@@ -1,0 +1,32 @@
+{
+  "en": {
+    "pcs_main_heading": "Set up",
+    "pcs_sub_heading": "Would you like to join this conversation?",
+    "pcs_signal_good": "Signal Good",
+    "pcs_signal_update": "Refresh",
+    "pcs_camera_label": "Camera selected",
+    "pcs_camera_selected": "FaceTime HD Camera",
+    "pcs_mic_label": "Select Microphone",
+    "pcs_mic_selected": "Default External Microphone (Built-in)",
+    "pcs_speaker_label": "Select Speakers",
+    "pcs_speaker_selected": "Default Headphones (Built-in)",
+    "pcs_btn_speaker_test": "Test Speakers",
+    "pcs_btn_reset_devices": "Reset devices",
+    "pcs_btn_join_call": "Join call"
+  },
+  "de": {
+    "pcs_main_heading": "Beitrittsbestätigung",
+    "pcs_sub_heading": "Möchten Sie diesem Gespräch beitreten?",
+    "pcs_signal_good": "Signal Gut",
+    "pcs_signal_update": "Aktualisieren",
+    "pcs_camera_label": "Gewählte Kamera",
+    "pcs_camera_selected": "FaceTime HD Camera",
+    "pcs_mic_label": "Gewähltes Mikrofon",
+    "pcs_mic_selected": "Default External Microphone (Built-in)",
+    "pcs_speaker_label": "Gewählte Lautsprecher",
+    "pcs_speaker_selected": "Default Headphones (Built-in)",
+    "pcs_btn_speaker_test": "Lautsprechen testen",
+    "pcs_btn_reset_devices": "Geräte neu auswählen",
+    "pcs_btn_join_call": "Gespräch beitreten"
+  }
+}
