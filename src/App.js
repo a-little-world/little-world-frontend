@@ -54,6 +54,27 @@ createLocalTracks(
     }
   );
 
+function VideoFrame() {
+  const { t, i18n } = useTranslation();
+
+  return (
+    <div className="video-container">
+      <div id="container" className="video-frame" alt="video" />
+      <div className="video-controls">
+        <button type="button" className="signal-button">
+          {t("pcs_signal_good")} <span className="signal-update">{t("pcs_signal_update")}</span>
+        </button>
+        <button type="button" className="push-right circle-button">
+          M
+        </button>
+        <button type="button" className="circle-button">
+          C
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function CallSetup() {
   const { t, i18n } = useTranslation();
   return (
@@ -64,7 +85,9 @@ function CallSetup() {
             <h3 className="title">{t("pcs_main_heading")}</h3>
             <span className="subtitle">{t("pcs_sub_heading")}</span>
           </div>
-          <button className="modal-close">X</button>
+          <button type="button" className="modal-close">
+            X
+          </button>
         </div>
         <VideoFrame />
         <div className="video-setup-dropdowns">
@@ -73,25 +96,9 @@ function CallSetup() {
           <Dropdown title="Gewählte Lautsprecher" />
         </div>
         <a className="video-setup-reset">{t("pcs_btn_reset_devices")}</a>
-        <button className="video-setup-confirm">{t("pcs_btn_join_call")}</button>
-      </div>
-    </div>
-  );
-}
-
-function VideoFrame() {
-  const { t, i18n } = useTranslation();
-
-  return (
-    <div className="video-container">
-      <img src={logo} className="video-frame" alt="video" />
-      <div className="video-controls">
-        <button className="signal-button">
-          { t("pcs_signal_good") } <
-            span className="signal-update">{ t("pcs_signal_update") }</span>
+        <button type="submit" className="video-setup-confirm">
+          {t("pcs_btn_join_call")}
         </button>
-        <button className="push-right circle-button">M</button>
-        <button className="circle-button">C</button>
       </div>
     </div>
   );
@@ -100,7 +107,7 @@ function VideoFrame() {
 function Dropdown({ title, options }) {
   return (
     <div className="">
-      <label for="webcam-select">{ title }</label>
+      <label htmlFor="webcam-select">{title}</label>
       <select name="webcam-select">
         <option value="123">FaceTime HD camera</option>
       </select>
