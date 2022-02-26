@@ -61,6 +61,22 @@ createLocalTracks(
     }
   );
 
+function toggleTrack(track) {
+  if (track.isEnabled) {
+    track.disable();
+  } else {
+    track.enable();
+  }
+}
+
+function toggleAudio() {
+  toggleTrack(activeTracks.audio);
+}
+
+function toggleVideo() {
+  toggleTrack(activeTracks.video);
+}
+
 function VideoFrame() {
   const { t, i18n } = useTranslation();
 
@@ -71,10 +87,10 @@ function VideoFrame() {
         <button type="button" className="signal-button">
           {t("pcs_signal_good")} <span className="signal-update">{t("pcs_signal_update")}</span>
         </button>
-        <button type="button" className="push-right circle-button">
+        <button type="button" className="push-right circle-button" onClick={() => toggleAudio()}>
           M
         </button>
-        <button type="button" className="circle-button">
+        <button type="button" className="circle-button" onClick={() => toggleVideo()}>
           C
         </button>
       </div>
