@@ -2,7 +2,57 @@ import React from "react";
 import "./App.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
-import logo from "./logo.svg";
+
+const { connect, createLocalTracks } = require("twilio-video");
+
+const token = "";
+
+const mediaErrors = [
+  "NotAllowedError",
+  "NotFoundError",
+  "NotReadableError",
+  "OverconstrainedError",
+  "TypeError",
+];
+
+function handleMediaError(error) {
+  console.error("Failed to acquire media:", error.name, error.message);
+}
+
+createLocalTracks(
+  {
+    audio: true,
+    video: { width: 576, height: 276 },
+  },
+  (error) => {
+    console.error(`Unable to create local track: ${error.message}`);
+  }
+)
+  .then(
+    (localTracks) => {
+      const localMediaContainer = document.querySelector(".video-container");
+      localTracks.forEach((track) => {
+        localMediaContainer.prepend(track.attach());
+      });
+      return connect(token, {
+        name: "my-room-name",
+        tracks: localTracks,
+      });
+    },
+    (error) => {
+      handleMediaError(error);
+    }
+  )
+  .then(
+    (room) => {
+      console.log(`Connected to Room: ${room.name}`);
+    },
+    (error) => {
+      if (mediaErrors.includes(error.name)) {
+        handleMediaError(error);
+      }
+    }
+  );
 
 function CallSetup() {
   const { t, i18n } = useTranslation();
