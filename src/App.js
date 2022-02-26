@@ -19,6 +19,9 @@ function handleMediaError(error) {
   console.error("Failed to acquire media:", error.name, error.message);
 }
 
+const activeTracks = { video: null, audio: null };
+
+// initialise webcam and mic
 createLocalTracks(
   {
     audio: true,
@@ -31,9 +34,13 @@ createLocalTracks(
   .then(
     (localTracks) => {
       const localMediaContainer = document.querySelector(".video-container");
+      // temporarily setting last audio/video track found as default
       localTracks.forEach((track) => {
-        localMediaContainer.prepend(track.attach());
+        activeTracks[track.kind] = track;
       });
+      localMediaContainer.prepend(activeTracks.video.attach());
+      localMediaContainer.prepend(activeTracks.audio.attach());
+
       return connect(token, {
         name: "my-room-name",
         tracks: localTracks,
