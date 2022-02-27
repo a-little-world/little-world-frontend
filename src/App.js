@@ -110,7 +110,7 @@ function CallSetup() {
             <span className="subtitle">{t("pcs_sub_heading")}</span>
           </div>
           <button type="button" className="modal-close">
-            X
+            &nbsp;
           </button>
         </div>
         <VideoFrame />

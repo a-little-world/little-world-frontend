@@ -48,6 +48,11 @@
   width: 60px;
   border-radius: 30px;
   margin-right: -18px;
+  background-image: url("images/close-pop-up.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(100, 100, 100, 0.5);
+  border: none;
 }
 
 /*video area*/
