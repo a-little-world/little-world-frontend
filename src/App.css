@@ -72,15 +72,6 @@
   margin-top: -60px;
 }
 
-.video-controls .push-right {
-  margin-left: auto;
-}
-
-.video-controls .circle-button {
-  height: 42px;
-  width: 42px;
-}
-
 .video-controls > button {
   border-radius: 21px;
 }
@@ -93,6 +84,35 @@
 }
 .video-controls .signal-button .signal-update {
   color: #F39325;
+}
+
+input#audio-toggle, input#video-toggle {
+  display: none;
+}
+
+input#audio-toggle + label, input#video-toggle + label {
+  height: 42px;
+  width: 42px;
+  border-radius: 21px;
+  background-color: black;
+  margin-right: 10px;
+}
+
+input#audio-toggle + label {
+  margin-left: auto;
+  background-image: url("images/microphone-off.svg");
+}
+
+input#audio-toggle:checked + label {
+  background-image: url("images/microphone-on.svg");
+}
+
+input#video-toggle + label {
+  background-image: url("images/camera-off.svg");
+}
+
+input#video-toggle:checked + label {
+  background-image: url("images/camera-on.svg");
 }
 
 /*setting selection*/

@@ -61,20 +61,13 @@ createLocalTracks(
     }
   );
 
-function toggleTrack(track) {
-  if (track.isEnabled) {
-    track.disable();
-  } else {
+function toggleLocalTracks(isOn, trackType) {
+  const track = activeTracks[trackType];
+  if (isOn) {
     track.enable();
+  } else {
+    track.disable();
   }
-}
-
-function toggleAudio() {
-  toggleTrack(activeTracks.audio);
-}
-
-function toggleVideo() {
-  toggleTrack(activeTracks.video);
 }
 
 function VideoFrame() {
@@ -87,12 +80,20 @@ function VideoFrame() {
         <button type="button" className="signal-button">
           {t("pcs_signal_good")} <span className="signal-update">{t("pcs_signal_update")}</span>
         </button>
-        <button type="button" className="push-right circle-button" onClick={() => toggleAudio()}>
-          M
-        </button>
-        <button type="button" className="circle-button" onClick={() => toggleVideo()}>
-          C
-        </button>
+        <input
+          type="checkbox"
+          id="audio-toggle"
+          defaultChecked="checked"
+          onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
+        />
+        <label htmlFor="audio-toggle" />
+        <input
+          type="checkbox"
+          id="video-toggle"
+          defaultChecked="checked"
+          onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
+        />
+        <label htmlFor="video-toggle" />
       </div>
     </div>
   );
