@@ -94,7 +94,7 @@ input#audio-toggle + label, input#video-toggle + label {
   height: 42px;
   width: 42px;
   border-radius: 21px;
-  background-color: black;
+  background-color: rgba(100, 100, 100, 0.5);
   margin-right: 10px;
 }
 
