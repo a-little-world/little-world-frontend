@@ -81,6 +81,11 @@
   border-radius: 21px;
 }
 
+.video-controls #signalQuality {
+  vertical-align: middle;
+  padding-right: 5px;
+}
+
 .video-controls .signal-button {
   font-weight: 600;
   padding: 10px 15px;

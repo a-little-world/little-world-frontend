@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
+import signalWifi from "./images/signal-wifi.svg";
 
 const { connect, createLocalTracks } = require("twilio-video");
 
@@ -70,16 +71,34 @@ function toggleLocalTracks(isOn, trackType) {
   }
 }
 
+function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText }) {
+  const signalQualityImage = {
+    good: signalWifi,
+  };
+  return (
+    <button type="button" className="signal-button">
+      <img id="signalQuality" alt={signalQualityText} src={signalQualityImage[signalQuality]} />
+      {`${signalQualityText} `}
+      <span className="signal-update">{signalUpdateText}</span>
+    </button>
+  );
+}
+
 function VideoFrame() {
   const { t, i18n } = useTranslation();
+  const signalQuality = "good";
+  const signalQualityText = t(`pcs_signal_${signalQuality}`);
+  const signalUpdateText = t("pcs_signal_update");
 
   return (
     <div className="video-container">
       <div id="container" className="video-frame" alt="video" />
       <div className="video-controls">
-        <button type="button" className="signal-button">
-          {t("pcs_signal_good")} <span className="signal-update">{t("pcs_signal_update")}</span>
-        </button>
+        <SignalIndicator
+          signalQuality={signalQuality}
+          signalQualityText={signalQualityText}
+          signalUpdateText={signalUpdateText}
+        />
         <input
           type="checkbox"
           id="audio-toggle"
