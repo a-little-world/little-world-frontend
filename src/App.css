@@ -58,7 +58,8 @@
 
 /*video area*/
 
-.video-container {
+
+.local-video-container {
   position: relative;
   width: 576px;
   height: 276px;
@@ -72,10 +73,13 @@
   pointer-events: none;
 }
 
+/* controls box */
+
 .video-controls {
   display: flex;
   margin: 7px;
   margin-top: -60px;
+  user-select: none;
 }
 
 .video-controls > button {
@@ -93,45 +97,111 @@
   background: rgba(255, 255, 255, 0.9);
   border: none;
 }
+
 .video-controls .signal-button .signal-update {
   color: #F39325;
 }
 
-input#audio-toggle, input#video-toggle {
+.video-controls > input[type=checkbox] {
   display: none;
 }
 
-input#audio-toggle + label, input#video-toggle + label {
+.video-controls > input[type=checkbox] + label {
   height: 42px;
-  width: 42px;
+  min-width: 42px;
   border-radius: 21px;
   background-color: rgba(100, 100, 100, 0.5);
-  margin-right: 10px;
+  margin-right: 16px;
+
+  /* center text vertically */
+  display: flex;
+  align-items: center;
+
+  color: #E6E8EC;
 }
 
-input#audio-toggle + label {
+button, .video-controls > label {
+  cursor: pointer;
+}
+
+.video-controls > input[type=checkbox]:not(#audio-toggle, #video-toggle) + label img {
+   padding: 10px;
+}
+
+.video-controls > input[type=checkbox]:not(#audio-toggle, #video-toggle) + label {
+  padding-right: 12px;
+}
+
+input#audio-toggle + label { /* push items to right side */
   margin-left: auto;
-  background-image: url("images/microphone-off.svg");
 }
 
-input#audio-toggle:checked + label {
-  background-image: url("images/microphone-on.svg");
+input#audio-toggle + label img {
+  margin: 0 auto; /* not sure why this is required only here, probably related to the right-push*/
+  content: url("images/microphone-off.svg");
 }
 
-input#video-toggle + label {
-  background-image: url("images/camera-off.svg");
+input#audio-toggle:checked + label img {
+  content: url("images/microphone-on.svg");
 }
 
-input#video-toggle:checked + label {
-  background-image: url("images/camera-on.svg");
+input#video-toggle + label img {
+  content: url("images/camera-off.svg");
 }
 
+input#video-toggle:checked + label img {
+  content: url("images/camera-on.svg");
+}
+
+input#fullscreen-toggle + label img {
+  content: url("images/fullscreen-exit.svg");
+}
+
+/* input#fullscreen-toggle:checked + label {
+  
+} */
+
+input#calendar-toggle + label img {
+  content: url("images/calendar.svg");
+}
+/* 
+input#calendar-toggle:checked + label img {
+  content: url("images/calendar.svg");
+} */
+
+input#help-toggle + label img {
+  content: url("images/exclamation-mark.svg");
+}
+/* 
+input#help-toggle:checked + label img {
+  content: url("images/exclamation-mark.svg");
+} */
+
+input#chat-toggle + label img {
+  content: url("images/chat.svg");
+}
+/* 
+input#chat-toggle:checked + label img {
+  content: url("images/chat.svg");
+} */
+
+input#call-time + label {
+  margin-left: auto;
+  padding-left: 12px;
+  cursor: default;
+}
+
+input#end-call + label {
+  padding-left: 12px;
+  background: linear-gradient(225.88deg, #DB590B 7.79%, #9C2308 104.6%);
+}
 /*setting selection*/
 
 .video-setup-dropdowns label {
   color: #5F5F5F;
   font-size: 14px;
 }
+
 .video-setup-dropdowns select {
   display: block;
   width: 100%;

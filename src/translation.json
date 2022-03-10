@@ -12,7 +12,12 @@
     "pcs_speaker_selected": "Default Headphones (Built-in)",
     "pcs_btn_speaker_test": "Test Speakers",
     "pcs_btn_reset_devices": "Reset devices",
-    "pcs_btn_join_call": "Join call"
+    "pcs_btn_join_call": "Join call",
+    "vc_fs_btn_end_fullscreen":	"Exit Fullscreen",
+    "vc_fs_btn_appointment":	"Appointment",
+    "vc_fs_btn_mistake":	"Notice",
+    "vc_fs_btn_chat":	"Chat",
+    "vc_fs_btn_end_call":	"End call"
   },
   "de": {
     "pcs_main_heading": "Beitrittsbestätigung",
@@ -27,6 +32,11 @@
     "pcs_speaker_selected": "Default Headphones (Built-in)",
     "pcs_btn_speaker_test": "Lautsprechen testen",
     "pcs_btn_reset_devices": "Geräte neu auswählen",
-    "pcs_btn_join_call": "Gespräch beitreten"
+    "pcs_btn_join_call": "Gespräch beitreten",
+    "vc_fs_btn_end_fullscreen":	"Vollbild beenden",
+    "vc_fs_btn_appointment":	"Termin ausmachen",
+    "vc_fs_btn_mistake":	"Hinweis",
+    "vc_fs_btn_chat":	"Chat",
+    "vc_fs_btn_end_call":	"Gespräch verlassen"
   }
 }
