@@ -1,67 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { addTracks, toggleLocalTracks } from "./twilio-helper";
 
 import signalWifi from "./images/signal-wifi.svg";
-
-const { connect, createLocalTracks } = require("twilio-video");
-
-function handleMediaError(error) {
-  console.error(`${error.name} Failed to acquire media: ${error.message}`);
-}
-
-const activeTracks = { video: null, audio: null };
-
-// initialise webcam and mic
-createLocalTracks(
-  {
-    audio: true,
-    video: { width: 576, height: 276 },
-  },
-  (error) => {
-    console.error(`Unable to create local track: ${error.message}`);
-  }
-)
-  .then(
-    (localTracks) => {
-      const localMediaContainer = document.querySelector(".local-video-container");
-      // temporarily setting last audio/video track found as default
-      localTracks.forEach((track) => {
-        activeTracks[track.kind] = track;
-      });
-      localMediaContainer.prepend(activeTracks.video.attach());
-      localMediaContainer.prepend(activeTracks.audio.attach());
-
-      return fetch("http://token-service-2436-dev.twil.io/token"); //from https://www.twilio.com/blog/generate-access-token-twilio-chat-video-voice-using-twilio-functions
-    },
-    (error) => {
-      handleMediaError(error);
-    }
-  )
-  .then((response) => response.json())
-  .then((data) => {
-    const token = data.accessToken;
-    // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTS2QxNDY4YWFiYmM1NzE0OWMwMTJkZmI0ZjMyMGQyYTBiLTE2NDY5MjM0MTciLCJncmFudHMiOnsidmlkZW8iOnsicm9vbSI6ImNvb2wgcm9vbSJ9fSwiaWF0IjoxNjQ2OTIzNDE3LCJleHAiOjE2NDY5MjcwMTcsImlzcyI6IlNLZDE0NjhhYWJiYzU3MTQ5YzAxMmRmYjRmMzIwZDJhMGIiLCJzdWIiOiJBQ2EwMzQ0ZGQ0OWY3MjQzNzQ5MTY0ZTQyNGM5YTk1YjE3In0.u1ywhDWCrnhJvZoCRfiamCsoXmHoM8XJNbfqwtb80Yc";
-    console.log(14, data.accessToken);
-    console.log(15, token);
-    connect(token, {
-      name: "CoolRoom", //from https://www.twilio.com/blog/generate-access-token-twilio-chat-video-voice-using-twilio-functions
-      tracks: [activeTracks.video, activeTracks.audio],
-    }).then((room) => {
-      console.log("Connected to Room:", room.name);
-    });
-  });
-
-function toggleLocalTracks(isOn, trackType) {
-  const track = activeTracks[trackType];
-  if (isOn) {
-    track.enable();
-  } else {
-    track.disable();
-  }
-}
 
 function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText }) {
   const signalQualityImage = {
@@ -107,7 +51,7 @@ function VideoControls({ signalInfo }) {
 }
 
 function VideoFrame() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const quality = "good";
   const qualityText = t(`pcs_signal_${quality}`);
   const updateText = t("pcs_signal_update");
@@ -134,6 +78,9 @@ function Dropdown({ title, options }) {
 
 function CallSetup() {
   const { t } = useTranslation();
+  useEffect(() => {
+    addTracks();
+  });
   return (
     <div className="call-setup-overlay">
       <div className="call-setup-modal">
@@ -156,16 +103,12 @@ function CallSetup() {
         <Link
           to={{
             pathname: "/call",
-            state: { message: "hello, im a passed message!" },
           }}
         >
-          pressme
-        </Link>
-        <a href="./call">
           <button type="submit" className="video-setup-confirm">
             {t("pcs_btn_join_call")}
           </button>
-        </a>
+        </Link>
       </div>
     </div>
   );

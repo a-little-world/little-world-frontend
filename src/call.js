@@ -1,20 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import "./call.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
-
-console.log("call.js running");
-
-function toggleLocalTracks(isOn, trackType) {
-  console.log(32, activeTracks);
-  const track = activeTracks[trackType];
-  if (isOn) {
-    track.enable();
-  } else {
-    track.disable();
-  }
-}
+import { addTracks, joinRoom, toggleLocalTracks } from "./twilio-helper";
 
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
@@ -89,6 +78,10 @@ function VideoFrame() {
 }
 
 function ActiveCall() {
+  useEffect(() => {
+    addTracks();
+    joinRoom();
+  });
   return <VideoFrame />;
 }
 
