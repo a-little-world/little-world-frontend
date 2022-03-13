@@ -154,12 +154,12 @@ input#video-toggle:checked + label img {
 }
 
 input#fullscreen-toggle + label img {
-  content: url("images/fullscreen-exit.svg");
+  content: url("images/fullscreen-enter.svg");
 }
 
-/* input#fullscreen-toggle:checked + label {
-  
-} */
+input#fullscreen-toggle:checked + label img {
+  content: url("images/fullscreen-exit.svg");
+}
 
 input#calendar-toggle + label img {
   content: url("images/calendar.svg");

@@ -5,11 +5,17 @@ import "./i18n";
 import { useTranslation } from "react-i18next";
 import { addTracks, joinRoom, toggleLocalTracks } from "./twilio-helper";
 
-function toggleFullscreen() {
+function toggleFullscreen(t) {
+  const videoContainer = document.querySelector(".foreign-video-container");
+  const fullScreenTextEl = document.querySelector("label[for=fullscreen-toggle] .text");
+  // would be nice to do text in CSS but we need translation support
+
   if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
+    videoContainer.requestFullscreen();
+    fullScreenTextEl.innerHTML = t("vc_fs_btn_exit_fullscreen");
   } else if (document.exitFullscreen) {
     document.exitFullscreen();
+    fullScreenTextEl.innerHTML = t("vc_fs_btn_enter_fullscreen");
   }
 }
 
@@ -35,14 +41,10 @@ function VideoControls() {
       <label htmlFor="video-toggle">
         <img alt="enable/disable webcam" />
       </label>
-      <input
-        type="checkbox"
-        id="fullscreen-toggle"
-        onChange={(e) => toggleFullscreen(e.target.checked)}
-      />
+      <input type="checkbox" id="fullscreen-toggle" onChange={() => toggleFullscreen(t)} />
       <label htmlFor="fullscreen-toggle">
         <img alt="" />
-        {t("vc_fs_btn_end_fullscreen")}
+        <span className="text">{t("vc_fs_btn_enter_fullscreen")}</span>
       </label>
       <input type="checkbox" id="calendar-toggle" />
       <label htmlFor="calendar-toggle">
@@ -85,4 +87,79 @@ function ActiveCall() {
   return <VideoFrame />;
 }
 
-export default ActiveCall;
+function setSidebar(e) {
+  const toShow = e.target.className;
+}
+
+function SidebarSelector() {
+  const { t } = useTranslation();
+  return (
+    <div className="sidebar-selector">
+      <button className="chat" onClick={setSidebar}>
+        {t("vc_btn_chat")}
+      </button>
+      <button className="questions" onClick={setSidebar}>
+        {t("vc_btn_questions")}
+      </button>
+      <button className="notes" onClick={setSidebar}>
+        {t("vc_btn_notes")}
+      </button>
+    </div>
+  );
+}
+
+function SidebarChat() {
+  return <div className="chat">chat stuff goes here</div>;
+}
+
+function SidebarQuestions() {
+  return <div className="questions">questions stuff goes here</div>;
+}
+function SidebarNotes() {
+  return <div className="notes">notes stuff goes here</div>;
+}
+
+function TranslationDropdown({ side }) {
+  const { t } = useTranslation();
+  const languages = ["en", "de"];
+  return (
+    <select name={`${side}-language-select`}>
+      {languages.map((code) => (
+        <option key={code} value={code}>
+          {t(`lang-${code}`)}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function TranslationBox() {
+  return (
+    <div className="translation-box">
+      <TranslationDropdown side="left" />
+      <button className="swap-languages" />
+      <TranslationDropdown side="right" />
+    </div>
+  );
+}
+
+function CallScreen() {
+  return (
+    <div className="call-screen">
+      <div className="call-and-text">
+        <ActiveCall />
+        <TranslationBox />
+      </div>
+      <div className="call-sidebar">
+        <SidebarSelector />
+        <div className="sidebar-contents">
+          <SidebarChat />
+          <SidebarQuestions />
+          <SidebarNotes />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default CallScreen;
