@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import "./call.css";
 import "./i18n";
@@ -87,36 +87,150 @@ function ActiveCall() {
   return <VideoFrame />;
 }
 
-function setSidebar(e) {
-  const toShow = e.target.className;
-}
-
-function SidebarSelector() {
-  const { t } = useTranslation();
-  return (
-    <div className="sidebar-selector">
-      <button className="chat" onClick={setSidebar}>
-        {t("vc_btn_chat")}
-      </button>
-      <button className="questions" onClick={setSidebar}>
-        {t("vc_btn_questions")}
-      </button>
-      <button className="notes" onClick={setSidebar}>
-        {t("vc_btn_notes")}
-      </button>
-    </div>
-  );
-}
-
 function SidebarChat() {
   return <div className="chat">chat stuff goes here</div>;
 }
 
 function SidebarQuestions() {
-  return <div className="questions">questions stuff goes here</div>;
+  const { t } = useTranslation();
+  const [selectedTopic, setTopic] = useState("Jokes");
+  const [selectedQuestionId, setQuestionId] = useState(null);
+
+  const questionsData = {
+    Jokes: [
+      {
+        id: 1,
+        text: "How much wood would a wood chucker chuck if a woodchucker could chuck wood?",
+      },
+      {
+        id: 2,
+        text: "What is the air speed velocity of an unladen swallow?",
+      },
+    ],
+    Oliver: [
+      {
+        id: 3,
+        text: "Where is Oliver from?",
+      },
+      {
+        id: 4,
+        text: "Which part of Berlin?",
+      },
+      {
+        id: 5,
+        text: "Where did he get those glasses?",
+      },
+    ],
+    "Another Topic": [
+      {
+        id: 6,
+        text: "nothing to see here",
+      },
+    ],
+    "Yet Another Topic": [
+      {
+        id: 7,
+        text: "what did you expect?",
+      },
+    ],
+  };
+  const questionsTopics = Object.keys(questionsData);
+
+  const changeScroll = (direction) => {
+    const element = document.querySelector(".questions-categories .categories");
+    const scrollVelocity = {
+      right: 100,
+      left: -100,
+    };
+    element.scrollLeft += scrollVelocity[direction];
+  };
+
+  return (
+    <div className="questions">
+      <div className="questions-categories">
+        <button className="questions-left" onClick={() => changeScroll("left")}>
+          <img alt="show left" />
+        </button>
+        <div className="categories">
+          {questionsTopics.map((topic) => (
+            <span key={topic}>
+              <input
+                type="radio"
+                id={`${topic}-radio`}
+                value={topic}
+                checked={selectedTopic === topic}
+                name="questionsTopics"
+                onChange={(e) => setTopic(e.target.value)}
+              />
+              <label htmlFor={`${topic}-radio`}>{topic}</label>
+            </span>
+          ))}
+        </div>
+        <button className="questions-right" onClick={() => changeScroll("right")}>
+          <img alt="show right" />
+        </button>
+      </div>
+      <div className="questions-content">
+        {questionsData[selectedTopic].map(({ id, text }) => (
+          <span key={id}>
+            <input
+              type="radio"
+              id={`question-${id}`}
+              value={id}
+              checked={selectedQuestionId === id}
+              name={selectedTopic}
+              onChange={() => setQuestionId(id)}
+            />
+            <label htmlFor={`question-${id}`}>
+              {text}
+              {selectedQuestionId === id && (
+                <div>
+                  <button>Y</button>
+                  <button>E</button>
+                  <button>N</button>
+                </div>
+              )}
+            </label>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
 }
 function SidebarNotes() {
   return <div className="notes">notes stuff goes here</div>;
+}
+
+function Sidebar() {
+  const { t } = useTranslation();
+  const sidebarTopics = ["chat", "questions", "notes"];
+  const [sideSelection, setSideSelection] = useState("questions");
+  const handleChange = (e) => setSideSelection(e.target.value);
+
+  return (
+    <div className="call-sidebar">
+      <div className="sidebar-selector">
+        {sidebarTopics.map((topic) => (
+          <span key={topic}>
+            <input
+              type="radio"
+              id={`${topic}-radio`}
+              value={topic}
+              checked={sideSelection === topic}
+              name="sidebar"
+              onChange={handleChange}
+            />
+            <label htmlFor={`${topic}-radio`}>{t(`vc_btn_${topic}`)}</label>
+          </span>
+        ))}
+      </div>
+      <div className="sidebar-content">
+        {sideSelection === "chat" && <SidebarChat />}
+        {sideSelection === "questions" && <SidebarQuestions />}
+        {sideSelection === "notes" && <SidebarNotes />}
+      </div>
+    </div>
+  );
 }
 
 function TranslationDropdown({ side }) {
@@ -134,11 +248,18 @@ function TranslationDropdown({ side }) {
 }
 
 function TranslationBox() {
+  const { t } = useTranslation();
   return (
     <div className="translation-box">
-      <TranslationDropdown side="left" />
+      <div className="left">
+        <TranslationDropdown side="left" />
+        <textarea placeholder={t("vc_translator_type_here")} />
+      </div>
       <button className="swap-languages" />
-      <TranslationDropdown side="right" />
+      <div className="right">
+        <TranslationDropdown side="right" />
+        <textarea placeholder={t("vc_translator_type_here")} />
+      </div>
     </div>
   );
 }
@@ -150,14 +271,7 @@ function CallScreen() {
         <ActiveCall />
         <TranslationBox />
       </div>
-      <div className="call-sidebar">
-        <SidebarSelector />
-        <div className="sidebar-contents">
-          <SidebarChat />
-          <SidebarQuestions />
-          <SidebarNotes />
-        </div>
-      </div>
+      <Sidebar />
     </div>
   );
 }
