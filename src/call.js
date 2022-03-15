@@ -19,6 +19,27 @@ function toggleFullscreen(t) {
   }
 }
 
+function Timer() {
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setSeconds((currentSeconds) => currentSeconds + 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  });
+
+  const remainder = seconds % 60;
+  const minutes = (seconds - remainder) / 60;
+
+  const two = (n) => (n < 10 ? `0${n}` : n);
+
+  return (
+    <div id="call-time">
+      {two(minutes)}:{two(remainder)}
+    </div>
+  );
+}
+
 function VideoControls() {
   const { t } = useTranslation();
   return (
@@ -61,8 +82,7 @@ function VideoControls() {
         <img alt="" />
         {t("vc_fs_btn_chat")}
       </label>
-      <input type="checkbox" id="call-time" />
-      <label htmlFor="call-time">00:00</label>
+      <Timer />
       <input type="checkbox" id="end-call" />
       <label htmlFor="end-call">{t("vc_fs_btn_end_call")}</label>
     </div>

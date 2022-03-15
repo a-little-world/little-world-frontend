@@ -106,7 +106,7 @@
   display: none;
 }
 
-.video-controls > input[type=checkbox] + label {
+.video-controls > input[type=checkbox] + label, #call-time {
   height: 42px;
   min-width: 42px;
   border-radius: 21px;
@@ -128,7 +128,7 @@ button, .video-controls > label {
    padding: 10px;
 }
 
-.video-controls > input[type=checkbox]:not(#audio-toggle, #video-toggle) + label {
+.video-controls > input[type=checkbox]:not(#audio-toggle, #video-toggle) + label, #call-time {
   padding-right: 12px;
 }
 
@@ -185,7 +185,7 @@ input#chat-toggle:checked + label img {
   content: url("images/chat.svg");
 } */
 
-input#call-time + label {
+#call-time {
   margin-left: auto;
   padding-left: 12px;
   cursor: default;
