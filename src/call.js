@@ -108,7 +108,44 @@ function ActiveCall() {
 }
 
 function SidebarChat() {
-  return <div className="chat">chat stuff goes here</div>;
+  const { t } = useTranslation();
+  const dummyData = [
+    {
+      id: 213,
+      sender: "foreign",
+      text: "Hello Richard how are you doing?",
+    },
+    {
+      id: 217,
+      sender: "local",
+      text: "Let's talk about a new topic. How about...",
+    },
+    {
+      id: 218,
+      sender: "local",
+      text: "We discussed",
+    },
+  ];
+
+  return (
+    <div className="chat">
+      <div className="chat-messages">
+        {dummyData.map(({ id, sender, text }) => {
+          return (
+            <div key={id} className={`message ${sender}`}>
+              {text}
+            </div>
+          );
+        })}
+      </div>
+      <div className="chat-compose">
+        <input type="text" />
+        <button className="send" type="submit">
+          Send
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function SidebarQuestions() {
