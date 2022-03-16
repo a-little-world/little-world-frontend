@@ -153,7 +153,7 @@ function SidebarQuestions() {
   const [selectedTopic, setTopic] = useState("Jokes");
   const [selectedQuestionId, setQuestionId] = useState(null);
 
-  const questionsData = {
+  let dummyData = {
     Jokes: [
       {
         id: 1,
@@ -191,7 +191,19 @@ function SidebarQuestions() {
       },
     ],
   };
+
+  const [questionsData, setQuestions] = useState(dummyData);
+
   const questionsTopics = Object.keys(questionsData);
+
+  const removeQuestion = () => {
+    // needs to go to backend
+    const questionIdx = questionsData[selectedTopic].findIndex(
+      (item) => item.id === selectedQuestionId
+    );
+    questionsData[selectedTopic].splice(questionIdx, 1);
+    setQuestionId(questionsData);
+  };
 
   const changeScroll = (direction) => {
     const element = document.querySelector(".questions-categories .categories");
@@ -240,7 +252,7 @@ function SidebarQuestions() {
                 <div className="question-action">
                   <img className="yes" alt="accept question" />
                   <img className="edit" alt="edit question" />
-                  <img className="no" alt="reject question" />
+                  <img className="no" alt="reject question" onClick={removeQuestion} />
                 </div>
               )}
             </label>
