@@ -153,7 +153,7 @@ function SidebarQuestions() {
   const [selectedTopic, setTopic] = useState("Jokes");
   const [selectedQuestionId, setQuestionId] = useState(null);
 
-  let dummyData = {
+  const dummyData = {
     Jokes: [
       {
         id: 1,

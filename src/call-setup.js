@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
@@ -65,12 +65,84 @@ function VideoFrame() {
   );
 }
 
-function Dropdown({ title, options }) {
+function VideoInputSelect() {
+  const { t } = useTranslation();
+  const [videoInDevices, setVideoInDevices] = useState([]);
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then((deviceList) => {
+      const devices = deviceList
+        .filter((deviceInfo) => deviceInfo.kind === "videoinput")
+        .filter((deviceInfo) => deviceInfo.deviceId !== "default");
+      setVideoInDevices(devices);
+    });
+  });
   return (
     <div className="">
-      <label htmlFor="webcam-select">{title}</label>
+      <label htmlFor="webcam-select">{t("pcs_camera_label")}</label>
       <select name="webcam-select">
-        <option value="123">FaceTime HD camera</option>
+        {videoInDevices.map((deviceInfo) => {
+          return (
+            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+              {deviceInfo.label}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
+}
+
+function AudioInputSelect() {
+  const { t } = useTranslation();
+  const [audioInDevices, setAudioInDevices] = useState([]);
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then((deviceList) => {
+      const devices = deviceList
+        .filter((deviceInfo) => deviceInfo.kind === "audioinput")
+        .filter((deviceInfo) => deviceInfo.deviceId !== "default");
+      setAudioInDevices(devices);
+    });
+  });
+
+  return (
+    <div className="">
+      <label htmlFor="mic-select">{t("pcs_mic_label")}</label>
+      <select name="mic-select">
+        {audioInDevices.map((deviceInfo) => {
+          return (
+            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+              {deviceInfo.label}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
+}
+
+function AudioOutputSelect() {
+  const { t } = useTranslation();
+  const [audioOutDevices, setAudioOutDevices] = useState([]);
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then((deviceList) => {
+      const devices = deviceList
+        .filter((deviceInfo) => deviceInfo.kind === "audiooutput")
+        .filter((deviceInfo) => deviceInfo.deviceId !== "default");
+      setAudioOutDevices(devices);
+    });
+  });
+
+  return (
+    <div className="">
+      <label htmlFor="speaker-select">{t("pcs_speaker_label")}</label>
+      <select name="speaker-select">
+        {audioOutDevices.map((deviceInfo) => {
+          return (
+            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+              {deviceInfo.label}
+            </option>
+          );
+        })}
       </select>
     </div>
   );
@@ -94,18 +166,18 @@ function CallSetup() {
           </button>
         </div>
         <VideoFrame />
-        <div className="video-setup-dropdowns">
-          <Dropdown title="Gewähltes Kamera" />
-          <Dropdown title="Gewähltes Mikrofon" />
-          <Dropdown title="Gewählte Lautsprecher" />
+        <div className="av-setup-dropdowns">
+          <VideoInputSelect />
+          <AudioInputSelect />
+          <AudioOutputSelect />
         </div>
-        <a className="video-setup-reset">{t("pcs_btn_reset_devices")}</a>
+        <a className="av-setup-reset">{t("pcs_btn_reset_devices")}</a>
         <Link
           to={{
             pathname: "/call",
           }}
         >
-          <button type="submit" className="video-setup-confirm">
+          <button type="submit" className="av-setup-confirm">
             {t("pcs_btn_join_call")}
           </button>
         </Link>

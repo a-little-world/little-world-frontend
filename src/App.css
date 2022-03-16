@@ -197,12 +197,12 @@ input#end-call + label {
 }
 /*setting selection*/
 
-.video-setup-dropdowns label {
+.av-setup-dropdowns label {
   color: #5F5F5F;
   font-size: 14px;
 }
 
-.video-setup-dropdowns select {
+.av-setup-dropdowns select {
   display: block;
   width: 100%;
   height: 44px;
@@ -213,7 +213,7 @@ input#end-call + label {
   box-sizing: border-box;
 }
 
-.video-setup-reset {
+.av-setup-reset {
   color: #F39325;
   font-size: 20px;
   display: block;
@@ -221,7 +221,7 @@ input#end-call + label {
   margin: 20px auto;
 }
 
-.video-setup-confirm {
+.av-setup-confirm {
   color: white;
   background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%);
   border-radius: 90px;
