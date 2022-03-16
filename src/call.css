@@ -89,7 +89,9 @@ video {
 
 img.swap-languages {
     height: 20px;
-    margin-top: 20px;
+    margin: 10px -10px;
+    padding: 10px;
+    cursor: pointer;
     content: url("./images/switch-language.svg");
 }
 
@@ -137,6 +139,7 @@ img.swap-languages {
     font-size: 21px;
     line-height: 20px;
     color: #36A9E0;
+    cursor: pointer;
 }
 
 .sidebar-selector input:checked + label {
@@ -161,7 +164,7 @@ img.swap-languages {
     appearance: none;
 }
 
-.questions-categories label {
+.questions-categories label, .questions-categories img {
     cursor: pointer;
 }
 
@@ -220,9 +223,18 @@ img.swap-languages {
     box-sizing: border-box;
 }
 
+.questions-content input:not(:checked) + label {
+    cursor: pointer;
+}
+
 .questions-content .question-action {
     height: 28px;
     margin-top: 5px;
+}
+
+.question-action img {
+    cursor: pointer;
+    border-radius: 20px;
 }
 
 .question-action img.yes {
