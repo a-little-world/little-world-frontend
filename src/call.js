@@ -205,9 +205,7 @@ function SidebarQuestions() {
   return (
     <div className="questions">
       <div className="questions-categories">
-        <button className="questions-left" onClick={() => changeScroll("left")}>
-          <img alt="show left" />
-        </button>
+        <img alt="show left" className="questions-left" onClick={() => changeScroll("left")} />
         <div className="categories">
           {questionsTopics.map((topic) => (
             <span key={topic}>
@@ -223,9 +221,7 @@ function SidebarQuestions() {
             </span>
           ))}
         </div>
-        <button className="questions-right" onClick={() => changeScroll("right")}>
-          <img alt="show right" />
-        </button>
+        <img alt="show right" className="questions-right" onClick={() => changeScroll("right")} />
       </div>
       <div className="questions-content">
         {questionsData[selectedTopic].map(({ id, text }) => (
@@ -241,10 +237,10 @@ function SidebarQuestions() {
             <label htmlFor={`question-${id}`}>
               {text}
               {selectedQuestionId === id && (
-                <div>
-                  <button>Y</button>
-                  <button>E</button>
-                  <button>N</button>
+                <div className="question-action">
+                  <img className="yes" alt="accept question" />
+                  <img className="edit" alt="edit question" />
+                  <img className="no" alt="reject question" />
                 </div>
               )}
             </label>
@@ -312,7 +308,7 @@ function TranslationBox() {
         <TranslationDropdown side="left" />
         <textarea placeholder={t("vc_translator_type_here")} />
       </div>
-      <button className="swap-languages" />
+      <img className="swap-languages" alt="swap languages" />
       <div className="right">
         <TranslationDropdown side="right" />
         <textarea placeholder={t("vc_translator_type_here")} />
