@@ -1,0 +1,270 @@
+.main {
+  display: flex;
+  background: url("./images/background.svg");
+  background-position-y: bottom;
+  background-repeat: no-repeat;
+  padding: 16px;
+}
+
+.sidebar {
+  width: 160px;
+  background-color: white;
+  border-radius: 20px;
+  margin: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar .logo {
+  width: 96px;
+  margin: 16px;
+}
+
+.sidebar > div {
+  width: 127px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(230, 232, 236, 0.5);
+  border-radius: 15px;
+  margin: 5px;
+  align-items: center;
+  font-family: "Signika Negative";
+  font-size: 14px;
+  line-height: 17.25px;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.sidebar .help {
+  margin-top: auto;
+}
+
+.sidebar > div > img {
+  height: 30px;
+}
+
+.sidebar > div.selected {
+  background: linear-gradient(50.19deg, #36A9E0 2.84%, #0367B2 106.82%);
+}
+
+.sidebar .start img {
+  content: url("./images/sidebar/start.svg");
+}
+.sidebar .messages img {
+  content: url("./images/sidebar/chat.svg");
+}
+.sidebar .notifications img {
+  content: url("./images/sidebar/notifications.svg");
+}
+.sidebar .my_profile img {
+  content: url("./images/sidebar/profile.svg");
+}
+.sidebar .help img {
+  content: url("./images/sidebar/help.svg");
+}
+.sidebar .settings img {
+  content: url("./images/sidebar/settings.svg");
+}
+.sidebar .log_out img {
+  content: url("./images/sidebar/logout.svg");
+}
+
+.content-area-right {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-bar-top {
+  display: flex;
+  background: #FFFFFF;
+  border: 1px solid #E6E8EC;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
+  border-radius: 20px;
+  margin: 10px;
+}
+
+.nav-bar-top .selector {
+  display: flex;
+}
+
+.nav-bar-top .selector > span {
+  display: inherit;
+}
+
+.nav-bar-top input {
+  display: none;
+}
+
+.nav-bar-top input + label {
+  font-size: 18px;
+  color: #36A9E0;
+  padding: 10px 15px;
+  margin: 13px;
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.nav-bar-top input:checked + label {
+  background: linear-gradient(50.19deg, #36A9E0 2.84%, #0367B2 106.82%);
+  color: white;
+}
+
+
+.content-area-main {
+  display: flex;
+
+}
+
+.profiles {
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: 400px 400px;
+  gap: 10px;
+  padding: 10px;
+}
+
+.profile-box, .find-new {
+  height: 350px;
+  background: #FFFFFF;
+  border: 1px solid #E6E8EC;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px;
+}
+
+.profile-box:nth-of-type(odd) {
+  grid-column: 1/2;
+}
+
+.profile-box:nth-of-type(even) {
+  grid-column: 2/2;
+}
+
+.profile-image {
+  width: 360px;
+  height: 180px;
+  display: block;
+  border-radius: 20px;
+}
+
+.profile-info {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.profile-info .name {
+  font-size: 24px;
+  font-family: "Signika Negative";
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.profile-info .text {
+  font-size: 16px;
+  font-family: "Signika Negative";
+  font-weight: 300;
+  color: #777E90;
+  margin-left: 6px;
+}
+
+.profile-box .buttons {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+.profile-box .buttons a {
+  background: rgba(230, 232, 236, 0.2);
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  margin: 6px;
+  width: 80px;
+}
+
+a.profile img {
+  content: url("./images/profile-orange.svg");
+}
+
+a.chat img {
+  content: url("./images/chat-orange.svg");
+}
+
+a.call img {
+  content: url("./images/call-orange.svg");
+}
+
+.find-new {
+  font-family: "Signika Negative";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 15px;
+  text-align: center;
+  color: #F28D00;
+}
+
+.find-new img {
+  content: url("./images/plus-with-circle.svg");
+  width: 115px;
+  height: 115px;
+  margin-top: 110px;
+  margin-bottom: 30px;
+}
+
+.notification-panel {
+  background: white;
+  border-radius: 36px;
+  border: 1px solid #E6E8EC;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
+  margin: 10px;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.active-user {
+  font-family: "Signika Negative";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 32px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.notification-panel .active-user img {
+  display: block;
+  height: 126px;
+  width: 126px;
+  border-radius: 80px;
+  border: 8px solid #E6E8EC;
+  margin-top: 45px;
+}
+
+.notifications-header {
+  font-size: 22px;
+}
+
+.notification-item {
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 19px 22px;
+  background: #FFFFFF;
+  border: 1px solid #F2F2F2;
+  box-sizing: border-box;
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
