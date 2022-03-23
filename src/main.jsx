@@ -4,6 +4,7 @@ import "./main.css";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import logoWithText from "./images/logo-text.svg";
+import $ from "jquery";
 
 function Sidebar() {
   const { t } = useTranslation();
@@ -105,10 +106,29 @@ function PartnerProfiles() {
 
 function NotificationPanel() {
   const { t } = useTranslation();
-  const dummyUserData = {
-    id: 402,
-    name: "Courtney Henry",
-  };
+  const [userInfo, setUserInfo] = useState({
+    imgSrc: null,
+    firstName: null,
+    lastName: null,
+  });
+  useEffect(() => {
+    const userName = "benjamin.tim@gmx.de";
+    const userPass = "Test123";
+    $.ajax({
+      // using jQuery for now as fetch api is more convoluted with cross-domain requests
+      type: "GET",
+      url: "https://littleworld-test.com/api2/profile/",
+      headers: {
+        Authorization: `Basic ${btoa(`${userName}:${userPass}`)}`,
+      },
+    }).then((data) => {
+      setUserInfo({
+        imgSrc: data.profile_image,
+        firstName: data.real_name_first,
+        lastName: data.real_name_last,
+      });
+    });
+  });
   const dummyNotifications = [
     {
       id: 2347,
@@ -135,8 +155,8 @@ function NotificationPanel() {
   return (
     <div className="notification-panel">
       <div className="active-user">
-        <img src={`../images/profiles/${dummyUserData.id}.jpg`} alt="current user" />
-        <div className="name">{dummyUserData.name}</div>
+        <img src={userInfo.imgSrc} alt="current user" />
+        <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
       </div>
       <div className="notifications-header">{t("nbr_notifications")}</div>
       <div className="notifications-content">
