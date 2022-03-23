@@ -47,6 +47,7 @@
 
 .sidebar > div.selected {
   background: linear-gradient(50.19deg, #36A9E0 2.84%, #0367B2 106.82%);
+  color: white;
 }
 
 .sidebar .start img {
@@ -210,6 +211,7 @@
   padding: 10px;
   margin: 6px;
   width: 80px;
+  cursor: pointer;
 }
 
 a.profile img {
@@ -240,6 +242,7 @@ a.call img {
   height: 115px;
   margin-top: 110px;
   margin-bottom: 30px;
+  cursor: pointer;
 }
 
 .notification-panel {
