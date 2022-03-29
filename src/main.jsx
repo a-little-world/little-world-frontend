@@ -6,6 +6,9 @@ import { Link } from "react-router-dom";
 import $ from "jquery";
 import PropTypes from "prop-types";
 import logoWithText from "./images/logo-text.svg";
+import {default as GLOB } from "./ENVIRONMENT.js"
+import Cookies from 'js-cookie'
+import * as simulator from "./login-simulator.js"
 
 function Sidebar() {
   const { t } = useTranslation();
@@ -31,7 +34,16 @@ function Sidebar() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    window.localStorage.setItem("credentials", login);
+    /* 
+    * We force login the new user and reload the window 
+    * NOTE: we did change the `crsftoken` and `sessionid` 
+    * so they have to be realoded accordingly, prob only relevant for `crsftoken`
+    */
+    const usr_pass = login.split(":")
+    // I stole this trick with local storage, it's not cleared on reload an can be used to set defaults
+    window.localStorage.setItem("current_login_user", usr_pass[0])
+    window.localStorage.setItem("current_login_pass", usr_pass[1])
+    //simulator.awaitSimulatedLogin(usr_pass[0], usr_pass[1], true)
     window.location.reload();
   };
 
@@ -179,48 +191,7 @@ function NotificationPanel({ userInfo }) {
   );
 }
 
-// Has to be async... This will not be needed in the future, cause login will already be done when loading this page normally
-async function simulatedAutoLogin(username, password, by_force=false){
-
-  // We dont want this function to be called on every reload
-  // If you want to ignore this and use by_force=true
-  const already_loggedin = window.localStorage.getItem("user_loggedin") || false;
-  if(already_loggedin && !by_force){
-    // The data `login_dat` should **not** be used anywhere it is just here to provide a default without doing the call again.
-    return window.localStorage.getItem("login_data")
-  }
-
-  
-  // This has to be await, cause nothing is gonna work if not logged in
-  const login_data = await $.ajax({
-    type: "POST",
-    url: "https://littleworld-test.com/api2/login_hack/",
-    /* 
-     * This uses the `login_hack` api, which is an adaptation of the regular login
-     * - also returns `csrftoken` this is usualy set when loading the page under the default backend
-     * In this case we manulay get the cookie and and add it to the browser session
-    */
-    data: {
-      username: username,
-      password: password,
-    },
-  })
-
-  // patching the cookie, this would also usually not be needed cause it would be set if loaded via regular backend
-  document.cookie = `csrftoken=${login_data.csrfcookie}; expires=Sun, 1 Jan 2023 00:00:00 UTC; path=/`;
-
-  // The session login cookie should be set automaticly
-  console.log(login_data);
-
-  window.localStorage.setItem("login_data", login_data)
-  window.localStorage.setItem("user_loggedin", true)
-
-  return login_data
-}
-
 function Main() {
-
-  const login_data = simulatedAutoLogin("benjamin.tim@gmx.de", "Test123");
 
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
@@ -239,10 +210,10 @@ function Main() {
     const loginString = window.localStorage.getItem("credentials") || "benjamin.tim@gmx.de:Test123";
     $.ajax({
       type: "POST",
-      url: "https://littleworld-test.com/api2/composite/",
-      headers: {
-        Authorization: `Basic ${btoa(loginString)}`,
-      },
+      url: `${GLOB.BACKEND_URL}/api2/composite/`,
+       headers: { // The cookies is optained when authenticating via `api2/login/`
+        "X-CSRFToken" : Cookies.get('csrftoken') // the login_had sets this, see 'login-simulator.js'
+    },
       data: {
         "composite-request": JSON.stringify([
           {
