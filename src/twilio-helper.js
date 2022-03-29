@@ -25,17 +25,17 @@ function addTracks() {
   });
 }
 
-function joinRoom() {
+function joinRoom(loginString, partnerKey) {
   $.ajax({
     // using jQuery for now as fetch api is more convoluted with cross-domain requests
     type: "POST",
     url: "https://littleworld-test.com/api2/auth_call_room/",
     headers: {
-      Authorization: `Basic ${btoa("benjamin.tim@gmx.de:Test123")}`,
+      Authorization: `Basic ${btoa(loginString)}`,
     },
     data: {
       room_h256_pk: "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
-      partner_h256_pk: "5893bfed87ff048caee8b0fc8a3514df7e2495fe2e48d160dc26cd6401f1e6e7",
+      partner_h256_pk: partnerKey, // "5893bfed87ff048caee8b0fc8a3514df7e2495fe2e48d160dc26cd6401f1e6e7",
     },
   }).then((data) => {
     const token = data.user_token;
@@ -44,6 +44,7 @@ function joinRoom() {
       tracks: [activeTracks.video, activeTracks.audio],
     }).then((room) => {
       console.log("Connected to Room:", room.name);
+      console.log("Partner key:", partnerKey);
     });
   });
 }

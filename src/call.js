@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "./App.css";
 import "./call.css";
 import "./i18n";
@@ -100,10 +101,13 @@ function VideoFrame() {
 }
 
 function ActiveCall() {
+  const location = useLocation();
+  const key = location.state;
   useEffect(() => {
+    const credentials = window.localStorage.getItem("credentials") || "benjamin.tim@gmx.de:Test123";
     addTracks();
-    joinRoom();
-  });
+    joinRoom(credentials, key);
+  }, []);
   return <VideoFrame />;
 }
 
