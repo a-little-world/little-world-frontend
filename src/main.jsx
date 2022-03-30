@@ -91,13 +91,13 @@ function PartnerProfiles({ matchesInfo }) {
 
   return (
     <div className="profiles">
-      {matchesInfo.map(({ user_h256_pk, display_name }) => {
+      {matchesInfo.map(({ userPk, firstName, lastName, userDescription, imgSrc }) => {
         return (
-          <div key={user_h256_pk} className="profile-box">
-            <img alt="match" className="profile-image" />
+          <div key={userPk} className="profile-box">
+            <img alt="match" className="profile-image" src={imgSrc} />
             <div className="profile-info">
-              <div className="name">{display_name}</div>
-              <div className="text">{user_h256_pk}</div>
+              <div className="name">{`${firstName} ${lastName}`}</div>
+              <div className="text">{userDescription}</div>
             </div>
             <div className="buttons">
               <a className="profile">
@@ -108,7 +108,7 @@ function PartnerProfiles({ matchesInfo }) {
                 <img alt="chat" />
                 {t("cp_message")}
               </a>
-              <Link to="/call-setup" state={user_h256_pk} className="call">
+              <Link to="/call-setup" state={userPk} className="call">
                 <img alt="call" />
                 {t("cp_call")}
               </Link>
