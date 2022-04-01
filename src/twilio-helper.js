@@ -35,7 +35,7 @@ function joinRoom(loginString, partnerKey) {
     },
     data: {
       room_h256_pk: "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
-      partner_h256_pk: partnerKey, // "5893bfed87ff048caee8b0fc8a3514df7e2495fe2e48d160dc26cd6401f1e6e7",
+      partner_h256_pk: partnerKey,
     },
   }).then((data) => {
     const token = data.user_token;

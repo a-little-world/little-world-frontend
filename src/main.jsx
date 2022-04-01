@@ -4,7 +4,6 @@ import "./main.css";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import $ from "jquery";
-import PropTypes from "prop-types";
 import logoWithText from "./images/logo-text.svg";
 import {default as GLOB } from "./ENVIRONMENT.js"
 import Cookies from 'js-cookie'
@@ -104,13 +103,13 @@ function PartnerProfiles({ matchesInfo }) {
 
   return (
     <div className="profiles">
-      {matchesInfo.map(({ user_h256_pk, display_name }) => {
+      {matchesInfo.map(({ userPk, firstName, lastName, userDescription, imgSrc }) => {
         return (
-          <div key={user_h256_pk} className="profile-box">
-            <img alt="match" className="profile-image" />
+          <div key={userPk} className="profile-box">
+            <img alt="match" className="profile-image" src={imgSrc} />
             <div className="profile-info">
-              <div className="name">{display_name}</div>
-              <div className="text">{user_h256_pk}</div>
+              <div className="name">{`${firstName} ${lastName}`}</div>
+              <div className="text">{userDescription}</div>
             </div>
             <div className="buttons">
               <a className="profile">
@@ -121,7 +120,7 @@ function PartnerProfiles({ matchesInfo }) {
                 <img alt="chat" />
                 {t("cp_message")}
               </a>
-              <Link to="/call-setup" state={user_h256_pk} className="call">
+              <Link to="/call-setup" state={userPk} className="call">
                 <img alt="call" />
                 {t("cp_call")}
               </Link>
@@ -136,9 +135,6 @@ function PartnerProfiles({ matchesInfo }) {
     </div>
   );
 }
-PartnerProfiles.propTypes = {
-  matchesInfo: PropTypes.arrayOf.isRequired,
-};
 
 function NotificationPanel({ userInfo }) {
   const { t } = useTranslation();
@@ -199,12 +195,7 @@ function Main() {
     lastName: "",
   });
 
-  const [matchesInfo, setMatchesInfo] = useState([
-    {
-      display_name: "loading...",
-      user_h256_pk: null,
-    },
-  ]);
+  const [matchesInfo, setMatchesInfo] = useState([]);
 
   useEffect(() => {
     const loginString = window.localStorage.getItem("credentials") || "benjamin.tim@gmx.de:Test123";
@@ -219,27 +210,25 @@ function Main() {
           {
             spec: {
               type: "simple",
-              ref: "matches",
+              ref: "_matchesBasic",
             },
             method: "GET",
             path: "api2/matches/",
-            body: {},
           },
           {
             spec: {
               type: "simple",
-              ref: "profile",
+              ref: "userData",
             },
             method: "GET",
             path: "api2/profile/",
-            body: {},
           },
           {
             spec: {
               type: "foreach",
-              in: "matches",
+              in: "_matchesBasic",
               as: "match",
-              ref: "profiles",
+              ref: "matches",
             },
             method: "POST",
             path: "api2/profile_of/",
@@ -249,18 +238,23 @@ function Main() {
           },
         ]),
       },
-    }).then(({ matches, profile, profiles }) => {
-      console.log(44, matches);
+    }).then(({ _matchesBasic, userData, matches }) => {
       setUserInfo({
-        imgSrc: profile.profile_image,
-        firstName: profile.real_name_first,
-        lastName: profile.real_name_last,
+        imgSrc: userData.profile_image,
+        firstName: userData.real_name_first,
+        lastName: userData.real_name_last,
       });
-      // const matchesInfo = matches.forEach((match) => {
-      //   return {
-      //     match.
-      // })
-      setMatchesInfo(matches);
+
+      const matchesData = matches.map((match) => {
+        return {
+          userPk: match["match.user_h256_pk"],
+          firstName: match.real_name_first,
+          lastName: match.real_name_last,
+          userDescription: match.user_description,
+          imgSrc: match.profile_image,
+        };
+      });
+      setMatchesInfo(matchesData);
     });
   }, []);
 
