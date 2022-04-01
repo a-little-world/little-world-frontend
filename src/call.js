@@ -104,9 +104,8 @@ function ActiveCall() {
   const location = useLocation();
   const key = location.state;
   useEffect(() => {
-    const credentials = window.localStorage.getItem("credentials") || "benjamin.tim@gmx.de:Test123";
     addTracks();
-    joinRoom(credentials, key);
+    joinRoom(key);
   }, []);
   return <VideoFrame />;
 }

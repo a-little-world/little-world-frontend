@@ -1,4 +1,5 @@
 import $ from "jquery";
+import { BACKEND_URL } from "./ENVIRONMENT";
 
 const { connect, createLocalTracks } = require("twilio-video");
 
@@ -9,7 +10,7 @@ function addTracks() {
   createLocalTracks(
     {
       audio: true,
-      video: { width: 576, height: 276 },
+      video: { width: 576, height: 276, aspectRatio: 16 / 9 },
     },
     (error) => {
       console.error(`Unable to create local track: ${error.message}`);
@@ -25,14 +26,11 @@ function addTracks() {
   });
 }
 
-function joinRoom(loginString, partnerKey) {
+function joinRoom(partnerKey) {
   $.ajax({
     // using jQuery for now as fetch api is more convoluted with cross-domain requests
     type: "POST",
-    url: "https://littleworld-test.com/api2/auth_call_room/",
-    headers: {
-      Authorization: `Basic ${btoa(loginString)}`,
-    },
+    url: `${BACKEND_URL}/api2/auth_call_room/`,
     data: {
       room_h256_pk: "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
       partner_h256_pk: partnerKey,
@@ -44,7 +42,22 @@ function joinRoom(loginString, partnerKey) {
       tracks: [activeTracks.video, activeTracks.audio],
     }).then((room) => {
       console.log("Connected to Room:", room.name);
-      console.log("Partner key:", partnerKey);
+
+      const container = document.getElementById("foreign-container");
+      const handleParticipant = (participant) => {
+        console.log(`Participant "${participant.identity}" is connected to the Room`);
+        container.innerHTML = ""; // remove any video/audio elements hanging around, OK as we only have 1 partner
+        participant.on("trackSubscribed", (track) => container.appendChild(track.attach()));
+      };
+
+      room.participants.forEach(handleParticipant); // handle already connected partners
+      room.on("participantConnected", handleParticipant); // handle partners that join after
+
+      room.once("participantDisconnected", (participant) => {
+        // note this event doesn't always seem to successfully fire,
+        // which would lead to multiple videos, so we are clearing it on connect instead
+        console.log(`Participant "${participant.identity}" has disconnected from the Room`);
+      });
     });
   });
 }
