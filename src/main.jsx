@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import $ from "jquery";
 import logoWithText from "./images/logo-text.svg";
+import {default as GLOB } from "./ENVIRONMENT.js"
+import Cookies from 'js-cookie'
+import * as simulator from "./login-simulator.js"
 
 function Sidebar() {
   const { t } = useTranslation();
@@ -30,7 +33,16 @@ function Sidebar() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    window.localStorage.setItem("credentials", login);
+    /* 
+    * We force login the new user and reload the window 
+    * NOTE: we did change the `crsftoken` and `sessionid` 
+    * so they have to be realoded accordingly, prob only relevant for `crsftoken`
+    */
+    const usr_pass = login.split(":")
+    // I stole this trick with local storage, it's not cleared on reload an can be used to set defaults
+    window.localStorage.setItem("current_login_user", usr_pass[0])
+    window.localStorage.setItem("current_login_pass", usr_pass[1])
+    //simulator.awaitSimulatedLogin(usr_pass[0], usr_pass[1], true)
     window.location.reload();
   };
 
@@ -176,6 +188,7 @@ function NotificationPanel({ userInfo }) {
 }
 
 function Main() {
+
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
     firstName: "",
@@ -188,11 +201,10 @@ function Main() {
     const loginString = window.localStorage.getItem("credentials") || "benjamin.tim@gmx.de:Test123";
     $.ajax({
       type: "POST",
-      url: "https://littleworld-test.com/api2/composite/",
-      xhrFields: { withCredentials: true },
-      headers: {
-        Authorization: `Basic ${btoa(loginString)}`,
-      },
+      url: `${GLOB.BACKEND_URL}/api2/composite/`,
+       headers: { // The cookies is optained when authenticating via `api2/login/`
+        "X-CSRFToken" : Cookies.get('csrftoken') // the login_had sets this, see 'login-simulator.js'
+    },
       data: {
         "composite-request": JSON.stringify([
           {
