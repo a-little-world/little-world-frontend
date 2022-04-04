@@ -4,14 +4,36 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+import * as simulator from "./login-simulator.js"
+import {default as GLOB } from "./ENVIRONMENT.js"
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+/*
+* These can be changed before window.reload()
+*/
+const login_user = window.localStorage.getItem("current_login_user") || GLOB.DEFAULT_LOGIN_USERNAME;
+const login_pass = window.localStorage.getItem("current_login_pass") || GLOB.DEFAULT_LOGIN_PASSWORD;
+
+/*
+Rendering the DOM only after the login call is done
+This is prob agains all sorts of js/react principles,
+but it can safely be removed in production
+*/
+simulator.awaitSimulatedLogin(login_user, login_pass, true).then(
+  (data) => {
+
+  console.log(data);
+  console.log("start rendering now...");
+
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    document.getElementById('root')
+  );
+
+  // If you want to start measuring performance in your app, pass a function
+  // to log results (for example: reportWebVitals(console.log))
+  // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+  reportWebVitals();
+
+});

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { addTracks, toggleLocalTracks } from "./twilio-helper";
 
 import signalWifi from "./images/signal-wifi.svg";
@@ -149,6 +149,9 @@ function AudioOutputSelect() {
 }
 
 function CallSetup() {
+  const location = useLocation();
+  console.log(23, location);
+
   const { t } = useTranslation();
   useEffect(() => {
     addTracks();
@@ -172,11 +175,7 @@ function CallSetup() {
           <AudioOutputSelect />
         </div>
         <a className="av-setup-reset">{t("pcs_btn_reset_devices")}</a>
-        <Link
-          to={{
-            pathname: "/call",
-          }}
-        >
+        <Link to="/call" state={location.state}>
           <button type="submit" className="av-setup-confirm">
             {t("pcs_btn_join_call")}
           </button>

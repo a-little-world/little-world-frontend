@@ -3,8 +3,11 @@ import "./i18n";
 import "./main.css";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import logoWithText from "./images/logo-text.svg";
 import $ from "jquery";
+import Cookies from "js-cookie";
+import * as simulator from "./login-simulator";
+import GLOB from "./ENVIRONMENT";
+import logoWithText from "./images/logo-text.svg";
 
 function Sidebar() {
   const { t } = useTranslation();
@@ -20,9 +23,32 @@ function Sidebar() {
     { label: "log_out", image: "", link: "" },
   ];
 
+  const initCredentials =
+    window.localStorage.getItem("credentials") || "benjamin.tim@gmx.de:Test123";
+  const [login, setLogin] = useState(initCredentials);
+
+  const handleChange = (e) => {
+    setLogin(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    /*
+     * We force login the new user and reload the window
+     * NOTE: we did change the `crsftoken` and `sessionid`
+     * so they have to be realoded accordingly, prob only relevant for `crsftoken`
+     */
+    const [userLogin, userPass] = login.split(":");
+    // I stole this trick with local storage, it's not cleared on reload an can be used to set defaults
+    window.localStorage.setItem("current_login_user", userLogin);
+    window.localStorage.setItem("current_login_pass", userPass);
+    // simulator.awaitSimulatedLogin(userPass[0], userPass[1], true);
+    window.location.reload();
+  };
+
   return (
     <div className="sidebar">
-      <img src={logoWithText} className="logo" />
+      <img alt="little world" src={logoWithText} className="logo" />
       {buttonData.map(({ label, image, link }) => {
         return (
           <div key={label} className={`${label} ${selected === label ? "selected" : ""}`}>
@@ -31,6 +57,16 @@ function Sidebar() {
           </div>
         );
       })}
+      <form onSubmit={handleSubmit}>
+        <input
+          type="login"
+          name="login"
+          placeholder="Enter username:password"
+          onChange={handleChange}
+          value={login}
+        />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 }
@@ -62,36 +98,32 @@ function NavBarTop() {
   );
 }
 
-function PartnerProfiles() {
+function PartnerProfiles({ matchesInfo }) {
   const { t } = useTranslation();
-  const dummyProfiles = [
-    { id: 312, name: "Frank", text: "Talk to Frank" },
-    { id: 392, name: "Andreas", text: "Hi I'm Andreas hell yeah!" },
-    { id: 399, name: "Hildegard", text: "I like big butts and I cannot lie" },
-  ];
+
   return (
     <div className="profiles">
-      {dummyProfiles.map(({ id, name, text }) => {
+      {matchesInfo.map(({ userPk, firstName, lastName, userDescription, imgSrc }) => {
         return (
-          <div key={id} className="profile-box">
-            <img className="profile-image" src={`/images/profiles/${id}.jpg`} />
+          <div key={userPk} className="profile-box">
+            <img alt="match" className="profile-image" src={imgSrc} />
             <div className="profile-info">
-              <div className="name">{name}</div>
-              <div className="text">{text}</div>
+              <div className="name">{`${firstName} ${lastName}`}</div>
+              <div className="text">{userDescription}</div>
             </div>
             <div className="buttons">
               <a className="profile">
-                <img alt="profile" />
+                <img alt="visit profile" />
                 {t("cp_profile")}
               </a>
               <a className="chat">
                 <img alt="chat" />
                 {t("cp_message")}
               </a>
-              <a className="call">
+              <Link to="/call-setup" state={userPk} className="call">
                 <img alt="call" />
                 {t("cp_call")}
-              </a>
+              </Link>
             </div>
           </div>
         );
@@ -104,31 +136,9 @@ function PartnerProfiles() {
   );
 }
 
-function NotificationPanel() {
+function NotificationPanel({ userInfo }) {
   const { t } = useTranslation();
-  const [userInfo, setUserInfo] = useState({
-    imgSrc: null,
-    firstName: null,
-    lastName: null,
-  });
-  useEffect(() => {
-    const userName = "benjamin.tim@gmx.de";
-    const userPass = "Test123";
-    $.ajax({
-      // using jQuery for now as fetch api is more convoluted with cross-domain requests
-      type: "GET",
-      url: "https://littleworld-test.com/api2/profile/",
-      headers: {
-        Authorization: `Basic ${btoa(`${userName}:${userPass}`)}`,
-      },
-    }).then((data) => {
-      setUserInfo({
-        imgSrc: data.profile_image,
-        firstName: data.real_name_first,
-        lastName: data.real_name_last,
-      });
-    });
-  });
+
   const dummyNotifications = [
     {
       id: 2347,
@@ -178,14 +188,84 @@ function NotificationPanel() {
 }
 
 function Main() {
+  const [userInfo, setUserInfo] = useState({
+    imgSrc: null,
+    firstName: "",
+    lastName: "",
+  });
+
+  const [matchesInfo, setMatchesInfo] = useState([]);
+
+  useEffect(() => {
+    const loginString = window.localStorage.getItem("credentials") || "benjamin.tim@gmx.de:Test123";
+    $.ajax({
+      type: "POST",
+      url: `${GLOB.BACKEND_URL}/api2/composite/`,
+      headers: {
+        // The cookies is optained when authenticating via `api2/login/`
+        "X-CSRFToken": Cookies.get("csrftoken") // the login_had sets this, see 'login-simulator.js'
+      },
+      data: {
+        "composite-request": JSON.stringify([
+          {
+            spec: {
+              type: "simple",
+              ref: "_matchesBasic",
+            },
+            method: "GET",
+            path: "api2/matches/",
+          },
+          {
+            spec: {
+              type: "simple",
+              ref: "userData",
+            },
+            method: "GET",
+            path: "api2/profile/",
+          },
+          {
+            spec: {
+              type: "foreach",
+              in: "_matchesBasic",
+              as: "match",
+              ref: "matches",
+            },
+            method: "POST",
+            path: "api2/profile_of/",
+            body: {
+              partner_h256_pk: "${match.user_h256_pk}",
+            },
+          },
+        ]),
+      },
+    }).then(({ _matchesBasic, userData, matches }) => {
+      setUserInfo({
+        imgSrc: userData.profile_image,
+        firstName: userData.real_name_first,
+        lastName: userData.real_name_last,
+      });
+
+      const matchesData = matches.map((match) => {
+        return {
+          userPk: match["match.user_h256_pk"],
+          firstName: match.real_name_first,
+          lastName: match.real_name_last,
+          userDescription: match.user_description,
+          imgSrc: match.profile_image,
+        };
+      });
+      setMatchesInfo(matchesData);
+    });
+  }, []);
+
   return (
     <div className="main">
       <Sidebar />
       <div className="content-area-right">
         <NavBarTop />
         <div className="content-area-main">
-          <PartnerProfiles />
-          <NotificationPanel />
+          <PartnerProfiles matchesInfo={matchesInfo} />
+          <NotificationPanel userInfo={userInfo} />
         </div>
       </div>
     </div>

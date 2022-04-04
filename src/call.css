@@ -55,7 +55,7 @@ video {
 }
 
 .foreign-video-container {
-    height: 75%;
+    min-height: 470px;
     border-radius: 30px;
     overflow: hidden;
 }

@@ -212,6 +212,8 @@
   margin: 6px;
   width: 80px;
   cursor: pointer;
+  text-decoration: none;
+  color: black;
 }
 
 a.profile img {
