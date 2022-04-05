@@ -30,5 +30,6 @@ module.exports = {
     "react/prefer-stateless-function": [1],
     "react/static-property-placement": [1, "property assignment"],
     quotes: ["error", "double"],
+    "react/prop-types": ["off"],
   },
 };
