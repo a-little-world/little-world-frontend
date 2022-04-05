@@ -1,28 +1,71 @@
 import $ from "jquery";
 import { BACKEND_URL } from "./ENVIRONMENT";
 
-const { connect, createLocalTracks } = require("twilio-video");
+const { connect, createLocalVideoTrack, createLocalAudioTrack } = require("twilio-video");
 
 const activeTracks = { video: null, audio: null };
 
-// initialise webcam and mic
-function addTracks() {
-  createLocalTracks(
-    {
-      audio: true,
-      video: { width: 576, height: 276, aspectRatio: 16 / 9 },
-    },
-    (error) => {
-      console.error(`Unable to create local track: ${error.message}`);
-    }
-  ).then((localTracks) => {
-    const localMediaContainer = document.querySelector(".local-video-container");
-    // temporarily setting last audio/video track found as default
-    localTracks.forEach((track) => {
-      activeTracks[track.kind] = track;
+const removeTrack = (track) => {
+  console.log(`removing ${track.kind} track with device id ${track.deviceId}`);
+  track
+    .stop()
+    .detach()
+    .forEach((e) => {
+      e.remove();
     });
+};
+
+function addVideoTrack(deviceId) {
+  let id;
+  if (activeTracks.video) {
+    if (deviceId) {
+      removeTrack(activeTracks.video);
+    }
+    id = deviceId || activeTracks.video.deviceId;
+  }
+
+  console.log(`adding video track with device id ${id}`);
+
+  const constraints = {
+    width: 576,
+    height: 276,
+    deviceId: { exact: id }, // if set as undefined acts as if not present and selects default
+  };
+
+  return createLocalVideoTrack(constraints, (error) => {
+    console.error(`Unable to create local video track: ${error.message}`);
+    return false;
+  }).then((localTrack) => {
+    activeTracks.video = localTrack;
+    activeTracks.video.deviceId = deviceId; // need this for restarting after mute
+    const localMediaContainer = document.querySelector(".local-video-container");
     localMediaContainer.prepend(activeTracks.video.attach());
+    return true;
+  });
+}
+
+function addAudioTrack(deviceId) {
+  let id;
+  if (activeTracks.audio) {
+    if (deviceId) {
+      removeTrack(activeTracks.audio);
+    }
+    id = deviceId || activeTracks.audio.deviceId;
+  }
+
+  console.log(`adding audio track with device id ${deviceId}`);
+
+  const constraints = { deviceId: { exact: id } }; // selects default if undefined
+
+  return createLocalAudioTrack(constraints, (error) => {
+    console.error(`Unable to create local audio track: ${error.message}`);
+    return false;
+  }).then((localTrack) => {
+    const localMediaContainer = document.querySelector(".local-video-container");
+    activeTracks.audio = localTrack;
+    activeTracks.audio.deviceId = deviceId; // need this for restarting after mute
     localMediaContainer.prepend(activeTracks.audio.attach());
+    return true;
   });
 }
 
@@ -41,7 +84,7 @@ function joinRoom(partnerKey) {
       name: "cool room",
       tracks: [activeTracks.video, activeTracks.audio],
     }).then((room) => {
-      console.log("Connected to Room:", room.name);
+      console.log(`Connected to Room ${room.name}`);
 
       const container = document.getElementById("foreign-container");
       const handleParticipant = (participant) => {
@@ -62,13 +105,19 @@ function joinRoom(partnerKey) {
   });
 }
 
+const addTrack = {
+  audio: addAudioTrack,
+  video: addVideoTrack,
+};
+
 function toggleLocalTracks(isOn, trackType) {
   const track = activeTracks[trackType];
   if (isOn) {
-    track.enable();
+    addTrack[trackType](track.deviceId);
   } else {
-    track.disable();
+    console.log(`stopping ${track.kind} track with device id ${track.deviceId}`);
+    track.stop();
   }
 }
 
-export { addTracks, joinRoom, toggleLocalTracks };
+export { addVideoTrack, addAudioTrack, joinRoom, toggleLocalTracks };

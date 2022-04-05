@@ -4,7 +4,7 @@ import "./App.css";
 import "./call.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
-import { addTracks, joinRoom, toggleLocalTracks } from "./twilio-helper";
+import { addAudioTrack, addVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
 
 function toggleFullscreen(t) {
   const videoContainer = document.querySelector(".foreign-video-container");
@@ -104,9 +104,10 @@ function ActiveCall() {
   const location = useLocation();
   const key = location.state;
   useEffect(() => {
-    addTracks();
+    addVideoTrack();
+    addAudioTrack();
     joinRoom(key);
-  }, []);
+  }, [key]);
   return <VideoFrame />;
 }
 

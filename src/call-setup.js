@@ -3,8 +3,7 @@ import "./App.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
-import { addTracks, toggleLocalTracks } from "./twilio-helper";
-
+import { addAudioTrack, addVideoTrack, toggleLocalTracks } from "./twilio-helper";
 import signalWifi from "./images/signal-wifi.svg";
 
 function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText }) {
@@ -67,19 +66,39 @@ function VideoFrame() {
 
 function VideoInputSelect() {
   const { t } = useTranslation();
+
+  // get avaiable devices
   const [videoInDevices, setVideoInDevices] = useState([]);
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then((deviceList) => {
       const devices = deviceList
         .filter((deviceInfo) => deviceInfo.kind === "videoinput")
-        .filter((deviceInfo) => deviceInfo.deviceId !== "default");
+        .filter((deviceInfo) => deviceInfo.deviceId !== "default"); // prevent dupes
       setVideoInDevices(devices);
     });
-  });
+  }, []);
+
+  // set the first device as initial when devices have been detected
+  const [selectedVideoIn, setSelectedVideoIn] = useState(null);
+  useEffect(() => {
+    if (videoInDevices[0]) {
+      setSelectedVideoIn(videoInDevices[0].deviceId);
+    }
+  }, [videoInDevices]);
+
+  // fix checkbox status; used when we select a new camera while the previous one is muted.
+  useEffect(() => {
+    if (selectedVideoIn) {
+      document.getElementById("video-toggle").checked = addVideoTrack(selectedVideoIn);
+    }
+  }, [selectedVideoIn]);
+
+  const handleChange = (e) => setSelectedVideoIn(e.target.value);
+
   return (
     <div className="">
       <label htmlFor="webcam-select">{t("pcs_camera_label")}</label>
-      <select name="webcam-select">
+      <select name="webcam-select" onChange={handleChange}>
         {videoInDevices.map((deviceInfo) => {
           return (
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
@@ -94,20 +113,39 @@ function VideoInputSelect() {
 
 function AudioInputSelect() {
   const { t } = useTranslation();
+
+  // get avaiable devices
   const [audioInDevices, setAudioInDevices] = useState([]);
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then((deviceList) => {
       const devices = deviceList
         .filter((deviceInfo) => deviceInfo.kind === "audioinput")
-        .filter((deviceInfo) => deviceInfo.deviceId !== "default");
+        .filter((deviceInfo) => deviceInfo.deviceId !== "default"); // prevent dupes
       setAudioInDevices(devices);
     });
-  });
+  }, []);
+
+  // set the first device as initial when devices have been detected
+  const [selectedAudioIn, setSelectedAudioIn] = useState(null);
+  useEffect(() => {
+    if (audioInDevices[0]) {
+      setSelectedAudioIn(audioInDevices[0].deviceId);
+    }
+  }, [audioInDevices]);
+
+  // fix checkbox status; used when we select a new mic while the previous one is muted.
+  useEffect(() => {
+    if (selectedAudioIn) {
+      document.getElementById("audio-toggle").checked = addAudioTrack(selectedAudioIn);
+    }
+  }, [selectedAudioIn]);
+
+  const handleChange = (e) => setSelectedAudioIn(e.target.value);
 
   return (
     <div className="">
       <label htmlFor="mic-select">{t("pcs_mic_label")}</label>
-      <select name="mic-select">
+      <select name="mic-select" defaultValue={selectedAudioIn} onChange={handleChange}>
         {audioInDevices.map((deviceInfo) => {
           return (
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
@@ -122,6 +160,7 @@ function AudioInputSelect() {
 
 function AudioOutputSelect() {
   const { t } = useTranslation();
+
   const [audioOutDevices, setAudioOutDevices] = useState([]);
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then((deviceList) => {
@@ -150,12 +189,8 @@ function AudioOutputSelect() {
 
 function CallSetup() {
   const location = useLocation();
-  console.log(23, location);
-
   const { t } = useTranslation();
-  useEffect(() => {
-    addTracks();
-  });
+
   return (
     <div className="call-setup-overlay">
       <div className="call-setup-modal">
