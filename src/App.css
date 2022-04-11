@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Signika+Negative:regular,bold,italic&subset=latin,latin-ext');
 
+/* hide ES-lint complaining on page load */
+#webpack-dev-server-client-overlay {
+  display: none;
+}
+
 .call-setup-overlay {
   display: flex;
   position: fixed;
