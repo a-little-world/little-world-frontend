@@ -16,12 +16,13 @@ const removeTrack = (track) => {
 };
 
 function addVideoTrack(deviceId) {
-  let id;
+  let id = deviceId;
   if (activeTracks.video) {
-    if (deviceId) {
+    if (id) {
       removeTrack(activeTracks.video);
+    } else {
+      id = activeTracks.video.deviceId;
     }
-    id = deviceId || activeTracks.video.deviceId;
   }
 
   console.log(`adding video track with device id ${id}`);
@@ -110,12 +111,12 @@ const addTrack = {
   video: addVideoTrack,
 };
 
-function toggleLocalTracks(isOn, trackType) {
+function toggleLocalTracks(isOn, trackType, deviceId) {
   const track = activeTracks[trackType];
   if (isOn) {
-    addTrack[trackType](track.deviceId);
+    addTrack[trackType](deviceId);
   } else {
-    console.log(`stopping ${track.kind} track with device id ${track.deviceId}`);
+    console.log(`stopping ${track.kind} track with device id ${deviceId}`);
     track.stop();
   }
 }

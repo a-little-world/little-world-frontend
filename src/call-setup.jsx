@@ -3,6 +3,8 @@ import "./App.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { setVideo, setAudio } from "./features/tracks";
 import { addAudioTrack, addVideoTrack, toggleLocalTracks } from "./twilio-helper";
 import signalWifi from "./images/signal-wifi.svg";
 
@@ -20,6 +22,8 @@ function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText })
 }
 
 function VideoControls({ signalInfo }) {
+  const { videoId, audioId } = useSelector((state) => state.tracks);
+
   return (
     <div className="video-controls">
       <SignalIndicator
@@ -31,7 +35,7 @@ function VideoControls({ signalInfo }) {
         type="checkbox"
         id="audio-toggle"
         defaultChecked="checked"
-        onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
+        onChange={(e) => toggleLocalTracks(e.target.checked, "audio", audioId)}
       />
       <label htmlFor="audio-toggle">
         <img alt="toggle audio" />
@@ -40,7 +44,7 @@ function VideoControls({ signalInfo }) {
         type="checkbox"
         id="video-toggle"
         defaultChecked="checked"
-        onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
+        onChange={(e) => toggleLocalTracks(e.target.checked, "video", videoId)}
       />
       <label htmlFor="video-toggle">
         <img alt="toggle video" />
@@ -66,6 +70,8 @@ function VideoFrame() {
 
 function VideoInputSelect() {
   const { t } = useTranslation();
+  const selectedVideoIn = useSelector((state) => state.tracks.videoId);
+  const dispatch = useDispatch();
 
   // get avaiable devices
   const [videoInDevices, setVideoInDevices] = useState([]);
@@ -79,10 +85,9 @@ function VideoInputSelect() {
   }, []);
 
   // set the first device as initial when devices have been detected
-  const [selectedVideoIn, setSelectedVideoIn] = useState(null);
   useEffect(() => {
     if (videoInDevices[0]) {
-      setSelectedVideoIn(videoInDevices[0].deviceId);
+      dispatch(setVideo(videoInDevices[0].deviceId));
     }
   }, [videoInDevices]);
 
@@ -93,7 +98,10 @@ function VideoInputSelect() {
     }
   }, [selectedVideoIn]);
 
-  const handleChange = (e) => setSelectedVideoIn(e.target.value);
+  const handleChange = (e) => {
+    const deviceId = e.target.value;
+    dispatch(setVideo(deviceId));
+  };
 
   return (
     <div className="">
@@ -113,6 +121,8 @@ function VideoInputSelect() {
 
 function AudioInputSelect() {
   const { t } = useTranslation();
+  const selectedAudioIn = useSelector((state) => state.tracks.audioId);
+  const dispatch = useDispatch();
 
   // get avaiable devices
   const [audioInDevices, setAudioInDevices] = useState([]);
@@ -126,10 +136,9 @@ function AudioInputSelect() {
   }, []);
 
   // set the first device as initial when devices have been detected
-  const [selectedAudioIn, setSelectedAudioIn] = useState(null);
   useEffect(() => {
     if (audioInDevices[0]) {
-      setSelectedAudioIn(audioInDevices[0].deviceId);
+      dispatch(setAudio(audioInDevices[0].deviceId));
     }
   }, [audioInDevices]);
 
@@ -140,7 +149,10 @@ function AudioInputSelect() {
     }
   }, [selectedAudioIn]);
 
-  const handleChange = (e) => setSelectedAudioIn(e.target.value);
+  const handleChange = (e) => {
+    const deviceId = e.target.value;
+    dispatch(setAudio(deviceId));
+  };
 
   return (
     <div className="">
@@ -191,6 +203,10 @@ function CallSetup() {
   const location = useLocation();
   const { t } = useTranslation();
 
+  const { userPk } = location.state || {};
+
+  const tracks = useSelector((state) => state.tracks);
+
   return (
     <div className="call-setup-overlay">
       <div className="call-setup-modal">
@@ -210,7 +226,7 @@ function CallSetup() {
           <AudioOutputSelect />
         </div>
         <a className="av-setup-reset">{t("pcs_btn_reset_devices")}</a>
-        <Link to="/call" state={location.state}>
+        <Link to="/call" state={{ userPk, tracks }}>
           <button type="submit" className="av-setup-confirm">
             {t("pcs_btn_join_call")}
           </button>

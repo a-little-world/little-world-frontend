@@ -43,13 +43,16 @@ function Timer() {
 
 function VideoControls() {
   const { t } = useTranslation();
+  const location = useLocation();
+  const { videoId, audioId } = (location.state || {}).tracks || {};
+
   return (
     <div className="video-controls">
       <input
         type="checkbox"
         id="audio-toggle"
         defaultChecked="checked"
-        onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
+        onChange={(e) => toggleLocalTracks(e.target.checked, "audio", audioId)}
       />
       <label htmlFor="audio-toggle">
         <img alt="mute/unmute mic" />
@@ -58,7 +61,7 @@ function VideoControls() {
         type="checkbox"
         id="video-toggle"
         defaultChecked="checked"
-        onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
+        onChange={(e) => toggleLocalTracks(e.target.checked, "video", videoId)}
       />
       <label htmlFor="video-toggle">
         <img alt="enable/disable webcam" />
@@ -102,12 +105,15 @@ function VideoFrame() {
 
 function ActiveCall() {
   const location = useLocation();
-  const key = location.state;
+  const { userPk, tracks } = location.state || {};
+
   useEffect(() => {
-    addVideoTrack();
-    addAudioTrack();
-    joinRoom(key);
-  }, [key]);
+    const { videoId, audioId } = tracks || {};
+    addVideoTrack(videoId);
+    addAudioTrack(audioId);
+    joinRoom(userPk);
+  }, [userPk, tracks]);
+
   return <VideoFrame />;
 }
 

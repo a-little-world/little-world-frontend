@@ -120,7 +120,7 @@ function PartnerProfiles({ matchesInfo }) {
                 <img alt="chat" />
                 {t("cp_message")}
               </a>
-              <Link to="/call-setup" state={userPk} className="call">
+              <Link to="/call-setup" state={{ userPk }} className="call">
                 <img alt="call" />
                 {t("cp_call")}
               </Link>
