@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 import "./call.css";
 import "./i18n";
@@ -104,11 +104,18 @@ function VideoFrame() {
 }
 
 function ActiveCall() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { userPk, tracks } = location.state || {};
 
   useEffect(() => {
+    if (!userPk) {
+      navigate("/");
+    }
     const { videoId, audioId } = tracks || {};
+    if (!(videoId && audioId)) {
+      navigate("/call-setup", { state: { userPk } });
+    }
     addVideoTrack(videoId);
     addAudioTrack(audioId);
     joinRoom(userPk);

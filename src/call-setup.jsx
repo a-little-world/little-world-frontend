@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setVideo, setAudio } from "./features/tracks";
 import { addAudioTrack, addVideoTrack, toggleLocalTracks } from "./twilio-helper";
@@ -201,9 +201,15 @@ function AudioOutputSelect() {
 
 function CallSetup() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const { userPk } = location.state || {};
+  useEffect(() => {
+    if (!userPk) {
+      navigate("/");
+    }
+  }, [userPk]);
 
   const tracks = useSelector((state) => state.tracks);
 
