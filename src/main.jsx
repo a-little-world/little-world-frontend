@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import $ from "jquery";
 import Cookies from "js-cookie";
-import * as simulator from "./login-simulator";
 import GLOB from "./ENVIRONMENT";
 import logoWithText from "./images/logo-text.svg";
 
@@ -197,13 +196,12 @@ function Main() {
   const [matchesInfo, setMatchesInfo] = useState([]);
 
   useEffect(() => {
-    const loginString = window.localStorage.getItem("credentials") || "benjamin.tim@gmx.de:Test123";
     $.ajax({
       type: "POST",
       url: `${GLOB.BACKEND_URL}/api2/composite/`,
       headers: {
         // The cookies is optained when authenticating via `api2/login/`
-        "X-CSRFToken": Cookies.get("csrftoken") // the login_had sets this, see 'login-simulator.js'
+        "X-CSRFToken": Cookies.get("csrftoken"), // the login_had sets this, see 'login-simulator.js'
       },
       data: {
         "composite-request": JSON.stringify([
@@ -233,7 +231,7 @@ function Main() {
             method: "POST",
             path: "api2/profile_of/",
             body: {
-              partner_h256_pk: "${match.user_h256_pk}",
+              partner_h256_pk: "${match.user_h256_pk}", // eslint-disable-line no-template-curly-in-string
             },
           },
         ]),
