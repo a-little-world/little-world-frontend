@@ -221,9 +221,11 @@ function CallSetup() {
             <h3 className="title">{t("pcs_main_heading")}</h3>
             <span className="subtitle">{t("pcs_sub_heading")}</span>
           </div>
-          <button type="button" className="modal-close">
-            &nbsp;
-          </button>
+          <Link to="/">
+            <button type="button" className="modal-close">
+              &nbsp;
+            </button>
+          </Link>
         </div>
         <VideoFrame />
         <div className="av-setup-dropdowns">
