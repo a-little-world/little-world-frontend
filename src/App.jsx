@@ -5,6 +5,7 @@ import store from "./app/store";
 import CallSetup from "./call-setup";
 import ActiveCall from "./call";
 import Main from "./main";
+import { App as Chat } from "./chat/chat-full-view";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/call-setup" element={<CallSetup />} />
             <Route path="/call" element={<ActiveCall />} />
             <Route path="/partners" element={<Main />} />
+            <Route path="/chat" element={<Chat />} />
             <Route path="*" element="404" />
           </Route>
         </Routes>
