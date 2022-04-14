@@ -53,12 +53,34 @@ export async function simulatedAutoLogin(username, password, by_force=false){
     * Somehow there is no way to teach the browser to send the `sessionid` to another domain.
     * So we just store the authentication and use 'Basic ...'
     */
+    "crossDomain": true,
     headers : {
         Authorization: `Basic ${btoa(username + ":" + password)}`,
+        "accept": "application/json",
+        //"Access-Control-Allow-Origin":"*"
     }
   })
 
   return login_data
+}
+
+/*
+* Another crude hack to manipulate fetch to also send authentications
+*/
+export function updateOptions(options) {
+
+  const login_user = window.localStorage.getItem("current_login_user") || GLOB.DEFAULT_LOGIN_USERNAME;
+  const login_pass = window.localStorage.getItem("current_login_pass") || GLOB.DEFAULT_LOGIN_PASSWORD;
+
+  const update = { ...options };
+  if (localStorage.jwt) {
+    update.headers = {
+      ...update.headers,
+      credentials: 'include',
+      Authorization: `Basic ${btoa(login_user + ":" + login_pass)}`,
+    };
+  }
+  return update;
 }
 
 /* 
