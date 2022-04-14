@@ -78,8 +78,8 @@ function VideoInputSelect() {
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then((deviceList) => {
       const devices = deviceList
-        .filter((deviceInfo) => deviceInfo.kind === "videoinput")
-        .filter((deviceInfo) => deviceInfo.deviceId !== "default"); // prevent dupes
+        .filter(({ kind }) => kind === "videoinput")
+        .filter(({ deviceId }) => deviceId !== "default"); // prevent dupes
       setVideoInDevices(devices);
     });
   }, []);
@@ -129,8 +129,8 @@ function AudioInputSelect() {
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then((deviceList) => {
       const devices = deviceList
-        .filter((deviceInfo) => deviceInfo.kind === "audioinput")
-        .filter((deviceInfo) => deviceInfo.deviceId !== "default"); // prevent dupes
+        .filter(({ kind }) => kind === "audioinput")
+        .filter(({ deviceId }) => deviceId !== "default"); // prevent dupes
       setAudioInDevices(devices);
     });
   }, []);
