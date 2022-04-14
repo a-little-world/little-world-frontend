@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import 'react-chat-elements/dist/main.css';
 import 'react-toastify/dist/ReactToastify.css';
+import ReactHtmlParser from 'react-html-parser'; 
 import './App.css';
 import {ToastContainer, toast} from 'react-toastify';
 import {
@@ -21,7 +22,6 @@ import throttle from 'lodash.throttle';
 import {FaSearch, FaComments, FaWindowClose, FaEdit, FaPaperclip, FaSquare, FaTimesCircle} from 'react-icons/fa';
 import {MdMenu} from 'react-icons/md';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-//import "./main.css";
 import {
     uploadFile,
     sendOutgoingFileMessage,
@@ -44,10 +44,58 @@ import {
 } from 'timeago.js';
 
 import loremIpsum from 'lorem-ipsum';
-import { ticksToUnixEpochMilliseconds } from './.fable/fable-library.3.1.7/Long';
+import $ from 'jquery'; 
+
+function getCookie2(name) { // I know this is all hella redundant, but im coding fast ok!
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie2('csrftoken');
 
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
+
+/* How the view should be rendered
+                            <div class="chat-bottom">
+                                <div class="chat-start">
+                                    <div class="outgoing">
+                                        <div class="outgoingtext">Lorem ipsum</div>
+                                    </div>
+                                    <div class="ingoing">
+                                        <div class="ingoingtext">Lorem ipsum</div>
+                                        <div class="ctime">15:35</div>
+                                    </div>
+                                    <div class="outgoing">
+                                        <div class="outgoingtext">Lorem ipsum</div>
+                                    </div>
+                                    <div class="ingoing">
+                                        <div class="ingoingtext">Lorem ipsum</div>
+                                        <div class="ctime">15:35</div>
+                                    </div>
+                                    <div class="outgoing">
+                                        <div class="outgoingtext">Lorem ipsum</div>
+                                    </div>
+                                    <div class="ingoing">
+                                        <div class="ingoingtext">Lorem ipsum</div>
+                                        <div class="ctime">15:35</div>
+                                    </div>
+                                </div>
+                                <textarea placeholder="Lorem ipsum...."></textarea>
+                            </div>
+                        </div>
+*/
 
 function getCookie() {
     const name = 'csrftoken';
@@ -65,18 +113,111 @@ function getCookie() {
     return cookieValue;
 }
 
-export class Chat extends Component {
+
+export class MessageItemTim extends Component {
 
     constructor(props) {
         super(props);
+
+    }
+
+    render() {
+
+        var _div_class1 = ''
+        var _div_class2 = ''
+
+        var ingoing = false
+
+        if(this.props.cur_dialog !== null){
+            ingoing = this.props.title != this.props.cur_dialog.alt
+        }
+
+
+        if (!ingoing) {
+            _div_class1 = 'outgoing'
+            _div_class2 = 'outgoingtext'
+        } else { // The other user...
+            _div_class1 = 'ingoing'
+            _div_class2 = 'ingoingtext'
+        }
+      
+
+        return (
+        <div className={_div_class1}>
+            <div className={_div_class2}>
+                { ReactHtmlParser (this.props.text) }
+            </div>
+            {ingoing &&
+            <div className="ctime">
+                { ReactHtmlParser ('15:35')}
+            </div>}
+        </div>
+        );
+    }
+}
+
+export class MessageListTim extends Component {
+
+    constructor(props) {
+        super(props);
+
+    }
+
+    handleKeyPress = (e) => {
+        if (e.charCode !== 13) {
+            console.log('key pressed');
+
+            this.props.parent.isTyping();
+        }
+        if (e.shiftKey && e.charCode === 13) {
+            return true;
+        }
+        if (e.charCode === 13) {
+            if (this.props.parent.state.socket.readyState === 1) {
+                this.props.parent.performSendingMessage()
+                e.preventDefault();
+
+            }
+            return false;
+        }
+    }
+
+    render() {
+        return (
+
+            <div className="chat-bottom"> 
+            <div className="chat-start"> 
+                {this.props.dataSource.map((x, i) => (
+                    <MessageItemTim
+                        key={i}
+                        cur_dialog={this.props.cur_dialog}
+                        {...x}
+                    />
+                )) }
+            </div>
+            <textarea
+            ref={this.props.parent.setTextInputRef}
+            placeholder="Lorem ipsum...."
+                        defaultValue=""
+                        onKeyPress={this.handleKeyPress}
+            />
+            </div> 
+        );
+    }
+}
+
+export class App extends Component {
+
+    constructor(props) {
+        super(props);
+        this.other_user_display_name = props.other_user_display_name;
         // Refs
         this.textInput = null;
         this.setTextInputRef = element => {
-            console.log("Set input ref");
             this.textInput = element;
         };
         this.clearTextInput = () => {
-            if (this.textInput) this.textInput.clear();
+            if (this.textInput) this.textInput.value = ""
         };
 
         this.searchInput = null;
@@ -107,7 +248,7 @@ export class Chat extends Component {
             onlinePKs: [],
             selfInfo: null,
             selectedDialog: null,
-            socket: new ReconnectingWebSocket('wss://' + 'littleworld.ngrok.io' + '/chat_ws')
+            socket: new ReconnectingWebSocket('wss://' + window.location.host + '/chat_ws')
         };
         //some js magic
         this.performSendingMessage = this.performSendingMessage.bind(this);
@@ -141,7 +282,6 @@ export class Chat extends Component {
     }
 
     componentDidMount() {
-        this.textInput = document.getElementById("textInput");
         fetchMessages().then((r) => {
             if (r.tag === 0) {
                 console.log("Fetched messages:")
@@ -158,7 +298,13 @@ export class Chat extends Component {
                 console.log("Fetched dialogs:")
                 console.log(r.fields[0])
                 this.setState({dialogList: r.fields[0], filteredDialogList: r.fields[0]})
-                this.selectDialog(r.fields[0][0])
+                // get the current user display_name: TODO:
+                //TODO: also handle failure
+                console.log(r.fields);
+                var _res = r.fields[0].filter(w => this.other_user_display_name == w.title); // Find's the right dialog, selects it TODO: name should be set dynamicly here, TODO maybe also this should use .title
+                console.log(_res);
+                this.selectDialog(_res[0])
+
             } else {
                 console.log("Dialogs error:")
                 toast.error(r.fields[0])
@@ -213,6 +359,7 @@ export class Chat extends Component {
     }
 
     selectDialog(item) {
+        console.log(item)
         console.log("Selecting dialog " + item.id)
         this.setState({selectedDialog: item})
         this.setState(prevState => ({
@@ -389,7 +536,8 @@ export class Chat extends Component {
     performSendingMessage() {
         if (this.state.selectedDialog) {
             console.log(this.textInput);
-            let text = this.textInput.input.value;
+            console.log(this.textInput.value);
+            let text = this.textInput.value;
             let user_pk = this.state.selectedDialog.id;
             this.clearTextInput();
             let msgBox = sendOutgoingTextMessage(this.state.socket, text, user_pk, this.state.selfInfo);
@@ -429,199 +577,29 @@ export class Chat extends Component {
     triggerFileRefClick() {
         this.fileInput.click()
     }
+    // What we need to do is:
+    // 1 - check who is the *other* call user
+    // 2 - select that dialog
+    // 3 - get the messages, render them
+    // 4 - implement message sending
+
+    // TODO: we need to build react component with dataSource= for this to work, otherwise message fetching cant work async
 
     render() {
         return (
-            <div className='container'>
-                <div
-                    className='chat-list'>
-                    <SideBar
-                        type='light'
-                        top={
-                            <span className='chat-list'>
-                                <Input
-                                    placeholder="Search..."
-                                    ref={this.setSearchInputRef}
-                                    onKeyPress={(e) => {
-                                        if (e.charCode !== 13) {
-                                            this.localSearch();
-                                        }
-                                        if (e.charCode === 13) {
-                                            this.localSearch();
-                                            console.log("search invoke with" + this.searchInput.input.value)
-                                            e.preventDefault();
-                                            return false;
-                                        }
-                                    }}
-                                    rightButtons={
-                                        <div>
-                                            <Button
-                                                type='transparent'
-                                                color='black'
-                                                onClick={() => {
-                                                    this.localSearch();
-                                                    console.log("search invoke with" + this.searchInput.input.value);
-                                                }}
-                                                icon={{
-                                                    component: <FaSearch/>,
-                                                    size: 18
-                                                }}/>
-                                            <Button
-                                                type='transparent'
-                                                color='black'
-                                                icon={{
-                                                    component: <FaTimesCircle/>,
-                                                    size: 18
-                                                }}
-                                                onClick={() => this.clearSearchInput()}/>
-                                        </div>
-                                    }
-                                />
-
-                                <ChatList onClick={(item, i, e) => this.selectDialog(item)}
-                                          dataSource={this.state.filteredDialogList.slice().sort(chatItemSortingFunction)}/>
-                            </span>
-
-                        }
-                        bottom={
-                            <Button type='transparent' color='black' disabled={true}
-                                    text={"Connection state: " + this.getSocketState()}/>
-                        }/>
-                </div>
-                <div
-                    className='right-panel'>
-                    <ToastContainer/>
-                    <Popup
-                        show={this.state.showNewChatPopup}
-                        header='New chat'
-                        headerButtons={[{
-                            type: 'transparent',
-                            color: 'black',
-                            text: 'close',
-                            icon: {
-                                component: <FaWindowClose/>,
-                                size: 18
-                            },
-                            onClick: () => {
-                                this.setState({showNewChatPopup: false})
-                            }
-                        }]}
-                        renderContent={() => {
-                            if (this.state.usersDataLoading) {
-                                return <div><p>Loading data...</p></div>
-                            } else {
-                                if (this.state.availableUsers.length === 0) {
-                                    return <div><p>No users available</p></div>
-                                } else {
-                                    return <ChatList onClick={(item, i, e) => {
-                                        this.setState({showNewChatPopup: false});
-                                        this.selectDialog(item);
-                                    }} dataSource={this.state.availableUsers}/>
-                                }
-
-                            }
-                        }}
-                        // footerButtons={[{
-                        //     color: 'white',
-                        //     backgroundColor: 'lightgreen',
-                        //     text: "Hello!",
-                        //     disabled: this.state.newChatChosen !== null
-                        // }]}
-
-                    />
-                    <Navbar left={
-                        <ChatItem  {...this.state.selectedDialog} date={null} unread={0}
-                                   statusColor={
-                                       this.state.selectedDialog && this.state.onlinePKs.includes(this.state.selectedDialog.id) ? "lightgreen" : ""
-                                   }
-                                   subtitle={
-                                       this.state.selectedDialog && this.state.typingPKs.includes(this.state.selectedDialog.id) ? "typing..." : ""
-                                   }
-                        />
-                    } right={
-                        <Button
-                            type='transparent'
-                            color='black'
-                            onClick={() => {
-                                this.setState({usersDataLoading: true})
-                                fetchUsersList(this.state.dialogList).then((r) => {
-                                    this.setState({usersDataLoading: false})
-                                    if (r.tag === 0) {
-                                        console.log("Fetched users:")
-                                        console.log(r.fields[0])
-                                        this.setState({availableUsers: r.fields[0]})
-                                    } else {
-                                        console.log("Users error:")
-                                        toast.error(r.fields[0])
-                                    }
-                                })
-                                this.setState({showNewChatPopup: true})
-                            }}
-                            icon={{
-                                component: <FaEdit/>,
-                                size: 24
-                            }}/>
-                    }/>
-
-
-                    <MessageList
-                        className='message-list'
-                        lockable={true}
-                        onDownload={(x,i,e) => {
-                            console.log("onDownload from messageList")
-                            x.onDownload();
-                        }}
-                        downButtonBadge={this.state.selectedDialog && this.state.selectedDialog.unread > 0 ? this.state.selectedDialog.unread : ''}
-                        dataSource={filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}/>
-
-                    <input id='selectFile' hidden type="file" onChange={this.handleFileInputChange}
-                           ref={this.setFileInputRef}/>
-                    <Input
-                        placeholder="Type here to send a message."
-                        defaultValue=""
-                        id="textInput"
-                        multiline={true}
-                        // buttonsFloat='left'
-                        onChange={(e) => {this.setTextInputRef(e.target)}}
-                        onKeyPress={(e) => {
-                            if (e.charCode !== 13) {
-                                console.log('key pressed');
-
-                                this.isTyping();
-                            }
-                            if (e.shiftKey && e.charCode === 13) {
-                                return true;
-                            }
-                            if (e.charCode === 13) {
-                                if (this.state.socket.readyState === 1) {
-                                    this.performSendingMessage()
-                                    e.preventDefault();
-
-                                }
-                                return false;
-                            }
-                        }}
-                        leftButtons={
-                            <Button
-                                type='transparent'
-                                color='black'
-                                onClick={this.triggerFileRefClick}
-                                icon={{
-                                    component: <FaPaperclip/>,
-                                    size: 24
-                                }}
-                            />
-                        }
-                        rightButtons={
-                            <Button
-                                text='Send'
-                                disabled={this.state.socket.readyState !== 1}
-                                onClick={() => this.performSendingMessage()}/>
-                        }/>
-                </div>
-            </div>
+                <MessageListTim
+                dataSource={filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}
+                parent={this}
+                cur_dialog={this.state.selectedDialog}
+                />
         );
     }
 }
 
-export default Chat;
+/*
+                user_id={this.state.selectedDialog.user_id}
+                other_user_id={this.state.selectedDialog.other_user_id}
+*/
+//{filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}
+
+export default App;

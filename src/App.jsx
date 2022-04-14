@@ -5,7 +5,7 @@ import store from "./app/store";
 import CallSetup from "./call-setup";
 import ActiveCall from "./call";
 import Main from "./main";
-import { App as Chat } from "./chat/chat-full-view";
+import Chat from "./chat/chat-full-view";
 
 function App() {
   return (

@@ -2,6 +2,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
 /* eslint-disable import/extensions */
+import GLOB from "../ENVIRONMENT";
 import {
   DialogsResponse_get_Decoder,
   MessageBox__HasDbId,
@@ -30,7 +31,7 @@ import {
 } from "./.fable/Fable.Promise.2.0.0/Promise.fs.js";
 import { map, defaultArg, some } from "./.fable/fable-library.3.1.7/Option.js";
 import { promise } from "./.fable/Fable.Promise.2.0.0/PromiseImpl.fs.js";
-import { Types_RequestProperties, tryFetch } from "./.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
+import { Types_RequestProperties, tryFetch as tryFetchSimple } from "./.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
 import { ofArray, singleton, empty } from "./.fable/fable-library.3.1.7/List.js";
 import { Result_Map, Result_Bind, FSharpResult$2 } from "./.fable/fable-library.3.1.7/Choice.js";
 import { generateRandomId, humanFileSize, getPhotoString } from "./Utils.fs.js";
@@ -54,6 +55,29 @@ import { sortBy, contains, map as map_1 } from "./.fable/fable-library.3.1.7/Arr
 import { compare } from "./.fable/fable-library.3.1.7/Date.js";
 
 export const defaultDataStatus = new MessageBoxDataStatus(true, 0, false);
+
+
+import * as simulator from "../login-simulator.js";
+
+
+function tryFetch(url, options){
+    //let updated_ops = ofArray(simulator.updateOptions(options));
+
+    const login_user = window.localStorage.getItem("current_login_user") || GLOB.DEFAULT_LOGIN_USERNAME;
+    const login_pass = window.localStorage.getItem("current_login_pass") || GLOB.DEFAULT_LOGIN_PASSWORD;
+
+    const headers_1 = new Types_RequestProperties(1, {
+        ["Authorization"]: `Basic ${btoa(login_user + ":" + login_pass)}`,
+    });
+
+    const headers_2 = new Types_RequestProperties(1, {
+        ["credentials"] : 'include',
+    });
+
+    let updated_ops = ofArray([headers_1, headers_2]);
+    console.log(updated_ops.toString());
+    return tryFetchSimple(url, options);
+}
 
 export function createOnDownload(uri, filename, e) {
   const pr = mapResult(
@@ -258,7 +282,7 @@ export function sendMessageReadMessage(sock, user_pk, message_id) {
 }
 
 // TODO: bettherway to embed the urls
-export const backendUrl = "http://localhost:8004"; // ((process.env.LOCAL_DEBUG == "1") ? 'http://localhost:60' : 'https://littleworld-test.com');  //"http://localhost:60";
+export const backendUrl = GLOB.BACKEND_URL; // ((process.env.LOCAL_DEBUG == "1") ? 'http://localhost:60' : 'https://littleworld-test.com');  //"http://localhost:60";
 
 export const messagesEndpoint = toText(printf("%s/messages/"))(backendUrl);
 
