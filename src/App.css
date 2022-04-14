@@ -202,6 +202,14 @@ input#end-call + label {
 }
 /*setting selection*/
 
+.modal-top a {
+  text-decoration: none;
+}
+
+.av-setup-dropdowns {
+  margin-bottom: 40px;
+}
+
 .av-setup-dropdowns label {
   color: #5F5F5F;
   font-size: 14px;
@@ -216,14 +224,6 @@ input#end-call + label {
   border: 1px solid #E6E8EC;
   border-radius: 8px;
   box-sizing: border-box;
-}
-
-.av-setup-reset {
-  color: #F39325;
-  font-size: 20px;
-  display: block;
-  width: fit-content;
-  margin: 20px auto;
 }
 
 .av-setup-confirm {

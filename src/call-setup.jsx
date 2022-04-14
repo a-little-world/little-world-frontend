@@ -213,6 +213,27 @@ function CallSetup() {
 
   const tracks = useSelector((state) => state.tracks);
 
+  const [mediaPermission, setMediaPermission] = useState(null);
+
+  navigator.permissions.query({ name: "microphone" }).then((audioResult) => {
+    navigator.permissions.query({ name: "camera" }).then((videoResult) => {
+      if ([audioResult.state, videoResult.state].includes("denied")) {
+        // if either have been denied, we need to tell the user to fix their browser settings
+        setMediaPermission(false);
+      } else if ([audioResult.state, videoResult.state].includes("prompt")) {
+        // otherwise if either don't have permission, we need to trigger the request
+        navigator.getUserMedia(
+          { video: videoResult.state === "prompt", audio: audioResult.state === "prompt" },
+          () => setMediaPermission(true),
+          (e) => console.log(e)
+        );
+      } else {
+        // when both are granted, we are good and we'll show the setup
+        setMediaPermission(true);
+      }
+    });
+  });
+
   return (
     <div className="call-setup-overlay">
       <div className="call-setup-modal">
@@ -227,18 +248,31 @@ function CallSetup() {
             </button>
           </Link>
         </div>
-        <VideoFrame />
-        <div className="av-setup-dropdowns">
-          <VideoInputSelect />
-          <AudioInputSelect />
-          <AudioOutputSelect />
-        </div>
-        <a className="av-setup-reset">{t("pcs_btn_reset_devices")}</a>
-        <Link to="/call" state={{ userPk, tracks }}>
-          <button type="submit" className="av-setup-confirm">
-            {t("pcs_btn_join_call")}
-          </button>
-        </Link>
+        {mediaPermission && (
+          <>
+            <VideoFrame />
+            <div className="av-setup-dropdowns">
+              <VideoInputSelect />
+              <AudioInputSelect />
+              <AudioOutputSelect />
+            </div>
+            <Link to="/call" state={{ userPk, tracks }}>
+              <button type="submit" className="av-setup-confirm">
+                {t("pcs_btn_join_call")}
+              </button>
+            </Link>
+          </>
+        )}
+        {!mediaPermission && (
+          <>
+            <br />
+            Permission to use the camera and microphone is required.
+            <br />
+            Please give permission in your browser settings.
+            <br />
+            See https://support.google.com/chrome/answer/2693767 for instructions.
+          </>
+        )}
       </div>
     </div>
   );
