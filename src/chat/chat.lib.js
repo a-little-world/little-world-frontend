@@ -284,15 +284,15 @@ export function sendMessageReadMessage(sock, user_pk, message_id) {
 // TODO: bettherway to embed the urls
 export const backendUrl = GLOB.BACKEND_URL; // ((process.env.LOCAL_DEBUG == "1") ? 'http://localhost:60' : 'https://littleworld-test.com');  //"http://localhost:60";
 
-export const messagesEndpoint = toText(printf("%s/messages/"))(backendUrl);
+export const messagesEndpoint = toText(printf("%s/api2/messages/"))(backendUrl);
 
-export const dialogsEndpoint = toText(printf("%s/dialogs/"))(backendUrl);
+export const dialogsEndpoint = toText(printf("%s/api2/dialogs/"))(backendUrl);
 
-export const selfEndpoint = toText(printf("%s/self/"))(backendUrl);
+export const selfEndpoint = toText(printf("%s/api2/self/"))(backendUrl);
 
-export const usersEndpoint = toText(printf("%s/users/"))(backendUrl);
+export const usersEndpoint = toText(printf("%s/api2/users/"))(backendUrl);
 
-export const uploadEndpoint = toText(printf("%s/upload/"))(backendUrl);
+export const uploadEndpoint = toText(printf("%s/api2/upload/"))(backendUrl);
 
 export function uploadFile(f, csrfToken) {
     return PromiseBuilder__Run_212F1D4B(promise, PromiseBuilder__Delay_62FBFDE1(promise, () => {
