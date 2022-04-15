@@ -405,10 +405,13 @@ export function fetchMessages() {
 
 export function filterMessagesForDialog(d, messages) {
     if (d == null) {
+        console.log("No dialogs");
         return new Array(0);
     }
     else {
         const dialog = d;
+        console.log("filtering", d);
+        console.log("msg", messages);
         return messages.filter((m) => (m.data.dialog_id === dialog.id));
     }
 }
@@ -439,6 +442,8 @@ export function fetchDialogs() {
             return r.text().then(((_arg2) => {
                 const text = _arg2;
                 const decoded = fromString(uncurry(2, DialogsResponse_get_Decoder()), text);
+
+                console.log(123,decoded);
                 return Promise.resolve(decoded);
             }));
         }

@@ -44,7 +44,7 @@ import {
 } from 'timeago.js';
 
 import loremIpsum from 'lorem-ipsum';
-import { ticksToUnixEpochMilliseconds } from './.fable/fable-library.3.1.7/Long';
+import { object } from './.fable/Thoth.Json.5.1.0/Decode.fs';
 
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
@@ -388,10 +388,11 @@ export class Chat extends Component {
 
     performSendingMessage() {
         if (this.state.selectedDialog) {
-            console.log(this.textInput);
+            console.log(1, this.textInput);
+            this.textInput = {input : {value: "test"}}
             let text = this.textInput.input.value;
             let user_pk = this.state.selectedDialog.id;
-            this.clearTextInput();
+            //this.clearTextInput();
             let msgBox = sendOutgoingTextMessage(this.state.socket, text, user_pk, this.state.selfInfo);
             console.log("sendOutgoingTextMessage result:")
             console.log(msgBox)
@@ -580,9 +581,9 @@ export class Chat extends Component {
                         placeholder="Type here to send a message."
                         defaultValue=""
                         id="textInput"
+                        ref={this.setTextInputRef}
                         multiline={true}
                         // buttonsFloat='left'
-                        onChange={(e) => {this.setTextInputRef(e.target)}}
                         onKeyPress={(e) => {
                             if (e.charCode !== 13) {
                                 console.log('key pressed');
