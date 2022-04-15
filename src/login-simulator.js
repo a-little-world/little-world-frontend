@@ -56,7 +56,7 @@ export async function simulatedAutoLogin(username, password, by_force=false){
     "crossDomain": true,
     headers : {
         Authorization: `Basic ${btoa(username + ":" + password)}`,
-        "accept": "application/json",
+        //"accept": "application/json",
         //"Access-Control-Allow-Origin":"*"
     }
   })
