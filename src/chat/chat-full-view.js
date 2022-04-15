@@ -45,6 +45,7 @@ import {
 
 import loremIpsum from 'lorem-ipsum';
 import { object } from './.fable/Thoth.Json.5.1.0/Decode.fs';
+import { BACKEND_URL } from '../ENVIRONMENT';
 
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
@@ -107,7 +108,7 @@ export class Chat extends Component {
             onlinePKs: [],
             selfInfo: null,
             selectedDialog: null,
-            socket: new ReconnectingWebSocket('wss://' + 'littleworld.ngrok.io' + '/chat_ws')
+            socket: new ReconnectingWebSocket('ws://' + BACKEND_URL.substring(7) + '/chat_ws') /* without the 'https://' */
         };
         //some js magic
         this.performSendingMessage = this.performSendingMessage.bind(this);
