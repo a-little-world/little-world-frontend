@@ -25,6 +25,8 @@ import $ from "jquery";
 import { BACKEND_URL } from "./ENVIRONMENT";
 import Cookies from "js-cookie";
 
+import {ToastContainer, toast} from 'react-toastify';
+
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 
@@ -148,6 +150,15 @@ function ActiveCall() {
 
 function SidebarChat() {
 
+  let toastOptions = {
+      autoClose: 1500,
+      hideProgressBar: true,
+      closeOnClick: false,
+      pauseOnHover: false,
+      pauseOnFocusLoss: false,
+      draggable: false,
+  };
+
   const location = useLocation();
   const { userPk, tracks } = location.state || {};
 
@@ -171,6 +182,29 @@ function SidebarChat() {
             selectedDialog: null,
             socket: new ReconnectingWebSocket('wss://' + 'littleworld.ngrok.io' + '/chat_ws')
         });
+
+  let [textInput, setTextInput] = useState("");
+
+  let handleTextUpdate = (evt) => {
+    setTextInput(evt.target.value);
+  }
+  
+  let performSendMessage = () => {
+          let text = textInput;
+          let user_pk = selectedDialog.id;
+          //this.clearTextInput();
+          let msgBox = sendOutgoingTextMessage(chatState.socket, text, user_pk, chatState.selfInfo);
+          console.log("sendOutgoingTextMessage result:")
+          console.log(msgBox)
+  }
+
+  // Yet unhandled callbacks
+  let addMessage = () => {}
+  let replaceMessageId = () => {}
+  let addPKToTyping = () => {}
+  let changePKOnlineStatus = () => {}
+  let setMessageIdAsRead = () => {}
+  let newUnreadCount = () => {}
 
   useEffect(() => {
     fetchMessages().then((r) => {
@@ -202,6 +236,7 @@ function SidebarChat() {
             console.log(r.fields[0])
         }
     })
+
     fetchSelfInfo().then((r) => {
         if (r.tag === 0) {
             console.log("Fetched selfInfo:")
@@ -209,15 +244,44 @@ function SidebarChat() {
             setChatState({selfInfo: r.fields[0]})
         } else {
             console.log("SelfInfo error:")
-            console.log(r.fields[0])
+            toast.error(r.fields[0])
         }
     })
+
+
+    setChatState({socketConnectionState: chatState.socket.readyState});
+    let socket = chatState.socket;
+
+    // the socket stuff doen't handle all we need yet
+    socket.onopen = function (e) {
+        toast.success("Connected!", toastOptions)
+        setChatState({socketConnectionState: socket.readyState});
+    }
+    socket.onmessage = function (e) {
+        setChatState({socketConnectionState: socket.readyState});
+
+        let errMsg = handleIncomingWebsocketMessage(socket, e.data, {
+            addMessage: addMessage,
+            replaceMessageId: replaceMessageId,
+            addPKToTyping: addPKToTyping,
+            changePKOnlineStatus: changePKOnlineStatus,
+            setMessageIdAsRead: setMessageIdAsRead,
+            newUnreadCount: newUnreadCount
+        });
+        if (errMsg) {
+            toast.error(errMsg)
+        }
+    };
+    socket.onclose = function (e) {
+        toast.info("Disconnected...", toastOptions)
+        setChatState({socketConnectionState: socket.readyState});
+        console.log("websocket closed")
+    }
+
   },[]);
 
-  const prev = useRef({ chatMessages, selectedDialog });
-
   useEffect(() => {
-      //your logic here
+      // Logic is basicly, when the messageList updated OR the selectedDialog Updated we have to update the chatMessage-state
       console.log(messageList, selectedDialog, '- Have changed')
       let msgs = []
       messageList.filter((m) => (m.data.dialog_id === selectedDialog.id)).forEach((e, i) => {
@@ -246,8 +310,8 @@ function SidebarChat() {
         })}
       </div>
       <div className="chat-compose">
-        <input type="text" />
-        <button className="send" type="submit">
+        <input type="text" onChange={evt => handleTextUpdate(evt)}/>
+        <button className="send" type="submit" onClick={e => performSendMessage()}>
           Send
         </button>
       </div>
