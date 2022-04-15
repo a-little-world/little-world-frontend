@@ -15,10 +15,10 @@ function App() {
           <Route path="/">
             <Route index element={<Main />} />
             {/* placeholder while we have no main page */}
-            <Route path="/call-setup" element={<CallSetup />} />
-            <Route path="/call" element={<ActiveCall />} />
-            <Route path="/partners" element={<Main />} />
-            <Route path="/chat" element={<Chat />} />
+            <Route path="call-setup" element={<CallSetup />} />
+            <Route path="call" element={<ActiveCall />} />
+            <Route path="partners" element={<Main />} />
+            <Route path="chat" element={<Chat />} />
             <Route path="*" element="404" />
           </Route>
         </Routes>
