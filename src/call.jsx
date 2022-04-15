@@ -1,10 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 import "./call.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { addAudioTrack, addVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
+import {
+    uploadFile,
+    sendOutgoingFileMessage,
+    createNewDialogModelFromIncomingMessageBox,
+    getSubtitleTextFromMessageBox,
+    fetchSelfInfo,
+    handleIncomingWebsocketMessage,
+    sendOutgoingTextMessage,
+    filterMessagesForDialog,
+    fetchDialogs,
+    fetchMessages,
+    fetchUsersList,
+    sendIsTypingMessage,
+    markMessagesForDialogAsRead,
+    sendMessageReadMessage
+} from "./chat/chat.lib"
+import $ from "jquery";
+import { BACKEND_URL } from "./ENVIRONMENT";
+import Cookies from "js-cookie";
+
+import ReconnectingWebSocket from 'reconnecting-websocket';
+
 
 function toggleFullscreen(t) {
   const videoContainer = document.querySelector(".foreign-video-container");
@@ -125,29 +147,97 @@ function ActiveCall() {
 }
 
 function SidebarChat() {
+
+  const location = useLocation();
+  const { userPk, tracks } = location.state || {};
+
+  let [chatMessages, setChatMessages] = useState([]);
+
+  let [messageList, setMessageList] = useState([]);
+
+  let [selectedDialog, setSelectedDialog] = useState([]);
+
+  let [chatState, setChatState] = useState({
+            socketConnectionState: 0,
+            showNewChatPopup: false,
+            newChatChosen: null,
+            usersDataLoading: false,
+            availableUsers: [],
+            dialogList: [],
+            filteredDialogList: [],
+            typingPKs: [],
+            onlinePKs: [],
+            selfInfo: null,
+            selectedDialog: null,
+            socket: new ReconnectingWebSocket('wss://' + 'littleworld.ngrok.io' + '/chat_ws')
+        });
+
+  useEffect(() => {
+    fetchMessages().then((r) => {
+        if (r.tag === 0) {
+            console.log("Fetched messages:");
+            console.log(r.fields[0]);
+            setChatState({messageList: r.fields[0]});
+            setMessageList(r.fields[0]);
+        } else {
+            console.log("Messages error:")
+            console.log(r.fields[0])
+        }
+    })
+
+    fetchDialogs().then((r) => {
+        if (r.tag === 0) {
+            console.log("Fetched dialogs:")
+            console.log(r.fields[0]);
+            let dialogs = r.fields[0];
+            const index = dialogs.findIndex(item => item.title === userPk); // Find the dialog with that use
+            console.log("index", index);
+
+            setChatState({selectedDialog: dialogs[index]})
+            setSelectedDialog(dialogs[index]);
+            //setChatState({dialogList: r.fields[0], filteredDialogList: r.fields[0]})
+            //setChatState({selectedDialog: item}) // select the dialog, where username = user_h256_pk
+        } else {
+            console.log("Dialogs error:")
+            console.log(r.fields[0])
+        }
+    })
+    fetchSelfInfo().then((r) => {
+        if (r.tag === 0) {
+            console.log("Fetched selfInfo:")
+            console.log(r.fields[0])
+            setChatState({selfInfo: r.fields[0]})
+        } else {
+            console.log("SelfInfo error:")
+            console.log(r.fields[0])
+        }
+    })
+  },[]);
+
+  const prev = useRef({ chatMessages, selectedDialog });
+
+  useEffect(() => {
+      //your logic here
+      console.log(messageList, selectedDialog, '- Have changed')
+      let msgs = []
+      messageList.filter((m) => (m.data.dialog_id === selectedDialog.id)).forEach((e, i) => {
+        msgs.push(
+          {
+            id : i,
+            sender : e.position == 'right' ? 'foreign' : 'local',
+            text : e.text
+          }
+        )
+      })
+      setChatMessages(msgs)
+  },[messageList, selectedDialog]);
+
   const { t } = useTranslation();
-  const dummyData = [
-    {
-      id: 213,
-      sender: "foreign",
-      text: "Hello Richard how are you doing?",
-    },
-    {
-      id: 217,
-      sender: "local",
-      text: "Let's talk about a new topic. How about...",
-    },
-    {
-      id: 218,
-      sender: "local",
-      text: "We discussed",
-    },
-  ];
 
   return (
     <div className="chat">
       <div className="chat-messages">
-        {dummyData.map(({ id, sender, text }) => {
+        {chatMessages.map(({ id, sender, text }) => {
           return (
             <div key={id} className={`message ${sender}`}>
               {text}
