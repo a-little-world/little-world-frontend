@@ -1,3 +1,29 @@
+/**containers**/
+.right-panel, .container > .chat-list {
+  border-radius: 30px;
+  border: 1px solid #E6E8EC;
+}
+
+.right-panel {
+  padding: 25px;
+  margin-left: 20px;
+}
+
+.right-panel .rce-container-input, .rce-container-mlist, .rce-navbar.light {
+  background-color: #F9FAFB;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.rce-citem {
+  background: unset;
+}
+
+.right-panel .rce-container-input, .rce-container-mlist {
+  margin-top: 18px;
+}
+
+
 /** message area **/
 /* hide avatar and name on every message */
 .rce-mbox-title {
