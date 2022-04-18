@@ -71,5 +71,29 @@
   display: none;
 }
 
+
+/** message input/sending area **/
+/* hide file upload */
+.right-panel .rce-input-buttons:first-child {
   display: none;
+}
+
+/* input area */
+.rce-input-textarea {
+  margin: 15px;
+  border-radius: 100px;
+  padding-left: 16px;
+  background-color: #F6F6F6;
+  font-size: 16px;
+}
+
+
+/* send button */
+.right-panel .rce-input-buttons:not(:first-child) .rce-button {
+  background: #F39325 !important;
+  border-radius: 100px;
+  padding: 8px 6px;
+  font-size: 14px;
+  min-width: 66px;
+  margin-right: 15px;
 }
