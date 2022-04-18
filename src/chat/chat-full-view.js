@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "react-chat-elements/dist/main.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import "./chat-override.css";
 import { ToastContainer, toast } from "react-toastify";
 import {
   MessageBox,

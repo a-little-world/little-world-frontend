@@ -1,0 +1,75 @@
+/** message area **/
+/* hide avatar and name on every message */
+.rce-mbox-title {
+  display: none;
+}
+
+/* set background colour */
+.rce-mlist {
+  background-color: #F9FAFB;
+}
+
+/* format message box */
+.rce-mbox {
+  border: none;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.rce-mbox-text {
+  font-family: "Signika Negative";
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.rce-mbox-text::after {
+  content: "";  
+}
+
+.rce-mbox-text {
+  border-radius: 100px;
+  padding: 16px 24px;
+}
+
+.rce-mbox-text.left {
+  float: left;
+  background-color: white;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.rce-mbox-text.right {
+  float: right;
+  background-color: #F39325;
+  color: white;
+}
+
+.rce-mbox.rce-mbox-right {
+  margin-right: 0;
+}
+
+.rce-mbox-time {
+  position: relative;
+  clear: both;
+  bottom: inherit;
+  font-family: "Signika Negative";
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  padding-right: 16px;
+  text-align: unset; /* need to unset here as there is no left class */
+}
+
+.rce-mbox-right .rce-mbox-time {
+  text-align: right;
+}
+
+/* hide speech bubble notch */
+.rce-mbox-right-notch, .rce-mbox-left-notch {
+  display: none;
+}
+
+  display: none;
+}
