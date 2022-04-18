@@ -82,7 +82,9 @@ export class Chat extends Component {
       this.textInput = element;
     };
     this.clearTextInput = () => {
-      if (this.textInput) this.textInput.clear();
+      if (this.textInput) {
+        this.textInput.value = "";
+      }
     };
 
     this.searchInput = null;
@@ -412,12 +414,14 @@ export class Chat extends Component {
 
   performSendingMessage() {
     if (this.state.selectedDialog) {
-      console.log(1, this.textInput);
-      this.textInput = { input: { value: "test" } };
-      const text = this.textInput.input.value;
-      const user_pk = this.state.selectedDialog.id;
-      // this.clearTextInput();
-      const msgBox = sendOutgoingTextMessage(this.state.socket, text, user_pk, this.state.selfInfo);
+      const userPk = this.state.selectedDialog.id;
+      const msgBox = sendOutgoingTextMessage(
+        this.state.socket,
+        this.textInput.value,
+        userPk,
+        this.state.selfInfo
+      );
+      this.clearTextInput();
       console.log("sendOutgoingTextMessage result:");
       console.log(msgBox);
       if (msgBox) {
@@ -435,11 +439,11 @@ export class Chat extends Component {
       if (r.tag === 0) {
         console.log("Uploaded file :");
         console.log(r.fields[0]);
-        const user_pk = this.state.selectedDialog.id;
+        const userPk = this.state.selectedDialog.id;
         const uploadResp = r.fields[0];
         const msgBox = sendOutgoingFileMessage(
           this.state.socket,
-          user_pk,
+          userPk,
           uploadResp,
           this.state.selfInfo
         );
@@ -460,6 +464,10 @@ export class Chat extends Component {
   }
 
   render() {
+    const handleTextUpdate = (evt) => {
+      this.textInput = evt.target;
+    };
+
     return (
       <div className="container">
         <div className="chat-list">
@@ -653,8 +661,6 @@ export class Chat extends Component {
             // buttonsFloat='left'
             onKeyPress={(e) => {
               if (e.charCode !== 13) {
-                console.log("key pressed");
-
                 this.isTyping();
               }
               if (e.shiftKey && e.charCode === 13) {
@@ -662,12 +668,13 @@ export class Chat extends Component {
               }
               if (e.charCode === 13) {
                 if (this.state.socket.readyState === 1) {
-                  this.performSendingMessage();
                   e.preventDefault();
+                  this.performSendingMessage();
                 }
                 return false;
               }
             }}
+            onChange={handleTextUpdate}
             leftButtons={
               <Button
                 type="transparent"
