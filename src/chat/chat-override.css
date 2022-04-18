@@ -24,6 +24,41 @@
 }
 
 
+/** left panel **/
+.rce-sbar.light {
+  background: none;
+}
+
+/* search and cancel buttons */
+.rce-sbar.light .rce-input-buttons {
+  display: none;
+}
+
+/* search bar */
+.rce-sbar.light .rce-sbar-item input {
+  margin: 25px;
+  padding: 15px;
+  color: #5F5F5F;
+  font-family: "Signika Negative";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.rce-citem-body {
+  border-bottom: none;
+}
+
+/*hide connection status text*/
+.rce-sbar.light .rce-sbar-item:not(:first-child) {
+  display: none;
+}
+
+.rce-sbar.light .rce-container-input input {
+  background: #F9FAFB;
+  border-radius: 10px;
+}
+
 /** message area **/
 /* hide avatar and name on every message */
 .rce-mbox-title {
