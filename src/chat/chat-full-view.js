@@ -7,7 +7,6 @@ import "./chat-override.css";
 import { ToastContainer, toast } from "react-toastify";
 import {
   MessageBox,
-  ChatList,
   SystemMessage,
   MessageList,
   Input,
@@ -49,6 +48,7 @@ import {
   sendMessageReadMessage,
 } from "./chat.lib";
 import ChatItem from "./ChatItem-override";
+import ChatList from "./ChatList-override";
 import { object } from "./.fable/Thoth.Json.5.1.0/Decode.fs";
 import { BACKEND_URL } from "../ENVIRONMENT";
 

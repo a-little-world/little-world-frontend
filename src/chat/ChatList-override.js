@@ -1,7 +1,6 @@
 import React from "react";
-import "./ChatList.css";
 
-import ChatItem from "../ChatItem/ChatItem";
+import ChatItem from "./ChatItem-override";
 
 const classNames = require("classnames");
 
