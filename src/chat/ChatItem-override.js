@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import "./ChatItem.css";
 
 import { format } from "timeago.js";
 
 import classNames from "classnames";
 
-import { MdVideoCall, MdVolumeOff, MdVolumeUp } from "react-icons/lib/md";
-import Avatar from "../Avatar/Avatar";
-
 function ChatItem(props) {
   const [onHoverTool, setOnHoverTool] = useState(false);
-  const { statusColorType } = props;
+  const statusColorType = props.statusColorType;
   const [onDrag, setOnDrag] = useState(false);
 
   const handleOnMouseEnter = () => {
@@ -73,35 +69,7 @@ function ChatItem(props) {
               "rce-citem-status-encircle": statusColorType === "encircle",
             })}
           >
-            <Avatar
-              src={props.avatar}
-              alt={props.alt}
-              className={statusColorType === "encircle" ? "rce-citem-avatar-encircle-status" : ""}
-              size="large"
-              letterItem={props.letterItem}
-              sideElement={
-                props.statusColor && (
-                  <span
-                    className="rce-citem-status"
-                    style={
-                      statusColorType === "encircle"
-                        ? {
-                            border: `solid 2px ${props.statusColor}`,
-                          }
-                        : {
-                            backgroundColor: props.statusColor,
-                          }
-                    }
-                  >
-                    {props.statusText}
-                  </span>
-                )
-              }
-              onError={props.onAvatarError}
-              lazyLoadingImage={props.lazyLoadingImage}
-              type={classNames("circle", { flexible: props.avatarFlexible })}
-            />
-            />
+            <img className="profile-image" />
           </div>,
           <div className="rce-citem-body">
             <div className="rce-citem-body--top">
@@ -118,28 +86,16 @@ function ChatItem(props) {
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               >
-                {props.showMute && (
-                  <div className="rce-citem-body--bottom-tools-item" onClick={props.onClickMute}>
-                    {props.muted === true && <MdVolumeOff />}
-                    {props.muted === false && <MdVolumeUp />}
-                  </div>
-                )}
                 {props.showVideoCall && (
                   <div
                     className="rce-citem-body--bottom-tools-item"
                     onClick={props.onClickVideoCall}
                   >
-                    <MdVideoCall />
+                    {/* videocall */}
                   </div>
                 )}
               </div>
-              <div className="rce-citem-body--bottom-tools-item-hidden-hover">
-                {props.showMute && props.muted && (
-                  <div className="rce-citem-body--bottom-tools-item">
-                    <MdVolumeOff />
-                  </div>
-                )}
-              </div>
+              <div className="rce-citem-body--bottom-tools-item-hidden-hover" />
               <div className="rce-citem-body--bottom-status">
                 {props.unread > 0 && <span>{props.unread}</span>}
               </div>
