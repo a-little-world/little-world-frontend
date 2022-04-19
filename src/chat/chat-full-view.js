@@ -435,7 +435,6 @@ export class Chat extends Component {
               <span className="chat-list">
                 <Input
                   placeholder="Search..."
-                  ref={this.setSearchInputRef}
                   onKeyPress={(e) => {
                     if (e.charCode !== 13) {
                       this.localSearch();
@@ -574,7 +573,6 @@ export class Chat extends Component {
             placeholder="Type here to send a message."
             defaultValue=""
             id="textInput"
-            ref={this.setTextInputRef}
             multiline
             // buttonsFloat='left'
             onKeyPress={(e) => {
