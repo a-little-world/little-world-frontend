@@ -613,13 +613,6 @@ export class Chat extends Component {
             dataSource={filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}
           />
 
-          <input
-            id="selectFile"
-            hidden
-            type="file"
-            onChange={this.handleFileInputChange}
-            ref={this.setFileInputRef}
-          />
           <Input
             placeholder="Type here to send a message."
             defaultValue=""
@@ -643,17 +636,6 @@ export class Chat extends Component {
               }
             }}
             onChange={handleTextUpdate}
-            leftButtons={
-              <Button
-                type="transparent"
-                color="black"
-                onClick={this.triggerFileRefClick}
-                icon={{
-                  component: <FaPaperclip />,
-                  size: 24,
-                }}
-              />
-            }
             rightButtons={
               <Button
                 text="Send"

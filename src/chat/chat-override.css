@@ -124,11 +124,6 @@
 
 
 /** message input/sending area **/
-/* hide file upload */
-.right-panel .rce-input-buttons:first-child {
-  display: none;
-}
-
 /* input area */
 .rce-input-textarea {
   margin: 15px;
@@ -140,7 +135,7 @@
 
 
 /* send button */
-.right-panel .rce-input-buttons:not(:first-child) .rce-button {
+.right-panel .rce-input-buttons .rce-button {
   background: #F39325 !important;
   border-radius: 100px;
   padding: 8px 6px;
