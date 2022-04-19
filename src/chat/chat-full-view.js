@@ -24,7 +24,6 @@ import {
   FaComments,
   FaWindowClose,
   FaEdit,
-  FaPaperclip,
   FaSquare,
   FaTimesCircle,
 } from "react-icons/fa";
@@ -36,8 +35,6 @@ import { format } from "timeago.js";
 
 import loremIpsum from "lorem-ipsum";
 import {
-  uploadFile,
-  sendOutgoingFileMessage,
   createNewDialogModelFromIncomingMessageBox,
   getSubtitleTextFromMessageBox,
   fetchSelfInfo,
@@ -93,11 +90,6 @@ export class Chat extends Component {
       this.searchInput = element;
     };
 
-    this.fileInput = null;
-    this.setFileInputRef = (element) => {
-      this.fileInput = element;
-    };
-
     this.clearSearchInput = () => {
       if (this.searchInput) this.searchInput.clear();
     };
@@ -127,8 +119,6 @@ export class Chat extends Component {
     this.changePKOnlineStatus = this.changePKOnlineStatus.bind(this);
     this.setMessageIdAsRead = this.setMessageIdAsRead.bind(this);
     this.newUnreadCount = this.newUnreadCount.bind(this);
-    this.triggerFileRefClick = this.triggerFileRefClick.bind(this);
-    this.handleFileInputChange = this.handleFileInputChange.bind(this);
 
     this.isTyping = throttle(() => {
       sendIsTypingMessage(this.state.socket);
@@ -429,39 +419,6 @@ export class Chat extends Component {
         this.addMessage(msgBox);
       }
     }
-  }
-
-  handleFileInputChange(e) {
-    console.log("Upload starting...");
-    console.log(e.target.files);
-
-    // TODO: set 'file uploading' state to true, show some indication of file upload in progress
-    uploadFile(e.target.files, getCookie()).then((r) => {
-      if (r.tag === 0) {
-        console.log("Uploaded file :");
-        console.log(r.fields[0]);
-        const userPk = this.state.selectedDialog.id;
-        const uploadResp = r.fields[0];
-        const msgBox = sendOutgoingFileMessage(
-          this.state.socket,
-          userPk,
-          uploadResp,
-          this.state.selfInfo
-        );
-        console.log("sendOutgoingFileMessage result:");
-        console.log(msgBox);
-        if (msgBox) {
-          this.addMessage(msgBox);
-        }
-      } else {
-        console.log("File upload error");
-        toast.error(r.fields[0]);
-      }
-    });
-  }
-
-  triggerFileRefClick() {
-    this.fileInput.click();
   }
 
   render() {
