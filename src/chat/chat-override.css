@@ -25,6 +25,15 @@
 
 
 /** left panel **/
+.chat-header {
+  font-family: "Signika Negative";
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 20px;
+  margin: 20px 20px 0 20px;
+  color: #5F5F5F;
+}
+
 .rce-sbar.light {
   background: none;
 }
@@ -47,6 +56,32 @@
 .rce-sbar.light .rce-container-input input {
   background: #F9FAFB;
   border-radius: 10px;
+}
+
+/** top bar **/
+.rce-citem-body--top-title {
+  max-width: 300px;
+}
+
+.free-appointments, .suggest-appointment {
+  border-radius: 100px;
+  background: #F39325;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-family: "Signika Negative";
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 24px;
+  margin-right: 10px;
+}
+
+.call-start {
+  content: url("../images/camera-on.svg");
+  background: linear-gradient(50.19deg, #36A9E0 2.84%, #0367B2 106.82%);
+  height: 30px;
+  padding: 5px;
+  border-radius: 100px;
 }
 
 /** message area **/

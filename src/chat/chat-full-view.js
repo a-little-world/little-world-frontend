@@ -7,7 +7,7 @@ import "./chat-override.css";
 import { ToastContainer, toast } from "react-toastify";
 import { MessageList, Input, Button, Navbar, SideBar, Popup } from "react-chat-elements";
 import throttle from "lodash.throttle";
-import { FaWindowClose, FaEdit } from "react-icons/fa";
+import { FaWindowClose } from "react-icons/fa";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import {
   createNewDialogModelFromIncomingMessageBox,
@@ -404,6 +404,7 @@ class Chat extends Component {
             type="light"
             top={
               <span className="chat-list">
+                <h3 className="chat-header">{t("chat_header")}</h3>
                 <Input
                   placeholder={t("chat_search")}
                   onKeyPress={(e) => {
@@ -499,29 +500,34 @@ class Chat extends Component {
               />
             }
             right={
-              <Button
-                type="transparent"
-                color="black"
-                onClick={() => {
-                  this.setState({ usersDataLoading: true });
-                  fetchUsersList(this.state.dialogList).then((r) => {
-                    this.setState({ usersDataLoading: false });
-                    if (r.tag === 0) {
-                      console.log("Fetched users:");
-                      console.log(r.fields[0]);
-                      this.setState({ availableUsers: r.fields[0] });
-                    } else {
-                      console.log("Users error:");
-                      toast.error(r.fields[0]);
-                    }
-                  });
-                  this.setState({ showNewChatPopup: true });
-                }}
-                icon={{
-                  component: <FaEdit />,
-                  size: 24,
-                }}
-              />
+              <>
+                <button type="button" className="free-appointments">
+                  {t("chat_show_free_appointments")}
+                </button>
+                <button type="button" className="suggest-appointment">
+                  {t("chat_suggest_appointment")}
+                </button>
+                <img className="call-start" alt="start call" />
+                <Button
+                  type="transparent"
+                  color="black"
+                  onClick={() => {
+                    this.setState({ usersDataLoading: true });
+                    fetchUsersList(this.state.dialogList).then((r) => {
+                      this.setState({ usersDataLoading: false });
+                      if (r.tag === 0) {
+                        console.log("Fetched users:");
+                        console.log(r.fields[0]);
+                        this.setState({ availableUsers: r.fields[0] });
+                      } else {
+                        console.log("Users error:");
+                        toast.error(r.fields[0]);
+                      }
+                    });
+                    this.setState({ showNewChatPopup: true });
+                  }}
+                />
+              </>
             }
           />
 
