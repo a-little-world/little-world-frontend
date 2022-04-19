@@ -5,34 +5,10 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import "./chat-override.css";
 import { ToastContainer, toast } from "react-toastify";
-import {
-  MessageBox,
-  SystemMessage,
-  MessageList,
-  Input,
-  Button,
-  Avatar,
-  Navbar,
-  SideBar,
-  Dropdown,
-  Popup,
-} from "react-chat-elements";
+import { MessageList, Input, Button, Navbar, SideBar, Popup } from "react-chat-elements";
 import throttle from "lodash.throttle";
-import {
-  FaSearch,
-  FaComments,
-  FaWindowClose,
-  FaEdit,
-  FaSquare,
-  FaTimesCircle,
-} from "react-icons/fa";
-import { MdMenu } from "react-icons/md";
+import { FaWindowClose, FaEdit } from "react-icons/fa";
 import ReconnectingWebSocket from "reconnecting-websocket";
-// import "./main.css";
-
-import { format } from "timeago.js";
-
-import loremIpsum from "lorem-ipsum";
 import {
   createNewDialogModelFromIncomingMessageBox,
   getSubtitleTextFromMessageBox,
@@ -49,7 +25,6 @@ import {
 } from "./chat.lib";
 import ChatItem from "./ChatItem-override";
 import ChatList from "./ChatList-override";
-import { object } from "./.fable/Thoth.Json.5.1.0/Decode.fs";
 import { BACKEND_URL } from "../ENVIRONMENT";
 
 const TYPING_TIMEOUT = 5000;
@@ -76,10 +51,6 @@ class Chat extends Component {
     super(props);
     // Refs
     this.textInput = null;
-    this.setTextInputRef = (element) => {
-      console.log("Set input ref");
-      this.textInput = element;
-    };
     this.clearTextInput = () => {
       if (this.textInput) {
         this.textInput.value = "";
@@ -87,9 +58,6 @@ class Chat extends Component {
     };
 
     this.searchInput = null;
-    this.setSearchInputRef = (element) => {
-      this.searchInput = element;
-    };
 
     this.clearSearchInput = () => {
       if (this.searchInput) this.searchInput.clear();
