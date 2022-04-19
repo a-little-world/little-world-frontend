@@ -9,6 +9,7 @@ import { MessageList, Input, Button, Navbar, SideBar, Popup } from "react-chat-e
 import throttle from "lodash.throttle";
 import { FaWindowClose } from "react-icons/fa";
 import ReconnectingWebSocket from "reconnecting-websocket";
+import { Link } from "react-router-dom";
 import {
   createNewDialogModelFromIncomingMessageBox,
   getSubtitleTextFromMessageBox,
@@ -397,6 +398,8 @@ class Chat extends Component {
       this.textInput = evt.target;
     };
 
+    const userPk = (this.state.selectedDialog || {}).title;
+
     return (
       <div className="container">
         <div className="chat-list">
@@ -507,7 +510,9 @@ class Chat extends Component {
                 <button type="button" className="suggest-appointment">
                   {t("chat_suggest_appointment")}
                 </button>
-                <img className="call-start" alt="start call" />
+                <Link to="/call-setup" state={{ userPk }}>
+                  <img className="call-start" alt="start call" />
+                </Link>
                 <Button
                   type="transparent"
                   color="black"
