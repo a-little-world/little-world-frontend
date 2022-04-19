@@ -29,11 +29,6 @@
   background: none;
 }
 
-/* search and cancel buttons */
-.rce-sbar.light .rce-input-buttons {
-  display: none;
-}
-
 /* search bar */
 .rce-sbar.light .rce-sbar-item input {
   margin: 25px;

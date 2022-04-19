@@ -490,31 +490,6 @@ export class Chat extends Component {
                       return false;
                     }
                   }}
-                  rightButtons={
-                    <div>
-                      <Button
-                        type="transparent"
-                        color="black"
-                        onClick={() => {
-                          this.localSearch();
-                          console.log(`search invoke with${this.searchInput.input.value}`);
-                        }}
-                        icon={{
-                          component: <FaSearch />,
-                          size: 18,
-                        }}
-                      />
-                      <Button
-                        type="transparent"
-                        color="black"
-                        icon={{
-                          component: <FaTimesCircle />,
-                          size: 18,
-                        }}
-                        onClick={() => this.clearSearchInput()}
-                      />
-                    </div>
-                  }
                 />
 
                 <ChatList
