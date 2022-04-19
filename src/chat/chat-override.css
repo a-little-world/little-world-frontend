@@ -88,6 +88,12 @@
 
 /** message area **/
 /* hide avatar and name on every message */
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+}
+
 .rce-mbox-title {
   display: none;
 }
@@ -171,7 +177,7 @@
 }
 
 /* send button */
-.right-panel .rce-input-buttons .rce-button {
+.rce-input-buttons .rce-button {
   background: #F39325 !important;
   border-radius: 100px;
   padding: 8px 6px;
