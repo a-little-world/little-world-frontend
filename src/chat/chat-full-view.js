@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withTranslation } from "react-i18next";
 import "react-chat-elements/dist/main.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
@@ -70,7 +71,7 @@ function getCookie() {
   return cookieValue;
 }
 
-export class Chat extends Component {
+class Chat extends Component {
   constructor(props) {
     super(props);
     // Refs
@@ -422,6 +423,8 @@ export class Chat extends Component {
   }
 
   render() {
+    const t = this.props.t;
+
     const handleTextUpdate = (evt) => {
       this.textInput = evt.target;
     };
@@ -434,7 +437,7 @@ export class Chat extends Component {
             top={
               <span className="chat-list">
                 <Input
-                  placeholder="Search..."
+                  placeholder={t("chat_search")}
                   onKeyPress={(e) => {
                     if (e.charCode !== 13) {
                       this.localSearch();
@@ -570,7 +573,7 @@ export class Chat extends Component {
           />
 
           <Input
-            placeholder="Type here to send a message."
+            placeholder={t("chat_input_text")}
             defaultValue=""
             id="textInput"
             multiline
@@ -593,7 +596,7 @@ export class Chat extends Component {
             onChange={handleTextUpdate}
             rightButtons={
               <Button
-                text="Send"
+                text={t("chat_send")}
                 disabled={this.state.socket.readyState !== 1}
                 onClick={() => this.performSendingMessage()}
               />
@@ -605,4 +608,4 @@ export class Chat extends Component {
   }
 }
 
-export default Chat;
+export default withTranslation()(Chat);
