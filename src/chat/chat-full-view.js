@@ -498,14 +498,6 @@ export class Chat extends Component {
                 />
               </span>
             }
-            bottom={
-              <Button
-                type="transparent"
-                color="black"
-                disabled
-                text={`Connection state: ${this.getSocketState()}`}
-              />
-            }
           />
         </div>
         <div className="right-panel">

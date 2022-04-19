@@ -44,11 +44,6 @@
   border-bottom: none;
 }
 
-/*hide connection status text*/
-.rce-sbar.light .rce-sbar-item:not(:first-child) {
-  display: none;
-}
-
 .rce-sbar.light .rce-container-input input {
   background: #F9FAFB;
   border-radius: 10px;
