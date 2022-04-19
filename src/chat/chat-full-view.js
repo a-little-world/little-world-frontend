@@ -392,7 +392,7 @@ class Chat extends Component {
   }
 
   render() {
-    const t = this.props.t;
+    const { t } = this.props;
 
     const handleTextUpdate = (evt) => {
       this.textInput = evt.target;
@@ -475,12 +475,6 @@ class Chat extends Component {
                 />
               );
             }}
-            // footerButtons={[{
-            //     color: 'white',
-            //     backgroundColor: 'lightgreen',
-            //     text: "Hello!",
-            //     disabled: this.state.newChatChosen !== null
-            // }]}
           />
           <Navbar
             left={
