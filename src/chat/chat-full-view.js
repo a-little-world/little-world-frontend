@@ -180,6 +180,33 @@ class Chat extends Component {
     };
   }
 
+  setMessageIdAsRead(msg_id) {
+    console.log(`Setting msg_id ${msg_id} as read`);
+    this.setState((prevState) => ({
+      messageList: prevState.messageList.map(function (el) {
+        if (el.data.message_id.Equals(msg_id)) {
+          return { ...el, status: "read" };
+        }
+        return el;
+      }),
+    }));
+  }
+
+  getSocketState() {
+    if (this.state.socket.readyState === 0) {
+      return "Connecting...";
+    }
+    if (this.state.socket.readyState === 1) {
+      return "Connected";
+    }
+    if (this.state.socket.readyState === 2) {
+      return "Disconnecting...";
+    }
+    if (this.state.socket.readyState === 3) {
+      return "Disconnected";
+    }
+  }
+
   selectDialog(item) {
     console.log(`Selecting dialog ${item.id}`);
     this.setState({ selectedDialog: item });
@@ -197,21 +224,6 @@ class Chat extends Component {
       this.state.messageList,
       this.setMessageIdAsRead
     );
-  }
-
-  getSocketState() {
-    if (this.state.socket.readyState === 0) {
-      return "Connecting...";
-    }
-    if (this.state.socket.readyState === 1) {
-      return "Connected";
-    }
-    if (this.state.socket.readyState === 2) {
-      return "Disconnecting...";
-    }
-    if (this.state.socket.readyState === 3) {
-      return "Disconnected";
-    }
   }
 
   addPKToTyping(pk) {
@@ -358,18 +370,6 @@ class Chat extends Component {
           : prevState.selectedDialog,
     }));
     this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
-  }
-
-  setMessageIdAsRead(msg_id) {
-    console.log(`Setting msg_id ${msg_id} as read`);
-    this.setState((prevState) => ({
-      messageList: prevState.messageList.map(function (el) {
-        if (el.data.message_id.Equals(msg_id)) {
-          return { ...el, status: "read" };
-        }
-        return el;
-      }),
-    }));
   }
 
   performSendingMessage() {
