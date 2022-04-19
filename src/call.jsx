@@ -1,34 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 import "./call.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { addAudioTrack, addVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
-import {
-    uploadFile,
-    sendOutgoingFileMessage,
-    createNewDialogModelFromIncomingMessageBox,
-    getSubtitleTextFromMessageBox,
-    fetchSelfInfo,
-    handleIncomingWebsocketMessage,
-    sendOutgoingTextMessage,
-    filterMessagesForDialog,
-    fetchDialogs,
-    fetchMessages,
-    fetchUsersList,
-    sendIsTypingMessage,
-    markMessagesForDialogAsRead,
-    sendMessageReadMessage
-} from "./chat/chat.lib"
-import $ from "jquery";
-import { BACKEND_URL } from "./ENVIRONMENT";
-import Cookies from "js-cookie";
-
-import {ToastContainer, toast} from 'react-toastify';
-
-import ReconnectingWebSocket from 'reconnecting-websocket';
-
+import { ChatCore } from "./chat/chat-full-view";
 
 function toggleFullscreen(t) {
   const videoContainer = document.querySelector(".foreign-video-container");
@@ -146,177 +123,6 @@ function ActiveCall() {
   }, [userPk, tracks]);
 
   return <VideoFrame />;
-}
-
-function SidebarChat() {
-
-  let toastOptions = {
-      autoClose: 1500,
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: false,
-      pauseOnFocusLoss: false,
-      draggable: false,
-  };
-
-  const location = useLocation();
-  const { userPk, tracks } = location.state || {};
-
-  let [chatMessages, setChatMessages] = useState([]);
-
-  let [messageList, setMessageList] = useState([]);
-
-  let [selectedDialog, setSelectedDialog] = useState([]);
-
-  let [chatState, setChatState] = useState({
-            socketConnectionState: 0,
-            showNewChatPopup: false,
-            newChatChosen: null,
-            usersDataLoading: false,
-            availableUsers: [],
-            dialogList: [],
-            filteredDialogList: [],
-            typingPKs: [],
-            onlinePKs: [],
-            selfInfo: null,
-            selectedDialog: null,
-            socket: new ReconnectingWebSocket('wss://' + 'littleworld.ngrok.io' + '/chat_ws')
-        });
-
-  let [textInput, setTextInput] = useState("");
-
-  let handleTextUpdate = (evt) => {
-    setTextInput(evt.target.value);
-  }
-  
-  let performSendMessage = () => {
-          let text = textInput;
-          let user_pk = selectedDialog.id;
-          //this.clearTextInput();
-          let msgBox = sendOutgoingTextMessage(chatState.socket, text, user_pk, chatState.selfInfo);
-          console.log("sendOutgoingTextMessage result:")
-          console.log(msgBox)
-  }
-
-  // Yet unhandled callbacks
-  let addMessage = () => {}
-  let replaceMessageId = () => {}
-  let addPKToTyping = () => {}
-  let changePKOnlineStatus = () => {}
-  let setMessageIdAsRead = () => {}
-  let newUnreadCount = () => {}
-
-  useEffect(() => {
-    fetchMessages().then((r) => {
-        if (r.tag === 0) {
-            console.log("Fetched messages:");
-            console.log(r.fields[0]);
-            setChatState({messageList: r.fields[0]});
-            setMessageList(r.fields[0]);
-        } else {
-            console.log("Messages error:")
-            console.log(r.fields[0])
-        }
-    })
-
-    fetchDialogs().then((r) => {
-        if (r.tag === 0) {
-            console.log("Fetched dialogs:")
-            console.log(r.fields[0]);
-            let dialogs = r.fields[0];
-            const index = dialogs.findIndex(item => item.title === userPk); // Find the dialog with that use
-            console.log("index", index);
-
-            setChatState({selectedDialog: dialogs[index]})
-            setSelectedDialog(dialogs[index]);
-            //setChatState({dialogList: r.fields[0], filteredDialogList: r.fields[0]})
-            //setChatState({selectedDialog: item}) // select the dialog, where username = user_h256_pk
-        } else {
-            console.log("Dialogs error:")
-            console.log(r.fields[0])
-        }
-    })
-
-    fetchSelfInfo().then((r) => {
-        if (r.tag === 0) {
-            console.log("Fetched selfInfo:")
-            console.log(r.fields[0])
-            setChatState({selfInfo: r.fields[0]})
-        } else {
-            console.log("SelfInfo error:")
-            toast.error(r.fields[0])
-        }
-    })
-
-
-    setChatState({socketConnectionState: chatState.socket.readyState});
-    let socket = chatState.socket;
-
-    // the socket stuff doen't handle all we need yet
-    socket.onopen = function (e) {
-        toast.success("Connected!", toastOptions)
-        setChatState({socketConnectionState: socket.readyState});
-    }
-    socket.onmessage = function (e) {
-        setChatState({socketConnectionState: socket.readyState});
-
-        let errMsg = handleIncomingWebsocketMessage(socket, e.data, {
-            addMessage: addMessage,
-            replaceMessageId: replaceMessageId,
-            addPKToTyping: addPKToTyping,
-            changePKOnlineStatus: changePKOnlineStatus,
-            setMessageIdAsRead: setMessageIdAsRead,
-            newUnreadCount: newUnreadCount
-        });
-        if (errMsg) {
-            toast.error(errMsg)
-        }
-    };
-    socket.onclose = function (e) {
-        toast.info("Disconnected...", toastOptions)
-        setChatState({socketConnectionState: socket.readyState});
-        console.log("websocket closed")
-    }
-
-  },[]);
-
-  useEffect(() => {
-      // Logic is basicly, when the messageList updated OR the selectedDialog Updated we have to update the chatMessage-state
-      console.log(messageList, selectedDialog, '- Have changed')
-      let msgs = []
-      messageList.filter((m) => (m.data.dialog_id === selectedDialog.id)).forEach((e, i) => {
-        msgs.push(
-          {
-            id : i,
-            sender : e.position == 'right' ? 'foreign' : 'local',
-            text : e.text
-          }
-        )
-      })
-      setChatMessages(msgs)
-  },[messageList, selectedDialog]);
-
-  const { t } = useTranslation();
-
-  return (
-    <div className="chat">
-      <div className="chat-messages">
-        {chatMessages.map(({ id, sender, text }) => {
-          return (
-            <div key={id} className={`message ${sender}`}>
-              {text}
-            </div>
-          );
-        })}
-      </div>
-      <div className="chat-compose">
-        <input type="text" onChange={evt => handleTextUpdate(evt)}/>
-        <button className="send" type="submit" onClick={e => performSendMessage()}>
-          Send
-        </button>
-      </div>
-    </div>
-  );
 }
 
 function SidebarQuestions() {
@@ -461,7 +267,7 @@ function Sidebar() {
         ))}
       </div>
       <div className="sidebar-content">
-        {sideSelection === "chat" && <SidebarChat />}
+        {sideSelection === "chat" && <ChatCore />}
         {sideSelection === "questions" && <SidebarQuestions />}
         {sideSelection === "notes" && <SidebarNotes />}
       </div>

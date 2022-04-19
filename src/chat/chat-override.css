@@ -9,7 +9,7 @@
   margin-left: 20px;
 }
 
-.right-panel .rce-container-input, .rce-container-mlist, .rce-navbar.light {
+.flex-container .rce-container-input, .rce-container-mlist, .rce-navbar.light {
   background-color: #F9FAFB;
   border-radius: 18px;
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -19,8 +19,8 @@
   background: unset;
 }
 
-.right-panel .rce-container-input, .rce-container-mlist {
-  margin-top: 18px;
+.rce-navbar, .rce-container-mlist {
+  margin-bottom: 18px;
 }
 
 
@@ -91,7 +91,8 @@
 .flex-container {
   display: flex;
   flex-direction: column;
-  max-height: 100vh;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .rce-mbox-title {
@@ -174,6 +175,7 @@
   padding-left: 16px;
   background-color: #F6F6F6;
   font-size: 16px;
+  min-width: 0; /* not sure why this works!! */
 }
 
 /* send button */

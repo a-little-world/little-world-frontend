@@ -33,10 +33,11 @@ video {
     flex-direction: row;
     background: #f5f5f5;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 .call-and-text, .translation-box textarea, .sidebar-selector, .sidebar-content,
-.sidebar-content .questions-content > div, .questions-content label, .chat-messages, .chat-compose,
+.sidebar-content .questions-content > div, .questions-content label,
 .message.local {
     border: 1px solid #E6E8EC;
     box-sizing: border-box;
@@ -152,6 +153,7 @@ img.swap-languages {
     border-radius: 16px;
     flex-grow: 1;
     padding: 10px;
+    overflow: auto;
 }
 
 .questions-categories {
@@ -181,7 +183,7 @@ img.swap-languages {
     overflow-x: hidden;
 }
 
-.call-sidebar span {
+.call-sidebar .questions span, .sidebar-selector span {
     display: inherit;
 }
 
@@ -247,84 +249,4 @@ img.swap-languages {
 
 .question-action img.no {
     content: url("./images/close.svg");
-}
-
-/* chat */
-.sidebar-content .chat {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.sidebar-content .chat-messages {
-    flex-grow: 1;
-    background: #F9FAFB;
-    margin: 5px;
-    border-radius: 18px;
-}
-
-.sidebar-content .chat-compose {
-    background: #F9FAFB;
-    border-radius: 18px;
-}
-
-.chat-compose {
-    background-color: #F9FAFB;
-    display: flex;
-    flex-direction: row;
-    margin: 5px;
-    padding: 10px 15px;
-}
-
-.chat-compose input {
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    box-sizing: border-box;
-    border-radius: 18px;
-    height: 36px;
-    font-family: "Inter";
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    align-items: center;
-    padding: 0 15px;
-    flex-grow: 1;
-    width: 160px;
-}
-
-.chat-compose .send {
-    background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%);
-    border-radius: 20px;
-    color: white;
-    height: 34px;
-    font-family: "Inter";
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 17px;
-    border: none;
-    margin-left: 10px;
-    padding: 8px 16px;
-}
-
-.chat-messages {
-    padding-top: 10px;
-}
-
-.chat-messages .message {
-    line-height: 24px;
-    margin: 6px 10px;
-    display: inline-flex;
-    padding: 8px 16px;
-    border-radius: 20px;
-}
-
-.message.foreign {
-    background-color: #F3E0CA;
-    margin-left: 25px;
-}
-
-.message.local {
-    margin-right: 25px;
 }
