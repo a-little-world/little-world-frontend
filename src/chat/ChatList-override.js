@@ -31,11 +31,6 @@ function ChatList(props) {
           onClick={(e) => onClick(x, i, e)}
           onClickMute={(e) => props.onClickMute(x, i, e)}
           onClickVideoCall={(e) => props.onClickVideoCall(x, i, e)}
-          onDragOver={props.onDragOver}
-          onDragEnter={props.onDragEnter}
-          onDrop={props.onDrop}
-          onDragLeave={props.onDragLeave}
-          onDragComponent={props.onDragComponent}
         />
       ))}
     </div>
@@ -49,11 +44,6 @@ ChatList.defaultProps = {
   mute: null,
   onClickMute: null,
   onClickVideoCall: null,
-  onDragOver: () => void 0,
-  onDrop: () => void 0,
-  onDragEnter: () => void 0,
-  onDragLeave: () => void 0,
-  onDragComponent: null,
 };
 
 export default ChatList;
