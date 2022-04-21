@@ -37,12 +37,14 @@ function Sidebar() {
      * NOTE: we did change the `crsftoken` and `sessionid`
      * so they have to be realoded accordingly, prob only relevant for `crsftoken`
      */
-    const [userLogin, userPass] = login.split(":");
-    // I stole this trick with local storage, it's not cleared on reload an can be used to set defaults
-    window.localStorage.setItem("current_login_user", userLogin);
-    window.localStorage.setItem("current_login_pass", userPass);
-    // simulator.awaitSimulatedLogin(userPass[0], userPass[1], true);
-    window.location.reload();
+    if(GLOB.DEVELOPMENT){
+      const [userLogin, userPass] = login.split(":");
+      // I stole this trick with local storage, it's not cleared on reload an can be used to set defaults
+      window.localStorage.setItem("current_login_user", userLogin);
+      window.localStorage.setItem("current_login_pass", userPass);
+      // simulator.awaitSimulatedLogin(userPass[0], userPass[1], true);
+      window.location.reload();
+    }
   };
 
   return (
@@ -56,6 +58,7 @@ function Sidebar() {
           </div>
         );
       })}
+      {GLOB.DEVELOPMENT &&
       <form onSubmit={handleSubmit}>
         <input
           type="login"
@@ -66,6 +69,7 @@ function Sidebar() {
         />
         <button type="submit">Submit</button>
       </form>
+      }
     </div>
   );
 }
@@ -119,7 +123,7 @@ function PartnerProfiles({ matchesInfo }) {
                 <img alt="chat" />
                 {t("cp_message")}
               </a>
-              <Link to="/call-setup" state={{ userPk }} className="call">
+              <Link to={`${GLOB.BACKEND_PATH}/call-setup`} state={{ userPk }} className="call">
                 <img alt="call" />
                 {t("cp_call")}
               </Link>
