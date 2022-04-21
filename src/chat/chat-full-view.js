@@ -526,7 +526,7 @@ class Chat extends Component {
               </>
             }
           />
-          <Core {...this.props} />
+          <Core t={this.props.t} userPk={userPk} state={this.state} />
         </div>
       </div>
     );
@@ -534,6 +534,12 @@ class Chat extends Component {
 }
 
 export class Core extends Chat {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.state) {
+      this.state = nextProps.state;
+    }
+  }
+
   render() {
     const { t } = this.props;
 
