@@ -7,6 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 import GLOB from "./ENVIRONMENT";
 
 if(GLOB.DEVELOPMENT){
+  // Only way I found to do a conditional import
   import("./login-simulator.js").then((simulator) => {
   /*
   * These can be changed before window.reload()
