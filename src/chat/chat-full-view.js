@@ -536,7 +536,7 @@ class Chat extends Component {
 export class Core extends Chat {
   componentWillReceiveProps(nextProps) {
     if (nextProps.state) {
-      this.state = nextProps.state;
+      this.setState({ ...nextProps.state });
     }
   }
 
