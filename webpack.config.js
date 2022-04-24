@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require('webpack');
 const BundleTracker = require('webpack-bundle-tracker');
+const CompressionPlugin = require("compression-webpack-plugin");
 /*
 * For this one we needed to uninstall react-error-overlay see: https://stackoverflow.com/questions/70368760/react-uncaught-referenceerror-process-is-not-defined
 */
@@ -33,7 +34,9 @@ var config = function(env) {
 
 
     plugins: [
+
         new BundleTracker({ filename: path.join(__dirname, './webpack-stats.json') }),
+        new CompressionPlugin(),
         new webpack.DefinePlugin({
                 "process.env": JSON.stringify({}) // Tempoary fix, not using process
             })
