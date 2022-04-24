@@ -1,5 +1,4 @@
 /* eslint-disable no-else-return */
-/* eslint-disable prettier/prettier */
 /* eslint-disable camelcase */
 /* eslint-disable import/extensions */
 import GLOB from "../ENVIRONMENT";
