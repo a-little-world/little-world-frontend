@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import React, { Component } from "react";
 import { withTranslation } from "react-i18next";
 import "react-chat-elements/dist/main.css";
@@ -392,8 +391,66 @@ class Chat extends Component {
     }
   }
 
+  Core = () => {
+    const { t } = this.props;
+
+    const handleTextUpdate = (e) => {
+      this.textInput = e.target;
+    };
+
+    return (
+      <div className="flex-container">
+        <MessageList
+          className="message-list"
+          lockable
+          onDownload={(x, i, e) => {
+            console.log("onDownload from messageList");
+            x.onDownload();
+          }}
+          downButtonBadge={
+            this.state.selectedDialog && this.state.selectedDialog.unread > 0
+              ? this.state.selectedDialog.unread
+              : ""
+          }
+          dataSource={filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}
+        />
+        <Input
+          placeholder={t("chat_input_text")}
+          defaultValue=""
+          id="textInput"
+          multiline
+          // buttonsFloat='left'
+          onKeyPress={(e) => {
+            if (e.charCode !== 13) {
+              this.isTyping();
+            }
+            if (e.shiftKey && e.charCode === 13) {
+              return true;
+            }
+            if (e.charCode === 13) {
+              if (this.state.socket.readyState === 1) {
+                e.preventDefault();
+                this.performSendingMessage();
+              }
+              return false;
+            }
+          }}
+          onChange={handleTextUpdate}
+          rightButtons={
+            <Button
+              text={t("chat_send")}
+              disabled={this.state.socket.readyState !== 1}
+              onClick={() => this.performSendingMessage()}
+            />
+          }
+        />
+      </div>
+    );
+  };
+
   render() {
     const { t } = this.props;
+    const { Core } = this;
 
     const userPk = (this.state.selectedDialog || {}).title;
 
@@ -526,78 +583,11 @@ class Chat extends Component {
               </>
             }
           />
-          <Core t={this.props.t} userPk={userPk} state={this.state} />
+          <Core />
         </div>
       </div>
     );
   }
 }
 
-export class Core extends Chat {
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.state) {
-      this.setState({ ...nextProps.state });
-    }
-  }
-
-  render() {
-    const { t } = this.props;
-
-    const handleTextUpdate = (evt) => {
-      this.textInput = evt.target;
-    };
-
-    return (
-      <div className="flex-container">
-        <MessageList
-          className="message-list"
-          lockable
-          onDownload={(x, i, e) => {
-            console.log("onDownload from messageList");
-            x.onDownload();
-          }}
-          downButtonBadge={
-            this.state.selectedDialog && this.state.selectedDialog.unread > 0
-              ? this.state.selectedDialog.unread
-              : ""
-          }
-          dataSource={filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}
-        />
-        <Input
-          placeholder={t("chat_input_text")}
-          defaultValue=""
-          id="textInput"
-          multiline
-          // buttonsFloat='left'
-          onKeyPress={(e) => {
-            if (e.charCode !== 13) {
-              this.isTyping();
-            }
-            if (e.shiftKey && e.charCode === 13) {
-              return true;
-            }
-            if (e.charCode === 13) {
-              if (this.state.socket.readyState === 1) {
-                e.preventDefault();
-                this.performSendingMessage();
-              }
-              return false;
-            }
-          }}
-          onChange={handleTextUpdate}
-          rightButtons={
-            <Button
-              text={t("chat_send")}
-              disabled={this.state.socket.readyState !== 1}
-              onClick={() => this.performSendingMessage()}
-            />
-          }
-        />
-      </div>
-    );
-  }
-}
-
-const ChatFull = withTranslation()(Chat);
-const ChatCore = withTranslation()(Core);
-export { ChatFull, ChatCore };
+export default withTranslation()(Chat);

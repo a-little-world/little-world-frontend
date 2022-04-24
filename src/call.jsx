@@ -5,7 +5,7 @@ import "./call.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { addAudioTrack, addVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
-import { ChatCore } from "./chat/chat-full-view";
+import Chat from "./chat/chat-full-view";
 
 function toggleFullscreen(t) {
   const videoContainer = document.querySelector(".foreign-video-container");
