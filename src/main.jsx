@@ -120,10 +120,10 @@ function PartnerProfiles({ matchesInfo }) {
                 <img alt="visit profile" />
                 {t("cp_profile")}
               </a>
-              <a className="chat">
+              <Link to="/chat" state={{ userPk }} className="chat">
                 <img alt="chat" />
                 {t("cp_message")}
-              </a>
+              </Link>
               <Link to="/call-setup" state={{ userPk }} className="call">
                 <img alt="call" />
                 {t("cp_call")}
@@ -193,6 +193,7 @@ function NotificationPanel({ userInfo }) {
 
 function Main() {
   const location = useLocation();
+  const { userPk } = location.state || {};
 
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
@@ -276,7 +277,7 @@ function Main() {
             </div>
           </>
         )}
-        {location.pathname === "/chat" && <Chat />}
+        {location.pathname === "/chat" && <Chat userPk={userPk} />}
       </div>
     </div>
   );

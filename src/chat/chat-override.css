@@ -238,3 +238,9 @@
 .rce-citem {
   border-radius: 18px;
 }
+
+.rce-citem.selected {
+  background-color: #F9FAFB;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  
+}

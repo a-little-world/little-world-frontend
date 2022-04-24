@@ -123,10 +123,18 @@ class Chat extends Component {
 
     fetchDialogs().then((r) => {
       if (r.tag === 0) {
-        console.log("Fetched dialogs:");
-        console.log(r.fields[0]);
-        this.setState({ dialogList: r.fields[0], filteredDialogList: r.fields[0] });
-        this.selectDialog(r.fields[0][0]);
+        const { userPk } = this.props;
+
+        const dialogList = r.fields[0];
+        this.setState({ dialogList, filteredDialogList: dialogList });
+
+        // set selected dialog to match the userPk if supplied, otherwise use first
+        if (userPk) {
+          const userDialog = dialogList.filter(({ alt }) => alt === userPk)[0];
+          this.selectDialog(userDialog);
+        } else {
+          this.selectDialog(dialogList[0]);
+        }
       } else {
         console.log("Dialogs error:");
         toast.error(r.fields[0]);
@@ -374,11 +382,10 @@ class Chat extends Component {
 
   performSendingMessage() {
     if (this.state.selectedDialog) {
-      const userPk = this.state.selectedDialog.id;
       const msgBox = sendOutgoingTextMessage(
         this.state.socket,
         this.textInput.value,
-        userPk,
+        this.state.selectedDialog.id, // id is not always userPk as it stands
         this.state.selfInfo
       );
       this.clearTextInput();
@@ -449,9 +456,8 @@ class Chat extends Component {
 
   render() {
     const { t } = this.props;
+    const userPk = (this.state.selectedDialog || {}).alt;
     const { Core } = this;
-
-    const userPk = (this.state.selectedDialog || {}).title;
 
     return (
       <div className="container">
