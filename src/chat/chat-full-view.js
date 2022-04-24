@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withTranslation } from "react-i18next";
 import "react-chat-elements/dist/main.css";
 import "react-toastify/dist/ReactToastify.css";
-import "./App.css";
 import "./chat-override.css";
 import { ToastContainer, toast } from "react-toastify";
 import { MessageList, Input, Button, Navbar, SideBar, Popup } from "react-chat-elements";
