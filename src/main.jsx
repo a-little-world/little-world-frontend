@@ -10,17 +10,17 @@ import logoWithText from "./images/logo-text.svg";
 import Chat from "./chat/chat-full-view";
 
 function Sidebar() {
+  const location = useLocation();
   const { t } = useTranslation();
-  const [selected, setSelected] = useState("start");
 
   const buttonData = [
-    { label: "start", image: "", link: "" },
-    { label: "messages", image: "", link: "" },
-    { label: "notifications", image: "", link: "" },
-    { label: "my_profile", image: "", link: "" },
-    { label: "help", image: "", link: "" },
-    { label: "settings", image: "", link: "" },
-    { label: "log_out", image: "", link: "" },
+    { label: "start", image: "", path: "/" },
+    { label: "messages", image: "", path: "/chat" },
+    { label: "notifications", image: "", path: "" },
+    { label: "my_profile", image: "", path: "" },
+    { label: "help", image: "", path: "" },
+    { label: "settings", image: "", path: "" },
+    { label: "log_out", image: "", path: "" },
   ];
 
   const initCredentials =
@@ -49,12 +49,16 @@ function Sidebar() {
   return (
     <div className="sidebar">
       <img alt="little world" src={logoWithText} className="logo" />
-      {buttonData.map(({ label, image, link }) => {
+      {buttonData.map(({ label, image, path }) => {
         return (
-          <div key={label} className={`${label} ${selected === label ? "selected" : ""}`}>
+          <Link
+            to={path}
+            key={label}
+            className={`sidebar-item ${label}${location.pathname === path ? " selected" : ""}`}
+          >
             <img alt={label} />
             {t(`nbs_${label}`)}
-          </div>
+          </Link>
         );
       })}
       <form onSubmit={handleSubmit}>
