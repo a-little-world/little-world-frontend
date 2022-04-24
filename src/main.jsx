@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./i18n";
 import "./main.css";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import $ from "jquery";
 import Cookies from "js-cookie";
 import GLOB from "./ENVIRONMENT";
 import logoWithText from "./images/logo-text.svg";
+import Chat from "./chat/chat-full-view";
 
 function Sidebar() {
   const { t } = useTranslation();
@@ -187,6 +188,8 @@ function NotificationPanel({ userInfo }) {
 }
 
 function Main() {
+  const location = useLocation();
+
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
     firstName: "",
@@ -260,11 +263,16 @@ function Main() {
     <div className="main">
       <Sidebar />
       <div className="content-area-right">
-        <NavBarTop />
-        <div className="content-area-main">
-          <PartnerProfiles matchesInfo={matchesInfo} />
-          <NotificationPanel userInfo={userInfo} />
-        </div>
+        {location.pathname === "/" && (
+          <>
+            <NavBarTop />
+            <div className="content-area-main">
+              <PartnerProfiles matchesInfo={matchesInfo} />
+              <NotificationPanel userInfo={userInfo} />
+            </div>
+          </>
+        )}
+        {location.pathname === "/chat" && <Chat />}
       </div>
     </div>
   );
