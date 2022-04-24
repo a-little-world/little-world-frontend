@@ -249,7 +249,7 @@ function Sidebar() {
 
   const { userPk } = location.state || {};
   const sidebarTopics = ["chat", "questions", "notes"];
-  const [sideSelection, setSideSelection] = useState("questions");
+  const [sideSelection, setSideSelection] = useState("chat");
   const handleChange = (e) => setSideSelection(e.target.value);
 
   return (
