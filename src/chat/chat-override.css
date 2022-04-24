@@ -220,6 +220,10 @@
   height: 100px;
 }
 
+.call-sidebar .flex-container {
+  min-height: 100px;
+}
+
 .rce-container-mlist.message-list {
   min-height: 100px;
   flex-grow: 1;

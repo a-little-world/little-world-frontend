@@ -245,6 +245,9 @@ function SidebarNotes() {
 
 function Sidebar() {
   const { t } = useTranslation();
+  const location = useLocation();
+
+  const { userPk } = location.state || {};
   const sidebarTopics = ["chat", "questions", "notes"];
   const [sideSelection, setSideSelection] = useState("questions");
   const handleChange = (e) => setSideSelection(e.target.value);
@@ -267,7 +270,7 @@ function Sidebar() {
         ))}
       </div>
       <div className="sidebar-content">
-        {sideSelection === "chat" && <ChatCore />}
+        {sideSelection === "chat" && <Chat userPk={userPk} />}
         {sideSelection === "questions" && <SidebarQuestions />}
         {sideSelection === "notes" && <SidebarNotes />}
       </div>

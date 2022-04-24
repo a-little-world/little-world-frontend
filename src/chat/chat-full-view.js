@@ -477,6 +477,14 @@ class Chat extends Component {
     const userPk = (this.state.selectedDialog || {}).alt;
     const { Core } = this;
 
+    if (this.props.userPk && !this.props.matchesInfo) {
+      /* if we send userPk as a prop but not matches info, early exit
+       * and only show the chat with specified user, without selector etc.
+       * For sidebar chat.
+       */
+      return <Core />;
+    }
+
     return (
       <div className="container">
         <div className="chat-list">
