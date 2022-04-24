@@ -39,7 +39,7 @@ function ChatItem(props) {
             "rce-citem-status-encircle": statusColorType === "encircle",
           })}
         >
-          <img className="profile-image" />
+          <img className="profile-image" alt="user" src={props.avatar} />
         </div>
         <div className="rce-citem-body">
           <div className="rce-citem-body--top">

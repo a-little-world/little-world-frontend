@@ -277,7 +277,7 @@ function Main() {
             </div>
           </>
         )}
-        {location.pathname === "/chat" && <Chat userPk={userPk} />}
+        {location.pathname === "/chat" && <Chat matchesInfo={matchesInfo} userPk={userPk} />}
       </div>
     </div>
   );

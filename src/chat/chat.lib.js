@@ -37,7 +37,7 @@ import {
 } from "./.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
 import { ofArray, singleton, empty } from "./.fable/fable-library.3.1.7/List.js";
 import { Result_Map, Result_Bind, FSharpResult$2 } from "./.fable/fable-library.3.1.7/Choice.js";
-import { generateRandomId, humanFileSize, getPhotoString } from "./Utils.fs.js";
+import { generateRandomId, humanFileSize } from "./Utils.fs.js";
 import { now, fromDate } from "./.fable/fable-library.3.1.7/DateOffset.js";
 import { Record } from "./.fable/fable-library.3.1.7/Types.js";
 import {
@@ -60,6 +60,8 @@ import { compare } from "./.fable/fable-library.3.1.7/Date.js";
 export const defaultDataStatus = new MessageBoxDataStatus(true, 0, false);
 
 import * as simulator from "../login-simulator.js";
+
+const getPhotoString = () => {}; // replace with no-op for now
 
 function tryFetch(url, options) {
   //let updated_ops = ofArray(simulator.updateOptions(options));

@@ -46,6 +46,24 @@ function getCookie() {
   return cookieValue;
 }
 
+/* add image source and user's name to dialogList, which is used by chatList/item */
+const addMatchesInfo = (dialogList, matchesInfo) => {
+  if (matchesInfo) {
+    const result = dialogList.map((dialog) => {
+      const matchInfo = matchesInfo.filter(({ userPk }) => userPk === dialog.alt)[0];
+      /* we have to modify the original dialog object and not create a new
+       * one with object speader so that the object prototype is not altered
+       */
+      return Object.assign(dialog, {
+        avatar: matchInfo.imgSrc,
+        title: `${matchInfo.firstName} ${matchInfo.lastName}`,
+      });
+    });
+    return result;
+  }
+  return dialogList;
+};
+
 class Chat extends Component {
   constructor(props) {
     super(props);
@@ -123,9 +141,9 @@ class Chat extends Component {
 
     fetchDialogs().then((r) => {
       if (r.tag === 0) {
-        const { userPk } = this.props;
+        const { userPk, matchesInfo } = this.props;
 
-        const dialogList = r.fields[0];
+        const dialogList = addMatchesInfo(r.fields[0], matchesInfo); // add name and imgSrc
         this.setState({ dialogList, filteredDialogList: dialogList });
 
         // set selected dialog to match the userPk if supplied, otherwise use first
