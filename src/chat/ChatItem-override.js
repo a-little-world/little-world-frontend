@@ -29,13 +29,17 @@ function ChatItem(props) {
       onClick={handleOnClick}
       onContextMenu={props.onContextMenu}
     >
-      <div className="rce-citem">
+      <div
+        className={classNames("rce-citem", {
+          selected: statusColorType === "encircle",
+        })}
+      >
         <div
           className={classNames("rce-citem-avatar", {
             "rce-citem-status-encircle": statusColorType === "encircle",
           })}
         >
-          <img className="profile-image" />
+          <img className="profile-image" alt="user" src={props.avatar} />
         </div>
         <div className="rce-citem-body">
           <div className="rce-citem-body--top">

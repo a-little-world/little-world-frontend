@@ -2,24 +2,25 @@ import React, { useEffect, useState } from "react";
 import "./i18n";
 import "./main.css";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import $ from "jquery";
 import Cookies from "js-cookie";
 import GLOB from "./ENVIRONMENT";
 import logoWithText from "./images/logo-text.svg";
+import Chat from "./chat/chat-full-view";
 
 function Sidebar() {
+  const location = useLocation();
   const { t } = useTranslation();
-  const [selected, setSelected] = useState("start");
 
   const buttonData = [
-    { label: "start", image: "", link: "" },
-    { label: "messages", image: "", link: "" },
-    { label: "notifications", image: "", link: "" },
-    { label: "my_profile", image: "", link: "" },
-    { label: "help", image: "", link: "" },
-    { label: "settings", image: "", link: "" },
-    { label: "log_out", image: "", link: "" },
+    { label: "start", image: "", path: "/" },
+    { label: "messages", image: "", path: "/chat" },
+    { label: "notifications", image: "", path: "" },
+    { label: "my_profile", image: "", path: "" },
+    { label: "help", image: "", path: "" },
+    { label: "settings", image: "", path: "" },
+    { label: "log_out", image: "", path: "" },
   ];
 
   const initCredentials =
@@ -50,12 +51,16 @@ function Sidebar() {
   return (
     <div className="sidebar">
       <img alt="little world" src={logoWithText} className="logo" />
-      {buttonData.map(({ label, image, link }) => {
+      {buttonData.map(({ label, image, path }) => {
         return (
-          <div key={label} className={`${label} ${selected === label ? "selected" : ""}`}>
+          <Link
+            to={path}
+            key={label}
+            className={`sidebar-item ${label}${location.pathname === path ? " selected" : ""}`}
+          >
             <img alt={label} />
             {t(`nbs_${label}`)}
-          </div>
+          </Link>
         );
       })}
       {GLOB.DEVELOPMENT &&
@@ -119,10 +124,10 @@ function PartnerProfiles({ matchesInfo }) {
                 <img alt="visit profile" />
                 {t("cp_profile")}
               </a>
-              <a className="chat">
+              <Link to="/chat" state={{ userPk }} className="chat">
                 <img alt="chat" />
                 {t("cp_message")}
-              </a>
+              </Link>
               <Link to={`${GLOB.BACKEND_PATH}/call-setup`} state={{ userPk }} className="call">
                 <img alt="call" />
                 {t("cp_call")}
@@ -191,6 +196,9 @@ function NotificationPanel({ userInfo }) {
 }
 
 function Main() {
+  const location = useLocation();
+  const { userPk } = location.state || {};
+
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
     firstName: "",
@@ -264,11 +272,16 @@ function Main() {
     <div className="main">
       <Sidebar />
       <div className="content-area-right">
-        <NavBarTop />
-        <div className="content-area-main">
-          <PartnerProfiles matchesInfo={matchesInfo} />
-          <NotificationPanel userInfo={userInfo} />
-        </div>
+        {location.pathname === "/" && (
+          <>
+            <NavBarTop />
+            <div className="content-area-main">
+              <PartnerProfiles matchesInfo={matchesInfo} />
+              <NotificationPanel userInfo={userInfo} />
+            </div>
+          </>
+        )}
+        {location.pathname === "/chat" && <Chat matchesInfo={matchesInfo} userPk={userPk} />}
       </div>
     </div>
   );

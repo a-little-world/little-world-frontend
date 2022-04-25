@@ -22,7 +22,7 @@
   margin: 16px;
 }
 
-.sidebar > div {
+.sidebar-item {
   width: 127px;
   display: flex;
   flex-direction: column;
@@ -34,18 +34,18 @@
   font-size: 14px;
   line-height: 17.25px;
   padding: 10px 0;
-  cursor: pointer;
+}
+
+.sidebar a {
+  text-decoration: inherit;
+  color: inherit;
 }
 
 .sidebar .help {
   margin-top: auto;
 }
 
-.sidebar > div > img {
-  height: 30px;
-}
-
-.sidebar > div.selected {
+.sidebar-item.selected {
   background: linear-gradient(50.19deg, #36A9E0 2.84%, #0367B2 106.82%);
   color: white;
 }

@@ -5,8 +5,8 @@ import "./call.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { addAudioTrack, addVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
-import { ChatCore } from "./chat/chat-full-view";
 import GLOB from "./ENVIRONMENT";
+import Chat from "./chat/chat-full-view";
 
 function toggleFullscreen(t) {
   const videoContainer = document.querySelector(".foreign-video-container");
@@ -246,8 +246,11 @@ function SidebarNotes() {
 
 function Sidebar() {
   const { t } = useTranslation();
+  const location = useLocation();
+
+  const { userPk } = location.state || {};
   const sidebarTopics = ["chat", "questions", "notes"];
-  const [sideSelection, setSideSelection] = useState("questions");
+  const [sideSelection, setSideSelection] = useState("chat");
   const handleChange = (e) => setSideSelection(e.target.value);
 
   return (
@@ -268,7 +271,7 @@ function Sidebar() {
         ))}
       </div>
       <div className="sidebar-content">
-        {sideSelection === "chat" && <ChatCore />}
+        {sideSelection === "chat" && <Chat userPk={userPk} />}
         {sideSelection === "questions" && <SidebarQuestions />}
         {sideSelection === "notes" && <SidebarNotes />}
       </div>

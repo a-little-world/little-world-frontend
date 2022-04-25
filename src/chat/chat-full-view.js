@@ -1,9 +1,7 @@
-/* eslint-disable max-classes-per-file */
 import React, { Component } from "react";
 import { withTranslation } from "react-i18next";
 import "react-chat-elements/dist/main.css";
 import "react-toastify/dist/ReactToastify.css";
-import "./App.css";
 import "./chat-override.css";
 import { ToastContainer, toast } from "react-toastify";
 import { MessageList, Input, Button, Navbar, SideBar, Popup } from "react-chat-elements";
@@ -47,6 +45,24 @@ function getCookie() {
   }
   return cookieValue;
 }
+
+/* add image source and user's name to dialogList, which is used by chatList/item */
+const addMatchesInfo = (dialogList, matchesInfo) => {
+  if (matchesInfo) {
+    const result = dialogList.map((dialog) => {
+      const matchInfo = matchesInfo.filter(({ userPk }) => userPk === dialog.alt)[0];
+      /* we have to modify the original dialog object and not create a new
+       * one with object speader so that the object prototype is not altered
+       */
+      return Object.assign(dialog, {
+        avatar: matchInfo.imgSrc,
+        title: `${matchInfo.firstName} ${matchInfo.lastName}`,
+      });
+    });
+    return result;
+  }
+  return dialogList;
+};
 
 class Chat extends Component {
   constructor(props) {
@@ -125,10 +141,18 @@ class Chat extends Component {
 
     fetchDialogs().then((r) => {
       if (r.tag === 0) {
-        console.log("Fetched dialogs:");
-        console.log(r.fields[0]);
-        this.setState({ dialogList: r.fields[0], filteredDialogList: r.fields[0] });
-        this.selectDialog(r.fields[0][0]);
+        const { userPk, matchesInfo } = this.props;
+
+        const dialogList = addMatchesInfo(r.fields[0], matchesInfo); // add name and imgSrc
+        this.setState({ dialogList, filteredDialogList: dialogList });
+
+        // set selected dialog to match the userPk if supplied, otherwise use first
+        if (userPk) {
+          const userDialog = dialogList.filter(({ alt }) => alt === userPk)[0];
+          this.selectDialog(userDialog);
+        } else {
+          this.selectDialog(dialogList[0]);
+        }
       } else {
         console.log("Dialogs error:");
         toast.error(r.fields[0]);
@@ -376,11 +400,10 @@ class Chat extends Component {
 
   performSendingMessage() {
     if (this.state.selectedDialog) {
-      const userPk = this.state.selectedDialog.id;
       const msgBox = sendOutgoingTextMessage(
         this.state.socket,
         this.textInput.value,
-        userPk,
+        this.state.selectedDialog.id, // id is not always userPk as it stands
         this.state.selfInfo
       );
       this.clearTextInput();
@@ -392,10 +415,75 @@ class Chat extends Component {
     }
   }
 
-  render() {
+  Core = () => {
     const { t } = this.props;
 
-    const userPk = (this.state.selectedDialog || {}).title;
+    const handleTextUpdate = (e) => {
+      this.textInput = e.target;
+    };
+
+    return (
+      <div className="flex-container">
+        <MessageList
+          className="message-list"
+          lockable
+          onDownload={(x, i, e) => {
+            console.log("onDownload from messageList");
+            x.onDownload();
+          }}
+          downButtonBadge={
+            this.state.selectedDialog && this.state.selectedDialog.unread > 0
+              ? this.state.selectedDialog.unread
+              : ""
+          }
+          dataSource={filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}
+        />
+        <Input
+          placeholder={t("chat_input_text")}
+          defaultValue=""
+          id="textInput"
+          multiline
+          // buttonsFloat='left'
+          onKeyPress={(e) => {
+            if (e.charCode !== 13) {
+              this.isTyping();
+            }
+            if (e.shiftKey && e.charCode === 13) {
+              return true;
+            }
+            if (e.charCode === 13) {
+              if (this.state.socket.readyState === 1) {
+                e.preventDefault();
+                this.performSendingMessage();
+              }
+              return false;
+            }
+          }}
+          onChange={handleTextUpdate}
+          rightButtons={
+            <Button
+              text={t("chat_send")}
+              disabled={this.state.socket.readyState !== 1}
+              onClick={() => this.performSendingMessage()}
+            />
+          }
+        />
+      </div>
+    );
+  };
+
+  render() {
+    const { t } = this.props;
+    const userPk = (this.state.selectedDialog || {}).alt;
+    const { Core } = this;
+
+    if (this.props.userPk && !this.props.matchesInfo) {
+      /* if we send userPk as a prop but not matches info, early exit
+       * and only show the chat with specified user, without selector etc.
+       * For sidebar chat.
+       */
+      return <Core />;
+    }
 
     return (
       <div className="container">
@@ -526,78 +614,11 @@ class Chat extends Component {
               </>
             }
           />
-          <Core t={this.props.t} userPk={userPk} state={this.state} />
+          <Core />
         </div>
       </div>
     );
   }
 }
 
-export class Core extends Chat {
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.state) {
-      this.state = nextProps.state;
-    }
-  }
-
-  render() {
-    const { t } = this.props;
-
-    const handleTextUpdate = (evt) => {
-      this.textInput = evt.target;
-    };
-
-    return (
-      <div className="flex-container">
-        <MessageList
-          className="message-list"
-          lockable
-          onDownload={(x, i, e) => {
-            console.log("onDownload from messageList");
-            x.onDownload();
-          }}
-          downButtonBadge={
-            this.state.selectedDialog && this.state.selectedDialog.unread > 0
-              ? this.state.selectedDialog.unread
-              : ""
-          }
-          dataSource={filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}
-        />
-        <Input
-          placeholder={t("chat_input_text")}
-          defaultValue=""
-          id="textInput"
-          multiline
-          // buttonsFloat='left'
-          onKeyPress={(e) => {
-            if (e.charCode !== 13) {
-              this.isTyping();
-            }
-            if (e.shiftKey && e.charCode === 13) {
-              return true;
-            }
-            if (e.charCode === 13) {
-              if (this.state.socket.readyState === 1) {
-                e.preventDefault();
-                this.performSendingMessage();
-              }
-              return false;
-            }
-          }}
-          onChange={handleTextUpdate}
-          rightButtons={
-            <Button
-              text={t("chat_send")}
-              disabled={this.state.socket.readyState !== 1}
-              onClick={() => this.performSendingMessage()}
-            />
-          }
-        />
-      </div>
-    );
-  }
-}
-
-const ChatFull = withTranslation()(Chat);
-const ChatCore = withTranslation()(Core);
-export { ChatFull, ChatCore };
+export default withTranslation()(Chat);
