@@ -26,6 +26,7 @@ import {
 import ChatItem from "./ChatItem-override";
 import ChatList from "./ChatList-override";
 import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
+import GLOB from "../ENVIRONMENT";
 
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
