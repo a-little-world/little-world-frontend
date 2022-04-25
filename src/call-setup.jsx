@@ -246,7 +246,7 @@ function CallSetup() {
             <h3 className="title">{t("pcs_main_heading")}</h3>
             <span className="subtitle">{t("pcs_sub_heading")}</span>
           </div>
-          <Link to="/">
+          <Link to={`${GLOB.BACKEND_PATH}/`}>
             <button type="button" className="modal-close">
               &nbsp;
             </button>

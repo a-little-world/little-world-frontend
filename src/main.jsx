@@ -14,8 +14,8 @@ function Sidebar() {
   const { t } = useTranslation();
 
   const buttonData = [
-    { label: "start", image: "", path: "/" },
-    { label: "messages", image: "", path: "/chat" },
+    { label: "start", image: "", path: `${GLOB.BACKEND_PATH}/` },
+    { label: "messages", image: "", path: `${GLOB.BACKEND_PATH}/chat` },
     { label: "notifications", image: "", path: "" },
     { label: "my_profile", image: "", path: "" },
     { label: "help", image: "", path: "" },
@@ -124,7 +124,7 @@ function PartnerProfiles({ matchesInfo }) {
                 <img alt="visit profile" />
                 {t("cp_profile")}
               </a>
-              <Link to="/chat" state={{ userPk }} className="chat">
+              <Link to={`${GLOB.BACKEND_PATH}/chat`} state={{ userPk }} className="chat">
                 <img alt="chat" />
                 {t("cp_message")}
               </Link>
