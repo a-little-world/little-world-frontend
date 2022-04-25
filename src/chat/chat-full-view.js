@@ -25,7 +25,7 @@ import {
 } from "./chat.lib";
 import ChatItem from "./ChatItem-override";
 import ChatList from "./ChatList-override";
-import { BACKEND_URL } from "../ENVIRONMENT";
+import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
 
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
@@ -95,7 +95,7 @@ class Chat extends Component {
       selfInfo: null,
       selectedDialog: null,
       socket: new ReconnectingWebSocket(
-        `ws://${BACKEND_URL.substring(7)}/chat_ws`
+        `${PRODUCTION ? "wss" : "ws"}://${DEVELOPMENT ? BACKEND_URL.substring(7) : window.origin.split("//").pop() }/chat_ws`
       ) /* without the 'https://' */,
     };
     // some js magic
