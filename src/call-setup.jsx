@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setVideo, setAudio } from "./features/tracks";
 import { addAudioTrack, addVideoTrack, toggleLocalTracks } from "./twilio-helper";
 import signalWifi from "./images/signal-wifi.svg";
+import GLOB from "./ENVIRONMENT";
 
 function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText }) {
   const signalQualityImage = {
@@ -207,7 +208,7 @@ function CallSetup() {
   const { userPk } = location.state || {};
   useEffect(() => {
     if (!userPk) {
-      navigate("/");
+      navigate(`${GLOB.BACKEND_PATH}/`);
     }
   }, [userPk]);
 
@@ -217,7 +218,9 @@ function CallSetup() {
 
   navigator.permissions.query({ name: "microphone" }).then((audioResult) => {
     navigator.permissions.query({ name: "camera" }).then((videoResult) => {
-      if ([audioResult.state, videoResult.state].includes("denied")) {
+      if ([audioResult.state /* , videoResult.state */].includes("denied")) {
+        // disable checking for webcam temporarily as chromeOS passthrough doesn't work
+
         // if either have been denied, we need to tell the user to fix their browser settings
         setMediaPermission(false);
       } else if ([audioResult.state, videoResult.state].includes("prompt")) {
@@ -239,16 +242,17 @@ function CallSetup() {
       <div className="call-setup-modal">
         <div className="modal-top">
           <div className="modal-header">
+            {`${mediaPermission}`}
             <h3 className="title">{t("pcs_main_heading")}</h3>
             <span className="subtitle">{t("pcs_sub_heading")}</span>
           </div>
-          <Link to="/">
+          <Link to={`${GLOB.BACKEND_PATH}/`}>
             <button type="button" className="modal-close">
               &nbsp;
             </button>
           </Link>
         </div>
-        {mediaPermission && (
+        {mediaPermission !== false && (
           <>
             <VideoFrame />
             <div className="av-setup-dropdowns">
@@ -256,7 +260,7 @@ function CallSetup() {
               <AudioInputSelect />
               <AudioOutputSelect />
             </div>
-            <Link to="/call" state={{ userPk, tracks }}>
+            <Link to={`${GLOB.BACKEND_PATH}/call`} state={{ userPk, tracks }}>
               <button type="submit" className="av-setup-confirm">
                 {t("pcs_btn_join_call")}
               </button>

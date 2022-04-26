@@ -5,6 +5,8 @@ import "./call.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { addAudioTrack, addVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
+import GLOB from "./ENVIRONMENT";
+import Chat from "./chat/chat-full-view";
 
 function toggleFullscreen(t) {
   const videoContainer = document.querySelector(".foreign-video-container");
@@ -110,59 +112,18 @@ function ActiveCall() {
 
   useEffect(() => {
     if (!userPk) {
-      navigate("/");
+      navigate(`${GLOB.BACKEND_PATH}/`);
     }
     const { videoId, audioId } = tracks || {};
-    if (!(videoId && audioId)) {
-      navigate("/call-setup", { state: { userPk } });
-    }
+    // if (!(videoId && audioId)) {
+    //   navigate("/call-setup", { state: { userPk } });
+    // }
     addVideoTrack(videoId);
     addAudioTrack(audioId);
     joinRoom(userPk);
   }, [userPk, tracks]);
 
   return <VideoFrame />;
-}
-
-function SidebarChat() {
-  const { t } = useTranslation();
-  const dummyData = [
-    {
-      id: 213,
-      sender: "foreign",
-      text: "Hello Richard how are you doing?",
-    },
-    {
-      id: 217,
-      sender: "local",
-      text: "Let's talk about a new topic. How about...",
-    },
-    {
-      id: 218,
-      sender: "local",
-      text: "We discussed",
-    },
-  ];
-
-  return (
-    <div className="chat">
-      <div className="chat-messages">
-        {dummyData.map(({ id, sender, text }) => {
-          return (
-            <div key={id} className={`message ${sender}`}>
-              {text}
-            </div>
-          );
-        })}
-      </div>
-      <div className="chat-compose">
-        <input type="text" />
-        <button className="send" type="submit">
-          Send
-        </button>
-      </div>
-    </div>
-  );
 }
 
 function SidebarQuestions() {
@@ -285,8 +246,11 @@ function SidebarNotes() {
 
 function Sidebar() {
   const { t } = useTranslation();
+  const location = useLocation();
+
+  const { userPk } = location.state || {};
   const sidebarTopics = ["chat", "questions", "notes"];
-  const [sideSelection, setSideSelection] = useState("questions");
+  const [sideSelection, setSideSelection] = useState("chat");
   const handleChange = (e) => setSideSelection(e.target.value);
 
   return (
@@ -307,7 +271,7 @@ function Sidebar() {
         ))}
       </div>
       <div className="sidebar-content">
-        {sideSelection === "chat" && <SidebarChat />}
+        {sideSelection === "chat" && <Chat userPk={userPk} />}
         {sideSelection === "questions" && <SidebarQuestions />}
         {sideSelection === "notes" && <SidebarNotes />}
       </div>
