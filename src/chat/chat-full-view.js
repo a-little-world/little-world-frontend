@@ -96,7 +96,9 @@ class Chat extends Component {
       selfInfo: null,
       selectedDialog: null,
       socket: new ReconnectingWebSocket(
-        `${PRODUCTION ? "wss" : "ws"}://${DEVELOPMENT ? BACKEND_URL.substring(7) : window.origin.split("//").pop() }/chat_ws`
+        `${PRODUCTION ? "wss" : "ws"}://${
+          DEVELOPMENT ? BACKEND_URL.substring(7) : window.origin.split("//").pop()
+        }/chat_ws`
       ) /* without the 'https://' */,
     };
     // some js magic

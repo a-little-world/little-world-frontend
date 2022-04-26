@@ -39,7 +39,7 @@ function Sidebar() {
      * NOTE: we did change the `crsftoken` and `sessionid`
      * so they have to be realoded accordingly, prob only relevant for `crsftoken`
      */
-    if(GLOB.DEVELOPMENT){
+    if (GLOB.DEVELOPMENT) {
       const [userLogin, userPass] = login.split(":");
       // I stole this trick with local storage, it's not cleared on reload an can be used to set defaults
       window.localStorage.setItem("current_login_user", userLogin);
@@ -64,18 +64,18 @@ function Sidebar() {
           </Link>
         );
       })}
-      {GLOB.DEVELOPMENT &&
-      <form onSubmit={handleSubmit}>
-        <input
-          type="login"
-          name="login"
-          placeholder="Enter username:password"
-          onChange={handleChange}
-          value={login}
-        />
-        <button type="submit">Submit</button>
-      </form>
-      }
+      {DEVELOPMENT && (
+        <form onSubmit={handleSubmit}>
+          <input
+            type="login"
+            name="login"
+            placeholder="Enter username:password"
+            onChange={handleChange}
+            value={login}
+          />
+          <button type="submit">Submit</button>
+        </form>
+      )}
     </div>
   );
 }
@@ -273,7 +273,8 @@ function Main() {
     <div className="main">
       <Sidebar />
       <div className="content-area-right">
-        {location.pathname === `${GLOB.BACKEND_PATH}/` && ( /* Maybe check for something else than path? */
+        {location.pathname ===
+          `${GLOB.BACKEND_PATH}/` /* Maybe check for something else than path? */ && (
           <>
             <NavBarTop />
             <div className="content-area-main">
@@ -282,7 +283,9 @@ function Main() {
             </div>
           </>
         )}
-        {location.pathname === `${GLOB.BACKEND_PATH}/chat` && <Chat matchesInfo={matchesInfo} userPk={userPk} />}
+        {location.pathname === `${GLOB.BACKEND_PATH}/chat` && (
+          <Chat matchesInfo={matchesInfo} userPk={userPk} />
+        )}
       </div>
     </div>
   );
