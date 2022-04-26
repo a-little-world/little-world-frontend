@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./i18n";
 import "./main.css";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import $ from "jquery";
 import Cookies from "js-cookie";
 import GLOB, { DEVELOPMENT } from "./ENVIRONMENT";
+import Link from "./path-prepend";
 import logoWithText from "./images/logo-text.svg";
 import Chat from "./chat/chat-full-view";
 
@@ -14,8 +15,8 @@ function Sidebar() {
   const { t } = useTranslation();
 
   const buttonData = [
-    { label: "start", image: "", path: `${GLOB.BACKEND_PATH}/` },
-    { label: "messages", image: "", path: `${GLOB.BACKEND_PATH}/chat` },
+    { label: "start", image: "", path: "/" },
+    { label: "messages", image: "", path: "/chat" },
     { label: "notifications", image: "", path: "" },
     { label: "my_profile", image: "", path: "" },
     { label: "help", image: "", path: "" },
@@ -124,11 +125,11 @@ function PartnerProfiles({ matchesInfo }) {
                 <img alt="visit profile" />
                 {t("cp_profile")}
               </a>
-              <Link to={`${GLOB.BACKEND_PATH}/chat`} state={{ userPk }} className="chat">
+              <Link to="/chat" state={{ userPk }} className="chat">
                 <img alt="chat" />
                 {t("cp_message")}
               </Link>
-              <Link to={`${GLOB.BACKEND_PATH}/call-setup`} state={{ userPk }} className="call">
+              <Link to="/call-setup" state={{ userPk }} className="call">
                 <img alt="call" />
                 {t("cp_call")}
               </Link>

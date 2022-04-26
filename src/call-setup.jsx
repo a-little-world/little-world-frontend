@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import Link from "./path-prepend";
 import { setVideo, setAudio } from "./features/tracks";
 import { addAudioTrack, addVideoTrack, toggleLocalTracks } from "./twilio-helper";
 import signalWifi from "./images/signal-wifi.svg";
@@ -246,7 +247,7 @@ function CallSetup() {
             <h3 className="title">{t("pcs_main_heading")}</h3>
             <span className="subtitle">{t("pcs_sub_heading")}</span>
           </div>
-          <Link to={`${GLOB.BACKEND_PATH}/`}>
+          <Link to="/">
             <button type="button" className="modal-close">
               &nbsp;
             </button>
@@ -260,7 +261,7 @@ function CallSetup() {
               <AudioInputSelect />
               <AudioOutputSelect />
             </div>
-            <Link to={`${GLOB.BACKEND_PATH}/call`} state={{ userPk, tracks }}>
+            <Link to="/call" state={{ userPk, tracks }}>
               <button type="submit" className="av-setup-confirm">
                 {t("pcs_btn_join_call")}
               </button>

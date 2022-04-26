@@ -590,7 +590,7 @@ class Chat extends Component {
                 <button type="button" className="suggest-appointment">
                   {t("chat_suggest_appointment")}
                 </button>
-                <Link to={`${GLOB.BACKEND_PATH}/call-setup`} state={{ userPk }}>
+                <Link to="/call-setup" state={{ userPk }}>
                   <img className="call-start" alt="start call" />
                 </Link>
                 <Button
