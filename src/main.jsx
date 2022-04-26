@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import $ from "jquery";
 import Cookies from "js-cookie";
-import GLOB from "./ENVIRONMENT";
+import GLOB, { DEVELOPMENT } from "./ENVIRONMENT";
 import logoWithText from "./images/logo-text.svg";
 import Chat from "./chat/chat-full-view";
 
@@ -272,7 +272,7 @@ function Main() {
     <div className="main">
       <Sidebar />
       <div className="content-area-right">
-        {location.pathname === "/" && (
+        {location.pathname === `${GLOB.BACKEND_PATH}/` && ( /* Maybe check for something else than path? */
           <>
             <NavBarTop />
             <div className="content-area-main">
@@ -281,7 +281,7 @@ function Main() {
             </div>
           </>
         )}
-        {location.pathname === "/chat" && <Chat matchesInfo={matchesInfo} userPk={userPk} />}
+        {location.pathname === `${GLOB.BACKEND_PATH}/chat` && <Chat matchesInfo={matchesInfo} userPk={userPk} />}
       </div>
     </div>
   );
