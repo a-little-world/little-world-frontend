@@ -6,14 +6,14 @@ import CallSetup from "./call-setup";
 import ActiveCall from "./call";
 import Main from "./main";
 import { ChatFull } from "./chat/chat-full-view";
-import GLOB from "./ENVIRONMENT";
+import { BACKEND_PATH } from "./ENVIRONMENT";
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
         <Routes>
-          <Route path={`${GLOB.BACKEND_PATH}/`}>
+          <Route path={`${BACKEND_PATH}/`}>
             <Route index element={<Main />} />
             {/* placeholder while we have no main page */}
             <Route path="call-setup" element={<CallSetup />} />

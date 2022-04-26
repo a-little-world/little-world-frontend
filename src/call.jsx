@@ -5,7 +5,7 @@ import "./call.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { addAudioTrack, addVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
-import GLOB from "./ENVIRONMENT";
+import { BACKEND_PATH } from "./ENVIRONMENT";
 import Chat from "./chat/chat-full-view";
 
 function toggleFullscreen(t) {
@@ -112,7 +112,7 @@ function ActiveCall() {
 
   useEffect(() => {
     if (!userPk) {
-      navigate(`${GLOB.BACKEND_PATH}/`);
+      navigate(`${BACKEND_PATH}/`);
     }
     const { videoId, audioId } = tracks || {};
     // if (!(videoId && audioId)) {

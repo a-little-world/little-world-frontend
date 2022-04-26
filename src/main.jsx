@@ -5,8 +5,8 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import $ from "jquery";
 import Cookies from "js-cookie";
-import GLOB, { DEVELOPMENT } from "./ENVIRONMENT";
 import Link from "./path-prepend";
+import { BACKEND_PATH, DEVELOPMENT, BACKEND_URL } from "./ENVIRONMENT";
 import logoWithText from "./images/logo-text.svg";
 import Chat from "./chat/chat-full-view";
 
@@ -39,7 +39,7 @@ function Sidebar() {
      * NOTE: we did change the `crsftoken` and `sessionid`
      * so they have to be realoded accordingly, prob only relevant for `crsftoken`
      */
-    if (GLOB.DEVELOPMENT) {
+    if (DEVELOPMENT) {
       const [userLogin, userPass] = login.split(":");
       // I stole this trick with local storage, it's not cleared on reload an can be used to set defaults
       window.localStorage.setItem("current_login_user", userLogin);
@@ -211,7 +211,7 @@ function Main() {
   useEffect(() => {
     $.ajax({
       type: "POST",
-      url: `${GLOB.BACKEND_URL}/api2/composite/`,
+      url: `${BACKEND_URL}/api2/composite/`,
       headers: {
         // The cookies is optained when authenticating via `api2/login/`
         "X-CSRFToken": Cookies.get("csrftoken"), // the login_had sets this, see 'login-simulator.js'
@@ -274,7 +274,7 @@ function Main() {
       <Sidebar />
       <div className="content-area-right">
         {location.pathname ===
-          `${GLOB.BACKEND_PATH}/` /* Maybe check for something else than path? */ && (
+          `${BACKEND_PATH}/` /* Maybe check for something else than path? */ && (
           <>
             <NavBarTop />
             <div className="content-area-main">
@@ -283,7 +283,7 @@ function Main() {
             </div>
           </>
         )}
-        {location.pathname === `${GLOB.BACKEND_PATH}/chat` && (
+        {location.pathname === `${BACKEND_PATH}/chat` && (
           <Chat matchesInfo={matchesInfo} userPk={userPk} />
         )}
       </div>

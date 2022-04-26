@@ -8,7 +8,7 @@ import Link from "./path-prepend";
 import { setVideo, setAudio } from "./features/tracks";
 import { addAudioTrack, addVideoTrack, toggleLocalTracks } from "./twilio-helper";
 import signalWifi from "./images/signal-wifi.svg";
-import GLOB from "./ENVIRONMENT";
+import { BACKEND_PATH } from "./ENVIRONMENT";
 
 function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText }) {
   const signalQualityImage = {
@@ -209,7 +209,7 @@ function CallSetup() {
   const { userPk } = location.state || {};
   useEffect(() => {
     if (!userPk) {
-      navigate(`${GLOB.BACKEND_PATH}/`);
+      navigate(`${BACKEND_PATH}/`);
     }
   }, [userPk]);
 
