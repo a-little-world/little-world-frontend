@@ -5,7 +5,6 @@ import store from "./app/store";
 import CallSetup from "./call-setup";
 import ActiveCall from "./call";
 import Main from "./main";
-import { ChatFull } from "./chat/chat-full-view";
 import { BACKEND_PATH } from "./ENVIRONMENT";
 
 function App() {
