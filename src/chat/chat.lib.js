@@ -61,7 +61,7 @@ export const defaultDataStatus = new MessageBoxDataStatus(true, 0, false);
 const getPhotoString = () => {}; // replace with no-op for now
 
 function tryFetch(url, options) {
-  //let updated_ops = ofArray(simulator.updateOptions(options));
+  // let updated_ops = ofArray(simulator.updateOptions(options));
 
   const login_user =
     window.localStorage.getItem("current_login_user") || GLOB.DEFAULT_LOGIN_USERNAME;
@@ -69,14 +69,14 @@ function tryFetch(url, options) {
     window.localStorage.getItem("current_login_pass") || GLOB.DEFAULT_LOGIN_PASSWORD;
 
   const headers_1 = new Types_RequestProperties(1, {
-    ["Authorization"]: `Basic ${btoa(login_user + ":" + login_pass)}`,
+    Authorization: `Basic ${btoa(`${login_user}:${login_pass}`)}`,
   });
 
   const headers_2 = new Types_RequestProperties(1, {
-    ["credentials"]: "include",
+    credentials: "include",
   });
 
-  let updated_ops = ofArray([headers_1, headers_2]);
+  const updated_ops = ofArray([headers_1, headers_2]);
   console.log(updated_ops.toString());
   return tryFetchSimple(url, options);
 }
@@ -96,7 +96,7 @@ export function createOnDownload(uri, filename, e) {
     PromiseBuilder__Run_212F1D4B(
       promise,
       PromiseBuilder__Delay_62FBFDE1(promise, () => {
-        console.log(some("running onDownload for " + uri));
+        console.log(some(`running onDownload for ${uri}`));
         console.log(some(e));
         return tryFetch(uri, empty()).then((_arg1) => {
           const resp = _arg1;
@@ -121,7 +121,7 @@ export function getSubtitleTextFromMessageModel(msg) {
   return defaultArg(
     map((x) => {
       if (x.out) {
-        return "You: " + x.text;
+        return `You: ${x.text}`;
       } else {
         return x.text;
       }
@@ -134,7 +134,7 @@ export function getSubtitleTextFromMessageBox(msg) {
   return defaultArg(
     map((x) => {
       if (x.data.out) {
-        return "You: " + x.text;
+        return `You: ${x.text}`;
       } else {
         return x.text;
       }
@@ -433,7 +433,7 @@ export function uploadFile(f, csrfToken) {
       const data = new FormData();
       data.append("file", f[0]);
       const headers_2 = new Types_RequestProperties(1, {
-        ["X-CSRFToken"]: csrfToken,
+        "X-CSRFToken": csrfToken,
       });
       const props = ofArray([
         new Types_RequestProperties(0, "POST"),
