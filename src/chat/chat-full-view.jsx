@@ -30,22 +30,6 @@ import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
 
-function getCookie() {
-  const name = "csrftoken";
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === `${name}=`) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
-
 /* add image source and user's name to dialogList, which is used by chatList/item */
 const addMatchesInfo = (dialogList, matchesInfo) => {
   if (matchesInfo) {
