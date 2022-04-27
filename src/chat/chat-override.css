@@ -16,12 +16,12 @@
 }
 
 .flex-container .rce-container-input, .rce-container-mlist, .rce-navbar.light, .rce-mlist {
-  background-color: #F9FAFB;
+  background-color: white;
   border-radius: 18px;
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.rce-citem {
+.rce-citem, .rce-navbar .rce-citem:hover {
   background: unset;
 }
 
@@ -72,20 +72,33 @@
 
 .free-appointments, .suggest-appointment {
   border-radius: 100px;
-  background: #F39325;
-  color: white;
-  border: none;
-  padding: 10px 20px;
+  display: inline;
+  padding: 0 20px;
+  height: 36px;
   font-family: "Signika Negative";
   font-size: 15px;
   font-weight: 500;
-  line-height: 24px;
   margin-right: 10px;
+  white-space: nowrap;
+}
+
+.free-appointments {
+  border: 2px solid #F9BA6E;
+  color: #F39325;
+  background: white;
+  margin-right: 10px;
+  /* padding: 8px 18px; reduce padding by border size */
+}
+
+.suggest-appointment {
+  border: none;
+  color: white;
+  background: linear-gradient(90deg, #F28D00 0%, #F9BA6E 100%);
 }
 
 .call-start {
   content: url("../images/camera-on.svg");
-  background: linear-gradient(50.19deg, #36A9E0 2.84%, #0367B2 106.82%);
+  background: linear-gradient(90deg, #F28D00 0%, #F9BA6E 100%);
   height: 30px;
   padding: 5px;
   border-radius: 100px;
@@ -103,11 +116,6 @@
 
 .rce-mbox-title {
   display: none;
-}
-
-/* set background colour */
-.rce-mlist {
-  background-color: #F9FAFB;
 }
 
 /* format message box */
@@ -132,7 +140,8 @@
 
 .rce-mbox-text {
   border-radius: 100px;
-  padding: 16px 24px;
+  padding: 6px 20px;
+  font-weight: 300;
 }
 
 .rce-mbox-text.left {
@@ -143,8 +152,8 @@
 
 .rce-mbox-text.right {
   float: right;
-  background-color: #F39325;
-  color: white;
+  background-color: rgba(243, 147, 37, 0.27);
+  margin-right: 6px;
 }
 
 .rce-mbox.rce-mbox-right {
@@ -156,8 +165,8 @@
   clear: both;
   bottom: inherit;
   font-family: "Signika Negative";
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 400;
+  font-size: 12px;
   line-height: 20px;
   padding-right: 16px;
   text-align: unset; /* need to unset here as there is no left class */
@@ -186,7 +195,7 @@
 
 /* send button */
 .rce-input-buttons .rce-button {
-  background: #F39325 !important;
+  background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%) !important;
   border-radius: 100px;
   padding: 8px 6px;
   font-size: 14px;
