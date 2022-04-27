@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Signika+Negative:regular,bold,italic&subset=latin,latin-ext');
+@import url("https://fonts.googleapis.com/css?family=Signika+Negative:300,400,500,600&subset=latin,latin-ext");
 
 /* hide ES-lint complaining on page load */
 #webpack-dev-server-client-overlay {
