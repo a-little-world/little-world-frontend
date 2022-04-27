@@ -58,8 +58,6 @@ import { compare } from "./.fable/fable-library.3.1.7/Date.js";
 
 export const defaultDataStatus = new MessageBoxDataStatus(true, 0, false);
 
-import * as simulator from "../login-simulator.js";
-
 const getPhotoString = () => {}; // replace with no-op for now
 
 function tryFetch(url, options) {
