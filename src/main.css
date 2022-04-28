@@ -30,7 +30,6 @@
   border-radius: 15px;
   margin: 5px;
   align-items: center;
-  font-family: "Signika Negative";
   font-size: 14px;
   line-height: 17.25px;
   padding: 10px 0;
@@ -183,14 +182,12 @@
 
 .profile-info .name {
   font-size: 24px;
-  font-family: "Signika Negative";
   font-weight: 600;
   margin-left: 6px;
 }
 
 .profile-info .text {
   font-size: 16px;
-  font-family: "Signika Negative";
   font-weight: 300;
   color: #777E90;
   margin-left: 6px;
@@ -229,7 +226,6 @@ a.call img {
 }
 
 .find-new {
-  font-family: "Signika Negative";
   font-style: normal;
   font-weight: 600;
   font-size: 24px;
@@ -260,7 +256,6 @@ a.call img {
 }
 
 .active-user {
-  font-family: "Signika Negative";
   font-style: normal;
   font-weight: 600;
   font-size: 26px;

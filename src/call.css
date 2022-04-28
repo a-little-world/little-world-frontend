@@ -49,7 +49,6 @@ video {
     position: relative; /* makes positioning of inset video in reference to this element */
     display: flex;
     flex-direction: column;
-
     background: white;
     border-radius: 35px;
     padding: 10px;
@@ -79,7 +78,6 @@ video {
     height: 42px;
     width: 100%;
     font-weight: 600;
-    font-family: "Signika Negative";
     font-size: 18px;
     line-height: 22px;
     color: #363535;
@@ -102,7 +100,6 @@ img.swap-languages {
     background: #F9F9F9;
     border-radius: 25px;
     margin-top: 10px;
-    font-family: "Signika Negative";
     font-weight: 300;
     font-size: 20px;
     line-height: 25px;
@@ -134,7 +131,6 @@ img.swap-languages {
 .sidebar-selector input + label {
     padding: 15px 10px;
     border-radius: 23px;
-    font-family: "Signika Negative";
     font-style: normal;
     font-weight: 600;
     font-size: 21px;
@@ -190,7 +186,6 @@ img.swap-languages {
 .questions-categories .categories input + label {
     padding: 10px;
     border-radius: 23px;
-    font-family: "Signika Negative";
     font-style: normal;
     font-weight: 500;
     font-size: 18px;

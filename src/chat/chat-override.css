@@ -32,7 +32,6 @@
 
 /** left panel **/
 .chat-header {
-  font-family: "Signika Negative";
   font-size: 24px;
   font-weight: 600;
   line-height: 20px;
@@ -49,7 +48,6 @@
   margin: 25px;
   padding: 15px;
   color: #5F5F5F;
-  font-family: "Signika Negative";
   font-weight: 400;
   font-size: 16px;
   line-height: 20px;
@@ -75,7 +73,6 @@
   display: inline;
   padding: 0 20px;
   height: 36px;
-  font-family: "Signika Negative";
   font-size: 15px;
   font-weight: 500;
   margin-right: 10px;
@@ -129,7 +126,6 @@
 }
 
 .rce-mbox-text {
-  font-family: "Signika Negative";
   font-size: 15px;
   line-height: 24px;
 }
@@ -164,7 +160,6 @@
   position: relative;
   clear: both;
   bottom: inherit;
-  font-family: "Signika Negative";
   font-weight: 400;
   font-size: 12px;
   line-height: 20px;
