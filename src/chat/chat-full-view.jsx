@@ -462,6 +462,7 @@ class Chat extends Component {
     const { t } = this.props;
     const userPk = (this.state.selectedDialog || {}).alt;
     const { Core } = this;
+    const pending = true; /* set this to change when request sent/pending */
 
     if (this.props.userPk && !this.props.matchesInfo) {
       /* if we send userPk as a prop but not matches info, early exit
@@ -501,6 +502,29 @@ class Chat extends Component {
               </span>
             }
           />
+          <div className="new-partner">
+            {!pending && (
+              <div className="find-partner">
+                <img className="plus" alt="add" />
+                {t("chat_find_new_person")}
+              </div>
+            )}
+            {pending && (
+              <div className="waiting">
+                <div className="content">
+                  <img className="searching" alt="Search in progress" />
+                  <div className="text">
+                    <div className="header">{t("chat_search_running_header")}</div>
+                    {t("chat_search_running_text")}
+                  </div>
+                </div>
+                <div className="buttons">
+                  <button className="cancel">{t("chat_search_cancel")}</button>
+                  <button className="change">{t("chat_search_change")}</button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <div className="right-panel">
           <ToastContainer />

@@ -31,6 +31,11 @@
 
 
 /** left panel **/
+div.chat-list {
+  display: flex;
+  flex-direction: column;
+}
+
 .chat-header {
   font-size: 24px;
   font-weight: 600;
@@ -41,6 +46,79 @@
 
 .rce-sbar.light {
   background: none;
+  min-height: unset;
+  flex-grow: 1;
+ }
+
+.new-partner {
+  height: 100px;
+  display: block;
+  color: #F28D00;
+  display: flex;
+  margin: 10px;
+  border-top: 1px solid #E6E8EC;
+}
+
+.find-partner {
+  margin: auto;
+   font-weight: 600;
+  font-size: 16px;
+}
+
+.find-partner img.plus {
+  content: url("../images/chat-plus.svg");
+  border-radius: 100px;
+  border: 2px solid #F28D00;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.waiting {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.waiting .content {
+  display: flex;
+  margin: 10px auto 4px auto;
+}
+
+.waiting .text {
+  margin: auto;
+  font-weight: 300;
+  font-size: 12px;
+}
+
+.waiting .header {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.waiting img.searching {
+  content: url("../images/chat-searching.svg");
+  margin-right: 10px;
+}
+
+.buttons {
+  margin: 0 auto;
+}
+
+.buttons button {
+  background: none;
+  border-radius: 100px;
+  padding: 5px 10px;
+  color: #1983C6;
+  display: inline;
+}
+
+.buttons .cancel {
+  border: 2px solid #36A9E0;
+  margin-right: 4px;
+}
+
+.buttons .change {
+  border: none;
 }
 
 /* search bar */
@@ -200,6 +278,7 @@
 
 .chat-list {
   max-width: 100%;
+  height: 100%;
 }
 
 .rce-container-citem{
