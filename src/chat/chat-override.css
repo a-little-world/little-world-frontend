@@ -267,7 +267,7 @@ div.chat-list {
 }
 
 /* send button */
-.rce-input-buttons .rce-button {
+.rce-input-buttons .rce-button:last-child { /* :last-child only needed to override react-chat-elements CSS */
   background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%) !important;
   border-radius: 100px;
   padding: 8px 6px;
