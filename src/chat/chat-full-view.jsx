@@ -408,7 +408,7 @@ class Chat extends Component {
       this.textInput = e.target;
     };
 
-    const chatRequest = true;
+    const chatRequest = false;
     const userName = (this.state.selectedDialog || {}).title;
 
     return (
@@ -493,7 +493,7 @@ class Chat extends Component {
     const { t } = this.props;
     const userPk = (this.state.selectedDialog || {}).alt;
     const { Core } = this;
-    const pending = true; /* set this to change when request sent/pending */
+    const pending = false; /* set this to change when request sent/pending */
 
     if (this.props.userPk && !this.props.matchesInfo) {
       /* if we send userPk as a prop but not matches info, early exit
