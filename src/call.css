@@ -27,7 +27,6 @@ video {
 
 /* non-fullscreen view */
 .call-screen {
-    height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: row;
@@ -61,6 +60,7 @@ video {
 }
 
 .translation-box {
+    min-height: 200px;
     height: 25%;
     display: flex;
     flex-direction: row;
@@ -150,6 +150,7 @@ img.swap-languages {
     flex-grow: 1;
     padding: 10px;
     overflow: auto;
+    height: 100px;
 }
 
 .questions-categories {

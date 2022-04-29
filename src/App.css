@@ -123,6 +123,7 @@ body, button {
   border-radius: 21px;
   background-color: rgba(100, 100, 100, 0.5);
   margin-right: 16px;
+  white-space: nowrap;
 
   /* center text vertically */
   display: flex;

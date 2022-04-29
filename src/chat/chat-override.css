@@ -21,6 +21,19 @@
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
+.rce-mlist {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.rce-container-mbox {
+  min-width: unset;
+  overflow-x: unset;
+  flex-grow: 1;
+}
+
 .rce-citem, .rce-navbar .rce-citem:hover {
   background: unset;
 }
@@ -264,6 +277,9 @@ div.chat-list {
   background-color: #F6F6F6;
   font-size: 16px;
   min-width: 0; /* not sure why this works!! */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* send button */
