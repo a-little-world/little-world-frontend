@@ -408,52 +408,83 @@ class Chat extends Component {
       this.textInput = e.target;
     };
 
+    const chatRequest = true;
+    const userName = (this.state.selectedDialog || {}).title;
+
     return (
       <div className="flex-container">
-        <MessageList
-          className="message-list"
-          lockable
-          onDownload={(x, i, e) => {
-            console.log("onDownload from messageList");
-            x.onDownload();
-          }}
-          downButtonBadge={
-            this.state.selectedDialog && this.state.selectedDialog.unread > 0
-              ? this.state.selectedDialog.unread
-              : ""
-          }
-          dataSource={filterMessagesForDialog(this.state.selectedDialog, this.state.messageList)}
-        />
-        <Input
-          placeholder={t("chat_input_text")}
-          defaultValue=""
-          id="textInput"
-          multiline
-          // buttonsFloat='left'
-          onKeyPress={(e) => {
-            if (e.charCode !== 13) {
-              this.isTyping();
-            }
-            if (e.shiftKey && e.charCode === 13) {
-              return true;
-            }
-            if (e.charCode === 13) {
-              if (this.state.socket.readyState === 1) {
-                e.preventDefault();
-                this.performSendingMessage();
+        {chatRequest && (
+          <div className="partner-request">
+            <div className="match-notify">
+              <img className="match-celebrate" alt="" />
+              <div className="text">{t("chat_success_message", { userName })}</div>
+            </div>
+            <div className="match-process">
+              <div className="this-request">{t("chat_request_header")}</div>
+              <div className="buttons">
+                <button type="button" className="request-accept">
+                  {t("chat_request_accept")}
+                </button>
+                <button type="button" className="request-deny">
+                  {t("chat_request_decline")}
+                </button>
+                <button type="button" className="request-info">
+                  {t("chat_request_more_info")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {!chatRequest && (
+          <>
+            <MessageList
+              className="message-list"
+              lockable
+              onDownload={(x, i, e) => {
+                console.log("onDownload from messageList");
+                x.onDownload();
+              }}
+              downButtonBadge={
+                this.state.selectedDialog && this.state.selectedDialog.unread > 0
+                  ? this.state.selectedDialog.unread
+                  : ""
               }
-              return false;
-            }
-          }}
-          onChange={handleTextUpdate}
-          rightButtons={
-            <Button
-              text={t("chat_send")}
-              disabled={this.state.socket.readyState !== 1}
-              onClick={() => this.performSendingMessage()}
+              dataSource={filterMessagesForDialog(
+                this.state.selectedDialog,
+                this.state.messageList
+              )}
             />
-          }
-        />
+            <Input
+              placeholder={t("chat_input_text")}
+              defaultValue=""
+              id="textInput"
+              multiline
+              onKeyPress={(e) => {
+                if (e.charCode !== 13) {
+                  this.isTyping();
+                }
+                if (e.shiftKey && e.charCode === 13) {
+                  return true;
+                }
+                if (e.charCode === 13) {
+                  if (this.state.socket.readyState === 1) {
+                    e.preventDefault();
+                    this.performSendingMessage();
+                  }
+                  return false;
+                }
+              }}
+              onChange={handleTextUpdate}
+              rightButtons={
+                <Button
+                  text={t("chat_send")}
+                  disabled={this.state.socket.readyState !== 1}
+                  onClick={() => this.performSendingMessage()}
+                />
+              }
+            />
+          </>
+        )}
       </div>
     );
   };
@@ -519,8 +550,12 @@ class Chat extends Component {
                   </div>
                 </div>
                 <div className="buttons">
-                  <button className="cancel">{t("chat_search_cancel")}</button>
-                  <button className="change">{t("chat_search_change")}</button>
+                  <button type="button" className="cancel">
+                    {t("chat_search_cancel")}
+                  </button>
+                  <button type="button" className="change">
+                    {t("chat_search_change")}
+                  </button>
                 </div>
               </div>
             )}

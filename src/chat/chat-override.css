@@ -100,11 +100,11 @@ div.chat-list {
   margin-right: 10px;
 }
 
-.buttons {
+.waiting .buttons {
   margin: 0 auto;
 }
 
-.buttons button {
+.waiting .buttons button {
   background: none;
   border-radius: 100px;
   padding: 5px 10px;
@@ -112,12 +112,12 @@ div.chat-list {
   display: inline;
 }
 
-.buttons .cancel {
+.waiting .buttons .cancel {
   border: 2px solid #36A9E0;
   margin-right: 4px;
 }
 
-.buttons .change {
+.waiting .buttons .change {
   border: none;
 }
 
@@ -329,5 +329,60 @@ div.chat-list {
 .rce-citem.selected {
   background-color: #F9FAFB;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  
+}
+
+/* chat request */
+.partner-request {
+  font-size: 16px;
+  margin: auto 80px;
+  display: flex;
+  flex-direction: column;
+}
+
+.match-notify {
+  display: flex;
+  margin-top: -50px;
+}
+
+.match-notify .text {
+  margin: auto 12px;
+}
+
+.partner-request img.match-celebrate {
+  content: url("../images/chat-match-sucess.svg");
+}
+
+.match-process {
+  margin: 10px auto;
+}
+
+.match-process .buttons {
+  margin-top: 10px;
+}
+
+.partner-request .buttons button {
+  border-radius: 100px;
+  display: inline;
+  height: 36px;
+  box-sizing: border-box;
+  padding: 0 14px;
+}
+
+.request-accept {
+  border: 2px solid #DB590B;
+  background-color: white;
+  color: #DB590B;
+  margin-right: 10px;
+}
+
+.request-deny {
+  color: white;
+  background: linear-gradient(90deg, #F28D00 0%, #F9BA6E 100%);
+  border: none;
+  margin-right: 4px;
+}
+
+.request-info {
+  background: none;
+  border: none;
 }
