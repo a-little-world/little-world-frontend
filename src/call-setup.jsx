@@ -219,9 +219,7 @@ function CallSetup() {
 
   navigator.permissions.query({ name: "microphone" }).then((audioResult) => {
     navigator.permissions.query({ name: "camera" }).then((videoResult) => {
-      if ([audioResult.state /* , videoResult.state */].includes("denied")) {
-        // disable checking for webcam temporarily as chromeOS passthrough doesn't work
-
+      if ([audioResult.state, videoResult.state].includes("denied")) {
         // if either have been denied, we need to tell the user to fix their browser settings
         setMediaPermission(false);
       } else if ([audioResult.state, videoResult.state].includes("prompt")) {
@@ -243,7 +241,6 @@ function CallSetup() {
       <div className="call-setup-modal">
         <div className="modal-top">
           <div className="modal-header">
-            {`${mediaPermission}`}
             <h3 className="title">{t("pcs_main_heading")}</h3>
             <span className="subtitle">{t("pcs_sub_heading")}</span>
           </div>
@@ -253,7 +250,7 @@ function CallSetup() {
             </button>
           </Link>
         </div>
-        {mediaPermission !== false && (
+        {mediaPermission && (
           <>
             <VideoFrame />
             <div className="av-setup-dropdowns">

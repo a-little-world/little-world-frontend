@@ -115,9 +115,9 @@ function ActiveCall() {
       navigate(`${BACKEND_PATH}/`);
     }
     const { videoId, audioId } = tracks || {};
-    // if (!(videoId && audioId)) {
-    //   navigate("/call-setup", { state: { userPk } });
-    // }
+    if (!(videoId && audioId)) {
+      navigate("/call-setup", { state: { userPk } });
+    }
     addVideoTrack(videoId);
     addAudioTrack(audioId);
     joinRoom(userPk);
