@@ -78,5 +78,5 @@ docker run \
     --name nginx-frontend-proxy \
     --add-host=host.docker.internal:host-gateway \
     -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf:ro \
-    -p 81:80 \
+    -p 3333:80 \
     -d nginx
