@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext, useContext } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import "./App.css";
 import "./call.css";
@@ -21,6 +21,8 @@ function toggleFullscreen(t) {
     fullScreenTextEl.innerHTML = t("vc_fs_btn_enter_fullscreen");
   }
 }
+
+const SidebarContext = createContext({ sideSelection: null, setSideSelection: () => {} });
 
 function Timer() {
   const [seconds, setSeconds] = useState(0);
@@ -49,6 +51,15 @@ function VideoControls() {
   const { t } = useTranslation();
   const location = useLocation();
   const { videoId, audioId } = (location.state || {}).tracks || {};
+
+  const { setSideSelection } = useContext(SidebarContext);
+
+  const showChat = () => {
+    if (document.fullscreenElement) {
+      toggleFullscreen(t);
+    }
+    setSideSelection("chat");
+  };
 
   return (
     <div className="video-controls">
@@ -254,7 +265,7 @@ function Sidebar() {
 
   const { userPk } = location.state || {};
   const sidebarTopics = ["chat", "questions", "notes"];
-  const [sideSelection, setSideSelection] = useState("chat");
+  const { sideSelection, setSideSelection } = useContext(SidebarContext);
   const handleChange = (e) => setSideSelection(e.target.value);
 
   return (
@@ -334,13 +345,17 @@ function TranslationBox() {
 }
 
 function CallScreen() {
+  const [sideSelection, setSideSelection] = useState("chat");
+
   return (
     <div className="call-screen">
-      <div className="call-and-text">
-        <ActiveCall />
-        <TranslationBox />
-      </div>
-      <Sidebar />
+      <SidebarContext.Provider value={{ sideSelection, setSideSelection }}>
+        <div className="call-and-text">
+          <ActiveCall />
+          <TranslationBox />
+        </div>
+        <Sidebar />
+      </SidebarContext.Provider>
     </div>
   );
 }
