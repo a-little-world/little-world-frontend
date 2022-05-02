@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import "./App.css";
 import "./call.css";
 import "./i18n";
@@ -38,7 +38,9 @@ function Timer() {
 
   return (
     <div id="call-time">
-      {two(minutes)}:{two(remainder)}
+      <span className="text">
+        {two(minutes)}:{two(remainder)}
+      </span>
     </div>
   );
 }
@@ -76,21 +78,23 @@ function VideoControls() {
       <input type="checkbox" id="calendar-toggle" />
       <label htmlFor="calendar-toggle">
         <img alt="" />
-        {t("vc_fs_btn_appointment")}
+        <span className="text">{t("vc_fs_btn_appointment")}</span>
       </label>
       <input type="checkbox" id="help-toggle" />
       <label htmlFor="help-toggle">
         <img alt="" />
-        {t("vc_fs_btn_mistake")}
+        <span className="text">{t("vc_fs_btn_mistake")}</span>
       </label>
-      <input type="checkbox" id="chat-toggle" />
-      <label htmlFor="chat-toggle">
+      <button type="button" id="chat-show" onClick={showChat}>
         <img alt="" />
-        {t("vc_fs_btn_chat")}
-      </label>
+        <span className="text">{t("vc_fs_btn_chat")}</span>
+      </button>
       <Timer />
-      <input type="checkbox" id="end-call" />
-      <label htmlFor="end-call">{t("vc_fs_btn_end_call")}</label>
+      <Link to="/">
+        <button type="button" id="end-call">
+          <span className="text">{t("vc_fs_btn_end_call")}</span>
+        </button>
+      </Link>
     </div>
   );
 }
