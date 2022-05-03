@@ -30,7 +30,6 @@ video {
     overflow: hidden;
     display: flex;
     flex-direction: row;
-    background: #f5f5f5;
     padding: 20px;
     box-sizing: border-box;
 }

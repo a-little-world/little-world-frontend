@@ -1,8 +1,5 @@
 .main {
   display: flex;
-  background: url("./images/background.svg");
-  background-position-y: bottom;
-  background-repeat: no-repeat;
   padding: 16px;
 }
 
