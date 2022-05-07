@@ -278,8 +278,8 @@ function Main() {
           <>
             <NavBarTop />
             <div className="content-area-main">
-              <PartnerProfiles matchesInfo={matchesInfo} />
               <NotificationPanel userInfo={userInfo} />
+              <PartnerProfiles matchesInfo={matchesInfo} />
             </div>
           </>
         )}
