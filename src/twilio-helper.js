@@ -6,15 +6,6 @@ const { connect, createLocalVideoTrack, createLocalAudioTrack } = require("twili
 
 const activeTracks = { video: null, audio: null };
 
-const removeActiveTracks = () => {
-  if (activeTracks.video) {
-    removeTrack(activeTracks.video);
-  }
-  if (activeTracks.audio) {
-    removeTrack(activeTracks.audio);
-  }
-};
-
 const removeTrack = (track) => {
   console.log(`removing ${track.kind} track with device id ${track.deviceId}`);
   track
@@ -23,6 +14,15 @@ const removeTrack = (track) => {
     .forEach((e) => {
       e.remove();
     });
+};
+
+const removeActiveTracks = () => {
+  if (activeTracks.video) {
+    removeTrack(activeTracks.video);
+  }
+  if (activeTracks.audio) {
+    removeTrack(activeTracks.audio);
+  }
 };
 
 function addVideoTrack(deviceId) {
