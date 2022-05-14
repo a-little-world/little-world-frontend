@@ -1,4 +1,5 @@
 import $ from "jquery";
+import Cookies from "js-cookie";
 import { BACKEND_URL } from "./ENVIRONMENT";
 
 const { connect, createLocalVideoTrack, createLocalAudioTrack } = require("twilio-video");
@@ -80,38 +81,64 @@ function addAudioTrack(deviceId) {
 }
 
 function joinRoom(partnerKey) {
-  $.ajax({
-    // using jQuery for now as fetch api is more convoluted with cross-domain requests
-    type: "POST",
-    url: `${BACKEND_URL}/api2/auth_call_room/`,
-    data: {
-      room_h256_pk: "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
-      partner_h256_pk: partnerKey,
-    },
-  }).then((data) => {
-    const token = data.user_token;
-    connect(token, {
-      name: "cool room",
-      tracks: [activeTracks.video, activeTracks.audio],
-    }).then((room) => {
-      console.log(`Connected to Room ${room.name}`);
+  const csrfToken = Cookies.get("csrftoken");
 
-      const container = document.getElementById("foreign-container");
-      const handleParticipant = (participant) => {
-        console.log(`Participant "${participant.identity}" is connected to the Room`);
-        container.innerHTML = ""; // remove any video/audio elements hanging around, OK as we only have 1 partner
-        participant.on("trackSubscribed", (track) => container.appendChild(track.attach()));
-      };
+  const doJoinRoom = (roomPk) => {
+    $.ajax({
+      // using jQuery for now as fetch api is more convoluted with cross-domain requests
+      type: "POST",
+      url: `${BACKEND_URL}/api2/auth_call_room/`,
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
+      data: {
+        room_h256_pk: roomPk,
+        partner_h256_pk: partnerKey,
+      },
+    }).then((data) => {
+      const token = data.user_token;
+      connect(token, {
+        name: "cool room",
+        tracks: [activeTracks.video, activeTracks.audio],
+      }).then((room) => {
+        console.log(`Connected to Room ${room.name}`);
 
-      room.participants.forEach(handleParticipant); // handle already connected partners
-      room.on("participantConnected", handleParticipant); // handle partners that join after
+        const container = document.getElementById("foreign-container");
+        const handleParticipant = (participant) => {
+          console.log(`Participant "${participant.identity}" is connected to the Room`);
+          container.innerHTML = ""; // remove any video/audio elements hanging around, OK as we only have 1 partner
+          participant.on("trackSubscribed", (track) => container.appendChild(track.attach()));
+        };
 
-      room.once("participantDisconnected", (participant) => {
-        // note this event doesn't always seem to successfully fire,
-        // which would lead to multiple videos, so we are clearing it on connect instead
-        console.log(`Participant "${participant.identity}" has disconnected from the Room`);
+        room.participants.forEach(handleParticipant); // handle already connected partners
+        room.on("participantConnected", handleParticipant); // handle partners that join after
+
+        room.once("participantDisconnected", (participant) => {
+          // note this event doesn't always seem to successfully fire,
+          // which would lead to multiple videos, so we are clearing it on connect instead
+          console.log(`Participant "${participant.identity}" has disconnected from the Room`);
+        });
       });
     });
+  };
+
+  // the room key will ultimately need both userPKs as input
+  // although the current user PK could be inferred by backend
+  $.ajax({
+    type: "GET",
+    url: `${BACKEND_URL}/api2/appointments/`,
+    headers: {
+      "X-CSRFToken": csrfToken,
+    },
+  }).then((appointments) => {
+    const apt = appointments.filter(({ user }) =>
+      user.filter(({ user_h256_pk }) => user_h256_pk === partnerKey)
+    )[0];
+    if (apt) {
+      doJoinRoom(apt.room_h256_pk);
+    } else {
+      console.error("no appointment found");
+    }
   });
 }
 

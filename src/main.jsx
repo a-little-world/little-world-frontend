@@ -247,17 +247,9 @@ function Main() {
               partner_h256_pk: "${match.user_h256_pk}", // eslint-disable-line no-template-curly-in-string
             },
           },
-          {
-            spec: {
-              type: "simple",
-              ref: "appointments",
-            },
-            method: "GET",
-            path: "api2/appointments/",
-          },
         ]),
       },
-    }).then(({ _matchesBasic, userData, matches, appointments }) => {
+    }).then(({ _matchesBasic, userData, matches }) => {
       setUserInfo({
         imgSrc: userData.profile_image,
         firstName: userData.real_name_first,
@@ -265,18 +257,10 @@ function Main() {
       });
 
       const matchesData = matches.map((match) => {
-        // Map the appointment containing this users h256_pk
-        const matchRoomPk = appointments.filter(
-          (appointment) =>
-            appointment.user.filter((usr) => usr.user_h256_pk === match["match.user_h256_pk"])
-              .length !== 0
-        )[0].room_h256_pk; // There should be some error handling if no matching appointment was found
-
         return {
           userPk: match["match.user_h256_pk"],
           firstName: match.real_name_first,
           lastName: match.real_name_last,
-          matchRoomPk,
           userDescription: match.user_description,
           imgSrc: match.profile_image,
         };
