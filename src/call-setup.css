@@ -1,0 +1,230 @@
+.call-setup-overlay {
+  display: flex;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  backdrop-filter: blur(25px);
+  background: rgba(0,0,0,0.3);
+  overflow-y: scroll;
+  padding-top: 4px;
+}
+
+.call-setup-modal {
+  margin: auto;
+  background: white;
+  border-radius: 35px;
+  padding: 24px;
+  border: 1px solid #D6D6D6;
+}
+
+/*titles area*/
+
+.modal-top {
+  display: table;
+  width: 100%;
+}
+
+.modal-header, .modal-close {
+  display: table-cell;
+}
+
+.modal-header .title, .modal-header .subtitle {
+  margin: 7px 0;
+}
+
+.modal-header .title {
+  color: #374151;
+  font-size: 24px;
+}
+.modal-header .subtitle {
+  color: #6B7280;
+  font-size: 18px;
+}
+
+.modal-close {
+  height: 60px;
+  width: 60px;
+  border-radius: 30px;
+  margin-right: -18px;
+  background-image: url("images/close-pop-up.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(230, 232, 236, 0.2);
+  border: 2px solid rgba(230, 232, 236, 0.2);
+  box-sizing: border-box;
+}
+
+/*video area*/
+
+
+.local-video-container {
+  position: relative;
+  width: 576px;
+  height: 276px;
+  margin: 15px 0;
+}
+
+.video-container > video {
+  height: 100%;
+  width: 100%;
+  border-radius: 20px;
+  pointer-events: none;
+}
+
+/* controls box */
+
+.video-controls {
+  display: flex;
+  margin: 7px;
+  margin-top: -60px;
+  user-select: none;
+}
+
+.video-controls > button {
+  border-radius: 21px;
+}
+
+.video-controls #signalQuality {
+  vertical-align: middle;
+  padding-right: 5px;
+}
+
+.video-controls .signal-button .signal-update {
+  color: #F39325;
+  padding-right: 12px;
+}
+
+.video-controls > input[type=checkbox] {
+  display: none;
+}
+
+/* video call inset buttons / toggles */
+.video-controls label, .video-controls button, #call-time {
+  height: 42px;
+  min-width: 42px;
+  border: none;
+  border-radius: 21px;
+  background-color: rgba(100, 100, 100, 0.5);
+  margin-right: 16px;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.call-screen .video-controls .text {
+  font-size: 16px;
+  color: #E6E8EC;
+  padding-right: 12px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+/* override background for signal button */
+.video-controls .signal-button {
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.video-controls input:not(#audio-toggle, #video-toggle) + label img, .video-controls button img {
+   padding: 10px;
+}
+
+.video-controls a {
+  text-decoration: none;
+}
+
+input#audio-toggle + label { /* push items to right side */
+  margin-left: auto;
+}
+
+input#audio-toggle + label img {
+  margin: 0 auto; /* not sure why this is required only here, probably related to the right-push*/
+  content: url("images/microphone-off.svg");
+}
+
+input#audio-toggle:checked + label img {
+  content: url("images/microphone-on.svg");
+}
+
+input#video-toggle + label img {
+  content: url("images/camera-off.svg");
+}
+
+input#video-toggle:checked + label img {
+  content: url("images/camera-on.svg");
+}
+
+input#fullscreen-toggle + label img {
+  content: url("images/fullscreen-enter.svg");
+}
+
+input#fullscreen-toggle:checked + label img {
+  content: url("images/fullscreen-exit.svg");
+}
+
+input#calendar-toggle + label img {
+  content: url("images/calendar.svg");
+}
+/* 
+input#calendar-toggle:checked + label img {
+  content: url("images/calendar.svg");
+} */
+
+input#help-toggle + label img {
+  content: url("images/exclamation-mark.svg");
+}
+/* 
+input#help-toggle:checked + label img {
+  content: url("images/exclamation-mark.svg");
+} */
+
+#chat-show img {
+  content: url("images/chat.svg");
+}
+
+#call-time {
+  margin-left: auto;
+  padding-left: 12px;
+  cursor: default;
+}
+
+#end-call {
+  padding-left: 12px;
+  background: linear-gradient(225.88deg, #DB590B 7.79%, #9C2308 104.6%);
+}
+/*setting selection*/
+
+.modal-top a {
+  text-decoration: none;
+}
+
+.av-setup-dropdowns {
+  margin-bottom: 40px;
+}
+
+.av-setup-dropdowns label {
+  color: #5F5F5F;
+  font-size: 14px;
+}
+
+.av-setup-dropdowns select {
+  display: block;
+  width: 100%;
+  height: 44px;
+  padding: 10px 14px;
+  margin: 6px 0;
+  border: 1px solid #E6E8EC;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.av-setup-confirm {
+  color: white;
+  background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%);
+  border-radius: 90px;
+  width: 100%;
+  height: 58px;
+  border: none;
+}

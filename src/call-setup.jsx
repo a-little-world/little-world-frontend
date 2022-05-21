@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+import "./call-setup.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";

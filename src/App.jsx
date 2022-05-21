@@ -1,4 +1,5 @@
 import React from "react";
+import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./app/store";
@@ -14,7 +15,6 @@ function App() {
         <Routes>
           <Route path={`${BACKEND_PATH}/`}>
             <Route index element={<Main />} />
-            {/* placeholder while we have no main page */}
             <Route path="call-setup" element={<CallSetup />} />
             <Route path="call" element={<ActiveCall />} />
             <Route path="partners" element={<Main />} />
