@@ -183,7 +183,7 @@ function AudioOutputSelect() {
         .filter((deviceInfo) => deviceInfo.deviceId !== "default");
       setAudioOutDevices(devices);
     });
-  });
+  }, []);
 
   return (
     <div className="">
