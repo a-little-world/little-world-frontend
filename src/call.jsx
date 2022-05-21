@@ -9,7 +9,7 @@ import { BACKEND_PATH } from "./ENVIRONMENT";
 import Chat from "./chat/chat-full-view";
 
 function toggleFullscreen(t) {
-  const videoContainer = document.querySelector(".foreign-video-container");
+  const videoContainer = document.querySelector(".video-container");
   const fullScreenTextEl = document.querySelector("label[for=fullscreen-toggle] .text");
   // would be nice to do text in CSS but we need translation support
 
@@ -112,10 +112,12 @@ function VideoControls() {
 
 function VideoFrame() {
   return (
-    <div className="foreign-video-container">
-      <div id="foreign-container" className="video-frame" alt="video" />
-      <div className="local-video-container inset" />
-      <VideoControls />
+    <div className="video-border">
+      <div className="video-container">
+        <div id="foreign-container" className="video-frame" alt="video" />
+        <div className="local-video-container inset" />
+        <VideoControls />
+      </div>
     </div>
   );
 }
