@@ -83,6 +83,7 @@ class Chat extends Component {
           DEVELOPMENT ? BACKEND_URL.substring(7) : window.origin.split("//").pop()
         }/chat_ws`
       ) /* without the 'https://' */,
+      userWasSelected: !!this.props.userPk,
     };
     // some js magic
     this.performSendingMessage = this.performSendingMessage.bind(this);
@@ -221,6 +222,14 @@ class Chat extends Component {
 
   selectDialog(item) {
     console.log(`Selecting dialog ${item.id}`);
+
+    // do nothing when clicking on the already-selected chat
+    // prevents styling of user name in top bar
+    const prevId = (this.state.selectedDialog || {}).id;
+    if (prevId === item.id) {
+      return;
+    }
+
     this.setState({ selectedDialog: item });
     this.setState((prevState) => ({
       dialogList: prevState.dialogList.map((el) =>
@@ -502,10 +511,14 @@ class Chat extends Component {
        */
       return <Core />;
     }
+    const clickUser = (item) => {
+      this.selectDialog(item);
+      this.setState({ userWasSelected: true });
+    };
 
     return (
       <div className="container">
-        <div className="chat-list-box">
+        <div className={this.state.userWasSelected ? "chat-list-box" : "chat-list-box active-panel-mobile"}>
           <SideBar
             type="light"
             top={
@@ -527,7 +540,7 @@ class Chat extends Component {
                 />
 
                 <ChatList
-                  onClick={(item, i, e) => this.selectDialog(item)}
+                  onClick={clickUser}
                   dataSource={this.state.filteredDialogList.slice().sort(chatItemSortingFunction)}
                 />
               </span>
@@ -561,7 +574,7 @@ class Chat extends Component {
             )}
           </div>
         </div>
-        <div className="right-panel">
+        <div className={this.state.userWasSelected ? "right-panel active-panel-mobile" : "right-panel"}>
           <ToastContainer />
           <Popup
             show={this.state.showNewChatPopup}
@@ -608,31 +621,43 @@ class Chat extends Component {
           />
           <Navbar
             left={
-              <ChatItem
-                {...this.state.selectedDialog}
-                date={null}
-                unread={0}
-                statusColor={
-                  this.state.selectedDialog &&
-                  this.state.onlinePKs.includes(this.state.selectedDialog.id)
-                    ? "lightgreen"
-                    : ""
-                }
-                subtitle={
-                  this.state.selectedDialog &&
-                  this.state.typingPKs.includes(this.state.selectedDialog.id)
-                    ? "typing..."
-                    : ""
-                }
-              />
+              <>
+                <button
+                  type="button"
+                  className="chat-back"
+                  onClick={() => {
+                    console.log("back");
+                    this.setState({ userWasSelected: false });
+                  }}
+                >
+                  <span className="text">&lt;</span>
+                </button>
+                <ChatItem
+                  {...this.state.selectedDialog}
+                  date={null}
+                  unread={0}
+                  statusColor={
+                    this.state.selectedDialog &&
+                    this.state.onlinePKs.includes(this.state.selectedDialog.id)
+                      ? "lightgreen"
+                      : ""
+                  }
+                  subtitle={
+                    this.state.selectedDialog &&
+                    this.state.typingPKs.includes(this.state.selectedDialog.id)
+                      ? "typing..."
+                      : ""
+                  }
+                />
+              </>
             }
             right={
               <>
                 <button type="button" className="free-appointments">
-                  {t("chat_show_free_appointments")}
+                  <span className="text">{t("chat_show_free_appointments")}</span>
                 </button>
                 <button type="button" className="suggest-appointment">
-                  {t("chat_suggest_appointment")}
+                  <span className="text">{t("chat_suggest_appointment")}</span>
                 </button>
                 <Link to="/call-setup" state={{ userPk }}>
                   <img className="call-start" alt="start call" />

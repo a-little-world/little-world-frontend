@@ -160,7 +160,7 @@
   max-width: 300px;
 }
 
-.free-appointments, .suggest-appointment {
+.free-appointments, .suggest-appointment, .chat-back {
   border-radius: 100px;
   display: inline;
   padding: 0 20px;
@@ -171,6 +171,10 @@
   white-space: nowrap;
 }
 
+.chat-back {
+  display: none; /* don't display by default; enable with mobile window size */
+}
+
 .free-appointments {
   border: 2px solid #F9BA6E;
   color: #F39325;
@@ -179,20 +183,22 @@
   /* padding: 8px 18px; reduce padding by border size */
 }
 
-.suggest-appointment {
+.suggest-appointment, .call-start, .chat-back {
+  background: linear-gradient(90deg, #F28D00 0%, #F9BA6E 100%);
   border: none;
   color: white;
-  background: linear-gradient(90deg, #F28D00 0%, #F9BA6E 100%);
 }
 
 .call-start {
   content: url("../images/camera-on.svg");
-  background: linear-gradient(90deg, #F28D00 0%, #F9BA6E 100%);
   height: 30px;
   padding: 5px;
   border-radius: 100px;
 }
 
+.rce-navbar-item > button > .text {
+  margin-left: unset;
+}
 
 /** message area **/
 /* hide avatar and name on every message */
@@ -402,4 +408,41 @@
 .request-info {
   background: none;
   border: none;
+}
+
+@media screen and (max-width: 1023px) {
+  body {
+    background: none;
+  }
+
+  #root, .main {
+    height: 100%;
+  }
+
+  .main {
+    box-sizing: border-box;
+  }
+
+  .right-panel {
+    height: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin-left: 0;
+  }
+
+  .chat-back {
+    display: inline;
+  }
+
+  .rce-sbar-item, .chat-list {
+    width: 100%;
+  }
+
+  .main, .content-area-right, .container, .content-area-right {
+    display: contents !important;
+  }
+
+  .sidebar, .right-panel:not(.active-panel-mobile), .chat-list-box:not(.active-panel-mobile), button .text {
+    display: none !important;
+  }
 }
