@@ -3,7 +3,7 @@
   display: flex;
 }
 
-.right-panel, .container > .chat-list {
+.right-panel, .container > .chat-list-box {
   border-radius: 30px;
   border: 1px solid #E6E8EC;
   background-color: white;
@@ -44,9 +44,10 @@
 
 
 /** left panel **/
-div.chat-list {
+.chat-list-box {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .chat-header {

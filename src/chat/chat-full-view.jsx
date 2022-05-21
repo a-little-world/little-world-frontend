@@ -505,7 +505,7 @@ class Chat extends Component {
 
     return (
       <div className="container">
-        <div className="chat-list">
+        <div className="chat-list-box">
           <SideBar
             type="light"
             top={
