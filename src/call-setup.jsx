@@ -258,10 +258,8 @@ function CallSetup() {
               <AudioInputSelect />
               <AudioOutputSelect />
             </div>
-            <Link to="/call" state={{ userPk, tracks }}>
-              <button type="submit" className="av-setup-confirm">
-                {t("pcs_btn_join_call")}
-              </button>
+            <Link to="/call" className="av-setup-confirm" state={{ userPk, tracks }}>
+              <button type="submit">{t("pcs_btn_join_call")}</button>
             </Link>
           </>
         )}
