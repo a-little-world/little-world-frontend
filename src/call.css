@@ -10,6 +10,7 @@ video {
     width: 100%;
     pointer-events: none;
     object-fit: cover;
+    aspect-ratio: 16/9;
 }
 
 .local-video-container.inset {
@@ -280,6 +281,7 @@ img.swap-languages {
         box-sizing: border-box;
         padding: 10px;
         width: 50%;
+        max-height: 28%;
         top: 0;
         right: 0;
         margin: 0;
