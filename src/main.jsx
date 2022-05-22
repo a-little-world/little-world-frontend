@@ -64,18 +64,6 @@ function Sidebar() {
           </Link>
         );
       })}
-      {DEVELOPMENT && (
-        <form onSubmit={handleSubmit}>
-          <input
-            type="login"
-            name="login"
-            placeholder="Enter username:password"
-            onChange={handleChange}
-            value={login}
-          />
-          <button type="submit">Submit</button>
-        </form>
-      )}
     </div>
   );
 }
