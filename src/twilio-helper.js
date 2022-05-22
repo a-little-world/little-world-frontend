@@ -152,8 +152,7 @@ function toggleLocalTracks(isOn, trackType, deviceId) {
   if (isOn) {
     addTrack[trackType](deviceId);
   } else {
-    console.log(`stopping ${track.kind} track with device id ${deviceId}`);
-    track.stop();
+    removeTrack(track);
   }
 }
 
