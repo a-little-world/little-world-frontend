@@ -153,6 +153,7 @@
   height: 180px;
   display: block;
   border-radius: 20px;
+  object-fit: cover;
 }
 
 .profile-info {
@@ -260,6 +261,7 @@ a.call img {
   border-radius: 80px;
   border: 8px solid #E6E8EC;
   margin-top: 45px;
+  object-fit: cover;
 }
 
 .notifications-header {
