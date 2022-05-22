@@ -41,7 +41,6 @@ video {
 
 .video-controls .signal-button .signal-update {
   color: #F39325;
-  padding-right: 12px;
 }
 
 .video-controls > input[type=checkbox] {
@@ -59,16 +58,22 @@ video {
   padding: 0;
   cursor: pointer;
   display: flex;
-  align-items: center;
 }
 
-.call-screen .video-controls .text {
+.video-controls .text {
   font-size: 16px;
   color: #E6E8EC;
   padding-right: 12px;
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.video-controls .signal-button .text {
+  color: unset;
 }
 
 /* override background for signal button */
@@ -170,7 +175,7 @@ input#help-toggle:checked + label img {
 }
 
 @media screen and (max-width: 1023px) {
-  .video-controls .text {
+  .call-screen .video-controls .text {
       display: none;
   }
 

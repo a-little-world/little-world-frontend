@@ -17,8 +17,10 @@ function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText })
   return (
     <button type="button" className="signal-button">
       <img id="signalQuality" alt={signalQualityText} src={signalQualityImage[signalQuality]} />
-      {signalQualityText}&nbsp;
-      <span className="signal-update">{signalUpdateText}</span>
+      <div className="text">
+        {signalQualityText}&nbsp;
+        <span className="signal-update">{signalUpdateText}</span>
+      </div>
     </button>
   );
 }
