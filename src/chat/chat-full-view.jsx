@@ -193,6 +193,12 @@ class Chat extends Component {
     };
   }
 
+  componentDidUpdate() {
+    // scroll message box to bottom when messages are updated
+    const scrollEl = document.querySelector(".rce-mlist");
+    scrollEl.scrollTop = scrollEl.scrollHeight;
+  }
+
   setMessageIdAsRead(msg_id) {
     console.log(`Setting msg_id ${msg_id} as read`);
     this.setState((prevState) => ({
