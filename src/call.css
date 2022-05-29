@@ -238,16 +238,10 @@ img.swap-languages {
         display: none;
     }
     
-    body, .call-screen, .call-and-text {
+    body, .call-screen, .call-and-text, .video-border {
         display: contents;
     }
     
-    .video-container {
-        position: fixed;
-        height: 100vh;
-        width: 100vw;
-    }
-
     #calendar-toggle, #chat-show {
         display: none;
     }
