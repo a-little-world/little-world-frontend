@@ -39,7 +39,7 @@ function addVideoTrack(deviceId) {
 
   const constraints = {
     width: 576,
-    height: 276,
+    height: 324,
     deviceId: { exact: id }, // if set as undefined acts as if not present and selects default
   };
 
