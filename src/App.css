@@ -12,9 +12,9 @@ html, body {
 body {
   margin: 0;
   background: url("./images/background.svg");
-  background-position-y: 200px;
   background-repeat: no-repeat;
   background-size: 100% auto;
+  background-color: #f2dabc;
 }
 
 body, button {
