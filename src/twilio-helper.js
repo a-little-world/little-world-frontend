@@ -142,17 +142,12 @@ function joinRoom(partnerKey) {
   });
 }
 
-const addTrack = {
-  audio: addAudioTrack,
-  video: addVideoTrack,
-};
-
-function toggleLocalTracks(isOn, trackType, deviceId) {
+function toggleLocalTracks(isEnabled, trackType) {
   const track = activeTracks[trackType];
-  if (isOn) {
-    addTrack[trackType](deviceId);
+  if (isEnabled) {
+    track.enable();
   } else {
-    removeTrack(track);
+    track.disable();
   }
 }
 

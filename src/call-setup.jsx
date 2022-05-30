@@ -39,7 +39,7 @@ function VideoControls({ signalInfo }) {
         type="checkbox"
         id="audio-toggle"
         defaultChecked="checked"
-        onChange={(e) => toggleLocalTracks(e.target.checked, "audio", audioId)}
+        onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
       />
       <label htmlFor="audio-toggle">
         <img alt="toggle audio" />
@@ -48,7 +48,7 @@ function VideoControls({ signalInfo }) {
         type="checkbox"
         id="video-toggle"
         defaultChecked="checked"
-        onChange={(e) => toggleLocalTracks(e.target.checked, "video", videoId)}
+        onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
       />
       <label htmlFor="video-toggle">
         <img alt="toggle video" />
