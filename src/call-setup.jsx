@@ -83,6 +83,7 @@ function VideoInputSelect() {
     navigator.mediaDevices.enumerateDevices().then((deviceList) => {
       const devices = deviceList
         .filter(({ kind }) => kind === "videoinput")
+        .filter(({ label }) => !label.endsWith("facing back")) // don't show rear cameras
         .filter(({ deviceId }) => deviceId !== "default"); // prevent dupes
       setVideoInDevices(devices);
     });
@@ -114,7 +115,7 @@ function VideoInputSelect() {
         {videoInDevices.map((deviceInfo) => {
           return (
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-              {deviceInfo.label}
+              {deviceInfo.label.endsWith("facing front") ? t("pcs_front_camera") : deviceInfo.label}
             </option>
           );
         })}
