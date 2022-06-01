@@ -142,12 +142,12 @@ function joinRoom(partnerKey) {
   });
 }
 
-function toggleLocalTracks(isEnabled, trackType) {
+function toggleLocalTracks(willMute, trackType) {
   const track = activeTracks[trackType];
-  if (isEnabled) {
-    track.enable();
-  } else {
+  if (willMute) {
     track.disable();
+  } else {
+    track.enable();
   }
 }
 

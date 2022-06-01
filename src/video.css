@@ -45,7 +45,8 @@ video {
 
 .video-controls #signalQuality {
   vertical-align: middle;
-  padding-right: 5px;
+  padding: 8px;
+  margin: auto;
 }
 
 .video-controls .signal-button .signal-update {
@@ -57,7 +58,7 @@ video {
 }
 
 /* video call inset buttons / toggles */
-.video-controls label, .video-controls button, #call-time {
+.video-controls label, .video-controls button, .call-time {
   height: 42px;
   min-width: 42px;
   border: none;
@@ -89,73 +90,81 @@ video {
   background: rgba(255, 255, 255, 0.9);
 }
 
-.video-controls input:not(#audio-toggle, #video-toggle) + label img, .video-controls button img {
-   padding: 10px;
+.video-controls .img {
+  padding: 0;
+  margin: auto 3px;
+  width: 36px;
+  height: 36px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 100px;
 }
 
 .video-controls a {
   text-decoration: none;
 }
 
-input#audio-toggle + label { /* push items to right side */
+.call-setup-modal input#audio-toggle + label { /* push items to right side */
   margin-left: auto;
 }
 
-input#audio-toggle + label img {
-  margin: 0 auto; /* not sure why this is required only here, probably related to the right-push*/
-  content: url("images/microphone-off.svg");
+input#audio-toggle + label .img {
+  background-image: url("images/microphone-on.svg");
 }
 
-input#audio-toggle:checked + label img {
-  content: url("images/microphone-on.svg");
+input#audio-toggle:checked + label .img {
+  background-image: url("images/microphone-off.svg");
 }
 
-input#video-toggle + label img {
-  content: url("images/camera-off.svg");
+input#video-toggle + label .img {
+  background-image: url("images/camera-on.svg");
 }
 
-input#video-toggle:checked + label img {
-  content: url("images/camera-on.svg");
+input#video-toggle:checked + label .img {
+  background-image: url("images/camera-off.svg");
 }
 
-input#fullscreen-toggle + label img {
-  content: url("images/fullscreen-enter.svg");
+input#fullscreen-toggle + label .img {
+  background-image: url("images/fullscreen-enter.svg");
 }
 
-input#fullscreen-toggle:checked + label img {
-  content: url("images/fullscreen-exit.svg");
+input#fullscreen-toggle:checked + label .img {
+  background-image: url("images/fullscreen-exit.svg");
 }
 
-input#calendar-toggle + label img {
-  content: url("images/calendar.svg");
-}
-/* 
-input#calendar-toggle:checked + label img {
-  content: url("images/calendar.svg");
-} */
-
-input#help-toggle + label img {
-  content: url("images/exclamation-mark.svg");
+input#calendar-toggle + label .img {
+  background-image: url("images/calendar.svg");
 }
 /* 
-input#help-toggle:checked + label img {
-  content: url("images/exclamation-mark.svg");
+input#calendar-toggle:checked + label .img {
+  background-image: url("images/calendar.svg");
 } */
 
-#chat-show img {
-  content: url("images/chat.svg");
+input#help-toggle + label .img {
+  background-image: url("images/exclamation-mark.svg");
+}
+/* 
+input#help-toggle:checked + label .img {
+  background-image: url("images/exclamation-mark.svg");
+} */
+
+.chat-show .img {
+  background-image: url("images/chat.svg");
 }
 
-#call-time {
+.call-time {
   margin-left: auto;
   padding-left: 12px;
   cursor: default;
   flex-shrink: 0;
 }
 
-#end-call {
-  padding-left: 12px;
+.end-call {
   background: linear-gradient(225.88deg, #DB590B 7.79%, #9C2308 104.6%);
+}
+
+.end-call .img {
+  background-image: url("images/call-end.svg");
 }
 
 
@@ -174,12 +183,10 @@ input#help-toggle:checked + label img {
   max-height: 30%;
 }
 
-.video-container .video-controls input#audio-toggle + label {
-  margin-left: unset;
-}
+
 
 @media screen and (max-width: 1023px) {
-  .call-screen .video-controls .text {
+  .call-screen .video-controls :not(.call-time) .text {
       display: none;
   }
 
@@ -193,11 +200,25 @@ input#help-toggle:checked + label img {
   }
 }
 
+
+
 /* need to set this as aspect-ratio will not override height/width settings */
 @media screen and (orientation: landscape) {
   /* only apply to inset, ie not on call setup */
   .local-video-container.inset {
     width: unset;
     height: 324px;
+  }
+}
+
+
+
+@media screen and (max-width: 1023px) and (orientation: portrait) {
+  .video-controls #calendar-toggle + label, .video-controls .chat-show, .video-controls .call-time {
+    display: none;
+  }
+
+  .video-controls {
+    justify-content: space-evenly;
   }
 }

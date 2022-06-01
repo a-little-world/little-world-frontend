@@ -38,20 +38,20 @@ function VideoControls({ signalInfo }) {
       <input
         type="checkbox"
         id="audio-toggle"
-        defaultChecked="checked"
+        defaultChecked={false}
         onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
       />
       <label htmlFor="audio-toggle">
-        <img alt="toggle audio" />
+        <div className="img" alt="toggle audio" />
       </label>
       <input
         type="checkbox"
         id="video-toggle"
-        defaultChecked="checked"
+        defaultChecked={false}
         onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
       />
       <label htmlFor="video-toggle">
-        <img alt="toggle video" />
+        <div className="img" alt="toggle video" />
       </label>
     </div>
   );
@@ -99,7 +99,7 @@ function VideoInputSelect() {
   // fix checkbox status; used when we select a new camera while the previous one is muted.
   useEffect(() => {
     if (selectedVideoIn) {
-      document.getElementById("video-toggle").checked = addVideoTrack(selectedVideoIn);
+      document.getElementById("video-toggle").checked = !addVideoTrack(selectedVideoIn);
     }
   }, [selectedVideoIn]);
 
@@ -150,7 +150,7 @@ function AudioInputSelect() {
   // fix checkbox status; used when we select a new mic while the previous one is muted.
   useEffect(() => {
     if (selectedAudioIn) {
-      document.getElementById("audio-toggle").checked = addAudioTrack(selectedAudioIn);
+      document.getElementById("audio-toggle").checked = !addAudioTrack(selectedAudioIn);
     }
   }, [selectedAudioIn]);
 

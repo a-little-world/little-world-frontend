@@ -241,8 +241,4 @@ img.swap-languages {
     body, .call-screen, .call-and-text, .video-border {
         display: contents;
     }
-    
-    #calendar-toggle, #chat-show {
-        display: none;
-    }
 }

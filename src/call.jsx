@@ -39,11 +39,23 @@ function Timer() {
   const two = (n) => (n < 10 ? `0${n}` : n);
 
   return (
-    <div id="call-time">
+    <div className="call-time">
       <span className="text">
         {two(minutes)}:{two(remainder)}
       </span>
     </div>
+  );
+}
+
+function ToggleButton({ id, text, alt, onChange }) {
+  return (
+    <>
+      <input type="checkbox" id={id} defaultChecked={false} onChange={onChange} />
+      <label htmlFor={id}>
+        <div className="img" alt={alt} />
+        {text && <span className="text">{text}</span>}
+      </label>
+    </>
   );
 }
 
@@ -63,46 +75,40 @@ function VideoControls() {
 
   return (
     <div className="video-controls">
-      <input
-        type="checkbox"
+      <ToggleButton
         id="audio-toggle"
-        defaultChecked="checked"
+        alt="mute/unmute mic"
         onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
       />
-      <label htmlFor="audio-toggle">
-        <img alt="mute/unmute mic" />
-      </label>
-      <input
-        type="checkbox"
+      <ToggleButton
         id="video-toggle"
-        defaultChecked="checked"
+        alt="enable/disable webcam"
         onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
       />
-      <label htmlFor="video-toggle">
-        <img alt="enable/disable webcam" />
-      </label>
-      <input type="checkbox" id="fullscreen-toggle" onChange={() => toggleFullscreen(t)} />
-      <label htmlFor="fullscreen-toggle">
-        <img alt="" />
-        <span className="text">{t("vc_fs_btn_enter_fullscreen")}</span>
-      </label>
-      <input type="checkbox" id="calendar-toggle" />
-      <label htmlFor="calendar-toggle">
-        <img alt="" />
-        <span className="text">{t("vc_fs_btn_appointment")}</span>
-      </label>
-      <input type="checkbox" id="help-toggle" />
-      <label htmlFor="help-toggle">
-        <img alt="" />
-        <span className="text">{t("vc_fs_btn_mistake")}</span>
-      </label>
-      <button type="button" id="chat-show" onClick={showChat}>
-        <img alt="" />
+      <ToggleButton
+        id="fullscreen-toggle"
+        text={t("vc_fs_btn_enter_fullscreen")}
+        alt="toggle fullscreen"
+        onChange={() => toggleFullscreen(t)}
+      />
+      <ToggleButton
+        id="calendar-toggle"
+        text={t("vc_fs_btn_appointment")}
+        alt="calendar"
+      />
+      <ToggleButton
+        id="help-toggle"
+        text={t("vc_fs_btn_mistake")}
+        alt="mistake"
+      />
+      <button type="button" className="chat-show" onClick={showChat}>
+        <div className="img" alt="show chat" />
         <span className="text">{t("vc_fs_btn_chat")}</span>
       </button>
       <Timer />
       <Link to="/">
-        <button type="button" id="end-call">
+        <button type="button" className="end-call">
+          <div className="img" alt="end call" />
           <span className="text">{t("vc_fs_btn_end_call")}</span>
         </button>
       </Link>
