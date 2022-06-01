@@ -190,7 +190,7 @@
 }
 
 .call-start {
-  content: url("../images/camera-on.svg");
+  content: url("../images/videobuttons/camera-on.svg");
   height: 30px;
   padding: 5px;
   border-radius: 100px;

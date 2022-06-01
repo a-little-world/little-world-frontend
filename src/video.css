@@ -109,47 +109,47 @@ video {
 }
 
 input#audio-toggle + label .img {
-  background-image: url("images/microphone-on.svg");
+  background-image: url("images/videobuttons/microphone-on.svg");
 }
 
 input#audio-toggle:checked + label .img {
-  background-image: url("images/microphone-off.svg");
+  background-image: url("images/videobuttons/microphone-off.svg");
 }
 
 input#video-toggle + label .img {
-  background-image: url("images/camera-on.svg");
+  background-image: url("images/videobuttons/camera-on.svg");
 }
 
 input#video-toggle:checked + label .img {
-  background-image: url("images/camera-off.svg");
+  background-image: url("images/videobuttons/camera-off.svg");
 }
 
 input#fullscreen-toggle + label .img {
-  background-image: url("images/fullscreen-enter.svg");
+  background-image: url("images/videobuttons/fullscreen-enter.svg");
 }
 
 input#fullscreen-toggle:checked + label .img {
-  background-image: url("images/fullscreen-exit.svg");
+  background-image: url("images/videobuttons/fullscreen-exit.svg");
 }
 
 input#calendar-toggle + label .img {
-  background-image: url("images/calendar.svg");
+  background-image: url("images/videobuttons/calendar.svg");
 }
 /* 
 input#calendar-toggle:checked + label .img {
-  background-image: url("images/calendar.svg");
+  background-image: url("images/videobuttons/calendar.svg");
 } */
 
 input#help-toggle + label .img {
-  background-image: url("images/exclamation-mark.svg");
+  background-image: url("images/videobuttons/exclamation-mark.svg");
 }
 /* 
 input#help-toggle:checked + label .img {
-  background-image: url("images/exclamation-mark.svg");
+  background-image: url("images/videobuttons/exclamation-mark.svg");
 } */
 
 .chat-show .img {
-  background-image: url("images/chat.svg");
+  background-image: url("images/videobuttons/chat.svg");
 }
 
 .call-time {
@@ -164,7 +164,7 @@ input#help-toggle:checked + label .img {
 }
 
 .end-call .img {
-  background-image: url("images/call-end.svg");
+  background-image: url("images/videobuttons/call-end.svg");
 }
 
 
