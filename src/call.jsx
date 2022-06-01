@@ -116,10 +116,26 @@ function VideoControls() {
   );
 }
 
+function MobileVideoControlsTop() {
+  const { t } = useTranslation();
+  const buttons = ["profile", "chat", "translate", "questions", "notes"];
+
+  return (
+    <div className="video-controls top">
+      {buttons.map((name) => (
+        <button key={name} type="button" className={`show-${name}`} onClick={() => {}}>
+          <img alt={`show-${name}`} />
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function VideoFrame() {
   return (
     <div className="video-border">
       <div className="video-container">
+        <MobileVideoControlsTop />
         <div id="foreign-container" className="video-frame" alt="video" />
         <div className="local-video-container inset" />
         <VideoControls />

@@ -39,6 +39,11 @@ video {
   width: 100%;
 }
 
+.video-controls.top {
+  bottom: unset;
+  top: 0;
+}
+
 .video-controls > button {
   border-radius: 21px;
 }
@@ -183,6 +188,10 @@ input#help-toggle:checked + label .img {
   max-height: 30%;
 }
 
+.video-controls.top {
+  display: none;
+}
+
 
 
 @media screen and (max-width: 1023px) {
@@ -220,5 +229,29 @@ input#help-toggle:checked + label .img {
 
   .video-controls {
     justify-content: space-evenly;
+  }
+
+  .video-controls.top {
+    display: flex;
+  }
+
+  .video-controls.top .show-profile {
+    content: url("images/videobuttons/profile.svg");
+  }
+  .video-controls.top .show-chat {
+    content: url("images/videobuttons/chat.svg");
+  }
+  .video-controls.top .show-translate {
+    content: url("images/videobuttons/translate.svg");
+  }
+  .video-controls.top .show-questions {
+    content: url("images/videobuttons/questions.svg");
+  }
+  .video-controls.top .show-notes {
+    content: url("images/videobuttons/notes.svg");
+  }
+
+  .local-video-container.inset {
+    top: 50px;
   }
 }
