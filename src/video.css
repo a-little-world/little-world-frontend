@@ -67,8 +67,9 @@ video {
   height: 42px;
   min-width: 42px;
   border: none;
+  box-shadow: 0 0 4px 3px rgb(255 255 255 / 15%); /* see the button when there is black background */
   border-radius: 21px;
-  background-color: rgba(100, 100, 100, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   margin-right: 16px;
   padding: 0;
   cursor: pointer;
