@@ -91,16 +91,8 @@ function VideoControls() {
         alt="toggle fullscreen"
         onChange={() => toggleFullscreen(t)}
       />
-      <ToggleButton
-        id="calendar-toggle"
-        text={t("vc_fs_btn_appointment")}
-        alt="calendar"
-      />
-      <ToggleButton
-        id="help-toggle"
-        text={t("vc_fs_btn_mistake")}
-        alt="mistake"
-      />
+      <ToggleButton id="calendar-toggle" text={t("vc_fs_btn_appointment")} alt="calendar" />
+      <ToggleButton id="help-toggle" text={t("vc_fs_btn_mistake")} alt="mistake" />
       <button type="button" className="chat-show" onClick={showChat}>
         <div className="img" alt="show chat" />
         <span className="text">{t("vc_fs_btn_chat")}</span>

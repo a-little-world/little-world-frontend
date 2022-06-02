@@ -524,7 +524,11 @@ class Chat extends Component {
 
     return (
       <div className="container">
-        <div className={this.state.userWasSelected ? "chat-list-box" : "chat-list-box active-panel-mobile"}>
+        <div
+          className={
+            this.state.userWasSelected ? "chat-list-box" : "chat-list-box active-panel-mobile"
+          }
+        >
           <SideBar
             type="light"
             top={
@@ -580,7 +584,9 @@ class Chat extends Component {
             )}
           </div>
         </div>
-        <div className={this.state.userWasSelected ? "right-panel active-panel-mobile" : "right-panel"}>
+        <div
+          className={this.state.userWasSelected ? "right-panel active-panel-mobile" : "right-panel"}
+        >
           <ToastContainer />
           <Popup
             show={this.state.showNewChatPopup}
