@@ -122,7 +122,6 @@ img.swap-languages {
     font-size: 21px;
     line-height: 20px;
     color: #36A9E0;
-    cursor: pointer;
 }
 
 .sidebar-selector input:checked + label {
@@ -149,15 +148,15 @@ img.swap-languages {
     appearance: none;
 }
 
-.questions-categories label, .questions-categories img {
-    cursor: pointer;
+.questions-categories .questions-left, .questions-categories .questions-right {
+    border-radius: 100px;
 }
 
-.questions-categories img.questions-left {
+.questions-categories .questions-left img {
     content: url("./images/arrow-left.svg");
 }
 
-.questions-categories img.questions-right {
+.questions-categories .questions-right img {
     content: url("./images/arrow-right.svg");
 }
 
@@ -187,7 +186,6 @@ img.swap-languages {
 .questions-content {
     display: flex;
     flex-direction: column;
-    overflow-x: scroll;
 }
 
 .questions-content input {
@@ -208,7 +206,6 @@ img.swap-languages {
 }
 
 .questions-content input:not(:checked) + label {
-    cursor: pointer;
 }
 
 .questions-content .question-action {
@@ -216,20 +213,19 @@ img.swap-languages {
     margin-top: 5px;
 }
 
-.question-action img {
-    cursor: pointer;
+.question-action button {
     border-radius: 20px;
 }
 
-.question-action img.yes {
+.question-action .yes img {
     content: url("./images/check.svg");
 }
 
-.question-action img.edit {
+.question-action .edit img {
     content: url("./images/edit.svg");
 }
 
-.question-action img.no {
+.question-action .no img {
     content: url("./images/close.svg");
 }
 

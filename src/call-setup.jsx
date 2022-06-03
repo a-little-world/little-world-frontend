@@ -247,11 +247,7 @@ function CallSetup() {
             <h3 className="title">{t("pcs_main_heading")}</h3>
             <span className="subtitle">{t("pcs_sub_heading")}</span>
           </div>
-          <Link to="/">
-            <button type="button" className="modal-close">
-              &nbsp;
-            </button>
-          </Link>
+          <Link className="modal-close" to="/" />
         </div>
         {mediaPermission && (
           <>
@@ -262,7 +258,7 @@ function CallSetup() {
               <AudioOutputSelect />
             </div>
             <Link to="/call" className="av-setup-confirm" state={{ userPk, tracks }}>
-              <button type="submit">{t("pcs_btn_join_call")}</button>
+              {t("pcs_btn_join_call")}
             </Link>
           </>
         )}

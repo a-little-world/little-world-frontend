@@ -226,7 +226,9 @@ function SidebarQuestions() {
   return (
     <div className="questions">
       <div className="questions-categories">
-        <img alt="show left" className="questions-left" onClick={() => changeScroll("left")} />
+        <button type="button" className="questions-left" onClick={() => changeScroll("left")}>
+          <img alt="show left" />
+        </button>
         <div className="categories">
           {questionsTopics.map((topic) => (
             <span key={topic}>
@@ -242,7 +244,9 @@ function SidebarQuestions() {
             </span>
           ))}
         </div>
-        <img alt="show right" className="questions-right" onClick={() => changeScroll("right")} />
+        <button type="button" className="questions-right" onClick={() => changeScroll("right")}>
+          <img alt="show right" />
+        </button>
       </div>
       <div className="questions-content">
         {questionsData[selectedTopic].map(({ id, text }) => (
@@ -259,9 +263,15 @@ function SidebarQuestions() {
               {text}
               {selectedQuestionId === id && (
                 <div className="question-action">
-                  <img className="yes" alt="accept question" />
-                  <img className="edit" alt="edit question" />
-                  <img className="no" alt="reject question" onClick={removeQuestion} />
+                  <button type="button" className="yes">
+                    <img alt="accept question" />
+                  </button>
+                  <button type="button" className="edit">
+                    <img alt="edit question" />
+                  </button>
+                  <button type="button" className="no" onClick={removeQuestion}>
+                    <img alt="reject question" />
+                  </button>
                 </div>
               )}
             </label>

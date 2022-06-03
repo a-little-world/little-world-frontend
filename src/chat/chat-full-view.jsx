@@ -671,8 +671,8 @@ class Chat extends Component {
                 <button type="button" className="suggest-appointment">
                   <span className="text">{t("chat_suggest_appointment")}</span>
                 </button>
-                <Link to="/call-setup" state={{ userPk }}>
-                  <img className="call-start" alt="start call" />
+                <Link className="call-start" to="/call-setup" state={{ userPk }}>
+                  <img alt="start call" />
                 </Link>
                 <Button
                   type="transparent"

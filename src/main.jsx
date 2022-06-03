@@ -125,10 +125,10 @@ function PartnerProfiles({ matchesInfo }) {
           </div>
         );
       })}
-      <div className="find-new">
+      <Link className="find-new">
         <img alt="plus" />
         {t("cp_find_new_partner")}
-      </div>
+      </Link>
     </div>
   );
 }
