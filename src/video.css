@@ -231,8 +231,14 @@ input#help-toggle:checked + label .img {
     display: none;
   }
 
-  .video-controls {
+  .call-screen .video-controls {
+    margin: 0;
+    padding: 15px 0;
     justify-content: space-evenly;
+  }
+
+  .call-screen .video-controls label, .call-screen .video-controls button, .call-time {
+    margin-right: unset;
   }
 
   .video-controls.top {
@@ -256,6 +262,6 @@ input#help-toggle:checked + label .img {
   }
 
   .local-video-container.inset {
-    top: 50px;
+    top: 60px;
   }
 }
