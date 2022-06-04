@@ -245,6 +245,10 @@ input#help-toggle:checked + label .img {
     display: flex;
   }
 
+  .video-controls.top button.selected {
+    background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%);
+  }
+
   .video-controls.top .show-profile {
     content: url("images/videobuttons/profile.svg");
   }

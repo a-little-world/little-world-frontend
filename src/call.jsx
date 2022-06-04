@@ -108,14 +108,18 @@ function VideoControls() {
   );
 }
 
-function MobileVideoControlsTop() {
-  const { t } = useTranslation();
+function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
   const buttons = ["profile", "chat", "translate", "questions", "notes"];
 
   return (
     <div className="video-controls top">
       {buttons.map((name) => (
-        <button key={name} type="button" className={`show-${name}`} onClick={() => {}}>
+        <button
+          key={name}
+          type="button"
+          className={selectedOverlay === name ? `show-${name} selected` : `show-${name}`}
+          onClick={() => setOverlay(name)}
+        >
           <img alt={`show-${name}`} />
         </button>
       ))}
@@ -302,14 +306,39 @@ function TranslationBox() {
   );
 }
 
+function MobileDrawer({ content, setOverlay }) {
+  const location = useLocation();
+  const { userPk } = location.state || {};
+
+  return (
+    <div className={`call-drawer-container ${content}`}>
+      <div className="call-drawer">
+        <button className="arrow-down" type="button" onClick={() => setOverlay(null)}>
+          <img alt="hide drawer" />
+        </button>
+        <div className="drawer-content">
+          {content === "profile" && "profile"}
+          {content === "chat" && <Chat userPk={userPk} />}
+          {content === "translate" && <TranslationBox />}
+          {content === "questions" && <SidebarQuestions />}
+          {content === "notes" && <SidebarNotes />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function VideoFrame() {
+  const [selectedOverlay, setOverlay] = useState(null);
+
   return (
     <div className="video-border">
       <div className="video-container">
-        <MobileVideoControlsTop />
+        <MobileVideoControlsTop selectedOverlay={selectedOverlay} setOverlay={setOverlay} />
         <div id="foreign-container" className="video-frame" alt="video" />
         <div className="local-video-container inset" />
         <VideoControls />
+        <MobileDrawer content={selectedOverlay} setOverlay={setOverlay} />
       </div>
     </div>
   );

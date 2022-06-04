@@ -238,3 +238,50 @@ img.swap-languages {
         display: contents;
     }
 }
+.call-drawer-container {
+    display: none;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    top: 100%;
+    box-sizing: border-box;
+    padding: 0 10px;
+    transition: top 0.2s linear;
+}
+
+@media screen and (max-width: 1023px) and (orientation: portrait) {
+    .call-drawer-container {
+        display: flex;
+        top: 68px;
+    }
+
+    .call-drawer-container.null {
+        top: 100%;
+    }
+}
+
+.call-drawer {
+    flex-grow: 1;
+    background-color: white;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 15px;
+}
+
+button.arrow-down {
+    background: none;
+    border: none;
+    display: block;
+    padding: 10px;
+    align-self: center;
+}
+
+.arrow-down img {
+    content: url("./images/arrow-down.svg");
+}
+
+.drawer-content {
+    display: flex;
+    flex-grow: 1;
+}
