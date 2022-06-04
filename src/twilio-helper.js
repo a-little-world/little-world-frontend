@@ -14,6 +14,7 @@ const removeTrack = (track) => {
     .forEach((e) => {
       e.remove();
     });
+  activeTracks[track.kind] = null;
 };
 
 const removeActiveTracks = () => {
