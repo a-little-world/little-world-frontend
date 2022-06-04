@@ -207,6 +207,10 @@ input#help-toggle:checked + label .img {
     right: 0;
     margin: 10px;
   }
+
+  .video-controls #calendar-toggle + label, .video-controls .chat-show {
+    display: none;
+  }
 }
 
 
@@ -223,7 +227,7 @@ input#help-toggle:checked + label .img {
 
 
 @media screen and (max-width: 1023px) and (orientation: portrait) {
-  .video-controls #calendar-toggle + label, .video-controls .chat-show, .video-controls .call-time {
+  .video-controls .call-time {
     display: none;
   }
 
