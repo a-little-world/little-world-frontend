@@ -335,7 +335,11 @@ function VideoFrame() {
     <div className="video-border">
       <div className="video-container">
         <MobileVideoControlsTop selectedOverlay={selectedOverlay} setOverlay={setOverlay} />
-        <div id="foreign-container" className="video-frame" alt="video" />
+        <div
+          id="foreign-container"
+          className={selectedOverlay ? "video-frame blur" : "video-frame"}
+          alt="video"
+        />
         <div className="local-video-container inset" />
         <VideoControls />
         <MobileDrawer content={selectedOverlay} setOverlay={setOverlay} />

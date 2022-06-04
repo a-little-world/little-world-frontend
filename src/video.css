@@ -227,6 +227,10 @@ input#help-toggle:checked + label .img {
 
 
 @media screen and (max-width: 1023px) and (orientation: portrait) {
+  #foreign-container.blur video {
+    filter: blur(20px);
+  }
+
   .video-controls .call-time {
     display: none;
   }
@@ -243,6 +247,7 @@ input#help-toggle:checked + label .img {
 
   .video-controls.top {
     display: flex;
+    z-index: 1; /* put above video to avoid blur */
   }
 
   .video-controls.top button.selected {
