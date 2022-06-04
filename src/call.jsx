@@ -123,40 +123,6 @@ function MobileVideoControlsTop() {
   );
 }
 
-function VideoFrame() {
-  return (
-    <div className="video-border">
-      <div className="video-container">
-        <MobileVideoControlsTop />
-        <div id="foreign-container" className="video-frame" alt="video" />
-        <div className="local-video-container inset" />
-        <VideoControls />
-      </div>
-    </div>
-  );
-}
-
-function ActiveCall() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { userPk, tracks } = location.state || {};
-
-  useEffect(() => {
-    if (!userPk) {
-      navigate(`${BACKEND_PATH}/`);
-    }
-    const { videoId, audioId } = tracks || {};
-    if (!(videoId && audioId)) {
-      navigate("/call-setup", { state: { userPk } });
-    }
-    addVideoTrack(videoId);
-    addAudioTrack(audioId);
-    joinRoom(userPk);
-  }, [userPk, tracks]);
-
-  return <VideoFrame />;
-}
-
 function SidebarQuestions() {
   const { t } = useTranslation();
   const [selectedTopic, setTopic] = useState("Jokes");
@@ -281,43 +247,9 @@ function SidebarQuestions() {
     </div>
   );
 }
+
 function SidebarNotes() {
   return <div className="notes">notes stuff goes here</div>;
-}
-
-function Sidebar() {
-  const { t } = useTranslation();
-  const location = useLocation();
-
-  const { userPk } = location.state || {};
-  const sidebarTopics = ["chat", "questions", "notes"];
-  const { sideSelection, setSideSelection } = useContext(SidebarContext);
-  const handleChange = (e) => setSideSelection(e.target.value);
-
-  return (
-    <div className="call-sidebar">
-      <div className="sidebar-selector">
-        {sidebarTopics.map((topic) => (
-          <span key={topic}>
-            <input
-              type="radio"
-              id={`${topic}-radio`}
-              value={topic}
-              checked={sideSelection === topic}
-              name="sidebar"
-              onChange={handleChange}
-            />
-            <label htmlFor={`${topic}-radio`}>{t(`vc_btn_${topic}`)}</label>
-          </span>
-        ))}
-      </div>
-      <div className="sidebar-content">
-        {sideSelection === "chat" && <Chat userPk={userPk} />}
-        {sideSelection === "questions" && <SidebarQuestions />}
-        {sideSelection === "notes" && <SidebarNotes />}
-      </div>
-    </div>
-  );
 }
 
 function TranslationDropdown({ side }) {
@@ -365,6 +297,75 @@ function TranslationBox() {
       <div className="right">
         <TranslationDropdown side="right" />
         <textarea placeholder={t("vc_translator_type_here")} />
+      </div>
+    </div>
+  );
+}
+
+function VideoFrame() {
+  return (
+    <div className="video-border">
+      <div className="video-container">
+        <MobileVideoControlsTop />
+        <div id="foreign-container" className="video-frame" alt="video" />
+        <div className="local-video-container inset" />
+        <VideoControls />
+      </div>
+    </div>
+  );
+}
+
+function ActiveCall() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userPk, tracks } = location.state || {};
+
+  useEffect(() => {
+    if (!userPk) {
+      navigate(`${BACKEND_PATH}/`);
+    }
+    const { videoId, audioId } = tracks || {};
+    if (!(videoId && audioId)) {
+      navigate("/call-setup", { state: { userPk } });
+    }
+    addVideoTrack(videoId);
+    addAudioTrack(audioId);
+    joinRoom(userPk);
+  }, [userPk, tracks]);
+
+  return <VideoFrame />;
+}
+
+function Sidebar() {
+  const { t } = useTranslation();
+  const location = useLocation();
+
+  const { userPk } = location.state || {};
+  const sidebarTopics = ["chat", "questions", "notes"];
+  const { sideSelection, setSideSelection } = useContext(SidebarContext);
+  const handleChange = (e) => setSideSelection(e.target.value);
+
+  return (
+    <div className="call-sidebar">
+      <div className="sidebar-selector">
+        {sidebarTopics.map((topic) => (
+          <span key={topic}>
+            <input
+              type="radio"
+              id={`${topic}-radio`}
+              value={topic}
+              checked={sideSelection === topic}
+              name="sidebar"
+              onChange={handleChange}
+            />
+            <label htmlFor={`${topic}-radio`}>{t(`vc_btn_${topic}`)}</label>
+          </span>
+        ))}
+      </div>
+      <div className="sidebar-content">
+        {sideSelection === "chat" && <Chat userPk={userPk} />}
+        {sideSelection === "questions" && <SidebarQuestions />}
+        {sideSelection === "notes" && <SidebarNotes />}
       </div>
     </div>
   );
