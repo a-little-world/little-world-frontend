@@ -201,17 +201,15 @@ function SidebarQuestions() {
         </button>
         <div className="categories">
           {questionsTopics.map((topic) => (
-            <span key={topic}>
-              <input
-                type="radio"
-                id={`${topic}-radio`}
-                value={topic}
-                checked={selectedTopic === topic}
-                name="questionsTopics"
-                onChange={(e) => setTopic(e.target.value)}
-              />
-              <label htmlFor={`${topic}-radio`}>{topic}</label>
-            </span>
+            <button
+              key={topic}
+              type="button"
+              className={selectedTopic === topic ? `${topic}-radio selected` : `${topic}-radio`}
+              value={topic}
+              onClick={() => setTopic(topic)}
+            >
+              {topic}
+            </button>
           ))}
         </div>
         <button type="button" className="questions-right" onClick={() => changeScroll("right")}>
@@ -220,32 +218,31 @@ function SidebarQuestions() {
       </div>
       <div className="questions-content">
         {questionsData[selectedTopic].map(({ id, text }) => (
-          <span key={id}>
-            <input
-              type="radio"
-              id={`question-${id}`}
-              value={id}
-              checked={selectedQuestionId === id}
-              name={selectedTopic}
-              onChange={() => setQuestionId(id)}
-            />
-            <label htmlFor={`question-${id}`}>
+          <div
+            key={id}
+            className={selectedQuestionId === id ? `question-${id} selected` : `question-${id}`}
+          >
+            <button
+              type="button"
+              className={selectedQuestionId === id ? "selected" : ""}
+              onClick={() => setQuestionId(id)}
+            >
               {text}
-              {selectedQuestionId === id && (
-                <div className="question-action">
-                  <button type="button" className="yes">
-                    <img alt="accept question" />
-                  </button>
-                  <button type="button" className="edit">
-                    <img alt="edit question" />
-                  </button>
-                  <button type="button" className="no" onClick={removeQuestion}>
-                    <img alt="reject question" />
-                  </button>
-                </div>
-              )}
-            </label>
-          </span>
+            </button>
+            {selectedQuestionId === id && (
+              <div className="question-action">
+                <button type="button" className="yes">
+                  <img alt="accept question" />
+                </button>
+                <button type="button" className="edit">
+                  <img alt="edit question" />
+                </button>
+                <button type="button" className="no" onClick={removeQuestion}>
+                  <img alt="reject question" />
+                </button>
+              </div>
+            )}
+          </div>
         ))}
       </div>
     </div>

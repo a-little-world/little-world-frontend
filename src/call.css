@@ -136,12 +136,19 @@ img.swap-languages {
     padding: 10px;
     overflow: auto;
     height: 100px;
+    display: flex;
+}
+
+.questions {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .questions-categories {
     display: flex;
     align-items: center;
-    height: 44px;
 }
 
 .questions-categories input {
@@ -169,16 +176,19 @@ img.swap-languages {
     display: inherit;
 }
 
-.questions-categories .categories input + label {
+.questions-categories .categories button {
     padding: 10px;
     border-radius: 23px;
     font-style: normal;
     font-weight: 500;
     font-size: 18px;
     white-space: nowrap;
+    border: 2px solid #EF8A21;
+    margin: 0 6px;
+    box-sizing: border-box;
 }
 
-.questions-categories .categories input:checked + label {
+.questions-categories .categories button.selected {
     background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%);
     color: white;
 }
@@ -186,26 +196,34 @@ img.swap-languages {
 .questions-content {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
 }
 
-.questions-content input {
-    appearance: none;
-}
-
-.questions-content label {
-    padding: 15px;
+.questions-content > div {
+    border: 1px solid rgb(0 0 0 / 5%);
+    box-sizing: border-box;
     border-radius: 18px;
     margin-top: 10px;
     background: #F9FAFB;
     width: 100%;
+    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.questions-content input:checked + label {
-    border: 1px solid red;
-    box-sizing: border-box;
+.questions-content > div > button {
+    padding: 15px;
+    font-size: unset;
+    width: 100%;
 }
 
-.questions-content input:not(:checked) + label {
+.questions-content div.selected {
+    border-color: red;
+    padding: 15px;
+}
+.questions-content button.selected {
+    padding: 0;
 }
 
 .questions-content .question-action {
@@ -238,6 +256,7 @@ img.swap-languages {
         display: contents;
     }
 }
+
 .call-drawer-container {
     display: none;
     width: 100%;
