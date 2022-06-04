@@ -13,6 +13,7 @@
   padding: 25px;
   margin-left: 20px;
   background-color: white;
+  min-width: 400px;
 }
 
 .flex-container .rce-container-input, .rce-container-mlist, .rce-navbar.light, .rce-mlist {
@@ -156,6 +157,41 @@
 
 
 /** top bar **/
+.rce-navbar {
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+}
+
+.rce-navbar-item__left {
+  flex: 1 1;
+  min-width: 160px;
+}
+
+.rce-navbar-item__right {
+  min-width: 100px;
+}
+
+.rce-navbar-item__right button {
+  overflow: hidden;
+}
+
+.rce-navbar-item__right button .text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: block;
+}
+
+.right-panel .rce-navbar-item__left .rce-citem-body {
+  min-width: 70px;
+  max-width: fit-content;
+}
+
+.right-panel .rce-navbar-item__left .rce-container-citem {
+  flex: 1 1;
+}
+
 .rce-citem-body--top-title {
   max-width: 300px;
 }
@@ -334,6 +370,7 @@
 
 .content-area-right {
   margin: 10px;
+  min-width: 800px;
 }
 
 .rce-citem-body {
@@ -344,6 +381,8 @@
 
 .rce-citem {
   border-radius: 18px;
+  min-width: unset;
+  flex: 1 1;
 }
 
 .rce-citem.selected {
