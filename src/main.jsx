@@ -261,8 +261,7 @@ function Main() {
     <div className="main">
       <Sidebar />
       <div className="content-area-right">
-        {location.pathname ===
-          `${BACKEND_PATH}/` /* Maybe check for something else than path? */ && (
+        {location.pathname === `${BACKEND_PATH}/` && (
           <>
             <NavBarTop />
             <div className="content-area-main">
