@@ -42,47 +42,30 @@
   color: white;
 }
 
+.sidebar-item.selected img {
+  filter: brightness(0) invert(1);
+}
+
 .sidebar .start img {
   content: url("./images/sidebar/start.svg");
-}
-.sidebar .start.selected img {
-  content: url("./images/sidebar/start-white.svg");
 }
 .sidebar .messages img {
   content: url("./images/sidebar/chat.svg");
 }
-.sidebar .messages.selected img {
-  content: url("./images/sidebar/chat-white.svg");
-}
 .sidebar .notifications img {
   content: url("./images/sidebar/notifications.svg");
-}
-.sidebar .notifications.selected img {
-  content: url("./images/sidebar/notifications-white.svg");
 }
 .sidebar .my_profile img {
   content: url("./images/sidebar/profile.svg");
 }
-.sidebar .my_profile.selected img {
-  content: url("./images/sidebar/profile-white.svg");
-}
 .sidebar .help img {
   content: url("./images/sidebar/help.svg");
-}
-.sidebar .help.selected img {
-  content: url("./images/sidebar/help-white.svg");
 }
 .sidebar .settings img {
   content: url("./images/sidebar/settings.svg");
 }
-.sidebar .settings.selected img {
-  content: url("./images/sidebar/settings-white.svg");
-}
 .sidebar .log_out img {
   content: url("./images/sidebar/logout.svg");
-}
-.sidebar .log_out.selected img {
-  content: url("./images/sidebar/logout-white.svg");
 }
 
 .content-area {
