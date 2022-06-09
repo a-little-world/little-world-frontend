@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import $ from "jquery";
 import Cookies from "js-cookie";
 import Link from "./path-prepend";
-import { BACKEND_PATH, DEVELOPMENT, BACKEND_URL } from "./ENVIRONMENT";
+import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import logoWithText from "./images/logo-text.svg";
 import Chat from "./chat/chat-full-view";
 
@@ -15,39 +15,15 @@ function Sidebar() {
   const { t } = useTranslation();
 
   const buttonData = [
-    { label: "start", image: "", path: "/" },
-    { label: "messages", image: "", path: "/chat" },
-    { label: "notifications", image: "", path: "" },
-    { label: "my_profile", image: "", path: "" },
-    { label: "help", image: "", path: "" },
-    { label: "settings", image: "", path: "" },
-    { label: "log_out", image: "", path: "" },
+    { label: "start", path: "/" },
+    { label: "messages", path: "/chat" },
+    { label: "notifications", path: "" },
+    { label: "my_profile", path: "" },
+    { label: "help", path: "" },
+    { label: "settings", path: "" },
+    { label: "log_out", path: "" },
   ];
 
-  const initCredentials =
-    window.localStorage.getItem("credentials") || "benjamin.tim@gmx.de:Test123";
-  const [login, setLogin] = useState(initCredentials);
-
-  const handleChange = (e) => {
-    setLogin(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    /*
-     * We force login the new user and reload the window
-     * NOTE: we did change the `crsftoken` and `sessionid`
-     * so they have to be realoded accordingly, prob only relevant for `crsftoken`
-     */
-    if (DEVELOPMENT) {
-      const [userLogin, userPass] = login.split(":");
-      // I stole this trick with local storage, it's not cleared on reload an can be used to set defaults
-      window.localStorage.setItem("current_login_user", userLogin);
-      window.localStorage.setItem("current_login_pass", userPass);
-      // simulator.awaitSimulatedLogin(userPass[0], userPass[1], true);
-      window.location.reload();
-    }
-  };
 
   return (
     <div className="sidebar">
