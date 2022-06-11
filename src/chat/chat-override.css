@@ -170,7 +170,7 @@
 }
 
 .rce-navbar-item__right {
-  min-width: 100px;
+  min-width: 60px;
 }
 
 .rce-navbar-item__right button {
@@ -196,7 +196,7 @@
   max-width: 300px;
 }
 
-.free-appointments, .suggest-appointment, .chat-back {
+.free-appointments, .suggest-appointment {
   border-radius: 100px;
   display: inline;
   padding: 0 20px;
@@ -219,7 +219,7 @@
   /* padding: 8px 18px; reduce padding by border size */
 }
 
-.suggest-appointment, .call-start, .chat-back {
+.suggest-appointment, .call-start {
   background: linear-gradient(90deg, #F28D00 0%, #F9BA6E 100%);
   border: none;
   color: white;
@@ -466,8 +466,16 @@
     margin-left: 0;
   }
 
+  .rce-navbar-item__right .free-appointments, .rce-navbar-item__right .suggest-appointment {
+    display: none;
+  }
+
   .chat-back {
     display: inline;
+  }
+
+  .chat-back img {
+    content: url("../images/arrow-back.svg");
   }
 
   .rce-sbar-item, .chat-list {

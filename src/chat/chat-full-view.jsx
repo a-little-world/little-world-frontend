@@ -642,7 +642,7 @@ class Chat extends Component {
                     this.setState({ userWasSelected: false });
                   }}
                 >
-                  <span className="text">&lt;</span>
+                  <img alt="return to chat partner selection" />
                 </button>
                 <ChatItem
                   {...this.state.selectedDialog}
