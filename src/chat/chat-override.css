@@ -459,6 +459,14 @@
     box-sizing: border-box;
   }
 
+  .right-panel, .container > .chat-list-box,
+  .flex-container .rce-container-input,
+  .rce-container-mlist,
+  .rce-navbar.light, 
+  .rce-mlist {
+    border-radius: 0;
+  }
+
   .right-panel {
     height: 100%;
     box-sizing: border-box;
