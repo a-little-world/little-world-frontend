@@ -447,6 +447,10 @@
   border: none;
 }
 
+.buttons-mobile {
+  display: none;
+}
+
 @media screen and (max-width: 1023px) {
   body {
     background: none;
@@ -492,11 +496,22 @@
     width: 100%;
   }
 
+  .buttons-mobile {
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: space-around;
+    max-width: 100vw;
+    overflow: hidden;
+  }
+  .buttons-mobile button {
+    margin: 0;
+  }
+
   .main, .content-area-right, .container, .content-area-right {
     display: contents !important;
   }
 
-  .sidebar, .right-panel:not(.active-panel-mobile), .chat-list-box:not(.active-panel-mobile), button .text {
+  .sidebar, .right-panel:not(.active-panel-mobile), .chat-list-box:not(.active-panel-mobile) {
     display: none !important;
   }
 }

@@ -677,6 +677,14 @@ class Chat extends Component {
               </>
             }
           />
+          <div className="buttons-mobile">
+            <button type="button" className="free-appointments">
+              <span className="text">{t("chat_show_free_appointments")}</span>
+            </button>
+            <button type="button" className="suggest-appointment">
+              <span className="text">{t("chat_suggest_appointment")}</span>
+            </button>
+          </div>
           <Core />
         </div>
       </div>
