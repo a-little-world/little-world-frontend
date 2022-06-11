@@ -674,25 +674,6 @@ class Chat extends Component {
                 <Link className="call-start" to="/call-setup" state={{ userPk }}>
                   <img alt="start call" />
                 </Link>
-                <Button
-                  type="transparent"
-                  color="black"
-                  onClick={() => {
-                    this.setState({ usersDataLoading: true });
-                    fetchUsersList(this.state.dialogList).then((r) => {
-                      this.setState({ usersDataLoading: false });
-                      if (r.tag === 0) {
-                        console.log("Fetched users:");
-                        console.log(r.fields[0]);
-                        this.setState({ availableUsers: r.fields[0] });
-                      } else {
-                        console.log("Users error:");
-                        toast.error(r.fields[0]);
-                      }
-                    });
-                    this.setState({ showNewChatPopup: true });
-                  }}
-                />
               </>
             }
           />
