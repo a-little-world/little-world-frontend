@@ -527,6 +527,10 @@
   .right-panel:not(.active-panel-mobile), .chat-list-box:not(.active-panel-mobile) {
     display: none !important;
   }
+
+  .rce-container-mlist {
+    margin-bottom: unset;
+  }
 }
 
 .show-chat .nav-bar-top .selector {
