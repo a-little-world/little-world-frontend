@@ -6,6 +6,7 @@
 .right-panel, .container > .chat-list-box {
   border-radius: 30px;
   border: 1px solid #E6E8EC;
+  box-sizing: border-box;
   background-color: white;
 }
 
@@ -472,6 +473,7 @@
     box-sizing: border-box;
     padding: 0;
     margin-left: 0;
+    min-width: unset;
   }
 
   .rce-navbar-item__right .free-appointments, .rce-navbar-item__right .suggest-appointment {
