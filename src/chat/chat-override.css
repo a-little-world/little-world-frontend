@@ -28,6 +28,7 @@
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
+  width: 0; /* black magic fuckery. prevents element from over-expanding */
 }
 
 .rce-container-mbox {
