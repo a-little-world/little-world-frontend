@@ -109,7 +109,7 @@ function VideoInputSelect() {
   };
 
   return (
-    <div className="">
+    <div className="webcam-select">
       <label htmlFor="webcam-select">{t("pcs_camera_label")}</label>
       <select name="webcam-select" onChange={handleChange}>
         {videoInDevices.map((deviceInfo) => {
@@ -160,7 +160,7 @@ function AudioInputSelect() {
   };
 
   return (
-    <div className="">
+    <div className="mic-select">
       <label htmlFor="mic-select">{t("pcs_mic_label")}</label>
       <select name="mic-select" defaultValue={selectedAudioIn} onChange={handleChange}>
         {audioInDevices.map((deviceInfo) => {
@@ -189,7 +189,7 @@ function AudioOutputSelect() {
   }, []);
 
   return (
-    <div className="">
+    <div className="speaker-select">
       <label htmlFor="speaker-select">{t("pcs_speaker_label")}</label>
       <select name="speaker-select">
         {audioOutDevices.map((deviceInfo) => {
