@@ -40,7 +40,8 @@
   font-size: 24px;
 }
 .modal-header .subtitle {
-  color: #6B7280;
+  font-weight: 300;
+  color: #A6A6A6;
   font-size: 18px;
 }
 
@@ -68,8 +69,9 @@
 }
 
 .av-setup-dropdowns label {
-  color: #5F5F5F;
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 16px;
+  color: #363535;
 }
 
 .av-setup-dropdowns select {
@@ -81,6 +83,9 @@
   border: 1px solid #E6E8EC;
   border-radius: 8px;
   box-sizing: border-box;
+  font-family: "Signika Negative";
+  font-size: 15px;
+  color: #A6A6A6;
 }
 
 .av-setup-confirm {
