@@ -83,12 +83,17 @@
   background-position: -30px;
   background-origin: content-box;
   background-repeat: no-repeat;
+  background-color: rgba(230, 232, 236, 0.2);
   border: 1px solid #E6E8EC;
   border-radius: 8px;
   box-sizing: border-box;
   font-family: "Signika Negative";
   font-size: 15px;
   color: #A6A6A6;
+}
+
+.av-setup-dropdowns select:focus-visible {
+  outline:  auto;
 }
 
 .webcam-select select {
