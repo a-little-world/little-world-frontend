@@ -109,7 +109,7 @@ function VideoControls() {
 }
 
 function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
-  const buttons = ["profile", "chat", "translate", "questions", "notes"];
+  const buttons = ["chat", "translate", "questions", "notes"];
 
   return (
     <div className="video-controls top">
@@ -314,7 +314,6 @@ function MobileDrawer({ content, setOverlay }) {
           <img alt="hide drawer" />
         </button>
         <div className="drawer-content">
-          {content === "profile" && "profile"}
           {content === "chat" && <Chat userPk={userPk} />}
           {content === "translate" && <TranslationBox />}
           {content === "questions" && <SidebarQuestions />}

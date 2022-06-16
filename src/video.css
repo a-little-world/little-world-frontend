@@ -254,9 +254,6 @@ input#help-toggle:checked + label .img {
     background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%);
   }
 
-  .video-controls.top .show-profile {
-    content: url("images/videobuttons/profile.svg");
-  }
   .video-controls.top .show-chat {
     content: url("images/videobuttons/chat.svg");
   }
