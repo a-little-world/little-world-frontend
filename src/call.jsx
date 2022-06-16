@@ -1,5 +1,6 @@
 import React, { useEffect, useState, createContext, useContext } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
+import Link from "./path-prepend";
 import "./App.css";
 import "./call.css";
 import "./i18n";
@@ -356,7 +357,7 @@ function ActiveCall() {
     }
     const { videoId, audioId } = tracks || {};
     if (!(videoId && audioId)) {
-      navigate("/call-setup", { state: { userPk } });
+      navigate(`${BACKEND_PATH}/call-setup`, { state: { userPk } });
     }
     addVideoTrack(videoId);
     addAudioTrack(audioId);
