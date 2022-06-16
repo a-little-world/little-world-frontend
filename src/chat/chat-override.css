@@ -505,6 +505,8 @@
   }
   .buttons-mobile button {
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .main-page, .content-area .container {
