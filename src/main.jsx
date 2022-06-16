@@ -68,41 +68,44 @@ function Sidebar() {
   );
 }
 
-function NavBarTop() {
+function MobileNavBar() {
+  return (
+    <div className="mobile-header">
+      <button type="button" className="menu">
+        <img alt="open menu" />
+      </button>
+      <div className="logo-with-text">
+        <img className="logo-mobile" alt="" />
+        <span className="logo-text">Little World</span>
+      </div>
+      <button className="notification" type="button">
+        <img alt="show notifications" />
+      </button>
+    </div>
+  );
+}
+
+function Selector() {
   const { t } = useTranslation();
   const nbtTopics = ["conversation_partners", "appointments", "community_calls"];
   const [topSelection, setTopSelection] = useState("conversation_partners");
   const handleChange = (e) => setTopSelection(e.target.value);
 
   return (
-    <div className="nav-bar-top">
-      <div className="mobile-header">
-        <button type="button" className="menu">
-          <img alt="open menu" />
-        </button>
-        <div className="logo-with-text">
-          <img className="logo-mobile" alt="" />
-          <span className="logo-text">Little World</span>
-        </div>
-        <button className="notification" type="button">
-          <img alt="show notifications" />
-        </button>
-      </div>
-      <div className="selector">
-        {nbtTopics.map((topic) => (
-          <span className={topic} key={topic}>
-            <input
-              type="radio"
-              id={`${topic}-radio`}
-              value={topic}
-              checked={topSelection === topic}
-              name="sidebar"
-              onChange={handleChange}
-            />
-            <label htmlFor={`${topic}-radio`}>{t(`nbt_${topic}`)}</label>
-          </span>
-        ))}
-      </div>
+    <div className="selector">
+      {nbtTopics.map((topic) => (
+        <span className={topic} key={topic}>
+          <input
+            type="radio"
+            id={`${topic}-radio`}
+            value={topic}
+            checked={topSelection === topic}
+            name="sidebar"
+            onChange={handleChange}
+          />
+          <label htmlFor={`${topic}-radio`}>{t(`nbt_${topic}`)}</label>
+        </span>
+      ))}
     </div>
   );
 }
@@ -269,18 +272,21 @@ function Main() {
     });
   }, []);
 
+  const use = location.pathname.split("/").slice(-1)[0] || "main";
+
   return (
-    <div className="main">
+    <div className={`main-page show-${use}`}>
       <Sidebar />
-      <div className="content-area-right">
+      <div className="content-area">
+        <div className="nav-bar-top">
+          <MobileNavBar />
+          <Selector />
+        </div>
         {location.pathname === `${BACKEND_PATH}/` && (
-          <>
-            <NavBarTop />
-            <div className="content-area-main">
-              <NotificationPanel userInfo={userInfo} />
-              <PartnerProfiles matchesInfo={matchesInfo} />
-            </div>
-          </>
+          <div className="content-area-main">
+            <NotificationPanel userInfo={userInfo} />
+            <PartnerProfiles matchesInfo={matchesInfo} />
+          </div>
         )}
         {location.pathname === `${BACKEND_PATH}/chat` && (
           <Chat matchesInfo={matchesInfo} userPk={userPk} />

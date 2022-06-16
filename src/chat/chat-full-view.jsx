@@ -520,6 +520,7 @@ class Chat extends Component {
     const clickUser = (item) => {
       this.selectDialog(item);
       this.setState({ userWasSelected: true });
+      document.body.classList.add("hide-mobile-header");
     };
 
     return (
@@ -639,6 +640,7 @@ class Chat extends Component {
                   className="chat-back"
                   onClick={() => {
                     console.log("back");
+                    document.body.classList.remove("hide-mobile-header");
                     this.setState({ userWasSelected: false });
                   }}
                 >

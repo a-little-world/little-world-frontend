@@ -372,7 +372,7 @@
   min-height: 200px;
 }
 
-.content-area-right {
+.content-area {
   margin: 10px;
   min-width: 800px;
 }
@@ -455,15 +455,12 @@
 }
 
 @media screen and (max-width: 1023px) {
-  body {
-    background: none;
+  #root {
+    flex-grow: 1;
   }
 
-  #root, .main {
+  .main-page {
     height: 100%;
-  }
-
-  .main {
     box-sizing: border-box;
   }
 
@@ -510,11 +507,22 @@
     margin: 0;
   }
 
-  .main, .content-area-right, .container, .content-area-right {
+  .main-page, .content-area .container {
     display: contents !important;
+  }
+
+  .content-area {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    min-width: unset;
   }
 
   .sidebar, .right-panel:not(.active-panel-mobile), .chat-list-box:not(.active-panel-mobile) {
     display: none !important;
   }
+}
+
+.show-chat .nav-bar-top .selector {
+  display: none;
 }

@@ -252,7 +252,7 @@ img.swap-languages {
         display: none;
     }
     
-    body, .call-screen, .call-and-text, .video-border {
+    .call-screen, .call-and-text, .video-border {
         display: contents;
     }
 }
