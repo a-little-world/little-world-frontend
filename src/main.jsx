@@ -76,9 +76,21 @@ function NavBarTop() {
 
   return (
     <div className="nav-bar-top">
+      <div className="mobile-header">
+        <button type="button" className="menu">
+          <img alt="open menu" />
+        </button>
+        <div className="logo-with-text">
+          <img className="logo-mobile" alt="" />
+          <span className="logo-text">Little World</span>
+        </div>
+        <button className="notification" type="button">
+          <img alt="show notifications" />
+        </button>
+      </div>
       <div className="selector">
         {nbtTopics.map((topic) => (
-          <span key={topic}>
+          <span className={topic} key={topic}>
             <input
               type="radio"
               id={`${topic}-radio`}

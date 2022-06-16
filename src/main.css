@@ -91,6 +91,7 @@
 
 .nav-bar-top {
   display: flex;
+  flex-direction: column;
   background: #FFFFFF;
   border: 1px solid #E6E8EC;
   box-sizing: border-box;
@@ -101,6 +102,7 @@
 
 .nav-bar-top .selector {
   display: flex;
+  padding: 12px;
 }
 
 .nav-bar-top .selector > span {
@@ -115,8 +117,8 @@
   font-size: 18px;
   color: #36A9E0;
   padding: 10px 15px;
-  margin: 13px;
   border-radius: 20px;
+  white-space: nowrap;
 }
 
 .nav-bar-top input:checked + label {
@@ -230,9 +232,69 @@ a.call img {
   align-items: center;
 }
 
-@media (max-width: 1024px) {
+.mobile-header {
+  display: none;
+}
+
+@media (max-width: 1023px) {
   .notification-panel {
     display: none;
+  }
+
+  .mobile-header {
+    display: flex;
+    padding: 10px 0;
+    justify-content: space-around;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .mobile-header button {
+    border: none;
+    background: none;
+    border-radius: 100px;
+  }
+
+  .mobile-header .menu img {
+    content: url("./images/button-menu.svg");
+  }
+  .mobile-header .logo-with-text {
+    margin: auto 0;
+    width: 210px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .mobile-header .logo-mobile {
+    content: url("./images/logo.svg");
+    width: 50px;
+    vertical-align: text-bottom;
+  }
+  .mobile-header .logo-text {
+    font-family: "Signika Negative";
+    font-weight: 600;
+    font-size: 30px;
+    color: #23262F;
+  }
+  .mobile-header .notification img {
+    content: url("./images/button-bell.svg");
+  }
+
+  .nav-bar-top {
+    border-radius: unset;
+    margin: unset;
+    overflow: hidden; /* risk here is from .selector element overflowing */
+  }
+  .nav-bar-top .selector {
+    margin: auto;
+  }
+  .nav-bar-top .selector > span.community_calls {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 1024px) and (orientation: portrait) {
+  .nav-bar-top {
+    position: sticky;
+    top: 0;
   }
 }
 
