@@ -62,8 +62,6 @@ function ToggleButton({ id, text, alt, onChange, defaultChecked, disabled }) {
 
 function VideoControls() {
   const { t } = useTranslation();
-  const location = useLocation();
-  const { videoId, audioId } = (location.state || {}).tracks || {};
 
   const setSideSelection = useContext(SetSideContext);
 
@@ -74,16 +72,21 @@ function VideoControls() {
     setSideSelection("chat");
   };
 
+  const audioMuted = localStorage.getItem("audio muted") === "true";
+  const videoMuted = localStorage.getItem("video muted") === "true";
+
   return (
     <div className="video-controls">
       <ToggleButton
         id="audio-toggle"
         alt="mute/unmute mic"
+        defaultChecked={audioMuted}
         onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
       />
       <ToggleButton
         id="video-toggle"
         alt="enable/disable webcam"
+        defaultChecked={videoMuted}
         onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
       />
       <ToggleButton
