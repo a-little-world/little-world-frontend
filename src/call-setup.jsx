@@ -3,9 +3,7 @@ import "./call-setup.css";
 import "./i18n";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import Link from "./path-prepend";
-import { setVideo, setAudio } from "./features/tracks";
 import { addAudioTrack, addVideoTrack, toggleLocalTracks } from "./twilio-helper";
 import signalWifi from "./images/signal-wifi.svg";
 import { BACKEND_PATH } from "./ENVIRONMENT";
@@ -26,7 +24,6 @@ function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText })
 }
 
 function VideoControls({ signalInfo }) {
-  const { videoId, audioId } = useSelector((state) => state.tracks);
 
   return (
     <div className="video-controls">
@@ -72,10 +69,8 @@ function VideoFrame() {
   );
 }
 
-function VideoInputSelect() {
+function VideoInputSelect({ setVideo }) {
   const { t } = useTranslation();
-  const selectedVideoIn = useSelector((state) => state.tracks.videoId);
-  const dispatch = useDispatch();
 
   // get avaiable devices
   const [videoInDevices, setVideoInDevices] = useState([]);
@@ -92,20 +87,13 @@ function VideoInputSelect() {
   // set the first device as initial when devices have been detected
   useEffect(() => {
     if (videoInDevices[0]) {
-      dispatch(setVideo(videoInDevices[0].deviceId));
+      setVideo(videoInDevices[0].deviceId);
     }
   }, [videoInDevices]);
 
-  // fix checkbox status; used when we select a new camera while the previous one is muted.
-  useEffect(() => {
-    if (selectedVideoIn) {
-      document.getElementById("video-toggle").checked = !addVideoTrack(selectedVideoIn);
-    }
-  }, [selectedVideoIn]);
-
   const handleChange = (e) => {
     const deviceId = e.target.value;
-    dispatch(setVideo(deviceId));
+    setVideo(deviceId);
   };
 
   return (
@@ -124,10 +112,8 @@ function VideoInputSelect() {
   );
 }
 
-function AudioInputSelect() {
+function AudioInputSelect({ setAudio }) {
   const { t } = useTranslation();
-  const selectedAudioIn = useSelector((state) => state.tracks.audioId);
-  const dispatch = useDispatch();
 
   // get avaiable devices
   const [audioInDevices, setAudioInDevices] = useState([]);
@@ -143,26 +129,19 @@ function AudioInputSelect() {
   // set the first device as initial when devices have been detected
   useEffect(() => {
     if (audioInDevices[0]) {
-      dispatch(setAudio(audioInDevices[0].deviceId));
+      setAudio(audioInDevices[0].deviceId);
     }
   }, [audioInDevices]);
 
-  // fix checkbox status; used when we select a new mic while the previous one is muted.
-  useEffect(() => {
-    if (selectedAudioIn) {
-      document.getElementById("audio-toggle").checked = !addAudioTrack(selectedAudioIn);
-    }
-  }, [selectedAudioIn]);
-
   const handleChange = (e) => {
     const deviceId = e.target.value;
-    dispatch(setAudio(deviceId));
+    setAudio(deviceId);
   };
 
   return (
     <div className="mic-select">
       <label htmlFor="mic-select">{t("pcs_mic_label")}</label>
-      <select name="mic-select" defaultValue={selectedAudioIn} onChange={handleChange}>
+      <select name="mic-select" onChange={handleChange}>
         {audioInDevices.map((deviceInfo) => {
           return (
             <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
@@ -216,7 +195,26 @@ function CallSetup() {
     }
   }, [userPk]);
 
-  const tracks = useSelector((state) => state.tracks);
+  const [videoTrack, setVideoTrack] = useState(null);
+  const setVideo = (deviceId) => {
+    localStorage.setItem("video muted", false); // always unmute when selecting new
+    document.getElementById("video-toggle").checked = false;
+    addVideoTrack(deviceId);
+    setVideoTrack(deviceId);
+  };
+
+  const [audioTrack, setAudioTrack] = useState(null);
+  const setAudio = (deviceId) => {
+    localStorage.setItem("audio muted", false); // always unmute when selecting new
+    document.getElementById("audio-toggle").checked = false;
+    addAudioTrack(deviceId);
+    setAudioTrack(deviceId);
+  };
+
+  const tracks = {
+    videoId: videoTrack,
+    audioId: audioTrack,
+  };
 
   const [mediaPermission, setMediaPermission] = useState(null);
 
@@ -253,8 +251,8 @@ function CallSetup() {
           <>
             <VideoFrame />
             <div className="av-setup-dropdowns">
-              <VideoInputSelect />
-              <AudioInputSelect />
+              <VideoInputSelect setVideo={setVideo} />
+              <AudioInputSelect setAudio={setAudio} />
               <AudioOutputSelect />
             </div>
             <Link to="/call" className="av-setup-confirm" state={{ userPk, tracks }}>
