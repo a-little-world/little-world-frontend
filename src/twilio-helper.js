@@ -4,7 +4,7 @@ import { BACKEND_URL } from "./ENVIRONMENT";
 
 const { connect, createLocalVideoTrack, createLocalAudioTrack } = require("twilio-video");
 
-const activeTracks = { video: null, audio: null };
+const selectedTracks = { video: null, audio: null };
 
 const removeTrack = (track) => {
   console.log(`removing ${track.kind} track with device id ${track.deviceId}`);
@@ -14,25 +14,25 @@ const removeTrack = (track) => {
     .forEach((e) => {
       e.remove();
     });
-  activeTracks[track.kind] = null;
+  selectedTracks[track.kind] = null;
 };
 
 const removeActiveTracks = () => {
-  if (activeTracks.video) {
-    removeTrack(activeTracks.video);
+  if (selectedTracks.video) {
+    removeTrack(selectedTracks.video);
   }
-  if (activeTracks.audio) {
-    removeTrack(activeTracks.audio);
+  if (selectedTracks.audio) {
+    removeTrack(selectedTracks.audio);
   }
 };
 
 function addVideoTrack(deviceId) {
   let id = deviceId;
-  if (activeTracks.video) {
+  if (selectedTracks.video) {
     if (id) {
-      removeTrack(activeTracks.video);
+      removeTrack(selectedTracks.video);
     } else {
-      id = activeTracks.video.deviceId;
+      id = selectedTracks.video.deviceId;
     }
   }
 
@@ -48,21 +48,21 @@ function addVideoTrack(deviceId) {
     console.error(`Unable to create local video track: ${error.message}`);
     return false;
   }).then((localTrack) => {
-    activeTracks.video = localTrack;
-    activeTracks.video.deviceId = deviceId; // need this for restarting after mute
+    selectedTracks.video = localTrack;
+    selectedTracks.video.deviceId = deviceId; // need this for restarting after mute
     const localMediaContainer = document.querySelector(".local-video-container");
-    localMediaContainer.prepend(activeTracks.video.attach());
+    localMediaContainer.prepend(selectedTracks.video.attach());
     return true;
   });
 }
 
 function addAudioTrack(deviceId) {
   let id;
-  if (activeTracks.audio) {
+  if (selectedTracks.audio) {
     if (deviceId) {
-      removeTrack(activeTracks.audio);
+      removeTrack(selectedTracks.audio);
     }
-    id = deviceId || activeTracks.audio.deviceId;
+    id = deviceId || selectedTracks.audio.deviceId;
   }
 
   console.log(`adding audio track with device id ${deviceId}`);
@@ -74,9 +74,9 @@ function addAudioTrack(deviceId) {
     return false;
   }).then((localTrack) => {
     const localMediaContainer = document.querySelector(".local-video-container");
-    activeTracks.audio = localTrack;
-    activeTracks.audio.deviceId = deviceId; // need this for restarting after mute
-    localMediaContainer.prepend(activeTracks.audio.attach());
+    selectedTracks.audio = localTrack;
+    selectedTracks.audio.deviceId = deviceId; // need this for restarting after mute
+    localMediaContainer.prepend(selectedTracks.audio.attach());
     return true;
   });
 }
@@ -100,7 +100,7 @@ function joinRoom(partnerKey) {
       const token = data.user_token;
       connect(token, {
         name: "cool room",
-        tracks: [activeTracks.video, activeTracks.audio],
+        tracks: [selectedTracks.video, selectedTracks.audio],
       }).then((room) => {
         console.log(`Connected to Room ${room.name}`);
 
@@ -144,7 +144,7 @@ function joinRoom(partnerKey) {
 }
 
 function toggleLocalTracks(willMute, trackType) {
-  const track = activeTracks[trackType];
+  const track = selectedTracks[trackType];
   if (willMute) {
     track.disable();
   } else {
