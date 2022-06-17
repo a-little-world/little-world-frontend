@@ -23,7 +23,7 @@ function toggleFullscreen(t) {
   }
 }
 
-const SidebarContext = createContext({ sideSelection: null, setSideSelection: () => {} });
+const SetSideContext = createContext(() => {});
 
 function Timer() {
   const [seconds, setSeconds] = useState(0);
@@ -65,7 +65,7 @@ function VideoControls() {
   const location = useLocation();
   const { videoId, audioId } = (location.state || {}).tracks || {};
 
-  const { setSideSelection } = useContext(SidebarContext);
+  const setSideSelection = useContext(SetSideContext);
 
   const showChat = () => {
     if (document.fullscreenElement) {
@@ -376,13 +376,13 @@ function ActiveCall() {
   return <VideoFrame />;
 }
 
-function Sidebar() {
+function Sidebar({ sideSelection }) {
   const { t } = useTranslation();
   const location = useLocation();
 
   const { userPk } = location.state || {};
   const sidebarTopics = ["chat", "questions", "notes"];
-  const { sideSelection, setSideSelection } = useContext(SidebarContext);
+  const setSideSelection = useContext(SetSideContext);
   const handleChange = (e) => setSideSelection(e.target.value);
   const disabled = ["questions", "notes"];
 
@@ -422,13 +422,13 @@ function CallScreen() {
 
   return (
     <div className="call-screen">
-      <SidebarContext.Provider value={{ sideSelection, setSideSelection }}>
+      <SetSideContext.Provider value={setSideSelection}>
         <div className="call-and-text">
           <ActiveCall />
           <TranslationBox />
         </div>
-        <Sidebar />
-      </SidebarContext.Provider>
+        <Sidebar sideSelection={sideSelection} />
+      </SetSideContext.Provider>
     </div>
   );
 }
