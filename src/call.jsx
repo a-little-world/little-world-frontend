@@ -48,11 +48,11 @@ function Timer() {
   );
 }
 
-function ToggleButton({ id, text, alt, onChange, defaultChecked }) {
+function ToggleButton({ id, text, alt, onChange, defaultChecked, disabled }) {
   return (
     <>
       <input type="checkbox" id={id} defaultChecked={defaultChecked} onChange={onChange} />
-      <label htmlFor={id}>
+      <label htmlFor={id} className={disabled ? "disabled" : ""}>
         <div className="img" alt={alt} />
         {text && <span className="text">{text}</span>}
       </label>
@@ -92,8 +92,13 @@ function VideoControls() {
         alt="toggle fullscreen"
         onChange={() => toggleFullscreen(t)}
       />
-      <ToggleButton id="calendar-toggle" text={t("vc_fs_btn_appointment")} alt="calendar" />
-      <ToggleButton id="help-toggle" text={t("vc_fs_btn_mistake")} alt="mistake" />
+      <ToggleButton
+        id="calendar-toggle"
+        text={t("vc_fs_btn_appointment")}
+        alt="calendar"
+        disabled
+      />
+      <ToggleButton id="help-toggle" text={t("vc_fs_btn_mistake")} alt="mistake" disabled />
       <button type="button" className="chat-show" onClick={showChat}>
         <div className="img" alt="show chat" />
         <span className="text">{t("vc_fs_btn_chat")}</span>
@@ -111,6 +116,7 @@ function VideoControls() {
 
 function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
   const buttons = ["chat", "translate", "questions", "notes"];
+  const disabled = ["translate", "questions", "notes"];
 
   return (
     <div className="video-controls top">
@@ -118,7 +124,9 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
         <button
           key={name}
           type="button"
-          className={selectedOverlay === name ? `show-${name} selected` : `show-${name}`}
+          className={`show-${name}${selectedOverlay === name ? " selected" : ""}${
+            disabled.includes(name) ? " disabled" : ""
+          }`}
           onClick={() => setOverlay(name)}
         >
           <img alt={`show-${name}`} />
@@ -374,6 +382,7 @@ function Sidebar() {
   const sidebarTopics = ["chat", "questions", "notes"];
   const { sideSelection, setSideSelection } = useContext(SidebarContext);
   const handleChange = (e) => setSideSelection(e.target.value);
+  const disabled = ["questions", "notes"];
 
   return (
     <div className="call-sidebar">
@@ -388,7 +397,12 @@ function Sidebar() {
               name="sidebar"
               onChange={handleChange}
             />
-            <label htmlFor={`${topic}-radio`}>{t(`vc_btn_${topic}`)}</label>
+            <label
+              htmlFor={`${topic}-radio`}
+              className={disabled.includes(topic) ? "disabled" : ""}
+            >
+              {t(`vc_btn_${topic}`)}
+            </label>
           </span>
         ))}
       </div>

@@ -38,12 +38,15 @@ function Sidebar({ userInfo, sidebarMobile }) {
         </div>
         <img alt="little world" src={logoWithText} className="logo" />
         {buttonData.map(({ label, path }) => {
+          const classes = ["sidebar-item", label];
+          if (location.pathname === path) {
+            classes.push("selected");
+          }
+          if (path === "") {
+            classes.push("disabled");
+          }
           return (
-            <Link
-              to={path}
-              key={label}
-              className={`sidebar-item ${label}${location.pathname === path ? " selected" : ""}`}
-            >
+            <Link to={path} key={label} className={classes.join(" ")}>
               <img alt={label} />
               {t(`nbs_${label}`)}
             </Link>
@@ -65,7 +68,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
         <img className="logo-mobile" alt="" />
         <span className="logo-text">Little World</span>
       </div>
-      <button className="notification" type="button">
+      <button className="notification disabled" type="button">
         <img alt="show notifications" />
       </button>
     </div>
@@ -77,6 +80,7 @@ function Selector() {
   const nbtTopics = ["conversation_partners", "appointments", "community_calls"];
   const [topSelection, setTopSelection] = useState("conversation_partners");
   const handleChange = (e) => setTopSelection(e.target.value);
+  const disabled = ["appointments", "community_calls"];
 
   return (
     <div className="selector">
@@ -90,7 +94,9 @@ function Selector() {
             name="sidebar"
             onChange={handleChange}
           />
-          <label htmlFor={`${topic}-radio`}>{t(`nbt_${topic}`)}</label>
+          <label htmlFor={`${topic}-radio`} className={disabled.includes(topic) ? "disabled" : ""}>
+            {t(`nbt_${topic}`)}
+          </label>
         </span>
       ))}
     </div>
