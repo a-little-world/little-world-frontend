@@ -315,14 +315,24 @@ a.call img {
   align-items: center;
 }
 
-.notification-panel .active-user img {
+.active-user img {
   display: block;
   height: 126px;
   width: 126px;
   border-radius: 80px;
   border: 8px solid #E6E8EC;
+  filter: drop-shadow(0px 4px 4px rgb(0 0 0 / 25%));
   margin-top: 45px;
   object-fit: cover;
+  text-align: center;
+}
+
+.active-user .name {
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .notifications-header {
@@ -338,6 +348,80 @@ a.call img {
   box-sizing: border-box;
   border-radius: 15px;
   margin-bottom: 10px;
+}
+
+.mobile-shade, .sidebar .active-user, .sidebar .close {
+  display: none;
+}
+
+@media screen and (max-width: 1024px) and (orientation: portrait) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    border-radius: 0;
+    margin: 0;
+    left: 0;
+    transition: left 0.4s;
+    overflow-y: scroll;
+  }
+
+  .sidebar.hidden {
+    left: -100%;
+  }
+  .sidebar.hidden + .mobile-shade {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sidebar .logo {
+    display: none;
+  }
+
+  .sidebar .active-user {
+    height: unset;
+    padding: 30px;
+    padding-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 18px;
+  }
+
+  .active-user img {
+    height: unset;
+    width: 100%;
+    box-sizing: border-box;
+    aspect-ratio: 1;
+    margin-top: unset;
+  }
+
+  .sidebar .active-user, .sidebar .close {
+    display: unset;
+  }
+
+  .sidebar button.close {
+    border-radius: 100px;
+    align-self: end;
+    background: rgba(230, 232, 236, 0.4);
+    margin: 10px 10px 0 0;
+    padding: 6px;
+  }
+  .sidebar button.close img {
+    content: url("./images/close-pop-up.svg");
+    filter: grayscale(1);
+  }
+
+  .mobile-shade {
+    display: block;
+    background: rgb(0 0 0 / 30%);
+    z-index: 1;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    pointer-events: all;
+    transition: opacity 0.5s;
+  }
 }
 
 body.hide-mobile-header .mobile-header {

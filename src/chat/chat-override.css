@@ -520,7 +520,7 @@
     min-width: unset;
   }
 
-  .sidebar, .right-panel:not(.active-panel-mobile), .chat-list-box:not(.active-panel-mobile) {
+  .right-panel:not(.active-panel-mobile), .chat-list-box:not(.active-panel-mobile) {
     display: none !important;
   }
 }

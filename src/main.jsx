@@ -10,7 +10,7 @@ import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import logoWithText from "./images/logo-text.svg";
 import Chat from "./chat/chat-full-view";
 
-function Sidebar() {
+function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
 
@@ -24,30 +24,41 @@ function Sidebar() {
     { label: "log_out", path: "" },
   ];
 
+  const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
 
   return (
-    <div className="sidebar">
-      <img alt="little world" src={logoWithText} className="logo" />
-      {buttonData.map(({ label, image, path }) => {
-        return (
-          <Link
-            to={path}
-            key={label}
-            className={`sidebar-item ${label}${location.pathname === path ? " selected" : ""}`}
-          >
-            <img alt={label} />
-            {t(`nbs_${label}`)}
-          </Link>
-        );
-      })}
-    </div>
+    <>
+      <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
+        {/* <button type="button" className="close" onClick={() => setShowSidebarMobile(false)}>
+          <img alt="close" />
+        </button> */}
+        <div className="active-user">
+          <img src={userInfo.imgSrc} alt="current user" />
+          <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
+        </div>
+        <img alt="little world" src={logoWithText} className="logo" />
+        {buttonData.map(({ label, path }) => {
+          return (
+            <Link
+              to={path}
+              key={label}
+              className={`sidebar-item ${label}${location.pathname === path ? " selected" : ""}`}
+            >
+              <img alt={label} />
+              {t(`nbs_${label}`)}
+            </Link>
+          );
+        })}
+      </div>
+      <div className="mobile-shade" onClick={() => setShowSidebarMobile(false)} />
+    </>
   );
 }
 
-function MobileNavBar() {
+function MobileNavBar({ setShowSidebarMobile }) {
   return (
     <div className="mobile-header">
-      <button type="button" className="menu">
+      <button type="button" className="menu" onClick={() => setShowSidebarMobile(true)}>
         <img alt="open menu" />
       </button>
       <div className="logo-with-text">
@@ -186,6 +197,11 @@ function Main() {
   });
 
   const [matchesInfo, setMatchesInfo] = useState([]);
+  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
+
+  useEffect(() => {
+    setShowSidebarMobile(false);
+  }, [location]);
 
   useEffect(() => {
     $.ajax({
@@ -252,10 +268,13 @@ function Main() {
 
   return (
     <div className={`main-page show-${use}`}>
-      <Sidebar />
+      <Sidebar
+        userInfo={userInfo}
+        sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
+      />
       <div className="content-area">
         <div className="nav-bar-top">
-          <MobileNavBar />
+          <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
           <Selector />
         </div>
         {location.pathname === `${BACKEND_PATH}/` && (
