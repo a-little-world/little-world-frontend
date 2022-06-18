@@ -48,10 +48,10 @@ function Timer() {
   );
 }
 
-function ToggleButton({ id, text, alt, onChange }) {
+function ToggleButton({ id, text, alt, onChange, defaultChecked }) {
   return (
     <>
-      <input type="checkbox" id={id} defaultChecked={false} onChange={onChange} />
+      <input type="checkbox" id={id} defaultChecked={defaultChecked} onChange={onChange} />
       <label htmlFor={id}>
         <div className="img" alt={alt} />
         {text && <span className="text">{text}</span>}
