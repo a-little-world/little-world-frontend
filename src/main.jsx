@@ -101,17 +101,8 @@ function PartnerProfiles({ matchesInfo }) {
 
   return (
     <div className="profiles">
-      {matchesInfo.map(({ userPk, firstName, lastName, userDescription, imgSrc }) => {
-        return (
-          <ProfileBox
-            key={userPk}
-            userPk={userPk}
-            firstName={firstName}
-            lastName={lastName}
-            userDescription={userDescription}
-            imgSrc={imgSrc}
-          />
-        );
+      {matchesInfo.map((userData) => {
+        return <ProfileBox key={userData.userPk} {...userData} />;
       })}
       <Link className="find-new">
         <img alt="plus" />
