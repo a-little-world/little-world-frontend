@@ -73,7 +73,9 @@ function Profile({ userData }) {
   return (
     <div className="profile-component">
       <div className="header">
-        <img alt="back" className="back" />
+        <Link to="/" className="back">
+          <img alt="back" />
+        </Link>
         {t("profile_my_profile")}
       </div>
       <div className="content">

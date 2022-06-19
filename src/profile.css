@@ -60,11 +60,15 @@
   padding: 16px 32px;
 }
 
-.show-profile img.back {
+.show-profile a.back {
+  border-radius: 100%;
+  margin-left: -15px;
+}
+
+.show-profile .back img {
   content: url("./images/arrow-back.svg");
   vertical-align: middle;
   padding: 15px;
-  margin-left: -15px;
 }
 
 .show-profile h3 {
