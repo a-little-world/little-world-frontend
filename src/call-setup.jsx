@@ -100,13 +100,11 @@ function VideoInputSelect({ setVideo }) {
     <div className="webcam-select">
       <label htmlFor="webcam-select">{t("pcs_camera_label")}</label>
       <select name="webcam-select" onChange={handleChange}>
-        {videoInDevices.map((deviceInfo) => {
-          return (
-            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-              {deviceInfo.label.endsWith("facing front") ? t("pcs_front_camera") : deviceInfo.label}
-            </option>
-          );
-        })}
+        {videoInDevices.map((deviceInfo) => (
+          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+            {deviceInfo.label.endsWith("facing front") ? t("pcs_front_camera") : deviceInfo.label}
+          </option>
+        ))}
       </select>
     </div>
   );
@@ -142,13 +140,11 @@ function AudioInputSelect({ setAudio }) {
     <div className="mic-select">
       <label htmlFor="mic-select">{t("pcs_mic_label")}</label>
       <select name="mic-select" onChange={handleChange}>
-        {audioInDevices.map((deviceInfo) => {
-          return (
-            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-              {deviceInfo.label}
-            </option>
-          );
-        })}
+        {audioInDevices.map((deviceInfo) => (
+          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+            {deviceInfo.label}
+          </option>
+        ))}
       </select>
     </div>
   );
@@ -171,13 +167,11 @@ function AudioOutputSelect() {
     <div className="speaker-select">
       <label htmlFor="speaker-select">{t("pcs_speaker_label")}</label>
       <select name="speaker-select">
-        {audioOutDevices.map((deviceInfo) => {
-          return (
-            <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-              {deviceInfo.label}
-            </option>
-          );
-        })}
+        {audioOutDevices.map((deviceInfo) => (
+          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
+            {deviceInfo.label}
+          </option>
+        ))}
       </select>
     </div>
   );

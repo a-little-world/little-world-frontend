@@ -167,17 +167,15 @@ function NotificationPanel({ userInfo }) {
       </div>
       <div className="notifications-header">{t("nbr_notifications")}</div>
       <div className="notifications-content">
-        {dummyNotifications.map((item) => {
-          return (
-            <div key={item.id} className="notification-item">
-              <img className={item.type} alt={item.type} />
-              <div className="info">
-                <div className="notification-headline">{item.text}</div>
-                <div className="notification-time">{item.dateString}</div>
-              </div>
+        {dummyNotifications.map((item) => (
+          <div key={item.id} className="notification-item">
+            <img className={item.type} alt={item.type} />
+            <div className="info">
+              <div className="notification-headline">{item.text}</div>
+              <div className="notification-time">{item.dateString}</div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
       <Link className="show-all">{t("nbr_show_all")}</Link>
     </div>
