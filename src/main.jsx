@@ -96,6 +96,34 @@ function Selector() {
   );
 }
 
+function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc }) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="profile-box">
+      <img alt="match" className="profile-image" src={imgSrc} />
+      <div className="profile-info">
+        <div className="name">{`${firstName} ${lastName}`}</div>
+        <div className="text">{userDescription}</div>
+      </div>
+      <div className="buttons">
+        <a className="profile">
+          <img alt="visit profile" />
+          {t("cp_profile")}
+        </a>
+        <Link to="/chat" state={{ userPk }} className="chat">
+          <img alt="chat" />
+          {t("cp_message")}
+        </Link>
+        <Link to="/call-setup" state={{ userPk }} className="call">
+          <img alt="call" />
+          {t("cp_call")}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 function PartnerProfiles({ matchesInfo }) {
   const { t } = useTranslation();
 
@@ -103,27 +131,14 @@ function PartnerProfiles({ matchesInfo }) {
     <div className="profiles">
       {matchesInfo.map(({ userPk, firstName, lastName, userDescription, imgSrc }) => {
         return (
-          <div key={userPk} className="profile-box">
-            <img alt="match" className="profile-image" src={imgSrc} />
-            <div className="profile-info">
-              <div className="name">{`${firstName} ${lastName}`}</div>
-              <div className="text">{userDescription}</div>
-            </div>
-            <div className="buttons">
-              <a className="profile">
-                <img alt="visit profile" />
-                {t("cp_profile")}
-              </a>
-              <Link to="/chat" state={{ userPk }} className="chat">
-                <img alt="chat" />
-                {t("cp_message")}
-              </Link>
-              <Link to="/call-setup" state={{ userPk }} className="call">
-                <img alt="call" />
-                {t("cp_call")}
-              </Link>
-            </div>
-          </div>
+          <ProfileBox
+            key={userPk}
+            userPk={userPk}
+            firstName={firstName}
+            lastName={lastName}
+            userDescription={userDescription}
+            imgSrc={imgSrc}
+          />
         );
       })}
       <Link className="find-new">
