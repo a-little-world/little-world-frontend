@@ -8,7 +8,7 @@ import { MessageList, Input, Button, Navbar, SideBar, Popup } from "react-chat-e
 import throttle from "lodash.throttle";
 import { FaWindowClose } from "react-icons/fa";
 import ReconnectingWebSocket from "reconnecting-websocket";
-import { Link } from "react-router-dom";
+import Link from "../path-prepend";
 import {
   createNewDialogModelFromIncomingMessageBox,
   getSubtitleTextFromMessageBox,
