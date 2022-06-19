@@ -66,6 +66,10 @@ function ProfileDetail() {
 function Profile({ userData }) {
   const { t } = useTranslation();
 
+  if (!userData) {
+    return null; // don't render until ajax has returned
+  }
+
   return (
     <div className="profile-component">
       <div className="header">
