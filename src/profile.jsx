@@ -37,7 +37,7 @@ const dummyText =
   "Augue neque gravida in Fermentum et solicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque eu tincidunt. Tortor aliquam nulla Facilisi cras fermentum odio eu feugiat pretium nibh ipsum consequat nisl Vel Pretium lectus quam id leo in vitae; turpis massa sed elementum tempus Egestas.";
 
 function ProfileDetail() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="profile-detail">
@@ -62,7 +62,7 @@ function ProfileDetail() {
 }
 
 function Profile({ userData }) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="profile-component">
