@@ -41,6 +41,10 @@
   background: unset;
 }
 
+.rce-navbar .rce-citem {
+  cursor: unset;
+}
+
 @media screen and (min-width: 1024px) {
   .rce-navbar, .rce-container-mlist {
     margin-bottom: 18px;
