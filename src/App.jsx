@@ -19,6 +19,7 @@ function App() {
             <Route path="call" element={<ActiveCall />} />
             <Route path="partners" element={<Main />} />
             <Route path="chat" element={<Main />} />
+            <Route path="profile" element={<Main />} />
             <Route path="*" element="404" />
           </Route>
         </Routes>

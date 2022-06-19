@@ -9,6 +9,7 @@ import Link from "./path-prepend";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import logoWithText from "./images/logo-text.svg";
 import Chat from "./chat/chat-full-view";
+import Profile from "./profile";
 
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
@@ -18,7 +19,7 @@ function Sidebar({ userInfo, sidebarMobile }) {
     { label: "start", path: "/" },
     { label: "messages", path: "/chat" },
     { label: "notifications", path: "" },
-    { label: "my_profile", path: "" },
+    { label: "my_profile", path: "/profile" },
     { label: "help", path: "" },
     { label: "settings", path: "" },
     { label: "log_out", path: "" },
@@ -284,6 +285,7 @@ function Main() {
         {location.pathname === `${BACKEND_PATH}/chat` && (
           <Chat matchesInfo={matchesInfo} userPk={userPk} />
         )}
+        {location.pathname === `${BACKEND_PATH}/profile` && <Profile />}
       </div>
     </div>
   );
