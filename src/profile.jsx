@@ -5,6 +5,34 @@ import Link from "./path-prepend";
 import "./profile.css";
 import "./i18n";
 
+function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc }) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="profile-box">
+      <img alt="match" className="profile-image" src={imgSrc} />
+      <div className="profile-info">
+        <div className="name">{`${firstName} ${lastName}`}</div>
+        <div className="text">{userDescription}</div>
+      </div>
+      <div className="buttons">
+        <a className="profile">
+          <img alt="visit profile" />
+          {t("cp_profile")}
+        </a>
+        <Link to="/chat" state={{ userPk }} className="chat">
+          <img alt="chat" />
+          {t("cp_message")}
+        </Link>
+        <Link to="/call-setup" state={{ userPk }} className="call">
+          <img alt="call" />
+          {t("cp_call")}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 function ProfileUser() {
   return (
     <div className="profile-user">
@@ -61,4 +89,5 @@ function Profile() {
   );
 }
 
+export { ProfileBox };
 export default Profile;
