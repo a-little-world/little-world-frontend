@@ -541,7 +541,7 @@ class Chat extends Component {
           <SideBar
             type="light"
             top={
-              <span className="chat-list">
+              <div className="chat-list">
                 <h3 className="chat-header">{t("chat_header")}</h3>
                 <Input
                   placeholder={t("chat_search")}
@@ -562,7 +562,7 @@ class Chat extends Component {
                   onClick={clickUser}
                   dataSource={this.state.filteredDialogList.slice().sort(chatItemSortingFunction)}
                 />
-              </span>
+              </div>
             }
           />
           <div className="new-partner">
