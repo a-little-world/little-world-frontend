@@ -49,15 +49,9 @@ function Profile() {
 
   return (
     <div className="profile">
-      <div className="left">
-        <div className="back">
-          <img alt="back" />
-          {t("profile_back")}
-        </div>
+      <div className="header"><img alt="back" />{t("profile_my_profile")}</div>
+      <div className="content">
         <ProfileUser />
-      </div>
-      <div className="main">
-        <div className="header">{t("profile_my_profile")}</div>
         <ProfileDetail />
       </div>
     </div>
