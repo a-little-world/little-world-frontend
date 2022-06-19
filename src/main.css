@@ -16,6 +16,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
+  padding: 10px;
 }
 
 .sidebar .logo {
@@ -24,12 +26,11 @@
 }
 
 .sidebar-item {
-  width: 127px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   background: rgba(230, 232, 236, 0.5);
   border-radius: 15px;
-  margin: 5px;
   align-items: center;
   font-size: 14px;
   line-height: 17.25px;
@@ -315,16 +316,16 @@ a.call img {
   align-items: center;
 }
 
-.active-user img {
+.active-user img, .show-profile .profile-image {
   display: block;
-  height: 126px;
-  width: 126px;
-  border-radius: 80px;
+  aspect-ratio: 1;
+  width: 60%;
+  height: auto;
   border: 8px solid #E6E8EC;
   filter: drop-shadow(0px 4px 4px rgb(0 0 0 / 25%));
-  margin-top: 45px;
+  border-radius: 100%;
+  margin: 20px;
   object-fit: cover;
-  text-align: center;
 }
 
 .active-user .name {
@@ -381,19 +382,9 @@ a.call img {
 
   .sidebar .active-user {
     height: unset;
-    padding: 30px;
-    padding-bottom: 10px;
     width: 100%;
     box-sizing: border-box;
     font-size: 18px;
-  }
-
-  .active-user img {
-    height: unset;
-    width: 100%;
-    box-sizing: border-box;
-    aspect-ratio: 1;
-    margin-top: unset;
   }
 
   .sidebar .active-user, .sidebar .close {
