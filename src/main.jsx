@@ -37,21 +37,16 @@ function Sidebar({ userInfo, sidebarMobile }) {
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
         <img alt="little world" src={logoWithText} className="logo" />
-        {buttonData.map(({ label, path }) => {
-          const classes = ["sidebar-item", label];
-          if (location.pathname === path) {
-            classes.push("selected");
-          }
-          if (path === "") {
-            classes.push("disabled");
-          }
-          return (
-            <Link to={path} key={label} className={classes.join(" ")}>
-              <img alt={label} />
-              {t(`nbs_${label}`)}
-            </Link>
-          );
-        })}
+        {buttonData.map(({ label, path }) => (
+          <Link
+            to={path}
+            key={label}
+            className={`sidebar-item ${label}${location.pathname === path ? " selected" : ""}`}
+          >
+            <img alt={label} />
+            {t(`nbs_${label}`)}
+          </Link>
+        ))}
       </div>
       <div className="mobile-shade" onClick={() => setShowSidebarMobile(false)} />
     </>
@@ -187,7 +182,7 @@ function NotificationPanel({ userInfo }) {
           );
         })}
       </div>
-      <div className="show-all">{t("nbr_show_all")}</div>
+      <Link className="show-all">{t("nbr_show_all")}</Link>
     </div>
   );
 }
