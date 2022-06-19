@@ -49,7 +49,10 @@ function Profile() {
 
   return (
     <div className="profile-component">
-      <div className="header"><img alt="back" />{t("profile_my_profile")}</div>
+      <div className="header">
+        <img alt="back" className="back" />
+        {t("profile_my_profile")}
+      </div>
       <div className="content">
         <ProfileUser />
         <ProfileDetail />

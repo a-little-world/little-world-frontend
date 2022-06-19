@@ -43,6 +43,13 @@
   padding: 16px 32px;
 }
 
+.show-profile img.back {
+  content: url("./images/arrow-back.svg");
+  vertical-align: middle;
+  padding: 15px;
+  margin-left: -15px;
+}
+
 .show-profile h3 {
   margin: 5px 0;
   font-size: 22px;
