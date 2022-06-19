@@ -11,6 +11,10 @@
   padding: 10px;
 }
 
+.show-profile .profile-component, .show-profile .content {
+  gap: 20px;
+}
+
 .show-profile .content {
   display: flex;
   flex: 1 1 0;
@@ -19,6 +23,12 @@
 .show-profile .profile-box {
   width: 370px;
   box-sizing: border-box;
+  text-align: center;
+}
+
+.show-profile .profile-box .text {
+  font-size: 22px;
+  font-weight: 400;
 }
 
 .show-profile .profile-box .buttons {
@@ -38,7 +48,6 @@
 }
 
 .show-profile .profile-box, .show-profile .header, .profile-detail {
-  margin: 10px;
   border: 1px solid #E6E8EC;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
   border-radius: 20px;
@@ -79,11 +88,15 @@
     display: none;
   }
 
+  .show-profile .profile-component, .show-profile .content {
+    gap: 10px;
+  }
+
   .show-profile .content {
     flex-direction: column
   }
 
   .show-profile .profile-box {
-    width: unset;
+    width: 100%;
   }
 }
