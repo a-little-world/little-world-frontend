@@ -4,14 +4,14 @@
   }
 }
 
-.profile {
+.show-profile .profile-component {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   padding: 10px;
 }
 
-.profile .content {
+.show-profile .content {
   display: flex;
   flex: 1 1 0;
 }
@@ -29,7 +29,7 @@
   padding: 30px;
 }
 
-.profile-user, .profile .header, .profile-detail {
+.profile-user, .show-profile .header, .profile-detail {
   margin: 10px;
   border: 1px solid #E6E8EC;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
@@ -37,13 +37,13 @@
   background-color: white;
 }
 
-.profile .header {
+.show-profile .header {
   font-weight: 700;
   font-size: 28px;
   padding: 16px 32px;
 }
 
-.profile h3 {
+.show-profile h3 {
   margin: 5px 0;
   font-size: 22px;
   font-weight: 500;
@@ -64,7 +64,7 @@
     display: none;
   }
 
-  .profile .content {
+  .show-profile .content {
     flex-direction: column
   }
 

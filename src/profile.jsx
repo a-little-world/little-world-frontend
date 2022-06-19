@@ -48,7 +48,7 @@ function Profile() {
   const {t} = useTranslation();
 
   return (
-    <div className="profile">
+    <div className="profile-component">
       <div className="header"><img alt="back" />{t("profile_my_profile")}</div>
       <div className="content">
         <ProfileUser />
