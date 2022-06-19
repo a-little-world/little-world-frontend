@@ -268,7 +268,9 @@ function Main() {
         {location.pathname === `${BACKEND_PATH}/chat` && (
           <Chat matchesInfo={matchesInfo} userPk={userPk} />
         )}
-        {location.pathname === `${BACKEND_PATH}/profile` && <Profile userData={userInfo} />}
+        {location.pathname === `${BACKEND_PATH}/profile` && (
+          <Profile matchesInfo={matchesInfo} userInfo={userInfo} />
+        )}
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import Link from "./path-prepend";
 
 import "./profile.css";
 
-function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc }) {
+function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc, isSelf }) {
   const { t } = useTranslation();
 
   return (
@@ -17,20 +17,22 @@ function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc }) {
         <div className="name">{`${firstName} ${lastName}`}</div>
         <div className="text">{userDescription}</div>
       </div>
-      <div className="buttons">
-        <a className="profile">
-          <img alt="visit profile" />
-          {t("cp_profile")}
-        </a>
-        <Link to="/chat" state={{ userPk }} className="chat">
-          <img alt="chat" />
-          {t("cp_message")}
-        </Link>
-        <Link to="/call-setup" state={{ userPk }} className="call">
-          <img alt="call" />
-          {t("cp_call")}
-        </Link>
-      </div>
+      {!isSelf && (
+        <div className="buttons">
+          <Link to="/profile" state={{ userPk }} className="profile">
+            <img alt="visit profile" />
+            {t("cp_profile")}
+          </Link>
+          <Link to="/chat" state={{ userPk }} className="chat">
+            <img alt="chat" />
+            {t("cp_message")}
+          </Link>
+          <Link to="/call-setup" state={{ userPk }} className="call">
+            <img alt="call" />
+            {t("cp_call")}
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
@@ -63,12 +65,19 @@ function ProfileDetail() {
   );
 }
 
-function Profile({ userData }) {
+function Profile({ matchesInfo, userInfo }) {
   const { t } = useTranslation();
+  const location = useLocation();
+  const { userPk } = location.state || {};
+  const profileData = userPk ? matchesInfo.filter((data) => data.userPk === userPk)[0] : userInfo;
 
-  if (!userData) {
-    return null; // don't render until ajax has returned
+  if (!profileData) {
+    return null; // don't render until ajax has returned the necessary data
   }
+
+  const profileTitle = userPk
+    ? t("profile_match_profile", { userName: profileData.firstName })
+    : t("profile_my_profile");
 
   return (
     <div className="profile-component">
@@ -76,10 +85,10 @@ function Profile({ userData }) {
         <Link to="/" className="back">
           <img alt="back" />
         </Link>
-        {t("profile_my_profile")}
+        {profileTitle}
       </div>
       <div className="content">
-        <ProfileBox {...userData} />
+        <ProfileBox {...profileData} isSelf={!userPk} />
         <ProfileDetail />
       </div>
     </div>
