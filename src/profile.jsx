@@ -33,17 +33,6 @@ function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc }) {
   );
 }
 
-function ProfileUser() {
-  return (
-    <div className="profile-user">
-      <img />
-      <div className="user-name">Courtney</div>
-      <div className="user-summary">Valkenburg</div>
-      <div className="user-actions"></div>
-    </div>
-  );
-}
-
 const dummyText =
   "Augue neque gravida in Fermentum et solicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque eu tincidunt. Tortor aliquam nulla Facilisi cras fermentum odio eu feugiat pretium nibh ipsum consequat nisl Vel Pretium lectus quam id leo in vitae; turpis massa sed elementum tempus Egestas.";
 
@@ -72,7 +61,7 @@ function ProfileDetail() {
   );
 }
 
-function Profile() {
+function Profile({ userData }) {
   const {t} = useTranslation();
 
   return (
@@ -82,7 +71,7 @@ function Profile() {
         {t("profile_my_profile")}
       </div>
       <div className="content">
-        <ProfileUser />
+        <ProfileBox {...userData} />
         <ProfileDetail />
       </div>
     </div>

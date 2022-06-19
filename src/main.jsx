@@ -221,9 +221,11 @@ function Main() {
       },
     }).then(({ _matchesBasic, userData, matches }) => {
       setUserInfo({
-        imgSrc: userData.profile_image,
+        // userPk:
         firstName: userData.real_name_first,
         lastName: userData.real_name_last,
+        // userDescription:
+        imgSrc: userData.profile_image,
       });
 
       const matchesData = matches.map((match) => {
@@ -263,7 +265,7 @@ function Main() {
         {location.pathname === `${BACKEND_PATH}/chat` && (
           <Chat matchesInfo={matchesInfo} userPk={userPk} />
         )}
-        {location.pathname === `${BACKEND_PATH}/profile` && <Profile />}
+        {location.pathname === `${BACKEND_PATH}/profile` && <Profile userData={userInfo} />}
       </div>
     </div>
   );

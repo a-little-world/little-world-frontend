@@ -16,20 +16,28 @@
   flex: 1 1 0;
 }
 
-.profile-user {
+.show-profile .profile-box {
   width: 370px;
   box-sizing: border-box;
+}
+
+.show-profile .profile-box .buttons {
+  justify-content: space-around;
+}
+
+.show-profile .profile-box .buttons .profile {
+  display: none;
 }
 
 .profile-detail {
   flex: 1 1 0;
 }
 
-.profile-user, .profile-detail {
+.show-profile .profile-box, .profile-detail {
   padding: 30px;
 }
 
-.profile-user, .show-profile .header, .profile-detail {
+.show-profile .profile-box, .show-profile .header, .profile-detail {
   margin: 10px;
   border: 1px solid #E6E8EC;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
@@ -75,7 +83,7 @@
     flex-direction: column
   }
 
-  .profile-user {
+  .show-profile .profile-box {
     width: unset;
   }
 }
