@@ -559,10 +559,10 @@ class Chat extends Component {
           />
           <div className="new-partner">
             {!pending && (
-              <div className="find-partner">
+              <Link className="find-partner">
                 <img className="plus" alt="add" />
                 {t("chat_find_new_person")}
-              </div>
+              </Link>
             )}
             {pending && (
               <div className="waiting">
@@ -667,10 +667,10 @@ class Chat extends Component {
             }
             right={
               <>
-                <button type="button" className="free-appointments">
+                <button type="button" className="free-appointments disabled">
                   <span className="text">{t("chat_show_free_appointments")}</span>
                 </button>
-                <button type="button" className="suggest-appointment">
+                <button type="button" className="suggest-appointment disabled">
                   <span className="text">{t("chat_suggest_appointment")}</span>
                 </button>
                 <Link className="call-start" to="/call-setup" state={{ userPk }}>
@@ -680,10 +680,10 @@ class Chat extends Component {
             }
           />
           <div className="buttons-mobile">
-            <button type="button" className="free-appointments">
+            <button type="button" className="free-appointments disabled">
               <span className="text">{t("chat_show_free_appointments")}</span>
             </button>
-            <button type="button" className="suggest-appointment">
+            <button type="button" className="suggest-appointment disabled">
               <span className="text">{t("chat_suggest_appointment")}</span>
             </button>
           </div>
