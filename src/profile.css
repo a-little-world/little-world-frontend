@@ -57,12 +57,13 @@
 .show-profile .header {
   font-weight: 700;
   font-size: 28px;
-  padding: 16px 32px;
+  padding: 16px;
 }
 
 .show-profile a.back {
-  border-radius: 100%;
-  margin-left: -15px;
+  border-radius: 100px;
+  margin-right: 6px;
+  display: inline-block;
 }
 
 .show-profile .back img {
