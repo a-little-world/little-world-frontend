@@ -37,6 +37,7 @@ label {
   display: block;
 }
 
+/* button hover */
 input:not([type="radio"]:checked) + label:hover,
 button:not(.selected):hover,
 a:not(.selected):hover {
@@ -68,6 +69,7 @@ button img {
   display: block;
 }
 
+/* handle disabled buttons */
 .disabled {
   pointer-events: none;
   filter: grayscale(1);
