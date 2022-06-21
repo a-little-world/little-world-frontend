@@ -265,6 +265,8 @@ function Main() {
     });
   }, []);
 
+  document.body.classList.remove("hide-mobile-header");
+
   const use = location.pathname.split("/").slice(-1)[0] || "main";
 
   return (

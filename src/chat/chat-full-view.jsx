@@ -510,6 +510,11 @@ class Chat extends Component {
     const { Core } = this;
     const pending = false; /* set this to change when request sent/pending */
 
+    if (this.props.userPk && !userPk) {
+      // this happens when clicking "message" button on a user profile
+      document.body.classList.add("hide-mobile-header");
+    }
+
     if (this.props.userPk && !this.props.matchesInfo) {
       /* if we send userPk as a prop but not matches info, early exit
        * and only show the chat with specified user, without selector etc.
