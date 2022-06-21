@@ -400,7 +400,7 @@ class Chat extends Component {
   }
 
   performSendingMessage() {
-    if (this.state.selectedDialog) {
+    if (this.state.selectedDialog && (this.textInput || {}).value) {
       const msgBox = sendOutgoingTextMessage(
         this.state.socket,
         this.textInput.value,
