@@ -262,7 +262,7 @@ function SidebarNotes() {
   return <div className="notes">notes stuff goes here</div>;
 }
 
-function TranslationDropdown({ side }) {
+function TranslationDropdown({ side, selected }) {
   const { t } = useTranslation();
   const languages = [
     "en",
@@ -287,7 +287,7 @@ function TranslationDropdown({ side }) {
   return (
     <select name={`${side}-language-select`}>
       {languages.map((code) => (
-        <option key={code} value={code}>
+        <option key={code} value={code} selected={code === selected}>
           {t(`lang-${code}`)}
         </option>
       ))}
@@ -300,14 +300,14 @@ function TranslationBox() {
   return (
     <div className="translation-box">
       <div className="left">
-        <TranslationDropdown side="left" />
+        <TranslationDropdown side="left" selected="en" />
         <textarea placeholder={t("vc_translator_type_here")} />
       </div>
       <button type="button" className="swap-languages">
         <img alt="swap languages" />
       </button>
       <div className="right">
-        <TranslationDropdown side="right" />
+        <TranslationDropdown side="right" selected="de" />
         <textarea placeholder={t("vc_translator_type_here")} />
       </div>
     </div>
