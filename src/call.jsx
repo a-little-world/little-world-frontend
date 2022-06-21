@@ -303,7 +303,9 @@ function TranslationBox() {
         <TranslationDropdown side="left" />
         <textarea placeholder={t("vc_translator_type_here")} />
       </div>
-      <img className="swap-languages" alt="swap languages" />
+      <button type="button" className="swap-languages">
+        <img alt="swap languages" />
+      </button>
       <div className="right">
         <TranslationDropdown side="right" />
         <textarea placeholder={t("vc_translator_type_here")} />

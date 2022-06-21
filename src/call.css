@@ -50,6 +50,7 @@
     justify-content: space-between;
     flex-grow: 1;
     padding: 20px;
+    gap: 10px;
 }
 
 .translation-box > div {
@@ -70,12 +71,14 @@
     padding: 0 10px;
 }
 
-img.swap-languages {
-    height: 20px;
-    margin: 10px -10px;
+.swap-languages {
     padding: 10px;
-    cursor: pointer;
+    border-radius: 100%;
+}
+
+.swap-languages img {
     content: url("./images/switch-language.svg");
+    height: 20px;
 }
 
 .translation-box textarea {
