@@ -318,6 +318,10 @@
   display: none;
 }
 
+.rce-mlist-down-button {
+  display: none;
+}
+
 
 /** message input/sending area **/
 /* input area */
