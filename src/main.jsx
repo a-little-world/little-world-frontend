@@ -29,9 +29,6 @@ function Sidebar({ userInfo, sidebarMobile }) {
   return (
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
-        {/* <button type="button" className="close" onClick={() => setShowSidebarMobile(false)}>
-          <img alt="close" />
-        </button> */}
         <div className="active-user">
           <img src={userInfo.imgSrc} alt="current user" />
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
