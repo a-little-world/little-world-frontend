@@ -28,6 +28,45 @@ button {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* all items that live on top of the main background */
+.panel,
+.profile-box,
+.find-new,
+.sidebar,
+.nav-bar-top,
+.notification-panel,
+.chat-list-box,
+.show-chat .right-panel,
+.show-profile .profile-box,
+.show-profile .header,
+.profile-detail,
+.show-profile .profile-box,
+.call-setup-modal,
+.call-and-text,
+.call-sidebar .sidebar-selector,
+.call-sidebar .sidebar-content {
+  border: 1px solid #e6e8ec;
+  box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
+  background: white;
+  border-radius: 30px;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+/* parent items of above elements, setting consistent gap between */
+@media screen and (min-width: 1024px) {
+  .main-page,
+  .main-page .content-area,
+  .main-page .content-area-main,
+  .show-chat .container,
+  .profile-component,
+  .profile-component .content,
+  .call-screen,
+  .call-sidebar {
+    gap: 30px;
+  }
+}
+
 input[type="radio"],
 input[type="checkbox"] {
   display: none;
