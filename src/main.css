@@ -116,12 +116,20 @@
   color: white;
 }
 
+/* main content area */
+.content-area-main {
+  display: flex;
+  flex: 1 1 0;
+}
+
 .profiles {
   display: grid;
+  flex-grow: 1;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   grid-auto-rows: 1fr;
   gap: 10px;
   padding: 10px;
+  height: fit-content;
 }
 
 .profile-box,
@@ -221,15 +229,15 @@
 }
 
 .notification-panel {
-  float: right;
   background: white;
   border-radius: 36px;
   border: 1px solid #e6e8ec;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
   margin: 10px;
-  width: 350px;
   padding: 30px;
   box-sizing: border-box;
+  margin-left: auto;
+  flex: 0 1 350px;
   display: flex;
   flex-direction: column;
   align-items: center;

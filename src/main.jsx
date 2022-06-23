@@ -280,8 +280,8 @@ function Main() {
         </div>
         {use === "main" && (
           <div className="content-area-main">
-            <NotificationPanel userInfo={userInfo} />
             <PartnerProfiles matchesInfo={matchesInfo} setCallSetupPartner={setCallSetupPartner} />
+            <NotificationPanel userInfo={userInfo} />
           </div>
         )}
         {use === "chat" && (
