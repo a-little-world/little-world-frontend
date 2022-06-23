@@ -542,6 +542,7 @@ class Chat extends Component {
             type="light"
             top={
               <div className="chat-list">
+                <ToastContainer />
                 <h3 className="chat-header">{t("chat_header")}</h3>
                 <Input
                   placeholder={t("chat_search")}
@@ -596,50 +597,6 @@ class Chat extends Component {
         <div
           className={this.state.userWasSelected ? "right-panel active-panel-mobile" : "right-panel"}
         >
-          <ToastContainer />
-          <Popup
-            show={this.state.showNewChatPopup}
-            header="New chat"
-            headerButtons={[
-              {
-                type: "transparent",
-                color: "black",
-                text: "close",
-                icon: {
-                  component: <FaWindowClose />,
-                  size: 18,
-                },
-                onClick: () => {
-                  this.setState({ showNewChatPopup: false });
-                },
-              },
-            ]}
-            renderContent={() => {
-              if (this.state.usersDataLoading) {
-                return (
-                  <div>
-                    <p>Loading data...</p>
-                  </div>
-                );
-              }
-              if (this.state.availableUsers.length === 0) {
-                return (
-                  <div>
-                    <p>No users available</p>
-                  </div>
-                );
-              }
-              return (
-                <ChatList
-                  onClick={(item, i, e) => {
-                    this.setState({ showNewChatPopup: false });
-                    this.selectDialog(item);
-                  }}
-                  dataSource={this.state.availableUsers}
-                />
-              );
-            }}
-          />
           <Navbar
             left={
               <>

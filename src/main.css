@@ -275,6 +275,7 @@
     overflow: hidden; /* risk here is from .selector element overflowing */
     position: sticky;
     top: 0;
+    padding: 0;
   }
   .nav-bar-top .selector {
     margin: auto;
