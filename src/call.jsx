@@ -433,7 +433,7 @@ function CallScreen() {
     }
     const { videoId, audioId } = tracks || {};
     if (!(videoId && audioId)) {
-      navigate(`${BACKEND_PATH}/call-setup`, { state: { userPk } });
+      console.error("videoId audioId", videoId, audioId);
     }
     const videoMuted = localStorage.getItem("video muted") === "true";
     const audioMuted = localStorage.getItem("audio muted") === "true";
