@@ -354,7 +354,7 @@ a.call img {
   display: none;
 }
 
-@media screen and (width < 1024px) and (orientation: portrait) {
+@media screen and (width < 1024px) {
   .sidebar {
     position: fixed;
     top: 0;
