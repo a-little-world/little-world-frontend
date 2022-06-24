@@ -262,7 +262,7 @@ function SidebarNotes() {
   return <div className="notes">notes stuff goes here</div>;
 }
 
-function TranslationDropdown({ side, selected }) {
+function TranslationDropdown({ side, selected, setter }) {
   const { t } = useTranslation();
   const languages = [
     "en",
@@ -285,7 +285,7 @@ function TranslationDropdown({ side, selected }) {
     "de",
   ];
   return (
-    <select name={`${side}-language-select`}>
+    <select name={`${side}-language-select`} onChange={(e) => setter(e.target.value)}>
       {languages.map((code) => (
         <option key={code} value={code} selected={code === selected}>
           {t(`lang-${code}`)}
@@ -297,17 +297,33 @@ function TranslationDropdown({ side, selected }) {
 
 function TranslationBox() {
   const { t } = useTranslation();
+  const [fromLang, setFromLang] = useState("en");
+  const [toLang, setToLang] = useState("de");
+  const [isSwapped, setIsSwapped] = useState(false);
+
+  const swapLang = () => {
+    const oldFromLang = fromLang;
+    const oldToLang = toLang;
+    setFromLang(oldToLang);
+    setToLang(oldFromLang);
+    setIsSwapped(!isSwapped);
+  };
+
   return (
     <div className="translation-box">
       <div className="left">
-        <TranslationDropdown side="left" selected="en" />
+        <TranslationDropdown side="left" selected={fromLang} setter={setFromLang} />
         <textarea placeholder={t("vc_translator_type_here")} />
       </div>
-      <button type="button" className="swap-languages">
+      <button
+        type="button"
+        className={isSwapped ? "swap-languages swapped" : "swap-languages"}
+        onClick={swapLang}
+      >
         <img alt="swap languages" />
       </button>
       <div className="right">
-        <TranslationDropdown side="right" selected="de" />
+        <TranslationDropdown side="right" selected={toLang} setter={setToLang} />
         <textarea placeholder={t("vc_translator_type_here")} />
       </div>
     </div>

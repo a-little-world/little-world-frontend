@@ -80,6 +80,11 @@
 .swap-languages {
     padding: 10px;
     border-radius: 100%;
+    transition: transform 0.4s ease !important;
+}
+
+.swap-languages.swapped {
+    transform: rotate(180deg);
 }
 
 .swap-languages img {
