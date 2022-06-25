@@ -285,9 +285,13 @@ function TranslationDropdown({ side, selected, setter }) {
     "de",
   ];
   return (
-    <select name={`${side}-language-select`} onChange={(e) => setter(e.target.value)}>
+    <select
+      name={`${side}-language-select`}
+      onChange={(e) => setter(e.target.value)}
+      value={selected}
+    >
       {languages.map((code) => (
-        <option key={code} value={code} selected={code === selected}>
+        <option key={code} value={code}>
           {t(`lang-${code}`)}
         </option>
       ))}
