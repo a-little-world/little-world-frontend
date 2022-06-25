@@ -194,7 +194,7 @@ input#help-toggle:checked + label .img {
 
 
 
-@media screen and (max-width: 1023px) {
+@media screen and (width < 1024px) {
   .call-screen .video-controls :not(.call-time) .text {
       display: none;
   }
@@ -226,7 +226,7 @@ input#help-toggle:checked + label .img {
 
 
 
-@media screen and (max-width: 1023px) and (orientation: portrait) {
+@media screen and (width < 1024px) and (orientation: portrait) {
   #foreign-container.blur video {
     filter: blur(20px);
   }

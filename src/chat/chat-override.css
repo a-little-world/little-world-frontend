@@ -45,7 +45,7 @@
   cursor: unset;
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (width >= 1024px) {
   .rce-navbar, .rce-container-mlist {
     margin-bottom: 18px;
   }
@@ -462,7 +462,7 @@
   display: none;
 }
 
-@media screen and (max-width: 1023px) {
+@media screen and (width < 1024px) {
   #root {
     flex-grow: 1;
   }

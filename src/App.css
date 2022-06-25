@@ -69,7 +69,7 @@ button img {
   opacity: 0.5;
 }
 
-@media (max-width: 1023px) {
+@media (width < 1024px) {
   body {
     background-image: none;
     background-color: #FFF0E0;

@@ -37,7 +37,7 @@
     aspect-ratio: 16/9;
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (width >= 1024px) {
     #foreign-container video {
         object-fit: contain;
     }
@@ -261,7 +261,7 @@
     content: url("./images/close.svg");
 }
 
-@media screen and (max-width: 1023px) {
+@media screen and (width < 1024px) {
     .call-sidebar, .translation-box {
         display: none;
     }
@@ -282,7 +282,7 @@
     transition: top 0.2s linear;
 }
 
-@media screen and (max-width: 1023px) and (orientation: portrait) {
+@media screen and (width < 1024px) and (orientation: portrait) {
     .call-drawer-container {
         display: flex;
         top: 68px;
