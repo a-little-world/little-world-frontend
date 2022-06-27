@@ -1,12 +1,14 @@
 import React from "react";
-import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
 import store from "./app/store";
 import CallSetup from "./call-setup";
 import ActiveCall from "./call";
-import Main from "./main";
 import { BACKEND_PATH } from "./ENVIRONMENT";
+import Main from "./main";
+
+import "./App.css";
 
 function App() {
   return (

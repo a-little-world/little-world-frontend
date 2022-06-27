@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import Link from "./path-prepend";
-import "./profile.css";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import "./i18n";
+import Link from "./path-prepend";
+
+import "./profile.css";
 
 function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc }) {
   const { t } = useTranslation();

@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
-import "./i18n";
-import "./main.css";
-import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 import $ from "jquery";
 import Cookies from "js-cookie";
-import Link from "./path-prepend";
-import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
-import logoWithText from "./images/logo-text.svg";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
+
 import Chat from "./chat/chat-full-view";
+import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
+import "./i18n";
+import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
+
+import "./main.css";
+
+import logoWithText from "./images/logo-text.svg";
 
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();

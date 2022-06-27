@@ -1,6 +1,6 @@
+import classNames from "classnames";
 import React, { useState } from "react";
 import { format } from "timeago.js";
-import classNames from "classnames";
 
 function ChatItem(props) {
   const [onHoverTool, setOnHoverTool] = useState(false);

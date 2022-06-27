@@ -1,31 +1,33 @@
-import React, { Component } from "react";
-import { withTranslation } from "react-i18next";
-import "react-chat-elements/dist/main.css";
-import "react-toastify/dist/ReactToastify.css";
-import "./chat-override.css";
-import { ToastContainer, toast } from "react-toastify";
-import { MessageList, Input, Button, Navbar, SideBar, Popup } from "react-chat-elements";
 import throttle from "lodash.throttle";
+import React, { Component } from "react";
+import { Button, Input, MessageList, Navbar, Popup, SideBar } from "react-chat-elements";
+import { withTranslation } from "react-i18next";
 import { FaWindowClose } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
+
+import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
 import Link from "../path-prepend";
 import {
   createNewDialogModelFromIncomingMessageBox,
-  getSubtitleTextFromMessageBox,
-  fetchSelfInfo,
-  handleIncomingWebsocketMessage,
-  sendOutgoingTextMessage,
-  filterMessagesForDialog,
   fetchDialogs,
   fetchMessages,
+  fetchSelfInfo,
   fetchUsersList,
-  sendIsTypingMessage,
+  filterMessagesForDialog,
+  getSubtitleTextFromMessageBox,
+  handleIncomingWebsocketMessage,
   markMessagesForDialogAsRead,
+  sendIsTypingMessage,
   sendMessageReadMessage,
+  sendOutgoingTextMessage,
 } from "./chat.lib";
 import ChatItem from "./ChatItem-override";
 import ChatList from "./ChatList-override";
-import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
+
+import "./chat-override.css";
+import "react-chat-elements/dist/main.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;

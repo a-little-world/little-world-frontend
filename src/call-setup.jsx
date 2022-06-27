@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import "./call-setup.css";
-import "./i18n";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+
+import { BACKEND_PATH } from "./ENVIRONMENT";
+import "./i18n";
 import Link from "./path-prepend";
 import { addAudioTrack, addVideoTrack, toggleLocalTracks } from "./twilio-helper";
+
+import "./call-setup.css";
+
 import signalWifi from "./images/signal-wifi.svg";
-import { BACKEND_PATH } from "./ENVIRONMENT";
 
 function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText }) {
   const signalQualityImage = {
