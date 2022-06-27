@@ -58,3 +58,17 @@
   padding: 30px;
   margin: 10px 0 25px 0;
 }
+
+@media screen and (max-width: 1023px) {
+  .show-profile .selector {
+    display: none;
+  }
+
+  .profile .content {
+    flex-direction: column
+  }
+
+  .profile-user {
+    width: unset;
+  }
+}
