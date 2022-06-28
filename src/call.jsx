@@ -380,27 +380,6 @@ function VideoFrame() {
   );
 }
 
-function ActiveCall() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { userPk, tracks } = location.state || {};
-
-  useEffect(() => {
-    if (!userPk) {
-      navigate(`${BACKEND_PATH}/`);
-    }
-    const { videoId, audioId } = tracks || {};
-    if (!(videoId && audioId)) {
-      navigate(`${BACKEND_PATH}/call-setup`, { state: { userPk } });
-    }
-    addVideoTrack(videoId);
-    addAudioTrack(audioId);
-    joinRoom(userPk);
-  }, [userPk, tracks]);
-
-  return <VideoFrame />;
-}
-
 function Sidebar({ sideSelection }) {
   const { t } = useTranslation();
   const location = useLocation();
@@ -444,12 +423,30 @@ function Sidebar({ sideSelection }) {
 
 function CallScreen() {
   const [sideSelection, setSideSelection] = useState("chat");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userPk, tracks } = location.state || {};
+
+  useEffect(() => {
+    if (!userPk) {
+      navigate(`${BACKEND_PATH}/`);
+    }
+    const { videoId, audioId } = tracks || {};
+    if (!(videoId && audioId)) {
+      navigate(`${BACKEND_PATH}/call-setup`, { state: { userPk } });
+    }
+    const videoMuted = localStorage.getItem("video muted") === "true";
+    const audioMuted = localStorage.getItem("audio muted") === "true";
+    addVideoTrack(videoId, videoMuted);
+    addAudioTrack(audioId, audioMuted);
+    joinRoom(userPk);
+  }, [userPk, tracks]);
 
   return (
     <div className="call-screen">
       <SetSideContext.Provider value={setSideSelection}>
         <div className="call-and-text">
-          <ActiveCall />
+          <VideoFrame />
           <TranslationBox />
         </div>
         <Sidebar sideSelection={sideSelection} />
