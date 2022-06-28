@@ -7,7 +7,8 @@
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
     "^[./](?!.*\\.(css|jpg|jpeg|png|svg|webm)($|\\?)).*",
-    "^(.*)(\\.css)$",
+    "^(?![./])(.*)(\\.css)$",
+    "^[./](.*)(\\.css)$",
     "^(.*)(\\.(jpg|jpeg|png|svg|webm))$"
   ],
   "importOrderSeparation": true,

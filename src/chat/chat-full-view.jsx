@@ -25,9 +25,10 @@ import {
 import ChatItem from "./ChatItem-override";
 import ChatList from "./ChatList-override";
 
-import "./chat-override.css";
 import "react-chat-elements/dist/main.css";
 import "react-toastify/dist/ReactToastify.css";
+
+import "./chat-override.css";
 
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
