@@ -259,18 +259,14 @@ function Main() {
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
           <Selector />
         </div>
-        {location.pathname === `${BACKEND_PATH}/` && (
+        {use === "main" && (
           <div className="content-area-main">
             <NotificationPanel userInfo={userInfo} />
             <PartnerProfiles matchesInfo={matchesInfo} />
           </div>
         )}
-        {location.pathname === `${BACKEND_PATH}/chat` && (
-          <Chat matchesInfo={matchesInfo} userPk={userPk} />
-        )}
-        {location.pathname === `${BACKEND_PATH}/profile` && (
-          <Profile matchesInfo={matchesInfo} userInfo={userInfo} />
-        )}
+        {use === "chat" && <Chat matchesInfo={matchesInfo} userPk={userPk} />}
+        {use === "profile" && <Profile matchesInfo={matchesInfo} userInfo={userInfo} />}
       </div>
     </div>
   );
