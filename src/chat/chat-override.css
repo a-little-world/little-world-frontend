@@ -3,9 +3,10 @@
   display: flex;
 }
 
-.right-panel, .container > .chat-list-box {
+.right-panel,
+.container > .chat-list-box {
   border-radius: 30px;
-  border: 1px solid #E6E8EC;
+  border: 1px solid #e6e8ec;
   box-sizing: border-box;
   background-color: white;
 }
@@ -17,7 +18,10 @@
   min-width: 400px;
 }
 
-.flex-container .rce-container-input, .rce-container-mlist, .rce-navbar.light, .rce-mlist {
+.flex-container .rce-container-input,
+.rce-container-mlist,
+.rce-navbar.light,
+.rce-mlist {
   background-color: white;
   border-radius: 18px;
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -37,7 +41,8 @@
   flex-grow: 1;
 }
 
-.rce-citem, .rce-navbar .rce-citem:hover {
+.rce-citem,
+.rce-navbar .rce-citem:hover {
   background: unset;
 }
 
@@ -46,11 +51,11 @@
 }
 
 @media screen and (width >= 1024px) {
-  .rce-navbar, .rce-container-mlist {
+  .rce-navbar,
+  .rce-container-mlist {
     margin-bottom: 18px;
   }
 }
-
 
 /** left panel **/
 .chat-list-box {
@@ -64,34 +69,34 @@
   font-weight: 600;
   line-height: 20px;
   margin: 20px 20px 0 20px;
-  color: #5F5F5F;
+  color: #5f5f5f;
 }
 
 .rce-sbar.light {
   background: none;
   min-height: unset;
   flex-grow: 1;
- }
+}
 
 .new-partner {
   height: 100px;
   display: block;
-  color: #F28D00;
+  color: #f28d00;
   display: flex;
   margin: 10px;
-  border-top: 1px solid #E6E8EC;
+  border-top: 1px solid #e6e8ec;
 }
 
 .find-partner {
   margin: auto;
-   font-weight: 600;
+  font-weight: 600;
   font-size: 16px;
 }
 
 .find-partner img.plus {
   content: url("../images/chat-plus.svg");
   border-radius: 100px;
-  border: 2px solid #F28D00;
+  border: 2px solid #f28d00;
   vertical-align: middle;
   margin-right: 10px;
 }
@@ -131,12 +136,12 @@
   background: none;
   border-radius: 100px;
   padding: 5px 10px;
-  color: #1983C6;
+  color: #1983c6;
   display: inline;
 }
 
 .waiting .buttons .cancel {
-  border: 2px solid #36A9E0;
+  border: 2px solid #36a9e0;
   margin-right: 4px;
 }
 
@@ -148,7 +153,7 @@
 .rce-sbar.light .rce-sbar-item input {
   margin: 25px;
   padding: 15px;
-  color: #5F5F5F;
+  color: #5f5f5f;
   font-weight: 400;
   font-size: 16px;
   line-height: 20px;
@@ -159,10 +164,9 @@
 }
 
 .rce-sbar.light .rce-container-input input {
-  background: #F9FAFB;
+  background: #f9fafb;
   border-radius: 10px;
 }
-
 
 /** top bar **/
 .rce-navbar {
@@ -204,7 +208,8 @@
   max-width: 300px;
 }
 
-.free-appointments, .suggest-appointment {
+.free-appointments,
+.suggest-appointment {
   border-radius: 100px;
   display: inline;
   padding: 0 20px;
@@ -220,15 +225,16 @@
 }
 
 .free-appointments {
-  border: 2px solid #F9BA6E;
-  color: #F39325;
+  border: 2px solid #f9ba6e;
+  color: #f39325;
   background: white;
   margin-right: 10px;
   /* padding: 8px 18px; reduce padding by border size */
 }
 
-.suggest-appointment, .call-start {
-  background: linear-gradient(90deg, #F28D00 0%, #F9BA6E 100%);
+.suggest-appointment,
+.call-start {
+  background: linear-gradient(90deg, #f28d00 0%, #f9ba6e 100%);
   border: none;
   color: white;
 }
@@ -273,7 +279,7 @@
 }
 
 .rce-mbox-text::after {
-  content: "";  
+  content: "";
 }
 
 .rce-mbox-text {
@@ -285,7 +291,7 @@
 .rce-mbox-text.left {
   float: left;
   background-color: white;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .rce-mbox-text.right {
@@ -314,7 +320,8 @@
 }
 
 /* hide speech bubble notch */
-.rce-mbox-right-notch, .rce-mbox-left-notch {
+.rce-mbox-right-notch,
+.rce-mbox-left-notch {
   display: none;
 }
 
@@ -322,14 +329,13 @@
   display: none;
 }
 
-
 /** message input/sending area **/
 /* input area */
 .rce-input-textarea {
   margin: 15px;
   border-radius: 100px;
   padding-left: 16px;
-  background-color: #F6F6F6;
+  background-color: #f6f6f6;
   font-size: 16px;
   min-width: 0; /* not sure why this works!! */
   overflow: hidden;
@@ -338,8 +344,9 @@
 }
 
 /* send button */
-.rce-input-buttons .rce-button:last-child { /* :last-child only needed to override react-chat-elements CSS */
-  background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%) !important;
+.rce-input-buttons .rce-button:last-child {
+  /* :last-child only needed to override react-chat-elements CSS */
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%) !important;
   border-radius: 100px;
   padding: 8px 6px;
   font-size: 14px;
@@ -352,7 +359,7 @@
   height: 100%;
 }
 
-.rce-container-citem{
+.rce-container-citem {
   min-width: 0;
 }
 
@@ -398,7 +405,7 @@
 }
 
 .rce-citem.selected {
-  background-color: #F9FAFB;
+  background-color: #f9fafb;
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
@@ -440,15 +447,15 @@
 }
 
 .request-accept {
-  border: 2px solid #DB590B;
+  border: 2px solid #db590b;
   background-color: white;
-  color: #DB590B;
+  color: #db590b;
   margin-right: 10px;
 }
 
 .request-deny {
   color: white;
-  background: linear-gradient(90deg, #F28D00 0%, #F9BA6E 100%);
+  background: linear-gradient(90deg, #f28d00 0%, #f9ba6e 100%);
   border: none;
   margin-right: 4px;
 }
@@ -472,10 +479,11 @@
     box-sizing: border-box;
   }
 
-  .right-panel, .container > .chat-list-box,
+  .right-panel,
+  .container > .chat-list-box,
   .flex-container .rce-container-input,
   .rce-container-mlist,
-  .rce-navbar.light, 
+  .rce-navbar.light,
   .rce-mlist {
     border-radius: 0;
   }
@@ -488,7 +496,8 @@
     min-width: unset;
   }
 
-  .rce-navbar-item__right .free-appointments, .rce-navbar-item__right .suggest-appointment {
+  .rce-navbar-item__right .free-appointments,
+  .rce-navbar-item__right .suggest-appointment {
     display: none;
   }
 
@@ -500,7 +509,8 @@
     content: url("../images/arrow-back.svg");
   }
 
-  .rce-sbar-item, .chat-list {
+  .rce-sbar-item,
+  .chat-list {
     width: 100%;
   }
 
@@ -517,7 +527,8 @@
     text-overflow: ellipsis;
   }
 
-  .main-page, .content-area .container {
+  .main-page,
+  .content-area .container {
     display: contents !important;
   }
 
@@ -528,7 +539,8 @@
     min-width: unset;
   }
 
-  .right-panel:not(.active-panel-mobile), .chat-list-box:not(.active-panel-mobile) {
+  .right-panel:not(.active-panel-mobile),
+  .chat-list-box:not(.active-panel-mobile) {
     display: none !important;
   }
 

@@ -13,14 +13,16 @@ video {
   width: 576px;
   max-width: 100%;
   margin: 15px auto;
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
-.local-video-container, .local-video-container video {
+.local-video-container,
+.local-video-container video {
   border-radius: 20px;
 }
 
-.video-container > video, .local-video-container video {
+.video-container > video,
+.local-video-container video {
   height: 100%;
   width: 100%;
   border-radius: 20px;
@@ -55,15 +57,17 @@ video {
 }
 
 .video-controls .signal-button .signal-update {
-  color: #F39325;
+  color: #f39325;
 }
 
-.video-controls > input[type=checkbox] {
+.video-controls > input[type="checkbox"] {
   display: none;
 }
 
 /* video call inset buttons / toggles */
-.video-controls label, .video-controls button, .call-time {
+.video-controls label,
+.video-controls button,
+.call-time {
   height: 42px;
   min-width: 42px;
   border: none;
@@ -77,7 +81,7 @@ video {
 
 .video-controls .text {
   font-size: 16px;
-  color: #E6E8EC;
+  color: #e6e8ec;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -109,7 +113,8 @@ video {
   text-decoration: none;
 }
 
-.call-setup-modal input#audio-toggle + label { /* push items to right side */
+.call-setup-modal input#audio-toggle + label {
+  /* push items to right side */
   margin-left: auto;
 }
 
@@ -165,13 +170,12 @@ input#help-toggle:checked + label .img {
 }
 
 .end-call {
-  background: linear-gradient(225.88deg, #DB590B 7.79%, #9C2308 104.6%);
+  background: linear-gradient(225.88deg, #db590b 7.79%, #9c2308 104.6%);
 }
 
 .end-call .img {
   background-image: url("images/videobuttons/call-end.svg");
 }
-
 
 #foreign-container {
   width: 100%;
@@ -192,11 +196,9 @@ input#help-toggle:checked + label .img {
   display: none;
 }
 
-
-
 @media screen and (width < 1024px) {
   .call-screen .video-controls :not(.call-time) .text {
-      display: none;
+    display: none;
   }
 
   .local-video-container.inset {
@@ -208,12 +210,11 @@ input#help-toggle:checked + label .img {
     margin: 10px;
   }
 
-  .video-controls #calendar-toggle + label, .video-controls .chat-show {
+  .video-controls #calendar-toggle + label,
+  .video-controls .chat-show {
     display: none;
   }
 }
-
-
 
 /* need to set this as aspect-ratio will not override height/width settings */
 @media screen and (orientation: landscape) {
@@ -223,8 +224,6 @@ input#help-toggle:checked + label .img {
     height: 324px;
   }
 }
-
-
 
 @media screen and (width < 1024px) and (orientation: portrait) {
   #foreign-container.blur video {
@@ -241,7 +240,9 @@ input#help-toggle:checked + label .img {
     justify-content: space-evenly;
   }
 
-  .call-screen .video-controls label, .call-screen .video-controls button, .call-time {
+  .call-screen .video-controls label,
+  .call-screen .video-controls button,
+  .call-time {
     margin-right: unset;
   }
 
@@ -251,7 +252,7 @@ input#help-toggle:checked + label .img {
   }
 
   .video-controls.top button.selected {
-    background: linear-gradient(43.07deg, #DB590B -3.02%, #F39325 93.96%);
+    background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
   }
 
   .video-controls.top .show-chat {
