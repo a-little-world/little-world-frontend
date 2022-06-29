@@ -66,7 +66,6 @@
 
 .show-profile a.back {
   border-radius: 100px;
-  margin-right: 6px;
   display: inline-block;
 }
 
@@ -74,6 +73,10 @@
   content: url("./images/arrow-back.svg");
   vertical-align: middle;
   padding: 15px;
+}
+
+.show-profile .text {
+  margin-left: 6px;
 }
 
 .show-profile h3 {

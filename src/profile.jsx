@@ -95,7 +95,7 @@ function Profile({ matchesInfo, userInfo, setCallSetupPartner }) {
             <img alt="back" />
           </Link>
         )}
-        {profileTitle}
+        <span className="text">{profileTitle}</span>
       </div>
       <div className="content">
         <ProfileBox {...profileData} isSelf={!userPk} setCallSetupPartner={setCallSetupPartner} />
