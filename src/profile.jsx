@@ -19,7 +19,7 @@ function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc, isSe
       </div>
       {!isSelf && (
         <div className="buttons">
-          <Link to="/profile" state={{ userPk }} className="profile">
+          <Link to="/" state={{ userPk }} className="profile">
             <img alt="visit profile" />
             {t("cp_profile")}
           </Link>
@@ -82,9 +82,11 @@ function Profile({ matchesInfo, userInfo }) {
   return (
     <div className="profile-component">
       <div className="header">
-        <Link to="/" className="back">
-          <img alt="back" />
-        </Link>
+        {userPk && (
+          <Link to="/" className="back">
+            <img alt="back" />
+          </Link>
+        )}
         {profileTitle}
       </div>
       <div className="content">
