@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { BACKEND_PATH } from "./ENVIRONMENT";
 import "./i18n";
@@ -26,7 +27,6 @@ function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText })
 }
 
 function VideoControls({ signalInfo }) {
-
   return (
     <div className="video-controls">
       <SignalIndicator
