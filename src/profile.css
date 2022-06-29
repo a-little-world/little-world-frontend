@@ -62,6 +62,9 @@
   font-weight: 700;
   font-size: 28px;
   padding: 16px;
+  display: flex;
+  height: 1em;
+  align-items: center;
 }
 
 .show-profile a.back {
