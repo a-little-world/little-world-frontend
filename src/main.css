@@ -223,6 +223,8 @@ a.call img {
   line-height: 15px;
   text-align: center;
   color: #f28d00;
+  border-style: dashed;
+  border-width: 2px;
 }
 
 .find-new img {
