@@ -135,7 +135,7 @@ function NotificationPanel({ userInfo }) {
     },
     {
       id: 1973,
-      type: "call",
+      type: "missed call",
       text: "missed call",
       dateString: "You missed appointment",
       unixtime: 1640995200,
@@ -147,14 +147,15 @@ function NotificationPanel({ userInfo }) {
         <img src={userInfo.imgSrc} alt="current user" />
         <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
       </div>
+      <hr />
       <div className="notifications-header">{t("nbr_notifications")}</div>
       <div className="notifications-content">
-        {dummyNotifications.map((item) => (
-          <div key={item.id} className="notification-item">
-            <img className={item.type} alt={item.type} />
+        {dummyNotifications.map(({ id, type, text, dateString }) => (
+          <div key={id} className="notification-item">
+            <img className={type.replace(" ", "-")} alt={type} />
             <div className="info">
-              <div className="notification-headline">{item.text}</div>
-              <div className="notification-time">{item.dateString}</div>
+              <div className="notification-headline">{text}</div>
+              <div className="notification-time">{dateString}</div>
             </div>
           </div>
         ))}
