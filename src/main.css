@@ -176,7 +176,7 @@
   width: 100%;
 }
 
-.profile-box .buttons a {
+.profile-box .buttons a, .profile-box .buttons button {
   background: rgba(230, 232, 236, 0.2);
   border-radius: 25px;
   display: flex;
@@ -184,18 +184,19 @@
   align-items: center;
   padding: 10px;
   width: 80px;
-  flex-grow: 1;
+  flex: 1 1 0;
+  font-size: inherit;
 }
 
-a.profile img {
+.profile-box .buttons .profile img {
   content: url("./images/profile-orange.svg");
 }
 
-a.chat img {
+.profile-box .buttons .chat img {
   content: url("./images/chat-orange.svg");
 }
 
-a.call img {
+.profile-box .buttons .call img {
   content: url("./images/call-orange.svg");
 }
 

@@ -9,6 +9,8 @@ import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
+import CallSetup from "./call-setup";
+import { removeActiveTracks } from "./twilio-helper";
 
 import "./main.css";
 
@@ -99,13 +101,19 @@ function Selector() {
   );
 }
 
-function PartnerProfiles({ matchesInfo }) {
+function PartnerProfiles({ matchesInfo, setCallSetupPartner }) {
   const { t } = useTranslation();
 
   return (
     <div className="profiles">
       {matchesInfo.map((userData) => {
-        return <ProfileBox key={userData.userPk} {...userData} />;
+        return (
+          <ProfileBox
+            key={userData.userPk}
+            {...userData}
+            setCallSetupPartner={setCallSetupPartner}
+          />
+        );
       })}
       <Link className="find-new">
         <img alt="plus" />
@@ -177,6 +185,16 @@ function Main() {
 
   const [matchesInfo, setMatchesInfo] = useState([]);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
+  const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
+  const setCallSetupPartner = (userPk) => {
+    document.body.style.overflow = userPk ? "hidden" : "";
+    setCallSetupPartnerKey(userPk);
+    if (!userPk) {
+      removeActiveTracks();
+    }
+  };
+
+  removeActiveTracks();
 
   useEffect(() => {
     setShowSidebarMobile(false);
@@ -263,11 +281,28 @@ function Main() {
         {use === "main" && (
           <div className="content-area-main">
             <NotificationPanel userInfo={userInfo} />
-            <PartnerProfiles matchesInfo={matchesInfo} />
+            <PartnerProfiles matchesInfo={matchesInfo} setCallSetupPartner={setCallSetupPartner} />
           </div>
         )}
-        {use === "chat" && <Chat matchesInfo={matchesInfo} userPk={userPk} />}
-        {use === "profile" && <Profile matchesInfo={matchesInfo} userInfo={userInfo} />}
+        {use === "chat" && (
+          <Chat
+            matchesInfo={matchesInfo}
+            userPk={userPk}
+            setCallSetupPartner={setCallSetupPartner}
+          />
+        )}
+        {use === "profile" && (
+          <Profile
+            matchesInfo={matchesInfo}
+            userInfo={userInfo}
+            setCallSetupPartner={setCallSetupPartner}
+          />
+        )}
+      </div>
+      <div className={callSetupPartner ? "call-setup-overlay" : "call-setup-overlay hidden"}>
+        {callSetupPartner && (
+          <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
+        )}
       </div>
     </div>
   );

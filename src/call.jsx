@@ -442,6 +442,8 @@ function CallScreen() {
     joinRoom(userPk);
   }, [userPk, tracks]);
 
+  document.body.style.overflow = ""; // unset after call overlay
+
   return (
     <div className="call-screen">
       <SetSideContext.Provider value={setSideSelection}>

@@ -7,7 +7,15 @@ import Link from "./path-prepend";
 
 import "./profile.css";
 
-function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc, isSelf }) {
+function ProfileBox({
+  userPk,
+  firstName,
+  lastName,
+  userDescription,
+  imgSrc,
+  isSelf,
+  setCallSetupPartner,
+}) {
   const { t } = useTranslation();
 
   return (
@@ -27,10 +35,10 @@ function ProfileBox({ userPk, firstName, lastName, userDescription, imgSrc, isSe
             <img alt="chat" />
             {t("cp_message")}
           </Link>
-          <Link to="/call-setup" state={{ userPk }} className="call">
+          <button type="button" onClick={() => setCallSetupPartner(userPk)} className="call">
             <img alt="call" />
             {t("cp_call")}
-          </Link>
+          </button>
         </div>
       )}
     </div>
@@ -65,7 +73,7 @@ function ProfileDetail() {
   );
 }
 
-function Profile({ matchesInfo, userInfo }) {
+function Profile({ matchesInfo, userInfo, setCallSetupPartner }) {
   const { t } = useTranslation();
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -90,7 +98,7 @@ function Profile({ matchesInfo, userInfo }) {
         {profileTitle}
       </div>
       <div className="content">
-        <ProfileBox {...profileData} isSelf={!userPk} />
+        <ProfileBox {...profileData} isSelf={!userPk} setCallSetupPartner={setCallSetupPartner} />
         <ProfileDetail />
       </div>
     </div>

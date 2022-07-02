@@ -179,17 +179,8 @@ function AudioOutputSelect() {
   );
 }
 
-function CallSetup() {
-  const location = useLocation();
-  const navigate = useNavigate();
+function CallSetup({ userPk, setCallSetupPartner }) {
   const { t } = useTranslation();
-
-  const { userPk } = location.state || {};
-  useEffect(() => {
-    if (!userPk) {
-      navigate(`${BACKEND_PATH}/`);
-    }
-  }, [userPk]);
 
   const [videoTrack, setVideoTrack] = useState(null);
   const setVideo = (deviceId) => {
@@ -234,39 +225,37 @@ function CallSetup() {
   });
 
   return (
-    <div className="call-setup-overlay">
-      <div className="call-setup-modal">
-        <div className="modal-top">
-          <div className="modal-header">
-            <h3 className="title">{t("pcs_main_heading")}</h3>
-            <span className="subtitle">{t("pcs_sub_heading")}</span>
-          </div>
-          <Link className="modal-close" to="/" />
+    <div className="call-setup-modal">
+      <div className="modal-top">
+        <div className="modal-header">
+          <h3 className="title">{t("pcs_main_heading")}</h3>
+          <span className="subtitle">{t("pcs_sub_heading")}</span>
         </div>
-        {mediaPermission && (
-          <>
-            <VideoFrame />
-            <div className="av-setup-dropdowns">
-              <VideoInputSelect setVideo={setVideo} />
-              <AudioInputSelect setAudio={setAudio} />
-              <AudioOutputSelect />
-            </div>
-            <Link to="/call" className="av-setup-confirm" state={{ userPk, tracks }}>
-              {t("pcs_btn_join_call")}
-            </Link>
-          </>
-        )}
-        {!mediaPermission && (
-          <>
-            <br />
-            Permission to use the camera and microphone is required.
-            <br />
-            Please give permission in your browser settings.
-            <br />
-            See https://support.google.com/chrome/answer/2693767 for instructions.
-          </>
-        )}
+        <button type="button" className="modal-close" onClick={() => setCallSetupPartner(null)} />
       </div>
+      {mediaPermission && (
+        <>
+          <VideoFrame />
+          <div className="av-setup-dropdowns">
+            <VideoInputSelect setVideo={setVideo} />
+            <AudioInputSelect setAudio={setAudio} />
+            <AudioOutputSelect />
+          </div>
+          <Link to="/call" className="av-setup-confirm" state={{ userPk, tracks }}>
+            {t("pcs_btn_join_call")}
+          </Link>
+        </>
+      )}
+      {!mediaPermission && (
+        <>
+          <br />
+          Permission to use the camera and microphone is required.
+          <br />
+          Please give permission in your browser settings.
+          <br />
+          See https://support.google.com/chrome/answer/2693767 for instructions.
+        </>
+      )}
     </div>
   );
 }

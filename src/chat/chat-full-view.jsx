@@ -681,9 +681,13 @@ class Chat extends Component {
                 <button type="button" className="suggest-appointment disabled">
                   <span className="text">{t("chat_suggest_appointment")}</span>
                 </button>
-                <Link className="call-start" to="/call-setup" state={{ userPk }}>
+                <button
+                  type="button"
+                  className="call-start"
+                  onClick={() => this.props.setCallSetupPartner(userPk)}
+                >
                   <img alt="start call" />
-                </Link>
+                </button>
               </>
             }
           />

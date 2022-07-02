@@ -3,7 +3,6 @@ import { Provider } from "react-redux";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import store from "./app/store";
-import CallSetup from "./call-setup";
 import ActiveCall from "./call";
 import { BACKEND_PATH } from "./ENVIRONMENT";
 import Main from "./main";
@@ -17,7 +16,6 @@ function App() {
         <Routes>
           <Route path={`${BACKEND_PATH}/`}>
             <Route index element={<Main />} />
-            <Route path="call-setup" element={<CallSetup />} />
             <Route path="call" element={<ActiveCall />} />
             <Route path="partners" element={<Main />} />
             <Route path="chat" element={<Main />} />
