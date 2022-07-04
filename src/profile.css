@@ -88,7 +88,8 @@
   font-weight: 500;
 }
 
-.profile-text {
+.profile-text,
+.selected-topics {
   background: rgba(230, 232, 236, 0.2);
   border-radius: 15px;
   font-size: 24px;
@@ -96,6 +97,21 @@
   color: #667085;
   padding: 30px;
   margin: 10px 0 25px 0;
+}
+
+.selected-topics {
+  display: flex;
+  gap: 15px;
+}
+
+.selected-topics span {
+  padding: 8px 20px;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
+  border-radius: 1000px;
+  font-weight: 600;
+  font-size: 17px;
+  background-color: white;
+  color: #36a9e0;
 }
 
 @media screen and (max-width: 1023px) {

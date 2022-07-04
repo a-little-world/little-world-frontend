@@ -45,6 +45,19 @@ function ProfileBox({
   );
 }
 
+const dummyTopicsIds = [1, 19, 8];
+
+function TopicsBox({ topicIds }) {
+  const { t } = useTranslation();
+  return (
+    <div className="selected-topics">
+      {topicIds.map((idx) => (
+        <span key={idx}>{t(`profile_interests.${idx}`)}</span>
+      ))}
+    </div>
+  );
+}
+
 const dummyText =
   "Augue neque gravida in Fermentum et solicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque eu tincidunt. Tortor aliquam nulla Facilisi cras fermentum odio eu feugiat pretium nibh ipsum consequat nisl Vel Pretium lectus quam id leo in vitae; turpis massa sed elementum tempus Egestas.";
 
@@ -59,7 +72,7 @@ function ProfileDetail() {
       </div>
       <div className="topics">
         <h3>{t("profile_topics")}</h3>
-        <div className="profile-text">{dummyText}</div>
+        <TopicsBox topicIds={dummyTopicsIds} />
       </div>
       <div className="extra-topics">
         <h3>{t("profile_extra_topics")}</h3>
