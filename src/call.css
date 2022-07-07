@@ -178,6 +178,7 @@
 .questions-categories .categories {
   display: flex;
   overflow-x: hidden;
+  padding: 2px;
 }
 
 .call-sidebar .questions span,

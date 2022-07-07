@@ -109,11 +109,9 @@ function VideoControls() {
         <span className="text">{t("vc_fs_btn_chat")}</span>
       </button>
       <Timer />
-      <Link to="/">
-        <button type="button" className="end-call">
-          <div className="img" alt="end call" />
-          <span className="text">{t("vc_fs_btn_end_call")}</span>
-        </button>
+      <Link to="/" className="end-call">
+        <div className="img" alt="end call" />
+        <span className="text">{t("vc_fs_btn_end_call")}</span>
       </Link>
     </div>
   );

@@ -67,7 +67,8 @@ video {
 /* video call inset buttons / toggles */
 .video-controls label,
 .video-controls button,
-.call-time {
+.call-time,
+.end-call {
   height: 42px;
   min-width: 42px;
   border: none;
