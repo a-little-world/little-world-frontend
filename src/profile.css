@@ -39,9 +39,9 @@
 .show-profile .header {
   font-weight: 700;
   font-size: 28px;
-  padding: 16px;
   display: flex;
   height: 1em;
+  box-sizing: content-box;
   align-items: center;
 }
 
