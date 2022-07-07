@@ -43,8 +43,7 @@ button {
 .show-profile .profile-box,
 .call-setup-modal,
 .call-and-text,
-.call-sidebar .sidebar-selector,
-.call-sidebar .sidebar-content {
+.call-sidebar {
   border: 1px solid #e6e8ec;
   box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
   background: white;
@@ -61,8 +60,7 @@ button {
   .show-chat .container,
   .profile-component,
   .profile-component .content,
-  .call-screen,
-  .call-sidebar {
+  .call-screen {
     gap: 30px;
   }
 }
