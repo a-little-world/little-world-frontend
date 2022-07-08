@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable jsx-a11y/media-has-caption */
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { BACKEND_PATH } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
-import { addAudioTrack, addVideoTrack, toggleLocalTracks } from "./twilio-helper";
+import { getAudioTrack, getVideoTrack, removeActiveTracks, toggleLocalTracks } from "./twilio-helper";
 
 import "./call-setup.css";
 
@@ -56,7 +56,7 @@ function VideoControls({ signalInfo }) {
   );
 }
 
-function VideoFrame() {
+function VideoFrame({ Video, Audio }) {
   const { t } = useTranslation();
   const quality = "good";
   const qualityText = t(`pcs_signal_${quality}`);
@@ -65,7 +65,10 @@ function VideoFrame() {
 
   return (
     <div className="local-video-container">
-      <div id="container" className="video-frame" alt="video" />
+      <div id="container" className="video-frame" alt="video">
+        <video ref={Video} />
+        <audio ref={Audio} />
+      </div>
       <VideoControls signalInfo={signalInfo} />
     </div>
   );
@@ -182,25 +185,30 @@ function AudioOutputSelect() {
 function CallSetup({ userPk, setCallSetupPartner }) {
   const { t } = useTranslation();
 
-  const [videoTrack, setVideoTrack] = useState(null);
+  const videoRef = useRef();
+  const [videoTrackId, setVideoTrackId] = useState(null);
   const setVideo = (deviceId) => {
     localStorage.setItem("video muted", false); // always unmute when selecting new
     document.getElementById("video-toggle").checked = false;
-    addVideoTrack(deviceId);
-    setVideoTrack(deviceId);
+    getVideoTrack(deviceId).then((track) => {
+      const el = videoRef.current;
+      track.attach(el);
+    });
+    setVideoTrackId(deviceId);
   };
 
-  const [audioTrack, setAudioTrack] = useState(null);
+  const audioRef = useRef();
+  const [audioTrackId, setAudioTrackId] = useState(null);
   const setAudio = (deviceId) => {
     localStorage.setItem("audio muted", false); // always unmute when selecting new
     document.getElementById("audio-toggle").checked = false;
-    addAudioTrack(deviceId);
-    setAudioTrack(deviceId);
+    getAudioTrack(deviceId).then((track) => track.attach(audioRef.current));
+    setAudioTrackId(deviceId);
   };
 
   const tracks = {
-    videoId: videoTrack,
-    audioId: audioTrack,
+    videoId: videoTrackId,
+    audioId: audioTrackId,
   };
 
   const [mediaPermission, setMediaPermission] = useState(null);
@@ -235,7 +243,7 @@ function CallSetup({ userPk, setCallSetupPartner }) {
       </div>
       {mediaPermission && (
         <>
-          <VideoFrame />
+          <VideoFrame Video={videoRef} Audio={audioRef} />
           <div className="av-setup-dropdowns">
             <VideoInputSelect setVideo={setVideo} />
             <AudioInputSelect setAudio={setAudio} />

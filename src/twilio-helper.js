@@ -26,64 +26,40 @@ const removeActiveTracks = () => {
   }
 };
 
-function addVideoTrack(deviceId) {
-  // returns true for active, false for muted and null for failure
-  let id = deviceId;
-  if (selectedTracks.video) {
-    if (id) {
-      removeTrack(selectedTracks.video);
-    } else {
-      id = selectedTracks.video.deviceId;
-    }
+function saveTrack(track, id) {
+  const { kind } = track;
+  selectedTracks[kind] = track;
+  selectedTracks[kind].deviceId = id; // need this for restarting after mute
+  if (localStorage.getItem(`${kind} muted`) === "true") {
+    selectedTracks[kind].disable();
   }
+  return selectedTracks[track.kind];
+}
 
-  console.log(`adding video track with device id ${id}`);
+function getVideoTrack(deviceId) {
+  console.log(`adding video track with device id ${deviceId}`);
 
   const constraints = {
     width: 576,
     height: 324,
-    deviceId: { exact: id }, // if set as undefined acts as if not present and selects default
+    deviceId: { exact: deviceId }, // if set as undefined acts as if not present and selects default
   };
 
   return createLocalVideoTrack(constraints, (error) => {
     console.error(`Unable to create local video track: ${error.message}`);
     return null;
-  }).then((localTrack) => {
-    selectedTracks.video = localTrack;
-    selectedTracks.video.deviceId = deviceId; // need this for restarting after mute
-    const localMediaContainer = document.querySelector(".local-video-container");
-    localMediaContainer.prepend(selectedTracks.video.attach());
-    if (localStorage.getItem("video muted") === "true") {
-      selectedTracks.video.disable();
-      return false;
-    }
-    return true;
-  });
+  }).then((localTrack) => saveTrack(localTrack, deviceId));
 }
 
-function addAudioTrack(deviceId) {
-  let id;
-  if (selectedTracks.audio) {
-    if (deviceId) {
-      removeTrack(selectedTracks.audio);
-    }
-    id = deviceId || selectedTracks.audio.deviceId;
-  }
-
+function getAudioTrack(deviceId) {
   console.log(`adding audio track with device id ${deviceId}`);
 
-  const constraints = { deviceId: { exact: id } }; // selects default if undefined
+  const constraints = { deviceId: { exact: deviceId } }; // selects default if undefined
 
   return createLocalAudioTrack(constraints, (error) => {
     console.error(`Unable to create local audio track: ${error.message}`);
-    return false;
-  }).then((localTrack) => {
-    const localMediaContainer = document.querySelector(".local-video-container");
-    selectedTracks.audio = localTrack;
-    selectedTracks.audio.deviceId = deviceId; // need this for restarting after mute
-    localMediaContainer.prepend(selectedTracks.audio.attach());
-    return true;
-  });
+    return null;
+  }).then((localTrack) => saveTrack(localTrack, deviceId));
 }
 
 function joinRoom(partnerKey) {
@@ -158,4 +134,4 @@ function toggleLocalTracks(willMute, trackType) {
   localStorage.setItem(`${trackType} muted`, willMute);
 }
 
-export { addVideoTrack, addAudioTrack, joinRoom, toggleLocalTracks, removeActiveTracks };
+export { getVideoTrack, getAudioTrack, joinRoom, toggleLocalTracks, removeActiveTracks };

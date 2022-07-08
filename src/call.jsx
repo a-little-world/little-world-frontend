@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -6,7 +6,7 @@ import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
-import { addAudioTrack, addVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
+import { getAudioTrack, getVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
 
 import "./App.css";
 import "./call.css";
@@ -358,7 +358,7 @@ function MobileDrawer({ content, setOverlay }) {
   );
 }
 
-function VideoFrame() {
+function VideoFrame({ video, audio }) {
   const [selectedOverlay, setOverlay] = useState(null);
 
   return (
@@ -370,7 +370,10 @@ function VideoFrame() {
           className={selectedOverlay ? "video-frame blur" : "video-frame"}
           alt="video"
         />
-        <div className="local-video-container inset" />
+        <div className="local-video-container inset">
+          <video ref={video} />
+          <audio ref={audio} />
+        </div>
         <VideoControls />
         <MobileDrawer content={selectedOverlay} setOverlay={setOverlay} />
       </div>
@@ -424,6 +427,8 @@ function CallScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const { userPk, tracks } = location.state || {};
+  const videoRef = useRef();
+  const audioRef = useRef();
 
   useEffect(() => {
     if (!userPk) {
@@ -435,8 +440,12 @@ function CallScreen() {
     }
     const videoMuted = localStorage.getItem("video muted") === "true";
     const audioMuted = localStorage.getItem("audio muted") === "true";
-    addVideoTrack(videoId, videoMuted);
-    addAudioTrack(audioId, audioMuted);
+    getVideoTrack(videoId, videoMuted).then((track) => {
+      track.attach(videoRef.current);
+    });
+    getAudioTrack(audioId, audioMuted).then((track) => {
+      track.attach(audioRef.current);
+    });
     joinRoom(userPk);
   }, [userPk, tracks]);
 
@@ -446,7 +455,7 @@ function CallScreen() {
     <div className="call-screen">
       <SetSideContext.Provider value={setSideSelection}>
         <div className="call-and-text">
-          <VideoFrame />
+          <VideoFrame video={videoRef} audio={audioRef} />
           <TranslationBox />
         </div>
         <Sidebar sideSelection={sideSelection} />
