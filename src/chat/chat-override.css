@@ -126,7 +126,6 @@
 
 .waiting .buttons button {
   background: none;
-  border-radius: 100px;
   padding: 5px 10px;
   color: #1983c6;
   display: inline;
@@ -203,7 +202,6 @@
 
 .free-appointments,
 .suggest-appointment {
-  border-radius: 100px;
   display: inline;
   padding: 0 20px;
   height: 36px;
@@ -236,7 +234,6 @@
   content: url("../images/videobuttons/camera-on.svg");
   height: 36px;
   padding: 5px;
-  border-radius: 100px;
 }
 
 .rce-navbar-item > button > .text {
@@ -436,7 +433,6 @@
 }
 
 .partner-request .buttons button {
-  border-radius: 100px;
   display: inline;
   height: 36px;
   box-sizing: border-box;

@@ -80,7 +80,6 @@
 
 .swap-languages {
   padding: 10px;
-  border-radius: 100%;
   transition: transform 0.4s ease !important;
 }
 
@@ -126,7 +125,6 @@
 }
 .sidebar-selector input + label {
   padding: 15px 10px;
-  border-radius: 23px;
   font-style: normal;
   font-weight: 600;
   font-size: 21px;
@@ -160,11 +158,6 @@
 
 .questions-categories input {
   appearance: none;
-}
-
-.questions-categories .questions-left,
-.questions-categories .questions-right {
-  border-radius: 100px;
 }
 
 .questions-categories .questions-left img {
@@ -226,6 +219,7 @@
   padding: 15px;
   font-size: unset;
   width: 100%;
+  border-radius: inherit;
 }
 
 .questions-content div.selected {
@@ -239,10 +233,6 @@
 .questions-content .question-action {
   height: 28px;
   margin-top: 5px;
-}
-
-.question-action button {
-  border-radius: 20px;
 }
 
 .question-action .yes img {

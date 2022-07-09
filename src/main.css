@@ -97,7 +97,6 @@
   font-size: 18px;
   color: #36a9e0;
   padding: 10px 15px;
-  border-radius: 20px;
   white-space: nowrap;
 }
 
@@ -244,7 +243,6 @@
   .mobile-header button {
     border: none;
     background: none;
-    border-radius: 100px;
   }
 
   .mobile-header .menu img {
@@ -376,7 +374,6 @@
 .notification-panel .show-all {
   color: rgba(54, 169, 224, 1);
   padding: 10px;
-  border-radius: 100px;
 }
 
 .mobile-shade,
@@ -424,7 +421,6 @@
   }
 
   .sidebar button.close {
-    border-radius: 100px;
     align-self: end;
     background: rgba(230, 232, 236, 0.4);
     margin: 10px 10px 0 0;

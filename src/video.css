@@ -46,10 +46,6 @@ video {
   top: 0;
 }
 
-.video-controls > button {
-  border-radius: 21px;
-}
-
 .video-controls #signalQuality {
   vertical-align: middle;
   padding: 8px;

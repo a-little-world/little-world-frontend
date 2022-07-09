@@ -46,7 +46,6 @@
 }
 
 .show-profile a.back {
-  border-radius: 100px;
   display: inline-block;
 }
 
@@ -85,7 +84,7 @@
 .selected-topics span {
   padding: 8px 20px;
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
-  border-radius: 1000px;
+  border-radius: 100px;
   font-weight: 600;
   font-size: 17px;
   background-color: white;

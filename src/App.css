@@ -97,9 +97,14 @@ button {
   background: none;
   border: none;
   color: inherit;
-  border-radius: inherit;
   padding: 0;
   height: fit-content;
+}
+
+a,
+button,
+label {
+  border-radius: 100px;
 }
 
 button img {
