@@ -114,11 +114,15 @@ button img {
 }
 
 /* button press */
-input:not([type="radio"]:checked):active + label, button:not(.selected):active, a:not(.selected):active {
+input:not([type="radio"]:checked):active + label,
+button:not(.selected):active,
+a:not(.selected):active {
   transform: translate(2px, 2px);
 }
 
-label, button, a {
+label,
+button,
+a {
   transition: transform 0.1s ease !important;
 }
 

@@ -167,7 +167,8 @@
   width: 100%;
 }
 
-.profile-box .buttons a, .profile-box .buttons button {
+.profile-box .buttons a,
+.profile-box .buttons button {
   background: rgba(230, 232, 236, 0.2);
   border-radius: 25px;
   display: flex;
@@ -321,7 +322,7 @@
   border: none;
   height: 1px;
   width: 100%;
-  background-color: #E6E8EC;;
+  background-color: #e6e8ec;
 }
 
 .notifications-header {
@@ -359,7 +360,7 @@
   content: url("./images/notifications/missed-call.svg");
 }
 
-.notification-headline {  
+.notification-headline {
   font-size: 14px;
   font-weight: 600;
   line-height: 24px;
