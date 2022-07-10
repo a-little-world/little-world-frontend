@@ -17,6 +17,7 @@
 .sidebar .logo {
   width: 96px;
   margin: 16px;
+  content: url("./images/logo-text.svg");
 }
 
 .sidebar-item {

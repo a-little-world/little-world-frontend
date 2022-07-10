@@ -14,8 +14,6 @@ import { removeActiveTracks } from "./twilio-helper";
 
 import "./main.css";
 
-import logoWithText from "./images/logo-text.svg";
-
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
@@ -39,7 +37,7 @@ function Sidebar({ userInfo, sidebarMobile }) {
           <img src={userInfo.imgSrc} alt="current user" />
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
-        <img alt="little world" src={logoWithText} className="logo" />
+        <img alt="little world" className="logo" />
         {buttonData.map(({ label, path }) => (
           <Link
             to={path}
