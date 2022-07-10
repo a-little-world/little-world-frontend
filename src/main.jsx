@@ -14,8 +14,6 @@ import { removeActiveTracks } from "./twilio-helper";
 
 import "./main.css";
 
-import logoWithText from "./images/logo-text.svg";
-
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
@@ -39,7 +37,7 @@ function Sidebar({ userInfo, sidebarMobile }) {
           <img src={userInfo.imgSrc} alt="current user" />
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
-        <img alt="little world" src={logoWithText} className="logo" />
+        <img alt="little world" className="logo" />
         {buttonData.map(({ label, path }) => (
           <Link
             to={path}
@@ -244,8 +242,8 @@ function Main() {
     }).then(({ _matchesBasic, userData, matches }) => {
       setUserInfo({
         // userPk:
-        firstName: userData.real_name_first,
-        lastName: userData.real_name_last,
+        firstName: userData.first_name,
+        lastName: userData.second_name,
         // userDescription:
         imgSrc: userData.profile_image,
       });
@@ -253,9 +251,10 @@ function Main() {
       const matchesData = matches.map((match) => {
         return {
           userPk: match["match.user_h256_pk"],
-          firstName: match.real_name_first,
-          lastName: match.real_name_last,
-          userDescription: match.user_description,
+          firstName: match.first_name,
+          lastName: match.second_name,
+          userDescription: match.description,
+          userType: match.user_type,
           imgSrc: match.profile_image,
         };
       });
@@ -280,7 +279,7 @@ function Main() {
         </div>
         {use === "main" && (
           <div className="content-area-main">
-            <PartnerProfiles matchesInfo={matchesInfo} setCallSetupPartner={setCallSetupPartner} />
+            <PartnerProfiles matchesInfo={matchesInfo.filter(({userType}) =>  userType == "0")} setCallSetupPartner={setCallSetupPartner} />
             <NotificationPanel userInfo={userInfo} />
           </div>
         )}
