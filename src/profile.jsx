@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
@@ -49,11 +49,73 @@ const dummyTopicsIds = [1, 19, 8];
 
 function TopicsBox({ topicIds }) {
   const { t } = useTranslation();
+
+  const [editing, setEditing] = useState(false);
+  const [topicIndexes, setTopicIndexes] = useState(topicIds);
+  const [tempTopicIndexes, setTempTopicIndexes] = useState(topicIds);
+
+  const location = useLocation();
+  const { userPk } = location.state || {};
+  const isSelf = !userPk;
+
+  const toggleInterest = (idx) => {
+    const newIndexes = tempTopicIndexes.includes(idx)
+      ? tempTopicIndexes.filter((item) => item !== idx) // remove item
+      : [...tempTopicIndexes, idx]; // add item
+    setTempTopicIndexes(newIndexes);
+  };
+
+  const saveTopics = () => {
+    setTopicIndexes(tempTopicIndexes);
+    setEditing(false);
+  };
+
+  const cancelTopics = () => {
+    setTempTopicIndexes(topicIndexes);
+    setEditing(false);
+  };
+
   return (
     <div className="selected-topics">
-      {topicIds.map((idx) => (
-        <span key={idx}>{t(`profile_interests.${idx}`)}</span>
+      {isSelf && (
+        <button type="button" className="edit" onClick={() => setEditing(true)}>
+          <img alt="edit" />
+        </button>
+      )}
+      {topicIndexes.map((idx) => (
+        <div key={idx} className="interest-item">
+          <span className="text">{t(`profile_interests.${idx}`)}</span>
+        </div>
       ))}
+      {editing && (
+        <div className="topics-shade">
+          <div className="topics-selector">
+            <div className="buttons">
+              <button type="button" className="cancel" onClick={cancelTopics}>
+                <img alt="cancel" />
+              </button>
+              <button type="button" className="save" onClick={saveTopics}>
+                <img alt="save" />
+              </button>
+            </div>
+            <h3>{t("profile_choose_interests")}</h3>
+            <div className="items">
+              {t("profile_interests", { returnObjects: true }).map((interest, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className={
+                    tempTopicIndexes.includes(idx) ? "interest-item selected-item" : "interest-item"
+                  }
+                  onClick={() => toggleInterest(idx)}
+                >
+                  <span className="text">{interest}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

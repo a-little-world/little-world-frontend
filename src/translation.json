@@ -63,6 +63,7 @@
     "profile_extra_topics": "Other Topics",
     "profile_expectations": "What do you expect from the talks?",
     "profile_since": "Member since {{date}}",
+    "profile_choose_interests": "Select Interests",
     "profile_interests": [
       "Hobbies",
       "Sports",
@@ -168,6 +169,7 @@
     "profile_extra_topics": "Weitere Themen",
     "profile_expectations": "Was erwartest du von den Gesprächen?",
     "profile_since": "Mitglied seit {{date}}",
+    "profile_choose_interests": "Themen wählen",
     "profile_interests": [
       "Hobbies",
       "Sport",
