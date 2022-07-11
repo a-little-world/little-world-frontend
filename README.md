@@ -1,13 +1,13 @@
 # Little World Frontend
 
-## Starting ant watching
+## Starting and watching
 
 `npm start`
 
 Be aware that `localhost:3000` might not be able to render/recieve backend data if the Routing is not setup.
-If you wan't to use the app without routing change the `BACKEND_URL` to `lw.ngrok.io` but this will break the chat and maybe some other request that need cors and same-site.
+If you want to use the app without routing change the `BACKEND_URL` to `lw.ngrok.io` but this will break the chat and maybe some other request that need cors and same-site.
 
-Once the routing is setup the frontend url is `localhost:81`.
+Once the routing is setup the frontend url is `localhost:3333`.
 
 ## Routing setup
 
@@ -19,7 +19,7 @@ To bypass this there is the `schrodingers-nginx.sh`
 
 What is does:
 
-- Routes the frontent to `localhost:81` ( from `localhost:3000`)
-- Routes the backend server path `api2/*` and `chat_ws/` to `localhost:81/api2/*` ...
+- Routes the frontent to `localhost:3333` ( from `localhost:3000`)
+- Routes the backend server path `api2/*` and `chat_ws/` to `localhost:3333/api2/*` ...
 
-Now when acessing `localhost:81` *all* request and responses are `same-site`.
+Now when acessing `localhost:3333` _all_ request and responses are `same-site`.
