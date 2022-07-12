@@ -39,7 +39,7 @@ button {
 .show-chat .right-panel,
 .show-profile .profile-box,
 .show-profile .header,
-.profile-detail,
+.profile-detail > div,
 .show-profile .profile-box,
 .call-setup-modal,
 .call-and-text,

@@ -34,6 +34,9 @@
 
 .profile-detail {
   flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .show-profile .header {
