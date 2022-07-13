@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
+import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
-import CallSetup from "./call-setup";
 import { removeActiveTracks } from "./twilio-helper";
 
 import "./main.css";
@@ -279,7 +279,10 @@ function Main() {
         </div>
         {use === "main" && (
           <div className="content-area-main">
-            <PartnerProfiles matchesInfo={matchesInfo.filter(({userType}) =>  userType == "0")} setCallSetupPartner={setCallSetupPartner} />
+            <PartnerProfiles
+              matchesInfo={matchesInfo.filter(({ userType }) => userType === 0)}
+              setCallSetupPartner={setCallSetupPartner}
+            />
             <NotificationPanel userInfo={userInfo} />
           </div>
         )}
