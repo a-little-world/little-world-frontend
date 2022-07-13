@@ -147,6 +147,12 @@ function NotificationPanel({ userInfo }) {
       unixtime: 1640995200,
     },
   ];
+
+  // don't show unless names are available; ie API call has returned
+  if (!(userInfo.firstName && userInfo.lastName)) {
+    return false;
+  }
+
   return (
     <div className="notification-panel">
       <div className="active-user">
