@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 
 import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
-import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
+import { BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
