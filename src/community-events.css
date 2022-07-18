@@ -1,0 +1,112 @@
+.community-calls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.community-event {
+  display: flex;
+  background-color: white;
+  border: 1px solid #E6E8EC;
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
+  border-radius: 28px;  
+  padding: 15px;
+  gap: 20px;
+}
+
+.community-event .frequency {
+  flex: 1 0.1 160px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 160px;
+  overflow: hidden;
+  position: relative;
+  align-items: center;
+}
+
+.community-event .frequency img {
+  content: url("./images/coffee.webp");
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.community-event .frequency-text {
+  background: white;
+  border-radius: 100px;
+  padding: 5px 15px;
+  margin: 12px auto;
+  position: absolute;
+  bottom: 0;
+}
+
+/* main area */
+.community-event .main {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+}
+
+.community-event .buttons {
+  display: flex;
+  gap: 10px;
+  /* justify-content: space-evenly; */
+}
+
+.community-event .buttons button {
+  background: rgba(230, 232, 236, 0.2);
+  border: 2px solid rgba(230, 232, 236, 0.2);
+  border-radius: 25px;
+  flex: 0 1 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 25px 22px;
+}
+
+.community-event button .text {
+  font-size: 14px;
+  color: rgb(75, 76, 79);
+}
+
+.community-event .buttons button img {
+  width: 55px;
+}
+
+.community-event button.appointment img {
+  content: url("./images/new-appointment.svg");
+}
+
+.community-event button.call img {
+  content: url("./images/call-orange.svg");
+}
+
+.community-event .event-info h3 {
+  margin: 0;
+  font-weight: 700 !important;
+  font-size: 32px !important;
+}
+
+.community-event .event-info .text {
+  font-size: 15px;
+  color: rgba(119, 126, 144, 0.7);
+}
+
+.community-event .dateTime {
+  flex: 1 0.1 180px;
+  text-align: center;
+  margin: auto;
+}
+
+.dateTime .date {
+  font-weight: 700;
+  font-size: 55px;
+}
+
+.dateTime .month, .dateTime .time {
+  font-weight: 600;
+  font-size: 30px;
+  text-transform: uppercase;
+}

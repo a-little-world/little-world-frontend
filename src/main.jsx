@@ -12,6 +12,7 @@ import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
 import { removeActiveTracks } from "./twilio-helper";
 
+import "./community-events.css";
 import "./main.css";
 
 function Sidebar({ userInfo, sidebarMobile }) {
@@ -71,12 +72,10 @@ function MobileNavBar({ setShowSidebarMobile }) {
   );
 }
 
-function Selector() {
+function Selector({ selection, setSelection }) {
   const { t } = useTranslation();
   const nbtTopics = ["conversation_partners", "appointments", "community_calls"];
-  const [topSelection, setTopSelection] = useState("conversation_partners");
-  const handleChange = (e) => setTopSelection(e.target.value);
-  const disabled = ["appointments", "community_calls"];
+  const disabled = ["appointments"];
 
   return (
     <div className="selector">
@@ -86,9 +85,9 @@ function Selector() {
             type="radio"
             id={`${topic}-radio`}
             value={topic}
-            checked={topSelection === topic}
+            checked={selection === topic}
             name="sidebar"
-            onChange={handleChange}
+            onChange={(e) => setSelection(e.target.value)}
           />
           <label htmlFor={`${topic}-radio`} className={disabled.includes(topic) ? "disabled" : ""}>
             {t(`nbt_${topic}`)}
@@ -117,6 +116,79 @@ function PartnerProfiles({ matchesInfo, setCallSetupPartner }) {
         <img alt="plus" />
         {t("cp_find_new_partner")}
       </Link>
+    </div>
+  );
+}
+
+function CommunityEvent({ frequency, header, text, dateTime }) {
+  const { t } = useTranslation();
+
+  const two = (n) => (n < 10 ? `0${n}` : n);
+
+  return (
+    <div className="community-event">
+      <div className="frequency">
+        <img alt="" />
+        <div className="frequency-text">{frequency}</div>
+      </div>
+      <div className="main">
+        <div className="event-info">
+          <h3>{header}</h3>
+          <div className="text">
+            {text} <Link className="show-more">Show more</Link>
+          </div>
+        </div>
+        <div className="buttons">
+          <button type="button" className="appointment">
+            <img alt="add appointment" />
+            <span className="text">Termin hinzufügen</span>
+          </button>
+          <button type="button" className="call">
+            <img alt="call" />
+            <span className="text">Gespräch beitreten</span>
+          </button>
+        </div>
+      </div>
+      <div className="dateTime">
+        <div className="date">{two(dateTime.getDate())}</div>
+        <div className="month">{t(`month_short.${dateTime.getMonth()}`)}</div>
+        <div className="time">{`${two(dateTime.getHours())}:${two(dateTime.getMinutes())}`}</div>
+      </div>
+    </div>
+  );
+}
+
+function CommunityCalls() {
+  const now = new Date();
+  const dummyEvents = [
+    {
+      id: 23,
+      frequency: "weekly",
+      header: "Kaffeerunden",
+      text: "Come Together of the community - Grab a coffee and talk to other users, share your delights and enjoy!",
+      dateTime: now,
+    },
+    {
+      id: 26,
+      frequency: "once",
+      header: "Willkommen! Zeit für Fragen",
+      text: "Confused? Don’t worry, our team will happily answer all your questions! Just join the call.",
+      dateTime: now,
+    },
+    {
+      id: 29,
+      frequency: "once",
+      header: "Lach-Yoga",
+      text: "Want to have a heartily laugh with the community?  Treat yourself something good and join us! It’s free!",
+      dateTime: now,
+    },
+  ];
+
+  return (
+    <div className="community-calls">
+      {dummyEvents.map((eventData) => (
+        <CommunityEvent key={eventData.id} {...eventData} />
+      ))}
     </div>
   );
 }
@@ -268,6 +340,8 @@ function Main() {
     });
   }, []);
 
+  const [topSelection, setTopSelection] = useState("conversation_partners");
+
   document.body.classList.remove("hide-mobile-header");
 
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
@@ -281,15 +355,20 @@ function Main() {
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-          <Selector />
+          <Selector selection={topSelection} setSelection={setTopSelection} />
         </div>
         {use === "main" && (
           <div className="content-area-main">
-            <PartnerProfiles
-              matchesInfo={matchesInfo.filter(({ userType }) => userType === 0)}
-              setCallSetupPartner={setCallSetupPartner}
-            />
-            <NotificationPanel userInfo={userInfo} />
+            {topSelection === "conversation_partners" && (
+              <>
+                <PartnerProfiles
+                  matchesInfo={matchesInfo.filter(({ userType }) => userType === 0)}
+                  setCallSetupPartner={setCallSetupPartner}
+                />
+                <NotificationPanel userInfo={userInfo} />
+              </>
+            )}
+            {topSelection === "community_calls" && <CommunityCalls />}
           </div>
         )}
         {use === "chat" && (

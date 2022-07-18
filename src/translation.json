@@ -86,6 +86,20 @@
       "Science",
       "Cooking"
     ],
+    "month_short": [
+      "jan",
+      "feb",
+      "mar",
+      "apr",
+      "may",
+      "jun",
+      "jul",
+      "aug",
+      "sep",
+      "oct",
+      "nov",
+      "dec"
+    ],
     "lang-en": "English",
     "lang-sa": "Arabic",
     "lang-bg": "Bulgarian",
@@ -191,6 +205,20 @@
       "Persönliche Entwicklung",
       "Wissenschaft",
       "Kochen"
+    ],
+    "month_short": [
+      "jan",
+      "feb",
+      "märz",
+      "apr",
+      "mai",
+      "juni",
+      "juli",
+      "aug",
+      "sept",
+      "okt",
+      "nov",
+      "dez"
     ],
     "lang-en": "Englisch",
     "lang-sa": "Arabisch",
