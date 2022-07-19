@@ -2,15 +2,11 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  flex: 1 1 0;
 }
 
 .community-event {
   display: flex;
-  background-color: white;
-  border: 1px solid #E6E8EC;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.03);
-  border-radius: 28px;  
-  padding: 15px;
   gap: 20px;
 }
 
@@ -19,7 +15,6 @@
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-  width: 160px;
   overflow: hidden;
   position: relative;
   align-items: center;
@@ -36,7 +31,7 @@
   background: white;
   border-radius: 100px;
   padding: 5px 15px;
-  margin: 12px auto;
+  margin: 12px;
   position: absolute;
   bottom: 0;
 }
@@ -45,25 +40,27 @@
 .community-event .main {
   display: flex;
   flex-direction: column;
-  gap: 35px;
+  gap: 20px;
+  justify-content: space-evenly;
+  flex: 1 1 100%;
 }
 
 .community-event .buttons {
   display: flex;
   gap: 10px;
-  /* justify-content: space-evenly; */
+  justify-content: space-evenly;
 }
 
 .community-event .buttons button {
   background: rgba(230, 232, 236, 0.2);
   border: 2px solid rgba(230, 232, 236, 0.2);
   border-radius: 25px;
-  flex: 0 1 200px;
+  flex: 0 1 max-content;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  padding: 25px 22px;
+  padding: 20px;
 }
 
 .community-event button .text {
@@ -72,7 +69,7 @@
 }
 
 .community-event .buttons button img {
-  width: 55px;
+  width: 40px;
 }
 
 .community-event button.appointment img {
@@ -95,8 +92,11 @@
 }
 
 .community-event .dateTime {
-  flex: 1 0.1 180px;
-  text-align: center;
+  flex: 1 1 180px;
+  width: 180px; /* used to decide shrinking priority and affects min-width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: auto;
 }
 
@@ -105,7 +105,8 @@
   font-size: 55px;
 }
 
-.dateTime .month, .dateTime .time {
+.dateTime .month,
+.dateTime .time {
   font-weight: 600;
   font-size: 30px;
   text-transform: uppercase;
