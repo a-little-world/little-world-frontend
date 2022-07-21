@@ -12,6 +12,7 @@
 
 .community-event .frequency {
   flex: 1 0.1 160px;
+  min-width: 50px;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -106,6 +107,7 @@
   font-size: 55px;
 }
 
+.dateTime .weekday,
 .dateTime .month,
 .dateTime .time {
   font-weight: 600;

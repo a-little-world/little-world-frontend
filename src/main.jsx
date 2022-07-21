@@ -122,7 +122,6 @@ function PartnerProfiles({ matchesInfo, setCallSetupPartner }) {
 
 function CommunityEvent({ frequency, header, text, dateTime }) {
   const { t } = useTranslation();
-
   const two = (n) => (n < 10 ? `0${n}` : n);
 
   return (
@@ -150,8 +149,15 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
         </div>
       </div>
       <div className="dateTime">
-        <div className="date">{two(dateTime.getDate())}</div>
-        <div className="month">{t(`month_short.${dateTime.getMonth()}`)}</div>
+        {frequency === "weekly" && (
+          <div className="weekday">{t(`weekdays.${dateTime.getDay()}`)}</div>
+        )}
+        {frequency === "once" && (
+          <>
+            <div className="date">{two(dateTime.getDate())}</div>
+            <div className="month">{t(`month_short.${dateTime.getMonth()}`)}</div>
+          </>
+        )}
         <div className="time">{`${two(dateTime.getHours())}:${two(dateTime.getMinutes())}`}</div>
       </div>
     </div>

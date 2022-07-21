@@ -86,6 +86,7 @@
       "Science",
       "Cooking"
     ],
+    "weekdays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     "month_short": [
       "jan",
       "feb",
@@ -206,6 +207,7 @@
       "Wissenschaft",
       "Kochen"
     ],
+    "weekdays": ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
     "month_short": [
       "jan",
       "feb",
