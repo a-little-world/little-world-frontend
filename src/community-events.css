@@ -98,6 +98,7 @@
   flex-direction: column;
   align-items: center;
   margin: auto;
+  justify-content: center;
 }
 
 .dateTime .date {
@@ -110,4 +111,34 @@
   font-weight: 600;
   font-size: 30px;
   text-transform: uppercase;
+}
+
+@media screen and (max-width: 1023px) {
+  .content-area-main {
+    padding: 10px;
+  }
+
+  .community-event {
+    flex-direction: column;
+  }
+
+  .community-event .frequency {
+    width: 100%;
+    align-items: start;
+  }
+
+  .community-event .main button {
+    padding: 10px 0;
+    flex-grow: 1;
+  }
+
+  .community-event .dateTime {
+    flex-direction: row;
+    flex: unset;
+    gap: 20px;
+  }
+  .community-event .dateTime > div {
+    font-size: 30px;
+    font-weight: 600;
+  }
 }
