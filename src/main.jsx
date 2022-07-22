@@ -26,7 +26,17 @@ function Sidebar({ userInfo, sidebarMobile }) {
     { label: "my_profile", path: "/profile" },
     { label: "help", path: "" },
     { label: "settings", path: "" },
-    { label: "log_out", path: "" },
+    {
+      label: "log_out",
+      path: "xx",
+      clickEvent: () => {
+        $.ajax({
+          type: "GET",
+          url: `${BACKEND_URL}/api2/logout/`,
+          headers: { "X-CSRFToken": Cookies.get("csrftoken")},
+        });
+      },
+    },
   ];
 
   const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
@@ -39,10 +49,14 @@ function Sidebar({ userInfo, sidebarMobile }) {
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
         <img alt="little world" className="logo" />
-        {buttonData.map(({ label, path }) => (
+        {buttonData.map(({ label, path, clickEvent }) => (
           <Link
             to={path}
             key={label}
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...(typeof clickEvent !== typeof undefined && {
+              onClick: clickEvent,
+            })} /* Best way I found to add prob only if it's defined */
             className={`sidebar-item ${label}${location.pathname === path ? " selected" : ""}`}
           >
             <img alt={label} />
