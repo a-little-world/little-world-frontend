@@ -115,7 +115,7 @@ function Selector({ selection, setSelection }) {
 function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
   const { t } = useTranslation();
   const findNewText =
-    typeof clickEvent !== typeof undefined
+    typeof userInfo.matching !== typeof undefined
       ? t(userInfo.matching.choices[userInfo.matching.matching_state])
       : t("matching_state_not_searching_trans");
   return (
