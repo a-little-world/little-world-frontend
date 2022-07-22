@@ -33,7 +33,7 @@ function Sidebar({ userInfo, sidebarMobile }) {
         $.ajax({
           type: "GET",
           url: `${BACKEND_URL}/api2/logout/`,
-          headers: { "X-CSRFToken": Cookies.get("csrftoken")},
+          headers: { "X-CSRFToken": Cookies.get("csrftoken") },
         });
       },
     },
@@ -112,9 +112,12 @@ function Selector({ selection, setSelection }) {
   );
 }
 
-function PartnerProfiles({ matchesInfo, setCallSetupPartner }) {
+function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
   const { t } = useTranslation();
-
+  const findNewText =
+    typeof clickEvent !== typeof undefined
+      ? t(userInfo.matching.choices[userInfo.matching.matching_state])
+      : t("matching_state_not_searching_trans");
   return (
     <div className="profiles">
       {matchesInfo.map((userData) => {
@@ -128,7 +131,7 @@ function PartnerProfiles({ matchesInfo, setCallSetupPartner }) {
       })}
       <Link className="find-new">
         <img alt="plus" />
-        {t("cp_find_new_partner")}
+        {findNewText}
       </Link>
     </div>
   );
@@ -395,6 +398,7 @@ function Main() {
             {topSelection === "conversation_partners" && (
               <>
                 <PartnerProfiles
+                  userInfo={userInfo}
                   matchesInfo={matchesInfo.filter(({ userType }) => userType === 0)}
                   setCallSetupPartner={setCallSetupPartner}
                 />
