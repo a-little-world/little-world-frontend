@@ -277,6 +277,7 @@ function Main() {
     imgSrc: null,
     firstName: "",
     lastName: "",
+    matching: null, // Holds the matching state of the user
   });
 
   const [matchesInfo, setMatchesInfo] = useState([]);
@@ -324,6 +325,14 @@ function Main() {
           },
           {
             spec: {
+              type: "simple",
+              ref: "userState", // State of the current user
+            },
+            method: ["GET", "OPTIONS"],
+            path: "api2/user_state/",
+          },
+          {
+            spec: {
               type: "foreach",
               in: "_matchesBasic",
               as: "match",
@@ -337,13 +346,17 @@ function Main() {
           },
         ]),
       },
-    }).then(({ _matchesBasic, userData, matches }) => {
+    }).then(({ _matchesBasic, userData, userStateGET, userStateOPTIONS, matches }) => {
       setUserInfo({
         // userPk:
         firstName: userData.first_name,
         lastName: userData.second_name,
         // userDescription:
         imgSrc: userData.profile_image,
+        matching: {
+          state: userStateGET.matching_state, // state of user matching
+          choices: userStateOPTIONS.actions.POST.matching_state.choices, // what states are possible
+        },
       });
 
       const matchesData = matches.map((match) => {
