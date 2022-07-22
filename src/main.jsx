@@ -114,10 +114,27 @@ function Selector({ selection, setSelection }) {
 
 function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
   const { t } = useTranslation();
+  console.log("state", userInfo);
   const findNewText =
-    typeof userInfo.matching !== typeof undefined
-      ? t(userInfo.matching.choices[userInfo.matching.matching_state])
+    userInfo.matching !== null
+      ? t(
+          userInfo.matching.choices.find((obj) => {
+            return obj.value === userInfo.matching.state;
+          }).display_name
+        )
       : t("matching_state_not_searching_trans");
+  function updateUserMatchingState() {
+    $.ajax({
+      type: "POST",
+      url: `${BACKEND_URL}/api2/user_state/`,
+      headers: { "X-CSRFToken": Cookies.get("csrftoken") },
+      data: {
+        action: "update_user_state",
+      },
+    }).then((resp) => {
+      console.log('resp', resp);
+    });
+  }
   return (
     <div className="profiles">
       {matchesInfo.map((userData) => {
@@ -129,7 +146,7 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
           />
         );
       })}
-      <Link className="find-new">
+      <Link className="find-new" onClick={updateUserMatchingState}>
         <img alt="plus" />
         {findNewText}
       </Link>
