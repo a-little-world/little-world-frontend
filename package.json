@@ -31,6 +31,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build_new" : "PUBLIC_URL='/static/little-world-frontend/dist/' BUILD_PATH='./dist' DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
