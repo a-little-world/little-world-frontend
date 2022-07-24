@@ -234,6 +234,7 @@
   content: url("../images/videobuttons/camera-on.svg");
   height: 36px;
   padding: 5px;
+  flex: 0 0 fit-content;
 }
 
 .rce-navbar-item > button > .text {
