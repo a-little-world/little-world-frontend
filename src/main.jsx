@@ -8,6 +8,7 @@ import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
+import Overlay from "./overlay";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
 import { removeActiveTracks } from "./twilio-helper";
@@ -457,6 +458,18 @@ function Main() {
       <div className={callSetupPartner ? "call-setup-overlay" : "call-setup-overlay hidden"}>
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
+        )}
+      </div>
+      <div className={false ? "overlay" : "overlay hidden"}>
+        {false && (
+          <Overlay
+            title="Title"
+            subtitle="subtitle"
+            text="Hallo"
+            onOk={() => {
+              "was";
+            }}
+          />
         )}
       </div>
     </div>
