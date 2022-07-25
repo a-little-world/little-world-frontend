@@ -2,7 +2,7 @@ import $ from "jquery";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
@@ -18,6 +18,7 @@ import "./main.css";
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const buttonData = [
     { label: "start", path: "/" },
@@ -28,12 +29,14 @@ function Sidebar({ userInfo, sidebarMobile }) {
     { label: "settings", path: "" },
     {
       label: "log_out",
-      path: "xx",
       clickEvent: () => {
         $.ajax({
           type: "GET",
           url: `${BACKEND_URL}/api2/logout/`,
           headers: { "X-CSRFToken": Cookies.get("csrftoken") },
+        }).then(() => {
+          navigate("/login/"); // Redirect only valid in production
+          navigate(0); // to reload the page
         });
       },
     },
@@ -49,22 +52,32 @@ function Sidebar({ userInfo, sidebarMobile }) {
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
         <img alt="little world" className="logo" />
-        {buttonData.map(({ label, path, clickEvent }) => (
-          <Link
-            to={path}
-            key={label}
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            {...(typeof clickEvent !== typeof undefined && {
-              onClick: clickEvent,
-            })} /* Best way I found to add prob only if it's defined */
-            className={`sidebar-item ${label}${
-              location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
-            }`}
-          >
-            <img alt={label} />
-            {t(`nbs_${label}`)}
-          </Link>
-        ))}
+        {buttonData.map(({ label, path, clickEvent }) =>
+          typeof clickEvent === typeof undefined ? (
+            <Link
+              to={path}
+              key={label}
+              className={`sidebar-item ${label}${
+                location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
+              }`}
+            >
+              <img alt={label} />
+              {t(`nbs_${label}`)}
+            </Link>
+          ) : (
+            <button
+              key={label}
+              type="button"
+              onClick={clickEvent}
+              className={`sidebar-item ${label}${
+                location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
+              }`}
+            >
+              <img alt={label} />
+              {t(`nbs_${label}`)}
+            </button>
+          )
+        )}
       </div>
       <div className="mobile-shade" onClick={() => setShowSidebarMobile(false)} />
     </>
@@ -116,7 +129,6 @@ function Selector({ selection, setSelection }) {
 
 function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
   const { t } = useTranslation();
-  console.log("state", userInfo);
   const findNewText =
     userInfo.matching !== null
       ? t(
@@ -134,7 +146,7 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
         action: "update_user_state",
       },
     }).then((resp) => {
-      console.log('resp', resp);
+      console.log("resp", resp);
     });
   }
   return (
