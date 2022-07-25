@@ -160,10 +160,10 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
           />
         );
       })}
-      <Link className="find-new" onClick={updateUserMatchingState}>
+      <button className="find-new" onClick={updateUserMatchingState}>
         <img alt="plus" />
         {findNewText}
-      </Link>
+      </button>
     </div>
   );
 }
