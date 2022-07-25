@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 
 import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
-import { BACKEND_URL } from "./ENVIRONMENT";
+import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
@@ -57,7 +57,9 @@ function Sidebar({ userInfo, sidebarMobile }) {
             {...(typeof clickEvent !== typeof undefined && {
               onClick: clickEvent,
             })} /* Best way I found to add prob only if it's defined */
-            className={`sidebar-item ${label}${location.pathname === path ? " selected" : ""}`}
+            className={`sidebar-item ${label}${
+              location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
+            }`}
           >
             <img alt={label} />
             {t(`nbs_${label}`)}
