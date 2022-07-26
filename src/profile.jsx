@@ -49,7 +49,6 @@ function ItemsBox({ choices, selectedChoices }) {
   const { t } = useTranslation();
 
   const choicesTransTags = choices.map(({ display_name }) => display_name);
-
   const [editing, setEditing] = useState(false);
   const [topicIndexes, setTopicIndexes] = useState(selectedChoices);
   const [tempTopicIndexes, setTempTopicIndexes] = useState(selectedChoices);
@@ -86,7 +85,7 @@ function ItemsBox({ choices, selectedChoices }) {
         )}
         {topicIndexes.map((idx) => (
           <div key={idx} className="interest-item">
-            <span className="text">{choicesTransTags[idx]}</span>
+            <span className="text">{t(`profile_interests.${choicesTransTags[idx]}`)}</span>
           </div>
         ))}
         {editing && (
@@ -113,7 +112,7 @@ function ItemsBox({ choices, selectedChoices }) {
                     }
                     onClick={() => toggleInterest(idx)}
                   >
-                    <span className="text">{interest}</span>
+                    <span className="text">{t(`profile_interests.${interest}`)}</span>
                   </button>
                 ))}
               </div>
