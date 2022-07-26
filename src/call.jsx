@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/media-has-caption */
 import $ from "jquery";
 import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
