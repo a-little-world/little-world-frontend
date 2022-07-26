@@ -125,15 +125,12 @@ function ItemsBox({ choices, selectedChoices }) {
   );
 }
 
-const dummyText =
-  "Augue neque gravida in Fermentum et solicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque eu tincidunt. Tortor aliquam nulla Facilisi cras fermentum odio eu feugiat pretium nibh ipsum consequat nisl Vel Pretium lectus quam id leo in vitae; turpis massa sed elementum tempus Egestas.";
-
-function TextBox({ subject }) {
+function TextBox({ subject, initialText }) {
   const { t } = useTranslation();
   const location = useLocation();
   const editorRef = useRef();
   const [editState, setEditState] = useState(false);
-  const [topicText, setTopicText] = useState(dummyText);
+  const [topicText, setTopicText] = useState(initialText);
   const [textLen, setTextLen] = useState(0);
 
   const { userPk } = location.state || {};
@@ -265,16 +262,17 @@ function TextBox({ subject }) {
   );
 }
 
+/* TODO: the expectations is still the wrong form field */
 function ProfileDetail({ profileOptions, profile }) {
   return (
     <div className="profile-detail">
-      <TextBox subject="about" />
+      <TextBox subject="about" initialText={profile.description} />
       <ItemsBox
         choices={profileOptions.interests.choices}
         selectedChoices={profile.interests.map(Number)}
       />
-      <TextBox subject="extra-topics" />
-      <TextBox subject="expectations" />
+      <TextBox subject="extra-topics" initialText={profile.additional_interests} />
+      <TextBox subject="expectations" initialText={profile.language_skill_description} />
     </div>
   );
 }
