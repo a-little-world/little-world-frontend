@@ -9,7 +9,13 @@ import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
-import { getAudioTrack, getVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
+import {
+  getAudioTrack,
+  getVideoTrack,
+  joinRoom,
+  removeActiveTracks,
+  toggleLocalTracks,
+} from "./twilio-helper";
 
 import "./App.css";
 import "./call.css";
@@ -447,6 +453,11 @@ function CallScreen() {
   const { userPk, tracks } = location.state || {};
   const videoRef = useRef();
   const audioRef = useRef();
+
+  /* remove the video stream from call-setup otherwise it can hang around after
+   * returing to main page, causing webcam lights to remain on.
+   */
+  removeActiveTracks();
 
   useEffect(() => {
     if (!userPk) {
