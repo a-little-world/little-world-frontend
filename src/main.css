@@ -202,6 +202,10 @@
   border-width: 2px;
 }
 
+button.find-new {
+  height: auto !important;
+}
+
 .find-new img {
   content: url("./images/plus-with-circle.svg");
   width: 115px;

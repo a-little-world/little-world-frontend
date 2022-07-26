@@ -1,9 +1,11 @@
+import $ from "jquery";
+import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Chat from "./chat/chat-full-view";
-import { BACKEND_PATH } from "./ENVIRONMENT";
+import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
 import { getAudioTrack, getVideoTrack, joinRoom, toggleLocalTracks } from "./twilio-helper";
@@ -267,26 +269,7 @@ function SidebarNotes() {
 
 function TranslationDropdown({ side, selected, setter }) {
   const { t } = useTranslation();
-  const languages = [
-    "en",
-    "sa",
-    "bg",
-    "ma",
-    "ca",
-    "fr",
-    "gr",
-    "in",
-    "it",
-    "kr",
-    "ir",
-    "pl",
-    "ru",
-    "es",
-    "tr",
-    "ua",
-    "vn",
-    "de",
-  ];
+  const languages = ["en", "de"];
   return (
     <select
       name={`${side}-language-select`}
@@ -308,11 +291,41 @@ function TranslationBox() {
   const [toLang, setToLang] = useState("de");
   const [isSwapped, setIsSwapped] = useState(false);
 
+  const [leftText, setLeftText] = useState("");
+  const [rigthText, setRightText] = useState("");
+
+  const handleChangeLeft = (event) => {
+    setLeftText(event.target.value);
+  };
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (leftText === "") return;
+      $.ajax({
+        type: "POST",
+        url: `${BACKEND_URL}/api2/trans/`,
+        headers: { "X-CSRFToken": Cookies.get("csrftoken") },
+        data: {
+          src_lang: fromLang,
+          dest_lang: toLang,
+          text: leftText,
+        },
+      }).then((resp) => {
+        setRightText(resp.trans);
+      });
+    }, 1000);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [leftText]);
+
   const swapLang = () => {
     const oldFromLang = fromLang;
     const oldToLang = toLang;
     setFromLang(oldToLang);
     setToLang(oldFromLang);
+    const tmpLeftText = leftText;
+    setRightText(tmpLeftText);
+    setLeftText(rigthText);
     setIsSwapped(!isSwapped);
   };
 
@@ -320,7 +333,11 @@ function TranslationBox() {
     <div className="translation-box">
       <div className="left">
         <TranslationDropdown side="left" selected={fromLang} setter={setFromLang} />
-        <textarea placeholder={t("vc_translator_type_here")} />
+        <textarea
+          placeholder={t("vc_translator_type_here")}
+          value={leftText}
+          onChange={handleChangeLeft}
+        />
       </div>
       <button
         type="button"
@@ -331,7 +348,7 @@ function TranslationBox() {
       </button>
       <div className="right">
         <TranslationDropdown side="right" selected={toLang} setter={setToLang} />
-        <textarea placeholder={t("vc_translator_type_here")} />
+        <textarea placeholder={t("vc_translator_type_here")} readOnly value={rigthText} />
       </div>
     </div>
   );

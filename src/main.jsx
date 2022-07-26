@@ -2,12 +2,13 @@ import $ from "jquery";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
+import Overlay from "./overlay";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
 import { removeActiveTracks } from "./twilio-helper";
@@ -18,6 +19,7 @@ import "./main.css";
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const buttonData = [
     { label: "start", path: "/" },
@@ -26,7 +28,19 @@ function Sidebar({ userInfo, sidebarMobile }) {
     { label: "my_profile", path: "/profile" },
     { label: "help", path: "" },
     { label: "settings", path: "" },
-    { label: "log_out", path: "" },
+    {
+      label: "log_out",
+      clickEvent: () => {
+        $.ajax({
+          type: "GET",
+          url: `${BACKEND_URL}/api2/logout/`,
+          headers: { "X-CSRFToken": Cookies.get("csrftoken") },
+        }).then(() => {
+          navigate("/login/"); // Redirect only valid in production
+          navigate(0); // to reload the page
+        });
+      },
+    },
   ];
 
   const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
@@ -39,18 +53,32 @@ function Sidebar({ userInfo, sidebarMobile }) {
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
         <img alt="little world" className="logo" />
-        {buttonData.map(({ label, path }) => (
-          <Link
-            to={path}
-            key={label}
-            className={`sidebar-item ${label}${
-              location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
-            }`}
-          >
-            <img alt={label} />
-            {t(`nbs_${label}`)}
-          </Link>
-        ))}
+        {buttonData.map(({ label, path, clickEvent }) =>
+          typeof clickEvent === typeof undefined ? (
+            <Link
+              to={path}
+              key={label}
+              className={`sidebar-item ${label}${
+                location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
+              }`}
+            >
+              <img alt={label} />
+              {t(`nbs_${label}`)}
+            </Link>
+          ) : (
+            <button
+              key={label}
+              type="button"
+              onClick={clickEvent}
+              className={`sidebar-item ${label}${
+                location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
+              }`}
+            >
+              <img alt={label} />
+              {t(`nbs_${label}`)}
+            </button>
+          )
+        )}
       </div>
       <div className="mobile-shade" onClick={() => setShowSidebarMobile(false)} />
     </>
@@ -100,9 +128,28 @@ function Selector({ selection, setSelection }) {
   );
 }
 
-function PartnerProfiles({ matchesInfo, setCallSetupPartner }) {
+function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
   const { t } = useTranslation();
-
+  const findNewText =
+    userInfo.matching !== null
+      ? t(
+          userInfo.matching.choices.find((obj) => {
+            return obj.value === userInfo.matching.state;
+          }).display_name
+        )
+      : t("matching_state_not_searching_trans");
+  function updateUserMatchingState() {
+    $.ajax({
+      type: "POST",
+      url: `${BACKEND_URL}/api2/user_state/`,
+      headers: { "X-CSRFToken": Cookies.get("csrftoken") },
+      data: {
+        action: "update_user_state",
+      },
+    }).then((resp) => {
+      console.log("resp", resp);
+    });
+  }
   return (
     <div className="profiles">
       {matchesInfo.map((userData) => {
@@ -114,10 +161,10 @@ function PartnerProfiles({ matchesInfo, setCallSetupPartner }) {
           />
         );
       })}
-      <Link className="find-new">
+      <button className="find-new" onClick={updateUserMatchingState}>
         <img alt="plus" />
-        {t("cp_find_new_partner")}
-      </Link>
+        {findNewText}
+      </button>
     </div>
   );
 }
@@ -265,8 +312,12 @@ function Main() {
     imgSrc: null,
     firstName: "",
     lastName: "",
+    matching: null, // Holds the matching state of the user
   });
 
+  const [profileOptions, setProfileOptions] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [matchesProfiles, setMatchesProfiles] = useState({});
   const [matchesInfo, setMatchesInfo] = useState([]);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
@@ -307,8 +358,16 @@ function Main() {
               type: "simple",
               ref: "userData",
             },
-            method: "GET",
+            method: ["GET", "OPTIONS"],
             path: "api2/profile/",
+          },
+          {
+            spec: {
+              type: "simple",
+              ref: "userState", // State of the current user
+            },
+            method: ["GET", "OPTIONS"],
+            path: "api2/user_state/",
           },
           {
             spec: {
@@ -325,27 +384,49 @@ function Main() {
           },
         ]),
       },
-    }).then(({ _matchesBasic, userData, matches }) => {
-      setUserInfo({
-        // userPk:
-        firstName: userData.first_name,
-        lastName: userData.second_name,
-        // userDescription:
-        imgSrc: userData.profile_image,
-      });
+    }).then(
+      ({
+        _matchesBasic,
+        userDataGET,
+        userDataOPTIONS,
+        userStateGET,
+        userStateOPTIONS,
+        matches,
+      }) => {
+        console.log(userDataOPTIONS.actions.POST);
+        setProfileOptions(userDataOPTIONS.actions.POST);
+        setUserProfile(userDataGET);
+        setUserInfo({
+          // userPk:
+          firstName: userDataGET.first_name,
+          lastName: userDataGET.second_name,
+          // userDescription:
+          imgSrc: userDataGET.profile_image,
+          matching: {
+            state: userStateGET.matching_state, // state of user matching
+            choices: userStateOPTIONS.actions.POST.matching_state.choices, // what states are possible
+          },
+        });
 
-      const matchesData = matches.map((match) => {
-        return {
-          userPk: match["match.user_h256_pk"],
-          firstName: match.first_name,
-          lastName: match.second_name,
-          userDescription: match.description,
-          userType: match.user_type,
-          imgSrc: match.profile_image,
-        };
-      });
-      setMatchesInfo(matchesData);
-    });
+        const matchesProfilesTmp = {};
+        matches.forEach((m) => {
+          matchesProfilesTmp[m["match.user_h256_pk"]] = m;
+        });
+        setMatchesProfiles(matchesProfilesTmp);
+
+        const matchesData = matches.map((match) => {
+          return {
+            userPk: match["match.user_h256_pk"],
+            firstName: match.first_name,
+            lastName: match.second_name,
+            userDescription: match.description,
+            userType: match.user_type,
+            imgSrc: match.profile_image,
+          };
+        });
+        setMatchesInfo(matchesData);
+      }
+    );
   }, []);
 
   const [topSelection, setTopSelection] = useState("conversation_partners");
@@ -353,6 +434,7 @@ function Main() {
   document.body.classList.remove("hide-mobile-header");
 
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
+  const profileToDispay = userPk ? matchesProfiles[userPk] : userProfile;
 
   return (
     <div className={`main-page show-${use}`}>
@@ -370,6 +452,7 @@ function Main() {
             {topSelection === "conversation_partners" && (
               <>
                 <PartnerProfiles
+                  userInfo={userInfo}
                   matchesInfo={matchesInfo.filter(({ userType }) => userType === 0)}
                   setCallSetupPartner={setCallSetupPartner}
                 />
@@ -391,12 +474,26 @@ function Main() {
             matchesInfo={matchesInfo}
             userInfo={userInfo}
             setCallSetupPartner={setCallSetupPartner}
+            profileOptions={profileOptions}
+            profile={profileToDispay}
           />
         )}
       </div>
       <div className={callSetupPartner ? "call-setup-overlay" : "call-setup-overlay hidden"}>
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
+        )}
+      </div>
+      <div className={false ? "overlay" : "overlay hidden"}>
+        {false && (
+          <Overlay
+            title="Title"
+            subtitle="subtitle"
+            text="Hallo"
+            onOk={() => {
+              "was";
+            }}
+          />
         )}
       </div>
     </div>

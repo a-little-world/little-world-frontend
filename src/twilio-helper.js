@@ -106,6 +106,7 @@ function joinRoom(partnerKey) {
 
   // the room key will ultimately need both userPKs as input
   // although the current user PK could be inferred by backend
+  // TODO there is no reason this call can't be added to the composite-request in the main.jsx
   $.ajax({
     type: "GET",
     url: `${BACKEND_URL}/api2/appointments/`,
@@ -113,8 +114,8 @@ function joinRoom(partnerKey) {
       "X-CSRFToken": csrfToken,
     },
   }).then((appointments) => {
-    const apt = appointments.filter(({ user }) =>
-      user.filter(({ user_h256_pk }) => user_h256_pk === partnerKey)
+    const apt = appointments.filter(
+      ({ user }) => user.filter(({ user_h256_pk }) => user_h256_pk === partnerKey).length !== 0
     )[0];
     if (apt) {
       doJoinRoom(apt.room_h256_pk);

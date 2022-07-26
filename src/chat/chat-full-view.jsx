@@ -30,6 +30,16 @@ import "react-toastify/dist/ReactToastify.css";
 
 import "./chat-override.css";
 
+// Monkey path, disables only sucess toast, on if not in DEVELOPMENT
+// We like to keep the error messages (if any), so in that case we can help users to debug
+const origSucessFunc = toast.success;
+const successShowOnlyIfDevelopment = function () {
+  // eslint-disable-next-line prefer-spread, prefer-rest-params
+  if (DEVELOPMENT) return origSucessFunc.apply(null, arguments);
+  return null;
+};
+toast.success = successShowOnlyIfDevelopment;
+
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
 

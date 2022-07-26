@@ -45,14 +45,13 @@ function ProfileBox({
   );
 }
 
-const dummyTopicsIds = [1, 19, 8];
-
-function ItemsBox() {
+function ItemsBox({ choices, selectedChoices }) {
   const { t } = useTranslation();
 
+  const choicesTransTags = choices.map(({ display_name }) => display_name);
   const [editing, setEditing] = useState(false);
-  const [topicIndexes, setTopicIndexes] = useState(dummyTopicsIds);
-  const [tempTopicIndexes, setTempTopicIndexes] = useState(dummyTopicsIds);
+  const [topicIndexes, setTopicIndexes] = useState(selectedChoices);
+  const [tempTopicIndexes, setTempTopicIndexes] = useState(selectedChoices);
 
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -86,7 +85,7 @@ function ItemsBox() {
         )}
         {topicIndexes.map((idx) => (
           <div key={idx} className="interest-item">
-            <span className="text">{t(`profile_interests.${idx}`)}</span>
+            <span className="text">{t(`profile_interests.${choicesTransTags[idx]}`)}</span>
           </div>
         ))}
         {editing && (
@@ -102,7 +101,7 @@ function ItemsBox() {
               </div>
               <h3>{t("profile_choose_interests")}</h3>
               <div className="items">
-                {t("profile_interests", { returnObjects: true }).map((interest, idx) => (
+                {choicesTransTags.map((interest, idx) => (
                   <button
                     key={idx}
                     type="button"
@@ -113,7 +112,7 @@ function ItemsBox() {
                     }
                     onClick={() => toggleInterest(idx)}
                   >
-                    <span className="text">{interest}</span>
+                    <span className="text">{t(`profile_interests.${interest}`)}</span>
                   </button>
                 ))}
               </div>
@@ -125,15 +124,12 @@ function ItemsBox() {
   );
 }
 
-const dummyText =
-  "Augue neque gravida in Fermentum et solicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque eu tincidunt. Tortor aliquam nulla Facilisi cras fermentum odio eu feugiat pretium nibh ipsum consequat nisl Vel Pretium lectus quam id leo in vitae; turpis massa sed elementum tempus Egestas.";
-
-function TextBox({ subject }) {
+function TextBox({ subject, initialText }) {
   const { t } = useTranslation();
   const location = useLocation();
   const editorRef = useRef();
   const [editState, setEditState] = useState(false);
-  const [topicText, setTopicText] = useState(dummyText);
+  const [topicText, setTopicText] = useState(initialText);
   const [textLen, setTextLen] = useState(0);
 
   const { userPk } = location.state || {};
@@ -265,18 +261,22 @@ function TextBox({ subject }) {
   );
 }
 
-function ProfileDetail() {
+/* TODO: the expectations is still the wrong form field */
+function ProfileDetail({ profileOptions, profile }) {
   return (
     <div className="profile-detail">
-      <TextBox subject="about" />
-      <ItemsBox />
-      <TextBox subject="extra-topics" />
-      <TextBox subject="expectations" />
+      <TextBox subject="about" initialText={profile.description} />
+      <ItemsBox
+        choices={profileOptions.interests.choices}
+        selectedChoices={profile.interests.map(Number)}
+      />
+      <TextBox subject="extra-topics" initialText={profile.additional_interests} />
+      <TextBox subject="expectations" initialText={profile.language_skill_description} />
     </div>
   );
 }
 
-function Profile({ matchesInfo, userInfo, setCallSetupPartner }) {
+function Profile({ matchesInfo, userInfo, setCallSetupPartner, profileOptions, profile }) {
   const { t } = useTranslation();
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -302,7 +302,7 @@ function Profile({ matchesInfo, userInfo, setCallSetupPartner }) {
       </div>
       <div className="content">
         <ProfileBox {...profileData} isSelf={!userPk} setCallSetupPartner={setCallSetupPartner} />
-        <ProfileDetail isSelf={!userPk} />
+        <ProfileDetail isSelf={!userPk} profileOptions={profileOptions} profile={profile} />
       </div>
     </div>
   );
