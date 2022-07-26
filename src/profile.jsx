@@ -45,14 +45,14 @@ function ProfileBox({
   );
 }
 
-const dummyTopicsIds = [1, 19, 8];
-
-function ItemsBox() {
+function ItemsBox({ choices, selectedChoices }) {
   const { t } = useTranslation();
 
+  const choicesTransTags = choices.map(({ display_name }) => display_name);
+
   const [editing, setEditing] = useState(false);
-  const [topicIndexes, setTopicIndexes] = useState(dummyTopicsIds);
-  const [tempTopicIndexes, setTempTopicIndexes] = useState(dummyTopicsIds);
+  const [topicIndexes, setTopicIndexes] = useState(selectedChoices);
+  const [tempTopicIndexes, setTempTopicIndexes] = useState(selectedChoices);
 
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -86,7 +86,7 @@ function ItemsBox() {
         )}
         {topicIndexes.map((idx) => (
           <div key={idx} className="interest-item">
-            <span className="text">{t(`profile_interests.${idx}`)}</span>
+            <span className="text">{choicesTransTags[idx]}</span>
           </div>
         ))}
         {editing && (
@@ -102,7 +102,7 @@ function ItemsBox() {
               </div>
               <h3>{t("profile_choose_interests")}</h3>
               <div className="items">
-                {t("profile_interests", { returnObjects: true }).map((interest, idx) => (
+                {choicesTransTags.map((interest, idx) => (
                   <button
                     key={idx}
                     type="button"
@@ -265,18 +265,21 @@ function TextBox({ subject }) {
   );
 }
 
-function ProfileDetail() {
+function ProfileDetail({ profileOptions, profile }) {
   return (
     <div className="profile-detail">
       <TextBox subject="about" />
-      <ItemsBox />
+      <ItemsBox
+        choices={profileOptions.interests.choices}
+        selectedChoices={profile.interests.map(Number)}
+      />
       <TextBox subject="extra-topics" />
       <TextBox subject="expectations" />
     </div>
   );
 }
 
-function Profile({ matchesInfo, userInfo, setCallSetupPartner }) {
+function Profile({ matchesInfo, userInfo, setCallSetupPartner, profileOptions, profile }) {
   const { t } = useTranslation();
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -302,7 +305,7 @@ function Profile({ matchesInfo, userInfo, setCallSetupPartner }) {
       </div>
       <div className="content">
         <ProfileBox {...profileData} isSelf={!userPk} setCallSetupPartner={setCallSetupPartner} />
-        <ProfileDetail isSelf={!userPk} />
+        <ProfileDetail isSelf={!userPk} profileOptions={profileOptions} profile={profile} />
       </div>
     </div>
   );

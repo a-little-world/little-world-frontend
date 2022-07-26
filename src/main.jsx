@@ -315,6 +315,8 @@ function Main() {
     matching: null, // Holds the matching state of the user
   });
 
+  const [profileOptions, setProfileOptions] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
   const [matchesInfo, setMatchesInfo] = useState([]);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
@@ -355,7 +357,7 @@ function Main() {
               type: "simple",
               ref: "userData",
             },
-            method: "GET",
+            method: ["GET", "OPTIONS"],
             path: "api2/profile/",
           },
           {
@@ -381,31 +383,43 @@ function Main() {
           },
         ]),
       },
-    }).then(({ _matchesBasic, userData, userStateGET, userStateOPTIONS, matches }) => {
-      setUserInfo({
-        // userPk:
-        firstName: userData.first_name,
-        lastName: userData.second_name,
-        // userDescription:
-        imgSrc: userData.profile_image,
-        matching: {
-          state: userStateGET.matching_state, // state of user matching
-          choices: userStateOPTIONS.actions.POST.matching_state.choices, // what states are possible
-        },
-      });
+    }).then(
+      ({
+        _matchesBasic,
+        userDataGET,
+        userDataOPTIONS,
+        userStateGET,
+        userStateOPTIONS,
+        matches,
+      }) => {
+        console.log(userDataOPTIONS.actions.POST);
+        setProfileOptions(userDataOPTIONS.actions.POST);
+        setUserProfile(userDataGET);
+        setUserInfo({
+          // userPk:
+          firstName: userDataGET.first_name,
+          lastName: userDataGET.second_name,
+          // userDescription:
+          imgSrc: userDataGET.profile_image,
+          matching: {
+            state: userStateGET.matching_state, // state of user matching
+            choices: userStateOPTIONS.actions.POST.matching_state.choices, // what states are possible
+          },
+        });
 
-      const matchesData = matches.map((match) => {
-        return {
-          userPk: match["match.user_h256_pk"],
-          firstName: match.first_name,
-          lastName: match.second_name,
-          userDescription: match.description,
-          userType: match.user_type,
-          imgSrc: match.profile_image,
-        };
-      });
-      setMatchesInfo(matchesData);
-    });
+        const matchesData = matches.map((match) => {
+          return {
+            userPk: match["match.user_h256_pk"],
+            firstName: match.first_name,
+            lastName: match.second_name,
+            userDescription: match.description,
+            userType: match.user_type,
+            imgSrc: match.profile_image,
+          };
+        });
+        setMatchesInfo(matchesData);
+      }
+    );
   }, []);
 
   const [topSelection, setTopSelection] = useState("conversation_partners");
@@ -452,6 +466,8 @@ function Main() {
             matchesInfo={matchesInfo}
             userInfo={userInfo}
             setCallSetupPartner={setCallSetupPartner}
+            profileOptions={profileOptions}
+            profile={userProfile}
           />
         )}
       </div>
