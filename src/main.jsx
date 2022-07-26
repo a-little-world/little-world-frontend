@@ -317,6 +317,7 @@ function Main() {
 
   const [profileOptions, setProfileOptions] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
+  const [matchesProfiles, setMatchesProfiles] = useState({});
   const [matchesInfo, setMatchesInfo] = useState([]);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
@@ -407,6 +408,12 @@ function Main() {
           },
         });
 
+        const matchesProfilesTmp = {};
+        matches.forEach((m) => {
+          matchesProfilesTmp[m["match.user_h256_pk"]] = m;
+        });
+        setMatchesProfiles(matchesProfilesTmp);
+
         const matchesData = matches.map((match) => {
           return {
             userPk: match["match.user_h256_pk"],
@@ -427,6 +434,7 @@ function Main() {
   document.body.classList.remove("hide-mobile-header");
 
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
+  const profileToDispay = userPk ? matchesProfiles[userPk] : userProfile;
 
   return (
     <div className={`main-page show-${use}`}>
@@ -467,7 +475,7 @@ function Main() {
             userInfo={userInfo}
             setCallSetupPartner={setCallSetupPartner}
             profileOptions={profileOptions}
-            profile={userProfile}
+            profile={profileToDispay}
           />
         )}
       </div>
