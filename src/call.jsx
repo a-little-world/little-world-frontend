@@ -122,7 +122,7 @@ function VideoControls() {
 
 function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
   const buttons = ["chat", "translate", "questions", "notes"];
-  const disabled = ["translate", "questions", "notes"];
+  const disabled = ["questions", "notes"];
 
   return (
     <div className="video-controls top">
