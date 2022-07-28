@@ -242,7 +242,7 @@ function CallSetup({ userPk, setCallSetupPartner }) {
         </div>
         <button type="button" className="modal-close" onClick={() => setCallSetupPartner(null)} />
       </div>
-      {mediaPermission && (
+      {mediaPermission === true && (
         <>
           <VideoFrame Video={videoRef} Audio={audioRef} />
           <div className="av-setup-dropdowns">
@@ -255,7 +255,7 @@ function CallSetup({ userPk, setCallSetupPartner }) {
           </Link>
         </>
       )}
-      {!mediaPermission && (
+      {mediaPermission === false && (
         <>
           <br />
           Permission to use the camera and microphone is required.
