@@ -5,7 +5,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import "./i18n";
 import Link from "./path-prepend";
-import { getAudioTrack, getVideoTrack, removeActiveTracks, toggleLocalTracks } from "./twilio-helper";
+import {
+  getAudioTrack,
+  getVideoTrack,
+  removeActiveTracks,
+  toggleLocalTracks,
+} from "./twilio-helper";
 
 import "./call-setup.css";
 
