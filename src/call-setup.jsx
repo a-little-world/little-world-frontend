@@ -225,11 +225,13 @@ function CallSetup({ userPk, setCallSetupPartner }) {
         setMediaPermission(false);
       } else if ([audioResult.state, videoResult.state].includes("prompt")) {
         // otherwise if either don't have permission, we need to trigger the request
-        navigator.getUserMedia(
-          { video: videoResult.state === "prompt", audio: audioResult.state === "prompt" },
-          () => setMediaPermission(true),
-          (e) => console.log(e)
-        );
+        navigator.mediaDevices
+          .getUserMedia({
+            video: videoResult.state === "prompt",
+            audio: audioResult.state === "prompt",
+          })
+          .then(() => setMediaPermission(true))
+          .catch((e) => console.log(e));
       } else {
         // when both are granted, we are good and we'll show the setup
         setMediaPermission(true);
