@@ -1,16 +1,10 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
 
 import "./i18n";
 import Link from "./path-prepend";
-import {
-  getAudioTrack,
-  getVideoTrack,
-  removeActiveTracks,
-  toggleLocalTracks,
-} from "./twilio-helper";
+import { getAudioTrack, getVideoTrack, toggleLocalTracks } from "./twilio-helper";
 
 import "./call-setup.css";
 
