@@ -212,26 +212,15 @@ function CallSetup({ userPk, setCallSetupPartner }) {
 
   const [mediaPermission, setMediaPermission] = useState(null);
 
-  navigator.permissions.query({ name: "microphone" }).then((audioResult) => {
-    navigator.permissions.query({ name: "camera" }).then((videoResult) => {
-      if ([audioResult.state, videoResult.state].includes("denied")) {
-        // if either have been denied, we need to tell the user to fix their browser settings
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true, video: true })
+      .then(() => setMediaPermission(true))
+      .catch((e) => {
+        console.error(e.name, e.message);
         setMediaPermission(false);
-      } else if ([audioResult.state, videoResult.state].includes("prompt")) {
-        // otherwise if either don't have permission, we need to trigger the request
-        navigator.mediaDevices
-          .getUserMedia({
-            video: videoResult.state === "prompt",
-            audio: audioResult.state === "prompt",
-          })
-          .then(() => setMediaPermission(true))
-          .catch((e) => console.log(e));
-      } else {
-        // when both are granted, we are good and we'll show the setup
-        setMediaPermission(true);
-      }
-    });
-  });
+      });
+  }, []);
 
   return (
     <div className="call-setup-modal">
