@@ -52,7 +52,7 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
        * one with object speader so that the object prototype is not altered
        */
       return Object.assign(dialog, {
-        avatar: matchInfo.imgSrc,
+        avatar: matchInfo.usesAvatar ? matchInfo.avatarConfig : matchInfo.imgSrc,
         title: `${matchInfo.firstName} ${matchInfo.lastName}`,
       });
     });

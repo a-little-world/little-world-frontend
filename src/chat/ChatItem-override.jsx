@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { useState } from "react";
 import { format } from "timeago.js";
+import Avatar from "react-nice-avatar";
 
 function ChatItem(props) {
   const [onHoverTool, setOnHoverTool] = useState(false);
@@ -22,6 +23,14 @@ function ChatItem(props) {
     props.onClick();
   };
 
+  let avatar = null;
+  if (typeof props.avatar === 'string' || props.avatar instanceof String){
+    avatar = <img className="profile-image" alt="user" src={props.avatar} />;
+  }else{
+    avatar = <Avatar className="profile-avatar-chat" {...props.avatar} />
+  }
+
+
   return (
     <div
       key={props.id}
@@ -39,7 +48,7 @@ function ChatItem(props) {
             "rce-citem-status-encircle": statusColorType === "encircle",
           })}
         >
-          <img className="profile-image" alt="user" src={props.avatar} />
+          {avatar}
         </div>
         <div className="rce-citem-body">
           <div className="rce-citem-body--top">
