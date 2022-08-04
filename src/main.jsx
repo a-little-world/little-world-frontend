@@ -1,4 +1,5 @@
 import $ from "jquery";
+import Avatar, { AvatarFullConfig, genConfig } from "react-nice-avatar";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -310,6 +311,8 @@ function Main() {
 
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
+    avatarConfig: null,
+    usesAvatar: null,
     firstName: "",
     lastName: "",
     matching: null, // Holds the matching state of the user
@@ -394,6 +397,16 @@ function Main() {
         matches,
       }) => {
         console.log(userDataOPTIONS.actions.POST);
+        console.log("usrData", userDataGET);
+        let avatarConfig = {};
+        let usesAvatar = false;
+        try {
+          avatarConfig = JSON.parse(userDataGET.profile_avatar);
+          usesAvatar = userDataGET.profile_image_type === 0;
+        } catch (error) {
+          usesAvatar = false;
+        }
+        // If possibel load the avatar config json
         setProfileOptions(userDataOPTIONS.actions.POST);
         setUserProfile(userDataGET);
         setUserInfo({
@@ -402,6 +415,8 @@ function Main() {
           lastName: userDataGET.second_name,
           // userDescription:
           imgSrc: userDataGET.profile_image,
+          usesAvatar,
+          avatarConfig,
           matching: {
             state: userStateGET.matching_state, // state of user matching
             choices: userStateOPTIONS.actions.POST.matching_state.choices, // what states are possible
