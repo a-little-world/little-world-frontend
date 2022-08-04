@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
+import Avatar from "react-nice-avatar";
 
 import "./i18n";
 import Link from "./path-prepend";
@@ -13,6 +14,8 @@ function ProfileBox({
   lastName,
   userDescription,
   imgSrc,
+  avatarConfig,
+  usesAvatar,
   isSelf,
   setCallSetupPartner,
 }) {
@@ -20,7 +23,11 @@ function ProfileBox({
 
   return (
     <div className="profile-box">
-      <img alt="match" className="profile-image" src={imgSrc} />
+      {usesAvatar ? (
+        <Avatar className="profile-avatar" {...avatarConfig} />
+      ) : (
+        <img alt="match" className="profile-image" src={imgSrc} />
+      )}
       <div className="profile-info">
         <div className="name">{`${firstName} ${lastName}`}</div>
         <div className="text">{userDescription}</div>

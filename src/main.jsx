@@ -1,8 +1,8 @@
 import $ from "jquery";
-import Avatar, { AvatarFullConfig, genConfig } from "react-nice-avatar";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup from "./call-setup";
@@ -16,6 +16,22 @@ import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";
 import "./main.css";
+
+const dummyAvatarConfig = {
+  sex: "woman",
+  faceColor: "#AC6651",
+  earSize: "big",
+  eyeStyle: "smile",
+  noseStyle: "round",
+  mouthStyle: "peace",
+  shirtStyle: "short",
+  glassesStyle: "square",
+  hairStyle: "womanShort",
+  hairColor: "#77311D",
+  hatStyle: "beanie",
+  shirtColor: "#6BD9E9",
+  bgColor: "#D2EFF3",
+};
 
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
@@ -50,7 +66,7 @@ function Sidebar({ userInfo, sidebarMobile }) {
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
         <div className="active-user">
-          <img src={userInfo.imgSrc} alt="current user" />
+          {userInfo.usesAvatar ? "Avatar" : <img src={userInfo.imgSrc} alt="current user" />}
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
         <img alt="little world" className="logo" />
@@ -284,7 +300,11 @@ function NotificationPanel({ userInfo }) {
   return (
     <div className="notification-panel">
       <div className="active-user">
-        <img src={userInfo.imgSrc} alt="current user" />
+        {userInfo.usesAvatar ? (
+          <Avatar className="avatar" {...userInfo.avatarConfig} />
+        ) : (
+          <img src={userInfo.imgSrc} alt="current user" />
+        )}
         <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
       </div>
       <hr />
@@ -398,14 +418,15 @@ function Main() {
       }) => {
         console.log(userDataOPTIONS.actions.POST);
         console.log("usrData", userDataGET);
-        let avatarConfig = {};
-        let usesAvatar = false;
+        let avatarConfig = dummyAvatarConfig;
+        let usesAvatar = true;
+        /*
         try {
           avatarConfig = JSON.parse(userDataGET.profile_avatar);
           usesAvatar = userDataGET.profile_image_type === 0;
         } catch (error) {
           usesAvatar = false;
-        }
+        }*/
         // If possibel load the avatar config json
         setProfileOptions(userDataOPTIONS.actions.POST);
         setUserProfile(userDataGET);
@@ -430,12 +451,16 @@ function Main() {
         setMatchesProfiles(matchesProfilesTmp);
 
         const matchesData = matches.map((match) => {
+          avatarConfig = dummyAvatarConfig;
+          usesAvatar = true;
           return {
             userPk: match["match.user_h256_pk"],
             firstName: match.first_name,
             lastName: match.second_name,
             userDescription: match.description,
             userType: match.user_type,
+            usesAvatar,
+            avatarConfig,
             imgSrc: match.profile_image,
           };
         });
