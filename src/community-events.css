@@ -116,7 +116,7 @@
   text-transform: uppercase;
 }
 
-@media screen and (max-width: 1023px) {
+@media screen and (width < 1024px) {
   .content-area-main {
     padding: 10px;
   }

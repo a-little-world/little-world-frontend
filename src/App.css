@@ -55,7 +55,7 @@ button {
 }
 
 /* parent items of above elements, setting consistent gap between */
-@media screen and (min-width: 1024px) {
+@media screen and (width >= 1024px) {
   .main-page,
   .main-page .content-area,
   .main-page .content-area-main,
