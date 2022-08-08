@@ -399,11 +399,6 @@
   flex: 1 1;
 }
 
-.rce-citem.selected {
-  background-color: #f9fafb;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
 /* chat request */
 .partner-request {
   font-size: 16px;
@@ -461,6 +456,13 @@
 
 .buttons-mobile {
   display: none;
+}
+
+@media screen and (width >= 1024px) {
+  .rce-citem.selected {
+    background-color: #f9fafb;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
 }
 
 @media screen and (width < 1024px) {
