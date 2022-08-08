@@ -15,9 +15,14 @@
   flex: 1 1 0;
 }
 
+.profile-box .profile-avatar{
+  text-align: left;
+}
+
 .show-profile .profile-box {
   text-align: center;
 }
+
 
 .show-profile .profile-box .text {
   font-size: 22px;

@@ -2,6 +2,7 @@ import $ from "jquery";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup from "./call-setup";
@@ -15,6 +16,25 @@ import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";
 import "./main.css";
+
+/*
+const dummyAvatarConfig = {
+  sex: "woman",
+  faceColor: "#F9C9B6",
+  earSize: "big",
+  eyeStyle: "smile",
+  noseStyle: "round",
+  mouthStyle: "smile",
+  shirtStyle: "hoody",
+  glassesStyle: "square",
+  hairColor: "#77311D",
+  hairStyle: "womanShort",
+  hatStyle: "none",
+  hatColor: "#77311D",
+  eyeBrowStyle: "up",
+  shirtColor: "#F4D150",
+  bgColor: "linear-gradient(45deg, #3e1ccd 0%, #ff6871 100%)",
+}; */
 
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
@@ -49,7 +69,11 @@ function Sidebar({ userInfo, sidebarMobile }) {
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
         <div className="active-user">
-          <img src={userInfo.imgSrc} alt="current user" />
+          {userInfo.usesAvatar ? (
+            <Avatar className="avatar" {...userInfo.avatarConfig} />
+          ) : (
+            <img src={userInfo.imgSrc} alt="current user" />
+          )}
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
         <img alt="little world" className="logo" />
@@ -283,7 +307,11 @@ function NotificationPanel({ userInfo }) {
   return (
     <div className="notification-panel">
       <div className="active-user">
-        <img src={userInfo.imgSrc} alt="current user" />
+        {userInfo.usesAvatar ? (
+          <Avatar className="avatar" {...userInfo.avatarConfig} />
+        ) : (
+          <img src={userInfo.imgSrc} alt="current user" />
+        )}
         <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
       </div>
       <hr />
@@ -310,6 +338,8 @@ function Main() {
 
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
+    avatarConfig: null,
+    usesAvatar: null,
     firstName: "",
     lastName: "",
     matching: null, // Holds the matching state of the user
@@ -393,7 +423,15 @@ function Main() {
         userStateOPTIONS,
         matches,
       }) => {
-        console.log(userDataOPTIONS.actions.POST);
+        let avatarConfig = null; // dummyAvatarConfig;
+        let usesAvatar = false;
+        try {
+          avatarConfig = JSON.parse(userDataGET.profile_avatar);
+          usesAvatar = userDataGET.profile_image_type === 0;
+        } catch (error) {
+          usesAvatar = false;
+        }
+        // If possibel load the avatar config json
         setProfileOptions(userDataOPTIONS.actions.POST);
         setUserProfile(userDataGET);
         setUserInfo({
@@ -402,6 +440,8 @@ function Main() {
           lastName: userDataGET.second_name,
           // userDescription:
           imgSrc: userDataGET.profile_image,
+          usesAvatar,
+          avatarConfig,
           matching: {
             state: userStateGET.matching_state, // state of user matching
             choices: userStateOPTIONS.actions.POST.matching_state.choices, // what states are possible
@@ -415,12 +455,22 @@ function Main() {
         setMatchesProfiles(matchesProfilesTmp);
 
         const matchesData = matches.map((match) => {
+          avatarConfig = null; // dummyAvatarConfig;
+          usesAvatar = false;
+          try {
+            avatarConfig = JSON.parse(match.profile_avatar);
+            usesAvatar = match.profile_image_type === 0;
+          } catch (error) {
+            usesAvatar = false;
+          }
           return {
             userPk: match["match.user_h256_pk"],
             firstName: match.first_name,
             lastName: match.second_name,
             userDescription: match.description,
             userType: match.user_type,
+            usesAvatar,
+            avatarConfig,
             imgSrc: match.profile_image,
           };
         });
