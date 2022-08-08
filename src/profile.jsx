@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 import Avatar from "react-nice-avatar";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import "./i18n";
 import Link from "./path-prepend";
@@ -127,6 +127,16 @@ function ItemsBox({ choices, selectedChoices }) {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function SectionBox({subject, children}){
+  // TODO: use translations
+  return (
+    <div className={subject}>
+      <h3>{subject}</h3>
+      {children}
     </div>
   );
 }
@@ -270,6 +280,11 @@ function TextBox({ subject, initialText }) {
 
 /* TODO: the expectations is still the wrong form field */
 function ProfileDetail({ profileOptions, profile }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { userPk } = location.state || {};
+  const isSelf = !userPk;
+
   return (
     <div className="profile-detail">
       <TextBox subject="about" initialText={profile.description} />
@@ -279,6 +294,19 @@ function ProfileDetail({ profileOptions, profile }) {
       />
       <TextBox subject="extra-topics" initialText={profile.additional_interests} />
       <TextBox subject="expectations" initialText={profile.language_skill_description} />
+      {isSelf && (
+        <SectionBox subject="Edit User Form">
+          <button
+            type="button"
+            onClick={() => {
+              navigate("/form/");
+              navigate(0);
+            }}
+          >
+            Edit User Form
+          </button>
+        </SectionBox>
+      )}
     </div>
   );
 }
