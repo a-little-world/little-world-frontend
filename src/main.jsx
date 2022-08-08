@@ -19,18 +19,20 @@ import "./main.css";
 
 const dummyAvatarConfig = {
   sex: "woman",
-  faceColor: "#AC6651",
+  faceColor: "#F9C9B6",
   earSize: "big",
   eyeStyle: "smile",
   noseStyle: "round",
-  mouthStyle: "peace",
-  shirtStyle: "short",
+  mouthStyle: "smile",
+  shirtStyle: "hoody",
   glassesStyle: "square",
-  hairStyle: "womanShort",
   hairColor: "#77311D",
-  hatStyle: "beanie",
-  shirtColor: "#6BD9E9",
-  bgColor: "#D2EFF3",
+  hairStyle: "womanShort",
+  hatStyle: "none",
+  hatColor: "#77311D",
+  eyeBrowStyle: "up",
+  shirtColor: "#F4D150",
+  bgColor: "linear-gradient(45deg, #3e1ccd 0%, #ff6871 100%)",
 };
 
 function Sidebar({ userInfo, sidebarMobile }) {
@@ -66,7 +68,11 @@ function Sidebar({ userInfo, sidebarMobile }) {
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
         <div className="active-user">
-          {userInfo.usesAvatar ? "Avatar" : <img src={userInfo.imgSrc} alt="current user" />}
+          {userInfo.usesAvatar ? (
+            <Avatar className="avatar" {...userInfo.avatarConfig} />
+          ) : (
+            <img src={userInfo.imgSrc} alt="current user" />
+          )}
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
         <img alt="little world" className="logo" />
@@ -453,6 +459,13 @@ function Main() {
         const matchesData = matches.map((match) => {
           avatarConfig = dummyAvatarConfig;
           usesAvatar = true;
+          /*
+          try {
+            avatarConfig = JSON.parse(userDataGET.profile_avatar);
+            usesAvatar = userDataGET.profile_image_type === 0;
+          } catch (error) {
+            usesAvatar = false;
+          }*/
           return {
             userPk: match["match.user_h256_pk"],
             firstName: match.first_name,
