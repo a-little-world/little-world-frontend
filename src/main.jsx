@@ -17,6 +17,7 @@ import { removeActiveTracks } from "./twilio-helper";
 import "./community-events.css";
 import "./main.css";
 
+/*
 const dummyAvatarConfig = {
   sex: "woman",
   faceColor: "#F9C9B6",
@@ -33,7 +34,7 @@ const dummyAvatarConfig = {
   eyeBrowStyle: "up",
   shirtColor: "#F4D150",
   bgColor: "linear-gradient(45deg, #3e1ccd 0%, #ff6871 100%)",
-};
+}; */
 
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
@@ -422,17 +423,14 @@ function Main() {
         userStateOPTIONS,
         matches,
       }) => {
-        console.log(userDataOPTIONS.actions.POST);
-        console.log("usrData", userDataGET);
-        let avatarConfig = dummyAvatarConfig;
-        let usesAvatar = true;
-        /*
+        let avatarConfig = null; // dummyAvatarConfig;
+        let usesAvatar = false;
         try {
           avatarConfig = JSON.parse(userDataGET.profile_avatar);
           usesAvatar = userDataGET.profile_image_type === 0;
         } catch (error) {
           usesAvatar = false;
-        }*/
+        }
         // If possibel load the avatar config json
         setProfileOptions(userDataOPTIONS.actions.POST);
         setUserProfile(userDataGET);
@@ -457,15 +455,14 @@ function Main() {
         setMatchesProfiles(matchesProfilesTmp);
 
         const matchesData = matches.map((match) => {
-          avatarConfig = dummyAvatarConfig;
-          usesAvatar = true;
-          /*
+          avatarConfig = null; // dummyAvatarConfig;
+          usesAvatar = false;
           try {
-            avatarConfig = JSON.parse(userDataGET.profile_avatar);
-            usesAvatar = userDataGET.profile_image_type === 0;
+            avatarConfig = JSON.parse(match.profile_avatar);
+            usesAvatar = match.profile_image_type === 0;
           } catch (error) {
             usesAvatar = false;
-          }*/
+          }
           return {
             userPk: match["match.user_h256_pk"],
             firstName: match.first_name,
