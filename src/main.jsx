@@ -326,10 +326,42 @@ function Main() {
     matching: null, // Holds the matching state of the user
   });
 
+  const [overlayState, setOverlayState] = useState({
+    visible: false,
+    title: "None",
+    subtitle: "Lorem",
+    test: "Lorem",
+    userInfo: null,
+  });
+
+  const updateOverlayState = (unconfirmedMatches, matchesData) => {
+    if (unconfirmedMatches.length > 0) {
+      console.log("unconfirmed", unconfirmedMatches);
+      setOverlayState({
+        visible: true,
+        title: "We found a match for you!",
+        subtitle: "His name is TODO",
+        test: "Look at his profile now!",
+        userInfo: matchesData.filter(
+          (match) => match.userPk === unconfirmedMatches[0].user_h256_pk
+        )[0],
+      });
+    } else {
+      setOverlayState({
+        visible: false,
+        title: "None",
+        subtitle: "Lorem",
+        test: "Lorem",
+        userInfo: null,
+      });
+    }
+  };
+
   const [profileOptions, setProfileOptions] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [matchesProfiles, setMatchesProfiles] = useState({});
   const [matchesInfo, setMatchesInfo] = useState([]);
+  const [matchesUnconfirmed, setMatchesUnconfirmed] = useState([]);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
   const setCallSetupPartner = (userPk) => {
@@ -367,6 +399,14 @@ function Main() {
           {
             spec: {
               type: "simple",
+              ref: "unconfirmedMatches",
+            },
+            method: "GET",
+            path: "api2/unconfirmed_matches/", // TODO @tbscode yes i'll compine the matches and unconfirmed matches api :)
+          },
+          {
+            spec: {
+              type: "simple",
               ref: "userData",
             },
             method: ["GET", "OPTIONS"],
@@ -398,6 +438,7 @@ function Main() {
     }).then(
       ({
         _matchesBasic,
+        unconfirmedMatches,
         userDataGET,
         userDataOPTIONS,
         userStateGET,
@@ -429,6 +470,10 @@ function Main() {
           },
         });
 
+        console.log("matching state", userStateGET, userStateOPTIONS.actions.POST);
+        // Check the matching state, if we are in "matching_state_found_unconfirmed_trans"
+        // If that is the case we display a 'new match found' dialog
+
         const matchesProfilesTmp = {};
         matches.forEach((m) => {
           matchesProfilesTmp[m["match.user_h256_pk"]] = m;
@@ -450,12 +495,20 @@ function Main() {
             lastName: match.second_name,
             userDescription: match.description,
             userType: match.user_type,
+            // If this match has been confirmed ( acknowleged )
+            isConfirmed:
+              unconfirmedMatches.filter((m) => m.user_h256_pk === match["match.user_h256_pk"])
+                .length === 0,
             usesAvatar,
             avatarConfig,
             imgSrc: match.profile_image,
           };
         });
+
+        console.log("Match infos", matchesData);
         setMatchesInfo(matchesData);
+        setMatchesUnconfirmed(unconfirmedMatches);
+        updateOverlayState(unconfirmedMatches, matchesData);
       }
     );
   }, []);
@@ -515,14 +568,35 @@ function Main() {
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
         )}
       </div>
-      <div className={false ? "overlay" : "overlay hidden"}>
-        {false && (
+      <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
+        {overlayState.visible && (
           <Overlay
-            title="Title"
-            subtitle="subtitle"
-            text="Hallo"
+            title={overlayState.title}
+            subtitle={overlayState.subtitle}
+            text={overlayState.text}
+            userInfo={overlayState.userInfo}
             onOk={() => {
-              "was";
+              console.log("Confirming match");
+              $.ajax({
+                type: "POST",
+                url: `${BACKEND_URL}/api2/unconfirmed_matches/`,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken"),
+                },
+                data: {
+                  partner_h256_pk: overlayState.userInfo.userPk,
+                },
+                success: () => {
+                  const newUnconfirmed = matchesUnconfirmed.filter(
+                    (m) => m.user_h256_pk !== overlayState.userInfo.userPk
+                  );
+                  setMatchesUnconfirmed(newUnconfirmed);
+                  updateOverlayState(newUnconfirmed, matchesInfo);
+                },
+                error: (e) => {
+                  console.log(e);
+                },
+              });
             }}
           />
         )}
