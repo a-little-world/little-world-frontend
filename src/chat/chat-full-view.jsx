@@ -5,7 +5,6 @@ import { withTranslation } from "react-i18next";
 import { FaWindowClose } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
-import { isJsxFragment } from "typescript";
 
 import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
 import Link from "../path-prepend";
