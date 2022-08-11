@@ -16,13 +16,14 @@ function ProfileBox({
   imgSrc,
   avatarConfig,
   usesAvatar,
+  isConfirmed,
   isSelf,
   setCallSetupPartner,
 }) {
   const { t } = useTranslation();
 
   return (
-    <div className="profile-box">
+    <div className={!isConfirmed ? "profile-box new-match" : "profile-box"}>
       {usesAvatar ? (
         <Avatar className="profile-avatar" {...avatarConfig} />
       ) : (
@@ -316,6 +317,7 @@ function Profile({ matchesInfo, userInfo, setCallSetupPartner, profileOptions, p
   const location = useLocation();
   const { userPk } = location.state || {};
   const profileData = userPk ? matchesInfo.filter((data) => data.userPk === userPk)[0] : userInfo;
+  console.log("PDATA", profileData);
 
   if (!profileData) {
     return null; // don't render until ajax has returned the necessary data

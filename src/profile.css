@@ -19,6 +19,10 @@
   text-align: left;
 }
 
+.new-match { /* TODO: @tbscode temporary indication this should be a 'NEW' svg or similar in future */
+  background-color: rgb(252, 224, 172);
+}
+
 .show-profile .profile-box {
   text-align: center;
 }

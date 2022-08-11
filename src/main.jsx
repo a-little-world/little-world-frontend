@@ -336,7 +336,6 @@ function Main() {
 
   const updateOverlayState = (unconfirmedMatches, matchesData) => {
     if (unconfirmedMatches.length > 0) {
-      console.log("unconfirmed", unconfirmedMatches);
       setOverlayState({
         visible: true,
         title: "We found a match for you!",
@@ -470,10 +469,6 @@ function Main() {
           },
         });
 
-        console.log("matching state", userStateGET, userStateOPTIONS.actions.POST);
-        // Check the matching state, if we are in "matching_state_found_unconfirmed_trans"
-        // If that is the case we display a 'new match found' dialog
-
         const matchesProfilesTmp = {};
         matches.forEach((m) => {
           matchesProfilesTmp[m["match.user_h256_pk"]] = m;
@@ -504,8 +499,6 @@ function Main() {
             imgSrc: match.profile_image,
           };
         });
-
-        console.log("Match infos", matchesData);
         setMatchesInfo(matchesData);
         setMatchesUnconfirmed(unconfirmedMatches);
         updateOverlayState(unconfirmedMatches, matchesData);
@@ -576,7 +569,6 @@ function Main() {
             text={overlayState.text}
             userInfo={overlayState.userInfo}
             onOk={() => {
-              console.log("Confirming match");
               $.ajax({
                 type: "POST",
                 url: `${BACKEND_URL}/api2/unconfirmed_matches/`,
