@@ -5,6 +5,7 @@ import { withTranslation } from "react-i18next";
 import { FaWindowClose } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
+import { isJsxFragment } from "typescript";
 
 import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
 import Link from "../path-prepend";
@@ -43,11 +44,37 @@ toast.success = successShowOnlyIfDevelopment;
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
 
+const defaultArcivedChatAvatar = {
+  sex: "man",
+  faceColor: "#000",
+  earSize: "big",
+  eyeStyle: "circle",
+  noseStyle: "long",
+  mouthStyle: "smile",
+  shirtStyle: "short",
+  glassesStyle: "round",
+  hairColor: "#000",
+  hairStyle: "thick",
+  hatStyle: "none",
+  hatColor: "#000",
+  eyeBrowStyle: "up",
+  shirtColor: "#000",
+  bgColor: "#fff",
+};
+
 /* add image source and user's name to dialogList, which is used by chatList/item */
 const addMatchesInfo = (dialogList, matchesInfo) => {
   if (matchesInfo) {
     const result = dialogList.map((dialog) => {
       const matchInfo = matchesInfo.filter(({ userPk }) => userPk === dialog.alt)[0];
+      console.log("INFO", matchInfo, dialog);
+      if (matchInfo === undefined) {
+        return Object.assign(dialog, {
+          avatar: defaultArcivedChatAvatar,
+          title: "Old Chat ( not matched anymore)",
+        });
+      }
+
       /* we have to modify the original dialog object and not create a new
        * one with object speader so that the object prototype is not altered
        */

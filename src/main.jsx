@@ -17,25 +17,6 @@ import { removeActiveTracks } from "./twilio-helper";
 import "./community-events.css";
 import "./main.css";
 
-/*
-const dummyAvatarConfig = {
-  sex: "woman",
-  faceColor: "#F9C9B6",
-  earSize: "big",
-  eyeStyle: "smile",
-  noseStyle: "round",
-  mouthStyle: "smile",
-  shirtStyle: "hoody",
-  glassesStyle: "square",
-  hairColor: "#77311D",
-  hairStyle: "womanShort",
-  hatStyle: "none",
-  hatColor: "#77311D",
-  eyeBrowStyle: "up",
-  shirtColor: "#F4D150",
-  bgColor: "linear-gradient(45deg, #3e1ccd 0%, #ff6871 100%)",
-}; */
-
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
