@@ -1,8 +1,11 @@
+import $ from "jquery";
+import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
 
@@ -132,7 +135,7 @@ function ItemsBox({ choices, selectedChoices }) {
   );
 }
 
-function SectionBox({subject, children}){
+function SectionBox({ subject, children }) {
   // TODO: use translations
   return (
     <div className={subject}>
@@ -142,16 +145,31 @@ function SectionBox({subject, children}){
   );
 }
 
-function TextBox({ subject, initialText }) {
+function TextBox({ subject, initialText, form_tag }) {
   const { t } = useTranslation();
   const location = useLocation();
   const editorRef = useRef();
   const [editState, setEditState] = useState(false);
   const [topicText, setTopicText] = useState(initialText);
+  const [errorText, setErrorText] = useState("");
   const [textLen, setTextLen] = useState(0);
 
   const { userPk } = location.state || {};
   const isSelf = !userPk;
+  const postUserProfileUpdate = (updateData, onFailure, onSucess) => {
+    $.ajax({
+      type: "POST",
+      url: `${BACKEND_URL}/api2/profile/`,
+      headers: {
+        "X-CSRFToken": Cookies.get("csrftoken"),
+      },
+      data: updateData,
+      success: onSucess,
+      error: (e) => {
+        onFailure(e.responseJSON.report[form_tag][2]);
+      },
+    });
+  };
 
   const saveChange = () => {
     const html = editorRef.current.innerHTML;
@@ -167,6 +185,14 @@ function TextBox({ subject, initialText }) {
     const text = editorRef.current.innerText;
     setTopicText(text);
     setEditState(false);
+    postUserProfileUpdate(
+      { [form_tag]: text },
+      (_text) => {
+        console.log("text error");
+        setErrorText(_text);
+      },
+      () => {}
+    );
   };
 
   const allowedCodes = [
@@ -209,6 +235,8 @@ function TextBox({ subject, initialText }) {
     }
     setTextLen(el.innerText.length);
   };
+
+  // Call to the api to update the user form
 
   const handlePaste = (e) => {
     // ensures pastes are sent as unformatted plain text
@@ -275,6 +303,7 @@ function TextBox({ subject, initialText }) {
           </div>
         )}
       </div>
+      {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
   );
 }
@@ -288,13 +317,17 @@ function ProfileDetail({ profileOptions, profile }) {
 
   return (
     <div className="profile-detail">
-      <TextBox subject="about" initialText={profile.description} />
+      <TextBox subject="about" initialText={profile.description} form_tag="description" />
       <ItemsBox
         choices={profileOptions.interests.choices}
         selectedChoices={profile.interests.map(Number)}
       />
-      <TextBox subject="extra-topics" initialText={profile.additional_interests} />
-      <TextBox subject="expectations" initialText={profile.language_skill_description} />
+      <TextBox subject="extra-topics" initialText={profile.additional_interests} form_tag="" />
+      <TextBox
+        subject="expectations"
+        initialText={profile.language_skill_description}
+        form_tag=""
+      />
       {isSelf && (
         <SectionBox subject="Edit User Form">
           <button
