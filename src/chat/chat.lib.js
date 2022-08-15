@@ -262,6 +262,7 @@ export function WSHandlingCallbacks$reflection() {
 }
 
 export function handleIncomingWebsocketMessage(sock, message, callbacks) {
+  console.log("Socket", sock, message, callbacks);
   const res = Result_Bind((o) => {
     switch (o) {
       case 1: {

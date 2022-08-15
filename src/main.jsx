@@ -515,6 +515,15 @@ function Main() {
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
   const profileToDispay = userPk ? matchesProfiles[userPk] : userProfile;
 
+  const initChatComponent = (
+    <Chat
+      showChat={use === "chat"}
+      matchesInfo={matchesInfo}
+      userPk={userPk}
+      setCallSetupPartner={setCallSetupPartner}
+    />
+  );
+
   return (
     <div className={`main-page show-${use}`}>
       <Sidebar
@@ -541,13 +550,6 @@ function Main() {
             {topSelection === "community_calls" && <CommunityCalls />}
           </div>
         )}
-        {use === "chat" && (
-          <Chat
-            matchesInfo={matchesInfo}
-            userPk={userPk}
-            setCallSetupPartner={setCallSetupPartner}
-          />
-        )}
         {use === "profile" && (
           <Profile
             matchesInfo={matchesInfo}
@@ -557,6 +559,7 @@ function Main() {
             profile={profileToDispay}
           />
         )}
+        {use === "chat" && initChatComponent}
       </div>
       <div className={callSetupPartner ? "call-setup-overlay" : "call-setup-overlay hidden"}>
         {callSetupPartner && (
@@ -595,6 +598,7 @@ function Main() {
           />
         )}
       </div>
+      {!(use === "chat") && <div style={{ display: "none" }}>{initChatComponent}</div>}
     </div>
   );
 }
