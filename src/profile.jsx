@@ -11,6 +11,21 @@ import Link from "./path-prepend";
 
 import "./profile.css";
 
+const postUserProfileUpdate = (updateData, onFailure, onSucess, formTag) => {
+  $.ajax({
+    type: "POST",
+    url: `${BACKEND_URL}/api2/profile/`,
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    data: updateData,
+    success: onSucess,
+    error: (e) => {
+      onFailure(e.responseJSON.report[formTag][2]);
+    },
+  });
+};
+
 function ProfileBox({
   userPk,
   firstName,
@@ -63,6 +78,7 @@ function ItemsBox({ choices, selectedChoices }) {
   const [editing, setEditing] = useState(false);
   const [topicIndexes, setTopicIndexes] = useState(selectedChoices);
   const [tempTopicIndexes, setTempTopicIndexes] = useState(selectedChoices);
+  const [errorText, setErrorText] = useState("");
 
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -78,6 +94,14 @@ function ItemsBox({ choices, selectedChoices }) {
   const saveTopics = () => {
     setTopicIndexes(tempTopicIndexes);
     setEditing(false);
+    postUserProfileUpdate(
+      { interests: tempTopicIndexes },
+      (_text) => {
+        setErrorText(_text);
+      },
+      () => {},
+      "interests"
+    );
   };
 
   const cancelTopics = () => {
@@ -131,6 +155,7 @@ function ItemsBox({ choices, selectedChoices }) {
           </div>
         )}
       </div>
+      {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
   );
 }
@@ -145,31 +170,17 @@ function SectionBox({ subject, children }) {
   );
 }
 
-function TextBox({ subject, initialText, form_tag }) {
+function TextBox({ subject, initialText, formTag }) {
   const { t } = useTranslation();
   const location = useLocation();
   const editorRef = useRef();
   const [editState, setEditState] = useState(false);
   const [topicText, setTopicText] = useState(initialText);
-  const [errorText, setErrorText] = useState("");
+  const [errorText, setErrorText] = useState(""); // TODO: maybe if error add a reload button that loads the old default of this field
   const [textLen, setTextLen] = useState(0);
 
   const { userPk } = location.state || {};
   const isSelf = !userPk;
-  const postUserProfileUpdate = (updateData, onFailure, onSucess) => {
-    $.ajax({
-      type: "POST",
-      url: `${BACKEND_URL}/api2/profile/`,
-      headers: {
-        "X-CSRFToken": Cookies.get("csrftoken"),
-      },
-      data: updateData,
-      success: onSucess,
-      error: (e) => {
-        onFailure(e.responseJSON.report[form_tag][2]);
-      },
-    });
-  };
 
   const saveChange = () => {
     const html = editorRef.current.innerHTML;
@@ -186,12 +197,13 @@ function TextBox({ subject, initialText, form_tag }) {
     setTopicText(text);
     setEditState(false);
     postUserProfileUpdate(
-      { [form_tag]: text },
+      { [formTag]: text },
       (_text) => {
         console.log("text error");
         setErrorText(_text);
       },
-      () => {}
+      () => {},
+      formTag
     );
   };
 
@@ -317,16 +329,20 @@ function ProfileDetail({ profileOptions, profile }) {
 
   return (
     <div className="profile-detail">
-      <TextBox subject="about" initialText={profile.description} form_tag="description" />
+      <TextBox subject="about" initialText={profile.description} formTag="description" />
       <ItemsBox
         choices={profileOptions.interests.choices}
         selectedChoices={profile.interests.map(Number)}
       />
-      <TextBox subject="extra-topics" initialText={profile.additional_interests} form_tag="" />
+      <TextBox
+        subject="extra-topics"
+        initialText={profile.additional_interests}
+        formTag="additional_interests"
+      />
       <TextBox
         subject="expectations"
         initialText={profile.language_skill_description}
-        form_tag=""
+        formTag="language_skill_description"
       />
       {isSelf && (
         <SectionBox subject="Edit User Form">
@@ -350,7 +366,7 @@ function Profile({ matchesInfo, userInfo, setCallSetupPartner, profileOptions, p
   const location = useLocation();
   const { userPk } = location.state || {};
   const profileData = userPk ? matchesInfo.filter((data) => data.userPk === userPk)[0] : userInfo;
-  console.log("PDATA", profileData);
+  console.log("PDATA", profileData, matchesInfo);
 
   if (!profileData) {
     return null; // don't render until ajax has returned the necessary data
