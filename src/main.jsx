@@ -316,6 +316,14 @@ function NotificationPanel({ userInfo }) {
 function Main() {
   const location = useLocation();
   const { userPk } = location.state || {};
+  const { t } = useTranslation();
+  const [profileOptions, setProfileOptions] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [matchesProfiles, setMatchesProfiles] = useState({});
+  const [matchesInfo, setMatchesInfo] = useState([]);
+  const [matchesUnconfirmed, setMatchesUnconfirmed] = useState([]);
+  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
+  const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
 
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
@@ -329,17 +337,18 @@ function Main() {
   const [overlayState, setOverlayState] = useState({
     visible: false,
     title: "None",
-    subtitle: "Lorem",
+    name: "Lorem",
     test: "Lorem",
     userInfo: null,
   });
 
-  const updateOverlayState = (unconfirmedMatches, matchesData) => {
+  const updateOverlayState = (unconfirmedMatches, matchesData, _matchesProfiles) => {
+    console.log("mProfiles", matchesProfiles);
     if (unconfirmedMatches.length > 0) {
       setOverlayState({
         visible: true,
-        title: "We found a match for you!",
-        subtitle: "His name is TODO",
+        title: t("matching_state_found_unconfirmed_trans"),
+        name: _matchesProfiles[unconfirmedMatches[0].user_h256_pk].first_name,
         test: "Look at his profile now!",
         userInfo: matchesData.filter(
           (match) => match.userPk === unconfirmedMatches[0].user_h256_pk
@@ -349,20 +358,13 @@ function Main() {
       setOverlayState({
         visible: false,
         title: "None",
-        subtitle: "Lorem",
+        name: "Lorem",
         test: "Lorem",
         userInfo: null,
       });
     }
   };
 
-  const [profileOptions, setProfileOptions] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
-  const [matchesProfiles, setMatchesProfiles] = useState({});
-  const [matchesInfo, setMatchesInfo] = useState([]);
-  const [matchesUnconfirmed, setMatchesUnconfirmed] = useState([]);
-  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
-  const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
   const setCallSetupPartner = (userPk) => {
     document.body.style.overflow = userPk ? "hidden" : "";
     setCallSetupPartnerKey(userPk);
@@ -501,7 +503,7 @@ function Main() {
         });
         setMatchesInfo(matchesData);
         setMatchesUnconfirmed(unconfirmedMatches);
-        updateOverlayState(unconfirmedMatches, matchesData);
+        updateOverlayState(unconfirmedMatches, matchesData, matchesProfilesTmp);
       }
     );
   }, []);
@@ -565,7 +567,7 @@ function Main() {
         {overlayState.visible && (
           <Overlay
             title={overlayState.title}
-            subtitle={overlayState.subtitle}
+            name={overlayState.name}
             text={overlayState.text}
             userInfo={overlayState.userInfo}
             onOk={() => {
@@ -583,7 +585,7 @@ function Main() {
                     (m) => m.user_h256_pk !== overlayState.userInfo.userPk
                   );
                   setMatchesUnconfirmed(newUnconfirmed);
-                  updateOverlayState(newUnconfirmed, matchesInfo);
+                  updateOverlayState(newUnconfirmed, matchesInfo, matchesProfiles);
                 },
                 error: (e) => {
                   console.log(e);

@@ -4,6 +4,10 @@
   }
 }
 
+.overlay-modal .centered {
+  text-align: center;
+}
+
 .show-profile .profile-component {
   display: flex;
   flex-direction: column;

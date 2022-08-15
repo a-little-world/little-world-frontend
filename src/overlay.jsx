@@ -8,16 +8,16 @@ import Link from "./path-prepend";
 
 import "./overlay.css";
 
-function Overlay({ title, subtitle, text, onOk, onExit, userInfo }) {
+function Overlay({ title, name, text, onOk, onExit, userInfo }) {
   const { t } = useTranslation();
   // TODO: add translations for this stuff
   // <button type="button" className="modal-close" onClick={onExit} />
+  // <span className="subtitle">{subtitle}</span>
   return (
     <div className="overlay-modal">
       <div className="modal-top">
         <div className="modal-header">
           <h3 className="title">{title}</h3>
-          <span className="subtitle">{subtitle}</span>
         </div>
       </div>
       {userInfo.usesAvatar ? (
@@ -26,8 +26,14 @@ function Overlay({ title, subtitle, text, onOk, onExit, userInfo }) {
         <img alt="match" className="profile-image" src={userInfo.imgSrc} />
       )}
       {text}
+      <div className="centered">
+        <h1>{name}</h1>
+      </div>
+      <div className="centered">
+        <h3>{t("match_overlay_text")}</h3>
+      </div>
       <button type="button" className="av-setup-confirm" onClick={onOk}>
-        OK
+        {t("match_overlay_button_text")}
       </button>
     </div>
   );
