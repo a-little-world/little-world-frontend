@@ -532,6 +532,7 @@ function Main() {
   const adminActionCallback = (action) => {
     console.log("Received Triggered admin callback", action);
     if(action.includes("reload")){
+      navigate(BACKEND_PATH);
       navigate(0);
     }
   };
