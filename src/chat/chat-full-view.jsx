@@ -324,13 +324,13 @@ class Chat extends Component {
     console.log("online Mapping", stateMapping);
     if (onoff) {
       onlines.push(pk);
-      this.props.setMatchesOnlineStates({ [stateMapping]: true });
+      this.props.setMatchesOnlineStates(stateMapping, true);
     } else {
       const index = onlines.indexOf(pk);
       if (index > -1) {
         onlines.splice(index, 1);
       }
-      this.props.setMatchesOnlineStates({ [stateMapping]: false });
+      this.props.setMatchesOnlineStates(stateMapping, false);
     }
     this.setState({ onlinePKs: onlines });
     this.setState((prevState) => ({

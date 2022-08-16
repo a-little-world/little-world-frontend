@@ -522,6 +522,11 @@ function Main() {
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
   const profileToDispay = userPk ? matchesProfiles[userPk] : userProfile;
 
+  const updateOnlineState = (userOnlinePk, status) => {
+    matchesOnlineStates[userOnlinePk] = status;
+    setMatchesOnlineStates(matchesOnlineStates);
+  };
+
   const initChatComponent = (
     <Chat
       showChat={use === "chat"}
@@ -529,7 +534,7 @@ function Main() {
       userPk={userPk}
       setCallSetupPartner={setCallSetupPartner}
       userPkMappingCallback={setUserPkToChatIdMap}
-      setMatchesOnlineStates={setMatchesOnlineStates}
+      updateMatchesOnlineStates={updateOnlineState}
     />
   );
 

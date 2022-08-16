@@ -40,7 +40,7 @@ function ProfileBox({
   isOnline,
 }) {
   const { t } = useTranslation();
-  if(isSelf){
+  if (isSelf) {
     isOnline = true;
   }
 
