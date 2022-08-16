@@ -4,6 +4,10 @@
   }
 }
 
+.overlay-modal .centered {
+  text-align: center;
+}
+
 .show-profile .profile-component {
   display: flex;
   flex-direction: column;
@@ -17,6 +21,10 @@
 
 .profile-box .profile-avatar{
   text-align: left;
+}
+
+.new-match { /* TODO: @tbscode temporary indication this should be a 'NEW' svg or similar in future */
+  background-color: rgb(252, 224, 172);
 }
 
 .show-profile .profile-box {
@@ -218,6 +226,15 @@
   bottom: 1em;
 }
 
+.online-indicator {
+  color: red;
+  position: absolute;
+}
+
+.online {
+  color: green;
+}
+
 @media screen and (width < 1024px) {
   .show-profile .selector {
     display: none;
@@ -236,3 +253,4 @@
     width: 100%;
   }
 }
+

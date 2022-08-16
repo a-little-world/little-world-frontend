@@ -43,11 +43,37 @@ toast.success = successShowOnlyIfDevelopment;
 const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
 
+const defaultArcivedChatAvatar = {
+  sex: "man",
+  faceColor: "#000",
+  earSize: "big",
+  eyeStyle: "circle",
+  noseStyle: "long",
+  mouthStyle: "smile",
+  shirtStyle: "short",
+  glassesStyle: "round",
+  hairColor: "#000",
+  hairStyle: "thick",
+  hatStyle: "none",
+  hatColor: "#000",
+  eyeBrowStyle: "up",
+  shirtColor: "#000",
+  bgColor: "#fff",
+};
+
 /* add image source and user's name to dialogList, which is used by chatList/item */
 const addMatchesInfo = (dialogList, matchesInfo) => {
   if (matchesInfo) {
     const result = dialogList.map((dialog) => {
       const matchInfo = matchesInfo.filter(({ userPk }) => userPk === dialog.alt)[0];
+      console.log("INFO", matchInfo, dialog);
+      if (matchInfo === undefined) {
+        return Object.assign(dialog, {
+          avatar: defaultArcivedChatAvatar,
+          title: "Old Chat ( not matched anymore)",
+        });
+      }
+
       /* we have to modify the original dialog object and not create a new
        * one with object speader so that the object prototype is not altered
        */
@@ -82,6 +108,7 @@ class Chat extends Component {
       socketConnectionState: 0,
       showNewChatPopup: false,
       newChatChosen: null,
+      userMatchPkMap: null,
       usersDataLoading: false,
       availableUsers: [],
       messageList: [],
@@ -140,6 +167,12 @@ class Chat extends Component {
     });
 
     fetchDialogs().then((r) => {
+      const tmpMatchIdMap = {};
+      for (let i = 0; i < r.fields[0].length; i++) {
+        tmpMatchIdMap[r.fields[0][i].id] = r.fields[0][i].alt
+      }
+      this.props.userPkMappingCallback(tmpMatchIdMap);
+      this.setState({ userMatchPkMap: tmpMatchIdMap });
       if (r.tag === 0) {
         const { userPk, matchesInfo } = this.props;
 
@@ -194,6 +227,9 @@ class Chat extends Component {
         changePKOnlineStatus: that.changePKOnlineStatus,
         setMessageIdAsRead: that.setMessageIdAsRead,
         newUnreadCount: that.newUnreadCount,
+        performAdminCallBackAction: (action) => {
+          that.props.adminActionCallback(action);
+        },
       });
       if (errMsg) {
         toast.error(errMsg);
@@ -285,15 +321,19 @@ class Chat extends Component {
   }
 
   changePKOnlineStatus(pk, onoff) {
-    console.log(`Setting ${pk} to ${onoff}` ? "online" : "offline" + " status");
+    console.log("online", `Setting ${pk} to ${onoff}`);
     const onlines = this.state.onlinePKs;
+    const stateMapping = this.state.userMatchPkMap[pk];
+    console.log("online Mapping", stateMapping);
     if (onoff) {
       onlines.push(pk);
+      this.props.updateMatchesOnlineStates(stateMapping, true);
     } else {
       const index = onlines.indexOf(pk);
       if (index > -1) {
         onlines.splice(index, 1);
       }
+      this.props.updateMatchesOnlineStates(stateMapping, false);
     }
     this.setState({ onlinePKs: onlines });
     this.setState((prevState) => ({
@@ -308,10 +348,12 @@ class Chat extends Component {
       }),
     }));
     this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
+    console.log("STATE", this.state);
   }
 
   addMessage(msg) {
     console.log("Calling addMessage for ");
+    console.log("state", this.state);
 
     if (
       !msg.data.out &&
@@ -542,7 +584,7 @@ class Chat extends Component {
     };
 
     return (
-      <div className="container">
+      <div className={ this.props.showChat ? "container" : "container disable-chat"}>
         <div
           className={
             this.state.userWasSelected ? "chat-list-box" : "chat-list-box active-panel-mobile"

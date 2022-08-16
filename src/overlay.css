@@ -19,10 +19,15 @@
   pointer-events: none;
 }
 
+.overlay-modal .profile-image {
+  height: 320px;
+}
+
 .overlay-modal {
   margin: auto;
   padding: 24px;
   display: flex;
+  min-width: 500px;
   background-color: white;
   flex-direction: column;
 }
@@ -44,6 +49,7 @@
   }
 
   .overlay-modal {
+    min-width: unset;
     min-height: 100%;
     width: 100%;
     border-radius: 0;

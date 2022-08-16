@@ -17,25 +17,6 @@ import { removeActiveTracks } from "./twilio-helper";
 import "./community-events.css";
 import "./main.css";
 
-/*
-const dummyAvatarConfig = {
-  sex: "woman",
-  faceColor: "#F9C9B6",
-  earSize: "big",
-  eyeStyle: "smile",
-  noseStyle: "round",
-  mouthStyle: "smile",
-  shirtStyle: "hoody",
-  glassesStyle: "square",
-  hairColor: "#77311D",
-  hairStyle: "womanShort",
-  hatStyle: "none",
-  hatColor: "#77311D",
-  eyeBrowStyle: "up",
-  shirtColor: "#F4D150",
-  bgColor: "linear-gradient(45deg, #3e1ccd 0%, #ff6871 100%)",
-}; */
-
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
@@ -152,7 +133,8 @@ function Selector({ selection, setSelection }) {
   );
 }
 
-function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
+function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOnlineStates}) {
+  console.log("online match states", matchesOnlineStates);
   const { t } = useTranslation();
   const findNewText =
     userInfo.matching !== null
@@ -182,6 +164,7 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
             key={userData.userPk}
             {...userData}
             setCallSetupPartner={setCallSetupPartner}
+            isOnline={matchesOnlineStates[userData.userPk]}
           />
         );
       })}
@@ -335,6 +318,17 @@ function NotificationPanel({ userInfo }) {
 function Main() {
   const location = useLocation();
   const { userPk } = location.state || {};
+  const { t } = useTranslation();
+  const [profileOptions, setProfileOptions] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [matchesProfiles, setMatchesProfiles] = useState({});
+  const [matchesInfo, setMatchesInfo] = useState([]);
+  const [matchesUnconfirmed, setMatchesUnconfirmed] = useState([]);
+  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
+  const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
+  const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
+  const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
+  const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
@@ -345,12 +339,38 @@ function Main() {
     matching: null, // Holds the matching state of the user
   });
 
-  const [profileOptions, setProfileOptions] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
-  const [matchesProfiles, setMatchesProfiles] = useState({});
-  const [matchesInfo, setMatchesInfo] = useState([]);
-  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
-  const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
+  const [overlayState, setOverlayState] = useState({
+    visible: false,
+    title: "None",
+    name: "Lorem",
+    test: "Lorem",
+    userInfo: null,
+  });
+
+
+  const updateOverlayState = (unconfirmedMatches, matchesData, _matchesProfiles) => {
+    console.log("mProfiles", matchesProfiles);
+    if (unconfirmedMatches.length > 0) {
+      setOverlayState({
+        visible: true,
+        title: t("matching_state_found_unconfirmed_trans"),
+        name: _matchesProfiles[unconfirmedMatches[0].user_h256_pk].first_name,
+        test: "Look at his profile now!",
+        userInfo: matchesData.filter(
+          (match) => match.userPk === unconfirmedMatches[0].user_h256_pk
+        )[0],
+      });
+    } else {
+      setOverlayState({
+        visible: false,
+        title: "None",
+        name: "Lorem",
+        test: "Lorem",
+        userInfo: null,
+      });
+    }
+  };
+
   const setCallSetupPartner = (userPk) => {
     document.body.style.overflow = userPk ? "hidden" : "";
     setCallSetupPartnerKey(userPk);
@@ -386,6 +406,14 @@ function Main() {
           {
             spec: {
               type: "simple",
+              ref: "unconfirmedMatches",
+            },
+            method: "GET",
+            path: "api2/unconfirmed_matches/", // TODO @tbscode yes i'll compine the matches and unconfirmed matches api :)
+          },
+          {
+            spec: {
+              type: "simple",
               ref: "userData",
             },
             method: ["GET", "OPTIONS"],
@@ -417,6 +445,7 @@ function Main() {
     }).then(
       ({
         _matchesBasic,
+        unconfirmedMatches,
         userDataGET,
         userDataOPTIONS,
         userStateGET,
@@ -449,10 +478,13 @@ function Main() {
         });
 
         const matchesProfilesTmp = {};
+        const matchesOnlineStatesTmp = {};
         matches.forEach((m) => {
           matchesProfilesTmp[m["match.user_h256_pk"]] = m;
+          matchesOnlineStatesTmp[m["match.user_h256_pk"]] = false;
         });
         setMatchesProfiles(matchesProfilesTmp);
+        setMatchesOnlineStates(matchesOnlineStatesTmp);
 
         const matchesData = matches.map((match) => {
           avatarConfig = null; // dummyAvatarConfig;
@@ -469,12 +501,18 @@ function Main() {
             lastName: match.second_name,
             userDescription: match.description,
             userType: match.user_type,
+            // If this match has been confirmed ( acknowleged )
+            isConfirmed:
+              unconfirmedMatches.filter((m) => m.user_h256_pk === match["match.user_h256_pk"])
+                .length === 0,
             usesAvatar,
             avatarConfig,
             imgSrc: match.profile_image,
           };
         });
         setMatchesInfo(matchesData);
+        setMatchesUnconfirmed(unconfirmedMatches);
+        updateOverlayState(unconfirmedMatches, matchesData, matchesProfilesTmp);
       }
     );
   }, []);
@@ -485,6 +523,31 @@ function Main() {
 
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
   const profileToDispay = userPk ? matchesProfiles[userPk] : userProfile;
+
+  const updateOnlineState = (userOnlinePk, status) => {
+    matchesOnlineStates[userOnlinePk] = status;
+    setMatchesOnlineStates({ ...matchesOnlineStates}); // spreading creates a copy if we use the same var state wont update
+  };
+
+  const adminActionCallback = (action) => {
+    console.log("Received Triggered admin callback", action);
+    if(action.includes("reload")){
+      navigate(BACKEND_PATH);
+      navigate(0);
+    }
+  };
+
+  const initChatComponent = (
+    <Chat
+      showChat={use === "chat"}
+      matchesInfo={matchesInfo}
+      userPk={userPk}
+      setCallSetupPartner={setCallSetupPartner}
+      userPkMappingCallback={setUserPkToChatIdMap}
+      updateMatchesOnlineStates={updateOnlineState}
+      adminActionCallback={adminActionCallback}
+    />
+  );
 
   return (
     <div className={`main-page show-${use}`}>
@@ -505,19 +568,13 @@ function Main() {
                   userInfo={userInfo}
                   matchesInfo={matchesInfo.filter(({ userType }) => userType === 0)}
                   setCallSetupPartner={setCallSetupPartner}
+                  matchesOnlineStates={matchesOnlineStates}
                 />
                 <NotificationPanel userInfo={userInfo} />
               </>
             )}
             {topSelection === "community_calls" && <CommunityCalls />}
           </div>
-        )}
-        {use === "chat" && (
-          <Chat
-            matchesInfo={matchesInfo}
-            userPk={userPk}
-            setCallSetupPartner={setCallSetupPartner}
-          />
         )}
         {use === "profile" && (
           <Profile
@@ -528,24 +585,46 @@ function Main() {
             profile={profileToDispay}
           />
         )}
+        {use === "chat" && initChatComponent}
       </div>
       <div className={callSetupPartner ? "call-setup-overlay" : "call-setup-overlay hidden"}>
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
         )}
       </div>
-      <div className={false ? "overlay" : "overlay hidden"}>
-        {false && (
+      <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
+        {overlayState.visible && (
           <Overlay
-            title="Title"
-            subtitle="subtitle"
-            text="Hallo"
+            title={overlayState.title}
+            name={overlayState.name}
+            text={overlayState.text}
+            userInfo={overlayState.userInfo}
             onOk={() => {
-              "was";
+              $.ajax({
+                type: "POST",
+                url: `${BACKEND_URL}/api2/unconfirmed_matches/`,
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken"),
+                },
+                data: {
+                  partner_h256_pk: overlayState.userInfo.userPk,
+                },
+                success: () => {
+                  const newUnconfirmed = matchesUnconfirmed.filter(
+                    (m) => m.user_h256_pk !== overlayState.userInfo.userPk
+                  );
+                  setMatchesUnconfirmed(newUnconfirmed);
+                  updateOverlayState(newUnconfirmed, matchesInfo, matchesProfiles);
+                },
+                error: (e) => {
+                  console.log(e);
+                },
+              });
             }}
           />
         )}
       </div>
+      {!(use === "chat") && <div style={{ visibility: "hidden" }}>{initChatComponent}</div>}
     </div>
   );
 }

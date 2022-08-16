@@ -20,6 +20,10 @@
   content: url("./images/logo-text.svg");
 }
 
+.disable-chat {
+  display: none;
+}
+
 .sidebar-item {
   width: 100%;
   display: flex;

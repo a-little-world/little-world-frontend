@@ -1,12 +1,30 @@
+import $ from "jquery";
+import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
 
+import { BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
 
 import "./profile.css";
+
+const postUserProfileUpdate = (updateData, onFailure, onSucess, formTag) => {
+  $.ajax({
+    type: "POST",
+    url: `${BACKEND_URL}/api2/profile/`,
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    data: updateData,
+    success: onSucess,
+    error: (e) => {
+      onFailure(e.responseJSON.report[formTag][2]);
+    },
+  });
+};
 
 function ProfileBox({
   userPk,
@@ -16,18 +34,26 @@ function ProfileBox({
   imgSrc,
   avatarConfig,
   usesAvatar,
+  isConfirmed,
   isSelf,
   setCallSetupPartner,
+  isOnline,
 }) {
   const { t } = useTranslation();
+  if (isSelf) {
+    isOnline = true;
+  }
 
   return (
-    <div className="profile-box">
+    <div className={!isConfirmed ? "profile-box new-match" : "profile-box"}>
       {usesAvatar ? (
         <Avatar className="profile-avatar" {...avatarConfig} />
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />
       )}
+      <div className={isOnline ? "online-indicator online" : "online-indicator"}>
+        {isOnline ? "Online" : "Offline"}
+      </div>
       <div className="profile-info">
         <div className="name">{`${firstName} ${lastName}`}</div>
         <div className="text">{userDescription}</div>
@@ -59,6 +85,7 @@ function ItemsBox({ choices, selectedChoices }) {
   const [editing, setEditing] = useState(false);
   const [topicIndexes, setTopicIndexes] = useState(selectedChoices);
   const [tempTopicIndexes, setTempTopicIndexes] = useState(selectedChoices);
+  const [errorText, setErrorText] = useState("");
 
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -74,6 +101,14 @@ function ItemsBox({ choices, selectedChoices }) {
   const saveTopics = () => {
     setTopicIndexes(tempTopicIndexes);
     setEditing(false);
+    postUserProfileUpdate(
+      { interests: tempTopicIndexes },
+      (_text) => {
+        setErrorText(_text);
+      },
+      () => {},
+      "interests"
+    );
   };
 
   const cancelTopics = () => {
@@ -127,11 +162,12 @@ function ItemsBox({ choices, selectedChoices }) {
           </div>
         )}
       </div>
+      {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
   );
 }
 
-function SectionBox({subject, children}){
+function SectionBox({ subject, children }) {
   // TODO: use translations
   return (
     <div className={subject}>
@@ -141,12 +177,13 @@ function SectionBox({subject, children}){
   );
 }
 
-function TextBox({ subject, initialText }) {
+function TextBox({ subject, initialText, formTag }) {
   const { t } = useTranslation();
   const location = useLocation();
   const editorRef = useRef();
   const [editState, setEditState] = useState(false);
   const [topicText, setTopicText] = useState(initialText);
+  const [errorText, setErrorText] = useState(""); // TODO: maybe if error add a reload button that loads the old default of this field
   const [textLen, setTextLen] = useState(0);
 
   const { userPk } = location.state || {};
@@ -166,6 +203,15 @@ function TextBox({ subject, initialText }) {
     const text = editorRef.current.innerText;
     setTopicText(text);
     setEditState(false);
+    postUserProfileUpdate(
+      { [formTag]: text },
+      (_text) => {
+        console.log("text error");
+        setErrorText(_text);
+      },
+      () => {},
+      formTag
+    );
   };
 
   const allowedCodes = [
@@ -208,6 +254,8 @@ function TextBox({ subject, initialText }) {
     }
     setTextLen(el.innerText.length);
   };
+
+  // Call to the api to update the user form
 
   const handlePaste = (e) => {
     // ensures pastes are sent as unformatted plain text
@@ -274,6 +322,7 @@ function TextBox({ subject, initialText }) {
           </div>
         )}
       </div>
+      {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
   );
 }
@@ -287,13 +336,21 @@ function ProfileDetail({ profileOptions, profile }) {
 
   return (
     <div className="profile-detail">
-      <TextBox subject="about" initialText={profile.description} />
+      <TextBox subject="about" initialText={profile.description} formTag="description" />
       <ItemsBox
         choices={profileOptions.interests.choices}
         selectedChoices={profile.interests.map(Number)}
       />
-      <TextBox subject="extra-topics" initialText={profile.additional_interests} />
-      <TextBox subject="expectations" initialText={profile.language_skill_description} />
+      <TextBox
+        subject="extra-topics"
+        initialText={profile.additional_interests}
+        formTag="additional_interests"
+      />
+      <TextBox
+        subject="expectations"
+        initialText={profile.language_skill_description}
+        formTag="language_skill_description"
+      />
       {isSelf && (
         <SectionBox subject="Edit User Form">
           <button
@@ -316,6 +373,7 @@ function Profile({ matchesInfo, userInfo, setCallSetupPartner, profileOptions, p
   const location = useLocation();
   const { userPk } = location.state || {};
   const profileData = userPk ? matchesInfo.filter((data) => data.userPk === userPk)[0] : userInfo;
+  console.log("PDATA", profileData, matchesInfo);
 
   if (!profileData) {
     return null; // don't render until ajax has returned the necessary data
