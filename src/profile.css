@@ -226,6 +226,15 @@
   bottom: 1em;
 }
 
+.online-indicator {
+  color: red;
+  position: absolute;
+}
+
+.online {
+  color: green;
+}
+
 @media screen and (width < 1024px) {
   .show-profile .selector {
     display: none;
@@ -244,3 +253,4 @@
     width: 100%;
   }
 }
+

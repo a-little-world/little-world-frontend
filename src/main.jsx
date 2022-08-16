@@ -133,7 +133,7 @@ function Selector({ selection, setSelection }) {
   );
 }
 
-function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
+function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOnlineStates}) {
   const { t } = useTranslation();
   const findNewText =
     userInfo.matching !== null
@@ -163,6 +163,7 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner }) {
             key={userData.userPk}
             {...userData}
             setCallSetupPartner={setCallSetupPartner}
+            isOnline={matchesOnlineStates[userData.userPk]}
           />
         );
       })}
@@ -324,6 +325,8 @@ function Main() {
   const [matchesUnconfirmed, setMatchesUnconfirmed] = useState([]);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
+  const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
+  const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
 
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
@@ -341,6 +344,7 @@ function Main() {
     test: "Lorem",
     userInfo: null,
   });
+
 
   const updateOverlayState = (unconfirmedMatches, matchesData, _matchesProfiles) => {
     console.log("mProfiles", matchesProfiles);
@@ -472,10 +476,13 @@ function Main() {
         });
 
         const matchesProfilesTmp = {};
+        const matchesOnlineStatesTmp = {};
         matches.forEach((m) => {
           matchesProfilesTmp[m["match.user_h256_pk"]] = m;
+          matchesOnlineStatesTmp[m["match.user_h256_pk"]] = false;
         });
         setMatchesProfiles(matchesProfilesTmp);
+        setMatchesOnlineStates(matchesOnlineStatesTmp);
 
         const matchesData = matches.map((match) => {
           avatarConfig = null; // dummyAvatarConfig;
@@ -521,6 +528,8 @@ function Main() {
       matchesInfo={matchesInfo}
       userPk={userPk}
       setCallSetupPartner={setCallSetupPartner}
+      userPkMappingCallback={setUserPkToChatIdMap}
+      setMatchesOnlineStates={setMatchesOnlineStates}
     />
   );
 
@@ -543,6 +552,7 @@ function Main() {
                   userInfo={userInfo}
                   matchesInfo={matchesInfo.filter(({ userType }) => userType === 0)}
                   setCallSetupPartner={setCallSetupPartner}
+                  matchesOnlineStates={matchesOnlineStates}
                 />
                 <NotificationPanel userInfo={userInfo} />
               </>

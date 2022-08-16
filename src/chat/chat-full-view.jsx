@@ -108,6 +108,7 @@ class Chat extends Component {
       socketConnectionState: 0,
       showNewChatPopup: false,
       newChatChosen: null,
+      userMatchPkMap: null,
       usersDataLoading: false,
       availableUsers: [],
       messageList: [],
@@ -166,6 +167,12 @@ class Chat extends Component {
     });
 
     fetchDialogs().then((r) => {
+      const tmpMatchIdMap = {};
+      for (let i = 0; i < r.fields[0].length; i++) {
+        tmpMatchIdMap[r.fields[0][i].id] = r.fields[0][i].alt
+      }
+      this.props.userPkMappingCallback(tmpMatchIdMap);
+      this.setState({ userMatchPkMap: tmpMatchIdMap });
       if (r.tag === 0) {
         const { userPk, matchesInfo } = this.props;
 
@@ -311,15 +318,19 @@ class Chat extends Component {
   }
 
   changePKOnlineStatus(pk, onoff) {
-    console.log(`Setting ${pk} to ${onoff}` ? "online" : "offline" + " status");
+    console.log("online", `Setting ${pk} to ${onoff}`);
     const onlines = this.state.onlinePKs;
+    const stateMapping = this.state.userMatchPkMap[pk];
+    console.log("online Mapping", stateMapping);
     if (onoff) {
       onlines.push(pk);
+      this.props.setMatchesOnlineStates({ [stateMapping]: true });
     } else {
       const index = onlines.indexOf(pk);
       if (index > -1) {
         onlines.splice(index, 1);
       }
+      this.props.setMatchesOnlineStates({ [stateMapping]: false });
     }
     this.setState({ onlinePKs: onlines });
     this.setState((prevState) => ({
@@ -334,10 +345,12 @@ class Chat extends Component {
       }),
     }));
     this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
+    console.log("STATE", this.state);
   }
 
   addMessage(msg) {
     console.log("Calling addMessage for ");
+    console.log("state", this.state);
 
     if (
       !msg.data.out &&

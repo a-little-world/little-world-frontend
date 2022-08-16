@@ -37,6 +37,7 @@ function ProfileBox({
   isConfirmed,
   isSelf,
   setCallSetupPartner,
+  isOnline,
 }) {
   const { t } = useTranslation();
 
@@ -47,6 +48,9 @@ function ProfileBox({
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />
       )}
+      <div className={isOnline ? "online-indicator online" : "online-indicator"}>
+        {isOnline ? "Online" : "Offline"}
+      </div>
       <div className="profile-info">
         <div className="name">{`${firstName} ${lastName}`}</div>
         <div className="text">{userDescription}</div>
