@@ -40,6 +40,9 @@ function ProfileBox({
   isOnline,
 }) {
   const { t } = useTranslation();
+  if(isSelf){
+    isOnline = true;
+  }
 
   return (
     <div className={!isConfirmed ? "profile-box new-match" : "profile-box"}>
