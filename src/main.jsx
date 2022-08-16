@@ -328,6 +328,7 @@ function Main() {
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
   const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
   const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
+  const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
@@ -528,6 +529,13 @@ function Main() {
     setMatchesOnlineStates({ ...matchesOnlineStates}); // spreading creates a copy if we use the same var state wont update
   };
 
+  const adminActionCallback = (action) => {
+    console.log("Received Triggered admin callback", action);
+    if(action.includes("reload")){
+      navigate(0);
+    }
+  };
+
   const initChatComponent = (
     <Chat
       showChat={use === "chat"}
@@ -536,6 +544,7 @@ function Main() {
       setCallSetupPartner={setCallSetupPartner}
       userPkMappingCallback={setUserPkToChatIdMap}
       updateMatchesOnlineStates={updateOnlineState}
+      adminActionCallback={adminActionCallback}
     />
   );
 
@@ -614,7 +623,7 @@ function Main() {
           />
         )}
       </div>
-      {!(use === "chat") && <div style={{ display: "none" }}>{initChatComponent}</div>}
+      {!(use === "chat") && <div style={{ visibility: "hidden" }}>{initChatComponent}</div>}
     </div>
   );
 }

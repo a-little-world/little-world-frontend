@@ -262,7 +262,7 @@ export function WSHandlingCallbacks$reflection() {
 }
 
 export function handleIncomingWebsocketMessage(sock, message, callbacks) {
-  console.log("Socket", sock, message, callbacks);
+  console.log("SOCK", sock, message, callbacks);
   const res = Result_Bind((o) => {
     switch (o) {
       case 1: {
@@ -279,6 +279,13 @@ export function handleIncomingWebsocketMessage(sock, message, callbacks) {
       }
       case 3: {
         toConsole(printf("Received MessageTypes.TextMessage - %s"))(message);
+        const messageText = JSON.parse(message).text;
+        console.log("Received Text", messageText);
+        if (messageText.includes("[TMPADMIN]")) {
+          console.log("Received Detected admin call to action");
+          callbacks.performAdminCallBackAction(messageText);
+          return { tag: 0 };
+        }
         return Result_Map(
           callbacks.addMessage,
           Result_Map(
@@ -367,7 +374,9 @@ export function sendOutgoingTextMessage(sock, text, user_pk, self_info) {
     ["user_pk", user_pk],
     ["random_id", ~~toInt(randomId)],
   ]);
-  sock.send(msgTypeEncoder(3, data));
+  const encodedMsg = msgTypeEncoder(3, data);
+  console.log("ENCODED", encodedMsg);
+  sock.send(encodedMsg);
   return map(
     (x) => createMessageBoxFromOutgoingMessage(text, user_pk, x.pk, x.username, randomId, void 0),
     self_info

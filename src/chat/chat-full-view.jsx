@@ -227,6 +227,9 @@ class Chat extends Component {
         changePKOnlineStatus: that.changePKOnlineStatus,
         setMessageIdAsRead: that.setMessageIdAsRead,
         newUnreadCount: that.newUnreadCount,
+        performAdminCallBackAction: (action) => {
+          that.props.adminActionCallback(action);
+        },
       });
       if (errMsg) {
         toast.error(errMsg);
