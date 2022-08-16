@@ -134,6 +134,7 @@ function Selector({ selection, setSelection }) {
 }
 
 function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOnlineStates}) {
+  console.log("online match states", matchesOnlineStates);
   const { t } = useTranslation();
   const findNewText =
     userInfo.matching !== null
@@ -524,7 +525,7 @@ function Main() {
 
   const updateOnlineState = (userOnlinePk, status) => {
     matchesOnlineStates[userOnlinePk] = status;
-    setMatchesOnlineStates(matchesOnlineStates);
+    setMatchesOnlineStates({ ...matchesOnlineStates}); // spreading creates a copy if we use the same var state wont update
   };
 
   const initChatComponent = (
