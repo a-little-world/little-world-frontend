@@ -21,7 +21,12 @@ const postUserProfileUpdate = (updateData, onFailure, onSucess, formTag) => {
     data: updateData,
     success: onSucess,
     error: (e) => {
-      onFailure(e.responseJSON.report[formTag][2]);
+      console.log("ListError", e.responseJSON.report[formTag]);
+      e.responseJSON.report[formTag].forEach((err) => {
+        const errorTags = [];
+        errorTags.push(err[2]);
+        onFailure(errorTags);
+      });
     },
   });
 };
@@ -103,8 +108,13 @@ function ItemsBox({ choices, selectedChoices }) {
     setEditing(false);
     postUserProfileUpdate(
       { interests: tempTopicIndexes },
-      (_text) => {
-        setErrorText(_text);
+      (_tags) => {
+        let errorText = "";
+        _tags.forEach((e) => {
+          errorText += `${t(e)}, `;
+        });
+        setErrorText(errorText);
+        console.log("ErrorText", errorText);
       },
       () => {},
       "interests"
