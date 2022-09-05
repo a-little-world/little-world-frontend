@@ -133,17 +133,21 @@ function Selector({ selection, setSelection }) {
   );
 }
 
-function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOnlineStates}) {
-  console.log("online match states", matchesOnlineStates);
+function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOnlineStates }) {
   const { t } = useTranslation();
-  const findNewText =
-    userInfo.matching !== null
-      ? t(
-          userInfo.matching.choices.find((obj) => {
-            return obj.value === userInfo.matching.state;
-          }).display_name
-        )
-      : t("matching_state_not_searching_trans");
+  const [findNewText, setFindNewText] = useState("");
+  useEffect(() => {
+    const findNewTextInitial =
+      userInfo.matching !== null
+        ? t(
+            userInfo.matching.choices.find((obj) => {
+              return obj.value === userInfo.matching.state;
+            }).display_name
+          )
+        : t("matching_state_not_searching_trans");
+    setFindNewText(findNewTextInitial);
+  }, [userInfo]);
+
   function updateUserMatchingState() {
     $.ajax({
       type: "POST",
@@ -152,8 +156,15 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
       data: {
         action: "update_user_state",
       },
-    }).then((resp) => {
-      console.log("resp", resp);
+      success: (resp) => {
+        setFindNewText(
+          t(
+            userInfo.matching.choices.find((obj) => {
+              return obj.value === resp.state.matching_state;
+            }).display_name
+          )
+        );
+      },
     });
   }
   return (
@@ -347,7 +358,6 @@ function Main() {
     userInfo: null,
   });
 
-
   const updateOverlayState = (unconfirmedMatches, matchesData, _matchesProfiles) => {
     console.log("mProfiles", matchesProfiles);
     if (unconfirmedMatches.length > 0) {
@@ -526,12 +536,12 @@ function Main() {
 
   const updateOnlineState = (userOnlinePk, status) => {
     matchesOnlineStates[userOnlinePk] = status;
-    setMatchesOnlineStates({ ...matchesOnlineStates}); // spreading creates a copy if we use the same var state wont update
+    setMatchesOnlineStates({ ...matchesOnlineStates }); // spreading creates a copy if we use the same var state wont update
   };
 
   const adminActionCallback = (action) => {
     console.log("Received Triggered admin callback", action);
-    if(action.includes("reload")){
+    if (action.includes("reload")) {
       navigate(BACKEND_PATH);
       navigate(0);
     }

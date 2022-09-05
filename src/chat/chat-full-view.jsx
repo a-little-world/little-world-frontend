@@ -169,9 +169,11 @@ class Chat extends Component {
     fetchDialogs().then((r) => {
       const tmpMatchIdMap = {};
       for (let i = 0; i < r.fields[0].length; i++) {
-        tmpMatchIdMap[r.fields[0][i].id] = r.fields[0][i].alt
+        tmpMatchIdMap[r.fields[0][i].id] = r.fields[0][i].alt;
       }
-      this.props.userPkMappingCallback(tmpMatchIdMap);
+      if (this.props.userPkMappingCallback !== undefined) {
+        this.props.userPkMappingCallback(tmpMatchIdMap);
+      }
       this.setState({ userMatchPkMap: tmpMatchIdMap });
       if (r.tag === 0) {
         const { userPk, matchesInfo } = this.props;
