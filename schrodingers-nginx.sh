@@ -5,7 +5,7 @@
 
 HOST="host.docker.internal:3000"
 #SERVER="host.docker.internal:8000"
-SERVER="lw.ngrok.io"
+SERVER="lw.eu.ngrok.io"
 #HOST="192.168.178.1:3000"
 #HOST="timschupp.de"
 
