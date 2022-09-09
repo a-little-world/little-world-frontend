@@ -1,7 +1,9 @@
 import i18next from "i18next";
+import Cookies from "js-cookie";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import translation from "./translation.json";
+
 
 i18next
   .use(LanguageDetector)
@@ -16,3 +18,9 @@ i18next
       },
     },
   });
+
+const cookieName = "frontend-language";
+const cookie = Cookies.get(cookieName);
+if (cookie !== undefined) {
+  i18next.changeLanguage(cookie);
+}
