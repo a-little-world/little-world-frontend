@@ -1,5 +1,4 @@
 import $ from "jquery";
-import * as dataJSON from "./data.json";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
+import * as dataJSON from "./data.json";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Overlay from "./overlay";
