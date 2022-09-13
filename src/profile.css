@@ -19,18 +19,18 @@
   flex: 1 1 0;
 }
 
-.profile-box .profile-avatar{
+.profile-box .profile-avatar {
   text-align: left;
 }
 
-.new-match { /* TODO: @tbscode temporary indication this should be a 'NEW' svg or similar in future */
+.new-match {
+  /* TODO: @tbscode temporary indication this should be a 'NEW' svg or similar in future */
   background-color: rgb(252, 224, 172);
 }
 
 .show-profile .profile-box {
   text-align: center;
 }
-
 
 .show-profile .profile-box .text {
   font-size: 22px;
@@ -253,4 +253,3 @@
     width: 100%;
   }
 }
-
