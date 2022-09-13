@@ -137,16 +137,22 @@ function Selector({ selection, setSelection }) {
 function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOnlineStates }) {
   const { t } = useTranslation();
   const [findNewText, setFindNewText] = useState("");
+  const [matchState, setMatchState] = useState("idle");
+
+  // backend values
+  const matchStatuses = {
+    0: "idle",
+    1: "searching",
+    2: "pending",
+    3: "confirmed",
+  };
+
   useEffect(() => {
-    const findNewTextInitial =
-      userInfo.matching !== null
-        ? t(
-            userInfo.matching.choices.find((obj) => {
-              return obj.value === userInfo.matching.state;
-            }).display_name
-          )
-        : t("matching_state_not_searching_trans");
-    setFindNewText(findNewTextInitial);
+    if (!userInfo.matching) {
+      return;
+    }
+    const searchCode = userInfo.matching.state;
+    setMatchState(matchStatuses[searchCode]);
   }, [userInfo]);
 
   function updateUserMatchingState() {
@@ -158,13 +164,7 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
         action: "update_user_state",
       },
       success: (resp) => {
-        setFindNewText(
-          t(
-            userInfo.matching.choices.find((obj) => {
-              return obj.value === resp.state.matching_state;
-            }).display_name
-          )
-        );
+        userInfo = resp;
       },
     });
   }
@@ -180,10 +180,21 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
           />
         );
       })}
-      <button className="find-new" onClick={updateUserMatchingState}>
-        <img alt="plus" />
-        {findNewText}
-      </button>
+      {["idle", "confirmed"].includes(matchState) && (
+        <button className="match-status find-new" onClick={updateUserMatchingState}>
+          <img alt="plus" />
+          {matchState === "idle" && t("matching_state_not_searching_trans")}
+          {matchState === "confirmed" && t("matching_state_found_confirmed_trans")}
+        </button>
+      )}
+      {["searching", "pending"].includes(matchState) && (
+        <div className="match-status searching">
+          <img alt="" />
+          {matchState === "searching" && t("matching_state_searching_trans")}
+          {matchState === "pending" && t("matching_state_found_unconfirmed_trans")}
+          <button className="change-criteria">{t("cp_modify_search")}</button>
+        </div>
+      )}
     </div>
   );
 }
