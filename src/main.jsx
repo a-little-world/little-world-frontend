@@ -136,7 +136,6 @@ function Selector({ selection, setSelection }) {
 
 function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOnlineStates }) {
   const { t } = useTranslation();
-  const [findNewText, setFindNewText] = useState("");
   const [matchState, setMatchState] = useState("idle");
 
   // backend values
