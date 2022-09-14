@@ -250,7 +250,7 @@ button.match-status {
 }
 
 .match-status.searching img {
-  content: url("./images/chat-searching.svg");
+  content: url("./images/chat-searching.png");
   margin-top: 60px;
 }
 
