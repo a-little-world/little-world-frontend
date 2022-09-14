@@ -16,11 +16,11 @@ function App({ initialProfileData }) {
       <Router>
         <Routes>
           <Route path={`${BACKEND_PATH}/`}>
-            <Route index element={<Main initialProfileData={initialProfileData}/>} />
+            <Route index element={<Main initialProfileData={initialProfileData} />} />
             <Route path="call" element={<ActiveCall />} />
-            <Route path="partners" element={<Main />} />
-            <Route path="chat" element={<Main />} />
-            <Route path="profile" element={<Main />} />
+            <Route path="partners" element={<Main initialProfileData={initialProfileData} />} />
+            <Route path="chat" element={<Main initialProfileData={initialProfileData} />} />
+            <Route path="profile" element={<Main initialProfileData={initialProfileData} />} />
             <Route path="*" element="404" />
           </Route>
         </Routes>
