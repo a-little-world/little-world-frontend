@@ -22,7 +22,7 @@ if (GLOB.DEVELOPMENT) {
       const initialProfileData = data.initial_profile_data
       ReactDOM.render(
         <React.StrictMode>
-          <App initalProfileData={initialProfileData}/>
+          <App initialProfileData={initialProfileData}/>
         </React.StrictMode>,
         document.getElementById("root")
       );
