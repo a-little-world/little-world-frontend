@@ -125,12 +125,13 @@
 }
 
 .profile-box,
-.find-new {
+.match-status {
   width: 360px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .profile-image {
@@ -217,7 +218,7 @@
   content: url("./images/call-orange.svg");
 }
 
-.find-new {
+.match-status {
   font-style: normal;
   font-weight: 600;
   font-size: 24px;
@@ -228,17 +229,38 @@
   border-width: 2px;
 }
 
-button.find-new {
+button.match-status {
   height: auto !important;
 }
 
-.find-new img {
-  content: url("./images/plus-with-circle.svg");
+.match-status img {
   width: 115px;
-  height: 115px;
-  margin-top: 110px;
   margin-bottom: 30px;
+}
+
+.match-status.find-new img {
+  content: url("./images/plus-with-circle.svg");
+  margin-top: 110px;
+  height: 115px;
   cursor: pointer;
+}
+
+.match-status.searching {
+  font-size: 16px;
+}
+
+.match-status.searching img {
+  content: url("./images/chat-searching.png");
+  margin-top: 60px;
+}
+
+.match-status.searching .change-criteria {
+  padding: 16px 44px;
+  margin: 30px;
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  border-radius: 90px;
+  font-weight: 600;
+  color: #fcfcfd;
 }
 
 .notification-panel {

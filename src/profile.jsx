@@ -57,7 +57,7 @@ function ProfileBox({
         <img alt="match" className="profile-image" src={imgSrc} />
       )}
       <div className={isOnline ? "online-indicator online" : "online-indicator"}>
-        {isOnline ? "Online" : "Offline"}
+        online <span className="light"></span>
       </div>
       <div className="profile-info">
         <div className="name">{`${firstName} ${lastName}`}</div>

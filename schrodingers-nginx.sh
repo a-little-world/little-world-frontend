@@ -4,8 +4,8 @@
 # Allows to bypass same-site and cors oring of browser without modifying backend cors
 
 HOST="host.docker.internal:3000"
-#SERVER="host.docker.internal:8000"
-SERVER="lw.eu.ngrok.io"
+SERVER="t1m.me:8080"
+#SERVER="lw.eu.ngrok.io"
 #HOST="192.168.178.1:3000"
 #HOST="timschupp.de"
 
