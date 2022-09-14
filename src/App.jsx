@@ -9,7 +9,7 @@ import Main from "./main";
 
 import "./App.css";
 
-function App() {
+function App({ initalProfileData }) {
   return (
     <Provider store={store}>
       <Router>
