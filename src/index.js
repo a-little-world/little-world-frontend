@@ -19,9 +19,10 @@ if (GLOB.DEVELOPMENT) {
       console.log(data);
       console.log("start rendering now...");
 
+      const initialProfileData = data.initial_profile_data
       ReactDOM.render(
         <React.StrictMode>
-          <App />
+          <App initalProfileData={initialProfileData}/>
         </React.StrictMode>,
         document.getElementById("root")
       );
