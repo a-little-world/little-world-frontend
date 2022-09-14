@@ -10,7 +10,6 @@ import Main from "./main";
 import "./App.css";
 
 function App({ initialProfileData }) {
-  console.log("DATA", initialProfileData)
   return (
     <Provider store={store}>
       <Router>
