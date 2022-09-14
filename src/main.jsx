@@ -407,7 +407,7 @@ function Main({ initialProfileData }) {
   }, [location]);
 
   useEffect(() => {
-    mainCompositeRequest().then(
+    Promise.resolve(initialProfileData).then(
       ({
         _matchesBasic,
         unconfirmedMatches,

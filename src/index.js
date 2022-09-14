@@ -30,11 +30,12 @@ if (GLOB.DEVELOPMENT) {
     });
   });
 } else {
-  window.renderApp = ({profile_data}) => {
+  window.renderApp = ({initialProfileData}) => {
   // If not in development just render ...
+  console.log("initialData", initialProfileData);
     ReactDOM.render(
       <React.StrictMode>
-        <App />
+        <App initialProfileData={initialProfileData} />
       </React.StrictMode>,
       document.getElementById("root")
     );

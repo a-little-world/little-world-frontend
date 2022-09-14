@@ -9,13 +9,14 @@ import Main from "./main";
 
 import "./App.css";
 
-function App({ initalProfileData }) {
+function App({ initialProfileData }) {
+  console.log("DATA", initialProfileData)
   return (
     <Provider store={store}>
       <Router>
         <Routes>
           <Route path={`${BACKEND_PATH}/`}>
-            <Route index element={<Main />} />
+            <Route index element={<Main initialProfileData={initialProfileData}/>} />
             <Route path="call" element={<ActiveCall />} />
             <Route path="partners" element={<Main />} />
             <Route path="chat" element={<Main />} />
