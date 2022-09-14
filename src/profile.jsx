@@ -192,7 +192,18 @@ function TextBox({ subject, initialText, formTag }) {
   const location = useLocation();
   const editorRef = useRef();
   const [editState, setEditState] = useState(false);
+
+  /*
+   * NOTE: useState will ONLY update based on initial value on the first render
+   * This was causing bug https://github.com/tbscode/little-world-frontend/issues/108
+   * IE; when a match's profile was loaded and then the user clicks directly to their own
+   * profile, the element is re-rendered and the topicText is not updated by useState alone
+   */
   const [topicText, setTopicText] = useState(initialText);
+  useEffect(() => {
+    setTopicText(initialText);
+  }, [initialText]);
+
   const [errorText, setErrorText] = useState(""); // TODO: maybe if error add a reload button that loads the old default of this field
   const [textLen, setTextLen] = useState(0);
 
