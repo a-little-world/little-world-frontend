@@ -8,5 +8,5 @@ exports.DEFAULT_LOGIN_USERNAME = this.DEVELOPMENT
 exports.DEFAULT_LOGIN_PASSWORD = this.DEVELOPMENT ? "Test123!" : "aPassYouCantUse:)";
 // exports.BACKEND_URL = "" -> for production
 // This is the default url of the 'docker-nginx-proxy' container created via 'schrodingers-nginx.sh' -> "http://localhost:81";
-exports.BACKEND_URL = this.DEVELOPMENT ? "" : "";
+exports.BACKEND_URL = this.DEVELOPMENT ? "http://localhost:3333" : "";
 exports.BACKEND_PATH = this.DEVELOPMENT ? "" : "/app";
