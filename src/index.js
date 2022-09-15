@@ -19,10 +19,10 @@ if (GLOB.DEVELOPMENT) {
       console.log(data);
       console.log("start rendering now...");
 
-      const initialProfileData = data.initial_profile_data
+      const initData = data.initial_profile_data;
       ReactDOM.render(
         <React.StrictMode>
-          <App initialProfileData={initialProfileData}/>
+          <App initData={initData}/>
         </React.StrictMode>,
         document.getElementById("root")
       );
@@ -31,12 +31,12 @@ if (GLOB.DEVELOPMENT) {
     });
   });
 } else {
-  window.renderApp = ({initialProfileData}) => {
+  window.renderApp = ({initData}) => {
   // If not in development just render ...
-  console.log("initialData", initialProfileData);
+  console.log("initialData", initData);
     ReactDOM.render(
       <React.StrictMode>
-        <App initialProfileData={initialProfileData} />
+        <App initData={initData} />
       </React.StrictMode>,
       document.getElementById("root")
     );

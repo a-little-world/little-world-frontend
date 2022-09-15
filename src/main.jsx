@@ -337,7 +337,7 @@ function NotificationPanel({ userInfo }) {
   );
 }
 
-function Main({ initialProfileData }) {
+function Main({ initData }) {
   const location = useLocation();
   const { userPk } = location.state || {};
   const { t } = useTranslation();
@@ -407,7 +407,7 @@ function Main({ initialProfileData }) {
   }, [location]);
 
   useEffect(() => {
-    Promise.resolve(initialProfileData).then(
+    Promise.resolve(initData).then(
       ({
         _matchesBasic,
         unconfirmedMatches,
