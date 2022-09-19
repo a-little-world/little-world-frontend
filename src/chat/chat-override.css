@@ -116,7 +116,8 @@
 }
 
 .waiting img.searching {
-  content: url("../images/chat-searching.svg");
+  content: url("../images/match-searching.svg");
+  height: 50px;
   margin-right: 10px;
 }
 

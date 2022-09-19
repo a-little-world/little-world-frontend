@@ -233,13 +233,10 @@ button.match-status {
   height: auto !important;
 }
 
-.match-status img {
-  width: 115px;
-  margin-bottom: 30px;
-}
-
 .match-status.find-new img {
   content: url("./images/plus-with-circle.svg");
+  width: 115px;
+  margin-bottom: 30px;
   margin-top: 110px;
   height: 115px;
   cursor: pointer;
@@ -250,8 +247,8 @@ button.match-status {
 }
 
 .match-status.searching img {
-  content: url("./images/chat-searching.png");
-  margin-top: 60px;
+  content: url("./images/match-searching.svg");
+  height: 210px;
 }
 
 .match-status.searching .change-criteria {
