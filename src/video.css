@@ -252,16 +252,20 @@ input#help-toggle:checked + label .img {
     background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
   }
 
-  .video-controls.top .show-chat {
+  .video-controls.top button img {
+    height: 100%;
+  }
+
+  .video-controls.top .show-chat img {
     content: url("images/videobuttons/chat.svg");
   }
-  .video-controls.top .show-translate {
+  .video-controls.top .show-translate img {
     content: url("images/videobuttons/translate.svg");
   }
-  .video-controls.top .show-questions {
+  .video-controls.top .show-questions img {
     content: url("images/videobuttons/questions.svg");
   }
-  .video-controls.top .show-notes {
+  .video-controls.top .show-notes img {
     content: url("images/videobuttons/notes.svg");
   }
 
