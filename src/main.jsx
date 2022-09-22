@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
-import { mainCompositeRequest } from "./requests"
 
 import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
