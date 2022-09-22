@@ -39,7 +39,7 @@ button {
 .chat-list-box,
 .show-chat .right-panel,
 .show-profile .profile-box,
-.show-profile .header,
+.main-page .header,
 .profile-detail > div,
 .show-profile .profile-box,
 .call-setup-modal,
@@ -52,6 +52,20 @@ button {
   border-radius: 30px;
   box-sizing: border-box;
   padding: 20px;
+}
+
+/* page header / title */
+.main-page .header {
+  font-weight: 700;
+  font-size: 28px;
+  display: flex;
+  height: 1em;
+  box-sizing: content-box;
+  align-items: center;
+}
+
+.main-page .header .text {
+  margin-left: 6px;
 }
 
 /* parent items of above elements, setting consistent gap between */
