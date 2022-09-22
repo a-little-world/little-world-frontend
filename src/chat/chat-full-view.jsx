@@ -584,7 +584,7 @@ class Chat extends Component {
     };
 
     return (
-      <div className={ this.props.showChat ? "container" : "container disable-chat"}>
+      <div className={this.props.showChat ? "container" : "container disable-chat"}>
         <div
           className={
             this.state.userWasSelected ? "chat-list-box" : "chat-list-box active-panel-mobile"
