@@ -1,0 +1,8 @@
+.setting-text.editing button.edit {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.setting-text:not(.editing) > .save-buttons {
+  display: none;
+}
