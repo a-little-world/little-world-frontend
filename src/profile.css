@@ -1,9 +1,3 @@
-@media screen and (width >= 1024px) {
-  .show-profile .nav-bar-top {
-    display: none;
-  }
-}
-
 .overlay-modal .centered {
   text-align: center;
 }

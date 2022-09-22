@@ -54,6 +54,17 @@ button {
   padding: 20px;
 }
 
+/* hide top nav bar in all desktop by default */
+@media screen and (width >= 1024px) {
+  .nav-bar-top {
+    display: none;
+  }
+}
+/* hide switcher on all (for mobile) except main page */
+.nav-bar-top .selector {
+  display: none;
+}
+
 /* page header / title */
 .main-page .header {
   font-weight: 700;

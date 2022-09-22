@@ -75,26 +75,17 @@
 
 /* nav bar */
 
-.nav-bar-top {
+.show-main .nav-bar-top {
   display: flex;
   flex-direction: column;
-  z-index: 1;
 }
 
-.show-chat .nav-bar-top {
-  display: none;
-}
-
-.nav-bar-top .selector {
+.show-main .nav-bar-top .selector {
   display: flex;
 }
 
 .nav-bar-top .selector > span {
   display: inherit;
-}
-
-.nav-bar-top input {
-  display: none;
 }
 
 .nav-bar-top input + label {
@@ -278,10 +269,6 @@ button.match-status {
     display: none;
   }
 
-  .show-chat .nav-bar-top {
-    display: unset;
-  }
-
   .mobile-header {
     display: flex;
     padding: 10px 0;
@@ -325,6 +312,7 @@ button.match-status {
     position: sticky;
     top: 0;
     padding: 0;
+    z-index: 1;
   }
   .nav-bar-top .selector {
     margin: auto;
