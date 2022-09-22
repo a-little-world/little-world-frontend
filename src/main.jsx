@@ -12,6 +12,7 @@ import "./i18n";
 import Overlay from "./overlay";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
+import Settings from "./settings";
 import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";
@@ -35,7 +36,7 @@ function Sidebar({ userInfo, sidebarMobile }) {
     { label: "notifications", path: "" },
     { label: "my_profile", path: "/profile" },
     { label: "help", path: "" },
-    { label: "settings", path: "" },
+    { label: "settings", path: "/settings" },
     {
       label: "log_out",
       clickEvent: () => {
@@ -557,6 +558,7 @@ function Main({ initData }) {
             {topSelection === "community_calls" && <CommunityCalls />}
           </div>
         )}
+        {use === "chat" && initChatComponent}
         {use === "profile" && (
           <Profile
             matchesInfo={matchesInfo}
@@ -566,7 +568,7 @@ function Main({ initData }) {
             profile={profileToDispay}
           />
         )}
-        {use === "chat" && initChatComponent}
+        {use === "settings" && <Settings />}
       </div>
       <div
         className={

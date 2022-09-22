@@ -20,6 +20,7 @@ function App({ initData }) {
             <Route path="partners" element={<Main initData={initData} />} />
             <Route path="chat" element={<Main initData={initData} />} />
             <Route path="profile" element={<Main initData={initData} />} />
+            <Route path="settings" element={<Main initData={initData} />} />
             <Route path="*" element="404" />
           </Route>
         </Routes>
