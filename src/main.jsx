@@ -424,7 +424,7 @@ function Main({ initData }) {
         } catch (error) {
           usesAvatar = false;
         }
-        // If possibel load the avatar config json
+        // If possible load the avatar config json
         setProfileOptions(userDataOPTIONS.actions.POST);
         setUserProfile(userDataGET);
         setUserInfo({
