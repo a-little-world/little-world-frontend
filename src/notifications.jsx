@@ -67,7 +67,22 @@ function Notifications() {
           </button>
         </div>
       </div>
-      <div className="content"></div>
+      <div className="content panel">
+        {dummyNotifications.map(({ id, status, type, text, dateString }) => {
+          if (["all", status].includes(visibleNotifs)) {
+            return (
+              <div key={id} className="notification-item">
+                <img className={type.replace(" ", "-")} alt={type} />
+                <div className="info">
+                  <div className="notification-headline">{text}</div>
+                  <div className="notification-time">{dateString}</div>
+                </div>
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
     </>
   );
 }
