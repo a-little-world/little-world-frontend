@@ -8,6 +8,7 @@ import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
+import Notifications from "./notifications";
 import Overlay from "./overlay";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
@@ -574,6 +575,7 @@ function Main({ initData }) {
           </div>
         )}
         {use === "chat" && initChatComponent}
+        {use === "notifications" && <Notifications />}
         {use === "profile" && (
           <Profile
             matchesInfo={matchesInfo}
