@@ -34,7 +34,7 @@ function Sidebar({ sidebarMobile }) {
   const buttonData = [
     { label: "start", path: "/" },
     { label: "messages", path: "/chat" },
-    { label: "notifications", path: "" },
+    { label: "notifications", path: "/notifications" },
     { label: "my_profile", path: "/profile" },
     { label: "help", path: "" },
     { label: "settings", path: "/settings" },
@@ -361,7 +361,9 @@ function NotificationPanel() {
           </div>
         ))}
       </div>
-      <Link className="show-all">{t("nbr_show_all")}</Link>
+      <Link to="/notifications" className="show-all">
+        {t("nbr_show_all")}
+      </Link>
     </div>
   );
 }
