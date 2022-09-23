@@ -3,6 +3,33 @@ import { useTranslation } from "react-i18next";
 
 import "./notifications.css";
 
+const dummyNotifications = [
+  {
+    id: 2347,
+    status: "unread",
+    type: "appointment",
+    text: "new appoinment?",
+    dateString: "27th October, 2022 at 3:00pm",
+    unixtime: 1666364400,
+  },
+  {
+    id: 2346,
+    status: "read",
+    type: "new friend",
+    text: "New friend: George McCoy",
+    dateString: "27th October, 2022 at 3:00pm",
+    unixtime: 1666364400,
+  },
+  {
+    id: 1973,
+    status: "archive",
+    type: "missed call",
+    text: "missed call",
+    dateString: "You missed appointment",
+    unixtime: 1640995200,
+  },
+];
+
 function Notifications() {
   const { t } = useTranslation();
   const [visibleNotifs, setVisibleNotifs] = useState("all");
@@ -45,4 +72,5 @@ function Notifications() {
   );
 }
 
+export { dummyNotifications };
 export default Notifications;
