@@ -355,6 +355,11 @@ function ProfileDetail({ profileOptions, profile }) {
   const { userPk } = location.state || {};
   const isSelf = !userPk;
 
+  // prevent erroring out when empty data sent (due to promise delay?)
+  if (!profile) {
+    return null;
+  }
+
   return (
     <div className="profile-detail">
       <TextBox subject="about" initialText={profile.description} formTag="description" />

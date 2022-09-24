@@ -75,26 +75,17 @@
 
 /* nav bar */
 
-.nav-bar-top {
+.show-main .nav-bar-top {
   display: flex;
   flex-direction: column;
-  z-index: 1;
 }
 
-.show-chat .nav-bar-top {
-  display: none;
-}
-
-.nav-bar-top .selector {
+.show-main .nav-bar-top .selector {
   display: flex;
 }
 
 .nav-bar-top .selector > span {
   display: inherit;
-}
-
-.nav-bar-top input {
-  display: none;
 }
 
 .nav-bar-top input + label {
@@ -233,13 +224,10 @@ button.match-status {
   height: auto !important;
 }
 
-.match-status img {
-  width: 115px;
-  margin-bottom: 30px;
-}
-
 .match-status.find-new img {
   content: url("./images/plus-with-circle.svg");
+  width: 115px;
+  margin-bottom: 30px;
   margin-top: 110px;
   height: 115px;
   cursor: pointer;
@@ -250,8 +238,8 @@ button.match-status {
 }
 
 .match-status.searching img {
-  content: url("./images/chat-searching.png");
-  margin-top: 60px;
+  content: url("./images/match-searching.svg");
+  height: 210px;
 }
 
 .match-status.searching .change-criteria {
@@ -279,10 +267,6 @@ button.match-status {
 @media (width < 1024px) {
   .notification-panel {
     display: none;
-  }
-
-  .show-chat .nav-bar-top {
-    display: unset;
   }
 
   .mobile-header {
@@ -328,6 +312,7 @@ button.match-status {
     position: sticky;
     top: 0;
     padding: 0;
+    z-index: 1;
   }
   .nav-bar-top .selector {
     margin: auto;
