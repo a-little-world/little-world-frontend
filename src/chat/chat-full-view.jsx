@@ -584,133 +584,140 @@ class Chat extends Component {
     };
 
     return (
-      <div className={this.props.showChat ? "container" : "container disable-chat"}>
-        <div
-          className={
-            this.state.userWasSelected ? "chat-list-box" : "chat-list-box active-panel-mobile"
-          }
-        >
-          <SideBar
-            type="light"
-            top={
-              <div className="chat-list">
-                <ToastContainer />
-                <h3 className="chat-header">{t("chat_header")}</h3>
-                <Input
-                  placeholder={t("chat_search")}
-                  onKeyPress={(e) => {
-                    if (e.charCode !== 13) {
-                      this.localSearch();
-                    }
-                    if (e.charCode === 13) {
-                      this.localSearch();
-                      console.log(`search invoke with${this.searchInput.input.value}`);
-                      e.preventDefault();
-                      return false;
-                    }
-                  }}
-                />
-
-                <ChatList
-                  onClick={clickUser}
-                  dataSource={this.state.filteredDialogList.slice().sort(chatItemSortingFunction)}
-                />
-              </div>
+      <>
+        <div className="header">
+          <span className="text">{t("chat_header")}</span>
+        </div>
+        <div className={this.props.showChat ? "container" : "container disable-chat"}>
+          <div
+            className={
+              this.state.userWasSelected ? "chat-list-box" : "chat-list-box active-panel-mobile"
             }
-          />
-          <div className="new-partner">
-            {!pending && (
-              <Link className="find-partner">
-                <img className="plus" alt="add" />
-                {t("chat_find_new_person")}
-              </Link>
-            )}
-            {pending && (
-              <div className="waiting">
-                <div className="content">
-                  <img className="searching" alt="Search in progress" />
-                  <div className="text">
-                    <div className="header">{t("chat_search_running_header")}</div>
-                    {t("chat_search_running_text")}
+          >
+            <SideBar
+              type="light"
+              top={
+                <div className="chat-list">
+                  <ToastContainer />
+                  <h3 className="chat-header"></h3>
+                  <Input
+                    placeholder={t("chat_search")}
+                    onKeyPress={(e) => {
+                      if (e.charCode !== 13) {
+                        this.localSearch();
+                      }
+                      if (e.charCode === 13) {
+                        this.localSearch();
+                        console.log(`search invoke with${this.searchInput.input.value}`);
+                        e.preventDefault();
+                        return false;
+                      }
+                    }}
+                  />
+
+                  <ChatList
+                    onClick={clickUser}
+                    dataSource={this.state.filteredDialogList.slice().sort(chatItemSortingFunction)}
+                  />
+                </div>
+              }
+            />
+            <div className="new-partner">
+              {!pending && (
+                <Link className="find-partner">
+                  <img className="plus" alt="add" />
+                  {t("chat_find_new_person")}
+                </Link>
+              )}
+              {pending && (
+                <div className="waiting">
+                  <div className="content">
+                    <img className="searching" alt="Search in progress" />
+                    <div className="text">
+                      <div className="header">{t("chat_search_running_header")}</div>
+                      {t("chat_search_running_text")}
+                    </div>
+                  </div>
+                  <div className="buttons">
+                    <button type="button" className="cancel">
+                      {t("chat_search_cancel")}
+                    </button>
+                    <button type="button" className="change">
+                      {t("chat_search_change")}
+                    </button>
                   </div>
                 </div>
-                <div className="buttons">
-                  <button type="button" className="cancel">
-                    {t("chat_search_cancel")}
+              )}
+            </div>
+          </div>
+          <div
+            className={
+              this.state.userWasSelected ? "right-panel active-panel-mobile" : "right-panel"
+            }
+          >
+            <Navbar
+              left={
+                <>
+                  <button
+                    type="button"
+                    className="chat-back"
+                    onClick={() => {
+                      console.log("back");
+                      document.body.classList.remove("hide-mobile-header");
+                      this.setState({ userWasSelected: false });
+                    }}
+                  >
+                    <img alt="return to chat partner selection" />
                   </button>
-                  <button type="button" className="change">
-                    {t("chat_search_change")}
+                  <ChatItem
+                    {...this.state.selectedDialog}
+                    date={null}
+                    unread={0}
+                    statusColor={
+                      this.state.selectedDialog &&
+                      this.state.onlinePKs.includes(this.state.selectedDialog.id)
+                        ? "lightgreen"
+                        : ""
+                    }
+                    subtitle={
+                      this.state.selectedDialog &&
+                      this.state.typingPKs.includes(this.state.selectedDialog.id)
+                        ? "typing..."
+                        : ""
+                    }
+                  />
+                </>
+              }
+              right={
+                <>
+                  <button type="button" className="free-appointments disabled">
+                    <span className="text">{t("chat_show_free_appointments")}</span>
                   </button>
-                </div>
-              </div>
-            )}
+                  <button type="button" className="suggest-appointment disabled">
+                    <span className="text">{t("chat_suggest_appointment")}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="call-start"
+                    onClick={() => this.props.setCallSetupPartner(userPk)}
+                  >
+                    <img alt="start call" />
+                  </button>
+                </>
+              }
+            />
+            <div className="buttons-mobile">
+              <button type="button" className="free-appointments disabled">
+                <span className="text">{t("chat_show_free_appointments")}</span>
+              </button>
+              <button type="button" className="suggest-appointment disabled">
+                <span className="text">{t("chat_suggest_appointment")}</span>
+              </button>
+            </div>
+            <Core />
           </div>
         </div>
-        <div
-          className={this.state.userWasSelected ? "right-panel active-panel-mobile" : "right-panel"}
-        >
-          <Navbar
-            left={
-              <>
-                <button
-                  type="button"
-                  className="chat-back"
-                  onClick={() => {
-                    console.log("back");
-                    document.body.classList.remove("hide-mobile-header");
-                    this.setState({ userWasSelected: false });
-                  }}
-                >
-                  <img alt="return to chat partner selection" />
-                </button>
-                <ChatItem
-                  {...this.state.selectedDialog}
-                  date={null}
-                  unread={0}
-                  statusColor={
-                    this.state.selectedDialog &&
-                    this.state.onlinePKs.includes(this.state.selectedDialog.id)
-                      ? "lightgreen"
-                      : ""
-                  }
-                  subtitle={
-                    this.state.selectedDialog &&
-                    this.state.typingPKs.includes(this.state.selectedDialog.id)
-                      ? "typing..."
-                      : ""
-                  }
-                />
-              </>
-            }
-            right={
-              <>
-                <button type="button" className="free-appointments disabled">
-                  <span className="text">{t("chat_show_free_appointments")}</span>
-                </button>
-                <button type="button" className="suggest-appointment disabled">
-                  <span className="text">{t("chat_suggest_appointment")}</span>
-                </button>
-                <button
-                  type="button"
-                  className="call-start"
-                  onClick={() => this.props.setCallSetupPartner(userPk)}
-                >
-                  <img alt="start call" />
-                </button>
-              </>
-            }
-          />
-          <div className="buttons-mobile">
-            <button type="button" className="free-appointments disabled">
-              <span className="text">{t("chat_show_free_appointments")}</span>
-            </button>
-            <button type="button" className="suggest-appointment disabled">
-              <span className="text">{t("chat_suggest_appointment")}</span>
-            </button>
-          </div>
-          <Core />
-        </div>
-      </div>
+      </>
     );
   }
 }
