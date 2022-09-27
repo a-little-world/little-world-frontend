@@ -80,6 +80,9 @@ function Notifications() {
                   <div className="notification-headline">{text}</div>
                   <div className="notification-time">{dateString}</div>
                 </div>
+                <div className="status">
+                  {status === "unread" && <div className="unread-indicator" />}
+                </div>
               </div>
             );
           }
