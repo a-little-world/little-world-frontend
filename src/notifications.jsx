@@ -30,6 +30,33 @@ const dummyNotifications = [
   },
 ];
 
+function timeAgo(start) {
+  const end = Math.floor(Date.now() / 1000); // trim to seconds
+  const seconds = end - start;
+
+  if (seconds < 60) {
+    return "just now";
+  }
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) {
+    return `${minutes} minutes ago`;
+  }
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) {
+    return `${hours} hours ago`;
+  }
+  const days = Math.floor(hours / 24);
+  if (days < 30) {
+    return `${days} days ago`;
+  }
+  const months = Math.floor(days / 30);
+  if (months < 12) {
+    return `${months} months ago`;
+  }
+  const years = Math.floor(months / 12);
+  return `${years} years ago`;
+}
+
 function Notifications() {
   const { t } = useTranslation();
   const [visibleNotifs, setVisibleNotifs] = useState("all");
@@ -71,7 +98,7 @@ function Notifications() {
         </div>
       </div>
       <div className="content panel">
-        {dummyNotifications.map(({ id, status, type, text, dateString }) => {
+        {dummyNotifications.map(({ id, status, type, text, dateString, unixtime }) => {
           if (["all", status].includes(visibleNotifs)) {
             return (
               <div key={id} className="notification-item">
@@ -82,6 +109,7 @@ function Notifications() {
                 </div>
                 <div className="status">
                   {status === "unread" && <div className="unread-indicator" />}
+                  <div className="time-ago">{timeAgo(unixtime)}</div>
                 </div>
               </div>
             );
