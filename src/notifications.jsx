@@ -37,32 +37,35 @@ function Notifications() {
     <>
       <div className="header">
         <span className="text">{t("nm_main_header_settings")}</span>
-        <div className="buttons">
+        <div className="buttons select-showing">
           <button
             type="button"
-            className={visibleNotifs === "all" ? "show-all selected" : "show-all"}
+            className={visibleNotifs === "all" ? "all selected" : "all"}
             onClick={() => {
               setVisibleNotifs("all");
             }}
           >
+            <img alt="" />
             {t("nm_filter_all")}
           </button>
           <button
             type="button"
-            className={visibleNotifs === "unread" ? "show-unread selected" : "show-unread"}
+            className={visibleNotifs === "unread" ? "unread selected" : "unread"}
             onClick={() => {
               setVisibleNotifs("unread");
             }}
           >
+            <img alt="" />
             {t("nm_filter_unread")}
           </button>
           <button
             type="button"
-            className={visibleNotifs === "archive" ? "show-archive selected" : "show-archive"}
+            className={visibleNotifs === "archive" ? "archive selected" : "archive"}
             onClick={() => {
               setVisibleNotifs("archive");
             }}
           >
+            <img alt="" />
             {t("nm_filter_archive")}
           </button>
         </div>
