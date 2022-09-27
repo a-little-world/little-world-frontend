@@ -41,3 +41,14 @@
   flex-direction: column;
   gap: 6px;
 }
+
+.notification-item .status {
+  margin-left: auto;
+}
+
+.notification-item .status .unread-indicator {
+  height: 14px;
+  width: 14px;
+  border-radius: 100%;
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+}
