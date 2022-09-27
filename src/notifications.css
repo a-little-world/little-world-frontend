@@ -23,7 +23,8 @@
   content: url("./images/notifications/showing/unread.svg");
 }
 
-.select-showing .archive img {
+.select-showing .archive img,
+.notification-item .status .archive-item img {
   content: url("./images/notifications/showing/archive.svg");
 }
 
@@ -55,6 +56,10 @@
   border-radius: 100%;
   background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
   margin-left: auto;
+}
+
+.notification-item .status button.archive-item {
+  margin-right: auto;
 }
 
 .notification-item .status .time-ago {

@@ -112,6 +112,11 @@ function Notifications() {
                 </div>
                 <div className="status">
                   {status === "unread" && <div className="unread-indicator" />}
+                  {status !== "archive" && (
+                    <button type="button" className="archive-item">
+                      <img alt="archive item" />
+                    </button>
+                  )}
                   <div className="time-ago">{timeAgo(unixtime)}</div>
                 </div>
               </div>
