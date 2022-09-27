@@ -253,6 +253,7 @@ button.match-status {
 
 .notification-panel {
   margin-left: auto;
+  margin-bottom: auto;
   flex: 0 1 350px;
   display: flex;
   flex-direction: column;
