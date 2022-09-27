@@ -1,3 +1,37 @@
-.show-notifications .header .buttons {
+.show-notifications .select-showing {
   margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.select-showing button {
+  padding: 10px;
+  border: 1.5px solid #f39325;
+  border-radius: 100px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #717171;
+  display: flex;
+  gap: 4px;
+}
+
+.select-showing .all img {
+  content: url("./images/notifications/showing/all.svg");
+}
+
+.select-showing .unread img {
+  content: url("./images/notifications/showing/unread.svg");
+}
+
+.select-showing .archive img {
+  content: url("./images/notifications/showing/archive.svg");
+}
+
+.select-showing .selected {
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  color: white;
+}
+
+.select-showing .selected img {
+  filter: brightness(0) invert(1);
 }
