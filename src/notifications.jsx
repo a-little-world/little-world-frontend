@@ -99,7 +99,10 @@ function Notifications() {
       </div>
       <div className="content panel">
         {dummyNotifications.map(({ id, status, type, text, dateString, unixtime }) => {
-          if (["all", status].includes(visibleNotifs)) {
+          if (
+            status === visibleNotifs ||
+            (visibleNotifs === "all" && ["read", "unread"].includes(status))
+          ) {
             return (
               <div key={id} className="notification-item">
                 <img className={type.replace(" ", "-")} alt={type} />
