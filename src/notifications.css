@@ -35,3 +35,9 @@
 .select-showing .selected img {
   filter: brightness(0) invert(1);
 }
+
+.show-notifications .content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
