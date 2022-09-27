@@ -44,6 +44,9 @@
 
 .notification-item .status {
   margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .notification-item .status .unread-indicator {
@@ -51,4 +54,12 @@
   width: 14px;
   border-radius: 100%;
   background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  margin-left: auto;
+}
+
+.notification-item .status .time-ago {
+  font-weight: 300;
+  font-size: 14px;
+  color: #a6a6a6;
+  margin-top: auto;
 }
