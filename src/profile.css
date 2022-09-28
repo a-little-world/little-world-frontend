@@ -24,6 +24,7 @@
 
 .show-profile .profile-box {
   text-align: center;
+  margin-bottom: auto;
 }
 
 .show-profile .profile-box .text {
