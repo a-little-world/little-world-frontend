@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import $ from "jquery";
+import { useSelector } from 'react-redux';
 import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,6 +20,9 @@ import {
 
 import "./App.css";
 import "./call.css";
+
+// This is not the recommended way of importing the store, but is Ok for now:
+import { ReactReduxContext } from 'react-redux'; 
 
 function toggleFullscreen(t) {
   const videoContainer = document.querySelector(".video-container");
@@ -453,6 +457,7 @@ function CallScreen() {
   const { userPk, tracks } = location.state || {};
   const videoRef = useRef();
   const audioRef = useRef();
+  const { store } = useContext(ReactReduxContext);
 
   /* remove the video stream from call-setup otherwise it can hang around after
    * returing to main page, causing webcam lights to remain on.
@@ -469,6 +474,9 @@ function CallScreen() {
     }
     const videoMuted = localStorage.getItem("video muted") === "true";
     const audioMuted = localStorage.getItem("audio muted") === "true";
+
+    const vidTrack = store.getState().tracks;
+    console.log("METH", vidTrack);
     getVideoTrack(videoId, videoMuted).then((track) => {
       track.attach(videoRef.current);
     });

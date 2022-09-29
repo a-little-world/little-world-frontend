@@ -1,10 +1,12 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import "./i18n";
 import Link from "./path-prepend";
-import { getAudioTrack, getVideoTrack, toggleLocalTracks } from "./twilio-helper";
+import { getAudioTrack, getVideoTrack, toggleLocalTracks, getVideoTrackOnly } from "./twilio-helper";
+// This is not the recommended way of importing the store, but is Ok for now:
+import { ReactReduxContext } from 'react-redux'; 
 
 import "./call-setup.css";
 
@@ -183,6 +185,7 @@ function AudioOutputSelect() {
 
 function CallSetup({ userPk, setCallSetupPartner }) {
   const { t } = useTranslation();
+  const { store } = useContext(ReactReduxContext);
 
   const videoRef = useRef();
   const [videoTrackId, setVideoTrackId] = useState(null);
@@ -191,7 +194,8 @@ function CallSetup({ userPk, setCallSetupPartner }) {
     document.getElementById("video-toggle").checked = false;
     getVideoTrack(deviceId).then((track) => {
       const el = videoRef.current;
-      track.attach(el);
+      store.dispatch({ type: "addTrack", payload: track });
+      // track.attach(el);
     });
     setVideoTrackId(deviceId);
   };
