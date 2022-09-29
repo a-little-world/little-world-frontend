@@ -1,8 +1,7 @@
 import throttle from "lodash.throttle";
 import React, { Component } from "react";
-import { Button, Input, MessageList, Navbar, Popup, SideBar } from "react-chat-elements";
+import { Button, Input, MessageList, Navbar, SideBar } from "react-chat-elements";
 import { withTranslation } from "react-i18next";
-import { FaWindowClose } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
@@ -13,7 +12,6 @@ import {
   fetchDialogs,
   fetchMessages,
   fetchSelfInfo,
-  fetchUsersList,
   filterMessagesForDialog,
   getSubtitleTextFromMessageBox,
   handleIncomingWebsocketMessage,
@@ -586,7 +584,7 @@ class Chat extends Component {
     };
 
     return (
-      <div className={ this.props.showChat ? "container" : "container disable-chat"}>
+      <div className={this.props.showChat ? "container" : "container disable-chat"}>
         <div
           className={
             this.state.userWasSelected ? "chat-list-box" : "chat-list-box active-panel-mobile"

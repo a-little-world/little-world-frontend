@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
-import { mainCompositeRequest } from "./requests"
+import { mainCompositeRequest } from "./requests";
 import { toast, ToastContainer } from "react-toastify"; // Uses for temporary notifications later to be replaced by custom frontend
 import "react-toastify/dist/ReactToastify.css";
 import CallSetup from "./call-setup";
@@ -436,7 +436,7 @@ function Main({ initData }) {
         } catch (error) {
           usesAvatar = false;
         }
-        // If possibel load the avatar config json
+        // If possible load the avatar config json
         setProfileOptions(userDataOPTIONS.actions.POST);
         setUserProfile(userDataGET);
         setUserInfo({
