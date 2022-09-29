@@ -39,9 +39,24 @@ var config = function(env) {
         new CompressionPlugin(),
         new webpack.DefinePlugin({
                 "process.env": JSON.stringify({}) // Tempoary fix, not using process
-            })
+            }),
+        ...(env.LOCAL_DEBUG === "1" ? [] : [new UglifyJsPlugin({ // Adds uglyfy ls only if in production
+                test: /\.(js|jsx|tsx|ts)$/,
+                uglifyOptions: {
+                    comments: false,
+                    warnings: false,
+                    parse: {},
+                    compress: {},
+                    mangle: true, // Note `mangle.properties` is `false` by default.
+                    output: null,
+                    toplevel: false,
+                    nameCache: null,
+                    ie8: false,
+                    keep_fnames: false,
+                },
+            })]),
     ],
-    devtool: 'eval-cheap-module-source-map',
+    devtool: env.LOCAL_DEBUG === "1" ? 'eval-cheap-module-source-map' : 'source-map',
     module: {
         rules: [
             {
