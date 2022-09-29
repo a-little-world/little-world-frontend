@@ -15,6 +15,7 @@ import Overlay from "./overlay";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
 import { removeActiveTracks } from "./twilio-helper";
+import { getTagByValueWChoices } from "./utils";
 
 import "./community-events.css";
 import "./main.css";
@@ -139,20 +140,11 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
   const { t } = useTranslation();
   const [matchState, setMatchState] = useState("idle");
 
-  // backend values
-  const matchStatuses = {
-    0: "idle",
-    1: "searching",
-    2: "pending",
-    3: "confirmed",
-  };
-
   useEffect(() => {
     if (!userInfo.matching) {
       return;
     }
-    const searchCode = userInfo.matching.state;
-    setMatchState(matchStatuses[searchCode]);
+    setMatchState(getTagByValueWChoices(userInfo.matching.state, userInfo.matching.choices));
   }, [userInfo]);
 
   function updateUserMatchingState() {
