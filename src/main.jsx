@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
 import { mainCompositeRequest } from "./requests";
-import { toast, ToastContainer } from "react-toastify"; // Uses for temporary notifications later to be replaced by custom frontend
+import { toast, ToastContainer } from "react-toastify"; // Used for temporary notifications later to be replaced by custom frontend
 import "react-toastify/dist/ReactToastify.css";
 import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
@@ -508,9 +508,9 @@ function Main({ initData }) {
   const adminActionCallback = (action) => {
     // This will later be moved to a whole new websocket
     // The new socket should then only receive messages from the backend
-    // Current implemntation allowes all matches to send 'admin actions'
-    // Allthouogh they are filtered this could with some modifications allow ather users to send these callbacks to their matches. 
-    // This is not desireabol ( see ISSUE #112 )
+    // Current implementation allows all matches to send 'admin actions'
+    // Although they are filtered this could with some modifications allow other users to send these callbacks to their matches.
+    // This is not desirable ( see ISSUE #112 )
     console.log("Received Triggered admin callback", action);
     if (action.includes("reload")) {
       // Backend says frontend should reload the page
@@ -522,7 +522,7 @@ function Main({ initData }) {
       toast.success(`User ${params[1]} entered video call!`, toastOptions);
     } else if (action.includes("exited_call")) {
       const params = action.split(":");
-      // Backend says a partner has entered the call
+      // Backend says a partner has exited the call
       toast.success(`User ${params[1]} existed video call!`, toastOptions);
     }
   };
