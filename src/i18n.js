@@ -17,9 +17,10 @@ i18next
         translation: translation.de,
       },
     },
+    fallbackLng: "en",
   });
 
-const cookieName = "frontend-language";
+const cookieName = "frontendLang";
 const cookie = Cookies.get(cookieName);
 if (cookie !== undefined) {
   i18next.changeLanguage(cookie);
