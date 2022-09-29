@@ -523,7 +523,7 @@ function Main({ initData }) {
     } else if (action.includes("exited_call")) {
       const params = action.split(":");
       // Backend says a partner has exited the call
-      toast.success(`User ${params[1]} existed video call!`, toastOptions);
+      toast.success(`User ${params[1]} exited video call!`, toastOptions);
     }
   };
 
