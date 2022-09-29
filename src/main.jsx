@@ -4,7 +4,9 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { mainCompositeRequest } from "./requests";
+import { toast, ToastContainer } from "react-toastify"; // Used for temporary notifications later to be replaced by custom frontend
+import "react-toastify/dist/ReactToastify.css";
 import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
@@ -368,6 +370,16 @@ function Main({ initData }) {
     userInfo: null,
   });
 
+  // Config for react-toastify
+  const toastOptions = {
+    autoClose: 1500,
+    hideProgressBar: true,
+    closeOnClick: false,
+    pauseOnHover: false,
+    pauseOnFocusLoss: false,
+    draggable: false,
+  };
+
   const updateOverlayState = (unconfirmedMatches, matchesData, _matchesProfiles) => {
     console.log("mProfiles", matchesProfiles);
     if (unconfirmedMatches.length > 0) {
@@ -494,10 +506,24 @@ function Main({ initData }) {
   };
 
   const adminActionCallback = (action) => {
+    // This will later be moved to a whole new websocket
+    // The new socket should then only receive messages from the backend
+    // Current implementation allows all matches to send 'admin actions'
+    // Although they are filtered this could with some modifications allow other users to send these callbacks to their matches.
+    // This is not desirable ( see ISSUE #112 )
     console.log("Received Triggered admin callback", action);
     if (action.includes("reload")) {
+      // Backend says frontend should reload the page
       navigate(BACKEND_PATH);
       navigate(0);
+    } else if (action.includes("entered_call")) {
+      const params = action.split(":");
+      // Backend says a partner has entered the call
+      toast.success(`User ${params[1]} entered video call!`, toastOptions);
+    } else if (action.includes("exited_call")) {
+      const params = action.split(":");
+      // Backend says a partner has exited the call
+      toast.success(`User ${params[1]} existed video call!`, toastOptions);
     }
   };
 
@@ -519,6 +545,7 @@ function Main({ initData }) {
         userInfo={userInfo}
         sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
       />
+      <ToastContainer />
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
