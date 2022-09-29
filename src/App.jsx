@@ -20,7 +20,7 @@ const trackReducer = (state = null, action) => { // redux needs default param fi
   }
 };
 
-const store = createStore(trackReducer);
+export const store = createStore(trackReducer);
 
 function App({ initData }) {
   // const reducer = combineReducers({ trackReducer });
