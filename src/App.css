@@ -68,6 +68,7 @@ body * {
 .show-profile .profile-box,
 .call-setup-modal,
 .overlay-modal,
+.edit-modal,
 .call-and-text,
 .call-sidebar {
   border: 1px solid #e6e8ec;

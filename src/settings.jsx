@@ -1,85 +1,123 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import "./settings.css";
 
-function InputSetting({ type, example, initVal }) {
+function ListItem({ title, text, setEditing }) {
+  return (
+    <>
+      <h3>{title}</h3>
+      {text}
+      <button type="button" className="edit" onClick={() => setEditing(title)}>
+        edit
+      </button>
+    </>
+  );
+}
+
+function InputItem({ label, initVal, example, repeat }) {
   const [value, setValue] = useState(initVal);
-  const [storedValue, setStoredValue] = useState(`${value}`);
-  const [editing, setEditing] = useState(false);
-
-  const textInput = useRef(null);
-
-  const enableEditing = () => {
-    setEditing(true);
-    const { current } = textInput;
-    const { length } = current.value;
-    current.focus();
-    current.setSelectionRange(length, length); // ensure cursor is at end
-  };
-
-  const revertChange = () => {
-    setValue(storedValue);
-    setEditing(false);
-  };
-
-  const saveChange = () => {
-    // server to be updated here
-    setStoredValue(value);
-    setEditing(false);
-  };
 
   const handleChange = (e) => {
     setValue(e.target.value);
   };
 
   return (
-    <div className={editing ? "setting-text editing" : "setting-text"}>
-      <h3>{type}</h3>
-      <button type="button" className="edit" onClick={enableEditing}>
-        e
-      </button>
-      <input
-        ref={textInput}
-        type="text"
-        readOnly={!editing}
-        value={value}
-        onChange={handleChange}
-        placeholder={example}
-      />
-      <div className="save-buttons">
-        <button type="button" className="cancel" onClick={revertChange}>
-          <img alt="cancel" />
-        </button>
-        <button type="button" className="save" onClick={saveChange}>
-          <img alt="save" />
-        </button>
-      </div>
-    </div>
+    <>
+      <div className="label">{label}</div>
+      <input type="text" value={value} onChange={handleChange} placeholder={example} />
+      {repeat && <InputItem label={`repeat ${label}`} repeat={false} />}
+    </>
   );
 }
 
 function Settings() {
   const { t } = useTranslation();
+  const [editing, setEditing] = useState(false);
+
+  const data = {
+    name: [
+      {
+        label: "First name",
+        example: "Max",
+        val: "John",
+        regex: "",
+      },
+      {
+        label: "Second name",
+        example: "Power",
+        val: "Smith",
+        regex: "",
+      },
+    ],
+    email: [
+      {
+        label: "email",
+        example: "max.power@gmail.com",
+        val: "j.smith69@gmx.de",
+        repeat: true,
+      },
+    ],
+    password: [
+      {
+        label: "password",
+        repeat: true,
+      },
+    ],
+    "phone number": [
+      {
+        label: "phone number",
+        example: "0519-345 95 704",
+        val: "0123-456-76-754",
+      },
+    ],
+    "post code": [
+      {
+        label: "post code",
+        example: "44986",
+        val: "90210",
+      },
+    ],
+    "birth year": [
+      {
+        label: "birth year",
+        example: "1962",
+        val: "1969",
+      },
+    ],
+  };
+
   return (
     <>
       <div className="header">
         <span className="text">{t("sg_main_header_settings")}</span>
       </div>
       <div className="content panel">
-        <InputSetting type="First Name" example="Max" initVal="John" />
-        <InputSetting type="Second Name" example="Power" initVal="Smith" />
-        <InputSetting
-          type="E-mail"
-          example="max.power@gmail.com"
-          initVal="j.smith69@gmx.de"
-          repeat
-        />
-        <InputSetting type="Password" example="Password123" initVal="Test123!" repeat />
-        <InputSetting type="Phone number" example="0519-345 95 704" initVal="0123-456-76-754" />
-        <InputSetting type="Post Code" example="44986" initVal="90210" />
-        <InputSetting type="Date of Birth" example="25/12/1962" initVal="20/4/1969" />
+        {Object.entries(data).map(([title, fields]) => {
+          const text = fields.map(({ val }) => val).join(" ");
+          return <ListItem key={title} title={title} text={text} setEditing={setEditing} />;
+        })}
         <button type="button">Delete Account</button>
+        <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
+          {editing && (
+            <div className="edit-modal">
+              {data[editing].map(({ label, example, val, regex, repeat }) => (
+                <InputItem
+                  key={label}
+                  label={label}
+                  example={example}
+                  initVal={val}
+                  regex={regex}
+                  repeat={repeat}
+                />
+              ))}
+              <button type="button" onClick={() => setEditing(false)}>
+                cancel
+              </button>
+              <button type="button">submit</button>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
