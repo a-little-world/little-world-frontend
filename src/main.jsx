@@ -180,7 +180,7 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
         );
       })}
       {["idle", "confirmed"].includes(matchState) && (
-        <button className="match-status find-new" onClick={updateUserMatchingState}>
+        <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
           <img alt="plus" />
           {matchState === "idle" && t("matching_state_not_searching_trans")}
           {matchState === "confirmed" && t("matching_state_found_confirmed_trans")}
@@ -191,7 +191,9 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
           <img alt="" />
           {matchState === "searching" && t("matching_state_searching_trans")}
           {matchState === "pending" && t("matching_state_found_unconfirmed_trans")}
-          <button className="change-criteria">{t("cp_modify_search")}</button>
+          <button type="button" className="change-criteria">
+            {t("cp_modify_search")}
+          </button>
         </div>
       )}
     </div>
