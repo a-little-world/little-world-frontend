@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Avatar from "react-nice-avatar";
 
 import "./i18n";
 import Link from "./path-prepend";
@@ -258,4 +259,40 @@ function CallSetup({ userPk, setCallSetupPartner }) {
   );
 }
 
+function IncomingCall({ userPk, matchesInfo, setVisible }) {
+  const profileData = matchesInfo.filter((data) => data.userPk === userPk)[0];
+  const { firstName, lastName, imgSrc, avatarConfig, usesAvatar } = profileData;
+  const answerCall = () => {
+    console.log("answer call");
+    setVisible(false);
+  };
+  const rejectCall = () => {
+    console.log("reject call");
+    setVisible(false);
+  };
+  return (
+    <div className="call-setup-modal">
+      <button type="button" className="close" onClick={rejectCall}>
+        X
+      </button>
+      {usesAvatar ? (
+        <Avatar className="profile-avatar" {...avatarConfig} />
+      ) : (
+        <img alt="match" className="profile-image" src={imgSrc} />
+      )}
+      <div className="name">
+        <span className="first-name">{firstName}</span>{" "}
+        <span className="last-name">{lastName}</span>
+      </div>
+      <button type="button" className="answer-call" onClick={answerCall}>
+        Answer
+      </button>
+      <button type="button" className="reject-call" onClick={rejectCall}>
+        Reject
+      </button>
+    </div>
+  );
+}
+
+export { IncomingCall };
 export default CallSetup;

@@ -6,7 +6,7 @@ import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
-import CallSetup from "./call-setup";
+import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
@@ -540,6 +540,8 @@ function Main({ initData }) {
     />
   );
 
+  const [showIncoming, setShowIncoming] = useState(false);
+
   return (
     <div className={`main-page show-${use}`}>
       <Sidebar
@@ -579,9 +581,20 @@ function Main({ initData }) {
         )}
         {use === "chat" && initChatComponent}
       </div>
-      <div className={callSetupPartner ? "call-setup-overlay" : "call-setup-overlay hidden"}>
+      <div
+        className={
+          callSetupPartner || showIncoming ? "call-setup-overlay" : "call-setup-overlay hidden"
+        }
+      >
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
+        )}
+        {showIncoming && (
+          <IncomingCall
+            matchesInfo={matchesInfo}
+            userPk={matchesInfo[1].userPk}
+            setVisible={setShowIncoming}
+          />
         )}
       </div>
       <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
@@ -617,6 +630,14 @@ function Main({ initData }) {
         )}
       </div>
       {!(use === "chat") && <div className="disable-chat">{initChatComponent}</div>}
+      <button
+        type="button"
+        onClick={() => {
+          setShowIncoming(true);
+        }}
+      >
+        show incoming
+      </button>
     </div>
   );
 }
