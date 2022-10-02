@@ -1,11 +1,11 @@
 import classNames from "classnames";
 import React, { useState } from "react";
-import { format } from "timeago.js";
 import Avatar from "react-nice-avatar";
+import { format } from "timeago.js";
 
 function ChatItem(props) {
   const [onHoverTool, setOnHoverTool] = useState(false);
-  const statusColorType = props.statusColorType;
+  const { statusColorType } = props;
 
   const handleOnMouseEnter = () => {
     setOnHoverTool(true);
@@ -24,12 +24,11 @@ function ChatItem(props) {
   };
 
   let avatar = null;
-  if (typeof props.avatar === 'string' || props.avatar instanceof String){
+  if (typeof props.avatar === "string" || props.avatar instanceof String) {
     avatar = <img className="profile-image" alt="user" src={props.avatar} />;
-  }else{
-    avatar = <Avatar className="profile-avatar-chat" {...props.avatar} />
+  } else {
+    avatar = <Avatar className="profile-avatar-chat" {...props.avatar} />;
   }
-
 
   return (
     <div
