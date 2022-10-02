@@ -669,23 +669,25 @@ class Chat extends Component {
                   >
                     <img alt="return to chat partner selection" />
                   </button>
-                  <ChatItem
-                    {...this.state.selectedDialog}
-                    date={null}
-                    unread={0}
-                    statusColor={
-                      this.state.selectedDialog &&
-                      this.state.onlinePKs.includes(this.state.selectedDialog.id)
-                        ? "lightgreen"
-                        : ""
-                    }
-                    subtitle={
-                      this.state.selectedDialog &&
-                      this.state.typingPKs.includes(this.state.selectedDialog.id)
-                        ? "typing..."
-                        : ""
-                    }
-                  />
+                  <Link to="/" state={{ userPk }} className="profile">
+                    <ChatItem
+                      {...this.state.selectedDialog}
+                      date={null}
+                      unread={0}
+                      statusColor={
+                        this.state.selectedDialog &&
+                        this.state.onlinePKs.includes(this.state.selectedDialog.id)
+                          ? "lightgreen"
+                          : ""
+                      }
+                      subtitle={
+                        this.state.selectedDialog &&
+                        this.state.typingPKs.includes(this.state.selectedDialog.id)
+                          ? "typing..."
+                          : ""
+                      }
+                    />
+                  </Link>
                 </>
               }
               right={

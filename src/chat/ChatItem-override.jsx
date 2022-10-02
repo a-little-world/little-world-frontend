@@ -16,6 +16,10 @@ function ChatItem(props) {
   };
 
   const handleOnClick = (e) => {
+    if (!props.onClick) {
+      return;
+    }
+
     e.preventDefault();
 
     if (onHoverTool === true) return;
