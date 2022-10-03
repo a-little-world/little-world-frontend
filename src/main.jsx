@@ -4,9 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
-import { mainCompositeRequest } from "./requests";
-import { toast, ToastContainer } from "react-toastify"; // Used for temporary notifications later to be replaced by custom frontend
-import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+
 import CallSetup from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
@@ -181,7 +180,7 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
         );
       })}
       {["idle", "confirmed"].includes(matchState) && (
-        <button className="match-status find-new" onClick={updateUserMatchingState}>
+        <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
           <img alt="plus" />
           {matchState === "idle" && t("matching_state_not_searching_trans")}
           {matchState === "confirmed" && t("matching_state_found_confirmed_trans")}
@@ -192,7 +191,9 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
           <img alt="" />
           {matchState === "searching" && t("matching_state_searching_trans")}
           {matchState === "pending" && t("matching_state_found_unconfirmed_trans")}
-          <button className="change-criteria">{t("cp_modify_search")}</button>
+          <button type="button" className="change-criteria">
+            {t("cp_modify_search")}
+          </button>
         </div>
       )}
     </div>
@@ -523,7 +524,7 @@ function Main({ initData }) {
     } else if (action.includes("exited_call")) {
       const params = action.split(":");
       // Backend says a partner has exited the call
-      toast.success(`User ${params[1]} existed video call!`, toastOptions);
+      toast.success(`User ${params[1]} exited video call!`, toastOptions);
     }
   };
 
