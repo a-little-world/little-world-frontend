@@ -139,3 +139,62 @@
     flex-direction: column;
   }
 }
+
+/*incoming call*/
+.incoming-call-modal .modal-close {
+  padding: 10px;
+  width: 41px;
+  height: 41px;
+  background-color: rgba(230, 232, 236, 0.2);
+  border: 2px solid rgba(230, 232, 236, 0.2);
+  border-radius: 40px;
+  filter: grayscale(1);
+}
+
+.incoming-call-modal .content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.incoming-call-modal .profile-avatar,
+.incoming-call-modal .profile-image {
+  width: 364px;
+  height: 182px;
+  border-radius: 20px;
+}
+
+.message-text {
+  align-self: center;
+  font-weight: 600;
+  font-size: 24px;
+  color: #23262f;
+}
+
+.incoming-call-modal .buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.answer-call,
+.reject-call {
+  padding: 12px 16px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  border-radius: 90px;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.answer-call {
+  color: white;
+  background: linear-gradient(90deg, #f28d00 0%, #f9ba6e 100%);
+}
+
+.reject-call {
+  background: #ffffff;
+  border: 2px solid #0063af;
+  color: #0063af;
+}
