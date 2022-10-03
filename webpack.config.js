@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require('webpack');
 const BundleTracker = require('webpack-bundle-tracker');
 const CompressionPlugin = require("compression-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 /*
 * For this one we needed to uninstall react-error-overlay see: https://stackoverflow.com/questions/70368760/react-uncaught-referenceerror-process-is-not-defined
 */
