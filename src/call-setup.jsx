@@ -260,6 +260,7 @@ function CallSetup({ userPk, setCallSetupPartner }) {
 }
 
 function IncomingCall({ userPk, matchesInfo, setVisible }) {
+  const { t } = useTranslation();
   const profileData = matchesInfo.filter((data) => data.userPk === userPk)[0];
   const { firstName, lastName, imgSrc, avatarConfig, usesAvatar } = profileData;
   const answerCall = () => {
@@ -271,25 +272,24 @@ function IncomingCall({ userPk, matchesInfo, setVisible }) {
     setVisible(false);
   };
   return (
-    <div className="call-setup-modal">
-      <button type="button" className="close" onClick={rejectCall}>
-        X
-      </button>
-      {usesAvatar ? (
-        <Avatar className="profile-avatar" {...avatarConfig} />
-      ) : (
-        <img alt="match" className="profile-image" src={imgSrc} />
-      )}
-      <div className="name">
-        <span className="first-name">{firstName}</span>{" "}
-        <span className="last-name">{lastName}</span>
+    <div className="call-setup-modal incoming-call-modal">
+      <button type="button" className="modal-close" onClick={rejectCall} />
+      <div className="content">
+        {usesAvatar ? (
+          <Avatar className="profile-avatar" {...avatarConfig} />
+        ) : (
+          <img alt="match" className="profile-image" src={imgSrc} />
+        )}
+        <div className="message-text">{`${firstName} ${t("pcs_waiting")}`}</div>
+        <div className="buttons">
+          <button type="button" className="answer-call" onClick={answerCall}>
+            {t("pcs_btn_join_call")}
+          </button>
+          <button type="button" className="reject-call" onClick={rejectCall}>
+            {t("pcs_btn_reject_call")}
+          </button>
+        </div>
       </div>
-      <button type="button" className="answer-call" onClick={answerCall}>
-        Answer
-      </button>
-      <button type="button" className="reject-call" onClick={rejectCall}>
-        Reject
-      </button>
     </div>
   );
 }
