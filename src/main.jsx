@@ -616,7 +616,7 @@ function Main({ initData }) {
           />
         )}
       </div>
-      {!(use === "chat") && <div style={{ display: "none" }}>{initChatComponent}</div>}
+      {!(use === "chat") && <div className="disable-chat">{initChatComponent}</div>}
     </div>
   );
 }
