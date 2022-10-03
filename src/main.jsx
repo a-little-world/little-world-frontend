@@ -594,6 +594,7 @@ function Main({ initData }) {
             matchesInfo={matchesInfo}
             userPk={matchesInfo[1].userPk}
             setVisible={setShowIncoming}
+            setCallSetupPartner={setCallSetupPartner}
           />
         )}
       </div>
