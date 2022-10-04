@@ -510,10 +510,11 @@ function Main({ initData }) {
       navigate(BACKEND_PATH);
       navigate(0);
     } else if (action.includes("entered_call")) {
-      const params = action.split(":");
+      const params = (action.substring(action.indexOf("(") + 1,action.indexOf(")"))).split(":")
+      console.log("PARAMS: ", params);
       // Backend says a partner has entered the call
-      setIncomingUserPk(params[1]);
       setShowIncoming(true);
+      setIncomingUserPk(params[1]);
     } else if (action.includes("exited_call")) {
       const params = action.split(":");
       // Backend says a partner has exited the call
@@ -581,8 +582,8 @@ function Main({ initData }) {
         )}
         {showIncoming && (
           <IncomingCall
-            matchesInfo={matchesInfo}
             userPk={incomingUserPk}
+            matchesInfo={matchesInfo}
             setVisible={setShowIncoming}
             setCallSetupPartner={setCallSetupPartner}
           />

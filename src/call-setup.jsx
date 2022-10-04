@@ -261,7 +261,12 @@ function CallSetup({ userPk, setCallSetupPartner }) {
 
 function IncomingCall({ userPk, matchesInfo, setVisible, setCallSetupPartner }) {
   const { t } = useTranslation();
+  console.log("Incoming user pk", userPk);
   const profileData = matchesInfo.filter((data) => data.userPk === userPk)[0];
+  useEffect(() => {
+    console.log("PK changed", userPk)
+    profileData = matchesInfo.filter((data) => data.userPk === userPk)[0];
+  }, [])
   const { firstName, imgSrc, avatarConfig, usesAvatar } = profileData;
   const answerCall = () => {
     console.log("answer call");
