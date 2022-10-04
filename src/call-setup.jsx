@@ -259,14 +259,12 @@ function CallSetup({ userPk, setCallSetupPartner }) {
   );
 }
 
-function IncomingCall({ userPk, matchesInfo, setVisible, setCallSetupPartner }) {
+function IncomingCall({ userPk, matchesInfo, visible, setVisible, setCallSetupPartner }) {
   const { t } = useTranslation();
+  if(userPk == null || !visible) return <></>
   console.log("Incoming user pk", userPk);
   const profileData = matchesInfo.filter((data) => data.userPk === userPk)[0];
-  useEffect(() => {
-    console.log("PK changed", userPk)
-    profileData = matchesInfo.filter((data) => data.userPk === userPk)[0];
-  }, [])
+  console.log("Incoming user data", profileData, matchesInfo);
   const { firstName, imgSrc, avatarConfig, usesAvatar } = profileData;
   const answerCall = () => {
     console.log("answer call");
@@ -277,7 +275,7 @@ function IncomingCall({ userPk, matchesInfo, setVisible, setCallSetupPartner }) 
     console.log("reject call");
     setVisible(false);
   };
-  return (
+  return ( visible ?
     <div className="call-setup-modal incoming-call-modal">
       <button type="button" className="modal-close" onClick={rejectCall} />
       <div className="content">
@@ -296,7 +294,7 @@ function IncomingCall({ userPk, matchesInfo, setVisible, setCallSetupPartner }) 
           </button>
         </div>
       </div>
-    </div>
+    </div> : <></>
   );
 }
 

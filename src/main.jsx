@@ -519,6 +519,8 @@ function Main({ initData }) {
       const params = action.split(":");
       // Backend says a partner has exited the call
       console.log(`User ${params[1]} exited video call!`);
+      setShowIncoming(false)
+      setIncomingUserPk(null);
     }
   };
 
@@ -580,14 +582,13 @@ function Main({ initData }) {
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
         )}
-        {showIncoming && (
           <IncomingCall
             userPk={incomingUserPk}
+            visible={showIncoming}
             matchesInfo={matchesInfo}
             setVisible={setShowIncoming}
             setCallSetupPartner={setCallSetupPartner}
           />
-        )}
       </div>
       <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
         {overlayState.visible && (
