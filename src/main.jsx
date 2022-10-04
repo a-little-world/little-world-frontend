@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
@@ -354,6 +352,10 @@ function Main({ initData }) {
   const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
   const navigate = useNavigate();
 
+  // Incoming Call Modal states:
+  const [showIncoming, setShowIncoming] = useState(false);
+  const [incomingUserPk, setIncomingUserPk] = useState(null);
+
   const [userInfo, setUserInfo] = useState({
     imgSrc: null,
     avatarConfig: null,
@@ -370,16 +372,6 @@ function Main({ initData }) {
     test: "Lorem",
     userInfo: null,
   });
-
-  // Config for react-toastify
-  const toastOptions = {
-    autoClose: 1500,
-    hideProgressBar: true,
-    closeOnClick: false,
-    pauseOnHover: false,
-    pauseOnFocusLoss: false,
-    draggable: false,
-  };
 
   const updateOverlayState = (unconfirmedMatches, matchesData, _matchesProfiles) => {
     console.log("mProfiles", matchesProfiles);
@@ -520,11 +512,12 @@ function Main({ initData }) {
     } else if (action.includes("entered_call")) {
       const params = action.split(":");
       // Backend says a partner has entered the call
-      toast.success(`User ${params[1]} entered video call!`, toastOptions);
+      setIncomingUserPk(params[1]);
+      setShowIncoming(true);
     } else if (action.includes("exited_call")) {
       const params = action.split(":");
       // Backend says a partner has exited the call
-      toast.success(`User ${params[1]} exited video call!`, toastOptions);
+      console.log(`User ${params[1]} exited video call!`);
     }
   };
 
@@ -540,15 +533,12 @@ function Main({ initData }) {
     />
   );
 
-  const [showIncoming, setShowIncoming] = useState(false);
-
   return (
     <div className={`main-page show-${use}`}>
       <Sidebar
         userInfo={userInfo}
         sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
       />
-      <ToastContainer />
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
@@ -592,7 +582,7 @@ function Main({ initData }) {
         {showIncoming && (
           <IncomingCall
             matchesInfo={matchesInfo}
-            userPk={matchesInfo[1].userPk}
+            userPk={incomingUserPk}
             setVisible={setShowIncoming}
             setCallSetupPartner={setCallSetupPartner}
           />
@@ -631,14 +621,6 @@ function Main({ initData }) {
         )}
       </div>
       {!(use === "chat") && <div className="disable-chat">{initChatComponent}</div>}
-      <button
-        type="button"
-        onClick={() => {
-          setShowIncoming(true);
-        }}
-      >
-        show incoming
-      </button>
     </div>
   );
 }
