@@ -541,9 +541,11 @@ function Main({ initData }) {
   );
 
   const [showIncoming, setShowIncoming] = useState(false);
+  const [incomingUserPk, setIncomingUserPk] = useState(null);
 
-  window.showIncoming = () => {
+  window.showIncoming = (userPkIn) => {
     setShowIncoming(true);
+    setIncomingUserPk(userPkIn);
   };
 
   return (
@@ -593,10 +595,10 @@ function Main({ initData }) {
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
         )}
-        {showIncoming && (
+        {incomingUserPk && showIncoming && (
           <IncomingCall
             matchesInfo={matchesInfo}
-            userPk={matchesInfo[1].userPk}
+            userPk={incomingUserPk}
             setVisible={setShowIncoming}
             setCallSetupPartner={setCallSetupPartner}
           />
