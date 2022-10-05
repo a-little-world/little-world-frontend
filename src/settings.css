@@ -39,7 +39,23 @@
   display: none;
 }
 
-.show-settings .content {
+section.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.show-settings h2 {
+  font-weight: 500;
+  font-size: 18px;
+  margin: 0;
+}
+
+.show-settings .settings-items {
+  border: 1px solid rgba(230, 232, 236, 1);
+  background: rgba(230, 232, 236, 0.2);
+  padding: 20px;
+  border-radius: 15px;
   display: flex;
   flex-direction: column;
   gap: 20px;
