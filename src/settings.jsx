@@ -5,13 +5,13 @@ import "./settings.css";
 
 function ListItem({ title, text, setEditing }) {
   return (
-    <>
+    <div className="item">
       <h3>{title}</h3>
-      {text}
+      <span className="text">{text}</span>
       <button type="button" className="edit" onClick={() => setEditing(title)}>
-        edit
+        change
       </button>
-    </>
+    </div>
   );
 }
 
@@ -97,7 +97,12 @@ function Settings() {
           const text = fields.map(({ val }) => val).join(" ");
           return <ListItem key={title} title={title} text={text} setEditing={setEditing} />;
         })}
-        <button type="button">Delete Account</button>
+        <div className="item">
+          <h3>Delete Account</h3>
+          <button type="button" className="delete-account">
+            Delete My Account Now
+          </button>
+        </div>
         <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
           {editing && (
             <div className="edit-modal">
