@@ -542,6 +542,10 @@ function Main({ initData }) {
 
   const [showIncoming, setShowIncoming] = useState(false);
 
+  window.showIncoming = () => {
+    setShowIncoming(true);
+  };
+
   return (
     <div className={`main-page show-${use}`}>
       <Sidebar
@@ -631,14 +635,6 @@ function Main({ initData }) {
         )}
       </div>
       {!(use === "chat") && <div className="disable-chat">{initChatComponent}</div>}
-      <button
-        type="button"
-        onClick={() => {
-          setShowIncoming(true);
-        }}
-      >
-        show incoming
-      </button>
     </div>
   );
 }
