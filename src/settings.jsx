@@ -93,36 +93,41 @@ function Settings() {
         <span className="text">{t("sg_main_header_settings")}</span>
       </div>
       <div className="content panel">
-        {Object.entries(data).map(([title, fields]) => {
-          const text = fields.map(({ val }) => val).join(" ");
-          return <ListItem key={title} title={title} text={text} setEditing={setEditing} />;
-        })}
-        <div className="item">
-          <h3>Delete Account</h3>
-          <button type="button" className="delete-account">
-            Delete My Account Now
-          </button>
-        </div>
-        <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
-          {editing && (
-            <div className="edit-modal">
-              {data[editing].map(({ label, example, val, regex, repeat }) => (
-                <InputItem
-                  key={label}
-                  label={label}
-                  example={example}
-                  initVal={val}
-                  regex={regex}
-                  repeat={repeat}
-                />
-              ))}
-              <button type="button" onClick={() => setEditing(false)}>
-                cancel
+        <section className="settings personal">
+          <h2>{t("sg_section_personal")}</h2>
+          <div className="settings-items">
+            {Object.entries(data).map(([title, fields]) => {
+              const text = fields.map(({ val }) => val).join(" ");
+              return <ListItem key={title} title={title} text={text} setEditing={setEditing} />;
+            })}
+            <div className="item">
+              <h3>Delete Account</h3>
+              <button type="button" className="delete-account">
+                Delete My Account Now
               </button>
-              <button type="button">submit</button>
             </div>
-          )}
-        </div>
+            <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
+              {editing && (
+                <div className="edit-modal">
+                  {data[editing].map(({ label, example, val, regex, repeat }) => (
+                    <InputItem
+                      key={label}
+                      label={label}
+                      example={example}
+                      initVal={val}
+                      regex={regex}
+                      repeat={repeat}
+                    />
+                  ))}
+                  <button type="button" onClick={() => setEditing(false)}>
+                    cancel
+                  </button>
+                  <button type="button">submit</button>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
       </div>
     </>
   );

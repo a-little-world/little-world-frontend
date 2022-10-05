@@ -157,7 +157,8 @@
     "sg_variable_year_of_birth": "1962",
     "sg_input_year_of_birth": "New year of birth",
     "sg_sub_header_delete_account": "Delete account",
-    "sg_btn_delete_account": "Delete my account now"
+    "sg_btn_delete_account": "Delete my account now",
+    "sg_section_personal": "Personal"
   },
   "de": {
     "pcs_main_heading": "Beitrittsbestätigung",
@@ -316,6 +317,7 @@
     "sg_variable_year_of_birth": "1962",
     "sg_input_year_of_birth": "Neues Geburtsjahr",
     "sg_sub_header_delete_account": "Account löschen",
-    "sg_btn_delete_account": "Jetzt meinen Account löschen"
+    "sg_btn_delete_account": "Jetzt meinen Account löschen",
+    "sg_section_personal": "Persönliches"
   }
 }
