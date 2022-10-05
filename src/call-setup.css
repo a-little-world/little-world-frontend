@@ -149,6 +149,7 @@
   border: 2px solid rgba(230, 232, 236, 0.2);
   border-radius: 40px;
   filter: grayscale(1);
+  margin-bottom: 10px;
 }
 
 .incoming-call-modal .content {
