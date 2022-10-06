@@ -15,14 +15,33 @@ function ListItem({ title, text, setEditing }) {
   );
 }
 
-function ModalBox({ label, value, setEditing }) {
+const displayLanguages = ["English", "Deutsch"];
+
+function ModalBox({ label, type, value, setEditing }) {
   return (
     <div className="edit-modal">
       <h2>change {label}</h2>
       <button type="button" className="modal-close" onClick={() => setEditing(false)} />
       <div className="input-container">
         <label htmlFor={label}>{label}</label>
-        <input type="text" defaultValue={value} name={label} />
+        {type === "select" && (
+          <select name="lang-select">
+            {displayLanguages.map((lang) => (
+              <option key={lang} value={lang}>
+                {lang}
+              </option>
+            ))}
+          </select>
+        )}
+        {type !== "select" && (
+          <input
+            type={type === "numeric" ? "text" : type}
+            defaultValue={type === "password" ? "" : value}
+            name={label}
+            inputMode={type}
+            pattern={type === "numeric" ? "[0-9]*" : undefined}
+          />
+        )}
       </div>
       <div className="buttons">
         <button type="button" className="save" onClick={() => setEditing(false)}>
@@ -42,34 +61,46 @@ function Settings() {
 
   const data = [
     {
+      label: "display langauge",
+      value: "English",
+      type: "select",
+    },
+    {
       label: "first name",
       value: "John",
+      type: "text",
     },
     {
       label: "last name",
       value: "Smith",
+      type: "text",
     },
     {
       label: "e-mail",
       value: "j.smith69@gmx.de",
+      type: "email",
       repeat: true,
     },
     {
       label: "password",
       value: "********",
+      type: "password",
       repeat: true,
     },
     {
       label: "phone number",
       value: "0123-456-76-754",
+      type: "tel",
     },
     {
       label: "post code",
       value: "90210",
+      type: "numeric",
     },
     {
       label: "birth year",
       value: "1969",
+      type: "numeric",
     },
   ];
 
@@ -95,6 +126,7 @@ function Settings() {
               {editing && (
                 <ModalBox
                   label={editing}
+                  type={data.filter(({ label }) => label === editing)[0].type}
                   value={data.filter(({ label }) => label === editing)[0].value}
                   setEditing={setEditing}
                 />
