@@ -16,9 +16,22 @@ function ListItem({ title, text, setEditing }) {
 }
 
 const displayLanguages = ["English", "Deutsch"];
+const allowedChars = {
+  tel: /^[+]?[0-9- ]*$/, // numbers spaces, dashes. can start with one +
+  numeric: /^[0-9]*$/, // numbers only
+  email: /^[a-z0-9@.+-]*$/i, // alphanumeric and @ . + -
+};
 
-function ModalBox({ label, type, value, setEditing }) {
+function ModalBox({ label, type, initValue, setEditing }) {
   const textInput = useRef();
+  const [value, setValue] = useState(type === "password" ? "" : initValue);
+
+  const handleChange = (e) => {
+    const val = e.target.value;
+    if (!["tel", "numeric", "email"].includes(type) || allowedChars[type].test(val)) {
+      setValue(val);
+    }
+  };
 
   useEffect(() => {
     if (textInput.current) {
@@ -44,9 +57,10 @@ function ModalBox({ label, type, value, setEditing }) {
         {type !== "select" && (
           <input
             type={type === "numeric" ? "text" : type}
-            defaultValue={type === "password" ? "" : value}
+            value={value}
             name={label}
             inputMode={type}
+            onChange={handleChange}
             pattern={type === "numeric" ? "[0-9]*" : undefined}
             ref={textInput}
           />
@@ -136,7 +150,7 @@ function Settings() {
                 <ModalBox
                   label={editing}
                   type={data.filter(({ label }) => label === editing)[0].type}
-                  value={data.filter(({ label }) => label === editing)[0].value}
+                  initValue={data.filter(({ label }) => label === editing)[0].value}
                   setEditing={setEditing}
                 />
               )}
