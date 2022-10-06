@@ -7,38 +7,6 @@
   display: none;
 }
 
-.edit-overlay {
-  display: flex;
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  backdrop-filter: blur(5px);
-  transition: 1s;
-  background: rgba(0, 0, 0, 0.3);
-  overflow-y: scroll;
-  padding-top: 4px;
-}
-
-.edit-overlay.hidden {
-  backdrop-filter: blur(0);
-  background: none;
-  pointer-events: none;
-}
-
-.edit-modal {
-  margin: auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-}
-
-.setting-text:not(.editing) .edit-modal {
-  display: none;
-}
-
 section.settings {
   display: flex;
   flex-direction: column;
@@ -97,4 +65,36 @@ section.settings {
   font-weight: 300;
   font-size: 15px;
   color: #4b4c4f;
+}
+
+.edit-overlay {
+  display: flex;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  backdrop-filter: blur(5px);
+  transition: 1s;
+  background: rgba(0, 0, 0, 0.3);
+  overflow-y: scroll;
+  padding-top: 4px;
+}
+
+.edit-overlay.hidden {
+  backdrop-filter: blur(0);
+  background: none;
+  pointer-events: none;
+}
+
+.edit-modal {
+  margin: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-text:not(.editing) .edit-modal {
+  display: none;
 }
