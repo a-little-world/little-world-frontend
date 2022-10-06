@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import "./settings.css";
@@ -18,6 +18,14 @@ function ListItem({ title, text, setEditing }) {
 const displayLanguages = ["English", "Deutsch"];
 
 function ModalBox({ label, type, value, setEditing }) {
+  const textInput = useRef();
+
+  useEffect(() => {
+    if (textInput.current) {
+      textInput.current.focus();
+    }
+  }, [textInput]);
+
   return (
     <div className="edit-modal">
       <h2>change {label}</h2>
@@ -40,6 +48,7 @@ function ModalBox({ label, type, value, setEditing }) {
             name={label}
             inputMode={type}
             pattern={type === "numeric" ? "[0-9]*" : undefined}
+            ref={textInput}
           />
         )}
       </div>
