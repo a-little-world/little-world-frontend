@@ -118,7 +118,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
 function Selector({ selection, setSelection }) {
   const { t } = useTranslation();
   const nbtTopics = ["conversation_partners", "appointments", "community_calls"];
-  const disabled = ["appointments"];
+  const disabled = ["appointments", "community_calls"];
 
   return (
     <div className="selector">
