@@ -198,9 +198,9 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
           <img alt="" />
           {matchState === "searching" && t("matching_state_searching_trans")}
           {matchState === "pending" && t("matching_state_found_unconfirmed_trans")}
-          <button type="button" className="change-criteria">
+          <a className="change-criteria" href="/form">
             {t("cp_modify_search")}
-          </button>
+          </a>
         </div>
       )}
     </div>
