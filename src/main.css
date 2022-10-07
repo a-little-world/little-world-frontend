@@ -34,6 +34,7 @@
   font-size: 14px;
   line-height: 17.25px;
   padding: 10px 0;
+  position: relative;
 }
 
 .sidebar-item.selected {
@@ -43,6 +44,22 @@
 
 .sidebar-item.selected img {
   filter: brightness(0) invert(1);
+}
+
+.sidebar-item .unread-dot {
+  position: absolute;
+  right: 10px;
+  background: #f39325;
+  color: #ffffff;
+  height: 16px;
+  aspect-ratio: 1;
+  border-radius: 100%;
+  font-weight: 600;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 100%;
 }
 
 .sidebar .start img {

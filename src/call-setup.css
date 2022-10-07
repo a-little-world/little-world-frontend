@@ -19,6 +19,7 @@
   backdrop-filter: blur(0);
   background: none;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .call-setup-modal {
