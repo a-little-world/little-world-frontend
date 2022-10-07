@@ -18,6 +18,13 @@ import { removeActiveTracks } from "./twilio-helper";
 import "./community-events.css";
 import "./main.css";
 
+function UnreadDot({ count }) {
+  if (!count) {
+    return false;
+  }
+  return <div className="unread-dot">{count}</div>;
+}
+
 function Sidebar({ userInfo, sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
@@ -68,6 +75,7 @@ function Sidebar({ userInfo, sidebarMobile }) {
                 location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
               }`}
             >
+              {["messages", "notifications"].includes(label) && <UnreadDot count="3" />}
               <img alt={label} />
               {t(`nbs_${label}`)}
             </Link>
