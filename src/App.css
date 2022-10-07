@@ -29,6 +29,29 @@ button {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* scrollbars (excluding main browser window) */
+/* NB: ideally we should list all internally scrollable elements instead of selecting all */
+body *::-webkit-scrollbar {
+  background: rgba(230, 232, 236, 0.6);
+  box-shadow: inset 0px 5px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 100px;
+  width: 10px;
+}
+
+body *::-webkit-scrollbar-button {
+  display: none;
+}
+
+body *::-webkit-scrollbar-thumb {
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  border-radius: 100px;
+}
+
+body * {
+  scrollbar-width: thin;
+  scrollbar-color: #f39325 rgba(230, 232, 236, 0.6);
+}
+
 /* all items that live on top of the main background */
 .panel,
 .profile-box,
