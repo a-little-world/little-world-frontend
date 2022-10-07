@@ -60,6 +60,7 @@
   align-items: center;
   justify-content: center;
   line-height: 100%;
+  display: none; /* TODO @tbscode: disabling that for now, as it might be confusin for users. Reendable once I've added the functionality */
 }
 
 .sidebar .start img {
