@@ -13,7 +13,7 @@
   padding: 0;
 }
 
-.rce-container-input {
+.chat-list .rce-container-input {
   /* TODO @tbscode (visibility and height) to temporary disable chat search, can't do display: none cause then the chat width is buggy */
   visibility: hidden; 
   height: 0px;
