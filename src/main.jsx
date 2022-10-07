@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useLocation, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
 
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
@@ -371,16 +370,6 @@ function Main({ initData }) {
     userInfo: null,
   });
 
-  // Config for react-toastify
-  const toastOptions = {
-    autoClose: 1500,
-    hideProgressBar: true,
-    closeOnClick: false,
-    pauseOnHover: false,
-    pauseOnFocusLoss: false,
-    draggable: false,
-  };
-
   const updateOverlayState = (unconfirmedMatches, matchesData, _matchesProfiles) => {
     console.log("mProfiles", matchesProfiles);
     if (unconfirmedMatches.length > 0) {
@@ -518,13 +507,17 @@ function Main({ initData }) {
       navigate(BACKEND_PATH);
       navigate(0);
     } else if (action.includes("entered_call")) {
-      const params = action.split(":");
+      const params = (action.substring(action.indexOf("(") + 1,action.indexOf(")"))).split(":")
+
       // Backend says a partner has entered the call
-      toast.success(`User ${params[1]} entered video call!`, toastOptions);
+      console.log(`User ${params[1]} entered video call!`);
+      setShowIncoming(true);
+      setIncomingUserPk(params[1]);
     } else if (action.includes("exited_call")) {
-      const params = action.split(":");
+      const params = (action.substring(action.indexOf("(") + 1,action.indexOf(")"))).split(":")
       // Backend says a partner has exited the call
-      toast.success(`User ${params[1]} exited video call!`, toastOptions);
+      setShowIncoming(false);
+      console.log(`User ${params[1]} left the video call!`);
     }
   };
 
@@ -543,18 +536,12 @@ function Main({ initData }) {
   const [showIncoming, setShowIncoming] = useState(false);
   const [incomingUserPk, setIncomingUserPk] = useState(null);
 
-  window.showIncoming = (userPkIn) => {
-    setShowIncoming(true);
-    setIncomingUserPk(userPkIn);
-  };
-
   return (
     <div className={`main-page show-${use}`}>
       <Sidebar
         userInfo={userInfo}
         sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
       />
-      <ToastContainer />
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
