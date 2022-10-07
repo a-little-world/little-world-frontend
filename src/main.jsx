@@ -293,25 +293,12 @@ function NotificationPanel({ userInfo }) {
     {
       id: 2347,
       type: "appointment",
-      text: "new appoinment?",
+      text: "Notifications will be added soon",
       dateString: "27th October, 2022 at 3:00pm",
       unixtime: 1666364400,
-    },
-    {
-      id: 2346,
-      type: "new friend",
-      text: "New friend: George McCoy",
-      dateString: "27th October, 2022 at 3:00pm",
-      unixtime: 1666364400,
-    },
-    {
-      id: 1973,
-      type: "missed call",
-      text: "missed call",
-      dateString: "You missed appointment",
-      unixtime: 1640995200,
     },
   ];
+  
 
   // don't show unless names are available; ie API call has returned
   if (!(userInfo.firstName && userInfo.lastName)) {
@@ -561,7 +548,7 @@ function Main({ initData }) {
               <>
                 <PartnerProfiles
                   userInfo={userInfo}
-                  matchesInfo={matchesInfo.filter(({ userType }) => userType === 0)}
+                  matchesInfo={matchesInfo}
                   setCallSetupPartner={setCallSetupPartner}
                   matchesOnlineStates={matchesOnlineStates}
                 />
