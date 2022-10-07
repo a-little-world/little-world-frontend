@@ -228,7 +228,7 @@ function TextBox({ subject, initialText, formTag }) {
       { [formTag]: text },
       (_text) => {
         console.log("text error");
-        setErrorText(_text);
+        setErrorText(t(`request_errors.${_text}`)); // TODO: @tbscode here again I'm tahing a backend state directly, this could be resolved by https://github.com/tbscode/little-world-frontend/pull/122
       },
       () => {},
       formTag

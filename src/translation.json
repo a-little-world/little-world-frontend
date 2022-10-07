@@ -125,7 +125,11 @@
     "lang-tr": "Turkish",
     "lang-ua": "Ukrainian",
     "lang-vn": "Vietnamese",
-    "lang-de": "German"
+    "lang-de": "German",
+    "request_errors": {
+      "to_short_10" : "Please enter at least 10 characters",
+      "to_long_300" : "Please enter a maximum of 300 characters"
+    }
   },
   "de": {
     "pcs_main_heading": "Beitrittsbestätigung",
@@ -252,6 +256,10 @@
     "lang-tr": "Türkisch",
     "lang-ua": "Ukrainisch",
     "lang-vn": "Vietnamesisch",
-    "lang-de": "Deutsch"
+    "lang-de": "Deutsch",
+    "request_errors": {
+      "to_short_10" : "Bitte gib mindestend 10 zeichen ein.",
+      "to_long_300" : "Bitte gib maximal 300 zeichen ein"
+    }
   }
 }
