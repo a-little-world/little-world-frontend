@@ -31,7 +31,6 @@ section.settings {
 
 .show-settings .content .item h3 {
   margin: 0;
-  text-transform: capitalize;
   font-weight: 600;
   font-size: 16px;
 }
@@ -53,10 +52,6 @@ section.settings {
   color: white;
   margin-top: 16px;
   margin-right: auto;
-}
-
-.item .edit {
-  text-transform: capitalize;
 }
 
 .show-settings .content .item .text {
