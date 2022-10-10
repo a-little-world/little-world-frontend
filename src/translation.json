@@ -180,7 +180,14 @@
     "sg_personal_postCode": "post code",
     "sg_personal_birthYear": "birth year",
     "sg_personal_delete_account": "delete account",
-    "sg_personal_delete_account_btn": "delete my account now"
+    "sg_personal_delete_account_btn": "delete my account now",
+    "nm_main_header_settings": "Notifications",
+    "nm_filter_all": "All",
+    "nm_filter_unread": "Unread",
+    "nm_filter_archive": "Archive",
+    "nm_time_seperator_today": "Today",
+    "nm_time_seperator_last_week": "Last week",
+    "nm_time_seperator_before": "Before"
   },
   "de": {
     "headers": {
@@ -362,6 +369,13 @@
     "sg_personal_postCode": "postleitzahl",
     "sg_personal_birthYear": "geburtsjahr",
     "sg_personal_delete_account": "account löschen",
-    "sg_personal_delete_account_btn": "jetzt meinen account löschen"
+    "sg_personal_delete_account_btn": "jetzt meinen account löschen",
+    "nm_main_header_settings": "Benachrichtigungen",
+    "nm_filter_all": "Alle",
+    "nm_filter_unread": "Ungelesen",
+    "nm_filter_archive": "Archive",
+    "nm_time_seperator_today": "Heute",
+    "nm_time_seperator_last_week": "Letzte Woche",
+    "nm_time_seperator_before": "Zuvor"
   }
 }
