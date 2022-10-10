@@ -568,7 +568,7 @@ function Main({ initData }) {
             profile={profileToDispay}
           />
         )}
-        {use === "settings" && <Settings />}
+        {use === "settings" && <Settings userData={initData.userDataGET} />}
       </div>
       <div
         className={
