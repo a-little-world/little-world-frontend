@@ -298,7 +298,6 @@ function NotificationPanel({ userInfo }) {
       unixtime: 1666364400,
     },
   ];
-  
 
   // don't show unless names are available; ie API call has returned
   if (!(userInfo.firstName && userInfo.lastName)) {
@@ -502,14 +501,14 @@ function Main({ initData }) {
       navigate(BACKEND_PATH);
       navigate(0);
     } else if (action.includes("entered_call")) {
-      const params = (action.substring(action.indexOf("(") + 1,action.indexOf(")"))).split(":")
+      const params = action.substring(action.indexOf("(") + 1, action.indexOf(")")).split(":");
 
       // Backend says a partner has entered the call
       console.log(`User ${params[1]} entered video call!`);
       setShowIncoming(true);
       setIncomingUserPk(params[1]);
     } else if (action.includes("exited_call")) {
-      const params = (action.substring(action.indexOf("(") + 1,action.indexOf(")"))).split(":")
+      const params = action.substring(action.indexOf("(") + 1, action.indexOf(")")).split(":");
       // Backend says a partner has exited the call
       setShowIncoming(false);
       console.log(`User ${params[1]} left the video call!`);

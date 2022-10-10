@@ -127,8 +127,8 @@
     "lang-vn": "Vietnamese",
     "lang-de": "German",
     "request_errors": {
-      "to_short_10" : "Please enter at least 10 characters",
-      "to_long_300" : "Please enter a maximum of 300 characters"
+      "to_short_10": "Please enter at least 10 characters",
+      "to_long_300": "Please enter a maximum of 300 characters"
     }
   },
   "de": {
@@ -258,8 +258,8 @@
     "lang-vn": "Vietnamesisch",
     "lang-de": "Deutsch",
     "request_errors": {
-      "to_short_10" : "Bitte gib mindestend 10 zeichen ein.",
-      "to_long_300" : "Bitte gib maximal 300 zeichen ein"
+      "to_short_10": "Bitte gib mindestend 10 zeichen ein.",
+      "to_long_300": "Bitte gib maximal 300 zeichen ein"
     }
   }
 }
