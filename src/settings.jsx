@@ -3,29 +3,41 @@ import { useTranslation } from "react-i18next";
 
 import "./settings.css";
 
-function ListItem({ title, text, setEditing }) {
+function ListItem({ section, label, text, setEditing }) {
   const { t } = useTranslation();
 
   return (
     <div className="item">
-      <h3>{t(title)}</h3>
+      <h3>{t(`sg_${section}_${label}`)}</h3>
       <span className="text">{text}</span>
-      <button type="button" className="edit" onClick={() => setEditing(title)}>
+      <button type="button" className="edit" onClick={() => setEditing(label)}>
         {t("sg_btn_change")}
       </button>
     </div>
   );
 }
 
-const displayLanguages = ["English", "Deutsch"];
+const types = {
+  display_lang: "select",
+  first_name: "text",
+  second_name: "text",
+  email: "email",
+  password: "password",
+  mobile_number: "tel",
+  postal_code: "numeric",
+  birth_year: "numeric",
+};
 const allowedChars = {
   tel: /^[+]?[0-9- ]*$/, // numbers spaces, dashes. can start with one +
   numeric: /^[0-9]*$/, // numbers only
   email: /^[a-z0-9@.+-]*$/i, // alphanumeric and @ . + -
 };
+const displayLanguages = ["English", "Deutsch"];
+const repeaters = ["password", "email"];
 
-function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
+function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
   const { t } = useTranslation();
+  const type = types[label];
   const [value, setValue] = useState(type === "password" ? "" : valueIn);
   const [repeat, setRepeat] = useState(repeatIn);
   const [lastValue, setLastValue] = useState(lastValueIn);
@@ -75,7 +87,7 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
 
   const fullLabel = () => {
     if (lastValue) {
-      const item = t(label);
+      const item = t(`sg_personal_${label}`);
       return t("sg_repeat_item", { item });
     }
     if (isOldPass) {
@@ -84,7 +96,7 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
     if (type === "password") {
       return t("sg_personal_password_new");
     }
-    return t(label);
+    return t(`sg_personal_${label}`);
   };
 
   return (
@@ -92,7 +104,6 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
       {waiting && repeat === true && (
         <ModalBox
           label={label}
-          type={type}
           valueIn=""
           repeatIn={isOldPass}
           lastValueIn={isOldPass ? value : undefined} /* maybe need to be undef if isOldPass */
@@ -101,7 +112,7 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
       )}
       {!(waiting && repeat === true) && (
         <div className="edit-modal">
-          <h2>{t("sg_change_item", { item: t(label) })}</h2>
+          <h2>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</h2>
           <div className="error-message">{errorType && `⚠️ ${t(`sg_err_${errorType}`)}`}</div>
           <button type="button" className="modal-close" onClick={() => setEditing(false)} />
           <div className="input-container">
@@ -154,61 +165,25 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
   );
 }
 
-function Settings() {
+function Settings({ userData }) {
   const { t } = useTranslation();
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(null);
 
-  const data = [
-    {
-      value: "English",
-      label: "display_lang",
-      type: "select",
-    },
-    {
-      label: "first_name",
-      value: "John",
-      type: "text",
-    },
-    {
-      label: "last_name",
-      value: "Smith",
-      type: "text",
-    },
-    {
-      label: "email",
-      value: "j.smith69@gmx.de",
-      type: "email",
-      repeat: true,
-    },
-    {
-      label: "password",
-      value: "********",
-      type: "password",
-      repeat: true,
-    },
-    {
-      label: "phone",
-      value: "0123-456-76-754",
-      type: "tel",
-    },
-    {
-      label: "post_code",
-      value: "90210",
-      type: "numeric",
-    },
-    {
-      label: "birth_year",
-      value: "1969",
-      type: "numeric",
-    },
+  const items = [
+    // with ordering
+    "display_lang",
+    "first_name",
+    "second_name",
+    "email",
+    "password",
+    "mobile_number",
+    "postal_code",
+    "birth_year",
   ];
 
-  const [editingData, setEditingData] = useState({});
-
-  useEffect(() => {
-    const item = data.filter(({ label }) => `sg_personal_${label}` === editing)[0];
-    setEditingData(item);
-  }, [editing]);
+  const data = Object.fromEntries(
+    items.map((item) => [item, item === "password" ? "********" : userData[item]])
+  );
 
   return (
     <>
@@ -219,12 +194,13 @@ function Settings() {
         <section className="settings personal">
           <h2>{t("sg_personal_header")}</h2>
           <div className="settings-items">
-            {data.map(({ label, value }) => {
+            {items.map((label) => {
               return (
                 <ListItem
                   key={label}
-                  title={`sg_personal_${label}`}
-                  text={value}
+                  section="personal"
+                  label={label}
+                  text={data[label]}
                   setEditing={setEditing}
                 />
               );
@@ -236,12 +212,11 @@ function Settings() {
               </button>
             </div>
             <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
-              {editing && editingData && (
+              {editing && (
                 <ModalBox
                   label={editing}
-                  type={editingData.type}
-                  valueIn={editingData.value}
-                  repeat={editingData.repeat}
+                  valueIn={data[editing]}
+                  repeat={repeaters.includes(editing)}
                   setEditing={setEditing}
                 />
               )}
