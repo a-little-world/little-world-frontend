@@ -4,12 +4,14 @@ import { useTranslation } from "react-i18next";
 import "./settings.css";
 
 function ListItem({ title, text, setEditing }) {
+  const { t } = useTranslation();
+
   return (
     <div className="item">
-      <h3>{title}</h3>
+      <h3>{t(title)}</h3>
       <span className="text">{text}</span>
       <button type="button" className="edit" onClick={() => setEditing(title)}>
-        change
+        {t("sg_btn_change")}
       </button>
     </div>
   );
@@ -23,6 +25,7 @@ const allowedChars = {
 };
 
 function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
+  const { t } = useTranslation();
   const [value, setValue] = useState(type === "password" ? "" : valueIn);
   const [repeat, setRepeat] = useState(repeatIn);
   const [lastValue, setLastValue] = useState(lastValueIn);
@@ -69,15 +72,16 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
 
   const fullLabel = () => {
     if (lastValue) {
-      return `repeat ${label}`;
+      const item = t(label);
+      return t("sg_repeat_item", { item });
     }
     if (isOldPass) {
-      return "enter current password";
+      return t("sg_personal_password_current");
     }
     if (type === "password") {
-      return "enter new password";
+      return t("sg_personal_password_new");
     }
-    return label;
+    return t(label);
   };
 
   return (
@@ -94,7 +98,7 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
       )}
       {!(waiting && repeat === true) && (
         <div className="edit-modal">
-          <h2>{`change ${label}`}</h2>
+          <h2>{t("sg_change_item", { item: t(label) })}</h2>
           <button type="button" className="modal-close" onClick={() => setEditing(false)} />
           <div className="input-container">
             <label htmlFor={label}>{fullLabel()}</label>
@@ -120,7 +124,7 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
             )}
             {isOldPass && (
               <button type="button" className="forgot-password" onClick={() => {}}>
-                Forgot Password?
+                {t("sg_personal_password_forgot")}
               </button>
             )}
           </div>
@@ -130,14 +134,14 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
               className={waiting ? "save waiting" : "save"}
               onClick={handleSubmit}
             >
-              {isOldPass ? "confirm" : "save"}
+              {isOldPass ? t("sg_btn_confirm") : t("sg_btn_save")}
             </button>
             <button
               type="button"
               className={waiting ? "cancel disabled" : "cancel"}
               onClick={() => setEditing(false)}
             >
-              cancel
+              {t("sg_btn_cancel")}
             </button>
           </div>
         </div>
@@ -152,22 +156,22 @@ function Settings() {
 
   const data = [
     {
-      label: "display langauge",
       value: "English",
+      label: "display_lang",
       type: "select",
     },
     {
-      label: "first name",
+      label: "first_name",
       value: "John",
       type: "text",
     },
     {
-      label: "last name",
+      label: "last_name",
       value: "Smith",
       type: "text",
     },
     {
-      label: "e-mail",
+      label: "email",
       value: "j.smith69@gmx.de",
       type: "email",
       repeat: true,
@@ -179,17 +183,17 @@ function Settings() {
       repeat: true,
     },
     {
-      label: "phone number",
+      label: "phone",
       value: "0123-456-76-754",
       type: "tel",
     },
     {
-      label: "post code",
+      label: "post_code",
       value: "90210",
       type: "numeric",
     },
     {
-      label: "birth year",
+      label: "birth_year",
       value: "1969",
       type: "numeric",
     },
@@ -205,19 +209,26 @@ function Settings() {
   return (
     <>
       <div className="header">
-        <span className="text">{t("sg_main_header_settings")}</span>
+        <span className="text">{t("sg_header")}</span>
       </div>
       <div className="content panel">
         <section className="settings personal">
-          <h2>{t("sg_section_personal")}</h2>
+          <h2>{t("sg_personal_header")}</h2>
           <div className="settings-items">
             {data.map(({ label, value }) => {
-              return <ListItem key={label} title={label} text={value} setEditing={setEditing} />;
+              return (
+                <ListItem
+                  key={label}
+                  title={`sg_personal_${label}`}
+                  text={value}
+                  setEditing={setEditing}
+                />
+              );
             })}
             <div className="item">
-              <h3>Delete Account</h3>
+              <h3>{t("sg_personal_delete_account")}</h3>
               <button type="button" className="delete-account">
-                Delete My Account Now
+                {t("sg_personal_delete_account_btn")}
               </button>
             </div>
             <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
