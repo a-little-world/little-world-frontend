@@ -30,6 +30,7 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
   const [repeat, setRepeat] = useState(repeatIn);
   const [lastValue, setLastValue] = useState(lastValueIn);
   const [waiting, setWaiting] = useState(false);
+  const [errorType, setErrorType] = useState(false);
   const textInput = useRef();
 
   const isOldPass = type === "password" && valueIn === "********";
@@ -50,7 +51,9 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
       setRepeat(true);
       setLastValue(undefined);
       current.value = ""; // clear directly because react does not re-render
+      setErrorType("mismatch");
     } else if (wrongPass) {
+      setErrorType("password");
       current.value = "";
       current.focus();
     } else {
@@ -99,6 +102,7 @@ function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
       {!(waiting && repeat === true) && (
         <div className="edit-modal">
           <h2>{t("sg_change_item", { item: t(label) })}</h2>
+          <div className="error-message">{errorType && `⚠️ ${t(`sg_err_${errorType}`)}`}</div>
           <button type="button" className="modal-close" onClick={() => setEditing(false)} />
           <div className="input-container">
             <label htmlFor={label}>{fullLabel()}</label>
