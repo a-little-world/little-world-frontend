@@ -22,9 +22,14 @@ const allowedChars = {
   email: /^[a-z0-9@.+-]*$/i, // alphanumeric and @ . + -
 };
 
-function ModalBox({ label, type, initValue, setEditing }) {
+function ModalBox({ label, type, valueIn, repeatIn, lastValueIn, setEditing }) {
+  const [value, setValue] = useState(type === "password" ? "" : valueIn);
+  const [repeat, setRepeat] = useState(repeatIn);
+  const [lastValue, setLastValue] = useState(lastValueIn);
+  const [waiting, setWaiting] = useState(false);
   const textInput = useRef();
-  const [value, setValue] = useState(type === "password" ? "" : initValue);
+
+  const isOldPass = type === "password" && valueIn === "********";
 
   const handleChange = (e) => {
     const val = e.target.value;
@@ -33,48 +38,111 @@ function ModalBox({ label, type, initValue, setEditing }) {
     }
   };
 
+  const handleSubmit = () => {
+    const wrongPass = type === "password" && value.length < 6;
+    /* mismatched values */
+    const { current } = textInput;
+    if (lastValue && lastValue !== value) {
+      setValue("");
+      setRepeat(true);
+      setLastValue(undefined);
+      current.value = ""; // clear directly because react does not re-render
+    } else if (wrongPass) {
+      current.value = "";
+      current.focus();
+    } else {
+      // send data {label: value}
+      setWaiting(true);
+      if (repeat !== true) {
+        setTimeout(() => {
+          setEditing(false);
+        }, 2000);
+      }
+    }
+  };
+
   useEffect(() => {
     if (textInput.current) {
       textInput.current.focus();
     }
-  }, [textInput]);
+  }, [textInput, repeat]);
+
+  const fullLabel = () => {
+    if (lastValue) {
+      return `repeat ${label}`;
+    }
+    if (isOldPass) {
+      return "enter current password";
+    }
+    if (type === "password") {
+      return "enter new password";
+    }
+    return label;
+  };
 
   return (
-    <div className="edit-modal">
-      <h2>change {label}</h2>
-      <button type="button" className="modal-close" onClick={() => setEditing(false)} />
-      <div className="input-container">
-        <label htmlFor={label}>{label}</label>
-        {type === "select" && (
-          <select name="lang-select">
-            {displayLanguages.map((lang) => (
-              <option key={lang} value={lang}>
-                {lang}
-              </option>
-            ))}
-          </select>
-        )}
-        {type !== "select" && (
-          <input
-            type={type === "numeric" ? "text" : type}
-            value={value}
-            name={label}
-            inputMode={type}
-            onChange={handleChange}
-            pattern={type === "numeric" ? "[0-9]*" : undefined}
-            ref={textInput}
-          />
-        )}
-      </div>
-      <div className="buttons">
-        <button type="button" className="save" onClick={() => setEditing(false)}>
-          save
-        </button>
-        <button type="button" className="cancel" onClick={() => setEditing(false)}>
-          cancel
-        </button>
-      </div>
-    </div>
+    <>
+      {waiting && repeat === true && (
+        <ModalBox
+          label={label}
+          type={type}
+          valueIn=""
+          repeatIn={isOldPass}
+          lastValueIn={isOldPass ? value : undefined} /* maybe need to be undef if isOldPass */
+          setEditing={setEditing}
+        />
+      )}
+      {!(waiting && repeat === true) && (
+        <div className="edit-modal">
+          <h2>{`change ${label}`}</h2>
+          <button type="button" className="modal-close" onClick={() => setEditing(false)} />
+          <div className="input-container">
+            <label htmlFor={label}>{fullLabel()}</label>
+            {type === "select" && (
+              <select name="lang-select" onChange={handleChange} ref={textInput}>
+                {displayLanguages.map((lang) => (
+                  <option key={lang} value={lang}>
+                    {lang}
+                  </option>
+                ))}
+              </select>
+            )}
+            {type !== "select" && (
+              <input
+                type={type === "numeric" ? "text" : type}
+                value={value}
+                name={label}
+                inputMode={type}
+                pattern={type === "numeric" ? "[0-9]*" : undefined}
+                onChange={handleChange}
+                ref={textInput}
+              />
+            )}
+            {isOldPass && (
+              <button type="button" className="forgot-password" onClick={() => {}}>
+                Forgot Password?
+              </button>
+            )}
+          </div>
+          <div className="buttons">
+            <button
+              type="button"
+              className={waiting ? "save waiting" : "save"}
+              onClick={handleSubmit}
+            >
+              {isOldPass ? "confirm" : "save"}
+            </button>
+            <button
+              type="button"
+              className={waiting ? "cancel disabled" : "cancel"}
+              onClick={() => setEditing(false)}
+            >
+              cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -127,6 +195,13 @@ function Settings() {
     },
   ];
 
+  const [editingData, setEditingData] = useState({});
+
+  useEffect(() => {
+    const item = data.filter(({ label }) => `sg_personal_${label}` === editing)[0];
+    setEditingData(item);
+  }, [editing]);
+
   return (
     <>
       <div className="header">
@@ -146,11 +221,12 @@ function Settings() {
               </button>
             </div>
             <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
-              {editing && (
+              {editing && editingData && (
                 <ModalBox
                   label={editing}
-                  type={data.filter(({ label }) => label === editing)[0].type}
-                  initValue={data.filter(({ label }) => label === editing)[0].value}
+                  type={editingData.type}
+                  valueIn={editingData.value}
+                  repeat={editingData.repeat}
                   setEditing={setEditing}
                 />
               )}
