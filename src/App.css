@@ -98,6 +98,7 @@ body * {
   height: 1em;
   box-sizing: content-box;
   align-items: center;
+  text-transform: capitalize;
 }
 
 .main-page .header .text {
