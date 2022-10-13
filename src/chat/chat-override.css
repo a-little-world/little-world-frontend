@@ -15,7 +15,7 @@
 
 .chat-list .rce-container-input {
   /* TODO @tbscode (visibility and height) to temporary disable chat search, can't do display: none cause then the chat width is buggy */
-  visibility: hidden; 
+  visibility: hidden;
   height: 0px;
 }
 
@@ -37,7 +37,6 @@
 .rce-container-mbox {
   min-width: unset;
   overflow-x: unset;
-  flex-grow: 1;
 }
 
 .rce-citem,
