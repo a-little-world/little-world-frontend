@@ -1,5 +1,9 @@
+import $ from "jquery";
+import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+import { BACKEND_URL } from "./ENVIRONMENT";
 
 import "./settings.css";
 
@@ -7,7 +11,7 @@ function ListItem({ section, label, text, setEditing }) {
   const { t } = useTranslation();
 
   return (
-    <div className="item">
+    <div className={`item ${label}`}>
       <h3>{t(`sg_${section}_${label}`)}</h3>
       <span className="text">{text}</span>
       <button type="button" className="edit" onClick={() => setEditing(label)}>
@@ -34,6 +38,19 @@ const allowedChars = {
 };
 const displayLanguages = ["English", "Deutsch"];
 const repeaters = ["password", "email"];
+
+const submitData = (newDataObj, onSucess, onFailure) => {
+  $.ajax({
+    type: "POST",
+    url: `${BACKEND_URL}/api2/profile/`,
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    data: newDataObj, // {label: value}
+    success: onSucess,
+    error: onFailure,
+  });
+};
 
 function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
   const { t } = useTranslation();
@@ -70,11 +87,19 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
       current.focus();
     } else {
       // send data {label: value}
-      setWaiting(true);
+      const newData = { [label]: value };
+      const onSucess = (e) => {
+        console.log(956, e, e.report[label]);
+        // update page
+        setEditing(false);
+      };
+      const onFailure = (e) => {
+        console.log(957, e);
+        // update error message
+      };
+
       if (repeat !== true) {
-        setTimeout(() => {
-          setEditing(false);
-        }, 2000);
+        submitData(newData, onSucess, onFailure);
       }
     }
   };
