@@ -1,5 +1,9 @@
+import $ from "jquery";
+import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+
+import { BACKEND_URL } from "./ENVIRONMENT";
 
 import "./settings.css";
 
@@ -7,7 +11,7 @@ function ListItem({ section, label, text, setEditing }) {
   const { t } = useTranslation();
 
   return (
-    <div className="item">
+    <div className={`item ${label}`}>
       <h3>{t(`sg_${section}_${label}`)}</h3>
       <span className="text">{text}</span>
       <button type="button" className="edit" onClick={() => setEditing(label)}>
@@ -35,6 +39,19 @@ const allowedChars = {
 const displayLanguages = ["English", "Deutsch"];
 const repeaters = ["password", "email"];
 
+const submitData = (newDataObj, onSucess, onFailure) => {
+  $.ajax({
+    type: "POST",
+    url: `${BACKEND_URL}/api2/profile/`,
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    data: newDataObj, // {label: value}
+    success: onSucess,
+    error: onFailure,
+  });
+};
+
 function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
   const { t } = useTranslation();
   const type = types[label];
@@ -42,7 +59,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
   const [repeat, setRepeat] = useState(repeatIn);
   const [lastValue, setLastValue] = useState(lastValueIn);
   const [waiting, setWaiting] = useState(false);
-  const [errorType, setErrorType] = useState(false);
+  const [errors, setErrors] = useState([]);
   const textInput = useRef();
 
   const isOldPass = type === "password" && valueIn === "********";
@@ -54,6 +71,16 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     }
   };
 
+  const onResponseSucess = (data) => {
+    window.location.reload(); // update page
+    setEditing(false);
+  };
+  const onResponseFailure = (jqXHR) => {
+    const responseErrors = jqXHR.responseJSON.report[label].map((err) => err[2]); // get message
+    setErrors(responseErrors); // update error message
+    setWaiting(false);
+  };
+
   const handleSubmit = () => {
     const wrongPass = type === "password" && value.length < 6;
     /* mismatched values */
@@ -63,19 +90,15 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
       setRepeat(true);
       setLastValue(undefined);
       current.value = ""; // clear directly because react does not re-render
-      setErrorType("mismatch");
+      setErrors(["fe_mismatch"]);
     } else if (wrongPass) {
-      setErrorType("password");
+      setErrors(["fe_password"]);
       current.value = "";
       current.focus();
-    } else {
-      // send data {label: value}
+    } else if (repeat !== true) {
       setWaiting(true);
-      if (repeat !== true) {
-        setTimeout(() => {
-          setEditing(false);
-        }, 2000);
-      }
+      const newData = { [label]: value };
+      submitData(newData, onResponseSucess, onResponseFailure);
     }
   };
 
@@ -113,7 +136,11 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
       {!(waiting && repeat === true) && (
         <div className="edit-modal">
           <h2>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</h2>
-          <div className="error-message">{errorType && `⚠️ ${t(`sg_err_${errorType}`)}`}</div>
+          <div className="error-message">
+            {errors.map((errorTag) => {
+              return <div key={errorTag}>{`⚠️ ${t(`request_errors.${errorTag}`)}`}</div>;
+            })}
+          </div>
           <button type="button" className="modal-close" onClick={() => setEditing(false)} />
           <div className="input-container">
             <label htmlFor={label}>{fullLabel()}</label>

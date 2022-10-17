@@ -129,6 +129,8 @@
     "request_errors": {
       "to_short_10": "Please enter at least 10 characters",
       "to_long_300": "Please enter a maximum of 300 characters"
+      "fe_mismatch": "Input values do not match. Please try again.",
+      "fe_password": "Wrong password. Please try again.",
     },
     "sg_header": "settings",
     "sg_change_item": "change {{item}}",
@@ -150,9 +152,7 @@
     "sg_personal_postal_code": "post code",
     "sg_personal_birth_year": "birth year",
     "sg_personal_delete_account": "delete account",
-    "sg_personal_delete_account_btn": "delete my account now",
-    "sg_err_mismatch": "Input values do not match. Please try again.",
-    "sg_err_password": "Wrong password. Please try again."
+    "sg_personal_delete_account_btn": "delete my account now"
   },
   "de": {
     "pcs_main_heading": "Beitrittsbestätigung",
@@ -281,6 +281,8 @@
     "lang-vn": "Vietnamesisch",
     "lang-de": "Deutsch",
     "request_errors": {
+      "fe_mismatch": "Die eingegebenen Werte stimmen nicht überein. Bitte versuchen Sie es erneut.",
+      "fe_password": "Falsches Passwort. Bitte versuchen Sie es erneut.",
       "to_short_10": "Bitte gib mindestend 10 zeichen ein.",
       "to_long_300": "Bitte gib maximal 300 zeichen ein"
     },
@@ -304,8 +306,6 @@
     "sg_personal_postal_code": "postleitzahl",
     "sg_personal_birth_year": "geburtsjahr",
     "sg_personal_delete_account": "account löschen",
-    "sg_personal_delete_account_btn": "jetzt meinen account löschen",
-    "sg_err_mismatch": "Die eingegebenen Werte stimmen nicht überein. Bitte versuchen Sie es erneut.",
-    "sg_err_password": "Falsches Passwort. Bitte versuchen Sie es erneut."
+    "sg_personal_delete_account_btn": "jetzt meinen account löschen"
   }
 }
