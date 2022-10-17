@@ -24,7 +24,7 @@ const postUserProfileUpdate = (updateData, onFailure, onSucess, formTag) => {
       console.log("ListError", e.responseJSON.report[formTag]);
       e.responseJSON.report[formTag].forEach((err) => {
         const errorTags = [];
-        errorTags.push(err[2]);
+        errorTags.push(err);
         onFailure(errorTags);
       });
     },
