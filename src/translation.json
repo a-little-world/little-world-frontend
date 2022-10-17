@@ -127,10 +127,17 @@
     "lang-vn": "Vietnamese",
     "lang-de": "German",
     "request_errors": {
-      "to_short_10": "Please enter at least 10 characters",
-      "to_long_300": "Please enter a maximum of 300 characters"
       "fe_mismatch": "Input values do not match. Please try again.",
       "fe_password": "Wrong password. Please try again.",
+      "to_short_5": "Please enter at least 5 characters.",
+      "to_short_10": "Please enter at least 10 characters.",
+      "to_long_5": "Please enter a maximum of 5 characters.",
+      "to_long_300": "Please enter a maximum of 300 characters.",
+      "length_not_in_constraint_trans_plz": "Bitte geben Sie eine gültige deutsche Postleitzahl ein.",
+      "name_contains_unallowed_characters": "Invalid characters. Please use only A-Z.",
+      "name_field_is_empty": "Please enter a name.",
+      "not_engough_selected": "Please select at least 5 interests.",
+      "value_not_in_range_trans": "Please enter a valid birth year."
     },
     "sg_header": "settings",
     "sg_change_item": "change {{item}}",
@@ -283,8 +290,15 @@
     "request_errors": {
       "fe_mismatch": "Die eingegebenen Werte stimmen nicht überein. Bitte versuchen Sie es erneut.",
       "fe_password": "Falsches Passwort. Bitte versuchen Sie es erneut.",
+      "to_short_5": "Bitte gib mindestend 5 zeichen ein.",
       "to_short_10": "Bitte gib mindestend 10 zeichen ein.",
-      "to_long_300": "Bitte gib maximal 300 zeichen ein"
+      "to_long_5": "Bitte gib maximal 5 zeichen ein.",
+      "to_long_300": "Bitte gib maximal 300 zeichen ein.",
+      "length_not_in_constraint_trans_plz": "Bitte geben Sie eine 5-stellige Postleitzahl ein. Wir verwenden derzeit nur deutsche Postleitzahlen.",
+      "name_contains_unallowed_characters": "Unzulässige Zeichen. Bitte verwenden Sie nur A-Z.",
+      "name_field_is_empty": "Bitte geben Sie einen Namen ein.",
+      "not_engough_selected": "Bitte wählen Sie mindestens 5 Interessen aus.",
+      "value_not_in_range_trans": "Bitte geben Sie ein gültiges Geburtsjahr ein."
     },
     "sg_header": "einstellungen",
     "sg_change_item": "{{item}} ändern",
