@@ -14,9 +14,16 @@
   gap: 10px;
 }
 
-.sidebar .logo {
+.sidebar .logos {
   width: 96px;
   margin: 16px;
+}
+
+.sidebar .logo-image {
+  content: url("./images/logo-image.svg");
+}
+
+.sidebar .logo-text {
   content: url("./images/logo-text.svg");
 }
 
@@ -315,7 +322,7 @@ button.match-status {
     justify-content: space-between;
   }
   .mobile-header .logo-mobile {
-    content: url("./images/logo.svg");
+    content: url("./images/logo-image.svg");
     width: 50px;
     vertical-align: text-bottom;
   }
