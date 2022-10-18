@@ -1,6 +1,8 @@
 import { t } from "i18next";
 import React from "react";
 
+import "./help.css";
+
 function Contact() {
   return (
     <div className="help-contact panel">
@@ -38,8 +40,14 @@ function Help({ selection }) {
         </div>
         <h2 className="support">{t("help_support_header")}</h2>
         <div className="support-sub">{t("help_support_slogan")}</div>
-        <button type="button">{t("help_support_message_btn")}</button>
-        <button type="button">{t("help_support_call_btn")}</button>
+        <button type="button" className="support-message">
+          <img alt="" />
+          {t("help_support_message_btn")}
+        </button>
+        <button type="button" className="support-call">
+          <img alt="" />
+          {t("help_support_call_btn")}
+        </button>
         <div className="contact-info">
           <div className="top">
             <div className="logos-small">
@@ -68,7 +76,7 @@ function Help({ selection }) {
               </div>
             </div>
             <div className="socials">
-              <img className="icon-linked-in" alt="linked in" />
+              <img className="icon-linkedin" alt="linked in" />
               <img className="icon-facebook" alt="facebook" />
               <img className="icon-instagram" alt="instagram" />
             </div>

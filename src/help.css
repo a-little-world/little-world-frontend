@@ -1,0 +1,62 @@
+.picture-drop-zone img {
+  content: url("./images/picture.svg");
+}
+
+.help-support .logos {
+  width: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.help-support .logos-small {
+  height: 30px;
+  display: flex;
+}
+
+.logos-small .logo-text {
+  margin: 3px;
+}
+
+img.logo-image {
+  content: url("./images/logo-image.svg");
+}
+
+img.logo-text {
+  content: url("./images/logo-text.svg");
+}
+
+img.web-icon {
+  content: url("./images/icons/web.svg");
+}
+
+img.email-icon {
+  content: url("./images/icons/email.svg");
+}
+
+img.phone-icon {
+  content: url("./images/icons/phone.svg");
+}
+
+img.mobile-icon {
+  content: url("./images/icons/mobile.svg");
+}
+
+.socials img.icon-linkedin {
+  content: url("./images/icons/linkedin.svg");
+}
+
+.socials img.icon-facebook {
+  content: url("./images/icons/facebook.svg");
+}
+
+.socials img.icon-instagram {
+  content: url("./images/icons/instagram.svg");
+}
+
+button.support-message img {
+  content: url("./images/chat-orange.svg");
+}
+
+button.support-call img {
+  content: url("./images/call-orange.svg");
+}
