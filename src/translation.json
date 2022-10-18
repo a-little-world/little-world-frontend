@@ -190,7 +190,19 @@
     "nm_filter_archive": "Archive",
     "nm_time_seperator_today": "Today",
     "nm_time_seperator_last_week": "Last week",
-    "nm_time_seperator_before": "Before"
+    "nm_time_seperator_before": "Before",
+    "help_contact_intro_line1": "The Little World Support Team is always available to answer any questions or problems you may have.",
+    "help_contact_intro_line2": "We look forward to hearing from you and will try to help you as soon as possible.",
+    "help_contact_problem_label": "Describe the problem or concern",
+    "help_contact_problem_placeholder": "Detailed description (max. 300 characters)",
+    "help_contact_picture_label": "Add pictures to explain the problem (optional)",
+    "help_contact_picture_btn": "click to upload",
+    "help_contact_picture_drag": "or drag and drop image here",
+    "help_contact_submit": "submit",
+    "help_support_header": "support team",
+    "help_support_slogan": "We're here for you!",
+    "help_support_message_btn": "chat now",
+    "help_support_call_btn": "call now"
   },
   "de": {
     "headers": {
@@ -379,6 +391,18 @@
     "nm_filter_archive": "Archive",
     "nm_time_seperator_today": "Heute",
     "nm_time_seperator_last_week": "Letzte Woche",
-    "nm_time_seperator_before": "Zuvor"
+    "nm_time_seperator_before": "Zuvor",
+    "help_intro_line1": "Das Little World Support Team steht dir bei jeglichen Fragen und Problemen jederzeit zuer Verfügung.",
+    "help_intro_line2": "Wir freuen uns von dir zu hören und versuchen dir schnellstmöglich zu helfen.",
+    "help_contact_problem_label": "Beschreibe das Problem oder Anliegen",
+    "help_contact_problem_placeholder": "Ausführliche Beschreibung (max. 300 Zeichen)",
+    "help_contact_picture_label": "Füge Bilder hinzu um das Problem zu erklären (optional)",
+    "help_contact_picture_btn": "zum hochladen klicken",
+    "help_contact_picture_drag": "oder Bild ziehen und hier ablegen",
+    "help_contact_submit": "einreichen",
+    "help_support_header": "support team",
+    "help_support_slogan": "Wir sind für dich da!",
+    "help_support_message_btn": "jetzt chatten",
+    "help_support_call_btn": "jetzt anrufen"
   }
 }
