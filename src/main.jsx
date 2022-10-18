@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
+import Help from "./help";
 import "./i18n";
 import Notifications from "./notifications";
 import Overlay from "./overlay";
@@ -36,7 +37,7 @@ function Sidebar({ sidebarMobile }) {
     { label: "messages", path: "/chat" },
     { label: "notifications", path: "/notifications" },
     { label: "my_profile", path: "/profile" },
-    { label: "help", path: "" },
+    { label: "help", path: "/help" },
     { label: "settings", path: "/settings" },
     {
       label: "log_out",
@@ -130,11 +131,13 @@ function NbtSelector({ selection, setSelection, use }) {
 
   const nbtTopics = {
     main: ["conversation_partners", "appointments", "community_calls"],
+    help: ["videos", "faqs", "contact"],
   };
   const topics = nbtTopics[use];
 
   const nbtDisabled = {
     main: ["appointments", "community_calls"],
+    help: ["videos", "faqs"],
   };
   const disabled = nbtDisabled[use];
 
@@ -516,6 +519,7 @@ function Main() {
         {use === "chat" && initChatComponent}
         {use === "notifications" && <Notifications />}
         {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} userPk={userPk} />}
+        {use === "help" && <Help selection={topSelection} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>
       <div className={callSetupPartner || showIncoming ? "overlay-shade" : "overlay-shade hidden"}>
