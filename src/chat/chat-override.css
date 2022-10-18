@@ -176,6 +176,11 @@
 .rce-navbar-item__left {
   flex: 1 1;
   min-width: 160px;
+  margin-right: 20px;
+}
+
+.rce-navbar-item__left a.profile {
+  width: 100%;
 }
 
 .rce-navbar-item__right {
