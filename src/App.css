@@ -177,7 +177,8 @@ button {
 }
 
 button::first-letter,
-label,
+label::first-letter,
+input[type="radio"] + label,
 h1,
 h2,
 h3 {
