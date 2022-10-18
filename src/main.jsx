@@ -71,7 +71,10 @@ function Sidebar({ userInfo, sidebarMobile }) {
           )}
           <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
         </div>
-        <img alt="little world" className="logo" />
+        <div className="logos">
+          <img alt="little" className="logo-image" />
+          <img alt="little world" className="logo-text" />
+        </div>
         {buttonData.map(({ label, path, clickEvent }) =>
           typeof clickEvent === typeof undefined ? (
             <Link

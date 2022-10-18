@@ -32,15 +32,20 @@ function Help({ selection }) {
     <div className="content-area-main">
       {selection === "contact" && <Contact />}
       <div className="help-support panel">
-        <img className="logo" alt="little world" />
+        <div className="logos">
+          <img className="logo-image" alt="" />
+          <img className="logo-text" alt="little world" />
+        </div>
         <h2 className="support">{t("help_support_header")}</h2>
         <div className="support-sub">{t("help_support_slogan")}</div>
         <button type="button">{t("help_support_message_btn")}</button>
         <button type="button">{t("help_support_call_btn")}</button>
         <div className="contact-info">
           <div className="top">
-            <img className="logo" alt="" />
-            <img className="logo-text" alt="little-world" />
+            <div className="logos-small">
+              <img className="logo-image" alt="" />
+              <img className="logo-text" alt="little world" />
+            </div>
             <div className="business-name">Little World GbR</div>
           </div>
           <div className="bottom">
