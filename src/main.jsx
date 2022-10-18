@@ -121,14 +121,26 @@ function MobileNavBar({ setShowSidebarMobile }) {
   );
 }
 
-function Selector({ selection, setSelection }) {
+function NbtSelector({ selection, setSelection, use }) {
+  if (!["main", "help"].includes(use)) {
+    return null;
+  }
+
   const { t } = useTranslation();
-  const nbtTopics = ["conversation_partners", "appointments", "community_calls"];
-  const disabled = ["appointments", "community_calls"];
+
+  const nbtTopics = {
+    main: ["conversation_partners", "appointments", "community_calls"],
+  };
+  const topics = nbtTopics[use];
+
+  const nbtDisabled = {
+    main: ["appointments", "community_calls"],
+  };
+  const disabled = nbtDisabled[use];
 
   return (
     <div className="selector">
-      {nbtTopics.map((topic) => (
+      {topics.map((topic) => (
         <span className={topic} key={topic}>
           <input
             type="radio"
@@ -496,12 +508,20 @@ function Main({ initData }) {
     );
   }, []);
 
-  const [topSelection, setTopSelection] = useState("conversation_partners");
-
   document.body.classList.remove("hide-mobile-header");
 
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
   const profileToDispay = userPk ? matchesProfiles[userPk] : userProfile;
+
+  const [topSelection, setTopSelection] = useState(null);
+  useEffect(() => {
+    if (use === "main") {
+      setTopSelection("conversation_partners");
+    }
+    if (use === "help") {
+      setTopSelection("contact");
+    }
+  }, [location]);
 
   const updateOnlineState = (userOnlinePk, status) => {
     matchesOnlineStates[userOnlinePk] = status;
@@ -558,7 +578,7 @@ function Main({ initData }) {
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-          <Selector selection={topSelection} setSelection={setTopSelection} />
+          <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
         </div>
         {use === "main" && (
           <div className="content-area-main">

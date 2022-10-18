@@ -93,12 +93,13 @@
 
 /* nav bar */
 
-.show-main .nav-bar-top {
+.show-main .nav-bar-top,
+.show-help .nav-bar-top {
   display: flex;
   flex-direction: column;
 }
 
-.show-main .nav-bar-top .selector {
+.nav-bar-top .selector {
   display: flex;
 }
 
@@ -339,9 +340,6 @@ button.match-status {
   }
   .nav-bar-top .selector {
     margin: auto;
-  }
-  .nav-bar-top .selector > span.community_calls {
-    display: none;
   }
 }
 
