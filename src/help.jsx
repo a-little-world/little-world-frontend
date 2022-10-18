@@ -1,9 +1,36 @@
 import { t } from "i18next";
 import React from "react";
 
+function Contact() {
+  return (
+    <div className="help-contact panel">
+      <h2>{t("nbt_contact")}</h2>
+      <p>
+        {t("help_contact_intro_line1")}
+        <br />
+        {t("help_contact_intro_line2")}
+      </p>
+      <label htmlFor="problem">{t("help_contact_problem_label")}</label>
+      <textarea
+        type="textarea"
+        name="problem"
+        inputMode="text"
+        placeholder={t("help_contact_problem_placeholder")}
+      />
+      <div className="drop-zone-label">{t("help_contact_picture_label")}</div>
+      <div className="picture-drop-zone">
+        <img alt="" />
+        <button type="button">{t("help_contact_picture_btn")}</button>
+        <div className="drag-text">{t("help_contact_picture_drag")}</div>
+      </div>
+    </div>
+  );
+}
+
 function Help({ selection }) {
   return (
     <div className="content-area-main">
+      {selection === "contact" && <Contact />}
       <div className="help-support panel">
         <img className="logo" alt="little world" />
         <h2 className="support">{t("help_support_header")}</h2>
