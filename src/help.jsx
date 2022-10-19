@@ -1,10 +1,11 @@
 import { t } from "i18next";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import "./help.css";
 
 function Contact() {
   const [dragOver, setDragOver] = useState(false);
+  const fileRef = useRef();
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -15,6 +16,8 @@ function Contact() {
   const handleDragOver = (e) => e.preventDefault();
   const handleDragEnter = () => setDragOver(true);
   const handleDragLeave = () => setDragOver(false);
+
+  const handleClick = () => fileRef.current.click();
 
   return (
     <div className="help panel">
@@ -44,7 +47,8 @@ function Contact() {
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
           >
-            <button type="button">
+            <input type="file" ref={fileRef} multiple />
+            <button type="button" onClick={handleClick}>
               <img alt="" />
               <span className="text">{t("help_contact_picture_btn")}</span>
             </button>
