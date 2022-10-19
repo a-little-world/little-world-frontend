@@ -47,6 +47,10 @@
   box-sizing: border-box;
 }
 
+.picture-drop-zone input {
+  display: none;
+}
+
 .picture-drop-zone.dragover {
   border-width: 4px;
   border-style: dashed;
