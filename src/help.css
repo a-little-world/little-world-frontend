@@ -71,6 +71,11 @@
   font-size: 16px;
 }
 
+.picture-drop-zone .filename {
+  display: flex;
+  align-items: center;
+}
+
 .picture-drop-zone img {
   content: url("./images/picture.svg");
   height: 32px;
