@@ -47,7 +47,7 @@ function Contact() {
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
           >
-            <input type="file" ref={fileRef} multiple />
+            <input type="file" ref={fileRef} multiple accept="image/*" />
             <button type="button" onClick={handleClick}>
               <img alt="" />
               <span className="text">{t("help_contact_picture_btn")}</span>
