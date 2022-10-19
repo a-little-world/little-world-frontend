@@ -5,25 +5,37 @@ import "./help.css";
 
 function Contact() {
   return (
-    <div className="help-contact panel">
-      <h2>{t("nbt_contact")}</h2>
-      <p>
-        {t("help_contact_intro_line1")}
-        <br />
-        {t("help_contact_intro_line2")}
-      </p>
-      <label htmlFor="problem">{t("help_contact_problem_label")}</label>
-      <textarea
-        type="textarea"
-        name="problem"
-        inputMode="text"
-        placeholder={t("help_contact_problem_placeholder")}
-      />
-      <div className="drop-zone-label">{t("help_contact_picture_label")}</div>
-      <div className="picture-drop-zone">
-        <img alt="" />
-        <button type="button">{t("help_contact_picture_btn")}</button>
-        <div className="drag-text">{t("help_contact_picture_drag")}</div>
+    <div className="help panel">
+      <div className="help-contact">
+        <h2>{t("nbt_contact")}</h2>
+        <p>
+          {t("help_contact_intro_line1")}
+          <br />
+          {t("help_contact_intro_line2")}
+        </p>
+        <label htmlFor="problem">
+          {t("help_contact_problem_label")}
+          <textarea
+            type="textarea"
+            name="problem"
+            inputMode="text"
+            maxLength="300"
+            placeholder={t("help_contact_problem_placeholder")}
+          />
+        </label>
+        <div className="drop-zone-label">
+          {t("help_contact_picture_label")}
+          <div className="picture-drop-zone">
+            <button type="button">
+              <img alt="" />
+              <span className="text">{t("help_contact_picture_btn")}</span>
+            </button>
+            <div className="drag-text">{t("help_contact_picture_drag")}</div>
+          </div>
+        </div>
+        <button type="submit" className="contact-submit">
+          {t("help_contact_submit")}
+        </button>
       </div>
     </div>
   );
@@ -34,20 +46,24 @@ function Help({ selection }) {
     <div className="content-area-main">
       {selection === "contact" && <Contact />}
       <div className="help-support panel">
-        <div className="logos">
-          <img className="logo-image" alt="" />
-          <img className="logo-text" alt="little world" />
+        <div className="topper">
+          <div className="logos">
+            <img className="logo-image" alt="" />
+            <img className="logo-text" alt="little world" />
+          </div>
+          <div className="support-team">
+            <h2>{t("help_support_header")}</h2>
+            <div className="sub">{t("help_support_slogan")}</div>
+          </div>
         </div>
-        <h2 className="support">{t("help_support_header")}</h2>
-        <div className="support-sub">{t("help_support_slogan")}</div>
         <div className="contact-buttons">
           <button type="button" className="support-message">
             <img alt="" />
-            {t("help_support_message_btn")}
+            <span className="text">{t("help_support_message_btn")}</span>
           </button>
           <button type="button" className="support-call">
             <img alt="" />
-            {t("help_support_call_btn")}
+            <span className="text">{t("help_support_call_btn")}</span>
           </button>
         </div>
         <div className="contact-info">
