@@ -123,8 +123,7 @@
   right: 30px;
 }
 
-.interest-item,
-.add-interest-item {
+.interest-item {
   padding: 8px 20px;
   box-shadow: 0px 1px 5px rgb(0, 0, 0 / 30%);
   border-radius: 100px;
@@ -141,27 +140,10 @@
 .selected-topics .interest-item .text {
   white-space: nowrap;
 }
-/* 
-.selected-topics button {
-  display: none;
-}
-
-.selected-topics.editing button {
-  display: unset;
-} */
-
-.selected-topics .add-interest-item {
-  height: auto;
-}
 
 .selected-topics .interest-item img {
   content: url("./images/close-pop-up.svg");
   filter: hue-rotate(180deg);
-}
-
-.selected-topics .add-interest-item img {
-  content: url("./images/chat-plus.svg");
-  filter: invert(1);
 }
 
 .topics-shade {
