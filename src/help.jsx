@@ -40,46 +40,56 @@ function Help({ selection }) {
         </div>
         <h2 className="support">{t("help_support_header")}</h2>
         <div className="support-sub">{t("help_support_slogan")}</div>
-        <button type="button" className="support-message">
-          <img alt="" />
-          {t("help_support_message_btn")}
-        </button>
-        <button type="button" className="support-call">
-          <img alt="" />
-          {t("help_support_call_btn")}
-        </button>
+        <div className="contact-buttons">
+          <button type="button" className="support-message">
+            <img alt="" />
+            {t("help_support_message_btn")}
+          </button>
+          <button type="button" className="support-call">
+            <img alt="" />
+            {t("help_support_call_btn")}
+          </button>
+        </div>
         <div className="contact-info">
-          <div className="top">
-            <div className="logos-small">
-              <img className="logo-image" alt="" />
-              <img className="logo-text" alt="little world" />
+          <div className="main">
+            <div className="top">
+              <div className="logos-small">
+                <img className="logo-image" alt="" />
+                <img className="logo-text" alt="little world" />
+              </div>
+              <div className="business-name">Little World GbR</div>
             </div>
-            <div className="business-name">Little World GbR</div>
+            <div className="bottom">
+              <div className="contacts">
+                <div>
+                  <img className="web-icon" alt="web" />
+                  www.little-world.de
+                </div>
+                <div>
+                  <img className="email-icon" alt="e-mail" />
+                  oliver@little-world.com
+                </div>
+                <div>
+                  <img className="phone-icon" alt="phone" />
+                  +49 241 980 93 490
+                </div>
+                <div>
+                  <img className="mobile-icon" alt="mobile" />
+                  +49 152 34 777 471
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="bottom">
-            <div className="contacts">
-              <div>
-                <img className="web-icon" alt="web" />
-                www.little-world.de
-              </div>
-              <div>
-                <img className="email-icon" alt="e-mail" />
-                oliver.berlin@little-world.com
-              </div>
-              <div>
-                <img className="phone-icon" alt="phone" />
-                +49 241 980 93 490
-              </div>
-              <div>
-                <img className="mobile-icon" alt="mobile" />
-                +49 152 34 777 471
-              </div>
-            </div>
-            <div className="socials">
+          <div className="socials">
+            <a href="http://linkedin.com/littleworld">
               <img className="icon-linkedin" alt="linked in" />
+            </a>
+            <a href="http://facebook.com/littleworld">
               <img className="icon-facebook" alt="facebook" />
+            </a>
+            <a href="http://instagram.com/littleworld">
               <img className="icon-instagram" alt="instagram" />
-            </div>
+            </a>
           </div>
         </div>
       </div>
