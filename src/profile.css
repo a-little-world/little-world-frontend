@@ -126,7 +126,7 @@
 .interest-item,
 .add-interest-item {
   padding: 8px 20px;
-  box-shadow: 0px 1px 5px rgb(0, 0, 0 / 30%);
+  box-shadow: 0px 1px 5px rgb(0 0 0 / 30%);
   border-radius: 100px;
   font-weight: 600;
   font-size: 17px;
