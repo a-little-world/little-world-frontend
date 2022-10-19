@@ -44,6 +44,13 @@
   flex-direction: column;
   align-items: center;
   padding: 40px;
+  box-sizing: border-box;
+}
+
+.picture-drop-zone.dragover {
+  border-width: 4px;
+  border-style: dashed;
+  filter: brightness(120%) contrast(120%);
 }
 
 .picture-drop-zone button {

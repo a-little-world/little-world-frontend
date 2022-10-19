@@ -1,9 +1,21 @@
 import { t } from "i18next";
-import React from "react";
+import React, { useState } from "react";
 
 import "./help.css";
 
 function Contact() {
+  const [dragOver, setDragOver] = useState(false);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragOver(false);
+    console.log("DROP");
+  };
+
+  const handleDragOver = (e) => e.preventDefault();
+  const handleDragEnter = () => setDragOver(true);
+  const handleDragLeave = () => setDragOver(false);
+
   return (
     <div className="help panel">
       <div className="help-contact">
@@ -25,7 +37,13 @@ function Contact() {
         </label>
         <div className="drop-zone-label">
           {t("help_contact_picture_label")}
-          <div className="picture-drop-zone">
+          <div
+            className={dragOver ? "picture-drop-zone dragover" : "picture-drop-zone"}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+          >
             <button type="button">
               <img alt="" />
               <span className="text">{t("help_contact_picture_btn")}</span>
