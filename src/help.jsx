@@ -5,6 +5,7 @@ import "./help.css";
 
 function Contact() {
   const [dragOver, setDragOver] = useState(false);
+  const [filenames, setFilenames] = useState([]);
   const fileRef = useRef();
 
   const handleDrop = (e) => {
@@ -18,6 +19,11 @@ function Contact() {
   const handleDragLeave = () => setDragOver(false);
 
   const handleClick = () => fileRef.current.click();
+
+  const handleChange = () => {
+    const fileList = [...fileRef.current.files].map((file) => file.name);
+    setFilenames(fileList);
+  };
 
   return (
     <div className="help panel">
@@ -47,10 +53,23 @@ function Contact() {
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
           >
-            <input type="file" ref={fileRef} multiple accept="image/*" />
+            <input type="file" ref={fileRef} multiple accept="image/*" onChange={handleChange} />
             <button type="button" onClick={handleClick}>
-              <img alt="" />
-              <span className="text">{t("help_contact_picture_btn")}</span>
+              {filenames.map((name) => {
+                return (
+                  <div className="filename" key={name}>
+                    <img alt="" />
+                    {name}
+                  </div>
+                );
+              })}
+              {filenames.length === 0 && (
+                <>
+                  <img alt="" />
+                  <span className="text">{t("help_contact_picture_btn")}</span>
+                </>
+              )}
+              {filenames.length > 0 && <span className="text">click to change files</span>}
             </button>
             <div className="drag-text">{t("help_contact_picture_drag")}</div>
           </div>
