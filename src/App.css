@@ -178,6 +178,7 @@ a {
 }
 
 button::first-letter,
+button .text::first-letter,
 label::first-letter,
 input[type="radio"] + label,
 h1,
