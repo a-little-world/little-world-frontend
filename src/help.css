@@ -57,6 +57,10 @@
   filter: brightness(120%) contrast(120%);
 }
 
+.picture-drop-zone.dragover * {
+  pointer-events: none;
+}
+
 .picture-drop-zone button {
   display: flex;
   flex-direction: column;
