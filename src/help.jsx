@@ -10,8 +10,11 @@ function Contact() {
 
   const handleDrop = (e) => {
     e.preventDefault();
+    const fileList = [...e.dataTransfer.items]
+      .filter((item) => item.kind === "file" && item.type.startsWith("image/"))
+      .map((item) => item.getAsFile().name);
+    setFilenames(fileList);
     setDragOver(false);
-    console.log("DROP");
   };
 
   const handleDragOver = (e) => e.preventDefault();
