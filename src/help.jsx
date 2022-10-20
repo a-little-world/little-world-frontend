@@ -3,6 +3,30 @@ import React, { useRef, useState } from "react";
 
 import "./help.css";
 
+function FrequentQuestion({ question, answer }) {
+  return (
+    <div className="faq-item">
+      <h3>{question}</h3>
+      <p className="answer">{answer}</p>
+    </div>
+  );
+}
+
+function Faqs() {
+  return (
+    <div>
+      <h2>{t("nbt_faqs")}</h2>
+      <p className="intro-text">{t("help_faqs_intro")}</p>
+      <div className="faq-items">
+        <FrequentQuestion question="question1" answer="this is stock answer number one." />
+        <FrequentQuestion question="question2" answer="this is stock answer number two." />
+        <FrequentQuestion question="question3" answer="this is stock answer number three." />
+        <FrequentQuestion question="question4" answer="this is stock answer number four." />
+      </div>
+    </div>
+  );
+}
+
 function Contact() {
   const [dragOver, setDragOver] = useState(false);
   const [filenames, setFilenames] = useState([]);
@@ -94,6 +118,7 @@ function Help({ selection }) {
   return (
     <div className="content-area-main">
       <div className="help panel">
+        {selection === "faqs" && <Faqs />}
         {selection === "contact" && <Contact />}
       </div>
       <div className="help-support panel">
