@@ -4,9 +4,15 @@ import React, { useRef, useState } from "react";
 import "./help.css";
 
 function FrequentQuestion({ question, answer }) {
+  const [showing, setShowing] = useState(false);
+  const toggleShowing = () => setShowing(!showing);
+
   return (
-    <div className="faq-item">
-      <h3>{question}</h3>
+    <div className={showing ? "faq-item showing" : "faq-item"}>
+      <h3 onClick={toggleShowing}>
+        <img alt="collapse/expand" />
+        {question}
+      </h3>
       <p className="answer">{answer}</p>
     </div>
   );
