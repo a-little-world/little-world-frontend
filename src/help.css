@@ -12,14 +12,38 @@
   margin: auto;
 }
 
-.help-contact h2 {
+.help h2 {
   margin: 0;
 }
 
-.help-contact p {
+.help p.intro-text {
   font-size: 14px;
   font-weight: 300;
-  margin: 0;
+  margin: 20px 10px;
+}
+
+.faq-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.faq-items .faq-item {
+  border-radius: 10px;
+  border: 1px solid rgb(0 0 0 / 10%);
+  padding: 20px;
+}
+
+.faq-item h3 {
+  margin: -5px 0 15px 0;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.faq-item p {
+  font-size: 15px;
+  font-weight: 300;
+  padding: 20px;
 }
 
 .help-contact textarea {
@@ -31,7 +55,8 @@
 }
 
 .help-contact textarea,
-.picture-drop-zone {
+.picture-drop-zone,
+.faq-item p {
   width: 100%;
   border: 1px solid rgb(0 0 0 / 10%);
   background: rgba(230, 232, 236, 0.2);
