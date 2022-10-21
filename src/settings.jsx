@@ -1,4 +1,3 @@
-import $ from "jquery";
 import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,16 +39,30 @@ const displayLanguages = ["English", "Deutsch"];
 const repeaters = ["password", "email"];
 
 const submitData = (newDataObj, onSucess, onFailure) => {
-  $.ajax({
-    type: "POST",
-    url: `${BACKEND_URL}/api2/profile/`,
+  fetch(`${BACKEND_URL}/api2/profile/`, {
+    method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    data: newDataObj, // {label: value}
-    success: onSucess,
-    error: onFailure,
-  });
+    body: new URLSearchParams(newDataObj).toString(),
+  })
+    .then((response) => {
+      const { status, statusText } = response;
+      if ([200, 400].includes(status)) {
+        response.json().then(({ report }) => {
+          if (status === 200) {
+            onSucess(report);
+          } else {
+            onFailure(report);
+          }
+        });
+      } else {
+        // unexpected error
+        console.error("server error", status, statusText);
+      }
+    })
+    .catch((error) => console.error(error));
 };
 
 const apiChangeEmail = (email, onSucess, onFailure) => {
@@ -89,9 +102,9 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     window.location.reload(); // update page
     setEditing(false);
   };
-  const onResponseFailure = (jqXHR) => {
-    const responseErrors = jqXHR.responseJSON.report[label].map((err) => err); // get message
-    setErrors(responseErrors); // update error message
+  const onResponseFailure = (report) => {
+    const errorsList = report[label];
+    setErrors(errorsList); // update error message(s)
     setWaiting(false);
   };
 

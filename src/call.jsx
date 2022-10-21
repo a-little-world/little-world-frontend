@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import $ from "jquery";
 import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -307,19 +306,31 @@ function TranslationBox() {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (leftText === "") return;
-      $.ajax({
-        type: "POST",
-        url: `${BACKEND_URL}/api2/trans/`,
-        headers: { "X-CSRFToken": Cookies.get("csrftoken") },
-        data: {
+      if (leftText === "") {
+        return;
+      }
+
+      fetch(`${BACKEND_URL}/api2/trans/`, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": Cookies.get("csrftoken"),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
           src_lang: fromLang,
           dest_lang: toLang,
           text: leftText,
-        },
-      }).then((resp) => {
-        setRightText(resp.trans);
-      });
+        }).toString(),
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          }
+          console.error("server error", response.status, response.statusText);
+          return false;
+        })
+        .then(({ trans }) => setRightText(trans))
+        .catch((error) => console.error(error));
     }, 1000);
 
     return () => clearTimeout(delayDebounceFn);

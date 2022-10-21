@@ -1,4 +1,3 @@
-import $ from "jquery";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,14 +39,19 @@ function Sidebar({ userInfo, sidebarMobile }) {
     {
       label: "log_out",
       clickEvent: () => {
-        $.ajax({
-          type: "GET",
-          url: `${BACKEND_URL}/api2/logout/`,
+        fetch(`${BACKEND_URL}/api2/logout/`, {
+          method: "GET",
           headers: { "X-CSRFToken": Cookies.get("csrftoken") },
-        }).then(() => {
-          navigate("/login/"); // Redirect only valid in production
-          navigate(0); // to reload the page
-        });
+        })
+          .then((response) => {
+            if (response.status === 200) {
+              navigate("/login/"); // Redirect only valid in production
+              navigate(0); // to reload the page
+            } else {
+              console.error("server error", response.status, response.statusText);
+            }
+          })
+          .catch((error) => console.error(error));
       },
     },
   ];
@@ -163,17 +167,27 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
   }, [userInfo]);
 
   function updateUserMatchingState() {
-    $.ajax({
-      type: "POST",
-      url: `${BACKEND_URL}/api2/user_state/`,
-      headers: { "X-CSRFToken": Cookies.get("csrftoken") },
-      data: {
-        action: "update_user_state",
+    fetch(`${BACKEND_URL}/api2/user_state/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": Cookies.get("csrftoken"),
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      success: (resp) => {
-        userInfo = resp;
-      },
-    });
+      body: new URLSearchParams({ action: "update_user_state" }).toString(),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        console.error("server error", response.status, response.statusText);
+        return false;
+      })
+      .then((response) => {
+        if (response) {
+          userInfo = response; // TODO: this should be updated another way
+        }
+      })
+      .catch((error) => console.error(error));
   }
   return (
     <div className="profiles">
@@ -596,26 +610,28 @@ function Main({ initData }) {
             text={overlayState.text}
             userInfo={overlayState.userInfo}
             onOk={() => {
-              $.ajax({
-                type: "POST",
-                url: `${BACKEND_URL}/api2/unconfirmed_matches/`,
+              fetch(`${BACKEND_URL}/api2/unconfirmed_matches/`, {
+                method: "POST",
                 headers: {
                   "X-CSRFToken": Cookies.get("csrftoken"),
+                  "Content-Type": "application/x-www-form-urlencoded",
                 },
-                data: {
+                body: new URLSearchParams({
                   partner_h256_pk: overlayState.userInfo.userPk,
-                },
-                success: () => {
-                  const newUnconfirmed = matchesUnconfirmed.filter(
-                    (m) => m.user_h256_pk !== overlayState.userInfo.userPk
-                  );
-                  setMatchesUnconfirmed(newUnconfirmed);
-                  updateOverlayState(newUnconfirmed, matchesInfo, matchesProfiles);
-                },
-                error: (e) => {
-                  console.log(e);
-                },
-              });
+                }).toString(),
+              })
+                .then(({ status, statusText }) => {
+                  if (status === 200) {
+                    const newUnconfirmed = matchesUnconfirmed.filter(
+                      (m) => m.user_h256_pk !== overlayState.userInfo.userPk
+                    );
+                    setMatchesUnconfirmed(newUnconfirmed);
+                    updateOverlayState(newUnconfirmed, matchesInfo, matchesProfiles);
+                  } else {
+                    console.error("server error", status, statusText);
+                  }
+                })
+                .catch((error) => console.error(error));
             }}
           />
         )}
