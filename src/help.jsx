@@ -179,13 +179,13 @@ function Help({ selection }) {
             </div>
           </div>
           <div className="socials">
-            <a href="http://linkedin.com/littleworld">
+            <a href="https://www.linkedin.com/company/76488145/">
               <img className="icon-linkedin" alt="linked in" />
             </a>
-            <a href="http://facebook.com/littleworld">
+            <a href="https://www.facebook.com/profile.php?id=100071509163812">
               <img className="icon-facebook" alt="facebook" />
             </a>
-            <a href="http://instagram.com/littleworld">
+            <a href="https://www.instagram.com/littleworld_de/">
               <img className="icon-instagram" alt="instagram" />
             </a>
           </div>
