@@ -82,6 +82,9 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
   };
 
   const handleSubmit = () => {
+    /**
+     * @tbscode future TODO there should be seperate chnage handlers! Switching inside the hanler is bad practice
+     */
     const wrongPass = type === "password" && value.length < 6;
     /* mismatched values */
     const { current } = textInput;
@@ -196,6 +199,13 @@ function Settings({ userData }) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(null);
 
+  /**
+   * @tbscode future TODO ok i see how this makes it hard to have different form inside the modals
+   * I think this would have been bettere handled by creating 'atom' components ( per suggestion from @seanbrundel )
+   * e.g.: atom.IntegerInput, atom.PassInput, atom.ErrorDisplay
+   * This would allow to render any form inside any modal simply by listing the fields to be used
+   * Since all these field should be able to handle their own validation this wouldn't give us the annoying limitation of having only one input per modal
+   */
   const items = [
     // with ordering
     "display_lang",
