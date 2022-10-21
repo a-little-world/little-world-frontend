@@ -1,72 +1,70 @@
 /* eslint-disable no-else-return */
+
 /* eslint-disable camelcase */
+
 /* eslint-disable import/extensions */
-import GLOB from "../ENVIRONMENT";
+import { BACKEND_URL, DEFAULT_LOGIN_PASSWORD, DEFAULT_LOGIN_USERNAME } from "../ENVIRONMENT";
+import { contains, map as map_1, sortBy } from "./.fable/fable-library.3.1.7/Array.js";
+import { FSharpResult$2, Result_Bind, Result_Map } from "./.fable/fable-library.3.1.7/Choice.js";
+import { compare } from "./.fable/fable-library.3.1.7/Date.js";
+import { fromDate, now } from "./.fable/fable-library.3.1.7/DateOffset.js";
+import { empty, ofArray, singleton } from "./.fable/fable-library.3.1.7/List.js";
+import { fromInteger, toInt } from "./.fable/fable-library.3.1.7/Long.js";
+import { defaultArg, map, some } from "./.fable/fable-library.3.1.7/Option.js";
 import {
-  DialogsResponse_get_Decoder,
-  MessageBox__HasDbId,
-  MessagesResponse_get_Decoder,
-  UserInfoResponse_get_Decoder,
-  MessageModelFile_get_Decoder,
-  msgTypeEncoder,
-  MessageTypesDecoder,
-  MessageTypeNewUnreadCount_get_Decoder,
-  MessageTypeMessageIdCreated_get_Decoder,
-  MessageTypeErrorOccured_get_Decoder,
-  MessageTypeMessageRead_get_Decoder,
-  MessageTypeFileMessage_get_Decoder,
-  MessageTypeTextMessage_get_Decoder,
-  GenericUserPKMessage_get_Decoder,
-  MessageBox$reflection,
-  ChatItem,
-  MessageBox,
-  MessageBoxData,
-  MessageBoxDataStatus,
-} from "./Types.fs.js";
-import {
-  PromiseBuilder__Delay_62FBFDE1,
-  PromiseBuilder__Run_212F1D4B,
-  mapResult,
-} from "./.fable/Fable.Promise.2.0.0/Promise.fs.js";
-import { map, defaultArg, some } from "./.fable/fable-library.3.1.7/Option.js";
-import { promise } from "./.fable/Fable.Promise.2.0.0/PromiseImpl.fs.js";
-import {
-  Types_RequestProperties,
-  tryFetch as tryFetchSimple,
-} from "./.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
-import { ofArray, singleton, empty } from "./.fable/fable-library.3.1.7/List.js";
-import { Result_Map, Result_Bind, FSharpResult$2 } from "./.fable/fable-library.3.1.7/Choice.js";
-import { generateRandomId, humanFileSize } from "./Utils.fs.js";
-import { now, fromDate } from "./.fable/fable-library.3.1.7/DateOffset.js";
-import { Record } from "./.fable/fable-library.3.1.7/Types.js";
-import {
-  record_type,
-  int32_type,
   bool_type,
-  string_type,
   class_type,
+  int32_type,
   lambda_type,
+  record_type,
+  string_type,
   unit_type,
 } from "./.fable/fable-library.3.1.7/Reflection.js";
-import { toText, printf, toConsole } from "./.fable/fable-library.3.1.7/String.js";
-import { array as array_3, fromString } from "./.fable/Thoth.Json.5.1.0/Decode.fs.js";
+import { printf, toConsole, toText } from "./.fable/fable-library.3.1.7/String.js";
+import { Record } from "./.fable/fable-library.3.1.7/Types.js";
 import { stringHash, uncurry } from "./.fable/fable-library.3.1.7/Util.js";
+import {
+  tryFetch as tryFetchSimple,
+  Types_RequestProperties,
+} from "./.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
+import {
+  mapResult,
+  PromiseBuilder__Delay_62FBFDE1,
+  PromiseBuilder__Run_212F1D4B,
+} from "./.fable/Fable.Promise.2.0.0/Promise.fs.js";
+import { promise } from "./.fable/Fable.Promise.2.0.0/PromiseImpl.fs.js";
+import { array as array_3, fromString } from "./.fable/Thoth.Json.5.1.0/Decode.fs.js";
 import { Enum_int, tuple2 } from "./.fable/Thoth.Json.5.1.0/Encode.fs.js";
-import { fromInteger, toInt } from "./.fable/fable-library.3.1.7/Long.js";
-import { sortBy, contains, map as map_1 } from "./.fable/fable-library.3.1.7/Array.js";
-import { compare } from "./.fable/fable-library.3.1.7/Date.js";
+import {
+  ChatItem,
+  DialogsResponse_get_Decoder,
+  GenericUserPKMessage_get_Decoder,
+  MessageBox,
+  MessageBox$reflection,
+  MessageBox__HasDbId,
+  MessageBoxData,
+  MessageBoxDataStatus,
+  MessageModelFile_get_Decoder,
+  MessagesResponse_get_Decoder,
+  MessageTypeErrorOccured_get_Decoder,
+  MessageTypeFileMessage_get_Decoder,
+  MessageTypeMessageIdCreated_get_Decoder,
+  MessageTypeMessageRead_get_Decoder,
+  MessageTypeNewUnreadCount_get_Decoder,
+  MessageTypesDecoder,
+  MessageTypeTextMessage_get_Decoder,
+  msgTypeEncoder,
+  UserInfoResponse_get_Decoder,
+} from "./Types.fs.js";
+import { generateRandomId, humanFileSize } from "./Utils.fs.js";
 
 export const defaultDataStatus = new MessageBoxDataStatus(true, 0, false);
 
 const getPhotoString = () => {}; // replace with no-op for now
 
 function tryFetch(url, options) {
-  // let updated_ops = ofArray(simulator.updateOptions(options));
-
-  const login_user =
-    window.localStorage.getItem("current_login_user") || GLOB.DEFAULT_LOGIN_USERNAME;
-  const login_pass =
-    window.localStorage.getItem("current_login_pass") || GLOB.DEFAULT_LOGIN_PASSWORD;
+  const login_user = window.localStorage.getItem("current_login_user") || DEFAULT_LOGIN_USERNAME;
+  const login_pass = window.localStorage.getItem("current_login_pass") || DEFAULT_LOGIN_PASSWORD;
 
   const headers_1 = new Types_RequestProperties(1, {
     Authorization: `Basic ${btoa(`${login_user}:${login_pass}`)}`,
@@ -424,7 +422,7 @@ export function sendMessageReadMessage(sock, user_pk, message_id) {
 }
 
 // TODO: bettherway to embed the urls
-export const backendUrl = GLOB.BACKEND_URL; // ((process.env.LOCAL_DEBUG == "1") ? 'http://localhost:60' : 'https://littleworld-test.com');  //"http://localhost:60";
+export const backendUrl = BACKEND_URL; // ((process.env.LOCAL_DEBUG == "1") ? 'http://localhost:60' : 'https://littleworld-test.com');  //"http://localhost:60";
 
 export const messagesEndpoint = toText(printf("%s/api2/messages/"))(backendUrl);
 
