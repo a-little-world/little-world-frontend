@@ -302,3 +302,7 @@ img.mobile-icon {
 .socials img.icon-instagram {
   content: url("./images/icons/instagram.svg");
 }
+
+.socials img.icon-twitter {
+  content: url("./images/icons/twitter.svg");
+}

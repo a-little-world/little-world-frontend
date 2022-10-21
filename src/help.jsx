@@ -188,6 +188,9 @@ function Help({ selection }) {
             <a href="https://www.instagram.com/littleworld_de/">
               <img className="icon-instagram" alt="instagram" />
             </a>
+            <a href="https://twitter.com/littleworld_de">
+              <img className="icon-twitter" alt="twitter" />
+            </a>
           </div>
         </div>
       </div>
