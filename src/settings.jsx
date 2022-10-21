@@ -76,7 +76,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     setEditing(false);
   };
   const onResponseFailure = (jqXHR) => {
-    const responseErrors = jqXHR.responseJSON.report[label].map((err) => err[2]); // get message
+    const responseErrors = jqXHR.responseJSON.report[label].map((err) => err); // get message
     setErrors(responseErrors); // update error message
     setWaiting(false);
   };
