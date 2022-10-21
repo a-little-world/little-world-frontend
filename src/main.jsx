@@ -405,6 +405,7 @@ function Main({ initData }) {
   useEffect(() => {
     Promise.resolve(initData).then(
       ({
+        selfInfo,
         _matchesBasic,
         unconfirmedMatches,
         userDataGET,
@@ -423,7 +424,7 @@ function Main({ initData }) {
         }
         // If possible load the avatar config json
         setProfileOptions(userDataOPTIONS.actions.POST);
-        setUserProfile(userDataGET);
+        setUserProfile({ ...userDataGET, ...selfInfo });
         setUserInfo({
           // userPk:
           firstName: userDataGET.first_name,
@@ -568,7 +569,7 @@ function Main({ initData }) {
             profile={profileToDispay}
           />
         )}
-        {use === "settings" && <Settings userData={initData.userDataGET} />}
+        {use === "settings" && <Settings userData={userProfile} />}
       </div>
       <div
         className={
