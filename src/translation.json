@@ -149,8 +149,7 @@
       "password_to_common": "This password is too common, please use a more secure password.",
       "name_empty_trans": "Please write something",
       "length_not_in_constraint_trans_plz": "Postcode not valid",
-      "name_contains_unallowed_characters": "The name you have entered contains unpermitted characters, e.g. space.",
-      "no_file_uploaded" : "File upload failed, have you selected a file under 0.5MB? If you can't upload a file please use an avatar instead."
+      "name_contains_unallowed_characters": "The name you have entered contains unpermitted characters, e.g. space."
     },
     "sg_header": "settings",
     "sg_change_item": "change {{item}}",
@@ -323,7 +322,7 @@
       "birth_year_empty_trans": "Bitte gib dein Geburtsjahr an",
       "to_long_300": "darf maximal 300 Zeichen haben.",
       "password_to_common": "Dieses Password ist zu einfach, bitte verwende ein sichereres Password.",
-      "name_empty_trans": "Bitte etwas schreiben",
+      "name_empty_trans": "Bitte etwas schreiben"
     },
     "sg_header": "einstellungen",
     "sg_change_item": "{{item}} ändern",
