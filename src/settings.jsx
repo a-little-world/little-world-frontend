@@ -52,6 +52,20 @@ const submitData = (newDataObj, onSucess, onFailure) => {
   });
 };
 
+const apiChangeEmail = (email, onSucess, onFailure) => {
+  /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
+  $.ajax({
+    type: "POST",
+    url: `${BACKEND_URL}/api2/change_email/`,
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    data: { email },
+    success: onSucess,
+    error: onFailure,
+  });
+};
+
 function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
   const { t } = useTranslation();
   const type = types[label];
@@ -101,7 +115,8 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     } else if (repeat !== true) {
       setWaiting(true);
       const newData = { [label]: value };
-      submitData(newData, onResponseSucess, onResponseFailure);
+      if (type === "email") apiChangeEmail(value, onResponseSucess, onResponseFailure);
+      else submitData(newData, onResponseSucess, onResponseFailure);
     }
   };
 
@@ -201,10 +216,10 @@ function Settings({ userData }) {
 
   /**
    * @tbscode future TODO ok i see how this makes it hard to have different form inside the modals
-   * I think this would have been bettere handled by creating 'atom' components ( per suggestion from @seanbrundel )
+   * I think this would have been bettere handled by creating 'atom' components ( per suggestion from @Simba14 )
    * e.g.: atom.IntegerInput, atom.PassInput, atom.ErrorDisplay
    * This would allow to render any form inside any modal simply by listing the fields to be used
-   * Since all these field should be able to handle their own validation this wouldn't give us the annoying limitation of having only one input per modal
+   * Since all these fields should be able to handle their own validation this wouldn't give us the annoying limitation of having only one input per modal
    */
   const items = [
     // with ordering
