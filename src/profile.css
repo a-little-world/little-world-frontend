@@ -163,6 +163,7 @@
 }
 
 .topics-shade {
+  z-index: 2;
   position: fixed;
   top: 0;
   left: 0;
@@ -174,6 +175,7 @@
 }
 
 .topics-selector {
+  z-index: 3;
   margin: auto;
   border-radius: 15px;
   background-color: #f2f2f2;
