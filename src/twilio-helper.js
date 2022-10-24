@@ -1,5 +1,5 @@
-import $ from "jquery";
 import Cookies from "js-cookie";
+
 import { BACKEND_URL } from "./ENVIRONMENT";
 
 const { connect, createLocalVideoTrack, createLocalAudioTrack } = require("twilio-video");
@@ -63,66 +63,81 @@ function getAudioTrack(deviceId) {
 }
 
 function joinRoom(partnerKey) {
-  const csrfToken = Cookies.get("csrftoken");
-
   const doJoinRoom = (roomPk) => {
-    $.ajax({
-      // using jQuery for now as fetch api is more convoluted with cross-domain requests
-      type: "POST",
-      url: `${BACKEND_URL}/api2/auth_call_room/`,
+    fetch(`${BACKEND_URL}/api2/auth_call_room/`, {
+      method: "POST",
       headers: {
-        "X-CSRFToken": csrfToken,
+        "X-CSRFToken": Cookies.get("csrftoken"),
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      data: {
+      body: new URLSearchParams({
         room_h256_pk: roomPk,
         partner_h256_pk: partnerKey,
-      },
-    }).then((data) => {
-      const token = data.user_token;
-      connect(token, {
-        name: "cool room",
-        tracks: [selectedTracks.video, selectedTracks.audio],
-      }).then((room) => {
-        console.log(`Connected to Room ${room.name}`);
+      }).toString(),
+    })
+      .then((response) => {
+        const { status, statusText } = response;
+        if (status === 200) {
+          return response.json();
+        }
+        console.error("server error", status, statusText);
+        return false;
+      })
+      .then(({ user_token }) => {
+        connect(user_token, {
+          name: "cool room",
+          tracks: [selectedTracks.video, selectedTracks.audio],
+        }).then((room) => {
+          console.log(`Connected to Room ${room.name}`);
 
-        const container = document.getElementById("foreign-container");
-        const handleParticipant = (participant) => {
-          console.log(`Participant "${participant.identity}" is connected to the Room`);
-          container.innerHTML = ""; // remove any video/audio elements hanging around, OK as we only have 1 partner
-          participant.on("trackSubscribed", (track) => container.appendChild(track.attach()));
-        };
+          const container = document.getElementById("foreign-container");
+          const handleParticipant = (participant) => {
+            console.log(`Participant "${participant.identity}" is connected to the Room`);
+            container.innerHTML = ""; // remove any video/audio elements hanging around, OK as we only have 1 partner
+            participant.on("trackSubscribed", (track) => container.appendChild(track.attach()));
+          };
 
-        room.participants.forEach(handleParticipant); // handle already connected partners
-        room.on("participantConnected", handleParticipant); // handle partners that join after
+          room.participants.forEach(handleParticipant); // handle already connected partners
+          room.on("participantConnected", handleParticipant); // handle partners that join after
 
-        room.once("participantDisconnected", (participant) => {
-          // note this event doesn't always seem to successfully fire,
-          // which would lead to multiple videos, so we are clearing it on connect instead
-          console.log(`Participant "${participant.identity}" has disconnected from the Room`);
+          room.once("participantDisconnected", (participant) => {
+            // note this event doesn't always seem to successfully fire,
+            // which would lead to multiple videos, so we are clearing it on connect instead
+            console.log(`Participant "${participant.identity}" has disconnected from the Room`);
+          });
         });
-      });
-    });
+      })
+      .catch((error) => console.error(error));
   };
 
   // the room key will ultimately need both userPKs as input
   // although the current user PK could be inferred by backend
   // TODO there is no reason this call can't be added to the composite-request in the main.jsx
-  $.ajax({
-    type: "GET",
-    url: `${BACKEND_URL}/api2/appointments/`,
+  fetch(`${BACKEND_URL}/api2/appointments/`, {
+    method: "GET",
     headers: {
-      "X-CSRFToken": csrfToken,
+      "X-CSRFToken": Cookies.get("csrftoken"),
     },
-  }).then((appointments) => {
-    const apt = appointments.filter(
-      ({ user }) => user.filter(({ user_h256_pk }) => user_h256_pk === partnerKey).length !== 0
-    )[0];
-    if (apt) {
-      doJoinRoom(apt.room_h256_pk);
-    } else {
-      console.error("no appointment found");
-    }
-  });
+  })
+    .then((response) => {
+      const { status, statusText } = response;
+      if (status === 200) {
+        return response.json();
+      }
+      console.error("server error", status, statusText);
+      return false;
+    })
+    .then((appointments) => {
+      const apt = appointments.filter(
+        ({ user }) => user.filter(({ user_h256_pk }) => user_h256_pk === partnerKey).length !== 0
+      )[0];
+      if (apt) {
+        doJoinRoom(apt.room_h256_pk);
+      } else {
+        console.error("no appointment found");
+      }
+    })
+    .catch((error) => console.error(error));
 }
 
 function toggleLocalTracks(willMute, trackType) {

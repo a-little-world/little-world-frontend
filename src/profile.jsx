@@ -1,4 +1,3 @@
-import $ from "jquery";
 import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,22 +11,27 @@ import Link from "./path-prepend";
 import "./profile.css";
 
 const postUserProfileUpdate = (updateData, onFailure, onSucess, formTag) => {
-  $.ajax({
-    type: "POST",
-    url: `${BACKEND_URL}/api2/profile/`,
+  fetch(`${BACKEND_URL}/api2/profile/`, {
+    method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    data: updateData,
-    success: onSucess,
-    error: (e) => {
-      console.log("ListError", e.responseJSON.report[formTag]);
-      e.responseJSON.report[formTag].forEach((err) => {
-        const errorTags = [];
-        errorTags.push(err);
-        onFailure(errorTags);
+    body: new URLSearchParams(updateData).toString(),
+  }).then((response) => {
+    const { status, statusText } = response;
+    if (![200, 400].includes(status)) {
+      console.error("server error", status, statusText);
+    } else {
+      response.json().then(({ report }) => {
+        if (response.status === 200) {
+          return onSucess();
+        }
+        const errorTags = report[formTag];
+        console.log("ListError", errorTags);
+        return onFailure(errorTags);
       });
-    },
+    }
   });
 };
 
@@ -57,7 +61,7 @@ function ProfileBox({
         <img alt="match" className="profile-image" src={imgSrc} />
       )}
       <div className={isOnline ? "online-indicator online" : "online-indicator"}>
-        online <span className="light"></span>
+        online <span className="light" />
       </div>
       <div className="profile-info">
         <div className="name">{`${firstName} ${lastName}`}</div>
@@ -104,19 +108,18 @@ function ItemsBox({ choices, selectedChoices }) {
   };
 
   const saveTopics = () => {
-    setTopicIndexes(tempTopicIndexes);
-    setEditing(false);
     postUserProfileUpdate(
-      { interests: tempTopicIndexes },
-      (_tags) => {
-        let errorText = "";
-        _tags.forEach((e) => {
-          errorText += `${t(e)}, `;
-        });
-        setErrorText(errorText);
-        console.log("ErrorText", errorText);
+      `interests:[${tempTopicIndexes}]`,
+      (errorTags) => {
+        const errorTextStr = errorTags.map((e) => t(e)).join(", ");
+        setErrorText(errorTextStr);
+        console.log("ErrorText", errorTextStr);
+        setEditing(false);
       },
-      () => {},
+      () => {
+        setEditing(false);
+        setTopicIndexes(tempTopicIndexes); // probably should use the server response?
+      },
       "interests"
     );
   };
@@ -222,15 +225,17 @@ function TextBox({ subject, initialText, formTag }) {
       .replace("<div>", "<br>")
       .replace("</div>", "");
     const text = editorRef.current.innerText;
-    setTopicText(text);
-    setEditState(false);
     postUserProfileUpdate(
       { [formTag]: text },
       (_text) => {
         console.log("text error");
         setErrorText(t(`request_errors.${_text}`)); // TODO: @tbscode here again I'm tahing a backend state directly, this could be resolved by https://github.com/tbscode/little-world-frontend/pull/122
+        setEditState(false);
       },
-      () => {},
+      () => {
+        setTopicText(text);
+        setEditState(false);
+      },
       formTag
     );
   };

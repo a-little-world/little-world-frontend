@@ -1,5 +1,4 @@
-import $ from "jquery";
-import { default as GLOB } from "./ENVIRONMENT.js";
+import { BACKEND_URL } from "./ENVIRONMENT";
 
 // Has to be async... This will not be needed in the future, cause login will already be done when loading this page normally
 export async function simulatedAutoLogin(username, password, by_force = false) {
@@ -12,21 +11,27 @@ export async function simulatedAutoLogin(username, password, by_force = false) {
   }
 
   // This has to be await, cause nothing is gonna work if not logged in
-  const login_data = await $.ajax({
-    type: "POST",
-    url: `${GLOB.BACKEND_URL}/api2/login_hack/`,
-    // headers: {  'Access-Control-Allow-Origin': '*' },
-    crossDomain: true,
-    /*
-     * This uses the `login_hack` api, which is an adaptation of the regular login
-     * - also returns `csrftoken` this is usualy set when loading the page under the default backend
-     * In this case we manulay get the cookie and and add it to the browser session
-     */
-    data: {
+  const login_data = await fetch(`${BACKEND_URL}/api2/login_hack/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    credentials: "include", // equivalent to crossDomain
+    body: new URLSearchParams({
       username,
       password,
-    },
-  });
+    }).toString(),
+  })
+    .then((response) => {
+      const { status, statusText } = response;
+      if (status === 200) {
+        return response.json();
+      }
+      console.error("server error", status, statusText);
+      return false;
+    })
+    .catch((error) => console.error(error));
 
   // patching the cookie, this would also usually not be needed cause it would be set if loaded via regular backend
   document.cookie = `csrftoken=${login_data.csrfcookie}; expires=Sun, 1 Jan 2023 00:00:00 UTC; path=/`;
@@ -37,48 +42,7 @@ export async function simulatedAutoLogin(username, password, by_force = false) {
   window.localStorage.setItem("login_data", login_data);
   window.localStorage.setItem("user_loggedin", true);
 
-  /* 
-  Last *impotant* thing
-  Ajax doesn't like transmitting the session id because the url is not the same as the current one,
-  if we set `xhrFields: { withCredentials: true }` It does it anyways.
-  */
-
-  $.ajaxSetup({
-    /* This will set this for all future calls */ xhrFields: { withCredentials: true },
-    /*
-     * So yeah mikes idea was the best all along.
-     * Somehow there is no way to teach the browser to send the `sessionid` to another domain.
-     * So we just store the authentication and use 'Basic ...'
-     */
-    crossDomain: true,
-    headers: {
-      Authorization: `Basic ${btoa(`${username}:${password}`)}`,
-      // "accept": "application/json",
-      // "Access-Control-Allow-Origin":"*"
-    },
-  });
-
   return login_data;
-}
-
-/*
- * Another crude hack to manipulate fetch to also send authentications
- */
-export function updateOptions(options) {
-  const login_user =
-    window.localStorage.getItem("current_login_user") || GLOB.DEFAULT_LOGIN_USERNAME;
-  const login_pass =
-    window.localStorage.getItem("current_login_pass") || GLOB.DEFAULT_LOGIN_PASSWORD;
-
-  const update = { ...options };
-  if (localStorage.jwt) {
-    update.headers = {
-      ...update.headers,
-      credentials: "include",
-      Authorization: `Basic ${btoa(`${login_user}:${login_pass}`)}`,
-    };
-  }
-  return update;
 }
 
 /*
