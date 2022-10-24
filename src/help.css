@@ -1,15 +1,16 @@
 .help.panel {
   display: flex;
-  flex-grow: 1;
+  margin: 0 auto;
+  padding: 30px;
+  height: fit-content;
+  width: 600px;
+  box-sizing: content-box;
 }
 
 .help-contact {
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 35px;
-  max-width: 600px;
-  margin: auto;
 }
 
 .help h2 {
@@ -70,7 +71,7 @@
   height: 122px;
   font-family: "Signika Negative";
   padding: 15px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .help-contact textarea,
@@ -146,9 +147,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
-  margin-left: auto;
   padding: 30px;
+  height: fit-content;
 }
 
 .help-support .topper {
