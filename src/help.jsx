@@ -8,6 +8,8 @@ function Contact() {
   const [filenames, setFilenames] = useState([]);
   const fileRef = useRef();
 
+  const handleSubmit = () => {};
+
   const handleDrop = (e) => {
     e.preventDefault();
     const fileList = [...e.dataTransfer.items]
@@ -29,66 +31,71 @@ function Contact() {
   };
 
   return (
-    <div className="help panel">
-      <div className="help-contact">
-        <h2>{t("nbt_contact")}</h2>
-        <p>
-          {t("help_contact_intro_line1")}
-          <br />
-          {t("help_contact_intro_line2")}
-        </p>
-        <label htmlFor="problem">
-          {t("help_contact_problem_label")}
-          <textarea
-            type="textarea"
-            name="problem"
-            inputMode="text"
-            maxLength="300"
-            placeholder={t("help_contact_problem_placeholder")}
-          />
-        </label>
-        <div className="drop-zone-label">
-          {t("help_contact_picture_label")}
-          <div
-            className={dragOver ? "picture-drop-zone dragover" : "picture-drop-zone"}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-          >
-            <input type="file" ref={fileRef} multiple accept="image/*" onChange={handleChange} />
-            <button type="button" onClick={handleClick}>
-              {filenames.map((name) => {
-                return (
-                  <div className="filename" key={name}>
-                    <img alt="" />
-                    {name}
-                  </div>
-                );
-              })}
-              {filenames.length === 0 && (
-                <>
+    <form
+      method="post"
+      encType="multipart/form-data"
+      className="help-contact"
+      onSubmit={handleSubmit}
+    >
+      <h2>{t("nbt_contact")}</h2>
+      <p className="intro-text">
+        {t("help_contact_intro_line1")}
+        <br />
+        {t("help_contact_intro_line2")}
+      </p>
+      <label htmlFor="problem">
+        {t("help_contact_problem_label")}
+        <textarea
+          type="textarea"
+          name="problem"
+          inputMode="text"
+          maxLength="300"
+          placeholder={t("help_contact_problem_placeholder")}
+        />
+      </label>
+      <div className="drop-zone-label">
+        {t("help_contact_picture_label")}
+        <div
+          className={dragOver ? "picture-drop-zone dragover" : "picture-drop-zone"}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+        >
+          <input type="file" ref={fileRef} multiple accept="image/*" onChange={handleChange} />
+          <button type="button" onClick={handleClick}>
+            {filenames.map((name) => {
+              return (
+                <div className="filename" key={name}>
                   <img alt="" />
-                  <span className="text">{t("help_contact_picture_btn")}</span>
-                </>
-              )}
-              {filenames.length > 0 && <span className="text">click to change files</span>}
-            </button>
-            <div className="drag-text">{t("help_contact_picture_drag")}</div>
-          </div>
+                  {name}
+                </div>
+              );
+            })}
+            {filenames.length === 0 && (
+              <>
+                <img alt="" />
+                <span className="text">{t("help_contact_picture_btn")}</span>
+              </>
+            )}
+            {filenames.length > 0 && <span className="text">click to change files</span>}
+          </button>
+          <div className="drag-text">{t("help_contact_picture_drag")}</div>
         </div>
-        <button type="submit" className="contact-submit">
-          {t("help_contact_submit")}
-        </button>
       </div>
-    </div>
+      <button type="submit" className="contact-submit">
+        {t("help_contact_submit")}
+      </button>
+    </form>
   );
 }
 
 function Help({ selection }) {
   return (
     <div className="content-area-main">
-      {selection === "contact" && <Contact />}
+      <div className="help panel">
+        {selection === "contact" && <Contact />}
+      </div>
       <div className="help-support panel">
         <div className="topper">
           <div className="logos">
