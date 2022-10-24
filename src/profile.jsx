@@ -109,7 +109,7 @@ function ItemsBox({ choices, selectedChoices }) {
 
   const saveTopics = () => {
     postUserProfileUpdate(
-      `interests[]:[${tempTopicIndexes}]`,
+      `interests:[${tempTopicIndexes}]`,
       (errorTags) => {
         const errorTextStr = errorTags.map((e) => t(e)).join(", ");
         setErrorText(errorTextStr);
