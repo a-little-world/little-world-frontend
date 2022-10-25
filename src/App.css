@@ -117,14 +117,14 @@ button {
   font-weight: 700;
   font-size: 28px;
   display: flex;
-  height: 1em;
-  box-sizing: content-box;
+  height: 84px;
+  box-sizing: border-box;
   align-items: center;
   text-transform: capitalize;
 }
 
 .main-page .header .text {
-  margin-left: 6px;
+  margin-left: 12px;
 }
 
 /* parent items of above elements, setting consistent gap between */
