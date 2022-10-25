@@ -10,9 +10,9 @@ html {
 }
 
 body {
-  margin: 0;
   height: 100%;
   max-width: 1790px; /* 3 columns */
+  margin: 0 auto;
   background: url("./images/background.svg");
   background-repeat: no-repeat;
   background-size: 100% auto;
