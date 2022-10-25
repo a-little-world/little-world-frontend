@@ -223,3 +223,13 @@ a {
     background-color: #fff0e0;
   }
 }
+
+img.logo-image {
+  content: url("./images/logo-image.svg");
+  max-width: 100%;
+}
+
+img.logo-text {
+  content: url("./images/logo-text.svg");
+  max-width: 100%;
+}

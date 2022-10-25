@@ -254,14 +254,6 @@ button.support-call img {
   color: #4b4c4f;
 }
 
-img.logo-image {
-  content: url("./images/logo-image.svg");
-}
-
-img.logo-text {
-  content: url("./images/logo-text.svg");
-}
-
 img.web-icon {
   content: url("./images/icons/web.svg");
 }
