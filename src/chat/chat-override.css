@@ -242,6 +242,7 @@
 
 .call-start {
   padding: 9px;
+  flex-shrink: 0;
 }
 
 .call-start img {
