@@ -173,30 +173,6 @@ section.settings {
   color: #0063af;
 }
 
-.buttons .save.waiting {
-  animation-name: stretch;
-  animation-duration: 0.7s;
-  animation-timing-function: ease-out;
-  animation-direction: alternate;
-  animation-iteration-count: infinite;
-  animation-play-state: running;
-
-  pointer-events: none;
-
-  display: unset;
-  flex: unset;
-  flex-direction: unset;
-}
-
-@keyframes stretch {
-  0% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 0.4;
-  }
-}
-
 @media (width < 1024px) {
   .edit-overlay {
     padding: 0;
