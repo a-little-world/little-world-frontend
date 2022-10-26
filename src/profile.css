@@ -8,11 +8,6 @@
   flex-grow: 1;
 }
 
-.show-profile .content {
-  display: flex;
-  flex: 1 1 0;
-}
-
 .profile-box .profile-avatar {
   text-align: left;
 }
@@ -225,15 +220,6 @@
 @media screen and (width < 1024px) {
   .show-profile .selector {
     display: none;
-  }
-
-  .show-profile .profile-component,
-  .show-profile .content {
-    gap: 10px;
-  }
-
-  .show-profile .content {
-    flex-direction: column;
   }
 
   .show-profile .profile-box {
