@@ -1,5 +1,4 @@
 .show-notifications .select-showing {
-  margin-left: auto;
   display: flex;
   gap: 8px;
 }
