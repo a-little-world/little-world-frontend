@@ -3,7 +3,7 @@
   margin: 0 auto;
   padding: 30px;
   height: fit-content;
-  width: 600px;
+  flex: 0 1 600px;
   box-sizing: content-box;
 }
 
