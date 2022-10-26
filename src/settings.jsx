@@ -324,8 +324,8 @@ function Settings() {
                 {t("sg_personal_delete_account_btn")}
               </button>
             </div>
-          */}
-            <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
+            */}
+            <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
               {editing && (
                 <ModalBox
                   label={editing}

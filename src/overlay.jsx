@@ -14,7 +14,7 @@ function Overlay({ title, name, text, onOk, onExit, userInfo }) {
   // <button type="button" className="modal-close" onClick={onExit} />
   // <span className="subtitle">{subtitle}</span>
   return (
-    <div className="overlay-modal">
+    <div className="overlay-modal modal-box">
       <div className="modal-top">
         <div className="modal-header">
           <h3 className="title">{title}</h3>

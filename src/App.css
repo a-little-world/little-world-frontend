@@ -65,9 +65,7 @@ button {
 .main-page .header,
 .profile-detail > div,
 .show-profile .profile-box,
-.call-setup-modal,
-.overlay-modal,
-.edit-modal,
+.modal-box,
 .call-and-text,
 .call-sidebar {
   border: 1px solid rgba(0, 0, 0, 0.12);
