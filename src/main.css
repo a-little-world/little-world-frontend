@@ -19,14 +19,6 @@
   margin: 16px;
 }
 
-.sidebar .logo-image {
-  content: url("./images/logo-image.svg");
-}
-
-.sidebar .logo-text {
-  content: url("./images/logo-text.svg");
-}
-
 .disable-chat {
   display: none;
 }
@@ -459,7 +451,7 @@ button.match-status {
     left: 0;
     transition: left 0.4s;
     overflow-y: scroll;
-    width: min-content;
+    width: fit-content;
   }
 
   .sidebar.hidden {
@@ -481,7 +473,6 @@ button.match-status {
     font-size: 18px;
   }
 
-  .sidebar .active-user,
   .sidebar .close {
     display: unset;
   }
@@ -506,6 +497,20 @@ button.match-status {
     width: 100vw;
     pointer-events: all;
     transition: opacity 0.5s;
+  }
+
+  @media screen and (height < 775px) {
+    .sidebar .logos {
+      margin: 0 10px 10px;
+      /* match logos-small rules */
+      height: 30px;
+      display: flex;
+      width: fit-content;
+    }
+
+    .logos .logo-text {
+      margin: 3px;
+    }
   }
 }
 

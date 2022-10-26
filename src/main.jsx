@@ -62,7 +62,10 @@ function Sidebar({ sidebarMobile }) {
   return (
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
-        <img alt="little world" className="logo" />
+        <div className="logos">
+          <img alt="little" className="logo-image" />
+          <img alt="little world" className="logo-text" />
+        </div>
         {buttonData.map(({ label, path, clickEvent }) =>
           typeof clickEvent === typeof undefined ? (
             <Link
