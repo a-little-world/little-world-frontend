@@ -126,11 +126,10 @@ function MobileNavBar({ setShowSidebarMobile }) {
 }
 
 function NbtSelector({ selection, setSelection, use }) {
+  const { t } = useTranslation();
   if (!["main", "help"].includes(use)) {
     return null;
   }
-
-  const { t } = useTranslation();
 
   const nbtTopics = {
     main: ["conversation_partners", "appointments", "community_calls"],
