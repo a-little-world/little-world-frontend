@@ -63,14 +63,6 @@ function Sidebar({ userInfo, sidebarMobile }) {
   return (
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
-        <div className="active-user">
-          {userInfo.usesAvatar ? (
-            <Avatar className="avatar" {...userInfo.avatarConfig} />
-          ) : (
-            <img src={userInfo.imgSrc} alt="current user" />
-          )}
-          <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
-        </div>
         <div className="logos">
           <img alt="little" className="logo-image" />
           <img alt="little world" className="logo-text" />
