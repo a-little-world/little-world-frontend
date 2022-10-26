@@ -78,29 +78,6 @@ button {
   padding: 20px;
 }
 
-@media screen and (width < 1024px) {
-  .panel,
-  .profile-box,
-  .match-status,
-  .sidebar,
-  .nav-bar-top,
-  .notification-panel,
-  .community-event,
-  .chat-list-box,
-  .show-chat .right-panel,
-  .show-profile .profile-box,
-  .main-page .header,
-  .profile-detail > div,
-  .show-profile .profile-box,
-  .call-setup-modal,
-  .overlay-modal,
-  .edit-modal,
-  .call-and-text,
-  .call-sidebar {
-    border-radius: unset;
-  }
-}
-
 /* hide top nav bar in all desktop by default */
 @media screen and (width >= 1024px) {
   .nav-bar-top {
