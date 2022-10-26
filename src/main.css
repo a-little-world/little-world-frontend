@@ -344,6 +344,11 @@ button.match-status {
     max-width: 100%;
     overflow: hidden;
   }
+
+  .content-area-main {
+    gap: 20px;
+    flex-direction: column;
+  }
 }
 
 .active-user {
