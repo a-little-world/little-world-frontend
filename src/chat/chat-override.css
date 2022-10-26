@@ -169,7 +169,6 @@
 .rce-navbar {
   box-sizing: border-box;
   width: 100%;
-  overflow: hidden;
   display: flex;
 }
 
