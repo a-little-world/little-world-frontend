@@ -490,18 +490,13 @@
     box-sizing: border-box;
   }
 
-  .right-panel,
-  .container > .chat-list-box,
-  .flex-container .rce-container-input,
-  .rce-container-mlist,
-  .rce-navbar.light,
-  .rce-mlist {
+  .container .chat-list-box,
+  .show-chat .container .right-panel {
     border-radius: 0;
   }
 
   .show-chat .right-panel {
     min-width: unset;
-    border-radius: unset;
   }
 
   .rce-navbar-item__right .free-appointments,
