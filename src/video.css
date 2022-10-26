@@ -110,7 +110,7 @@ video {
   text-decoration: none;
 }
 
-.call-setup-modal input#audio-toggle + label {
+.modal-box input#audio-toggle + label {
   /* push items to right side */
   margin-left: auto;
 }

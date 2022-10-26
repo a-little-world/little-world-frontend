@@ -65,9 +65,7 @@ button {
 .main-page .header,
 .profile-detail > div,
 .show-profile .profile-box,
-.call-setup-modal,
-.overlay-modal,
-.edit-modal,
+.modal-box,
 .call-and-text,
 .call-sidebar {
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -240,5 +238,51 @@ img.logo-text {
   }
   100% {
     opacity: 0.4;
+  }
+}
+
+.overlay-shade {
+  display: flex;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  backdrop-filter: blur(5px);
+  transition: 1s;
+  background: rgba(0, 0, 0, 0.3);
+  overflow-y: scroll;
+  padding-top: 4px;
+}
+
+.overlay-shade.hidden {
+  backdrop-filter: blur(0);
+  background: none;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.modal-box {
+  margin: auto;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 30px;
+}
+
+@media screen and (width < 1024px) {
+  .overlay-shade {
+    padding: 0;
+  }
+
+  .modal-box {
+    height: 100%;
+    width: 100%;
+    border-radius: unset;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
   }
 }

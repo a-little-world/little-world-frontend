@@ -166,7 +166,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
         />
       )}
       {!(waiting && repeat === true) && (
-        <div className="edit-modal">
+        <div className="edit-modal modal-box">
           <h2>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</h2>
           <div className="error-message">
             {errors.map((errorTag) => {
@@ -277,7 +277,7 @@ function Settings({ userData }) {
                 {t("sg_personal_delete_account_btn")}
               </button>
             </div>
-            <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
+            <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
               {editing && (
                 <ModalBox
                   label={editing}

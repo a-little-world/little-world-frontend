@@ -144,8 +144,8 @@ function ItemsBox({ choices, selectedChoices }) {
           </div>
         ))}
         {editing && (
-          <div className="topics-shade">
-            <div className="topics-selector">
+          <div className="overlay-shade">
+            <div className="topics-selector modal-box">
               <div className="buttons">
                 <button type="button" className="cancel" onClick={cancelTopics}>
                   <img alt="cancel" />

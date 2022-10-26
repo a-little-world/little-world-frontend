@@ -616,11 +616,7 @@ function Main({ initData }) {
         {use === "help" && <Help selection={topSelection} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>
-      <div
-        className={
-          callSetupPartner || showIncoming ? "call-setup-overlay" : "call-setup-overlay hidden"
-        }
-      >
+      <div className={callSetupPartner || showIncoming ? "overlay-shade" : "overlay-shade hidden"}>
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
         )}

@@ -1,34 +1,5 @@
 @import "video.css";
 
-.call-setup-overlay {
-  display: flex;
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  backdrop-filter: blur(5px);
-  transition: 1s;
-  background: rgba(0, 0, 0, 0.3);
-  overflow-y: scroll;
-  padding-top: 4px;
-}
-
-.call-setup-overlay.hidden {
-  backdrop-filter: blur(0);
-  background: none;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.call-setup-modal {
-  margin: auto;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-}
-
 /*titles area*/
 
 .modal-top {
@@ -124,21 +95,6 @@
   background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
   line-height: 58px;
   text-align: center;
-}
-
-@media screen and (width < 1024px) {
-  .call-setup-overlay {
-    padding: 0;
-  }
-
-  .call-setup-modal {
-    min-height: 100%;
-    width: 100%;
-    border-radius: 0;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-  }
 }
 
 /*incoming call*/
