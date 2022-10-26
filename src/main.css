@@ -19,14 +19,6 @@
   margin: 16px;
 }
 
-.sidebar .logo-image {
-  content: url("./images/logo-image.svg");
-}
-
-.sidebar .logo-text {
-  content: url("./images/logo-text.svg");
-}
-
 .disable-chat {
   display: none;
 }
