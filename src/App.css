@@ -123,6 +123,12 @@ button {
   text-transform: capitalize;
 }
 
+@media screen and (width < 1024px) {
+  .main-page .header {
+    display: none;
+  }
+}
+
 .main-page .header .text {
   margin-left: 12px;
 }

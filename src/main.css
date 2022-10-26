@@ -305,6 +305,7 @@ button.match-status {
     padding: 10px 0;
     justify-content: space-around;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    text-transform: capitalize;
   }
 
   .mobile-header button {
@@ -319,7 +320,8 @@ button.match-status {
     margin: auto 0;
     width: 210px;
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
+    justify-content: center;
   }
   .mobile-header .logo-mobile {
     content: url("./images/logo-image.svg");
@@ -331,6 +333,7 @@ button.match-status {
     font-weight: 600;
     font-size: 30px;
     color: #23262f;
+    white-space: nowrap;
   }
   .mobile-header .notification img {
     content: url("./images/button-bell.svg");
