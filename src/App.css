@@ -96,6 +96,7 @@ button {
   box-sizing: border-box;
   align-items: center;
   text-transform: capitalize;
+  justify-content: space-between;
 }
 
 @media screen and (width < 1024px) {
