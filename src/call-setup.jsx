@@ -225,13 +225,9 @@ function CallSetup({ userPk, setCallSetupPartner }) {
 
   return (
     <div className="modal-box">
-      <div className="modal-top">
-        <div className="modal-header">
-          <h3 className="title">{t("pcs_main_heading")}</h3>
-          <span className="subtitle">{t("pcs_sub_heading")}</span>
-        </div>
-        <button type="button" className="modal-close" onClick={() => setCallSetupPartner(null)} />
-      </div>
+      <button type="button" className="modal-close" onClick={() => setCallSetupPartner(null)} />
+      <h3 className="title">{t("pcs_main_heading")}</h3>
+      <span className="subtitle">{t("pcs_sub_heading")}</span>
       {mediaPermission && (
         <>
           <VideoFrame Video={videoRef} Audio={audioRef} />
