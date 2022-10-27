@@ -251,14 +251,14 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
               className={waiting ? "save waiting" : "save"}
               onClick={handleSubmit}
             >
-              {isOldPass ? t("sg_btn_confirm") : t("sg_btn_save")}
+              {isOldPass ? t("sg_btn_confirm") : t("btn_save")}
             </button>
             <button
               type="button"
               className={waiting ? "cancel disabled" : "cancel"}
               onClick={() => setEditing(false)}
             >
-              {t("sg_btn_cancel")}
+              {t("btn_cancel")}
             </button>
           </div>
         </div>

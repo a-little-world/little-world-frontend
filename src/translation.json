@@ -1,5 +1,7 @@
 {
   "en": {
+    "btn_save": "save",
+    "btn_cancel": "cancel",
     "pcs_main_heading": "Set up",
     "pcs_sub_heading": "Would you like to join this conversation?",
     "pcs_signal_good": "Signal Good",
@@ -156,8 +158,6 @@
     "sg_repeat_item": "repeat {{item}}",
     "sg_btn_change": "change",
     "sg_btn_confirm": "confirm",
-    "sg_btn_save": "save",
-    "sg_btn_cancel": "cancel",
     "sg_personal_header": "personal",
     "sg_personal_displayLang": "display language",
     "sg_personal_firstName": "first name",
@@ -174,6 +174,8 @@
     "sg_personal_delete_account_btn": "delete my account now"
   },
   "de": {
+    "btn_save": "speichern",
+    "btn_cancel": "abbrechen",
     "pcs_main_heading": "Beitrittsbestätigung",
     "pcs_sub_heading": "Möchten Sie diesem Gespräch beitreten?",
     "pcs_signal_good": "Signal Gut",
@@ -329,8 +331,6 @@
     "sg_repeat_item": "wiederholung {{item}}",
     "sg_btn_change": "ändern",
     "sg_btn_confirm": "bestätigen",
-    "sg_btn_save": "speichern",
-    "sg_btn_cancel": "abbrechen",
     "sg_personal_header": "persönliches",
     "sg_personal_displayLang": "anzeigesprache",
     "sg_personal_firstName": "vorname",
