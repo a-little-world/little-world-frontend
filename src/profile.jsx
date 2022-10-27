@@ -143,17 +143,10 @@ function ItemsBox({ choices, selectedChoices }) {
             <span className="text">{t(`profile_interests.${choicesTransTags[idx]}`)}</span>
           </div>
         ))}
-        {editing && (
-          <div className="overlay-shade">
+        <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
+          {editing && (
             <div className="topics-selector modal-box">
-              <div className="buttons">
-                <button type="button" className="cancel" onClick={cancelTopics}>
-                  <img alt="cancel" />
-                </button>
-                <button type="button" className="save" onClick={saveTopics}>
-                  <img alt="save" />
-                </button>
-              </div>
+              <button type="button" className="modal-close" onClick={() => setEditing(false)} />
               <h3>{t("profile_choose_interests")}</h3>
               <div className="items">
                 {choicesTransTags.map((interest, idx) => (
@@ -171,9 +164,17 @@ function ItemsBox({ choices, selectedChoices }) {
                   </button>
                 ))}
               </div>
+              <div className="buttons">
+                <button type="button" className="save" onClick={saveTopics}>
+                  {t("btn_save")}
+                </button>
+                <button type="button" className="cancel" onClick={cancelTopics}>
+                  {t("btn_cancel")}
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
@@ -335,10 +336,10 @@ function TextBox({ subject, initialText, formTag }) {
         {isSelf && editState && (
           <div className="buttons">
             <button type="button" className="cancel" onClick={() => setEditState(false)}>
-              <img alt="cancel" />
+              <img alt={t("btn_cancel")} />
             </button>
             <button type="button" className="save" onClick={saveChange}>
-              <img alt="save" />
+              <img alt={t("btn_save")} />
             </button>
           </div>
         )}

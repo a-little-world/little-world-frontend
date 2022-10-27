@@ -58,7 +58,7 @@
   font-weight: 500;
 }
 
-.profile-detail .buttons {
+.profile-text .buttons {
   display: flex;
   position: absolute;
   right: 30px;
@@ -112,12 +112,6 @@
   right: 15px;
 }
 
-.selected-topics .buttons {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-}
-
 .interest-item {
   padding: 8px 20px;
   box-shadow: 0px 1px 5px rgb(0 0 0 / 30%);
@@ -141,15 +135,13 @@
   filter: hue-rotate(180deg);
 }
 
-.topics-selector {
-  gap: 40px;
-}
-
 .topics-selector .items {
   display: flex;
   flex-wrap: wrap;
-  max-width: 800px;
+  max-width: 600px;
   gap: 10px;
+  justify-content: space-evenly;
+  margin-top: 20px;
 }
 
 .interest-item.selected-item {

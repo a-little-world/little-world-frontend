@@ -2,48 +2,14 @@
 
 /*titles area*/
 
-.modal-top {
-  display: flex;
-}
-
-.modal-header,
-.modal-close {
-  display: table-cell;
-}
-
-.modal-header .title,
-.modal-header .subtitle {
-  margin: 7px 0;
-}
-
-.modal-header .title {
-  color: #374151;
-  font-size: 24px;
-}
-.modal-header .subtitle {
+.modal-box .subtitle {
   font-weight: 300;
   color: #a6a6a6;
   font-size: 18px;
-}
-
-.modal-close {
-  margin-left: auto;
-  height: 60px;
-  width: 60px;
-  background-image: url("images/close-pop-up.svg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: rgba(230, 232, 236, 0.2);
-  border: 2px solid rgba(230, 232, 236, 0.2);
-  box-sizing: border-box;
-  flex-shrink: 0;
+  text-align: center;
 }
 
 /*setting selection*/
-
-.modal-top a {
-  text-decoration: none;
-}
 
 .av-setup-dropdowns {
   margin-bottom: 40px;

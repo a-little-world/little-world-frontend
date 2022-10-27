@@ -167,13 +167,13 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
       )}
       {!(waiting && repeat === true) && (
         <div className="edit-modal modal-box">
+          <button type="button" className="modal-close" onClick={() => setEditing(false)} />
           <h2>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</h2>
           <div className="error-message">
             {errors.map((errorTag) => {
               return <div key={errorTag}>{`⚠️ ${t(`request_errors.${errorTag}`)}`}</div>;
             })}
           </div>
-          <button type="button" className="modal-close" onClick={() => setEditing(false)} />
           <div className="input-container">
             <label htmlFor={label}>{fullLabel()}</label>
             {type === "select" && (
@@ -277,18 +277,18 @@ function Settings({ userData }) {
                 {t("sg_personal_delete_account_btn")}
               </button>
             </div>
-            <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
-              {editing && (
-                <ModalBox
-                  label={editing}
-                  valueIn={data[editing]}
-                  repeat={repeaters.includes(editing)}
-                  setEditing={setEditing}
-                />
-              )}
-            </div>
           </div>
         </section>
+      </div>
+      <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
+        {editing && (
+          <ModalBox
+            label={editing}
+            valueIn={data[editing]}
+            repeat={repeaters.includes(editing)}
+            setEditing={setEditing}
+          />
+        )}
       </div>
     </>
   );
