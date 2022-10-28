@@ -155,26 +155,22 @@ function Help({ selection }) {
                 <img className="logo-image" alt="" />
                 <img className="logo-text" alt="little world" />
               </div>
-              <div className="business-name">Little World GbR</div>
+              <div className="business-name">A Little World gUG</div>
             </div>
             <div className="bottom">
               <div className="contacts">
-                <div>
-                  <img className="web-icon" alt="web" />
-                  www.little-world.de
-                </div>
-                <div>
+                <a href="mailto:oliver.berlin@little-world.com">
                   <img className="email-icon" alt="e-mail" />
-                  oliver@little-world.com
-                </div>
-                <div>
+                  oliver.berlin@little-world.com
+                </a>
+                <a href="tel:+4924198093490">
                   <img className="phone-icon" alt="phone" />
                   +49 241 980 93 490
-                </div>
-                <div>
+                </a>
+                <a href="tel:+4915234777471">
                   <img className="mobile-icon" alt="mobile" />
                   +49 152 34 777 471
-                </div>
+                </a>
               </div>
             </div>
           </div>
