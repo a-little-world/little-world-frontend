@@ -426,8 +426,8 @@ function Profile({ matchesInfo, userInfo, setCallSetupPartner, profileOptions, p
         <span className="text">{profileTitle}</span>
       </div>
       <div className="content-area-main">
-        <ProfileBox {...profileData} isSelf={!userPk} setCallSetupPartner={setCallSetupPartner} />
         <ProfileDetail isSelf={!userPk} profileOptions={profileOptions} profile={profile} />
+        <ProfileBox {...profileData} isSelf={!userPk} setCallSetupPartner={setCallSetupPartner} />
       </div>
     </div>
   );

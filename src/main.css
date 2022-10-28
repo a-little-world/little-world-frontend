@@ -349,6 +349,10 @@ button.match-status {
     gap: 20px;
     flex-direction: column;
   }
+
+  .show-profile .content-area-main {
+    flex-direction: column-reverse;
+  }
 }
 
 .active-user {
