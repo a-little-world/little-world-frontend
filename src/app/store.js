@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import tracksReducer from "../features/tracks";
+
+import userDataReducer from "../features/userData";
 
 export default configureStore({
   reducer: {
-    tracks: tracksReducer,
+    userData: userDataReducer,
   },
 });

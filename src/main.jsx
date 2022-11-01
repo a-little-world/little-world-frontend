@@ -2,11 +2,14 @@ import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
+import { initialise } from "./features/userData";
+import Help from "./help";
 import "./i18n";
 import Overlay from "./overlay";
 import Link from "./path-prepend";
@@ -301,8 +304,11 @@ function CommunityCalls() {
   );
 }
 
-function NotificationPanel({ userInfo }) {
+function NotificationPanel() {
   const { t } = useTranslation();
+  const { avatarConfig, firstName, lastName, imgSrc, usesAvatar } = useSelector(
+    (state) => state.userData
+  );
 
   const dummyNotifications = [
     {
@@ -315,19 +321,19 @@ function NotificationPanel({ userInfo }) {
   ];
 
   // don't show unless names are available; ie API call has returned
-  if (!(userInfo.firstName && userInfo.lastName)) {
+  if (!(firstName && lastName)) {
     return false;
   }
 
   return (
     <div className="notification-panel">
       <div className="active-user">
-        {userInfo.usesAvatar ? (
-          <Avatar className="avatar" {...userInfo.avatarConfig} />
+        {usesAvatar ? (
+          <Avatar className="avatar" {...avatarConfig} />
         ) : (
-          <img src={userInfo.imgSrc} alt="current user" />
+          <img src={imgSrc} alt="current user" />
         )}
-        <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
+        <div className="name">{`${firstName} ${lastName}`}</div>
       </div>
       <hr />
       <div className="notifications-header">{t("nbr_notifications")}</div>
@@ -348,6 +354,9 @@ function NotificationPanel({ userInfo }) {
 }
 
 function Main({ initData }) {
+  const dispatch = useDispatch();
+  dispatch(initialise(initData));
+
   const location = useLocation();
   const { userPk } = location.state || {};
   const { t } = useTranslation();
@@ -567,7 +576,7 @@ function Main({ initData }) {
                   setCallSetupPartner={setCallSetupPartner}
                   matchesOnlineStates={matchesOnlineStates}
                 />
-                <NotificationPanel userInfo={userInfo} />
+                <NotificationPanel />
               </>
             )}
             {topSelection === "community_calls" && <CommunityCalls />}
