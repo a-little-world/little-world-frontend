@@ -11,7 +11,7 @@ import Link from "./path-prepend";
 
 import "./profile.css";
 
-const postUserProfileUpdate = (updateData, onFailure, onSucess, formTag) => {
+const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
   fetch(`${BACKEND_URL}/api2/profile/`, {
     method: "POST",
     headers: {
@@ -26,7 +26,7 @@ const postUserProfileUpdate = (updateData, onFailure, onSucess, formTag) => {
     } else {
       response.json().then(({ report }) => {
         if (response.status === 200) {
-          return onSucess();
+          return onSuccess();
         }
         const errorTags = report[formTag];
         console.log("ListError", errorTags);

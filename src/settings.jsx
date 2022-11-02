@@ -38,7 +38,7 @@ const allowedChars = {
 const displayLanguages = ["English", "Deutsch"];
 const repeaters = ["password", "email"];
 
-const submitData = (newDataObj, onSucess, onFailure) => {
+const submitData = (newDataObj, onSuccess, onFailure) => {
   fetch(`${BACKEND_URL}/api2/profile/`, {
     method: "POST",
     headers: {
@@ -52,7 +52,7 @@ const submitData = (newDataObj, onSucess, onFailure) => {
       if ([200, 400].includes(status)) {
         response.json().then(({ report }) => {
           if (status === 200) {
-            onSucess(report);
+            onSuccess(report);
           } else {
             onFailure(report);
           }
@@ -65,7 +65,7 @@ const submitData = (newDataObj, onSucess, onFailure) => {
     .catch((error) => console.error(error));
 };
 
-const apiChangeEmail = (email, onSucess, onFailure) => {
+const apiChangeEmail = (email, onSuccess, onFailure) => {
   /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
   //to do ; use fetch api
   //$.ajax({
@@ -75,7 +75,7 @@ const apiChangeEmail = (email, onSucess, onFailure) => {
   //    "X-CSRFToken": Cookies.get("csrftoken"),
   //  },
   //  data: { email },
-  //  success: onSucess,
+  //  success: onSuccess,
   //  error: onFailure,
   //});
 };
@@ -99,7 +99,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     }
   };
 
-  const onResponseSucess = (data) => {
+  const onResponseSuccess = (data) => {
     window.location.reload(); // update page
     setEditing(false);
   };
@@ -129,8 +129,8 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     } else if (repeat !== true) {
       setWaiting(true);
       const newData = { [label]: value };
-      if (type === "email") apiChangeEmail(value, onResponseSucess, onResponseFailure);
-      else submitData(newData, onResponseSucess, onResponseFailure);
+      if (type === "email") apiChangeEmail(value, onResponseSuccess, onResponseFailure);
+      else submitData(newData, onResponseSuccess, onResponseFailure);
     }
   };
 
