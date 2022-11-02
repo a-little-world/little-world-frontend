@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { BACKEND_URL } from "./ENVIRONMENT";
@@ -39,24 +40,23 @@ function ProfileBox({
   userPk,
   firstName,
   lastName,
-  userDescription,
+  description,
   imgSrc,
-  avatarConfig,
-  usesAvatar,
-  isConfirmed,
-  isSelf,
+  avatarCfg,
+  status,
   setCallSetupPartner,
   isOnline,
 }) {
   const { t } = useTranslation();
+  const isSelf = status === "self";
   if (isSelf) {
     isOnline = true;
   }
 
   return (
-    <div className={!isConfirmed ? "profile-box new-match" : "profile-box"}>
-      {usesAvatar ? (
-        <Avatar className="profile-avatar" {...avatarConfig} />
+    <div className={status === "unconfirmed" ? "profile-box new-match" : "profile-box"}>
+      {avatarCfg ? (
+        <Avatar className="profile-avatar" {...avatarCfg} />
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />
       )}
@@ -65,7 +65,7 @@ function ProfileBox({
       </div>
       <div className="profile-info">
         <div className="name">{`${firstName} ${lastName}`}</div>
-        <div className="text">{userDescription}</div>
+        <div className="text">{description}</div>
       </div>
       {!isSelf && (
         <div className="buttons">
@@ -87,8 +87,9 @@ function ProfileBox({
   );
 }
 
-function ItemsBox({ choices, selectedChoices }) {
+function ItemsBox({ selectedChoices }) {
   const { t } = useTranslation();
+  const choices = useSelector((state) => state.userData.interestsChoices);
 
   const choicesTransTags = choices.map(({ display_name }) => display_name);
   const [editing, setEditing] = useState(false);
@@ -191,7 +192,7 @@ function SectionBox({ subject, children }) {
   );
 }
 
-function TextBox({ subject, initialText, formTag }) {
+function TextBox({ subject, initialText = "", formTag }) {
   const { t } = useTranslation();
   const location = useLocation();
   const editorRef = useRef();
@@ -355,7 +356,7 @@ function TextBox({ subject, initialText, formTag }) {
 }
 
 /* TODO: the expectations is still the wrong form field */
-function ProfileDetail({ profileOptions, profile }) {
+function ProfileDetail({ profile }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { userPk } = location.state || {};
@@ -368,19 +369,16 @@ function ProfileDetail({ profileOptions, profile }) {
 
   return (
     <div className="profile-detail">
-      <TextBox subject="about" initialText={profile.description} formTag="description" />
-      <ItemsBox
-        choices={profileOptions.interests.choices}
-        selectedChoices={profile.interests.map(Number)}
-      />
+      <TextBox subject="about" initialText={profile.about} formTag="description" />
+      <ItemsBox selectedChoices={profile.interestTopics} />
       <TextBox
         subject="extra-topics"
-        initialText={profile.additional_interests}
+        initialText={profile.extraTopics}
         formTag="additional_interests"
       />
       <TextBox
         subject="expectations"
-        initialText={profile.language_skill_description}
+        initialText={profile.expectations}
         formTag="language_skill_description"
       />
       {isSelf && (
@@ -400,25 +398,27 @@ function ProfileDetail({ profileOptions, profile }) {
   );
 }
 
-function Profile({ matchesInfo, userInfo, setCallSetupPartner, profileOptions, profile }) {
+function Profile({ setCallSetupPartner, userPk_ }) {
   const { t } = useTranslation();
-  const location = useLocation();
-  const { userPk } = location.state || {};
-  const profileData = userPk ? matchesInfo.filter((data) => data.userPk === userPk)[0] : userInfo;
-  console.log("PDATA", profileData, matchesInfo);
+  const usersData = useSelector((state) => state.userData.users);
+  const isSelf = !userPk_;
+
+  const profileData = isSelf
+    ? usersData.find(({ status }) => status === "self")
+    : usersData.find(({ userPk }) => userPk === userPk_);
 
   if (!profileData) {
-    return null; // don't render until ajax has returned the necessary data
+    return null; // don't render unless we have the necessary data
   }
 
-  const profileTitle = userPk
-    ? t("profile_match_profile", { userName: profileData.firstName })
-    : t("profile_my_profile");
+  const profileTitle = isSelf
+    ? t("profile_my_profile")
+    : t("profile_match_profile", { userName: profileData.firstName });
 
   return (
     <div className="profile-component">
       <div className="header">
-        {userPk && (
+        {!isSelf && (
           <Link to="/" className="back">
             <img alt="back" />
           </Link>
@@ -426,8 +426,8 @@ function Profile({ matchesInfo, userInfo, setCallSetupPartner, profileOptions, p
         <span className="text">{profileTitle}</span>
       </div>
       <div className="content-area-main">
-        <ProfileDetail isSelf={!userPk} profileOptions={profileOptions} profile={profile} />
-        <ProfileBox {...profileData} isSelf={!userPk} setCallSetupPartner={setCallSetupPartner} />
+        <ProfileDetail isSelf={isSelf} profile={profileData.extraInfo} />
+        <ProfileBox {...profileData} isSelf={isSelf} setCallSetupPartner={setCallSetupPartner} />
       </div>
     </div>
   );

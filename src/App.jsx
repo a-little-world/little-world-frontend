@@ -17,12 +17,12 @@ function DoRoutes({ initData }) {
     <Router>
       <Routes>
         <Route path={`${BACKEND_PATH}/`}>
-          <Route index element={<Main initData={initData} />} />
+          <Route index element={<Main />} />
           <Route path="call" element={<ActiveCall />} />
           <Route path="partners" element={<Main initData={initData} />} />
           <Route path="chat" element={<Main initData={initData} />} />
           <Route path="notifications" element={<Main initData={initData} />} />
-          <Route path="profile" element={<Main initData={initData} />} />
+          <Route path="profile" element={<Main />} />
           <Route path="help" element={<Main initData={initData} />} />
           <Route path="settings" element={<Main initData={initData} />} />
           <Route path="*" element="404" />
