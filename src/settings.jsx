@@ -83,7 +83,7 @@ const submitData = (item, newValue, onSuccess, onFailure) => {
     .catch((error) => console.error(error));
 };
 
-const apiChangeEmail = (email, onSucess, onFailure) => {
+const apiChangeEmail = (email, onSuccess, onFailure) => {
   /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
   fetch(`${BACKEND_URL}/api2/change_email/`, {
     method: "POST",
