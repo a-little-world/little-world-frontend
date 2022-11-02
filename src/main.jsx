@@ -2,13 +2,12 @@ import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
-import { initialise } from "./features/userData";
 import Help from "./help";
 import "./i18n";
 import Notifications from "./notifications";
@@ -374,9 +373,6 @@ function NotificationPanel() {
 }
 
 function Main({ initData }) {
-  const dispatch = useDispatch();
-  dispatch(initialise(initData));
-
   const location = useLocation();
   const { userPk } = location.state || {};
   const { t } = useTranslation();
