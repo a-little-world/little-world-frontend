@@ -2,14 +2,12 @@ import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
-import { initialise } from "./features/userData";
-import Help from "./help";
 import "./i18n";
 import Overlay from "./overlay";
 import Link from "./path-prepend";
@@ -27,7 +25,7 @@ function UnreadDot({ count }) {
   return <div className="unread-dot">{count}</div>;
 }
 
-function Sidebar({ userInfo, sidebarMobile }) {
+function Sidebar({ sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -64,14 +62,6 @@ function Sidebar({ userInfo, sidebarMobile }) {
   return (
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
-        <div className="active-user">
-          {userInfo.usesAvatar ? (
-            <Avatar className="avatar" {...userInfo.avatarConfig} />
-          ) : (
-            <img src={userInfo.imgSrc} alt="current user" />
-          )}
-          <div className="name">{`${userInfo.firstName} ${userInfo.lastName}`}</div>
-        </div>
         <img alt="little world" className="logo" />
         {buttonData.map(({ label, path, clickEvent }) =>
           typeof clickEvent === typeof undefined ? (
@@ -149,9 +139,10 @@ function Selector({ selection, setSelection }) {
   );
 }
 
-function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOnlineStates }) {
+function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   const { t } = useTranslation();
   const [matchState, setMatchState] = useState("idle");
+  const users = useSelector((state) => state.userData.users);
 
   // backend values
   const matchStatuses = {
@@ -161,13 +152,13 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
     3: "confirmed",
   };
 
-  useEffect(() => {
-    if (!userInfo.matching) {
-      return;
-    }
-    const searchCode = userInfo.matching.state;
-    setMatchState(matchStatuses[searchCode]);
-  }, [userInfo]);
+  // useEffect(() => {
+  //   if (!userInfo.matching) {
+  //     return;
+  //   }
+  //   const searchCode = userInfo.matching.state;
+  //   setMatchState(matchStatuses[searchCode]);
+  // }, [userInfo]);
 
   function updateUserMatchingState() {
     fetch(`${BACKEND_URL}/api2/user_state/`, {
@@ -194,16 +185,18 @@ function PartnerProfiles({ userInfo, matchesInfo, setCallSetupPartner, matchesOn
   }
   return (
     <div className="profiles">
-      {matchesInfo.map((userData) => {
-        return (
-          <ProfileBox
-            key={userData.userPk}
-            {...userData}
-            setCallSetupPartner={setCallSetupPartner}
-            isOnline={matchesOnlineStates[userData.userPk]}
-          />
-        );
-      })}
+      {users
+        .filter(({ status }) => status !== "self")
+        .map((user) => {
+          return (
+            <ProfileBox
+              key={user.userPk}
+              {...user}
+              setCallSetupPartner={setCallSetupPartner}
+              isOnline={matchesOnlineStates[user.userPk]}
+            />
+          );
+        })}
       {["idle", "confirmed"].includes(matchState) && (
         <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
           <img alt="plus" />
@@ -306,9 +299,9 @@ function CommunityCalls() {
 
 function NotificationPanel() {
   const { t } = useTranslation();
-  const { avatarConfig, firstName, lastName, imgSrc, usesAvatar } = useSelector(
-    (state) => state.userData
-  );
+  const users = useSelector((state) => state.userData.users);
+  const activeUser = users.find(({ status }) => status === "self");
+  const { avatarCfg, firstName, lastName, imgSrc } = activeUser;
 
   const dummyNotifications = [
     {
@@ -328,8 +321,8 @@ function NotificationPanel() {
   return (
     <div className="notification-panel">
       <div className="active-user">
-        {usesAvatar ? (
-          <Avatar className="avatar" {...avatarConfig} />
+        {avatarCfg ? (
+          <Avatar className="avatar" {...avatarCfg} />
         ) : (
           <img src={imgSrc} alt="current user" />
         )}
@@ -353,32 +346,23 @@ function NotificationPanel() {
   );
 }
 
-function Main({ initData }) {
-  const dispatch = useDispatch();
-  dispatch(initialise(initData));
-
+function Main() {
   const location = useLocation();
   const { userPk } = location.state || {};
   const { t } = useTranslation();
   const [profileOptions, setProfileOptions] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [matchesProfiles, setMatchesProfiles] = useState({});
-  const [matchesInfo, setMatchesInfo] = useState([]);
+
+  const users = useSelector((state) => state.userData.users);
+  const matchesInfo = users.filter(({ status }) => status !== "self");
+
   const [matchesUnconfirmed, setMatchesUnconfirmed] = useState([]);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
   const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
   const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
   const navigate = useNavigate();
-
-  const [userInfo, setUserInfo] = useState({
-    imgSrc: null,
-    avatarConfig: null,
-    usesAvatar: null,
-    firstName: "",
-    lastName: "",
-    matching: null, // Holds the matching state of the user
-  });
 
   const [overlayState, setOverlayState] = useState({
     visible: false,
@@ -425,89 +409,19 @@ function Main({ initData }) {
     setShowSidebarMobile(false);
   }, [location]);
 
-  useEffect(() => {
-    Promise.resolve(initData).then(
-      ({
-        selfInfo,
-        _matchesBasic,
-        unconfirmedMatches,
-        userDataGET,
-        userDataOPTIONS,
-        userStateGET,
-        userStateOPTIONS,
-        matches,
-      }) => {
-        let avatarConfig = null; // dummyAvatarConfig;
-        let usesAvatar = false;
-        try {
-          avatarConfig = JSON.parse(userDataGET.profile_avatar);
-          usesAvatar = userDataGET.profile_image_type === 0;
-        } catch (error) {
-          usesAvatar = false;
-        }
-        // If possible load the avatar config json
-        setProfileOptions(userDataOPTIONS.actions.POST);
-        setUserProfile({ ...userDataGET, ...selfInfo });
-        setUserInfo({
-          // userPk:
-          firstName: userDataGET.first_name,
-          lastName: userDataGET.second_name,
-          // userDescription:
-          imgSrc: userDataGET.profile_image,
-          usesAvatar,
-          avatarConfig,
-          matching: {
-            state: userStateGET.matching_state, // state of user matching
-            choices: userStateOPTIONS.actions.POST.matching_state.choices, // what states are possible
-          },
-        });
-
-        const matchesProfilesTmp = {};
-        const matchesOnlineStatesTmp = {};
-        matches.forEach((m) => {
-          matchesProfilesTmp[m["match.user_h256_pk"]] = m;
-          matchesOnlineStatesTmp[m["match.user_h256_pk"]] = false;
-        });
-        setMatchesProfiles(matchesProfilesTmp);
-        setMatchesOnlineStates(matchesOnlineStatesTmp);
-
-        const matchesData = matches.map((match) => {
-          avatarConfig = null; // dummyAvatarConfig;
-          usesAvatar = false;
-          try {
-            avatarConfig = JSON.parse(match.profile_avatar);
-            usesAvatar = match.profile_image_type === 0;
-          } catch (error) {
-            usesAvatar = false;
-          }
-          return {
-            userPk: match["match.user_h256_pk"],
-            firstName: match.first_name,
-            lastName: match.second_name,
-            userDescription: match.description,
-            userType: match.user_type,
-            // If this match has been confirmed ( acknowleged )
-            isConfirmed:
-              unconfirmedMatches.filter((m) => m.user_h256_pk === match["match.user_h256_pk"])
-                .length === 0,
-            usesAvatar,
-            avatarConfig,
-            imgSrc: match.profile_image,
-          };
-        });
-        setMatchesInfo(matchesData);
-        setMatchesUnconfirmed(unconfirmedMatches);
-        updateOverlayState(unconfirmedMatches, matchesData, matchesProfilesTmp);
-      }
-    );
-  }, []);
-
-  const [topSelection, setTopSelection] = useState("conversation_partners");
-
   document.body.classList.remove("hide-mobile-header");
 
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
-  const profileToDispay = userPk ? matchesProfiles[userPk] : userProfile;
+
+  const [topSelection, setTopSelection] = useState(null);
+  useEffect(() => {
+    if (use === "main") {
+      setTopSelection("conversation_partners");
+    }
+    if (use === "help") {
+      setTopSelection("contact");
+    }
+  }, [location]);
 
   const updateOnlineState = (userOnlinePk, status) => {
     matchesOnlineStates[userOnlinePk] = status;
@@ -557,10 +471,7 @@ function Main({ initData }) {
 
   return (
     <div className={`main-page show-${use}`}>
-      <Sidebar
-        userInfo={userInfo}
-        sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
-      />
+      <Sidebar sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }} />
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
@@ -571,8 +482,6 @@ function Main({ initData }) {
             {topSelection === "conversation_partners" && (
               <>
                 <PartnerProfiles
-                  userInfo={userInfo}
-                  matchesInfo={matchesInfo}
                   setCallSetupPartner={setCallSetupPartner}
                   matchesOnlineStates={matchesOnlineStates}
                 />
@@ -584,13 +493,7 @@ function Main({ initData }) {
         )}
         {use === "chat" && initChatComponent}
         {use === "profile" && (
-          <Profile
-            matchesInfo={matchesInfo}
-            userInfo={userInfo}
-            setCallSetupPartner={setCallSetupPartner}
-            profileOptions={profileOptions}
-            profile={profileToDispay}
-          />
+          <Profile setCallSetupPartner={setCallSetupPartner} userPk_={userPk} />
         )}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>

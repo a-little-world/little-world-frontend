@@ -1,13 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  userPk: null,
-  firstName: null,
-  lastName: null,
   email: null,
-  usesAvatar: false,
-  avatarConfig: null,
-  imgSrc: null,
+  interestsChoices: [],
+  users: [],
+  raw: {},
 };
 
 export const userDataSlice = createSlice({
@@ -15,18 +12,53 @@ export const userDataSlice = createSlice({
   initialState,
   reducers: {
     initialise: (state, action) => {
-      const { selfInfo, userDataGET } = action.payload;
-      state.userPk = selfInfo.user_h256_pk;
-      state.firstName = userDataGET.first_name;
-      state.lastName = userDataGET.second_name;
-      state.email = selfInfo.email;
-      state.imgSrc = userDataGET.profile_image;
+      state.raw = action.payload;
+
+      const { matches, selfInfo, userDataGET } = action.payload;
+
+      const others = matches.map((match) => {
+        let avatarCfg = "";
+        try {
+          avatarCfg = JSON.parse(match.profile_avatar);
+        } catch {}
+        return {
+          userPk: match["match.user_h256_pk"],
+          firstName: match.first_name,
+          lastName: match.second_name,
+          imgSrc: match.profile_image,
+          avatarCfg,
+          description: match.description,
+          status: "confirmed",
+          extraInfo: {
+            about: match.description,
+            interestTopics: match.interests.map(Number),
+            extraTopics: match.additional_interests,
+            expectations: match.language_skill_description,
+          },
+        };
+      });
+      let avatarCfg = "";
       try {
-        state.avatarConfig = JSON.parse(userDataGET.profile_avatar);
-        state.usesAvatar = true;
-      } catch (error) {
-        state.usesAvatar = false;
-      }
+        avatarCfg = JSON.parse(userDataGET.profile_avatar);
+      } catch {}
+      const self = {
+        userPk: selfInfo.user_h256_pk,
+        firstName: userDataGET.first_name,
+        lastName: userDataGET.second_name,
+        imgSrc: userDataGET.profile_image,
+        avatarCfg,
+        description: userDataGET.description,
+        status: "self",
+        extraInfo: {
+          about: userDataGET.description,
+          interestTopics: userDataGET.interests.map(Number),
+          extraTopics: userDataGET.additional_interests,
+          expectations: userDataGET.language_skill_description,
+        },
+      };
+      state.users = [self, ...others];
+
+      state.interestsChoices = action.payload.userDataOPTIONS.actions.POST.interests.choices;
     },
   },
 });
