@@ -28,7 +28,7 @@ export const userDataSlice = createSlice({
           imgSrc: match.profile_image,
           avatarCfg,
           description: match.description,
-          status: "confirmed",
+          type: match.user_type === 1 ? "support" : "match",
           extraInfo: {
             about: match.description,
             interestTopics: match.interests.map(Number),
@@ -48,7 +48,7 @@ export const userDataSlice = createSlice({
         imgSrc: userDataGET.profile_image,
         avatarCfg,
         description: userDataGET.description,
-        status: "self",
+        type: "self",
         extraInfo: {
           about: userDataGET.description,
           interestTopics: userDataGET.interests.map(Number),

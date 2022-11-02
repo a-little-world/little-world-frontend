@@ -43,18 +43,17 @@ function ProfileBox({
   description,
   imgSrc,
   avatarCfg,
-  status,
+  type,
   setCallSetupPartner,
   isOnline,
 }) {
   const { t } = useTranslation();
-  const isSelf = status === "self";
-  if (isSelf) {
+  if (type === "self") {
     isOnline = true;
   }
 
   return (
-    <div className={status === "unconfirmed" ? "profile-box new-match" : "profile-box"}>
+    <div className={type === "unconfirmed" ? "profile-box new-match" : "profile-box"}>
       {avatarCfg ? (
         <Avatar className="profile-avatar" {...avatarCfg} />
       ) : (
@@ -67,7 +66,7 @@ function ProfileBox({
         <div className="name">{`${firstName} ${lastName}`}</div>
         <div className="text">{description}</div>
       </div>
-      {!isSelf && (
+      {type !== "self" && (
         <div className="buttons">
           <Link to="/" state={{ userPk }} className="profile">
             <img alt="visit profile" />
@@ -403,7 +402,7 @@ function Profile({ setCallSetupPartner, userPk }) {
   const isSelf = !userPk;
 
   const profileData = isSelf
-    ? usersData.find(({ status }) => status === "self")
+    ? usersData.find(({ type }) => type === "self")
     : usersData.find((usr) => usr.userPk === userPk);
 
   if (!profileData) {
