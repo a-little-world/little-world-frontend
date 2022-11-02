@@ -1,8 +1,10 @@
 import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 
 import { BACKEND_URL } from "./ENVIRONMENT";
+import { updateSettings } from "./features/userData";
 
 import "./settings.css";
 
@@ -21,14 +23,14 @@ function ListItem({ section, label, text, setEditing }) {
 }
 
 const types = {
-  display_lang: "select",
-  first_name: "text",
-  second_name: "text",
+  displayLang: "select",
+  firstName: "text",
+  lastName: "text",
   email: "email",
   password: "password",
-  mobile_number: "tel",
-  postal_code: "numeric",
-  birth_year: "numeric",
+  phone: "tel",
+  postCode: "numeric",
+  birthYear: "numeric",
 };
 const allowedChars = {
   tel: /^[+]?[0-9- ]*$/, // numbers spaces, dashes. can start with one +
@@ -38,21 +40,32 @@ const allowedChars = {
 const displayLanguages = ["English", "Deutsch"];
 const repeaters = ["password", "email"];
 
-const submitData = (newDataObj, onSuccess, onFailure) => {
+const labelsMap = {
+  displayLang: "display_lang",
+  firstName: "first_name",
+  lastName: "second_name",
+  email: "email",
+  password: "password",
+  phone: "mobile_phone",
+  postCode: "postal_code",
+  birthYear: "birth_year",
+};
+
+const submitData = (item, newValue, onSuccess, onFailure) => {
   fetch(`${BACKEND_URL}/api2/profile/`, {
     method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: new URLSearchParams(newDataObj).toString(),
+    body: new URLSearchParams({ [labelsMap[item]]: newValue }).toString(),
   })
     .then((response) => {
       const { status, statusText } = response;
       if ([200, 400].includes(status)) {
         response.json().then(({ report }) => {
           if (status === 200) {
-            onSuccess(report);
+            onSuccess(report, item, newValue);
           } else {
             onFailure(report);
           }
@@ -82,6 +95,7 @@ const apiChangeEmail = (email, onSuccess, onFailure) => {
 
 function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const type = types[label];
   const [value, setValue] = useState(type === "password" ? "" : valueIn);
   const [repeat, setRepeat] = useState(repeatIn);
@@ -99,12 +113,12 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     }
   };
 
-  const onResponseSuccess = (data) => {
-    window.location.reload(); // update page
+  const onResponseSuccess = (data, item, newValue) => {
+    dispatch(updateSettings({ [item]: newValue }));
     setEditing(false);
   };
   const onResponseFailure = (report) => {
-    const errorsList = report[label];
+    const errorsList = report[labelsMap[label]];
     setErrors(errorsList); // update error message(s)
     setWaiting(false);
   };
@@ -128,9 +142,11 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
       current.focus();
     } else if (repeat !== true) {
       setWaiting(true);
-      const newData = { [label]: value };
-      if (type === "email") apiChangeEmail(value, onResponseSuccess, onResponseFailure);
-      else submitData(newData, onResponseSuccess, onResponseFailure);
+      if (type === "email") {
+        apiChangeEmail(value, onResponseSuccess, onResponseFailure);
+      } else {
+        submitData(label, value, onResponseSuccess, onResponseFailure);
+      }
     }
   };
 
@@ -224,7 +240,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
   );
 }
 
-function Settings({ userData }) {
+function Settings() {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(null);
 
@@ -237,15 +253,17 @@ function Settings({ userData }) {
    */
   const items = [
     // with ordering
-    "display_lang",
-    "first_name",
-    "second_name",
+    "displayLang",
+    "firstName",
+    "lastName",
     "email",
     "password",
-    "mobile_number",
-    "postal_code",
-    "birth_year",
+    "phone",
+    "postCode",
+    "birthYear",
   ];
+
+  const userData = useSelector((state) => state.userData.settings);
 
   const data = Object.fromEntries(
     items.map((item) => [item, item === "password" ? "********" : userData[item]])

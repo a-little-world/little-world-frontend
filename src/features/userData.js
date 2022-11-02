@@ -5,6 +5,7 @@ const initialState = {
   interestsChoices: [],
   users: [],
   raw: {},
+  settings: {},
 };
 
 export const userDataSlice = createSlice({
@@ -59,11 +60,27 @@ export const userDataSlice = createSlice({
       state.users = [self, ...others];
 
       state.interestsChoices = action.payload.userDataOPTIONS.actions.POST.interests.choices;
+
+      state.settings = {
+        displayLang: userDataGET.display_lang,
+        firstName: userDataGET.first_name,
+        lastName: userDataGET.second_name,
+        email: selfInfo.email,
+        password: userDataGET.password,
+        phone: userDataGET.mobile_number,
+        postCode: userDataGET.postal_code,
+        birthYear: userDataGET.birth_year,
+      };
+    },
+    updateSettings: (state, action) => {
+      Object.entries(action.payload).forEach(([item, value]) => {
+        state.settings[item] = value;
+      });
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { initialise } = userDataSlice.actions;
+export const { initialise, updateSettings } = userDataSlice.actions;
 
 export default userDataSlice.reducer;
