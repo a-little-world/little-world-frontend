@@ -213,7 +213,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   return (
     <div className="profiles">
       {users
-        .filter(({ status }) => status !== "self")
+        .filter(({ type }) => type !== "self")
         .map((user) => {
           return (
             <ProfileBox
@@ -327,7 +327,7 @@ function CommunityCalls() {
 function NotificationPanel() {
   const { t } = useTranslation();
   const users = useSelector((state) => state.userData.users);
-  const activeUser = users.find(({ status }) => status === "self");
+  const activeUser = users.find(({ type }) => type === "self");
   const { avatarCfg, firstName, lastName, imgSrc } = activeUser;
 
   const dummyNotifications = [
@@ -384,7 +384,7 @@ function Main() {
   const [matchesProfiles, setMatchesProfiles] = useState({});
 
   const users = useSelector((state) => state.userData.users);
-  const matchesInfo = users.filter(({ status }) => status !== "self");
+  const matchesInfo = users.filter(({ type }) => type !== "self");
 
   const [matchesUnconfirmed, setMatchesUnconfirmed] = useState([]);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
