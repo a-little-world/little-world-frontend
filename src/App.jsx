@@ -10,21 +10,21 @@ import Main from "./main";
 
 import "./App.css";
 
-function DoRoutes({ initData }) {
+function HandleRoutes({ data }) {
   const dispatch = useDispatch();
-  dispatch(initialise(initData));
+  dispatch(initialise(data));
   return (
     <Router>
       <Routes>
         <Route path={`${BACKEND_PATH}/`}>
           <Route index element={<Main />} />
           <Route path="call" element={<ActiveCall />} />
-          <Route path="partners" element={<Main initData={initData} />} />
-          <Route path="chat" element={<Main initData={initData} />} />
-          <Route path="notifications" element={<Main initData={initData} />} />
+          <Route path="partners" element={<Main />} />
+          <Route path="chat" element={<Main />} />
+          <Route path="notifications" element={<Main />} />
           <Route path="profile" element={<Main />} />
-          <Route path="help" element={<Main initData={initData} />} />
-          <Route path="settings" element={<Main initData={initData} />} />
+          <Route path="help" element={<Main />} />
+          <Route path="settings" element={<Main />} />
           <Route path="*" element="404" />
         </Route>
       </Routes>
@@ -35,7 +35,7 @@ function DoRoutes({ initData }) {
 function App({ initData }) {
   return (
     <Provider store={store}>
-      <DoRoutes initData={initData} />
+      <HandleRoutes data={initData} />
     </Provider>
   );
 }
