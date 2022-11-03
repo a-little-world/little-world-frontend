@@ -492,16 +492,10 @@ function Main() {
           </div>
         )}
         {use === "chat" && initChatComponent}
-        {use === "profile" && (
-          <Profile setCallSetupPartner={setCallSetupPartner} userPk_={userPk} />
-        )}
+        {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} userPk={userPk} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>
-      <div
-        className={
-          callSetupPartner || showIncoming ? "call-setup-overlay" : "call-setup-overlay hidden"
-        }
-      >
+      <div className={callSetupPartner || showIncoming ? "overlay-shade" : "overlay-shade hidden"}>
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
         )}
