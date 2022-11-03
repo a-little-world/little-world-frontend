@@ -115,6 +115,16 @@ export const userDataSlice = createSlice({
     updateSettings: (state, action) => {
       Object.entries(action.payload).forEach(([item, value]) => {
         state.settings[item] = value;
+
+        // if name is changed, also update the users object
+        if (["firstName", "lastName"].includes(item)) {
+          state.users = state.users.map((user) => {
+            if (user.type === "self") {
+              return { ...user, [item]: value };
+            }
+            return user;
+          });
+        }
       });
     },
     readAll: (state) => {
