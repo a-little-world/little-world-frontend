@@ -61,6 +61,12 @@ function Sidebar({ sidebarMobile }) {
 
   const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
 
+  const notifications = useSelector((state) => state.userData.notifications);
+  const unread = {
+    notifications: notifications.filter(({ status }) => status === "unread"),
+    messages: [],
+  };
+
   return (
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
@@ -77,7 +83,9 @@ function Sidebar({ sidebarMobile }) {
                 location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
               }`}
             >
-              {["messages", "notifications"].includes(label) && <UnreadDot count="3" />}
+              {["messages", "notifications"].includes(label) && (
+                <UnreadDot count={unread[label].length} />
+              )}
               <img alt={label} />
               {t(`nbs_${label}`)}
             </Link>
@@ -326,15 +334,7 @@ function NotificationPanel() {
   const activeUser = users.find(({ type }) => type === "self");
   const { avatarCfg, firstName, lastName, imgSrc } = activeUser;
 
-  const dummyNotifications = [
-    {
-      id: 2347,
-      type: "appointment",
-      text: "Notifications will be added soon",
-      dateString: "27th October, 2022 at 3:00pm",
-      unixtime: 1666364400,
-    },
-  ];
+  const notifications = useSelector((state) => state.userData.notifications);
 
   // don't show unless names are available; ie API call has returned
   if (!(firstName && lastName)) {
@@ -354,7 +354,7 @@ function NotificationPanel() {
       <hr />
       <div className="notifications-header">{t("nbr_notifications")}</div>
       <div className="notifications-content">
-        {dummyNotifications.map(({ id, type, text, dateString }) => (
+        {notifications.map(({ id, type, text, dateString }) => (
           <div key={id} className="notification-item">
             <img className={type.replace(" ", "-")} alt={type} />
             <div className="info">

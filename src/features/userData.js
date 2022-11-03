@@ -2,12 +2,50 @@ import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 
 const initialState = {
-  email: null,
-  interestsChoices: [],
-  users: [],
   raw: {},
+  users: [],
   settings: {},
+  notifications: [],
+  interestsChoices: [],
 };
+
+const dummyNotifications = [
+  {
+    id: 2347,
+    status: "unread",
+    type: "appointment",
+    text: "new appoinment?",
+    dateString: "27th October, 2022 at 3:00pm",
+    unixtime: 1666364400,
+  },
+  {
+    id: 2346,
+    status: "read",
+    type: "new friend",
+    text: "New friend: George McCoy",
+    dateString: "27th October, 2022 at 3:00pm",
+    unixtime: 1666364400,
+  },
+  {
+    id: 1973,
+    status: "archive",
+    type: "missed call",
+    text: "missed call",
+    dateString: "You missed appointment",
+    unixtime: 1640995200,
+  },
+];
+
+const dummyNotifications2 = [
+  {
+    id: 2347,
+    status: "read",
+    type: "appointment",
+    text: "Notifications will be added soon",
+    dateString: "27th October, 2022 at 3:00pm",
+    unixtime: 1666364400,
+  },
+];
 
 export const userDataSlice = createSlice({
   name: "userData",
@@ -74,6 +112,8 @@ export const userDataSlice = createSlice({
         postCode: userDataGET.postal_code,
         birthYear: userDataGET.birth_year,
       };
+
+      state.notifications = dummyNotifications;
     },
     updateSettings: (state, action) => {
       Object.entries(action.payload).forEach(([item, value]) => {
@@ -101,10 +141,20 @@ export const userDataSlice = createSlice({
         return user;
       });
     },
+    readAll: (state) => {
+      if (state.notifications.find(({ status }) => status === "unread")) {
+        state.notifications = state.notifications.map((notif) => {
+          if (notif.status === "unread") {
+            return { ...notif, status: "read" };
+          }
+          return notif;
+        });
+      }
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { initialise, updateSettings, updateProfile } = userDataSlice.actions;
+export const { initialise, updateSettings, updateProfile, readAll } = userDataSlice.actions;
 
 export default userDataSlice.reducer;
