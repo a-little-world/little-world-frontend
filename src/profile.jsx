@@ -397,14 +397,14 @@ function ProfileDetail({ profile }) {
   );
 }
 
-function Profile({ setCallSetupPartner, userPk_ }) {
+function Profile({ setCallSetupPartner, userPk }) {
   const { t } = useTranslation();
   const usersData = useSelector((state) => state.userData.users);
-  const isSelf = !userPk_;
+  const isSelf = !userPk;
 
   const profileData = isSelf
     ? usersData.find(({ type }) => type === "self")
-    : usersData.find(({ userPk }) => userPk === userPk_);
+    : usersData.find((user) => user.userPk === userPk);
 
   if (!profileData) {
     return null; // don't render unless we have the necessary data
