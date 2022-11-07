@@ -292,6 +292,7 @@
   border-radius: 42px; /*smooth curve on up to 3 lines of text, without breaking higher line counts*/
   padding: 6px 20px;
   font-weight: 300;
+  white-space: pre-wrap;
 }
 
 .rce-mbox-text.left {
