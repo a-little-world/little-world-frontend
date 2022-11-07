@@ -1,3 +1,7 @@
+.show-notifications .header {
+  justify-content: space-between;
+}
+
 .show-notifications .select-showing {
   display: flex;
   gap: 8px;
