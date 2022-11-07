@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useSelector } from "react-redux";
@@ -170,9 +170,149 @@ function NbtSelector({ selection, setSelection, use }) {
   );
 }
 
+function UnmatchModal({ user, setShow }) {
+  const { t } = useTranslation();
+  const [showContent, setShowContent] = useState("selector");
+
+  const { imgSrc, firstName, lastName, avatarCfg } = user;
+
+  const submitReport = (e) => {
+    console.log(e);
+    setShowContent("reported");
+  };
+  const submitUnmatch = () => {
+    setShowContent("unmatched");
+  };
+
+  const selector = (
+    <>
+      {avatarCfg ? (
+        <Avatar className="profile-avatar" {...avatarCfg} />
+      ) : (
+        <img alt="user to unmatch" className="profile-image" src={imgSrc} />
+      )}
+      <div className="name">
+        {firstName} {lastName}
+      </div>
+      <div className="buttons">
+        <button type="button" onClick={() => setShowContent("unmatch")}>
+          {t("ur_unmatch")}
+        </button>
+        <div className="btn-detail">{t("ur_btn_unmatch_text")}</div>
+        <button type="button" onClick={() => setShowContent("report")}>
+          {t("ur_report")}
+        </button>
+        <div className="btn-detail">{t("ur_btn_report_text")}</div>
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("btn_cancel")}
+        </button>
+      </div>
+    </>
+  );
+
+  // disables the submit report button until it meets the required length
+  // feature disabled for now, needs at least an indicator of required length
+  const [submitState, setSubmitState] = useState("");
+  const textRef = useRef();
+  const onKeyUp = () => {
+    // const validForm = textRef.current.value.length > 9;
+    // setSubmitState(validForm ? "active" : "disabled");
+  };
+
+  const report = (
+    <>
+      <label htmlFor="report">
+        {t("ur_report_label", { name: firstName })}
+        <textarea
+          ref={textRef}
+          onKeyUp={onKeyUp}
+          className={submitState === "waiting" ? "disabled" : ""}
+          type="textarea"
+          name="report"
+          inputMode="text"
+          maxLength="999"
+          placeholder={t("ur_report_placeholder")}
+        />
+      </label>
+      <div className="buttons">
+        <button type="button" onClick={submitReport} className={submitState}>
+          {t("ur_report")}
+        </button>
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("btn_cancel")}
+        </button>
+      </div>
+    </>
+  );
+
+  const unmatch = (
+    <>
+      <img className="unmatched" alt="" />
+      <div className="unconfirm-question">{t("ur_confirm_unmatch_line1", { name: firstName })}</div>
+      <div className="extra-text">{t("ur_confirm_unmatch_line2")}</div>
+      <div className="buttons">
+        <button type="button" onClick={submitUnmatch}>
+          {t("ur_unmatch")}
+        </button>
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("btn_cancel")}
+        </button>
+      </div>
+    </>
+  );
+
+  const unmatched = (
+    <>
+      <div className="main-text">{t("ur_unmatched", { name: firstName })}</div>
+      <div className="buttons">
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("close")}
+        </button>
+      </div>
+    </>
+  );
+
+  const reported = (
+    <>
+      <div>{t("ur_reported_line1", { name: firstName })}</div>
+      <div className="extra-text">{t("ur_reported_line2")}</div>
+      <div className="buttons">
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("close")}
+        </button>
+      </div>
+    </>
+  );
+
+  const content = {
+    selector,
+    unmatch,
+    report,
+    unmatched,
+    reported,
+  };
+
+  const header = {
+    selector: "ur_header",
+    unmatch: "ur_unmatch",
+    report: "ur_report",
+    unmatched: "ur_unmatch",
+    reported: "ur_report",
+  };
+
+  return (
+    <div className="modal-box unmatch-modal">
+      <button type="button" className="modal-close" onClick={() => setShow(false)} />
+      <h3>{t(header[showContent])}</h3>
+      {content[showContent]}
+    </div>
+  );
+}
+
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   const { t } = useTranslation();
   const [matchState, setMatchState] = useState("idle");
+  const [unmatchingUser, setUnmatchingUser] = useState(false);
   const users = useSelector((state) => state.userData.users);
 
   // backend values
@@ -214,38 +354,45 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
       })
       .catch((error) => console.error(error));
   }
+
   return (
-    <div className="profiles">
-      {users
-        .filter(({ type }) => type !== "self")
-        .map((user) => {
-          return (
-            <ProfileBox
-              key={user.userPk}
-              {...user}
-              setCallSetupPartner={setCallSetupPartner}
-              isOnline={matchesOnlineStates[user.userPk]}
-            />
-          );
-        })}
-      {["idle", "confirmed"].includes(matchState) && (
-        <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
-          <img alt="plus" />
-          {matchState === "idle" && t("matching_state_not_searching_trans")}
-          {matchState === "confirmed" && t("matching_state_found_confirmed_trans")}
-        </button>
-      )}
-      {["searching", "pending"].includes(matchState) && (
-        <div className="match-status searching">
-          <img alt="" />
-          {matchState === "searching" && t("matching_state_searching_trans")}
-          {matchState === "pending" && t("matching_state_found_unconfirmed_trans")}
-          <a className="change-criteria" href="/form">
-            {t("cp_modify_search")}
-          </a>
-        </div>
-      )}
-    </div>
+    <>
+      <div className="profiles">
+        {users
+          .filter(({ type }) => type !== "self")
+          .map((user) => {
+            return (
+              <ProfileBox
+                key={user.userPk}
+                user={user}
+                setCallSetupPartner={setCallSetupPartner}
+                isOnline={matchesOnlineStates[user.userPk]}
+                setUnmatchingUser={setUnmatchingUser}
+              />
+            );
+          })}
+        {["idle", "confirmed"].includes(matchState) && (
+          <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
+            <img alt="plus" />
+            {matchState === "idle" && t("matching_state_not_searching_trans")}
+            {matchState === "confirmed" && t("matching_state_found_confirmed_trans")}
+          </button>
+        )}
+        {["searching", "pending"].includes(matchState) && (
+          <div className="match-status searching">
+            <img alt="" />
+            {matchState === "searching" && t("matching_state_searching_trans")}
+            {matchState === "pending" && t("matching_state_found_unconfirmed_trans")}
+            <a className="change-criteria" href="/form">
+              {t("cp_modify_search")}
+            </a>
+          </div>
+        )}
+      </div>
+      <div className={unmatchingUser ? "overlay-shade" : "overlay-shade hidden"}>
+        {unmatchingUser && <UnmatchModal user={unmatchingUser} setShow={setUnmatchingUser} />}
+      </div>
+    </>
   );
 }
 

@@ -203,7 +203,19 @@
     "help_support_header": "support team",
     "help_support_slogan": "We're here for you!",
     "help_support_message_btn": "chat now",
-    "help_support_call_btn": "call now"
+    "help_support_call_btn": "call now",
+    "ur_header": "unmatch or report user",
+    "ur_unmatch": "unmatch user",
+    "ur_report": "report user",
+    "ur_btn_unmatch_text": "Not working out? Remove them from your matches.",
+    "ur_btn_report_text": "Please tell us about your experience.",
+    "ur_confirm_unmatch_line1": "Are you sure you want to unmatch with {{name}}?",
+    "ur_confirm_unmatch_line2": "You will be unable to chat further.",
+    "ur_unmatched": "Contact with {{name}} has been ended.",
+    "ur_report_label": "Tell us why you want to report {{name}}.",
+    "ur_report_placeholder": "Compose a message to us…",
+    "ur_reported_line1": "You have reported {{name}}!",
+    "ur_reported_line2": "They will no longer be able to contact you."
   },
   "de": {
     "headers": {
@@ -408,6 +420,18 @@
     "help_support_header": "support team",
     "help_support_slogan": "Wir sind für dich da!",
     "help_support_message_btn": "jetzt chatten",
-    "help_support_call_btn": "jetzt anrufen"
+    "help_support_call_btn": "jetzt anrufen",
+    "ur_header": "Benutzer unmatchen oder melden",
+    "ur_unmatch": "Benutzer unmatchen",
+    "ur_report": "Benutzer melden",
+    "ur_btn_unmatch_text": "Klappt es nicht? Entfernen Sie sie aus Ihren Spielen.",
+    "ur_btn_report_text": "Bitte erzählen Sie uns von Ihrer Erfahrung.",
+    "ur_confirm_unmatch_line1": "Sind Sie sicher, dass Sie die Übereinstimmung mit {{name}} aufheben möchten?",
+    "ur_confirm_unmatch_line2": "Sie werden nicht weiter chatten können.",
+    "ur_unmatched": "Dein Kontakt zu {{name}} wurde beendet.",
+    "ur_report_label": "Sagen Sie uns, warum Sie {{name}} melden wollen.",
+    "ur_report_placeholder": "Verfassen Sie eine Nachricht an uns…",
+    "ur_reported_line1": "Sie haben {{name}} gemeldet!",
+    "ur_reported_line2": "Sie werden nicht mehr in der Lage sein, Sie zu kontaktieren."
   }
 }

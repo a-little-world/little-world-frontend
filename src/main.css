@@ -282,6 +282,30 @@ button.match-status {
   gap: 20px;
 }
 
+.unmatch-modal {
+  max-width: 500px;
+}
+
+.unmatch-modal img.unmatched {
+  content: url("./images/unmatched.svg");
+  margin: 20px;
+}
+
+.unmatch-modal .main-text {
+  text-align: center;
+}
+
+.unmatch-modal .extra-text {
+  font-weight: 300;
+}
+
+.unmatch-modal .btn-detail {
+  font-weight: 300;
+  font-size: 14px;
+  text-align: center;
+  margin-top: -12px;
+}
+
 .mobile-header {
   display: none;
 }
@@ -444,6 +468,24 @@ button.match-status {
 .notification-panel .show-all {
   color: rgba(54, 169, 224, 1);
   padding: 10px;
+}
+
+.show-main .modal-box .profile-avatar,
+.show-main .modal-box .name {
+  align-self: center;
+}
+
+.show-main .modal-box textarea {
+  resize: none;
+  height: 122px;
+  font-family: "Signika Negative";
+  padding: 15px;
+  font-size: 16px;
+  width: 100%;
+  border: 1px solid rgb(0 0 0 / 10%);
+  background: rgba(230, 232, 236, 0.2);
+  border-radius: 10px;
+  box-sizing: border-box;
 }
 
 .mobile-shade,

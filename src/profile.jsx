@@ -37,18 +37,9 @@ const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
   });
 };
 
-function ProfileBox({
-  userPk,
-  firstName,
-  lastName,
-  description,
-  imgSrc,
-  avatarCfg,
-  type,
-  setCallSetupPartner,
-  isOnline,
-}) {
+function ProfileBox({ user, setCallSetupPartner, isOnline, setUnmatchingUser }) {
   const { t } = useTranslation();
+  const { userPk, firstName, lastName, description, imgSrc, avatarCfg, type } = user;
   if (type === "self") {
     isOnline = true;
   }
@@ -59,6 +50,11 @@ function ProfileBox({
         <Avatar className="profile-avatar" {...avatarCfg} />
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />
+      )}
+      {type === "match" && (
+        <button className="unmatch" type="button" onClick={() => setUnmatchingUser(user)}>
+          <img />
+        </button>
       )}
       <div className={isOnline ? "online-indicator online" : "online-indicator"}>
         online <span className="light" />
@@ -400,17 +396,17 @@ function Profile({ setCallSetupPartner, userPk }) {
   const usersData = useSelector((state) => state.userData.users);
   const isSelf = !userPk;
 
-  const profileData = isSelf
+  const user = isSelf
     ? usersData.find(({ type }) => type === "self")
     : usersData.find((usr) => usr.userPk === userPk);
 
-  if (!profileData) {
+  if (!user) {
     return null; // don't render unless we have the necessary data
   }
 
   const profileTitle = isSelf
     ? t("profile_my_profile")
-    : t("profile_match_profile", { userName: profileData.firstName });
+    : t("profile_match_profile", { userName: user.firstName });
 
   return (
     <div className="profile-component">
@@ -423,9 +419,9 @@ function Profile({ setCallSetupPartner, userPk }) {
         <span className="text">{profileTitle}</span>
       </div>
       <div className="content-area-main">
-        <ProfileDetail isSelf={isSelf} profile={profileData.extraInfo} />
+        <ProfileDetail isSelf={isSelf} profile={user.extraInfo} />
         <ProfileBox
-          {...profileData}
+          user={user}
           description="" /* don't show description on profile page as it's already shown in full */
           isSelf={isSelf}
           setCallSetupPartner={setCallSetupPartner}
