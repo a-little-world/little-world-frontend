@@ -151,6 +151,17 @@ export const userDataSlice = createSlice({
         });
       }
     },
+    updateProfile: (state, action) => {
+      state.users = state.users.map((user) => {
+        if (user.type === "self") {
+          const [key, value] = Object.entries(action.payload)[0];
+          const extraInfo = { ...user.extraInfo, [key]: value };
+          const more = key === "about" ? { description: value } : {};
+          return { ...user, extraInfo, more };
+        }
+        return user;
+      });
+    },
   },
 });
 
