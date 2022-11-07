@@ -417,7 +417,12 @@ function Profile({ setCallSetupPartner, userPk }) {
       </div>
       <div className="content-area-main">
         <ProfileDetail isSelf={isSelf} profile={profileData.extraInfo} />
-        <ProfileBox {...profileData} isSelf={isSelf} setCallSetupPartner={setCallSetupPartner} />
+        <ProfileBox
+          {...profileData}
+          description="" /* don't show description on profile page as it's already shown in full */
+          isSelf={isSelf}
+          setCallSetupPartner={setCallSetupPartner}
+        />
       </div>
     </div>
   );
