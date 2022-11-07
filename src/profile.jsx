@@ -2,10 +2,11 @@ import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { BACKEND_URL } from "./ENVIRONMENT";
+import { updateProfile } from "./features/userData";
 import "./i18n";
 import Link from "./path-prepend";
 
@@ -190,22 +191,12 @@ function SectionBox({ subject, children }) {
   );
 }
 
-function TextBox({ subject, initialText = "", formTag }) {
+function TextBox({ subject, topicText = "", formTag }) {
   const { t } = useTranslation();
   const location = useLocation();
   const editorRef = useRef();
   const [editState, setEditState] = useState(false);
-
-  /*
-   * NOTE: useState will ONLY update based on initial value on the first render
-   * This was causing bug https://github.com/tbscode/little-world-frontend/issues/108
-   * IE; when a match's profile was loaded and then the user clicks directly to their own
-   * profile, the element is re-rendered and the topicText is not updated by useState alone
-   */
-  const [topicText, setTopicText] = useState(initialText);
-  useEffect(() => {
-    setTopicText(initialText);
-  }, [initialText]);
+  const dispatch = useDispatch();
 
   const [errorText, setErrorText] = useState(""); // TODO: maybe if error add a reload button that loads the old default of this field
   const [textLen, setTextLen] = useState(0);
@@ -233,7 +224,7 @@ function TextBox({ subject, initialText = "", formTag }) {
         setEditState(false);
       },
       () => {
-        setTopicText(text);
+        dispatch(updateProfile({ [subject]: text }));
         setEditState(false);
       },
       formTag
@@ -367,16 +358,16 @@ function ProfileDetail({ profile }) {
 
   return (
     <div className="profile-detail">
-      <TextBox subject="about" initialText={profile.about} formTag="description" />
+      <TextBox subject="about" topicText={profile.about} formTag="description" />
       <ItemsBox selectedChoices={profile.interestTopics} />
       <TextBox
         subject="extra-topics"
-        initialText={profile.extraTopics}
+        topicText={profile.extraTopics}
         formTag="additional_interests"
       />
       <TextBox
         subject="expectations"
-        initialText={profile.expectations}
+        topicText={profile.expectations}
         formTag="language_skill_description"
       />
       {isSelf && (
