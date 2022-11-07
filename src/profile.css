@@ -160,19 +160,32 @@
   bottom: 1em;
 }
 
+button.unmatch {
+  position: absolute;
+  right: 30px;
+  background: white;
+  filter: grayscale(1);
+  top: 30px;
+}
+
+button.unmatch img {
+  content: url("./images/close-pop-up.svg");
+}
+
 .online-indicator {
   font-weight: 300;
   font-size: 12px;
   color: rgb(243, 147, 37);
   background-color: white;
-  border-radius: 100px 0 0 100px;
-  padding: 8px 20px;
+  border-radius: 0 100px 100px 0;
+  padding: 8px 10px;
   position: absolute;
-  right: 4px;
+  left: 20px;
   top: 35px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 1s;
+  box-shadow: 4px 1px 6px rgb(0 0 0 / 7%);
 }
 
 .online-indicator.online {

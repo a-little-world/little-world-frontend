@@ -62,11 +62,6 @@ section.settings {
   color: #4b4c4f;
 }
 
-.edit-modal {
-  padding: 24px;
-  gap: 10px;
-}
-
 .setting-text:not(.editing) .edit-modal {
   display: none;
 }
