@@ -8,8 +8,9 @@ import { updateSettings } from "./features/userData";
 
 import "./settings.css";
 
-function ListItem({ section, label, text, setEditing }) {
+function ListItem({ section, label, value, setEditing, map }) {
   const { t } = useTranslation();
+  const text = map ? map[value] : value;
 
   return (
     <div className={`item ${label}`}>
@@ -37,7 +38,11 @@ const allowedChars = {
   numeric: /^[0-9]*$/, // numbers only
   email: /^[a-z0-9@.+-]*$/i, // alphanumeric and @ . + -
 };
-const displayLanguages = ["English", "Deutsch"];
+const displayLanguages = {
+  en: "🇬🇧 English",
+  de: "🇩🇪 Deutsch",
+};
+
 const repeaters = ["password", "email"];
 
 const labelsMap = {
@@ -93,7 +98,7 @@ const apiChangeEmail = (email, onSucess, onFailure) => {
 };
 
 function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const type = types[label];
   const [value, setValue] = useState(type === "password" ? "" : valueIn);
@@ -129,7 +134,12 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     const wrongPass = type === "password" && value.length < 6;
     /* mismatched values */
     const { current } = textInput;
-    if (lastValue && lastValue !== value) {
+    if (label === "displayLang") {
+      dispatch(updateSettings({ displayLang: value }));
+      Cookies.set("frontendLang", value);
+      i18n.changeLanguage(value);
+      setEditing(false);
+    } else if (lastValue && lastValue !== value) {
       setValue("");
       setRepeat(true);
       setLastValue(undefined);
@@ -191,16 +201,20 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
           </div>
           <div className="input-container">
             <label htmlFor={label}>{fullLabel()}</label>
-            {type === "select" && (
-              <select name="lang-select" onChange={handleChange} ref={textInput}>
-                {displayLanguages.map((lang) => (
-                  <option key={lang} value={lang}>
+            {label === "displayLang" ? (
+              <select
+                name="lang-select"
+                onChange={handleChange}
+                ref={textInput}
+                defaultValue={valueIn}
+              >
+                {Object.entries(displayLanguages).map(([code, lang]) => (
+                  <option key={code} value={code}>
                     {lang}
                   </option>
                 ))}
               </select>
-            )}
-            {type !== "select" && (
+            ) : (
               <input
                 type={type === "numeric" ? "text" : type}
                 value={value}
@@ -262,10 +276,10 @@ function Settings() {
     "birthYear",
   ];
 
-  const userData = useSelector((state) => state.userData.settings);
+  const settingsData = useSelector((state) => state.userData.settings);
 
   const data = Object.fromEntries(
-    items.map((item) => [item, item === "password" ? "********" : userData[item]])
+    items.map((item) => [item, item === "password" ? "********" : settingsData[item]])
   );
 
   return (
@@ -283,8 +297,9 @@ function Settings() {
                   key={label}
                   section="personal"
                   label={label}
-                  text={data[label]}
+                  value={data[label]}
                   setEditing={setEditing}
+                  map={label === "displayLang" ? displayLanguages : false}
                 />
               );
             })}

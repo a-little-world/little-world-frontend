@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 const initialState = {
   email: null,
@@ -61,8 +62,9 @@ export const userDataSlice = createSlice({
 
       state.interestsChoices = action.payload.userDataOPTIONS.actions.POST.interests.choices;
 
+      const displayLang = (userDataGET.display_lang || Cookies.get("frontendLang")).slice(0, 2);
       state.settings = {
-        displayLang: userDataGET.display_lang,
+        displayLang,
         firstName: userDataGET.first_name,
         lastName: userDataGET.second_name,
         email: selfInfo.email,
