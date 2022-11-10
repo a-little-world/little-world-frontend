@@ -438,7 +438,13 @@ function Main({ initData }) {
         }
         // If possible load the avatar config json
         setProfileOptions(userDataOPTIONS.actions.POST);
-        setUserProfile({ ...userDataGET, ...selfInfo });
+        /* TODO @tbscode
+         * For now we set the display lang based on the displayLang cookie
+         * This will change with the new backend and api version ( then this will be part of init data an reside in the settings model )
+         */
+        const cookie = Cookies.get("frontendLang", "en"); // 'en' same as i18next.fallbackLng ( see ./i18n.js )
+
+        setUserProfile({ ...userDataGET, ...selfInfo, ...{ display_lang: cookie } });
         setUserInfo({
           // userPk:
           firstName: userDataGET.first_name,
@@ -505,6 +511,9 @@ function Main({ initData }) {
     setMatchesOnlineStates({ ...matchesOnlineStates }); // spreading creates a copy if we use the same var state wont update
   };
 
+  const [showIncoming, setShowIncoming] = useState(false);
+  const [incomingUserPk, setIncomingUserPk] = useState(null);
+
   const adminActionCallback = (action) => {
     // This will later be moved to a whole new websocket
     // The new socket should then only receive messages from the backend
@@ -543,8 +552,6 @@ function Main({ initData }) {
     />
   );
 
-  const [showIncoming, setShowIncoming] = useState(false);
-  const [incomingUserPk, setIncomingUserPk] = useState(null);
 
   return (
     <div className={`main-page show-${use}`}>
