@@ -35,7 +35,10 @@ const allowedChars = {
   numeric: /^[0-9]*$/, // numbers only
   email: /^[a-z0-9@.+-]*$/i, // alphanumeric and @ . + -
 };
-const displayLanguages = ["English", "Deutsch"];
+const displayLanguages = [
+  ["English", "en"],
+  ["Deutsch", "de"],
+];
 const repeaters = ["password", "email"];
 
 const submitData = (newDataObj, onSucess, onFailure) => {
@@ -107,7 +110,11 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
 
   const handleChange = (e) => {
     const val = e.target.value;
+    console.log("value", val, e, e.target);
     if (!["tel", "numeric", "email"].includes(type) || allowedChars[type].test(val)) {
+      setValue(val);
+    } else if (!["select"].includes(type)) {
+      // TODO: we could check if the value is in the possible values but whatever
       setValue(val);
     }
   };
@@ -147,8 +154,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
       else if (type === "select" && label === "display_lang") {
         // TODO @tbscode for now we use just the 'frontendLang' cookie
         // This *will* change with the new api
-        console.log("New val", value);
-        // TODO set the cookie
+        Cookies.set("frontendLang", value);
         onResponseSucess({});
       } else submitData(newData, onResponseSucess, onResponseFailure);
     }
@@ -199,8 +205,14 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
             {type === "select" && (
               <select name="lang-select" onChange={handleChange} ref={textInput}>
                 {displayLanguages.map((lang) => (
-                  <option key={lang} value={lang}>
-                    {lang}
+                  <option
+                    key={lang[1]}
+                    value={lang[1]}
+                    // This auto sects the current language selection
+                    // eslint-disable-next-line react/jsx-props-no-spreading
+                    {...(valueIn === lang[1] ? { selected: "selected" } : {})}
+                  >
+                    {lang[0]}
                   </option>
                 ))}
               </select>
