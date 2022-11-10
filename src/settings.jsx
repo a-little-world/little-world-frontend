@@ -67,16 +67,30 @@ const submitData = (newDataObj, onSucess, onFailure) => {
 
 const apiChangeEmail = (email, onSucess, onFailure) => {
   /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
-  $.ajax({
-    type: "POST",
-    url: `${BACKEND_URL}/api2/change_email/`,
+  fetch(`${BACKEND_URL}/api2/change_email/`, {
+    method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    data: { email },
-    success: onSucess,
-    error: onFailure,
-  });
+    body: new URLSearchParams({ email }).toString(),
+  })
+    .then((response) => {
+      const { status, statusText } = response;
+      if ([200, 400].includes(status)) {
+        response.json().then(({ report }) => {
+          if (status === 200) {
+            onSucess(report);
+          } else {
+            onFailure(report);
+          }
+        });
+      } else {
+        // unexpected error
+        console.error("server error", status, statusText);
+      }
+    })
+    .catch((error) => console.error(error));
 };
 
 function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
@@ -128,8 +142,15 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     } else if (repeat !== true) {
       setWaiting(true);
       const newData = { [label]: value };
+      console.log("Appepting update ", newData, value, type);
       if (type === "email") apiChangeEmail(value, onResponseSucess, onResponseFailure);
-      else submitData(newData, onResponseSucess, onResponseFailure);
+      else if (type === "select" && label === "display_lang") {
+        // TODO @tbscode for now we use just the 'frontendLang' cookie
+        // This *will* change with the new api
+        console.log("New val", value);
+        // TODO set the cookie
+        onResponseSucess({});
+      } else submitData(newData, onResponseSucess, onResponseFailure);
     }
   };
 
@@ -234,6 +255,11 @@ function Settings({ userData }) {
    * This would allow to render any form inside any modal simply by listing the fields to be used
    * Since all these fields should be able to handle their own validation this wouldn't give us the annoying limitation of having only one input per modal
    */
+  if (!userData) {
+    // TODO @tbscode: I stole this from profile.jsx but this certainly doesn't look like the right way to handle things like this
+    return null; // don't render until ajax has returned the necessary data
+  }
+
   const items = [
     // with ordering
     "display_lang",
@@ -270,12 +296,14 @@ function Settings({ userData }) {
                 />
               );
             })}
+            {/* No deleting of account for now!
             <div className="item">
               <h3>{t("sg_personal_delete_account")}</h3>
               <button type="button" className="delete-account">
                 {t("sg_personal_delete_account_btn")}
               </button>
             </div>
+          */}
             <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
               {editing && (
                 <ModalBox
