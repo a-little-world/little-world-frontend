@@ -1,5 +1,9 @@
 {
   "en": {
+    "community_calls_title_1": "Coffee talks",
+    "community_calls_title_2": "Question and suggestion session",
+    "community_calls_desc_1": "Come Together of the community - Grab a coffee or tea and talk to other users, share your delights and enjoy! ",
+    "community_calls_desc_2": "Confused or ideas for improvement? Don’t worry, our team will happily answer all your questions! Just join the call and help us get better.",
     "pcs_main_heading": "Set up",
     "pcs_sub_heading": "Would you like to join this conversation?",
     "pcs_signal_good": "Signal Good",
@@ -93,7 +97,15 @@
       "psycology_trans": "Psycology",
       "pdev_trans": "Personal Development"
     },
-    "weekdays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "weekdays": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
     "month_short": [
       "jan",
       "feb",
@@ -174,6 +186,10 @@
     "sg_personal_delete_account_btn": "delete my account now"
   },
   "de": {
+    "community_calls_title_1": "Kaffeerunden",
+    "community_calls_title_2": "Frage- und Anregungsrunde",
+    "community_calls_desc_1": "Zusammenkommen der Community – lerne das Team hinter Little World und andere Nutzer:innen bei einer gemütlichen Tasse Kaffee oder Tee kennen. ",
+    "community_calls_desc_2": "Fragezeichen in den Augen oder Verbesserungsideen? Dann komm in das Gruppengespräch, lern das Team kennen und hilf uns Little World besser zu machen! ",
     "pcs_main_heading": "Beitrittsbestätigung",
     "pcs_sub_heading": "Möchten Sie diesem Gespräch beitreten?",
     "pcs_signal_good": "Signal Gut",
@@ -266,7 +282,15 @@
       "psycology_trans": "Psychologie",
       "pdev_trans": "Persönliche Entwicklung"
     },
-    "weekdays": ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+    "weekdays": [
+      "Sonntag",
+      "Montag",
+      "Dienstag",
+      "Mittwoch",
+      "Donnerstag",
+      "Freitag",
+      "Samstag"
+    ],
     "month_short": [
       "jan",
       "feb",

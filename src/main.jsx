@@ -123,7 +123,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
 function Selector({ selection, setSelection }) {
   const { t } = useTranslation();
   const nbtTopics = ["conversation_partners", "appointments", "community_calls"];
-  const disabled = ["appointments", "community_calls"];
+  const disabled = ["appointments"];
 
   return (
     <div className="selector">
@@ -267,28 +267,23 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
 }
 
 function CommunityCalls() {
+  const { t } = useTranslation();
   const now = new Date();
+  console.log("Now", now);
   const dummyEvents = [
     {
       id: 23,
       frequency: "weekly",
-      header: "Kaffeerunden",
-      text: "Come Together of the community - Grab a coffee and talk to other users, share your delights and enjoy!",
-      dateTime: now,
+      header: t("community_calls_title_1"),
+      text: t("community_calls_desc_1"),
+      dateTime: new Date(Date.UTC(2022, 11, 12, 19)),
     },
     {
-      id: 26,
-      frequency: "once",
-      header: "Willkommen! Zeit für Fragen",
-      text: "Confused? Don’t worry, our team will happily answer all your questions! Just join the call.",
-      dateTime: now,
-    },
-    {
-      id: 29,
-      frequency: "once",
-      header: "Lach-Yoga",
-      text: "Want to have a heartily laugh with the community?  Treat yourself something good and join us! It’s free!",
-      dateTime: now,
+      id: 24,
+      frequency: "weekly",
+      header: t("community_calls_title_2"),
+      text: t("community_calls_desc_2"),
+      dateTime: new Date("2022", 11, 12, 19),
     },
   ];
 
