@@ -110,11 +110,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
 
   const handleChange = (e) => {
     const val = e.target.value;
-    console.log("value", val, e, e.target);
     if (!["tel", "numeric", "email"].includes(type) || allowedChars[type].test(val)) {
-      setValue(val);
-    } else if (!["select"].includes(type)) {
-      // TODO: we could check if the value is in the possible values but whatever
       setValue(val);
     }
   };
