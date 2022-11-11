@@ -268,8 +268,6 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
 
 function CommunityCalls() {
   const { t } = useTranslation();
-  const now = new Date();
-  console.log("Now", now);
   const dummyEvents = [
     {
       id: 23,
