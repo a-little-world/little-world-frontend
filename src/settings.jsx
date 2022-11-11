@@ -145,7 +145,6 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     } else if (repeat !== true) {
       setWaiting(true);
       const newData = { [label]: value };
-      console.log("Appepting update ", newData, value, type);
       if (type === "email") apiChangeEmail(value, onResponseSucess, onResponseFailure);
       else if (type === "select" && label === "display_lang") {
         // TODO @tbscode for now we use just the 'frontendLang' cookie
