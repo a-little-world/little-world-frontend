@@ -220,3 +220,102 @@ a {
     background-color: #fff0e0;
   }
 }
+
+.overlay-shade {
+  display: flex;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  backdrop-filter: blur(5px);
+  transition: 1s;
+  background: rgba(0, 0, 0, 0.3);
+  overflow-y: scroll;
+  padding-top: 4px;
+}
+
+.overlay-shade.hidden {
+  backdrop-filter: blur(0);
+  background: none;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.modal-box {
+  margin: auto;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 30px;
+}
+
+.modal-box button.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background-image: url("images/close-pop-up.svg");
+  filter: grayscale(1);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(230, 232, 236, 0.2);
+  border: 2px solid rgba(230, 232, 236, 0.2);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.modal-box h2,
+.modal-box h3 {
+  font-weight: 600;
+  font-size: 24px;
+  color: #23262f;
+  align-self: center;
+  text-align: center;
+  padding: 0 60px;
+  margin: 0;
+}
+
+.modal-box .content {
+  margin-top: auto;
+}
+
+.modal-box .buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 20px;
+  margin-top: auto;
+}
+
+.modal-box .buttons button {
+  padding: 12px 16px;
+  border-radius: 100px;
+  font-size: 18px;
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  color: #fcfcfd;
+}
+
+.modal-box button.cancel {
+  background: unset;
+  border: 2px solid #0063af;
+  color: #0063af;
+}
+
+@media screen and (width < 1024px) {
+  .overlay-shade {
+    padding: 0;
+  }
+
+  .modal-box {
+    height: 100%;
+    width: 100%;
+    border-radius: unset;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+}
