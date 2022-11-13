@@ -85,16 +85,30 @@ const submitData = (item, newValue, onSuccess, onFailure) => {
 
 const apiChangeEmail = (email, onSucess, onFailure) => {
   /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
-  $.ajax({
-    type: "POST",
-    url: `${BACKEND_URL}/api2/change_email/`,
+  fetch(`${BACKEND_URL}/api2/change_email/`, {
+    method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    data: { email },
-    success: onSucess,
-    error: onFailure,
-  });
+    body: new URLSearchParams({ email }).toString(),
+  })
+    .then((response) => {
+      const { status, statusText } = response;
+      if ([200, 400].includes(status)) {
+        response.json().then(({ report }) => {
+          if (status === 200) {
+            onSuccess(report);
+          } else {
+            onFailure(report);
+          }
+        });
+      } else {
+        // unexpected error
+        console.error("server error", status, statusText);
+      }
+    })
+    .catch((error) => console.error(error));
 };
 
 function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
