@@ -317,12 +317,14 @@ function Settings() {
                 />
               );
             })}
+            {/* No deleting of account for now!
             <div className="item">
               <h3>{t("sg_personal_delete_account")}</h3>
               <button type="button" className="delete-account">
                 {t("sg_personal_delete_account_btn")}
               </button>
             </div>
+          */}
             <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
               {editing && (
                 <ModalBox
