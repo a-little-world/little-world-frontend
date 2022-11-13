@@ -113,14 +113,26 @@ function MobileNavBar({ setShowSidebarMobile }) {
   );
 }
 
-function Selector({ selection, setSelection }) {
+function NbtSelector({ selection, setSelection, use }) {
+  if (!["main", "help"].includes(use)) {
+    return null;
+  }
+
   const { t } = useTranslation();
-  const nbtTopics = ["conversation_partners", "appointments", "community_calls"];
-  const disabled = ["appointments", "community_calls"];
+
+  const nbtTopics = {
+    main: ["conversation_partners", "appointments", "community_calls"],
+  };
+  const topics = nbtTopics[use];
+
+  const nbtDisabled = {
+    main: ["appointments", "community_calls"],
+  };
+  const disabled = nbtDisabled[use];
 
   return (
     <div className="selector">
-      {nbtTopics.map((topic) => (
+      {topics.map((topic) => (
         <span className={topic} key={topic}>
           <input
             type="radio"
@@ -475,7 +487,7 @@ function Main() {
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-          <Selector selection={topSelection} setSelection={setTopSelection} />
+          <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
         </div>
         {use === "main" && (
           <div className="content-area-main">
