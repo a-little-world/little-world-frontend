@@ -109,8 +109,15 @@ function ItemsBox({ selectedChoices }) {
   };
 
   const saveTopics = () => {
+    // This is a workaround since fetch doesn't handle nested objects correct
+    // Without this the backend wouldn't show an error but also not update the interests
+    // With api v2 well be able to input data in json directly
+    const formDataInterests = new FormData();
+    tempTopicIndexes.forEach((v) => {
+      formDataInterests.append("interests[]", v);
+    });
     postUserProfileUpdate(
-      `interests:[${tempTopicIndexes}]`,
+      formDataInterests,
       (errorTags) => {
         const errorTextStr = errorTags.map((e) => t(e)).join(", ");
         setErrorText(errorTextStr);
