@@ -62,7 +62,7 @@ export const userDataSlice = createSlice({
 
       state.interestsChoices = action.payload.userDataOPTIONS.actions.POST.interests.choices;
 
-      const displayLang = (userDataGET.display_lang || Cookies.get("frontendLang", "en")) // fallback to english
+      const displayLang = (userDataGET.display_lang || Cookies.get("frontendLang") || "en") // fallback to english
         .slice(0, 2); // just use 2-character code for now; ie "en" not "en-gb", "en-us" etc
       state.settings = {
         displayLang,
