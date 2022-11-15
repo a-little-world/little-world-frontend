@@ -16,7 +16,8 @@ export const userDataSlice = createSlice({
     initialise: (state, action) => {
       state.raw = action.payload;
 
-      const { matches, selfInfo, userDataGET } = action.payload;
+      const { user, profile, state: usrState, matches } = action.payload;
+      console.log(user, profile, usrState, matches);
 
       const others = matches.map((match) => {
         let avatarCfg = "";
