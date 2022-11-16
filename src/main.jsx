@@ -100,14 +100,10 @@ function Sidebar({ sidebarMobile }) {
 }
 
 function MobileNavBar({ setShowSidebarMobile }) {
+  const { t } = useTranslation();
   const location = useLocation();
   const { userPk } = location.state || {};
-  const use =
-    location.pathname.split("/").slice(-1)[0] || (userPk ? "user profile" : "little world");
-  const nameExceptions = {
-    chat: "messages",
-    profile: "my profile",
-  };
+  const key = location.pathname.split("/").slice(-1)[0] || (userPk ? "user" : "home");
 
   return (
     <div className="mobile-header">
@@ -116,7 +112,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
       </button>
       <div className="logo-with-text">
         <img className="logo-mobile" alt="" />
-        <span className="logo-text">{nameExceptions[use] || use}</span>
+        <span className="logo-text">{t(`headers.${key}`)}</span>
       </div>
       <button className="notification disabled" type="button">
         <img alt="show notifications" />
