@@ -527,7 +527,6 @@ button.match-status {
       /* match logos-small rules */
       height: 30px;
       display: flex;
-      width: fit-content;
     }
 
     .logos .logo-text {
