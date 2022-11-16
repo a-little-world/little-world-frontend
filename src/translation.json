@@ -9,6 +9,14 @@
       "help": "help",
       "settings": "settings"
     },
+    "notif_time_ago": {
+      "now": "just now",
+      "minutes": "{{n}} minutes ago",
+      "hours": "{{n}} hours ago",
+      "days": "{{n}} days ago",
+      "months": "{{n}} months ago",
+      "years": "{{n}} years ago"
+    },
     "btn_save": "save",
     "btn_cancel": "cancel",
     "pcs_main_heading": "Set up",
@@ -226,6 +234,14 @@
       "profile": "mein profil",
       "help": "hilfe erhalten",
       "settings": "einstellungen"
+    },
+    "notif_time_ago": {
+      "now": "gerade jetzt",
+      "minutes": "vor {{n}} minuten",
+      "hours": "vor {{n}} stunden",
+      "days": "vor {{n}} tagen",
+      "months": "vor {{n}} monaten",
+      "years": "{{n}} jahre her"
     },
     "btn_save": "speichern",
     "btn_cancel": "abbrechen",

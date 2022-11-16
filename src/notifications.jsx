@@ -6,31 +6,31 @@ import { readAll } from "./features/userData";
 
 import "./notifications.css";
 
-function timeAgo(start) {
+function timeAgo(start, t) {
   const end = Math.floor(Date.now() / 1000); // trim to seconds
   const seconds = end - start;
 
   if (seconds < 60) {
-    return "just now";
+    return t("notif_time_ago.now");
   }
   const minutes = Math.floor(seconds / 60);
   if (minutes < 60) {
-    return `${minutes} minutes ago`;
+    return t("notif_time_ago.minutes", { n: minutes });
   }
   const hours = Math.floor(minutes / 60);
   if (hours < 24) {
-    return `${hours} hours ago`;
+    return t("notif_time_ago.hours", { n: hours });
   }
   const days = Math.floor(hours / 24);
   if (days < 30) {
-    return `${days} days ago`;
+    return t("notif_time_ago.days", { n: days });
   }
   const months = Math.floor(days / 30);
   if (months < 12) {
-    return `${months} months ago`;
+    return t("notif_time_ago.months", { n: months });
   }
   const years = Math.floor(months / 12);
-  return `${years} years ago`;
+  return t("notif_time_ago.years", { n: years });
 }
 
 function Notifications() {
@@ -97,7 +97,7 @@ function Notifications() {
                       <img alt="archive item" />
                     </button>
                   )}
-                  <div className="time-ago">{timeAgo(unixtime)}</div>
+                  <div className="time-ago">{timeAgo(unixtime, t)}</div>
                 </div>
               </div>
             );
