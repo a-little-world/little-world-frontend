@@ -11,6 +11,30 @@ const initialState = {
 
 const dummyNotifications = [
   {
+    id: 2450,
+    status: "unread",
+    type: "appointment",
+    text: "new appoinment?",
+    dateString: "2 hours ago",
+    unixtime: Math.floor(Date.now() / 1000) - 2 * 3600,
+  },
+  {
+    id: 2380,
+    status: "unread",
+    type: "appointment",
+    text: "new appoinment?",
+    dateString: "2 days ago",
+    unixtime: Math.floor(Date.now() / 1000) - 2 * 24 * 3600,
+  },
+  {
+    id: 2350,
+    status: "unread",
+    type: "appointment",
+    text: "new appoinment?",
+    dateString: "3 days ago",
+    unixtime: Math.floor(Date.now() / 1000) - 3 * 24 * 3600,
+  },
+  {
     id: 2347,
     status: "unread",
     type: "appointment",
@@ -151,11 +175,19 @@ export const userDataSlice = createSlice({
         });
       }
     },
+    readNotif: (state, action) => {
+      state.notifications.find(
+        ({ id, status }) => id === action.payload && status === "unread"
+      ).status = "read";
+    },
+    archiveNotif: (state, action) => {
+      state.notifications.find(({ id }) => id === action.payload).status = "archive";
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { initialise, updateSettings, updateProfile, readAll } = userDataSlice.actions;
+export const { initialise, updateSettings, updateProfile, readAll, readNotif, archiveNotif } =
+  userDataSlice.actions;
 
 export default userDataSlice.reducer;
