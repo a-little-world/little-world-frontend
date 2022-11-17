@@ -16,64 +16,66 @@ export const userDataSlice = createSlice({
     initialise: (state, action) => {
       state.raw = action.payload;
 
-      const { user, profile, state: usrState, matches } = action.payload;
-      console.log(user, profile, usrState, matches);
+      const { user, profile, settings, notifications, state: usrState, matches } = action.payload;
+      console.log(user, profile, settings, notifications, usrState, matches);
 
       const others = matches.map((match) => {
         let avatarCfg = "";
         try {
-          avatarCfg = JSON.parse(match.profile_avatar);
+          avatarCfg = JSON.parse(match.profle.profile_avatar_config);
         } catch {}
         return {
-          userPk: match["match.user_h256_pk"],
-          firstName: match.first_name,
-          lastName: match.second_name,
-          imgSrc: match.profile_image,
+          userPk: match.user.hash,
+          firstName: match.profile.first_name,
+          lastName: match.profile.second_name,
+          imgSrc: match.profile.profile_image,
           avatarCfg,
-          description: match.description,
-          type: match.user_type === 1 ? "support" : "match",
+          description: match.profile.description,
+          type: match.user.is_admin ? "support" : "match",
           extraInfo: {
-            about: match.description,
-            interestTopics: match.interests.map(Number),
-            extraTopics: match.additional_interests,
-            expectations: match.language_skill_description,
+            about: match.profile.description,
+            interestTopics: match.profile.interests.map(Number),
+            extraTopics: match.profile.additional_interests,
+            expectations: match.profile.language_skill_description,
           },
         };
       });
+      console.log("OTHRS", others);
+
       let avatarCfg = "";
       try {
-        avatarCfg = JSON.parse(userDataGET.profile_avatar);
+        avatarCfg = JSON.parse(user.profile.profile_avatar_config);
       } catch {}
       const self = {
-        userPk: selfInfo.user_h256_pk,
-        firstName: userDataGET.first_name,
-        lastName: userDataGET.second_name,
-        imgSrc: userDataGET.profile_image,
+        userPk: user.hash,
+        firstName: profile.first_name,
+        lastName: profile.second_name,
+        imgSrc: profile.profile_image,
         avatarCfg,
-        description: userDataGET.description,
+        description: profile.description,
         type: "self",
         extraInfo: {
-          about: userDataGET.description,
-          interestTopics: userDataGET.interests.map(Number),
-          extraTopics: userDataGET.additional_interests,
-          expectations: userDataGET.language_skill_description,
+          about: profile.description,
+          interestTopics: profile.interests.map(Number),
+          extraTopics: profile.additional_interests,
+          expectations: profile.language_skill_description,
         },
       };
       state.users = [self, ...others];
 
-      state.interestsChoices = action.payload.userDataOPTIONS.actions.POST.interests.choices;
+      state.interestsChoices = profile.options.interests;
 
-      const displayLang = (userDataGET.display_lang || Cookies.get("frontendLang") || "en") // fallback to english
+      const displayLang = (settings.language || Cookies.get("frontendLang") || "en") // fallback to english
         .slice(0, 2); // just use 2-character code for now; ie "en" not "en-gb", "en-us" etc
       state.settings = {
         displayLang,
-        firstName: userDataGET.first_name,
-        lastName: userDataGET.second_name,
-        email: selfInfo.email,
-        password: userDataGET.password,
-        phone: userDataGET.mobile_number,
-        postCode: userDataGET.postal_code,
-        birthYear: userDataGET.birth_year,
+        firstName: profile.first_name,
+        lastName: profile.second_name,
+        email: user.email,
+        password: "", // userDataGET.password <-- TODO: why was this here?
+        phone: profile.phone_mobile,
+        postCode: profile.postal_code,
+        birthYear: profile.birth_year,
       };
     },
     updateSettings: (state, action) => {
