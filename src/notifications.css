@@ -46,19 +46,30 @@
   gap: 6px;
 }
 
+.notification-item {
+  transition: box-shadow 0.5s;
+}
+
+.notification-item.unread {
+  cursor: pointer;
+  box-shadow: 0 0 6px inset #f39325;
+}
+
 .notification-item .status {
   margin-left: auto;
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
 }
 
 .notification-item .status .unread-indicator {
+  position: absolute;
+  right: 0;
   height: 14px;
   width: 14px;
   border-radius: 100%;
   background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
-  margin-left: auto;
 }
 
 .notification-item .status button.archive-item {

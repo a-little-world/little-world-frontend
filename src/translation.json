@@ -17,6 +17,11 @@
       "months": "{{n}} months ago",
       "years": "{{n}} years ago"
     },
+    "notif_age": {
+      "today": "today",
+      "week": "this week",
+      "older": "older"
+    },
     "btn_save": "save",
     "btn_cancel": "cancel",
     "pcs_main_heading": "Set up",
@@ -242,6 +247,11 @@
       "days": "vor {{n}} tagen",
       "months": "vor {{n}} monaten",
       "years": "{{n}} jahre her"
+    },
+    "notif_age": {
+      "today": "heute",
+      "week": "lezte woche",
+      "older": "zuvor"
     },
     "btn_save": "speichern",
     "btn_cancel": "abbrechen",

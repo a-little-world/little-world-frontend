@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
-import { readAll } from "./features/userData";
+import { archiveNotif, readNotif } from "./features/userData";
 
 import "./notifications.css";
 
-function timeAgo(start, t) {
-  const end = Math.floor(Date.now() / 1000); // trim to seconds
-  const seconds = end - start;
-
+function timeToStr(seconds, t) {
   if (seconds < 60) {
     return t("notif_time_ago.now");
   }
@@ -33,12 +30,48 @@ function timeAgo(start, t) {
   return t("notif_time_ago.years", { n: years });
 }
 
+const secondsAgo = (start) => {
+  const end = Math.floor(Date.now() / 1000); // trim to seconds
+  const seconds = end - start;
+  return seconds;
+};
+
 function Notifications() {
   const { t } = useTranslation();
-  const [visibleNotifs, setVisibleNotifs] = useState("all");
+  const [visibleNotifType, setVisibleNotifType] = useState("all");
   const dispatch = useDispatch();
-  dispatch(readAll());
   const notifications = useSelector((state) => state.userData.notifications);
+
+  const groupedNotifs = {
+    day: [],
+    week: [],
+    older: [],
+  };
+
+  const visibleNotifs = notifications.filter(({ status }) => {
+    return (
+      status === visibleNotifType ||
+      (visibleNotifType === "all" && ["read", "unread"].includes(status))
+    );
+  });
+
+  visibleNotifs.forEach((notif) => {
+    const secondsOld = secondsAgo(notif.unixtime);
+    if (secondsOld < 60 * 60 * 24) {
+      groupedNotifs.day.push(notif);
+    } else if (secondsOld < 60 * 60 * 24 * 7) {
+      groupedNotifs.week.push(notif);
+    } else {
+      groupedNotifs.older.push(notif);
+    }
+  });
+
+  const archive = (id) => {
+    dispatch(archiveNotif(id));
+  };
+  const markRead = (id) => {
+    dispatch(readNotif(id));
+  };
 
   return (
     <>
@@ -47,30 +80,24 @@ function Notifications() {
         <div className="buttons select-showing">
           <button
             type="button"
-            className={visibleNotifs === "all" ? "all selected" : "all"}
-            onClick={() => {
-              setVisibleNotifs("all");
-            }}
+            className={visibleNotifType === "all" ? "all selected" : "all"}
+            onClick={() => setVisibleNotifType("all")}
           >
             <img alt="" />
             {t("nm_filter_all")}
           </button>
           <button
             type="button"
-            className={visibleNotifs === "unread" ? "unread selected" : "unread"}
-            onClick={() => {
-              setVisibleNotifs("unread");
-            }}
+            className={visibleNotifType === "unread" ? "unread selected" : "unread"}
+            onClick={() => setVisibleNotifType("unread")}
           >
             <img alt="" />
             {t("nm_filter_unread")}
           </button>
           <button
             type="button"
-            className={visibleNotifs === "archive" ? "archive selected" : "archive"}
-            onClick={() => {
-              setVisibleNotifs("archive");
-            }}
+            className={visibleNotifType === "archive" ? "archive selected" : "archive"}
+            onClick={() => setVisibleNotifType("archive")}
           >
             <img alt="" />
             {t("nm_filter_archive")}
@@ -78,32 +105,47 @@ function Notifications() {
         </div>
       </div>
       <div className="content panel">
-        {notifications.map(({ id, status, type, text, dateString, unixtime }) => {
-          if (
-            status === visibleNotifs ||
-            (visibleNotifs === "all" && ["read", "unread"].includes(status))
-          ) {
-            return (
-              <div key={id} className="notification-item">
-                <img className={type.replace(" ", "-")} alt={type} />
-                <div className="info">
-                  <div className="notification-headline">{text}</div>
-                  <div className="notification-time">{dateString}</div>
-                </div>
-                <div className="status">
-                  {status === "unread" && <div className="unread-indicator" />}
-                  {status !== "archive" && (
-                    <button type="button" className="archive-item">
-                      <img alt="archive item" />
-                    </button>
-                  )}
-                  <div className="time-ago">{timeAgo(unixtime, t)}</div>
-                </div>
-              </div>
-            );
+        {Object.entries(groupedNotifs).map(([name, notifs]) => {
+          if (notifs.length === 0) {
+            return false;
           }
-          return null;
+          return (
+            <>
+              <div className="notification-age">{name}</div>
+              {groupedNotifs[name].map(({ id, status, type, text, dateString, unixtime }) => {
+                const extraProps =
+                  status === "unread"
+                    ? {
+                        onClick: () => markRead(id),
+                        onKeyPress: () => markRead(id),
+                        role: "button",
+                        tabIndex: 0,
+                      }
+                    : {};
+
+                return (
+                  <div key={id} className={`notification-item ${status}`} {...extraProps}>
+                    <img className={type.replace(" ", "-")} alt={type} />
+                    <div className="info">
+                      <div className="notification-headline">{text}</div>
+                      <div className="notification-time">{dateString}</div>
+                    </div>
+                    <div className="status">
+                      {status === "unread" && <div className="unread-indicator" />}
+                      {status !== "archive" && (
+                        <button type="button" className="archive-item" onClick={() => archive(id)}>
+                          <img alt="archive item" />
+                        </button>
+                      )}
+                      <div className="time-ago">{timeToStr(secondsAgo(unixtime), t)}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          );
         })}
+        {visibleNotifs.length === 0 && <div>no notifications</div>}
       </div>
     </>
   );
