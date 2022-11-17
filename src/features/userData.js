@@ -27,7 +27,7 @@ export const userDataSlice = createSlice({
         return {
           userPk: match.user.hash,
           firstName: match.profile.first_name,
-          lastName: match.profile.second_name,
+          lastName: "", // TODO: we removed the second name completely, so we can also remove its frontend use
           imgSrc: match.profile.profile_image,
           avatarCfg,
           description: match.profile.description,
