@@ -241,9 +241,11 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   );
 }
 
-function CommunityEvent({ frequency, header, text, dateTime }) {
+function CommunityEvent({ frequency, header, text, dateTime, joinCallback }) {
   const { t } = useTranslation();
   const two = (n) => (n < 10 ? `0${n}` : n);
+
+  
 
   return (
     <div className="community-event">
@@ -263,7 +265,7 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
             <img alt="add appointment" />
             <span className="text">Termin hinzufügen</span>
           </button>
-          <button type="button" className="call">
+          <button type="button" className="call" onClick={() => joinCallback()}>
             <img alt="call" />
             <span className="text">Gespräch beitreten</span>
           </button>
@@ -295,6 +297,9 @@ function CommunityCalls() {
       header: t("community_calls_title_1"),
       text: t("community_calls_desc_1"),
       dateTime: new Date(Date.UTC(2022, 11, 27, 17)),
+      joinCallback: () => {
+        window.open('https://rwth.zoom.us/j/96781095354','_blank');
+      }
     },
     {
       id: 24,
@@ -302,6 +307,9 @@ function CommunityCalls() {
       header: t("community_calls_title_2"),
       text: t("community_calls_desc_2"),
       dateTime: new Date(Date.UTC(2022, 11, 29, 12)),
+      joinCallback: () => {
+        window.open('https://rwth.zoom.us/j/94896616563','_blank');
+      }
     },
   ];
 
