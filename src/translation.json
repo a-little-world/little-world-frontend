@@ -1,5 +1,9 @@
 {
   "en": {
+    "community_calls_title_1": "Kaffeerunden",
+    "community_calls_title_2": "Frage- und Anregungsrunde",
+    "community_calls_desc_1": "Zusammenkommen der Community – lerne das Team hinter Little World und andere Nutzer:innen bei einer gemütlichen Tasse Kaffee oder Tee kennen. ",
+    "community_calls_desc_2": "Fragezeichen in den Augen oder Verbesserungsideen? Dann komm in das Gruppengespräch, lern das Team kennen und hilf uns Little World besser zu machen! ",
     "btn_save": "save",
     "btn_cancel": "cancel",
     "pcs_main_heading": "Set up",
@@ -95,7 +99,15 @@
       "psycology_trans": "Psycology",
       "pdev_trans": "Personal Development"
     },
-    "weekdays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "weekdays": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
     "month_short": [
       "jan",
       "feb",
@@ -174,6 +186,10 @@
     "sg_personal_delete_account_btn": "delete my account now"
   },
   "de": {
+    "community_calls_title_1": "Kaffeerunden",
+    "community_calls_title_2": "Frage- und Anregungsrunde",
+    "community_calls_desc_1": "Zusammenkommen der Community – lerne das Team hinter Little World und andere Nutzer:innen bei einer gemütlichen Tasse Kaffee oder Tee kennen. ",
+    "community_calls_desc_2": "Fragezeichen in den Augen oder Verbesserungsideen? Dann komm in das Gruppengespräch, lern das Team kennen und hilf uns Little World besser zu machen! ",
     "btn_save": "speichern",
     "btn_cancel": "abbrechen",
     "pcs_main_heading": "Beitrittsbestätigung",
@@ -268,7 +284,15 @@
       "psycology_trans": "Psychologie",
       "pdev_trans": "Persönliche Entwicklung"
     },
-    "weekdays": ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
+    "weekdays": [
+      "Sonntag",
+      "Montag",
+      "Dienstag",
+      "Mittwoch",
+      "Donnerstag",
+      "Freitag",
+      "Samstag"
+    ],
     "month_short": [
       "jan",
       "feb",

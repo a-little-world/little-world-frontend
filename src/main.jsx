@@ -137,7 +137,7 @@ function NbtSelector({ selection, setSelection, use }) {
   const topics = nbtTopics[use];
 
   const nbtDisabled = {
-    main: ["appointments", "community_calls"],
+    main: ["appointments"],
   };
   const disabled = nbtDisabled[use];
 
@@ -255,11 +255,11 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
         <div className="event-info">
           <h3>{header}</h3>
           <div className="text">
-            {text} <Link className="show-more">Show more</Link>
+            {text} {/*<Link className="show-more">Show more</Link>*/}
           </div>
         </div>
         <div className="buttons">
-          <button type="button" className="appointment">
+          <button type="button" className="appointment disabled">
             <img alt="add appointment" />
             <span className="text">Termin hinzufügen</span>
           </button>
@@ -287,27 +287,21 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
 
 function CommunityCalls() {
   const now = new Date();
+  const { t } = useTranslation();
   const dummyEvents = [
     {
       id: 23,
       frequency: "weekly",
-      header: "Kaffeerunden",
-      text: "Come Together of the community - Grab a coffee and talk to other users, share your delights and enjoy!",
-      dateTime: now,
+      header: t("community_calls_title_1"),
+      text: t("community_calls_desc_1"),
+      dateTime: new Date(Date.UTC(2022, 11, 27, 17)),
     },
     {
-      id: 26,
-      frequency: "once",
-      header: "Willkommen! Zeit für Fragen",
-      text: "Confused? Don’t worry, our team will happily answer all your questions! Just join the call.",
-      dateTime: now,
-    },
-    {
-      id: 29,
-      frequency: "once",
-      header: "Lach-Yoga",
-      text: "Want to have a heartily laugh with the community?  Treat yourself something good and join us! It’s free!",
-      dateTime: now,
+      id: 24,
+      frequency: "weekly",
+      header: t("community_calls_title_2"),
+      text: t("community_calls_desc_2"),
+      dateTime: new Date(Date.UTC(2022, 11, 29, 12)),
     },
   ];
 
