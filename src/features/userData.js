@@ -22,19 +22,19 @@ export const userDataSlice = createSlice({
       const others = matches.map((match) => {
         let avatarCfg = "";
         try {
-          avatarCfg = JSON.parse(match.profle.profile_avatar_config);
+          avatarCfg = JSON.parse(match.profle.avatar_config);
         } catch {}
         return {
           userPk: match.user.hash,
           firstName: match.profile.first_name,
           lastName: "", // TODO: we removed the second name completely, so we can also remove its frontend use
-          imgSrc: match.profile.profile_image,
+          imgSrc: match.profile.image,
           avatarCfg,
           description: match.profile.description,
           type: match.user.is_admin ? "support" : "match",
           extraInfo: {
             about: match.profile.description,
-            interestTopics: match.profile.interests.map(Number),
+            interestTopics: match.profile.interests,
             extraTopics: match.profile.additional_interests,
             expectations: match.profile.language_skill_description,
           },
@@ -44,19 +44,19 @@ export const userDataSlice = createSlice({
 
       let avatarCfg = "";
       try {
-        avatarCfg = JSON.parse(user.profile.profile_avatar_config);
+        avatarCfg = JSON.parse(user.profile.avatar_config);
       } catch {}
       const self = {
         userPk: user.hash,
         firstName: profile.first_name,
         lastName: profile.second_name,
-        imgSrc: profile.profile_image,
+        imgSrc: profile.image,
         avatarCfg,
         description: profile.description,
         type: "self",
         extraInfo: {
           about: profile.description,
-          interestTopics: profile.interests.map(Number),
+          interestTopics: profile.interests,
           extraTopics: profile.additional_interests,
           expectations: profile.language_skill_description,
         },
