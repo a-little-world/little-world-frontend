@@ -324,7 +324,9 @@ function NotificationPanel() {
   const { t } = useTranslation();
   const users = useSelector((state) => state.userData.users);
   const activeUser = users.find(({ type }) => type === "self");
-  const { avatarCfg, firstName, lastName, imgSrc } = activeUser;
+  const { avatarCfg, firstName, lastName, imgSrc, notifications } = activeUser;
+
+  console.log("NOTIFICATIONS", notifications);
 
   const dummyNotifications = [
     {
@@ -354,12 +356,12 @@ function NotificationPanel() {
       <hr />
       <div className="notifications-header">{t("nbr_notifications")}</div>
       <div className="notifications-content">
-        {dummyNotifications.map(({ id, type, text, dateString }) => (
-          <div key={id} className="notification-item">
-            <img className={type.replace(" ", "-")} alt={type} />
+        {notifications.map(({ hash, type, title, created_at }) => (
+          <div key={hash} className="notification-item">
+            <img className="appointment" alt={type} />
             <div className="info">
-              <div className="notification-headline">{text}</div>
-              <div className="notification-time">{dateString}</div>
+              <div className="notification-headline">{title}</div>
+              <div className="notification-time">{created_at}</div>
             </div>
           </div>
         ))}
