@@ -337,7 +337,7 @@ function NotificationPanel() {
   ];
 
   // don't show unless names are available; ie API call has returned
-  if (!(firstName && lastName)) {
+  if (!firstName) {
     return false;
   }
 
