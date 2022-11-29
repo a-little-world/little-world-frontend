@@ -119,7 +119,7 @@ class Chat extends Component {
       socket: new ReconnectingWebSocket(
         `${PRODUCTION ? "wss" : "ws"}://${
           DEVELOPMENT ? BACKEND_URL.substring(7) : window.origin.split("//").pop()
-        }/chat_ws`
+        }/api/chat/ws`
       ) /* without the 'https://' */,
       userWasSelected: !!this.props.userPk,
     };
