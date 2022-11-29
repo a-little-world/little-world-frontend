@@ -53,6 +53,7 @@ export const userDataSlice = createSlice({
         imgSrc: profile.image,
         avatarCfg,
         description: profile.description,
+        notifications,
         type: "self",
         extraInfo: {
           about: profile.description,
