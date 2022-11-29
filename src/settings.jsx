@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { BACKEND_URL } from "./ENVIRONMENT";
 import { updateSettings } from "./features/userData";
@@ -24,6 +25,7 @@ function ListItem({ section, label, value, setEditing, map }) {
 }
 
 const types = {
+  profilePicture: "popup-open",
   displayLang: "select",
   firstName: "text",
   lastName: "text",
@@ -269,6 +271,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
 
 function Settings() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(null);
 
   /**
@@ -280,6 +283,7 @@ function Settings() {
    */
   const items = [
     // with ordering
+    "profilePicture",
     "displayLang",
     "firstName",
     "lastName",
@@ -312,7 +316,15 @@ function Settings() {
                   section="personal"
                   label={label}
                   value={data[label]}
-                  setEditing={setEditing}
+                  setEditing={
+                    label !== "profilePicture"
+                      ? setEditing
+                      : () => {
+                          /* For profile picture we just open the userform frontend for now */
+                          navigate("/formpage?pages=6");
+                          navigate(0); /* Reload page */
+                        }
+                  }
                   map={label === "displayLang" ? displayLanguages : false}
                 />
               );
