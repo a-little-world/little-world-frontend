@@ -40,7 +40,7 @@ function Sidebar({ sidebarMobile }) {
     {
       label: "log_out",
       clickEvent: () => {
-        fetch(`${BACKEND_URL}/api2/logout/`, {
+        fetch(`${BACKEND_URL}/api/user/logout/`, {
           method: "GET",
           headers: { "X-CSRFToken": Cookies.get("csrftoken") },
         })
@@ -271,7 +271,7 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
       </div>
       <div className="dateTime">
         {frequency === "weekly" && (
-          <div className="weekday">{t(`weekdays.${dateTime.getDay()}`)}</div>
+          <div className="weekday">{t(`weekdays::${dateTime.getDay()}`)}</div>
         )}
         {frequency === "once" && (
           <>
@@ -325,8 +325,6 @@ function NotificationPanel() {
   const users = useSelector((state) => state.userData.users);
   const activeUser = users.find(({ type }) => type === "self");
   const { avatarCfg, firstName, lastName, imgSrc, notifications } = activeUser;
-
-  console.log("NOTIFICATIONS", notifications);
 
   const dummyNotifications = [
     {
