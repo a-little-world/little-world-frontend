@@ -69,6 +69,9 @@ export const userDataSlice = createSlice({
           extraTopics: profile.additional_interests,
           expectations: profile.language_skill_description,
         },
+        stateInfo: {
+          unconfirmedMatches: usrState.unconfirmed_matches_stack,
+        },
       };
 
       state.self = self;

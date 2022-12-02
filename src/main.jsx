@@ -350,45 +350,42 @@ function Main() {
   const [matchesProfiles, setMatchesProfiles] = useState({});
 
   const users = useSelector((state) => state.userData.users);
+  const initalUnconfirmedMatches = useSelector(
+    (state) => state.userData.self.stateInfo.unconfirmedMatches
+  );
+
   const matchesInfo = users.filter(({ type }) => type !== "self");
 
-  const [matchesUnconfirmed, setMatchesUnconfirmed] = useState([]);
+  const [matchesUnconfirmed, setMatchesUnconfirmed] = useState(initalUnconfirmedMatches);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
   const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
   const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
   const navigate = useNavigate();
 
-  const [overlayState, setOverlayState] = useState({
-    visible: false,
-    title: "None",
-    name: "Lorem",
-    test: "Lorem",
-    userInfo: null,
-  });
-
-  const updateOverlayState = (unconfirmedMatches, matchesData, _matchesProfiles) => {
-    console.log("mProfiles", matchesProfiles);
-    if (unconfirmedMatches.length > 0) {
-      setOverlayState({
-        visible: true,
-        title: t("matching_state_found_unconfirmed_trans"),
-        name: _matchesProfiles[unconfirmedMatches[0].user_h256_pk].first_name,
-        test: "Look at his profile now!",
-        userInfo: matchesData.filter(
-          (match) => match.userPk === unconfirmedMatches[0].user_h256_pk
-        )[0],
-      });
-    } else {
-      setOverlayState({
+  const updateOverlayState = (inlUnconfirmedMatches) => {
+    const hasUnconfirmedMatches = inlUnconfirmedMatches.length > 0;
+    if (!hasUnconfirmedMatches)
+      return {
         visible: false,
         title: "None",
         name: "Lorem",
         test: "Lorem",
         userInfo: null,
-      });
-    }
+      };
+
+    const firstUnconfimed = matchesInfo.filter((m) => m.userPk === inlUnconfirmedMatches[0])[0];
+
+    return {
+      visible: true,
+      title: t("matching_state_found_unconfirmed_trans"),
+      name: firstUnconfimed.firstName,
+      test: "Look at his profile now!",
+      userInfo: firstUnconfimed,
+    };
   };
+
+  const [overlayState, setOverlayState] = useState(updateOverlayState(initalUnconfirmedMatches));
 
   const setCallSetupPartner = (userPk) => {
     document.body.style.overflow = userPk ? "hidden" : "";
@@ -511,24 +508,28 @@ function Main() {
             text={overlayState.text}
             userInfo={overlayState.userInfo}
             onOk={() => {
-              fetch(`${BACKEND_URL}/api2/unconfirmed_matches/`, {
+              fetch(`${BACKEND_URL}/api/user/confirm_match/`, {
                 /* TODO is incuded in main frontend data now! */
                 method: "POST",
                 headers: {
                   "X-CSRFToken": Cookies.get("csrftoken"),
-                  "Content-Type": "application/x-www-form-urlencoded",
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  "X-UseTagsOnly": true,
                 },
-                body: new URLSearchParams({
-                  partner_h256_pk: overlayState.userInfo.userPk,
-                }).toString(),
+                body: JSON.stringify({ matches: [overlayState.userInfo.userPk] }),
               })
                 .then(({ status, statusText }) => {
                   if (status === 200) {
-                    const newUnconfirmed = matchesUnconfirmed.filter(
-                      (m) => m.userPk !== overlayState.userInfo.userPk
-                    );
+                    console.log("Confirming", overlayState.userInfo, matchesUnconfirmed);
+                    const newUnconfirmed = [];
+                    matchesUnconfirmed.forEach((e) => {
+                      console.log("UNK", e, overlayState.userInfo.userOnlinePk);
+                      if (e !== overlayState.userInfo.userPk) newUnconfirmed.push(e);
+                    });
+                    console.log("NEW unconfirmed", newUnconfirmed);
                     setMatchesUnconfirmed(newUnconfirmed);
-                    updateOverlayState(newUnconfirmed, matchesInfo, matchesProfiles);
+                    setOverlayState(updateOverlayState(newUnconfirmed));
                   } else {
                     console.error("server error", status, statusText);
                   }
