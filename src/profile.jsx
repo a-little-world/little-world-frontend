@@ -13,13 +13,14 @@ import Link from "./path-prepend";
 import "./profile.css";
 
 const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
-  fetch(`${BACKEND_URL}/api2/profile/`, {
+  fetch(`${BACKEND_URL}/api/profile/`, {
     method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
-      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
-    body: new URLSearchParams(updateData).toString(),
+    body: JSON.stringify(updateData),
   }).then((response) => {
     const { status, statusText } = response;
     if (![200, 400].includes(status)) {
@@ -87,37 +88,32 @@ function ProfileBox({
   );
 }
 
-function ItemsBox({ selectedChoices }) {
+function InterestsSelector() {
   const { t } = useTranslation();
-  const choices = useSelector((state) => state.userData.interestsChoices);
+  const interestChoices = useSelector((state) => state.userData.apiOptions.profile.interests);
+  const selectedTopics = useSelector((state) => state.userData.self.extraInfo.interestTopics);
+  console.log("INTEREST options", interestChoices, selectedTopics);
+  const [topicSelection, setTopicSelection] = useState(selectedTopics);
 
-  const choicesTransTags = choices.map(({ display_name }) => display_name);
   const [editing, setEditing] = useState(false);
-  const [topicIndexes, setTopicIndexes] = useState(selectedChoices);
-  const [tempTopicIndexes, setTempTopicIndexes] = useState(selectedChoices);
   const [errorText, setErrorText] = useState("");
 
   const location = useLocation();
   const { userPk } = location.state || {};
   const isSelf = !userPk;
 
-  const toggleInterest = (idx) => {
-    const newIndexes = tempTopicIndexes.includes(idx)
-      ? tempTopicIndexes.filter((item) => item !== idx) // remove item
-      : [...tempTopicIndexes, idx]; // add item
-    setTempTopicIndexes(newIndexes);
+  const toggleInterest = (topicValue) => {
+    const newSelection = topicSelection.includes(topicValue)
+      ? topicSelection.filter((item) => item !== topicValue) // remove item
+      : [...topicSelection, topicValue]; // add item
+
+    console.log("TOGGLE", topicValue, newSelection);
+    setTopicSelection(() => newSelection);
   };
 
   const saveTopics = () => {
-    // This is a workaround since fetch doesn't handle nested objects correct
-    // Without this the backend wouldn't show an error but also not update the interests
-    // With api v2 well be able to input data in json directly
-    const formDataInterests = new FormData();
-    tempTopicIndexes.forEach((v) => {
-      formDataInterests.append("interests[]", v);
-    });
     postUserProfileUpdate(
-      formDataInterests,
+      { interests: topicSelection },
       (errorTags) => {
         const errorTextStr = errorTags.map((e) => t(e)).join(", ");
         setErrorText(errorTextStr);
@@ -125,15 +121,14 @@ function ItemsBox({ selectedChoices }) {
         setEditing(false);
       },
       () => {
+        // dispatch(updateProfile({ interests: topicSelection })); No need state will automaticly handle this
         setEditing(false);
-        setTopicIndexes(tempTopicIndexes); // probably should use the server response?
       },
       "interests"
     );
   };
 
   const cancelTopics = () => {
-    setTempTopicIndexes(topicIndexes);
     setEditing(false);
   };
 
@@ -146,11 +141,14 @@ function ItemsBox({ selectedChoices }) {
             <img alt="edit" />
           </button>
         )}
-        {topicIndexes.map((idx) => (
-          <div key={idx} className="interest-item">
-            <span className="text">{t(`profile_interests.${choicesTransTags[idx]}`)}</span>
-          </div>
-        ))}
+        {topicSelection.map((interest) => {
+          const topicOptions = interestChoices.filter((c) => c.value === interest)[0];
+          return (
+            <div key={topicOptions.value} className="interest-item">
+              <span className="text">{t(topicOptions.tag)}</span>
+            </div>
+          );
+        })}
         {editing && (
           <div className="topics-shade">
             <div className="topics-selector">
@@ -164,18 +162,18 @@ function ItemsBox({ selectedChoices }) {
               </div>
               <h3>{t("profile_choose_interests")}</h3>
               <div className="items">
-                {choicesTransTags.map((interest, idx) => (
+                {interestChoices.map((choice) => (
                   <button
-                    key={idx}
+                    key={choice.value}
                     type="button"
                     className={
-                      tempTopicIndexes.includes(idx)
+                      topicSelection.includes(choice.value)
                         ? "interest-item selected-item"
                         : "interest-item"
                     }
-                    onClick={() => toggleInterest(idx)}
+                    onClick={() => toggleInterest(choice.value)}
                   >
-                    <span className="text">{t(`profile_interests.${interest}`)}</span>
+                    <span className="text">{t(choice.tag)}</span>
                   </button>
                 ))}
               </div>
@@ -366,7 +364,7 @@ function ProfileDetail({ profile }) {
   return (
     <div className="profile-detail">
       <TextBox subject="about" topicText={profile.about} formTag="description" />
-      <ItemsBox selectedChoices={profile.interestTopics} />
+      <InterestsSelector />
       <TextBox
         subject="extra-topics"
         topicText={profile.extraTopics}
