@@ -16,8 +16,16 @@ export const userDataSlice = createSlice({
     initialise: (state, action) => {
       state.raw = action.payload;
 
-      const { user, profile, settings, notifications, state: usrState, matches } = action.payload;
-      console.log(user, profile, settings, notifications, usrState, matches);
+      const {
+        user,
+        profile,
+        settings,
+        notifications,
+        state: usrState,
+        matches,
+        community_events,
+      } = action.payload;
+      console.log(user, profile, settings, notifications, usrState, matches, community_events);
 
       const others = matches.map((match) => {
         let avatarCfg = "";
@@ -44,7 +52,7 @@ export const userDataSlice = createSlice({
 
       let avatarCfg = "";
       try {
-        avatarCfg = JSON.parse(user.profile.avatar_config);
+        avatarCfg = JSON.parse(profile.avatar_config);
       } catch {}
       const self = {
         userPk: user.hash,
@@ -69,6 +77,7 @@ export const userDataSlice = createSlice({
       const displayLang = (settings.language || Cookies.get("frontendLang") || "en") // fallback to english
         .slice(0, 2); // just use 2-character code for now; ie "en" not "en-gb", "en-us" etc
       state.settings = {
+        profilePicture: profile.image_type /* selction 'picture' or 'avatar' */,
         displayLang,
         firstName: profile.first_name,
         lastName: profile.second_name,
@@ -78,6 +87,8 @@ export const userDataSlice = createSlice({
         postCode: profile.postal_code,
         birthYear: profile.birth_year,
       };
+
+      state.communityEvents = community_events;
     },
     updateSettings: (state, action) => {
       Object.entries(action.payload).forEach(([item, value]) => {
