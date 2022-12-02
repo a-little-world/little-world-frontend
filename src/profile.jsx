@@ -19,6 +19,7 @@ const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
       "X-CSRFToken": Cookies.get("csrftoken"),
       Accept: "application/json",
       "Content-Type": "application/json",
+      "X-UseTagsOnly": true, // This automaticly requests error tags instead of direct translations!
     },
     body: JSON.stringify(updateData),
   }).then((response) => {
@@ -26,7 +27,7 @@ const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
     if (![200, 400].includes(status)) {
       console.error("server error", status, statusText);
     } else {
-      response.json().then(({ report }) => {
+      response.json().then((report) => {
         if (response.status === 200) {
           return onSuccess();
         }
@@ -223,9 +224,8 @@ function TextBox({ subject, topicText = "", formTag }) {
     const text = editorRef.current.innerText;
     postUserProfileUpdate(
       { [formTag]: text },
-      (_text) => {
-        console.log("text error");
-        setErrorText(t(`request_errors.${_text}`)); // TODO: @tbscode here again I'm tahing a backend state directly, this could be resolved by https://github.com/tbscode/little-world-frontend/pull/122
+      (tag) => {
+        setErrorText(t(tag));
         setEditState(false);
       },
       () => {
