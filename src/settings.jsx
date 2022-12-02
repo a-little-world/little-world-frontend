@@ -59,18 +59,20 @@ const labelsMap = {
 };
 
 const submitData = (item, newValue, onSuccess, onFailure) => {
-  fetch(`${BACKEND_URL}/api2/profile/`, {
+  fetch(`${BACKEND_URL}/api/profile/`, {
     method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
-      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-UseTagsOnly": true, // This automaticly requests error tags instead of direct translations!
     },
-    body: new URLSearchParams({ [labelsMap[item]]: newValue }).toString(),
+    body: JSON.stringify({ [labelsMap[item]]: newValue }),
   })
     .then((response) => {
       const { status, statusText } = response;
       if ([200, 400].includes(status)) {
-        response.json().then(({ report }) => {
+        response.json().then((report) => {
           if (status === 200) {
             onSuccess(report, item, newValue);
           } else {
@@ -87,7 +89,7 @@ const submitData = (item, newValue, onSuccess, onFailure) => {
 
 const apiChangeEmail = (email, onSuccess, onFailure) => {
   /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
-  fetch(`${BACKEND_URL}/api2/change_email/`, {
+  fetch(`${BACKEND_URL}/api/user/change_email/`, {
     method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
@@ -138,6 +140,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     setEditing(false);
   };
   const onResponseFailure = (report) => {
+    console.log("REPORT", report);
     const errorsList = report[labelsMap[label]];
     setErrors(errorsList); // update error message(s)
     setWaiting(false);
@@ -212,7 +215,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
           <h2>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</h2>
           <div className="error-message">
             {errors.map((errorTag) => {
-              return <div key={errorTag}>{`⚠️ ${t(`request_errors.${errorTag}`)}`}</div>;
+              return <div key={errorTag}>{`⚠️ ${t(errorTag)}`}</div>;
             })}
           </div>
           <div className="input-container">
