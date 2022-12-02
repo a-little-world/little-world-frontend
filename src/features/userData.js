@@ -70,9 +70,13 @@ export const userDataSlice = createSlice({
           expectations: profile.language_skill_description,
         },
       };
-      state.users = [self, ...others];
 
-      state.interestsChoices = profile.options.interests;
+      state.self = self;
+      /* TODO can this reference break anything?
+       I just don't feel that it makes any sense to do state.users.filter(type === 'self') all the time? 
+      */
+
+      state.users = [self, ...others]; // Why would we do this id dont get it?
 
       const displayLang = (settings.language || Cookies.get("frontendLang") || "en") // fallback to english
         .slice(0, 2); // just use 2-character code for now; ie "en" not "en-gb", "en-us" etc
@@ -89,6 +93,11 @@ export const userDataSlice = createSlice({
       };
 
       state.communityEvents = community_events;
+
+      /* Stores backend api options globaly */
+      state.apiOptions = {
+        profile: profile.options,
+      };
     },
     updateSettings: (state, action) => {
       Object.entries(action.payload).forEach(([item, value]) => {
