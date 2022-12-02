@@ -137,7 +137,7 @@ function NbtSelector({ selection, setSelection, use }) {
   const topics = nbtTopics[use];
 
   const nbtDisabled = {
-    main: ["appointments", "community_calls"],
+    main: ["appointments"],
   };
   const disabled = nbtDisabled[use];
 
@@ -241,9 +241,11 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   );
 }
 
-function CommunityEvent({ frequency, header, text, dateTime }) {
+function CommunityEvent({ frequency, description, title, time }) {
   const { t } = useTranslation();
   const two = (n) => (n < 10 ? `0${n}` : n);
+
+  const dateTime = new Date(time);
 
   return (
     <div className="community-event">
@@ -253,9 +255,9 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
       </div>
       <div className="main">
         <div className="event-info">
-          <h3>{header}</h3>
+          <h3>{title}</h3>
           <div className="text">
-            {text} <Link className="show-more">Show more</Link>
+            {description} <Link className="show-more">Show more</Link>
           </div>
         </div>
         <div className="buttons">
@@ -276,7 +278,7 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
         {frequency === "once" && (
           <>
             <div className="date">{two(dateTime.getDate())}</div>
-            <div className="month">{t(`month_short.${dateTime.getMonth()}`)}</div>
+            <div className="month">{t(`month_short::${dateTime.getMonth()}`)}</div>
           </>
         )}
         <div className="time">{`${two(dateTime.getHours())}:${two(dateTime.getMinutes())}`}</div>
@@ -286,34 +288,14 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
 }
 
 function CommunityCalls() {
+  const events = useSelector((state) => state.userData.communityEvents);
+  console.log("EVENTS", events);
+
   const now = new Date();
-  const dummyEvents = [
-    {
-      id: 23,
-      frequency: "weekly",
-      header: "Kaffeerunden",
-      text: "Come Together of the community - Grab a coffee and talk to other users, share your delights and enjoy!",
-      dateTime: now,
-    },
-    {
-      id: 26,
-      frequency: "once",
-      header: "Willkommen! Zeit für Fragen",
-      text: "Confused? Don’t worry, our team will happily answer all your questions! Just join the call.",
-      dateTime: now,
-    },
-    {
-      id: 29,
-      frequency: "once",
-      header: "Lach-Yoga",
-      text: "Want to have a heartily laugh with the community?  Treat yourself something good and join us! It’s free!",
-      dateTime: now,
-    },
-  ];
 
   return (
     <div className="community-calls">
-      {dummyEvents.map((eventData) => (
+      {events.map((eventData) => (
         <CommunityEvent key={eventData.id} {...eventData} />
       ))}
     </div>
@@ -325,16 +307,6 @@ function NotificationPanel() {
   const users = useSelector((state) => state.userData.users);
   const activeUser = users.find(({ type }) => type === "self");
   const { avatarCfg, firstName, lastName, imgSrc, notifications } = activeUser;
-
-  const dummyNotifications = [
-    {
-      id: 2347,
-      type: "appointment",
-      text: "Notifications will be added soon",
-      dateString: "27th October, 2022 at 3:00pm",
-      unixtime: 1666364400,
-    },
-  ];
 
   // don't show unless names are available; ie API call has returned
   if (!firstName) {
@@ -540,6 +512,7 @@ function Main() {
             userInfo={overlayState.userInfo}
             onOk={() => {
               fetch(`${BACKEND_URL}/api2/unconfirmed_matches/`, {
+                /* TODO is incuded in main frontend data now! */
                 method: "POST",
                 headers: {
                   "X-CSRFToken": Cookies.get("csrftoken"),
@@ -552,7 +525,7 @@ function Main() {
                 .then(({ status, statusText }) => {
                   if (status === 200) {
                     const newUnconfirmed = matchesUnconfirmed.filter(
-                      (m) => m.user_h256_pk !== overlayState.userInfo.userPk
+                      (m) => m.userPk !== overlayState.userInfo.userPk
                     );
                     setMatchesUnconfirmed(newUnconfirmed);
                     updateOverlayState(newUnconfirmed, matchesInfo, matchesProfiles);
