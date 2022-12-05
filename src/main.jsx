@@ -164,33 +164,18 @@ function NbtSelector({ selection, setSelection, use }) {
 
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   const { t } = useTranslation();
-  const [matchState, setMatchState] = useState("idle");
   const users = useSelector((state) => state.userData.users);
-
-  // backend values
-  const matchStatuses = {
-    0: "idle",
-    1: "searching",
-    2: "pending",
-    3: "confirmed",
-  };
-
-  // useEffect(() => {
-  //   if (!userInfo.matching) {
-  //     return;
-  //   }
-  //   const searchCode = userInfo.matching.state;
-  //   setMatchState(matchStatuses[searchCode]);
-  // }, [userInfo]);
+  const currentMatchingState = useSelector((state) => state.userData.self.stateInfo.matchingState);
+  console.log("Current matching state", currentMatchingState);
+  const [matchState, setMatchState] = useState(currentMatchingState);
 
   function updateUserMatchingState() {
-    fetch(`${BACKEND_URL}/api2/user_state/`, {
+    const updatedState = "searching";
+    fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
       method: "POST",
       headers: {
         "X-CSRFToken": Cookies.get("csrftoken"),
-        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: new URLSearchParams({ action: "update_user_state" }).toString(),
     })
       .then((response) => {
         if (response.status === 200) {
@@ -201,7 +186,9 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
       })
       .then((response) => {
         if (response) {
-          userInfo = response; // TODO: this should be updated another way
+          // If this request works, we can safely update our state to 'searching'
+          // TODO: we need to also update the redux state!
+          setMatchState(updatedState);
         }
       })
       .catch((error) => console.error(error));
@@ -220,18 +207,18 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
             />
           );
         })}
-      {["idle", "confirmed"].includes(matchState) && (
+      {["idle"].includes(matchState) && (
         <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
           <img alt="plus" />
           {matchState === "idle" && t("matching_state_not_searching_trans")}
-          {matchState === "confirmed" && t("matching_state_found_confirmed_trans")}
+          {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
         </button>
       )}
-      {["searching", "pending"].includes(matchState) && (
+      {["searching"].includes(matchState) && (
         <div className="match-status searching">
           <img alt="" />
           {matchState === "searching" && t("matching_state_searching_trans")}
-          {matchState === "pending" && t("matching_state_found_unconfirmed_trans")}
+          {/* matchState === "pending" && t("matching_state_found_unconfirmed_trans") */}
           <a className="change-criteria" href="/form">
             {t("cp_modify_search")}
           </a>
