@@ -89,12 +89,11 @@ function ProfileBox({
   );
 }
 
-function InterestsSelector() {
+function InterestsSelector({ inTopicSelection }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const interestChoices = useSelector((state) => state.userData.apiOptions.profile.interests);
-  const selectedTopics = useSelector((state) => state.userData.self.extraInfo.interestTopics);
-  console.log("INTEREST options", interestChoices, selectedTopics);
-  const [topicSelection, setTopicSelection] = useState(selectedTopics);
+  const [topicSelection, setTopicSelection] = useState(inTopicSelection);
 
   const [editing, setEditing] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -122,7 +121,7 @@ function InterestsSelector() {
         setEditing(false);
       },
       () => {
-        // dispatch(updateProfile({ interests: topicSelection })); No need state will automaticly handle this
+        dispatch(updateProfile({ interestTopics: topicSelection }));
         setEditing(false);
       },
       "interests"
@@ -364,7 +363,7 @@ function ProfileDetail({ profile }) {
   return (
     <div className="profile-detail">
       <TextBox subject="about" topicText={profile.about} formTag="description" />
-      <InterestsSelector />
+      <InterestsSelector inTopicSelection={profile.interestTopics} />
       <TextBox
         subject="extra-topics"
         topicText={profile.extraTopics}
