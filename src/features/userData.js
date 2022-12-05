@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
+import { setTextRange } from "typescript";
 
 const initialState = {
   email: null,
@@ -29,9 +30,7 @@ export const userDataSlice = createSlice({
 
       const others = matches.map((match) => {
         let avatarCfg = "";
-        try {
-          avatarCfg = JSON.parse(match.profle.avatar_config);
-        } catch {}
+        avatarCfg = match.profile.avatar_config;
         return {
           userPk: match.user.hash,
           firstName: match.profile.first_name,
@@ -51,9 +50,7 @@ export const userDataSlice = createSlice({
       console.log("OTHRS", others);
 
       let avatarCfg = "";
-      try {
-        avatarCfg = JSON.parse(profile.avatar_config);
-      } catch {}
+      avatarCfg = profile.avatar_config;
       const self = {
         userPk: user.hash,
         firstName: profile.first_name,
@@ -71,6 +68,7 @@ export const userDataSlice = createSlice({
         },
         stateInfo: {
           unconfirmedMatches: usrState.unconfirmed_matches_stack,
+          matchingState: usrState.matching_state,
         },
       };
 
@@ -79,7 +77,12 @@ export const userDataSlice = createSlice({
        I just don't feel that it makes any sense to do state.users.filter(type === 'self') all the time? 
       */
 
-      state.users = [self, ...others]; // Why would we do this id dont get it?
+      // Is it safe to rely on state.users[0] to be self?
+      // I mean we do all this [self, ...others] stuff
+      // because we might want to update the state of all users right?
+      // So if we had also websocket updates for this stuff the profiles of others could reload
+      // otherwise I really dont get why we dont just to state.self = self ?
+      state.users = [self, ...others];
 
       const displayLang = (settings.language || Cookies.get("frontendLang") || "en") // fallback to english
         .slice(0, 2); // just use 2-character code for now; ie "en" not "en-gb", "en-us" etc
@@ -110,6 +113,7 @@ export const userDataSlice = createSlice({
         if (["firstName", "lastName"].includes(item)) {
           state.users = state.users.map((user) => {
             if (user.type === "self") {
+              state.self = { ...user, [item]: value };
               return { ...user, [item]: value };
             }
             return user;
@@ -123,6 +127,8 @@ export const userDataSlice = createSlice({
           const [key, value] = Object.entries(action.payload)[0];
           const extraInfo = { ...user.extraInfo, [key]: value };
           const more = key === "about" ? { description: value } : {};
+          // TODO: for now I retain the self reference
+          state.self = { ...user, extraInfo, more };
           return { ...user, extraInfo, more };
         }
         return user;
