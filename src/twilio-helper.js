@@ -62,62 +62,19 @@ function getAudioTrack(deviceId) {
   }).then((localTrack) => saveTrack(localTrack, deviceId));
 }
 
-function joinRoom(partnerKey) {
-  const doJoinRoom = (roomPk) => {
-    fetch(`${BACKEND_URL}/api2/auth_call_room/`, {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": Cookies.get("csrftoken"),
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        room_h256_pk: roomPk,
-        partner_h256_pk: partnerKey,
-      }).toString(),
-    })
-      .then((response) => {
-        const { status, statusText } = response;
-        if (status === 200) {
-          return response.json();
-        }
-        console.error("server error", status, statusText);
-        return false;
-      })
-      .then(({ user_token }) => {
-        connect(user_token, {
-          name: "cool room",
-          tracks: [selectedTracks.video, selectedTracks.audio],
-        }).then((room) => {
-          console.log(`Connected to Room ${room.name}`);
-
-          const container = document.getElementById("foreign-container");
-          const handleParticipant = (participant) => {
-            console.log(`Participant "${participant.identity}" is connected to the Room`);
-            container.innerHTML = ""; // remove any video/audio elements hanging around, OK as we only have 1 partner
-            participant.on("trackSubscribed", (track) => container.appendChild(track.attach()));
-          };
-
-          room.participants.forEach(handleParticipant); // handle already connected partners
-          room.on("participantConnected", handleParticipant); // handle partners that join after
-
-          room.once("participantDisconnected", (participant) => {
-            // note this event doesn't always seem to successfully fire,
-            // which would lead to multiple videos, so we are clearing it on connect instead
-            console.log(`Participant "${participant.identity}" has disconnected from the Room`);
-          });
-        });
-      })
-      .catch((error) => console.error(error));
-  };
-
-  // the room key will ultimately need both userPKs as input
-  // although the current user PK could be inferred by backend
-  // TODO there is no reason this call can't be added to the composite-request in the main.jsx
-  fetch(`${BACKEND_URL}/api2/appointments/`, {
-    method: "GET",
+function joinRoom(selfPk, partnerKey) {
+  fetch(`${BACKEND_URL}/api/video_rooms/authenticate_call/`, {
+    method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-UseTagsOnly": true,
     },
+    body: JSON.stringify({
+      usr_hash: selfPk,
+      partner_hash: partnerKey,
+    }),
   })
     .then((response) => {
       const { status, statusText } = response;
@@ -127,15 +84,29 @@ function joinRoom(partnerKey) {
       console.error("server error", status, statusText);
       return false;
     })
-    .then((appointments) => {
-      const apt = appointments.filter(
-        ({ user }) => user.filter(({ user_h256_pk }) => user_h256_pk === partnerKey).length !== 0
-      )[0];
-      if (apt) {
-        doJoinRoom(apt.room_h256_pk);
-      } else {
-        console.error("no appointment found");
-      }
+    .then(({ usr_auth_token, room_name }) => {
+      connect(usr_auth_token, {
+        name: room_name,
+        tracks: [selectedTracks.video, selectedTracks.audio],
+      }).then((room) => {
+        console.log(`Connected to Room ${room.name}`);
+
+        const container = document.getElementById("foreign-container");
+        const handleParticipant = (participant) => {
+          console.log(`Participant "${participant.identity}" is connected to the Room`);
+          container.innerHTML = ""; // remove any video/audio elements hanging around, OK as we only have 1 partner
+          participant.on("trackSubscribed", (track) => container.appendChild(track.attach()));
+        };
+
+        room.participants.forEach(handleParticipant); // handle already connected partners
+        room.on("participantConnected", handleParticipant); // handle partners that join after
+
+        room.once("participantDisconnected", (participant) => {
+          // note this event doesn't always seem to successfully fire,
+          // which would lead to multiple videos, so we are clearing it on connect instead
+          console.log(`Participant "${participant.identity}" has disconnected from the Room`);
+        });
+      });
     })
     .catch((error) => console.error(error));
 }
