@@ -46,6 +46,7 @@ function ProfileBox({
   description,
   imgSrc,
   avatarCfg,
+  usesAvatar,
   type,
   setCallSetupPartner,
   isOnline,
@@ -57,7 +58,7 @@ function ProfileBox({
 
   return (
     <div className={type === "unconfirmed" ? "profile-box new-match" : "profile-box"}>
-      {avatarCfg ? (
+      {usesAvatar ? (
         <Avatar className="profile-avatar" {...avatarCfg} />
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />

@@ -293,7 +293,7 @@ function NotificationPanel() {
   const { t } = useTranslation();
   const users = useSelector((state) => state.userData.users);
   const activeUser = users.find(({ type }) => type === "self");
-  const { avatarCfg, firstName, lastName, imgSrc, notifications } = activeUser;
+  const { usesAvatar, avatarCfg, firstName, lastName, imgSrc, notifications } = activeUser;
 
   // don't show unless names are available; ie API call has returned
   if (!firstName) {
@@ -303,7 +303,7 @@ function NotificationPanel() {
   return (
     <div className="notification-panel">
       <div className="active-user">
-        {avatarCfg ? (
+        {usesAvatar ? (
           <Avatar className="avatar" {...avatarCfg} />
         ) : (
           <img src={imgSrc} alt="current user" />

@@ -75,8 +75,13 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
       /* we have to modify the original dialog object and not create a new
        * one with object speader so that the object prototype is not altered
        */
+      console.log("matchInfo", matchInfo, matchInfo.firstName);
+      let avatarImgOrDefault = matchInfo.usesAvatar ? matchInfo.avatarCfg : matchInfo.imgSrc;
+      if (matchInfo.imgSrc === null && Object.keys(matchInfo.avatarCfg).length === 0) {
+        avatarImgOrDefault = defaultArcivedChatAvatar;
+      }
       return Object.assign(dialog, {
-        avatar: matchInfo.usesAvatar ? matchInfo.avatarConfig : matchInfo.imgSrc,
+        avatar: avatarImgOrDefault,
         title: `${matchInfo.firstName} ${matchInfo.lastName}`,
       });
     });

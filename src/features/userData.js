@@ -37,6 +37,7 @@ export const userDataSlice = createSlice({
           lastName: "", // TODO: we removed the second name completely, so we can also remove its frontend use
           imgSrc: match.profile.image,
           avatarCfg,
+          usesAvatar: match.profile.image_type === "avatar",
           description: match.profile.description,
           type: match.user.is_admin ? "support" : "match",
           extraInfo: {
@@ -57,6 +58,7 @@ export const userDataSlice = createSlice({
         lastName: profile.second_name,
         imgSrc: profile.image,
         avatarCfg,
+        usesAvatar: profile.image_type === "avatar",
         description: profile.description,
         notifications,
         type: "self",
