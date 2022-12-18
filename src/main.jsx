@@ -125,6 +125,61 @@ function MobileNavBar({ setShowSidebarMobile }) {
   );
 }
 
+function NbtSelectorAdmin({ selection, setSelection, use, adminInfos }) {
+  const { t } = useTranslation();
+  if (!["main", "help"].includes(use)) {
+    return null;
+  }
+
+  console.log("ADMIN INFOS", adminInfos);
+
+  const pagesMatches = [...Array(adminInfos.num_pages).keys()].map((x) => x + 1);
+  const defaultSelectors = ["conversation_partners", "appointments", "community_calls"];
+
+  const nbtTopics = {
+    main: [...defaultSelectors, ...pagesMatches],
+  };
+  const topics = nbtTopics[use];
+
+  const nbtDisabled = {
+    main: ["appointments"],
+  };
+  const disabled = nbtDisabled[use];
+
+  const updateSelection = (e) => {
+    const v = e.target.value;
+    if (defaultSelectors.includes(v)) {
+      setSelection(v);
+    } else {
+      // Then reload the page with ?page=x
+      const url = window.location.href;
+      const parser = new URL(url || window.location);
+      parser.searchParams.set("page", v);
+      window.location = parser.href;
+    }
+  };
+
+  return (
+    <div className="selector">
+      {topics.map((topic) => (
+        <span className={topic} key={topic}>
+          <input
+            type="radio"
+            id={`${topic}-radio`}
+            value={topic}
+            checked={selection === topic || `${adminInfos.page}-radio` === `${topic}-radio`}
+            name="sidebar"
+            onChange={(e) => updateSelection(e)}
+          />
+          <label htmlFor={`${topic}-radio`} className={disabled.includes(topic) ? "disabled" : ""}>
+            {defaultSelectors.includes(topic) ? t(`nbt_${topic}`) : topic}
+          </label>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function NbtSelector({ selection, setSelection, use }) {
   const { t } = useTranslation();
   if (!["main", "help"].includes(use)) {
@@ -341,6 +396,8 @@ function Main() {
     (state) => state.userData.self.stateInfo.unconfirmedMatches
   );
 
+  const self = useSelector((state) => state.userData.self);
+
   const matchesInfo = users.filter(({ type }) => type !== "self");
 
   const [matchesUnconfirmed, setMatchesUnconfirmed] = useState(initalUnconfirmedMatches);
@@ -454,7 +511,16 @@ function Main() {
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-          <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
+          {!self.isAdmin ? (
+            <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
+          ) : (
+            <NbtSelectorAdmin
+              selection={topSelection}
+              setSelection={setTopSelection}
+              use={use}
+              adminInfos={self.adminInfos}
+            />
+          )}
         </div>
         {use === "main" && (
           <div className="content-area-main">
