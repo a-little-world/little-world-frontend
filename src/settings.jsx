@@ -53,7 +53,7 @@ const labelsMap = {
   lastName: "second_name",
   email: "email",
   password: "password",
-  phone: "mobile_phone",
+  phone: "phone_mobile",
   postCode: "postal_code",
   birthYear: "birth_year",
 };
@@ -286,12 +286,12 @@ function Settings() {
    */
   const items = [
     // with ordering
-    "profilePicture",
+    // "profilePicture",
     "displayLang",
     "firstName",
     "lastName",
     "email",
-    "password",
+    // "password",
     "phone",
     "postCode",
     "birthYear",
