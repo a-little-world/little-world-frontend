@@ -29,6 +29,7 @@ function Sidebar({ sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const self = useSelector((state) => state.userData.self);
 
   const buttonData = [
     { label: "start", path: "/" },
@@ -56,6 +57,16 @@ function Sidebar({ sidebarMobile }) {
       },
     },
   ];
+
+  if (self.isAdmin) {
+    buttonData.push({
+      label: "admin_panel",
+      clickEvent: () => {
+        navigate("/admin/"); // Redirect only valid in production
+        navigate(0); // to reload the page
+      },
+    });
+  }
 
   const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
 
