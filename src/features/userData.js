@@ -25,8 +25,10 @@ export const userDataSlice = createSlice({
         state: usrState,
         matches,
         community_events,
+        admin_infos: adminInfos,
       } = action.payload;
       console.log(user, profile, settings, notifications, usrState, matches, community_events);
+      console.log("ADMIN", adminInfos);
 
       const others = matches.map((match) => {
         let avatarCfg = "";
@@ -59,6 +61,8 @@ export const userDataSlice = createSlice({
         imgSrc: profile.image,
         avatarCfg,
         usesAvatar: profile.image_type === "avatar",
+        isAdmin: user.is_admin,
+        adminInfos: user.is_admin ? adminInfos : null,
         description: profile.description,
         notifications,
         type: "self",
