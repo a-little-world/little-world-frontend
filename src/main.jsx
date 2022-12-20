@@ -294,7 +294,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   );
 }
 
-function CommunityEvent({ frequency, description, title, time }) {
+function CommunityEvent({ frequency, description, title, time, link }) {
   const { t } = useTranslation();
   const two = (n) => (n < 10 ? `0${n}` : n);
 
@@ -314,11 +314,17 @@ function CommunityEvent({ frequency, description, title, time }) {
           </div>
         </div>
         <div className="buttons">
-          <button type="button" className="appointment">
+          <button type="button" className="appointment disabled">
             <img alt="add appointment" />
             <span className="text">Termin hinzufügen</span>
           </button>
-          <button type="button" className="call">
+          <button
+            type="button"
+            className="call"
+            onClick={() => {
+              window.open(link, "_blank");
+            }}
+          >
             <img alt="call" />
             <span className="text">Gespräch beitreten</span>
           </button>
