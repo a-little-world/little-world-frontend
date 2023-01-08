@@ -1,15 +1,15 @@
-const baseUrl = "localhost:3333";
+const baseUrl = "http://localhost:3333";
 const baseLogin = {
-  username: "test1@user.de",
-  password: "Test123!",
+  username: "devuser@mail.com",
+  password: "Test321!",
 };
 
 // eslint-disable-next-line import/prefer-default-export
-export function simulatedAutoLogin(username = baseLogin.username, password = baseLogin.passoword) {
-  return fetch(`${baseUrl}/api/devlogin`, {
+export function simulatedAutoLogin(username = baseLogin.username, password = baseLogin.password) {
+  return fetch(`${baseUrl}/api/devlogin/`, {
     method: "POST",
-    credentials: "include",
     headers: {
+      Accept: "application/json",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

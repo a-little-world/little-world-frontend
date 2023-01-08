@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
-import { setTextRange } from "typescript";
 
 const initialState = {
   email: null,
