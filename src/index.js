@@ -11,10 +11,12 @@ console.log("STARTUP");
 if (GLOB.DEVELOPMENT) {
   import("./loginSimulator.js").then((simulator) => {
     simulator.simulatedAutoLogin().then((data) => {
-      console.log(data);
       console.log("start rendering now...");
 
-      const initData = data.initial_profile_data;
+      const initData = JSON.parse(data.profile_data);
+      const apiTranslations = JSON.parse(data.api_translations);
+      updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
+      console.log(initData);
       ReactDOM.render(
         <React.StrictMode>
           <App initData={initData} />
