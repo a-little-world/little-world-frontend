@@ -145,7 +145,12 @@ function NbtSelectorAdmin({ selection, setSelection, use, adminInfos }) {
   console.log("ADMIN INFOS", adminInfos);
 
   const pagesMatches = [...Array(adminInfos.num_pages).keys()].map((x) => x + 1);
-  const defaultSelectors = ["conversation_partners", "appointments", "community_calls"];
+  const defaultSelectors = [
+    "conversation_partners",
+    "appointments",
+    "community_calls",
+    "update_news",
+  ];
 
   const nbtTopics = {
     main: [...defaultSelectors, ...pagesMatches],
@@ -294,6 +299,32 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   );
 }
 
+function NewsItem({ description, title, time, link}) {
+  const { t } = useTranslation();
+  const two = (n) => (n < 10 ? `0${n}` : n);
+
+  const dateTime = new Date(time);
+
+  return (
+    <div className="community-event">
+      <div className="frequency">
+        <FontAwesomeIcon icon="fas fa-wrench" />
+      </div>
+      <div className="main">
+        <div className="event-info">
+          <h3>{title}</h3>
+          <div className="text">{description}</div>
+        </div>
+      </div>
+      <div className="dateTime">
+        <div className="date">{two(dateTime.getDate())}</div>
+        <div className="month">{t(`month_short::${dateTime.getMonth()}`)}</div>
+        <div className="time">{`${two(dateTime.getHours())}:${two(dateTime.getMinutes())}`}</div>
+      </div>
+    </div>
+  )
+}
+
 function CommunityEvent({ frequency, description, title, time, link }) {
   const { t } = useTranslation();
   const two = (n) => (n < 10 ? `0${n}` : n);
@@ -356,6 +387,29 @@ function CommunityCalls() {
     <div className="community-calls">
       {events.map((eventData) => (
         <CommunityEvent key={eventData.id} {...eventData} />
+      ))}
+    </div>
+  );
+}
+
+function NewsPanel() {
+  //const news = useSelector((state) => state.userData.news);
+  const news = [
+    {
+      id: 1,
+      title: "Automatic Email Bug",
+      description: "Wir testen verschiedene implementierungen automatischer email benachrichtigunegne dabei haben wir vergangene nacht versehentlich .... bla bla ...",
+      time: "2020-10-10",
+      link: "https://google.com",
+    },
+  ];
+  console.log("EVENTS", news);
+
+  return (
+    <div className="community-calls">
+      <div>HI</div>
+      {news.map((newsData) => (
+        <NewsItem key={newsData.id} {...newsData} />
       ))}
     </div>
   );
@@ -551,6 +605,7 @@ function Main() {
               </>
             )}
             {topSelection === "community_calls" && <CommunityCalls />}
+            {topSelection === "update_news" && <NewsPanel />}
           </div>
         )}
         {use === "chat" && initChatComponent}
