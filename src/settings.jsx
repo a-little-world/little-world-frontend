@@ -2,6 +2,7 @@ import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { BACKEND_URL } from "./ENVIRONMENT";
 import { updateSettings } from "./features/userData";
@@ -24,6 +25,7 @@ function ListItem({ section, label, value, setEditing, map }) {
 }
 
 const types = {
+  profilePicture: "popup-open",
   displayLang: "select",
   firstName: "text",
   lastName: "text",
@@ -51,24 +53,26 @@ const labelsMap = {
   lastName: "second_name",
   email: "email",
   password: "password",
-  phone: "mobile_phone",
+  phone: "phone_mobile",
   postCode: "postal_code",
   birthYear: "birth_year",
 };
 
 const submitData = (item, newValue, onSuccess, onFailure) => {
-  fetch(`${BACKEND_URL}/api2/profile/`, {
+  fetch(`${BACKEND_URL}/api/profile/`, {
     method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
-      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-UseTagsOnly": true, // This automaticly requests error tags instead of direct translations!
     },
-    body: new URLSearchParams({ [labelsMap[item]]: newValue }).toString(),
+    body: JSON.stringify({ [labelsMap[item]]: newValue }),
   })
     .then((response) => {
       const { status, statusText } = response;
       if ([200, 400].includes(status)) {
-        response.json().then(({ report }) => {
+        response.json().then((report) => {
           if (status === 200) {
             onSuccess(report, item, newValue);
           } else {
@@ -85,7 +89,7 @@ const submitData = (item, newValue, onSuccess, onFailure) => {
 
 const apiChangeEmail = (email, onSuccess, onFailure) => {
   /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
-  fetch(`${BACKEND_URL}/api2/change_email/`, {
+  fetch(`${BACKEND_URL}/api/user/change_email/`, {
     method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
@@ -136,6 +140,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     setEditing(false);
   };
   const onResponseFailure = (report) => {
+    console.log("REPORT", report);
     const errorsList = report[labelsMap[label]];
     setErrors(errorsList); // update error message(s)
     setWaiting(false);
@@ -210,7 +215,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
           <h2>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</h2>
           <div className="error-message">
             {errors.map((errorTag) => {
-              return <div key={errorTag}>{`⚠️ ${t(`request_errors.${errorTag}`)}`}</div>;
+              return <div key={errorTag}>{`⚠️ ${t(errorTag)}`}</div>;
             })}
           </div>
           <div className="input-container">
@@ -269,6 +274,7 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
 
 function Settings() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(null);
 
   /**
@@ -280,11 +286,12 @@ function Settings() {
    */
   const items = [
     // with ordering
+    // "profilePicture",
     "displayLang",
     "firstName",
     "lastName",
     "email",
-    "password",
+    // "password",
     "phone",
     "postCode",
     "birthYear",
@@ -312,7 +319,15 @@ function Settings() {
                   section="personal"
                   label={label}
                   value={data[label]}
-                  setEditing={setEditing}
+                  setEditing={
+                    label !== "profilePicture"
+                      ? setEditing
+                      : () => {
+                          /* For profile picture we just open the userform frontend for now */
+                          navigate("/formpage?pages=6");
+                          navigate(0); /* Reload page */
+                        }
+                  }
                   map={label === "displayLang" ? displayLanguages : false}
                 />
               );

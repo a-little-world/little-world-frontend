@@ -39,16 +39,8 @@ http {
         server_name  localhost;
         include /etc/nginx/mime.types;
 
-        location /api2/ {
+        location /api/ {
             proxy_pass http://SERVER_URL/api2/;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade \$http_upgrade;
-            proxy_set_header Connection 'upgrade';
-            proxy_cache_bypass \$http_upgrade;
-	    }
-
-        location /chat_ws {
-            proxy_pass http://SERVER_URL/chat_ws;
             proxy_http_version 1.1;
             proxy_set_header Upgrade \$http_upgrade;
             proxy_set_header Connection 'upgrade';

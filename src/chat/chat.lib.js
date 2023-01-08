@@ -422,17 +422,26 @@ export function sendMessageReadMessage(sock, user_pk, message_id) {
 }
 
 // TODO: bettherway to embed the urls
-export const backendUrl = BACKEND_URL; // ((process.env.LOCAL_DEBUG == "1") ? 'http://localhost:60' : 'https://littleworld-test.com');  //"http://localhost:60";
+// export const backendUrl = BACKEND_URL; // ((process.env.LOCAL_DEBUG == "1") ? 'http://localhost:60' : 'https://littleworld-test.com');  //"http://localhost:60";
 
-export const messagesEndpoint = toText(printf("%s/api2/messages/"))(backendUrl);
+export const backendUrl = window.location.origin + "/api/chat";
 
-export const dialogsEndpoint = toText(printf("%s/api2/dialogs/"))(backendUrl);
+export const messagesEndpoint = toText(printf("%s/messages/"))(backendUrl);
 
-export const selfEndpoint = toText(printf("%s/api2/self/"))(backendUrl);
+export const dialogsEndpoint = toText(printf("%s/dialogs/"))(backendUrl);
+function dialogsEndpointByPage(page) {
+  return dialogsEndpoint + "?page=" + page;
+}
 
-export const usersEndpoint = toText(printf("%s/api2/users/"))(backendUrl);
+function dialogsEndpointByUserPk(pk) {
+  return dialogsEndpoint + "?usr_hash=" + pk;
+}
 
-export const uploadEndpoint = toText(printf("%s/api2/upload/"))(backendUrl);
+export const selfEndpoint = toText(printf("%s/self/"))(backendUrl);
+
+export const usersEndpoint = toText(printf("%s/users/"))(backendUrl);
+
+export const uploadEndpoint = toText(printf("%s/upload/"))(backendUrl);
 
 export function uploadFile(f, csrfToken) {
   return PromiseBuilder__Run_212F1D4B(
@@ -644,7 +653,14 @@ export function markMessagesForDialogAsRead(sock, d, messages, msgReadCallback) 
     });
 }
 
-export function fetchDialogs() {
+export function fetchDialogs(page = null, user_pk = null) {
+  var dialogGet = dialogsEndpoint;
+  if (user_pk != null) {
+    // Yeah everybody knows that this is ugly but we have to rewrite this app anyways
+    dialogGet = dialogsEndpointByUserPk(user_pk);
+  } else if (page != null) {
+    dialogGet = dialogsEndpointByPage(page);
+  }
   return mapResult(
     (x) =>
       map_1(
@@ -669,7 +685,7 @@ export function fetchDialogs() {
     PromiseBuilder__Run_212F1D4B(
       promise,
       PromiseBuilder__Delay_62FBFDE1(promise, () =>
-        tryFetch(dialogsEndpoint, empty()).then((_arg1) => {
+        tryFetch(dialogGet, empty()).then((_arg1) => {
           const resp = _arg1;
           if (resp.tag === 1) {
             const e = resp.fields[0];
@@ -679,8 +695,6 @@ export function fetchDialogs() {
             return r.text().then((_arg2) => {
               const text = _arg2;
               const decoded = fromString(uncurry(2, DialogsResponse_get_Decoder()), text);
-
-              console.log(123, decoded);
               return Promise.resolve(decoded);
             });
           }

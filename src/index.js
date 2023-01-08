@@ -1,9 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 
+import App from "./App";
 import GLOB from "./ENVIRONMENT";
+import { updateTranslationResources } from "./i18n";
+import reportWebVitals from "./reportWebVitals";
 
 if (GLOB.DEVELOPMENT) {
   import("./login-simulator.js").then((simulator) => {
@@ -22,7 +23,7 @@ if (GLOB.DEVELOPMENT) {
       const initData = data.initial_profile_data;
       ReactDOM.render(
         <React.StrictMode>
-          <App initData={initData}/>
+          <App initData={initData} />
         </React.StrictMode>,
         document.getElementById("root")
       );
@@ -31,9 +32,10 @@ if (GLOB.DEVELOPMENT) {
     });
   });
 } else {
-  window.renderApp = ({initData}) => {
-  // If not in development just render ...
-  console.log("initialData", initData);
+  window.renderApp = ({ initData }, { apiTranslations }) => {
+    updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
+    // If not in development just render ...
+    console.log("initialData", initData, apiTranslations);
     ReactDOM.render(
       <React.StrictMode>
         <App initData={initData} />
@@ -42,5 +44,5 @@ if (GLOB.DEVELOPMENT) {
     );
 
     reportWebVitals();
-  }
+  };
 }

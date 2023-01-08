@@ -29,6 +29,7 @@ function Sidebar({ sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const self = useSelector((state) => state.userData.self);
 
   const buttonData = [
     { label: "start", path: "/" },
@@ -40,7 +41,7 @@ function Sidebar({ sidebarMobile }) {
     {
       label: "log_out",
       clickEvent: () => {
-        fetch(`${BACKEND_URL}/api2/logout/`, {
+        fetch(`${BACKEND_URL}/api/user/logout/`, {
           method: "GET",
           headers: { "X-CSRFToken": Cookies.get("csrftoken") },
         })
@@ -56,6 +57,16 @@ function Sidebar({ sidebarMobile }) {
       },
     },
   ];
+
+  if (self.isAdmin) {
+    buttonData.push({
+      label: "admin_panel",
+      clickEvent: () => {
+        navigate("/admin/"); // Redirect only valid in production
+        navigate(0); // to reload the page
+      },
+    });
+  }
 
   const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
 
@@ -121,6 +132,61 @@ function MobileNavBar({ setShowSidebarMobile }) {
   );
 }
 
+function NbtSelectorAdmin({ selection, setSelection, use, adminInfos }) {
+  const { t } = useTranslation();
+  if (!["main", "help"].includes(use)) {
+    return null;
+  }
+
+  console.log("ADMIN INFOS", adminInfos);
+
+  const pagesMatches = [...Array(adminInfos.num_pages).keys()].map((x) => x + 1);
+  const defaultSelectors = ["conversation_partners", "appointments", "community_calls"];
+
+  const nbtTopics = {
+    main: [...defaultSelectors, ...pagesMatches],
+  };
+  const topics = nbtTopics[use];
+
+  const nbtDisabled = {
+    main: ["appointments"],
+  };
+  const disabled = nbtDisabled[use];
+
+  const updateSelection = (e) => {
+    const v = e.target.value;
+    if (defaultSelectors.includes(v)) {
+      setSelection(v);
+    } else {
+      // Then reload the page with ?page=x
+      const url = window.location.href;
+      const parser = new URL(url || window.location);
+      parser.searchParams.set("page", v);
+      window.location = parser.href;
+    }
+  };
+
+  return (
+    <div className="selector">
+      {topics.map((topic) => (
+        <span className={topic} key={topic}>
+          <input
+            type="radio"
+            id={`${topic}-radio`}
+            value={topic}
+            checked={selection === topic || `${adminInfos.page}-radio` === `${topic}-radio`}
+            name="sidebar"
+            onChange={(e) => updateSelection(e)}
+          />
+          <label htmlFor={`${topic}-radio`} className={disabled.includes(topic) ? "disabled" : ""}>
+            {defaultSelectors.includes(topic) ? t(`nbt_${topic}`) : topic}
+          </label>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function NbtSelector({ selection, setSelection, use }) {
   const { t } = useTranslation();
   if (!["main", "help"].includes(use)) {
@@ -133,7 +199,7 @@ function NbtSelector({ selection, setSelection, use }) {
   const topics = nbtTopics[use];
 
   const nbtDisabled = {
-    main: ["appointments", "community_calls"],
+    main: ["appointments"],
   };
   const disabled = nbtDisabled[use];
 
@@ -160,33 +226,18 @@ function NbtSelector({ selection, setSelection, use }) {
 
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   const { t } = useTranslation();
-  const [matchState, setMatchState] = useState("idle");
   const users = useSelector((state) => state.userData.users);
-
-  // backend values
-  const matchStatuses = {
-    0: "idle",
-    1: "searching",
-    2: "pending",
-    3: "confirmed",
-  };
-
-  // useEffect(() => {
-  //   if (!userInfo.matching) {
-  //     return;
-  //   }
-  //   const searchCode = userInfo.matching.state;
-  //   setMatchState(matchStatuses[searchCode]);
-  // }, [userInfo]);
+  const currentMatchingState = useSelector((state) => state.userData.self.stateInfo.matchingState);
+  console.log("Current matching state", currentMatchingState);
+  const [matchState, setMatchState] = useState(currentMatchingState);
 
   function updateUserMatchingState() {
-    fetch(`${BACKEND_URL}/api2/user_state/`, {
+    const updatedState = "searching";
+    fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
       method: "POST",
       headers: {
         "X-CSRFToken": Cookies.get("csrftoken"),
-        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: new URLSearchParams({ action: "update_user_state" }).toString(),
     })
       .then((response) => {
         if (response.status === 200) {
@@ -197,7 +248,9 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
       })
       .then((response) => {
         if (response) {
-          userInfo = response; // TODO: this should be updated another way
+          // If this request works, we can safely update our state to 'searching'
+          // TODO: we need to also update the redux state!
+          setMatchState(updatedState);
         }
       })
       .catch((error) => console.error(error));
@@ -216,18 +269,18 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
             />
           );
         })}
-      {["idle", "confirmed"].includes(matchState) && (
+      {["idle"].includes(matchState) && (
         <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
           <img alt="plus" />
           {matchState === "idle" && t("matching_state_not_searching_trans")}
-          {matchState === "confirmed" && t("matching_state_found_confirmed_trans")}
+          {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
         </button>
       )}
-      {["searching", "pending"].includes(matchState) && (
+      {["searching"].includes(matchState) && (
         <div className="match-status searching">
           <img alt="" />
           {matchState === "searching" && t("matching_state_searching_trans")}
-          {matchState === "pending" && t("matching_state_found_unconfirmed_trans")}
+          {/* matchState === "pending" && t("matching_state_found_unconfirmed_trans") */}
           <a className="change-criteria" href="/form">
             {t("cp_modify_search")}
           </a>
@@ -237,9 +290,11 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
   );
 }
 
-function CommunityEvent({ frequency, header, text, dateTime }) {
+function CommunityEvent({ frequency, description, title, time, link }) {
   const { t } = useTranslation();
   const two = (n) => (n < 10 ? `0${n}` : n);
+
+  const dateTime = new Date(time);
 
   return (
     <div className="community-event">
@@ -249,17 +304,23 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
       </div>
       <div className="main">
         <div className="event-info">
-          <h3>{header}</h3>
+          <h3>{title}</h3>
           <div className="text">
-            {text} <Link className="show-more">Show more</Link>
+            {description} <Link className="show-more">Show more</Link>
           </div>
         </div>
         <div className="buttons">
-          <button type="button" className="appointment">
+          <button type="button" className="appointment disabled">
             <img alt="add appointment" />
             <span className="text">Termin hinzufügen</span>
           </button>
-          <button type="button" className="call">
+          <button
+            type="button"
+            className="call"
+            onClick={() => {
+              window.open(link, "_blank");
+            }}
+          >
             <img alt="call" />
             <span className="text">Gespräch beitreten</span>
           </button>
@@ -267,12 +328,12 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
       </div>
       <div className="dateTime">
         {frequency === "weekly" && (
-          <div className="weekday">{t(`weekdays.${dateTime.getDay()}`)}</div>
+          <div className="weekday">{t(`weekdays::${dateTime.getDay()}`)}</div>
         )}
         {frequency === "once" && (
           <>
             <div className="date">{two(dateTime.getDate())}</div>
-            <div className="month">{t(`month_short.${dateTime.getMonth()}`)}</div>
+            <div className="month">{t(`month_short::${dateTime.getMonth()}`)}</div>
           </>
         )}
         <div className="time">{`${two(dateTime.getHours())}:${two(dateTime.getMinutes())}`}</div>
@@ -282,34 +343,14 @@ function CommunityEvent({ frequency, header, text, dateTime }) {
 }
 
 function CommunityCalls() {
+  const events = useSelector((state) => state.userData.communityEvents);
+  console.log("EVENTS", events);
+
   const now = new Date();
-  const dummyEvents = [
-    {
-      id: 23,
-      frequency: "weekly",
-      header: "Kaffeerunden",
-      text: "Come Together of the community - Grab a coffee and talk to other users, share your delights and enjoy!",
-      dateTime: now,
-    },
-    {
-      id: 26,
-      frequency: "once",
-      header: "Willkommen! Zeit für Fragen",
-      text: "Confused? Don’t worry, our team will happily answer all your questions! Just join the call.",
-      dateTime: now,
-    },
-    {
-      id: 29,
-      frequency: "once",
-      header: "Lach-Yoga",
-      text: "Want to have a heartily laugh with the community?  Treat yourself something good and join us! It’s free!",
-      dateTime: now,
-    },
-  ];
 
   return (
     <div className="community-calls">
-      {dummyEvents.map((eventData) => (
+      {events.map((eventData) => (
         <CommunityEvent key={eventData.id} {...eventData} />
       ))}
     </div>
@@ -320,27 +361,17 @@ function NotificationPanel() {
   const { t } = useTranslation();
   const users = useSelector((state) => state.userData.users);
   const activeUser = users.find(({ type }) => type === "self");
-  const { avatarCfg, firstName, lastName, imgSrc } = activeUser;
-
-  const dummyNotifications = [
-    {
-      id: 2347,
-      type: "appointment",
-      text: "Notifications will be added soon",
-      dateString: "27th October, 2022 at 3:00pm",
-      unixtime: 1666364400,
-    },
-  ];
+  const { usesAvatar, avatarCfg, firstName, lastName, imgSrc, notifications } = activeUser;
 
   // don't show unless names are available; ie API call has returned
-  if (!(firstName && lastName)) {
+  if (!firstName) {
     return false;
   }
 
   return (
     <div className="notification-panel">
       <div className="active-user">
-        {avatarCfg ? (
+        {usesAvatar ? (
           <Avatar className="avatar" {...avatarCfg} />
         ) : (
           <img src={imgSrc} alt="current user" />
@@ -350,12 +381,12 @@ function NotificationPanel() {
       <hr />
       <div className="notifications-header">{t("nbr_notifications")}</div>
       <div className="notifications-content">
-        {dummyNotifications.map(({ id, type, text, dateString }) => (
-          <div key={id} className="notification-item">
-            <img className={type.replace(" ", "-")} alt={type} />
+        {notifications.map(({ hash, type, title, created_at }) => (
+          <div key={hash} className="notification-item">
+            <img className="appointment" alt={type} />
             <div className="info">
-              <div className="notification-headline">{text}</div>
-              <div className="notification-time">{dateString}</div>
+              <div className="notification-headline">{title}</div>
+              <div className="notification-time">{created_at}</div>
             </div>
           </div>
         ))}
@@ -374,45 +405,44 @@ function Main() {
   const [matchesProfiles, setMatchesProfiles] = useState({});
 
   const users = useSelector((state) => state.userData.users);
+  const initalUnconfirmedMatches = useSelector(
+    (state) => state.userData.self.stateInfo.unconfirmedMatches
+  );
+
+  const self = useSelector((state) => state.userData.self);
+
   const matchesInfo = users.filter(({ type }) => type !== "self");
 
-  const [matchesUnconfirmed, setMatchesUnconfirmed] = useState([]);
+  const [matchesUnconfirmed, setMatchesUnconfirmed] = useState(initalUnconfirmedMatches);
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
   const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
   const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
   const navigate = useNavigate();
 
-  const [overlayState, setOverlayState] = useState({
-    visible: false,
-    title: "None",
-    name: "Lorem",
-    test: "Lorem",
-    userInfo: null,
-  });
-
-  const updateOverlayState = (unconfirmedMatches, matchesData, _matchesProfiles) => {
-    console.log("mProfiles", matchesProfiles);
-    if (unconfirmedMatches.length > 0) {
-      setOverlayState({
-        visible: true,
-        title: t("matching_state_found_unconfirmed_trans"),
-        name: _matchesProfiles[unconfirmedMatches[0].user_h256_pk].first_name,
-        test: "Look at his profile now!",
-        userInfo: matchesData.filter(
-          (match) => match.userPk === unconfirmedMatches[0].user_h256_pk
-        )[0],
-      });
-    } else {
-      setOverlayState({
+  const updateOverlayState = (inlUnconfirmedMatches) => {
+    const hasUnconfirmedMatches = inlUnconfirmedMatches.length > 0;
+    if (!hasUnconfirmedMatches)
+      return {
         visible: false,
         title: "None",
         name: "Lorem",
         test: "Lorem",
         userInfo: null,
-      });
-    }
+      };
+
+    const firstUnconfimed = matchesInfo.filter((m) => m.userPk === inlUnconfirmedMatches[0])[0];
+
+    return {
+      visible: true,
+      title: t("matching_state_found_unconfirmed_trans"),
+      name: firstUnconfimed.firstName,
+      test: "Look at his profile now!",
+      userInfo: firstUnconfimed,
+    };
   };
+
+  const [overlayState, setOverlayState] = useState(updateOverlayState(initalUnconfirmedMatches));
 
   const setCallSetupPartner = (userPk) => {
     document.body.style.overflow = userPk ? "hidden" : "";
@@ -494,7 +524,16 @@ function Main() {
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-          <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
+          {!self.isAdmin ? (
+            <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
+          ) : (
+            <NbtSelectorAdmin
+              selection={topSelection}
+              setSelection={setTopSelection}
+              use={use}
+              adminInfos={self.adminInfos}
+            />
+          )}
         </div>
         {use === "main" && (
           <div className="content-area-main">
@@ -535,23 +574,28 @@ function Main() {
             text={overlayState.text}
             userInfo={overlayState.userInfo}
             onOk={() => {
-              fetch(`${BACKEND_URL}/api2/unconfirmed_matches/`, {
+              fetch(`${BACKEND_URL}/api/user/confirm_match/`, {
+                /* TODO is incuded in main frontend data now! */
                 method: "POST",
                 headers: {
                   "X-CSRFToken": Cookies.get("csrftoken"),
-                  "Content-Type": "application/x-www-form-urlencoded",
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  "X-UseTagsOnly": true,
                 },
-                body: new URLSearchParams({
-                  partner_h256_pk: overlayState.userInfo.userPk,
-                }).toString(),
+                body: JSON.stringify({ matches: [overlayState.userInfo.userPk] }),
               })
                 .then(({ status, statusText }) => {
                   if (status === 200) {
-                    const newUnconfirmed = matchesUnconfirmed.filter(
-                      (m) => m.user_h256_pk !== overlayState.userInfo.userPk
-                    );
+                    console.log("Confirming", overlayState.userInfo, matchesUnconfirmed);
+                    const newUnconfirmed = [];
+                    matchesUnconfirmed.forEach((e) => {
+                      console.log("UNK", e, overlayState.userInfo.userOnlinePk);
+                      if (e !== overlayState.userInfo.userPk) newUnconfirmed.push(e);
+                    });
+                    console.log("NEW unconfirmed", newUnconfirmed);
                     setMatchesUnconfirmed(newUnconfirmed);
-                    updateOverlayState(newUnconfirmed, matchesInfo, matchesProfiles);
+                    setOverlayState(updateOverlayState(newUnconfirmed));
                   } else {
                     console.error("server error", status, statusText);
                   }
