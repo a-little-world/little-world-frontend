@@ -13,19 +13,21 @@ import Link from "./path-prepend";
 import "./profile.css";
 
 const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
-  fetch(`${BACKEND_URL}/api2/profile/`, {
+  fetch(`${BACKEND_URL}/api/profile/`, {
     method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
-      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-UseTagsOnly": true, // This automaticly requests error tags instead of direct translations!
     },
-    body: new URLSearchParams(updateData).toString(),
+    body: JSON.stringify(updateData),
   }).then((response) => {
     const { status, statusText } = response;
     if (![200, 400].includes(status)) {
       console.error("server error", status, statusText);
     } else {
-      response.json().then(({ report }) => {
+      response.json().then((report) => {
         if (response.status === 200) {
           return onSuccess();
         }
@@ -37,16 +39,26 @@ const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
   });
 };
 
-function ProfileBox({ user, setCallSetupPartner, isOnline, setUnmatchingUser }) {
+function ProfileBox({
+  userPk,
+  firstName,
+  lastName,
+  description,
+  imgSrc,
+  avatarCfg,
+  usesAvatar,
+  type,
+  setCallSetupPartner,
+  isOnline,
+}) {
   const { t } = useTranslation();
-  const { userPk, firstName, lastName, description, imgSrc, avatarCfg, type } = user;
   if (type === "self") {
     isOnline = true;
   }
 
   return (
     <div className={type === "unconfirmed" ? "profile-box new-match" : "profile-box"}>
-      {avatarCfg ? (
+      {usesAvatar ? (
         <Avatar className="profile-avatar" {...avatarCfg} />
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />
@@ -83,37 +95,31 @@ function ProfileBox({ user, setCallSetupPartner, isOnline, setUnmatchingUser }) 
   );
 }
 
-function ItemsBox({ selectedChoices }) {
+function InterestsSelector({ inTopicSelection }) {
   const { t } = useTranslation();
-  const choices = useSelector((state) => state.userData.interestsChoices);
+  const dispatch = useDispatch();
+  const interestChoices = useSelector((state) => state.userData.apiOptions.profile.interests);
+  const [topicSelection, setTopicSelection] = useState(inTopicSelection);
 
-  const choicesTransTags = choices.map(({ display_name }) => display_name);
   const [editing, setEditing] = useState(false);
-  const [topicIndexes, setTopicIndexes] = useState(selectedChoices);
-  const [tempTopicIndexes, setTempTopicIndexes] = useState(selectedChoices);
   const [errorText, setErrorText] = useState("");
 
   const location = useLocation();
   const { userPk } = location.state || {};
   const isSelf = !userPk;
 
-  const toggleInterest = (idx) => {
-    const newIndexes = tempTopicIndexes.includes(idx)
-      ? tempTopicIndexes.filter((item) => item !== idx) // remove item
-      : [...tempTopicIndexes, idx]; // add item
-    setTempTopicIndexes(newIndexes);
+  const toggleInterest = (topicValue) => {
+    const newSelection = topicSelection.includes(topicValue)
+      ? topicSelection.filter((item) => item !== topicValue) // remove item
+      : [...topicSelection, topicValue]; // add item
+
+    console.log("TOGGLE", topicValue, newSelection);
+    setTopicSelection(() => newSelection);
   };
 
   const saveTopics = () => {
-    // This is a workaround since fetch doesn't handle nested objects correct
-    // Without this the backend wouldn't show an error but also not update the interests
-    // With api v2 well be able to input data in json directly
-    const formDataInterests = new FormData();
-    tempTopicIndexes.forEach((v) => {
-      formDataInterests.append("interests[]", v);
-    });
     postUserProfileUpdate(
-      formDataInterests,
+      { interests: topicSelection },
       (errorTags) => {
         const errorTextStr = errorTags.map((e) => t(e)).join(", ");
         setErrorText(errorTextStr);
@@ -121,15 +127,14 @@ function ItemsBox({ selectedChoices }) {
         setEditing(false);
       },
       () => {
+        dispatch(updateProfile({ interestTopics: topicSelection }));
         setEditing(false);
-        setTopicIndexes(tempTopicIndexes); // probably should use the server response?
       },
       "interests"
     );
   };
 
   const cancelTopics = () => {
-    setTempTopicIndexes(topicIndexes);
     setEditing(false);
   };
 
@@ -142,29 +147,39 @@ function ItemsBox({ selectedChoices }) {
             <img alt="edit" />
           </button>
         )}
-        {topicIndexes.map((idx) => (
-          <div key={idx} className="interest-item">
-            <span className="text">{t(`profile_interests.${choicesTransTags[idx]}`)}</span>
-          </div>
-        ))}
-        <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
-          {editing && (
-            <div className="topics-selector modal-box">
-              <button type="button" className="modal-close" onClick={() => setEditing(false)} />
+        {topicSelection.map((interest) => {
+          const topicOptions = interestChoices.filter((c) => c.value === interest)[0];
+          return (
+            <div key={topicOptions.value} className="interest-item">
+              <span className="text">{t(topicOptions.tag)}</span>
+            </div>
+          );
+        })}
+        {editing && (
+          <div className="topics-shade">
+            <div className="topics-selector">
+              <div className="buttons">
+                <button type="button" className="cancel" onClick={cancelTopics}>
+                  <img alt="cancel" />
+                </button>
+                <button type="button" className="save" onClick={saveTopics}>
+                  <img alt="save" />
+                </button>
+              </div>
               <h3>{t("profile_choose_interests")}</h3>
               <div className="items">
-                {choicesTransTags.map((interest, idx) => (
+                {interestChoices.map((choice) => (
                   <button
-                    key={idx}
+                    key={choice.value}
                     type="button"
                     className={
-                      tempTopicIndexes.includes(idx)
+                      topicSelection.includes(choice.value)
                         ? "interest-item selected-item"
                         : "interest-item"
                     }
-                    onClick={() => toggleInterest(idx)}
+                    onClick={() => toggleInterest(choice.value)}
                   >
-                    <span className="text">{t(`profile_interests.${interest}`)}</span>
+                    <span className="text">{t(choice.tag)}</span>
                   </button>
                 ))}
               </div>
@@ -177,8 +192,8 @@ function ItemsBox({ selectedChoices }) {
                 </button>
               </div>
             </div>
-          )}
         </div>
+          )}
       </div>
       {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
@@ -222,9 +237,8 @@ function TextBox({ subject, topicText = "", formTag }) {
     const text = editorRef.current.innerText;
     postUserProfileUpdate(
       { [formTag]: text },
-      (_text) => {
-        console.log("text error");
-        setErrorText(t(`request_errors.${_text}`)); // TODO: @tbscode here again I'm tahing a backend state directly, this could be resolved by https://github.com/tbscode/little-world-frontend/pull/122
+      (tag) => {
+        setErrorText(t(tag));
         setEditState(false);
       },
       () => {
@@ -363,7 +377,7 @@ function ProfileDetail({ profile }) {
   return (
     <div className="profile-detail">
       <TextBox subject="about" topicText={profile.about} formTag="description" />
-      <ItemsBox selectedChoices={profile.interestTopics} />
+      <InterestsSelector inTopicSelection={profile.interestTopics} />
       <TextBox
         subject="extra-topics"
         topicText={profile.extraTopics}

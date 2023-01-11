@@ -1,28 +1,25 @@
 import React from "react";
 import ReactDOM from "react-dom";
+
 import App from "./App";
+import GLOB from "./ENVIRONMENT";
+import { updateTranslationResources } from "./i18n";
 import reportWebVitals from "./reportWebVitals";
 
-import GLOB from "./ENVIRONMENT";
+console.log("STARTUP");
 
 if (GLOB.DEVELOPMENT) {
-  import("./login-simulator.js").then((simulator) => {
-    /*
-     * These can be changed before window.reload()
-     */
-    const login_user =
-      window.localStorage.getItem("current_login_user") || GLOB.DEFAULT_LOGIN_USERNAME;
-    const login_pass =
-      window.localStorage.getItem("current_login_pass") || GLOB.DEFAULT_LOGIN_PASSWORD;
-
-    simulator.awaitSimulatedLogin(login_user, login_pass, true).then((data) => {
-      console.log(data);
+  import("./loginSimulator.js").then((simulator) => {
+    simulator.simulatedAutoLogin().then((data) => {
       console.log("start rendering now...");
 
-      const initData = data.initial_profile_data;
+      const initData = JSON.parse(data.profile_data);
+      const apiTranslations = JSON.parse(data.api_translations);
+      updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
+      console.log(initData);
       ReactDOM.render(
         <React.StrictMode>
-          <App initData={initData}/>
+          <App initData={initData} />
         </React.StrictMode>,
         document.getElementById("root")
       );
@@ -31,9 +28,10 @@ if (GLOB.DEVELOPMENT) {
     });
   });
 } else {
-  window.renderApp = ({initData}) => {
-  // If not in development just render ...
-  console.log("initialData", initData);
+  window.renderApp = ({ initData }, { apiTranslations }) => {
+    updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
+    // If not in development just render ...
+    console.log("initialData", initData, apiTranslations);
     ReactDOM.render(
       <React.StrictMode>
         <App initData={initData} />
@@ -42,5 +40,5 @@ if (GLOB.DEVELOPMENT) {
     );
 
     reportWebVitals();
-  }
+  };
 }

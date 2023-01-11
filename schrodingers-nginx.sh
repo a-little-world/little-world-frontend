@@ -4,8 +4,8 @@
 # Allows to bypass same-site and cors oring of browser without modifying backend cors
 
 HOST="host.docker.internal:3000"
-SERVER="host.docker.internal:8000"
-#SERVER="lw.eu.ngrok.io"
+#SERVER="host.docker.internal:8000"
+SERVER="s1.littleworld-test.com"
 #HOST="192.168.178.1:3000"
 #HOST="timschupp.de"
 
@@ -39,24 +39,18 @@ http {
         server_name  localhost;
         include /etc/nginx/mime.types;
 
-        location /api2/ {
-            proxy_pass http://SERVER_URL/api2/;
+        location /api/ {
+            proxy_pass https://SERVER_URL/api/;
+            proxy_redirect  https://SERVER_URL/ /;
             proxy_http_version 1.1;
             proxy_set_header Upgrade \$http_upgrade;
             proxy_set_header Connection 'upgrade';
-            proxy_cache_bypass \$http_upgrade;
-	    }
-
-        location /chat_ws {
-            proxy_pass http://SERVER_URL/chat_ws;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade \$http_upgrade;
-            proxy_set_header Connection 'upgrade';
+            proxy_pass_header Content-Type;
             proxy_cache_bypass \$http_upgrade;
 	    }
 
         location /media {
-            proxy_pass http://SERVER_URL/media;
+            proxy_pass https://SERVER_URL/media;
             proxy_http_version 1.1;
             proxy_set_header Upgrade \$http_upgrade;
             proxy_set_header Connection 'upgrade';

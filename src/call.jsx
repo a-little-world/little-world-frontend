@@ -2,6 +2,7 @@
 import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Chat from "./chat/chat-full-view";
@@ -459,6 +460,7 @@ function Sidebar({ sideSelection }) {
 
 function CallScreen() {
   const [sideSelection, setSideSelection] = useState("chat");
+  const selfPk = useSelector((state) => state.userData.self.userPk);
   const navigate = useNavigate();
   const location = useLocation();
   const { userPk, tracks } = location.state || {};
@@ -486,7 +488,7 @@ function CallScreen() {
     getAudioTrack(audioId, audioMuted).then((track) => {
       track.attach(audioRef.current);
     });
-    joinRoom(userPk);
+    joinRoom(selfPk, userPk);
   }, [userPk, tracks]);
 
   document.body.style.overflow = ""; // unset after call overlay

@@ -82,6 +82,9 @@
 .sidebar .log_out img {
   content: url("./images/sidebar/logout.svg");
 }
+.sidebar .admin_panel img {
+  content: url("./images/sidebar/settings.svg");
+}
 
 .content-area {
   flex-grow: 1;
