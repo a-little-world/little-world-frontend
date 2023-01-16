@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
-import { archiveNotif, readNotif } from "./features/userData";
+import { archiveNotif, ArchiveNotificationAsync, FetchNotificationsAsync, readNotif } from "./features/userData";
 
 import "./notifications.css";
 
@@ -39,22 +39,25 @@ const secondsAgo = (start) => {
 function Notifications() {
   const { t } = useTranslation();
   const [visibleNotifType, setVisibleNotifType] = useState("all");
+  
   const dispatch = useDispatch();
-  const notifications = useSelector((state) => state.userData.notifications);
-
+  const [notifications,setNotifications] = useState([])
+  const data = useSelector((state) => state.userData.notifications)
+  const status = useSelector((state) => state.userData.status)
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const groupedNotifs = {
-    day: [],
+    day:[],
     week: [],
     older: [],
   };
 
-  const visibleNotifs = notifications.filter(({ status }) => {
+  const visibleNotifs = notifications.filter(({ state }) => {
     return (
-      status === visibleNotifType ||
-      (visibleNotifType === "all" && ["read", "unread"].includes(status))
+      state === visibleNotifType ||
+      (visibleNotifType === "all" && ["read", "unread"].includes(state))
     );
   });
-
   visibleNotifs.forEach((notif) => {
     const secondsOld = secondsAgo(notif.unixtime);
     if (secondsOld < 60 * 60 * 24) {
@@ -65,9 +68,16 @@ function Notifications() {
       groupedNotifs.older.push(notif);
     }
   });
+useEffect(()=>{
+  dispatch(FetchNotificationsAsync({pageNumber:page+1,itemPerPage:20}))
+  
+  setNotifications([...notifications,...data])
+  if(page*10>data.length)setHasMore(false)
+
+},[page])
 
   const archive = (id) => {
-    dispatch(archiveNotif(id));
+    dispatch(ArchiveNotificationAsync(id));
   };
   const markRead = (id) => {
     dispatch(readNotif(id));
@@ -112,39 +122,43 @@ function Notifications() {
           return (
             <>
               <div className="notification-age">{name}</div>
-              {groupedNotifs[name].map(({ id, status, type, text, dateString, unixtime }) => {
+              {groupedNotifs[name].map(({ hash, status, type, title, dateString, unixtime }) => {
                 const extraProps =
                   status === "unread"
                     ? {
-                        onClick: () => markRead(id),
-                        onKeyPress: () => markRead(id),
+                        onClick: () => markRead(hash),
+                        onKeyPress: () => markRead(hash),
                         role: "button",
                         tabIndex: 0,
                       }
                     : {};
 
                 return (
-                  <div key={id} className={`notification-item ${status}`} {...extraProps}>
+                  <div key={hash} className={`notification-item ${status}`} {...extraProps}>
                     <img className={type.replace(" ", "-")} alt={type} />
                     <div className="info">
-                      <div className="notification-headline">{text}</div>
+                      <div className="notification-headline">{title}</div>
                       <div className="notification-time">{dateString}</div>
                     </div>
                     <div className="status">
                       {status === "unread" && <div className="unread-indicator" />}
                       {status !== "archive" && (
-                        <button type="button" className="archive-item" onClick={() => archive(id)}>
+                        <button type="button" className="archive-item" onClick={() => archive(hash)}>
                           <img alt="archive item" />
                         </button>
                       )}
                       <div className="time-ago">{timeToStr(secondsAgo(unixtime), t)}</div>
                     </div>
+                  
                   </div>
                 );
               })}
             </>
           );
         })}
+          {visibleNotifs.length !== 0&&  (
+                      <button className={`load-more ${!hasMore?'disabled':""} ${status==="loading"?"loading":"loading"}` }   onClick={() => setPage(page + 1)}>Load More</button>
+                    )}
         {visibleNotifs.length === 0 && <div>no notifications</div>}
       </div>
     </>

@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup, { IncomingCall } from "./call-setup";
@@ -19,6 +19,7 @@ import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";
 import "./main.css";
+import { FetchNotificationsAsync } from "./features/userData";
 
 function UnreadDot({ count }) {
   if (!count) {
@@ -72,11 +73,18 @@ function Sidebar({ sidebarMobile }) {
 
   const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
 
-  const notifications = useSelector((state) => state.userData.notifications);
+  const notifications = useSelector(state => state.userData.notifications);
+
   const unread = {
     notifications: notifications.filter(({ status }) => status === "unread"),
     messages: [],
   };
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(FetchNotificationsAsync({ pageNumber: 1, itemPerPage: 20 }));
+  }, []);
+  
 
   return (
     <>
@@ -118,6 +126,7 @@ function Sidebar({ sidebarMobile }) {
       <div className="mobile-shade" onClick={() => setShowSidebarMobile(false)} />
     </>
   );
+  // else  return <h1>no notifications</h1>
 }
 
 function MobileNavBar({ setShowSidebarMobile }) {
@@ -512,8 +521,8 @@ function NotificationPanel() {
   const { t } = useTranslation();
   const users = useSelector((state) => state.userData.users);
   const activeUser = users.find(({ type }) => type === "self");
-  const { usesAvatar, avatarCfg, firstName, lastName, imgSrc, notifications } = activeUser;
-
+  const { usesAvatar, avatarCfg, firstName, lastName, imgSrc } = activeUser;
+  const notifications = useSelector((state) => state.userData.notifications);
   // don't show unless names are available; ie API call has returned
   if (!firstName) {
     return false;
