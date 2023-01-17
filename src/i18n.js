@@ -3,7 +3,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import Cookies from "js-cookie";
 import { initReactI18next } from "react-i18next";
 
-import translation from "./translation.json";
+import translationDE from "./locale/de.json";
+import translationEN from "./locale/en.json";
 
 i18next
   .use(LanguageDetector)
@@ -16,10 +17,10 @@ i18next
     keySeparator: "::",
     resources: {
       en: {
-        translation: translation.en,
+        translation: translationEN,
       },
       de: {
-        translation: translation.de,
+        translation: translationDE,
       },
     },
     fallbackLng: "en",
