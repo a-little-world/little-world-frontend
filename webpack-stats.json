@@ -573,6 +573,14 @@
       "name": "node_modules_web-vitals_dist_web-vitals_js-01408854efb6c8d34a50.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-01408854efb6c8d34a50.js.gz"
     },
+    "node_modules_web-vitals_dist_web-vitals_js-018a35e99d6420bd58fb.js": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-018a35e99d6420bd58fb.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-018a35e99d6420bd58fb.js"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-018a35e99d6420bd58fb.js.gz": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-018a35e99d6420bd58fb.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-018a35e99d6420bd58fb.js.gz"
+    },
     "node_modules_web-vitals_dist_web-vitals_js-01afb9abdc0428f8d175.js": {
       "name": "node_modules_web-vitals_dist_web-vitals_js-01afb9abdc0428f8d175.js",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-01afb9abdc0428f8d175.js"
@@ -660,6 +668,14 @@
     "node_modules_web-vitals_dist_web-vitals_js-1765a7ae85db7747e8c3.js.gz": {
       "name": "node_modules_web-vitals_dist_web-vitals_js-1765a7ae85db7747e8c3.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-1765a7ae85db7747e8c3.js.gz"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-17d1cf7f68a7002864b4.js": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-17d1cf7f68a7002864b4.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-17d1cf7f68a7002864b4.js"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-17d1cf7f68a7002864b4.js.gz": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-17d1cf7f68a7002864b4.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-17d1cf7f68a7002864b4.js.gz"
     },
     "node_modules_web-vitals_dist_web-vitals_js-19e6e862caed08499720.js": {
       "name": "node_modules_web-vitals_dist_web-vitals_js-19e6e862caed08499720.js",
@@ -932,6 +948,14 @@
     "node_modules_web-vitals_dist_web-vitals_js-5e1845c9cabe7d16ef20.js.gz": {
       "name": "node_modules_web-vitals_dist_web-vitals_js-5e1845c9cabe7d16ef20.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-5e1845c9cabe7d16ef20.js.gz"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-613bd5314b5edd92bb69.js": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-613bd5314b5edd92bb69.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-613bd5314b5edd92bb69.js"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-613bd5314b5edd92bb69.js.gz": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-613bd5314b5edd92bb69.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-613bd5314b5edd92bb69.js.gz"
     },
     "node_modules_web-vitals_dist_web-vitals_js-62943f4069d9bf6773b5.js": {
       "name": "node_modules_web-vitals_dist_web-vitals_js-62943f4069d9bf6773b5.js",
@@ -1421,6 +1445,22 @@
       "name": "node_modules_web-vitals_dist_web-vitals_js-d079c3f188dd3a8faf15.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-d079c3f188dd3a8faf15.js.gz"
     },
+    "node_modules_web-vitals_dist_web-vitals_js-d40ad98ce2bc32cb7ff6.js": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-d40ad98ce2bc32cb7ff6.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-d40ad98ce2bc32cb7ff6.js"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-d40ad98ce2bc32cb7ff6.js.gz": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-d40ad98ce2bc32cb7ff6.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-d40ad98ce2bc32cb7ff6.js.gz"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-d4e57503c54a0ce69c2f.js": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-d4e57503c54a0ce69c2f.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-d4e57503c54a0ce69c2f.js"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-d4e57503c54a0ce69c2f.js.gz": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-d4e57503c54a0ce69c2f.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-d4e57503c54a0ce69c2f.js.gz"
+    },
     "node_modules_web-vitals_dist_web-vitals_js-d6366f591cd3547ede2f.js": {
       "name": "node_modules_web-vitals_dist_web-vitals_js-d6366f591cd3547ede2f.js",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-d6366f591cd3547ede2f.js"
@@ -1468,6 +1508,14 @@
     "node_modules_web-vitals_dist_web-vitals_js-dc24cd7d7a8439c670ac.js.gz": {
       "name": "node_modules_web-vitals_dist_web-vitals_js-dc24cd7d7a8439c670ac.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-dc24cd7d7a8439c670ac.js.gz"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-df1bbf65d0b0726e96d9.js": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-df1bbf65d0b0726e96d9.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-df1bbf65d0b0726e96d9.js"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-df1bbf65d0b0726e96d9.js.gz": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-df1bbf65d0b0726e96d9.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-df1bbf65d0b0726e96d9.js.gz"
     },
     "node_modules_web-vitals_dist_web-vitals_js-e4de261a25523889750b.js": {
       "name": "node_modules_web-vitals_dist_web-vitals_js-e4de261a25523889750b.js",
@@ -1557,6 +1605,14 @@
       "name": "node_modules_web-vitals_dist_web-vitals_js-f92055faeefc29beaaf8.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-f92055faeefc29beaaf8.js.gz"
     },
+    "node_modules_web-vitals_dist_web-vitals_js-fae83dbd7f0f7ab0fb5c.js": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-fae83dbd7f0f7ab0fb5c.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-fae83dbd7f0f7ab0fb5c.js"
+    },
+    "node_modules_web-vitals_dist_web-vitals_js-fae83dbd7f0f7ab0fb5c.js.gz": {
+      "name": "node_modules_web-vitals_dist_web-vitals_js-fae83dbd7f0f7ab0fb5c.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-fae83dbd7f0f7ab0fb5c.js.gz"
+    },
     "node_modules_web-vitals_dist_web-vitals_js-feb964b59bcb0359ff92.js": {
       "name": "node_modules_web-vitals_dist_web-vitals_js-feb964b59bcb0359ff92.js",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\node_modules_web-vitals_dist_web-vitals_js-feb964b59bcb0359ff92.js"
@@ -1600,6 +1656,14 @@
     "src_loginSimulator_js-01408854efb6c8d34a50.js.gz": {
       "name": "src_loginSimulator_js-01408854efb6c8d34a50.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-01408854efb6c8d34a50.js.gz"
+    },
+    "src_loginSimulator_js-018a35e99d6420bd58fb.js": {
+      "name": "src_loginSimulator_js-018a35e99d6420bd58fb.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-018a35e99d6420bd58fb.js"
+    },
+    "src_loginSimulator_js-018a35e99d6420bd58fb.js.gz": {
+      "name": "src_loginSimulator_js-018a35e99d6420bd58fb.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-018a35e99d6420bd58fb.js.gz"
     },
     "src_loginSimulator_js-01afb9abdc0428f8d175.js": {
       "name": "src_loginSimulator_js-01afb9abdc0428f8d175.js",
@@ -1688,6 +1752,14 @@
     "src_loginSimulator_js-1765a7ae85db7747e8c3.js.gz": {
       "name": "src_loginSimulator_js-1765a7ae85db7747e8c3.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-1765a7ae85db7747e8c3.js.gz"
+    },
+    "src_loginSimulator_js-17d1cf7f68a7002864b4.js": {
+      "name": "src_loginSimulator_js-17d1cf7f68a7002864b4.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-17d1cf7f68a7002864b4.js"
+    },
+    "src_loginSimulator_js-17d1cf7f68a7002864b4.js.gz": {
+      "name": "src_loginSimulator_js-17d1cf7f68a7002864b4.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-17d1cf7f68a7002864b4.js.gz"
     },
     "src_loginSimulator_js-19e6e862caed08499720.js": {
       "name": "src_loginSimulator_js-19e6e862caed08499720.js",
@@ -1960,6 +2032,14 @@
     "src_loginSimulator_js-5e1845c9cabe7d16ef20.js.gz": {
       "name": "src_loginSimulator_js-5e1845c9cabe7d16ef20.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-5e1845c9cabe7d16ef20.js.gz"
+    },
+    "src_loginSimulator_js-613bd5314b5edd92bb69.js": {
+      "name": "src_loginSimulator_js-613bd5314b5edd92bb69.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-613bd5314b5edd92bb69.js"
+    },
+    "src_loginSimulator_js-613bd5314b5edd92bb69.js.gz": {
+      "name": "src_loginSimulator_js-613bd5314b5edd92bb69.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-613bd5314b5edd92bb69.js.gz"
     },
     "src_loginSimulator_js-62943f4069d9bf6773b5.js": {
       "name": "src_loginSimulator_js-62943f4069d9bf6773b5.js",
@@ -2449,6 +2529,22 @@
       "name": "src_loginSimulator_js-d079c3f188dd3a8faf15.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-d079c3f188dd3a8faf15.js.gz"
     },
+    "src_loginSimulator_js-d40ad98ce2bc32cb7ff6.js": {
+      "name": "src_loginSimulator_js-d40ad98ce2bc32cb7ff6.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-d40ad98ce2bc32cb7ff6.js"
+    },
+    "src_loginSimulator_js-d40ad98ce2bc32cb7ff6.js.gz": {
+      "name": "src_loginSimulator_js-d40ad98ce2bc32cb7ff6.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-d40ad98ce2bc32cb7ff6.js.gz"
+    },
+    "src_loginSimulator_js-d4e57503c54a0ce69c2f.js": {
+      "name": "src_loginSimulator_js-d4e57503c54a0ce69c2f.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-d4e57503c54a0ce69c2f.js"
+    },
+    "src_loginSimulator_js-d4e57503c54a0ce69c2f.js.gz": {
+      "name": "src_loginSimulator_js-d4e57503c54a0ce69c2f.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-d4e57503c54a0ce69c2f.js.gz"
+    },
     "src_loginSimulator_js-d6366f591cd3547ede2f.js": {
       "name": "src_loginSimulator_js-d6366f591cd3547ede2f.js",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-d6366f591cd3547ede2f.js"
@@ -2496,6 +2592,14 @@
     "src_loginSimulator_js-dc24cd7d7a8439c670ac.js.gz": {
       "name": "src_loginSimulator_js-dc24cd7d7a8439c670ac.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-dc24cd7d7a8439c670ac.js.gz"
+    },
+    "src_loginSimulator_js-df1bbf65d0b0726e96d9.js": {
+      "name": "src_loginSimulator_js-df1bbf65d0b0726e96d9.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-df1bbf65d0b0726e96d9.js"
+    },
+    "src_loginSimulator_js-df1bbf65d0b0726e96d9.js.gz": {
+      "name": "src_loginSimulator_js-df1bbf65d0b0726e96d9.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-df1bbf65d0b0726e96d9.js.gz"
     },
     "src_loginSimulator_js-e4de261a25523889750b.js": {
       "name": "src_loginSimulator_js-e4de261a25523889750b.js",
@@ -2585,6 +2689,14 @@
       "name": "src_loginSimulator_js-f92055faeefc29beaaf8.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-f92055faeefc29beaaf8.js.gz"
     },
+    "src_loginSimulator_js-fae83dbd7f0f7ab0fb5c.js": {
+      "name": "src_loginSimulator_js-fae83dbd7f0f7ab0fb5c.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-fae83dbd7f0f7ab0fb5c.js"
+    },
+    "src_loginSimulator_js-fae83dbd7f0f7ab0fb5c.js.gz": {
+      "name": "src_loginSimulator_js-fae83dbd7f0f7ab0fb5c.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-fae83dbd7f0f7ab0fb5c.js.gz"
+    },
     "src_loginSimulator_js-feb964b59bcb0359ff92.js": {
       "name": "src_loginSimulator_js-feb964b59bcb0359ff92.js",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\src_loginSimulator_js-feb964b59bcb0359ff92.js"
@@ -2608,6 +2720,14 @@
     "staticfiles-01408854efb6c8d34a50.js.gz": {
       "name": "staticfiles-01408854efb6c8d34a50.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-01408854efb6c8d34a50.js.gz"
+    },
+    "staticfiles-018a35e99d6420bd58fb.js": {
+      "name": "staticfiles-018a35e99d6420bd58fb.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-018a35e99d6420bd58fb.js"
+    },
+    "staticfiles-018a35e99d6420bd58fb.js.gz": {
+      "name": "staticfiles-018a35e99d6420bd58fb.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-018a35e99d6420bd58fb.js.gz"
     },
     "staticfiles-01afb9abdc0428f8d175.js": {
       "name": "staticfiles-01afb9abdc0428f8d175.js",
@@ -2696,6 +2816,14 @@
     "staticfiles-1765a7ae85db7747e8c3.js.gz": {
       "name": "staticfiles-1765a7ae85db7747e8c3.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-1765a7ae85db7747e8c3.js.gz"
+    },
+    "staticfiles-17d1cf7f68a7002864b4.js": {
+      "name": "staticfiles-17d1cf7f68a7002864b4.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-17d1cf7f68a7002864b4.js"
+    },
+    "staticfiles-17d1cf7f68a7002864b4.js.gz": {
+      "name": "staticfiles-17d1cf7f68a7002864b4.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-17d1cf7f68a7002864b4.js.gz"
     },
     "staticfiles-19e6e862caed08499720.js": {
       "name": "staticfiles-19e6e862caed08499720.js",
@@ -2968,6 +3096,14 @@
     "staticfiles-5e1845c9cabe7d16ef20.js.gz": {
       "name": "staticfiles-5e1845c9cabe7d16ef20.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-5e1845c9cabe7d16ef20.js.gz"
+    },
+    "staticfiles-613bd5314b5edd92bb69.js": {
+      "name": "staticfiles-613bd5314b5edd92bb69.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-613bd5314b5edd92bb69.js"
+    },
+    "staticfiles-613bd5314b5edd92bb69.js.gz": {
+      "name": "staticfiles-613bd5314b5edd92bb69.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-613bd5314b5edd92bb69.js.gz"
     },
     "staticfiles-62943f4069d9bf6773b5.js": {
       "name": "staticfiles-62943f4069d9bf6773b5.js",
@@ -3457,6 +3593,22 @@
       "name": "staticfiles-d079c3f188dd3a8faf15.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-d079c3f188dd3a8faf15.js.gz"
     },
+    "staticfiles-d40ad98ce2bc32cb7ff6.js": {
+      "name": "staticfiles-d40ad98ce2bc32cb7ff6.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-d40ad98ce2bc32cb7ff6.js"
+    },
+    "staticfiles-d40ad98ce2bc32cb7ff6.js.gz": {
+      "name": "staticfiles-d40ad98ce2bc32cb7ff6.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-d40ad98ce2bc32cb7ff6.js.gz"
+    },
+    "staticfiles-d4e57503c54a0ce69c2f.js": {
+      "name": "staticfiles-d4e57503c54a0ce69c2f.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-d4e57503c54a0ce69c2f.js"
+    },
+    "staticfiles-d4e57503c54a0ce69c2f.js.gz": {
+      "name": "staticfiles-d4e57503c54a0ce69c2f.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-d4e57503c54a0ce69c2f.js.gz"
+    },
     "staticfiles-d6366f591cd3547ede2f.js": {
       "name": "staticfiles-d6366f591cd3547ede2f.js",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-d6366f591cd3547ede2f.js"
@@ -3504,6 +3656,14 @@
     "staticfiles-dc24cd7d7a8439c670ac.js.gz": {
       "name": "staticfiles-dc24cd7d7a8439c670ac.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-dc24cd7d7a8439c670ac.js.gz"
+    },
+    "staticfiles-df1bbf65d0b0726e96d9.js": {
+      "name": "staticfiles-df1bbf65d0b0726e96d9.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-df1bbf65d0b0726e96d9.js"
+    },
+    "staticfiles-df1bbf65d0b0726e96d9.js.gz": {
+      "name": "staticfiles-df1bbf65d0b0726e96d9.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-df1bbf65d0b0726e96d9.js.gz"
     },
     "staticfiles-e4de261a25523889750b.js": {
       "name": "staticfiles-e4de261a25523889750b.js",
@@ -3593,6 +3753,14 @@
       "name": "staticfiles-f92055faeefc29beaaf8.js.gz",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-f92055faeefc29beaaf8.js.gz"
     },
+    "staticfiles-fae83dbd7f0f7ab0fb5c.js": {
+      "name": "staticfiles-fae83dbd7f0f7ab0fb5c.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-fae83dbd7f0f7ab0fb5c.js"
+    },
+    "staticfiles-fae83dbd7f0f7ab0fb5c.js.gz": {
+      "name": "staticfiles-fae83dbd7f0f7ab0fb5c.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-fae83dbd7f0f7ab0fb5c.js.gz"
+    },
     "staticfiles-feb964b59bcb0359ff92.js": {
       "name": "staticfiles-feb964b59bcb0359ff92.js",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles-feb964b59bcb0359ff92.js"
@@ -3620,6 +3788,18 @@
     "staticfiles.01408854efb6c8d34a50.hot-update.json": {
       "name": "staticfiles.01408854efb6c8d34a50.hot-update.json",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.01408854efb6c8d34a50.hot-update.json"
+    },
+    "staticfiles.018a35e99d6420bd58fb.hot-update.js": {
+      "name": "staticfiles.018a35e99d6420bd58fb.hot-update.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.018a35e99d6420bd58fb.hot-update.js"
+    },
+    "staticfiles.018a35e99d6420bd58fb.hot-update.js.gz": {
+      "name": "staticfiles.018a35e99d6420bd58fb.hot-update.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.018a35e99d6420bd58fb.hot-update.js.gz"
+    },
+    "staticfiles.018a35e99d6420bd58fb.hot-update.json": {
+      "name": "staticfiles.018a35e99d6420bd58fb.hot-update.json",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.018a35e99d6420bd58fb.hot-update.json"
     },
     "staticfiles.01afb9abdc0428f8d175.hot-update.js": {
       "name": "staticfiles.01afb9abdc0428f8d175.hot-update.js",
@@ -3752,6 +3932,18 @@
     "staticfiles.1765a7ae85db7747e8c3.hot-update.json": {
       "name": "staticfiles.1765a7ae85db7747e8c3.hot-update.json",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.1765a7ae85db7747e8c3.hot-update.json"
+    },
+    "staticfiles.17d1cf7f68a7002864b4.hot-update.js": {
+      "name": "staticfiles.17d1cf7f68a7002864b4.hot-update.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.17d1cf7f68a7002864b4.hot-update.js"
+    },
+    "staticfiles.17d1cf7f68a7002864b4.hot-update.js.gz": {
+      "name": "staticfiles.17d1cf7f68a7002864b4.hot-update.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.17d1cf7f68a7002864b4.hot-update.js.gz"
+    },
+    "staticfiles.17d1cf7f68a7002864b4.hot-update.json": {
+      "name": "staticfiles.17d1cf7f68a7002864b4.hot-update.json",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.17d1cf7f68a7002864b4.hot-update.json"
     },
     "staticfiles.19e6e862caed08499720.hot-update.js": {
       "name": "staticfiles.19e6e862caed08499720.hot-update.js",
@@ -4161,6 +4353,18 @@
       "name": "staticfiles.5e1845c9cabe7d16ef20.hot-update.json",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.5e1845c9cabe7d16ef20.hot-update.json"
     },
+    "staticfiles.613bd5314b5edd92bb69.hot-update.js": {
+      "name": "staticfiles.613bd5314b5edd92bb69.hot-update.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.613bd5314b5edd92bb69.hot-update.js"
+    },
+    "staticfiles.613bd5314b5edd92bb69.hot-update.js.gz": {
+      "name": "staticfiles.613bd5314b5edd92bb69.hot-update.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.613bd5314b5edd92bb69.hot-update.js.gz"
+    },
+    "staticfiles.613bd5314b5edd92bb69.hot-update.json": {
+      "name": "staticfiles.613bd5314b5edd92bb69.hot-update.json",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.613bd5314b5edd92bb69.hot-update.json"
+    },
     "staticfiles.62943f4069d9bf6773b5.hot-update.js": {
       "name": "staticfiles.62943f4069d9bf6773b5.hot-update.js",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.62943f4069d9bf6773b5.hot-update.js"
@@ -4292,6 +4496,18 @@
     "staticfiles.74050c7179a56be9528c.hot-update.json": {
       "name": "staticfiles.74050c7179a56be9528c.hot-update.json",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.74050c7179a56be9528c.hot-update.json"
+    },
+    "staticfiles.76791dd1f16e932342a5.hot-update.js": {
+      "name": "staticfiles.76791dd1f16e932342a5.hot-update.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.76791dd1f16e932342a5.hot-update.js"
+    },
+    "staticfiles.76791dd1f16e932342a5.hot-update.js.gz": {
+      "name": "staticfiles.76791dd1f16e932342a5.hot-update.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.76791dd1f16e932342a5.hot-update.js.gz"
+    },
+    "staticfiles.76791dd1f16e932342a5.hot-update.json": {
+      "name": "staticfiles.76791dd1f16e932342a5.hot-update.json",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.76791dd1f16e932342a5.hot-update.json"
     },
     "staticfiles.7737cb4d4e0b5fd50c02.hot-update.js": {
       "name": "staticfiles.7737cb4d4e0b5fd50c02.hot-update.js",
@@ -4881,6 +5097,30 @@
       "name": "staticfiles.d079c3f188dd3a8faf15.hot-update.json",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.d079c3f188dd3a8faf15.hot-update.json"
     },
+    "staticfiles.d40ad98ce2bc32cb7ff6.hot-update.js": {
+      "name": "staticfiles.d40ad98ce2bc32cb7ff6.hot-update.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.d40ad98ce2bc32cb7ff6.hot-update.js"
+    },
+    "staticfiles.d40ad98ce2bc32cb7ff6.hot-update.js.gz": {
+      "name": "staticfiles.d40ad98ce2bc32cb7ff6.hot-update.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.d40ad98ce2bc32cb7ff6.hot-update.js.gz"
+    },
+    "staticfiles.d40ad98ce2bc32cb7ff6.hot-update.json": {
+      "name": "staticfiles.d40ad98ce2bc32cb7ff6.hot-update.json",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.d40ad98ce2bc32cb7ff6.hot-update.json"
+    },
+    "staticfiles.d4e57503c54a0ce69c2f.hot-update.js": {
+      "name": "staticfiles.d4e57503c54a0ce69c2f.hot-update.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.d4e57503c54a0ce69c2f.hot-update.js"
+    },
+    "staticfiles.d4e57503c54a0ce69c2f.hot-update.js.gz": {
+      "name": "staticfiles.d4e57503c54a0ce69c2f.hot-update.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.d4e57503c54a0ce69c2f.hot-update.js.gz"
+    },
+    "staticfiles.d4e57503c54a0ce69c2f.hot-update.json": {
+      "name": "staticfiles.d4e57503c54a0ce69c2f.hot-update.json",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.d4e57503c54a0ce69c2f.hot-update.json"
+    },
     "staticfiles.d6366f591cd3547ede2f.hot-update.js": {
       "name": "staticfiles.d6366f591cd3547ede2f.hot-update.js",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.d6366f591cd3547ede2f.hot-update.js"
@@ -4952,6 +5192,18 @@
     "staticfiles.dc24cd7d7a8439c670ac.hot-update.json": {
       "name": "staticfiles.dc24cd7d7a8439c670ac.hot-update.json",
       "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.dc24cd7d7a8439c670ac.hot-update.json"
+    },
+    "staticfiles.df1bbf65d0b0726e96d9.hot-update.js": {
+      "name": "staticfiles.df1bbf65d0b0726e96d9.hot-update.js",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.df1bbf65d0b0726e96d9.hot-update.js"
+    },
+    "staticfiles.df1bbf65d0b0726e96d9.hot-update.js.gz": {
+      "name": "staticfiles.df1bbf65d0b0726e96d9.hot-update.js.gz",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.df1bbf65d0b0726e96d9.hot-update.js.gz"
+    },
+    "staticfiles.df1bbf65d0b0726e96d9.hot-update.json": {
+      "name": "staticfiles.df1bbf65d0b0726e96d9.hot-update.json",
+      "path": "D:\\litle_world\\little-world-frontend\\dist\\staticfiles.df1bbf65d0b0726e96d9.hot-update.json"
     },
     "staticfiles.e4de261a25523889750b.hot-update.js": {
       "name": "staticfiles.e4de261a25523889750b.hot-update.js",
@@ -5112,8 +5364,8 @@
   },
   "chunks": {
     "staticfiles": [
-      "staticfiles-76791dd1f16e932342a5.js",
-      "staticfiles.f5d4b8b3e23afa5854b2.hot-update.js"
+      "staticfiles-fae83dbd7f0f7ab0fb5c.js",
+      "staticfiles.613bd5314b5edd92bb69.hot-update.js"
     ]
   },
   "error": "ModuleBuildError",

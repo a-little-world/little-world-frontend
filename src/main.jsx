@@ -222,7 +222,6 @@ function NbtSelector({ selection, setSelection, use }) {
     main: ["appointments"],
   };
   const disabled = nbtDisabled[use];
-
   return (
     <div className="selector">
       {topics.map((topic) => (
@@ -235,7 +234,9 @@ function NbtSelector({ selection, setSelection, use }) {
             name="sidebar"
             onChange={(e) => setSelection(e.target.value)}
           />
-          <label htmlFor={`${topic}-radio`} className={disabled.includes(topic) ? "disabled" : ""}>
+                    {console.log('topic',disabled)}
+
+          <label htmlFor={`${topic}-radio`} className={disabled&&disabled.includes(topic) ? "disabled" : ""}>
             {t(`nbt_${topic}`)}
           </label>
         </span>
