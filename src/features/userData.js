@@ -221,12 +221,10 @@ export const userDataSlice = createSlice({
       }
     },
     readNotif: (state, action) => {
-      state.notifications.find(
-        ({ id, status }) => id === action.payload && status === "unread"
-      ).status = "read";
-    },
+      state.notifications.map((el) => el.hash === action.payload?el.state="read":el.state)
+     },
     archiveNotif: (state, action) => {
-      state.notifications.notifications.map((el) => el.hash === action.payload?el.state="archive":el.state)
+      state.notifications.map((el) => el.hash === action.payload?el.state="archive":el.state)
     },
   },
 });
@@ -243,9 +241,16 @@ export const { initialise, updateSettings, updateProfile, readAll, readNotif, ar
   };
   export const ArchiveNotificationAsync = (hash) => async (dispatch) => {
     dispatch(setStatus('loading'));
-    // const result = await notifications.archive(hash);
+    const result = await notifications.archive(hash);
     dispatch(archiveNotif(hash));
     dispatch(setStatus('data'));
+  };
+  export const ReadNotificationAsync = (hash) => async (dispatch) => {
+    dispatch(setStatus('loading'));
+    const result = await notifications.read(hash);
+    dispatch(readNotif(hash));
+    dispatch(setStatus('data'));
+    
   };
   
 
