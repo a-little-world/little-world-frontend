@@ -17,7 +17,7 @@ function Overlay({ title, name, text, onOk, onExit, userInfo }) {
     <div className="overlay-modal modal-box">
       <div className="modal-top">
         <div className="modal-header">
-          <h3 className="title">{title}</h3>
+          <h3 className="title">{title&&title.toUpperCase()}</h3>
         </div>
       </div>
       {userInfo.usesAvatar ? (
