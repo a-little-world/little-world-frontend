@@ -11,67 +11,7 @@ const initialState = {
   status: 'no-thing',
 };
 
-const dummyNotifications = [
-  {
-    id: 2450,
-    status: "unread",
-    type: "appointment",
-    text: "new appoinment?",
-    dateString: "2 hours ago",
-    unixtime: Math.floor(Date.now() / 1000) - 2 * 3600,
-  },
-  {
-    id: 2380,
-    status: "unread",
-    type: "appointment",
-    text: "new appoinment?",
-    dateString: "2 days ago",
-    unixtime: Math.floor(Date.now() / 1000) - 2 * 24 * 3600,
-  },
-  {
-    id: 2350,
-    status: "unread",
-    type: "appointment",
-    text: "new appoinment?",
-    dateString: "3 days ago",
-    unixtime: Math.floor(Date.now() / 1000) - 3 * 24 * 3600,
-  },
-  {
-    id: 2347,
-    status: "unread",
-    type: "appointment",
-    text: "new appoinment?",
-    dateString: "27th October, 2022 at 3:00pm",
-    unixtime: 1666364400,
-  },
-  {
-    id: 2346,
-    status: "read",
-    type: "new friend",
-    text: "New friend: George McCoy",
-    dateString: "27th October, 2022 at 3:00pm",
-    unixtime: 1666364400,
-  },
-  {
-    id: 1973,
-    status: "archive",
-    type: "missed call",
-    text: "missed call",
-    dateString: "You missed appointment",
-    unixtime: 1640995200,
-  },
-];
-
-const dummyNotifications2 = [
-  {
-    id: 2347,
-    status: "read",
-    type: "appointment",
-    text: "Notifications will be added soon",
-    dateString: "27th October, 2022 at 3:00pm",
-    unixtime: 1666364400,
-  },
-];
+ 
 
 export const userDataSlice = createSlice({
   name: "userData",
