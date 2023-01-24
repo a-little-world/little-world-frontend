@@ -63,7 +63,7 @@ function ProfileBox({
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />
       )}
-      {type === "match" && (
+      {(type === "match" && false) && ( /** TODO temporarily disabled */
         <button className="unmatch" type="button" onClick={() => setUnmatchingUser(user)}>
           <img />
         </button>
