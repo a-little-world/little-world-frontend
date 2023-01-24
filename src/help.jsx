@@ -1,5 +1,8 @@
 import { t } from "i18next";
+import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
+import { filterMessagesForDialog } from "./chat/chat.lib";
+import { setStatus } from "./features/userData";
 
 import "./help.css";
 
@@ -36,9 +39,36 @@ function Faqs() {
 function Contact() {
   const [dragOver, setDragOver] = useState(false);
   const [filenames, setFilenames] = useState([]);
+  const [helpMessage, setHelpMessage] = useState("");
+  const [formState, setFormState] = useState("idle");
   const fileRef = useRef();
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    setFormState("pending")
+    var data = new FormData();
+    console.log(data, fileRef, filenames, fileRef.current);
+    for (var i = 0; i < fileRef.current.files.length; ++i) {
+      let file = fileRef.current.files.item(i);
+      let name = file.name;
+      console.log("file name: ", name);
+      data.append('file', file, name);
+    }
+    data.set('message', helpMessage);
+    fetch("/api/help_message/", {
+      headers: {
+        "X-CSRFToken": Cookies.get("csrftoken"),
+        "X-UseTagsOnly": true,
+      },
+      method: 'POST',
+      body: data
+    }).then((res) => {
+      if(res.ok){
+        setFormState("submitted")
+      }else{
+        setFormState("error")
+      }
+    })
+  };
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -60,12 +90,24 @@ function Contact() {
     setFilenames(fileList);
   };
 
+  if(formState === "pending"){
+    return <>
+      <h2>Sending you message</h2>
+    </>
+  }else if(formState === "submitted"){
+    return <>
+      <h2>Your message has been submitted, thanks for your feedback!</h2>
+    </>
+  }else if(formState === "error"){
+    return <>
+      <h2>There has been an error submitting your message, please try sending an email.</h2>
+    </>
+  }
+
+
   return (
     <form
-      method="post"
-      encType="multipart/form-data"
       className="help-contact"
-      onSubmit={handleSubmit}
     >
       <h2>{t("nbt_contact")}</h2>
       <p className="intro-text">
@@ -81,6 +123,9 @@ function Contact() {
           inputMode="text"
           maxLength="300"
           placeholder={t("help_contact_problem_placeholder")}
+          onChange={(e) => {
+            setHelpMessage(e.target.value);
+          }}
         />
       </label>
       <div className="drop-zone-label">
@@ -113,7 +158,7 @@ function Contact() {
           <div className="drag-text">{t("help_contact_picture_drag")}</div>
         </div>
       </div>
-      <button type="submit" className="contact-submit">
+      <button type="button" className="contact-submit" onClick={handleSubmit}>
         {t("help_contact_submit")}
       </button>
     </form>
@@ -161,11 +206,7 @@ function Help({ selection }) {
               <div className="contacts">
                 <a href="mailto:oliver.berlin@little-world.com">
                   <img className="email-icon" alt="e-mail" />
-                  oliver.berlin@little-world.com
-                </a>
-                <a href="tel:+4924198093490">
-                  <img className="phone-icon" alt="phone" />
-                  +49 241 980 93 490
+                  oliver@little-world.com
                 </a>
                 <a href="tel:+4915234777471">
                   <img className="mobile-icon" alt="mobile" />
@@ -183,9 +224,6 @@ function Help({ selection }) {
             </a>
             <a href="https://www.instagram.com/littleworld_de/">
               <img className="icon-instagram" alt="instagram" />
-            </a>
-            <a href="https://twitter.com/littleworld_de">
-              <img className="icon-twitter" alt="twitter" />
             </a>
           </div>
         </div>
