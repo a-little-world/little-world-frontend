@@ -220,7 +220,7 @@ function NbtSelector({ selection, setSelection, use }) {
 
   const nbtDisabled = {
     main: ["appointments"],
-    help: ["videos"]
+    help: ["videos", "faqs"]
   };
   const disabled = nbtDisabled[use];
   return (
