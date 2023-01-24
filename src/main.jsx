@@ -142,7 +142,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
       </button>
       <div className="logo-with-text">
         <img className="logo-mobile" alt="" />
-        <span className="logo-text">{t(`headers.${key}`)}</span>
+        <span className="logo-text">{t(`headers::${key}`)}</span>
       </div>
       <button className="notification disabled" type="button">
         <img alt="show notifications" />
