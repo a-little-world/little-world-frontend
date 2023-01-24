@@ -224,14 +224,10 @@ function CallSetup({ userPk, setCallSetupPartner }) {
   }, []);
 
   return (
-    <div className="call-setup-modal">
-      <div className="modal-top">
-        <div className="modal-header">
-          <h3 className="title">{t("pcs_main_heading")}</h3>
-          <span className="subtitle">{t("pcs_sub_heading")}</span>
-        </div>
-        <button type="button" className="modal-close" onClick={() => setCallSetupPartner(null)} />
-      </div>
+    <div className="modal-box">
+      <button type="button" className="modal-close" onClick={() => setCallSetupPartner(null)} />
+      <h3 className="title">{t("pcs_main_heading")}</h3>
+      <span className="subtitle">{t("pcs_sub_heading")}</span>
       {mediaPermission && (
         <>
           <VideoFrame Video={videoRef} Audio={audioRef} />
@@ -273,7 +269,7 @@ function IncomingCall({ userPk, matchesInfo, setVisible, setCallSetupPartner }) 
     setVisible(false);
   };
   return (
-    <div className="call-setup-modal incoming-call-modal">
+    <div className="modal-box incoming-call-modal">
       <button type="button" className="modal-close" onClick={rejectCall} />
       <div className="content">
         {usesAvatar ? (

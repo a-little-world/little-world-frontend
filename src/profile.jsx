@@ -63,6 +63,11 @@ function ProfileBox({
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />
       )}
+      {(type === "match" && false) && ( /** TODO temporarily disabled */
+        <button className="unmatch" type="button" onClick={() => setUnmatchingUser(user)}>
+          <img />
+        </button>
+      )}
       <div className={isOnline ? "online-indicator online" : "online-indicator"}>
         online <span className="light" />
       </div>
@@ -178,9 +183,17 @@ function InterestsSelector({ inTopicSelection }) {
                   </button>
                 ))}
               </div>
+              <div className="buttons">
+                <button type="button" className="save" onClick={saveTopics}>
+                  {t("btn_save")}
+                </button>
+                <button type="button" className="cancel" onClick={cancelTopics}>
+                  {t("btn_cancel")}
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+        </div>
+          )}
       </div>
       {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
@@ -331,10 +344,10 @@ function TextBox({ subject, topicText = "", formTag }) {
         {isSelf && editState && (
           <div className="buttons">
             <button type="button" className="cancel" onClick={() => setEditState(false)}>
-              <img alt="cancel" />
+              <img alt={t("btn_cancel")} />
             </button>
             <button type="button" className="save" onClick={saveChange}>
-              <img alt="save" />
+              <img alt={t("btn_save")} />
             </button>
           </div>
         )}
@@ -397,17 +410,19 @@ function Profile({ setCallSetupPartner, userPk }) {
   const usersData = useSelector((state) => state.userData.users);
   const isSelf = !userPk;
 
-  const profileData = isSelf
+  const user = isSelf
     ? usersData.find(({ type }) => type === "self")
     : usersData.find((usr) => usr.userPk === userPk);
 
-  if (!profileData) {
+  console.log("USER", user);
+
+  if (!user) {
     return null; // don't render unless we have the necessary data
   }
 
   const profileTitle = isSelf
     ? t("profile_my_profile")
-    : t("profile_match_profile", { userName: profileData.firstName });
+    : t("profile_match_profile", { userName: user.firstName });
 
   return (
     <div className="profile-component">
@@ -420,9 +435,9 @@ function Profile({ setCallSetupPartner, userPk }) {
         <span className="text">{profileTitle}</span>
       </div>
       <div className="content-area-main">
-        <ProfileDetail isSelf={isSelf} profile={profileData.extraInfo} />
+        <ProfileDetail isSelf={isSelf} profile={user.extraInfo} />
         <ProfileBox
-          {...profileData}
+          {...user}
           description="" /* don't show description on profile page as it's already shown in full */
           isSelf={isSelf}
           setCallSetupPartner={setCallSetupPartner}

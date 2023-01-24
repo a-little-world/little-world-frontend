@@ -8,11 +8,6 @@
   flex-grow: 1;
 }
 
-.show-profile .content {
-  display: flex;
-  flex: 1 1 0;
-}
-
 .profile-box .profile-avatar {
   text-align: left;
 }
@@ -63,7 +58,7 @@
   font-weight: 500;
 }
 
-.profile-detail .buttons {
+.profile-text .buttons {
   display: flex;
   position: absolute;
   right: 30px;
@@ -117,14 +112,7 @@
   right: 15px;
 }
 
-.selected-topics .buttons {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-}
-
-.interest-item,
-.add-interest-item {
+.interest-item {
   padding: 8px 20px;
   box-shadow: 0px 1px 5px rgb(0 0 0 / 30%);
   border-radius: 100px;
@@ -141,58 +129,19 @@
 .selected-topics .interest-item .text {
   white-space: nowrap;
 }
-/* 
-.selected-topics button {
-  display: none;
-}
-
-.selected-topics.editing button {
-  display: unset;
-} */
-
-.selected-topics .add-interest-item {
-  height: auto;
-}
 
 .selected-topics .interest-item img {
   content: url("./images/close-pop-up.svg");
   filter: hue-rotate(180deg);
 }
 
-.selected-topics .add-interest-item img {
-  content: url("./images/chat-plus.svg");
-  filter: invert(1);
-}
-
-.topics-shade {
-  z-index: 2;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  backdrop-filter: blur(5px);
-}
-
-.topics-selector {
-  z-index: 3;
-  margin: auto;
-  border-radius: 15px;
-  background-color: #f2f2f2;
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  gap: 40px;
-}
-
 .topics-selector .items {
   display: flex;
   flex-wrap: wrap;
-  max-width: 800px;
+  max-width: 600px;
   gap: 10px;
+  justify-content: space-evenly;
+  margin-top: 20px;
 }
 
 .interest-item.selected-item {
@@ -211,19 +160,32 @@
   bottom: 1em;
 }
 
+button.unmatch {
+  position: absolute;
+  right: 30px;
+  background: white;
+  filter: grayscale(1);
+  top: 30px;
+}
+
+button.unmatch img {
+  content: url("./images/close-pop-up.svg");
+}
+
 .online-indicator {
   font-weight: 300;
   font-size: 12px;
   color: rgb(243, 147, 37);
   background-color: white;
-  border-radius: 100px 0 0 100px;
-  padding: 8px 20px;
+  border-radius: 0 100px 100px 0;
+  padding: 8px 10px;
   position: absolute;
-  right: 4px;
+  left: 20px;
   top: 35px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 1s;
+  box-shadow: 4px 1px 6px rgb(0 0 0 / 7%);
 }
 
 .online-indicator.online {
@@ -243,15 +205,6 @@
 @media screen and (width < 1024px) {
   .show-profile .selector {
     display: none;
-  }
-
-  .show-profile .profile-component,
-  .show-profile .content {
-    gap: 10px;
-  }
-
-  .show-profile .content {
-    flex-direction: column;
   }
 
   .show-profile .profile-box {

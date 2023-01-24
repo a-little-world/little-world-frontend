@@ -65,9 +65,7 @@ button {
 .main-page .header,
 .profile-detail > div,
 .show-profile .profile-box,
-.call-setup-modal,
-.overlay-modal,
-.edit-modal,
+.modal-box,
 .call-and-text,
 .call-sidebar {
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -98,6 +96,7 @@ button {
   box-sizing: border-box;
   align-items: center;
   text-transform: capitalize;
+  justify-content: space-between;
 }
 
 @media screen and (width < 1024px) {
@@ -161,6 +160,7 @@ a {
 }
 
 button::first-letter,
+button .text::first-letter,
 label::first-letter,
 input[type="radio"] + label,
 h1,
@@ -295,7 +295,7 @@ img.logo-text {
   align-self: center;
   text-align: center;
   padding: 0 60px;
-  margin: 0;
+  margin-top: 0;
 }
 
 .modal-box .content {

@@ -339,19 +339,19 @@ function Settings() {
                 {t("sg_personal_delete_account_btn")}
               </button>
             </div>
-          */}
-            <div className={editing ? "edit-overlay" : "edit-overlay hidden"}>
-              {editing && (
-                <ModalBox
-                  label={editing}
-                  valueIn={data[editing]}
-                  repeat={repeaters.includes(editing)}
-                  setEditing={setEditing}
-                />
-              )}
-            </div>
+            */}
           </div>
         </section>
+      </div>
+      <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
+        {editing && (
+          <ModalBox
+            label={editing}
+            valueIn={data[editing]}
+            repeat={repeaters.includes(editing)}
+            setEditing={setEditing}
+          />
+        )}
       </div>
     </>
   );

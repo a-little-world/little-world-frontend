@@ -1,13 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
+import { notifications } from "../services/notifications";
 
 const initialState = {
-  email: null,
-  interestsChoices: [],
-  users: [],
   raw: {},
+  users: [],
   settings: {},
+  notifications: [],
+  interestsChoices: [],
+  status: 'no-thing',
 };
+
+ 
 
 export const userDataSlice = createSlice({
   name: "userData",
@@ -15,7 +19,6 @@ export const userDataSlice = createSlice({
   reducers: {
     initialise: (state, action) => {
       state.raw = action.payload;
-
       const {
         user,
         profile,
@@ -28,6 +31,7 @@ export const userDataSlice = createSlice({
       } = action.payload;
       console.log(user, profile, settings, notifications, usrState, matches, community_events);
       console.log("ADMIN", adminInfos);
+      // notifications=action.payload
 
       const others = matches.map((match) => {
         let avatarCfg = "";
@@ -110,6 +114,13 @@ export const userDataSlice = createSlice({
         profile: profile.options,
       };
     },
+    setStatus: (state, { payload }) => {
+      console.log('payload',payload)
+      state.status = payload;
+    },
+    fetchNotifications:(state,{payload})=>{
+      state.notifications = payload
+    },
     updateSettings: (state, action) => {
       Object.entries(action.payload).forEach(([item, value]) => {
         state.settings[item] = value;
@@ -139,10 +150,50 @@ export const userDataSlice = createSlice({
         return user;
       });
     },
+    readAll: (state) => {
+      if (state.notifications.find(({ status }) => status === "unread")) {
+        state.notifications = state.notifications.map((notif) => {
+          if (notif.status === "unread") {
+            return { ...notif, status: "read" };
+          }
+          return notif;
+        });
+      }
+    },
+    readNotif: (state, action) => {
+      state.notifications.map((el) => el.hash === action.payload?el.state="read":el.state)
+     },
+    archiveNotif: (state, action) => {
+      state.notifications.map((el) => el.hash === action.payload?el.state="archive":el.state)
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { initialise, updateSettings, updateProfile } = userDataSlice.actions;
+export const { initialise, updateSettings, updateProfile, readAll, readNotif, archiveNotif,setStatus,fetchNotifications } =
+  userDataSlice.actions;
+
+  export const FetchNotificationsAsync = ({pageNumber:page,itemPerPage}) => async (dispatch) => {
+    dispatch(setStatus('loading'));
+    const result = await notifications.getAll({pageNumber:page,itemPerPage});
+    dispatch(setStatus('data'));
+    dispatch(fetchNotifications(result));
+  };
+  export const ArchiveNotificationAsync = (hash) => async (dispatch) => {
+    dispatch(setStatus('loading'));
+    const result = await notifications.archive(hash);
+    dispatch(archiveNotif(hash));
+    dispatch(setStatus('data'));
+  };
+  export const ReadNotificationAsync = (hash) => async (dispatch) => {
+    dispatch(setStatus('loading'));
+    const result = await notifications.read(hash);
+    dispatch(readNotif(hash));
+    dispatch(setStatus('data'));
+    
+  };
+  
+
+ 
 
 export default userDataSlice.reducer;

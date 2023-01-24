@@ -1,14 +1,16 @@
 import Cookies from "js-cookie";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
+import Help from "./help";
 import "./i18n";
+import Notifications from "./notifications";
 import Overlay from "./overlay";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
@@ -17,6 +19,7 @@ import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";
 import "./main.css";
+import { FetchNotificationsAsync } from "./features/userData";
 
 function UnreadDot({ count }) {
   if (!count) {
@@ -34,9 +37,9 @@ function Sidebar({ sidebarMobile }) {
   const buttonData = [
     { label: "start", path: "/" },
     { label: "messages", path: "/chat" },
-    { label: "notifications", path: "" },
+    { label: "notifications", path: ""},//"/notifications" },
     { label: "my_profile", path: "/profile" },
-    { label: "help", path: "" },
+    { label: "help", path: "/help" },
     { label: "settings", path: "/settings" },
     {
       label: "log_out",
@@ -70,6 +73,19 @@ function Sidebar({ sidebarMobile }) {
 
   const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
 
+  const notifications = useSelector(state => state.userData.notifications);
+
+  const unread = {
+    notifications: notifications.filter(({ status }) => status === "unread"),
+    messages: [],
+  };
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(FetchNotificationsAsync({ pageNumber: 1, itemPerPage: 20 }));
+  }, []);
+  
+
   return (
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
@@ -86,7 +102,9 @@ function Sidebar({ sidebarMobile }) {
                 location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
               }`}
             >
-              {["messages", "notifications"].includes(label) && <UnreadDot count="3" />}
+              {["messages", "notifications"].includes(label) && (
+                <UnreadDot count={unread[label].length} />
+              )}
               <img alt={label} />
               {t(`nbs_${label}`)}
             </Link>
@@ -108,6 +126,7 @@ function Sidebar({ sidebarMobile }) {
       <div className="mobile-shade" onClick={() => setShowSidebarMobile(false)} />
     </>
   );
+  // else  return <h1>no notifications</h1>
 }
 
 function MobileNavBar({ setShowSidebarMobile }) {
@@ -123,7 +142,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
       </button>
       <div className="logo-with-text">
         <img className="logo-mobile" alt="" />
-        <span className="logo-text">{t(`headers.${key}`)}</span>
+        <span className="logo-text">{t(`headers::${key}`)}</span>
       </div>
       <button className="notification disabled" type="button">
         <img alt="show notifications" />
@@ -195,14 +214,15 @@ function NbtSelector({ selection, setSelection, use }) {
 
   const nbtTopics = {
     main: ["conversation_partners", "appointments", "community_calls"],
+    help: ["videos", "faqs", "contact"],
   };
   const topics = nbtTopics[use];
 
   const nbtDisabled = {
     main: ["appointments"],
+    help: ["videos", "faqs"]
   };
   const disabled = nbtDisabled[use];
-
   return (
     <div className="selector">
       {topics.map((topic) => (
@@ -215,11 +235,152 @@ function NbtSelector({ selection, setSelection, use }) {
             name="sidebar"
             onChange={(e) => setSelection(e.target.value)}
           />
-          <label htmlFor={`${topic}-radio`} className={disabled.includes(topic) ? "disabled" : ""}>
+                    {console.log('topic',disabled)}
+
+          <label htmlFor={`${topic}-radio`} className={disabled&&disabled.includes(topic) ? "disabled" : ""}>
             {t(`nbt_${topic}`)}
           </label>
         </span>
       ))}
+    </div>
+  );
+}
+
+function UnmatchModal({ user, setShow }) {
+  const { t } = useTranslation();
+  const [showContent, setShowContent] = useState("selector");
+
+  const { imgSrc, firstName, lastName, avatarCfg } = user;
+
+  const submitReport = (e) => {
+    console.log(e);
+    setShowContent("reported");
+  };
+  const submitUnmatch = () => {
+    setShowContent("unmatched");
+  };
+
+  const selector = (
+    <>
+      {avatarCfg ? (
+        <Avatar className="profile-avatar" {...avatarCfg} />
+      ) : (
+        <img alt="user to unmatch" className="profile-image" src={imgSrc} />
+      )}
+      <div className="name">
+        {firstName} {lastName}
+      </div>
+      <div className="buttons">
+        <button type="button" onClick={() => setShowContent("unmatch")}>
+          {t("ur_unmatch")}
+        </button>
+        <div className="btn-detail">{t("ur_btn_unmatch_text")}</div>
+        <button type="button" onClick={() => setShowContent("report")}>
+          {t("ur_report")}
+        </button>
+        <div className="btn-detail">{t("ur_btn_report_text")}</div>
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("btn_cancel")}
+        </button>
+      </div>
+    </>
+  );
+
+  // disables the submit report button until it meets the required length
+  // feature disabled for now, needs at least an indicator of required length
+  const [submitState, setSubmitState] = useState("");
+  const textRef = useRef();
+  const onKeyUp = () => {
+    // const validForm = textRef.current.value.length > 9;
+    // setSubmitState(validForm ? "active" : "disabled");
+  };
+
+  const report = (
+    <>
+      <label htmlFor="report">
+        {t("ur_report_label", { name: firstName })}
+        <textarea
+          ref={textRef}
+          onKeyUp={onKeyUp}
+          className={submitState === "waiting" ? "disabled" : ""}
+          type="textarea"
+          name="report"
+          inputMode="text"
+          maxLength="999"
+          placeholder={t("ur_report_placeholder")}
+        />
+      </label>
+      <div className="buttons">
+        <button type="button" onClick={submitReport} className={submitState}>
+          {t("ur_report")}
+        </button>
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("btn_cancel")}
+        </button>
+      </div>
+    </>
+  );
+
+  const unmatch = (
+    <>
+      <img className="unmatched" alt="" />
+      <div className="unconfirm-question">{t("ur_confirm_unmatch_line1", { name: firstName })}</div>
+      <div className="extra-text">{t("ur_confirm_unmatch_line2")}</div>
+      <div className="buttons">
+        <button type="button" onClick={submitUnmatch}>
+          {t("ur_unmatch")}
+        </button>
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("btn_cancel")}
+        </button>
+      </div>
+    </>
+  );
+
+  const unmatched = (
+    <>
+      <div className="main-text">{t("ur_unmatched", { name: firstName })}</div>
+      <div className="buttons">
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("close")}
+        </button>
+      </div>
+    </>
+  );
+
+  const reported = (
+    <>
+      <div>{t("ur_reported_line1", { name: firstName })}</div>
+      <div className="extra-text">{t("ur_reported_line2")}</div>
+      <div className="buttons">
+        <button type="button" className="cancel" onClick={() => setShow(false)}>
+          {t("close")}
+        </button>
+      </div>
+    </>
+  );
+
+  const content = {
+    selector,
+    unmatch,
+    report,
+    unmatched,
+    reported,
+  };
+
+  const header = {
+    selector: "ur_header",
+    unmatch: "ur_unmatch",
+    report: "ur_report",
+    unmatched: "ur_unmatch",
+    reported: "ur_report",
+  };
+
+  return (
+    <div className="modal-box unmatch-modal">
+      <button type="button" className="modal-close" onClick={() => setShow(false)} />
+      <h3>{t(header[showContent])}</h3>
+      {content[showContent]}
     </div>
   );
 }
@@ -255,6 +416,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
       })
       .catch((error) => console.error(error));
   }
+
   return (
     <div className="profiles">
       {users
@@ -361,8 +523,8 @@ function NotificationPanel() {
   const { t } = useTranslation();
   const users = useSelector((state) => state.userData.users);
   const activeUser = users.find(({ type }) => type === "self");
-  const { usesAvatar, avatarCfg, firstName, lastName, imgSrc, notifications } = activeUser;
-
+  const { usesAvatar, avatarCfg, firstName, lastName, imgSrc } = activeUser;
+  const notifications = useSelector((state) => state.userData.notifications);
   // don't show unless names are available; ie API call has returned
   if (!firstName) {
     return false;
@@ -391,7 +553,9 @@ function NotificationPanel() {
           </div>
         ))}
       </div>
-      <Link className="show-all">{t("nbr_show_all")}</Link>
+      <Link to="/notifications" className="show-all">
+        {t("nbr_show_all")}
+      </Link>
     </div>
   );
 }
@@ -550,7 +714,9 @@ function Main() {
           </div>
         )}
         {use === "chat" && initChatComponent}
+        {use === "notifications" && <Notifications />}
         {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} userPk={userPk} />}
+        {use === "help" && <Help selection={topSelection} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>
       <div className={callSetupPartner || showIncoming ? "overlay-shade" : "overlay-shade hidden"}>
