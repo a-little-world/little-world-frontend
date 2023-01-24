@@ -37,7 +37,7 @@ function Sidebar({ sidebarMobile }) {
   const buttonData = [
     { label: "start", path: "/" },
     { label: "messages", path: "/chat" },
-    { label: "notifications", path: "/notifications" },
+    { label: "notifications", path: ""},//"/notifications" },
     { label: "my_profile", path: "/profile" },
     { label: "help", path: "/help" },
     { label: "settings", path: "/settings" },
