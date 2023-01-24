@@ -414,6 +414,8 @@ function Profile({ setCallSetupPartner, userPk }) {
     ? usersData.find(({ type }) => type === "self")
     : usersData.find((usr) => usr.userPk === userPk);
 
+  console.log("USER", user);
+
   if (!user) {
     return null; // don't render unless we have the necessary data
   }
@@ -435,7 +437,7 @@ function Profile({ setCallSetupPartner, userPk }) {
       <div className="content-area-main">
         <ProfileDetail isSelf={isSelf} profile={user.extraInfo} />
         <ProfileBox
-          user={user}
+          {...user}
           description="" /* don't show description on profile page as it's already shown in full */
           isSelf={isSelf}
           setCallSetupPartner={setCallSetupPartner}
