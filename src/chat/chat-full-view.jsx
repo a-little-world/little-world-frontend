@@ -4,7 +4,7 @@ import { Button, Input, MessageList, Navbar, SideBar } from "react-chat-elements
 import { withTranslation } from "react-i18next";
 import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
-
+import AppointmentsLayout from './../layout/layout'
 import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
 import Link from "../path-prepend";
 import {
@@ -127,6 +127,7 @@ class Chat extends Component {
         }/api/chat/ws`
       ) /* without the 'https://' */,
       userWasSelected: !!this.props.userPk,
+      open:false
     };
     // some js magic
     this.performSendingMessage = this.performSendingMessage.bind(this);
@@ -563,7 +564,8 @@ class Chat extends Component {
       </div>
     );
   };
-
+setOpen = ()=>this.setState({open:true})
+setClose = ()=>this.setState({open:false})
   render() {
     const { t } = this.props;
     const userPk = (this.state.selectedDialog || {}).alt;
@@ -590,7 +592,13 @@ class Chat extends Component {
 
     return (
       <>
-        <div className="header">
+      {
+      this.state.open&&<div class="overlay-shade">
+        <div class="modal-box " style={{height:"auto",minWidth:"50%"}}>
+        <AppointmentsLayout setClose={this.setClose} id={userPk} />
+              </div>
+             </div>}
+         <div className="header">
           <span className="text">{t("chat_header")}</span>
         </div>
         <div className={this.props.showChat ? "container" : "container disable-chat"}>
@@ -700,7 +708,7 @@ class Chat extends Component {
                   <button type="button" className="free-appointments disabled">
                     <span className="text">{t("chat_show_free_appointments")}</span>
                   </button>
-                  <button type="button" className="suggest-appointment disabled">
+                  <button type="button" className="suggest-appointment" onClick={()=>this.setOpen(true)}>
                     <span className="text">{t("chat_suggest_appointment")}</span>
                   </button>
                   <button
