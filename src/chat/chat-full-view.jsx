@@ -95,6 +95,7 @@ class Chat extends Component {
     super(props);
     // Refs
     this.textInput = null;
+
     this.clearTextInput = () => {
       if (this.textInput) {
         this.textInput.value = "";
@@ -158,7 +159,8 @@ class Chat extends Component {
   }
 
   componentDidMount() {
-    this.textInput = document.getElementById("textInput");
+    this.textInput = document.getElementById("test-input").firstChild.firstChild;
+    console.log("textInput", this.textInput);
     fetchMessages().then((r) => {
       if (r.tag === 0) {
         console.log("Fetched messages:");
@@ -530,6 +532,7 @@ class Chat extends Component {
                 this.state.messageList
               )}
             />
+            <div id="test-input">
             <Input
               placeholder={t("chat_input_text")}
               defaultValue=""
@@ -558,7 +561,7 @@ class Chat extends Component {
                   onClick={() => this.performSendingMessage()}
                 />
               }
-            />
+            /></div>
           </>
         )}
       </div>
@@ -595,7 +598,7 @@ setClose = ()=>this.setState({open:false})
       {
       this.state.open&&<div class="overlay-shade">
         <div class="modal-box " style={{height:"auto",minWidth:"50%"}}>
-        <AppointmentsLayout setClose={this.setClose} id={userPk} />
+        <AppointmentsLayout setClose={this.setClose} id={userPk}/>
               </div>
              </div>}
          <div className="header">

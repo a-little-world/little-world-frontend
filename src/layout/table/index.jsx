@@ -1,5 +1,5 @@
 import moment from "moment/moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "./style.module.css";
 
 function findNextDate(weekday, time) {
@@ -48,29 +48,41 @@ const getDayNumber = (day) => {
   }
 };
 
-const Table = ({ view, data }) => {
+const Table = ({ view, data, setDate, header, inSelect, setSelect }) => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const dates = {}
+  const times = {}
 
   const handleSelect = (index) => {
+    setSelect();
+    setDate(dates[index] + " um " + times[index]);
     setSelectedIndex(selectedIndex === index ? -1 : index);
   };
+
+  useEffect(() => {
+    if(!inSelect)
+      setSelectedIndex(-1);
+  }, [inSelect])
 
   if (view) {
     return (
       <div className={style["container"]}>
-        <p>Hier haben Hildegard und du meist beide Zeit:</p>
+        <p>{header}</p>
         <table>
-          {data.map((row, index) => (
-            <tr
+          {data.map((row, index) => {
+            dates[index] = findNextDate(getDayNumber(row[0]), Number(row[1][0].split("_")[0]) / 60)
+            times[index] = Number(row[1][0].split("_")[0])%24+":00" 
+            console.log("DDD", dates[index])
+            return (<tr
               className={selectedIndex === index ? style["selected"] : ""}
               onClick={() => handleSelect(index)}
             >
               <td>
                 {row[0] +
                   ", " +
-                  findNextDate(getDayNumber(row[0]), Number(row[1][0].split("_")[0]) / 60)}
+                  dates[index]}
               </td>
-              <td>{Number(row[1][0].split("_")[0])%24+":00" }</td>
+              <td>{times[index]}</td>
               <td style={{ color: "#F39325", display: "flex", justifyContent: "space-between" }}>
                 Auswahl  
                 
@@ -81,7 +93,7 @@ const Table = ({ view, data }) => {
                 
               </td>
             </tr>
-          ))}
+          )})}
         </table>
       </div>
     );

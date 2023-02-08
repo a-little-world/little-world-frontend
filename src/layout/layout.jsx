@@ -3,6 +3,8 @@ import _ from 'lodash'
 import style from "./style.module.css";
 import Table from "./table";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+
 function findOverlap(array1, array2) {
   let overlap = [];
 
@@ -33,9 +35,13 @@ function findDifference(array1, array2) {
 }
 
 const AppointmentsLayout = ({setClose,id} ) => {
+  const { t } = useTranslation();
+  const [dateSelection, setDateSelection] = React.useState("");
+  const [tableSelection, setTableSelection] = React.useState("first");
   const user = useSelector((state) => state.userData.raw);
+  console.log("Input", document.getElementById("test-input").firstChild.firstChild);
   let selectedUser = user.matches.find(el=>el.user.hash===id)
-    console.log("🚀 ~ file: layout.jsx:66 ~ AppointmentsLayout ~ selectedUser", selectedUser)
+    //console.log("🚀 ~ file: layout.jsx:66 ~ AppointmentsLayout ~ selectedUser", selectedUser)
     let data =selectedUser&& findOverlap(Object.entries(user.profile.availability),Object.entries(selectedUser.profile.availability))
    let data1 = selectedUser&&findDifference(Object.entries(user.profile.availability),Object.entries(selectedUser.profile.availability))
  
@@ -48,7 +54,7 @@ const AppointmentsLayout = ({setClose,id} ) => {
       </div>
       <div class={`${style["col"]} ${style["sub-title"]}`}>
       
-        <label>Wahle deine Termine unten aus und sende deine Vorshlage </label>
+        <label>{t('chat_suggest_appointment_description')}</label>
       </div>
       <div class={style["col"]}>
         <div class={style["container"]}>
@@ -58,11 +64,23 @@ const AppointmentsLayout = ({setClose,id} ) => {
           <label>{selectedUser&&selectedUser.profile.first_name} einen Termin vorschlagen</label>
         </div>
       </div>
-      <div class={style["col"]}><Table data={data} view={true}/></div>
-      <div class={style["col"]}><Table data={data1} view={true}/></div>
+      <div class={style["col"]}><Table data={data} inSelect={tableSelection==="first"} setSelect={() => {
+        setTableSelection("first");
+      }} view={true} setDate={setDateSelection} header={t('chat_appointment_message_overlap_header', {userName: selectedUser.profile.first_name })}/></div>
+      <div class={style["col"]}><Table data={data1} inSelect={tableSelection==="second"} setSelect={() => {
+        setTableSelection("second");
+      }} view={true} setDate={setDateSelection} header={t('chat_appointment_message_non_overlap_header', {userName: selectedUser.profile.first_name })}/></div>
       <div class={style["btn-container"]}>
-        <button className={style["send-button"]}>Abbrechen</button>
-        <button className={style["cancle-button"]}>Vorschlag senden</button>
+        <button className={style["send-button"]} onClick={() => {
+          setClose(true);
+        }} >Abbrechen</button>
+        <button className={style["cancle-button"]} onClick={() => {
+          if(dateSelection!==""){
+            const value = t( tableSelection === 'first' ? 'chat_appointment_message_overlap' : 'chat_appointment_message_non_overlap', {userName: selectedUser.profile.first_name, date: dateSelection})
+            document.getElementById("test-input").firstChild.firstChild.value = value;
+            setClose(true);
+          }
+        }}>{t('chat_auggest_appointment_message')}</button>
       </div>
     </div>
   );
