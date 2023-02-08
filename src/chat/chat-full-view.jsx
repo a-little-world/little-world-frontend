@@ -4,7 +4,7 @@ import { Button, Input, MessageList, Navbar, SideBar } from "react-chat-elements
 import { withTranslation } from "react-i18next";
 import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
-
+import AppointmentsLayout from './../layout/layout'
 import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
 import Link from "../path-prepend";
 import {
@@ -95,6 +95,7 @@ class Chat extends Component {
     super(props);
     // Refs
     this.textInput = null;
+
     this.clearTextInput = () => {
       if (this.textInput) {
         this.textInput.value = "";
@@ -127,6 +128,7 @@ class Chat extends Component {
         }/api/chat/ws`
       ) /* without the 'https://' */,
       userWasSelected: !!this.props.userPk,
+      open:false
     };
     // some js magic
     this.performSendingMessage = this.performSendingMessage.bind(this);
@@ -157,7 +159,8 @@ class Chat extends Component {
   }
 
   componentDidMount() {
-    this.textInput = document.getElementById("textInput");
+    this.textInput = document.getElementById("test-input").firstChild.firstChild;
+    console.log("textInput", this.textInput);
     fetchMessages().then((r) => {
       if (r.tag === 0) {
         console.log("Fetched messages:");
@@ -529,6 +532,7 @@ class Chat extends Component {
                 this.state.messageList
               )}
             />
+            <div id="test-input">
             <Input
               placeholder={t("chat_input_text")}
               defaultValue=""
@@ -557,13 +561,14 @@ class Chat extends Component {
                   onClick={() => this.performSendingMessage()}
                 />
               }
-            />
+            /></div>
           </>
         )}
       </div>
     );
   };
-
+setOpen = ()=>this.setState({open:true})
+setClose = ()=>this.setState({open:false})
   render() {
     const { t } = this.props;
     const userPk = (this.state.selectedDialog || {}).alt;
@@ -590,7 +595,13 @@ class Chat extends Component {
 
     return (
       <>
-        <div className="header">
+      {
+      this.state.open&&<div class="overlay-shade">
+        <div class="modal-box " style={{height:"auto",minWidth:"50%"}}>
+        <AppointmentsLayout setClose={this.setClose} id={userPk}/>
+              </div>
+             </div>}
+         <div className="header">
           <span className="text">{t("chat_header")}</span>
         </div>
         <div className={this.props.showChat ? "container" : "container disable-chat"}>
@@ -700,7 +711,7 @@ class Chat extends Component {
                   <button type="button" className="free-appointments disabled">
                     <span className="text">{t("chat_show_free_appointments")}</span>
                   </button>
-                  <button type="button" className="suggest-appointment disabled">
+                  <button type="button" className="suggest-appointment" onClick={()=>this.setOpen(true)}>
                     <span className="text">{t("chat_suggest_appointment")}</span>
                   </button>
                   <button
