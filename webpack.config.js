@@ -22,7 +22,7 @@ const config = function (env) {
     },
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, ".src/"),
+        "@": path.resolve(__dirname, "src/"),
         // '@django': path.resolve(__dirname, '../back/static/'),
       },
     },

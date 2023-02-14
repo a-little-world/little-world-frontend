@@ -6,7 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import AppointmentsLayout from './../layout/layout'
 import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
-import Link from "../path-prepend";
+import Link from "../components/Link/path-prepend";
 import {
   createNewDialogModelFromIncomingMessageBox,
   fetchDialogs,

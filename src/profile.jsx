@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "./ENVIRONMENT";
 import { updateProfile } from "./features/userData";
 import "./i18n";
-import Link from "./path-prepend";
+import Link from "./components/Link/path-prepend";
 
 import "./profile.css";
 

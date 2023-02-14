@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 
 import "./i18n";
-import Link from "./path-prepend";
+import Link from "./components/Link/path-prepend";
 import { getAudioTrack, getVideoTrack, toggleLocalTracks } from "./twilio-helper";
 
 import "./call-setup.css";

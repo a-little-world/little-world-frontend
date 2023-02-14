@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
-import Link from "./path-prepend";
+import Link from "./components/Link/path-prepend";
 import {
   getAudioTrack,
   getVideoTrack,
