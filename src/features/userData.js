@@ -1,5 +1,6 @@
 import { createSlice, current } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
+
 import { notifications } from "../services/notifications";
 
 const initialState = {
@@ -8,10 +9,8 @@ const initialState = {
   settings: {},
   notifications: [],
   interestsChoices: [],
-  status: 'no-thing',
+  status: "no-thing",
 };
-
- 
 
 export const userDataSlice = createSlice({
   name: "userData",
@@ -115,11 +114,11 @@ export const userDataSlice = createSlice({
       };
     },
     setStatus: (state, { payload }) => {
-      console.log('payload',payload)
+      console.log("payload", payload);
       state.status = payload;
     },
-    fetchNotifications:(state,{payload})=>{
-      state.notifications = payload
+    fetchNotifications: (state, { payload }) => {
+      state.notifications = payload;
     },
     updateSettings: (state, action) => {
       Object.entries(action.payload).forEach(([item, value]) => {
@@ -161,39 +160,49 @@ export const userDataSlice = createSlice({
       }
     },
     readNotif: (state, action) => {
-      state.notifications.map((el) => el.hash === action.payload?el.state="read":el.state)
-     },
+      state.notifications.map((el) =>
+        el.hash === action.payload ? (el.state = "read") : el.state
+      );
+    },
     archiveNotif: (state, action) => {
-      state.notifications.map((el) => el.hash === action.payload?el.state="archive":el.state)
+      state.notifications.map((el) =>
+        el.hash === action.payload ? (el.state = "archive") : el.state
+      );
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { initialise, updateSettings, updateProfile, readAll, readNotif, archiveNotif,setStatus,fetchNotifications } =
-  userDataSlice.actions;
+export const {
+  initialise,
+  updateSettings,
+  updateProfile,
+  readAll,
+  readNotif,
+  archiveNotif,
+  setStatus,
+  fetchNotifications,
+} = userDataSlice.actions;
 
-  export const FetchNotificationsAsync = ({pageNumber:page,itemPerPage}) => async (dispatch) => {
-    dispatch(setStatus('loading'));
-    const result = await notifications.getAll({pageNumber:page,itemPerPage});
-    dispatch(setStatus('data'));
+export const FetchNotificationsAsync =
+  ({ pageNumber: page, itemPerPage }) =>
+  async (dispatch) => {
+    dispatch(setStatus("loading"));
+    const result = await notifications.getAll({ pageNumber: page, itemPerPage });
+    dispatch(setStatus("data"));
     dispatch(fetchNotifications(result));
   };
-  export const ArchiveNotificationAsync = (hash) => async (dispatch) => {
-    dispatch(setStatus('loading'));
-    const result = await notifications.archive(hash);
-    dispatch(archiveNotif(hash));
-    dispatch(setStatus('data'));
-  };
-  export const ReadNotificationAsync = (hash) => async (dispatch) => {
-    dispatch(setStatus('loading'));
-    const result = await notifications.read(hash);
-    dispatch(readNotif(hash));
-    dispatch(setStatus('data'));
-    
-  };
-  
-
- 
+export const ArchiveNotificationAsync = (hash) => async (dispatch) => {
+  dispatch(setStatus("loading"));
+  const result = await notifications.archive(hash);
+  dispatch(archiveNotif(hash));
+  dispatch(setStatus("data"));
+};
+export const ReadNotificationAsync = (hash) => async (dispatch) => {
+  dispatch(setStatus("loading"));
+  const result = await notifications.read(hash);
+  dispatch(readNotif(hash));
+  dispatch(setStatus("data"));
+};
 
 export default userDataSlice.reducer;

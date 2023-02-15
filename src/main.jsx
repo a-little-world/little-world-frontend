@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
+import { FetchNotificationsAsync } from "./features/userData";
 import Help from "./help";
 import "./i18n";
 import Notifications from "./notifications";
@@ -19,7 +20,6 @@ import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";
 import "./main.css";
-import { FetchNotificationsAsync } from "./features/userData";
 
 function UnreadDot({ count }) {
   if (!count) {
@@ -37,7 +37,7 @@ function Sidebar({ sidebarMobile }) {
   const buttonData = [
     { label: "start", path: "/" },
     { label: "messages", path: "/chat" },
-    { label: "notifications", path: ""},//"/notifications" },
+    { label: "notifications", path: "" }, // "/notifications" },
     { label: "my_profile", path: "/profile" },
     { label: "help", path: "/help" },
     { label: "settings", path: "/settings" },
@@ -73,18 +73,17 @@ function Sidebar({ sidebarMobile }) {
 
   const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
 
-  const notifications = useSelector(state => state.userData.notifications);
+  const notifications = useSelector((state) => state.userData.notifications);
 
   const unread = {
     notifications: notifications.filter(({ status }) => status === "unread"),
     messages: [],
   };
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     dispatch(FetchNotificationsAsync({ pageNumber: 1, itemPerPage: 20 }));
   }, []);
-  
 
   return (
     <>
@@ -220,7 +219,7 @@ function NbtSelector({ selection, setSelection, use }) {
 
   const nbtDisabled = {
     main: ["appointments"],
-    help: ["videos", "faqs"]
+    help: ["videos", "faqs"],
   };
   const disabled = nbtDisabled[use];
   return (
@@ -235,9 +234,11 @@ function NbtSelector({ selection, setSelection, use }) {
             name="sidebar"
             onChange={(e) => setSelection(e.target.value)}
           />
-                    {console.log('topic',disabled)}
-
-          <label htmlFor={`${topic}-radio`} className={disabled&&disabled.includes(topic) ? "disabled" : ""}>
+          {console.log("topic", disabled)}
+          <label
+            htmlFor={`${topic}-radio`}
+            className={disabled && disabled.includes(topic) ? "disabled" : ""}
+          >
             {t(`nbt_${topic}`)}
           </label>
         </span>
