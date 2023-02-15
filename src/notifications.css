@@ -82,14 +82,9 @@
   color: #a6a6a6;
   margin-top: auto;
 }
+
 .load-more {
   padding: 1rem;
   background: linear-gradient(50.19deg, #36a9e0 2.84%, #0367b2 106.82%);
   color: #fff;
 }
-.disabled{
-pointer-events: none;
-opacity: 0.5;
-cursor: not-allowed;
-}
- 
