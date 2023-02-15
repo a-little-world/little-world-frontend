@@ -771,7 +771,7 @@ function Main() {
           />
         )}
       </div>
-      {!(use === "chat") && <div className="disable-chat">{initChatComponent}</div>}
+      {false && !(use === "chat") && <div className="disable-chat">{initChatComponent}</div>}
     </div>
   );
 }
