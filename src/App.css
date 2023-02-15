@@ -107,6 +107,7 @@ button {
 
 .main-page .header .text {
   margin-left: 12px;
+  margin-right: auto;
 }
 
 /* parent items of above elements, setting consistent gap between */
