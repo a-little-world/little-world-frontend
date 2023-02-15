@@ -234,7 +234,6 @@ function NbtSelector({ selection, setSelection, use }) {
             name="sidebar"
             onChange={(e) => setSelection(e.target.value)}
           />
-          {console.log("topic", disabled)}
           <label
             htmlFor={`${topic}-radio`}
             className={disabled && disabled.includes(topic) ? "disabled" : ""}
