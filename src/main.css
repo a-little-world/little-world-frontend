@@ -353,6 +353,12 @@ button.match-status {
     color: #23262f;
     white-space: nowrap;
   }
+
+  .mobile-header .notification.disabled {
+    display: unset !important;
+    visibility: hidden;
+  }
+
   .mobile-header .notification img {
     content: url("./images/button-bell.svg");
   }
