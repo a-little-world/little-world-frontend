@@ -446,6 +446,9 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
           <a className="change-criteria" href="/form">
             {t("cp_modify_search")}
           </a>
+          <button className="cancel-search" type="button">
+            {t("cp_cancel_search")}
+          </button>
         </div>
       )}
     </div>

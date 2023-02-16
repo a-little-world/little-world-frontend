@@ -57,6 +57,7 @@
   "matching_state_found_confirmed_trans": "Find another partner",
   "cp_searching_text": "We are currently looking for a new conversation partner for you",
   "cp_modify_search": "Change search criteria",
+  "cp_cancel_search": "Cancel search",
   "chat_header": "Messages",
   "chat_search": "Search",
   "chat_show_free_appointments": "Show free appointments",

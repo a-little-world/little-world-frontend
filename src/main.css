@@ -275,6 +275,14 @@ button.match-status {
   color: #fcfcfd;
 }
 
+.match-status.searching .cancel-search {
+  padding: 10px;
+  color: rgba(54, 169, 224, 1);
+  margin-top: -15px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
 .notification-panel {
   margin-left: auto;
   margin-bottom: auto;
