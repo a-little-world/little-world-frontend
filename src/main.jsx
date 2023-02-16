@@ -385,7 +385,7 @@ function UnmatchModal({ user, setShow }) {
   );
 }
 
-function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
+function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
   const users = useSelector((state) => state.userData.users);
   const currentMatchingState = useSelector((state) => state.userData.self.stateInfo.matchingState);
@@ -446,11 +446,36 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
           <a className="change-criteria" href="/form">
             {t("cp_modify_search")}
           </a>
-          <button className="cancel-search" type="button">
+          <button className="cancel-search" type="button" onClick={() => setShowCancel(true)}>
             {t("cp_cancel_search")}
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function CancelMatching({ setShowCancel }) {
+  const { t } = useTranslation();
+  const undoMatching = () => {
+    console.log("do da ting");
+    setShowCancel(false);
+  };
+
+  return (
+    <div className="modal-box">
+      <button type="button" className="modal-close" onClick={() => setShowCancel(false)} />
+      <div className="content">
+        <div className="message-text">{t("cp_cancel_search_confirm")}</div>
+        <div className="buttons">
+          <button type="button" className="confirm" onClick={undoMatching}>
+            {t("cp_cancel_search")}
+          </button>
+          <button type="button" className="cancel" onClick={() => setShowCancel(false)}>
+            {t("cp_cancel_search_reject")}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -682,6 +707,8 @@ function Main() {
     />
   );
 
+  const [showCancelMatching, setShowCancelMatching] = useState(false);
+
   const [showIncoming, setShowIncoming] = useState(false);
   const [incomingUserPk, setIncomingUserPk] = useState(null);
 
@@ -709,6 +736,7 @@ function Main() {
                 <PartnerProfiles
                   setCallSetupPartner={setCallSetupPartner}
                   matchesOnlineStates={matchesOnlineStates}
+                  setShowCancel={setShowCancelMatching}
                 />
                 <NotificationPanel />
               </>
@@ -722,7 +750,13 @@ function Main() {
         {use === "help" && <Help selection={topSelection} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>
-      <div className={callSetupPartner || showIncoming ? "overlay-shade" : "overlay-shade hidden"}>
+      <div
+        className={
+          callSetupPartner || showIncoming || showCancelMatching
+            ? "overlay-shade"
+            : "overlay-shade hidden"
+        }
+      >
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
         )}
@@ -734,6 +768,7 @@ function Main() {
             setCallSetupPartner={setCallSetupPartner}
           />
         )}
+        {showCancelMatching && <CancelMatching setShowCancel={setShowCancelMatching} />}
       </div>
       <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
         {overlayState.visible && (
