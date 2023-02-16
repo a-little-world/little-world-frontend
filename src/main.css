@@ -130,7 +130,7 @@
   display: grid;
   flex-grow: 1;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  grid-auto-rows: 1fr;
+  grid-auto-rows: max-content;
   gap: 20px;
   height: fit-content;
 }
