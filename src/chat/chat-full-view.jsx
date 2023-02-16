@@ -4,8 +4,9 @@ import { Button, Input, MessageList, Navbar, SideBar } from "react-chat-elements
 import { withTranslation } from "react-i18next";
 import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
-import AppointmentsLayout from './../layout/layout'
+
 import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
+import AppointmentsLayout from "../layout/layout";
 import Link from "../path-prepend";
 import {
   createNewDialogModelFromIncomingMessageBox,
@@ -128,7 +129,7 @@ class Chat extends Component {
         }/api/chat/ws`
       ) /* without the 'https://' */,
       userWasSelected: !!this.props.userPk,
-      open:false
+      open: false,
     };
     // some js magic
     this.performSendingMessage = this.performSendingMessage.bind(this);
@@ -533,42 +534,46 @@ class Chat extends Component {
               )}
             />
             <div id="test-input">
-            <Input
-              placeholder={t("chat_input_text")}
-              defaultValue=""
-              id="textInput"
-              multiline
-              onKeyPress={(e) => {
-                if (e.charCode !== 13) {
-                  this.isTyping();
-                }
-                if (e.shiftKey && e.charCode === 13) {
-                  return true;
-                }
-                if (e.charCode === 13) {
-                  if (this.state.socket.readyState === 1) {
-                    e.preventDefault();
-                    this.performSendingMessage();
+              <Input
+                placeholder={t("chat_input_text")}
+                defaultValue=""
+                id="textInput"
+                multiline
+                onKeyPress={(e) => {
+                  if (e.charCode !== 13) {
+                    this.isTyping();
                   }
-                  return false;
+                  if (e.shiftKey && e.charCode === 13) {
+                    return true;
+                  }
+                  if (e.charCode === 13) {
+                    if (this.state.socket.readyState === 1) {
+                      e.preventDefault();
+                      this.performSendingMessage();
+                    }
+                    return false;
+                  }
+                }}
+                onChange={handleTextUpdate}
+                rightButtons={
+                  <Button
+                    text={t("chat_send")}
+                    disabled={this.state.socket.readyState !== 1}
+                    onClick={() => this.performSendingMessage()}
+                  />
                 }
-              }}
-              onChange={handleTextUpdate}
-              rightButtons={
-                <Button
-                  text={t("chat_send")}
-                  disabled={this.state.socket.readyState !== 1}
-                  onClick={() => this.performSendingMessage()}
-                />
-              }
-            /></div>
+              />
+            </div>
           </>
         )}
       </div>
     );
   };
-setOpen = ()=>this.setState({open:true})
-setClose = ()=>this.setState({open:false})
+
+  setOpen = () => this.setState({ open: true });
+
+  setClose = () => this.setState({ open: false });
+
   render() {
     const { t } = this.props;
     const userPk = (this.state.selectedDialog || {}).alt;
@@ -595,13 +600,14 @@ setClose = ()=>this.setState({open:false})
 
     return (
       <>
-      {
-      this.state.open&&<div class="overlay-shade">
-        <div class="modal-box " style={{height:"auto",minWidth:"50%"}}>
-        <AppointmentsLayout setClose={this.setClose} id={userPk}/>
-              </div>
-             </div>}
-         <div className="header">
+        {this.state.open && (
+          <div className="overlay-shade">
+            <div className="modal-box " style={{ height: "auto", minWidth: "50%" }}>
+              <AppointmentsLayout setClose={this.setClose} id={userPk} />
+            </div>
+          </div>
+        )}
+        <div className="header">
           <span className="text">{t("chat_header")}</span>
         </div>
         <div className={this.props.showChat ? "container" : "container disable-chat"}>
@@ -711,7 +717,11 @@ setClose = ()=>this.setState({open:false})
                   <button type="button" className="free-appointments disabled">
                     <span className="text">{t("chat_show_free_appointments")}</span>
                   </button>
-                  <button type="button" className="suggest-appointment" onClick={()=>this.setOpen(true)}>
+                  <button
+                    type="button"
+                    className="suggest-appointment"
+                    onClick={() => this.setOpen(true)}
+                  >
                     <span className="text">{t("chat_suggest_appointment")}</span>
                   </button>
                   <button
