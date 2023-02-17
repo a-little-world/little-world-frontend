@@ -464,14 +464,14 @@ const changeSearchState = (updatedState) => {
   });
 };
 
-function CancelMatching({ setShowCancel }) {
+function CancelSearching({ setShowCancel }) {
   const { t } = useTranslation();
-  const undoMatching = () => {
+  const undoSearching = () => {
     changeSearchState("idle").then(({ status, statusText }) => {
       if (status === 200) {
         setShowCancel(false);
       } else {
-        console.error(`Cancelling matching failed with error ${status}: ${statusText}`);
+        console.error(`Cancelling match searching failed with error ${status}: ${statusText}`);
       }
     });
   };
@@ -482,7 +482,7 @@ function CancelMatching({ setShowCancel }) {
       <div className="content">
         <div className="message-text">{t("cp_cancel_search_confirm")}</div>
         <div className="buttons">
-          <button type="button" className="confirm" onClick={undoMatching}>
+          <button type="button" className="confirm" onClick={undoSearching}>
             {t("cp_cancel_search")}
           </button>
           <button type="button" className="cancel" onClick={() => setShowCancel(false)}>
@@ -721,7 +721,7 @@ function Main() {
     />
   );
 
-  const [showCancelMatching, setShowCancelMatching] = useState(false);
+  const [showCancelSearching, setShowCancelSearching] = useState(false);
 
   const [showIncoming, setShowIncoming] = useState(false);
   const [incomingUserPk, setIncomingUserPk] = useState(null);
@@ -750,7 +750,7 @@ function Main() {
                 <PartnerProfiles
                   setCallSetupPartner={setCallSetupPartner}
                   matchesOnlineStates={matchesOnlineStates}
-                  setShowCancel={setShowCancelMatching}
+                  setShowCancel={setShowCancelSearching}
                 />
                 <NotificationPanel />
               </>
@@ -766,7 +766,7 @@ function Main() {
       </div>
       <div
         className={
-          callSetupPartner || showIncoming || showCancelMatching
+          callSetupPartner || showIncoming || showCancelSearching
             ? "overlay-shade"
             : "overlay-shade hidden"
         }
@@ -782,7 +782,7 @@ function Main() {
             setCallSetupPartner={setCallSetupPartner}
           />
         )}
-        {showCancelMatching && <CancelMatching setShowCancel={setShowCancelMatching} />}
+        {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
       </div>
       <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
         {overlayState.visible && (
