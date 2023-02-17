@@ -455,11 +455,25 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
   );
 }
 
+const changeSearchState = (updatedState) => {
+  return fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+  });
+};
+
 function CancelMatching({ setShowCancel }) {
   const { t } = useTranslation();
   const undoMatching = () => {
-    console.log("do da ting");
-    setShowCancel(false);
+    changeSearchState("idle").then(({ status, statusText }) => {
+      if (status === 200) {
+        setShowCancel(false);
+      } else {
+        console.error(`Cancelling matching failed with error ${status}: ${statusText}`);
+      }
+    });
   };
 
   return (
