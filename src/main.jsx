@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
-import { FetchNotificationsAsync } from "./features/userData";
+import { FetchNotificationsAsync, updateSearching } from "./features/userData";
 import Help from "./help";
 import "./i18n";
 import Notifications from "./notifications";
@@ -387,10 +387,9 @@ function UnmatchModal({ user, setShow }) {
 
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const users = useSelector((state) => state.userData.users);
-  const currentMatchingState = useSelector((state) => state.userData.self.stateInfo.matchingState);
-  console.log("Current matching state", currentMatchingState);
-  const [matchState, setMatchState] = useState(currentMatchingState);
+  const matchState = useSelector((state) => state.userData.self.stateInfo.matchingState);
 
   function updateUserMatchingState() {
     const updatedState = "searching";
@@ -410,8 +409,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
       .then((response) => {
         if (response) {
           // If this request works, we can safely update our state to 'searching'
-          // TODO: we need to also update the redux state!
-          setMatchState(updatedState);
+          dispatch(updateSearching(updatedState));
         }
       })
       .catch((error) => console.error(error));
@@ -466,9 +464,12 @@ const changeSearchState = (updatedState) => {
 
 function CancelSearching({ setShowCancel }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
   const undoSearching = () => {
     changeSearchState("idle").then(({ status, statusText }) => {
       if (status === 200) {
+        dispatch(updateSearching("idle"));
         setShowCancel(false);
       } else {
         console.error(`Cancelling match searching failed with error ${status}: ${statusText}`);
