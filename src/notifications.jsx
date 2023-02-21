@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
-import { archiveNotif, ArchiveNotificationAsync, FetchNotificationsAsync, readNotif, ReadNotificationAsync } from "./features/userData";
+import {
+  archiveNotif,
+  ArchiveNotificationAsync,
+  FetchNotificationsAsync,
+  readNotif,
+  ReadNotificationAsync,
+} from "./features/userData";
 
 import "./notifications.css";
 
 function timeToStr(seconds, t) {
-   if (seconds < 60) {
+  if (seconds < 60) {
     return t("notif_time_ago::now");
   }
   const minutes = Math.floor(seconds / 60);
@@ -33,22 +39,22 @@ function timeToStr(seconds, t) {
 const secondsAgo = (start) => {
   const end = Math.floor(Date.now() / 1000); // trim to seconds
   const seconds = end - start;
-   return seconds;
+  return seconds;
 };
 
 function Notifications() {
   const { t } = useTranslation();
   const [visibleNotifType, setVisibleNotifType] = useState("all");
-  
+
   const dispatch = useDispatch();
-  const [notifications,setNotifications] = useState([])
-  const data = useSelector((state) => state.userData.notifications)
-  const status = useSelector((state) => state.userData.status)
-  console.log("🚀 ~ file: notifications.jsx:46 ~ Notifications ~ data",status, data)
+  const [notifications, setNotifications] = useState([]);
+  const data = useSelector((state) => state.userData.notifications);
+  const status = useSelector((state) => state.userData.status);
+  console.log("🚀 ~ file: notifications.jsx:46 ~ Notifications ~ data", status, data);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const groupedNotifs = {
-    day:[],
+    day: [],
     week: [],
     older: [],
   };
@@ -70,24 +76,22 @@ function Notifications() {
     }
   });
 
-
- const loadMore = (page)=> {
-     dispatch(FetchNotificationsAsync({ pageNumber: page, itemPerPage: 20 }));
+  const loadMore = (page) => {
+    dispatch(FetchNotificationsAsync({ pageNumber: page, itemPerPage: 20 }));
     setNotifications([...notifications, ...data]);
-    setPage(page)
-    if (page * 10 > data.length)
-      setHasMore(false);
-  }
- 
-useEffect(()=>{  
-  status==="data"&&setNotifications(data)
-},[JSON.stringify(data),status,dispatch])
+    setPage(page);
+    if (page * 10 > data.length) setHasMore(false);
+  };
+
+  useEffect(() => {
+    status === "data" && setNotifications(data);
+  }, [JSON.stringify(data), status, dispatch]);
   const archive = (id) => {
     dispatch(ArchiveNotificationAsync(id));
   };
   const markRead = (id) => {
     dispatch(ReadNotificationAsync(id));
-   };
+  };
   return (
     <>
       <div className="header">
@@ -128,7 +132,7 @@ useEffect(()=>{
             <>
               <div className="notification-age">{name}</div>
               {groupedNotifs[name].map(({ hash, state, type, title, dateString, created_at }) => {
-                 const extraProps =
+                const extraProps =
                   state === "unread"
                     ? {
                         onClick: () => markRead(hash),
@@ -148,22 +152,28 @@ useEffect(()=>{
                     <div className="status">
                       {state === "unread" && <div className="unread-indicator" />}
                       {state !== "archive" && (
-                        <button type="button" className="archive-item" onClick={() => archive(hash)}>
+                        <button
+                          type="button"
+                          className="archive-item"
+                          onClick={() => archive(hash)}
+                        >
                           <img alt="archive item" />
                         </button>
                       )}
-                      <div className="time-ago">{timeToStr(secondsAgo(Date.parse(created_at)), t)}</div>
+                      <div className="time-ago">
+                        {timeToStr(secondsAgo(Date.parse(created_at)), t)}
+                      </div>
                     </div>
-                  
                   </div>
                 );
               })}
             </>
           );
         })}
-          {visibleNotifs.length !== 0&&  (
-                      <button className={`load-more ${!hasMore?'disabled':""} ` }   onClick={() => loadMore(page + 1)}>Load More</button>
-                    )}
+        {visibleNotifs.length !== 0&&  (
+          <button className={`load-more ${!hasMore?"disabled":""} ` }   onClick={() => loadMore(page + 1)}>Load More</button>
+          </button>
+        )}
         {visibleNotifs.length === 0 && <div>no notifications</div>}
       </div>
     </>
