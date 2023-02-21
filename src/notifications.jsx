@@ -170,8 +170,13 @@ function Notifications() {
             </>
           );
         })}
-        {visibleNotifs.length !== 0&&  (
-          <button className={`load-more ${!hasMore?"disabled":""} ` }   onClick={() => loadMore(page + 1)}>Load More</button>
+        {visibleNotifs.length !== 0 && (
+          <button
+            type="button"
+            className={`load-more ${!hasMore ? "disabled" : ""} `}
+            onClick={() => loadMore(page + 1)}
+          >
+            Load More
           </button>
         )}
         {visibleNotifs.length === 0 && <div>no notifications</div>}
