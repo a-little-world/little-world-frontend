@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
-import { FetchNotificationsAsync } from "./features/userData";
+import { FetchNotificationsAsync, updateSearching } from "./features/userData";
 import Help from "./help";
 import "./i18n";
 import Notifications from "./notifications";
@@ -385,12 +385,11 @@ function UnmatchModal({ user, setShow }) {
   );
 }
 
-function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
+function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const users = useSelector((state) => state.userData.users);
-  const currentMatchingState = useSelector((state) => state.userData.self.stateInfo.matchingState);
-  console.log("Current matching state", currentMatchingState);
-  const [matchState, setMatchState] = useState(currentMatchingState);
+  const matchState = useSelector((state) => state.userData.self.stateInfo.matchingState);
 
   function updateUserMatchingState() {
     const updatedState = "searching";
@@ -410,8 +409,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
       .then((response) => {
         if (response) {
           // If this request works, we can safely update our state to 'searching'
-          // TODO: we need to also update the redux state!
-          setMatchState(updatedState);
+          dispatch(updateSearching(updatedState));
         }
       })
       .catch((error) => console.error(error));
@@ -446,8 +444,53 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates }) {
           <a className="change-criteria" href="/form">
             {t("cp_modify_search")}
           </a>
+          <button className="cancel-search" type="button" onClick={() => setShowCancel(true)}>
+            {t("cp_cancel_search")}
+          </button>
         </div>
       )}
+    </div>
+  );
+}
+
+const changeSearchState = (updatedState) => {
+  return fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+  });
+};
+
+function CancelSearching({ setShowCancel }) {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const undoSearching = () => {
+    changeSearchState("idle").then(({ status, statusText }) => {
+      if (status === 200) {
+        dispatch(updateSearching("idle"));
+        setShowCancel(false);
+      } else {
+        console.error(`Cancelling match searching failed with error ${status}: ${statusText}`);
+      }
+    });
+  };
+
+  return (
+    <div className="modal-box">
+      <button type="button" className="modal-close" onClick={() => setShowCancel(false)} />
+      <div className="content">
+        <div className="message-text">{t("cp_cancel_search_confirm")}</div>
+        <div className="buttons">
+          <button type="button" className="confirm" onClick={undoSearching}>
+            {t("cp_cancel_search")}
+          </button>
+          <button type="button" className="cancel" onClick={() => setShowCancel(false)}>
+            {t("cp_cancel_search_reject")}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -679,6 +722,8 @@ function Main() {
     />
   );
 
+  const [showCancelSearching, setShowCancelSearching] = useState(false);
+
   const [showIncoming, setShowIncoming] = useState(false);
   const [incomingUserPk, setIncomingUserPk] = useState(null);
 
@@ -706,6 +751,7 @@ function Main() {
                 <PartnerProfiles
                   setCallSetupPartner={setCallSetupPartner}
                   matchesOnlineStates={matchesOnlineStates}
+                  setShowCancel={setShowCancelSearching}
                 />
                 <NotificationPanel />
               </>
@@ -719,7 +765,13 @@ function Main() {
         {use === "help" && <Help selection={topSelection} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>
-      <div className={callSetupPartner || showIncoming ? "overlay-shade" : "overlay-shade hidden"}>
+      <div
+        className={
+          callSetupPartner || showIncoming || showCancelSearching
+            ? "overlay-shade"
+            : "overlay-shade hidden"
+        }
+      >
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
         )}
@@ -731,6 +783,7 @@ function Main() {
             setCallSetupPartner={setCallSetupPartner}
           />
         )}
+        {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
       </div>
       <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
         {overlayState.visible && (

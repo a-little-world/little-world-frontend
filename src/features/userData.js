@@ -5,6 +5,7 @@ import { notifications } from "../services/notifications";
 
 const initialState = {
   raw: {},
+  self: {},
   users: [],
   settings: {},
   notifications: [],
@@ -169,6 +170,9 @@ export const userDataSlice = createSlice({
         el.hash === action.payload ? (el.state = "archive") : el.state
       );
     },
+    updateSearching: (state, { payload }) => {
+      state.self.stateInfo.matchingState = payload;
+    },
   },
 });
 
@@ -182,6 +186,7 @@ export const {
   archiveNotif,
   setStatus,
   fetchNotifications,
+  updateSearching,
 } = userDataSlice.actions;
 
 export const FetchNotificationsAsync =
