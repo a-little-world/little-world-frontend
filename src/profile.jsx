@@ -63,7 +63,7 @@ function ProfileBox({
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />
       )}
-      {(type === "match" && false) && ( /** TODO temporarily disabled */
+      {(type === "match") && ( /** TODO temporarily disabled */
         <button className="unmatch" type="button" onClick={() => setUnmatchingUser(user)}>
           <img />
         </button>
@@ -379,7 +379,7 @@ function ProfileDetail({ profile }) {
       <TextBox subject="about" topicText={profile.about} formTag="description" />
       <InterestsSelector inTopicSelection={profile.interestTopics} />
       <TextBox
-        subject="extra-topics"
+        subject="extraTopics"
         topicText={profile.extraTopics}
         formTag="additional_interests"
       />
