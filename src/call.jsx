@@ -276,7 +276,26 @@ function SidebarNotes() {
 
 function TranslationDropdown({ side, selected, setter }) {
   const { t } = useTranslation();
-  const languages = ["en", "de"];
+  const languages = [
+    "en",
+    "sa",
+    "bg",
+    "ma",
+    "ca",
+    "fr",
+    "gr",
+    "in",
+    "it",
+    "kr",
+    "ir",
+    "pl",
+    "ru",
+    "es",
+    "tr",
+    "uk",
+    "vn",
+    "de",
+  ];
   return (
     <select
       name={`${side}-language-select`}
@@ -311,15 +330,15 @@ function TranslationBox() {
         return;
       }
 
-      fetch(`${BACKEND_URL}/api2/trans/`, {
+      fetch(`${BACKEND_URL}/api/user/translate/`, {
         method: "POST",
         headers: {
           "X-CSRFToken": Cookies.get("csrftoken"),
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          src_lang: fromLang,
-          dest_lang: toLang,
+          source_lang: fromLang,
+          target_lang: toLang,
           text: leftText,
         }).toString(),
       })
