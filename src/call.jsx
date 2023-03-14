@@ -276,7 +276,26 @@ function SidebarNotes() {
 
 function TranslationDropdown({ side, selected, setter }) {
   const { t } = useTranslation();
-  const languages = ["en", "de"];
+  const languages = [
+    "en",
+    "sa",
+    "bg",
+    "ma",
+    "ca",
+    "fr",
+    "gr",
+    "in",
+    "it",
+    "kr",
+    "ir",
+    "pl",
+    "ru",
+    "es",
+    "tr",
+    "ua",
+    "vn",
+    "de",
+  ];
   return (
     <select
       name={`${side}-language-select`}
