@@ -198,7 +198,9 @@ function Help({ selection }) {
             <img alt="" />
             <span className="text">{t("help_support_message_btn")}</span>
           </button>
-          <button type="button" className="support-call">
+          <button type="button" className="support-call" onClick={() => {
+            window.open("tel:+4915234777471");
+          }}>
             <img alt="" />
             <span className="text">{t("help_support_call_btn")}</span>
           </button>
@@ -216,7 +218,7 @@ function Help({ selection }) {
               <div className="contacts">
                 <a href="mailto:oliver.berlin@little-world.com">
                   <img className="email-icon" alt="e-mail" />
-                  oliver@little-world.com
+                  support@little-world.com
                 </a>
                 <a href="tel:+4915234777471">
                   <img className="mobile-icon" alt="mobile" />
