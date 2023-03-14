@@ -216,7 +216,7 @@ function Help({ selection }) {
             </div>
             <div className="bottom">
               <div className="contacts">
-                <a href="mailto:oliver.berlin@little-world.com">
+                <a href="mailto:support@little-world.com">
                   <img className="email-icon" alt="e-mail" />
                   support@little-world.com
                 </a>
