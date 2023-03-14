@@ -2,7 +2,10 @@ import { t } from "i18next";
 import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
 import { filterMessagesForDialog } from "./chat/chat.lib";
+import { useDispatch, useSelector } from "react-redux";
 import { setStatus } from "./features/userData";
+import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import "./help.css";
 
@@ -166,6 +169,11 @@ function Contact() {
 }
 
 function Help({ selection }) {
+
+  const adminUser = useSelector((state) => state.userData.users.filter((u) => u.type === "support")[0]);
+  const navigate = useNavigate();
+  console.log("ADMIN", adminUser);
+
   return (
     <div className="content-area-main">
       <div className="help panel">
@@ -184,11 +192,15 @@ function Help({ selection }) {
           </div>
         </div>
         <div className="contact-buttons">
-          <button type="button" className="support-message">
+          <button type="button" className="support-message" onClick={() => {
+              navigate(`${BACKEND_PATH}/chat`, {state: {userPk: adminUser.userPk}});
+          }}>
             <img alt="" />
             <span className="text">{t("help_support_message_btn")}</span>
           </button>
-          <button type="button" className="support-call">
+          <button type="button" className="support-call" onClick={() => {
+            window.open("tel:+4915234777471");
+          }}>
             <img alt="" />
             <span className="text">{t("help_support_call_btn")}</span>
           </button>
@@ -206,7 +218,7 @@ function Help({ selection }) {
               <div className="contacts">
                 <a href="mailto:oliver.berlin@little-world.com">
                   <img className="email-icon" alt="e-mail" />
-                  oliver@little-world.com
+                  support@little-world.com
                 </a>
                 <a href="tel:+4915234777471">
                   <img className="mobile-icon" alt="mobile" />
