@@ -292,7 +292,7 @@ function TranslationDropdown({ side, selected, setter }) {
     "ru",
     "es",
     "tr",
-    "ua",
+    "uk",
     "vn",
     "de",
   ];
@@ -330,15 +330,15 @@ function TranslationBox() {
         return;
       }
 
-      fetch(`${BACKEND_URL}/api2/trans/`, {
+      fetch(`${BACKEND_URL}/api/user/translate/`, {
         method: "POST",
         headers: {
           "X-CSRFToken": Cookies.get("csrftoken"),
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          src_lang: fromLang,
-          dest_lang: toLang,
+          source_lang: fromLang,
+          target_lang: toLang,
           text: leftText,
         }).toString(),
       })
