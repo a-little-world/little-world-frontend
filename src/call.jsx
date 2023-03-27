@@ -278,22 +278,15 @@ function TranslationDropdown({ side, selected, setter }) {
   const { t } = useTranslation();
   const languages = [
     "en",
-    "sa",
     "bg",
-    "ma",
     "ca",
     "fr",
-    "gr",
-    "in",
     "it",
-    "kr",
-    "ir",
     "pl",
     "ru",
     "es",
     "tr",
     "uk",
-    "vn",
     "de",
   ];
   return (
