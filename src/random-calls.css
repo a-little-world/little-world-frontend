@@ -1,0 +1,205 @@
+.random-calls-header {
+  display: flex;
+  gap: 10px;
+}
+
+.random-calls-past-partners {
+  display: flex;
+  gap: 10px;
+}
+
+.random-calls-past-call-match {
+  display: flex;
+  gap: 20px;
+}
+
+.random-calls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1 1 0;
+  max-width: 1200px;
+}
+
+
+.random-calls-header .main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: space-evenly;
+  flex: 1 1 100%;
+}
+
+.random-calls-past-partners .main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  flex: 1 1 100%;
+}
+
+.random-calls-past-partners .main h3 {
+  margin: 0;
+}
+
+.random-calls-past-partners .main .text {
+  font-size: 18px;
+  color: rgba(119, 126, 144, 0.7);
+}
+
+.past-participants {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-evenly;
+  flex: 1 1 100%;
+}
+
+.random-calls-header .main button {
+  padding: 16px 44px;
+  max-width: fit-content;
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  border-radius: 90px;
+  font-weight: 600;
+  color: #fcfcfd;
+}
+
+
+.random-calls-header .main .text {
+  font-size: 18px;
+  color: rgba(119, 126, 144, 0.7);
+}
+
+.random-calls-past-call-match .frequency {
+  flex: 1 0.1 160px;
+  min-width: 50px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  align-items: center;
+}
+
+.random-calls-past-call-match .frequency img {
+  content: url("./images/coffee.webp");
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.random-calls-past-call-match .frequency-text {
+  background: white;
+  border-radius: 100px;
+  padding: 5px 15px;
+  margin: 12px;
+  position: absolute;
+  bottom: 0;
+}
+
+/* main area */
+.random-calls-past-call-match .main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-evenly;
+  flex: 1 1 100%;
+}
+
+.random-calls-past-call-match .buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: space-evenly;
+}
+
+.random-calls-past-call-match .buttons button {
+  background: rgba(230, 232, 236, 0.2);
+  border: 2px solid rgba(230, 232, 236, 0.2);
+  border-radius: 25px;
+  flex: 0 1 max-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+}
+
+.random-calls-past-call-match button .text {
+  font-size: 14px;
+  color: rgb(75, 76, 79);
+}
+
+.random-calls-past-call-match .buttons button img {
+  width: 40px;
+}
+
+.random-calls-past-call-match button.appointment img {
+  content: url("./images/new-appointment.svg");
+}
+
+.random-calls-past-call-match button.call img {
+  content: url("./images/call-orange.svg");
+}
+
+.random-calls-past-call-match .event-info h3 {
+  margin: 0;
+  font-weight: 700 !important;
+  font-size: 32px !important;
+}
+
+.random-calls-past-call-match .event-info .text {
+  font-size: 15px;
+  color: rgba(119, 126, 144, 0.7);
+}
+
+.random-calls-past-call-match .dateTime {
+  flex: 1 1 180px;
+  width: 180px; /* used to decide shrinking priority and affects min-width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  justify-content: center;
+}
+
+.dateTime .date {
+  font-weight: 700;
+  font-size: 55px;
+}
+
+.dateTime .weekday,
+.dateTime .month,
+.dateTime .time {
+  font-weight: 600;
+  font-size: 30px;
+  text-transform: uppercase;
+}
+
+@media screen and (width < 1024px) {
+  .content-area-main {
+    padding: 10px;
+  }
+
+  .random-calls-past-call-match {
+    flex-direction: column;
+  }
+
+  .random-calls-past-call-match .frequency {
+    width: 100%;
+    align-items: start;
+  }
+
+  .random-calls-past-call-match .main button {
+    padding: 10px 0;
+    flex-grow: 1;
+  }
+
+  .random-calls-past-call-match .dateTime {
+    flex-direction: row;
+    flex: unset;
+    gap: 20px;
+  }
+  .random-calls-past-call-match .dateTime > div {
+    font-size: 30px;
+    font-weight: 600;
+  }
+}
