@@ -19,6 +19,7 @@ import Settings from "./settings";
 import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";
+import "./random-calls.css";
 import "./main.css";
 
 function UnreadDot({ count }) {
@@ -159,7 +160,7 @@ function NbtSelectorAdmin({ selection, setSelection, use, adminInfos }) {
   console.log("ADMIN INFOS", adminInfos);
 
   const pagesMatches = [...Array(adminInfos.num_pages).keys()].map((x) => x + 1);
-  const defaultSelectors = ["conversation_partners", "appointments", "community_calls"];
+  const defaultSelectors = ["conversation_partners", "appointments", "community_calls", "random_calls"];
 
   const nbtTopics = {
     main: [...defaultSelectors, ...pagesMatches],
@@ -212,7 +213,7 @@ function NbtSelector({ selection, setSelection, use }) {
   }
 
   const nbtTopics = {
-    main: ["conversation_partners", "appointments", "community_calls"],
+    main: ["conversation_partners", "appointments", "community_calls", "random_calls"],
     help: ["videos", "faqs", "contact"],
   };
   const topics = nbtTopics[use];
@@ -547,6 +548,77 @@ function CommunityEvent({ frequency, description, title, time, link }) {
   );
 }
 
+function RandomCalls() {
+  const { t } = useTranslation();
+  const two = (n) => (n < 10 ? `0${n}` : n);
+
+  const past_partners = [{name: "Test"}];
+
+  const dateTime = new Date();
+  return (
+    <div className="random-calls">
+      <div className="random-calls-header">
+        <div className="main">
+          <h2>{t('nbt_random_calls')}</h2>
+          <div className="text">
+           {t('nbt_random_calls_description')}
+          </div>
+          <button>
+           {t('nbt_random_calls_join_button')}
+          </button>
+        </div>
+      </div>
+      <div className="random-calls-past-partners">
+        <div className="main">
+        <h3>Past conversation partners</h3>
+            <div className="text">
+              only shown if they agreed to share their profile
+            </div>
+        </div>
+      </div>
+      {past_partners.map((partner) => {
+        return (      <div className="random-calls-past-call-match">
+                <div className="frequency">
+        <img alt="" />
+        <div className="frequency-text">Freq</div>
+      </div>
+      <div className="main">
+        <div className="event-info">
+          <h3>Title</h3>
+          <div className="text">
+            Blub <Link className="show-more">Show more</Link>
+          </div>
+        </div>
+        <div className="buttons">
+          <button type="button" className="appointment disabled">
+            <img alt="add appointment" />
+            <span className="text">Termin hinzufügen</span>
+          </button>
+          <button
+            type="button"
+            className="call"
+            onClick={() => {
+              window.open(link, "_blank");
+            }}
+          >
+            <img alt="call" />
+            <span className="text">Gespräch beitreten</span>
+          </button>
+        </div>
+      </div>
+              <div className="dateTime">
+          <>
+            <div className="date">{two(dateTime.getDate())}</div>
+            <div className="month">{t(`month_short::${dateTime.getMonth()}`)}</div>
+          </>
+        <div className="time">{`${two(dateTime.getHours())}:${two(dateTime.getMinutes())}`}</div>
+      </div>
+      </div>)
+      })}
+  </div>
+  )
+}
+
 function CommunityCalls() {
   const events = useSelector((state) => state.userData.communityEvents);
   console.log("EVENTS", events);
@@ -757,6 +829,7 @@ function Main() {
               </>
             )}
             {topSelection === "community_calls" && <CommunityCalls />}
+            {topSelection === "random_calls" && <RandomCalls />}
           </div>
         )}
         {use === "chat" && initChatComponent}
