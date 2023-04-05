@@ -267,7 +267,7 @@
           "answer": "Wir empfehlen auch Deutschkurse! Aber leider haben diese oft Wartezeiten von über einem Jahr oder sind für Zugewanderte bei Selbstzahlung sehr kostspielig. Besonders fehlt hier die Praxis des Deutschsprechens mit Muttersprachlern. Bei Little World hast du genau das - die Chance, deine Deutschkenntnisse durch regelmäßige Übungen mit Muttersprachlern zu verbessern. Willkommen bei Little World!"
         }
       },
-      "can_everyone_join": {
+      "can_anyone_join": {
         "q1": {
           "question": "Ist Little World wirklich kostenlos?",
           "answer": "Ja, Little World steht allen Personen zur Verfügung, und das auf Dauer."
@@ -313,7 +313,7 @@
           "answer": "Unterstütze uns auf vielfältige Weise! Teile uns mit Freunden und Bekannten weiter, folge uns auf Social Media oder engagiere dich im Team. Es gibt Möglichkeiten für jede Fähigkeit. Du kannst zum Beispiel unsere Teilnehmer koordinieren, Texte mit uns verfassen oder Flyer verteilen. Nutze auch gerne deinen professionellen Hintergrund. Bei Interesse kontaktiere uns unter oliver@little-world.com und wir besprechen gemeinsam deine Möglichkeiten!"
         }
       },
-      "data_and_technical_issues": {
+      "data_tech_issues": {
         "q1": {
           "question": "Was passiert mit meinen Daten?",
           "answer": "Datensicherheit und Transparenz sind zentrale Anliegen für uns. Aus diesem Grund haben wir alle relevanten Informationen in unserer Datenschutzrichtlinie (https://home.little-world.com/datenschutz) detailliert und transparent dargestellt."
