@@ -243,5 +243,94 @@
   "ur_report_label": "Sagen Sie uns, warum Sie {{name}} melden wollen.",
   "ur_report_placeholder": "Verfassen Sie eine Nachricht an uns…",
   "ur_reported_line1": "Sie haben {{name}} gemeldet!",
-  "ur_reported_line2": "Sie werden nicht mehr in der Lage sein, Sie zu kontaktieren."
+  "ur_reported_line2": "Sie werden nicht mehr in der Lage sein, Sie zu kontaktieren.",
+  "faq": {
+    "section_title": {
+      "why_lw": "Warum Little World?",
+      "can_anyone_join": "Kann jede:r bei Little World mitmachen?",
+      "time_commitment": "Wie ist der zeitliche Aufwand?",
+      "sustainability": "Wie nachhaltig ist Little World?",
+      "data_tech_issues": "Was passiert mit meinen Daten und bei techn. Störungen?"
+    },
+    "section_content": {
+      "why_lw": {
+        "q1": {
+          "question": "Wieso Little World?",
+          "answer": "Für eine erfolgreiche Integration von Zugewanderten ist die Beherrschung der deutschen Sprache von großer Bedeutung. Leider stehen vielen Geflüchteten und Newcomer:innen die notwendigen Ressourcen und Angebote oft nicht zur Verfügung. Die aktuelle Corona-Situation erschwert die Situation zusätzlich. Mit Little World wird die Integration jedoch einfacher. Durch unsere Vernetzungsplattform können wir Menschen, selbst aus der kleinsten Kommune, zusammenbringen und damit die soziale Teilhabe und Chancengleichheit fördern."
+        },
+        "q2": {
+          "question": "Können Sprachlernende nicht Sprachtandems bilden?",
+          "answer": "Sprachtandem-Partner können eine wertvolle Unterstützung darstellen. Jedoch sind sie in der Regel an Sprachen interessiert, die weltweit verbreitet sind, wie Englisch, Spanisch oder Französisch. Allerdings bringen rund 95% der Menschen, die nach Deutschland kommen, andere Sprachen mit, wie Hindi, Ukrainisch oder Amharisch. Ein Sprachtandem zu finden, ist daher sehr schwierig. Hier kommt Little World ins Spiel: Sie bietet eine Plattform für Menschen, die sich zum Üben des Deutschsprechens treffen möchten."
+        },
+        "q3": {
+          "question": "Was ist mit Sprachlehrer:innen oder Sprachschulen?",
+          "answer": "Wir empfehlen auch Deutschkurse! Aber leider haben diese oft Wartezeiten von über einem Jahr oder sind für Zugewanderte bei Selbstzahlung sehr kostspielig. Besonders fehlt hier die Praxis des Deutschsprechens mit Muttersprachlern. Bei Little World hast du genau das - die Chance, deine Deutschkenntnisse durch regelmäßige Übungen mit Muttersprachlern zu verbessern. Willkommen bei Little World!"
+        }
+      },
+      "can_everyone_join": {
+        "q1": {
+          "question": "Ist Little World wirklich kostenlos?",
+          "answer": "Ja, Little World steht allen Personen zur Verfügung, und das auf Dauer."
+        },
+        "q2": {
+          "question": "Kann ich es einfach mal ausprobieren?",
+          "answer": "Definitiv! Registrieren Sie Ihr Konto in nur wenigen Minuten, wählen Sie Ihre Interessen aus und starten Sie ihr erstes Gespräch."
+        },
+        "q3": {
+          "question": "Muss ich wirklich nur Deutsch sprechen können, um zu helfen?",
+          "answer": "Ja, Little World ist dafür entwickelt worden, die Möglichkeit zu bieten, das Deutschsprechen zu verbessern. Daher ist es die beste Strategie, diese Gelegenheit zu nutzen und aktiv Deutsch zu sprechen."
+        },
+        "q4": {
+          "question": "Und wenn uns kein Gesprächsthema mehr einfällt?",
+          "answer": "Wenn euch das Gesprächsthema ausgeht, habt keine Sorge. Wir haben auf unserer Plattform eine Reihe von Gesprächshilfen bereitgestellt, wie das Wetter, Pinguine oder Pizza. Probiert es einfach aus und lasst euch überraschen!"
+        },
+        "q5": {
+          "question": "Gibt es auch eine App?",
+          "answer": "Mit Little World hast du Zugang zu einer benutzerfreundlichen WebApp, die du direkt über deinen Internetbrowser nutzen kannst. Bald wird es auch eine dedizierte App für alle wichtigen Plattformen geben."
+        }
+      },
+      "time_commitment": {
+        "q1": {
+          "question": "Ein Ehrenamt. Dafür hab ich gar nicht die Zeit, oder?",
+          "answer": "Little World bietet ein flexibles Ehrenamt, das sich perfekt in deinen Alltag integrieren lässt. Du entscheidest selbst, wie viel Zeit du investieren möchtest und wann es für dich am besten passt. Selbst kurze Zeiträume wie 30 Minuten pro Woche können bereits einen großen Beitrag für andere leisten."
+        },
+        "q2": {
+          "question": "Kann ich auch mal eine Woche auslassen?",
+          "answer": "Es versteht sich von selbst, dass die Zeitplanung für jeden eine Herausforderung darstellen kann. Bei Little World hast du jedoch die volle Flexibilität, um dich in Übereinstimmung mit deinen Verpflichtungen zu engagieren. Du kannst jederzeit entscheiden, wann und wie du dich einbringen möchtest."
+        }
+      },
+      "sustainability": {
+        "q1": {
+          "question": "Wie lange halten die Kontakte an?",
+          "answer": "Das variiert je nach Paarung. Einige bleiben über Monate im Kontakt, andere über Jahre, und einige feiern sogar gemeinsam Weihnachten. Wir bemühen uns, dich mit einer geeigneten Person zu verbinden. Sollte es nicht passen, ist das kein Problem. Wir finden dann gerne neue angenehme Gesprächspartner für dich."
+        },
+        "q2": {
+          "question": "Wie finanziert ihr euch?",
+          "answer": "Bislang finanzieren wir uns durch eigene Mittel und geringfügige Förderungen. Unser Ziel ist es, Little World auf mittelfristiger Basis durch Kommunen und den Bund zu unterstützen zu bekommen, da es uns ohne Unterstützung nicht möglich ist, unsere Arbeit fortzuführen. Dabei ist es uns wichtig, allen Teilnehmern weiterhin eine kostenfreie Teilhabe zu ermöglichen, insbesondere mit Fokus auf sozial schwächeren und geflüchteten Menschen."
+        },
+        "q3": {
+          "question": "Wie kann ich noch helfen?",
+          "answer": "Unterstütze uns auf vielfältige Weise! Teile uns mit Freunden und Bekannten weiter, folge uns auf Social Media oder engagiere dich im Team. Es gibt Möglichkeiten für jede Fähigkeit. Du kannst zum Beispiel unsere Teilnehmer koordinieren, Texte mit uns verfassen oder Flyer verteilen. Nutze auch gerne deinen professionellen Hintergrund. Bei Interesse kontaktiere uns unter oliver@little-world.com und wir besprechen gemeinsam deine Möglichkeiten!"
+        }
+      },
+      "data_and_technical_issues": {
+        "q1": {
+          "question": "Was passiert mit meinen Daten?",
+          "answer": "Datensicherheit und Transparenz sind zentrale Anliegen für uns. Aus diesem Grund haben wir alle relevanten Informationen in unserer Datenschutzrichtlinie (https://home.little-world.com/datenschutz) detailliert und transparent dargestellt."
+        },
+        "q2": {
+          "question": "Kann ich anonym bleiben?",
+          "answer": "Ja, bei uns legen wir großen Wert auf Datenschutz . Aus diesem Grund wird in unserer Webapp nur dein Vorname angezeigt und dieser ist auch nur für deine Matches sichtbar. Persönliche Informationen, wie die E-Mail-Adresse, sind nur für unser Team zugänglich und werden nicht an Dritte weitergegeben. Du hast jederzeit Zugriff auf deine Benutzerdaten über dein Benutzerformular und kannst sie unter \"Einstellungen\" nach Belieben anpassen."
+        },
+        "q3": {
+          "question": "Technische Störungen auf Little World?",
+          "answer": "Solltest du technische Probleme haben, steht dir unser Support-Team jederzeit zur Verfügung. Bitte nutze dazu unser Kontaktformular unter https://home.little-world.com/kontakt und wir werden uns schnellstmöglich um dein Anliegen kümmern."
+        },
+        "q4": {
+          "question": "Ich kann mich nicht einloggen oder registrieren?",
+          "answer": "Wenn du Schwierigkeiten beim Login oder bei der Anmeldung hast, kann das daran liegen, dass einige E-Mail-Provider unsere Registrierungs-E-Mail noch blockieren. In diesem Fall kontaktiere uns bitte so schnell wie möglich, damit unser Support-Team dir helfen kann. Du kannst das Kontaktformular unter https://home.little-world.com/kontakt erreichen."
+        }
+      }
+    }
+  }
 }
