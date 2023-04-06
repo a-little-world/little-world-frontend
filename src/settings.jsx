@@ -115,23 +115,94 @@ const apiChangeEmail = (email, onSuccess, onFailure) => {
     .catch((error) => console.error(error));
 };
 
-function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
+const allowedCodes = [
+  // copied from profile.jsx. should globalise.
+  8, // backspace
+  16, // shift - for selection
+  17, // ctrl - for word deletion
+  33, // pageUp
+  34, // pageDown
+  35, // end
+  36, // home
+  37, // left arrow
+  38, // up arrow
+  39, // right arrow
+  40, // down arrow
+  46, // delete
+];
+
+function AtomicInput({ label, inputVal = "", handleChange = () => {}, refIn = undefined }) {
+  const { t } = useTranslation();
+  const type = types[label] || types[label.slice(0, 8)]; // password_new_rpt -> password
+  const controlled = ["tel", "numeric", "email"].includes(type);
+
+  const onKeyDown = (e) => {
+    if (
+      controlled &&
+      !e.ctrlKey &&
+      !allowedCodes.includes(e.keyCode) &&
+      allowedChars[type].test(e.key) === false
+    ) {
+      e.preventDefault(); // prevent unwanted keypresses registering
+    }
+  };
+
+  const inputProps = {
+    type: type === "numeric" ? "text" : type,
+    name: label,
+    inputMode: type,
+    pattern: type === "numeric" ? "[0-9]*" : undefined,
+    onChange: handleChange,
+    onKeyDown,
+    ref: refIn,
+  };
+
+  if (controlled) {
+    inputProps.value = inputVal || "";
+  } else {
+    inputProps.defaultValue = inputVal || "";
+  }
+
+  return (
+    <label className="input-container">
+      {t(`sg_personal_${label}`)}
+      <input {...inputProps} />
+    </label>
+  );
+}
+
+function PassChange({ refIn = undefined }) {
+  const { t } = useTranslation();
+
+  const handleForgot = () => {}; // TODO
+
+  return (
+    <>
+      <AtomicInput label="password_current" refIn={refIn} />
+      <button type="button" className="forgot-password" onClick={handleForgot}>
+        {t("sg_personal_password_forgot")}
+      </button>
+      <AtomicInput label="password_new" />
+      <AtomicInput label="password_new_rpt" />
+    </>
+  );
+}
+
+function ModalBox({ label, valueIn, setEditing }) {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const type = types[label];
-  const [value, setValue] = useState(type === "password" ? "" : valueIn);
-  const [repeat, setRepeat] = useState(repeatIn);
-  const [lastValue, setLastValue] = useState(lastValueIn);
+  const [value, setValue] = useState(valueIn);
   const [waiting, setWaiting] = useState(false);
   const [errors, setErrors] = useState([]);
   const textInput = useRef();
-
-  const isOldPass = type === "password" && valueIn === "********";
 
   const handleChange = (e) => {
     const val = e.target.value;
     if (!["tel", "numeric", "email"].includes(type) || allowedChars[type].test(val)) {
       setValue(val);
+    } else {
+      e.preventDefault();
     }
   };
 
@@ -141,37 +212,46 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
   };
   const onResponseFailure = (report) => {
     console.log("REPORT", report);
-    const errorsList = report[labelsMap[label]];
+    const backendLabel = labelsMap[label];
+    const errorsList = report[backendLabel];
     setErrors(errorsList); // update error message(s)
     setWaiting(false);
   };
 
-  const handleSubmit = () => {
-    /**
-     * @tbscode future TODO there should be seperate chnage handlers! Switching inside the hanler is bad practice
-     */
-    const wrongPass = type === "password" && value.length < 6;
-    /* mismatched values */
-    const { current } = textInput;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setErrors([]); // clear existing errors
+    const val = e.target.elements[0].value;
+
     if (label === "displayLang") {
-      dispatch(updateSettings({ displayLang: value }));
-      Cookies.set("frontendLang", value);
-      i18n.changeLanguage(value);
+      // TODO: we need to update the server info also; this only upadates UI and cookie
+      const langCode = val;
+      dispatch(updateSettings({ displayLang: langCode }));
+      Cookies.set("frontendLang", langCode);
+      i18n.changeLanguage(langCode);
       setEditing(false);
-    } else if (lastValue && lastValue !== value) {
-      setValue("");
-      setRepeat(true);
-      setLastValue(undefined);
-      current.value = ""; // clear directly because react does not re-render
-      setErrors(["fe_mismatch"]);
-    } else if (wrongPass) {
-      setErrors(["fe_password"]);
-      current.value = "";
-      current.focus();
-    } else if (repeat !== true) {
+    } else {
       setWaiting(true);
-      if (type === "email") {
-        apiChangeEmail(value, onResponseSuccess, onResponseFailure);
+      if (label == "password") {
+        const values = Array.from(e.target.elements)
+          .filter(({ tagName }) => tagName !== "BUTTON")
+          .map((x) => x.value);
+
+        const [currentPass, newPass1, newPass2] = values;
+        // we check the new passwords match on frontend, so only need to send one to backend
+        if (newPass1 !== newPass2) {
+          setErrors(["request_errors.fe_mismatch"]);
+          setWaiting(false);
+        } else {
+          const data = {
+            currentPass,
+            newPass: newPass1,
+          };
+          // submit data
+        }
+      } else if (type === "email") {
+        // DISABLE; DANGEROUS
+        // apiChangeEmail(value, onResponseSuccess, onResponseFailure);
       } else {
         submitData(label, value, onResponseSuccess, onResponseFailure);
       }
@@ -182,93 +262,55 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     if (textInput.current) {
       textInput.current.focus();
     }
-  }, [textInput, repeat]);
-
-  const fullLabel = () => {
-    if (lastValue) {
-      const item = t(`sg_personal_${label}`);
-      return t("sg_repeat_item", { item });
-    }
-    if (isOldPass) {
-      return t("sg_personal_password_current");
-    }
-    if (type === "password") {
-      return t("sg_personal_password_new");
-    }
-    return t(`sg_personal_${label}`);
-  };
+  }, [textInput]);
 
   return (
-    <>
-      {waiting && repeat === true && (
-        <ModalBox
-          label={label}
-          valueIn=""
-          repeatIn={isOldPass}
-          lastValueIn={isOldPass ? value : undefined} /* maybe need to be undef if isOldPass */
-          setEditing={setEditing}
-        />
-      )}
-      {!(waiting && repeat === true) && (
-        <div className="edit-modal modal-box">
-          <button type="button" className="modal-close" onClick={() => setEditing(false)} />
-          <h2>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</h2>
-          <div className="error-message">
-            {errors.map((errorTag) => {
-              return <div key={errorTag}>{`⚠️ ${t(errorTag)}`}</div>;
-            })}
-          </div>
-          <div className="input-container">
-            <label htmlFor={label}>{fullLabel()}</label>
-            {label === "displayLang" ? (
-              <select
-                name="lang-select"
-                onChange={handleChange}
-                ref={textInput}
-                defaultValue={valueIn}
-              >
+    <div className="edit-modal modal-box">
+      <button type="button" className="modal-close" onClick={() => setEditing(false)} />
+      <h2>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</h2>
+      <div className="error-message">
+        {errors.map((errorTag) => {
+          return <div key={errorTag}>{`⚠️ ${t(errorTag)}`}</div>;
+        })}
+      </div>
+      <form onSubmit={handleSubmit}>
+        <section className="inputs">
+          {label === "displayLang" && (
+            <label className="input-container">
+              {t("sg_personal_displayLang")}
+              <select name="lang-select" defaultValue={valueIn} ref={textInput}>
                 {Object.entries(displayLanguages).map(([code, lang]) => (
                   <option key={code} value={code}>
                     {lang}
                   </option>
                 ))}
               </select>
-            ) : (
-              <input
-                type={type === "numeric" ? "text" : type}
-                value={value}
-                name={label}
-                inputMode={type}
-                pattern={type === "numeric" ? "[0-9]*" : undefined}
-                onChange={handleChange}
-                ref={textInput}
-              />
-            )}
-            {isOldPass && (
-              <button type="button" className="forgot-password" onClick={() => {}}>
-                {t("sg_personal_password_forgot")}
-              </button>
-            )}
-          </div>
-          <div className="buttons">
-            <button
-              type="button"
-              className={waiting ? "save waiting" : "save"}
-              onClick={handleSubmit}
-            >
-              {isOldPass ? t("sg_btn_confirm") : t("btn_save")}
-            </button>
-            <button
-              type="button"
-              className={waiting ? "cancel disabled" : "cancel"}
-              onClick={() => setEditing(false)}
-            >
-              {t("btn_cancel")}
-            </button>
-          </div>
+            </label>
+          )}
+          {label === "password" && <PassChange refIn={textInput} />}
+          {["firstName", "lastName", "email", "phone", "postCode", "birthYear"].includes(label) && (
+            <AtomicInput
+              label={label}
+              inputVal={value}
+              handleChange={handleChange}
+              refIn={textInput}
+            />
+          )}
+        </section>
+        <div className="buttons">
+          <button type="submit" className={waiting ? "save waiting" : "save"}>
+            {t("btn_save")}
+          </button>
+          <button
+            type="button"
+            className={waiting ? "cancel disabled" : "cancel"}
+            onClick={() => setEditing(false)}
+          >
+            {t("btn_cancel")}
+          </button>
         </div>
-      )}
-    </>
+      </form>
+    </div>
   );
 }
 
@@ -277,13 +319,6 @@ function Settings() {
   const navigate = useNavigate();
   const [editing, setEditing] = useState(null);
 
-  /**
-   * @tbscode future TODO ok i see how this makes it hard to have different form inside the modals
-   * I think this would have been bettere handled by creating 'atom' components ( per suggestion from @Simba14 )
-   * e.g.: atom.IntegerInput, atom.PassInput, atom.ErrorDisplay
-   * This would allow to render any form inside any modal simply by listing the fields to be used
-   * Since all these fields should be able to handle their own validation this wouldn't give us the annoying limitation of having only one input per modal
-   */
   const items = [
     // with ordering
     // "profilePicture",
