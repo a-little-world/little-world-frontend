@@ -102,3 +102,10 @@ section.settings {
   padding: 12px 16px;
   width: 100%;
 }
+
+.forgot-password {
+  text-transform: capitalize;
+  padding: 6px 18px;
+  display: flex;
+  margin: 6px auto;
+}
