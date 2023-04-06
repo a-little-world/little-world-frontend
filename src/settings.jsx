@@ -290,7 +290,7 @@ function Settings() {
     "firstName",
     "lastName",
     "email",
-    // "password",
+    "password",
     "phone",
     "postCode",
     "birthYear",
