@@ -1,4 +1,5 @@
 import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
 import { filterMessagesForDialog } from "./chat/chat.lib";
@@ -10,6 +11,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./help.css";
 
 function FrequentQuestion({ question, answer }) {
+
+
   const [showing, setShowing] = useState(false);
   const toggleShowing = () => setShowing(!showing);
 
@@ -25,15 +28,42 @@ function FrequentQuestion({ question, answer }) {
 }
 
 function Faqs() {
+
+  const { t } = useTranslation();
+  const help_faq = [
+    {
+      "section" : "why_lw",
+      "questions" : ["q1", "q2", "q2"]
+    },
+    {
+      "section" : "can_anyone_join",
+      "questions" : ["q1", "q2", "q2", "q4", "q5"]
+    },
+    {
+      "section" : "time_commitment",
+      "questions" : ["q1", "q2"]
+    },
+    {
+      "section" : "sustainability",
+      "questions" : ["q1", "q2"]
+    },
+    {
+      "section" : "data_tech_issues",
+      "questions" : ["q1", "q2", "q3", "q4"]
+    }
+  ]
   return (
     <div>
       <h2>{t("nbt_faqs")}</h2>
       <p className="intro-text">{t("help_faqs_intro")}</p>
-      <div className="faq-items">
-        <FrequentQuestion question="question1" answer="this is stock answer number one." />
-        <FrequentQuestion question="question2" answer="this is stock answer number two." />
-        <FrequentQuestion question="question3" answer="this is stock answer number three." />
-        <FrequentQuestion question="question4" answer="this is stock answer number four." />
+      <div className="faq-items">{help_faq.map((faq) => {
+        return <>
+          <h2>{t(`faq::section_title::${faq.section}`)}</h2>
+          {faq.questions.map((question) => {
+            return <FrequentQuestion question={t(`faq::section_content::${faq.section}::${question}::question`)} answer={t(`faq::section_content::${faq.section}::${question}::answer`)} />
+          })}
+        </>
+      })}
       </div>
     </div>
   );
@@ -173,6 +203,7 @@ function Help({ selection }) {
   const adminUser = useSelector((state) => state.userData.users.filter((u) => u.type === "support")[0]);
   const navigate = useNavigate();
   console.log("ADMIN", adminUser);
+  
 
   return (
     <div className="content-area-main">

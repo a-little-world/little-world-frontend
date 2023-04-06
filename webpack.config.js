@@ -32,6 +32,7 @@ const config = function (env) {
       publicPath,
     },
     devServer: {
+      historyApiFallback: true,
       port: 3000,
     },
 

@@ -63,7 +63,7 @@ function ProfileBox({
       ) : (
         <img alt="match" className="profile-image" src={imgSrc} />
       )}
-      {(type === "match") && ( /** TODO temporarily disabled */
+      {type === "match" && false /** temporarily disabled */ && (
         <button className="unmatch" type="button" onClick={() => setUnmatchingUser(user)}>
           <img />
         </button>
@@ -192,8 +192,8 @@ function InterestsSelector({ inTopicSelection }) {
                 </button>
               </div>
             </div>
-        </div>
-          )}
+          </div>
+        )}
       </div>
       {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
