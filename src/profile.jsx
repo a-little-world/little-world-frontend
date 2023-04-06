@@ -261,11 +261,11 @@ function TextBox({ subject, topicText = "", formTag }) {
 
   const handleKeyDown = (e) => {
     // preventing keyPresses needs to run on keyDown
-    if (e.ctrlKey) {
-      return; // allow ctrl + anything
-    }
     if (allowedCodes.includes(e.keyCode)) {
       return; // don't calculate length if not necessary
+    }
+    if (e.keyCode === 90 && e.ctrlKey) {
+      return; // allow undo (ctrl+z)
     }
     const el = editorRef.current;
     const len = el.innerText.length;
