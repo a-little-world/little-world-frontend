@@ -80,6 +80,7 @@ section.settings {
 .edit-modal .input-container {
   display: flex;
   flex-direction: column;
+  text-transform: capitalize;
 }
 
 .edit-modal label {
