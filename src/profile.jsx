@@ -155,17 +155,11 @@ function InterestsSelector({ inTopicSelection }) {
             </div>
           );
         })}
+      <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
         {editing && (
-          <div className="topics-shade">
-            <div className="topics-selector">
-              <div className="buttons">
-                <button type="button" className="cancel" onClick={cancelTopics}>
-                  <img alt="cancel" />
-                </button>
-                <button type="button" className="save" onClick={saveTopics}>
-                  <img alt="save" />
-                </button>
-              </div>
+            <div className="topics-selector modal-box">
+              <button type="button" className="modal-close" onClick={cancelTopics}>
+              </button>
               <h3>{t("profile_choose_interests")}</h3>
               <div className="items">
                 {interestChoices.map((choice) => (
@@ -192,8 +186,8 @@ function InterestsSelector({ inTopicSelection }) {
                 </button>
               </div>
             </div>
-          </div>
         )}
+          </div>
       </div>
       {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
