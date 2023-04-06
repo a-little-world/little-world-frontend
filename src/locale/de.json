@@ -148,6 +148,7 @@
   "sg_personal_password": "passwort",
   "sg_personal_password_current": "aktuelles passwort",
   "sg_personal_password_new": "neues passwort",
+  "sg_personal_password_new_rpt": "neues passwort wiederholen",
   "sg_personal_password_forgot": "passwort vergessen?",
   "sg_personal_phone": "telefonnummer",
   "sg_personal_postCode": "postleitzahl",

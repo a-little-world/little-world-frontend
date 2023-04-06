@@ -153,6 +153,7 @@
   "sg_personal_password": "password",
   "sg_personal_password_current": "enter current password",
   "sg_personal_password_new": "new password",
+  "sg_personal_password_new_rpt": "repeat new password",
   "sg_personal_password_forgot": "forgot password?",
   "sg_personal_phone": "phone number",
   "sg_personal_postCode": "post code",
