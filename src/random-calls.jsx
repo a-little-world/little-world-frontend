@@ -1,6 +1,13 @@
 import { useTranslation } from "react-i18next";
 import Link from "./path-prepend";
 import React, { useEffect, useRef, useState } from "react";
+import GridLoader from "react-spinners/GridLoader";
+
+const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+  };
 
 function RandomCallsPastPartnerItem({partner}) {
   const { t } = useTranslation();
@@ -48,9 +55,38 @@ function RandomCallsPastPartnerItem({partner}) {
 }
 
 function WaitingRoomOverlay({ state, setState }) {
+    let [loading, setLoading] = useState(true);
+    let [color, setColor] = useState("#000000");
+
+    const { t } = useTranslation();
     return <div className="overlay-shade">
         <div className="modal-box">
-              <button type="button" className="modal-close" onClick={() => {}} />
+            <div className="content">
+              <h3>{t("nbt_random_calls_overlay_title")}</h3>
+                <div className="connection-indicator"><span class="light"></span> connected </div>
+            <div className="main">
+
+              <div className="subtitle">{t('nbt_random_calls_overlay_subtitle')}</div>
+              <div className="sweet-loading">
+                  <GridLoader
+                    color={color}
+                    loading={loading}
+                    cssOverride={override}
+                    size={40}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </div>
+              <div className="text">{"There are currently X people in the queue before you. \nKeep this page open it will automaticly redirect you to a video call, \nonce we found a random call partner for you!"}</div>
+              <div className="buttons">
+                <button type="button" className="cancel" onClick={() => {
+                    setState({...state, ...{ show: !state.show }});
+                }}>
+                  {"Leave random call queue"}
+                </button>
+              </div>
+            </div>
+        </div>
         </div>
     </div>
 }
@@ -72,7 +108,9 @@ export function RandomCalls() {
           <div className="text">
            {t('nbt_random_calls_description')}
           </div>
-          <button>
+          <button onClick={() => {
+            setJoinOverlayState({...joinOverlayState, ...{ show: !joinOverlayState.show }});
+          }}>
            {t('nbt_random_calls_join_button')}
           </button>
         </div>

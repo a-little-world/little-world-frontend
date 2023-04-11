@@ -20,7 +20,58 @@
   flex: 1 1 0;
   max-width: 1200px;
 }
+.random-calls .modal-box h3 {
+  text-align: start;
+  padding: unset;
+}
 
+.random-calls .modal-box .content .connection-indicator {
+  font-weight: 300;
+  font-size: 16px;
+  color: rgb(243, 147, 37);
+  background-color: white;
+  border-radius: 100px 0 0 100px;
+  padding: 8px 10px;
+  position: absolute;
+  right: 0px;
+  top: 25px;
+  pointer-events: none;
+  transition: opacity 1s;
+  box-shadow: 4px 4px 6px rgb(0 0 0 / 20%);
+}
+
+.random-calls .modal-box .content .connection-indicator .light{
+  background-color: rgba(200, 238, 162, 1);
+  display: inline-block;
+  height: 9px;
+  width: 9px;
+  border-radius: 100%;
+  vertical-align: middle;
+  margin: 5px;
+}
+
+.random-calls .modal-box .content {
+  align-items: start !important;
+}
+
+.random-calls .modal-box .content .main {
+  flex-direction: column;
+  text-align: start !important;
+  gap: 20px;
+}
+
+.random-calls .modal-box .content .main .subtitle {
+  font-size: 18px;
+  font-weight: 300;
+  color: #777e90;
+  margin-left: 6px;
+  text-align: start !important;
+  padding-bottom: 10px;
+}
+
+.random-calls .modal-box .content .main .text {
+  white-space: pre-wrap;
+}
 
 .random-calls-header .main {
   display: flex;
@@ -40,6 +91,7 @@
 .random-calls-past-partners .main h3 {
   margin: 0;
 }
+
 
 .random-calls-past-partners .main .text {
   font-size: 18px;
