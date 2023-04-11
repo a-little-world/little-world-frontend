@@ -251,6 +251,8 @@
   "ur_report_placeholder": "Compose a message to us…",
   "ur_reported_line1": "You have reported {{name}}!",
   "ur_reported_line2": "They will no longer be able to contact you.",
+  "nbt_random_calls_overlay_title": "Waiting for random call...",
+  "nbt_random_calls_overlay_subtitle": "This can take a few minutes, please be patient.",
   "faq": {
     "section_title": {
       "why_lw": "Why Little World?",
