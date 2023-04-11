@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next";
 import Link from "./path-prepend";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import GridLoader from "react-spinners/GridLoader";
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 const override = {
     display: "block",
@@ -59,11 +60,35 @@ function WaitingRoomOverlay({ state, setState }) {
     let [color, setColor] = useState("#000000");
 
     const { t } = useTranslation();
+    
+    const [socketUrl, setSocketUrl] = useState('ws://localhost:8000/api/random_calls/ws');
+    const [messageHistory, setMessageHistory] = useState([]);
+  
+    const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl)
+    
+    useEffect(() => {
+        console.log("MESSAGE RECEIVED:", lastMessage)
+        if (lastMessage !== null) {
+          setMessageHistory((prev) => prev.concat(lastMessage));
+        }
+      }, [lastMessage, setMessageHistory]);
+    
+      const handleClickSendMessage = useCallback(() => sendMessage('Hello'), []);
+    
+      const connectionStatus = {
+        [ReadyState.CONNECTING]: 'connecting',
+        [ReadyState.OPEN]: 'connected',
+        [ReadyState.CLOSING]: 'disconnecting',
+        [ReadyState.CLOSED]: 'disconnected',
+        [ReadyState.UNINSTANTIATED]: 'idle',
+      }[readyState];
+    
+
     return <div className="overlay-shade">
         <div className="modal-box">
             <div className="content">
               <h3>{t("nbt_random_calls_overlay_title")}</h3>
-                <div className="connection-indicator"><span class="light"></span> connected </div>
+                <div className="connection-indicator"><span class="light"></span> {connectionStatus} </div>
             <div className="main">
 
               <div className="subtitle">{t('nbt_random_calls_overlay_subtitle')}</div>
