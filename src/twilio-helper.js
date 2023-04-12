@@ -62,20 +62,26 @@ function getAudioTrack(deviceId) {
   }).then((localTrack) => saveTrack(localTrack, deviceId));
 }
 
-function joinRoom(selfPk, partnerKey) {
-  fetch(`${BACKEND_URL}/api/video_rooms/authenticate_call/`, {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-UseTagsOnly": true,
-    },
-    body: JSON.stringify({
-      usr_hash: selfPk,
-      partner_hash: partnerKey,
-    }),
-  })
+function joinRoom(selfPk, partnerKey, isRandomCall = false) {
+  // If random call is true, then use the 'authenticate_random_call` endpoint instead
+  fetch(
+    isRandomCall
+      ? `${BACKEND_URL}/api/video_rooms/authenticate_random_call/`
+      : `${BACKEND_URL}/api/video_rooms/authenticate_call/`,
+    {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": Cookies.get("csrftoken"),
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-UseTagsOnly": true,
+      },
+      body: JSON.stringify({
+        usr_hash: selfPk,
+        partner_hash: partnerKey,
+      }),
+    }
+  )
     .then((response) => {
       const { status, statusText } = response;
       if (status === 200) {
