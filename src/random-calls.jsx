@@ -58,6 +58,10 @@ function RandomCallsPastPartnerItem({partner}) {
 function WaitingRoomOverlay({ state, setState }) {
     let [loading, setLoading] = useState(true);
     let [color, setColor] = useState("#000000");
+    const [waitingRoomState, setWaitingRoomState] = useState({
+      total_users_waiting: 0,
+      position_in_queue: 0,
+    })
 
     const { t } = useTranslation();
     
@@ -69,6 +73,17 @@ function WaitingRoomOverlay({ state, setState }) {
     useEffect(() => {
         console.log("MESSAGE RECEIVED:", lastMessage)
         if (lastMessage !== null) {
+          // Read the data
+          const data = JSON.parse(lastMessage.data);
+
+          console.log("data parsed", data)
+          
+          if(["user_joined", "user_left", "users_matched"].includes(data.event)) {
+            console.log("User waaiting updated event")
+            setWaitingRoomState({...waitingRoomState, 
+              ...{ total_users_waiting: data.total_users, 
+                position_in_queue: data.position_in_queue }});
+          }
           setMessageHistory((prev) => prev.concat(lastMessage));
         }
       }, [lastMessage, setMessageHistory]);
@@ -102,7 +117,7 @@ function WaitingRoomOverlay({ state, setState }) {
                     data-testid="loader"
                   />
                 </div>
-              <div className="text">{"There are currently X people in the queue before you. \nKeep this page open it will automaticly redirect you to a video call, \nonce we found a random call partner for you!"}</div>
+              <div className="text">{t('nbt_random_calls_overlay_text', {nqueue : waitingRoomState.position_in_queue.toString()})}</div>
               <div className="buttons">
                 <button type="button" className="cancel" onClick={() => {
                     setState({...state, ...{ show: !state.show }});
