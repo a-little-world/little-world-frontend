@@ -254,6 +254,9 @@
   "nbt_random_calls_overlay_title": "Waiting for random call...",
   "nbt_random_calls_overlay_subtitle": "This can take a few minutes, please be patient.",
   "nbt_random_calls_overlay_text": "There are currently {{nqueue}} people in the queue before you. \nKeep this page open it will automaticly redirect you to a video call, \nonce we found a random call partner for you!",
+  "nbt_random_calls_setup_title": "Before looking for a random match",
+  "nbt_random_calls_setup_subtitle": "Please check your microphone and camera.",
+  "nbt_random_calls_setup_confirm_button": "Look for random call match",
   "faq": {
     "section_title": {
       "why_lw": "Why Little World?",
