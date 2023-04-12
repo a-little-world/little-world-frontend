@@ -83,6 +83,11 @@ function WaitingRoomOverlay({ state, setState }) {
             setWaitingRoomState({...waitingRoomState, 
               ...{ total_users_waiting: data.total_users, 
                 position_in_queue: data.position_in_queue }});
+          }else if(["found_match"].includes(data.event)) {
+
+            navigate(`${BACKEND_PATH}/call`, { state: { 
+              userPk: data.match_hash
+            } });  
           }
           setMessageHistory((prev) => prev.concat(lastMessage));
         }
@@ -100,6 +105,16 @@ function WaitingRoomOverlay({ state, setState }) {
     
 
     return <div className="overlay-shade">
+        <div style={{position: "absolute"}}>
+          <h2>DEBUG LOG:</h2> 
+          <ol>
+            {messageHistory.map((message, idx) => {
+              return <div key={idx}>
+                <li>{message.data}</li>
+              </div>
+            })}
+          </ol>
+        </div>
         <div className="modal-box">
             <div className="content">
               <h3>{t("nbt_random_calls_overlay_title")}</h3>
@@ -120,7 +135,7 @@ function WaitingRoomOverlay({ state, setState }) {
               <div className="text">{t('nbt_random_calls_overlay_text', {nqueue : waitingRoomState.position_in_queue.toString()})}</div>
               <div className="buttons">
                 <button type="button" className="cancel" onClick={() => {
-                    setState({...state, ...{ show: !state.show }});
+                    setState({...state, ...{ showOverlay: !state.showOverlay }});
                 }}>
                   {"Leave random call queue"}
                 </button>
@@ -131,13 +146,10 @@ function WaitingRoomOverlay({ state, setState }) {
     </div>
 }
 
-export function RandomCalls() {
+export function RandomCalls({setCallSetupPartner, randomCallState, setRandomCallState}) {
+
   const { t } = useTranslation();
     
-  const [joinOverlayState, setJoinOverlayState] = useState({
-    show: false,
-  });
-
   const past_partners = [{name: "Test"}];
 
   return (
@@ -149,7 +161,8 @@ export function RandomCalls() {
            {t('nbt_random_calls_description')}
           </div>
           <button onClick={() => {
-            setJoinOverlayState({...joinOverlayState, ...{ show: !joinOverlayState.show }});
+            setCallSetupPartner("random"); // this indicates that we set a parter for a 'random' call
+            //setJoinOverlayState({...joinOverlayState, ...{ showOverlay: !joinOverlayState.show }});
           }}>
            {t('nbt_random_calls_join_button')}
           </button>
@@ -167,7 +180,7 @@ export function RandomCalls() {
         return <RandomCallsPastPartnerItem partner={partner}></RandomCallsPastPartnerItem>
       })}
       {/* We deliberately render this component *only* if it should be shown cause it will automaticly connect to the random call websocket */}
-      {joinOverlayState.show && <WaitingRoomOverlay state={joinOverlayState} setState={setJoinOverlayState} />}
+      {randomCallState.showOverlay && <WaitingRoomOverlay state={randomCallState} setState={setRandomCallState} />}
   </div>
   )
 }
