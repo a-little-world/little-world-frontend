@@ -253,6 +253,7 @@
   "ur_reported_line2": "They will no longer be able to contact you.",
   "nbt_random_calls_overlay_title": "Waiting for random call...",
   "nbt_random_calls_overlay_subtitle": "This can take a few minutes, please be patient.",
+  "nbt_random_calls_overlay_text": "There are currently {{nqueue}} people in the queue before you. \nKeep this page open it will automaticly redirect you to a video call, \nonce we found a random call partner for you!",
   "faq": {
     "section_title": {
       "why_lw": "Why Little World?",
