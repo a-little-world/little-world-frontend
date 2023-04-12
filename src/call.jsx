@@ -475,7 +475,8 @@ function CallScreen() {
   const selfPk = useSelector((state) => state.userData.self.userPk);
   const navigate = useNavigate();
   const location = useLocation();
-  const { userPk, tracks } = location.state || {};
+  const { userPk, tracks, randomCallRoom } = location.state || {};
+  // the flag 'randomCallRoom' is true when this is a one-time authentication for a random call video room
   const videoRef = useRef();
   const audioRef = useRef();
 
