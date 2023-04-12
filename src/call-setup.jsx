@@ -182,8 +182,17 @@ function AudioOutputSelect() {
   );
 }
 
-function CallSetup({ userPk, setCallSetupPartner }) {
+function CallSetup({ 
+  userPk, 
+  setCallSetupPartner, 
+  randomCallRoomSetup = false, 
+  randomCallState = {},
+  setRandomCallState = () => {} }) {
   const { t } = useTranslation();
+  
+  if(userPk === "random"){
+    randomCallRoomSetup = true;
+  }
 
   const videoRef = useRef();
   const [videoTrackId, setVideoTrackId] = useState(null);
@@ -226,8 +235,9 @@ function CallSetup({ userPk, setCallSetupPartner }) {
   return (
     <div className="modal-box">
       <button type="button" className="modal-close" onClick={() => setCallSetupPartner(null)} />
-      <h3 className="title">{t("pcs_main_heading")}</h3>
-      <span className="subtitle">{t("pcs_sub_heading")}</span>
+      <h3 className="title">{randomCallRoomSetup ? t("Before looking for a random match"): t("pcs_main_heading")}</h3>
+      {!randomCallRoomSetup && <span className="subtitle">{t("pcs_sub_heading")}</span>}
+      {randomCallRoomSetup && <span className="subtitle">{t("nbt_random_calls_setup_subtitle")}</span>}
       {mediaPermission && (
         <>
           <VideoFrame Video={videoRef} Audio={audioRef} />
@@ -236,9 +246,15 @@ function CallSetup({ userPk, setCallSetupPartner }) {
             <AudioInputSelect setAudio={setAudio} />
             <AudioOutputSelect />
           </div>
-          <Link to="/call" className="av-setup-confirm" state={{ userPk, tracks }}>
+          {!randomCallRoomSetup && <Link to="/call" className="av-setup-confirm" state={{ userPk, tracks, randomCallRoom: randomCallRoomSetup }}>
             {t("pcs_btn_join_call")}
-          </Link>
+          </Link>}
+          {randomCallRoomSetup && <button className="av-setup-confirm" onClick={() => {
+            setCallSetupPartner(null);
+            setRandomCallState({ ...randomCallState, tracks, showOverlay: true });
+          }}>
+            {t("nbt_random_calls_setup_confirm_button")}
+          </button>}
         </>
       )}
       {!mediaPermission && (
