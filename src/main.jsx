@@ -613,6 +613,11 @@ function Main() {
   const [profileOptions, setProfileOptions] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [matchesProfiles, setMatchesProfiles] = useState({});
+  
+  const [randomCallState, setRandomCallState] = useState({
+    showOverlay: false,
+  });
+
 
   const users = useSelector((state) => state.userData.users);
   const initalUnconfirmedMatches = useSelector(
@@ -760,7 +765,7 @@ function Main() {
               </>
             )}
             {topSelection === "community_calls" && <CommunityCalls />}
-            {topSelection === "random_calls" && <RandomCalls />}
+            {topSelection === "random_calls" && <RandomCalls setCallSetupPartner={setCallSetupPartner} randomCallState={randomCallState} setRandomCallState={setRandomCallState}/>}
           </div>
         )}
         {use === "chat" && initChatComponent}
@@ -777,7 +782,7 @@ function Main() {
         }
       >
         {callSetupPartner && (
-          <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
+          <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} randomCallState={randomCallState} setRandomCallState={setRandomCallState}/>
         )}
         {incomingUserPk && showIncoming && (
           <IncomingCall
