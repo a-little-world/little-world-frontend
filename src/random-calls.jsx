@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import Link from "./path-prepend";
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import GridLoader from "react-spinners/GridLoader";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
@@ -56,6 +57,7 @@ function RandomCallsPastPartnerItem({partner}) {
 }
 
 function WaitingRoomOverlay({ state, setState }) {
+    const navigate = useNavigate();
     let [loading, setLoading] = useState(true);
     let [color, setColor] = useState("#000000");
     const [waitingRoomState, setWaitingRoomState] = useState({
@@ -85,8 +87,10 @@ function WaitingRoomOverlay({ state, setState }) {
                 position_in_queue: data.position_in_queue }});
           }else if(["found_match"].includes(data.event)) {
 
+            // TODO: we should dispatch an update to the past profile array
+            // when we found a match we can easily redirect to the call screen which will handle the rest
             navigate(`${BACKEND_PATH}/call`, { state: { 
-              userPk: data.match_hash
+              userPk: data.match_hash, tracks: state.tracks, randomCallRoom: true
             } });  
           }
           setMessageHistory((prev) => prev.concat(lastMessage));
@@ -149,6 +153,8 @@ function WaitingRoomOverlay({ state, setState }) {
 export function RandomCalls({setCallSetupPartner, randomCallState, setRandomCallState}) {
 
   const { t } = useTranslation();
+  
+  console.log("Random call state changed", randomCallState);
     
   const past_partners = [{name: "Test"}];
 
