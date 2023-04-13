@@ -476,6 +476,7 @@ function CallScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const { userPk, tracks, randomCallRoom } = location.state || {};
+  console.log("OPEN CALL SCEEN", userPk, tracks, randomCallRoom)
   // the flag 'randomCallRoom' is true when this is a one-time authentication for a random call video room
   const videoRef = useRef();
   const audioRef = useRef();
@@ -501,7 +502,7 @@ function CallScreen() {
     getAudioTrack(audioId, audioMuted).then((track) => {
       track.attach(audioRef.current);
     });
-    joinRoom(selfPk, userPk);
+    joinRoom(selfPk, userPk, randomCallRoom);
   }, [userPk, tracks]);
 
   document.body.style.overflow = ""; // unset after call overlay
@@ -513,7 +514,7 @@ function CallScreen() {
           <VideoFrame video={videoRef} audio={audioRef} />
           <TranslationBox />
         </div>
-        <Sidebar sideSelection={sideSelection} />
+        {!randomCallRoom && <Sidebar sideSelection={sideSelection} />}
       </SetSideContext.Provider>
     </div>
   );
