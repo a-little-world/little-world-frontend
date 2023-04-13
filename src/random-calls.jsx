@@ -1,9 +1,14 @@
 import { useTranslation } from "react-i18next";
 import Link from "./path-prepend";
+import Cookies from "js-cookie";
+import Avatar from "react-nice-avatar";
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import GridLoader from "react-spinners/GridLoader";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { updatePastRandomCallMatches } from "./features/userData";
+import { BACKEND_URL } from "./ENVIRONMENT";
 
 const override = {
     display: "block",
@@ -13,36 +18,67 @@ const override = {
 
 function RandomCallsPastPartnerItem({partner}) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
-  const dateTime = new Date();
+  const dateTime = new Date(partner.time);
   const two = (n) => (n < 10 ? `0${n}` : n);
+  
+  const acceptDenyPartnerCall = (accept) => {
+    fetch(`${BACKEND_URL}/api/user/random_calls/past_match_accept_deny/`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "X-CSRFToken": Cookies.get("csrftoken"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        partner_hash: partner.user_hash,
+        accept: accept,
+      }),
+    }).then((response) => {
+      if (response.ok) {
+        // use dispatch update
+        dispatch(updatePastRandomCallMatches({ user_hash: partner.user_hash, accepted: accept }));
+      }
+    });
+  }
 
     return  <div className="random-calls-past-call-match">
                 <div className="frequency">
-        <img alt="" />
-        <div className="frequency-text">Freq</div>
+      {partner.user_image_type === 'avatar' ? (
+        <Avatar className="profile-avatar" {...partner.user_profile} />
+      ) : (
+        <img alt="match" className="profile-image" src={partner.user_profile} />
+      )}
+        {/*<div className="frequency-text">Freq</div>*/}
       </div>
       <div className="main">
         <div className="event-info">
-          <h3>Title</h3>
+          <h3>{partner.user_first_name}</h3>
           <div className="text">
-            Blub <Link className="show-more">Show more</Link>
           </div>
         </div>
         <div className="buttons">
-          <button type="button" className="appointment disabled">
-            <img alt="add appointment" />
-            <span className="text">Termin hinzufügen</span>
-          </button>
           <button
             type="button"
-            className="call"
+            className={partner.accepted ? "call": "call active"}
             onClick={() => {
-              window.open(link, "_blank");
+              // TODO: call the api!
+              acceptDenyPartnerCall(false);
             }}
           >
             <img alt="call" />
-            <span className="text">Gespräch beitreten</span>
+            <span className="text">Profil nicht geteilt</span>
+          </button>
+          <button
+            type="button"
+            className={partner.accepted ? "call active": "call"}
+            onClick={() => {
+              acceptDenyPartnerCall(true);
+            }}
+          >
+            <img alt="call" />
+            <span className="text">Profil geteilt</span>
           </button>
         </div>
       </div>
@@ -156,7 +192,7 @@ export function RandomCalls({setCallSetupPartner, randomCallState, setRandomCall
   
   console.log("Random call state changed", randomCallState);
     
-  const past_partners = [{name: "Test"}];
+  const pastRandomCallMatches = useSelector((state) => state.userData.self.pastRandomCallMatches);
 
   return (
     <div className="random-calls">
@@ -182,7 +218,7 @@ export function RandomCalls({setCallSetupPartner, randomCallState, setRandomCall
             </div>
         </div>
       </div>
-      {past_partners.map((partner) => {
+      {pastRandomCallMatches.map((partner) => {
         return <RandomCallsPastPartnerItem partner={partner}></RandomCallsPastPartnerItem>
       })}
       {/* We deliberately render this component *only* if it should be shown cause it will automaticly connect to the random call websocket */}
