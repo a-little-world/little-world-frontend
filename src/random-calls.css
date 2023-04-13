@@ -163,6 +163,8 @@
   justify-content: space-evenly;
 }
 
+
+
 .random-calls-past-call-match .buttons button {
   background: rgba(230, 232, 236, 0.2);
   border: 2px solid rgba(230, 232, 236, 0.2);
@@ -175,6 +177,9 @@
   padding: 20px;
 }
 
+.random-calls-past-call-match .buttons .active {
+  border: 2px solid #db590b;
+}
 .random-calls-past-call-match button .text {
   font-size: 14px;
   color: rgb(75, 76, 79);
