@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import GridLoader from "react-spinners/GridLoader";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { updatePastRandomCallMatches } from "./features/userData";
-import { BACKEND_URL } from "./ENVIRONMENT";
+import { BACKEND_URL, BACKEND_PATH } from "./ENVIRONMENT";
 
 const override = {
     display: "block",
@@ -121,8 +121,9 @@ function WaitingRoomOverlay({ state, setState }) {
             setWaitingRoomState({...waitingRoomState, 
               ...{ total_users_waiting: data.total_users, 
                 position_in_queue: data.position_in_queue }});
-          }else if(["found_match"].includes(data.event)) {
+          }else if(["match_found"].includes(data.event)) {
 
+            setState({...state, ...{ showOverlay: !state.showOverlay }});
             // TODO: we should dispatch an update to the past profile array
             // when we found a match we can easily redirect to the call screen which will handle the rest
             navigate(`${BACKEND_PATH}/call`, { state: { 
