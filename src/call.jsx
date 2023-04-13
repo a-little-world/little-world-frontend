@@ -514,7 +514,7 @@ function CallScreen() {
           <VideoFrame video={videoRef} audio={audioRef} />
           <TranslationBox />
         </div>
-        {!randomCallRoom && <Sidebar sideSelection={sideSelection} />}
+        <Sidebar sideSelection={sideSelection} />
       </SetSideContext.Provider>
     </div>
   );
