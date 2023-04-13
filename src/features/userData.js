@@ -22,6 +22,7 @@ export const userDataSlice = createSlice({
       const {
         user,
         profile,
+        past_random_call_matches,
         settings,
         notifications,
         state: usrState,
@@ -69,6 +70,7 @@ export const userDataSlice = createSlice({
         description: profile.description,
         notifications,
         type: "self",
+        pastRandomCallMatches: past_random_call_matches,
         extraInfo: {
           about: profile.description,
           interestTopics: profile.interests,
@@ -120,6 +122,20 @@ export const userDataSlice = createSlice({
     },
     fetchNotifications: (state, { payload }) => {
       state.notifications = payload;
+    },
+    updatePastRandomCallMatches: (state, action) => {
+      state.self.pastRandomCallMatches = state.self.pastRandomCallMatches.map((match) => {
+        if (match.user_hash === action.payload.user_hash) {
+          return { ...match, accepted: action.payload.accepted };
+        }
+        return match;
+      });
+      state.users = state.users.map((user) => {
+        if (user.type === "self") {
+          return { ...user, pastRandomCallMatches: state.self.pastRandomCallMatches };
+        }
+        return user;
+      });
     },
     updateSettings: (state, action) => {
       Object.entries(action.payload).forEach(([item, value]) => {
@@ -181,6 +197,7 @@ export const {
   initialise,
   updateSettings,
   updateProfile,
+  updatePastRandomCallMatches,
   readAll,
   readNotif,
   archiveNotif,
