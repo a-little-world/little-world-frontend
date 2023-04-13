@@ -209,6 +209,7 @@ function NbtSelectorAdmin({ selection, setSelection, use, adminInfos }) {
 
 function NbtSelector({ selection, setSelection, use }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   if (!["main", "help"].includes(use)) {
     return null;
   }
@@ -234,7 +235,10 @@ function NbtSelector({ selection, setSelection, use }) {
             value={topic}
             checked={selection === topic}
             name="sidebar"
-            onChange={(e) => setSelection(e.target.value)}
+            onChange={(e) => {
+              navigate(`#${topic}`)
+              setSelection(e.target.value)
+            }}
           />
           <label
             htmlFor={`${topic}-radio`}
@@ -616,6 +620,7 @@ function Main() {
   
   const [randomCallState, setRandomCallState] = useState({
     showOverlay: false,
+    showPostCallOverlay: true,
   });
 
 
@@ -677,13 +682,23 @@ function Main() {
 
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
 
-  const [topSelection, setTopSelection] = useState(null);
+  
+  let initalTopSelection = null
+  console.log("LOC hash", location.hash.replace("#", ""))
+  if(['conversation_partners', 'random_calls', 'community_calls'].includes(location.hash.replace("#", "")))
+      initalTopSelection = location.hash.replace("#", "")
+  const [topSelection, setTopSelection] = useState(initalTopSelection);
+  
+
+  
   useEffect(() => {
-    if (use === "main") {
-      setTopSelection("conversation_partners");
-    }
-    if (use === "help") {
-      setTopSelection("contact");
+    if(initalTopSelection === null){
+      if (use === "main") {
+        setTopSelection("conversation_partners");
+      }
+      if (use === "help") {
+        setTopSelection("contact");
+      }
     }
   }, [location]);
 
