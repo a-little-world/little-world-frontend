@@ -133,7 +133,6 @@
 }
 
 .random-calls-past-call-match .frequency img {
-  content: url("./images/coffee.webp");
   object-fit: cover;
   height: 100%;
   width: 100%;
