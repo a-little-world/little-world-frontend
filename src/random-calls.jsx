@@ -92,6 +92,8 @@ function RandomCallsPastPartnerItem({partner}) {
       </div>
 }
 
+
+
 function WaitingRoomOverlay({ state, setState }) {
     const navigate = useNavigate();
     let [loading, setLoading] = useState(true);
@@ -187,6 +189,36 @@ function WaitingRoomOverlay({ state, setState }) {
     </div>
 }
 
+function AfterCallRoomOverlay({ state, setState }) {
+
+    return <div className="overlay-shade">
+        <div className="modal-box">
+            <div className="content">
+              <h3>{"How was your call?"}</h3>
+            <div className="main">
+
+              <div className="subtitle">{"Random calls are still in alpha please give us some swift feedback."}</div>
+              <div className="sweet-loading">
+                </div>
+              <div className="text">Some text is here!</div>
+              <div className="buttons">
+                <button type="button" className="save" onClick={() => {
+                    setState({...state, ...{ showPastCallOverlay: !state.showPastCallOverlay }}); 
+                }}>
+                  {"Look for another random call"}
+                </button>
+                <button type="button" className="cancel" onClick={() => {
+                    setState({...state, ...{ showPostCallOverlay: !state.showPostCallOverlay }});
+                }}>
+                  {"Back to dashboard"}
+                </button>
+              </div>
+            </div>
+        </div>
+        </div>
+    </div>
+}
+
 export function RandomCalls({setCallSetupPartner, randomCallState, setRandomCallState}) {
 
   const { t } = useTranslation();
@@ -224,6 +256,7 @@ export function RandomCalls({setCallSetupPartner, randomCallState, setRandomCall
       })}
       {/* We deliberately render this component *only* if it should be shown cause it will automaticly connect to the random call websocket */}
       {randomCallState.showOverlay && <WaitingRoomOverlay state={randomCallState} setState={setRandomCallState} />}
+      {randomCallState.showPostCallOverlay && <AfterCallRoomOverlay state={randomCallState} setState={setRandomCallState}></AfterCallRoomOverlay>}
   </div>
   )
 }
