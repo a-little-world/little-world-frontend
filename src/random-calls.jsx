@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import GridLoader from "react-spinners/GridLoader";
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { updatePastRandomCallMatches } from "./features/userData";
-import { BACKEND_URL, BACKEND_PATH } from "./ENVIRONMENT";
+import { BACKEND_URL, BACKEND_PATH, PRODUCTION, DEVELOPMENT } from "./ENVIRONMENT";
 
 const override = {
     display: "block",
@@ -111,7 +111,7 @@ function WaitingRoomOverlay({ state, setState }) {
 
     const { t } = useTranslation();
     
-    const [socketUrl, setSocketUrl] = useState('ws://localhost:8000/api/random_calls/ws');
+    const [socketUrl, setSocketUrl] = useState(`${PRODUCTION ? "wss" : "ws"}://${DEVELOPMENT ? BACKEND_URL.substring(7) : window.origin.split("//").pop()}/api/random_calls/ws`);
     const [messageHistory, setMessageHistory] = useState([]);
   
     const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl)
