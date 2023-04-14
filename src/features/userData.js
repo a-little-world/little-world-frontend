@@ -71,6 +71,14 @@ export const userDataSlice = createSlice({
         notifications,
         type: "self",
         pastRandomCallMatches: past_random_call_matches,
+        frontendState: {
+          // This is a flag that indicates it the user just left a random call & is used to automatically open the post-random call modal
+          justLeftRandomCall: true,
+          lastRandomCallMatch:
+            past_random_call_matches.length === 0
+              ? null
+              : past_random_call_matches[past_random_call_matches.length - 1],
+        },
         extraInfo: {
           about: profile.description,
           interestTopics: profile.interests,
@@ -136,6 +144,14 @@ export const userDataSlice = createSlice({
         }
         return user;
       });
+
+      state.self.frontendState = {
+        ...state.self.frontendState,
+        lastRandomCallMatch:
+          state.self.pastRandomCallMatches === 0
+            ? null
+            : state.self.pastRandomCallMatches[state.self.pastRandomCallMatches.length - 1],
+      };
     },
     updateSettings: (state, action) => {
       Object.entries(action.payload).forEach(([item, value]) => {
