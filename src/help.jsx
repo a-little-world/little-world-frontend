@@ -33,11 +33,11 @@ function Faqs() {
   const help_faq = [
     {
       "section" : "why_lw",
-      "questions" : ["q1", "q2", "q2"]
+      "questions" : ["q1", "q2", "q3"]
     },
     {
       "section" : "can_anyone_join",
-      "questions" : ["q1", "q2", "q2", "q4", "q5"]
+      "questions" : ["q1", "q2", "q3", "q4", "q5"]
     },
     {
       "section" : "time_commitment",
@@ -202,8 +202,7 @@ function Help({ selection }) {
 
   const adminUser = useSelector((state) => state.userData.users.filter((u) => u.type === "support")[0]);
   const navigate = useNavigate();
-  console.log("ADMIN", adminUser);
-  
+  console.log("ADMIN", adminUser, selection);
 
   return (
     <div className="content-area-main">
