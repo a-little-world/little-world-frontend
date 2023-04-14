@@ -162,6 +162,14 @@
   justify-content: space-evenly;
 }
 
+.random-calls-past-call-match .buttons .accept img{
+  content: url("./images/random_calls/accept-share-icon.svg");
+}
+
+.random-calls-past-call-match .buttons .deny img{
+  content: url("./images/random_calls/deny-share-icon.svg");
+}
+
 
 
 .random-calls-past-call-match .buttons button {
