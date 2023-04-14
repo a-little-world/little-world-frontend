@@ -16,13 +16,9 @@ const override = {
     borderColor: "red",
   };
 
-function RandomCallsPastPartnerItem({partner}) {
-  const { t } = useTranslation();
+function RandomCallsAcceptDenySelector({partner}) {
   const dispatch = useDispatch();
 
-  const dateTime = new Date(partner.time);
-  const two = (n) => (n < 10 ? `0${n}` : n);
-  
   const acceptDenyPartnerCall = (accept) => {
     fetch(`${BACKEND_URL}/api/user/random_calls/past_match_accept_deny/`, {
       method: "POST",
@@ -43,22 +39,7 @@ function RandomCallsPastPartnerItem({partner}) {
     });
   }
 
-    return  <div className="random-calls-past-call-match">
-                <div className="frequency">
-      {partner.user_image_type === 'avatar' ? (
-        <Avatar className="profile-avatar" {...partner.user_profile} />
-      ) : (
-        <img alt="match" className="profile-image" src={partner.user_profile} />
-      )}
-        {/*<div className="frequency-text">Freq</div>*/}
-      </div>
-      <div className="main">
-        <div className="event-info">
-          <h3>{partner.user_first_name}</h3>
-          <div className="text">
-          </div>
-        </div>
-        <div className="buttons">
+  return <div className="buttons">
           <button
             type="button"
             className={partner.accepted ? "call deny": "call active deny"}
@@ -81,6 +62,31 @@ function RandomCallsPastPartnerItem({partner}) {
             <span className="text">Profil geteilt</span>
           </button>
         </div>
+}
+
+function RandomCallsPastPartnerItem({partner}) {
+  const { t } = useTranslation();
+
+  const dateTime = new Date(partner.time);
+  const two = (n) => (n < 10 ? `0${n}` : n);
+  
+
+    return  <div className="random-calls-past-call-match">
+                <div className="frequency">
+      {partner.user_image_type === 'avatar' ? (
+        <Avatar className="profile-avatar" {...partner.user_profile} />
+      ) : (
+        <img alt="match" className="profile-image" src={partner.user_profile} />
+      )}
+        {/*<div className="frequency-text">Freq</div>*/}
+      </div>
+      <div className="main">
+        <div className="event-info">
+          <h3>{partner.user_first_name}</h3>
+          <div className="text">
+          </div>
+        </div>
+      <RandomCallsAcceptDenySelector partner={partner} />
       </div>
               <div className="dateTime">
           <>
@@ -224,7 +230,7 @@ const StarRating = ({ value }) => {
   );
 };
 
-function AfterCallRoomOverlay({ state, setState }) {
+function AfterCallRoomOverlay({ state, setState, lastPastCallPartner }) {
 
     return <div className="overlay-shade">
         <div className="modal-box">
@@ -235,8 +241,16 @@ function AfterCallRoomOverlay({ state, setState }) {
               <div className="subtitle">{"Random calls are still in alpha please give us some swift feedback."}</div>
               <div className="sweet-loading">
                 </div>
-              <StarRating value={3} />
-              <div className="text">Some text is here!</div>
+              <div className="stars">
+                <StarRating value={3} />
+              </div>
+              <div className="text">{"Do you whish to share your profile with {{ name }}?\n It will only be shared it you both select yes."}</div>
+
+            <div className="random-calls-past-call-match">
+              <div className="main">
+                <RandomCallsAcceptDenySelector partner={lastPastCallPartner} />
+              </div>
+            </div>
     
               <div className="buttons">
                 <button type="button" className="save" onClick={() => {
@@ -263,6 +277,7 @@ export function RandomCalls({setCallSetupPartner, randomCallState, setRandomCall
   console.log("Random call state changed", randomCallState);
     
   const pastRandomCallMatches = useSelector((state) => state.userData.self.pastRandomCallMatches);
+  const frontendState = useSelector((state) => state.userData.self.frontendState);
 
   return (
     <div className="random-calls">
@@ -293,7 +308,7 @@ export function RandomCalls({setCallSetupPartner, randomCallState, setRandomCall
       })}
       {/* We deliberately render this component *only* if it should be shown cause it will automaticly connect to the random call websocket */}
       {randomCallState.showOverlay && <WaitingRoomOverlay state={randomCallState} setState={setRandomCallState} />}
-      {randomCallState.showPostCallOverlay && <AfterCallRoomOverlay state={randomCallState} setState={setRandomCallState}></AfterCallRoomOverlay>}
+      {randomCallState.showPostCallOverlay && <AfterCallRoomOverlay state={randomCallState} setState={setRandomCallState} lastPastCallPartner={frontendState.lastRandomCallMatch}></AfterCallRoomOverlay>}
   </div>
   )
 }
