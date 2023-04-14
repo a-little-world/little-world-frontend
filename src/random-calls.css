@@ -60,6 +60,10 @@
   gap: 20px;
 }
 
+.random-calls .modal-box .content .main .stars{
+  text-align: center;
+}
+
 .random-calls .modal-box .content .main .subtitle {
   font-size: 18px;
   font-weight: 300;
@@ -160,6 +164,7 @@
   display: flex;
   gap: 10px;
   justify-content: space-evenly;
+  flex-direction: row !important;
 }
 
 .random-calls-past-call-match .buttons .accept img{
