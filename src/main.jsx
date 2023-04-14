@@ -728,6 +728,7 @@ function Main() {
     } else if (action.includes("exited_call")) {
       const params = action.substring(action.indexOf("(") + 1, action.indexOf(")")).split(":");
       // Backend says a partner has exited the call
+      // TODO: this should also exit the random call screen
       setShowIncoming(false);
       console.log(`User ${params[1]} left the video call!`);
     }
