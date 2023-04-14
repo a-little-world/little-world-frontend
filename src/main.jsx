@@ -620,7 +620,7 @@ function Main() {
   
   const [randomCallState, setRandomCallState] = useState({
     showOverlay: false,
-    showPostCallOverlay: true,
+    showPostCallOverlay: false,
   });
 
 
@@ -684,8 +684,7 @@ function Main() {
 
   
   let initalTopSelection = null
-  console.log("LOC hash", location.hash.replace("#", ""))
-  if(['conversation_partners', 'random_calls', 'community_calls'].includes(location.hash.replace("#", "")))
+  if(location.hash !== "")
       initalTopSelection = location.hash.replace("#", "")
   const [topSelection, setTopSelection] = useState(initalTopSelection);
   
