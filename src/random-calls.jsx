@@ -61,7 +61,7 @@ function RandomCallsPastPartnerItem({partner}) {
         <div className="buttons">
           <button
             type="button"
-            className={partner.accepted ? "call": "call active"}
+            className={partner.accepted ? "call deny": "call active deny"}
             onClick={() => {
               // TODO: call the api!
               acceptDenyPartnerCall(false);
@@ -72,7 +72,7 @@ function RandomCallsPastPartnerItem({partner}) {
           </button>
           <button
             type="button"
-            className={partner.accepted ? "call active": "call"}
+            className={partner.accepted ? "call active accept": "call accept"}
             onClick={() => {
               acceptDenyPartnerCall(true);
             }}
@@ -189,6 +189,41 @@ function WaitingRoomOverlay({ state, setState }) {
     </div>
 }
 
+const Star = ({ marked, starId }) => {
+  return (
+    <span data-star-id={starId} className="star" role="button" style={{fontSize: '80px'}}>
+      {marked ? '\u2605' : '\u2606'}
+    </span>
+  );
+};
+
+const StarRating = ({ value }) => {
+  const [rating, setRating] = React.useState(parseInt(value) || 0);
+  const [selection, setSelection] = React.useState(0);
+
+  const hoverOver = event => {
+    let val = 0;
+    if (event && event.target && event.target.getAttribute('data-star-id'))
+      val = event.target.getAttribute('data-star-id');
+    setSelection(val);
+  };
+  return (
+    <div
+      onMouseOut={() => hoverOver(null)}
+      onClick={e => setRating(e.target.getAttribute('data-star-id') || rating)}
+      onMouseOver={hoverOver}
+    >
+      {Array.from({ length: 5 }, (v, i) => (
+        <Star
+          starId={i + 1}
+          key={`star_${i + 1}`}
+          marked={selection ? selection >= i + 1 : rating >= i + 1}
+        />
+      ))}
+    </div>
+  );
+};
+
 function AfterCallRoomOverlay({ state, setState }) {
 
     return <div className="overlay-shade">
@@ -200,7 +235,9 @@ function AfterCallRoomOverlay({ state, setState }) {
               <div className="subtitle">{"Random calls are still in alpha please give us some swift feedback."}</div>
               <div className="sweet-loading">
                 </div>
+              <StarRating value={3} />
               <div className="text">Some text is here!</div>
+    
               <div className="buttons">
                 <button type="button" className="save" onClick={() => {
                     setState({...state, ...{ showPastCallOverlay: !state.showPastCallOverlay }}); 
