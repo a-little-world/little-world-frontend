@@ -58,8 +58,12 @@ const labelsMap = {
   birthYear: "birth_year",
 };
 
-const submitData = (item, newValue, onSuccess, onFailure) => {
-  fetch(`${BACKEND_URL}/api/profile/`, {
+const submitItem = (item, newValue) => {
+  return submitData({ [labelsMap[item]]: newValue }, "/api/profile/");
+};
+
+const submitData = (data, endpoint) => {
+  return fetch(`${BACKEND_URL}${endpoint}`, {
     method: "POST",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
@@ -67,24 +71,15 @@ const submitData = (item, newValue, onSuccess, onFailure) => {
       "Content-Type": "application/json",
       "X-UseTagsOnly": true, // This automaticly requests error tags instead of direct translations!
     },
-    body: JSON.stringify({ [labelsMap[item]]: newValue }),
-  })
-    .then((response) => {
-      const { status, statusText } = response;
-      if ([200, 400].includes(status)) {
-        response.json().then((report) => {
-          if (status === 200) {
-            onSuccess(report, item, newValue);
-          } else {
-            onFailure(report);
-          }
-        });
-      } else {
-        // unexpected error
-        console.error("server error", status, statusText);
-      }
-    })
-    .catch((error) => console.error(error));
+    body: JSON.stringify(data),
+  }).then((response) => {
+    const { status, statusText } = response;
+    if (status === 200) {
+      return response.json();
+    } else {
+      throw new Error(`Error "${status}" submitting data: ${statusText}`);
+    }
+  });
 };
 
 const apiChangeEmail = (email, onSuccess, onFailure) => {
@@ -206,14 +201,14 @@ function ModalBox({ label, valueIn, setEditing }) {
     }
   };
 
-  const onResponseSuccess = (data, item, newValue) => {
-    dispatch(updateSettings({ [item]: newValue }));
+  const onResponseSuccess = (data) => {
+    dispatch(updateSettings(data));
     setEditing(false);
   };
   const onResponseFailure = (report) => {
     console.log("REPORT", report);
     const backendLabel = labelsMap[label];
-    const errorsList = report[backendLabel];
+    const errorsList = report[backendLabel] || ["unknown error"];
     setErrors(errorsList); // update error message(s)
     setWaiting(false);
   };
@@ -253,7 +248,7 @@ function ModalBox({ label, valueIn, setEditing }) {
         // DISABLE; DANGEROUS
         // apiChangeEmail(value, onResponseSuccess, onResponseFailure);
       } else {
-        submitData(label, value, onResponseSuccess, onResponseFailure);
+        submitItem(label, value).then(onResponseSuccess).catch(onResponseFailure);
       }
     }
   };
