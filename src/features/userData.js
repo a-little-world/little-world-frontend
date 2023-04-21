@@ -139,8 +139,8 @@ export const userDataSlice = createSlice({
     },
     updateSettings: (state, action) => {
       Object.entries(action.payload).forEach(([itemIn, value]) => {
-        const item = beToFe(itemIn);
-        state.settings[item] = value; // ensure data is frontend formatted; does nothing if already
+        const item = beToFe(itemIn); // ensure data is frontend formatted; does nothing if already
+        state.settings[item] = value;
 
         // if name is changed, also update the users object
         if (["firstName", "lastName"].includes(item)) {
