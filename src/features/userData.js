@@ -13,6 +13,13 @@ const initialState = {
   status: "no-thing",
 };
 
+const beToFe = (
+  str // change from underscore_case to camelCase
+) =>
+  str
+    .split("_")
+    .reduce((acc, val, i) => (i === 0 ? val : acc + val.charAt(0).toUpperCase() + val.slice(1)));
+
 export const userDataSlice = createSlice({
   name: "userData",
   initialState,
