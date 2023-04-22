@@ -49,7 +49,7 @@ const AppointmentsLayout = ({setClose,id} ) => {
     <div class={style["flex-grid"]}>
       <div class={`${style["col"]} ${style["title"]}`}>
      
-        <label>Termin vorschlagen</label>
+        <label>{t('chat_appointment_title')}</label>
         <button  className={style["close-button"]} onClick={()=>setClose(false)}>&times;</button>
       </div>
       <div class={`${style["col"]} ${style["sub-title"]}`}>
@@ -61,7 +61,7 @@ const AppointmentsLayout = ({setClose,id} ) => {
           <div className={style['image-container']}>
           <img src={selectedUser&&selectedUser.profile.image} alt="selected user" srcset="" />
           </div>
-          <label>{selectedUser&&selectedUser.profile.first_name} einen Termin vorschlagen</label>
+          <label>{`${selectedUser&&selectedUser.profile.first_name}${t('chat_appointment_send')}`}</label>
         </div>
       </div>
       <div class={style["col"]}><Table data={data} inSelect={tableSelection==="first"} setSelect={() => {
@@ -73,7 +73,7 @@ const AppointmentsLayout = ({setClose,id} ) => {
       <div class={style["btn-container"]}>
         <button className={style["send-button"]} onClick={() => {
           setClose(true);
-        }} >Abbrechen</button>
+        }} >{t('chat_appointment_abbort')}</button>
         <button className={style["cancle-button"]} onClick={() => {
           if(dateSelection!==""){
             const value = t( tableSelection === 'first' ? 'chat_appointment_message_overlap' : 'chat_appointment_message_non_overlap', {userName: selectedUser.profile.first_name, date: dateSelection})

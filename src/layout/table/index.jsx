@@ -2,29 +2,19 @@ import moment from "moment/moment";
 import React, { useEffect, useState } from "react";
 import style from "./style.module.css";
 
-function findNextDate(weekday, time) {
-  let date = new Date();
-  let currentWeekday = date.getDay();
-  let currentTime = date.getHours() + date.getMinutes() / 60;
+function getNextDate(weekday, timeSlot) {
+  const weekdays = ["su", "mo", "tu", "we", "th", "fr", "sa"];
+  const targetWeekday = weekdays.indexOf(weekday);
+  const [startHour, endHour] = timeSlot.split("_").map(Number);
 
-  let diffDays = (weekday - currentWeekday + 7) % 7;
-  let diffTime = (time - currentTime + 24) % 24;
+  const currentDate = new Date();
+  const currentWeekday = currentDate.getDay();
+  const daysToAdd = (targetWeekday - currentWeekday + 7) % 7 || 7;
 
-  if (diffTime < 0) {
-    diffDays += 1;
-  }
+  const targetDate = new Date(currentDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+  targetDate.setHours(startHour, 0, 0, 0);
 
-  let newDate = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate() + diffDays,
-    time,
-    0,
-    0
-  );
-
-  let formattedDate = moment(newDate).format('DD MMM YYYY');
-  return formattedDate;
+  return moment(targetDate).format('DD MMM YYYY');
 }
 
 const getDayNumber = (day) => {
@@ -70,7 +60,7 @@ const Table = ({ view, data, setDate, header, inSelect, setSelect }) => {
         <p>{header}</p>
         <table>
           {data.map((row, index) => {
-            dates[index] = findNextDate(getDayNumber(row[0]), Number(row[1][0].split("_")[0]) / 60)
+            dates[index] = getNextDate(row[0], row[1][0])
             times[index] = Number(row[1][0].split("_")[0])%24+":00" 
             console.log("DDD", dates[index])
             return (<tr
