@@ -253,85 +253,91 @@
   "ur_reported_line2": "They will no longer be able to contact you.",
   "faq": {
     "section_title": {
-      "why_lw": "Why Little World?",
-      "can_anyone_join": "Can anyone join Little World?",
-      "time_commitment": "How much time does Little World require?",
-      "sustainability": "How sustainable is Little World?",
-      "data_tech_issues": "What happens to my data and in the event of technical faults?"
+      "before_talk": "Before the conversation",
+      "during_talk": "During the conversation",
+      "after_talk": "After the conversation"
     },
     "section_content": {
-      "why_lw": {
+      "before_talk": {
         "q1": {
-          "question": "Why Little World?",
-          "answer": "The integration of immigrants is greatly facilitated through the acquisition of German language skills. However, a significant number of refugees and newcomers face barriers in accessing language learning opportunities, exacerbated by the current COVID-19 situation. Little World offers a comprehensive solution by facilitating language learning through its platform, fostering connections across communities and promoting social inclusion and equal opportunities."
+          "question": "Can I choose the people I want to talk to?",
+          "answer": "Little World matches you based on common interests. If it doesn't work out, please let us know and we connect you with the next person. You can dissolve your match at any time - and in the user form you can set everything, for example which topics you are interested in or which language level your conversation partner should have."
         },
         "q2": {
-          "question": "Isn't it possible for language learners to engage in language tandem learning opportunities",
-          "answer": "Tandem learning partnerships can be highly beneficial. However, it is often the case that individuals are primarily interested in acquiring proficiency in widely spoken languages such as English, Spanish, or French. Conversely, a vast majority of immigrants to Germany bring non-mainstream languages such as Hindi, Ukrainian, or Amharic, making it challenging to find suitable tandem partners. Little World addresses this issue by providing a platform where individuals can connect and engage in German language practice."
+          "question": "I don't have a match yet. Who can I contact?",
+          "answer": "First of all sorry! We are working hard to get everyone matched as soon as possible. Sometimes it can take a while. If it's been too long for you, contact our support and we'll take care of it right away!"
         },
         "q3": {
-          "question": "What about language teachers or language schools?",
-          "answer": "While traditional language courses are highly recommended, they are often plagued by lengthy waiting periods or prohibitive costs for self-funded immigrants. These courses may offer academic instruction, but lack the essential component of practical language usage through speaking with native speakers. Little World offers a practical solution to this challenge, providing a platform for language practice with native German speakers"
-        }
-      },
-      "can_anyone_join": {
-        "q1": {
-          "question": "Is Little World really free of charge?",
-          "answer": "Yes :) For each and everyone, forever!"
-        },
-        "q2": {
-          "question": "Can I just give it a try?",
-          "answer": "Definitely! You can easily create an account within a matter of minutes, select your interests, and start chatting!"
-        },
-        "q3": {
-          "question": "Is it only possible to help if I speak German?",
-          "answer": "Yes, Little World provides an opportunity to practice speaking German, therefore, active participation in speaking the language is the optimal approach"
+          "question": "I can't think of anything to talk about. What can I do?",
+          "answer": "Then there's always the topic of weather. Or penguins. Or pizza. And if you can get through that too, we've prepared questions on the platform to help you with the conversation - try it out now!"
         },
         "q4": {
-          "question": "And what if we can't think of a topic to talk about?",
-          "answer": "In addition to language practice, there are always topics like weather, penguins, or pizza to discuss. If you find yourself needing additional support, Little World has provided various tools on the platform to enhance conversation -try it out right now!"
+          "question": "Technical issues on Little World?",
+          "answer": "Whoops! If you have any technical problems, please contact our support and we'll take care of it right away!"
         },
         "q5": {
-          "question": "Is there also an app?",
-          "answer": "Little World is a web-based application, accessible directly through your internet browser without the need for a separate download from an app store. However, plans for a mobile application are in the works and will be made available in the near future"
+          "question": "Camera, microphone or loudspeaker not working?",
+          "answer": "Please remember to grant access to the camera and microphone. Only with these permissions a video call can take place. At the start you will be asked for it, if this does not work, check your settings in the browser. You can find the respective instructions here: Chrome, Firefox, Safari, Edge. If it still doesn't work, write to our support and we will be happy to help: https://home.little-world.com/kontakt"
+        },
+        "q6": {
+          "question": "Is there anything I can do to prepare for the interviews?",
+          "answer": "Just think about what interests you. Is it the other culture, everyday life, hobbies - the topics of conversation are as diverse as you and your conversation partner."
+        },
+        "q7": {
+          "question": "What if I don't like the match?",
+          "answer": "This is what can happen. We match you based on common interests, but sometimes it just doesn't fit. Then we will find new friendly conversation partners for you!"
+        },
+        "q8": {
+          "question": "My match doesn't answer me?",
+          "answer": "Please contact our support. For privacy reasons, we do not provide further contact information. But maybe we can reach your match in other ways. Otherwise, we will be happy to find new conversation partners for you!"
         }
       },
-      "time_commitment": {
+      "during_talk": {
         "q1": {
-          "question": "An honorary post. I don't have the time for that, do I?",
-          "answer": "Little World provides a flexible and accommodating volunteer service that can easily be integrated into your daily routine. The program offers complete autonomy in terms of how and when you can participate, and even a small commitment of 30 minutes a week can have a significant positive impact on others"
+          "question": "Is it possible to have group discussions?",
+          "answer": "We'll be offering that soon! Theme-specific or completely free-style. We're looking forward to that! In addition, our community meetings take place weekly: To get to know each other and exchange ideas. Access and dates can be found in the section 'Home' and then 'Community Calls'."
         },
         "q2": {
-          "question": "Can I also skip a week?",
-          "answer": "Certainly, we understand that everyone has prior commitments and obligations in their daily lives. If the volunteer service does not align with your schedule, you have the option to cancel the appointment at any time. Little World values flexibility and allows you to choose the time that works best for you."
-        }
-      },
-      "sustainability": {
-        "q1": {
-          "question": "How long do the contacts last?",
-          "answer": "The duration of the conversation can vary: some individuals maintain contact for several months, others for years, and in some cases, even celebrate holidays together. Our team strives to match you with a compatible conversation partner, however, if for any reason the connection does not work out, it is not a problem. We are always ready to provide you with new and pleasant individuals to engage in conversation with."
-        },
-        "q2": {
-          "question": "How are you financed?",
-          "answer": "So far, Little World has been sustained through personal funds and small grants. In the mid-term, our goal is to secure funding from local government entities and the federal government, as we cannot solely rely on existing resources. Our objective is to continue providing free access to all participants, with a specific emphasis on supporting socially disadvantaged individuals and refugees."
-        }
-      },
-      "data_tech_issues": {
-        "q1": {
-          "question": "What happens to my data?",
-          "answer": "At Little World, we place a high value on data protection and transparency. For this reason, we have transparently disclosed all relevant information in our privacy policy, which can be accessed at ttps://home.little-world.com/datenschutz"
-        },
-        "q2": {
-          "question": "Can I remain anonymous?",
-          "answer": "Only your first name is displayed in our web application, visible only to your matches. Other personal details, such as your email address, are kept confidential and known only to our team. The user form, which can be accessed and customized at any time under the \"Settings\" tab, contains all relevant information."
+          "question": "Does it make sense to exchange private information?",
+          "answer": "At least you don't have to. At Little World, everything is anonymous. How much you reveal about yourself in the conversations is entirely up to you!"
         },
         "q3": {
-          "question": "Technical faults on Little World?",
-          "answer": "For technical issues, kindly utilize our contact form at https://home.little-world.com/contact and our support team will promptly attend to your concerns."
+          "question": "Can I have several/different interlocutors?",
+          "answer": "Volunteers are welcome to help as much as they like. We make it possible for German learners to have two active partners. Because many people are still looking for a match and we would like to provide one for everyone."
         },
         "q4": {
-          "question": "I can't log in or register?",
-          "answer": "his can be frustrating, but don't worry! If you are having trouble receiving the registration email, please reach out to our support team using our contact form at: https://home.little-world.com/kontakt. We will be happy to assist you and resolve any technical issues you may be facing."
+          "question": "Technical fault?",
+          "answer": "Suddenly nothing works anymore? If technical problems arise, please contact our support and we will take care of it immediately!"
+        },
+        "q5": {
+          "question": "Insult/harassment in conversation?",
+          "answer": "We don't like that at all! Please contact our support immediately and we will intervene!"
+        },
+        "q6": {
+          "question": "What if traumas break out or suicidal thoughts are expressed?",
+          "answer": "Please do not solve it yourself. In such situations, contact our support and we will find professionals in the field."
+        }
+      },
+      "after_talk": {
+        "q1": {
+          "question": "Can I also meet people in private?",
+          "answer": "If your counterpart also feels like it, gladly! After all, Little World wants to promote integration and friendship."
+        },
+        "q2": {
+          "question": "Are there also Little World Community meetings?",
+          "answer": "There are! We meet online every week to exchange ideas and get to know each other. Access and dates can be found in the section 'Home' and then 'Community Calls'. You can easily join the conversations on the WebApp. We look forward to hearing from you!"
+        },
+        "q3": {
+          "question": "Can I give feedback on the platform?",
+          "answer": "Feedback is always welcome! Feel free to write us a message in the support chat or use our contact form: https://home.little-world.com/kontakt."
+        },
+        "q4": {
+          "question": "How can I delete my account?",
+          "answer": "At the moment it still works manually. Please contact our support and we will take care of it! "
+        },
+        "q5": {
+          "question": "How can I help Little World?",
+          "answer": "Join in! We are always looking for support. For programming, promotion, public relations and much more. We can use all the help we can get - donations help too. Just write to us in the chat or at oliver@little-world.com"
         }
       }
     }

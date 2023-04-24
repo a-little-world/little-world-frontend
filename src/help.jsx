@@ -32,24 +32,16 @@ function Faqs() {
   const { t } = useTranslation();
   const help_faq = [
     {
-      "section" : "why_lw",
-      "questions" : ["q1", "q2", "q2"]
+      "section" : "before_talk",
+      "questions" : ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"]
     },
     {
-      "section" : "can_anyone_join",
-      "questions" : ["q1", "q2", "q2", "q4", "q5"]
+      "section" : "during_talk",
+      "questions" : ["q1", "q2", "q3", "q4", "q5", "q6"]
     },
     {
-      "section" : "time_commitment",
-      "questions" : ["q1", "q2"]
-    },
-    {
-      "section" : "sustainability",
-      "questions" : ["q1", "q2"]
-    },
-    {
-      "section" : "data_tech_issues",
-      "questions" : ["q1", "q2", "q3", "q4"]
+      "section" : "after_talk",
+      "questions" : ["q1", "q2", "q3", "q4", "q5", "q6"]
     }
   ]
   return (
