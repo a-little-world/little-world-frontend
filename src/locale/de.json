@@ -250,89 +250,95 @@
   "ur_reported_line2": "Sie werden nicht mehr in der Lage sein, Sie zu kontaktieren.",
   "faq": {
     "section_title": {
-      "why_lw": "Warum Little World?",
-      "can_anyone_join": "Kann jede:r bei Little World mitmachen?",
-      "time_commitment": "Wie ist der zeitliche Aufwand?",
-      "sustainability": "Wie nachhaltig ist Little World?",
-      "data_tech_issues": "Was passiert mit meinen Daten und bei techn. Störungen?"
+      "before_talk": "Vor dem Gespräch",
+      "during_talk": "Während des Gesprächs",
+      "after_talk": "Nach dem Gespräch"
     },
     "section_content": {
-      "why_lw": {
+      "before_talk": {
         "q1": {
-          "question": "Wieso Little World?",
-          "answer": "Für eine erfolgreiche Integration von Zugewanderten ist die Beherrschung der deutschen Sprache von großer Bedeutung. Leider stehen vielen Geflüchteten und Newcomer:innen die notwendigen Ressourcen und Angebote oft nicht zur Verfügung. Die aktuelle Corona-Situation erschwert die Situation zusätzlich. Mit Little World wird die Integration jedoch einfacher. Durch unsere Vernetzungsplattform können wir Menschen, selbst aus der kleinsten Kommune, zusammenbringen und damit die soziale Teilhabe und Chancengleichheit fördern."
+          "question": "Kann ich mir die Gesprächspartner:innen selbst aussuchen?",
+          "answer": "Little World matcht euch aufgrund gemeinsamer Interessen. Sollte es mal nicht funken, gibst du uns Bescheid und wir verbinden dich mit dem oder der nächsten. Du kannst dein Match jederzeit auflösen – und im User Form kannst du alles einstellen, zum Beispiel welche Themen dich interessieren oder welches Sprachniveau dein:e Gesprächspartner:in haben soll."
         },
         "q2": {
-          "question": "Können Sprachlernende nicht Sprachtandems bilden?",
-          "answer": "Sprachtandem-Partner können eine wertvolle Unterstützung darstellen. Jedoch sind sie in der Regel an Sprachen interessiert, die weltweit verbreitet sind, wie Englisch, Spanisch oder Französisch. Allerdings bringen rund 95% der Menschen, die nach Deutschland kommen, andere Sprachen mit, wie Hindi, Ukrainisch oder Amharisch. Ein Sprachtandem zu finden, ist daher sehr schwierig. Hier kommt Little World ins Spiel: Sie bietet eine Plattform für Menschen, die sich zum Üben des Deutschsprechens treffen möchten."
+          "question": "Ich habe noch kein Match. An wen kann ich mich wenden?",
+          "answer": "Erstmal sorry! Wir arbeiten mit Hochdruck daran, dass alle so schnell wie möglich gematcht werden. Manchmal kann es etwas dauern. Sollte es bei dir schon zu lange der Fall sein, dann melde dich bei unserem Support und wir kümmern uns sofort darum!"
         },
         "q3": {
-          "question": "Was ist mit Sprachlehrer:innen oder Sprachschulen?",
-          "answer": "Wir empfehlen auch Deutschkurse! Aber leider haben diese oft Wartezeiten von über einem Jahr oder sind für Zugewanderte bei Selbstzahlung sehr kostspielig. Besonders fehlt hier die Praxis des Deutschsprechens mit Muttersprachlern. Bei Little World hast du genau das - die Chance, deine Deutschkenntnisse durch regelmäßige Übungen mit Muttersprachlern zu verbessern. Willkommen bei Little World!"
-        }
-      },
-      "can_anyone_join": {
-        "q1": {
-          "question": "Ist Little World wirklich kostenlos?",
-          "answer": "Ja, Little World steht allen Personen zur Verfügung, und das auf Dauer."
-        },
-        "q2": {
-          "question": "Kann ich es einfach mal ausprobieren?",
-          "answer": "Definitiv! Registrieren Sie Ihr Konto in nur wenigen Minuten, wählen Sie Ihre Interessen aus und starten Sie ihr erstes Gespräch."
-        },
-        "q3": {
-          "question": "Muss ich wirklich nur Deutsch sprechen können, um zu helfen?",
-          "answer": "Ja, Little World ist dafür entwickelt worden, die Möglichkeit zu bieten, das Deutschsprechen zu verbessern. Daher ist es die beste Strategie, diese Gelegenheit zu nutzen und aktiv Deutsch zu sprechen."
+          "question": "Mir fallen keine Gesprächsthemen ein. Was kann ich tun?",
+          "answer": "Dann gibt es immer noch das Thema Wetter. Oder Pinguine. Oder Pizza. Und wenn ihr auch damit durch seid, haben wir auf der Plattform einige Hilfsmittel vorbereitet, die euch beim Gespräch unterstützen – probiere es gleich mal aus!"
         },
         "q4": {
-          "question": "Und wenn uns kein Gesprächsthema mehr einfällt?",
-          "answer": "Wenn euch das Gesprächsthema ausgeht, habt keine Sorge. Wir haben auf unserer Plattform eine Reihe von Gesprächshilfen bereitgestellt, wie das Wetter, Pinguine oder Pizza. Probiert es einfach aus und lasst euch überraschen!"
+          "question": "Technische Störungen auf Little World?",
+          "answer": "Hoppla! Solltest du technische Probleme haben, wende dich bitte an unseren Support und wir kümmern uns umgehend darum!"
         },
         "q5": {
-          "question": "Gibt es auch eine App?",
-          "answer": "Mit Little World hast du Zugang zu einer benutzerfreundlichen WebApp, die du direkt über deinen Internetbrowser nutzen kannst. Bald wird es auch eine dedizierte App für alle wichtigen Plattformen geben."
+          "question": "Kamera, Mikrofon oder Lautsprecher funktionieren nicht?",
+          "answer": "Bitte denke daran, den Zugriff auf Kamera und Mikrofon zu gewähren. Erst mit dieser Erlaubnis kann ein Videocall stattfinden. Zum Start wirst du danach gefragt, sollte das nicht funktionieren, checke deine Einstellung im Browser. Die jeweiligen Anleitungen findest du hier: \n\nChrome\n\nFirefox\n\nSafari\n\nEdge\n\nSollte es dennoch nicht klappen, schreibe unserem Support und wir helfen gerne:   https://home.little-world.com/kontakt"
+        },
+        "q6": {
+          "question": "Kann ich mich irgendwie auf die Gespräche vorbereiten?",
+          "answer": "Überleg dir doch einfach, was dich interessiert. Ist es die andere Kultur, der Alltag, die Hobbies – die Gesprächsthemen sind so vielfältig wie Du und dein:e Gesprächspartner:in."
+        },
+        "q7": {
+          "question": "Mein Match gefällt mir nicht. Und jetzt?",
+          "answer": "Das kann passieren. Wir matchen euch anhand gemeinsamer Interessen, aber manchmal passt es eben nicht. Dann finden wir neue nette Gesprächspartner:innen für dich!"
+        },
+        "q8": {
+          "question": "Mein Match antwortet mir nicht?",
+          "answer": "Bitte kontaktiere unseren Support. Aus Datenschutz-Gründen, geben wir weitere Kontaktdaten nicht weiter. Aber vielleicht erreichen wir dein Match noch auf anderen Wegen. Ansonsten finden wir gerne neue Gesprächspartner:innen für dich!"
         }
       },
-      "time_commitment": {
+      "during_talk": {
         "q1": {
-          "question": "Ein Ehrenamt. Dafür hab ich gar nicht die Zeit, oder?",
-          "answer": "Little World bietet ein flexibles Ehrenamt, das sich perfekt in deinen Alltag integrieren lässt. Du entscheidest selbst, wie viel Zeit du investieren möchtest und wann es für dich am besten passt. Selbst kurze Zeiträume wie 30 Minuten pro Woche können bereits einen großen Beitrag für andere leisten."
+          "question": "Kann man auch Gruppengespräche führen?",
+          "answer": "Das bieten wir bald an! Themenspezifisch oder ganz frei. Darauf freuen wir uns schon!\nAußerdem finden wöchentlich unsere Community Treffen statt: Zum Kennenlernen und Austauschen. Zugang und Termine findest du im Bereich \"Start\" und dann \"Gruppengespräche\"."
         },
         "q2": {
-          "question": "Kann ich auch mal eine Woche auslassen?",
-          "answer": "Es versteht sich von selbst, dass die Zeitplanung für jeden eine Herausforderung darstellen kann. Bei Little World hast du jedoch die volle Flexibilität, um dich in Übereinstimmung mit deinen Verpflichtungen zu engagieren. Du kannst jederzeit entscheiden, wann und wie du dich einbringen möchtest."
-        }
-      },
-      "sustainability": {
-        "q1": {
-          "question": "Wie lange halten die Kontakte an?",
-          "answer": "Das variiert je nach Paarung. Einige bleiben über Monate im Kontakt, andere über Jahre, und einige feiern sogar gemeinsam Weihnachten. Wir bemühen uns, dich mit einer geeigneten Person zu verbinden. Sollte es nicht passen, ist das kein Problem. Wir finden dann gerne neue angenehme Gesprächspartner für dich."
-        },
-        "q2": {
-          "question": "Wie finanziert ihr euch?",
-          "answer": "Bislang finanzieren wir uns durch eigene Mittel und geringfügige Förderungen. Unser Ziel ist es, Little World auf mittelfristiger Basis durch Kommunen und den Bund zu unterstützen zu bekommen, da es uns ohne Unterstützung nicht möglich ist, unsere Arbeit fortzuführen. Dabei ist es uns wichtig, allen Teilnehmern weiterhin eine kostenfreie Teilhabe zu ermöglichen, insbesondere mit Fokus auf sozial schwächeren und geflüchteten Menschen."
+          "question": "Ist es sinnvoll, Privates auszutauschen?",
+          "answer": "Zumindest musst du es nicht. Bei Little World ist alles anonym. Wie viel du in den Gesprächen von dir preisgibst, entscheidest allein du!"
         },
         "q3": {
-          "question": "Wie kann ich noch helfen?",
-          "answer": "Unterstütze uns auf vielfältige Weise! Teile uns mit Freunden und Bekannten weiter, folge uns auf Social Media oder engagiere dich im Team. Es gibt Möglichkeiten für jede Fähigkeit. Du kannst zum Beispiel unsere Teilnehmer koordinieren, Texte mit uns verfassen oder Flyer verteilen. Nutze auch gerne deinen professionellen Hintergrund. Bei Interesse kontaktiere uns unter oliver@little-world.com und wir besprechen gemeinsam deine Möglichkeiten!"
-        }
-      },
-      "data_tech_issues": {
-        "q1": {
-          "question": "Was passiert mit meinen Daten?",
-          "answer": "Datensicherheit und Transparenz sind zentrale Anliegen für uns. Aus diesem Grund haben wir alle relevanten Informationen in unserer Datenschutzrichtlinie (https://home.little-world.com/datenschutz) detailliert und transparent dargestellt."
-        },
-        "q2": {
-          "question": "Kann ich anonym bleiben?",
-          "answer": "Ja, bei uns legen wir großen Wert auf Datenschutz . Aus diesem Grund wird in unserer Webapp nur dein Vorname angezeigt und dieser ist auch nur für deine Matches sichtbar. Persönliche Informationen, wie die E-Mail-Adresse, sind nur für unser Team zugänglich und werden nicht an Dritte weitergegeben. Du hast jederzeit Zugriff auf deine Benutzerdaten über dein Benutzerformular und kannst sie unter \"Einstellungen\" nach Belieben anpassen."
-        },
-        "q3": {
-          "question": "Technische Störungen auf Little World?",
-          "answer": "Solltest du technische Probleme haben, steht dir unser Support-Team jederzeit zur Verfügung. Bitte nutze dazu unser Kontaktformular unter https://home.little-world.com/kontakt und wir werden uns schnellstmöglich um dein Anliegen kümmern."
+          "question": "Kann ich mehrere/unterschiedliche Gesprächspartner:innen haben?",
+          "answer": "Ehrenamtliche Muttersprachler:innen dürfen gerne so viel helfen, wie sie mögen.\nDeutschlernenden ermöglichen wir zwei aktive Partner:innen. Denn hier sind noch viele auf der Suche nach einem Match und wir wollen gerne alle versorgen."
         },
         "q4": {
-          "question": "Ich kann mich nicht einloggen oder registrieren?",
-          "answer": "Wenn du Schwierigkeiten beim Login oder bei der Anmeldung hast, kann das daran liegen, dass einige E-Mail-Provider unsere Registrierungs-E-Mail noch blockieren. In diesem Fall kontaktiere uns bitte so schnell wie möglich, damit unser Support-Team dir helfen kann. Du kannst das Kontaktformular unter https://home.little-world.com/kontakt erreichen."
+          "question": "Technische Störung?",
+          "answer": "Plötzlich geht nichts mehr? Wenn technische Probleme aufkommen, wende dich bitte an unseren Support und wir kümmern uns umgehend darum!"
+        },
+        "q5": {
+          "question": "Beleidigung/Belästigung im Gespräch?",
+          "answer": "Das mögen wir gar nicht! Bitte wende dich umgehend an unseren Support und wir schreiten ein!"
+        },
+        "q6": {
+          "question": "Was ist wenn Traumata aufbrechen oder Suizidgedanken geäußert werden?",
+          "answer": "Bitte nicht selbst lösen. Bei solchen Situationen wende dich an unseren Support und wir helfen, professionelle Ansprechpartner zu finden."
+        }
+      },
+      "after_talk": {
+        "q1": {
+          "question": "Kann ich Gesprächspartner:innen auch privat treffen?",
+          "answer": "Wenn dein Gegenüber auch Lust hat, gerne! Immerhin will Little World ja Integration und Freundschaft fördern."
+        },
+        "q2": {
+          "question": "Gibt es auch Little World Community Treffen?",
+          "answer": "Gibt es! Wir treffen uns jede Woche online zum Austausch und Kennenlernen. Zugang und Termine findest du im Bereich \"Start\" und dann \"Gruppengespräche\". Wir freuen uns auf dich!"
+        },
+        "q3": {
+          "question": "Kann ich Feedback zur Plattform geben?",
+          "answer": "Feedback ist immer willkommen! Schreib uns gerne eine Nachricht im Support Chat oder nutze unser Kontakformular: https://home.little-world.com/kontakt"
+        },
+        "q4": {
+          "question": "Wie kann ich meinen Account löschen?",
+          "answer": "Momentan funktioniert das noch händisch. Wende dich bitte an unseren Support und wir kümmern uns darum!"
+        },
+        "q5": {
+          "question": "Kann ich mich sonst noch für geflüchtete Menschen engagieren?",
+          "answer": ""
+        },
+        "q6": {
+          "question": "Wie kann ich Little World helfen?",
+          "answer": "Mach mit! Wir suchen immer Unterstützung. Für Programmierung, Promotion, Öffentlichkeitsarbeit und vieles mehr. Wir können jede Hilfe gebrauchen – auch Spenden helfen. Schreib uns einfach im Chat oder unter oliver@little-world.com"
         }
       }
     }
