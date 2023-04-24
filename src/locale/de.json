@@ -246,5 +246,96 @@
   "ur_report_label": "Sagen Sie uns, warum Sie {{name}} melden wollen.",
   "ur_report_placeholder": "Verfassen Sie eine Nachricht an uns…",
   "ur_reported_line1": "Sie haben {{name}} gemeldet!",
-  "ur_reported_line2": "Sie werden nicht mehr in der Lage sein, Sie zu kontaktieren."
+  "ur_reported_line2": "Sie werden nicht mehr in der Lage sein, Sie zu kontaktieren.",
+  "faq": {
+    "section_title": {
+      "before_talk": "Vor dem Gespräch",
+      "during_talk": "Während des Gesprächs",
+      "after_talk": "Nach dem Gespräch"
+    },
+    "section_content": {
+      "before_talk": {
+        "q1": {
+          "question": "Kann ich mir die Gesprächspartner:innen selbst aussuchen?",
+          "answer": "Little World matcht euch aufgrund gemeinsamer Interessen. Sollte es mal nicht funken, gibst du uns Bescheid und wir verbinden dich mit dem oder der nächsten. Du kannst dein Match jederzeit auflösen – und im User Form kannst du alles einstellen, zum Beispiel welche Themen dich interessieren oder welches Sprachniveau dein:e Gesprächspartner:in haben soll."
+        },
+        "q2": {
+          "question": "Ich habe noch kein Match. An wen kann ich mich wenden?",
+          "answer": "Erstmal sorry! Wir arbeiten mit Hochdruck daran, dass alle so schnell wie möglich gematcht werden. Manchmal kann es etwas dauern. Sollte es bei dir schon zu lange der Fall sein, dann melde dich bei unserem Support und wir kümmern uns sofort darum!"
+        },
+        "q3": {
+          "question": "Mir fallen keine Gesprächsthemen ein. Was kann ich tun?",
+          "answer": "Dann gibt es immer noch das Thema Wetter. Oder Pinguine. Oder Pizza. Und wenn ihr auch damit durch seid, haben wir auf der Plattform einige Hilfsmittel vorbereitet, die euch beim Gespräch unterstützen – probiere es gleich mal aus!"
+        },
+        "q4": {
+          "question": "Technische Störungen auf Little World?",
+          "answer": "Hoppla! Solltest du technische Probleme haben, wende dich bitte an unseren Support und wir kümmern uns umgehend darum!"
+        },
+        "q5": {
+          "question": "Kamera, Mikrofon oder Lautsprecher funktionieren nicht?",
+          "answer": "Bitte denke daran, den Zugriff auf Kamera und Mikrofon zu gewähren. Erst mit dieser Erlaubnis kann ein Videocall stattfinden. Zum Start wirst du danach gefragt, sollte das nicht funktionieren, checke deine Einstellung im Browser. Die jeweiligen Anleitungen findest du hier: \n\nChrome\n\nFirefox\n\nSafari\n\nEdge\n\nSollte es dennoch nicht klappen, schreibe unserem Support und wir helfen gerne:   https://home.little-world.com/kontakt"
+        },
+        "q6": {
+          "question": "Kann ich mich irgendwie auf die Gespräche vorbereiten?",
+          "answer": "Überleg dir doch einfach, was dich interessiert. Ist es die andere Kultur, der Alltag, die Hobbies – die Gesprächsthemen sind so vielfältig wie Du und dein:e Gesprächspartner:in."
+        },
+        "q7": {
+          "question": "Mein Match gefällt mir nicht. Und jetzt?",
+          "answer": "Das kann passieren. Wir matchen euch anhand gemeinsamer Interessen, aber manchmal passt es eben nicht. Dann finden wir neue nette Gesprächspartner:innen für dich!"
+        },
+        "q8": {
+          "question": "Mein Match antwortet mir nicht?",
+          "answer": "Bitte kontaktiere unseren Support. Aus Datenschutz-Gründen, geben wir weitere Kontaktdaten nicht weiter. Aber vielleicht erreichen wir dein Match noch auf anderen Wegen. Ansonsten finden wir gerne neue Gesprächspartner:innen für dich!"
+        }
+      },
+      "during_talk": {
+        "q1": {
+          "question": "Kann man auch Gruppengespräche führen?",
+          "answer": "Das bieten wir bald an! Themenspezifisch oder ganz frei. Darauf freuen wir uns schon!\nAußerdem finden wöchentlich unsere Community Treffen statt: Zum Kennenlernen und Austauschen. Zugang und Termine findest du im Bereich \"Start\" und dann \"Gruppengespräche\"."
+        },
+        "q2": {
+          "question": "Ist es sinnvoll, Privates auszutauschen?",
+          "answer": "Zumindest musst du es nicht. Bei Little World ist alles anonym. Wie viel du in den Gesprächen von dir preisgibst, entscheidest allein du!"
+        },
+        "q3": {
+          "question": "Kann ich mehrere/unterschiedliche Gesprächspartner:innen haben?",
+          "answer": "Ehrenamtliche Muttersprachler:innen dürfen gerne so viel helfen, wie sie mögen.\nDeutschlernenden ermöglichen wir zwei aktive Partner:innen. Denn hier sind noch viele auf der Suche nach einem Match und wir wollen gerne alle versorgen."
+        },
+        "q4": {
+          "question": "Technische Störung?",
+          "answer": "Plötzlich geht nichts mehr? Wenn technische Probleme aufkommen, wende dich bitte an unseren Support und wir kümmern uns umgehend darum!"
+        },
+        "q5": {
+          "question": "Beleidigung/Belästigung im Gespräch?",
+          "answer": "Das mögen wir gar nicht! Bitte wende dich umgehend an unseren Support und wir schreiten ein!"
+        },
+        "q6": {
+          "question": "Was ist wenn Traumata aufbrechen oder Suizidgedanken geäußert werden?",
+          "answer": "Bitte nicht selbst lösen. Bei solchen Situationen wende dich an unseren Support und wir helfen, professionelle Ansprechpartner zu finden."
+        }
+      },
+      "after_talk": {
+        "q1": {
+          "question": "Kann ich Gesprächspartner:innen auch privat treffen?",
+          "answer": "Wenn dein Gegenüber auch Lust hat, gerne! Immerhin will Little World ja Integration und Freundschaft fördern."
+        },
+        "q2": {
+          "question": "Gibt es auch Little World Community Treffen?",
+          "answer": "Gibt es! Wir treffen uns jede Woche online zum Austausch und Kennenlernen. Zugang und Termine findest du im Bereich \"Start\" und dann \"Gruppengespräche\". Wir freuen uns auf dich!"
+        },
+        "q3": {
+          "question": "Kann ich Feedback zur Plattform geben?",
+          "answer": "Feedback ist immer willkommen! Schreib uns gerne eine Nachricht im Support Chat oder nutze unser Kontakformular: https://home.little-world.com/kontakt"
+        },
+        "q4": {
+          "question": "Wie kann ich meinen Account löschen?",
+          "answer": "Momentan funktioniert das noch händisch. Wende dich bitte an unseren Support und wir kümmern uns darum!"
+        },
+        "q5": {
+          "question": "Wie kann ich Little World helfen?",
+          "answer": "Mach mit! Wir suchen immer Unterstützung. Für Programmierung, Promotion, Öffentlichkeitsarbeit und vieles mehr. Wir können jede Hilfe gebrauchen – auch Spenden helfen. Schreib uns einfach im Chat oder unter oliver@little-world.com"
+        }
+      }
+    }
+  }
 }
