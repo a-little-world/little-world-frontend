@@ -710,8 +710,9 @@ function Main() {
     }
   };
 
-  const initChatComponent = (
-    <Chat
+  const initChatComponent = (backgroundMode) => {
+    return <Chat
+      backgroundMode={backgroundMode}
       showChat={use === "chat"}
       matchesInfo={matchesInfo}
       userPk={userPk}
@@ -720,7 +721,7 @@ function Main() {
       updateMatchesOnlineStates={updateOnlineState}
       adminActionCallback={adminActionCallback}
     />
-  );
+  }
 
   const [showCancelSearching, setShowCancelSearching] = useState(false);
 
@@ -759,7 +760,7 @@ function Main() {
             {topSelection === "community_calls" && <CommunityCalls />}
           </div>
         )}
-        {use === "chat" && initChatComponent}
+        {use === "chat" && initChatComponent(false)}
         {use === "notifications" && <Notifications />}
         {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} userPk={userPk} />}
         {use === "help" && <Help selection={topSelection} />}
@@ -824,7 +825,7 @@ function Main() {
           />
         )}
       </div>
-      {!(use === "chat") && <div className="disable-chat">{initChatComponent}</div>}
+      {!(use === "chat") && <div className="disable-chat">{initChatComponent(true)}</div>}
     </div>
   );
 }
