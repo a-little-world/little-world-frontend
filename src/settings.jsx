@@ -82,33 +82,8 @@ const submitData = (data, endpoint) => {
   });
 };
 
-const apiChangeEmail = (email, onSuccess, onFailure) => {
-  /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
-  fetch(`${BACKEND_URL}/api/user/change_email/`, {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({ email }).toString(),
-  })
-    .then((response) => {
-      const { status, statusText } = response;
-      if ([200, 400].includes(status)) {
-        response.json().then(({ report }) => {
-          if (status === 200) {
-            onSuccess(report);
-          } else {
-            onFailure(report);
-          }
-        });
-      } else {
-        // unexpected error
-        console.error("server error", status, statusText);
-      }
-    })
-    .catch((error) => console.error(error));
-};
+const apiChangeEmail = (email) => submitData(email, "/api/user/change_email/");
+/* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
 
 const allowedCodes = [
   // copied from profile.jsx. should globalise.
@@ -246,7 +221,7 @@ function ModalBox({ label, valueIn, setEditing }) {
         }
       } else if (type === "email") {
         // DISABLE; DANGEROUS
-        // apiChangeEmail(value, onResponseSuccess, onResponseFailure);
+        // apiChangeEmail(value).then(onResponseSuccess).catch(onResponseFailure);
       } else {
         submitItem(label, value).then(onResponseSuccess).catch(onResponseFailure);
       }
