@@ -82,6 +82,15 @@ const submitData = (data, endpoint) => {
   });
 };
 
+const apiChangePw = (oldPass, newPass) => {
+  const data = {
+    password_old: oldPass,
+    password_new: newPass,
+    password_new2: newPass,
+  };
+  return submitData(data, "/api/user/changepw/");
+};
+
 const apiChangeEmail = (email) => submitData(email, "/api/user/change_email/");
 /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
 
@@ -207,17 +216,15 @@ function ModalBox({ label, valueIn, setEditing }) {
           .filter(({ tagName }) => tagName !== "BUTTON")
           .map((x) => x.value);
 
-        const [currentPass, newPass1, newPass2] = values;
+        const [currentPw, newPw, newPwCopy] = values;
         // we check the new passwords match on frontend, so only need to send one to backend
-        if (newPass1 !== newPass2) {
+        if (newPw !== newPwCopy) {
           setErrors(["request_errors.fe_mismatch"]);
+          console.log(111, t("request_errors.fe_mismatch"));
           setWaiting(false);
         } else {
-          const data = {
-            currentPass,
-            newPass: newPass1,
-          };
           // submit data
+          apiChangePw(currentPw, newPw).then(onResponseSuccess).catch(onResponseFailure);
         }
       } else if (type === "email") {
         // DISABLE; DANGEROUS
