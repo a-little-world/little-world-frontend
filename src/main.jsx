@@ -562,6 +562,23 @@ function CommunityCalls() {
   );
 }
 
+function MatchConfirmOverlay({ visible, user }) {
+  /** 
+   * Matches now need to be confirmed!
+   * This overlay is shown when a match is found and needs to be confirmed.
+  
+  */
+  const { t } = useTranslation();
+
+  return <Overlay
+    title={t('confirm_match_overlay_title')}
+    name={t('confirm_match_overlay_title')}
+    text={t('confirm_match_overlay_title')}
+    userInfo={user}
+    onOk={() => {}}></Overlay>
+;
+}
+
 function NotificationPanel() {
   const { t } = useTranslation();
   const users = useSelector((state) => state.userData.users);
@@ -785,6 +802,9 @@ function Main() {
           />
         )}
         {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
+      </div>
+      <div className={"overlay"}>
+          <MatchConfirmOverlay visible={true} user={self}></MatchConfirmOverlay>
       </div>
       <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
         {overlayState.visible && (
