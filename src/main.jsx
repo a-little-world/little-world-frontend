@@ -159,21 +159,26 @@ function NbtSelectorAdmin({ selection, setSelection, use, adminInfos }) {
   console.log("ADMIN INFOS", adminInfos);
 
   const pagesMatches = [...Array(adminInfos.num_pages).keys()].map((x) => x + 1);
-  const defaultSelectors = ["conversation_partners", "appointments", "community_calls"];
+  const defaultSelectors = {
+    main: ["conversation_partners", "appointments", "community_calls"],
+    help: ["videos", "faqs", "contact"],
+  }
 
   const nbtTopics = {
-    main: [...defaultSelectors, ...pagesMatches],
+    main: [...defaultSelectors[use], ...pagesMatches],
+    help: ["videos", "faqs", "contact"],
   };
   const topics = nbtTopics[use];
 
   const nbtDisabled = {
     main: ["appointments"],
+    help: ["videos"]
   };
   const disabled = nbtDisabled[use];
 
   const updateSelection = (e) => {
     const v = e.target.value;
-    if (defaultSelectors.includes(v)) {
+    if (defaultSelectors[use].includes(v)) {
       setSelection(v);
     } else {
       // Then reload the page with ?page=x
@@ -197,7 +202,7 @@ function NbtSelectorAdmin({ selection, setSelection, use, adminInfos }) {
             onChange={(e) => updateSelection(e)}
           />
           <label htmlFor={`${topic}-radio`} className={disabled.includes(topic) ? "disabled" : ""}>
-            {defaultSelectors.includes(topic) ? t(`nbt_${topic}`) : topic}
+            {defaultSelectors[use].includes(topic) ? t(`nbt_${topic}`) : topic}
           </label>
         </span>
       ))}
