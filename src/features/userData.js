@@ -28,9 +28,11 @@ export const userDataSlice = createSlice({
         matches,
         community_events,
         admin_infos: adminInfos,
+        unconfrimed_matches: preMatches,
       } = action.payload;
       console.log(user, profile, settings, notifications, usrState, matches, community_events);
       console.log("ADMIN", adminInfos);
+      console.log("PREMATCHES", preMatches)
       // notifications=action.payload
 
       const others = matches.map((match) => {
@@ -76,7 +78,12 @@ export const userDataSlice = createSlice({
           expectations: profile.language_skill_description,
         },
         stateInfo: {
-          unconfirmedMatches: usrState.unconfirmed_matches_stack,
+          /**
+           * TODO: there is some name confusion here 'preMatches' sould be unmade matches that still need confirmation 
+           * while unconfirmed_matches_stack are the matches that have not been aknowleged 
+           * */
+          preMatches: preMatches, 
+          unconfirmedMatches: usrState.unconfirmed_matches_stack, // TODO: this should be renamed?
           matchingState: usrState.matching_state,
         },
       };
