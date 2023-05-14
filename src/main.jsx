@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
@@ -13,6 +12,7 @@ import Help from "./help";
 import "./i18n";
 import Notifications from "./notifications";
 import Overlay from "./overlay";
+import { MatchConfirmOverlay } from "./overlay";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
 import Settings from "./settings";
@@ -562,20 +562,56 @@ function CommunityCalls() {
   );
 }
 
-function MatchConfirmOverlay({ visible, user }) {
+function MatchConfirmOverlayComponent({ visible, userData }) {
   /** 
    * Matches now need to be confirmed!
    * This overlay is shown when a match is found and needs to be confirmed.
   
   */
+  const navigate = useNavigate();
+  console.log("USERDATA", userData);
   const { t } = useTranslation();
+  const confirmMatch = ({acceptDeny}) => {
+      fetch(`${BACKEND_URL}/api/user/match/confirm_deny/`, {
+        headers: {
+          "X-CSRFToken": Cookies.get("csrftoken"),
+          "X-UseTagsOnly": true,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          unconfirmed_match_hash: userData.hash,
+          confirm: acceptDeny,
+        })
+      }).then((res) => {
+        if(res.ok){
+          res.json().then((data) => {
+            console.log("DATA", data);
+            // TODO: for now we just reload the page but this should normally trigger a redux action
+            navigate(BACKEND_PATH);
+            navigate(0);
+          })
+        }else{
+          // TODO: same goes here, this *should* trigger a redux action, rather than a reload
+          navigate(BACKEND_PATH);
+          navigate(0);
+        }
+      })
+  };
 
-  return <Overlay
+  return <MatchConfirmOverlay
     title={t('confirm_match_overlay_title')}
     name={t('confirm_match_overlay_title')}
     text={t('confirm_match_overlay_title')}
-    userInfo={user}
-    onOk={() => {}}></Overlay>
+    userInfo={userData}
+    onOk={() => {
+      confirmMatch({acceptDeny: true });
+    }}
+    onExit={() => {
+      confirmMatch({acceptDeny: false });
+    }}
+    ></MatchConfirmOverlay>
 ;
 }
 
@@ -633,11 +669,17 @@ function Main() {
     (state) => state.userData.self.stateInfo.unconfirmedMatches
   );
 
+  const initalPreMatches = useSelector(
+    (state) => state.userData.self.stateInfo.preMatches
+  );
+
   const self = useSelector((state) => state.userData.self);
 
   const matchesInfo = users.filter(({ type }) => type !== "self");
 
   const [matchesUnconfirmed, setMatchesUnconfirmed] = useState(initalUnconfirmedMatches);
+  const [preMatches, setPreMatches] = useState(initalPreMatches);
+
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
   const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
@@ -803,9 +845,9 @@ function Main() {
         )}
         {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
       </div>
-      <div className={"overlay"}>
-          <MatchConfirmOverlay visible={true} user={self}></MatchConfirmOverlay>
-      </div>
+      { preMatches.length > 0 && <div className={"overlay"}>
+          <MatchConfirmOverlayComponent visible={true} userData={preMatches[0]}></MatchConfirmOverlayComponent>
+      </div>}
       <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
         {overlayState.visible && (
           <Overlay
