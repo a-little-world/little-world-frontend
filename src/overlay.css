@@ -44,6 +44,13 @@
   text-align: center;
 }
 
+.av-setup-reject {
+  color: white;
+  background: linear-gradient(43.07deg, #ff0000 -3.02%, #e8847b 93.96%);
+  line-height: 58px;
+  text-align: center;
+}
+
 @media screen and (width < 1024px) {
   .overlay {
     padding: 0;
