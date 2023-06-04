@@ -54,6 +54,11 @@
   "matching_state_found_confirmed_trans": "Weiter*n Gesprächspartner*in finden",
   "nbr_notifications": "Benachrichtigungen",
   "nbr_show_all": "Alle ansehen",
+  "confirm_match_title": "We have found you a conversation partner!",
+  "confirm_match_description": "Based on your search criteria, we think <highlight>{{name}}</highlight> would be a suitable conversation partner for you.",
+  "confirm_match_instruction": "Click \"Accept\" to confirm your match.",
+  "confirm_match_confirm_btn": "Accept",
+  "confrim_match_reject_btn": "Decline",
   "cp_searching_text": "Wir suchen derzeit eine*n neue*n Gesprächspartner*in für dich",
   "cp_modify_search": "Suchangaben ändern",
   "cp_cancel_search": "Suche abbrechen",
@@ -94,15 +99,7 @@
   "profile_expectations": "Welche Sprachen sprichst du und wie gut?",
   "profile_since": "Mitglied seit {{date}}",
   "profile_choose_interests": "Themen wählen",
-  "weekdays": [
-    "Sonntag",
-    "Montag",
-    "Dienstag",
-    "Mittwoch",
-    "Donnerstag",
-    "Freitag",
-    "Samstag"
-  ],
+  "weekdays": ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
   "month_short": [
     "jan",
     "feb",

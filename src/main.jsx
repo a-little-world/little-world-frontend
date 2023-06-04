@@ -1,18 +1,20 @@
+import { Modal } from "@a-little-world/little-world-design-system";
 import Cookies from "js-cookie";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
+import Overlay from "./components/overlay";
+import { MatchConfirmOverlay } from "./components/overlay";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import { FetchNotificationsAsync, updateSearching } from "./features/userData";
 import Help from "./help";
 import "./i18n";
 import Notifications from "./notifications";
-import Overlay from "./overlay";
-import { MatchConfirmOverlay } from "./overlay";
 import Link from "./path-prepend";
 import Profile, { ProfileBox } from "./profile";
 import Settings from "./settings";
@@ -162,7 +164,7 @@ function NbtSelectorAdmin({ selection, setSelection, use, adminInfos }) {
   const defaultSelectors = {
     main: ["conversation_partners", "appointments", "community_calls"],
     help: ["videos", "faqs", "contact"],
-  }
+  };
 
   const nbtTopics = {
     main: [...defaultSelectors[use], ...pagesMatches],
@@ -172,7 +174,7 @@ function NbtSelectorAdmin({ selection, setSelection, use, adminInfos }) {
 
   const nbtDisabled = {
     main: ["appointments"],
-    help: ["videos"]
+    help: ["videos"],
   };
   const disabled = nbtDisabled[use];
 
@@ -567,57 +569,58 @@ function CommunityCalls() {
   );
 }
 
-function MatchConfirmOverlayComponent({ visible, userData }) {
-  /** 
+function MatchConfirmOverlayComponent({ userData }) {
+  /**
    * Matches now need to be confirmed!
    * This overlay is shown when a match is found and needs to be confirmed.
-  
+
   */
   const navigate = useNavigate();
   console.log("USERDATA", userData);
   const { t } = useTranslation();
-  const confirmMatch = ({acceptDeny}) => {
-      fetch(`${BACKEND_URL}/api/user/match/confirm_deny/`, {
-        headers: {
-          "X-CSRFToken": Cookies.get("csrftoken"),
-          "X-UseTagsOnly": true,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          unconfirmed_match_hash: userData.hash,
-          confirm: acceptDeny,
-        })
-      }).then((res) => {
-        if(res.ok){
-          res.json().then((data) => {
-            console.log("DATA", data);
-            // TODO: for now we just reload the page but this should normally trigger a redux action
-            navigate(BACKEND_PATH);
-            navigate(0);
-          })
-        }else{
-          // TODO: same goes here, this *should* trigger a redux action, rather than a reload
+  const confirmMatch = ({ acceptDeny }) => {
+    fetch(`${BACKEND_URL}/api/user/match/confirm_deny/`, {
+      headers: {
+        "X-CSRFToken": Cookies.get("csrftoken"),
+        "X-UseTagsOnly": true,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        unconfirmed_match_hash: userData.hash,
+        confirm: acceptDeny,
+      }),
+    }).then((res) => {
+      if (res.ok) {
+        res.json().then((data) => {
+          console.log("DATA", data);
+          // TODO: for now we just reload the page but this should normally trigger a redux action
           navigate(BACKEND_PATH);
           navigate(0);
-        }
-      })
+        });
+      } else {
+        // TODO: same goes here, this *should* trigger a redux action, rather than a reload
+        navigate(BACKEND_PATH);
+        navigate(0);
+      }
+    });
   };
 
-  return <MatchConfirmOverlay
-    title={t('confirm_match_overlay_title')}
-    name={t('confirm_match_overlay_title')}
-    text={t('confirm_match_overlay_title')}
-    userInfo={userData}
-    onOk={() => {
-      confirmMatch({acceptDeny: true });
-    }}
-    onExit={() => {
-      confirmMatch({acceptDeny: false });
-    }}
-    ></MatchConfirmOverlay>
-;
+  return (
+    <MatchConfirmOverlay
+      name={userData.first_name}
+      imageType={userData.image_type}
+      avatar={userData.avatar_image}
+      image={userData.image_src}
+      onConfirm={() => {
+        confirmMatch({ acceptDeny: true });
+      }}
+      onExit={() => {
+        confirmMatch({ acceptDeny: false });
+      }}
+    />
+  );
 }
 
 function NotificationPanel() {
@@ -674,9 +677,7 @@ function Main() {
     (state) => state.userData.self.stateInfo.unconfirmedMatches
   );
 
-  const initalPreMatches = useSelector(
-    (state) => state.userData.self.stateInfo.preMatches
-  );
+  const initalPreMatches = useSelector((state) => state.userData.self.stateInfo.preMatches);
 
   const self = useSelector((state) => state.userData.self);
 
@@ -775,17 +776,19 @@ function Main() {
   };
 
   const initChatComponent = (backgroundMode) => {
-    return <Chat
-      backgroundMode={backgroundMode}
-      showChat={use === "chat"}
-      matchesInfo={matchesInfo}
-      userPk={userPk}
-      setCallSetupPartner={setCallSetupPartner}
-      userPkMappingCallback={setUserPkToChatIdMap}
-      updateMatchesOnlineStates={updateOnlineState}
-      adminActionCallback={adminActionCallback}
-    />
-  }
+    return (
+      <Chat
+        backgroundMode={backgroundMode}
+        showChat={use === "chat"}
+        matchesInfo={matchesInfo}
+        userPk={userPk}
+        setCallSetupPartner={setCallSetupPartner}
+        userPkMappingCallback={setUserPkToChatIdMap}
+        updateMatchesOnlineStates={updateOnlineState}
+        adminActionCallback={adminActionCallback}
+      />
+    );
+  };
 
   const [showCancelSearching, setShowCancelSearching] = useState(false);
 
@@ -850,48 +853,9 @@ function Main() {
         )}
         {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
       </div>
-      { preMatches.length > 0 && <div className={"overlay"}>
-          <MatchConfirmOverlayComponent visible={true} userData={preMatches[0]}></MatchConfirmOverlayComponent>
-      </div>}
-      <div className={overlayState.visible ? "overlay" : "overlay hidden"}>
-        {overlayState.visible && (
-          <Overlay
-            title={overlayState.title}
-            name={overlayState.name}
-            text={overlayState.text}
-            userInfo={overlayState.userInfo}
-            onOk={() => {
-              fetch(`${BACKEND_URL}/api/user/confirm_match/`, {
-                /* TODO is incuded in main frontend data now! */
-                method: "POST",
-                headers: {
-                  "X-CSRFToken": Cookies.get("csrftoken"),
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "X-UseTagsOnly": true,
-                },
-                body: JSON.stringify({ matches: [overlayState.userInfo.userPk] }),
-              })
-                .then(({ status, statusText }) => {
-                  if (status === 200) {
-                    console.log("Confirming", overlayState.userInfo, matchesUnconfirmed);
-                    const newUnconfirmed = [];
-                    matchesUnconfirmed.forEach((e) => {
-                      console.log("UNK", e, overlayState.userInfo.userOnlinePk);
-                      if (e !== overlayState.userInfo.userPk) newUnconfirmed.push(e);
-                    });
-                    console.log("NEW unconfirmed", newUnconfirmed);
-                    setMatchesUnconfirmed(newUnconfirmed);
-                    setOverlayState(updateOverlayState(newUnconfirmed));
-                  } else {
-                    console.error("server error", status, statusText);
-                  }
-                })
-                .catch((error) => console.error(error));
-            }}
-          />
-        )}
-      </div>
+      <Modal open={preMatches.length > 0} locked>
+        <MatchConfirmOverlayComponent userData={preMatches[0]} />
+      </Modal>
       {!(use === "chat") && <div className="disable-chat">{initChatComponent(true)}</div>}
     </div>
   );
