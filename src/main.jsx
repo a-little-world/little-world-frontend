@@ -8,8 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
-import Overlay from "./components/overlay";
-import { MatchConfirmOverlay } from "./components/overlay";
+import { ConfirmMatchCard } from "./components/ConfirmMatchCard";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import { FetchNotificationsAsync, updateSearching } from "./features/userData";
 import Help from "./help";
@@ -608,11 +607,11 @@ function MatchConfirmOverlayComponent({ userData }) {
   };
 
   return (
-    <MatchConfirmOverlay
+    <ConfirmMatchCard
       name={userData.first_name}
       imageType={userData.image_type}
       avatar={userData.avatar_image}
-      image={userData.image_src}
+      image={userData.image}
       onConfirm={() => {
         confirmMatch({ acceptDeny: true });
       }}
@@ -673,17 +672,12 @@ function Main() {
   const [matchesProfiles, setMatchesProfiles] = useState({});
 
   const users = useSelector((state) => state.userData.users);
-  const initalUnconfirmedMatches = useSelector(
-    (state) => state.userData.self.stateInfo.unconfirmedMatches
-  );
 
   const initalPreMatches = useSelector((state) => state.userData.self.stateInfo.preMatches);
 
   const self = useSelector((state) => state.userData.self);
 
   const matchesInfo = users.filter(({ type }) => type !== "self");
-
-  const [matchesUnconfirmed, setMatchesUnconfirmed] = useState(initalUnconfirmedMatches);
   const [preMatches, setPreMatches] = useState(initalPreMatches);
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
@@ -713,8 +707,6 @@ function Main() {
       userInfo: firstUnconfimed,
     };
   };
-
-  const [overlayState, setOverlayState] = useState(updateOverlayState(initalUnconfirmedMatches));
 
   const setCallSetupPartner = (userPk) => {
     document.body.style.overflow = userPk ? "hidden" : "";

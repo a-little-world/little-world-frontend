@@ -14,13 +14,21 @@ import styled from "styled-components";
 import "../i18n";
 
 // import Link from "../path-prepend";
-import "./overlay.css";
 
 const ButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 32px;
+
+  ${({ theme }) => `
+  gap: ${theme.spacing.small};
+  flex-wrap: wrap;
+
+  @media (min-width: ${theme.breakpoints.small}) {
+    gap: ${theme.spacing.large};
+    flex-wrap: nowrap;
+  }
+  `}
 `;
 
 const Centred = styled.div`
@@ -29,7 +37,14 @@ const Centred = styled.div`
   gap: 16px;
   align-items: center;
   text-align: center;
-  margin-bottom: 32px;
+
+  ${({ theme }) => `
+  margin-bottom: ${theme.spacing.medium};
+
+  @media (min-width: ${theme.breakpoints.small}) {
+    margin-bottom: ${theme.spacing.large};
+  }
+  `}
 `;
 
 const StyledAvatar = styled(Avatar)`
@@ -67,9 +82,9 @@ export const CircleImage = styled.div`
   position: relative;
 `;
 
-export function MatchConfirmOverlay({ name, avatar, onConfirm, onExit, image, imageType }) {
+export function ConfirmMatchCard({ name, avatar, onConfirm, onExit, image, imageType }) {
   const { t } = useTranslation();
-  console.log({ name, image, imageType });
+
   return (
     <Card width={CardSizes.Large}>
       <Centred>
@@ -80,7 +95,7 @@ export function MatchConfirmOverlay({ name, avatar, onConfirm, onExit, image, im
         {imageType === "avatar" ? (
           <StyledAvatar {...avatar} />
         ) : (
-          <CircleImage alt="match" $image={image} />
+          <CircleImage alt="match" $image={avatar} />
         )}
         <Text type={TextTypes.Body3}>{t("confirm_match_description", { name })}</Text>
         <Text tag="h3" type={TextTypes.Body3}>
