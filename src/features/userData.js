@@ -28,7 +28,7 @@ export const userDataSlice = createSlice({
         matches,
         community_events,
         admin_infos: adminInfos,
-        unconfrimed_matches: preMatches,
+        unconfirmed_matches: preMatches,
       } = action.payload;
       console.log(user, profile, settings, notifications, usrState, matches, community_events);
       console.log("ADMIN", adminInfos);
