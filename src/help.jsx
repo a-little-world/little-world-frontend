@@ -1,18 +1,17 @@
 import { t } from "i18next";
-import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
-import { filterMessagesForDialog } from "./chat/chat.lib";
+import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { setStatus } from "./features/userData";
-import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import { useLocation, useNavigate } from "react-router-dom";
+
+import { filterMessagesForDialog } from "./chat/chat.lib";
+import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
+import { setStatus } from "./features/userData";
 
 import "./help.css";
 
 function FrequentQuestion({ question, answer }) {
-
-
   const [showing, setShowing] = useState(false);
   const toggleShowing = () => setShowing(!showing);
 
@@ -28,34 +27,41 @@ function FrequentQuestion({ question, answer }) {
 }
 
 function Faqs() {
-
   const { t } = useTranslation();
   const help_faq = [
     {
-      "section" : "before_talk",
-      "questions" : ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"]
+      section: "before_talk",
+      questions: ["q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8"],
     },
     {
-      "section" : "during_talk",
-      "questions" : ["q1", "q2", "q3", "q4", "q5", "q6"]
+      section: "during_talk",
+      questions: ["q1", "q2", "q3", "q4", "q5", "q6"],
     },
     {
-      "section" : "after_talk",
-      "questions" : ["q1", "q2", "q3", "q4", "q5"]
-    }
-  ]
+      section: "after_talk",
+      questions: ["q1", "q2", "q3", "q4", "q5"],
+    },
+  ];
   return (
     <div>
       <h2>{t("nbt_faqs")}</h2>
       <p className="intro-text">{t("help_faqs_intro")}</p>
-      <div className="faq-items">{help_faq.map((faq) => {
-        return <>
-          <h2>{t(`faq::section_title::${faq.section}`)}</h2>
-          {faq.questions.map((question) => {
-            return <FrequentQuestion question={t(`faq::section_content::${faq.section}::${question}::question`)} answer={t(`faq::section_content::${faq.section}::${question}::answer`)} />
-          })}
-        </>
-      })}
+      <div className="faq-items">
+        {help_faq.map((faq) => {
+          return (
+            <>
+              <h2>{t(`faq::section_title::${faq.section}`)}</h2>
+              {faq.questions.map((question) => {
+                return (
+                  <FrequentQuestion
+                    question={t(`faq::section_content::${faq.section}::${question}::question`)}
+                    answer={t(`faq::section_content::${faq.section}::${question}::answer`)}
+                  />
+                );
+              })}
+            </>
+          );
+        })}
       </div>
     </div>
   );
@@ -69,30 +75,30 @@ function Contact() {
   const fileRef = useRef();
 
   const handleSubmit = () => {
-    setFormState("pending")
+    setFormState("pending");
     var data = new FormData();
     console.log(data, fileRef, filenames, fileRef.current);
     for (var i = 0; i < fileRef.current.files.length; ++i) {
       let file = fileRef.current.files.item(i);
       let name = file.name;
       console.log("file name: ", name);
-      data.append('file', file, name);
+      data.append("file", file, name);
     }
-    data.set('message', helpMessage);
+    data.set("message", helpMessage);
     fetch("/api/help_message/", {
       headers: {
         "X-CSRFToken": Cookies.get("csrftoken"),
         "X-UseTagsOnly": true,
       },
-      method: 'POST',
-      body: data
+      method: "POST",
+      body: data,
     }).then((res) => {
-      if(res.ok){
-        setFormState("submitted")
-      }else{
-        setFormState("error")
+      if (res.ok) {
+        setFormState("submitted");
+      } else {
+        setFormState("error");
       }
-    })
+    });
   };
 
   const handleDrop = (e) => {
@@ -115,25 +121,28 @@ function Contact() {
     setFilenames(fileList);
   };
 
-  if(formState === "pending"){
-    return <>
-      <h2>Sending you message</h2>
-    </>
-  }else if(formState === "submitted"){
-    return <>
-      <h2>Your message has been submitted, thanks for your feedback!</h2>
-    </>
-  }else if(formState === "error"){
-    return <>
-      <h2>There has been an error submitting your message, please try sending an email.</h2>
-    </>
+  if (formState === "pending") {
+    return (
+      <>
+        <h2>Sending you message</h2>
+      </>
+    );
+  } else if (formState === "submitted") {
+    return (
+      <>
+        <h2>Your message has been submitted, thanks for your feedback!</h2>
+      </>
+    );
+  } else if (formState === "error") {
+    return (
+      <>
+        <h2>There has been an error submitting your message, please try sending an email.</h2>
+      </>
+    );
   }
 
-
   return (
-    <form
-      className="help-contact"
-    >
+    <form className="help-contact">
       <h2>{t("nbt_contact")}</h2>
       <p className="intro-text">
         {t("help_contact_intro_line1")}
@@ -191,11 +200,11 @@ function Contact() {
 }
 
 function Help({ selection }) {
-
-  const adminUser = useSelector((state) => state.userData.users.filter((u) => u.type === "support")[0]);
+  const adminUser = useSelector(
+    (state) => state.userData.users.filter((u) => u.type === "support")[0]
+  );
   const navigate = useNavigate();
   console.log("ADMIN", adminUser);
-  
 
   return (
     <div className="content-area-main">
@@ -215,15 +224,23 @@ function Help({ selection }) {
           </div>
         </div>
         <div className="contact-buttons">
-          <button type="button" className="support-message" onClick={() => {
-              navigate(`${BACKEND_PATH}/chat`, {state: {userPk: adminUser.userPk}});
-          }}>
+          <button
+            type="button"
+            className="support-message"
+            onClick={() => {
+              navigate(`${BACKEND_PATH}/chat`, { state: { userPk: adminUser.userPk } });
+            }}
+          >
             <img alt="" />
             <span className="text">{t("help_support_message_btn")}</span>
           </button>
-          <button type="button" className="support-call" onClick={() => {
-            window.open("tel:+4915234777471");
-          }}>
+          <button
+            type="button"
+            className="support-call"
+            onClick={() => {
+              window.open("tel:+4915234777471");
+            }}
+          >
             <img alt="" />
             <span className="text">{t("help_support_call_btn")}</span>
           </button>
