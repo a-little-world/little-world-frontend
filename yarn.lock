@@ -3,6 +3,7 @@
 
 
 "@a-little-world/little-world-design-system@git+https://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@github.com/a-little-world/little-world-design-system#update-pull-origin-for-private-packages":
+  "integrity" "sha512-tqmdIyN7ry/wKlv5UUjTFELOv6/2+lofaW0YnsjkT8n3Spoiv8khwRudAAcRu55vXZ6PjZ3TnZUCfj6kyMFoLA=="
   "resolved" "git+https://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@github.com/a-little-world/little-world-design-system.git#32cc734572a4ac66c154fac08a1e9578a635c5cb"
   "version" "1.5.1"
   dependencies:

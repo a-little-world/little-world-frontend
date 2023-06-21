@@ -1,6 +1,5 @@
 import {
   Button,
-  ButtonTypes,
   Card,
   CardSizes,
   Text,
@@ -8,28 +7,9 @@ import {
 } from "@a-little-world/little-world-design-system";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
-// import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import "../i18n";
-
-// import Link from "../path-prepend";
-
-const ButtonsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  ${({ theme }) => `
-  gap: ${theme.spacing.small};
-  flex-wrap: wrap;
-
-  @media (min-width: ${theme.breakpoints.small}) {
-    gap: ${theme.spacing.large};
-    flex-wrap: nowrap;
-  }
-  `}
-`;
+import ProfileImage from "../atoms/ProfileImage";
 
 const Centred = styled.div`
   display: flex;
@@ -59,14 +39,6 @@ const StyledAvatar = styled(Avatar)`
   box-sizing: border-box;
 `;
 
-// const StyledImage = styled.img`
-//   width: 100%;
-//   height: 320px;
-//   display: block;
-//   border-radius: 20px;
-//   object-fit: cover;
-// `;
-
 export const CircleImage = styled.div`
   border-radius: 50%;
   border: 8px solid #e6e8ec;
@@ -82,35 +54,25 @@ export const CircleImage = styled.div`
   position: relative;
 `;
 
-export function ConfirmMatchCard({ name, avatar, onConfirm, onExit, image, imageType }) {
+const NewMatchCard = ({ name, image, imageType, onExit }) => {
   const { t } = useTranslation();
 
   return (
     <Card width={CardSizes.Large}>
       <Centred>
         <Text tag="h2" type={TextTypes.Heading2}>
-          {t("confirm_match_title")}
+          {t("new_match_title")}
         </Text>
 
-        {imageType === "avatar" ? (
-          <StyledAvatar {...avatar} />
-        ) : (
-          <CircleImage alt="match" $image={avatar} />
-        )}
-        <Text type={TextTypes.Body3}>{t("confirm_match_description", { name })}</Text>
+        <ProfileImage image={image} imageType={imageType} />
+        <Text type={TextTypes.Body3}>{t("new_match_description", { name })}</Text>
         <Text tag="h3" type={TextTypes.Body3}>
-          {t("confirm_match_instruction")}
+          {t("new_match_instruction")}
         </Text>
       </Centred>
-
-      <ButtonsContainer>
-        <Button type="button" onClick={onConfirm}>
-          {t("confirm_match_confirm_btn")}
-        </Button>
-        <Button type="button" variation={ButtonTypes.Secondary} onClick={onExit}>
-          {t("confrim_match_reject_btn")}
-        </Button>
-      </ButtonsContainer>
+      <Button onClick={onExit}>{t("new_match_close_button")}</Button>
     </Card>
   );
-}
+};
+
+export default NewMatchCard;

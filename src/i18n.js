@@ -10,8 +10,8 @@ i18next
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    /* 
-    I'm overwriting the seperators here since the backend also uses '.' in the translations! 
+    /*
+    I'm overwriting the seperators here since the backend also uses '.' in the translations!
     */
     nsSeparator: ":::",
     keySeparator: "::",
@@ -34,11 +34,10 @@ if (cookie !== undefined) {
 
 // eslint-disable-next-line import/prefer-default-export
 export const updateTranslationResources = ({ apiTranslations }) => {
-  /* 
+  /*
   This upates the current translations resources with all backend translations!
   */
   Object.keys(apiTranslations).forEach((lang) => {
-    console.log("updating translations", lang);
     i18next.addResourceBundle(lang, "translation", {
       ...i18next.getResourceBundle(lang, "translation"),
       ...apiTranslations[lang],
