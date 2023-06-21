@@ -100,6 +100,9 @@ class Chat extends Component {
     this.clearTextInput = () => {
       if (this.textInput) {
         this.textInput.value = "";
+        this.textInput.style.height = "";
+        // shrinks input box immediately after sending message, rather than
+        // doing so on new text input
       }
     };
 
