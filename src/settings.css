@@ -66,12 +66,18 @@ section.settings {
   display: none;
 }
 
+.edit-modal .inputs {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .edit-modal .error-message {
   color: red;
 }
 
 .edit-modal .input-container {
-  margin: 10px;
   display: flex;
   flex-direction: column;
 }
