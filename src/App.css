@@ -299,6 +299,9 @@ img.logo-text {
 
 .modal-box .content {
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .modal-box .buttons {
