@@ -258,11 +258,11 @@ function Help({ selection }) {
               <div className="contacts">
                 <a href="mailto:support@little-world.com">
                   <img className="email-icon" alt="e-mail" />
-                  support@little-world.com
+                  <span className="text">support@little-world.com</span>
                 </a>
                 <a href="tel:+4915234777471">
                   <img className="mobile-icon" alt="mobile" />
-                  +49 152 34 777 471
+                  <span className="text">+49 152 34 777 471</span>
                 </a>
               </div>
             </div>

@@ -235,6 +235,14 @@ button.support-call img {
   gap: 8px;
 }
 
+.help-support .contacts img {
+  vertical-align: middle;
+}
+
+.help-support .contacts .text {
+  padding: 0 5px;
+}
+
 .help-support .logos-small {
   height: 30px;
   display: flex;
