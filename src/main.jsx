@@ -88,7 +88,7 @@ function getMatchCardComponent({
 
 function Main() {
   const location = useLocation();
-  const { userPk } = location.mtate || {};
+  const { userPk } = location.state || {};
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
