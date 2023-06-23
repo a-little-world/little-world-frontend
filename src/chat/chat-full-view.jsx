@@ -591,7 +591,9 @@ class Chat extends Component {
           >
             <SideBar
               type="light"
-              top={
+              data={{
+                className: "",
+                top: (<>
                 <div className="chat-list">
                   <ToastContainer />
                   <h3 className="chat-header"></h3>
@@ -611,11 +613,13 @@ class Chat extends Component {
                   />
 
                   <ChatList
+                    className='chat-list'
                     onClick={clickUser}
                     dataSource={this.state.filteredDialogList.slice().sort(chatItemSortingFunction)}
                   />
                 </div>
-              }
+                </>)
+              }}
             />
             <div className="new-partner">
               {!pending && (
