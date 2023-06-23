@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function CommunityEvent({ frequency, description, title, time, link }) {
   const { t } = useTranslation();
