@@ -42,7 +42,6 @@
     "webpack": "^5.75.0"
   },
   "scripts": {
-    "preinstall": "npm-force-resolutions",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build_new": "PUBLIC_URL='/static/little-world-frontend/dist/' BUILD_PATH='./dist' DISABLE_ESLINT_PLUGIN=true react-scripts build",
