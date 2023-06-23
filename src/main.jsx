@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { confirmMatch } from "./api";
 
 import { partiallyConfirmMatch } from "./api";
 import CallSetup, { IncomingCall } from "./call-setup";
@@ -38,13 +39,16 @@ function getMatchCardComponent({
 }) {
   return showNewMatch ? (
     <NewMatchCard
-      name={userData.first_name}
-      imageType={userData.image_type}
-      image={userData.avatar_image}
+      name={userData.firstName}
+      imageType={userData.usesAvatar ? "avatar" : "image"}
+      image={userData.usesAvatar ? userData.avatarCfg : userData.imgSrc}
       onExit={() => {
         if (isVolunteer) {
-          confirmMatch({ userHash: userData?.hash })
+          confirmMatch({ userHash: userData?.userPk })
             .then(onConfirm)
+            .then(() => {
+              window.location.reload();
+            })
             .catch((error) => console.error(error));
         } else {
           onConfirm({ status: 200 });
@@ -84,7 +88,7 @@ function getMatchCardComponent({
 
 function Main() {
   const location = useLocation();
-  const { userPk } = location.state || {};
+  const { userPk } = location.mtate || {};
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
