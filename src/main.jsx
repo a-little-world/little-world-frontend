@@ -61,9 +61,8 @@ function getMatchCardComponent({
           if (res.ok) {
             res.json().then(() => {
               onPartialConfirm(userData);
-            }).then(() => {
               window.location.reload();
-            });
+            })
           } else {
             // TODO: Add toast error explainer or some error message
           }
@@ -74,9 +73,8 @@ function getMatchCardComponent({
           if (res.ok) {
             res.json().then(() => {
               onPartialConfirm();
-            }).then(() => {
               window.location.reload();
-            });
+            })
           } else {
             // TODO: Add toast error explainer or some error message
           }
