@@ -43,16 +43,12 @@ function getMatchCardComponent({
       imageType={userData.usesAvatar ? "avatar" : "image"}
       image={userData.usesAvatar ? userData.avatarCfg : userData.imgSrc}
       onExit={() => {
-        if (isVolunteer) {
-          confirmMatch({ userHash: userData?.userPk })
-            .then(onConfirm)
-            .then(() => {
-              window.location.reload();
-            })
-            .catch((error) => console.error(error));
-        } else {
-          onConfirm({ status: 200 });
-        }
+        confirmMatch({ userHash: userData?.userPk })
+          .then(onConfirm)
+          .then(() => {
+            window.location.reload();
+          })
+          .catch((error) => console.error(error));
       }}
     />
   ) : (
@@ -65,6 +61,8 @@ function getMatchCardComponent({
           if (res.ok) {
             res.json().then(() => {
               onPartialConfirm(userData);
+            }).then(() => {
+              window.location.reload();
             });
           } else {
             // TODO: Add toast error explainer or some error message
@@ -76,6 +74,8 @@ function getMatchCardComponent({
           if (res.ok) {
             res.json().then(() => {
               onPartialConfirm();
+            }).then(() => {
+              window.location.reload();
             });
           } else {
             // TODO: Add toast error explainer or some error message
