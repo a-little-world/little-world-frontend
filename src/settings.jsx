@@ -152,8 +152,12 @@ function AtomicInput({ label, inputVal = "", handleChange = () => {}, refIn = un
 
 function PassChange({ refIn = undefined }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
-  const handleForgot = () => {}; // TODO
+  const handleForgot = () => {
+    navigate("/password_reset/");
+    navigate(0);
+  };
 
   return (
     <>
@@ -224,7 +228,9 @@ function ModalBox({ label, valueIn, setEditing }) {
           setWaiting(false);
         } else {
           // submit data
-          apiChangePw(currentPw, newPw).then(onResponseSuccess).catch(onResponseFailure);
+          apiChangePw(currentPw, newPw).then(onResponseSuccess).catch(onResponseFailure).then(() => {
+            window.location.reload();
+          });
         }
       } else if (type === "email") {
         // DISABLE; DANGEROUS
