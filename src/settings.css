@@ -66,6 +66,10 @@ section.settings {
   display: none;
 }
 
+.edit-modal .warning-notice {
+  color: red;
+}
+
 .edit-modal .inputs {
   padding: 10px;
   display: flex;
