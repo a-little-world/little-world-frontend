@@ -369,7 +369,7 @@ function ProfileDetail({ profile }) {
       <TextBox subject="about" topicText={profile.about} formTag="description" />
       <InterestsSelector inTopicSelection={profile.interestTopics} />
       <TextBox
-        subject="extraTopics"
+        subject="extra_topics"
         topicText={profile.extraTopics}
         formTag="additional_interests"
       />
@@ -378,19 +378,6 @@ function ProfileDetail({ profile }) {
         topicText={profile.expectations}
         formTag="language_skill_description"
       />
-      {isSelf && (
-        <SectionBox subject="Edit User Form">
-          <button
-            type="button"
-            onClick={() => {
-              navigate("/form/");
-              navigate(0);
-            }}
-          >
-            Edit User Form
-          </button>
-        </SectionBox>
-      )}
     </div>
   );
 }
