@@ -378,19 +378,6 @@ function ProfileDetail({ profile }) {
         topicText={profile.expectations}
         formTag="language_skill_description"
       />
-      {isSelf && (
-        <SectionBox subject="Edit User Form">
-          <button
-            type="button"
-            onClick={() => {
-              navigate("/form/");
-              navigate(0);
-            }}
-          >
-            Edit User Form
-          </button>
-        </SectionBox>
-      )}
     </div>
   );
 }
