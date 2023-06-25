@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { BACKEND_URL } from "./ENVIRONMENT";
+import { BACKEND_URL, DEVELOPMENT } from "./ENVIRONMENT";
 import { updateSettings } from "./features/userData";
 
 import "./settings.css";
@@ -91,7 +91,7 @@ const apiChangePw = (oldPass, newPass) => {
   return submitData(data, "/api/user/changepw/");
 };
 
-const apiChangeEmail = (email) => submitData(email, "/api/user/change_email/");
+const apiChangeEmail = (email) => submitData({email}, "/api/user/change_email/");
 /* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
 
 const allowedCodes = [
@@ -234,7 +234,10 @@ function ModalBox({ label, valueIn, setEditing }) {
         }
       } else if (type === "email") {
         // DISABLE; DANGEROUS
-        // apiChangeEmail(value).then(onResponseSuccess).catch(onResponseFailure);
+        if(!DEVELOPMENT)
+          apiChangeEmail(value).then(onResponseSuccess).catch(onResponseFailure).then(() => {
+            window.location.reload();
+          });
       } else {
         submitItem(label, value).then(onResponseSuccess).catch(onResponseFailure);
       }
