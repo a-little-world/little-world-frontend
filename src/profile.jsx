@@ -369,7 +369,7 @@ function ProfileDetail({ profile }) {
       <TextBox subject="about" topicText={profile.about} formTag="description" />
       <InterestsSelector inTopicSelection={profile.interestTopics} />
       <TextBox
-        subject="extraTopics"
+        subject="extra_topics"
         topicText={profile.extraTopics}
         formTag="additional_interests"
       />
