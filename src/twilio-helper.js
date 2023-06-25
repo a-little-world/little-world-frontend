@@ -7,7 +7,6 @@ const { connect, createLocalVideoTrack, createLocalAudioTrack } = require("twili
 const selectedTracks = { video: null, audio: null };
 
 const removeTrack = (track) => {
-  console.log(`removing ${track.kind} track with device id ${track.deviceId}`);
   track
     .stop()
     .detach()
@@ -37,8 +36,6 @@ function saveTrack(track, id) {
 }
 
 function getVideoTrack(deviceId) {
-  console.log(`adding video track with device id ${deviceId}`);
-
   const constraints = {
     width: 576,
     height: 324,
@@ -52,8 +49,6 @@ function getVideoTrack(deviceId) {
 }
 
 function getAudioTrack(deviceId) {
-  console.log(`adding audio track with device id ${deviceId}`);
-
   const constraints = { deviceId: { exact: deviceId } }; // selects default if undefined
 
   return createLocalAudioTrack(constraints, (error) => {
@@ -89,11 +84,8 @@ function joinRoom(selfPk, partnerKey) {
         name: room_name,
         tracks: [selectedTracks.video, selectedTracks.audio],
       }).then((room) => {
-        console.log(`Connected to Room ${room.name}`);
-
         const container = document.getElementById("foreign-container");
         const handleParticipant = (participant) => {
-          console.log(`Participant "${participant.identity}" is connected to the Room`);
           container.innerHTML = ""; // remove any video/audio elements hanging around, OK as we only have 1 partner
           participant.on("trackSubscribed", (track) => container.appendChild(track.attach()));
         };
@@ -104,7 +96,6 @@ function joinRoom(selfPk, partnerKey) {
         room.once("participantDisconnected", (participant) => {
           // note this event doesn't always seem to successfully fire,
           // which would lead to multiple videos, so we are clearing it on connect instead
-          console.log(`Participant "${participant.identity}" has disconnected from the Room`);
         });
       });
     })

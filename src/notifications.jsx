@@ -50,7 +50,7 @@ function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const data = useSelector((state) => state.userData.notifications);
   const status = useSelector((state) => state.userData.status);
-  console.log("🚀 ~ file: notifications.jsx:46 ~ Notifications ~ data", status, data);
+
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const groupedNotifs = {

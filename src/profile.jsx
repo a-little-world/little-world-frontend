@@ -32,7 +32,6 @@ const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
           return onSuccess();
         }
         const errorTags = report[formTag];
-        console.log("ListError", errorTags);
         return onFailure(errorTags);
       });
     }
@@ -113,7 +112,6 @@ function InterestsSelector({ inTopicSelection }) {
       ? topicSelection.filter((item) => item !== topicValue) // remove item
       : [...topicSelection, topicValue]; // add item
 
-    console.log("TOGGLE", topicValue, newSelection);
     setTopicSelection(() => newSelection);
   };
 
@@ -123,7 +121,6 @@ function InterestsSelector({ inTopicSelection }) {
       (errorTags) => {
         const errorTextStr = errorTags.map((e) => t(e)).join(", ");
         setErrorText(errorTextStr);
-        console.log("ErrorText", errorTextStr);
         setEditing(false);
       },
       () => {
@@ -155,11 +152,10 @@ function InterestsSelector({ inTopicSelection }) {
             </div>
           );
         })}
-      <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
-        {editing && (
+        <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
+          {editing && (
             <div className="topics-selector modal-box">
-              <button type="button" className="modal-close" onClick={cancelTopics}>
-              </button>
+              <button type="button" className="modal-close" onClick={cancelTopics}></button>
               <h3>{t("profile_choose_interests")}</h3>
               <div className="items">
                 {interestChoices.map((choice) => (
@@ -186,8 +182,8 @@ function InterestsSelector({ inTopicSelection }) {
                 </button>
               </div>
             </div>
-        )}
-          </div>
+          )}
+        </div>
       </div>
       {errorText && <div style={{ color: "red" }}>{errorText}</div>}
     </div>
@@ -407,8 +403,6 @@ function Profile({ setCallSetupPartner, userPk }) {
   const user = isSelf
     ? usersData.find(({ type }) => type === "self")
     : usersData.find((usr) => usr.userPk === userPk);
-
-  console.log("USER", user);
 
   if (!user) {
     return null; // don't render unless we have the necessary data

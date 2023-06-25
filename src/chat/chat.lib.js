@@ -75,7 +75,6 @@ function tryFetch(url, options) {
   });
 
   const updated_ops = ofArray([headers_1, headers_2]);
-  console.log(updated_ops.toString());
   return tryFetchSimple(url, options);
 }
 
@@ -94,8 +93,6 @@ export function createOnDownload(uri, filename, e) {
     PromiseBuilder__Run_212F1D4B(
       promise,
       PromiseBuilder__Delay_62FBFDE1(promise, () => {
-        console.log(some(`running onDownload for ${uri}`));
-        console.log(some(e));
         return tryFetch(uri, empty()).then((_arg1) => {
           const resp = _arg1;
           if (resp.tag === 1) {
@@ -260,7 +257,6 @@ export function WSHandlingCallbacks$reflection() {
 }
 
 export function handleIncomingWebsocketMessage(sock, message, callbacks) {
-  console.log("SOCK", sock, message, callbacks);
   const res = Result_Bind((o) => {
     switch (o) {
       case 1: {
@@ -278,9 +274,8 @@ export function handleIncomingWebsocketMessage(sock, message, callbacks) {
       case 3: {
         toConsole(printf("Received MessageTypes.TextMessage - %s"))(message);
         const messageText = JSON.parse(message).text;
-        console.log("Received Text", messageText);
+
         if (messageText.includes("[TMPADMIN]")) {
-          console.log("Received Detected admin call to action");
           callbacks.performAdminCallBackAction(messageText);
           return { tag: 0 };
         }
@@ -373,7 +368,7 @@ export function sendOutgoingTextMessage(sock, text, user_pk, self_info) {
     ["random_id", ~~toInt(randomId)],
   ]);
   const encodedMsg = msgTypeEncoder(3, data);
-  console.log("ENCODED", encodedMsg);
+
   sock.send(encodedMsg);
   return map(
     (x) => createMessageBoxFromOutgoingMessage(text, user_pk, x.pk, x.username, randomId, void 0),
@@ -628,12 +623,10 @@ export function fetchMessages() {
 
 export function filterMessagesForDialog(d, messages) {
   if (d == null) {
-    console.log("No dialogs");
     return new Array(0);
   } else {
     const dialog = d;
-    console.log("filtering", d);
-    console.log("msg", messages);
+
     return messages.filter((m) => m.data.dialog_id === dialog.id);
   }
 }

@@ -65,7 +65,6 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
   if (matchesInfo) {
     const result = dialogList.map((dialog) => {
       const matchInfo = matchesInfo.filter(({ userPk }) => userPk === dialog.alt)[0];
-      console.log("INFO", matchInfo, dialog);
       if (matchInfo === undefined) {
         return Object.assign(dialog, {
           avatar: defaultArcivedChatAvatar,
@@ -76,7 +75,6 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
       /* we have to modify the original dialog object and not create a new
        * one with object speader so that the object prototype is not altered
        */
-      console.log("matchInfo", matchInfo, matchInfo.firstName);
       let avatarImgOrDefault = matchInfo.usesAvatar ? matchInfo.avatarCfg : matchInfo.imgSrc;
       if (matchInfo.imgSrc === null && Object.keys(matchInfo.avatarCfg).length === 0) {
         avatarImgOrDefault = defaultArcivedChatAvatar;
@@ -146,7 +144,7 @@ class Chat extends Component {
 
     this.localSearch = throttle(() => {
       const val = this.searchInput.input.value;
-      console.log(`localSearch with '${val}'`);
+
       if (!val || val.length === 0) {
         this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
       } else {
@@ -161,14 +159,10 @@ class Chat extends Component {
 
   componentDidMount() {
     this.textInput = document.getElementById("test-input").firstChild.firstChild;
-    console.log("textInput", this.textInput);
     fetchMessages().then((r) => {
       if (r.tag === 0) {
-        console.log("Fetched messages:");
-        console.log(r.fields[0]);
         this.setState({ messageList: r.fields[0] });
       } else {
-        console.log("Messages error:");
         toast.error(r.fields[0]);
       }
     });
@@ -196,17 +190,13 @@ class Chat extends Component {
           this.selectDialog(dialogList[0]);
         }
       } else {
-        console.log("Dialogs error:");
         toast.error(r.fields[0]);
       }
     });
     fetchSelfInfo().then((r) => {
       if (r.tag === 0) {
-        console.log("Fetched selfInfo:");
-        console.log(r.fields[0]);
         this.setState({ selfInfo: r.fields[0] });
       } else {
-        console.log("SelfInfo error:");
         toast.error(r.fields[0]);
       }
     });
@@ -247,7 +237,6 @@ class Chat extends Component {
     socket.onclose = function (e) {
       toast.info("Disconnected...", toastOptions);
       that.setState({ socketConnectionState: socket.readyState });
-      console.log("websocket closed");
     };
   }
 
@@ -258,7 +247,6 @@ class Chat extends Component {
   }
 
   setMessageIdAsRead(msg_id) {
-    console.log(`Setting msg_id ${msg_id} as read`);
     this.setState((prevState) => ({
       messageList: prevState.messageList.map(function (el) {
         if (el.data.message_id.Equals(msg_id)) {
@@ -285,8 +273,6 @@ class Chat extends Component {
   }
 
   selectDialog(item) {
-    console.log(`Selecting dialog ${item.id}`);
-
     // do nothing when clicking on the already-selected chat
     // prevents styling of user name in top bar
     const prevId = (this.state.selectedDialog || {}).id;
@@ -312,14 +298,12 @@ class Chat extends Component {
   }
 
   addPKToTyping(pk) {
-    console.log(`Adding ${pk} to typing pk-s`);
     const l = this.state.typingPKs;
     l.push(pk);
     this.setState({ typingPKs: l });
     const that = this;
     setTimeout(() => {
       // We can't use 'l' here because it might have been changed in the meantime
-      console.log(`Will remove ${pk} from typing pk-s`);
       const ll = that.state.typingPKs;
       const index = ll.indexOf(pk);
       if (index > -1) {
@@ -330,10 +314,9 @@ class Chat extends Component {
   }
 
   changePKOnlineStatus(pk, onoff) {
-    console.log("online", `Setting ${pk} to ${onoff}`);
     const onlines = this.state.onlinePKs;
     const stateMapping = this.state.userMatchPkMap[pk];
-    console.log("online Mapping", stateMapping);
+
     if (onoff) {
       onlines.push(pk);
       this.props.updateMatchesOnlineStates(stateMapping, true);
@@ -357,13 +340,9 @@ class Chat extends Component {
       }),
     }));
     this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
-    console.log("STATE", this.state);
   }
 
   addMessage(msg) {
-    console.log("Calling addMessage for ");
-    console.log("state", this.state);
-
     if (
       !msg.data.out &&
       msg.data.message_id > 0 &&
@@ -375,7 +354,7 @@ class Chat extends Component {
     }
     const list = this.state.messageList;
     list.push(msg);
-    console.log(msg);
+
     this.setState({
       messageList: list,
     });
@@ -396,7 +375,6 @@ class Chat extends Component {
       this.setState((prevState) => ({
         dialogList: prevState.dialogList.map(function (el) {
           if (el.id === msg.data.dialog_id) {
-            console.log(`Setting dialog ${msg.data.dialog_id} last message`);
             return { ...el, subtitle: getSubtitleTextFromMessageBox(msg) };
           }
           return el;
@@ -408,7 +386,6 @@ class Chat extends Component {
   }
 
   replaceMessageId(old_id, new_id) {
-    console.log(`Replacing random id  ${old_id} with db_id ${new_id}`);
     this.setState((prevState) => ({
       messageList: prevState.messageList.map(function (el) {
         if (el.data.message_id.Equals(old_id)) {
@@ -441,11 +418,9 @@ class Chat extends Component {
   }
 
   newUnreadCount(dialog_id, count) {
-    console.log(`Got new unread count ${count} for dialog ${dialog_id}`);
     this.setState((prevState) => ({
       dialogList: prevState.dialogList.map(function (el) {
         if (el.id === dialog_id) {
-          console.log(`Setting new unread count ${count} for dialog ${dialog_id}`);
           return { ...el, unread: count };
         }
         return el;
@@ -472,8 +447,7 @@ class Chat extends Component {
         this.state.selfInfo
       );
       this.clearTextInput();
-      console.log("sendOutgoingTextMessage result:");
-      console.log(msgBox);
+
       if (msgBox) {
         this.addMessage(msgBox);
       }
@@ -520,7 +494,6 @@ class Chat extends Component {
               className="message-list"
               lockable
               onDownload={(x, i, e) => {
-                console.log("onDownload from messageList");
                 x.onDownload();
               }}
               downButtonBadge={
@@ -618,7 +591,9 @@ class Chat extends Component {
           >
             <SideBar
               type="light"
-              top={
+              data={{
+                className: "",
+                top: (<>
                 <div className="chat-list">
                   <ToastContainer />
                   <h3 className="chat-header"></h3>
@@ -630,7 +605,7 @@ class Chat extends Component {
                       }
                       if (e.charCode === 13) {
                         this.localSearch();
-                        console.log(`search invoke with${this.searchInput.input.value}`);
+
                         e.preventDefault();
                         return false;
                       }
@@ -638,11 +613,13 @@ class Chat extends Component {
                   />
 
                   <ChatList
+                    className='chat-list'
                     onClick={clickUser}
                     dataSource={this.state.filteredDialogList.slice().sort(chatItemSortingFunction)}
                   />
                 </div>
-              }
+                </>)
+              }}
             />
             <div className="new-partner">
               {!pending && (
@@ -684,7 +661,6 @@ class Chat extends Component {
                     type="button"
                     className="chat-back"
                     onClick={() => {
-                      console.log("back");
                       document.body.classList.remove("hide-mobile-header");
                       this.setState({ userWasSelected: false });
                     }}

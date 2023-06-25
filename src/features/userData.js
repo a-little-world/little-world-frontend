@@ -28,11 +28,11 @@ export const userDataSlice = createSlice({
         matches,
         community_events,
         admin_infos: adminInfos,
-        unconfrimed_matches: preMatches,
+        unconfirmed_matches: preMatches,
       } = action.payload;
-      console.log(user, profile, settings, notifications, usrState, matches, community_events);
+      console.log({ user, profile, settings, notifications, usrState, matches, community_events });
       console.log("ADMIN", adminInfos);
-      console.log("PREMATCHES", preMatches)
+      console.log("PREMATCHES", preMatches);
       // notifications=action.payload
 
       const others = matches.map((match) => {
@@ -55,7 +55,6 @@ export const userDataSlice = createSlice({
           },
         };
       });
-      console.log("OTHRS", others);
 
       let avatarCfg = "";
       avatarCfg = profile.avatar_config;
@@ -79,18 +78,19 @@ export const userDataSlice = createSlice({
         },
         stateInfo: {
           /**
-           * TODO: there is some name confusion here 'preMatches' sould be unmade matches that still need confirmation 
-           * while unconfirmed_matches_stack are the matches that have not been aknowleged 
+           * TODO: there is some name confusion here 'preMatches' sould be unmade matches that still need confirmation
+           * while unconfirmed_matches_stack are the matches that have not been aknowleged
            * */
-          preMatches: preMatches, 
+          preMatches: preMatches,
           unconfirmedMatches: usrState.unconfirmed_matches_stack, // TODO: this should be renamed?
           matchingState: usrState.matching_state,
         },
+        userType: profile.user_type,
       };
 
       state.self = self;
       /* TODO can this reference break anything?
-       I just don't feel that it makes any sense to do state.users.filter(type === 'self') all the time? 
+       I just don't feel that it makes any sense to do state.users.filter(type === 'self') all the time?
       */
 
       // Is it safe to rely on state.users[0] to be self?
@@ -121,8 +121,10 @@ export const userDataSlice = createSlice({
         profile: profile.options,
       };
     },
+    setUsers: (state, { payload }) => {
+      state.users = [...state.users, payload];
+    },
     setStatus: (state, { payload }) => {
-      console.log("payload", payload);
       state.status = payload;
     },
     fetchNotifications: (state, { payload }) => {
@@ -192,6 +194,7 @@ export const {
   readNotif,
   archiveNotif,
   setStatus,
+  setUsers,
   fetchNotifications,
   updateSearching,
 } = userDataSlice.actions;

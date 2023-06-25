@@ -260,12 +260,10 @@ function IncomingCall({ userPk, matchesInfo, setVisible, setCallSetupPartner }) 
   const profileData = matchesInfo.filter((data) => data.userPk === userPk)[0];
   const { firstName, imgSrc, avatarConfig, usesAvatar } = profileData;
   const answerCall = () => {
-    console.log("answer call");
     setVisible(false);
     setCallSetupPartner(userPk);
   };
   const rejectCall = () => {
-    console.log("reject call");
     setVisible(false);
   };
   return (
