@@ -144,6 +144,8 @@
   "sg_repeat_item": "repeat {{item}}",
   "sg_btn_change": "change",
   "sg_btn_confirm": "confirm",
+  "sg_personal_password_change_warning": "Please note that you will need to log in again after changing your password.",
+  "sg_personal_email_change_warning": "Please note that after changing your email address, you will receive a new verification email and will need to enter a new code.",
   "sg_personal_header": "personal",
   "sg_personal_profilePicture": "profile picture",
   "sg_personal_displayLang": "display language",

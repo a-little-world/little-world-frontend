@@ -270,8 +270,7 @@ function ModalBox({ label, valueIn, setEditing }) {
               </select>
             </label>
           )}
-          {label === "password" && <span className="warning-notice">Achtung, du wirst dich mit dem neuen password erneut einloggen muessen</span>}
-          {label === "email" && <span className="warning-notice">Achtung, du bekommst eine neue verifizierungs email zugeschickt und muss erneut einen code ingeben</span>}
+          {["email", "password"].includes(label) && <span className="warning-notice">{t(`sg_personal_${label}_change_warning`)}</span>}
           {label === "password" && <PassChange refIn={textInput} />}
           {["firstName", "lastName", "email", "phone", "postCode", "birthYear"].includes(label) && (
             <AtomicInput
