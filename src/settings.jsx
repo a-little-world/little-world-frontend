@@ -140,7 +140,6 @@ function ModalBox({ label, valueIn, repeatIn, lastValueIn, setEditing }) {
     setEditing(false);
   };
   const onResponseFailure = (report) => {
-    console.log("REPORT", report);
     const errorsList = report[labelsMap[label]];
     setErrors(errorsList); // update error message(s)
     setWaiting(false);
