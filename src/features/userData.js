@@ -1,4 +1,4 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 
 import { notifications } from "../services/notifications";
@@ -88,7 +88,7 @@ export const userDataSlice = createSlice({
            * TODO: there is some name confusion here 'preMatches' sould be unmade matches that still need confirmation
            * while unconfirmed_matches_stack are the matches that have not been aknowleged
            * */
-          preMatches: preMatches,
+          preMatches,
           unconfirmedMatches: usrState.unconfirmed_matches_stack, // TODO: this should be renamed?
           matchingState: usrState.matching_state,
         },

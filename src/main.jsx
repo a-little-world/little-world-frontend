@@ -1,11 +1,9 @@
 import { Modal } from "@a-little-world/little-world-design-system";
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { confirmMatch } from "./api";
 
-import { partiallyConfirmMatch } from "./api";
+import { confirmMatch, partiallyConfirmMatch } from "./api";
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import CancelSearching from "./components/blocks/CancelSearching";
@@ -30,13 +28,7 @@ import { removeActiveTracks } from "./twilio-helper";
 import "./community-events.css";
 import "./main.css";
 
-function getMatchCardComponent({
-  isVolunteer,
-  onConfirm,
-  onPartialConfirm,
-  showNewMatch,
-  userData,
-}) {
+function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, userData }) {
   return showNewMatch ? (
     <NewMatchCard
       name={userData.firstName}
@@ -62,23 +54,23 @@ function getMatchCardComponent({
             res.json().then(() => {
               onPartialConfirm(userData);
               window.location.reload();
-            })
+            });
+          } else {
+            // TODO: Add toast error explainer or some error message
+          }
+        });
+      }}
+      onReject={() => {
+        partiallyConfirmMatch({ acceptDeny: false, userHash: userData?.hash }).then((res) => {
+          if (res.ok) {
+            res.json().then(() => {});
           } else {
             // TODO: Add toast error explainer or some error message
           }
         });
       }}
       onExit={() => {
-        partiallyConfirmMatch({ acceptDeny: false, userHash: userData?.hash }).then((res) => {
-          if (res.ok) {
-            res.json().then(() => {
-              onPartialConfirm();
-              window.location.reload();
-            })
-          } else {
-            // TODO: Add toast error explainer or some error message
-          }
-        });
+        onPartialConfirm();
       }}
     />
   );
@@ -87,7 +79,6 @@ function getMatchCardComponent({
 function Main() {
   const location = useLocation();
   const { userPk } = location.state || {};
-  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const [userProfile, setUserProfile] = useState(null);
@@ -114,7 +105,16 @@ function Main() {
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
   const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
   const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
+
+  const [showCancelSearching, setShowCancelSearching] = useState(false);
+  const [showIncoming, setShowIncoming] = useState(false);
+  const [incomingUserPk, setIncomingUserPk] = useState(null);
   const navigate = useNavigate();
+
+  const onModalClose = () => {
+    setPreMatches([]);
+    setPartiallyConfirmedMatches([]);
+  };
 
   const onConfirm = ({ status, statusText }) => {
     if (status === 200) {
@@ -150,10 +150,10 @@ function Main() {
     }
   };
 
-  const setCallSetupPartner = (userPk) => {
-    document.body.style.overflow = userPk ? "hidden" : "";
-    setCallSetupPartnerKey(userPk);
-    if (!userPk) {
+  const setCallSetupPartner = (partnerKey) => {
+    document.body.style.overflow = partnerKey ? "hidden" : "";
+    setCallSetupPartnerKey(partnerKey);
+    if (!partnerKey) {
       removeActiveTracks();
     }
   };
@@ -176,7 +176,7 @@ function Main() {
     if (use === "help") {
       setTopSelection("contact");
     }
-  }, [location]);
+  }, [location, use]);
 
   const updateOnlineState = (userOnlinePk, status) => {
     matchesOnlineStates[userOnlinePk] = status;
@@ -200,7 +200,6 @@ function Main() {
       setShowIncoming(true);
       setIncomingUserPk(params[1]);
     } else if (action.includes("exited_call")) {
-      const params = action.substring(action.indexOf("(") + 1, action.indexOf(")")).split(":");
       // Backend says a partner has exited the call
       setShowIncoming(false);
     }
@@ -220,11 +219,6 @@ function Main() {
       />
     );
   };
-
-  const [showCancelSearching, setShowCancelSearching] = useState(false);
-
-  const [showIncoming, setShowIncoming] = useState(false);
-  const [incomingUserPk, setIncomingUserPk] = useState(null);
 
   return (
     <div className={`main-page show-${use}`}>
@@ -284,7 +278,11 @@ function Main() {
         )}
         {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
       </div>
-      <Modal open={preMatches?.length || partiallyConfirmedMatches?.length} locked={false}>
+      <Modal
+        open={preMatches?.length || partiallyConfirmedMatches?.length}
+        locked={false}
+        onClose={onModalClose}
+      >
         {(preMatches?.length || partiallyConfirmedMatches?.length) &&
           getMatchCardComponent({
             isVolunteer: self.userType === "volunteer",
