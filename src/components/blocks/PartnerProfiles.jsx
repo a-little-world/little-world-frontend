@@ -9,7 +9,7 @@ import {
 } from "@a-little-world/little-world-design-system";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -32,7 +32,7 @@ const PartnerActionForm = styled.form`
 
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
-  const { register, handleSubmit } = useForm();
+  const { control, handleSubmit, setError, reset } = useForm();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.userData.users);
   const matchState = useSelector((state) => state.userData.self.stateInfo.matchingState);
@@ -63,10 +63,22 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
   }
 
   const handlePartnerAction = (formData) => {
-    if (partnerActionData.type === PARTNER_ACTION_UNMATCH)
-      unmatch({ userPk: partnerActionData.userPk, reason: formData.reason });
-    if (partnerActionData.type === PARTNER_ACTION_REPORT)
-      reportMatch({ userPk: partnerActionData.userPk, reason: formData.reason });
+    console.log({ formData });
+    const action = partnerActionData.type === PARTNER_ACTION_UNMATCH ? unmatch : reportMatch;
+
+    action({ userPk: partnerActionData.userPk, reason: formData.reason })
+      .then(() => setPartnerActionData(null))
+      .catch(() =>
+        setError("root.serverError", {
+          type: "server",
+          message: t(`${partnerActionData.type}_modal_reason_error_server`),
+        })
+      );
+  };
+
+  const onModalClose = () => {
+    setPartnerActionData(null);
+    reset();
   };
 
   return (
@@ -104,25 +116,45 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
           </button>
         </div>
       )}
-      <Modal open={Boolean(partnerActionData)} onClose={() => setPartnerActionData(null)}>
+      <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
         <Card width={CardSizes.Large}>
           {!!partnerActionData && (
             <PartnerActionForm onSubmit={handleSubmit(handlePartnerAction)}>
-              <Text type={TextTypes.Heading2} tag="h2">
+              <Text type={TextTypes.Heading2} tag="h2" center>
                 {t(`${partnerActionData?.type}_modal_title`)}
               </Text>
               <Text>
                 {t(`${partnerActionData?.type}_modal_description`, {
-                  name: partnerActionData?.name,
+                  name: partnerActionData?.userName,
                 })}
               </Text>
               <div>
-                <Text type={TextTypes.Heading3} tag="h3">
-                  {t(`${partnerActionData?.type}_modal_reason_subheading`)}
-                </Text>
-                <TextArea
-                  {...register("reason", { required: true })}
-                  placeholder={t(`${partnerActionData?.type}_modal_title`)}
+                <Text type={TextTypes.Heading3} tag="h3" />
+                <Controller
+                  control={control}
+                  name="reason"
+                  rules={{
+                    required: t(`${partnerActionData.type}_modal_reason_error_required`),
+                    minLength: {
+                      value: 50,
+                      message: t(`${partnerActionData.type}_modal_reason_error_min_length`),
+                    },
+                  }}
+                  render={({
+                    field: { onChange, onBlur, value, name, ref },
+                    fieldState: { error },
+                  }) => (
+                    <TextArea
+                      inputRef={ref}
+                      label={t(`${partnerActionData?.type}_modal_reason_subheading`)}
+                      error={error?.message}
+                      placeholder={t(`${partnerActionData?.type}_modal_title`)}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                      name={name}
+                    />
+                  )}
                 />
               </div>
               <Button type="submit">{t(`${partnerActionData?.type}_modal_button`)}</Button>
