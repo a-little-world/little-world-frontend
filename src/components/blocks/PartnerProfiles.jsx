@@ -1,17 +1,42 @@
+import {
+  Button,
+  Card,
+  CardSizes,
+  Modal,
+  Text,
+  TextArea,
+  TextTypes,
+} from "@a-little-world/little-world-design-system";
 import Cookies from "js-cookie";
-import React from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 
+import { reportMatch, unmatch } from "../../api";
 import { BACKEND_URL } from "../../ENVIRONMENT";
 import { updateSearching } from "../../features/userData";
 import { ProfileBox } from "../../profile";
 
+export const PARTNER_ACTION_REPORT = "report";
+export const PARTNER_ACTION_UNMATCH = "unmatch";
+
+const PartnerActionForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  ${({ theme }) => `
+  gap: ${theme.spacing.medium};
+  `};
+`;
+
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
+  const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.userData.users);
   const matchState = useSelector((state) => state.userData.self.stateInfo.matchingState);
+  const [partnerActionData, setPartnerActionData] = useState(null);
 
   function updateUserMatchingState() {
     const updatedState = "searching";
@@ -37,6 +62,13 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
       .catch((error) => console.error(error));
   }
 
+  const handlePartnerAction = (formData) => {
+    if (partnerActionData.type === PARTNER_ACTION_UNMATCH)
+      unmatch({ userPk: partnerActionData.userPk, reason: formData.reason });
+    if (partnerActionData.type === PARTNER_ACTION_REPORT)
+      reportMatch({ userPk: partnerActionData.userPk, reason: formData.reason });
+  };
+
   return (
     <div className="profiles">
       {users
@@ -46,6 +78,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
             <ProfileBox
               key={user.userPk}
               {...user}
+              openPartnerModal={setPartnerActionData}
               setCallSetupPartner={setCallSetupPartner}
               isOnline={matchesOnlineStates[user.userPk]}
             />
@@ -71,6 +104,32 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
           </button>
         </div>
       )}
+      <Modal open={Boolean(partnerActionData)} onClose={() => setPartnerActionData(null)}>
+        <Card width={CardSizes.Large}>
+          {!!partnerActionData && (
+            <PartnerActionForm onSubmit={handleSubmit(handlePartnerAction)}>
+              <Text type={TextTypes.Heading2} tag="h2">
+                {t(`${partnerActionData?.type}_modal_title`)}
+              </Text>
+              <Text>
+                {t(`${partnerActionData?.type}_modal_description`, {
+                  name: partnerActionData?.name,
+                })}
+              </Text>
+              <div>
+                <Text type={TextTypes.Heading3} tag="h3">
+                  {t(`${partnerActionData?.type}_modal_reason_subheading`)}
+                </Text>
+                <TextArea
+                  {...register("reason", { required: true })}
+                  placeholder={t(`${partnerActionData?.type}_modal_title`)}
+                />
+              </div>
+              <Button type="submit">{t(`${partnerActionData?.type}_modal_button`)}</Button>
+            </PartnerActionForm>
+          )}
+        </Card>
+      </Modal>
     </div>
   );
 }

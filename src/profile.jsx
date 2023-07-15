@@ -1,54 +1,74 @@
-import Cookies from "js-cookie";
+import {
+  Button,
+  ButtonTypes,
+  Card,
+  DotsIcon,
+  Popover,
+  Text,
+} from "@a-little-world/little-world-design-system";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Avatar from "react-nice-avatar";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import styled from "styled-components";
 
-import { BACKEND_URL } from "./ENVIRONMENT";
+import { postUserProfileUpdate } from "./api";
+import ProfileImage from "./components/atoms/ProfileImage";
+import { PARTNER_ACTION_REPORT, PARTNER_ACTION_UNMATCH } from "./components/blocks/PartnerProfiles";
 import { updateProfile } from "./features/userData";
 import "./i18n";
 import Link from "./path-prepend";
 
 import "./profile.css";
 
-const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
-  fetch(`${BACKEND_URL}/api/profile/`, {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-UseTagsOnly": true, // This automaticly requests error tags instead of direct translations!
-    },
-    body: JSON.stringify(updateData),
-  }).then((response) => {
-    const { status, statusText } = response;
-    if (![200, 400].includes(status)) {
-      console.error("server error", status, statusText);
-    } else {
-      response.json().then((report) => {
-        if (response.status === 200) {
-          return onSuccess();
-        }
-        const errorTags = report[formTag];
-        return onFailure(errorTags);
-      });
-    }
-  });
-};
+const ProfileCard = styled(Card)`
+  align-items: center;
+`;
+
+const ProfileInfo = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  ${({ theme }) => `
+  gap: ${theme.spacing.small};
+  margin-bottom: ${theme.spacing.xsmall};
+  `};
+`;
+
+const MatchMenuToggle = styled(Button)`
+  position: absolute;
+
+  ${({ theme }) => `
+  padding: ${theme.spacing.xxxsmall} ${theme.spacing.xxsmall};
+  top: ${theme.spacing.small};
+  right: ${theme.spacing.small};
+  `};
+`;
+
+const PartnerMenuOption = styled(Button)`
+  font-size: 1rem;
+  font-weight: normal;
+  justify-content: flex-start;
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+
+  &:not(:last-of-type) {
+    margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+  }
+`;
 
 function ProfileBox({
-  userPk,
-  firstName,
-  lastName,
-  description,
-  imgSrc,
   avatarCfg,
-  usesAvatar,
-  type,
-  setCallSetupPartner,
+  description,
+  firstName,
+  imgSrc,
   isOnline,
+  lastName,
+  openPartnerModal,
+  setCallSetupPartner,
+  type,
+  userPk,
+  usesAvatar,
 }) {
   const { t } = useTranslation();
   if (type === "self") {
@@ -56,24 +76,44 @@ function ProfileBox({
   }
 
   return (
-    <div className={type === "unconfirmed" ? "profile-box new-match" : "profile-box"}>
-      {usesAvatar ? (
-        <Avatar className="profile-avatar" {...avatarCfg} />
-      ) : (
-        <img alt="match" className="profile-image" src={imgSrc} />
-      )}
-      {type === "match" && false /** temporarily disabled */ && (
-        <button className="unmatch" type="button" onClick={() => setUnmatchingUser(user)}>
-          <img />
-        </button>
+    <ProfileCard className={type === "unconfirmed" ? "profile-box new-match" : "profile-box"}>
+      <ProfileImage
+        image={usesAvatar ? avatarCfg : imgSrc}
+        imageType={usesAvatar ? "avatar" : "image"}
+      />
+      {type === "match" && (
+        <Popover
+          trigger={
+            <MatchMenuToggle type="button" variation={ButtonTypes.Icon}>
+              <DotsIcon color="orange" />
+            </MatchMenuToggle>
+          }
+        >
+          <PartnerMenuOption
+            variation={ButtonTypes.Inline}
+            onClick={() =>
+              openPartnerModal({ type: PARTNER_ACTION_REPORT, userPk, userName: firstName })
+            }
+          >
+            {t("cp_menu_report")}
+          </PartnerMenuOption>
+          <PartnerMenuOption
+            variation={ButtonTypes.Inline}
+            onClick={() =>
+              openPartnerModal({ type: PARTNER_ACTION_UNMATCH, userPk, userName: firstName })
+            }
+          >
+            {t("cp_menu_umatch")}
+          </PartnerMenuOption>
+        </Popover>
       )}
       <div className={isOnline ? "online-indicator online" : "online-indicator"}>
         online <span className="light" />
       </div>
-      <div className="profile-info">
-        <div className="name">{`${firstName} ${lastName}`}</div>
-        <div className="text">{description}</div>
-      </div>
+      <ProfileInfo className="profile-info">
+        <Text className="name">{`${firstName} ${lastName}`}</Text>
+        <Text className="text">{description}</Text>
+      </ProfileInfo>
       {type !== "self" && (
         <div className="buttons">
           <Link to="/" state={{ userPk }} className="profile">
@@ -90,7 +130,7 @@ function ProfileBox({
           </button>
         </div>
       )}
-    </div>
+    </ProfileCard>
   );
 }
 
@@ -155,7 +195,7 @@ function InterestsSelector({ inTopicSelection }) {
         <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
           {editing && (
             <div className="topics-selector modal-box">
-              <button type="button" className="modal-close" onClick={cancelTopics}></button>
+              <button type="button" className="modal-close" onClick={cancelTopics} />
               <h3>{t("profile_choose_interests")}</h3>
               <div className="items">
                 {interestChoices.map((choice) => (
@@ -186,16 +226,6 @@ function InterestsSelector({ inTopicSelection }) {
         </div>
       </div>
       {errorText && <div style={{ color: "red" }}>{errorText}</div>}
-    </div>
-  );
-}
-
-function SectionBox({ subject, children }) {
-  // TODO: use translations
-  return (
-    <div className={subject}>
-      <h3>{subject}</h3>
-      {children}
     </div>
   );
 }
@@ -354,11 +384,6 @@ function TextBox({ subject, topicText = "", formTag }) {
 
 /* TODO: the expectations is still the wrong form field */
 function ProfileDetail({ profile }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { userPk } = location.state || {};
-  const isSelf = !userPk;
-
   // prevent erroring out when empty data sent (due to promise delay?)
   if (!profile) {
     return null;

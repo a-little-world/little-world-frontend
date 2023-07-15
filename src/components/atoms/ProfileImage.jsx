@@ -20,8 +20,8 @@ export const CircleImage = styled.div`
   background: ${({ $image }) => `url(${$image})`};
   background-size: cover;
   background-position: center;
-  width: 154px;
-  height: 154px;
+  width: 180px;
+  height: 180px;
   display: flex;
   align-items: end;
   justify-content: center;
@@ -29,12 +29,12 @@ export const CircleImage = styled.div`
   position: relative;
 `;
 
-const ProfileImage = ({ image, imageType }) => {
+function ProfileImage({ image, imageType }) {
   return imageType === "avatar" ? (
     <StyledAvatar {...image} />
   ) : (
     <CircleImage alt="user image" $image={image} />
   );
-};
+}
 
 export default ProfileImage;
