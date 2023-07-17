@@ -70,7 +70,7 @@ const NewMatchCard = ({ name, image, imageType, onExit }) => {
           {t("new_match_instruction")}
         </Text>
       </Centred>
-      <Button onClick={onExit}>{t("new_match_close_button")}</Button>
+      <Button onClick={onExit}>{t("new_match_close_btn")}</Button>
     </Card>
   );
 };
