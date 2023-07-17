@@ -17,7 +17,7 @@ import NotificationPanel from "./components/blocks/NotificationPanel";
 import PartnerProfiles from "./components/blocks/PartnerProfiles";
 import Sidebar from "./components/blocks/Sidebar";
 import { BACKEND_PATH } from "./ENVIRONMENT";
-import { setUsers } from "./features/userData";
+import { addUnconfirmed, removePreMatch, setUsers } from "./features/userData";
 import Help from "./help";
 import "./i18n";
 import Notifications from "./notifications";
@@ -37,9 +37,7 @@ function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, user
       onExit={() => {
         confirmMatch({ userHash: userData?.userPk })
           .then(onConfirm)
-          .then(() => {
-            window.location.reload();
-          })
+          .then(() => {})
           .catch((error) => console.error(error));
       }}
     />
@@ -51,9 +49,9 @@ function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, user
       onConfirm={() => {
         partiallyConfirmMatch({ acceptDeny: true, userHash: userData?.hash }).then((res) => {
           if (res.ok) {
-            res.json().then(() => {
-              onPartialConfirm(userData);
-              window.location.reload();
+            res.json().then((data) => {
+              // The user_data hash incase of a 'partial confirm will be the matching hash!
+              onPartialConfirm(userData['hash'] ,data["match"]);
             });
           } else {
             // TODO: Add toast error explainer or some error message
@@ -76,6 +74,25 @@ function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, user
   );
 }
 
+const userDataDefaultTransform = (data) => {
+  return {
+    userPk: data.user.hash,
+    firstName: data.profile.first_name,
+    lastName: "",
+    imgSrc: data.profile.image,
+    avatarCfg: data.profile.avatar_config,
+    usesAvatar: data.profile.image_type === "avatar",
+    description: data.profile.description,
+    type: "match",
+    extraInfo: {
+      about: data.profile.description,
+      interestTopics: data.profile.interests,
+      extraTopics: data.profile.additional_interests,
+      expectations: data.profile.language_skill_description,
+    },
+  }
+};
+
 function Main() {
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -83,16 +100,21 @@ function Main() {
 
   const [userProfile, setUserProfile] = useState(null);
 
-  const users = useSelector((state) => state.userData.users);
+  const usersInital = useSelector((state) => state.userData.users);
+  const [users, updateUsers] = useState(usersInital);
 
   const initalPreMatches = useSelector((state) => state.userData.self.stateInfo.preMatches);
-  const matchesInfo = users.filter(({ type }) => type !== "self");
+  const matchesInfo = usersInital.filter(({ type }) => type !== "self");
 
   const initialPartiallyConfirmedMatches = useSelector((state) =>
     matchesInfo.find(
       (match) => match?.userPk === state.userData.self?.stateInfo?.unconfirmedMatches?.[0]
     )
   );
+  
+  useEffect(() => {
+    updateUsers(usersInital);
+  }, [usersInital]);
 
   const self = useSelector((state) => state.userData.self);
 
@@ -123,30 +145,27 @@ function Main() {
       console.error("server error", status, statusText);
     }
   };
+  
+  function updateUsersAndUnconfirmed(matchingId ,match) {
+    return dispatch => {
+      console.log("DISPATCHING", match, matchingId);
+      dispatch(addUnconfirmed(match.user.hash));
+      dispatch(removePreMatch(matchingId));
+      const userObj = userDataDefaultTransform(match)
+      console.log("USER OBJ", userObj);
+      dispatch(setUsers(userObj));
+    }
+  }
 
-  const onPartialConfirm = (match) => {
-    // TODO this should come from the successful response
-    setPreMatches([]);
-    if (match) {
-      setPartiallyConfirmedMatches([match]);
-      dispatch(
-        setUsers({
-          userPk: match.user_hash,
-          firstName: match.first_name,
-          lastName: "",
-          imgSrc: match.avatar_image,
-          avatarCfg: match.avatar_image,
-          usesAvatar: match.image_type === "avatar",
-          description: "",
-          type: "match",
-          extraInfo: {
-            about: "",
-            interestTopics: [],
-            extraTopics: "",
-            expectations: "",
-          },
-        })
-      );
+  const onPartialConfirm = (matchingId, match) => {
+    if (match && matchingId) {
+      const newUser = userDataDefaultTransform(match);
+      dispatch(updateUsersAndUnconfirmed(matchingId, match));
+      setPartiallyConfirmedMatches([newUser]);
+      setPreMatches(preMatches.filter((match) => match.hash !== matchingId));
+    }else{
+      setPartiallyConfirmedMatches([]);
+      setPreMatches([]);
     }
   };
 
