@@ -129,8 +129,10 @@ export const userDataSlice = createSlice({
         profile: profile.options,
       };
     },
-    setUsers: (state, { payload }) => {
-      state.users = [...state.users, payload];
+    setUsers: (state, action) => {
+      const payload = action.payload;
+      const updatedUsers = [...state.users, payload];
+      state.users = updatedUsers;
     },
     setStatus: (state, { payload }) => {
       state.status = payload;
@@ -161,12 +163,13 @@ export const userDataSlice = createSlice({
     addUnconfirmed: (state, action) => {
       const newSelf = { ...state.self, stateInfo: { ...state.self.stateInfo, unconfirmedMatches: [...state.self.stateInfo.unconfirmedMatches, action.payload] } };
       state.self = newSelf;
-      state.users = state.users.map((user) => {
+      const updatedUsers = state.users.map((user) => {
         if (user.userPk === action.payload) {
           return { ...newSelf };
         }
         return user;
       });
+      state.users = updatedUsers;
     },
     updateProfile: (state, action) => {
       state.users = state.users.map((user) => {
