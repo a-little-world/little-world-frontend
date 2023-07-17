@@ -100,16 +100,21 @@ function Main() {
 
   const [userProfile, setUserProfile] = useState(null);
 
-  const users = useSelector((state) => state.userData.users);
+  const usersInital = useSelector((state) => state.userData.users);
+  const [users, updateUsers] = useState(usersInital);
 
   const initalPreMatches = useSelector((state) => state.userData.self.stateInfo.preMatches);
-  const matchesInfo = users.filter(({ type }) => type !== "self");
+  const matchesInfo = usersInital.filter(({ type }) => type !== "self");
 
   const initialPartiallyConfirmedMatches = useSelector((state) =>
     matchesInfo.find(
       (match) => match?.userPk === state.userData.self?.stateInfo?.unconfirmedMatches?.[0]
     )
   );
+  
+  useEffect(() => {
+    updateUsers(usersInital);
+  }, [usersInital]);
 
   const self = useSelector((state) => state.userData.self);
 
@@ -143,24 +148,24 @@ function Main() {
   
   function updateUsersAndUnconfirmed(matchingId ,match) {
     return dispatch => {
-      dispatch(
-        setUsers(userDataDefaultTransform(match))
-      );
+      console.log("DISPATCHING", match, matchingId);
       dispatch(addUnconfirmed(match.user.hash));
       dispatch(removePreMatch(matchingId));
+      const userObj = userDataDefaultTransform(match)
+      console.log("USER OBJ", userObj);
+      dispatch(setUsers(userObj));
     }
   }
 
   const onPartialConfirm = (matchingId, match) => {
-    // TODO this should come from the successful response
-    console.log("PARTIAL CONFIRM", match, matchingId);
-    if (match) {
+    if (match && matchingId) {
       const newUser = userDataDefaultTransform(match);
-      updateUsersAndUnconfirmed(matchingId, match);
-      //print("Setting up partially confirmed")
-      //setPreMatches([]) Should auto update when component reloads
+      dispatch(updateUsersAndUnconfirmed(matchingId, match));
       setPartiallyConfirmedMatches([newUser]);
       setPreMatches(preMatches.filter((match) => match.hash !== matchingId));
+    }else{
+      setPartiallyConfirmedMatches([]);
+      setPreMatches([]);
     }
   };
 
