@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 
 import { notifications } from "../services/notifications";
+import { State$reflection } from "../chat/Types.fs";
 
 const initialState = {
   raw: {},
@@ -154,6 +155,19 @@ export const userDataSlice = createSlice({
         }
       });
     },
+    removePreMatch: (state, action) => {
+      state.self = { ...state.self, stateInfo: { ...state.self.stateInfo, preMatches: state.self.stateInfo.preMatches.filter((match) => match.hash !== action.payload) } };  
+    },
+    addUnconfirmed: (state, action) => {
+      const newSelf = { ...state.self, stateInfo: { ...state.self.stateInfo, unconfirmedMatches: [...state.self.stateInfo.unconfirmedMatches, action.payload] } };
+      state.self = newSelf;
+      state.users = state.users.map((user) => {
+        if (user.userPk === action.payload) {
+          return { ...newSelf };
+        }
+        return user;
+      });
+    },
     updateProfile: (state, action) => {
       state.users = state.users.map((user) => {
         if (user.type === "self") {
@@ -198,9 +212,11 @@ export const {
   initialise,
   updateSettings,
   updateProfile,
+  addUnconfirmed,
   readAll,
   readNotif,
   archiveNotif,
+  removePreMatch,
   setStatus,
   setUsers,
   fetchNotifications,
