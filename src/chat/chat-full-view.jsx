@@ -520,14 +520,23 @@ class Chat extends Component {
                     this.isTyping();
                   }
                   if (e.shiftKey && e.charCode === 13) {
-                    return true;
-                  }
-                  if (e.charCode === 13) {
                     if (this.state.socket.readyState === 1) {
                       e.preventDefault();
                       this.performSendingMessage();
                     }
                     return false;
+                  }
+                  if (e.charCode === 13) {
+                    // if the last charCode is also enter send the messaage!
+                    if(e.target.value.endsWith("\n\n")){
+                      if (this.state.socket.readyState === 1) {
+                        e.preventDefault();
+                        this.performSendingMessage();
+                      }
+                      return false;
+                    }
+
+                    return true;
                   }
                 }}
                 onChange={handleTextUpdate}
