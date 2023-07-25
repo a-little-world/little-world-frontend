@@ -30,7 +30,7 @@ export const partiallyConfirmMatch = ({ acceptDeny, userHash }) =>
     }),
   });
 
-export const reportMatch = ({ reason, userHash }) => null;
+export const reportMatch = ({ reason, userHash }) => Promise.resolve();
 // fetch(`${BACKEND_URL}/api/user/unmatch_self/`, {
 //   headers: {
 //     "X-CSRFToken": Cookies.get("csrftoken"),

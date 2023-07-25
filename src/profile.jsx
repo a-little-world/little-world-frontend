@@ -2,10 +2,12 @@ import {
   Button,
   ButtonTypes,
   Card,
+  designTokens,
   DotsIcon,
   Popover,
   Text,
 } from "@a-little-world/little-world-design-system";
+import { PopoverSizes } from "@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +16,10 @@ import styled from "styled-components";
 
 import { postUserProfileUpdate } from "./api";
 import ProfileImage from "./components/atoms/ProfileImage";
-import { PARTNER_ACTION_REPORT, PARTNER_ACTION_UNMATCH } from "./components/blocks/PartnerProfiles";
+import {
+  PARTNER_ACTION_REPORT,
+  PARTNER_ACTION_UNMATCH,
+} from "./components/blocks/PartnerActionCard";
 import { updateProfile } from "./features/userData";
 import "./i18n";
 import Link from "./path-prepend";
@@ -83,9 +88,16 @@ function ProfileBox({
       />
       {type === "match" && (
         <Popover
+          width={PopoverSizes.Large}
+          showCloseButton
           trigger={
             <MatchMenuToggle type="button" variation={ButtonTypes.Icon}>
-              <DotsIcon color="orange" />
+              <DotsIcon
+                circular
+                height="16px"
+                width="16px"
+                color={designTokens.color.theme.light.text.tertiary}
+              />
             </MatchMenuToggle>
           }
         >
@@ -103,7 +115,7 @@ function ProfileBox({
               openPartnerModal({ type: PARTNER_ACTION_UNMATCH, userPk, userName: firstName })
             }
           >
-            {t("cp_menu_umatch")}
+            {t("cp_menu_unmatch")}
           </PartnerMenuOption>
         </Popover>
       )}

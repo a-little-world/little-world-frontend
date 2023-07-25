@@ -1,38 +1,16 @@
-import {
-  Button,
-  Card,
-  CardSizes,
-  Modal,
-  Text,
-  TextArea,
-  TextTypes,
-} from "@a-little-world/little-world-design-system";
+import { Modal } from "@a-little-world/little-world-design-system";
 import Cookies from "js-cookie";
 import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
 
-import { reportMatch, unmatch } from "../../api";
 import { BACKEND_URL } from "../../ENVIRONMENT";
 import { updateSearching } from "../../features/userData";
 import { ProfileBox } from "../../profile";
-
-export const PARTNER_ACTION_REPORT = "report";
-export const PARTNER_ACTION_UNMATCH = "unmatch";
-
-const PartnerActionForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  ${({ theme }) => `
-  gap: ${theme.spacing.medium};
-  `};
-`;
+import PartnerActionCard from "./PartnerActionCard";
 
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
-  const { control, handleSubmit, setError, reset } = useForm();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.userData.users);
   const matchState = useSelector((state) => state.userData.self.stateInfo.matchingState);
@@ -62,23 +40,8 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
       .catch((error) => console.error(error));
   }
 
-  const handlePartnerAction = (formData) => {
-    console.log({ formData });
-    const action = partnerActionData.type === PARTNER_ACTION_UNMATCH ? unmatch : reportMatch;
-
-    action({ userPk: partnerActionData.userPk, reason: formData.reason })
-      .then(() => setPartnerActionData(null))
-      .catch(() =>
-        setError("root.serverError", {
-          type: "server",
-          message: t(`${partnerActionData.type}_modal_reason_error_server`),
-        })
-      );
-  };
-
   const onModalClose = () => {
     setPartnerActionData(null);
-    reset();
   };
 
   return (
@@ -117,50 +80,9 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
         </div>
       )}
       <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
-        <Card width={CardSizes.Large}>
-          {!!partnerActionData && (
-            <PartnerActionForm onSubmit={handleSubmit(handlePartnerAction)}>
-              <Text type={TextTypes.Heading2} tag="h2" center>
-                {t(`${partnerActionData?.type}_modal_title`)}
-              </Text>
-              <Text>
-                {t(`${partnerActionData?.type}_modal_description`, {
-                  name: partnerActionData?.userName,
-                })}
-              </Text>
-              <div>
-                <Text type={TextTypes.Heading3} tag="h3" />
-                <Controller
-                  control={control}
-                  name="reason"
-                  rules={{
-                    required: t(`${partnerActionData.type}_modal_reason_error_required`),
-                    minLength: {
-                      value: 50,
-                      message: t(`${partnerActionData.type}_modal_reason_error_min_length`),
-                    },
-                  }}
-                  render={({
-                    field: { onChange, onBlur, value, name, ref },
-                    fieldState: { error },
-                  }) => (
-                    <TextArea
-                      inputRef={ref}
-                      label={t(`${partnerActionData?.type}_modal_reason_subheading`)}
-                      error={error?.message}
-                      placeholder={t(`${partnerActionData?.type}_modal_title`)}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      value={value}
-                      name={name}
-                    />
-                  )}
-                />
-              </div>
-              <Button type="submit">{t(`${partnerActionData?.type}_modal_button`)}</Button>
-            </PartnerActionForm>
-          )}
-        </Card>
+        {!!partnerActionData && (
+          <PartnerActionCard data={partnerActionData} onClose={onModalClose} />
+        )}
       </Modal>
     </div>
   );
