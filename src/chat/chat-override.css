@@ -551,3 +551,9 @@
     margin-bottom: unset;
   }
 }
+
+
+.styled-message-box a{
+  background: linear-gradient(0deg, #3cc1e957, transparent);
+  border: 1px solid rgb(0 30 89 / 14%);
+}
