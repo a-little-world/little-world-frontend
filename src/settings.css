@@ -114,7 +114,6 @@ section.settings {
 }
 
 .forgot-password {
-  text-transform: capitalize;
   padding: 6px 18px;
   display: flex;
   margin: 6px auto;

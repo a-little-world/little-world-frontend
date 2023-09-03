@@ -1,7 +1,8 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 
 import { notifications } from "../services/notifications";
+import { State$reflection } from "../chat/Types.fs";
 
 const initialState = {
   raw: {},
@@ -88,7 +89,7 @@ export const userDataSlice = createSlice({
            * TODO: there is some name confusion here 'preMatches' sould be unmade matches that still need confirmation
            * while unconfirmed_matches_stack are the matches that have not been aknowleged
            * */
-          preMatches: preMatches,
+          preMatches,
           unconfirmedMatches: usrState.unconfirmed_matches_stack, // TODO: this should be renamed?
           matchingState: usrState.matching_state,
         },
@@ -128,8 +129,10 @@ export const userDataSlice = createSlice({
         profile: profile.options,
       };
     },
-    setUsers: (state, { payload }) => {
-      state.users = [...state.users, payload];
+    setUsers: (state, action) => {
+      const payload = action.payload;
+      const updatedUsers = [...state.users, payload];
+      state.users = updatedUsers;
     },
     setStatus: (state, { payload }) => {
       state.status = payload;
@@ -153,6 +156,20 @@ export const userDataSlice = createSlice({
           });
         }
       });
+    },
+    removePreMatch: (state, action) => {
+      state.self = { ...state.self, stateInfo: { ...state.self.stateInfo, preMatches: state.self.stateInfo.preMatches.filter((match) => match.hash !== action.payload) } };  
+    },
+    addUnconfirmed: (state, action) => {
+      const newSelf = { ...state.self, stateInfo: { ...state.self.stateInfo, unconfirmedMatches: [...state.self.stateInfo.unconfirmedMatches, action.payload] } };
+      state.self = newSelf;
+      const updatedUsers = state.users.map((user) => {
+        if (user.userPk === action.payload) {
+          return { ...newSelf };
+        }
+        return user;
+      });
+      state.users = updatedUsers;
     },
     updateProfile: (state, action) => {
       state.users = state.users.map((user) => {
@@ -198,9 +215,11 @@ export const {
   initialise,
   updateSettings,
   updateProfile,
+  addUnconfirmed,
   readAll,
   readNotif,
   archiveNotif,
+  removePreMatch,
   setStatus,
   setUsers,
   fetchNotifications,
