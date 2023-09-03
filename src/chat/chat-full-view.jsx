@@ -1,4 +1,5 @@
 import throttle from "lodash.throttle";
+import sanitizeHtml from 'sanitize-html';
 import React, { Component } from "react";
 import { Button, Input, MessageList, Navbar, SideBar } from "react-chat-elements";
 import { withTranslation } from "react-i18next";
@@ -507,7 +508,20 @@ class Chat extends Component {
               dataSource={filterMessagesForDialog(
                 this.state.selectedDialog,
                 this.state.messageList
-              )}
+              ).map((msg) => {
+                return {
+                  ...msg,
+                  text: (
+                    <div className="styled-message-box" dangerouslySetInnerHTML={{__html: sanitizeHtml(msg.text, {
+                      allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+                      allowedAttributes: {
+                        a: ['href', 'target']
+                      }
+                    })}}>
+                    </div>
+                  )
+                }
+               })}
             />
             <div id="test-input">
               <Input
