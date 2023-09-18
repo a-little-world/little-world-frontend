@@ -318,6 +318,19 @@ function ConfirmAccountDeletetion({
           <button type="button" className="confirm" onClick={() => {
             // call deletion api ...
             // then reload page ...
+              fetch(`${BACKEND_URL}/api/user/delete_account/`, {
+                method: "POST",
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken"),
+                  "Content-Type": "application/json",
+                }
+              }).then((res) => {
+                if (res.ok) {
+                  window.location.reload();
+                } else {
+                  console.error(`Error ${res.status}: ${res.statusText}`);
+                }
+              })
           }}>
             {t("settings_delete_account_confirm_button")}
           </button>
