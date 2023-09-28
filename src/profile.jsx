@@ -1,11 +1,17 @@
 import {
   Button,
-  ButtonTypes,
+  ButtonVariations,
   Card,
+  CardSizes,
   designTokens,
   DotsIcon,
+  Gradients,
+  MessageIcon,
+  PhoneIcon,
   Popover,
+  ProfileIcon,
   Text,
+  TextTypes,
 } from "@a-little-world/little-world-design-system";
 import { PopoverSizes } from "@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover";
 import React, { useEffect, useRef, useState } from "react";
@@ -15,6 +21,7 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import { postUserProfileUpdate } from "./api";
+import MenuLink from "./components/atoms/MenuLink";
 import ProfileImage from "./components/atoms/ProfileImage";
 import {
   PARTNER_ACTION_REPORT,
@@ -46,8 +53,8 @@ const MatchMenuToggle = styled(Button)`
 
   ${({ theme }) => `
   padding: ${theme.spacing.xxxsmall} ${theme.spacing.xxsmall};
-  top: ${theme.spacing.small};
-  right: ${theme.spacing.small};
+  top: ${theme.spacing.xsmall};
+  right: ${theme.spacing.xsmall};
   `};
 `;
 
@@ -60,6 +67,13 @@ const PartnerMenuOption = styled(Button)`
   &:not(:last-of-type) {
     margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   }
+`;
+
+const Actions = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: ${({ theme }) => theme.spacing.small};
+  width: 100%;
 `;
 
 function ProfileBox({
@@ -81,7 +95,10 @@ function ProfileBox({
   }
 
   return (
-    <ProfileCard className={type === "unconfirmed" ? "profile-box new-match" : "profile-box"}>
+    <ProfileCard
+      className={type === "unconfirmed" ? "profile-box new-match" : "profile-box"}
+      width={CardSizes.Small}
+    >
       <ProfileImage
         image={usesAvatar ? avatarCfg : imgSrc}
         imageType={usesAvatar ? "avatar" : "image"}
@@ -91,7 +108,7 @@ function ProfileBox({
           width={PopoverSizes.Large}
           showCloseButton
           trigger={
-            <MatchMenuToggle type="button" variation={ButtonTypes.Icon}>
+            <MatchMenuToggle type="button" variation={ButtonVariations.Icon}>
               <DotsIcon
                 circular
                 height="16px"
@@ -102,7 +119,7 @@ function ProfileBox({
           }
         >
           <PartnerMenuOption
-            variation={ButtonTypes.Inline}
+            variation={ButtonVariations.Inline}
             onClick={() =>
               openPartnerModal({ type: PARTNER_ACTION_REPORT, userPk, userName: firstName })
             }
@@ -110,7 +127,7 @@ function ProfileBox({
             {t("cp_menu_report")}
           </PartnerMenuOption>
           <PartnerMenuOption
-            variation={ButtonTypes.Inline}
+            variation={ButtonVariations.Inline}
             onClick={() =>
               openPartnerModal({ type: PARTNER_ACTION_UNMATCH, userPk, userName: firstName })
             }
@@ -127,20 +144,28 @@ function ProfileBox({
         <Text className="text">{description}</Text>
       </ProfileInfo>
       {type !== "self" && (
-        <div className="buttons">
-          <Link to="/" state={{ userPk }} className="profile">
-            <img alt="visit profile" />
-            {t("cp_profile")}
-          </Link>
-          <Link to="/chat" state={{ userPk }} className="chat">
-            <img alt="chat" />
-            {t("cp_message")}
-          </Link>
-          <button type="button" onClick={() => setCallSetupPartner(userPk)} className="call">
-            <img alt="call" />
+        <Actions>
+          <MenuLink to="/" state={{ userPk }}>
+            <ProfileIcon
+              gradient={Gradients.Orange}
+              label="visit profile"
+              labelId="visit_profile"
+            />
+            <Text type={TextTypes.Body4}>{t("cp_profile")}</Text>
+          </MenuLink>
+          <MenuLink to="/chat" state={{ userPk }}>
+            <MessageIcon gradient={Gradients.Orange} label="chat icon" labelId="chat_icon" />
+            <Text type={TextTypes.Body4}>{t("cp_message")}</Text>
+          </MenuLink>
+          <Button
+            type="button"
+            variation={ButtonVariations.Option}
+            onClick={() => setCallSetupPartner(userPk)}
+          >
+            <PhoneIcon gradient={Gradients.Orange} label="call icon" labelId="call_icon" />
             {t("cp_call")}
-          </button>
-        </div>
+          </Button>
+        </Actions>
       )}
     </ProfileCard>
   );

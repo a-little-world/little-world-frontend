@@ -1,6 +1,6 @@
 import {
   Button,
-  ButtonTypes,
+  ButtonAppearance,
   Card,
   CardSizes,
   ExclamationIcon,
@@ -95,7 +95,7 @@ function PartnerActionCard({ data, onClose }) {
             {t(`${data?.type}_modal_confirmation`, { name: data.userName })}
           </Text>
           {isUnmatch && <Text center>{t("unmatch_modal_search_again")}</Text>}
-          <Button type="button" variation={ButtonTypes.Secondary} onClick={handleOnClose}>
+          <Button type="button" appearance={ButtonAppearance.Secondary} onClick={handleOnClose}>
             {t(`${data?.type}_modal_close_btn`)}
           </Button>
         </Centred>
@@ -139,7 +139,7 @@ function PartnerActionCard({ data, onClose }) {
           </ReasonWrapper>
           <ButtonsWrapper>
             <Button type="submit">{t(`${data?.type}_modal_confirm_btn`)}</Button>
-            <Button type="button" variation={ButtonTypes.Secondary} onClick={handleOnClose}>
+            <Button type="button" appearance={ButtonAppearance.Secondary} onClick={handleOnClose}>
               {t(`${data?.type}_modal_cancel_btn`)}
             </Button>
           </ButtonsWrapper>

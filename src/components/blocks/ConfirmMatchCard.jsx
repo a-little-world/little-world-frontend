@@ -1,11 +1,12 @@
 import {
   Button,
-  ButtonTypes,
+  ButtonAppearance,
   Card,
   CardSizes,
   Text,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
@@ -43,7 +44,7 @@ const Centred = styled.div`
   `}
 `;
 
-const ConfirmMatchCard = ({ name, onConfirm, onExit, image, imageType }) => {
+function ConfirmMatchCard({ name, onConfirm, onExit, image, imageType }) {
   const { t } = useTranslation();
 
   return (
@@ -61,7 +62,7 @@ const ConfirmMatchCard = ({ name, onConfirm, onExit, image, imageType }) => {
       </Centred>
 
       <ButtonsContainer>
-        <Button type="button" variation={ButtonTypes.Secondary} onClick={onExit}>
+        <Button type="button" appearance={ButtonAppearance.Secondary} onClick={onExit}>
           {t("confrim_match_reject_btn")}
         </Button>
         <Button type="button" onClick={onConfirm}>
@@ -70,6 +71,6 @@ const ConfirmMatchCard = ({ name, onConfirm, onExit, image, imageType }) => {
       </ButtonsContainer>
     </Card>
   );
-};
+}
 
 export default ConfirmMatchCard;
