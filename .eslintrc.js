@@ -31,6 +31,7 @@ module.exports = {
     "react/static-property-placement": [1, "property assignment"],
     quotes: ["error", "double"],
     "react/prop-types": ["off"],
+    "react/function-component-definition": "off",
     camelcase: "warn",
   },
 };

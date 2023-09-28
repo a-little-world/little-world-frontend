@@ -1,6 +1,6 @@
 import { Modal } from "@a-little-world/little-world-design-system";
 import Cookies from "js-cookie";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -12,9 +12,19 @@ import PartnerActionCard from "./PartnerActionCard";
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.userData.users);
-  const matchState = useSelector((state) => state.userData.self.stateInfo.matchingState);
+  const usersSel = useSelector((state) => state.userData.users);
+  const matchStateSel = useSelector((state) => state.userData.self.stateInfo.matchingState);
+  const [users, setUsers] = useState(usersSel);
+  const [matchState, setMatchState] = useState(matchStateSel);
   const [partnerActionData, setPartnerActionData] = useState(null);
+
+  useEffect(() => {
+    setUsers(usersSel);
+  }, [usersSel]);
+
+  useEffect(() => {
+    setMatchState(matchStateSel);
+  }, [matchStateSel]);
 
   function updateUserMatchingState() {
     const updatedState = "searching";

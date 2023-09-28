@@ -1,4 +1,5 @@
 import throttle from "lodash.throttle";
+import sanitizeHtml from 'sanitize-html';
 import React, { Component } from "react";
 import { Button, Input, MessageList, Navbar, SideBar } from "react-chat-elements";
 import { withTranslation } from "react-i18next";
@@ -507,7 +508,20 @@ class Chat extends Component {
               dataSource={filterMessagesForDialog(
                 this.state.selectedDialog,
                 this.state.messageList
-              )}
+              ).map((msg) => {
+                return {
+                  ...msg,
+                  text: (
+                    <div className="styled-message-box" dangerouslySetInnerHTML={{__html: sanitizeHtml(msg.text, {
+                      allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+                      allowedAttributes: {
+                        a: ['href', 'target']
+                      }
+                    })}}>
+                    </div>
+                  )
+                }
+               })}
             />
             <div id="test-input">
               <Input
@@ -520,14 +534,26 @@ class Chat extends Component {
                     this.isTyping();
                   }
                   if (e.shiftKey && e.charCode === 13) {
-                    return true;
-                  }
-                  if (e.charCode === 13) {
                     if (this.state.socket.readyState === 1) {
                       e.preventDefault();
                       this.performSendingMessage();
                     }
                     return false;
+                  }
+                  if (e.charCode === 13) {
+                    /**
+                      * TODO: in the future we want this to auto send on two enters on mobile maybe?
+                      * Also we might want shift enter to make a new line on desktop instad of sending?
+                      * https://app.clickup.com/t/863h7880p
+                    if(e.target.value.endsWith("\n\n")){
+                      if (this.state.socket.readyState === 1) {
+                        e.preventDefault();
+                        this.performSendingMessage();
+                      }
+                      return false;
+                    } */
+
+                    return true;
                   }
                 }}
                 onChange={handleTextUpdate}

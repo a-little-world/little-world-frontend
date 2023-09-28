@@ -95,7 +95,6 @@ button {
   height: 84px;
   box-sizing: border-box;
   align-items: center;
-  text-transform: capitalize;
   justify-content: space-between;
 }
 
@@ -159,6 +158,7 @@ a {
   height: fit-content;
 }
 
+/*
 button::first-letter,
 button .text::first-letter,
 label::first-letter,
@@ -167,7 +167,7 @@ h1,
 h2,
 h3 {
   text-transform: capitalize;
-}
+}*/
 
 a,
 button,

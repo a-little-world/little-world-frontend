@@ -301,10 +301,54 @@ function ModalBox({ label, valueIn, setEditing }) {
   );
 }
 
+
+function ConfirmAccountDeletetion({ 
+  showModal,
+  setShowModal
+}) {
+  const { t } = useTranslation();
+
+  return ( showModal &&
+  <div className={showModal ? "overlay-shade" : "overlay-shade hidden"}>
+    <div className="modal-box">
+      <button type="button" className="modal-close" onClick={() => setShowModal(false)} />
+      <div className="content">
+        <div className="message-text">{t("settings_delete_account_confirm_title")}</div>
+        <div className="buttons">
+          <button type="button" className="confirm" onClick={() => {
+            // call deletion api ...
+            // then reload page ...
+              fetch(`${BACKEND_URL}/api/user/delete_account/`, {
+                method: "POST",
+                headers: {
+                  "X-CSRFToken": Cookies.get("csrftoken"),
+                  "Content-Type": "application/json",
+                }
+              }).then((res) => {
+                if (res.ok) {
+                  window.location.reload();
+                } else {
+                  console.error(`Error ${res.status}: ${res.statusText}`);
+                }
+              })
+          }}>
+            {t("settings_delete_account_confirm_button")}
+          </button>
+          <button type="button" className="cancel" onClick={() => setShowModal(false)}>
+            {t("settings_delete_account_confirm_cancel")}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  );
+}
+
 function Settings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [editing, setEditing] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const items = [
     // with ordering
@@ -354,14 +398,15 @@ function Settings() {
                 />
               );
             })}
-            {/* No deleting of account for now!
             <div className="item">
               <h3>{t("sg_personal_delete_account")}</h3>
-              <button type="button" className="delete-account">
+              <button type="button" className="delete-account"
+                  onClick={() => {
+                    setShowConfirm(true);
+                  }}>
                 {t("sg_personal_delete_account_btn")}
               </button>
             </div>
-            */}
           </div>
         </section>
       </div>
@@ -375,6 +420,7 @@ function Settings() {
           />
         )}
       </div>
+      <ConfirmAccountDeletetion showModal={showConfirm} setShowModal={setShowConfirm}/>
     </>
   );
 }
