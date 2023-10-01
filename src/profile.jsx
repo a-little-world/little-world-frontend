@@ -63,6 +63,7 @@ const PartnerMenuOption = styled(Button)`
   font-weight: normal;
   justify-content: flex-start;
   padding: ${({ theme }) => theme.spacing.xxsmall};
+  padding-left: 0px;
 
   &:not(:last-of-type) {
     margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
