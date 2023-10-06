@@ -557,3 +557,14 @@
   background: linear-gradient(0deg, #3cc1e957, transparent);
   border: 1px solid rgb(0 30 89 / 14%);
 }
+
+
+.styled-message-box button{
+  padding: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  border: none;
+  color: white;
+  height: 36px;
+}
