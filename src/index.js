@@ -15,7 +15,7 @@ if (GLOB.DEVELOPMENT) {
 
       ReactDOM.render(
         <React.StrictMode>
-          <App initData={initData} />
+          <App data={initData} />
         </React.StrictMode>,
         document.getElementById("root")
       );

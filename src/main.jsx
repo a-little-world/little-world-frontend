@@ -9,13 +9,13 @@ import Chat from "./chat/chat-full-view";
 import CancelSearching from "./components/blocks/CancelSearching";
 import CommunityCalls from "./components/blocks/CommunityCalls";
 import ConfirmMatchCard from "./components/blocks/ConfirmMatchCard";
+import Layout from "./components/blocks/Layout/Layout";
 import MobileNavBar from "./components/blocks/MobileNavBar";
 import NbtSelector from "./components/blocks/NbtSelector";
 import NbtSelectorAdmin from "./components/blocks/NbtSelectorAdmin";
 import NewMatchCard from "./components/blocks/NewMatchCard";
 import NotificationPanel from "./components/blocks/NotificationPanel";
 import PartnerProfiles from "./components/blocks/PartnerProfiles";
-import Sidebar from "./components/blocks/Sidebar";
 import { BACKEND_PATH } from "./ENVIRONMENT";
 import { addUnconfirmed, removePreMatch, setUsers } from "./features/userData";
 import Help from "./help";
@@ -51,7 +51,7 @@ function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, user
           if (res.ok) {
             res.json().then((data) => {
               // The user_data hash incase of a 'partial confirm will be the matching hash!
-              onPartialConfirm(userData['hash'] ,data["match"]);
+              onPartialConfirm(userData.hash, data.match);
             });
           } else {
             // TODO: Add toast error explainer or some error message
@@ -90,7 +90,7 @@ const userDataDefaultTransform = (data) => {
       extraTopics: data.profile.additional_interests,
       expectations: data.profile.language_skill_description,
     },
-  }
+  };
 };
 
 function Main() {
@@ -111,7 +111,7 @@ function Main() {
       (match) => match?.userPk === state.userData.self?.stateInfo?.unconfirmedMatches?.[0]
     )
   );
-  
+
   useEffect(() => {
     updateUsers(usersInital);
   }, [usersInital]);
@@ -145,16 +145,16 @@ function Main() {
       console.error("server error", status, statusText);
     }
   };
-  
-  function updateUsersAndUnconfirmed(matchingId ,match) {
-    return dispatch => {
+
+  function updateUsersAndUnconfirmed(matchingId, match) {
+    return (dispatch) => {
       console.log("DISPATCHING", match, matchingId);
       dispatch(addUnconfirmed(match.user.hash));
       dispatch(removePreMatch(matchingId));
-      const userObj = userDataDefaultTransform(match)
+      const userObj = userDataDefaultTransform(match);
       console.log("USER OBJ", userObj);
       dispatch(setUsers(userObj));
-    }
+    };
   }
 
   const onPartialConfirm = (matchingId, match) => {
@@ -163,7 +163,7 @@ function Main() {
       dispatch(updateUsersAndUnconfirmed(matchingId, match));
       setPartiallyConfirmedMatches([newUser]);
       setPreMatches(preMatches.filter((match) => match.hash !== matchingId));
-    }else{
+    } else {
       setPartiallyConfirmedMatches([]);
       setPreMatches([]);
     }
@@ -240,8 +240,7 @@ function Main() {
   };
 
   return (
-    <div className={`main-page show-${use}`}>
-      <Sidebar sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }} />
+    <Layout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
@@ -312,7 +311,7 @@ function Main() {
           })}
       </Modal>
       {!(use === "chat") && <div className="disable-chat">{initChatComponent(true)}</div>}
-    </div>
+    </Layout>
   );
 }
 

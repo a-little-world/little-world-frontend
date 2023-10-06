@@ -1,9 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 
-import { notifications } from "../services/notifications";
-import { State$reflection } from "../chat/Types.fs";
-
 const initialState = {
   raw: {},
   self: {},
@@ -41,7 +38,6 @@ export const userDataSlice = createSlice({
       console.log({ user, profile, settings, notifications, usrState, matches, community_events });
       console.log("ADMIN", adminInfos);
       console.log("PREMATCHES", preMatches);
-      // notifications=action.payload
 
       const others = matches.map((match) => {
         let avatarCfg = "";
@@ -128,9 +124,14 @@ export const userDataSlice = createSlice({
       state.apiOptions = {
         profile: profile.options,
       };
+
+      state.formData = {
+        formOptions: null, // data?.form_options,
+        userData: null, // data?.user_data,
+      };
     },
     setUsers: (state, action) => {
-      const payload = action.payload;
+      const { payload } = action;
       const updatedUsers = [...state.users, payload];
       state.users = updatedUsers;
     },
@@ -158,10 +159,24 @@ export const userDataSlice = createSlice({
       });
     },
     removePreMatch: (state, action) => {
-      state.self = { ...state.self, stateInfo: { ...state.self.stateInfo, preMatches: state.self.stateInfo.preMatches.filter((match) => match.hash !== action.payload) } };  
+      state.self = {
+        ...state.self,
+        stateInfo: {
+          ...state.self.stateInfo,
+          preMatches: state.self.stateInfo.preMatches.filter(
+            (match) => match.hash !== action.payload
+          ),
+        },
+      };
     },
     addUnconfirmed: (state, action) => {
-      const newSelf = { ...state.self, stateInfo: { ...state.self.stateInfo, unconfirmedMatches: [...state.self.stateInfo.unconfirmedMatches, action.payload] } };
+      const newSelf = {
+        ...state.self,
+        stateInfo: {
+          ...state.self.stateInfo,
+          unconfirmedMatches: [...state.self.stateInfo.unconfirmedMatches, action.payload],
+        },
+      };
       state.self = newSelf;
       const updatedUsers = state.users.map((user) => {
         if (user.userPk === action.payload) {

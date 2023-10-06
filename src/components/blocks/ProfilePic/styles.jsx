@@ -1,0 +1,240 @@
+import styled, { css } from 'styled-components';
+import { Button } from '@a-little-world/little-world-design-system';
+
+export const ProfilePicWrapper = styled.div``;
+
+export const SelectionPanel = styled.div`
+  position: relative;
+  border: 2.5px solid;
+  border-color: ${({ $selected, theme, $error }) =>
+    $selected
+      ? $error
+        ? theme.color.border.error
+        : theme.color.border.selected
+      : theme.color.border.subtle};
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) =>
+    `${theme.spacing.xlarge} ${theme.spacing.small} ${theme.spacing.xlarge}`};
+  flex-wrap: wrap;
+
+  &:first-of-type {
+    margin-bottom: ${({ theme }) => theme.spacing.small};
+  }
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.small}) {
+      flex-wrap: nowrap;
+      padding: ${({ theme }) => theme.spacing.large};
+    }`}
+`;
+
+export const ImageContainer = styled.div``;
+
+export const InteractiveArea = styled.div`
+  background: #e6e8ec66;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: ${({ theme }) => theme.spacing.large};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+export const UploadArea = styled(InteractiveArea)`
+  text-align: center;
+  cursor: pointer;
+
+  * {
+    cursor: pointer;
+  }
+`;
+
+export const CircleButton = styled(Button)`
+  border-radius: 50%;
+  border: 3px solid #36a9e0;
+  background: #e6e8ec66;
+
+  width: 154px;
+  height: 154px;
+`;
+
+export const CircleImage = styled.div`
+  border-radius: 50%;
+  border: 8px solid #e6e8ec;
+  background: ${({ $image }) => `url(${$image})`};
+  background-size: cover;
+  background-position: center;
+  width: 154px;
+  height: 154px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing.small};
+  position: relative;
+`;
+
+export const TrashButton = styled(Button)`
+  position: absolute;
+  bottom: 32px;
+`;
+
+export const AvatarInfo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  width: 154px;
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.small}) {
+        flex-direction: column;
+    }`}
+`;
+
+export const AvatarSelection = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.small};
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const FileInput = styled.input`
+  visibility: hidden;
+  position: absolute;
+
+  &::-webkit-file-upload-button {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    opacity: 0;
+  }
+`;
+
+export const UploadLabel = styled.label`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+export const RadioInput = styled.input`
+  margin: auto 0.4rem auto auto;
+`;
+
+export const Editor = styled.div`
+  padding: 20px;
+  background: #101010;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 20px;
+  gap: 20px;
+`;
+
+export const AvatarContainer = styled.div`
+  height: 200px;
+  width: 200px;
+  background: #222;
+  border-radius: 100%;
+`;
+
+export const Controls = styled.div`
+  display: flex;
+  gap: 10px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background: #1a1a1a;
+
+  flex-wrap: wrap;
+
+  .color {
+    background: rgb(136, 204, 136);
+    color: black;
+  }
+
+  div .label {
+    user-select: none;
+  }
+
+  div span.color {
+    top: 0%;
+    position: absolute;
+    padding: 2px;
+    background: #fff;
+    font-size: 14px;
+    color: #111;
+    border-radius: 10px;
+    opacity: 0;
+    transition: 0.2s ease-in-out;
+  }
+
+  div:hover span.color {
+    top: -60%;
+    opacity: 1;
+  }
+`;
+
+export const ControlColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  align-items: center;
+
+  &:not(last-of-type) {
+    padding-right: ${({ theme }) => theme.spacing.xxsmall};
+    border-right: 1px solid #3c3c3c;
+  }
+`;
+
+export const OptionToggle = styled.button`
+  display: flex;
+  align-items:
+  height: 35px;
+  border-radius: 15px;
+  color: #bbb;
+  background: #3c3c3c;
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position: relative;
+
+  &:hover {
+    color: #fff;
+  }
+`;
+
+export const ColorPicker = styled.button`
+  background: ${({ background }) => background};
+  height: 32px;
+  width: 32px;
+  border: 1px solid white;
+  border-radius: 50%;
+`;
+
+export const Buttons = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const AvatarEditorButton = styled(Button)`
+  padding: ${({ theme }) => theme.spacing.xxxsmall};
+  border-radius: 5px;
+`;
