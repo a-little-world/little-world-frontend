@@ -48,22 +48,12 @@ function Sidebar({ sidebarMobile }) {
     },
   ];
 
-  if (self.isAdmin) {
-    buttonData.push({
-      label: "admin_panel",
-      clickEvent: () => {
-        navigate("/admin/"); // Redirect only valid in production
-        navigate(0); // to reload the page
-      },
-    });
-  }
-
   const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
 
   const notifications = useSelector((state) => state.userData.notifications);
 
   const unread = {
-    notifications: notifications.filter(({ status }) => status === "unread"),
+    notifications: notifications.unread.items.filter(({ status }) => status === "unread"),
     messages: [],
   };
   const dispatch = useDispatch();
