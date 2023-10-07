@@ -24,41 +24,4 @@ export const userDataSlice = createSlice({
   },
 });
 
-// Action creators are generated for each case reducer function
-export const {
-  initialise,
-  updateSettings,
-  updateProfile,
-  addUnconfirmed,
-  readAll,
-  readNotif,
-  archiveNotif,
-  removePreMatch,
-  setStatus,
-  setUsers,
-  fetchNotifications,
-  updateSearching,
-} = userDataSlice.actions;
-
-export const FetchNotificationsAsync =
-  ({ pageNumber: page, itemPerPage }) =>
-  async (dispatch) => {
-    dispatch(setStatus("loading"));
-    const result = await notifications.getAll({ pageNumber: page, itemPerPage });
-    dispatch(setStatus("data"));
-    dispatch(fetchNotifications(result));
-  };
-export const ArchiveNotificationAsync = (hash) => async (dispatch) => {
-  dispatch(setStatus("loading"));
-  const result = await notifications.archive(hash);
-  dispatch(archiveNotif(hash));
-  dispatch(setStatus("data"));
-};
-export const ReadNotificationAsync = (hash) => async (dispatch) => {
-  dispatch(setStatus("loading"));
-  const result = await notifications.read(hash);
-  dispatch(readNotif(hash));
-  dispatch(setStatus("data"));
-};
-
 export default userDataSlice.reducer;
