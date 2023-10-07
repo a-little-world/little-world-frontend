@@ -100,82 +100,21 @@ function Main() {
 
   const [userProfile, setUserProfile] = useState(null);
 
-  const usersInital = useSelector((state) => state.userData.users);
-  const [users, updateUsers] = useState(usersInital);
-
-  const initalPreMatches = useSelector((state) => state.userData.self.stateInfo.preMatches);
-  const matchesInfo = usersInital.filter(({ type }) => type !== "self");
-
-  const initialPartiallyConfirmedMatches = useSelector((state) =>
-    matchesInfo.find(
-      (match) => match?.userPk === state.userData.self?.stateInfo?.unconfirmedMatches?.[0]
-    )
-  );
-
-  useEffect(() => {
-    updateUsers(usersInital);
-  }, [usersInital]);
-
-  const self = useSelector((state) => state.userData.self);
-
-  const [preMatches, setPreMatches] = useState(initalPreMatches);
-  const [partiallyConfirmedMatches, setPartiallyConfirmedMatches] = useState(
-    initialPartiallyConfirmedMatches ? [initialPartiallyConfirmedMatches] : []
-  );
+  const user = useSelector((state) => state.userData.user);
+  const matches = useSelector((state) => state.userData.matches);
+  const dashboardVisibleMatches = [...matches.confirmed.items, ...matches.proposed.items]
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
+
   const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
+
   const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
 
   const [showCancelSearching, setShowCancelSearching] = useState(false);
   const [showIncoming, setShowIncoming] = useState(false);
   const [incomingUserPk, setIncomingUserPk] = useState(null);
   const navigate = useNavigate();
-
-  const onModalClose = () => {
-    setPreMatches([]);
-    setPartiallyConfirmedMatches([]);
-  };
-
-  const onConfirm = ({ status, statusText }) => {
-    if (status === 200) {
-      setPartiallyConfirmedMatches([]);
-    } else {
-      console.error("server error", status, statusText);
-    }
-  };
-
-  function updateUsersAndUnconfirmed(matchingId, match) {
-    return (dispatch) => {
-      console.log("DISPATCHING", match, matchingId);
-      dispatch(addUnconfirmed(match.user.hash));
-      dispatch(removePreMatch(matchingId));
-      const userObj = userDataDefaultTransform(match);
-      console.log("USER OBJ", userObj);
-      dispatch(setUsers(userObj));
-    };
-  }
-
-  const onPartialConfirm = (matchingId, match) => {
-    if (match && matchingId) {
-      const newUser = userDataDefaultTransform(match);
-      dispatch(updateUsersAndUnconfirmed(matchingId, match));
-      setPartiallyConfirmedMatches([newUser]);
-      setPreMatches(preMatches.filter((match) => match.hash !== matchingId));
-    } else {
-      setPartiallyConfirmedMatches([]);
-      setPreMatches([]);
-    }
-  };
-
-  const setCallSetupPartner = (partnerKey) => {
-    document.body.style.overflow = partnerKey ? "hidden" : "";
-    setCallSetupPartnerKey(partnerKey);
-    if (!partnerKey) {
-      removeActiveTracks();
-    }
-  };
 
   removeActiveTracks();
 
@@ -244,14 +183,14 @@ function Main() {
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-          {!self.isAdmin ? (
+          {!user.isAdmin ? (
             <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
           ) : (
             <NbtSelectorAdmin
               selection={topSelection}
               setSelection={setTopSelection}
               use={use}
-              adminInfos={self.adminInfos}
+              adminInfos={user.adminInfos}
             />
           )}
         </div>
@@ -297,17 +236,17 @@ function Main() {
         {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
       </div>
       <Modal
-        open={preMatches?.length || partiallyConfirmedMatches?.length}
+        open={matches.proposed?.length || matches.unconfirmed?.length}
         locked={false}
         onClose={onModalClose}
       >
-        {(preMatches?.length || partiallyConfirmedMatches?.length) &&
+        {(matches.proposed?.length || matches.unconfirmed?.length) &&
           getMatchCardComponent({
-            isVolunteer: self.userType === "volunteer",
+            isVolunteer: user.userType === "volunteer",
             onConfirm,
             onPartialConfirm,
             showNewMatch: Boolean(!preMatches?.length),
-            userData: preMatches?.length ? preMatches[0] : partiallyConfirmedMatches[0],
+            userData: matches.proposed?.length ? matches.proposed.items[0] : matches.unconfirmed.items[0],
           })}
       </Modal>
       {!(use === "chat") && <div className="disable-chat">{initChatComponent(true)}</div>}
