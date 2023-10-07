@@ -36,7 +36,7 @@ if (GLOB.DEVELOPMENT) {
       const root = createRoot(container);
       root.render(
       <React.StrictMode>
-        <App initData={initData} />
+        <App data={initData} />
       </React.StrictMode>)
 
     reportWebVitals();
