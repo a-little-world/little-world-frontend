@@ -115,6 +115,14 @@ function Main() {
   const [showIncoming, setShowIncoming] = useState(false);
   const [incomingUserPk, setIncomingUserPk] = useState(null);
   const navigate = useNavigate();
+  
+  const setCallSetupPartner = (partnerKey) => {
+    document.body.style.overflow = partnerKey ? "hidden" : "";
+    setCallSetupPartnerKey(partnerKey);
+    if (!partnerKey) {
+      removeActiveTracks();
+    }
+  };
 
   removeActiveTracks();
 
@@ -124,8 +132,8 @@ function Main() {
 
   document.body.classList.remove("hide-mobile-header");
 
+  // Manage the top navbar & extrac case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
-
   const [topSelection, setTopSelection] = useState(null);
   useEffect(() => {
     if (use === "main") {
@@ -136,12 +144,14 @@ function Main() {
     }
   }, [location, use]);
 
+  // Passed to chat component to update which users are online
   const updateOnlineState = (userOnlinePk, status) => {
     matchesOnlineStates[userOnlinePk] = status;
-    setMatchesOnlineStates({ ...matchesOnlineStates }); // spreading creates a copy if we use the same var state wont update
+    setMatchesOnlineStates({ ...matchesOnlineStates });
   };
-
+  
   const adminActionCallback = (action) => {
+    // TODO: partially broken!! ( callback doesn't come from the same admin user anymore necessarily )
     // This will later be moved to a whole new websocket
     // The new socket should then only receive messages from the backend
     // Current implementation allows all matches to send 'admin actions'
@@ -168,9 +178,11 @@ function Main() {
       <Chat
         backgroundMode={backgroundMode}
         showChat={use === "chat"}
-        matchesInfo={matchesInfo}
+        matchesInfo={dashboardVisibleMatches}
         userPk={userPk}
-        setCallSetupPartner={setCallSetupPartner}
+        setCallSetupPartner={() => {
+          // TODO
+        }}
         userPkMappingCallback={setUserPkToChatIdMap}
         updateMatchesOnlineStates={updateOnlineState}
         adminActionCallback={adminActionCallback}
@@ -183,16 +195,7 @@ function Main() {
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-          {!user.isAdmin ? (
-            <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
-          ) : (
-            <NbtSelectorAdmin
-              selection={topSelection}
-              setSelection={setTopSelection}
-              use={use}
-              adminInfos={user.adminInfos}
-            />
-          )}
+          <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
         </div>
         {use === "main" && (
           <div className="content-area-main">
@@ -238,7 +241,7 @@ function Main() {
       <Modal
         open={matches.proposed?.length || matches.unconfirmed?.length}
         locked={false}
-        onClose={onModalClose}
+        onClose={() => {}}
       >
         {(matches.proposed?.length || matches.unconfirmed?.length) &&
           getMatchCardComponent({
