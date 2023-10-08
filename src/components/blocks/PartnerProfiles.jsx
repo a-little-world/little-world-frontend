@@ -44,6 +44,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
         .map((match) => {
           return (
             <ProfileBox
+              key={match.partner.id}
               userPk={match.partner.id}
               profile={match.partner}
               isSelf={false}
