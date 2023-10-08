@@ -10,18 +10,19 @@ import { ProfileBox } from "../../profile";
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const usersSel = useSelector((state) => state.userData.users);
-  const matchStateSel = useSelector((state) => state.userData.self.stateInfo.matchingState);
-  const [users, setUsers] = useState(usersSel);
-  const [matchState, setMatchState] = useState(matchStateSel);
+  const matches = useSelector((state) => state.userData.matches);
+  const usersDisplay = [...matches.confirmed.items, ...matches.proposed.items];
+  const user = useSelector((state) => state.userData.user);
+  const [users, setUsers] = useState(usersDisplay);
+  const [isSearching, setIsSearching] = useState(user.isSearching);
   
   useEffect(() => {
-    setUsers(usersSel);
-  }, [usersSel]);
+    setUsers(usersDisplay);
+  }, [usersDisplay]);
     
   useEffect(() => {
-    setMatchState(matchStateSel);
-  }, [matchStateSel]);
+    setIsSearching(user.isSearching);
+  }, [user.isSearching]);
 
   function updateUserMatchingState() {
     const updatedState = "searching";
@@ -61,17 +62,17 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
             />
           );
         })}
-      {["idle"].includes(matchState) && (
+      {!isSearching && (
         <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
           <img alt="plus" />
-          {matchState === "idle" && t("matching_state_not_searching_trans")}
+          {(!isSearching) && t("matching_state_not_searching_trans")}
           {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
         </button>
       )}
-      {["searching"].includes(matchState) && (
+      {isSearching && (
         <div className="match-status searching">
           <img alt="" />
-          {matchState === "searching" && t("matching_state_searching_trans")}
+          {isSearching && t("matching_state_searching_trans")}
           {/* matchState === "pending" && t("matching_state_found_unconfirmed_trans") */}
           <a className="change-criteria" href="/form">
             {t("cp_modify_search")}
