@@ -11,19 +11,9 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const matches = useSelector((state) => state.userData.matches);
-  const usersDisplay = [...matches.confirmed.items, ...matches.proposed.items];
+  const matchesDisplay = [...matches.support.items, ...matches.confirmed.items];
   const user = useSelector((state) => state.userData.user);
-  const [users, setUsers] = useState(usersDisplay);
-  const [isSearching, setIsSearching] = useState(user.isSearching);
   
-  useEffect(() => {
-    setUsers(usersDisplay);
-  }, [usersDisplay]);
-    
-  useEffect(() => {
-    setIsSearching(user.isSearching);
-  }, [user.isSearching]);
-
   function updateUserMatchingState() {
     const updatedState = "searching";
     fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
@@ -50,29 +40,29 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
 
   return (
     <div className="profiles">
-      {users
-        .filter(({ type }) => type !== "self")
-        .map((user) => {
+      {matchesDisplay
+        .map((match) => {
           return (
             <ProfileBox
-              key={user.userPk}
-              {...user}
+              userPk={match.partner.id}
+              profile={match.partner}
+              isSelf={false}
               setCallSetupPartner={setCallSetupPartner}
               isOnline={matchesOnlineStates[user.userPk]}
             />
           );
         })}
-      {!isSearching && (
+      {!user.isSearching && (
         <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
           <img alt="plus" />
-          {(!isSearching) && t("matching_state_not_searching_trans")}
+          {(!user.isSearching) && t("matching_state_not_searching_trans")}
           {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
         </button>
       )}
-      {isSearching && (
+      {user.isSearching && (
         <div className="match-status searching">
           <img alt="" />
-          {isSearching && t("matching_state_searching_trans")}
+          {user.isSearching && t("matching_state_searching_trans")}
           {/* matchState === "pending" && t("matching_state_found_unconfirmed_trans") */}
           <a className="change-criteria" href="/form">
             {t("cp_modify_search")}
