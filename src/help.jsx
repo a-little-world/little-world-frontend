@@ -200,7 +200,7 @@ function Contact() {
 
 function Help({ selection }) {
   const adminUser = useSelector(
-    (state) => state.userData.users.filter((u) => u.type === "support")[0]
+    (state) => state.userData.matches.support.items[0]
   );
   const navigate = useNavigate();
 
@@ -226,7 +226,7 @@ function Help({ selection }) {
             type="button"
             className="support-message"
             onClick={() => {
-              navigate(`${BACKEND_PATH}/chat`, { state: { userPk: adminUser.userPk } });
+              navigate(`${BACKEND_PATH}/chat`, { state: { userPk: adminUser.patner.id } });
             }}
           >
             <img alt="" />
