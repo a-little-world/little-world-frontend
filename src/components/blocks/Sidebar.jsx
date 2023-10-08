@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { BACKEND_PATH, BACKEND_URL } from "../../ENVIRONMENT";
-import { FetchNotificationsAsync } from "../../features/userData";
 import Link from "../../path-prepend";
 
 function UnreadDot({ count }) {
@@ -59,7 +58,7 @@ function Sidebar({ sidebarMobile }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(FetchNotificationsAsync({ pageNumber: 1, itemPerPage: 20 }));
+    // TODO:
   }, []);
 
   return (
