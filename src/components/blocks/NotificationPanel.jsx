@@ -7,29 +7,27 @@ import Link from "../../path-prepend";
 
 function NotificationPanel() {
   const { t } = useTranslation();
-  const users = useSelector((state) => state.userData.users);
-  const activeUser = users.find(({ type }) => type === "self");
-  const { usesAvatar, avatarCfg, firstName, lastName, imgSrc } = activeUser;
+
+  const user = useSelector((state) => state.userData.user);
+  const usesAvatar = user.profile.image_type === "avatar";
+  const matches = useSelector((state) => state.userData.matches);
+  const usersDisplay = [...matches.confirmed.items, ...matches.proposed.items];
   const notifications = useSelector((state) => state.userData.notifications);
-  // don't show unless names are available; ie API call has returned
-  if (!firstName) {
-    return false;
-  }
 
   return (
     <div className="notification-panel">
       <div className="active-user">
         {usesAvatar ? (
-          <Avatar className="avatar" {...avatarCfg} />
+          <Avatar className="avatar" {...user.profile.avatar_config} />
         ) : (
-          <img src={imgSrc} alt="current user" />
+          <img src={user.profile.image} alt="current user" />
         )}
-        <div className="name">{`${firstName} ${lastName}`}</div>
+        <div className="name">{`${user.profile.first_name} ${user.profile.last_name}`}</div>
       </div>
       <hr />
       <div className="notifications-header">{t("nbr_notifications")}</div>
       <div className="notifications-content">
-        {notifications.map(({ hash, type, title, created_at }) => (
+        {notifications.unread.items.map(({ hash, type, title, created_at }) => (
           <div key={hash} className="notification-item">
             <img className="appointment" alt={type} />
             <div className="info">
