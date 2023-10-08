@@ -214,7 +214,7 @@ function Main() {
         )}
         {use === "chat" && initChatComponent(false)}
         {use === "notifications" && <Notifications />}
-        {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} userPk={userPk} />}
+        {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} isSelf={true} profile={user.profile} userPk={user.id}/>}
         {use === "help" && <Help selection={topSelection} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>
