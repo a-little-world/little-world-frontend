@@ -61,7 +61,7 @@ function CommunityCalls() {
 
   return (
     <div className="community-calls">
-      {events.map((eventData) => (
+      {events.items.map((eventData) => (
         <CommunityEvent key={eventData.id} {...eventData} />
       ))}
     </div>
