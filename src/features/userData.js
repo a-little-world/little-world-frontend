@@ -20,6 +20,7 @@ export const userDataSlice = createSlice({
       state.user = action.payload.user;
       state.notifications = action.payload.notifications;
       state.matches = action.payload.matches;
+      state.apiOptions = action.payload.apiOptions;
     },
   },
 });
