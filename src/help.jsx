@@ -51,9 +51,10 @@ function Faqs() {
           return (
             <>
               <h2>{t(`faq::section_title::${faq.section}`)}</h2>
-              {faq.questions.map((question) => {
+              {faq.questions.map((question, i) => {
                 return (
                   <FrequentQuestion
+                    key={i}
                     question={t(`faq::section_content::${faq.section}::${question}::question`)}
                     answer={t(`faq::section_content::${faq.section}::${question}::answer`)}
                   />
