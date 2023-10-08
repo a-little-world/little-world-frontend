@@ -347,26 +347,27 @@ function ConfirmAccountDeletetion({
 function Settings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const profile = useSelector((state) => state.userData.user.profile);
+
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const items = [
     // with ordering
     // "profilePicture",
-    "displayLang",
-    "firstName",
-    "lastName",
+    // "displayLang", // TODO: how to handle this?
+    "first_name",
+    "last_name",
     "email",
     "password",
-    "phone",
-    "postCode",
-    "birthYear",
+    "phone_mobile",
+    "postal_code",
+    "birth_year",
   ];
 
-  const settingsData = useSelector((state) => state.userData.settings);
 
   const data = Object.fromEntries(
-    items.map((item) => [item, item === "password" ? "********" : settingsData[item]])
+    items.map((item) => [item, item === "password" ? "********" : profile[item]])
   );
 
   return (
