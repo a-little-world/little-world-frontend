@@ -27,12 +27,20 @@ const Root = () => {
   );
 };
 
-const userFormLoader = async () => {
+const userFormLoader = async ({ params }) => {
   console.log({ s: store.getState() });
-  // const state = store.getState()
-  // const data = await getFormData();
+  let formContent;
+  try {
+    formContent = getFormPage({ slug: params.slug, formOptions, userData });
+  } catch (error) {
+    throw new Error(error);
+  }
 
-  // return JSON.parse(data.profile_data);
+  return {
+    formContent,
+    userData: store.getState().userData,
+    translations: window.apiTranslations,
+  };
 };
 
 // TODO: add 404 base route
