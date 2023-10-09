@@ -10,19 +10,10 @@ import { ProfileBox } from "../../profile";
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const usersSel = useSelector((state) => state.userData.users);
-  const matchStateSel = useSelector((state) => state.userData.self.stateInfo.matchingState);
-  const [users, setUsers] = useState(usersSel);
-  const [matchState, setMatchState] = useState(matchStateSel);
+  const matches = useSelector((state) => state.userData.matches);
+  const matchesDisplay = [...matches.support.items, ...matches.confirmed.items];
+  const user = useSelector((state) => state.userData.user);
   
-  useEffect(() => {
-    setUsers(usersSel);
-  }, [usersSel]);
-    
-  useEffect(() => {
-    setMatchState(matchStateSel);
-  }, [matchStateSel]);
-
   function updateUserMatchingState() {
     const updatedState = "searching";
     fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
@@ -49,29 +40,30 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
 
   return (
     <div className="profiles">
-      {users
-        .filter(({ type }) => type !== "self")
-        .map((user) => {
+      {matchesDisplay
+        .map((match) => {
           return (
             <ProfileBox
-              key={user.userPk}
-              {...user}
+              key={match.partner.id}
+              userPk={match.partner.id}
+              profile={match.partner}
+              isSelf={false}
               setCallSetupPartner={setCallSetupPartner}
               isOnline={matchesOnlineStates[user.userPk]}
             />
           );
         })}
-      {["idle"].includes(matchState) && (
+      {!user.isSearching && (
         <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
           <img alt="plus" />
-          {matchState === "idle" && t("matching_state_not_searching_trans")}
+          {(!user.isSearching) && t("matching_state_not_searching_trans")}
           {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
         </button>
       )}
-      {["searching"].includes(matchState) && (
+      {user.isSearching && (
         <div className="match-status searching">
           <img alt="" />
-          {matchState === "searching" && t("matching_state_searching_trans")}
+          {user.isSearching && t("matching_state_searching_trans")}
           {/* matchState === "pending" && t("matching_state_found_unconfirmed_trans") */}
           <a className="change-criteria" href="/form">
             {t("cp_modify_search")}

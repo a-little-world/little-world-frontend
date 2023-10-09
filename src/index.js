@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
+
 
 import App from "./App";
 import GLOB from "./ENVIRONMENT";
@@ -12,8 +14,11 @@ if (GLOB.DEVELOPMENT) {
       const initData = JSON.parse(data.profile_data);
       const apiTranslations = JSON.parse(data.api_translations);
       updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
+      
+      const container = document.getElementById("root");
+      const root = createRoot(container);
 
-      ReactDOM.render(
+      root.render(
         <React.StrictMode>
           <App data={initData} />
         </React.StrictMode>,
@@ -27,12 +32,12 @@ if (GLOB.DEVELOPMENT) {
   window.renderApp = ({ initData }, { apiTranslations }) => {
     updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
     // If not in development just render ...
-    ReactDOM.render(
+      const container = document.getElementById("root");
+      const root = createRoot(container);
+      root.render(
       <React.StrictMode>
-        <App initData={initData} />
-      </React.StrictMode>,
-      document.getElementById("root")
-    );
+        <App data={initData} />
+      </React.StrictMode>)
 
     reportWebVitals();
   };

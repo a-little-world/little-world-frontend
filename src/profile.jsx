@@ -40,41 +40,29 @@ const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
 
 function ProfileBox({
   userPk,
-  firstName,
-  lastName,
-  description,
-  imgSrc,
-  avatarCfg,
-  usesAvatar,
-  type,
+  profile,
+  isSelf,
   setCallSetupPartner,
   isOnline,
 }) {
   const { t } = useTranslation();
-  if (type === "self") {
-    isOnline = true;
-  }
+  const usesAvatar = profile.image_type === "avatar";
 
   return (
-    <div className={type === "unconfirmed" ? "profile-box new-match" : "profile-box"}>
+    <div className={"profile-box"}>
       {usesAvatar ? (
-        <Avatar className="profile-avatar" {...avatarCfg} />
+        <Avatar className="profile-avatar" {...profile.avatar_config} />
       ) : (
-        <img alt="match" className="profile-image" src={imgSrc} />
-      )}
-      {type === "match" && false /** temporarily disabled */ && (
-        <button className="unmatch" type="button" onClick={() => setUnmatchingUser(user)}>
-          <img />
-        </button>
+        <img alt="match" className="profile-image" src={profile.image} />
       )}
       <div className={isOnline ? "online-indicator online" : "online-indicator"}>
         online <span className="light" />
       </div>
       <div className="profile-info">
-        <div className="name">{`${firstName} ${lastName}`}</div>
-        <div className="text">{description}</div>
+        <div className="name">{`${profile.first_name} ${profile.first_name}`}</div>
+        <div className="text">{profile.description}</div>
       </div>
-      {type !== "self" && (
+      {!isSelf && (
         <div className="buttons">
           <Link to="/" state={{ userPk }} className="profile">
             <img alt="visit profile" />
@@ -367,10 +355,10 @@ function ProfileDetail({ profile }) {
   return (
     <div className="profile-detail">
       <TextBox subject="about" topicText={profile.about} formTag="description" />
-      <InterestsSelector inTopicSelection={profile.interestTopics} />
+      {/* TODO broken <InterestsSelector inTopicSelection={profile.interests} />**/}
       <TextBox
         subject="extra_topics"
-        topicText={profile.extraTopics}
+        topicText={profile.additional_interests}
         formTag="additional_interests"
       />
       <TextBox
@@ -382,22 +370,18 @@ function ProfileDetail({ profile }) {
   );
 }
 
-function Profile({ setCallSetupPartner, userPk }) {
+function Profile({ 
+    setCallSetupPartner, 
+    isSelf,
+    profile,
+    userPk
+  }) {
+
   const { t } = useTranslation();
-  const usersData = useSelector((state) => state.userData.users);
-  const isSelf = !userPk;
-
-  const user = isSelf
-    ? usersData.find(({ type }) => type === "self")
-    : usersData.find((usr) => usr.userPk === userPk);
-
-  if (!user) {
-    return null; // don't render unless we have the necessary data
-  }
 
   const profileTitle = isSelf
     ? t("profile_my_profile")
-    : t("profile_match_profile", { userName: user.firstName });
+    : t("profile_match_profile", { userName: profile.first_name });
 
   return (
     <div className="profile-component">
@@ -410,9 +394,10 @@ function Profile({ setCallSetupPartner, userPk }) {
         <span className="text">{profileTitle}</span>
       </div>
       <div className="content-area-main">
-        <ProfileDetail isSelf={isSelf} profile={user.extraInfo} />
+        <ProfileDetail isSelf={isSelf} profile={profile.additional_interests} />
         <ProfileBox
-          {...user}
+          userPk={userPk}
+          profile={profile}
           description="" /* don't show description on profile page as it's already shown in full */
           isSelf={isSelf}
           setCallSetupPartner={setCallSetupPartner}

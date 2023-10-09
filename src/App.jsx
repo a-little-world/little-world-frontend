@@ -28,14 +28,23 @@ const Root = () => {
   );
 };
 
-const userFormLoader = async () => {
+const userFormLoader = async ({ params }) => {
   console.log({ s: store.getState() });
-  // const state = store.getState()
-  // const data = await getFormData();
+  let formContent;
+  try {
+    formContent = getFormPage({ slug: params.slug, formOptions, userData });
+  } catch (error) {
+    throw new Error(error);
+  }
 
-  // return JSON.parse(data.profile_data);
+  return {
+    formContent,
+    userData: store.getState().userData,
+    translations: window.apiTranslations,
+  };
 };
 
+// TODO: add 404 base route
 export const router = createBrowserRouter(
   [
     {
@@ -105,34 +114,8 @@ export const router = createBrowserRouter(
       ],
     },
   ],
-  {
-    path: "*",
-    element: <Root />,
-  },
   { basename: `${BACKEND_PATH}/` }
 );
-
-// function HandleRoutes({ data }) {
-//   const dispatch = useDispatch();
-//   dispatch(initialise(data));
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path={`${BACKEND_PATH}/`}>
-//           <Route index element={<Main />} />
-//           <Route path="call" element={<ActiveCall />} />
-//           <Route path="partners" element={<Main />} />
-//           <Route path="chat" element={<Main />} />
-//           <Route path="notifications" element={<Main />} />
-//           <Route path="profile" element={<Main />} />
-//           <Route path="help" element={<Main />} />
-//           <Route path="settings" element={<Main />} />
-//           <Route path="*" element="404" />
-//         </Route>
-//       </Routes>
-//     </Router>
-//   );
-// }
 
 function InitializeDux({ data }) {
   const dispatch = useDispatch();
@@ -140,7 +123,7 @@ function InitializeDux({ data }) {
 }
 
 function App({ data }) {
-  console.log({ data });
+  console.log("BASENAME", data);
   return (
     <Provider store={store}>
       <InitializeDux data={data} />

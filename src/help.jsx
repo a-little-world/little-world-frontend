@@ -51,9 +51,10 @@ function Faqs() {
           return (
             <>
               <h2>{t(`faq::section_title::${faq.section}`)}</h2>
-              {faq.questions.map((question) => {
+              {faq.questions.map((question, i) => {
                 return (
                   <FrequentQuestion
+                    key={i}
                     question={t(`faq::section_content::${faq.section}::${question}::question`)}
                     answer={t(`faq::section_content::${faq.section}::${question}::answer`)}
                   />
@@ -200,7 +201,7 @@ function Contact() {
 
 function Help({ selection }) {
   const adminUser = useSelector(
-    (state) => state.userData.users.filter((u) => u.type === "support")[0]
+    (state) => state.userData.matches.support.items[0]
   );
   const navigate = useNavigate();
 
@@ -226,7 +227,7 @@ function Help({ selection }) {
             type="button"
             className="support-message"
             onClick={() => {
-              navigate(`${BACKEND_PATH}/chat`, { state: { userPk: adminUser.userPk } });
+              navigate(`${BACKEND_PATH}/chat`, { state: { userPk: adminUser.patner.id } });
             }}
           >
             <img alt="" />
