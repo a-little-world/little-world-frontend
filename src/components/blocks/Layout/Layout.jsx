@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
@@ -12,10 +12,12 @@ const Wrapper = styled.div`
   box-sizing: border-box;
 `;
 
-const Layout = ({ children, page, sidebarMobile }) => {
+const Layout = ({ children, page }) => {
+  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
+
   return (
     <Wrapper $page={page} className={`main-page show-${page}`}>
-      <Sidebar sidebarMobile={sidebarMobile} />
+      <Sidebar sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }} />
       {children || <Outlet />}
     </Wrapper>
   );
