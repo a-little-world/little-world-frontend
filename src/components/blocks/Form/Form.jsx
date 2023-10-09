@@ -66,10 +66,10 @@ const Form = () => {
   return (
     <StyledCard>
       <LanguageSelector />
+      <Title tag="h2" type={TextTypes.Heading2}>
+        {t(title)}
+      </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
-        <Title tag="h2" type={TextTypes.Heading2}>
-          {t(title)}
-        </Title>
         {step && <ProgressBar max={totalSteps} value={step} />}
         {note && <Note>{t(note)}</Note>}
         {components.map((component, index) => {

@@ -3,25 +3,27 @@ import {
   ButtonAppearance,
   ButtonVariations,
   TextInput,
+  TextTypes,
 } from "@a-little-world/little-world-design-system";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "styled-components";
 
-import { StyledCard, StyledForm, SubmitError, Title } from "../blocks/Form/styles";
 import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
+import { StyledCard, StyledForm, SubmitError, Title } from "./Registration.styles";
 
 const SIGN_UP = "sign-up";
 const LOGIN = "login";
 
 const Registration = () => {
   const { t } = useTranslation();
-  const location = useLocation();
-  console.log({ location });
-  const isSignUp = location === SIGN_UP;
-  const isLogin = location === LOGIN;
-  const type = location;
+  const theme = useTheme();
+  const { pathname } = useLocation();
+  const type = pathname.slice(1);
+  const isSignUp = type === SIGN_UP;
+  const isLogin = type === LOGIN;
 
   const {
     register,
@@ -39,7 +41,7 @@ const Registration = () => {
 
   const onError = (e) => {
     console.log({ e });
-    if (e.message) {
+    if (e?.message) {
       setError(
         e.cause ?? "root.serverError",
         { type: "custom", message: t(e.message) },
@@ -48,7 +50,7 @@ const Registration = () => {
     } else {
       setError("root.serverError", {
         type: "custom",
-        message: t(e.message) || t("validation.generic_try_again"),
+        message: t(e?.message) || t("validation.generic_try_again"),
       });
     }
   };
@@ -56,23 +58,27 @@ const Registration = () => {
   const onFormSubmit = async (data) => {
     console.log({ data });
   };
+  console.log({ theme });
 
   return (
     <StyledCard>
       <LanguageSelector />
+      <Title tag="h2" type={TextTypes.Heading2}>
+        {t("registration.title")}
+      </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
-        <Title>{t("registration.title")}</Title>
         <TextInput
           {...register("email", { required: t("errorMsg.required") })}
           id="email"
-          error={errors.email.message}
+          label={t("registration.email_label")}
+          error={errors?.email?.message}
           placeholder={t("registration.email_placeholder")}
           type="email"
         />
         <TextInput
           {...register("password", { required: t("errorMsg.required") })}
           id="password"
-          error={errors.password.message}
+          error={errors?.password?.message}
           label={t("registration.password_label")}
           placeholder={t("registration.password_placeholder")}
           type="password"
@@ -90,19 +96,28 @@ const Registration = () => {
             type="password"
           />
         )}
-
-        <Button variation={ButtonVariations.Inline} onClick={() => navigate("forgot-password")}>
-          {t(`${type}.changeLocation.cta`)}
-        </Button>
         {isLogin && (
-          <Button variation={ButtonVariations.Inline} onClick={() => navigate("forgot-password")}>
+          <Button
+            variation={ButtonVariations.Inline}
+            onClick={() => navigate("/forgot-password")}
+            color={theme.color.text.link}
+          >
             {t(`${type}.forgotPassword`)}
           </Button>
         )}
-        <SubmitError $visible={errors?.root?.serverError}>
-          {errors?.root?.serverError?.message}
+        <SubmitError $visible={true || errors?.root?.serverError}>
+          {errors?.root?.serverError?.message} Your Dad has issues bruv
         </SubmitError>
-        <Button type="submit" disabled={false} text={t(`${type}.submitBtn`)} loading={false} />
+        <Button type="submit" disabled={false} loading={false}>
+          {t(`${type}.submit-btn`)}
+        </Button>
+        <Button
+          variation={ButtonVariations.Inline}
+          onClick={() => navigate(isLogin ? SIGN_UP : LOGIN)}
+          color={theme.color.text.link}
+        >
+          {t(`${type}.changeLocation.cta`)}
+        </Button>
       </StyledForm>
     </StyledCard>
   );

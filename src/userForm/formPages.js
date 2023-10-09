@@ -3,28 +3,7 @@ import { ContentTypes } from "@a-little-world/little-world-design-system";
 import { USER_TYPES } from "../constants";
 import { ComponentTypes, formatDataField } from "./formContent";
 
-const columnHeadingsDummy = [
-  "Uhrzeit",
-  "Monday",
-  "Teusday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
-
 const columnKeys = ["mo", "tu", "we", "th", "fr", "sa", "su"];
-
-const rowHeadingsDummy = [
-  "8 bis 10 Uhr",
-  "10 bis 12 Uhr",
-  "12 bis 14 Uhr",
-  "14 bis 16 Uhr",
-  "16 bis 18 Uhr",
-  "18 bis 20 Uhr",
-  "20 bis 22 Uhr",
-];
 
 const NUM_STEPS_VOL = 9;
 const NUM_STEPS_LEARNER = 8;
@@ -243,8 +222,12 @@ const formPages = {
         formData: options?.availability,
         getProps: (t) => ({
           label: t("availability.label"),
-          columnHeadings: columnHeadingsDummy,
-          rowHeadings: rowHeadingsDummy,
+          columnHeadings: Array(8)
+            .fill()
+            .map((_, index) => t(`availability.column${index + 1}`)),
+          rowHeadings: Array(7)
+            .fill()
+            .map((_, index) => t(`availability.row${index + 1}`)),
           checkboxesByColumn: constructCheckboxes(options?.availability, t),
           preSelected: userData?.availability,
           errorRules: { required: t("validation.required") },

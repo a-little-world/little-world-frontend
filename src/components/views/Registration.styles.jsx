@@ -4,30 +4,25 @@ import styled from "styled-components";
 export const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.small};
+  align-items: flex-start;
   flex-grow: 1;
+  //   align-items:
 `;
 
 export const StyledCard = styled(Card)`
   position: relative;
-  max-width: 800px;
+  max-width: 500px;
   margin: 0 auto;
-  min-height: 591px;
-`;
-
-export const ButtonsSection = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: ${({ $hasBackBtn }) => ($hasBackBtn ? "space-between" : "flex-end")};
-  width: 100%;
-  margin-top: auto;
+  //   min-height: 591px;
 `;
 
 export const SubmitError = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: ${({ theme }) => theme.spacing.xlarge};
+  width: 100%;
+  min-height: ${({ theme }) => theme.spacing.large};
   padding: ${({ theme }) => theme.spacing.xxsmall};
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
   transition: ${({ $visible }) => ($visible ? "opacity 1s" : "none")};
@@ -39,4 +34,6 @@ export const SubmitError = styled.div`
 
 export const Title = styled(Text)`
   text-align: center;
+  width: 100%;
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
