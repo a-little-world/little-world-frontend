@@ -11,6 +11,7 @@ import RouterError from "./components/blocks/ErrorView/ErrorView";
 import Form from "./components/blocks/Form/Form";
 import Layout from "./components/blocks/Layout/Layout";
 import Welcome from "./components/blocks/Welcome/Welcome";
+import Registration from "./components/views/Registration";
 import { BACKEND_PATH } from "./ENVIRONMENT";
 import { initialise } from "./features/userData";
 import Main from "./main";
@@ -72,6 +73,18 @@ export const router = createBrowserRouter(
         {
           path: "settings",
           element: <Main />,
+        },
+        {
+          path: "login",
+          element: <Registration />,
+          errorElement: <RouterError />,
+          // loader: userFormLoader,
+        },
+        {
+          path: "sign-up",
+          element: <Registration />,
+          errorElement: <RouterError />,
+          // loader: userFormLoader,
         },
         {
           path: "user-form",
