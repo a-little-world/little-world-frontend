@@ -104,7 +104,8 @@ function ProfileBox({
         image={usesAvatar ? avatarCfg : imgSrc}
         imageType={usesAvatar ? "avatar" : "image"}
       />
-      {type === "match" && (
+      {/* temp disabled type === "match" */}
+      {false && (
         <Popover
           width={PopoverSizes.Large}
           showCloseButton
