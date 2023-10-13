@@ -112,7 +112,7 @@ function InterestsSelector({ inTopicSelection }) {
         setEditing(false);
       },
       () => {
-        dispatch(updateProfile({ interestTopics: topicSelection }));
+        dispatch(updateProfile({ interests: topicSelection }));
         setEditing(false);
       },
       "interests"
@@ -354,8 +354,8 @@ function ProfileDetail({ profile }) {
 
   return (
     <div className="profile-detail">
-      <TextBox subject="about" topicText={profile.about} formTag="description" />
-      {/* TODO broken <InterestsSelector inTopicSelection={profile.interests} />**/}
+      <TextBox subject="about" topicText={profile.description} formTag="description" />
+      <InterestsSelector inTopicSelection={profile.interests} />
       <TextBox
         subject="extra_topics"
         topicText={profile.additional_interests}
@@ -363,7 +363,7 @@ function ProfileDetail({ profile }) {
       />
       <TextBox
         subject="expectations"
-        topicText={profile.expectations}
+        topicText={profile.language_skill_description}
         formTag="language_skill_description"
       />
     </div>
@@ -376,6 +376,8 @@ function Profile({
     profile,
     userPk
   }) {
+  
+  console.log("Profile ", profile)
 
   const { t } = useTranslation();
 
@@ -394,7 +396,7 @@ function Profile({
         <span className="text">{profileTitle}</span>
       </div>
       <div className="content-area-main">
-        <ProfileDetail isSelf={isSelf} profile={profile.additional_interests} />
+        <ProfileDetail isSelf={isSelf} profile={profile} />
         <ProfileBox
           userPk={userPk}
           profile={profile}
