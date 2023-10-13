@@ -22,11 +22,17 @@ export const userDataSlice = createSlice({
       state.matches = action.payload.matches;
       state.apiOptions = action.payload.apiOptions;
     },
+    updateProfile: (state, action) => {
+      Object.keys(action.payload).forEach((key) => {
+        state.user.profile[key] = action.payload[key];
+      });
+    },
   },
 });
 
 export const {
   initialise,
+  updateProfile
 } = userDataSlice.actions;
 
 export default userDataSlice.reducer;
