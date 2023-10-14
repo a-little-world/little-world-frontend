@@ -6,7 +6,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const config = function (env) {
-  let publicPath = "";
+  let publicPath = "/";
   const devTool = env.DEV_TOOL === "none" ? false : env.DEV_TOOL;
   if (env.PUBLIC_PATH && env.PUBLIC_PATH !== "") publicPath = env.PUBLIC_PATH + publicPath;
   // It is always assumed that the backend is mounted at /back

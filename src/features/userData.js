@@ -15,18 +15,17 @@ export const userDataSlice = createSlice({
     initialise: (state, action) => {
       // TODO: this should NEVER be called twice will overwrite the full state
       console.log("PAYLOAD", action.payload);
-      //state = {...action.payload};
+      // state = {...action.payload};
       state.communityEvents = action.payload.communityEvents;
       state.user = action.payload.user;
       state.notifications = action.payload.notifications;
       state.matches = action.payload.matches;
       state.apiOptions = action.payload.apiOptions;
+      state.formOptions = action.payload.apiOptions.profile;
     },
   },
 });
 
-export const {
-  initialise,
-} = userDataSlice.actions;
+export const { initialise } = userDataSlice.actions;
 
 export default userDataSlice.reducer;

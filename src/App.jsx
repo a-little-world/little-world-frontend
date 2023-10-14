@@ -1,10 +1,9 @@
 import { GlobalStyles } from "@a-little-world/little-world-design-system";
 import React from "react";
 import { Provider, useDispatch } from "react-redux";
-import { createBrowserRouter, Outlet, RouterProvider, useLoaderData } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
-import { getFormData } from "./api";
 import store from "./app/store";
 import ActiveCall from "./call";
 import RouterError from "./components/blocks/ErrorView/ErrorView";
@@ -25,22 +24,6 @@ const Root = () => {
       <Outlet />
     </ThemeProvider>
   );
-};
-
-const userFormLoader = async ({ params }) => {
-  console.log({ s: store.getState() });
-  let formContent;
-  try {
-    formContent = getFormPage({ slug: params.slug, formOptions, userData });
-  } catch (error) {
-    throw new Error(error);
-  }
-
-  return {
-    formContent,
-    userData: store.getState().userData,
-    translations: window.apiTranslations,
-  };
 };
 
 // TODO: add 404 base route
@@ -86,7 +69,6 @@ export const router = createBrowserRouter(
           path: "user-form",
           element: <Layout />,
           errorElement: <RouterError />,
-          loader: userFormLoader,
           children: [
             {
               path: "",
@@ -101,7 +83,7 @@ export const router = createBrowserRouter(
       ],
     },
   ],
-  { basename: `${BACKEND_PATH}/` }
+  { basename: `${BACKEND_PATH}` }
 );
 
 function InitializeDux({ data }) {
