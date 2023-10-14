@@ -355,9 +355,9 @@ function Settings() {
   const items = [
     // with ordering
     // "profilePicture",
-    // "displayLang", // TODO: how to handle this?
+    "display_language",
     "first_name",
-    "last_name",
+    "second_name",
     "email",
     "password",
     "phone_mobile",

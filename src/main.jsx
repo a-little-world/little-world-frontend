@@ -102,7 +102,7 @@ function Main() {
 
   const user = useSelector((state) => state.userData.user);
   const matches = useSelector((state) => state.userData.matches);
-  const dashboardVisibleMatches = [...matches.confirmed.items, ...matches.proposed.items]
+  const dashboardVisibleMatches = [...matches.support.items, ...matches.confirmed.items]
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);

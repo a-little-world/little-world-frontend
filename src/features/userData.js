@@ -23,9 +23,14 @@ export const userDataSlice = createSlice({
       state.apiOptions = action.payload.apiOptions;
       state.formOptions = action.payload.apiOptions.profile;
     },
+    updateProfile: (state, action) => {
+      Object.keys(action.payload).forEach((key) => {
+        state.user.profile[key] = action.payload[key];
+      });
+    },
   },
 });
 
-export const { initialise } = userDataSlice.actions;
+export const { initialise, updateProfile } = userDataSlice.actions;
 
 export default userDataSlice.reducer;
