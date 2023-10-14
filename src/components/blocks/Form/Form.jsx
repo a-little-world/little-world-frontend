@@ -7,10 +7,12 @@ import {
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { mutateUserData } from "../../../api";
 import { ComponentTypes, getFormComponent } from "../../../userForm/formContent";
+import getFormPage from "../../../userForm/formPages";
 import LanguageSelector from "../LanguageSelector/LanguageSelector";
 import Note from "../Note/Note";
 import ProfilePic from "../ProfilePic/ProfilePic";
@@ -28,22 +30,30 @@ const Form = () => {
     setError,
   } = useForm({ shouldUnregister: true });
 
-  const {
-    formContent: { title, note, step, totalSteps, components, nextPage, prevPage },
-  } = useLoaderData();
+  const [formOptions, userData] = useSelector((state) => [
+    state.userData.formOptions,
+    state.userData.user.profile,
+  ]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const slug = location.pathname.split("/")[2];
+
+  const { title, note, step, totalSteps, components, nextPage, prevPage } = getFormPage({
+    slug,
+    formOptions,
+    userData,
+  });
 
   const navigateNextClick = () => {
-    navigate(nextPage);
+    navigate(`/user-form${nextPage}`);
   };
 
   const handleBackClick = (e) => {
     e.preventDefault();
-    navigate(prevPage);
+    navigate(`/user-form${prevPage}`);
   };
 
   const onError = (e) => {
-    console.log({ e });
     if (e.message) {
       setError(
         e.cause ?? "root.serverError",
@@ -59,7 +69,6 @@ const Form = () => {
   };
 
   const onFormSubmit = async (data) => {
-    console.log({ data });
     mutateUserData(data, navigateNextClick, onError);
   };
 

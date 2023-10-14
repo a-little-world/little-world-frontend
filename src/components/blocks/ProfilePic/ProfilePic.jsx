@@ -19,7 +19,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Avatar, { genConfig } from "react-nice-avatar";
-import { useLoaderData } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { USER_FIELDS } from "../../../constants";
 import theme from "../../../theme";
@@ -51,7 +51,7 @@ const ProfilePic = ({ control, setValue }) => {
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [avatarList, setAvatarList] = useState([]);
   const [uploadedImage, setUploadedImage] = useState("");
-  const { userData } = useLoaderData();
+  const userData = useSelector((state) => state.userData.user.profile);
   const { t } = useTranslation();
   const fileInputRef = useRef(null);
 
@@ -69,9 +69,9 @@ const ProfilePic = ({ control, setValue }) => {
     setValue(USER_FIELDS.imageType, imageType);
   };
 
-  const onImageSelection = (imageType) => {
-    setImageType(imageType);
-    setValue(USER_FIELDS.imageType, imageType);
+  const onImageSelection = (type) => {
+    setImageType(type);
+    setValue(USER_FIELDS.imageType, type);
   };
 
   useEffect(() => {

@@ -1,40 +1,33 @@
-import { useEffect, useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
-import {
-  ProfileIcon,
-  Text,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
+import { ProfileIcon, Text, TextTypes } from "@a-little-world/little-world-design-system";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-import { CategorySelectorWrapper, SelectionPanel, TextSection } from './styles';
+import { CategorySelectorWrapper, SelectionPanel, TextSection } from "./styles";
 
 const CategorySelector = ({ categories, onUpdate }) => {
   const [panelSelected, setPanelSelected] = useState(null);
-  const { userData } = useLoaderData();
+
+  const userData = useSelector((state) => state.userData.user.profile);
 
   useEffect(() => {
-    setPanelSelected(userData?.['user_type']);
+    setPanelSelected(userData?.user_type);
   }, [userData]);
 
-  const onSelection = value => {
+  const onSelection = (value) => {
     setPanelSelected(value);
     onUpdate(value);
   };
 
   return (
     <CategorySelectorWrapper>
-      {categories.map(category => (
+      {categories.map((category) => (
         <SelectionPanel
           key={category.label}
           onClick={() => onSelection(category.value)}
           $selected={panelSelected === category.value}
           type="button"
         >
-          <ProfileIcon
-            label={category.value}
-            labelId={category.tag}
-            color={category.color}
-          />
+          <ProfileIcon label={category.value} labelId={category.tag} color={category.color} />
           <TextSection>
             <Text type={TextTypes.Body2} bold color={category.color} tag="h4">
               {category.label}
