@@ -295,7 +295,7 @@ function TextBox({ subject, topicText = "", formTag }) {
         setEditState(false);
       },
       () => {
-        dispatch(updateProfile({ [subject]: text }));
+        dispatch(updateProfile({ [formTag]: text }));
         setEditState(false);
       },
       formTag
@@ -415,7 +415,6 @@ function TextBox({ subject, topicText = "", formTag }) {
   );
 }
 
-/* TODO: the expectations is still the wrong form field */
 function ProfileDetail({ profile }) {
   // prevent erroring out when empty data sent (due to promise delay?)
   if (!profile) {
