@@ -212,7 +212,7 @@
   display: block;
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
+  align-items: center;
 }
 
 .questions-content > div > button {
@@ -220,7 +220,6 @@
   font-size: unset;
   width: 100%;
   border-radius: inherit;
-  text-align: left;
 }
 
 .questions-content div.selected {

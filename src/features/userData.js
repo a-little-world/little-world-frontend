@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 
 import { notifications } from "../services/notifications";
 import { State$reflection } from "../chat/Types.fs";
-import { questionsDuringCall } from "../services/questionsDuringCall";
 
 const initialState = {
   raw: {},
@@ -208,9 +207,6 @@ export const userDataSlice = createSlice({
     updateSearching: (state, { payload }) => {
       state.self.stateInfo.matchingState = payload;
     },
-    FetchQuestions: (state, { payload }) => {
-      state.questions = payload;
-    },
   },
 });
 
@@ -228,7 +224,6 @@ export const {
   setUsers,
   fetchNotifications,
   updateSearching,
-  FetchQuestions,
 } = userDataSlice.actions;
 
 export const FetchNotificationsAsync =
@@ -251,11 +246,5 @@ export const ReadNotificationAsync = (hash) => async (dispatch) => {
   dispatch(readNotif(hash));
   dispatch(setStatus("data"));
 };
-
-export const FetchQuestionsDataAsync = () => 
-async (dispatch) => {
-  const result = await questionsDuringCall.getQuestions();
-  dispatch(FetchQuestions(result))
-}
 
 export default userDataSlice.reducer;
