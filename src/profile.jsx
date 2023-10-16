@@ -1,42 +1,81 @@
-import Cookies from "js-cookie";
+import {
+  Button,
+  ButtonVariations,
+  Card,
+  CardSizes,
+  designTokens,
+  DotsIcon,
+  Gradients,
+  MessageIcon,
+  PhoneIcon,
+  Popover,
+  ProfileIcon,
+  Text,
+  TextTypes,
+} from "@a-little-world/little-world-design-system";
+import { PopoverSizes } from "@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Avatar from "react-nice-avatar";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import styled from "styled-components";
 
-import { BACKEND_URL } from "./ENVIRONMENT";
+import { postUserProfileUpdate } from "./api";
+import MenuLink from "./components/atoms/MenuLink";
+import ProfileImage from "./components/atoms/ProfileImage";
+import {
+  PARTNER_ACTION_REPORT,
+  PARTNER_ACTION_UNMATCH,
+} from "./components/blocks/PartnerActionCard";
 import { updateProfile } from "./features/userData";
 import "./i18n";
 import Link from "./path-prepend";
 
 import "./profile.css";
 
-const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
-  fetch(`${BACKEND_URL}/api/profile/`, {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-UseTagsOnly": true, // This automaticly requests error tags instead of direct translations!
-    },
-    body: JSON.stringify(updateData),
-  }).then((response) => {
-    const { status, statusText } = response;
-    if (![200, 400].includes(status)) {
-      console.error("server error", status, statusText);
-    } else {
-      response.json().then((report) => {
-        if (response.status === 200) {
-          return onSuccess();
-        }
-        const errorTags = report[formTag];
-        return onFailure(errorTags);
-      });
-    }
-  });
-};
+const ProfileCard = styled(Card)`
+  align-items: center;
+`;
+
+const ProfileInfo = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  ${({ theme }) => `
+  gap: ${theme.spacing.small};
+  margin-bottom: ${theme.spacing.xsmall};
+  `};
+`;
+
+const MatchMenuToggle = styled(Button)`
+  position: absolute;
+
+  ${({ theme }) => `
+  padding: ${theme.spacing.xxxsmall} ${theme.spacing.xxsmall};
+  top: ${theme.spacing.xsmall};
+  right: ${theme.spacing.xsmall};
+  `};
+`;
+
+const PartnerMenuOption = styled(Button)`
+  font-size: 1rem;
+  font-weight: normal;
+  justify-content: flex-start;
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+  padding-left: 0px;
+
+  &:not(:last-of-type) {
+    margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+  }
+`;
+
+const Actions = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: ${({ theme }) => theme.spacing.small};
+  width: 100%;
+`;
 
 function ProfileBox({
   userPk,
@@ -44,41 +83,91 @@ function ProfileBox({
   isSelf,
   setCallSetupPartner,
   isOnline,
+  lastName,
+  openPartnerModal,
+  setCallSetupPartner,
+  type,
+  userPk,
+  usesAvatar,
 }) {
   const { t } = useTranslation();
   const usesAvatar = profile.image_type === "avatar";
 
   return (
-    <div className={"profile-box"}>
-      {usesAvatar ? (
-        <Avatar className="profile-avatar" {...profile.avatar_config} />
-      ) : (
-        <img alt="match" className="profile-image" src={profile.image} />
+    <ProfileCard
+      className={type === "unconfirmed" ? "profile-box new-match" : "profile-box"}
+      width={CardSizes.Small}
+    >
+      <ProfileImage
+        image={usesAvatar ? avatarCfg : imgSrc}
+        imageType={usesAvatar ? "avatar" : "image"}
+      />
+      {/* temp disabled type === "match" */}
+      {false && (
+        <Popover
+          width={PopoverSizes.Large}
+          showCloseButton
+          trigger={
+            <MatchMenuToggle type="button" variation={ButtonVariations.Icon}>
+              <DotsIcon
+                circular
+                height="16px"
+                width="16px"
+                color={designTokens.color.theme.light.text.tertiary}
+              />
+            </MatchMenuToggle>
+          }
+        >
+          <PartnerMenuOption
+            variation={ButtonVariations.Inline}
+            onClick={() =>
+              openPartnerModal({ type: PARTNER_ACTION_REPORT, userPk, userName: firstName })
+            }
+          >
+            {t("cp_menu_report")}
+          </PartnerMenuOption>
+          <PartnerMenuOption
+            variation={ButtonVariations.Inline}
+            onClick={() =>
+              openPartnerModal({ type: PARTNER_ACTION_UNMATCH, userPk, userName: firstName })
+            }
+          >
+            {t("cp_menu_unmatch")}
+          </PartnerMenuOption>
+        </Popover>
       )}
       <div className={isOnline ? "online-indicator online" : "online-indicator"}>
         online <span className="light" />
       </div>
-      <div className="profile-info">
-        <div className="name">{`${profile.first_name} ${profile.first_name}`}</div>
-        <div className="text">{profile.description}</div>
-      </div>
-      {!isSelf && (
-        <div className="buttons">
-          <Link to="/" state={{ userPk }} className="profile">
-            <img alt="visit profile" />
-            {t("cp_profile")}
-          </Link>
-          <Link to="/chat" state={{ userPk }} className="chat">
-            <img alt="chat" />
-            {t("cp_message")}
-          </Link>
-          <button type="button" onClick={() => setCallSetupPartner(userPk)} className="call">
-            <img alt="call" />
+      <ProfileInfo className="profile-info">
+        <Text className="name">{`${firstName} ${lastName}`}</Text>
+        <Text className="text">{description}</Text>
+      </ProfileInfo>
+      {type !== "self" && (
+        <Actions>
+          <MenuLink to="/" state={{ userPk }}>
+            <ProfileIcon
+              gradient={Gradients.Orange}
+              label="visit profile"
+              labelId="visit_profile"
+            />
+            <Text type={TextTypes.Body4}>{t("cp_profile")}</Text>
+          </MenuLink>
+          <MenuLink to="/chat" state={{ userPk }}>
+            <MessageIcon gradient={Gradients.Orange} label="chat icon" labelId="chat_icon" />
+            <Text type={TextTypes.Body4}>{t("cp_message")}</Text>
+          </MenuLink>
+          <Button
+            type="button"
+            variation={ButtonVariations.Option}
+            onClick={() => setCallSetupPartner(userPk)}
+          >
+            <PhoneIcon gradient={Gradients.Orange} label="call icon" labelId="call_icon" />
             {t("cp_call")}
-          </button>
-        </div>
+          </Button>
+        </Actions>
       )}
-    </div>
+    </ProfileCard>
   );
 }
 
@@ -143,7 +232,7 @@ function InterestsSelector({ inTopicSelection }) {
         <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
           {editing && (
             <div className="topics-selector modal-box">
-              <button type="button" className="modal-close" onClick={cancelTopics}></button>
+              <button type="button" className="modal-close" onClick={cancelTopics} />
               <h3>{t("profile_choose_interests")}</h3>
               <div className="items">
                 {interestChoices.map((choice) => (
@@ -174,16 +263,6 @@ function InterestsSelector({ inTopicSelection }) {
         </div>
       </div>
       {errorText && <div style={{ color: "red" }}>{errorText}</div>}
-    </div>
-  );
-}
-
-function SectionBox({ subject, children }) {
-  // TODO: use translations
-  return (
-    <div className={subject}>
-      <h3>{subject}</h3>
-      {children}
     </div>
   );
 }
@@ -342,11 +421,6 @@ function TextBox({ subject, topicText = "", formTag }) {
 
 /* TODO: the expectations is still the wrong form field */
 function ProfileDetail({ profile }) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { userPk } = location.state || {};
-  const isSelf = !userPk;
-
   // prevent erroring out when empty data sent (due to promise delay?)
   if (!profile) {
     return null;

@@ -1,6 +1,6 @@
 import {
   Button,
-  ButtonTypes,
+  ButtonAppearance,
   Card,
   CardSizes,
   Text,
@@ -86,7 +86,7 @@ const ConfirmMatchCard = ({ name, onConfirm, onExit, onReject, image, imageType 
             <Text type={TextTypes.Body3}>{t("rejected_match_info_2")}</Text>
             <Text type={TextTypes.Body3}>{t("rejected_match_info_3")}</Text>
           </InfoContainer>
-          <Button type="button" variation={ButtonTypes.Secondary} onClick={onExit}>
+          <Button type="button" appearance={ButtonAppearance.Secondary} onClick={onExit}>
             {t("rejected_match_btn")}
           </Button>
         </>
@@ -105,7 +105,7 @@ const ConfirmMatchCard = ({ name, onConfirm, onExit, onReject, image, imageType 
           </Centred>
 
           <ButtonsContainer>
-            <Button type="button" variation={ButtonTypes.Secondary} onClick={handleReject}>
+            <Button type="button" appearance={ButtonAppearance.Secondary} onClick={handleReject}>
               {t("confirm_match_reject_btn")}
             </Button>
             <Button type="button" onClick={onConfirm}>

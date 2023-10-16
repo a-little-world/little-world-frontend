@@ -36,34 +36,10 @@
   position: relative;
 }
 
-.sidebar-item.selected {
-  background: linear-gradient(50.19deg, #36a9e0 2.84%, #0367b2 106.82%);
-  color: white;
-}
-
 .sidebar-item.selected img {
   filter: brightness(0) invert(1);
 }
 
-.sidebar-item .unread-dot {
-  position: absolute;
-  right: 10px;
-  background: #f39325;
-  color: #ffffff;
-  height: 16px;
-  aspect-ratio: 1;
-  border-radius: 100%;
-  font-weight: 600;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 100%;
-}
-
-.sidebar .start img {
-  content: url("./images/sidebar/start.svg");
-}
 .sidebar .messages img {
   content: url("./images/sidebar/chat.svg");
 }
@@ -73,15 +49,11 @@
 .sidebar .my_profile img {
   content: url("./images/sidebar/profile.svg");
 }
-.sidebar .help img {
-  content: url("./images/sidebar/help.svg");
-}
+
 .sidebar .settings img {
   content: url("./images/sidebar/settings.svg");
 }
-.sidebar .log_out img {
-  content: url("./images/sidebar/logout.svg");
-}
+
 .sidebar .admin_panel img {
   content: url("./images/sidebar/settings.svg");
 }
@@ -219,18 +191,6 @@
   width: 80px;
   flex: 1 1 0;
   font-size: inherit;
-}
-
-.profile-box .buttons .profile img {
-  content: url("./images/profile-orange.svg");
-}
-
-.profile-box .buttons .chat img {
-  content: url("./images/chat-orange.svg");
-}
-
-.profile-box .buttons .call img {
-  content: url("./images/call-orange.svg");
 }
 
 .match-status {

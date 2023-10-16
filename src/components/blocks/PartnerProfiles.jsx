@@ -1,3 +1,4 @@
+import { Modal } from "@a-little-world/little-world-design-system";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BACKEND_URL } from "../../ENVIRONMENT";
 import { updateSearching } from "../../features/userData";
 import { ProfileBox } from "../../profile";
+import PartnerActionCard from "./PartnerActionCard";
 
 function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
   const { t } = useTranslation();
@@ -38,6 +40,10 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
       .catch((error) => console.error(error));
   }
 
+  const onModalClose = () => {
+    setPartnerActionData(null);
+  };
+
   return (
     <div className="profiles">
       {matchesDisplay
@@ -48,6 +54,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
               userPk={match.partner.id}
               profile={match.partner}
               isSelf={false}
+              openPartnerModal={setPartnerActionData}
               setCallSetupPartner={setCallSetupPartner}
               isOnline={matchesOnlineStates[user.userPk]}
             />
@@ -73,6 +80,11 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
           </button>
         </div>
       )}
+      <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
+        {!!partnerActionData && (
+          <PartnerActionCard data={partnerActionData} onClose={onModalClose} />
+        )}
+      </Modal>
     </div>
   );
 }
