@@ -2,7 +2,7 @@
 import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Chat from "./chat/chat-full-view";
@@ -19,6 +19,8 @@ import {
 
 import "./App.css";
 import "./call.css";
+import { FetchQuestionsDataAsync } from "./features/userData";
+import { questionsDuringCall } from "./services/questionsDuringCall";
 
 function toggleFullscreen(t) {
   const videoContainer = document.querySelector(".video-container");
@@ -34,7 +36,7 @@ function toggleFullscreen(t) {
   }
 }
 
-const SetSideContext = createContext(() => {});
+const SetSideContext = createContext(() => { });
 
 function Timer() {
   const [seconds, setSeconds] = useState(0);
@@ -136,9 +138,8 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
         <button
           key={name}
           type="button"
-          className={`show-${name}${selectedOverlay === name ? " selected" : ""}${
-            disabled.includes(name) ? " disabled" : ""
-          }`}
+          className={`show-${name}${selectedOverlay === name ? " selected" : ""}
+            `}
           onClick={() => setOverlay(name)}
         >
           <img alt={`show-${name}`} />
@@ -150,60 +151,42 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
 
 function SidebarQuestions() {
   const { t } = useTranslation();
-  const [selectedTopic, setTopic] = useState("Jokes");
+
+  const questionDataFromApi = useSelector((state) => state.userData?.questions?.data);
+  const questionTitleDataFromApi = useSelector((state) => state.userData?.questions?.category);
+  const [quetionsData, setQuetionsData] = useState(questionDataFromApi)
   const [selectedQuestionId, setQuestionId] = useState(null);
+  const selfUserPreferedLang = localStorage.i18nextLng
+  const topicList = questionTitleDataFromApi?.map((item) => item[selfUserPreferedLang]);
+  const [selectedTopic, setTopic] = useState(topicList ? topicList[0] : null);
 
-  const dummyData = {
-    Jokes: [
-      {
-        id: 1,
-        text: "How much wood would a wood chucker chuck if a woodchucker could chuck wood?",
-      },
-      {
-        id: 2,
-        text: "What is the air speed velocity of an unladen swallow?",
-      },
-    ],
-    Oliver: [
-      {
-        id: 3,
-        text: "Where is Oliver from?",
-      },
-      {
-        id: 4,
-        text: "Which part of Berlin?",
-      },
-      {
-        id: 5,
-        text: "Where did he get those glasses?",
-      },
-    ],
-    "Another Topic": [
-      {
-        id: 6,
-        text: "nothing to see here",
-      },
-    ],
-    "Yet Another Topic": [
-      {
-        id: 7,
-        text: "what did you expect?",
-      },
-    ],
-  };
-
-  const [questionsData, setQuestions] = useState(dummyData);
-
-  const questionsTopics = Object.keys(questionsData);
+  useEffect(() => {
+    const matchingQuestion = quetionsData?.find((item) => item?.category_name[selfUserPreferedLang] === selectedTopic);
+    if (matchingQuestion?.id) {
+      setQuestionId(matchingQuestion?.id)
+    }
+  }, [selectedTopic, quetionsData])
 
   const removeQuestion = () => {
     // needs to go to backend
-    const questionIdx = questionsData[selectedTopic].findIndex(
-      (item) => item.id === selectedQuestionId
-    );
-    questionsData[selectedTopic].splice(questionIdx, 1);
-    setQuestionId(questionsData);
+    // const questionIdx = questionsData[selectedTopic].findIndex(
+    //   (item) => item.id === selectedQuestionId
+    // );
+    // questionsData[selectedTopic].splice(questionIdx, 1);
+    // setQuestionId(questionsData);
   };
+
+
+  const archiveQuestion = async (id) => {
+    const response = await questionsDuringCall.archiveQuestion(id)
+    if(response === 'error'){
+      console.log('Internal Server Error')
+    }
+    else{
+      const updatedQuestions = quetionsData?.filter((question) => question.id !== id);
+      setQuetionsData(updatedQuestions);
+    }
+  }
 
   const changeScroll = (direction) => {
     const element = document.querySelector(".questions-categories .categories");
@@ -221,13 +204,13 @@ function SidebarQuestions() {
           <img alt="show left" />
         </button>
         <div className="categories">
-          {questionsTopics.map((topic) => (
+          {topicList?.map((topic) => (
             <button
               key={topic}
               type="button"
               className={selectedTopic === topic ? `${topic}-radio selected` : `${topic}-radio`}
               value={topic}
-              onClick={() => setTopic(topic)}
+              onClick={() => { setTopic(topic) }}
             >
               {topic}
             </button>
@@ -238,33 +221,36 @@ function SidebarQuestions() {
         </button>
       </div>
       <div className="questions-content">
-        {questionsData[selectedTopic].map(({ id, text }) => (
-          <div
-            key={id}
-            className={selectedQuestionId === id ? `question-${id} selected` : `question-${id}`}
-          >
-            <button
-              type="button"
-              className={selectedQuestionId === id ? "selected" : ""}
-              onClick={() => setQuestionId(id)}
-            >
-              {text}
-            </button>
-            {selectedQuestionId === id && (
-              <div className="question-action">
-                <button type="button" className="yes">
-                  <img alt="accept question" />
+        {
+          quetionsData
+            ?.filter((question) => question.category_name[selfUserPreferedLang] === selectedTopic)
+            ?.map(({ id, content }) => (
+              <div
+                key={id}
+                className={selectedQuestionId === id ? `question-${id} selected` : `question-${id}`}
+              >
+                <button
+                  type="button"
+                  className={selectedQuestionId === id ? "selected" : ""}
+                  onClick={() => setQuestionId(id)}
+                >
+                  {content[selfUserPreferedLang]}
                 </button>
-                <button type="button" className="edit">
-                  <img alt="edit question" />
-                </button>
-                <button type="button" className="no" onClick={removeQuestion}>
-                  <img alt="reject question" />
-                </button>
+                {selectedQuestionId === id && (
+                  <div className="question-action">
+                    <button type="button" className="yes" onClick={() => archiveQuestion(id)}>
+                      <img alt="accept question" />
+                    </button>
+                    <button type="button" className="edit">
+                      <img alt="edit question" />
+                    </button>
+                    <button type="button" className="no">
+                      <img alt="reject question" />
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        ))}
+            ))}
       </div>
     </div>
   );
@@ -461,7 +447,7 @@ function Sidebar({ sideSelection }) {
             />
             <label
               htmlFor={`${topic}-radio`}
-              className={disabled.includes(topic) ? "disabled" : ""}
+            // className={disabled.includes(topic) ? "disabled" : ""}
             >
               {t(`vc_btn_${topic}`)}
             </label>
@@ -482,6 +468,7 @@ function CallScreen() {
   const selfPk = useSelector((state) => state.userData.self.userPk);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const { userPk, tracks } = location.state || {};
   const videoRef = useRef();
   const audioRef = useRef();
@@ -490,6 +477,10 @@ function CallScreen() {
    * returing to main page, causing webcam lights to remain on.
    */
   removeActiveTracks();
+
+  useEffect(() => {
+    dispatch(FetchQuestionsDataAsync())
+  }, []);
 
   useEffect(() => {
     if (!userPk) {
