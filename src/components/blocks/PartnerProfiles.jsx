@@ -15,6 +15,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
   const matches = useSelector((state) => state.userData.matches);
   const matchesDisplay = [...matches.support.items, ...matches.confirmed.items];
   const user = useSelector((state) => state.userData.user);
+  const [partnerActionData, setPartnerActionData] = useState(null);
   
   function updateUserMatchingState() {
     const updatedState = "searching";
