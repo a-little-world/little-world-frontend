@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
 import { BACKEND_URL } from "../../ENVIRONMENT";
-import { updateSearching } from "../../features/userData";
+import { updateSearchState } from "../../features/userData";
 import { ProfileBox } from "../../profile";
 import PartnerActionCard from "./PartnerActionCard";
 
@@ -35,7 +35,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
       .then((response) => {
         if (response) {
           // If this request works, we can safely update our state to 'searching'
-          dispatch(updateSearching(updatedState));
+          dispatch(updateSearchState(updatedState === "idle" ? false : true));
         }
       })
       .catch((error) => console.error(error));
