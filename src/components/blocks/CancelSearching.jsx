@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 
 import { BACKEND_URL } from "../../ENVIRONMENT";
-import { updateSearching } from "../../features/userData";
+import { updateSearchState } from "../../features/userData";
 
-const changeSearchState = (updatedState) => {
+const changeSearchStatePost = (updatedState) => {
   return fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
     method: "POST",
     headers: {
@@ -20,9 +20,9 @@ function CancelSearching({ setShowCancel }) {
   const dispatch = useDispatch();
 
   const undoSearching = () => {
-    changeSearchState("idle").then(({ status, statusText }) => {
+    changeSearchStatePost("idle").then(({ status, statusText }) => {
       if (status === 200) {
-        dispatch(updateSearching("idle"));
+        dispatch(updateSearchState(false));
         setShowCancel(false);
       } else {
         console.error(`Cancelling match searching failed with error ${status}: ${statusText}`);
