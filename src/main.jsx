@@ -136,10 +136,8 @@ function Main() {
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
   const [topSelection, setTopSelection] = useState(null);
   const selfProfile = user.id === userPk || typeof userPk === "undefined";
-  const selectedProfile = selfProfile ? user.profile : dashboardVisibleMatches.find((match) => match.partner.id === userPk)?.partner;
+  const selectedProfile = dashboardVisibleMatches.find((match) => match.partner.id === userPk)?.partner;
   
-  console.log("selectedProfile", selectedProfile, user.id, userPk, user);
-
   useEffect(() => {
     if (use === "main") {
       setTopSelection("conversation_partners");
@@ -219,7 +217,7 @@ function Main() {
         )}
         {use === "chat" && initChatComponent(false)}
         {use === "notifications" && <Notifications />}
-        {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} isSelf={selfProfile} profile={selectedProfile} userPk={selfProfile ? user.id : userPk}/>}
+        {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} isSelf={selfProfile} profile={selfProfile ? user.profile : selectedProfile} userPk={selfProfile ? user.id : userPk}/>}
         {use === "help" && <Help selection={topSelection} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>
