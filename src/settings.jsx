@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { BACKEND_URL, DEVELOPMENT } from "./ENVIRONMENT";
-import { updateSettings } from "./features/userData";
+import { updateProfile } from "./features/userData";
 
 import "./settings.css";
 
@@ -25,15 +25,14 @@ function ListItem({ section, label, value, setEditing, map }) {
 }
 
 const types = {
-  profilePicture: "popup-open",
-  displayLang: "select",
-  firstName: "text",
-  lastName: "text",
+  display_language: "select",
+  first_name: "text",
+  last_name: "text",
   email: "email",
   password: "password",
-  phone: "tel",
-  postCode: "numeric",
-  birthYear: "numeric",
+  phone_mobile: "tel",
+  postal_code: "numeric",
+  birth_year: "numeric",
 };
 const allowedChars = {
   tel: /^[+]?[0-9- ]*$/, // numbers spaces, dashes. can start with one +
@@ -47,19 +46,8 @@ const displayLanguages = {
 
 const repeaters = ["password", "email"];
 
-const labelsMap = {
-  displayLang: "display_lang",
-  firstName: "first_name",
-  lastName: "second_name",
-  email: "email",
-  password: "password",
-  phone: "phone_mobile",
-  postCode: "postal_code",
-  birthYear: "birth_year",
-};
-
 const submitItem = (item, newValue) => {
-  return submitData({ [labelsMap[item]]: newValue }, "/api/profile/");
+  return submitData({ [item]: newValue }, "/api/profile/");
 };
 
 const submitData = (data, endpoint) => {
@@ -112,7 +100,7 @@ const allowedCodes = [
 
 function AtomicInput({ label, inputVal = "", handleChange = () => {}, refIn = undefined }) {
   const { t } = useTranslation();
-  const type = types[label] || types[label.slice(0, 8)]; // password_new_rpt -> password
+  const type = types[label] || types[label.slice(0, 8)]; // password_new_rpt -> password TODO: what fucked implementation is this?
   const controlled = ["tel", "numeric", "email"].includes(type);
 
   const onKeyDown = (e) => {
@@ -190,12 +178,12 @@ function ModalBox({ label, valueIn, setEditing }) {
   };
 
   const onResponseSuccess = (data) => {
-    dispatch(updateSettings(data));
+    dispatch(updateProfile(data));
     setEditing(false);
   };
   const onResponseFailure = (report) => {
     console.log("REPORT", report);
-    const backendLabel = labelsMap[label];
+    const backendLabel = label;
     const errorsList = report[backendLabel] || ["unknown error"];
     setErrors(errorsList); // update error message(s)
     setWaiting(false);
@@ -209,7 +197,7 @@ function ModalBox({ label, valueIn, setEditing }) {
     if (label === "displayLang") {
       // TODO: we need to update the server info also; this only upadates UI and cookie
       const langCode = val;
-      dispatch(updateSettings({ displayLang: langCode }));
+      dispatch(updateProfile({ display_language: langCode }));
       Cookies.set("frontendLang", langCode);
       i18n.changeLanguage(langCode);
       setEditing(false);
@@ -261,7 +249,7 @@ function ModalBox({ label, valueIn, setEditing }) {
       </div>
       <form onSubmit={handleSubmit}>
         <section className="inputs">
-          {label === "displayLang" && (
+          {label === "display_language" && (
             <label className="input-container">
               {t("sg_personal_displayLang")}
               <select name="lang-select" defaultValue={valueIn} ref={textInput}>
@@ -275,7 +263,7 @@ function ModalBox({ label, valueIn, setEditing }) {
           )}
           {["email", "password"].includes(label) && <span className="warning-notice">{t(`sg_personal_${label}_change_warning`)}</span>}
           {label === "password" && <PassChange refIn={textInput} />}
-          {["firstName", "lastName", "email", "phone", "postCode", "birthYear"].includes(label) && (
+          {["first_name", "last_name", "email", "phone_mobile", "postal_code", "birth_year"].includes(label) && (
             <AtomicInput
               label={label}
               inputVal={value}
