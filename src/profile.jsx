@@ -139,7 +139,7 @@ function ProfileBox({
         <Text className="name">{`${profile.first_name}`}</Text>
         <Text className="text">{profile.description}</Text>
       </ProfileInfo>
-      {type !== "self" && (
+      {!isSelf && (
         <Actions>
           <MenuLink to="/" state={{ userPk }}>
             <ProfileIcon
