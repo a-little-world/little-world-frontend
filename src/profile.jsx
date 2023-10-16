@@ -81,14 +81,10 @@ function ProfileBox({
   userPk,
   profile,
   isSelf,
-  setCallSetupPartner,
   isOnline,
-  lastName,
   openPartnerModal,
   setCallSetupPartner,
   type,
-  userPk,
-  usesAvatar,
 }) {
   const { t } = useTranslation();
   const usesAvatar = profile.image_type === "avatar";
@@ -99,7 +95,7 @@ function ProfileBox({
       width={CardSizes.Small}
     >
       <ProfileImage
-        image={usesAvatar ? avatarCfg : imgSrc}
+        image={usesAvatar ? profile.avatar_config : profile.image}
         imageType={usesAvatar ? "avatar" : "image"}
       />
       {/* temp disabled type === "match" */}
@@ -121,7 +117,7 @@ function ProfileBox({
           <PartnerMenuOption
             variation={ButtonVariations.Inline}
             onClick={() =>
-              openPartnerModal({ type: PARTNER_ACTION_REPORT, userPk, userName: firstName })
+              openPartnerModal({ type: PARTNER_ACTION_REPORT, userPk, userName: profile.first_name })
             }
           >
             {t("cp_menu_report")}
@@ -129,7 +125,7 @@ function ProfileBox({
           <PartnerMenuOption
             variation={ButtonVariations.Inline}
             onClick={() =>
-              openPartnerModal({ type: PARTNER_ACTION_UNMATCH, userPk, userName: firstName })
+              openPartnerModal({ type: PARTNER_ACTION_UNMATCH, userPk, userName: profile.first_name })
             }
           >
             {t("cp_menu_unmatch")}
@@ -140,8 +136,8 @@ function ProfileBox({
         online <span className="light" />
       </div>
       <ProfileInfo className="profile-info">
-        <Text className="name">{`${firstName} ${lastName}`}</Text>
-        <Text className="text">{description}</Text>
+        <Text className="name">{`${profile.first_name}`}</Text>
+        <Text className="text">{profile.description}</Text>
       </ProfileInfo>
       {type !== "self" && (
         <Actions>
