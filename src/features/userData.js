@@ -21,12 +21,16 @@ export const userDataSlice = createSlice({
         state.user.profile[key] = action.payload[key];
       });
     },
+    updateSearchState: (state, action) => {
+      state.user.isSearching = action.payload;
+    }
   },
 });
 
 export const {
   initialise,
-  updateProfile
+  updateProfile,
+  updateSearchState
 } = userDataSlice.actions;
 
 export default userDataSlice.reducer;
