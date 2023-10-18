@@ -290,6 +290,7 @@
   "ur_report_placeholder": "Compose a message to us…",
   "ur_reported_line1": "You have reported {{name}}!",
   "ur_reported_line2": "They will no longer be able to contact you.",
+  "question_category_archived": "Archived",
   "faq": {
     "section_title": {
       "before_talk": "Before the conversation",

@@ -159,7 +159,7 @@ export const userDataSlice = createSlice({
       });
     },
     removePreMatch: (state, action) => {
-      state.self = { ...state.self, stateInfo: { ...state.self.stateInfo, preMatches: state.self.stateInfo.preMatches.filter((match) => match.hash !== action.payload) } };  
+      state.self = { ...state.self, stateInfo: { ...state.self.stateInfo, preMatches: state.self.stateInfo.preMatches.filter((match) => match.hash !== action.payload) } };
     },
     addUnconfirmed: (state, action) => {
       const newSelf = { ...state.self, stateInfo: { ...state.self.stateInfo, unconfirmedMatches: [...state.self.stateInfo.unconfirmedMatches, action.payload] } };
@@ -211,6 +211,9 @@ export const userDataSlice = createSlice({
     FetchQuestions: (state, { payload }) => {
       state.questions = payload;
     },
+    FetchUnarchivedQuestions: (state, { payload }) => {
+      state.archivedQuestions = payload;
+    },
   },
 });
 
@@ -229,16 +232,17 @@ export const {
   fetchNotifications,
   updateSearching,
   FetchQuestions,
+  FetchUnarchivedQuestions
 } = userDataSlice.actions;
 
 export const FetchNotificationsAsync =
   ({ pageNumber: page, itemPerPage }) =>
-  async (dispatch) => {
-    dispatch(setStatus("loading"));
-    const result = await notifications.getAll({ pageNumber: page, itemPerPage });
-    dispatch(setStatus("data"));
-    dispatch(fetchNotifications(result));
-  };
+    async (dispatch) => {
+      dispatch(setStatus("loading"));
+      const result = await notifications.getAll({ pageNumber: page, itemPerPage });
+      dispatch(setStatus("data"));
+      dispatch(fetchNotifications(result));
+    };
 export const ArchiveNotificationAsync = (hash) => async (dispatch) => {
   dispatch(setStatus("loading"));
   const result = await notifications.archive(hash);
@@ -252,10 +256,16 @@ export const ReadNotificationAsync = (hash) => async (dispatch) => {
   dispatch(setStatus("data"));
 };
 
-export const FetchQuestionsDataAsync = () => 
-async (dispatch) => {
-  const result = await questionsDuringCall.getQuestions();
-  dispatch(FetchQuestions(result))
-}
+export const FetchQuestionsDataAsync = () =>
+  async (dispatch) => {
+    const result = await questionsDuringCall.getQuestions();
+    dispatch(FetchQuestions(result))
+  }
+
+export const FetchUnArchivedQuestions = () =>
+  async (dispatch) => {
+    const result = await questionsDuringCall.getUnArchivedQuestions();
+    dispatch(FetchUnarchivedQuestions(result))
+  }
 
 export default userDataSlice.reducer;

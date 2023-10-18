@@ -26,11 +26,32 @@ class QuestionsDuringCall {
         else return 
     }
 
+    async getUnArchivedQuestions() {
+        let response = await fetch(
+            `${BACKEND_URL}/api/questions-list/userarchived/`,
+            {
+                method: "GET",
+                headers: {
+                    "X-CSRFToken": Cookie.get("csrftoken"),
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    "X-UseTagsOnly": true,
+                },
+            }
+        );
+        let data = await response.text();
+        data = JSON.parse(data);
+        if (data.code === 200) {
+            return data.data
+        }
+        else return
+    }
+
     async archiveQuestion(id) {
-        let response = await fetch(`${BACKEND_URL}/api/archived/`, {
+        let response = await fetch(`${BACKEND_URL}/api/questions/archive/`, {
             method: "POST",
             body: JSON.stringify({
-                category_id: id,
+                card_id: id,
             }),
             headers: {
                 "X-CSRFToken": Cookie.get("csrftoken"),
@@ -44,6 +65,29 @@ class QuestionsDuringCall {
             return data;
         }
         else{
+            return 'error'
+        }
+    }
+
+
+    async unArchiveQuestion(id) {
+        let response = await fetch(`${BACKEND_URL}/api/questions/unarchived/`, {
+            method: "POST",
+            body: JSON.stringify({
+                card_id: id,
+            }),
+            headers: {
+                "X-CSRFToken": Cookie.get("csrftoken"),
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-UseTagsOnly": true,
+            },
+        });
+        if (response.status == 200) {
+            let data = await response.text();
+            return data;
+        }
+        else {
             return 'error'
         }
     }

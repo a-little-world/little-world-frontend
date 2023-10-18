@@ -19,7 +19,7 @@ import {
 
 import "./App.css";
 import "./call.css";
-import { FetchQuestionsDataAsync } from "./features/userData";
+import { FetchQuestionsDataAsync, FetchUnArchivedQuestions } from "./features/userData";
 import { questionsDuringCall } from "./services/questionsDuringCall";
 
 function toggleFullscreen(t) {
@@ -130,7 +130,7 @@ function VideoControls() {
 
 function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
   const buttons = ["chat", "translate", "questions", "notes"];
-  const disabled = ["questions", "notes"];
+  const disabled = ["notes"];
 
   return (
     <div className="video-controls top">
@@ -138,8 +138,8 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
         <button
           key={name}
           type="button"
-          className={`show-${name}${selectedOverlay === name ? " selected" : ""}
-            `}
+          className={`show-${name}${selectedOverlay === name ? " selected" : ""}${disabled.includes(name) ? " disabled" : ""
+            }`}
           onClick={() => setOverlay(name)}
         >
           <img alt={`show-${name}`} />
@@ -154,37 +154,59 @@ function SidebarQuestions() {
 
   const questionDataFromApi = useSelector((state) => state.userData?.questions?.data);
   const questionTitleDataFromApi = useSelector((state) => state.userData?.questions?.category);
-  const [quetionsData, setQuetionsData] = useState(questionDataFromApi)
-  const [selectedQuestionId, setQuestionId] = useState(null);
+  const archivedQuestionsFromApi = useSelector((state) => state.userData?.archivedQuestions);
+
   const selfUserPreferedLang = localStorage.i18nextLng
+  const [selectedQuestionId, setQuestionId] = useState(null);
+
   const topicList = questionTitleDataFromApi?.map((item) => item[selfUserPreferedLang]);
   const [selectedTopic, setTopic] = useState(topicList ? topicList[0] : null);
 
+  const [archived, setArchived] = useState(archivedQuestionsFromApi ? archivedQuestionsFromApi : [])
+  const [unarchived, setUnarchived] = useState(questionDataFromApi);
+
   useEffect(() => {
-    const matchingQuestion = quetionsData?.find((item) => item?.category_name[selfUserPreferedLang] === selectedTopic);
-    if (matchingQuestion?.id) {
-      setQuestionId(matchingQuestion?.id)
+    // condition for selecting the top item of the category
+    if (selectedTopic === 'Archived') {
+      if (archived.length !== 0) setQuestionId(archived[0]?.id)
     }
-  }, [selectedTopic, quetionsData])
-
-  const removeQuestion = () => {
-    // needs to go to backend
-    // const questionIdx = questionsData[selectedTopic].findIndex(
-    //   (item) => item.id === selectedQuestionId
-    // );
-    // questionsData[selectedTopic].splice(questionIdx, 1);
-    // setQuestionId(questionsData);
-  };
+    else {
+      const matchingQuestion = unarchived?.find((item) => item?.category_name[selfUserPreferedLang] === selectedTopic);
+      if (matchingQuestion?.id) {
+        setQuestionId(matchingQuestion?.id)
+      }
+    }
+  }, [selectedTopic, unarchived, archived])
 
 
+  // function to archive the card and store the card in Archived list
   const archiveQuestion = async (id) => {
     const response = await questionsDuringCall.archiveQuestion(id)
-    if(response === 'error'){
+    if (response === 'error') {
       console.log('Internal Server Error')
     }
-    else{
-      const updatedQuestions = quetionsData?.filter((question) => question.id !== id);
-      setQuetionsData(updatedQuestions);
+    else {
+      const questionToArchive = unarchived.find((question) => question.id === id);
+      if (questionToArchive) {
+        setUnarchived(unarchived.filter((question) => question.id !== id));
+        setArchived([...archived, questionToArchive]);
+      }
+    }
+  }
+
+  // function to un-archive the card and store the card back to unarchived list
+  const unArchiveQuestion = async (id) => {
+    const response = await questionsDuringCall.unArchiveQuestion(id)
+
+    if (response === 'error') {
+      console.log('Internal Server Error')
+    }
+    else {
+      const questionToUnarchive = archived.find((question) => question.id === id);
+      if (questionToUnarchive) {
+        setArchived((prevArchived) => prevArchived.filter((question) => question.id !== id));
+        setUnarchived((prevData) => [...prevData, questionToUnarchive]);
+      }
     }
   }
 
@@ -215,6 +237,17 @@ function SidebarQuestions() {
               {topic}
             </button>
           ))}
+
+          <button
+            key='Archived'
+            type="button"
+            className={selectedTopic === 'Archived' ? `Archived-radio selected` : `Archived-radio`}
+            value='Archived'
+            onClick={() => { setTopic('Archived') }}
+          >
+            {t("question_category_archived")}
+          </button>
+
         </div>
         <button type="button" className="questions-right" onClick={() => changeScroll("right")}>
           <img alt="show right" />
@@ -222,7 +255,7 @@ function SidebarQuestions() {
       </div>
       <div className="questions-content">
         {
-          quetionsData
+          unarchived
             ?.filter((question) => question.category_name[selfUserPreferedLang] === selectedTopic)
             ?.map(({ id, content }) => (
               <div
@@ -241,16 +274,46 @@ function SidebarQuestions() {
                     <button type="button" className="yes" onClick={() => archiveQuestion(id)}>
                       <img alt="accept question" />
                     </button>
-                    <button type="button" className="edit">
+                    {/* <button type="button" className="edit">
                       <img alt="edit question" />
                     </button>
                     <button type="button" className="no">
                       <img alt="reject question" />
-                    </button>
+                    </button> */}
                   </div>
                 )}
               </div>
             ))}
+
+        {
+          selectedTopic == 'Archived' &&
+          archived?.map(({ id, content }) => {
+            return (
+              <div
+                key={id}
+                className={selectedQuestionId === id ? `question-${id} selected` : `question-${id}`}
+              >
+                <button
+                  type="button"
+                  className={selectedQuestionId === id ? "selected" : ""}
+                  onClick={() => setQuestionId(id)}
+                >
+                  {content[selfUserPreferedLang]}
+                </button>
+
+                {selectedQuestionId === id && (
+                  <div className="question-action">
+                    <button type="button" className="unarchive" onClick={() => unArchiveQuestion(id)}>
+                      <img alt="accept question" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )
+          })
+        }
+
+
       </div>
     </div>
   );
@@ -430,7 +493,7 @@ function Sidebar({ sideSelection }) {
   const sidebarTopics = ["chat", "questions", "notes"];
   const setSideSelection = useContext(SetSideContext);
   const handleChange = (e) => setSideSelection(e.target.value);
-  const disabled = ["questions", "notes"];
+  const disabled = ["notes"];
 
   return (
     <div className="call-sidebar">
@@ -447,7 +510,7 @@ function Sidebar({ sideSelection }) {
             />
             <label
               htmlFor={`${topic}-radio`}
-            // className={disabled.includes(topic) ? "disabled" : ""}
+              className={disabled.includes(topic) ? "disabled" : ""}
             >
               {t(`vc_btn_${topic}`)}
             </label>
@@ -480,6 +543,7 @@ function CallScreen() {
 
   useEffect(() => {
     dispatch(FetchQuestionsDataAsync())
+    dispatch(FetchUnArchivedQuestions())
   }, []);
 
   useEffect(() => {

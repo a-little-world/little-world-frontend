@@ -248,6 +248,12 @@
   content: url("./images/close.svg");
 }
 
+.question-action .unarchive img {
+  content: url("./images/unarchive_question.svg");
+  width: 28px;
+  height: 28px;
+}
+
 @media screen and (width < 1024px) {
   .call-sidebar,
   .translation-box {
@@ -270,6 +276,10 @@
   box-sizing: border-box;
   padding: 0 10px;
   transition: top 0.2s linear;
+}
+
+.archived-category-fields{
+  padding: 0.5rem 1rem;
 }
 
 @media screen and (width < 1024px) and (orientation: portrait) {
