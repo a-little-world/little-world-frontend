@@ -1,17 +1,46 @@
+import {
+  Button,
+  ButtonAppearance,
+  ButtonVariations,
+  DashboardIcon,
+  Gradients,
+  LogoutIcon,
+  MessageIcon,
+  ProfileIcon,
+  QuestionIcon,
+  SettingsIcon,
+} from "@a-little-world/little-world-design-system";
 import Cookies from "js-cookie";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 import { BACKEND_PATH, BACKEND_URL } from "../../ENVIRONMENT";
 import Link from "../../path-prepend";
+import { FetchNotificationsAsync } from "../../features/userData";
+import MenuLink from "../atoms/MenuLink";
+
+const Unread = styled.div`
+  position: absolute;
+  top: ${({ theme }) => theme.spacing.xxsmall};
+  right: ${({ theme }) => theme.spacing.xxsmall};
+  background: ${({ theme }) => theme.color.surface.highlight};
+  color: ${({ theme }) => theme.color.text.button};
+  height: 16px;
+  aspect-ratio: 1;
+  border-radius: 100%;
+  font-weight: 600;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 100%;
+`;
 
 function UnreadDot({ count }) {
-  if (!count) {
-    return false;
-  }
-  return <div className="unread-dot">{count}</div>;
+  return <Unread>{count}</Unread>;
 }
 
 function Sidebar({ sidebarMobile }) {
@@ -21,12 +50,11 @@ function Sidebar({ sidebarMobile }) {
   const self = useSelector((state) => state.userData.self);
 
   const buttonData = [
-    { label: "start", path: "/" },
-    { label: "messages", path: "/chat" },
-    { label: "notifications", path: "" }, // "/notifications" },
-    { label: "my_profile", path: "/profile" },
-    { label: "help", path: "/help" },
-    { label: "settings", path: "/settings" },
+    { label: "start", path: "/", Icon: DashboardIcon },
+    { label: "messages", path: "/chat", Icon: MessageIcon },
+    { label: "my_profile", path: "/profile", Icon: ProfileIcon },
+    { label: "help", path: "/help", Icon: QuestionIcon },
+    { label: "settings", path: "/settings", Icon: SettingsIcon },
     {
       label: "log_out",
       clickEvent: () => {
@@ -55,6 +83,7 @@ function Sidebar({ sidebarMobile }) {
     notifications: notifications.unread.items.filter(({ status }) => status === "unread"),
     messages: [],
   };
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -68,33 +97,44 @@ function Sidebar({ sidebarMobile }) {
           <img alt="little" className="logo-image" />
           <img alt="little world" className="logo-text" />
         </div>
-        {buttonData.map(({ label, path, clickEvent }) =>
+        {buttonData.map(({ label, path, clickEvent, Icon }) =>
           typeof clickEvent === typeof undefined ? (
-            <Link
+            <MenuLink
               to={path}
               key={label}
-              className={`sidebar-item ${label}${
-                location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
-              }`}
+              $appearance={
+                location.pathname === `${BACKEND_PATH}${path}`
+                  ? ButtonAppearance.Secondary
+                  : ButtonAppearance.Primary
+              }
             >
-              {["messages", "notifications"].includes(label) && (
+              {["messages", "notifications"].includes(label) && Boolean(unread[label].length) && (
                 <UnreadDot count={unread[label].length} />
               )}
-              <img alt={label} />
+              <Icon
+                label={label}
+                labelId={label}
+                {...(location.pathname === `${BACKEND_PATH}${path}`
+                  ? { color: "white" }
+                  : { gradient: Gradients.Blue })}
+              />
               {t(`nbs_${label}`)}
-            </Link>
+            </MenuLink>
           ) : (
-            <button
+            <Button
               key={label}
               type="button"
+              variation={ButtonVariations.Option}
+              appearance={
+                location.pathname === `${BACKEND_PATH}${path}`
+                  ? ButtonAppearance.Secondary
+                  : ButtonAppearance.Primary
+              }
               onClick={clickEvent}
-              className={`sidebar-item ${label}${
-                location.pathname === `${BACKEND_PATH}${path}` ? " selected" : ""
-              }`}
             >
-              <img alt={label} />
+              <LogoutIcon color="#5f5f5f" label={label} labelId={label} />
               {t(`nbs_${label}`)}
-            </button>
+            </Button>
           )
         )}
       </div>

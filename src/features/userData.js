@@ -1,13 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 
-const beToFe = (
-  str // change from underscore_case to camelCase
-) =>
-  str
-    .split("_")
-    .reduce((acc, val, i) => (i === 0 ? val : acc + val.charAt(0).toUpperCase() + val.slice(1)));
-
 export const userDataSlice = createSlice({
   name: "userData",
   initialState: {},
@@ -28,9 +21,12 @@ export const userDataSlice = createSlice({
         state.user.profile[key] = action.payload[key];
       });
     },
+    updateSearchState: (state, action) => {
+      state.user.isSearching = action.payload;
+    },
   },
 });
 
-export const { initialise, updateProfile } = userDataSlice.actions;
+export const { initialise, updateProfile, updateSearchState } = userDataSlice.actions;
 
 export default userDataSlice.reducer;
