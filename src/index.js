@@ -11,8 +11,8 @@ if (GLOB.DEVELOPMENT) {
   import("./loginSimulator.js").then((simulator) => {
     simulator.simulatedAutoLogin().then((data) => {
       const initData = data?.data;
-      // const apiTranslations = JSON.parse(data.api_translations);
-      // updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
+      const apiTranslations = data.api_translations;
+      updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
 
       const container = document.getElementById("root");
       const root = createRoot(container);
