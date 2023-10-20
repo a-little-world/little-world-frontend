@@ -136,7 +136,6 @@ input:not([type="radio"]:checked) + label:hover,
 a:not(.selected):hover {
   filter: brightness(120%) contrast(120%);
   cursor: pointer;
-  box-shadow: 0 0 10px 3px rgb(0 0 0 / 11%), 0 0 8px 6px rgb(255 255 255 / 15%);
 }
 
 input:checked + label {
@@ -194,7 +193,7 @@ a:not(.selected):active {
 label,
 button,
 a {
-  transition: transform 0.1s ease !important;
+  transition: transform 0.1s ease;
 }
 
 @media (width < 1024px) {

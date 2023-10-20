@@ -102,7 +102,7 @@ function Main() {
 
   const user = useSelector((state) => state.userData.user);
   const matches = useSelector((state) => state.userData.matches);
-  const dashboardVisibleMatches = [...matches.confirmed.items, ...matches.proposed.items]
+  const dashboardVisibleMatches = [...matches.support.items, ...matches.confirmed.items]
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
@@ -135,6 +135,9 @@ function Main() {
   // Manage the top navbar & extrac case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
   const [topSelection, setTopSelection] = useState(null);
+  const selfProfile = user.id === userPk || typeof userPk === "undefined";
+  const selectedProfile = dashboardVisibleMatches.find((match) => match.partner.id === userPk)?.partner;
+  
   useEffect(() => {
     if (use === "main") {
       setTopSelection("conversation_partners");
@@ -214,7 +217,7 @@ function Main() {
         )}
         {use === "chat" && initChatComponent(false)}
         {use === "notifications" && <Notifications />}
-        {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} isSelf={true} profile={user.profile} userPk={user.id}/>}
+        {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} isSelf={selfProfile} profile={selfProfile ? user.profile : selectedProfile} userPk={selfProfile ? user.id : userPk}/>}
         {use === "help" && <Help selection={topSelection} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>

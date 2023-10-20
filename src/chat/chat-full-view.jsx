@@ -65,24 +65,28 @@ const defaultArcivedChatAvatar = {
 const addMatchesInfo = (dialogList, matchesInfo) => {
   if (matchesInfo) {
     const result = dialogList.map((dialog) => {
-      const matchInfo = matchesInfo.filter(({ userPk }) => userPk === dialog.alt)[0];
+      console.log("MATCHINFO", matchesInfo);
+      const matchInfo = matchesInfo.filter(({ partner }) => partner.id === dialog.alt)[0];
+      console.log("FOUND INFO", matchInfo)
       if (matchInfo === undefined) {
         return Object.assign(dialog, {
           avatar: defaultArcivedChatAvatar,
-          title: "Old Chat ( not matched anymore)",
+          title: "Could not retrieve user info",
         });
       }
 
       /* we have to modify the original dialog object and not create a new
        * one with object speader so that the object prototype is not altered
        */
-      let avatarImgOrDefault = matchInfo.usesAvatar ? matchInfo.avatarCfg : matchInfo.imgSrc;
-      if (matchInfo.imgSrc === null && Object.keys(matchInfo.avatarCfg).length === 0) {
+      const matchProfile = matchInfo.partner;
+      const usesAvatar = matchProfile.image_type === "avatar"
+      let avatarImgOrDefault = usesAvatar ? matchProfile.avatar_config : matchProfile.image;
+      if (matchProfile.image === null && Object.keys(matchProfile.avatar_config).length === 0) {
         avatarImgOrDefault = defaultArcivedChatAvatar;
       }
       return Object.assign(dialog, {
         avatar: avatarImgOrDefault,
-        title: `${matchInfo.firstName} ${matchInfo.lastName}`,
+        title: `${matchProfile.first_name}`,
       });
     });
     return result;
@@ -178,6 +182,7 @@ class Chat extends Component {
       }
       if (this.props.userPkMappingCallback !== undefined) {
         this.props.userPkMappingCallback(tmpMatchIdMap);
+        console.log("SENDING MAPPING", tmpMatchIdMap)
       }
       this.setState({ userMatchPkMap: tmpMatchIdMap });
       if (r.tag === 0) {
@@ -513,9 +518,10 @@ class Chat extends Component {
                   ...msg,
                   text: (
                     <div className="styled-message-box" dangerouslySetInnerHTML={{__html: sanitizeHtml(msg.text, {
-                      allowedTags: ['b', 'i', 'em', 'strong', 'a'],
+                      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'button'],
                       allowedAttributes: {
-                        a: ['href', 'target']
+                        a: ['href', 'target'],
+                        button: ['data-cal-link', 'data-cal-config']
                       }
                     })}}>
                     </div>
