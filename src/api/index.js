@@ -1,8 +1,7 @@
 import Cookies from "js-cookie";
 
 import { USER_FIELDS } from "../constants";
-import { BACKEND_URL, PRODUCTION } from "../ENVIRONMENT";
-import { simulatedAutoLogin } from "../loginSimulator";
+import { BACKEND_URL } from "../ENVIRONMENT";
 
 export const mutateUserData = async (formData, onSucess, onFailure) => {
   try {
@@ -92,5 +91,58 @@ export const partiallyConfirmMatch = ({ acceptDeny, userHash }) =>
     body: JSON.stringify({
       unconfirmed_match_hash: userHash,
       confirm: acceptDeny,
+    }),
+  });
+
+export const login = ({ email, password }) =>
+  fetch(`${BACKEND_URL}/api/user/login/`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+      "X-UseTagsOnly": "True",
+    },
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      password,
+    }),
+  });
+
+export const signUp = ({ email, birthYear, password, password2, firstName, secondName }) =>
+  fetch(`${BACKEND_URL}/api/register/`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+      "X-UseTagsOnly": "True",
+    },
+    method: "POST",
+    body: JSON.stringify({
+      email,
+      password1: password,
+      password2,
+      first_name: firstName,
+      second_name: secondName,
+      birth_year: birthYear,
+    }),
+  });
+
+export const requestPasswordReset = ({ email }) =>
+  fetch(`${BACKEND_URL}/api/resetpw/`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    method: "POST",
+    body: JSON.stringify({
+      email,
+    }),
+  });
+
+export const resetPassword = ({ password, token }) =>
+  fetch(`${BACKEND_URL}/api/resetpw/confirm/`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    method: "POST",
+    body: JSON.stringify({
+      password,
+      token,
     }),
   });

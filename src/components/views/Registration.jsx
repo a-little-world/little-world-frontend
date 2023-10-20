@@ -2,28 +2,35 @@ import {
   Button,
   ButtonAppearance,
   ButtonVariations,
+  Checkbox,
+  Label,
+  Text,
   TextInput,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
 
+import { signUp } from "../../api";
 import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
-import { StyledCard, StyledForm, SubmitError, Title } from "./Registration.styles";
-
-const SIGN_UP = "sign-up";
-const LOGIN = "login";
+import {
+  NameContainer,
+  NameInputs,
+  StyledCard,
+  StyledForm,
+  SubmitError,
+  Title,
+} from "./Registration.styles";
 
 const Registration = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const { pathname } = useLocation();
   const type = pathname.slice(1);
-  const isSignUp = type === SIGN_UP;
-  const isLogin = type === LOGIN;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -56,9 +63,19 @@ const Registration = () => {
   };
 
   const onFormSubmit = async (data) => {
-    console.log({ data });
+    setIsSubmitting(true);
+
+    signUp(data)
+      .then((res) => {
+        const userHash = "";
+        setIsSubmitting(false);
+        navigate("/app");
+      })
+      .error((error) => {
+        onError(error);
+        setIsSubmitting(false);
+      });
   };
-  console.log({ theme });
 
   return (
     <StyledCard>
@@ -67,6 +84,27 @@ const Registration = () => {
         {t("registration.title")}
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
+        <NameContainer>
+          <Label bold htmlFor="name" toolTipText={t("registration.name_tooltip")}>
+            {t("registration.name_label")}
+          </Label>
+          <NameInputs>
+            <TextInput
+              {...register("firstName", { required: t("errorMsg.required") })}
+              id="firstName"
+              error={errors?.email?.message}
+              placeholder={t("registration.first_name_placeholder")}
+              type="text"
+            />
+            <TextInput
+              {...register("secondName", { required: t("errorMsg.required") })}
+              id="secondName"
+              error={errors?.email?.message}
+              placeholder={t("registration.second_name_placeholder")}
+              type="text"
+            />
+          </NameInputs>
+        </NameContainer>
         <TextInput
           {...register("email", { required: t("errorMsg.required") })}
           id="email"
@@ -83,37 +121,41 @@ const Registration = () => {
           placeholder={t("registration.password_placeholder")}
           type="password"
         />
-        {isSignUp && (
-          <TextInput
-            {...register("confirmPassword", {
-              required: t("errorMsg.required"),
-              passwordsMatch: (v) => getValues().password === v || t("confirmPasswordError"),
-            })}
-            label={t("registration.confirm_password_label")}
-            id="confirmPassword"
-            error={errors?.confirmPassword?.message}
-            placeholder={t("registration.confirm_password_placeholder")}
-            type="password"
-          />
-        )}
-        {isLogin && (
-          <Button
-            variation={ButtonVariations.Inline}
-            onClick={() => navigate("/forgot-password")}
-            color={theme.color.text.link}
-          >
-            {t(`${type}.forgotPassword`)}
-          </Button>
-        )}
+        <TextInput
+          {...register("confirmPassword", {
+            required: t("errorMsg.required"),
+            passwordsMatch: (v) => getValues().password === v || t("confirmPasswordError"),
+          })}
+          label={t("registration.confirm_password_label")}
+          id="confirmPassword"
+          error={errors?.confirmPassword?.message}
+          placeholder={t("registration.confirm_password_placeholder")}
+          type="password"
+        />
+        <TextInput
+          {...register("birthYear", { required: t("errorMsg.required") })}
+          label={t("registration.birth_year_label")}
+          id="birthYear"
+          error={errors?.email?.message}
+          placeholder={t("registration.birth_year_placeholder")}
+          type="number"
+          min={1900}
+          max={2007}
+        />
+        <Checkbox
+          {...register("terms", { required: t("errorMsg.required") })}
+          label={t("registration.terms_label")}
+        />
+        <Text bold>{t("registration.privacy_policy")}</Text>
         <SubmitError $visible={true || errors?.root?.serverError}>
           {errors?.root?.serverError?.message} Your Dad has issues bruv
         </SubmitError>
-        <Button type="submit" disabled={false} loading={false}>
+        <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
           {t(`${type}.submit-btn`)}
         </Button>
         <Button
           variation={ButtonVariations.Inline}
-          onClick={() => navigate(isLogin ? SIGN_UP : LOGIN)}
+          onClick={() => navigate("/login")}
           color={theme.color.text.link}
         >
           {t(`${type}.changeLocation.cta`)}

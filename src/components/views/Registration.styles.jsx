@@ -37,3 +37,18 @@ export const Title = styled(Text)`
   width: 100%;
   margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
+
+export const NameContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+export const NameInputs = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;

@@ -1,6 +1,6 @@
 import { GlobalStyles } from "@a-little-world/little-world-design-system";
 import React from "react";
-import { createBrowserRouter, Outlet } from "react-router-dom";
+import { createBrowserRouter, Outlet, redirect } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
 import ActiveCall from "./call";
@@ -22,6 +22,14 @@ const Root = () => {
       <Outlet />
     </ThemeProvider>
   );
+};
+
+const registrationLoader = async () => {
+  const user = await null; // getUser();
+  if (user) {
+    return redirect("/app");
+  }
+  return null;
 };
 
 const router = createBrowserRouter(
@@ -66,27 +74,30 @@ const router = createBrowserRouter(
           path: "login",
           element: <Registration />,
           errorElement: <RouterError />,
+          loader: registrationLoader,
         },
         {
           path: "sign-up",
           element: <Registration />,
           errorElement: <RouterError />,
+          loader: registrationLoader,
         },
         {
           path: "forgot-password",
           element: <ForgotPassword />,
           errorElement: <RouterError />,
+          loader: registrationLoader,
         },
         {
           path: "reset-password",
           element: <ResetPassword />,
           errorElement: <RouterError />,
+          loader: registrationLoader,
         },
         {
           path: "user-form",
           element: <Layout />,
           errorElement: <RouterError />,
-          loader: userFormLoader,
           children: [
             {
               path: "",
