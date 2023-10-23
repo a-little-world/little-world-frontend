@@ -1,25 +1,26 @@
 import {
   Button,
-  ButtonAppearance,
+  ButtonSizes,
   ButtonVariations,
+  Text,
   TextInput,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
 
 import { login } from "../../api";
+import { MessageTypes } from "../atoms/FormMessage";
 import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
-import { StyledCard, StyledForm, SubmitError, Title } from "./Registration.styles";
+import { registerInput } from "./SignUp";
+import { ChangeLocation, StyledCard, StyledForm, Title } from "./SignUp.styles";
 
 const Login = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { pathname } = useLocation();
-  const type = pathname.slice(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -37,7 +38,6 @@ const Login = () => {
   }, [setFocus]);
 
   const onError = (e) => {
-    console.log({ e });
     if (e?.message) {
       setError(
         e.cause ?? "root.serverError",
@@ -59,7 +59,7 @@ const Login = () => {
       .then((res) => {
         const userHash = "";
         setIsSubmitting(false);
-        navigate("/app");
+        navigate("/");
       })
       .error((error) => {
         onError(error);
@@ -75,7 +75,11 @@ const Login = () => {
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
-          {...register("email", { required: t("errorMsg.required") })}
+          {...registerInput({
+            register,
+            name: "email",
+            options: { required: t("errorMsg.required") },
+          })}
           id="email"
           label={t("login.email_label")}
           error={errors?.email?.message}
@@ -83,7 +87,11 @@ const Login = () => {
           type="email"
         />
         <TextInput
-          {...register("password", { required: t("errorMsg.required") })}
+          {...registerInput({
+            register,
+            name: "password",
+            options: { required: t("errorMsg.required") },
+          })}
           id="password"
           error={errors?.password?.message}
           label={t("login.password_label")}
@@ -96,21 +104,23 @@ const Login = () => {
           onClick={() => navigate("/forgot-password")}
           color={theme.color.text.link}
         >
-          {t(`${type}.forgotPassword`)}
+          {t("login.forgot_password")}
         </Button>
-        <SubmitError $visible={true || errors?.root?.serverError}>
-          {errors?.root?.serverError?.message} Your Dad has issues bruv
-        </SubmitError>
-        <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-          {t(`${type}.submit-btn`)}
-        </Button>
+        <FormMessage $visible={errors?.root?.serverError} $type={MessageTypes.Error}>
+          {errors?.root?.serverError?.message}
+        </FormMessage>
         <Button
-          variation={ButtonVariations.Inline}
-          onClick={() => navigate("/sign-up")}
-          color={theme.color.text.link}
+          type="submit"
+          disabled={isSubmitting}
+          loading={isSubmitting}
+          size={ButtonSizes.Stretch}
         >
-          {t(`${type}.changeLocation.cta`)}
+          {t("login.submit_btn")}
         </Button>
+        <ChangeLocation>
+          <Text>{t("login.or")}</Text>
+          <Text>{t("login.change_location_cta")}</Text>
+        </ChangeLocation>
       </StyledForm>
     </StyledCard>
   );

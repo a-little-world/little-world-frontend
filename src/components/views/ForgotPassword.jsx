@@ -1,32 +1,38 @@
 import {
   Button,
   ButtonAppearance,
-  ButtonVariations,
+  Text,
   TextInput,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
+import { requestPasswordReset } from "../../api";
+import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
-import { StyledCard, StyledForm, SubmitError, Title } from "./Registration.styles";
-
-const SIGN_UP = "sign-up";
-const LOGIN = "login";
+import { registerInput } from "./SignUp";
+import { StyledCard, StyledForm, Title } from "./SignUp.styles";
 
 const Buttons = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+`;
+
+export const ForgotPasswordDescription = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
 
 const ForgotPassword = () => {
   const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requestSuccessful, setRequestSuccessful] = useState(true);
   const theme = useTheme();
-  const { pathname } = useLocation();
 
   const {
     register,
@@ -43,7 +49,6 @@ const ForgotPassword = () => {
   }, [setFocus]);
 
   const onError = (e) => {
-    console.log({ e });
     if (e?.message) {
       setError(
         e.cause ?? "root.serverError",
@@ -59,38 +64,51 @@ const ForgotPassword = () => {
   };
 
   const onFormSubmit = async (data) => {
-    console.log({ data });
+    setIsSubmitting(true);
+
+    requestPasswordReset(data)
+      .then(() => setRequestSuccessful(true))
+      .catch(onError);
   };
-  console.log({ theme });
 
   return (
     <StyledCard>
       <LanguageSelector />
       <Title tag="h2" type={TextTypes.Heading2}>
-        {t("ForgotPassword.title")}
+        {t("forgot_password.title")}
       </Title>
+      <ForgotPasswordDescription>{t("forgot_password.description")}</ForgotPasswordDescription>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
-          {...register("email", { required: t("errorMsg.required") })}
+          {...registerInput({
+            register,
+            name: "email",
+            options: { required: t("errorMsg.required") },
+          })}
           id="email"
-          label={t("ForgotPassword.email_label")}
+          label={t("forgot_password.email_label")}
           error={errors?.email?.message}
-          placeholder={t("ForgotPassword.email_placeholder")}
+          placeholder={t("forgot_password.email_placeholder")}
           type="email"
         />
-        <SubmitError $visible={true || errors?.root?.serverError}>
-          {errors?.root?.serverError?.message} Your Dad has issues bruv
-        </SubmitError>
+        <FormMessage
+          $visible={requestSuccessful || errors?.root?.serverError}
+          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+        >
+          {requestSuccessful
+            ? t("forgot_password.success_message")
+            : errors?.root?.serverError?.message}
+        </FormMessage>
         <Buttons>
           <Button
             appearance={ButtonAppearance.Secondary}
-            onClick={() => navigate(LOGIN)}
+            onClick={() => navigate("/login")}
             color={theme.color.text.link}
           >
-            {t("forgot_password.changeLocation.cta")}
+            {t("forgot_password.cancel_btn")}
           </Button>
-          <Button type="submit" disabled={false} loading={false}>
-            {t("forgot_password.submit-btn")}
+          <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
+            {t("forgot_password.submit_btn")}
           </Button>
         </Buttons>
       </StyledForm>

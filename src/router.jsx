@@ -1,4 +1,5 @@
 import { GlobalStyles } from "@a-little-world/little-world-design-system";
+import Cookies from "js-cookie";
 import React from "react";
 import { createBrowserRouter, Outlet, redirect } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
@@ -9,8 +10,9 @@ import Form from "./components/blocks/Form/Form";
 import Layout from "./components/blocks/Layout/Layout";
 import Welcome from "./components/blocks/Welcome/Welcome";
 import ForgotPassword from "./components/views/ForgotPassword";
-import Registration from "./components/views/Registration";
+import Login from "./components/views/Login";
 import ResetPassword from "./components/views/ResetPassword";
+import SignUp from "./components/views/SignUp";
 import { BACKEND_PATH } from "./ENVIRONMENT";
 import Main from "./main";
 import theme from "./theme";
@@ -24,11 +26,12 @@ const Root = () => {
   );
 };
 
-const registrationLoader = async () => {
-  const user = await null; // getUser();
-  if (user) {
-    return redirect("/app");
-  }
+const accountLoader = async () => {
+  // const sessionCookie = Cookies.get("lol");
+  // Cookies.console.log("ACCOUNT LOADER", { sessionCookie });
+  // if (sessionCookie) {
+  //   return redirect("/");
+  // }
   return null;
 };
 
@@ -72,27 +75,27 @@ const router = createBrowserRouter(
         },
         {
           path: "login",
-          element: <Registration />,
+          element: <Login />,
           errorElement: <RouterError />,
-          loader: registrationLoader,
+          loader: accountLoader,
         },
         {
           path: "sign-up",
-          element: <Registration />,
+          element: <SignUp />,
           errorElement: <RouterError />,
-          loader: registrationLoader,
+          loader: accountLoader,
         },
         {
           path: "forgot-password",
           element: <ForgotPassword />,
           errorElement: <RouterError />,
-          loader: registrationLoader,
+          loader: accountLoader,
         },
         {
           path: "reset-password",
           element: <ResetPassword />,
           errorElement: <RouterError />,
-          loader: registrationLoader,
+          loader: accountLoader,
         },
         {
           path: "user-form",

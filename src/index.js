@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 
 import App from "./App";
@@ -20,8 +19,7 @@ if (GLOB.DEVELOPMENT) {
       root.render(
         <React.StrictMode>
           <App data={initData} />
-        </React.StrictMode>,
-        document.getElementById("root")
+        </React.StrictMode>
       );
 
       reportWebVitals();

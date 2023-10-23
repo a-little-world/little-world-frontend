@@ -1,33 +1,23 @@
 import {
   Button,
   ButtonAppearance,
-  ButtonVariations,
   TextInput,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router-dom";
-import styled, { useTheme } from "styled-components";
+import { useNavigate } from "react-router-dom";
 
+import { resetPassword } from "../../api";
+import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
-import { StyledCard, StyledForm, SubmitError, Title } from "./Registration.styles";
-
-const SIGN_UP = "sign-up";
-const LOGIN = "login";
-
-const Buttons = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
+import { StyledCard, StyledForm, Title } from "./SignUp.styles";
 
 const ResetPassword = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const { pathname } = useLocation();
-  const type = pathname.slice(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requestSuccessful, setRequestSuccessful] = useState(false);
 
   const {
     register,
@@ -44,7 +34,6 @@ const ResetPassword = () => {
   }, [setFocus]);
 
   const onError = (e) => {
-    console.log({ e });
     if (e?.message) {
       setError(
         e.cause ?? "root.serverError",
@@ -60,31 +49,64 @@ const ResetPassword = () => {
   };
 
   const onFormSubmit = async (data) => {
-    console.log({ data });
+    setIsSubmitting(true);
+
+    resetPassword(data)
+      .then(() => setRequestSuccessful(true))
+      .catch(onError);
   };
-  console.log({ theme });
 
   return (
     <StyledCard>
       <LanguageSelector />
       <Title tag="h2" type={TextTypes.Heading2}>
-        {t("ResetPassword.title")}
+        {t("reset_password.title")}
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
-          {...register("email", { required: t("errorMsg.required") })}
-          id="email"
-          label={t("ResetPassword.email_label")}
-          error={errors?.email?.message}
-          placeholder={t("ResetPassword.email_placeholder")}
-          type="email"
+          {...registerInput({
+            register,
+            name: "password",
+            options: { required: t("errorMsg.required") },
+          })}
+          id="password"
+          error={errors?.password?.message}
+          label={t("reset_password.password_label")}
+          placeholder={t("reset_password.password_placeholder")}
+          type="password"
         />
-        <SubmitError $visible={true || errors?.root?.serverError}>
-          {errors?.root?.serverError?.message} Your Dad has issues bruv
-        </SubmitError>
+        <TextInput
+          {...registerInput({
+            register,
+            name: "confirmPassword",
+            options: {
+              required: t("errorMsg.required"),
+              passwordsMatch: (v) => getValues().password === v || t("confirmPasswordError"),
+            },
+          })}
+          label={t("reset_password.confirm_password_label")}
+          id="confirmPassword"
+          error={errors?.confirmPassword?.message}
+          type="password"
+        />
+        <FormMessage
+          $visible={requestSuccessful || errors?.root?.serverError}
+          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+        >
+          {requestSuccessful
+            ? t("forgot_password.success_message")
+            : errors?.root?.serverError?.message}
+        </FormMessage>
 
-        <Button type="submit" disabled={false} loading={false}>
-          {t(`${type}.submit-btn`)}
+        <Button
+          appearance={ButtonAppearance.Secondary}
+          onClick={() => navigate("/login")}
+          // color={theme.color.text.link}
+        >
+          {t("reset_password.to_login")}
+        </Button>
+        <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
+          {t("reset_password.submit_btn")}
         </Button>
       </StyledForm>
     </StyledCard>
