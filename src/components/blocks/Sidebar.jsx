@@ -18,8 +18,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { BACKEND_PATH, BACKEND_URL } from "../../ENVIRONMENT";
-import Link from "../../path-prepend";
-import { FetchNotificationsAsync } from "../../features/userData";
 import MenuLink from "../atoms/MenuLink";
 
 const Unread = styled.div`

@@ -133,7 +133,6 @@ label {
 
 /* button hover */
 input:not([type="radio"]:checked) + label:hover,
-button:not(.selected):hover,
 a:not(.selected):hover {
   filter: brightness(120%) contrast(120%);
   cursor: pointer;

@@ -1,0 +1,119 @@
+import {
+  Button,
+  ButtonAppearance,
+  Text,
+  TextInput,
+  TextTypes,
+} from "@a-little-world/little-world-design-system";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import styled, { useTheme } from "styled-components";
+
+import { requestPasswordReset } from "../../api";
+import FormMessage, { MessageTypes } from "../atoms/FormMessage";
+import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
+import { registerInput } from "./SignUp";
+import { StyledCard, StyledForm, Title } from "./SignUp.styles";
+
+const Buttons = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const ForgotPasswordDescription = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
+`;
+
+const ForgotPassword = () => {
+  const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requestSuccessful, setRequestSuccessful] = useState(true);
+  const theme = useTheme();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    setFocus,
+  } = useForm({ shouldUnregister: true });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setFocus("email");
+  }, [setFocus]);
+
+  const onError = (e) => {
+    if (e?.message) {
+      setError(
+        e.cause ?? "root.serverError",
+        { type: "custom", message: t(e.message) },
+        { shouldFocus: true }
+      );
+    } else {
+      setError("root.serverError", {
+        type: "custom",
+        message: t(e?.message) || t("validation.generic_try_again"),
+      });
+    }
+  };
+
+  const onFormSubmit = async (data) => {
+    setIsSubmitting(true);
+
+    requestPasswordReset(data)
+      .then(() => setRequestSuccessful(true))
+      .catch(onError);
+  };
+
+  return (
+    <StyledCard>
+      <LanguageSelector />
+      <Title tag="h2" type={TextTypes.Heading2}>
+        {t("forgot_password.title")}
+      </Title>
+      <ForgotPasswordDescription>{t("forgot_password.description")}</ForgotPasswordDescription>
+      <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
+        <TextInput
+          {...registerInput({
+            register,
+            name: "email",
+            options: { required: t("errorMsg.required") },
+          })}
+          id="email"
+          label={t("forgot_password.email_label")}
+          error={errors?.email?.message}
+          placeholder={t("forgot_password.email_placeholder")}
+          type="email"
+        />
+        <FormMessage
+          $visible={requestSuccessful || errors?.root?.serverError}
+          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+        >
+          {requestSuccessful
+            ? t("forgot_password.success_message")
+            : errors?.root?.serverError?.message}
+        </FormMessage>
+        <Buttons>
+          <Button
+            appearance={ButtonAppearance.Secondary}
+            onClick={() => navigate("/login")}
+            color={theme.color.text.link}
+          >
+            {t("forgot_password.cancel_btn")}
+          </Button>
+          <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
+            {t("forgot_password.submit_btn")}
+          </Button>
+        </Buttons>
+      </StyledForm>
+    </StyledCard>
+  );
+};
+
+export default ForgotPassword;
