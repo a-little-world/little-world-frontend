@@ -1,7 +1,6 @@
 import { GlobalStyles } from "@a-little-world/little-world-design-system";
-import Cookies from "js-cookie";
 import React from "react";
-import { createBrowserRouter, Outlet, redirect } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
 import ActiveCall from "./call";
@@ -24,15 +23,6 @@ const Root = () => {
       <Outlet />
     </ThemeProvider>
   );
-};
-
-const accountLoader = async () => {
-  // const sessionCookie = Cookies.get("lol");
-  // Cookies.console.log("ACCOUNT LOADER", { sessionCookie });
-  // if (sessionCookie) {
-  //   return redirect("/");
-  // }
-  return null;
 };
 
 const router = createBrowserRouter(
@@ -77,25 +67,21 @@ const router = createBrowserRouter(
           path: "login",
           element: <Login />,
           errorElement: <RouterError />,
-          loader: accountLoader,
         },
         {
           path: "sign-up",
           element: <SignUp />,
           errorElement: <RouterError />,
-          loader: accountLoader,
         },
         {
           path: "forgot-password",
           element: <ForgotPassword />,
           errorElement: <RouterError />,
-          loader: accountLoader,
         },
         {
           path: "reset-password",
           element: <ResetPassword />,
           errorElement: <RouterError />,
-          loader: accountLoader,
         },
         {
           path: "user-form",
