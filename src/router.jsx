@@ -14,6 +14,21 @@ import ResetPassword from "./components/views/ResetPassword";
 import SignUp from "./components/views/SignUp";
 import { BACKEND_PATH } from "./ENVIRONMENT";
 import Main from "./main";
+import {
+  BASE_ROUTE,
+  CALL_ROUTE,
+  CHAT_ROUTE,
+  FORGOT_PASSWORD_ROUTE,
+  HELP_ROUTE,
+  LOGIN_ROUTE,
+  NOTIFICATIONS_ROUTE,
+  PARTNERS_ROUTE,
+  PROFILE_ROUTE,
+  RESET_PASSWORD_ROUTE,
+  SETTINGS_ROUTE,
+  SIGN_UP_ROUTE,
+  USER_FORM_ROUTE,
+} from "./routes";
 import theme from "./theme";
 
 const Root = () => {
@@ -28,7 +43,7 @@ const Root = () => {
 const router = createBrowserRouter(
   [
     {
-      path: "/",
+      path: BASE_ROUTE,
       element: <Root />,
       children: [
         {
@@ -36,55 +51,55 @@ const router = createBrowserRouter(
           element: <Main />,
         },
         {
-          path: "call",
+          path: CALL_ROUTE,
           element: <ActiveCall />,
         },
         {
-          path: "partners",
+          path: PARTNERS_ROUTE,
           element: <Main />,
         },
         {
-          path: "chat",
+          path: CHAT_ROUTE,
           element: <Main />,
         },
         {
-          path: "notifications",
+          path: NOTIFICATIONS_ROUTE,
           element: <Main />,
         },
         {
-          path: "profile",
+          path: PROFILE_ROUTE,
           element: <Main />,
         },
         {
-          path: "help",
+          path: HELP_ROUTE,
           element: <Main />,
         },
         {
-          path: "settings",
+          path: SETTINGS_ROUTE,
           element: <Main />,
         },
         {
-          path: "login",
+          path: LOGIN_ROUTE,
           element: <Login />,
           errorElement: <RouterError />,
         },
         {
-          path: "sign-up",
+          path: SIGN_UP_ROUTE,
           element: <SignUp />,
           errorElement: <RouterError />,
         },
         {
-          path: "forgot-password",
+          path: FORGOT_PASSWORD_ROUTE,
           element: <ForgotPassword />,
           errorElement: <RouterError />,
         },
         {
-          path: "reset-password",
+          path: RESET_PASSWORD_ROUTE,
           element: <ResetPassword />,
           errorElement: <RouterError />,
         },
         {
-          path: "user-form",
+          path: USER_FORM_ROUTE,
           element: <Layout />,
           errorElement: <RouterError />,
           children: [

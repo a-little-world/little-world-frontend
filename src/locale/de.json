@@ -524,7 +524,7 @@
   "login.submit_btn": "Anmelden",
   "login.forgot_password": "Passwort vergessen?",
   "login.or": "Oder",
-  "login.change_location_cta": "<a {\"href\": \"/login\"}>Neues Konto erstellen</a>",
+  "login.change_location_cta": "<a {\"href\": \"/sign-up\"}>Neues Konto erstellen</a>",
 
   "forgot_password.title": "Passwort vergessen?",
   "forgot_password.description": "Kein Grund zur Sorge! Gib einfach die E-Mail Adresse ein, mit der du dich registriert hast. Wir senden dir dann ein neues Passwort zu.",

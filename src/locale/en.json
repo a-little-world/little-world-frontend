@@ -522,7 +522,7 @@
   "login.submit_btn": "Sign In",
   "login.forgot_password": "Forgot password?",
   "login.or": "Or",
-  "login.change_location_cta": "<a {\"href\": \"/login\"}>Create new account</a>",
+  "login.change_location_cta": "<a {\"href\": \"/sign-up\"}>Create new account</a>",
 
   "forgot_password.title": "Forgotten Password?",
   "forgot_password.description": "No need to worry! Just enter the email address you registered with. We will then send an email in order to set a new password.",

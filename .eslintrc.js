@@ -29,6 +29,7 @@ module.exports = {
     "react/jsx-one-expression-per-line": [0],
     "react/prefer-stateless-function": [1],
     "react/static-property-placement": [1, "property assignment"],
+    "react/react-in-jsx-scope": "off",
     quotes: ["error", "double"],
     "react/prop-types": ["off"],
     "react/function-component-definition": "off",

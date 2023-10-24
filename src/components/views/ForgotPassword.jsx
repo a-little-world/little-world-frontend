@@ -5,13 +5,14 @@ import {
   TextInput,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
 import { requestPasswordReset } from "../../api";
+import { LOGIN_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
 import { registerInput } from "./SignUp";
@@ -102,7 +103,7 @@ const ForgotPassword = () => {
         <Buttons>
           <Button
             appearance={ButtonAppearance.Secondary}
-            onClick={() => navigate("/login")}
+            onClick={() => navigate(`/${LOGIN_ROUTE}`)}
             color={theme.color.text.link}
           >
             {t("forgot_password.cancel_btn")}

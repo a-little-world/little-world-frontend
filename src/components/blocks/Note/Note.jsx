@@ -1,27 +1,18 @@
-import styled from 'styled-components';
-import {
-  InfoIcon,
-  Text,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
+import { InfoIcon, Text, TextTypes } from "@a-little-world/little-world-design-system";
+import styled from "styled-components";
 
 const StyledNote = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 const Note = ({ children }) => {
   return (
     <StyledNote>
-      <InfoIcon
-        height={'16px'}
-        width={'16px'}
-        color={'#36A9E0'}
-        label="info icon"
-        labelId="info icon"
-      />
+      <InfoIcon height="16px" width="16px" color="#36A9E0" label="info icon" labelId="info icon" />
       <Text type={TextTypes.Body4} color="#A6A6A6">
         {children}
       </Text>

@@ -117,7 +117,11 @@ function ProfileBox({
           <PartnerMenuOption
             variation={ButtonVariations.Inline}
             onClick={() =>
-              openPartnerModal({ type: PARTNER_ACTION_REPORT, userPk, userName: profile.first_name })
+              openPartnerModal({
+                type: PARTNER_ACTION_REPORT,
+                userPk,
+                userName: profile.first_name,
+              })
             }
           >
             {t("cp_menu_report")}
@@ -125,7 +129,11 @@ function ProfileBox({
           <PartnerMenuOption
             variation={ButtonVariations.Inline}
             onClick={() =>
-              openPartnerModal({ type: PARTNER_ACTION_UNMATCH, userPk, userName: profile.first_name })
+              openPartnerModal({
+                type: PARTNER_ACTION_UNMATCH,
+                userPk,
+                userName: profile.first_name,
+              })
             }
           >
             {t("cp_menu_unmatch")}
@@ -147,11 +155,11 @@ function ProfileBox({
               label="visit profile"
               labelId="visit_profile"
             />
-            <Text type={TextTypes.Body4}>{t("cp_profile")}</Text>
+            {t("cp_profile")}
           </MenuLink>
           <MenuLink to="/chat" state={{ userPk }}>
             <MessageIcon gradient={Gradients.Orange} label="chat icon" labelId="chat_icon" />
-            <Text type={TextTypes.Body4}>{t("cp_message")}</Text>
+            {t("cp_message")}
           </MenuLink>
           <Button
             type="button"
@@ -439,14 +447,8 @@ function ProfileDetail({ profile }) {
   );
 }
 
-function Profile({ 
-    setCallSetupPartner, 
-    isSelf,
-    profile,
-    userPk
-  }) {
-  
-  console.log("Profile ", profile)
+function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
+  console.log("Profile ", profile);
 
   const { t } = useTranslation();
 

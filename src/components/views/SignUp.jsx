@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonSizes,
   Checkbox,
   Label,
@@ -15,7 +14,14 @@ import { useNavigate } from "react-router-dom";
 import { signUp } from "../../api";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
-import { NameContainer, NameInputs, StyledCard, StyledForm, Title } from "./SignUp.styles";
+import {
+  NameContainer,
+  NameInputs,
+  StyledCard,
+  StyledCta,
+  StyledForm,
+  Title,
+} from "./SignUp.styles";
 
 export const registerInput = ({ register, name, options }) => {
   const { ref, ...rest } = register(name, options);
@@ -92,7 +98,7 @@ const SignUp = () => {
                 options: { required: t("errorMsg.required") },
               })}
               id="firstName"
-              error={errors?.email?.message}
+              error={errors?.firstName?.message}
               placeholder={t("sign_up.first_name_placeholder")}
               type="text"
             />
@@ -103,7 +109,7 @@ const SignUp = () => {
                 options: { required: t("errorMsg.required") },
               })}
               id="lastName"
-              error={errors?.email?.message}
+              error={errors?.lastName?.message}
               placeholder={t("sign_up.last_name_placeholder")}
               type="text"
             />
@@ -156,7 +162,7 @@ const SignUp = () => {
           label={t("sign_up.birth_year_label")}
           labelTooltip={t("sign_up.birth_year_tooltip")}
           id="birthYear"
-          error={errors?.email?.message}
+          error={errors?.birthYear?.message}
           placeholder={t("sign_up.birth_year_placeholder")}
           type="number"
           min={1900}
@@ -168,20 +174,21 @@ const SignUp = () => {
             name: "terms",
             options: { required: t("errorMsg.required") },
           })}
+          error={errors?.terms?.message}
           label={t("sign_up.terms_label")}
         />
         <Text bold>{t("sign_up.privacy_policy")}</Text>
         <FormMessage $visible={errors?.root?.serverError} $type={MessageTypes.Error}>
           {errors?.root?.serverError?.message}
         </FormMessage>
-        <Button
+        <StyledCta
           type="submit"
           disabled={isSubmitting}
           loading={isSubmitting}
           size={ButtonSizes.Stretch}
         >
           {t("sign_up.submit_btn")}
-        </Button>
+        </StyledCta>
         <Text>{t("sign_up.change_location_cta")}</Text>
       </StyledForm>
     </StyledCard>

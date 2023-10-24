@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.small};
   flex-grow: 1;
 `;
 
@@ -39,4 +39,5 @@ export const SubmitError = styled.div`
 
 export const Title = styled(Text)`
   text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;

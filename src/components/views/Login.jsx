@@ -13,10 +13,10 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
 
 import { login } from "../../api";
-import { MessageTypes } from "../atoms/FormMessage";
+import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
 import { registerInput } from "./SignUp";
-import { ChangeLocation, StyledCard, StyledForm, Title } from "./SignUp.styles";
+import { ChangeLocation, StyledCard, StyledCta, StyledForm, Title } from "./SignUp.styles";
 
 const Login = () => {
   const { t } = useTranslation();
@@ -109,14 +109,14 @@ const Login = () => {
         <FormMessage $visible={errors?.root?.serverError} $type={MessageTypes.Error}>
           {errors?.root?.serverError?.message}
         </FormMessage>
-        <Button
+        <StyledCta
           type="submit"
           disabled={isSubmitting}
           loading={isSubmitting}
           size={ButtonSizes.Stretch}
         >
           {t("login.submit_btn")}
-        </Button>
+        </StyledCta>
         <ChangeLocation>
           <Text>{t("login.or")}</Text>
           <Text>{t("login.change_location_cta")}</Text>
