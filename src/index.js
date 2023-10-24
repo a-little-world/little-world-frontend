@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { createRoot } from "react-dom/client";
 
 import App from "./App";
@@ -11,8 +10,8 @@ if (GLOB.DEVELOPMENT) {
   import("./loginSimulator.js").then((simulator) => {
     simulator.simulatedAutoLogin().then((data) => {
       const initData = data?.data;
-      // const apiTranslations = JSON.parse(data.api_translations);
-      // updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
+      const apiTranslations = data.api_translations;
+      updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
 
       const container = document.getElementById("root");
       const root = createRoot(container);
@@ -20,8 +19,7 @@ if (GLOB.DEVELOPMENT) {
       root.render(
         <React.StrictMode>
           <App data={initData} />
-        </React.StrictMode>,
-        document.getElementById("root")
+        </React.StrictMode>
       );
 
       reportWebVitals();

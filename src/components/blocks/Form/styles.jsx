@@ -1,10 +1,10 @@
-import styled from 'styled-components';
-import { Card, Text } from '@a-little-world/little-world-design-system';
+import { Card, Text } from "@a-little-world/little-world-design-system";
+import styled from "styled-components";
 
 export const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.small};
   flex-grow: 1;
 `;
 
@@ -18,8 +18,7 @@ export const StyledCard = styled(Card)`
 export const ButtonsSection = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${({ $hasBackBtn }) =>
-    $hasBackBtn ? 'space-between' : 'flex-end'};
+  justify-content: ${({ $hasBackBtn }) => ($hasBackBtn ? "space-between" : "flex-end")};
   width: 100%;
   margin-top: auto;
 `;
@@ -31,7 +30,7 @@ export const SubmitError = styled.div`
   min-height: ${({ theme }) => theme.spacing.xlarge};
   padding: ${({ theme }) => theme.spacing.xxsmall};
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
-  transition: ${({ $visible }) => ($visible ? 'opacity 1s' : 'none')};
+  transition: ${({ $visible }) => ($visible ? "opacity 1s" : "none")};
   text-align: center;
 
   background: ${({ theme }) => theme.color.surface.error};
@@ -40,4 +39,5 @@ export const SubmitError = styled.div`
 
 export const Title = styled(Text)`
   text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;

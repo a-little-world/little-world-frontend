@@ -1,0 +1,122 @@
+import { GlobalStyles } from "@a-little-world/little-world-design-system";
+import React from "react";
+import { createBrowserRouter, Outlet } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
+
+import ActiveCall from "./call";
+import RouterError from "./components/blocks/ErrorView/ErrorView";
+import Form from "./components/blocks/Form/Form";
+import Layout from "./components/blocks/Layout/Layout";
+import Welcome from "./components/blocks/Welcome/Welcome";
+import ForgotPassword from "./components/views/ForgotPassword";
+import Login from "./components/views/Login";
+import ResetPassword from "./components/views/ResetPassword";
+import SignUp from "./components/views/SignUp";
+import { BACKEND_PATH } from "./ENVIRONMENT";
+import Main from "./main";
+import {
+  BASE_ROUTE,
+  CALL_ROUTE,
+  CHAT_ROUTE,
+  FORGOT_PASSWORD_ROUTE,
+  HELP_ROUTE,
+  LOGIN_ROUTE,
+  NOTIFICATIONS_ROUTE,
+  PARTNERS_ROUTE,
+  PROFILE_ROUTE,
+  RESET_PASSWORD_ROUTE,
+  SETTINGS_ROUTE,
+  SIGN_UP_ROUTE,
+  USER_FORM_ROUTE,
+} from "./routes";
+import theme from "./theme";
+
+const Root = () => {
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <Outlet />
+    </ThemeProvider>
+  );
+};
+
+const router = createBrowserRouter(
+  [
+    {
+      path: BASE_ROUTE,
+      element: <Root />,
+      children: [
+        {
+          path: "",
+          element: <Main />,
+        },
+        {
+          path: CALL_ROUTE,
+          element: <ActiveCall />,
+        },
+        {
+          path: PARTNERS_ROUTE,
+          element: <Main />,
+        },
+        {
+          path: CHAT_ROUTE,
+          element: <Main />,
+        },
+        {
+          path: NOTIFICATIONS_ROUTE,
+          element: <Main />,
+        },
+        {
+          path: PROFILE_ROUTE,
+          element: <Main />,
+        },
+        {
+          path: HELP_ROUTE,
+          element: <Main />,
+        },
+        {
+          path: SETTINGS_ROUTE,
+          element: <Main />,
+        },
+        {
+          path: LOGIN_ROUTE,
+          element: <Login />,
+          errorElement: <RouterError />,
+        },
+        {
+          path: SIGN_UP_ROUTE,
+          element: <SignUp />,
+          errorElement: <RouterError />,
+        },
+        {
+          path: FORGOT_PASSWORD_ROUTE,
+          element: <ForgotPassword />,
+          errorElement: <RouterError />,
+        },
+        {
+          path: RESET_PASSWORD_ROUTE,
+          element: <ResetPassword />,
+          errorElement: <RouterError />,
+        },
+        {
+          path: USER_FORM_ROUTE,
+          element: <Layout />,
+          errorElement: <RouterError />,
+          children: [
+            {
+              path: "",
+              element: <Welcome />,
+            },
+            {
+              path: ":slug",
+              element: <Form />,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  { basename: `${BACKEND_PATH}/` }
+);
+
+export default router;

@@ -1,5 +1,4 @@
 import { Button, ButtonVariations } from "@a-little-world/little-world-design-system";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 
@@ -14,8 +13,8 @@ const Selector = styled.div`
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
       position: absolute;
-      top: 24px;
-      right: ${theme.spacing.xxsmall};
+      top: ${theme.spacing.medium};
+      right: ${theme.spacing.medium};
     }`}
 `;
 

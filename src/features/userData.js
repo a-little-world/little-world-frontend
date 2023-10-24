@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
 
 export const userDataSlice = createSlice({
   name: "userData",
@@ -23,14 +22,10 @@ export const userDataSlice = createSlice({
     },
     updateSearchState: (state, action) => {
       state.user.isSearching = action.payload;
-    }
+    },
   },
 });
 
-export const {
-  initialise,
-  updateProfile,
-  updateSearchState
-} = userDataSlice.actions;
+export const { initialise, updateProfile, updateSearchState } = userDataSlice.actions;
 
 export default userDataSlice.reducer;
