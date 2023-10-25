@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useRef, useState } from "r
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import Chat from "./chat/chat-full-view";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
@@ -226,7 +227,7 @@ function SidebarQuestions() {
           <img alt="show left" />
         </button>
         <div className="categories">
-          {questionsTopics.map((topic) => (
+          {topicList?.map((topic) => (
             <button
               key={topic}
               type="button"
@@ -530,6 +531,7 @@ function CallScreen() {
   const [sideSelection, setSideSelection] = useState("chat");
   const selfPk = useSelector((state) => state.userData.self.userPk);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const { userPk, tracks } = location.state || {};
   const videoRef = useRef();
