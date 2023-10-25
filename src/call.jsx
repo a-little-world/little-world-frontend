@@ -2,7 +2,7 @@
 import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Chat from "./chat/chat-full-view";
@@ -36,7 +36,7 @@ function toggleFullscreen(t) {
   }
 }
 
-const SetSideContext = createContext(() => { });
+const SetSideContext = createContext(() => {});
 
 function Timer() {
   const [seconds, setSeconds] = useState(0);
@@ -138,8 +138,9 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
         <button
           key={name}
           type="button"
-          className={`show-${name}${selectedOverlay === name ? " selected" : ""}${disabled.includes(name) ? " disabled" : ""
-            }`}
+          className={`show-${name}${selectedOverlay === name ? " selected" : ""}${
+            disabled.includes(name) ? " disabled" : ""
+          }`}
           onClick={() => setOverlay(name)}
         >
           <img alt={`show-${name}`} />
@@ -151,7 +152,6 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
 
 function SidebarQuestions() {
   const { t } = useTranslation();
-
   const questionDataFromApi = useSelector((state) => state.userData?.questions?.data);
   const questionTitleDataFromApi = useSelector((state) => state.userData?.questions?.category);
   const archivedQuestionsFromApi = useSelector((state) => state.userData?.archivedQuestions);
@@ -226,13 +226,13 @@ function SidebarQuestions() {
           <img alt="show left" />
         </button>
         <div className="categories">
-          {topicList?.map((topic) => (
+          {questionsTopics.map((topic) => (
             <button
               key={topic}
               type="button"
               className={selectedTopic === topic ? `${topic}-radio selected` : `${topic}-radio`}
               value={topic}
-              onClick={() => { setTopic(topic) }}
+              onClick={() => setTopic(topic)}
             >
               {topic}
             </button>
@@ -531,7 +531,6 @@ function CallScreen() {
   const selfPk = useSelector((state) => state.userData.self.userPk);
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
   const { userPk, tracks } = location.state || {};
   const videoRef = useRef();
   const audioRef = useRef();
