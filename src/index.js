@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import * as Sentry from "@sentry/react";
 
 import App from "./App";
 import GLOB from "./ENVIRONMENT";
@@ -25,6 +26,20 @@ if (GLOB.DEVELOPMENT) {
   });
 } else {
   window.renderApp = ({ initData }, { apiTranslations }) => {
+    
+    Sentry.init({
+      dsn: "https://9726397c1f42ffb5d79cbcc31dfe3c8e@s.t1m.me/3",
+      integrations: [
+        new Sentry.BrowserTracing({
+          tracePropagationTargets: ["localhost", /^https:\/\/little-world\.com\/api/],
+        }),
+        new Sentry.Replay(),
+      ],
+      tracesSampleRate: 1.0,
+      replaysSessionSampleRate: 0.1,
+      replaysOnErrorSampleRate: 1.0,
+    });
+
     updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
     // If not in development just render ...
     ReactDOM.render(
