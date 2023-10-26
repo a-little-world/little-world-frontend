@@ -479,7 +479,7 @@ function Sidebar({ sideSelection }) {
 
 function CallScreen() {
   const [sideSelection, setSideSelection] = useState("chat");
-  const selfPk = useSelector((state) => state.userData.self.userPk);
+  const selfPk = useSelector((state) => state.userData.user.id)
   const navigate = useNavigate();
   const location = useLocation();
   const { userPk, tracks } = location.state || {};
