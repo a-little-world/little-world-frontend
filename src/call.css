@@ -168,6 +168,24 @@
   content: url("./images/arrow-right.svg");
 }
 
+.accept-question-icon {
+  content: url("./images/check.svg");
+}
+
+.right-scroll-icon {
+  content: url("./images/arrow-right.svg");
+}
+
+.left-scroll-icon {
+  content: url("./images/arrow-left.svg");
+}
+
+.unarchive-question-icon {
+  content: url("./images/unarchive_question.svg");
+  width: 28px;
+  height: 28px;
+}
+
 .questions-categories .categories {
   display: flex;
   overflow-x: hidden;
@@ -245,12 +263,6 @@
 
 .question-action .no img {
   content: url("./images/close.svg");
-}
-
-.question-action .unarchive img {
-  content: url("./images/unarchive_question.svg");
-  width: 28px;
-  height: 28px;
 }
 
 @media screen and (width < 1024px) {

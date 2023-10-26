@@ -23,6 +23,105 @@ import "./call.css";
 import { FetchQuestionsDataAsync, FetchUnArchivedQuestions } from "./features/userData";
 import { questionsDuringCall } from "./services/questionsDuringCall";
 
+import {
+  Button,
+  Card,
+} from "@a-little-world/little-world-design-system";
+import styled from "styled-components";
+
+const TopicButton = styled.button`
+  font-size: 1rem;
+  font-weight: normal;
+  min-width: fit-content;
+  padding: ${({ theme }) => theme.spacing.xsmall};
+  border-radius: 23px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  white-space: nowrap;
+  border: 2px solid #ef8a21;
+  margin: 0px ${({ theme }) => theme.spacing.xxxsmall};
+  box-sizing: border-box;
+  ${(props) =>
+    props.selected &&
+    `
+    background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+    color: white;
+  `}
+`;
+
+const SidebarCard = styled(Card)`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+   background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+
+`;
+
+const QuestionCard = styled.div`
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  border-radius: 18px;
+  margin-top: ${({ theme }) => theme.spacing.xsmall};
+  background: #f9fafb;
+  width: 100%;
+  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  ${(props) =>
+    props.selected &&
+    `
+    border-color: red;
+  `}
+`;
+
+const QuestionContentCard = styled(Card)`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  @media(min-width: 500px){
+  padding: 0px;
+}
+`;
+
+const QuestionButton = styled(Button)`
+  padding: 0px;
+  background: transparent;
+  color: black;
+  padding: ${({ theme }) => theme.spacing.xsmall};
+  height: fit-content;
+  font-size: 16px;
+  font-weight: normal;
+`;
+
+const ArchiveButton = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.xxxsmall};
+  padding: 0px ${({ theme }) => theme.spacing.xsmall};
+
+`;
+
+const QuestionCategories = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Categories = styled.div`
+  display: flex;
+  overflow-x: hidden;
+  padding: ${({ theme }) => theme.spacing.xxxsmall};
+`
+
+
+
 function toggleFullscreen(t) {
   const videoContainer = document.querySelector(".video-container");
   const fullScreenTextEl = document.querySelector("label[for=fullscreen-toggle] .text");
@@ -210,113 +309,109 @@ function SidebarQuestions() {
       }
     }
   }
+  const categoriesRef = useRef(null);
 
   const changeScroll = (direction) => {
-    const element = document.querySelector(".questions-categories .categories");
     const scrollVelocity = {
       right: 100,
       left: -100,
     };
-    element.scrollLeft += scrollVelocity[direction];
+    if (categoriesRef.current) {
+      categoriesRef.current.scrollLeft += scrollVelocity[direction];
+    }
   };
 
   return (
-    <div className="questions">
-      <div className="questions-categories">
+    <SidebarCard>
+      <QuestionCategories>
         <button type="button" className="questions-left" onClick={() => changeScroll("left")}>
-          <img alt="show left" />
+          <img className="left-scroll-icon" alt="show left" />
         </button>
-        <div className="categories">
+        <Categories ref={categoriesRef}>
           {topicList?.map((topic) => (
-            <button
+            <TopicButton
               key={topic}
               type="button"
-              className={selectedTopic === topic ? `${topic}-radio selected` : `${topic}-radio`}
+              selected={selectedTopic === topic}
               value={topic}
               onClick={() => setTopic(topic)}
             >
               {topic}
-            </button>
+            </TopicButton>
           ))}
 
-          <button
+          <TopicButton
             key='Archived'
             type="button"
-            className={selectedTopic === 'Archived' ? `Archived-radio selected` : `Archived-radio`}
+            selected={selectedTopic === 'Archived'}
             value='Archived'
             onClick={() => { setTopic('Archived') }}
           >
             {t("question_category_archived")}
-          </button>
+          </TopicButton>
 
-        </div>
+        </Categories>
         <button type="button" className="questions-right" onClick={() => changeScroll("right")}>
-          <img alt="show right" />
+          <img className="right-scroll-icon" alt="show right" />
         </button>
-      </div>
-      <div className="questions-content">
+      </QuestionCategories>
+      <QuestionContentCard>
         {
           unarchived
             ?.filter((question) => question.category_name[selfUserPreferedLang] === selectedTopic)
             ?.map(({ id, content }) => (
-              <div
+              <QuestionCard
                 key={id}
-                className={selectedQuestionId === id ? `question-${id} selected` : `question-${id}`}
+                selected={selectedQuestionId === id}
               >
-                <button
+                <QuestionButton
                   type="button"
-                  className={selectedQuestionId === id ? "selected" : ""}
+                  selected={selectedQuestionId === id}
                   onClick={() => setQuestionId(id)}
                 >
                   {content[selfUserPreferedLang]}
-                </button>
+                </QuestionButton>
                 {selectedQuestionId === id && (
-                  <div className="question-action">
+                  <ArchiveButton>
                     <button type="button" className="yes" onClick={() => archiveQuestion(id)}>
-                      <img alt="accept question" />
+                      <img className="accept-question-icon" alt="accept question" />
                     </button>
-                    {/* <button type="button" className="edit">
-                      <img alt="edit question" />
-                    </button>
-                    <button type="button" className="no">
-                      <img alt="reject question" />
-                    </button> */}
-                  </div>
+                  </ArchiveButton>
                 )}
-              </div>
+              </QuestionCard>
             ))}
 
         {
           selectedTopic == 'Archived' &&
           archived?.map(({ id, content }) => {
             return (
-              <div
+              <QuestionCard
                 key={id}
-                className={selectedQuestionId === id ? `question-${id} selected` : `question-${id}`}
+                selected={selectedQuestionId === id}
               >
-                <button
+                <QuestionButton
                   type="button"
-                  className={selectedQuestionId === id ? "selected" : ""}
+                  selected={selectedQuestionId === id}
                   onClick={() => setQuestionId(id)}
                 >
                   {content[selfUserPreferedLang]}
-                </button>
+                </QuestionButton>
 
                 {selectedQuestionId === id && (
-                  <div className="question-action">
+                  <ArchiveButton>
                     <button type="button" className="unarchive" onClick={() => unArchiveQuestion(id)}>
-                      <img alt="accept question" />
+                      <img className="unarchive-question-icon" alt="accept question" />
                     </button>
-                  </div>
+                  </ArchiveButton>
                 )}
-              </div>
+              </QuestionCard>
             )
           })
         }
 
 
-      </div>
-    </div>
+      </QuestionContentCard>
+    </SidebarCard>
   );
 }
 
