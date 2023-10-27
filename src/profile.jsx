@@ -11,7 +11,6 @@ import {
   Popover,
   ProfileIcon,
   Text,
-  TextTypes,
 } from "@a-little-world/little-world-design-system";
 import { PopoverSizes } from "@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover";
 import React, { useEffect, useRef, useState } from "react";

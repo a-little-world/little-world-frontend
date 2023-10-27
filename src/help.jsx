@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { filterMessagesForDialog } from "./chat/chat.lib";
+import Logo from "./components/atoms/Logo";
 import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import { setStatus } from "./features/userData";
 
@@ -77,10 +78,10 @@ function Contact() {
 
   const handleSubmit = () => {
     setFormState("pending");
-    var data = new FormData();
-    for (var i = 0; i < fileRef.current.files.length; ++i) {
-      let file = fileRef.current.files.item(i);
-      let name = file.name;
+    const data = new FormData();
+    for (let i = 0; i < fileRef.current.files.length; ++i) {
+      const file = fileRef.current.files.item(i);
+      const { name } = file;
 
       data.append("file", file, name);
     }
@@ -122,23 +123,13 @@ function Contact() {
   };
 
   if (formState === "pending") {
-    return (
-      <>
-        <h2>Sending you message</h2>
-      </>
-    );
-  } else if (formState === "submitted") {
-    return (
-      <>
-        <h2>Your message has been submitted, thanks for your feedback!</h2>
-      </>
-    );
-  } else if (formState === "error") {
-    return (
-      <>
-        <h2>There has been an error submitting your message, please try sending an email.</h2>
-      </>
-    );
+    return <h2>Sending you message</h2>;
+  }
+  if (formState === "submitted") {
+    return <h2>Your message has been submitted, thanks for your feedback!</h2>;
+  }
+  if (formState === "error") {
+    return <h2>There has been an error submitting your message, please try sending an email.</h2>;
   }
 
   return (
@@ -200,9 +191,7 @@ function Contact() {
 }
 
 function Help({ selection }) {
-  const adminUser = useSelector(
-    (state) => state.userData.matches.support.items[0]
-  );
+  const adminUser = useSelector((state) => state.userData.matches.support.items[0]);
   const navigate = useNavigate();
 
   return (
@@ -213,10 +202,7 @@ function Help({ selection }) {
       </div>
       <div className="help-support panel">
         <div className="topper">
-          <div className="logos">
-            <img className="logo-image" alt="" />
-            <img className="logo-text" alt="little world" />
-          </div>
+          <Logo />
           <div className="support-team">
             <h2>{t("help_support_header")}</h2>
             <div className="sub">{t("help_support_slogan")}</div>
@@ -247,10 +233,7 @@ function Help({ selection }) {
         <div className="contact-info">
           <div className="main">
             <div className="top">
-              <div className="logos-small">
-                <img className="logo-image" alt="" />
-                <img className="logo-text" alt="little world" />
-              </div>
+              <Logo size="small" stacked={false} />
               <div className="business-name">A Little World gUG</div>
             </div>
             <div className="bottom">

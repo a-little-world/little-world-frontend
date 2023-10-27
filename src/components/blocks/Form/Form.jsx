@@ -13,7 +13,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { mutateUserData } from "../../../api";
 import { ComponentTypes, getFormComponent } from "../../../userForm/formContent";
 import getFormPage from "../../../userForm/formPages";
-import LanguageSelector from "../LanguageSelector/LanguageSelector";
 import Note from "../Note/Note";
 import ProfilePic from "../ProfilePic/ProfilePic";
 import FormStep from "./FormStep";
@@ -74,7 +73,6 @@ const Form = () => {
 
   return (
     <StyledCard>
-      <LanguageSelector />
       <Title tag="h2" type={TextTypes.Heading2}>
         {t(title)}
       </Title>

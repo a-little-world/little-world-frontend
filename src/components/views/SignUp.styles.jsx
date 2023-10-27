@@ -12,7 +12,7 @@ export const StyledForm = styled.form`
 export const StyledCard = styled(Card)`
   position: relative;
   max-width: 500px;
-  margin: 0 auto;
+  flex: 1;
 `;
 
 export const StyledCta = styled(Button)`

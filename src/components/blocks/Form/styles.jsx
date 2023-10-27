@@ -10,9 +10,12 @@ export const StyledForm = styled.form`
 
 export const StyledCard = styled(Card)`
   position: relative;
-  max-width: 800px;
-  margin: 0 auto;
   min-height: 591px;
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.small}) {
+      max-width: 800px;
+    }`}
 `;
 
 export const ButtonsSection = styled.div`
