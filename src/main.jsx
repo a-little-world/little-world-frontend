@@ -25,20 +25,29 @@ import Notifications from "./notifications";
 import Profile from "./profile";
 import Settings from "./settings";
 import { removeActiveTracks } from "./twilio-helper";
+import { removeMatch, changeMatchCategory } from "./features/userData";
 
 import "./community-events.css";
 import "./main.css";
 
-function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, userData }) {
+function getMatchCardComponent({ showNewMatch, matchId, profile }) {
+  const usesAvatar = profile.image_type === "avatar";
   return showNewMatch ? (
     <NewMatchCard
-      name={userData.firstName}
-      imageType={userData.usesAvatar ? "avatar" : "image"}
-      image={userData.usesAvatar ? userData.avatarCfg : userData.imgSrc}
+      name={profile.first_name}
+      imageType={profile.image_type}
+      image={usesAvatar ? profile.avatar_config : profile.image}
       onExit={() => {
-        confirmMatch({ userHash: userData?.userPk })
-          .then(onConfirm)
-          .then(() => {})
+        confirmMatch({ userHash: profile.id })
+          .then((res) => {
+            if(res.ok){
+              dispatch(changeMatchCategory({
+                match: {id: matchId},
+                category: "unconfirmed",
+                newCategory: "confirmed",
+              }))
+            }
+          })
           .catch((error) => console.error(error));
       }}
     />
@@ -51,8 +60,12 @@ function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, user
         partiallyConfirmMatch({ acceptDeny: true, userHash: userData?.hash }).then((res) => {
           if (res.ok) {
             res.json().then((data) => {
-              // The user_data hash incase of a 'partial confirm will be the matching hash!
-              onPartialConfirm(userData.hash, data.match);
+              // Change 'proposed' to 'unconfirmed' so it will render the 'new match' popup next
+              dispatch(changeMatchCategory({
+                match: {id: matchId},
+                category: "proposed",
+                newCategory: "unconfirmed",
+              }))
             });
           } else {
             // TODO: Add toast error explainer or some error message
@@ -62,14 +75,19 @@ function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, user
       onReject={() => {
         partiallyConfirmMatch({ acceptDeny: false, userHash: userData?.hash }).then((res) => {
           if (res.ok) {
-            res.json().then(() => {});
+            res.json().then(() => {
+              dispatch(removeMatch({ 
+                category: "proposed",
+                match: { id: matchId } 
+              }))
+            });
           } else {
             // TODO: Add toast error explainer or some error message
           }
         });
       }}
       onExit={() => {
-        onPartialConfirm();
+        // TODO IMPORTANT: Now it's impossible to 'ingnore' confirming a match
       }}
     />
   );
@@ -150,35 +168,6 @@ function Main() {
     }
   }, [location, use]);
 
-  // Passed to chat component to update which users are online
-  const updateOnlineState = (userOnlinePk, status) => {
-    matchesOnlineStates[userOnlinePk] = status;
-    setMatchesOnlineStates({ ...matchesOnlineStates });
-  };
-
-  const adminActionCallback = (action) => {
-    // TODO: partially broken!! ( callback doesn't come from the same admin user anymore necessarily )
-    // This will later be moved to a whole new websocket
-    // The new socket should then only receive messages from the backend
-    // Current implementation allows all matches to send 'admin actions'
-    // Although they are filtered this could with some modifications allow other users to send these callbacks to their matches.
-    // This is not desirable ( see ISSUE #112 )
-    if (action.includes("reload")) {
-      // Backend says frontend should reload the page
-      navigate(BACKEND_PATH);
-      navigate(0);
-    } else if (action.includes("entered_call")) {
-      const params = action.substring(action.indexOf("(") + 1, action.indexOf(")")).split(":");
-
-      // Backend says a partner has entered the call
-      setShowIncoming(true);
-      setIncomingUserPk(params[1]);
-    } else if (action.includes("exited_call")) {
-      // Backend says a partner has exited the call
-      setShowIncoming(false);
-    }
-  };
-
   const initChatComponent = (backgroundMode) => {
     return (
       <Chat
@@ -190,12 +179,10 @@ function Main() {
           // TODO
         }}
         userPkMappingCallback={setUserPkToChatIdMap}
-        updateMatchesOnlineStates={updateOnlineState}
-        adminActionCallback={adminActionCallback}
       />
     );
   };
-
+  
   return (
     <AppLayout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
       <div className="content-area">
@@ -252,19 +239,19 @@ function Main() {
         {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
       </div>
       <Modal
-        open={matches.proposed?.length || matches.unconfirmed?.length}
+        open={matches.proposed.items.length || matches.unconfirmed.items.length}
         locked={false}
         onClose={() => {}}
       >
-        {(matches.proposed?.length || matches.unconfirmed?.length) &&
+        {(matches.proposed.items.length || matches.unconfirmed.items.length) &&
           getMatchCardComponent({
-            isVolunteer: user.userType === "volunteer",
-            onConfirm,
-            onPartialConfirm,
-            showNewMatch: Boolean(!preMatches?.length),
-            userData: matches.proposed?.length
-              ? matches.proposed.items[0]
-              : matches.unconfirmed.items[0],
+            showNewMatch: Boolean(!matches.proposed.items.length),
+            matchId: matches.proposed.items.length
+              ? matches.proposed.items[0].id
+              : matches.unconfirmed.items[0].id,
+            profile: matches.proposed.items.length
+              ? matches.proposed.items[0].partner
+              : matches.unconfirmed.items[0].partner,
           })}
       </Modal>
       {!(use === "chat") && <div className="disable-chat">{initChatComponent(true)}</div>}
