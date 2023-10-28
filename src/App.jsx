@@ -35,9 +35,10 @@ const WebsocketBridge = () => {
     if (lastMessage !== null) {
       setMessageHistory((prev) => prev.concat(lastMessage));
       const message = JSON.parse(lastMessage.data);
+      console.log("CORE SOCKET:", message);
       if (message.event === "reduction") {
         dispatch({
-          type: message.payload.action,
+          type: `userData/${message.payload.action}`,
           payload: message.payload.payload,
         });
       }
