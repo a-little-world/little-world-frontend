@@ -32,6 +32,8 @@ import "./main.css";
 
 function getMatchCardComponent({ showNewMatch, matchId, profile }) {
   const usesAvatar = profile.image_type === "avatar";
+  const dispatch = useDispatch();
+
   return showNewMatch ? (
     <NewMatchCard
       name={profile.first_name}
