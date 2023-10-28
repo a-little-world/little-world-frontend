@@ -55,11 +55,11 @@ function getMatchCardComponent({ showNewMatch, matchId, profile }) {
     />
   ) : (
     <ConfirmMatchCard
-      name={userData.first_name}
-      imageType={userData.image_type}
-      image={userData.avatar_image}
+      name={profile.first_name}
+      imageType={profile.image_type}
+      image={usesAvatar ? profile.avatar_config : profile.image}
       onConfirm={() => {
-        partiallyConfirmMatch({ acceptDeny: true, userHash: userData?.hash }).then((res) => {
+        partiallyConfirmMatch({ acceptDeny: true, matchId }).then((res) => {
           if (res.ok) {
             res.json().then((data) => {
               // Change 'proposed' to 'unconfirmed' so it will render the 'new match' popup next
@@ -75,7 +75,7 @@ function getMatchCardComponent({ showNewMatch, matchId, profile }) {
         });
       }}
       onReject={() => {
-        partiallyConfirmMatch({ acceptDeny: false, userHash: userData?.hash }).then((res) => {
+        partiallyConfirmMatch({ acceptDeny: false, matchId }).then((res) => {
           if (res.ok) {
             res.json().then(() => {
               dispatch(removeMatch({ 
