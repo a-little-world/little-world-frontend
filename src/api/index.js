@@ -79,7 +79,7 @@ export const confirmMatch = ({ userHash }) =>
     body: JSON.stringify({ matches: [userHash] }),
   });
 
-export const partiallyConfirmMatch = ({ acceptDeny, userHash }) =>
+export const partiallyConfirmMatch = ({ acceptDeny, matchId }) =>
   fetch(`${BACKEND_URL}/api/user/match/confirm_deny/`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
@@ -89,7 +89,7 @@ export const partiallyConfirmMatch = ({ acceptDeny, userHash }) =>
     },
     method: "POST",
     body: JSON.stringify({
-      unconfirmed_match_hash: userHash,
+      unconfirmed_match_hash: matchId,
       confirm: acceptDeny,
     }),
   });
