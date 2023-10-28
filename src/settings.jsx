@@ -194,7 +194,7 @@ function ModalBox({ label, valueIn, setEditing }) {
     setErrors([]); // clear existing errors
     const val = e.target.elements[0].value;
 
-    if (label === "displayLang") {
+    if (label === "display_language") {
       // TODO: we need to update the server info also; this only upadates UI and cookie
       const langCode = val;
       dispatch(updateProfile({ display_language: langCode }));
@@ -251,7 +251,7 @@ function ModalBox({ label, valueIn, setEditing }) {
         <section className="inputs">
           {label === "display_language" && (
             <label className="input-container">
-              {t("sg_personal_displayLang")}
+              {t("sg_personal_display_language")}
               <select name="lang-select" defaultValue={valueIn} ref={textInput}>
                 {Object.entries(displayLanguages).map(([code, lang]) => (
                   <option key={code} value={code}>
@@ -383,7 +383,7 @@ function Settings() {
                           navigate(0); /* Reload page */
                         }
                   }
-                  map={label === "displayLang" ? displayLanguages : false}
+                  map={label === "display_language" ? displayLanguages : false}
                 />
               );
             })}

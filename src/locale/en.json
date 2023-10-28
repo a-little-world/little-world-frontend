@@ -184,7 +184,7 @@
   "sg_personal_email_change_warning": "Please note that after changing your email address, you will receive a new verification email and will need to enter a new code.",
   "sg_personal_header": "personal",
   "sg_personal_profilePicture": "profile picture",
-  "sg_personal_displayLang": "display language",
+  "sg_personal_display_language": "display language",
   "sg_personal_first_name": "first name",
   "sg_personal_second_name": "last name",
   "sg_personal_email": "e-mail",

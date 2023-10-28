@@ -180,7 +180,7 @@
   "sg_personal_password_change_warning": "Bitte beachte, dass du dich nach der Änderung des Passworts erneut anmelden musst.",
   "sg_personal_email_change_warning": "Bitte beachte, dass du nach der Änderung der E-Mail-Adresse eine neue Bestätigungs-E-Mail erhältst und einen neuen Code eingeben musst.",
   "sg_personal_header": "persönliches",
-  "sg_personal_displayLang": "Anzeigesprache",
+  "sg_personal_display_language": "Anzeigesprache",
   "sg_personal_first_name": "Vorname",
   "sg_personal_second_name": "Nachname",
   "sg_personal_email": "E-Mail",
