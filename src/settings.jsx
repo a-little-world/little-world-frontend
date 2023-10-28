@@ -195,12 +195,11 @@ function ModalBox({ label, valueIn, setEditing }) {
     const val = e.target.elements[0].value;
 
     if (label === "display_language") {
-      // TODO: we need to update the server info also; this only upadates UI and cookie
       const langCode = val;
       dispatch(updateProfile({ display_language: langCode }));
       Cookies.set("frontendLang", langCode);
       i18n.changeLanguage(langCode);
-      setEditing(false);
+      submitItem(label, langCode).then(onResponseSuccess).catch(onResponseFailure);
     } else {
       setWaiting(true);
       if (label == "password") {
