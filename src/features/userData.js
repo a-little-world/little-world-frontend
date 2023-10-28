@@ -39,6 +39,15 @@ export const userDataSlice = createSlice({
       if(matchIndex !== -1)
         state.matches[category][matchIndex] = {...state.matches[category][matchIndex], ...rest};
     },
+    updateMatchProfile: (state, action) => {
+      console.log("REDUCER", action.payload)
+      const { partnerId, profile } = action.payload;
+      Object.keys(state.matches).forEach((category) => {
+        const matchIndex = state.matches[category].items.findIndex((m) => m.partner.id === partnerId);
+        if(matchIndex !== -1)
+          state.matches[category].items[matchIndex].partner = {...state.matches[category].items[matchIndex].partner, ...profile};
+      });
+    },
     changeMatchCategory: (state, action) => {
       const { category, match, newCategory } = action.payload;
       const matchToMove = state.matches[category].items.find((m) => m.id === match.id);
@@ -52,6 +61,7 @@ export const {
   initialise, 
   updateProfile, 
   updateSearchState,
+  updateMatchProfile,
   addMatch,
   updateMatch,
   removeMatch,
