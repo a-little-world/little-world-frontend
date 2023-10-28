@@ -23,13 +23,13 @@ import { useSelector } from "react-redux";
 
 import { USER_FIELDS } from "../../../constants";
 import theme from "../../../theme";
+import { CircleImage } from "../../atoms/ProfileImage";
 import AvatarEditor from "./AvatarEditor";
 import {
   AvatarEditorButton,
   AvatarInfo,
   AvatarSelection,
   CircleButton,
-  CircleImage,
   FileInput,
   ImageContainer,
   InteractiveArea,
@@ -116,7 +116,7 @@ const ProfilePic = ({ control, setValue }) => {
         name={USER_FIELDS.image}
         control={control}
         rules={{ required: imageType === IMAGE_TYPES.image && !uploadedImage }}
-        render={({ field: { onChange, onBlur, name, value, ref }, fieldState: { error } }) => (
+        render={({ field: { onChange, onBlur, name, ref }, fieldState: { error } }) => (
           <SelectionPanel
             onClick={() => onImageSelection(IMAGE_TYPES.image)}
             $selected={imageType === IMAGE_TYPES.image}
@@ -124,7 +124,7 @@ const ProfilePic = ({ control, setValue }) => {
           >
             <ImageContainer>
               {uploadedImage ? (
-                <CircleImage $image={uploadedImage}>
+                <CircleImage $image={uploadedImage} size="medium">
                   <TrashButton onClick={onImageDelete} variation="Icon" type="button">
                     <TrashIcon color="white" />
                   </TrashButton>

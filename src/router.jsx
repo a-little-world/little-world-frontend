@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import ActiveCall from "./call";
 import RouterError from "./components/blocks/ErrorView/ErrorView";
 import Form from "./components/blocks/Form/Form";
-import Layout from "./components/blocks/Layout/Layout";
+import FormLayout from "./components/blocks/Layout/FormLayout";
 import Welcome from "./components/blocks/Welcome/Welcome";
 import ForgotPassword from "./components/views/ForgotPassword";
 import Login from "./components/views/Login";
@@ -80,27 +80,43 @@ const router = createBrowserRouter(
         },
         {
           path: LOGIN_ROUTE,
-          element: <Login />,
+          element: (
+            <FormLayout>
+              <Login />
+            </FormLayout>
+          ),
           errorElement: <RouterError />,
         },
         {
           path: SIGN_UP_ROUTE,
-          element: <SignUp />,
+          element: (
+            <FormLayout>
+              <SignUp />
+            </FormLayout>
+          ),
           errorElement: <RouterError />,
         },
         {
           path: FORGOT_PASSWORD_ROUTE,
-          element: <ForgotPassword />,
+          element: (
+            <FormLayout>
+              <ForgotPassword />
+            </FormLayout>
+          ),
           errorElement: <RouterError />,
         },
         {
           path: RESET_PASSWORD_ROUTE,
-          element: <ResetPassword />,
+          element: (
+            <FormLayout>
+              <ResetPassword />
+            </FormLayout>
+          ),
           errorElement: <RouterError />,
         },
         {
           path: USER_FORM_ROUTE,
-          element: <Layout />,
+          element: <FormLayout />,
           errorElement: <RouterError />,
           children: [
             {

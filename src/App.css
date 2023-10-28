@@ -151,22 +151,10 @@ a {
 button,
 a {
   background: none;
-  border: 1px solid rgba(0, 0, 0, 0.06);
   color: inherit;
   padding: 0;
   height: fit-content;
 }
-
-/*
-button::first-letter,
-button .text::first-letter,
-label::first-letter,
-input[type="radio"] + label,
-h1,
-h2,
-h3 {
-  text-transform: capitalize;
-}*/
 
 a,
 button,
@@ -201,16 +189,6 @@ a {
     background-image: none;
     background-color: #fff0e0;
   }
-}
-
-img.logo-image {
-  content: url("./images/logo-image.svg");
-  max-width: 100%;
-}
-
-img.logo-text {
-  content: url("./images/logo-text.svg");
-  max-width: 100%;
 }
 
 .waiting {

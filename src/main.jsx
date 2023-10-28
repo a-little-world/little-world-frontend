@@ -9,7 +9,8 @@ import Chat from "./chat/chat-full-view";
 import CancelSearching from "./components/blocks/CancelSearching";
 import CommunityCalls from "./components/blocks/CommunityCalls";
 import ConfirmMatchCard from "./components/blocks/ConfirmMatchCard";
-import Layout from "./components/blocks/Layout/Layout";
+import Layout from "./components/blocks/Layout/AppLayout";
+import AppLayout from "./components/blocks/Layout/AppLayout";
 import MobileNavBar from "./components/blocks/MobileNavBar";
 import NbtSelector from "./components/blocks/NbtSelector";
 import NbtSelectorAdmin from "./components/blocks/NbtSelectorAdmin";
@@ -102,7 +103,7 @@ function Main() {
 
   const user = useSelector((state) => state.userData.user);
   const matches = useSelector((state) => state.userData.matches);
-  const dashboardVisibleMatches = [...matches.support.items, ...matches.confirmed.items]
+  const dashboardVisibleMatches = [...matches.support.items, ...matches.confirmed.items];
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
@@ -115,7 +116,7 @@ function Main() {
   const [showIncoming, setShowIncoming] = useState(false);
   const [incomingUserPk, setIncomingUserPk] = useState(null);
   const navigate = useNavigate();
-  
+
   const setCallSetupPartner = (partnerKey) => {
     document.body.style.overflow = partnerKey ? "hidden" : "";
     setCallSetupPartnerKey(partnerKey);
@@ -136,8 +137,10 @@ function Main() {
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
   const [topSelection, setTopSelection] = useState(null);
   const selfProfile = user.id === userPk || typeof userPk === "undefined";
-  const selectedProfile = dashboardVisibleMatches.find((match) => match.partner.id === userPk)?.partner;
-  
+  const selectedProfile = dashboardVisibleMatches.find(
+    (match) => match.partner.id === userPk
+  )?.partner;
+
   useEffect(() => {
     if (use === "main") {
       setTopSelection("conversation_partners");
@@ -152,7 +155,7 @@ function Main() {
     matchesOnlineStates[userOnlinePk] = status;
     setMatchesOnlineStates({ ...matchesOnlineStates });
   };
-  
+
   const adminActionCallback = (action) => {
     // TODO: partially broken!! ( callback doesn't come from the same admin user anymore necessarily )
     // This will later be moved to a whole new websocket
@@ -194,7 +197,7 @@ function Main() {
   };
 
   return (
-    <Layout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
+    <AppLayout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
       <div className="content-area">
         <div className="nav-bar-top">
           <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
@@ -217,7 +220,14 @@ function Main() {
         )}
         {use === "chat" && initChatComponent(false)}
         {use === "notifications" && <Notifications />}
-        {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} isSelf={selfProfile} profile={selfProfile ? user.profile : selectedProfile} userPk={selfProfile ? user.id : userPk}/>}
+        {use === "profile" && (
+          <Profile
+            setCallSetupPartner={setCallSetupPartner}
+            isSelf={selfProfile}
+            profile={selfProfile ? user.profile : selectedProfile}
+            userPk={selfProfile ? user.id : userPk}
+          />
+        )}
         {use === "help" && <Help selection={topSelection} />}
         {use === "settings" && <Settings userData={userProfile} />}
       </div>
@@ -252,11 +262,13 @@ function Main() {
             onConfirm,
             onPartialConfirm,
             showNewMatch: Boolean(!preMatches?.length),
-            userData: matches.proposed?.length ? matches.proposed.items[0] : matches.unconfirmed.items[0],
+            userData: matches.proposed?.length
+              ? matches.proposed.items[0]
+              : matches.unconfirmed.items[0],
           })}
       </Modal>
       {!(use === "chat") && <div className="disable-chat">{initChatComponent(true)}</div>}
-    </Layout>
+    </AppLayout>
   );
 }
 

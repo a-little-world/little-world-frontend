@@ -1,14 +1,10 @@
-import {
-  Button,
-  Card,
-  Text,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
-import styled from 'styled-components';
-import Layout from '../Layout/Layout';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { ButtonSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Button/Button';
+import { Button, Card, Text, TextTypes } from "@a-little-world/little-world-design-system";
+import { ButtonSizes } from "@a-little-world/little-world-design-system/dist/esm/components/Button/Button";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+
+import Layout from "../Layout/AppLayout";
 
 const ErrorCard = styled(Card)`
   text-align: center;
@@ -26,9 +22,9 @@ const RouterError = () => {
   return (
     <Layout>
       <ErrorCard>
-        <Text type={TextTypes.Heading2}>{t('error_view.title')}</Text>
-        <Button size={ButtonSizes.Large} onClick={() => navigate('/')}>
-          {t('error_view.button')}
+        <Text type={TextTypes.Heading2}>{t("error_view.title")}</Text>
+        <Button size={ButtonSizes.Large} onClick={() => navigate("/")}>
+          {t("error_view.button")}
         </Button>
       </ErrorCard>
     </Layout>

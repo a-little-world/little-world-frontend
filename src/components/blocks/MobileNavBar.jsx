@@ -1,6 +1,16 @@
+import { Text, TextTypes } from "@a-little-world/little-world-design-system";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
+import styled from "styled-components";
+
+import Logo from "../atoms/Logo";
+
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
+`;
 
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
@@ -13,10 +23,12 @@ function MobileNavBar({ setShowSidebarMobile }) {
       <button type="button" className="menu" onClick={() => setShowSidebarMobile(true)}>
         <img alt="open menu" />
       </button>
-      <div className="logo-with-text">
-        <img className="logo-mobile" alt="" />
-        <span className="logo-text">{t(`headers::${key}`)}</span>
-      </div>
+      <LogoContainer>
+        <Logo stacked={false} displayText={false} />
+        <Text tag="h1" type={TextTypes.Heading2} color="black">
+          {t(`headers::${key}`)}
+        </Text>
+      </LogoContainer>
       <button className="notification disabled" type="button">
         <img alt="show notifications" />
       </button>

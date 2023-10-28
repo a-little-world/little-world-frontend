@@ -12,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { resetPassword } from "../../api";
 import { LOGIN_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
-import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
 import { StyledCard, StyledForm, Title } from "./SignUp.styles";
 
 const ResetPassword = () => {
@@ -59,7 +58,6 @@ const ResetPassword = () => {
 
   return (
     <StyledCard>
-      <LanguageSelector />
       <Title tag="h2" type={TextTypes.Heading2}>
         {t("reset_password.title")}
       </Title>

@@ -6,16 +6,7 @@ import { LANGUAGES } from "../../../constants";
 
 const Selector = styled.div`
   display: flex;
-  align-self: flex-end;
   align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
-
-  ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.medium}) {
-      position: absolute;
-      top: ${theme.spacing.medium};
-      right: ${theme.spacing.medium};
-    }`}
 `;
 
 const LanguageButton = styled(Button)`

@@ -18,6 +18,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { BACKEND_PATH, BACKEND_URL } from "../../ENVIRONMENT";
+import Logo from "../atoms/Logo";
 import MenuLink from "../atoms/MenuLink";
 
 const Unread = styled.div`
@@ -91,10 +92,7 @@ function Sidebar({ sidebarMobile }) {
   return (
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
-        <div className="logos">
-          <img alt="little" className="logo-image" />
-          <img alt="little world" className="logo-text" />
-        </div>
+        <Logo />
         {buttonData.map(({ label, path, clickEvent, Icon }) =>
           typeof clickEvent === typeof undefined ? (
             <MenuLink
