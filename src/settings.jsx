@@ -27,7 +27,7 @@ function ListItem({ section, label, value, setEditing, map }) {
 const types = {
   display_language: "select",
   first_name: "text",
-  last_name: "text",
+  second_name: "text",
   email: "email",
   password: "password",
   phone_mobile: "tel",
@@ -263,7 +263,7 @@ function ModalBox({ label, valueIn, setEditing }) {
           )}
           {["email", "password"].includes(label) && <span className="warning-notice">{t(`sg_personal_${label}_change_warning`)}</span>}
           {label === "password" && <PassChange refIn={textInput} />}
-          {["first_name", "last_name", "email", "phone_mobile", "postal_code", "birth_year"].includes(label) && (
+          {["first_name", "second_name", "email", "phone_mobile", "postal_code", "birth_year"].includes(label) && (
             <AtomicInput
               label={label}
               inputVal={value}

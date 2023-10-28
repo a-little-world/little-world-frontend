@@ -504,7 +504,7 @@
   "sign_up.name_label": "Dein Name",
   "sign_up.name_tooltip": "Gib hier deinen Vor- und Nachnamen ein",
   "sign_up.first_name_placeholder": "Vorname",
-  "sign_up.last_name_placeholder": "Nachname",
+  "sign_up.second_name_placeholder": "Nachname",
   "sign_up.email_label": "E-mail",
   "sign_up.email_placeholder": "example@gmail.com",
   "sign_up.password_label": "Passwort",

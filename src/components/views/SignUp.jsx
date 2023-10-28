@@ -109,7 +109,7 @@ const SignUp = () => {
               })}
               id="lastName"
               error={errors?.lastName?.message}
-              placeholder={t("sign_up.last_name_placeholder")}
+              placeholder={t("sign_up.second_name_placeholder")}
               type="text"
             />
           </NameInputs>

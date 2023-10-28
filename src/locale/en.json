@@ -502,7 +502,7 @@
   "sign_up.name_label": "Your name",
   "sign_up.name_tooltip": "Enter your first and last name here",
   "sign_up.first_name_placeholder": "First name",
-  "sign_up.last_name_placeholder": "Last name",
+  "sign_up.second_name_placeholder": "Last name",
   "sign_up.email_label": "E-mail",
   "sign_up.email_placeholder": "example@gmail.com",
   "sign_up.password_label": "Password",
