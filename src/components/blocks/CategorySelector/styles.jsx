@@ -25,6 +25,7 @@ export const SelectionPanel = styled.button`
   padding: ${({ theme }) => theme.spacing.small};
   box-shadow: 2px 2px 7px 0px #0000001f;
   width: 100%;
+  flex-basis: 100%;
 
   > svg {
     width: 80px;
@@ -41,7 +42,9 @@ export const SelectionPanel = styled.button`
     `@media (min-width: ${theme.breakpoints.small}) {
       padding: ${theme.spacing.large};
       width: unset;
+      flex-basis: 50%;
       flex-direction: column;
+      height: 100%;
 
       > svg {
         width: 150px;

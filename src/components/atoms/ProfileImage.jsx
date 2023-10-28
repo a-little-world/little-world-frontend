@@ -2,9 +2,15 @@ import React from "react";
 import Avatar from "react-nice-avatar";
 import styled from "styled-components";
 
+const ImageSizes = {
+  small: "120px",
+  medium: "154px",
+  large: "180px",
+};
+
 const StyledAvatar = styled(Avatar)`
-  width: 180px;
-  height: 180px;
+  width: ${({ $size }) => ImageSizes[$size]};
+  height: ${({ $size }) => ImageSizes[$size]};
   display: block;
   border-radius: 20px;
   object-fit: cover;
@@ -21,12 +27,12 @@ export const CircleImage = styled.div`
   background: ${({ $image }) => `url(${$image})`};
   background-size: cover;
   background-position: center;
-  width: 180px;
-  height: 180px;
+  width: ${({ $size }) => ImageSizes[$size]};
+  height: ${({ $size }) => ImageSizes[$size]};
   display: flex;
   align-items: end;
   justify-content: center;
-  padding: 16px;
+  padding: ${({ theme }) => theme.spacing.small};
   position: relative;
 `;
 
@@ -38,18 +44,18 @@ export const Image = styled.img`
   align-items: end;
   justify-content: center;
   width: 100%;
-  height: 180px;
+  height: ${({ $size }) => ImageSizes[$size]};
   border-radius: 30px;
   object-fit: cover;
 `;
 
-function ProfileImage({ image, imageType, circle }) {
-  if (imageType === "avatar") return <StyledAvatar {...image} />;
+function ProfileImage({ image, imageType, circle, size = "large" }) {
+  if (imageType === "avatar") return <StyledAvatar {...image} $size={size} />;
 
   return circle ? (
-    <CircleImage alt="user image" $image={image} />
+    <CircleImage alt="user image" $image={image} $size={size} />
   ) : (
-    <Image alt="user image" src={image} />
+    <Image alt="user image" src={image} $size={size} />
   );
 }
 

@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components';
-import { Button } from '@a-little-world/little-world-design-system';
+import { Button } from "@a-little-world/little-world-design-system";
+import styled, { css } from "styled-components";
 
 export const ProfilePicWrapper = styled.div``;
 
@@ -29,7 +29,7 @@ export const SelectionPanel = styled.div`
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.small}) {
       flex-wrap: nowrap;
-      padding: ${({ theme }) => theme.spacing.large};
+      padding: ${theme.spacing.large};
     }`}
 `;
 
@@ -64,21 +64,6 @@ export const CircleButton = styled(Button)`
 
   width: 154px;
   height: 154px;
-`;
-
-export const CircleImage = styled.div`
-  border-radius: 50%;
-  border: 8px solid #e6e8ec;
-  background: ${({ $image }) => `url(${$image})`};
-  background-size: cover;
-  background-position: center;
-  width: 154px;
-  height: 154px;
-  display: flex;
-  align-items: end;
-  justify-content: center;
-  padding: ${({ theme }) => theme.spacing.small};
-  position: relative;
 `;
 
 export const TrashButton = styled(Button)`

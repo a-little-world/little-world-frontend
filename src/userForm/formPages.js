@@ -1,4 +1,4 @@
-import { ContentTypes } from "@a-little-world/little-world-design-system";
+import { ContentTypes, InputWidth } from "@a-little-world/little-world-design-system";
 
 import { USER_TYPES } from "../constants";
 import { ComponentTypes, formatDataField } from "./formContent";
@@ -59,6 +59,7 @@ const formPages = {
         getProps: (t) => ({
           label: t("self_info.post_code_label"),
           errorRules: { required: t("validation.required") },
+          width: InputWidth.Small,
         }),
       },
       ...(userData?.user_type === USER_TYPES.volunteer
@@ -262,12 +263,14 @@ const formPages = {
         getProps: (t) => ({
           label: t("notifications.phone_number_label"),
           type: "tel",
+          width: InputWidth.Medium,
         }),
       },
       {
         type: ComponentTypes.infoText,
         getProps: (t) => ({
           children: t("notifications.info"),
+          center: false,
         }),
       },
     ],

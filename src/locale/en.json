@@ -1,4 +1,6 @@
 {
+  "header.privacy": "Privacy",
+  "header.terms": "Terms",
   "headers": {
     "home": "Little World",
     "user": "user profile",
@@ -36,7 +38,7 @@
   "nbs_messages": "Messages",
   "nbs_notifications": "Notifications",
   "nbs_my_profile": "My profile",
-  "nbs_help": "Receive help",
+  "nbs_help": "Help",
   "nbs_settings": "Settings",
   "nbs_log_out": "Log out",
   "nbs_admin_panel": "Admin Panel",

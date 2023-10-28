@@ -1,6 +1,7 @@
 import {
   ButtonSizes,
   Checkbox,
+  InputWidth,
   Label,
   Text,
   TextInput,
@@ -13,7 +14,6 @@ import { useNavigate } from "react-router-dom";
 
 import { signUp } from "../../api";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
-import LanguageSelector from "../blocks/LanguageSelector/LanguageSelector";
 import {
   NameContainer,
   NameInputs,
@@ -81,7 +81,6 @@ const SignUp = () => {
 
   return (
     <StyledCard>
-      <LanguageSelector />
       <Title tag="h2" type={TextTypes.Heading2}>
         {t("sign_up.title")}
       </Title>
@@ -165,6 +164,7 @@ const SignUp = () => {
           error={errors?.birthYear?.message}
           placeholder={t("sign_up.birth_year_placeholder")}
           type="number"
+          width={InputWidth.Small}
           min={1900}
           max={2007}
         />

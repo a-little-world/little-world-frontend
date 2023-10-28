@@ -160,13 +160,6 @@
   margin: auto;
 }
 
-.help-support .logos {
-  width: 150px;
-  display: flex;
-  flex-direction: column;
-  margin: 30px;
-}
-
 .support-team {
   display: flex;
   flex-direction: column;
@@ -233,15 +226,6 @@ button.support-call img {
 .help-support .contact-info .contacts div {
   display: flex;
   gap: 8px;
-}
-
-.help-support .logos-small {
-  height: 30px;
-  display: flex;
-}
-
-.logos-small .logo-text {
-  margin: 3px;
 }
 
 .business-name {
