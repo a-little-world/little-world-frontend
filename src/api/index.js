@@ -67,6 +67,7 @@ export const fetchFormData = async () => {
 };
 
 export const confirmMatch = ({ userHash }) =>
+  /** TODO: for consistency this api should also accept a matchId in the backend rather than userHashes ... */
   fetch(`${BACKEND_URL}/api/user/confirm_match/`, {
     /* TODO is incuded in main frontend data now! */
     method: "POST",
