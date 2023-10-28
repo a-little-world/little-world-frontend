@@ -41,9 +41,9 @@ export const userDataSlice = createSlice({
     },
     changeMatchCategory: (state, action) => {
       const { category, match, newCategory } = action.payload;
-      const { id, ...rest } = match;
-      state.matches[category] = state.matches[category].items.filter((m) => m.id !== id);
-      state.matches[newCategory].items.push(match);
+      const matchToMove = state.matches[category].items.find((m) => m.id === match.id);
+      state.matches[newCategory].items.push(matchToMove);
+      state.matches[category].items = state.matches[category].items.filter((m) => m.id !== match.id);
     },
   },
 });
