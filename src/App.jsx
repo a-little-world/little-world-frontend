@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import store from "./app/store";
 import { initialise } from "./features/userData";
 import router from "./router";
-import { CORE_WS_PATH } from "./ENVIRONMENT";
+import { CORE_WS_PATH, CORE_WS_SHEME } from "./ENVIRONMENT";
 
 import "./App.css";
 
@@ -27,7 +27,7 @@ const WebsocketBridge = () => {
    * } --> this will triger a simple redux dispatch in the frontend
    */
   const dispatch = useDispatch();
-  const [socketUrl, setSocketUrl] = useState(CORE_WS_PATH);
+  const [socketUrl, setSocketUrl] = useState(CORE_WS_SHEME + window.location.host + CORE_WS_PATH);
   const [messageHistory, setMessageHistory] = useState([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
