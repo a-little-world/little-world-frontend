@@ -128,7 +128,6 @@ function Main() {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
 
-  const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
 
   const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
 
@@ -198,7 +197,6 @@ function Main() {
               <>
                 <PartnerProfiles
                   setCallSetupPartner={setCallSetupPartner}
-                  matchesOnlineStates={matchesOnlineStates}
                   setShowCancel={setShowCancelSearching}
                 />
                 <NotificationPanel />
@@ -256,7 +254,6 @@ function Main() {
               : matches.unconfirmed.items[0].partner,
           })}
       </Modal>
-      {!(use === "chat") && <div className="disable-chat">{initChatComponent(true)}</div>}
     </AppLayout>
   );
 }
