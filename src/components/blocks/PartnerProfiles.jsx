@@ -9,7 +9,7 @@ import { updateSearchState } from "../../features/userData";
 import { ProfileBox } from "../../profile";
 import PartnerActionCard from "./PartnerActionCard";
 
-function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCancel }) {
+function PartnerProfiles({ setCallSetupPartner, setShowCancel }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const matches = useSelector((state) => state.userData.matches);
@@ -57,7 +57,7 @@ function PartnerProfiles({ setCallSetupPartner, matchesOnlineStates, setShowCanc
               isSelf={false}
               openPartnerModal={setPartnerActionData}
               setCallSetupPartner={setCallSetupPartner}
-              isOnline={matchesOnlineStates[user.userPk]}
+              isOnline={match.partner.is_online}
             />
           );
         })}
