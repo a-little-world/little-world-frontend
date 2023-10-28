@@ -23,9 +23,39 @@ export const userDataSlice = createSlice({
     updateSearchState: (state, action) => {
       state.user.isSearching = action.payload;
     },
+    addMatch: (state, action) => {
+      const { category, match } = action.payload;
+      state.matches[category].items.push(match);
+    },
+    removeMatch: (state, action) => {
+      const { category, match } = action.payload;
+      const { id, ...rest } = match;
+      state.matches[category] = state.matches[category].items.filter((m) => m.id !== id);
+    },
+    updateMatch: (state, action) => {
+      const { category, match } = action.payload;
+      const { id, ...rest } = match;
+      const matchIndex = state.matches[category].findIndex((m) => m.id === id);
+      if(matchIndex !== -1)
+        state.matches[category][matchIndex] = {...state.matches[category][matchIndex], ...rest};
+    },
+    changeMatchCategory: (state, action) => {
+      const { category, match, newCategory } = action.payload;
+      const { id, ...rest } = match;
+      state.matches[category] = state.matches[category].items.filter((m) => m.id !== id);
+      state.matches[newCategory].items.push(match);
+    },
   },
 });
 
-export const { initialise, updateProfile, updateSearchState } = userDataSlice.actions;
+export const { 
+  initialise, 
+  updateProfile, 
+  updateSearchState,
+  addMatch,
+  updateMatch,
+  removeMatch,
+  changeMatchCategory
+} = userDataSlice.actions;
 
 export default userDataSlice.reducer;
