@@ -14,6 +14,7 @@ export const userDataSlice = createSlice({
       state.matches = action.payload.matches;
       state.apiOptions = action.payload.apiOptions;
       state.formOptions = action.payload.apiOptions.profile;
+      state.incomingCalls = action.payload.incomingCalls;
     },
     updateProfile: (state, action) => {
       Object.keys(action.payload).forEach((key) => {
@@ -54,6 +55,10 @@ export const userDataSlice = createSlice({
       state.matches[newCategory].items.push(matchToMove);
       state.matches[category].items = state.matches[category].items.filter((m) => m.id !== match.id);
     },
+    blockIncomingCall: (state, action) => {
+      const { userId } = action.payload;
+      state.incomingCalls = state.incomingCalls.filter((call) => call.userId !== userId);
+    },
   },
 });
 
@@ -65,7 +70,17 @@ export const {
   addMatch,
   updateMatch,
   removeMatch,
-  changeMatchCategory
+  changeMatchCategory,
+  blockIncomingCall
 } = userDataSlice.actions;
+
+export const selectMatchByPartnerId = (matches, partnerId) => {
+  for (let category in matches) {
+    const match = matches[category].items.find((m) => m.partner.id === partnerId);
+    if(match)
+      return match;
+  }
+  return null;
+}
 
 export default userDataSlice.reducer;
