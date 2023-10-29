@@ -119,22 +119,16 @@ function Main() {
   const { userPk } = location.state || {};
   const dispatch = useDispatch();
 
-  const [userProfile, setUserProfile] = useState(null);
-
   const user = useSelector((state) => state.userData.user);
   const matches = useSelector((state) => state.userData.matches);
+  const incomingCalls = useSelector((state) => state.userData.incomingCalls);
   const dashboardVisibleMatches = [...matches.support.items, ...matches.confirmed.items];
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
 
 
-  const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
-
   const [showCancelSearching, setShowCancelSearching] = useState(false);
-  const [showIncoming, setShowIncoming] = useState(false);
-  const [incomingUserPk, setIncomingUserPk] = useState(null);
-  const navigate = useNavigate();
 
   const setCallSetupPartner = (partnerKey) => {
     document.body.style.overflow = partnerKey ? "hidden" : "";
@@ -169,21 +163,6 @@ function Main() {
     }
   }, [location, use]);
 
-  const initChatComponent = (backgroundMode) => {
-    return (
-      <Chat
-        backgroundMode={backgroundMode}
-        showChat={use === "chat"}
-        matchesInfo={dashboardVisibleMatches}
-        userPk={userPk}
-        setCallSetupPartner={() => {
-          // TODO
-        }}
-        userPkMappingCallback={setUserPkToChatIdMap}
-      />
-    );
-  };
-  
   return (
     <AppLayout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
       <div className="content-area">
@@ -205,7 +184,10 @@ function Main() {
             {topSelection === "community_calls" && <CommunityCalls />}
           </div>
         )}
-        {use === "chat" && initChatComponent(false)}
+        {use === "chat" && <Chat
+          showChat={use === "chat"}
+          matchesInfo={dashboardVisibleMatches}
+          userPk={userPk}/>}
         {use === "notifications" && <Notifications />}
         {use === "profile" && (
           <Profile
@@ -216,11 +198,11 @@ function Main() {
           />
         )}
         {use === "help" && <Help selection={topSelection} />}
-        {use === "settings" && <Settings userData={userProfile} />}
+        {use === "settings" && <Settings />}
       </div>
       <div
         className={
-          callSetupPartner || showIncoming || showCancelSearching
+          callSetupPartner || incomingCalls.length || showCancelSearching
             ? "overlay-shade"
             : "overlay-shade hidden"
         }
@@ -228,11 +210,10 @@ function Main() {
         {callSetupPartner && (
           <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
         )}
-        {incomingUserPk && showIncoming && (
+        {(incomingCalls.length > 0) && (
           <IncomingCall
-            matchesInfo={matchesInfo}
-            userPk={incomingUserPk}
-            setVisible={setShowIncoming}
+            matchesInfo={dashboardVisibleMatches}
+            userPk={incomingCalls[0].userId}
             setCallSetupPartner={setCallSetupPartner}
           />
         )}
