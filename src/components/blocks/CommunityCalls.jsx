@@ -3,14 +3,14 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-function CommunityEvent({ frequency, description, title, time, link }) {
+function CommunityEvent({ _key, frequency, description, title, time, link }) {
   const { t } = useTranslation();
   const two = (n) => (n < 10 ? `0${n}` : n);
 
   const dateTime = new Date(time);
 
   return (
-    <div className="community-event">
+    <div key={_key} className="community-event">
       <div className="frequency">
         <img alt="" />
         <div className="frequency-text">{frequency}</div>
@@ -62,7 +62,7 @@ function CommunityCalls() {
   return (
     <div className="community-calls">
       {events.items.map((eventData) => (
-        <CommunityEvent key={eventData.id} {...eventData} />
+        <CommunityEvent key={eventData.id} _key={eventData.id} {...eventData} />
       ))}
     </div>
   );
