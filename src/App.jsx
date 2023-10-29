@@ -54,9 +54,7 @@ const WebsocketBridge = () => {
   }[readyState];
   console.log("SOCKET LOADED", connectionStatus);
 
-  return <div style={{
-    visibility: "hidden"
-  }}>{connectionStatus}</div>;
+  return <></>
 };
 
 function App({ data }) {
