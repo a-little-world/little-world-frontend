@@ -80,6 +80,8 @@
 
 .community-event button.call img {
   content: url("./images/call-orange.svg");
+  width: 40px;
+  height: 40px;
 }
 
 .community-event .event-info h3 {
