@@ -9,7 +9,6 @@ import Chat from "./chat/chat-full-view";
 import CancelSearching from "./components/blocks/CancelSearching";
 import CommunityCalls from "./components/blocks/CommunityCalls";
 import ConfirmMatchCard from "./components/blocks/ConfirmMatchCard";
-import Layout from "./components/blocks/Layout/AppLayout";
 import AppLayout from "./components/blocks/Layout/AppLayout";
 import MobileNavBar from "./components/blocks/MobileNavBar";
 import NbtSelector from "./components/blocks/NbtSelector";

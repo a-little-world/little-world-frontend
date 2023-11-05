@@ -1,5 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import styled from "styled-components";
+
+const Selector = styled.div`
+  display: flex;
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+`;
 
 function NbtSelector({ selection, setSelection, use }) {
   const { t } = useTranslation();
@@ -19,7 +25,7 @@ function NbtSelector({ selection, setSelection, use }) {
   };
   const disabled = nbtDisabled[use];
   return (
-    <div className="selector">
+    <Selector className="selector">
       {topics.map((topic) => (
         <span className={topic} key={topic}>
           <input
@@ -38,7 +44,7 @@ function NbtSelector({ selection, setSelection, use }) {
           </label>
         </span>
       ))}
-    </div>
+    </Selector>
   );
 }
 

@@ -12,6 +12,7 @@ import ForgotPassword from "./components/views/ForgotPassword";
 import Login from "./components/views/Login";
 import ResetPassword from "./components/views/ResetPassword";
 import SignUp from "./components/views/SignUp";
+import VerifyEmail from "./components/views/VerifyEmail";
 import { BACKEND_PATH } from "./ENVIRONMENT";
 import Main from "./main";
 import {
@@ -28,6 +29,7 @@ import {
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   USER_FORM_ROUTE,
+  VERIFY_EMAIL_ROUTE,
 } from "./routes";
 import theme from "./theme";
 
@@ -110,6 +112,15 @@ const router = createBrowserRouter(
           element: (
             <FormLayout>
               <ResetPassword />
+            </FormLayout>
+          ),
+          errorElement: <RouterError />,
+        },
+        {
+          path: VERIFY_EMAIL_ROUTE,
+          element: (
+            <FormLayout>
+              <VerifyEmail />
             </FormLayout>
           ),
           errorElement: <RouterError />,

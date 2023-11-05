@@ -1,6 +1,8 @@
 import {
   Button,
   ButtonAppearance,
+  ButtonSizes,
+  ButtonVariations,
   Text,
   TextInput,
   TextTypes,
@@ -11,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
-import { requestPasswordReset } from "../../api";
+import { requestPasswordReset, resendVerificationEmail, verifyEmail } from "../../api";
 import { LOGIN_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import { registerInput } from "./SignUp";
@@ -24,14 +26,18 @@ const Buttons = styled.div`
   width: 100%;
 `;
 
-export const ForgotPasswordDescription = styled(Text)`
+const HelpText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
 
-const ForgotPassword = () => {
+export const VerifyEmailDescription = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.small};
+`;
+
+const VerifyEmail = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [requestSuccessful, setRequestSuccessful] = useState(true);
+  const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
 
   const {
@@ -45,7 +51,7 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFocus("email");
+    setFocus("verificationCode");
   }, [setFocus]);
 
   const onError = (e) => {
@@ -63,31 +69,38 @@ const ForgotPassword = () => {
     }
   };
 
-  const onFormSubmit = async (data) => {
+  const onResendCode = async () => {
     setIsSubmitting(true);
 
-    requestPasswordReset(data)
+    resendVerificationEmail()
       .then(() => setRequestSuccessful(true))
       .catch(onError);
   };
 
+  const onFormSubmit = async ({ verificationCode }) => {
+    setIsSubmitting(true);
+    verifyEmail({ verificationCode }).catch(onError);
+  };
+
+  const email = "seanblundell@gmail.com";
+
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading2}>
-        {t("forgot_password.title")}
+        {t("verify_email.title")}
       </Title>
-      <ForgotPasswordDescription>{t("forgot_password.description")}</ForgotPasswordDescription>
+      <VerifyEmailDescription>{t("verify_email.description", { email })}</VerifyEmailDescription>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
           {...registerInput({
             register,
-            name: "email",
+            name: "verficationCode",
             options: { required: t("errorMsg.required") },
           })}
-          id="email"
-          label={t("forgot_password.email_label")}
-          error={errors?.email?.message}
-          placeholder={t("forgot_password.email_placeholder")}
+          id="text"
+          label={t("verify_email.input_label")}
+          error={errors?.verificationCode?.message}
+          placeholder={t("verify_email.code_placeholder")}
           type="email"
         />
         <FormMessage
@@ -95,19 +108,33 @@ const ForgotPassword = () => {
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
           {requestSuccessful
-            ? t("forgot_password.success_message")
+            ? t("verify_email.success_message")
             : errors?.root?.serverError?.message}
         </FormMessage>
+        <Button
+          variation={ButtonVariations.Inline}
+          color={theme.color.text.link}
+          onClick={onResendCode}
+        >
+          {t("verify_email.resend_code")}
+        </Button>
+        <HelpText>{t("verify_email.help_text")}</HelpText>
         <Buttons>
           <Button
             appearance={ButtonAppearance.Secondary}
             onClick={() => navigate(`/${LOGIN_ROUTE}`)}
             color={theme.color.text.link}
+            size={ButtonSizes.Medium}
           >
-            {t("forgot_password.cancel_btn")}
+            {t("verify_email.change_email_btn")}
           </Button>
-          <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-            {t("forgot_password.submit_btn")}
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            loading={isSubmitting}
+            size={ButtonSizes.Medium}
+          >
+            {t("verify_email.submit_btn")}
           </Button>
         </Buttons>
       </StyledForm>
@@ -115,4 +142,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default VerifyEmail;

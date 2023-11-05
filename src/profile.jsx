@@ -74,6 +74,7 @@ const Actions = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: ${({ theme }) => theme.spacing.small};
   width: 100%;
+  max-width: 498px;
 `;
 
 function ProfileBox({

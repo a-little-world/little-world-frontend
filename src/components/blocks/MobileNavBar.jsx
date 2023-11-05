@@ -12,6 +12,14 @@ const LogoContainer = styled.div`
   gap: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
+const Title = styled(Text)`
+  font-weight: 700;
+  font-size: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  text-transform: capitalize;
+`;
+
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
   const location = useLocation();
@@ -25,9 +33,9 @@ function MobileNavBar({ setShowSidebarMobile }) {
       </button>
       <LogoContainer>
         <Logo stacked={false} displayText={false} />
-        <Text tag="h1" type={TextTypes.Heading2} color="black">
+        <Title tag="h1" type={TextTypes.Heading2} color="black">
           {t(`headers::${key}`)}
-        </Text>
+        </Title>
       </LogoContainer>
       <button className="notification disabled" type="button">
         <img alt="show notifications" />

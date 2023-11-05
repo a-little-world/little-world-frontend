@@ -1,18 +1,25 @@
 import { Button, Card, Text } from "@a-little-world/little-world-design-system";
 import styled from "styled-components";
 
+export const StyledCard = styled(Card)`
+  position: relative;
+  max-width: 500px;
+  align-self: flex-start;
+  flex: 1;
+
+  ${({ theme }) =>
+    `@media (max-width: ${theme.breakpoints.small}) {
+      padding-top: ${theme.spacing.medium};
+      padding-bottom: ${theme.spacing.medium};
+    }`}
+`;
+
 export const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xxxsmall};
   align-items: flex-start;
   flex-grow: 1;
-`;
-
-export const StyledCard = styled(Card)`
-  position: relative;
-  max-width: 500px;
-  flex: 1;
 `;
 
 export const StyledCta = styled(Button)`

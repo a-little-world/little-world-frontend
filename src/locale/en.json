@@ -541,5 +541,15 @@
   "reset_password.confirm_password_label": "Confimr Password",
   "reset_password.to_login": "To Login",
   "reset_password.submit_btn": "Reset Password",
-  "reset_password.success_message": "Password successfully reset. You can now login in with your new password."
+  "reset_password.success_message": "Password successfully reset. You can now login in with your new password.",
+
+  "verify_email.title": "Verify your email",
+  "verify_email.description": "To confirm your account, please enter the 5-digit code we sent to {{ email }}. If you did not receive an email, please check your spam folder.",
+  "verify_email.input_label": "Code",
+  "verify_email.code_placeholder": "5-digit code",
+  "verify_email.help_text": "You can't find your code? Check your spam folder! Still can't find it? Contact <a {\"href\": \"mailto:support@little-world.com\"}>support@little-world.com</a>",
+  "verify_email.submit_btn": "Submit",
+  "verify_email.change_email_btn": "Change Email",
+  "verify_email.resend_code": "Resend code?",
+  "verify_email.success_message": "Verification code resent."
 }

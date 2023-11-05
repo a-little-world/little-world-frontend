@@ -202,3 +202,19 @@ export const resetPassword = ({ password, token }) =>
       token,
     }),
   });
+
+export const verifyEmail = ({ verificationCode }) =>
+  fetch(`${BACKEND_URL}/api/user/verify/email/${verificationCode}`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    method: "POST",
+  });
+
+export const resendVerificationEmail = () =>
+  fetch(`${BACKEND_URL}/api/user/verify/email_resend/`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    method: "POST",
+  });

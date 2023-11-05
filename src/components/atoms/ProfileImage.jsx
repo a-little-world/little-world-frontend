@@ -44,9 +44,15 @@ export const Image = styled.img`
   align-items: end;
   justify-content: center;
   width: 100%;
+  max-width: 400px;
   height: ${({ $size }) => ImageSizes[$size]};
   border-radius: 30px;
   object-fit: cover;
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.small}) {
+      height: ${({ $size }) => ImageSizes[$size]};;
+    }`}
 `;
 
 function ProfileImage({ image, imageType, circle, size = "large" }) {
