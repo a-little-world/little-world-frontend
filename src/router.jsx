@@ -8,6 +8,7 @@ import RouterError from "./components/blocks/ErrorView/ErrorView";
 import Form from "./components/blocks/Form/Form";
 import FormLayout from "./components/blocks/Layout/FormLayout";
 import Welcome from "./components/blocks/Welcome/Welcome";
+import ChangeEmail from "./components/views/ChangeEmail";
 import ForgotPassword from "./components/views/ForgotPassword";
 import Login from "./components/views/Login";
 import ResetPassword from "./components/views/ResetPassword";
@@ -18,6 +19,7 @@ import Main from "./main";
 import {
   BASE_ROUTE,
   CALL_ROUTE,
+  CHANGE_EMAIL_ROUTE,
   CHAT_ROUTE,
   FORGOT_PASSWORD_ROUTE,
   HELP_ROUTE,
@@ -121,6 +123,15 @@ const router = createBrowserRouter(
           element: (
             <FormLayout>
               <VerifyEmail />
+            </FormLayout>
+          ),
+          errorElement: <RouterError />,
+        },
+        {
+          path: CHANGE_EMAIL_ROUTE,
+          element: (
+            <FormLayout>
+              <ChangeEmail />
             </FormLayout>
           ),
           errorElement: <RouterError />,

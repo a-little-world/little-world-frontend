@@ -13,25 +13,14 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
-import { requestPasswordReset, resendVerificationEmail, verifyEmail } from "../../api";
-import { LOGIN_ROUTE } from "../../routes";
+import { resendVerificationEmail, verifyEmail } from "../../api";
+import { CHANGE_EMAIL_ROUTE, LOGIN_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import { registerInput } from "./SignUp";
-import { StyledCard, StyledForm, Title } from "./SignUp.styles";
-
-const Buttons = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-`;
+import { Buttons, FormDescription, StyledCard, StyledForm, Title } from "./SignUp.styles";
 
 const HelpText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
-`;
-
-export const VerifyEmailDescription = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.small};
 `;
 
 const VerifyEmail = () => {
@@ -89,7 +78,7 @@ const VerifyEmail = () => {
       <Title tag="h2" type={TextTypes.Heading2}>
         {t("verify_email.title")}
       </Title>
-      <VerifyEmailDescription>{t("verify_email.description", { email })}</VerifyEmailDescription>
+      <FormDescription>{t("verify_email.description", { email })}</FormDescription>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
           {...registerInput({
@@ -103,14 +92,6 @@ const VerifyEmail = () => {
           placeholder={t("verify_email.code_placeholder")}
           type="email"
         />
-        <FormMessage
-          $visible={requestSuccessful || errors?.root?.serverError}
-          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
-        >
-          {requestSuccessful
-            ? t("verify_email.success_message")
-            : errors?.root?.serverError?.message}
-        </FormMessage>
         <Button
           variation={ButtonVariations.Inline}
           color={theme.color.text.link}
@@ -119,10 +100,18 @@ const VerifyEmail = () => {
           {t("verify_email.resend_code")}
         </Button>
         <HelpText>{t("verify_email.help_text")}</HelpText>
+        <FormMessage
+          $visible={requestSuccessful || errors?.root?.serverError}
+          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+        >
+          {requestSuccessful
+            ? t("verify_email.success_message")
+            : errors?.root?.serverError?.message}
+        </FormMessage>
         <Buttons>
           <Button
             appearance={ButtonAppearance.Secondary}
-            onClick={() => navigate(`/${LOGIN_ROUTE}`)}
+            onClick={() => navigate(`/${CHANGE_EMAIL_ROUTE}`)}
             color={theme.color.text.link}
             size={ButtonSizes.Medium}
           >

@@ -68,8 +68,7 @@ const SignUp = () => {
     setIsSubmitting(true);
 
     signUp(data)
-      .then((res) => {
-        const userHash = "";
+      .then(() => {
         setIsSubmitting(false);
         navigate("/app");
       })

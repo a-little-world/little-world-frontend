@@ -551,5 +551,12 @@
   "verify_email.submit_btn": "Submit",
   "verify_email.change_email_btn": "Change Email",
   "verify_email.resend_code": "Resend code?",
-  "verify_email.success_message": "Verification code resent."
+  "verify_email.success_message": "Verification code resent.",
+
+  "change_email.title": "Change your email",
+  "change_email.description": "Please provide your new email address. We will then send you a 5-digit code to verify your new email address.",
+  "change_email.input_label": "Email",
+  "change_email.input_placeholder": "sally@gmail.com",
+  "change_email.submit_btn": "Change Email",
+  "change_email.back_btn": "Cancel"
 }

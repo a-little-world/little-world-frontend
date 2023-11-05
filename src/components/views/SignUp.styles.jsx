@@ -22,6 +22,13 @@ export const StyledForm = styled.form`
   flex-grow: 1;
 `;
 
+export const Buttons = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
 export const StyledCta = styled(Button)`
   margin-bottom: ${({ theme }) => theme.spacing.small};
 `;
@@ -57,4 +64,8 @@ export const ChangeLocation = styled.div`
   a {
     border: none;
   }
+`;
+
+export const FormDescription = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.small};
 `;

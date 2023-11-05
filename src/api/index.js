@@ -218,3 +218,14 @@ export const resendVerificationEmail = () =>
     },
     method: "POST",
   });
+
+export const setNewEmail = ({ email }) =>
+  fetch(`${BACKEND_URL}/api/user/change_email/`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+    },
+    method: "POST",
+    body: JSON.stringify({
+      email,
+    }),
+  });

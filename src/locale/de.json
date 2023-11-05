@@ -553,5 +553,12 @@
   "verify_email.submit_btn": "Weiter",
   "verify_email.change_email_btn": "E-mail Adresse ändern",
   "verify_email.resend_code": "Bestätigungscode erneut senden",
-  "verify_email.success_message": "Bestätigungscode erneut gesendet"
+  "verify_email.success_message": "Bestätigungscode erneut gesendet",
+
+  "change_email.title": "E-Mail Adresse ändern",
+  "change_email.description": "Bitte gib deine neue E-Mail Adresse ein.",
+  "change_email.input_label": "E-mail",
+  "change_email.input_placeholder": "beispiel@gmail.com",
+  "change_email.submit_btn": "Neue E-mail bestätigen",
+  "change_email.back_btn": "Abbrechen"
 }
