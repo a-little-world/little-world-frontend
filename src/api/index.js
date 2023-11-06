@@ -203,3 +203,13 @@ export const resetPassword = ({ password, token }) =>
       token,
     }),
   });
+
+
+export const updateMatchData = (currentPage, firstPageItems, pageItems) =>
+  fetch(`${BACKEND_URL}/api/matches/confirmed/?page=${currentPage}&itemsPerPage=${currentPage === 1 ? firstPageItems : pageItems}`, {
+    method: "GET",
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+      "Content-Type": "application/json",
+    },
+  });

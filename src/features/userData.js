@@ -59,19 +59,23 @@ export const userDataSlice = createSlice({
       const { userId } = action.payload;
       state.incomingCalls = state.incomingCalls.filter((call) => call.userId !== userId);
     },
+    updateConfirmedData: (state, action) => {
+      state.matches.confirmed = action.payload;
+    },
   },
 });
 
-export const { 
-  initialise, 
-  updateProfile, 
+export const {
+  initialise,
+  updateProfile,
   updateSearchState,
   updateMatchProfile,
   addMatch,
   updateMatch,
   removeMatch,
   changeMatchCategory,
-  blockIncomingCall
+  blockIncomingCall,
+  updateConfirmedData,
 } = userDataSlice.actions;
 
 export const selectMatchByPartnerId = (matches, partnerId) => {
