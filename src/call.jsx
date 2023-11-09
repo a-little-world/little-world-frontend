@@ -508,7 +508,7 @@ function CallScreen() {
       track.attach(audioRef.current);
     });
     joinRoom(selfPk, userPk);
-  }, [userPk, tracks]);
+  });
 
   document.body.style.overflow = ""; // unset after call overlay
 
