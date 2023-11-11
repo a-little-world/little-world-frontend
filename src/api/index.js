@@ -29,11 +29,10 @@ export const mutateUserData = async (formData, onSucess, onFailure) => {
       },
       body: data,
     });
-
+    const responseBody = await response?.json();
     if (response.ok) {
-      onSucess(response);
+      onSucess(responseBody);
     } else {
-      const responseBody = await response.json();
       const errorType = Object.keys(responseBody)?.[0];
       const errorTag = Object.values(responseBody)?.[0]?.[0];
 

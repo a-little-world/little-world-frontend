@@ -2,16 +2,16 @@ import {
   Button,
   ButtonAppearance,
   ProgressBar,
-  RadioGroup,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { mutateUserData } from "../../../api";
+import { updateProfile } from "../../../features/userData";
 import { ComponentTypes, getFormComponent } from "../../../userForm/formContent";
 import getFormPage from "../../../userForm/formPages";
 import Note from "../Note/Note";
@@ -22,6 +22,7 @@ import { ButtonsSection, StyledCard, StyledForm, SubmitError, Title } from "./st
 
 const Form = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const {
     control,
@@ -45,7 +46,8 @@ const Form = () => {
     userData,
   });
 
-  const navigateNextClick = () => {
+  const onFormSuccess = (response) => {
+    dispatch(updateProfile(response));
     navigate(`/user-form${nextPage}`);
   };
 
@@ -70,7 +72,7 @@ const Form = () => {
   };
 
   const onFormSubmit = async (data) => {
-    mutateUserData(data, navigateNextClick, onError);
+    mutateUserData(data, onFormSuccess, onError);
   };
 
   return (
