@@ -2,6 +2,7 @@ import {
   Button,
   ButtonAppearance,
   ProgressBar,
+  RadioGroup,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
 import React from "react";
@@ -15,6 +16,7 @@ import { ComponentTypes, getFormComponent } from "../../../userForm/formContent"
 import getFormPage from "../../../userForm/formPages";
 import Note from "../Note/Note";
 import ProfilePic from "../ProfilePic/ProfilePic";
+import RadioGroupWithInput from "../RadioGroupWithInput/RadioGroupWithInput";
 import FormStep from "./FormStep";
 import { ButtonsSection, StyledCard, StyledForm, SubmitError, Title } from "./styles";
 
@@ -83,6 +85,15 @@ const Form = () => {
           // ProfilePic updates multiple data fields
           if (component?.type === ComponentTypes.picture)
             return <ProfilePic key={ProfilePic.name} control={control} setValue={setValue} />;
+
+          if (component?.type === ComponentTypes.radioWithInput)
+            return (
+              <RadioGroupWithInput
+                key={RadioGroupWithInput.name}
+                control={control}
+                {...component}
+              />
+            );
 
           return (
             <FormStep
