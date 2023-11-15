@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import store from "./app/store";
 import { initialise } from "./features/userData";
-import router from "./router";
+import router, { noLoginRouter } from "./router";
 import { CORE_WS_PATH, CORE_WS_SHEME } from "./ENVIRONMENT";
 
 import "./App.css";
@@ -66,5 +66,16 @@ function App({ data }) {
     </Provider>
   );
 }
+
+function AppPublic({ data }) {
+  return (
+    <Provider store={store}>
+      <InitializeDux data={data} />
+      <RouterProvider router={noLoginRouter} />
+    </Provider>
+  );
+}
+
+export { AppPublic };
 
 export default App;
