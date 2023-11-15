@@ -140,22 +140,7 @@ const noLoginRouter = createBrowserRouter(
             </FormLayout>
           ),
           errorElement: <RouterError />,
-        },
-        {
-          path: USER_FORM_ROUTE,
-          element: <FormLayout />,
-          errorElement: <RouterError />,
-          children: [
-            {
-              path: "",
-              element: <Welcome />,
-            },
-            {
-              path: ":slug",
-              element: <Form />,
-            },
-          ],
-        },
+        }
       ],
     },
   ],
