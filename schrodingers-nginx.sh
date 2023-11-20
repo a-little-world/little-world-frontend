@@ -1,11 +1,11 @@
 # Author: Tim Schupp
-# Creates a nginx container, rerouts a development frontent 
+# Creates a nginx container, rerouts a development frontent
 # to be served *with* the backend api trough one container
 # Allows to bypass same-site and cors oring of browser without modifying backend cors
 
 HOST="host.docker.internal:3000"
 #SERVER="host.docker.internal:8000"
-SERVER="s1.littleworld-test.com"
+SERVER="stage.little-world.com"
 #HOST="192.168.178.1:3000"
 #HOST="timschupp.de"
 

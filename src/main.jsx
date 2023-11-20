@@ -102,7 +102,9 @@ function Main() {
 
   const user = useSelector((state) => state.userData.user);
   const matches = useSelector((state) => state.userData.matches);
-  const dashboardVisibleMatches = [...matches.support.items, ...matches.confirmed.items];
+  const dashboardVisibleMatches = matches
+    ? [...matches.support.items, ...matches.confirmed.items]
+    : [];
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
@@ -135,9 +137,9 @@ function Main() {
   // Manage the top navbar & extrac case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
   const [topSelection, setTopSelection] = useState(null);
-  const selfProfile = user.id === userPk || typeof userPk === "undefined";
+  const selfProfile = user?.id === userPk || typeof userPk === "undefined";
   const selectedProfile = dashboardVisibleMatches.find(
-    (match) => match.partner.id === userPk
+    (match) => match?.partner?.id === userPk
   )?.partner;
 
   useEffect(() => {
@@ -251,19 +253,19 @@ function Main() {
         {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
       </div>
       <Modal
-        open={matches.proposed?.length || matches.unconfirmed?.length}
+        open={matches?.proposed?.length || matches?.unconfirmed?.length}
         locked={false}
         onClose={() => {}}
       >
-        {(matches.proposed?.length || matches.unconfirmed?.length) &&
+        {(matches?.proposed?.length || matches?.unconfirmed?.length) &&
           getMatchCardComponent({
-            isVolunteer: user.userType === "volunteer",
+            isVolunteer: user?.userType === "volunteer",
             onConfirm,
             onPartialConfirm,
             showNewMatch: Boolean(!preMatches?.length),
-            userData: matches.proposed?.length
-              ? matches.proposed.items[0]
-              : matches.unconfirmed.items[0],
+            userData: matches?.proposed?.length
+              ? matches?.proposed.items[0]
+              : matches?.unconfirmed.items[0],
           })}
       </Modal>
       {!(use === "chat") && <div className="disable-chat">{initChatComponent(true)}</div>}

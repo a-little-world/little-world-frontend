@@ -46,7 +46,8 @@ function Sidebar({ sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const self = useSelector((state) => state.userData.self);
+  const self = useSelector((state) => state.userData?.self);
+  if (!self) return null;
 
   const buttonData = [
     { label: "start", path: "/", Icon: DashboardIcon },

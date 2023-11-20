@@ -6,14 +6,14 @@ export const userDataSlice = createSlice({
   reducers: {
     initialise: (state, action) => {
       // TODO: this should NEVER be called twice will overwrite the full state
-      console.log("PAYLOAD", action.payload);
+      console.log("PAYLOAD", action.payload, { state, action });
       // state = {...action.payload};
-      state.communityEvents = action.payload.communityEvents;
-      state.user = action.payload.user;
-      state.notifications = action.payload.notifications;
-      state.matches = action.payload.matches;
-      state.apiOptions = action.payload.apiOptions;
-      state.formOptions = action.payload.apiOptions.profile;
+      state.communityEvents = action.payload?.communityEvents;
+      state.user = action.payload?.user;
+      state.notifications = action.payload?.notifications;
+      state.matches = action.payload?.matches;
+      state.apiOptions = action.payload?.apiOptions;
+      state.formOptions = action.payload?.apiOptions.profile;
     },
     updateProfile: (state, action) => {
       Object.keys(action.payload).forEach((key) => {
