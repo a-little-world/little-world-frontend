@@ -1,10 +1,16 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const Selector = styled.div`
-  display: flex;
+  display: none;
   padding: ${({ theme }) => theme.spacing.xxsmall};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.small}) {
+      display: flex;
+    }
+  `}
 `;
 
 function NbtSelector({ selection, setSelection, use }) {

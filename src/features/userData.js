@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const userDataSlice = createSlice({
   name: "userData",
-  initialState: {},
+  initialState: {
+    incomingCalls: [],
+  },
   reducers: {
     initialise: (state, action) => {
       // TODO: this should NEVER be called twice will overwrite the full state
@@ -14,7 +16,7 @@ export const userDataSlice = createSlice({
       state.matches = action.payload?.matches;
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
-      state.incomingCalls = action.payload?.incomingCalls;
+      state.incomingCalls = action.payload?.incomingCalls || [];
     },
     updateProfile: (state, action) => {
       Object.keys(action.payload).forEach((key) => {

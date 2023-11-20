@@ -127,7 +127,6 @@ const userDataDefaultTransform = (data) => {
 function Main() {
   const location = useLocation();
   const { userPk } = location.state || {};
-  const dispatch = useDispatch();
 
   const user = useSelector((state) => state.userData.user);
   const matches = useSelector((state) => state.userData.matches);
@@ -212,7 +211,7 @@ function Main() {
       </div>
       <div
         className={
-          callSetupPartner || incomingCalls.length || showCancelSearching
+          callSetupPartner || incomingCalls?.length || showCancelSearching
             ? "overlay-shade"
             : "overlay-shade hidden"
         }
@@ -238,7 +237,6 @@ function Main() {
           getMatchCardComponent({
             isVolunteer: user?.userType === "volunteer",
             onConfirm,
-
             onPartialConfirm,
             showNewMatch: Boolean(!preMatches?.length),
             userData: matches?.proposed?.length
