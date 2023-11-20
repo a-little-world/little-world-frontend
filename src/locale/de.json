@@ -543,5 +543,22 @@
   "reset_password.confirm_password_label": "Confimr Password",
   "reset_password.to_login": "To Login",
   "reset_password.submit_btn": "Reset Password",
-  "reset_password.success_message": "Password successfully reset. You can now login in with your new password."
+  "reset_password.success_message": "Password successfully reset. You can now login in with your new password.",
+
+  "verify_email.title": "Gib den Bestätigungscode ein",
+  "verify_email.description": "Um dein Konto zu bestätigen, gib bitte den 5-stelligen Code ein, den wir an {{ email }} gesendet haben.",
+  "verify_email.input_label": "Code",
+  "verify_email.code_placeholder": "5-stelliger Code",
+  "verify_email.help_text": "Du kannst deinen Code nicht finden? Schaue in deinem Spam-Ordner nach! Unauffindbar? Kontaktiere Contact  <a {\"href\": \"mailto:support@little-world.com\"}>support@little-world.com</a>",
+  "verify_email.submit_btn": "Weiter",
+  "verify_email.change_email_btn": "E-mail Adresse ändern",
+  "verify_email.resend_code": "Bestätigungscode erneut senden",
+  "verify_email.success_message": "Bestätigungscode erneut gesendet",
+
+  "change_email.title": "E-Mail Adresse ändern",
+  "change_email.description": "Bitte gib deine neue E-Mail Adresse ein.",
+  "change_email.input_label": "E-mail",
+  "change_email.input_placeholder": "beispiel@gmail.com",
+  "change_email.submit_btn": "Neue E-mail bestätigen",
+  "change_email.back_btn": "Abbrechen"
 }

@@ -67,10 +67,6 @@
   flex-direction: column;
 }
 
-.nav-bar-top .selector {
-  display: flex;
-}
-
 .nav-bar-top .selector > span {
   display: inherit;
 }

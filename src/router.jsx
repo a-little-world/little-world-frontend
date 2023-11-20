@@ -8,15 +8,18 @@ import RouterError from "./components/blocks/ErrorView/ErrorView";
 import Form from "./components/blocks/Form/Form";
 import FormLayout from "./components/blocks/Layout/FormLayout";
 import Welcome from "./components/blocks/Welcome/Welcome";
+import ChangeEmail from "./components/views/ChangeEmail";
 import ForgotPassword from "./components/views/ForgotPassword";
 import Login from "./components/views/Login";
 import ResetPassword from "./components/views/ResetPassword";
 import SignUp from "./components/views/SignUp";
+import VerifyEmail from "./components/views/VerifyEmail";
 import { BACKEND_PATH } from "./ENVIRONMENT";
 import Main from "./main";
 import {
   BASE_ROUTE,
   CALL_ROUTE,
+  CHANGE_EMAIL_ROUTE,
   CHAT_ROUTE,
   FORGOT_PASSWORD_ROUTE,
   HELP_ROUTE,
@@ -28,6 +31,7 @@ import {
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   USER_FORM_ROUTE,
+  VERIFY_EMAIL_ROUTE,
 } from "./routes";
 import theme from "./theme";
 
@@ -140,11 +144,44 @@ const noLoginRouter = createBrowserRouter(
             </FormLayout>
           ),
           errorElement: <RouterError />,
-        }
+        },
+        {
+          path: VERIFY_EMAIL_ROUTE,
+          element: (
+            <FormLayout>
+              <VerifyEmail />
+            </FormLayout>
+          ),
+          errorElement: <RouterError />,
+        },
+        {
+          path: CHANGE_EMAIL_ROUTE,
+          element: (
+            <FormLayout>
+              <ChangeEmail />
+            </FormLayout>
+          ),
+          errorElement: <RouterError />,
+        },
+        {
+          path: USER_FORM_ROUTE,
+          element: <FormLayout />,
+          errorElement: <RouterError />,
+          children: [
+            {
+              path: "",
+              element: <Welcome />,
+            },
+            {
+              path: ":slug",
+              element: <Form />,
+            },
+          ],
+        },
       ],
     },
   ],
-  { basename: `/` }
+  { basename: "/" }
 );
 
 export { noLoginRouter };

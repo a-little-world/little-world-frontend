@@ -13,7 +13,7 @@ import {
 import Cookies from "js-cookie";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -46,7 +46,6 @@ function Sidebar({ sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const self = useSelector((state) => state.userData.self);
 
   const buttonData = [
     { label: "start", path: "/", Icon: DashboardIcon },
@@ -82,8 +81,6 @@ function Sidebar({ sidebarMobile }) {
     notifications: notifications.unread.items.filter(({ status }) => status === "unread"),
     messages: [],
   };
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     // TODO:

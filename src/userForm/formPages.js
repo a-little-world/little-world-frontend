@@ -250,28 +250,25 @@ const formPages = {
         }),
       },
       {
-        type: ComponentTypes.radio,
-        currentValue: userData?.notify_channel,
-        dataField: "notify_channel",
-        formData: options?.notify_channel,
-      },
-      {
-        type: ComponentTypes.textInput,
-        currentValue: userData?.phone_mobile,
-        dataField: "phone_mobile",
-        formData: options?.phone_mobile,
-        getProps: (t) => ({
-          label: t("notifications.phone_number_label"),
-          type: "tel",
-          width: InputWidth.Medium,
-        }),
-      },
-      {
-        type: ComponentTypes.infoText,
-        getProps: (t) => ({
-          children: t("notifications.info"),
-          center: false,
-        }),
+        type: ComponentTypes.radioWithInput,
+        radioGroup: {
+          currentValue: userData?.notify_channel,
+          dataField: "notify_channel",
+          formData: options?.notify_channel,
+          textInputVal: options?.notify_channel?.[1]?.value,
+        },
+        textInput: {
+          currentValue: userData?.phone_mobile,
+          dataField: "phone_mobile",
+          formData: options?.phone_mobile,
+          getProps: (t) => ({
+            label: t("notifications.phone_number_label"),
+            type: "tel",
+            width: InputWidth.Medium,
+            infoText: t("notifications.info"),
+          }),
+          infoText: "notifications.info",
+        },
       },
     ],
   }),

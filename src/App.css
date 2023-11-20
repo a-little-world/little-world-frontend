@@ -82,10 +82,6 @@ button {
     display: none;
   }
 }
-/* hide switcher on all (for mobile) except main page */
-.nav-bar-top .selector {
-  display: none;
-}
 
 /* page header / title */
 .main-page .header {

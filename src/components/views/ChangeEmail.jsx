@@ -1,8 +1,7 @@
 import {
   Button,
+  ButtonAppearance,
   ButtonSizes,
-  ButtonVariations,
-  Text,
   TextInput,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
@@ -12,12 +11,13 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
 
-import { login } from "../../api";
+import { setNewEmail } from "../../api";
+import { VERIFY_EMAIL_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import { registerInput } from "./SignUp";
-import { ChangeLocation, StyledCard, StyledCta, StyledForm, Title } from "./SignUp.styles";
+import { Buttons, FormDescription, StyledCard, StyledForm, Title } from "./SignUp.styles";
 
-const Login = () => {
+const ChangeEmail = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,13 +51,13 @@ const Login = () => {
     }
   };
 
-  const onFormSubmit = async (data) => {
+  const onFormSubmit = async ({ email }) => {
     setIsSubmitting(true);
 
-    login(data)
+    setNewEmail({ email })
       .then(() => {
         setIsSubmitting(false);
-        navigate("/");
+        navigate(`/${VERIFY_EMAIL_ROUTE}`);
       })
       .error((error) => {
         onError(error);
@@ -68,8 +68,9 @@ const Login = () => {
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading2}>
-        {t("login.title")}
+        {t("change_email.title")}
       </Title>
+      <FormDescription>{t("change_email.description")}</FormDescription>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
           {...registerInput({
@@ -78,49 +79,35 @@ const Login = () => {
             options: { required: t("errorMsg.required") },
           })}
           id="email"
-          label={t("login.email_label")}
+          label={t("change_email.input_label")}
           error={errors?.email?.message}
-          placeholder={t("login.email_placeholder")}
+          placeholder={t("change_email.input_placeholder")}
           type="email"
         />
-        <TextInput
-          {...registerInput({
-            register,
-            name: "password",
-            options: { required: t("errorMsg.required") },
-          })}
-          id="password"
-          error={errors?.password?.message}
-          label={t("login.password_label")}
-          placeholder={t("login.password_placeholder")}
-          type="password"
-        />
-
-        <Button
-          variation={ButtonVariations.Inline}
-          onClick={() => navigate("/forgot-password")}
-          color={theme.color.text.link}
-        >
-          {t("login.forgot_password")}
-        </Button>
         <FormMessage $visible={errors?.root?.serverError} $type={MessageTypes.Error}>
           {errors?.root?.serverError?.message}
         </FormMessage>
-        <StyledCta
-          type="submit"
-          disabled={isSubmitting}
-          loading={isSubmitting}
-          size={ButtonSizes.Stretch}
-        >
-          {t("login.submit_btn")}
-        </StyledCta>
-        <ChangeLocation>
-          <Text>{t("login.or")}</Text>
-          <Text>{t("login.change_location_cta")}</Text>
-        </ChangeLocation>
+        <Buttons>
+          <Button
+            appearance={ButtonAppearance.Secondary}
+            onClick={() => navigate(`/${VERIFY_EMAIL_ROUTE}`)}
+            color={theme.color.text.link}
+            size={ButtonSizes.Medium}
+          >
+            {t("change_email.back_btn")}
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            loading={isSubmitting}
+            size={ButtonSizes.Medium}
+          >
+            {t("change_email.submit_btn")}
+          </Button>
+        </Buttons>
       </StyledForm>
     </StyledCard>
   );
 };
 
-export default Login;
+export default ChangeEmail;
