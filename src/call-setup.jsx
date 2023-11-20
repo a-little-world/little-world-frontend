@@ -2,6 +2,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
+import { selectMatchByPartnerId } from "./features/userData";
+import { useDispatch, useSelector } from "react-redux";
+import { blockIncomingCall } from "./features/userData";
 
 import "./i18n";
 import Link from "./path-prepend";
@@ -257,25 +260,27 @@ function CallSetup({ userPk, setCallSetupPartner }) {
 
 function IncomingCall({ userPk, matchesInfo, setVisible, setCallSetupPartner }) {
   const { t } = useTranslation();
-  const profileData = matchesInfo.filter((data) => data.userPk === userPk)[0];
-  const { firstName, imgSrc, avatarConfig, usesAvatar } = profileData;
+  const dispatch = useDispatch();
+  const matches = useSelector(state => state.userData.matches)
+  const {partner: profile, ...match} = selectMatchByPartnerId(matches, userPk)
+  console.log("INCOMING CALL", match, matches, userPk)
+  const usesAvatar = profile.image_type === "avatar";
   const answerCall = () => {
-    setVisible(false);
     setCallSetupPartner(userPk);
   };
   const rejectCall = () => {
-    setVisible(false);
+    dispatch(blockIncomingCall({userId: userPk}));
   };
   return (
     <div className="modal-box incoming-call-modal">
       <button type="button" className="modal-close" onClick={rejectCall} />
       <div className="content">
         {usesAvatar ? (
-          <Avatar className="profile-avatar" {...avatarConfig} />
+          <Avatar className="profile-avatar" {...profile.avatar_config} />
         ) : (
-          <img alt="match" className="profile-image" src={imgSrc} />
+          <img alt="match" className="profile-image" src={profile.image} />
         )}
-        <div className="message-text">{`${firstName} ${t("pcs_waiting")}`}</div>
+        <div className="message-text">{`${profile.first_name} ${t("pcs_waiting")}`}</div>
         <div className="buttons">
           <button type="button" className="answer-call" onClick={answerCall}>
             {t("pcs_btn_join_call")}

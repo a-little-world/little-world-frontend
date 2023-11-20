@@ -328,13 +328,13 @@ class Chat extends Component {
 
     if (onoff) {
       onlines.push(pk);
-      this.props.updateMatchesOnlineStates(stateMapping, true);
+      //this.props.updateMatchesOnlineStates(stateMapping, true);
     } else {
       const index = onlines.indexOf(pk);
       if (index > -1) {
         onlines.splice(index, 1);
       }
-      this.props.updateMatchesOnlineStates(stateMapping, false);
+      //this.props.updateMatchesOnlineStates(stateMapping, false);
     }
     this.setState({ onlinePKs: onlines });
     this.setState((prevState) => ({
@@ -588,7 +588,7 @@ class Chat extends Component {
     const { Core } = this;
     const pending = false; /* set this to change when request sent/pending */
 
-    if (this.props.userPk && !userPk && !this.props.backgroundMode) {
+    if (this.props.userPk && !userPk) {
       // this happens when clicking "message" button on a user profile
       document.body.classList.add("hide-mobile-header");
     }

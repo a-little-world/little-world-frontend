@@ -83,6 +83,33 @@ const router = createBrowserRouter(
           element: <Main />,
         },
         {
+          path: USER_FORM_ROUTE,
+          element: <FormLayout />,
+          errorElement: <RouterError />,
+          children: [
+            {
+              path: "",
+              element: <Welcome />,
+            },
+            {
+              path: ":slug",
+              element: <Form />,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  { basename: `${BACKEND_PATH}/` }
+);
+
+const noLoginRouter = createBrowserRouter(
+  [
+    {
+      path: BASE_ROUTE,
+      element: <Root />,
+      children: [
+        {
           path: LOGIN_ROUTE,
           element: (
             <FormLayout>
@@ -154,7 +181,9 @@ const router = createBrowserRouter(
       ],
     },
   ],
-  { basename: `${BACKEND_PATH}/` }
+  { basename: "/" }
 );
+
+export { noLoginRouter };
 
 export default router;

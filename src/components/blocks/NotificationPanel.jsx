@@ -22,7 +22,7 @@ function NotificationPanel() {
         ) : (
           <img src={user.profile.image} alt="current user" />
         )}
-        <div className="name">{`${user.profile.first_name} ${user.profile.last_name}`}</div>
+        <div className="name">{`${user.profile.first_name} ${user.profile.second_name}`}</div>
       </div>
       <hr />
       <div className="notifications-header">{t("nbr_notifications")}</div>
