@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
 
 import { login } from "../../api";
+import { APP_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import { registerInput } from "./SignUp";
 import { ChangeLocation, StyledCard, StyledCta, StyledForm, Title } from "./SignUp.styles";
@@ -57,7 +58,7 @@ const Login = () => {
     login(data)
       .then(() => {
         setIsSubmitting(false);
-        navigate("/");
+        navigate(`/${APP_ROUTE}/`);
       })
       .error((error) => {
         onError(error);

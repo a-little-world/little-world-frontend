@@ -1,4 +1,5 @@
 export const BASE_ROUTE = "/";
+export const APP_ROUTE = "app";
 export const CALL_ROUTE = "call";
 export const PARTNERS_ROUTE = "partners";
 export const CHAT_ROUTE = "chat";
@@ -18,3 +19,4 @@ export const TERMS_ROUTE = "nutzungsbedingungen";
 export const PRIVACY_ROUTE = "datenschutz";
 
 export const getHomeRoute = (locale, slug) => `${WP_HOME_ROUTE}/${locale}/${slug}`;
+export const getAppRoute = (slug) => `/${APP_ROUTE}/${slug}`;

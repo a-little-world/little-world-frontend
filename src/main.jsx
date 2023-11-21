@@ -16,7 +16,6 @@ import NbtSelectorAdmin from "./components/blocks/NbtSelectorAdmin";
 import NewMatchCard from "./components/blocks/NewMatchCard";
 import NotificationPanel from "./components/blocks/NotificationPanel";
 import PartnerProfiles from "./components/blocks/PartnerProfiles";
-import { BACKEND_PATH } from "./ENVIRONMENT";
 import {
   addUnconfirmed,
   changeMatchCategory,

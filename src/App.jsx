@@ -1,13 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Provider, useDispatch } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { useEffect, useState } from "react";
 
 import store from "./app/store";
-import { initialise } from "./features/userData";
-import router, { noLoginRouter } from "./router";
 import { CORE_WS_PATH, CORE_WS_SHEME } from "./ENVIRONMENT";
+import { initialise } from "./features/userData";
+import router from "./router";
 
 import "./App.css";
 
@@ -16,14 +15,13 @@ function InitializeDux({ data }) {
   dispatch(initialise(data));
 }
 
-
 const WebsocketBridge = () => {
   /**
    * Esablishes a websocket connection with the backend
    * This can be used to transmit any event from server to client
    * e.g.: client data can be cahnges by sending a message like: {
    * event: "reduction",
-   * payload: {...} 
+   * payload: {...}
    * } --> this will triger a simple redux dispatch in the frontend
    */
   const dispatch = useDispatch();
@@ -54,9 +52,10 @@ const WebsocketBridge = () => {
   }[readyState];
   console.log("SOCKET LOADED", connectionStatus);
 
-  return <></>
+  return <></>;
 };
 
+/// NOTE MOVE WEBSOCKET BRIDGE INTO ROUTER
 function App({ data }) {
   return (
     <Provider store={store}>
@@ -66,16 +65,5 @@ function App({ data }) {
     </Provider>
   );
 }
-
-function AppPublic({ data }) {
-  return (
-    <Provider store={store}>
-      <InitializeDux data={data} />
-      <RouterProvider router={noLoginRouter} />
-    </Provider>
-  );
-}
-
-export { AppPublic };
 
 export default App;
