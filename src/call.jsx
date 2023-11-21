@@ -6,9 +6,10 @@ import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Chat from "./chat/chat-full-view";
-import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
+import { BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
+import { APP_ROUTE, getAppRoute } from "./routes";
 import {
   getAudioTrack,
   getVideoTrack,
@@ -118,7 +119,7 @@ function VideoControls() {
         <span className="text">{t("vc_fs_btn_chat")}</span>
       </button>
       <Timer />
-      <Link to="/" className="end-call">
+      <Link to={getAppRoute("")} className="end-call">
         <div className="img" alt="end call" />
         <span className="text">{t("vc_fs_btn_end_call")}</span>
       </Link>
@@ -479,7 +480,7 @@ function Sidebar({ sideSelection }) {
 
 function CallScreen() {
   const [sideSelection, setSideSelection] = useState("chat");
-  const selfPk = useSelector((state) => state.userData.user.id)
+  const selfPk = useSelector((state) => state.userData.user.id);
   const navigate = useNavigate();
   const location = useLocation();
   const { userPk, tracks } = location.state || {};
@@ -493,7 +494,7 @@ function CallScreen() {
 
   useEffect(() => {
     if (!userPk) {
-      navigate(`${BACKEND_PATH}/`);
+      navigate(`/${APP_ROUTE}/`);
     }
     const { videoId, audioId } = tracks || {};
     if (!(videoId && audioId)) {

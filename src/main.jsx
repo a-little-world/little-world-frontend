@@ -1,7 +1,7 @@
 import { Modal } from "@a-little-world/little-world-design-system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { confirmMatch, partiallyConfirmMatch } from "./api";
 import CallSetup, { IncomingCall } from "./call-setup";
@@ -12,18 +12,10 @@ import ConfirmMatchCard from "./components/blocks/ConfirmMatchCard";
 import AppLayout from "./components/blocks/Layout/AppLayout";
 import MobileNavBar from "./components/blocks/MobileNavBar";
 import NbtSelector from "./components/blocks/NbtSelector";
-import NbtSelectorAdmin from "./components/blocks/NbtSelectorAdmin";
 import NewMatchCard from "./components/blocks/NewMatchCard";
 import NotificationPanel from "./components/blocks/NotificationPanel";
 import PartnerProfiles from "./components/blocks/PartnerProfiles";
-import { BACKEND_PATH } from "./ENVIRONMENT";
-import {
-  addUnconfirmed,
-  changeMatchCategory,
-  removeMatch,
-  removePreMatch,
-  setUsers,
-} from "./features/userData";
+import { changeMatchCategory, removeMatch } from "./features/userData";
 import Help from "./help";
 import "./i18n";
 import Notifications from "./notifications";
@@ -34,7 +26,7 @@ import { removeActiveTracks } from "./twilio-helper";
 import "./community-events.css";
 import "./main.css";
 
-function getMatchCardComponent({ showNewMatch, matchId, profile }) {
+const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
   const usesAvatar = profile.image_type === "avatar";
   const dispatch = useDispatch();
 
@@ -67,7 +59,7 @@ function getMatchCardComponent({ showNewMatch, matchId, profile }) {
       onConfirm={() => {
         partiallyConfirmMatch({ acceptDeny: true, matchId }).then((res) => {
           if (res.ok) {
-            res.json().then((data) => {
+            res.json().then(() => {
               // Change 'proposed' to 'unconfirmed' so it will render the 'new match' popup next
               dispatch(
                 changeMatchCategory({
@@ -103,25 +95,6 @@ function getMatchCardComponent({ showNewMatch, matchId, profile }) {
       }}
     />
   );
-}
-
-const userDataDefaultTransform = (data) => {
-  return {
-    userPk: data.user.hash,
-    firstName: data.profile.first_name,
-    lastName: "",
-    imgSrc: data.profile.image,
-    avatarCfg: data.profile.avatar_config,
-    usesAvatar: data.profile.image_type === "avatar",
-    description: data.profile.description,
-    type: "match",
-    extraInfo: {
-      about: data.profile.description,
-      interestTopics: data.profile.interests,
-      extraTopics: data.profile.additional_interests,
-      expectations: data.profile.language_skill_description,
-    },
-  };
 };
 
 function Main() {
@@ -157,7 +130,7 @@ function Main() {
   document.body.classList.remove("hide-mobile-header");
 
   // Manage the top navbar & extrac case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
-  const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
+  const use = location.pathname.split("/")[2] || (userPk ? "profile" : "main");
   const [topSelection, setTopSelection] = useState(null);
   const selfProfile = user?.id === userPk || typeof userPk === "undefined";
   const selectedProfile = dashboardVisibleMatches.find(
@@ -234,7 +207,7 @@ function Main() {
         onClose={() => {}}
       >
         {(matches?.proposed?.length || matches?.unconfirmed?.length) &&
-          getMatchCardComponent({
+          MatchCardComponent({
             isVolunteer: user?.userType === "volunteer",
             onConfirm,
             onPartialConfirm,

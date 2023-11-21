@@ -1,14 +1,15 @@
 import throttle from "lodash.throttle";
-import sanitizeHtml from 'sanitize-html';
 import React, { Component } from "react";
 import { Button, Input, MessageList, Navbar, SideBar } from "react-chat-elements";
 import { withTranslation } from "react-i18next";
 import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
+import sanitizeHtml from "sanitize-html";
 
 import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
 import AppointmentsLayout from "../layout/layout";
 import Link from "../path-prepend";
+import { getAppRoute } from "../routes";
 import {
   createNewDialogModelFromIncomingMessageBox,
   fetchDialogs,
@@ -67,7 +68,7 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
     const result = dialogList.map((dialog) => {
       console.log("MATCHINFO", matchesInfo);
       const matchInfo = matchesInfo.filter(({ partner }) => partner.id === dialog.alt)[0];
-      console.log("FOUND INFO", matchInfo)
+      console.log("FOUND INFO", matchInfo);
       if (matchInfo === undefined) {
         return Object.assign(dialog, {
           avatar: defaultArcivedChatAvatar,
@@ -79,7 +80,7 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
        * one with object speader so that the object prototype is not altered
        */
       const matchProfile = matchInfo.partner;
-      const usesAvatar = matchProfile.image_type === "avatar"
+      const usesAvatar = matchProfile.image_type === "avatar";
       let avatarImgOrDefault = usesAvatar ? matchProfile.avatar_config : matchProfile.image;
       if (matchProfile.image === null && Object.keys(matchProfile.avatar_config).length === 0) {
         avatarImgOrDefault = defaultArcivedChatAvatar;
@@ -182,7 +183,7 @@ class Chat extends Component {
       }
       if (this.props.userPkMappingCallback !== undefined) {
         this.props.userPkMappingCallback(tmpMatchIdMap);
-        console.log("SENDING MAPPING", tmpMatchIdMap)
+        console.log("SENDING MAPPING", tmpMatchIdMap);
       }
       this.setState({ userMatchPkMap: tmpMatchIdMap });
       if (r.tag === 0) {
@@ -328,13 +329,13 @@ class Chat extends Component {
 
     if (onoff) {
       onlines.push(pk);
-      //this.props.updateMatchesOnlineStates(stateMapping, true);
+      // this.props.updateMatchesOnlineStates(stateMapping, true);
     } else {
       const index = onlines.indexOf(pk);
       if (index > -1) {
         onlines.splice(index, 1);
       }
-      //this.props.updateMatchesOnlineStates(stateMapping, false);
+      // this.props.updateMatchesOnlineStates(stateMapping, false);
     }
     this.setState({ onlinePKs: onlines });
     this.setState((prevState) => ({
@@ -517,17 +518,21 @@ class Chat extends Component {
                 return {
                   ...msg,
                   text: (
-                    <div className="styled-message-box" dangerouslySetInnerHTML={{__html: sanitizeHtml(msg.text, {
-                      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'button'],
-                      allowedAttributes: {
-                        a: ['href', 'target'],
-                        button: ['data-cal-link', 'data-cal-config']
-                      }
-                    })}}>
-                    </div>
-                  )
-                }
-               })}
+                    <div
+                      className="styled-message-box"
+                      dangerouslySetInnerHTML={{
+                        __html: sanitizeHtml(msg.text, {
+                          allowedTags: ["b", "i", "em", "strong", "a", "button"],
+                          allowedAttributes: {
+                            a: ["href", "target"],
+                            button: ["data-cal-link", "data-cal-config"],
+                          },
+                        }),
+                      }}
+                    />
+                  ),
+                };
+              })}
             />
             <div id="test-input">
               <Input
@@ -628,32 +633,34 @@ class Chat extends Component {
               type="light"
               data={{
                 className: "",
-                top: (<>
-                <div className="chat-list">
-                  <ToastContainer />
-                  <h3 className="chat-header"></h3>
-                  <Input
-                    placeholder={t("chat_search")}
-                    onKeyPress={(e) => {
-                      if (e.charCode !== 13) {
-                        this.localSearch();
-                      }
-                      if (e.charCode === 13) {
-                        this.localSearch();
+                top: (
+                  <div className="chat-list">
+                    <ToastContainer />
+                    <h3 className="chat-header" />
+                    <Input
+                      placeholder={t("chat_search")}
+                      onKeyPress={(e) => {
+                        if (e.charCode !== 13) {
+                          this.localSearch();
+                        }
+                        if (e.charCode === 13) {
+                          this.localSearch();
 
-                        e.preventDefault();
-                        return false;
-                      }
-                    }}
-                  />
+                          e.preventDefault();
+                          return false;
+                        }
+                      }}
+                    />
 
-                  <ChatList
-                    className='chat-list'
-                    onClick={clickUser}
-                    dataSource={this.state.filteredDialogList.slice().sort(chatItemSortingFunction)}
-                  />
-                </div>
-                </>)
+                    <ChatList
+                      className="chat-list"
+                      onClick={clickUser}
+                      dataSource={this.state.filteredDialogList
+                        .slice()
+                        .sort(chatItemSortingFunction)}
+                    />
+                  </div>
+                ),
               }}
             />
             <div className="new-partner">
@@ -702,7 +709,7 @@ class Chat extends Component {
                   >
                     <img alt="return to chat partner selection" />
                   </button>
-                  <Link to="/" state={{ userPk }} className="profile">
+                  <Link to={getAppRoute("")} state={{ userPk }} className="profile">
                     <ChatItem
                       {...this.state.selectedDialog}
                       date={null}

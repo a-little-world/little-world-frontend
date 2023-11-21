@@ -2,12 +2,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
-import { selectMatchByPartnerId } from "./features/userData";
 import { useDispatch, useSelector } from "react-redux";
-import { blockIncomingCall } from "./features/userData";
 
+import { blockIncomingCall, selectMatchByPartnerId } from "./features/userData";
 import "./i18n";
 import Link from "./path-prepend";
+import { CALL_ROUTE, getAppRoute } from "./routes";
 import { getAudioTrack, getVideoTrack, toggleLocalTracks } from "./twilio-helper";
 
 import "./call-setup.css";
@@ -239,7 +239,11 @@ function CallSetup({ userPk, setCallSetupPartner }) {
             <AudioInputSelect setAudio={setAudio} />
             <AudioOutputSelect />
           </div>
-          <Link to="/call" className="av-setup-confirm" state={{ userPk, tracks }}>
+          <Link
+            to={getAppRoute(CALL_ROUTE)}
+            className="av-setup-confirm"
+            state={{ userPk, tracks }}
+          >
             {t("pcs_btn_join_call")}
           </Link>
         </>
@@ -261,15 +265,15 @@ function CallSetup({ userPk, setCallSetupPartner }) {
 function IncomingCall({ userPk, matchesInfo, setVisible, setCallSetupPartner }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const matches = useSelector(state => state.userData.matches)
-  const {partner: profile, ...match} = selectMatchByPartnerId(matches, userPk)
-  console.log("INCOMING CALL", match, matches, userPk)
+  const matches = useSelector((state) => state.userData.matches);
+  const { partner: profile, ...match } = selectMatchByPartnerId(matches, userPk);
+  console.log("INCOMING CALL", match, matches, userPk);
   const usesAvatar = profile.image_type === "avatar";
   const answerCall = () => {
     setCallSetupPartner(userPk);
   };
   const rejectCall = () => {
-    dispatch(blockIncomingCall({userId: userPk}));
+    dispatch(blockIncomingCall({ userId: userPk }));
   };
   return (
     <div className="modal-box incoming-call-modal">

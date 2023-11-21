@@ -11,13 +11,22 @@ import {
   SettingsIcon,
 } from "@a-little-world/little-world-design-system";
 import Cookies from "js-cookie";
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-import { BACKEND_PATH, BACKEND_URL } from "../../ENVIRONMENT";
+import { BACKEND_URL } from "../../ENVIRONMENT";
+import {
+  APP_ROUTE,
+  CHAT_ROUTE,
+  getAppRoute,
+  HELP_ROUTE,
+  LOGIN_ROUTE,
+  PROFILE_ROUTE,
+  SETTINGS_ROUTE,
+} from "../../routes";
 import Logo from "../atoms/Logo";
 import MenuLink from "../atoms/MenuLink";
 
@@ -48,11 +57,11 @@ function Sidebar({ sidebarMobile }) {
   const navigate = useNavigate();
 
   const buttonData = [
-    { label: "start", path: "/", Icon: DashboardIcon },
-    { label: "messages", path: "/chat", Icon: MessageIcon },
-    { label: "my_profile", path: "/profile", Icon: ProfileIcon },
-    { label: "help", path: "/help", Icon: QuestionIcon },
-    { label: "settings", path: "/settings", Icon: SettingsIcon },
+    { label: "start", path: getAppRoute(""), Icon: DashboardIcon },
+    { label: "messages", path: getAppRoute(CHAT_ROUTE), Icon: MessageIcon },
+    { label: "my_profile", path: getAppRoute(PROFILE_ROUTE), Icon: ProfileIcon },
+    { label: "help", path: getAppRoute(HELP_ROUTE), Icon: QuestionIcon },
+    { label: "settings", path: getAppRoute(SETTINGS_ROUTE), Icon: SettingsIcon },
     {
       label: "log_out",
       clickEvent: () => {
@@ -62,7 +71,7 @@ function Sidebar({ sidebarMobile }) {
         })
           .then((response) => {
             if (response.status === 200) {
-              navigate("/login/"); // Redirect only valid in production
+              navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
               navigate(0); // to reload the page
             } else {
               console.error("server error", response.status, response.statusText);
@@ -82,24 +91,17 @@ function Sidebar({ sidebarMobile }) {
     messages: [],
   };
 
-  useEffect(() => {
-    // TODO:
-  }, []);
-
   return (
     <>
       <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
         <Logo />
-        {buttonData.map(({ label, path, clickEvent, Icon }) =>
-          typeof clickEvent === typeof undefined ? (
+        {buttonData.map(({ label, path, clickEvent, Icon }) => {
+          const isActive = location.pathname === `/${APP_ROUTE}${path}`;
+          return typeof clickEvent === typeof undefined ? (
             <MenuLink
               to={path}
               key={label}
-              $appearance={
-                location.pathname === `${BACKEND_PATH}${path}`
-                  ? ButtonAppearance.Secondary
-                  : ButtonAppearance.Primary
-              }
+              $appearance={isActive ? ButtonAppearance.Secondary : ButtonAppearance.Primary}
             >
               {["messages", "notifications"].includes(label) && Boolean(unread[label].length) && (
                 <UnreadDot count={unread[label].length} />
@@ -107,9 +109,7 @@ function Sidebar({ sidebarMobile }) {
               <Icon
                 label={label}
                 labelId={label}
-                {...(location.pathname === `${BACKEND_PATH}${path}`
-                  ? { color: "white" }
-                  : { gradient: Gradients.Blue })}
+                {...(isActive ? { color: "white" } : { gradient: Gradients.Blue })}
               />
               {t(`nbs_${label}`)}
             </MenuLink>
@@ -118,23 +118,18 @@ function Sidebar({ sidebarMobile }) {
               key={label}
               type="button"
               variation={ButtonVariations.Option}
-              appearance={
-                location.pathname === `${BACKEND_PATH}${path}`
-                  ? ButtonAppearance.Secondary
-                  : ButtonAppearance.Primary
-              }
+              appearance={isActive ? ButtonAppearance.Secondary : ButtonAppearance.Primary}
               onClick={clickEvent}
             >
               <LogoutIcon color="#5f5f5f" label={label} labelId={label} />
               {t(`nbs_${label}`)}
             </Button>
-          )
-        )}
+          );
+        })}
       </div>
       <div className="mobile-shade" onClick={() => setShowSidebarMobile(false)} />
     </>
   );
-  // else  return <h1>no notifications</h1>
 }
 
 export default Sidebar;
