@@ -3,12 +3,12 @@
   "header.terms": "Terms",
   "headers": {
     "home": "Little World",
-    "user": "user profile",
-    "chat": "messages",
-    "notifications": "notifications",
-    "profile": "my profile",
-    "help": "help",
-    "settings": "settings"
+    "user": "User profile",
+    "chat": "Messages",
+    "notifications": "Notifications",
+    "profile": "My profile",
+    "help": "Help",
+    "settings": "Settings"
   },
   "btn_save": "save",
   "btn_cancel": "cancel",

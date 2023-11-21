@@ -9,7 +9,7 @@ import Chat from "./chat/chat-full-view";
 import { BACKEND_URL } from "./ENVIRONMENT";
 import "./i18n";
 import Link from "./path-prepend";
-import { APP_ROUTE } from "./routes";
+import { APP_ROUTE, getAppRoute } from "./routes";
 import {
   getAudioTrack,
   getVideoTrack,
@@ -119,7 +119,7 @@ function VideoControls() {
         <span className="text">{t("vc_fs_btn_chat")}</span>
       </button>
       <Timer />
-      <Link to="/" className="end-call">
+      <Link to={getAppRoute("")} className="end-call">
         <div className="img" alt="end call" />
         <span className="text">{t("vc_fs_btn_end_call")}</span>
       </Link>

@@ -18,7 +18,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { BACKEND_URL } from "../../ENVIRONMENT";
-import { APP_ROUTE } from "../../routes";
+import {
+  APP_ROUTE,
+  CHAT_ROUTE,
+  getAppRoute,
+  HELP_ROUTE,
+  LOGIN_ROUTE,
+  PROFILE_ROUTE,
+  SETTINGS_ROUTE,
+} from "../../routes";
 import Logo from "../atoms/Logo";
 import MenuLink from "../atoms/MenuLink";
 
@@ -49,11 +57,11 @@ function Sidebar({ sidebarMobile }) {
   const navigate = useNavigate();
 
   const buttonData = [
-    { label: "start", path: "/", Icon: DashboardIcon },
-    { label: "messages", path: "/chat", Icon: MessageIcon },
-    { label: "my_profile", path: "/profile", Icon: ProfileIcon },
-    { label: "help", path: "/help", Icon: QuestionIcon },
-    { label: "settings", path: "/settings", Icon: SettingsIcon },
+    { label: "start", path: getAppRoute(""), Icon: DashboardIcon },
+    { label: "messages", path: getAppRoute(CHAT_ROUTE), Icon: MessageIcon },
+    { label: "my_profile", path: getAppRoute(PROFILE_ROUTE), Icon: ProfileIcon },
+    { label: "help", path: getAppRoute(HELP_ROUTE), Icon: QuestionIcon },
+    { label: "settings", path: getAppRoute(SETTINGS_ROUTE), Icon: SettingsIcon },
     {
       label: "log_out",
       clickEvent: () => {
@@ -63,7 +71,7 @@ function Sidebar({ sidebarMobile }) {
         })
           .then((response) => {
             if (response.status === 200) {
-              navigate("/login/"); // Redirect only valid in production
+              navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
               navigate(0); // to reload the page
             } else {
               console.error("server error", response.status, response.statusText);

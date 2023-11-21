@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
+import WebsocketBridge from "../../../WebsocketBridge";
 import Sidebar from "../Sidebar";
 
 const Wrapper = styled.div`
@@ -14,6 +15,7 @@ const Wrapper = styled.div`
 const AppLayout = ({ children, page, sidebarMobile }) => {
   return (
     <Wrapper $page={page} className={`main-page show-${page}`}>
+      <WebsocketBridge />
       <Sidebar sidebarMobile={sidebarMobile} />
       {children || <Outlet />}
     </Wrapper>

@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 
-import App, { AppPublic } from "./App";
+import App from "./App";
 import GLOB from "./ENVIRONMENT";
 import { updateTranslationResources } from "./i18n";
 import reportWebVitals from "./reportWebVitals";
@@ -26,21 +26,21 @@ if (GLOB.DEVELOPMENT) {
     });
   });
 } else {
-  window.renderApp = ({ initData }, { apiTranslations }, publicRoutes=false) => {
+  window.renderApp = ({ initData }, { apiTranslations }, publicRoutes = false) => {
     updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
     // If not in development just render ...
     const container = document.getElementById("root");
     const root = createRoot(container);
-    if(!publicRoutes){
+    if (!publicRoutes) {
       root.render(
         <React.StrictMode>
           <App data={initData} />
         </React.StrictMode>
       );
-    }else{
+    } else {
       root.render(
         <React.StrictMode>
-          <AppPublic data={initData} />
+          <App data={initData} />
         </React.StrictMode>
       );
     }

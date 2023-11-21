@@ -4,6 +4,7 @@ import Avatar from "react-nice-avatar";
 import { useSelector } from "react-redux";
 
 import Link from "../../path-prepend";
+import { getAppRoute, NOTIFICATIONS_ROUTE } from "../../routes";
 
 function NotificationPanel() {
   const { t } = useTranslation();
@@ -37,7 +38,7 @@ function NotificationPanel() {
           </div>
         ))}
       </div>
-      <Link to="/notifications" className="show-all">
+      <Link to={getAppRoute(NOTIFICATIONS_ROUTE)} className="show-all">
         {t("nbr_show_all")}
       </Link>
     </div>
