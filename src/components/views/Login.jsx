@@ -11,6 +11,8 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
+import { Provider, useDispatch } from "react-redux";
+import { initialise } from "../../features/userData";
 
 import { login } from "../../api";
 import { APP_ROUTE } from "../../routes";
@@ -19,6 +21,7 @@ import { registerInput } from "./SignUp";
 import { ChangeLocation, StyledCard, StyledCta, StyledForm, Title } from "./SignUp.styles";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const theme = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,9 +59,13 @@ const Login = () => {
     setIsSubmitting(true);
 
     login(data)
-      .then(() => {
-        setIsSubmitting(false);
-        navigate(`/${APP_ROUTE}/`);
+      .then((data) => {
+        data.json().then((data) => {
+          console.log("INIT DATA", data)
+          dispatch(initialise(data));
+          setIsSubmitting(false);
+          navigate(`/${APP_ROUTE}/`);
+        })
       })
       .error((error) => {
         onError(error);
