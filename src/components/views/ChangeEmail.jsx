@@ -59,7 +59,7 @@ const ChangeEmail = () => {
         setIsSubmitting(false);
         navigate(`/${VERIFY_EMAIL_ROUTE}`);
       })
-      .error((error) => {
+      .catch((error) => {
         onError(error);
         setIsSubmitting(false);
       });

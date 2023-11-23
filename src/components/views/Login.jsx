@@ -9,12 +9,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { Provider, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
-import { Provider, useDispatch } from "react-redux";
-import { initialise } from "../../features/userData";
 
 import { login } from "../../api";
+import { initialise } from "../../features/userData";
 import { APP_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import { registerInput } from "./SignUp";
@@ -61,13 +61,13 @@ const Login = () => {
     login(data)
       .then((data) => {
         data.json().then((data) => {
-          console.log("INIT DATA", data)
+          console.log("INIT DATA", data);
           dispatch(initialise(data));
           setIsSubmitting(false);
           navigate(`/${APP_ROUTE}/`);
-        })
+        });
       })
-      .error((error) => {
+      .catch((error) => {
         onError(error);
         setIsSubmitting(false);
       });

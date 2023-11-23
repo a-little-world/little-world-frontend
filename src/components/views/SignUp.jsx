@@ -72,7 +72,7 @@ const SignUp = () => {
         setIsSubmitting(false);
         navigate("/app");
       })
-      .error((error) => {
+      .catch((error) => {
         onError(error);
         setIsSubmitting(false);
       });

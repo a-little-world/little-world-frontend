@@ -513,10 +513,10 @@
   "sign_up.birth_year_label": "Geburtsjahr",
   "sign_up.birth_year_tooltip": "",
   "sign_up.birth_year_placeholder": "1971",
-  "sign_up.terms_label": "Ich akzeptiere die <a {'href': '/terms'}>Nutzungsbedingungen</a>",
-  "sign_up.privacy_policy": "Bitte nehmen Sie unsere <a {'href': '/privacy_policy'}>Datenschutzinformationen</a>",
+  "sign_up.terms_label": "Ich akzeptiere die <a {\"href\": \"/terms\"}>Nutzungsbedingungen</a>",
+  "sign_up.privacy_policy": "Bitte nehmen Sie unsere <a {\"href\": \"/privacy_policy\"}>Datenschutzinformationen</a>",
   "sign_up.submit_btn": "Konto erstellen",
-  "sign_up.change_location_cta": "Du hast bereits ein Konto? <a {'href': '/login'}>Anmelden</a>",
+  "sign_up.change_location_cta": "Du hast bereits ein Konto? <a {\"href\": \"/login\"}>Anmelden</a>",
 
   "login.title": "Anmelden",
   "login.email_label": "E-mail",

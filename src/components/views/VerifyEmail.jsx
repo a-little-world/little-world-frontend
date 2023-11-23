@@ -90,7 +90,7 @@ const VerifyEmail = () => {
           label={t("verify_email.input_label")}
           error={errors?.verificationCode?.message}
           placeholder={t("verify_email.code_placeholder")}
-          type="email"
+          type="number"
         />
         <Button
           variation={ButtonVariations.Inline}
