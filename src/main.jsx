@@ -103,6 +103,7 @@ const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
 function Main() {
   const location = useLocation();
   const { userPk } = location.state || {};
+  const dispatch = useDispatch();
 
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -110,21 +111,16 @@ function Main() {
   // In order to define the frontent paginator numbers
   const pageItems = 10;
   const handlePageChange = async (page) => {
-    try {
-      const res = await updateMatchData(page, pageItems);
-      if (res && res.status === 200) {
-        const data = await res.json();
-        if (data) {
-          dispatch(updateConfirmedData(data.data.confirmed_matches));
-        setCurrentPage(page);
-        }
-      }
-      else {
-        console.error(`Cancelling match searching failed with error ${res.status}: ${res.statusText}`);
+    const res = await updateMatchData(page, pageItems);
+    if (res && res.status === 200) {
+      const data = await res.json();
+      if (data) {
+        dispatch(updateConfirmedData(data.data.confirmed_matches));
+      setCurrentPage(page);
       }
     }
-    catch (error) {
-      console.error('An error occurred:', error);
+    else {
+      console.error(`Cancelling match searching failed with error ${res.status}: ${res.statusText}`);
     }
   };
 
