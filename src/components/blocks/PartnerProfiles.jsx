@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
 import { BACKEND_URL } from "../../ENVIRONMENT";
-import { updateSearchState } from "../../features/userData";
+import { selectMatchesDisplay, updateSearchState } from "../../features/userData";
 import { ProfileBox } from "../../profile";
 import PartnerActionCard from "./PartnerActionCard";
 
@@ -13,18 +13,9 @@ function PartnerProfiles({ setCallSetupPartner, setShowCancel, totalPaginations 
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const matches = useSelector((state) => state.userData.matches);
-  const [matchesDisplay, setMatchesDisplay] = useState();
+  const matchesDisplay = useSelector(selectMatchesDisplay);
   const user = useSelector((state) => state.userData.user);
   const [partnerActionData, setPartnerActionData] = useState(null);
-
-  useEffect(() => {
-    if (matches.confirmed.currentPage === 1) {
-      setMatchesDisplay([...matches.support.items, ...matches.confirmed.items])
-    }
-    else {
-      setMatchesDisplay([...matches.confirmed.items])
-    }
-  }, [matches])
 
   function updateUserMatchingState() {
     const updatedState = "searching";
@@ -57,7 +48,7 @@ function PartnerProfiles({ setCallSetupPartner, setShowCancel, totalPaginations 
   return (
     <div className="profiles">
       {matchesDisplay
-        ?.map((match) => {
+        .map((match) => {
           return (
             <ProfileBox
               key={match.partner.id}

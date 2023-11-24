@@ -29,84 +29,7 @@ import { removeMatch, changeMatchCategory } from "./features/userData";
 
 import "./community-events.css";
 import "./main.css";
-import styled from "styled-components";
-
-const Pagination = styled.div`
-  width: fit-content;
-  margin: auto;
-`;
-
-const PaginationList = styled.ul`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  background: #fff;
-  max-width: 450px;
-  ${({ theme }) => `
-  padding: ${theme.spacing.xxsmall};
-  border-radius: ${theme.spacing.large};
-  `};
-  box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-`;
-
-const PaginationItem = styled.li`
-  color: #db590b;
-  list-style: none;
-  text-align: center;
-  font-weight: 500;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.3s ease;
-  font-size: 18px;
-  ${({ theme }) => `
-  line-height: ${theme.spacing.large};
-  `};
-`;
-
-const PaginationNumber = styled(PaginationItem)`
-  list-style: none;
-  margin: 0 3px;
-  border-radius: 50%;
-
-  ${({ theme }) => `
-    height: ${theme.spacing.xlarge};
-    width: ${theme.spacing.xlarge};
-    line-height: ${theme.spacing.xlarge};
-  `};
-
-  &.first {
-    margin: 0px 3px 0 -5px;
-  }
-
-  &.last {
-    margin: 0px -5px 0 3px;
-  }
-
-  &.active {
-    background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
-    color: #fff;
-  }
-`;
-
-const PaginationDots = styled(PaginationItem)`
-font-size: 22px;
-  cursor: default;
-`;
-
-const PaginationButton = styled(PaginationItem)`
-  ${({ theme }) => `
-    padding: ${theme.spacing.xxxsmall} ${theme.spacing.medium};
-    border-radius: ${theme.spacing.xlarge};
-  `};
-
-    &.disableButton {
-    color: #888;
-  }
-`;
-
-
-
-
+import CustomPagination from "./CustomPagination";
 
 function getMatchCardComponent({ showNewMatch, matchId, profile }) {
   const usesAvatar = profile.image_type === "avatar";
@@ -202,29 +125,40 @@ function Main() {
 
   // In order to define the frontent paginator numbers
   const pageItems = 10;
-  const firstPageItems = 9;
-
-  useEffect(() => {
-    updateMatchData(currentPage, firstPageItems, pageItems).then((res) => {
-      if (res.status === 200) {
-        return res.json()
-      } else {
-        console.error(`Cancelling match searching failed with error ${res.status}: ${statusText}`);
+  const handlePageChange = async (page) => {
+    try {
+      const res = await updateMatchData(page, pageItems);
+      if (res && res.status === 200) {
+        const data = await res.json();
+        if (data) {
+          dispatch(updateConfirmedData(data.data.confirmed_matches));
+        setCurrentPage(page);
+        }
       }
-    }).then((res) => {
-      dispatch(updateConfirmedData(res.data));
-    })
-  }, [currentPage])
+      else {
+        console.error(`Cancelling match searching failed with error ${res.status}: ${res.statusText}`);
+      }
+    }
+    catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
 
   const user = useSelector((state) => state.userData.user);
   const matches = useSelector((state) => state.userData.matches);
   const incomingCalls = useSelector((state) => state.userData.incomingCalls);
   const dashboardVisibleMatches = [...matches.support.items, ...matches.confirmed.items];
+  const [initialPageChangeDone, setInitialPageChangeDone] = useState(false);
 
   useEffect(() => {
-    const totalPage = ((matches?.confirmed?.totalItems + 1) / pageItems);
+    const totalPage = ((matches?.confirmed?.totalItems) / pageItems);
     setTotalPages(Math.ceil(totalPage))
   }, [matches])
+
+  if (!initialPageChangeDone) {
+    handlePageChange(currentPage);
+    setInitialPageChangeDone(true);
+  }
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
@@ -265,93 +199,10 @@ function Main() {
     }
   }, [location, use]);
 
-  // pagination function for conversation partners
-  const createPagination = (page) => {
-    const liTag = [];
-    let beforePage = Math.max(1, page - 1);
-    let afterPage = page + 1;
+  const onPageChange = (page) => {
+    handlePageChange(page)
+  }
 
-    liTag.push(
-      <PaginationItem
-        className="btn prev"
-        onClick={() => setCurrentPage(Math.max(1, page - 1))}
-      >
-        <PaginationButton className={page === 1 && 'disableButton'}>
-          <i className="fas fa-angle-left"></i> Prev
-        </PaginationButton>
-      </PaginationItem>
-    );
-
-    if (page > 2) {
-      liTag.push(
-        <PaginationNumber className="first numb" onClick={() => setCurrentPage(1)}>
-          <span>1</span>
-        </PaginationNumber>
-      );
-
-      if (page > 3) {
-        liTag.push(
-          <PaginationDots>
-            <span>...</span>
-          </PaginationDots>
-        );
-      }
-    }
-
-    for (let plength = beforePage; plength <= afterPage; plength++) {
-      if (plength > totalPages) {
-        continue;
-      }
-
-      const active = page === plength ? 'active' : '';
-
-      liTag.push(
-        <PaginationNumber
-          className={`numb ${active}`}
-          onClick={() => setCurrentPage(plength)}
-        >
-          <span>{plength}</span>
-        </PaginationNumber>
-      );
-    }
-
-    if (page < totalPages - 1) {
-      if (page < totalPages - 2) {
-        liTag.push(
-          <PaginationDots>
-            <span>...</span>
-          </PaginationDots>
-        );
-      }
-      liTag.push(
-        <PaginationNumber
-          className="last numb"
-          onClick={() => setCurrentPage(totalPages)}
-        >
-          <span>{totalPages}</span>
-        </PaginationNumber>
-      );
-    }
-
-    liTag.push(
-      <PaginationItem
-        className="btn next"
-        onClick={() => setCurrentPage(Math.min(totalPages, page + 1))}
-      >
-        <PaginationButton className={totalPages === page && 'disableButton'}>
-          Next <i className="fas fa-angle-right"></i>
-        </PaginationButton>
-      </PaginationItem>
-    );
-
-    return (
-      <Pagination>
-        <PaginationList>
-          {liTag}
-        </PaginationList>
-      </Pagination>
-    );
-  };
 
   return (
     <AppLayout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
@@ -374,7 +225,11 @@ function Main() {
                 </div>
                 {
                   totalPages > 1 &&
-                  createPagination(currentPage)
+                  <CustomPagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    onPageChange={onPageChange}
+                  />
                 }
               </>
             )}

@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from "@reduxjs/toolkit";
 
 export const userDataSlice = createSlice({
   name: "userData",
@@ -86,5 +86,11 @@ export const selectMatchByPartnerId = (matches, partnerId) => {
   }
   return null;
 }
+
+export const selectMatchesDisplay = createSelector(
+  [(state) => state.userData.matches],
+  ({ confirmed, support }) =>
+    confirmed.currentPage === 1 ? [...support.items, ...confirmed.items] : [...confirmed.items]
+);
 
 export default userDataSlice.reducer;

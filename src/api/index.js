@@ -205,8 +205,8 @@ export const resetPassword = ({ password, token }) =>
   });
 
 
-export const updateMatchData = (currentPage, firstPageItems, pageItems) =>
-  fetch(`${BACKEND_URL}/api/matches/confirmed/?page=${currentPage}&itemsPerPage=${currentPage === 1 ? firstPageItems : pageItems}`, {
+export const updateMatchData = (page, pageItems) =>
+  fetch(`${BACKEND_URL}/api/matches/confirmed/?page=${page}&itemsPerPage=${pageItems}`, {
     method: "GET",
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
