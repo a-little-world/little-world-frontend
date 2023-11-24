@@ -84,7 +84,7 @@ const VerifyEmail = () => {
           {...registerInput({
             register,
             name: "verficationCode",
-            options: { required: t("errorMsg.required") },
+            options: { required: t("error.required") },
           })}
           id="text"
           label={t("verify_email.input_label")}

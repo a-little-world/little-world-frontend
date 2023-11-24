@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Provider, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
 
@@ -83,7 +83,7 @@ const Login = () => {
           {...registerInput({
             register,
             name: "email",
-            options: { required: t("errorMsg.required") },
+            options: { required: t("error.required") },
           })}
           id="email"
           label={t("login.email_label")}
@@ -95,7 +95,7 @@ const Login = () => {
           {...registerInput({
             register,
             name: "password",
-            options: { required: t("errorMsg.required") },
+            options: { required: t("error.required") },
           })}
           id="password"
           error={errors?.password?.message}

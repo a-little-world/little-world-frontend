@@ -82,7 +82,7 @@ function Sidebar({ sidebarMobile }) {
     },
   ];
 
-  const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
+  const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile?.get, sidebarMobile?.set];
 
   const notifications = useSelector((state) => state.userData.notifications);
 

@@ -30,7 +30,7 @@ export const Buttons = styled.div`
 `;
 
 export const StyledCta = styled(Button)`
-  margin-bottom: ${({ theme }) => theme.spacing.small};
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 export const Title = styled(Text)`
@@ -68,4 +68,8 @@ export const ChangeLocation = styled.div`
 
 export const FormDescription = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.small};
+`;
+
+export const ToLogin = styled(Text)`
+  width: 100%;
 `;

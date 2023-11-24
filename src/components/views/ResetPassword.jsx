@@ -66,7 +66,7 @@ const ResetPassword = () => {
           {...registerInput({
             register,
             name: "password",
-            options: { required: t("errorMsg.required") },
+            options: { required: t("error.required") },
           })}
           id="password"
           error={errors?.password?.message}
@@ -79,7 +79,7 @@ const ResetPassword = () => {
             register,
             name: "confirmPassword",
             options: {
-              required: t("errorMsg.required"),
+              required: t("error.required"),
               passwordsMatch: (v) => getValues().password === v || t("confirmPasswordError"),
             },
           })}

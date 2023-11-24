@@ -76,7 +76,7 @@ const ChangeEmail = () => {
           {...registerInput({
             register,
             name: "email",
-            options: { required: t("errorMsg.required") },
+            options: { required: t("error.required") },
           })}
           id="email"
           label={t("change_email.input_label")}
