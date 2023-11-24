@@ -22,6 +22,7 @@ export const ComponentTypes = {
   textArea: "textArea",
   textInput: "textInput",
   radio: "radio",
+  radioWithInput: "radioWithInput",
   panelSelector: "panelSelector",
   multiSelection: "multiSelection",
   multiDropdown: "multiDropdown",

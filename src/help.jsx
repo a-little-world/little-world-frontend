@@ -7,8 +7,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { filterMessagesForDialog } from "./chat/chat.lib";
 import Logo from "./components/atoms/Logo";
-import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
 import { setStatus } from "./features/userData";
+import { CHAT_ROUTE, getAppRoute } from "./routes";
 
 import "./help.css";
 
@@ -213,7 +213,7 @@ function Help({ selection }) {
             type="button"
             className="support-message"
             onClick={() => {
-              navigate(`${BACKEND_PATH}/chat`, { state: { userPk: adminUser.patner.id } });
+              navigate(`/${getAppRoute(CHAT_ROUTE)}/`, { state: { userPk: adminUser.patner.id } });
             }}
           >
             <img alt="" />

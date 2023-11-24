@@ -12,11 +12,20 @@ const LogoContainer = styled.div`
   gap: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
+const Title = styled(Text)`
+  font-weight: 700;
+  font-size: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  text-transform: capitalize;
+`;
+
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
   const location = useLocation();
   const { userPk } = location.state || {};
   const key = location.pathname.split("/").slice(-1)[0] || (userPk ? "user" : "home");
+  const isHome = key === "home";
 
   return (
     <div className="mobile-header">
@@ -24,10 +33,12 @@ function MobileNavBar({ setShowSidebarMobile }) {
         <img alt="open menu" />
       </button>
       <LogoContainer>
-        <Logo stacked={false} displayText={false} />
-        <Text tag="h1" type={TextTypes.Heading2} color="black">
-          {t(`headers::${key}`)}
-        </Text>
+        <Logo stacked={false} displayText={isHome} />
+        {!isHome && (
+          <Title tag="h1" type={TextTypes.Heading2} color="black">
+            {t(`headers::${key}`)}
+          </Title>
+        )}
       </LogoContainer>
       <button className="notification disabled" type="button">
         <img alt="show notifications" />

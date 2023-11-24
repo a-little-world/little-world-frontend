@@ -29,6 +29,7 @@ import {
 import { updateProfile } from "./features/userData";
 import "./i18n";
 import Link from "./path-prepend";
+import { CHAT_ROUTE, getAppRoute } from "./routes";
 
 import "./profile.css";
 
@@ -74,6 +75,7 @@ const Actions = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   column-gap: ${({ theme }) => theme.spacing.small};
   width: 100%;
+  max-width: 498px;
 `;
 
 function ProfileBox({
@@ -148,7 +150,7 @@ function ProfileBox({
       </ProfileInfo>
       {!isSelf && (
         <Actions>
-          <MenuLink to="/" state={{ userPk }}>
+          <MenuLink to={getAppRoute("")} state={{ userPk }}>
             <ProfileIcon
               gradient={Gradients.Orange}
               label="visit profile"
@@ -156,7 +158,7 @@ function ProfileBox({
             />
             {t("cp_profile")}
           </MenuLink>
-          <MenuLink to="/chat" state={{ userPk }}>
+          <MenuLink to={getAppRoute(CHAT_ROUTE)} state={{ userPk }}>
             <MessageIcon gradient={Gradients.Orange} label="chat icon" labelId="chat_icon" />
             {t("cp_message")}
           </MenuLink>
@@ -459,8 +461,8 @@ function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
     <div className="profile-component">
       <div className="header">
         {!isSelf && (
-          <Link to="/" className="back">
-            <img alt="back" />
+          <Link to={getAppRoute("")} className="back">
+            <img alt="back button" />
           </Link>
         )}
         <span className="text">{profileTitle}</span>

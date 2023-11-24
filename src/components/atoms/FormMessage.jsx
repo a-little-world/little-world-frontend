@@ -15,6 +15,7 @@ const FormMessage = styled.div`
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
   transition: ${({ $visible }) => ($visible ? "opacity 1s" : "none")};
   text-align: center;
+  margin: ${({ theme }) => theme.spacing.xxsmall} 0;
 
   ${({ $type }) => {
     if ($type === MessageTypes.Error)

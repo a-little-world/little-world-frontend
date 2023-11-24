@@ -8,7 +8,7 @@ import {
   TextTypes,
 } from "@a-little-world/little-world-design-system";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -21,10 +21,12 @@ import {
   StyledCta,
   StyledForm,
   Title,
+  ToLogin,
 } from "./SignUp.styles";
 
 export const registerInput = ({ register, name, options }) => {
   const { ref, ...rest } = register(name, options);
+
   return {
     ...rest,
     inputRef: ref,
@@ -34,8 +36,10 @@ export const registerInput = ({ register, name, options }) => {
 const SignUp = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -43,10 +47,8 @@ const SignUp = () => {
     setFocus,
   } = useForm({ shouldUnregister: true });
 
-  const navigate = useNavigate();
-
   useEffect(() => {
-    setFocus("email");
+    setFocus("firstName");
   }, [setFocus]);
 
   const onError = (e) => {
@@ -66,14 +68,12 @@ const SignUp = () => {
 
   const onFormSubmit = async (data) => {
     setIsSubmitting(true);
-
     signUp(data)
-      .then((res) => {
-        const userHash = "";
+      .then(() => {
         setIsSubmitting(false);
         navigate("/app");
       })
-      .error((error) => {
+      .catch((error) => {
         onError(error);
         setIsSubmitting(false);
       });
@@ -94,7 +94,7 @@ const SignUp = () => {
               {...registerInput({
                 register,
                 name: "firstName",
-                options: { required: t("errorMsg.required") },
+                options: { required: t("error.required") },
               })}
               id="firstName"
               error={errors?.firstName?.message}
@@ -105,7 +105,7 @@ const SignUp = () => {
               {...registerInput({
                 register,
                 name: "lastName",
-                options: { required: t("errorMsg.required") },
+                options: { required: t("error.required") },
               })}
               id="lastName"
               error={errors?.lastName?.message}
@@ -118,7 +118,7 @@ const SignUp = () => {
           {...registerInput({
             register,
             name: "email",
-            options: { required: t("errorMsg.required") },
+            options: { required: t("error.required") },
           })}
           id="email"
           label={t("sign_up.email_label")}
@@ -130,7 +130,7 @@ const SignUp = () => {
           {...registerInput({
             register,
             name: "password",
-            options: { required: t("errorMsg.required") },
+            options: { required: t("error.required") },
           })}
           id="password"
           error={errors?.password?.message}
@@ -143,7 +143,7 @@ const SignUp = () => {
             register,
             name: "confirmPassword",
             options: {
-              required: t("errorMsg.required"),
+              required: t("error.required"),
               passwordsMatch: (v) => getValues().password === v || t("confirmPasswordError"),
             },
           })}
@@ -156,7 +156,7 @@ const SignUp = () => {
           {...registerInput({
             register,
             name: "birthYear",
-            options: { required: t("errorMsg.required") },
+            options: { required: t("error.required") },
           })}
           label={t("sign_up.birth_year_label")}
           labelTooltip={t("sign_up.birth_year_tooltip")}
@@ -168,14 +168,23 @@ const SignUp = () => {
           min={1900}
           max={2007}
         />
-        <Checkbox
-          {...registerInput({
-            register,
-            name: "terms",
-            options: { required: t("errorMsg.required") },
-          })}
-          error={errors?.terms?.message}
-          label={t("sign_up.terms_label")}
+        <Controller
+          defaultValue={false}
+          name="terms"
+          control={control}
+          rules={{ required: t("error.required") }}
+          render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
+            <Checkbox
+              id="terms"
+              name={name}
+              inputRef={ref}
+              onCheckedChange={(val) => onChange({ target: { value: val } })}
+              onBlur={onBlur}
+              value={value}
+              error={error?.message}
+              label={t("sign_up.terms_label")}
+            />
+          )}
         />
         <Text bold>{t("sign_up.privacy_policy")}</Text>
         <FormMessage $visible={errors?.root?.serverError} $type={MessageTypes.Error}>
@@ -189,23 +198,10 @@ const SignUp = () => {
         >
           {t("sign_up.submit_btn")}
         </StyledCta>
-        <Text>{t("sign_up.change_location_cta")}</Text>
+        <ToLogin center>{t("sign_up.change_location_cta")}</ToLogin>
       </StyledForm>
     </StyledCard>
   );
 };
 
 export default SignUp;
-
-//   const handleOnChange = useCallback(
-//     throttle(
-//       (event) => {
-//         clearErrors("submit");
-//         onChange();
-//         event.persist();
-//       },
-//       1000,
-//       { trailing: false }
-//     ),
-//     [onChange, clearErrors]
-//   );

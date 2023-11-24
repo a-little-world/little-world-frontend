@@ -29,11 +29,10 @@ export const mutateUserData = async (formData, onSucess, onFailure) => {
       },
       body: data,
     });
-
+    const responseBody = await response?.json();
     if (response.ok) {
-      onSucess(response);
+      onSucess(responseBody);
     } else {
-      const responseBody = await response.json();
       const errorType = Object.keys(responseBody)?.[0];
       const errorTag = Object.values(responseBody)?.[0]?.[0];
 
@@ -156,6 +155,8 @@ export const login = ({ email, password }) =>
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "X-UseTagsOnly": "True",
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     method: "POST",
     body: JSON.stringify({
@@ -169,6 +170,8 @@ export const signUp = ({ email, birthYear, password, password2, firstName, secon
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "X-UseTagsOnly": "True",
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     method: "POST",
     body: JSON.stringify({
@@ -185,6 +188,9 @@ export const requestPasswordReset = ({ email }) =>
   fetch(`${BACKEND_URL}/api/resetpw/`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
+      "X-UseTagsOnly": "True",
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     method: "POST",
     body: JSON.stringify({
@@ -196,6 +202,9 @@ export const resetPassword = ({ password, token }) =>
   fetch(`${BACKEND_URL}/api/resetpw/confirm/`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
+      "X-UseTagsOnly": "True",
+      Accept: "application/json",
+      "Content-Type": "application/json",
     },
     method: "POST",
     body: JSON.stringify({
@@ -204,7 +213,6 @@ export const resetPassword = ({ password, token }) =>
     }),
   });
 
-
 export const updateMatchData = (page, pageItems) =>
   fetch(`${BACKEND_URL}/api/matches/confirmed/?page=${page}&itemsPerPage=${pageItems}`, {
     method: "GET",
@@ -212,4 +220,42 @@ export const updateMatchData = (page, pageItems) =>
       "X-CSRFToken": Cookies.get("csrftoken"),
       "Content-Type": "application/json",
     },
+ });
+
+export const verifyEmail = ({ verificationCode }) =>
+  fetch(`${BACKEND_URL}/api/user/verify/email/${verificationCode}`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+      "X-UseTagsOnly": "True",
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    method: "POST",
   });
+
+export const resendVerificationEmail = () =>
+  fetch(`${BACKEND_URL}/api/user/verify/email_resend/`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+      "X-UseTagsOnly": "True",
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
+
+export const setNewEmail = ({ email }) =>
+  fetch(`${BACKEND_URL}/api/user/change_email/`, {
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+      "X-UseTagsOnly": "True",
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify({
+      email,
+    }),
+  });
+  
+

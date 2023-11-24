@@ -7,19 +7,22 @@ import {
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { mutateUserData } from "../../../api";
+import { updateProfile } from "../../../features/userData";
 import { ComponentTypes, getFormComponent } from "../../../userForm/formContent";
 import getFormPage from "../../../userForm/formPages";
 import Note from "../Note/Note";
 import ProfilePic from "../ProfilePic/ProfilePic";
+import RadioGroupWithInput from "../RadioGroupWithInput/RadioGroupWithInput";
 import FormStep from "./FormStep";
 import { ButtonsSection, StyledCard, StyledForm, SubmitError, Title } from "./styles";
 
 const Form = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const {
     control,
@@ -43,7 +46,8 @@ const Form = () => {
     userData,
   });
 
-  const navigateNextClick = () => {
+  const onFormSuccess = (response) => {
+    dispatch(updateProfile(response));
     navigate(`/user-form${nextPage}`);
   };
 
@@ -68,7 +72,7 @@ const Form = () => {
   };
 
   const onFormSubmit = async (data) => {
-    mutateUserData(data, navigateNextClick, onError);
+    mutateUserData(data, onFormSuccess, onError);
   };
 
   return (
@@ -83,6 +87,15 @@ const Form = () => {
           // ProfilePic updates multiple data fields
           if (component?.type === ComponentTypes.picture)
             return <ProfilePic key={ProfilePic.name} control={control} setValue={setValue} />;
+
+          if (component?.type === ComponentTypes.radioWithInput)
+            return (
+              <RadioGroupWithInput
+                key={RadioGroupWithInput.name}
+                control={control}
+                {...component}
+              />
+            );
 
           return (
             <FormStep
