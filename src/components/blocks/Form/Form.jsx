@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { mutateUserData } from "../../../api";
 import { updateProfile } from "../../../features/userData";
+import { getAppRoute } from "../../../routes";
 import { ComponentTypes, getFormComponent } from "../../../userForm/formContent";
 import getFormPage from "../../../userForm/formPages";
 import Note from "../Note/Note";
@@ -38,7 +39,7 @@ const Form = () => {
   ]);
   const navigate = useNavigate();
   const location = useLocation();
-  const slug = location.pathname.split("/")[2];
+  const slug = location.pathname.split("/").slice(-1)[0];
 
   const { title, note, step, totalSteps, components, nextPage, prevPage } = getFormPage({
     slug,
@@ -48,12 +49,12 @@ const Form = () => {
 
   const onFormSuccess = (response) => {
     dispatch(updateProfile(response));
-    navigate(`/user-form${nextPage}`);
+    navigate(getAppRoute(nextPage));
   };
 
   const handleBackClick = (e) => {
     e.preventDefault();
-    navigate(`/user-form${prevPage}`);
+    navigate(getAppRoute(prevPage));
   };
 
   const onError = (e) => {

@@ -23,7 +23,7 @@ import { useSelector } from "react-redux";
 
 import { USER_FIELDS } from "../../../constants";
 import theme from "../../../theme";
-import { CircleImage } from "../../atoms/ProfileImage";
+import ProfileImage from "../../atoms/ProfileImage";
 import AvatarEditor from "./AvatarEditor";
 import {
   AvatarEditorButton,
@@ -124,11 +124,11 @@ const ProfilePic = ({ control, setValue }) => {
           >
             <ImageContainer>
               {uploadedImage ? (
-                <CircleImage $image={uploadedImage} size="medium">
+                <ProfileImage image={uploadedImage} size="medium" circle>
                   <TrashButton onClick={onImageDelete} variation="Icon" type="button">
                     <TrashIcon color="white" />
                   </TrashButton>
-                </CircleImage>
+                </ProfileImage>
               ) : (
                 <CircleButton
                   htmlFor="fileInput"

@@ -1,5 +1,5 @@
 import { Button } from "@a-little-world/little-world-design-system";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export const ProfilePicWrapper = styled.div``;
 
@@ -33,7 +33,10 @@ export const SelectionPanel = styled.div`
     }`}
 `;
 
-export const ImageContainer = styled.div``;
+export const ImageContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 export const InteractiveArea = styled.div`
   background: #e6e8ec66;

@@ -34,7 +34,7 @@ const formPages = {
     note: "user_type.info_text",
     step: 1,
     totalSteps: getSteps(userData?.user_type),
-    nextPage: "/self-info-1",
+    nextPage: "user-form/self-info-1",
     components: [
       {
         type: ComponentTypes.panelSelector,
@@ -48,8 +48,8 @@ const formPages = {
     title: "self_info.title",
     step: 2,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: "/user-type",
-    nextPage: "/interests",
+    prevPage: "user-form/user-type",
+    nextPage: "user-form/interests",
     components: [
       {
         type: ComponentTypes.textInput,
@@ -115,8 +115,8 @@ const formPages = {
     note: "interests.info_text",
     step: 3,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: "/self-info-1",
-    nextPage: "/picture",
+    prevPage: "user-form/self-info-1",
+    nextPage: "user-form/picture",
     components: [
       {
         type: ComponentTypes.textArea,
@@ -141,8 +141,9 @@ const formPages = {
     title: "profile_pic.title",
     step: 4,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: "/interests",
-    nextPage: userData?.user_type === USER_TYPES.volunteer ? "/partner-1" : "/partner-2",
+    prevPage: "user-form/interests",
+    nextPage:
+      userData?.user_type === USER_TYPES.volunteer ? "user-form/partner-1" : "user-form/partner-2",
     components: [{ type: ComponentTypes.picture }],
   }),
   "partner-1": ({ options, userData }) => ({
@@ -150,8 +151,8 @@ const formPages = {
     note: "partner1.info_text",
     step: 5,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: "/picture",
-    nextPage: "/partner-2",
+    prevPage: "user-form/picture",
+    nextPage: "user-form/partner-2",
     components: [
       {
         type: ComponentTypes.dropdown,
@@ -180,8 +181,9 @@ const formPages = {
     note: "partner2.info_text",
     step: userData?.user_type === USER_TYPES.volunteer ? 6 : 5,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: userData?.user_type === USER_TYPES.volunteer ? "/partner-1" : "/picture",
-    nextPage: "/availability",
+    prevPage:
+      userData?.user_type === USER_TYPES.volunteer ? "user-form/partner-1" : "user-form/picture",
+    nextPage: "user-form//availability",
     components: [
       {
         type: ComponentTypes.radio,
@@ -209,8 +211,8 @@ const formPages = {
     title: "availability.title",
     step: userData?.user_type === USER_TYPES.volunteer ? 7 : 6,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: "/partner-2",
-    nextPage: "/notifications",
+    prevPage: "user-form/partner-2",
+    nextPage: "user-form/notifications",
     components: [
       {
         type: ComponentTypes.text,
@@ -240,8 +242,8 @@ const formPages = {
     title: "notifications.title",
     step: userData?.user_type === USER_TYPES.volunteer ? 8 : 7,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: "/availability",
-    nextPage: "/conditions",
+    prevPage: "user-form/availability",
+    nextPage: "user-form/conditions",
     components: [
       {
         type: ComponentTypes.text,
@@ -277,8 +279,8 @@ const formPages = {
     note: "conditions.info_text",
     step: userData?.user_type === USER_TYPES.volunteer ? 9 : 8,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: "/notifications",
-    nextPage: "/app",
+    prevPage: "user-form/notifications",
+    nextPage: "",
     components: [
       {
         type: ComponentTypes.textContent,
