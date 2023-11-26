@@ -575,13 +575,14 @@
     padding: 0px;
     margin: 0px;
     line-height: 24px;
-    font-size: 20px;
-    font-weight: 400;
+    white-space: unset;
 }
 
-.announcement-message .text-content {
+.styled-message-box .text-content {
     color: #333333;
     margin: 0;
+    font-size: 20px;
+    font-weight: 400;
 }
 
 .announcement-message .strong-text {
@@ -597,13 +598,18 @@
 }
 
 .announcement-message .zoom-button-container .zoom-button {
-    background-color: #004A99;
-    color: white;
-    text-align: center;
-    border-radius: 20px;
-    display: inline-block;
-    width: auto;
-    padding-right: 20px;
+  padding: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  border: none;
+  color: white;
+  height: 36px;
+  margin-top: -10px;
+  display: inline-block;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease; /* Optional: for hover effect */
 }
 
 .announcement-badge {
@@ -611,20 +617,22 @@
   color: white;
   border-radius: 15px; /* Rounded corners */
   padding: 3px 8px;    /* Top and Bottom, Left and Right padding */
-  font-size: 0.8em;    /* Smaller font size */
+  font-size: 1.2em;    /* Smaller font size */
+  font-weight: bold;
   display: inline;     /* Inline display */
 }
 
 .show-button {
+  padding: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  border: none;
+  color: white;
+  height: 36px;
   display: inline-block;
   cursor: pointer;
-  background-color: #0066CC;
-  color: white;
-  padding: 10px 10px;
-  text-decoration: none;
-  font-family: Arial, sans-serif;
-  border-radius: 12px;
-  margin-bottom: 10px; /* Spacing between the button and the message container */
+  font-weight: bold;
   transition: background-color 0.3s ease; /* Optional: for hover effect */
 }
 
