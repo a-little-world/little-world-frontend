@@ -553,7 +553,7 @@
 }
 
 
-.styled-message-box a{
+.styled-message-box > a{
   background: linear-gradient(0deg, #3cc1e957, transparent);
   border: 1px solid rgb(0 30 89 / 14%);
 }
@@ -567,4 +567,81 @@
   border: none;
   color: white;
   height: 36px;
+}
+
+.announcement-message {
+    font-family: Arial, sans-serif;
+    border-radius: 4px;
+    padding: 0px;
+    margin: 0px;
+    line-height: 24px;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.announcement-message .text-content {
+    color: #333333;
+    margin: 0;
+}
+
+.announcement-message .strong-text {
+    font-weight: bold;
+}
+
+.announcement-message .emphasis-text {
+    font-style: italic;
+}
+
+.announcement-message .zoom-button-container {
+    text-align: center;
+}
+
+.announcement-message .zoom-button-container .zoom-button {
+    background-color: #004A99;
+    color: white;
+    text-align: center;
+    border-radius: 20px;
+    display: inline-block;
+    width: auto;
+    padding-right: 20px;
+}
+
+.announcement-badge {
+  background-color: red;
+  color: white;
+  border-radius: 15px; /* Rounded corners */
+  padding: 3px 8px;    /* Top and Bottom, Left and Right padding */
+  font-size: 0.8em;    /* Smaller font size */
+  display: inline;     /* Inline display */
+}
+
+.show-button {
+  display: inline-block;
+  cursor: pointer;
+  background-color: #0066CC;
+  color: white;
+  padding: 10px 10px;
+  text-decoration: none;
+  font-family: Arial, sans-serif;
+  border-radius: 12px;
+  margin-bottom: 10px; /* Spacing between the button and the message container */
+  transition: background-color 0.3s ease; /* Optional: for hover effect */
+}
+
+.show-button:hover {
+  background-color: #0055BB; /* Optional: button changes color on hover */
+}
+
+.toggle-checkbox {
+  display: none; /* Hide the actual checkbox input */
+}
+
+/* We start with the content not showing, so we are initially hiding the container */
+.announcement-message {
+  display: none;
+}
+
+/* When the checkbox is checked, we display the content container */
+.toggle-checkbox:checked + .announcement-message {
+  display: block;
 }

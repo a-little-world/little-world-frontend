@@ -513,9 +513,13 @@ class Chat extends Component {
                   ...msg,
                   text: (
                     <div className="styled-message-box" dangerouslySetInnerHTML={{__html: sanitizeHtml(msg.text, {
-                      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'button'],
+                      allowedTags: ['b', 'i', 'em', 'strong', 'a', 'button', 'div', 'p', 'br', 'span', 'label', 'input'],
                       allowedAttributes: {
-                        a: ['href', 'target'],
+                        div: ['class'],
+                        label: ['class', 'for'],
+                        input: ['type', 'class', 'id', 'name', 'value', 'placeholder', 'checked'],
+                        span: ['class'],
+                        a: ['href', 'target', 'class'],
                         button: ['data-cal-link', 'data-cal-config']
                       }
                     })}}>
