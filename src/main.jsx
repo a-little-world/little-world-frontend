@@ -130,17 +130,11 @@ function Main() {
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
-  const [initialPageChangeDone, setInitialPageChangeDone] = useState(false);
 
   useEffect(() => {
     const totalPage = ((matches?.confirmed?.totalItems) / pageItems);
     setTotalPages(Math.ceil(totalPage))
   }, [matches])
-
-  if (!initialPageChangeDone) {
-    handlePageChange(currentPage);
-    setInitialPageChangeDone(true);
-  }
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
