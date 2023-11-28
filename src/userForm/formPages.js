@@ -183,7 +183,7 @@ const formPages = {
     totalSteps: getSteps(userData?.user_type),
     prevPage:
       userData?.user_type === USER_TYPES.volunteer ? "user-form/partner-1" : "user-form/picture",
-    nextPage: "user-form//availability",
+    nextPage: "user-form/availability",
     components: [
       {
         type: ComponentTypes.radio,
