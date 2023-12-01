@@ -515,8 +515,8 @@
   "sign_up.birth_year_label": "Geburtsjahr",
   "sign_up.birth_year_tooltip": "",
   "sign_up.birth_year_placeholder": "1971",
-  "sign_up.terms_label": "Ich akzeptiere die <a {\"href\": \"https://home.little-world.com/de/nutzungsbedingungen/\"}>Bedingungen</a>",
-  "sign_up.privacy_policy": "Bitte nehmen Sie unsere <a {\"href\": \"https://home.little-world.com/de/datenschutz/\"}>Datenschutzinformationen</a>",
+  "sign_up.terms_label": "Ich akzeptiere die <a {\"href\": \"https://home.little-world.com/de/nutzungsbedingungen/\"}>Nutzungsbedingungen</a>",
+  "sign_up.privacy_policy": "Bitte nehmen Sie unsere <a {\"href\": \"https://home.little-world.com/de/datenschutz/\"}>Datenschutzinformationen</a> zur Kenntnis",
   "sign_up.submit_btn": "Konto erstellen",
   "sign_up.change_location_cta": "Du hast bereits ein Konto? <a {\"href\": \"/login\"}>Anmelden</a>",
 
