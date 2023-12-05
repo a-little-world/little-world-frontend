@@ -1,8 +1,10 @@
 import { Button, ButtonVariations } from "@a-little-world/little-world-design-system";
+import Cookies from "js-cookie";
 import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 
 import { LANGUAGES } from "../../../constants";
+import { COOKIE_LANG } from "../../../i18n";
 
 const Selector = styled.div`
   display: flex;
@@ -33,18 +35,11 @@ const LanguageSelector = () => {
 
   const handleChangeLanguage = (lang) => {
     i18n.changeLanguage(lang);
+    Cookies.set(COOKIE_LANG, lang);
   };
 
   return (
     <Selector>
-      <LanguageButton
-        aria-label="switch language to English"
-        variation={ButtonVariations.Inline}
-        onClick={() => handleChangeLanguage(LANGUAGES.en)}
-        disabled={i18n.language === LANGUAGES.en}
-      >
-        EN
-      </LanguageButton>
       <LanguageButton
         aria-label="switch language to German"
         variation={ButtonVariations.Inline}
@@ -53,6 +48,14 @@ const LanguageSelector = () => {
         $right
       >
         DE
+      </LanguageButton>
+      <LanguageButton
+        aria-label="switch language to English"
+        variation={ButtonVariations.Inline}
+        onClick={() => handleChangeLanguage(LANGUAGES.en)}
+        disabled={i18n.language === LANGUAGES.en}
+      >
+        EN
       </LanguageButton>
     </Selector>
   );
