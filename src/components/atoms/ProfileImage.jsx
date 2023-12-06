@@ -55,11 +55,12 @@ export const Image = styled.img`
     }`}
 `;
 
-function ProfileImage({ image, imageType, circle, size = "large" }) {
+function ProfileImage({ children, image, imageType, circle, size = "large" }) {
   if (imageType === "avatar") return <StyledAvatar {...image} $size={size} />;
-
   return circle ? (
-    <CircleImage alt="user image" $image={image} $size={size} />
+    <CircleImage alt="user image" $image={image} $size={size}>
+      {children}
+    </CircleImage>
   ) : (
     <Image alt="user image" src={image} $size={size} />
   );

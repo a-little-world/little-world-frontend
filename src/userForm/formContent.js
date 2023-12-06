@@ -152,6 +152,7 @@ export const getFormComponent = ({ type, currentValue, dataField, formData, getP
       dataField,
       updater: "onCheckedChange",
       currentValue: currentValue || "",
+      defaultChecked: currentValue || false,
       ...props,
     };
 

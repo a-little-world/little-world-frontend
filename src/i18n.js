@@ -25,11 +25,11 @@ i18next
       },
     },
     languages: [LANGUAGES.en, LANGUAGES.de],
-    fallbackLng: LANGUAGES.en,
+    fallbackLng: LANGUAGES.de,
   });
 
-const cookieName = "frontendLang";
-const cookie = Cookies.get(cookieName);
+export const COOKIE_LANG = "frontendLang";
+const cookie = Cookies.get(COOKIE_LANG);
 if (cookie !== undefined) {
   i18next.changeLanguage(cookie);
 }

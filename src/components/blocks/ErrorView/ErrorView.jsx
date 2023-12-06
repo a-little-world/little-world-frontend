@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+import { getAppRoute } from "../../../routes";
 import Layout from "../Layout/AppLayout";
 
 const ErrorCard = styled(Card)`
@@ -13,6 +14,7 @@ const ErrorCard = styled(Card)`
   padding: ${({ theme }) => theme.spacing.xxlarge};
   gap: ${({ theme }) => theme.spacing.large};
   max-width: 800px;
+  max-height: 320px;
   margin: 0 auto;
 `;
 
@@ -23,7 +25,7 @@ const RouterError = () => {
     <Layout>
       <ErrorCard>
         <Text type={TextTypes.Heading2}>{t("error_view.title")}</Text>
-        <Button size={ButtonSizes.Large} onClick={() => navigate("/")}>
+        <Button size={ButtonSizes.Large} onClick={() => navigate(getAppRoute(""))}>
           {t("error_view.button")}
         </Button>
       </ErrorCard>
