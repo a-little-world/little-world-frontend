@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
-import { confirmMatch, partiallyConfirmMatch } from "./api";
+import { confirmMatch, partiallyConfirmMatch, updateMatchData } from "./api";
 import CallSetup, { IncomingCall } from "./call-setup";
 import Chat from "./chat/chat-full-view";
 import CancelSearching from "./components/blocks/CancelSearching";
@@ -15,6 +15,8 @@ import NbtSelector from "./components/blocks/NbtSelector";
 import NewMatchCard from "./components/blocks/NewMatchCard";
 import NotificationPanel from "./components/blocks/NotificationPanel";
 import PartnerProfiles from "./components/blocks/PartnerProfiles";
+import { BACKEND_PATH } from "./ENVIRONMENT";
+import { addUnconfirmed, removePreMatch, setUsers, updateConfirmedData } from "./features/userData";
 import { changeMatchCategory, removeMatch } from "./features/userData";
 import Help from "./help";
 import "./i18n";
@@ -25,6 +27,7 @@ import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";
 import "./main.css";
+import CustomPagination from "./CustomPagination";
 
 const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
   const usesAvatar = profile.image_type === "avatar";
@@ -100,6 +103,26 @@ const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
 function Main() {
   const location = useLocation();
   const { userPk } = location.state || {};
+  const dispatch = useDispatch();
+
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // In order to define the frontent paginator numbers
+  const pageItems = 10;
+  const handlePageChange = async (page) => {
+    const res = await updateMatchData(page, pageItems);
+    if (res && res.status === 200) {
+      const data = await res.json();
+      if (data) {
+        dispatch(updateConfirmedData(data.data.confirmed_matches));
+      setCurrentPage(page);
+      }
+    }
+    else {
+      console.error(`Cancelling match searching failed with error ${res.status}: ${res.statusText}`);
+    }
+  };
 
   const user = useSelector((state) => state.userData.user);
   const matches = useSelector((state) => state.userData.matches);
@@ -107,6 +130,11 @@ function Main() {
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
+
+  useEffect(() => {
+    const totalPage = ((matches?.confirmed?.totalItems) / pageItems);
+    setTotalPages(Math.ceil(totalPage))
+  }, [matches])
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
@@ -146,6 +174,11 @@ function Main() {
     }
   }, [location, use]);
 
+  const onPageChange = (page) => {
+    handlePageChange(page)
+  }
+
+
   return (
     <AppLayout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
       <div className="content-area">
@@ -154,14 +187,25 @@ function Main() {
           <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
         </div>
         {use === "main" && (
-          <div className="content-area-main">
+          <div>
             {topSelection === "conversation_partners" && (
               <>
-                <PartnerProfiles
-                  setCallSetupPartner={setCallSetupPartner}
-                  setShowCancel={setShowCancelSearching}
-                />
-                <NotificationPanel />
+                <div className="content-area-main">
+                  <PartnerProfiles
+                    setCallSetupPartner={setCallSetupPartner}
+                    setShowCancel={setShowCancelSearching}
+                    totalPaginations={totalPages}
+                  />
+                  <NotificationPanel />
+                </div>
+                {
+                  totalPages > 1 &&
+                  <CustomPagination
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    onPageChange={onPageChange}
+                  />
+                }
               </>
             )}
             {topSelection === "community_calls" && <CommunityCalls />}

@@ -213,6 +213,15 @@ export const resetPassword = ({ password, token }) =>
     }),
   });
 
+export const updateMatchData = (page, pageItems) =>
+  fetch(`${BACKEND_URL}/api/matches/confirmed/?page=${page}&itemsPerPage=${pageItems}`, {
+    method: "GET",
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+      "Content-Type": "application/json",
+    },
+ });
+
 export const verifyEmail = ({ verificationCode }) =>
   fetch(`${BACKEND_URL}/api/user/verify/email/${verificationCode}`, {
     headers: {
@@ -248,3 +257,5 @@ export const setNewEmail = ({ email }) =>
       email,
     }),
   });
+  
+
