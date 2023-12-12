@@ -23,16 +23,18 @@ const sharedItemStyles = css`
   cursor: pointer;
   user-select: none;
   transition: all 0.3s ease;
+  color: #db590b;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: ${({ theme }) => `${theme.spacing.large}`};
 `;
 
 const PaginationItem = styled.li`
-  color: #db590b;
-  font-size: 18px;
-  line-height: ${({ theme }) => `${theme.spacing.large}`};
   ${sharedItemStyles};
 `;
 
-const PaginationNumber = styled(PaginationItem)`
+const PaginationNumber = styled.button`
+${sharedItemStyles};
   margin: 0 3px;
   border-radius: 50%;
   height: ${({ theme }) => `${theme.spacing.xlarge}`};
@@ -53,12 +55,14 @@ const PaginationNumber = styled(PaginationItem)`
   }
 `;
 
-const PaginationDots = styled(PaginationItem)`
+const PaginationDots = styled.span`
+${sharedItemStyles};
   font-size: 22px;
   cursor: default;
 `;
 
-const PaginationButton = styled(PaginationItem)`
+const PaginationButton = styled.button`
+${sharedItemStyles};
   padding: ${({ theme }) => `${theme.spacing.xxxsmall} ${theme.spacing.medium}`};
   border-radius: ${({ theme }) => `${theme.spacing.xlarge}`};
 
