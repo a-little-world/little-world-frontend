@@ -168,6 +168,14 @@
   content: url("./images/arrow-right.svg");
 }
 
+.right-arrow-image img{
+  content: url("./images/arrow-right.svg");
+}
+
+.left-arrow-image img {
+  content: url("./images/arrow-left.svg");
+}
+
 .questions-categories .categories {
   display: flex;
   overflow-x: hidden;
@@ -212,7 +220,6 @@
   display: block;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .questions-content > div > button {
@@ -320,4 +327,47 @@ button.arrow-down {
 .drawer-content {
   display: flex;
   flex-grow: 1;
+}
+
+.image-for-is_favorite-notes {
+  content: url("./images/favorite.svg");
+}
+
+.image-for-is_archived-notes {
+  content: url("./images/archive_icon.svg");
+}
+
+.image-for-is_deleted-notes {
+  content: url("./images/delete_icon.svg");
+}
+
+.add-fovorite .favorite-icon {
+  width: 22px;
+  content: url("./images/favorite.svg");
+}
+
+.add-fovorite .unfavorite-icon {
+  width: 22px;
+  content: url("./images/star.svg");
+}
+
+.add-archives img {
+  width: 22px;
+  content: url("./images/archive_icon.svg");
+}
+
+.remove-note img {
+  width: 22px;
+  content: url("./images/delete_icon.svg");
+}
+
+.restore-note img {
+  width: 22px;
+  content: url("./images/restore_icon.svg");
+}
+
+@media(max-width: 600px) {
+  .responsive-text {
+    display: none;
+  }
 }

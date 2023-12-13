@@ -560,5 +560,9 @@
   "change_email.input_label": "Email",
   "change_email.input_placeholder": "sally@gmail.com",
   "change_email.submit_btn": "Change Email",
-  "change_email.back_btn": "Cancel"
+  "change_email.back_btn": "Cancel",
+  "all_notes_label": "All",
+  "favorite_notes_label": "Favorite",
+  "archived_notes_label": "Archived",
+  "notes_textarea_placeholder": "Enter your text here..."
 }
