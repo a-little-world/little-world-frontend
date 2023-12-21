@@ -2,7 +2,7 @@ import { ProfileIcon, Text, TextTypes } from "@a-little-world/little-world-desig
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { CategorySelectorWrapper, SelectionPanel, TextSection } from "./styles";
+import { CategoryNote, CategorySelectorWrapper, SelectionPanel, TextSection } from "./styles";
 
 const CategorySelector = ({ categories, onUpdate }) => {
   const [panelSelected, setPanelSelected] = useState(null);
@@ -33,9 +33,9 @@ const CategorySelector = ({ categories, onUpdate }) => {
               {category.label}
             </Text>
             <Text type={TextTypes.Body3}>{category.description}</Text>
-            <Text type={TextTypes.Body4} tag="h4" color="#A6A6A6">
+            <CategoryNote type={TextTypes.Body4} tag="h4" color="#A6A6A6">
               {category.note}
-            </Text>
+            </CategoryNote>
           </TextSection>
         </SelectionPanel>
       ))}

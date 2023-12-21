@@ -80,7 +80,7 @@ const ResetPassword = () => {
             name: "confirmPassword",
             options: {
               required: t("error.required"),
-              passwordsMatch: (v) => getValues().password === v || t("confirmPasswordError"),
+              passwordsMatch: (v, values) => values.password === v || t("confirmPasswordError"),
             },
           })}
           label={t("reset_password.confirm_password_label")}

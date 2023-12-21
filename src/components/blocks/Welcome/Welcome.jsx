@@ -8,17 +8,11 @@ import { ButtonSizes } from "@a-little-world/little-world-design-system/dist/esm
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 
-import { StyledCard, Title } from "../Form/styles";
-import LanguageSelector from "../LanguageSelector/LanguageSelector";
+import { Title } from "../Form/styles";
+import { IntroText, NoteText, WelcomeCard } from "./styles";
 
 const FIRST_FORM_STEP = "user-type";
-
-const WelcomeCard = styled(StyledCard)`
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.medium};
-`;
 
 const Welcome = () => {
   const { t } = useTranslation();
@@ -30,13 +24,15 @@ const Welcome = () => {
       <Title tag="h2" center type={TextTypes.Heading2}>
         {t("welcome.title")}
       </Title>
-      <Text center bold>
+      <IntroText center bold>
         {t("welcome.intro")}
+      </IntroText>
+      <Text tag="span" center>
+        {t("welcome.description")}
       </Text>
-      <Text center>{t("welcome.description")}</Text>
-      <Text center type={TextTypes.Body4}>
+      <NoteText tag="span" center>
         {t("welcome.note")}
-      </Text>
+      </NoteText>
       <Button size={ButtonSizes.Large} onClick={() => navigate(FIRST_FORM_STEP)}>
         {t("welcome.button")}
       </Button>

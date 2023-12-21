@@ -1,7 +1,9 @@
-import { Button } from "@a-little-world/little-world-design-system";
+import { Button, ImageIcon } from "@a-little-world/little-world-design-system";
 import styled from "styled-components";
 
-export const ProfilePicWrapper = styled.div``;
+export const ProfilePicWrapper = styled.div`
+  position: relative;
+`;
 
 export const SelectionPanel = styled.div`
   position: relative;
@@ -18,18 +20,15 @@ export const SelectionPanel = styled.div`
   align-items: stretch;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) =>
-    `${theme.spacing.xlarge} ${theme.spacing.small} ${theme.spacing.xlarge}`};
+  padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
   flex-wrap: wrap;
 
-  &:first-of-type {
-    margin-bottom: ${({ theme }) => theme.spacing.small};
-  }
+  margin-bottom: ${({ theme }) => theme.spacing.small};
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.small}) {
       flex-wrap: nowrap;
-      padding: ${theme.spacing.large};
+      padding: ${theme.spacing.medium};
     }`}
 `;
 
@@ -42,7 +41,7 @@ export const InteractiveArea = styled.div`
   background: #e6e8ec66;
   border-radius: 10px;
   cursor: pointer;
-  padding: ${({ theme }) => theme.spacing.large};
+  padding: ${({ theme }) => theme.spacing.medium};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,7 +114,6 @@ export const UploadLabel = styled.label`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 export const RadioInput = styled.input`
@@ -177,7 +175,6 @@ export const Controls = styled.div`
 
 export const ControlColumn = styled.div`
   display: flex;
-  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   align-items: center;
 
@@ -185,6 +182,11 @@ export const ControlColumn = styled.div`
     padding-right: ${({ theme }) => theme.spacing.xxsmall};
     border-right: 1px solid #3c3c3c;
   }
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.small}) {
+        flex-direction: column;
+    }`}
 `;
 
 export const OptionToggle = styled.button`
@@ -225,4 +227,9 @@ export const Buttons = styled.div`
 export const AvatarEditorButton = styled(Button)`
   padding: ${({ theme }) => theme.spacing.xxxsmall};
   border-radius: 5px;
+`;
+
+export const StyledFileIcon = styled(ImageIcon)`
+  color: ${({ theme }) => theme.color.text.primary};
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;

@@ -66,14 +66,26 @@ const formPages = {
         ? []
         : [
             {
-              type: ComponentTypes.dropdown,
-              currentValue: userData?.target_group,
-              dataField: "target_group",
-              formData: getUserTypeOptions(userData?.user_type, options?.target_group),
-              getProps: (t) => ({
-                label: t("self_info.target_group_label"),
-                errorRules: { required: t("validation.required") },
-              }),
+              dropdown: {
+                type: ComponentTypes.dropdownWithInput,
+                currentValue: userData?.target_group,
+                dataField: "target_group",
+                formData: getUserTypeOptions(userData?.user_type, options?.target_group),
+                getProps: (t) => ({
+                  label: t("self_info.target_group_label"),
+                  errorRules: { required: t("validation.required") },
+                }),
+                textInputVal: getUserTypeOptions(userData?.user_type, options?.target_group)[0]
+                  .value,
+              },
+              textInput: {
+                currentValue: userData?.other_target_group,
+                dataField: "other_target_group",
+                getProps: (t) => ({
+                  label: t("self_info.other_target_group_label"),
+                  width: InputWidth.Medium,
+                }),
+              },
             },
           ]),
       {
@@ -90,6 +102,7 @@ const formPages = {
         getProps: (t) => ({
           addMoreLabel: t("self_info.language_add_more"),
           label: t("self_info.language_skills_label"),
+          labelTooltip: t("self_info.language_skills_tooltip"),
           firstDropdown: {
             dataField: "lang",
             ariaLabel: t("self_info.language_selector_label"),
@@ -125,6 +138,7 @@ const formPages = {
         dataField: "description",
         getProps: (t) => ({
           label: t("interests.description_label"),
+          labelTooltip: t("interests.description_tooltip"),
           placeholder: t("interests.description_placeholder"),
         }),
       },
@@ -133,7 +147,10 @@ const formPages = {
         currentValue: userData?.interests,
         dataField: "interests",
         formData: options?.interests,
-        getProps: (t) => ({ label: t("interests.selection_label") }),
+        getProps: (t) => ({
+          label: t("interests.selection_label"),
+          labelTooltip: t("interests.selection_tooltip"),
+        }),
       },
     ],
   }),
@@ -225,6 +242,7 @@ const formPages = {
         formData: options?.availability,
         getProps: (t) => ({
           label: t("availability.label"),
+          labelTooltip: t("availability.tooltip"),
           columnHeadings: Array(8)
             .fill()
             .map((_, index) => t(`availability.column${index + 1}`)),

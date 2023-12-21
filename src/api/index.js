@@ -150,8 +150,8 @@ export const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag)
   });
 };
 
-export const login = ({ email, password }) =>
-  fetch(`${BACKEND_URL}/api/user/login/`, {
+export const login = async ({ email, password }) => {
+  const response = await fetch(`${BACKEND_URL}/api/user/login/`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "X-UseTagsOnly": "True",
@@ -165,8 +165,20 @@ export const login = ({ email, password }) =>
     }),
   });
 
-export const signUp = ({ email, birthYear, password, password2, firstName, secondName }) =>
-  fetch(`${BACKEND_URL}/api/register/`, {
+  if (response.ok) return response.json();
+  throw Error(response.statusText);
+};
+
+export const signUp = async ({
+  email,
+  birthYear,
+  password,
+  confirmPassword,
+  firstName,
+  lastName,
+  mailingList,
+}) => {
+  const response = await fetch(`${BACKEND_URL}/api/register/`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "X-UseTagsOnly": "True",
@@ -177,15 +189,19 @@ export const signUp = ({ email, birthYear, password, password2, firstName, secon
     body: JSON.stringify({
       email,
       password1: password,
-      password2,
+      password2: confirmPassword,
       first_name: firstName,
-      second_name: secondName,
+      second_name: lastName,
       birth_year: birthYear,
+      // mailing_list: mailingList,
     }),
   });
+  if (response.ok) return response.json();
+  throw Error(response.statusText);
+};
 
-export const requestPasswordReset = ({ email }) =>
-  fetch(`${BACKEND_URL}/api/resetpw/`, {
+export const requestPasswordReset = async ({ email }) => {
+  const response = await fetch(`${BACKEND_URL}/api/resetpw/`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "X-UseTagsOnly": "True",
@@ -198,8 +214,12 @@ export const requestPasswordReset = ({ email }) =>
     }),
   });
 
-export const resetPassword = ({ password, token }) =>
-  fetch(`${BACKEND_URL}/api/resetpw/confirm/`, {
+  if (response.ok) return response.json();
+  throw Error(response.statusText);
+};
+
+export const resetPassword = async ({ password, token }) => {
+  const response = await fetch(`${BACKEND_URL}/api/resetpw/confirm/`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "X-UseTagsOnly": "True",
@@ -212,9 +232,12 @@ export const resetPassword = ({ password, token }) =>
       token,
     }),
   });
+  if (response.ok) return response.json();
+  throw Error(response.statusText);
+};
 
-export const verifyEmail = ({ verificationCode }) =>
-  fetch(`${BACKEND_URL}/api/user/verify/email/${verificationCode}`, {
+export const verifyEmail = async ({ verificationCode }) => {
+  const response = await fetch(`${BACKEND_URL}/api/user/verify/email/${verificationCode}`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "X-UseTagsOnly": "True",
@@ -224,8 +247,12 @@ export const verifyEmail = ({ verificationCode }) =>
     method: "POST",
   });
 
-export const resendVerificationEmail = () =>
-  fetch(`${BACKEND_URL}/api/user/verify/email_resend/`, {
+  if (response.ok) return response.json();
+  throw Error(response.statusText);
+};
+
+export const resendVerificationEmail = async () => {
+  const response = await fetch(`${BACKEND_URL}/api/user/verify/email_resend/`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "X-UseTagsOnly": "True",
@@ -234,9 +261,12 @@ export const resendVerificationEmail = () =>
     },
     method: "POST",
   });
+  if (response.ok) return response.json();
+  throw Error(response.statusText);
+};
 
-export const setNewEmail = ({ email }) =>
-  fetch(`${BACKEND_URL}/api/user/change_email/`, {
+export const setNewEmail = async ({ email }) => {
+  const response = await fetch(`${BACKEND_URL}/api/user/change_email/`, {
     headers: {
       "X-CSRFToken": Cookies.get("csrftoken"),
       "X-UseTagsOnly": "True",
@@ -248,3 +278,6 @@ export const setNewEmail = ({ email }) =>
       email,
     }),
   });
+  if (response.ok) return response.json();
+  throw Error(response.statusText);
+};
