@@ -5,18 +5,18 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
 import { BACKEND_URL } from "../../ENVIRONMENT";
-import { updateSearchState } from "../../features/userData";
+import { selectMatchesDisplay, updateSearchState } from "../../features/userData";
 import { ProfileBox } from "../../profile";
 import PartnerActionCard from "./PartnerActionCard";
 
-function PartnerProfiles({ setCallSetupPartner, setShowCancel }) {
+function PartnerProfiles({ setCallSetupPartner, setShowCancel, totalPaginations }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const matches = useSelector((state) => state.userData.matches);
-  const matchesDisplay = [...matches.support.items, ...matches.confirmed.items];
+  const matchesDisplay = useSelector(selectMatchesDisplay);
   const user = useSelector((state) => state.userData.user);
   const [partnerActionData, setPartnerActionData] = useState(null);
-  
+
   function updateUserMatchingState() {
     const updatedState = "searching";
     fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
@@ -61,26 +61,31 @@ function PartnerProfiles({ setCallSetupPartner, setShowCancel }) {
             />
           );
         })}
-      {!user.isSearching && (
-        <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
-          <img alt="plus" />
-          {(!user.isSearching) && t("matching_state_not_searching_trans")}
-          {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
-        </button>
-      )}
-      {user.isSearching && (
-        <div className="match-status searching">
-          <img alt="" />
-          {user.isSearching && t("matching_state_searching_trans")}
-          {/* matchState === "pending" && t("matching_state_found_unconfirmed_trans") */}
-          <a className="change-criteria" href="/form">
-            {t("cp_modify_search")}
-          </a>
-          <button className="cancel-search" type="button" onClick={() => setShowCancel(true)}>
-            {t("cp_cancel_search")}
-          </button>
-        </div>
-      )}
+      {
+        totalPaginations === matches.confirmed.currentPage &&
+        <>
+          {!user.isSearching && (
+            <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
+              <img alt="plus" />
+              {(!user.isSearching) && t("matching_state_not_searching_trans")}
+              {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
+            </button>
+          )}
+          {user.isSearching && (
+            <div className="match-status searching">
+              <img alt="" />
+              {user.isSearching && t("matching_state_searching_trans")}
+              {/* matchState === "pending" && t("matching_state_found_unconfirmed_trans") */}
+              <a className="change-criteria" href="/form">
+                {t("cp_modify_search")}
+              </a>
+              <button className="cancel-search" type="button" onClick={() => setShowCancel(true)}>
+                {t("cp_cancel_search")}
+              </button>
+            </div>
+          )}
+        </>
+      }
       <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
         {!!partnerActionData && (
           <PartnerActionCard data={partnerActionData} onClose={onModalClose} />

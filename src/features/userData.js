@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from "@reduxjs/toolkit";
 
 export const userDataSlice = createSlice({
   name: "userData",
@@ -68,6 +68,9 @@ export const userDataSlice = createSlice({
       const { userId } = action.payload;
       state.incomingCalls = state.incomingCalls.filter((call) => call.userId !== userId);
     },
+    updateConfirmedData: (state, action) => {
+      state.matches.confirmed = action.payload;
+    },
   },
 });
 
@@ -81,6 +84,7 @@ export const {
   removeMatch,
   changeMatchCategory,
   blockIncomingCall,
+  updateConfirmedData,
 } = userDataSlice.actions;
 
 export const selectMatchByPartnerId = (matches, partnerId) => {
@@ -90,5 +94,11 @@ export const selectMatchByPartnerId = (matches, partnerId) => {
   }
   return null;
 };
+
+export const selectMatchesDisplay = createSelector(
+  [(state) => state.userData.matches],
+  ({ confirmed, support }) =>
+    confirmed.currentPage === 1 ? [...support.items, ...confirmed.items] : [...confirmed.items]
+);
 
 export default userDataSlice.reducer;

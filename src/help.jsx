@@ -9,8 +9,167 @@ import { filterMessagesForDialog } from "./chat/chat.lib";
 import Logo from "./components/atoms/Logo";
 import { setStatus } from "./features/userData";
 import { CHAT_ROUTE, getAppRoute } from "./routes";
-
+import styled from "styled-components";
 import "./help.css";
+
+const IntroText = styled.h1`
+  font-size: 14px;
+  font-weight: 300;
+  margin: ${({ theme }) => `${theme.spacing.xsmall} ${theme.spacing.medium}`};
+`
+const HelpSupport = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${({ theme }) => `${theme.spacing.large} `};
+  height: fit-content;
+`
+const Topper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+`
+const SupportTeam = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h2{
+    margin: 0;
+  }
+`
+const ContactButtons = styled.div`
+  display: flex;
+  gap: ${({ theme }) => `${theme.spacing.medium} `};
+  width: 100%;
+  box-sizing: border-box;
+  padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.xxxsmall}`};
+`
+const ContactButton = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: ${({ theme }) => `${theme.spacing.medium} `};
+  background: rgba(230, 232, 236, 0.2);
+  justify-content: center;
+  font-size: ${({ theme }) => `${theme.spacing.small} `};
+  flex-grow: 1;
+  padding: ${({ theme }) => `${theme.spacing.small} `};
+
+  img{
+    height: 48px;
+  }
+`
+const ContactInfo = styled.div`
+  display: flex;
+  background: rgba(230, 232, 236, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
+  border-radius: ${({ theme }) => `${theme.spacing.xxsmall} `};
+  margin-top: auto;
+  gap: 50px;
+`
+const Contacts = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => `${theme.spacing.xxxsmall} `};
+  white-space: nowrap;
+`
+const HeplHeading = styled.h2`
+  text-transform: none;
+  margin: 0;
+  margin-top: 1.5rem;
+`
+const SocialLinks = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => `${theme.spacing.xxsmall} `};
+  margin-left: auto;
+  justify-content: end;
+
+  img {
+    display: flex;
+    padding: ${({ theme }) => `${theme.spacing.xxxsmall} `};
+  }
+`
+const BusinessName = styled.div`
+  color: rgb(54, 169, 224);
+  font-size: ${({ theme }) => `${theme.spacing.xsmall} `};
+  margin: ${({ theme }) => `${theme.spacing.xxsmall}  ${theme.spacing.xxxsmall}`};
+`
+const BottomCard = styled.div`
+  display: flex;
+`
+const ContentWrapper = styled.div``
+const DropZoneLabel = styled.div``
+const HelpButton = styled.button`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${({ theme }) => `${theme.spacing.xxsmall} `};
+  color: #36a9e0;
+  font-weight: 600;
+  font-size: ${({ theme }) => `${theme.spacing.small} `};
+`
+const SupportButtonText = styled.span`
+  font-size: 1rem;
+`
+const ContactLink = styled.a`
+  display: flex;
+  text-align: center;
+  gap: 0.3rem;
+`
+const ContactSubmitButton = styled.button`
+  color: white;
+  font-weight: 700;
+  font-size: ${({ theme }) => `${theme.spacing.small} `};
+  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+  margin-left: auto;
+  margin-top: auto;
+  padding: ${({ theme }) => `${theme.spacing.xsmall}  ${theme.spacing.medium}`};
+`
+const DragText = styled.div`
+  font-weight: 300;
+  font-size: ${({ theme }) => `${theme.spacing.small} `};
+  color: #5f5f5f;
+`
+const FileName = styled.div`
+  display: flex;
+  align-items: center;
+`
+const TextArea = styled.textarea`
+  resize: none;
+  height: 122px;
+  font-family: "Signika Negative";
+  padding: ${({ theme }) => `${theme.spacing.small} `};
+  font-size: ${({ theme }) => `${theme.spacing.small} `};
+`
+const HelpText = styled.p`
+  font-size: ${({ theme }) => `${theme.spacing.small} `};
+  font-weight: 300;
+  margin: ${({ theme }) => `${theme.spacing.medium}  ${theme.spacing.xsmall}`};
+`
+const FAQQuestion = styled.h3`
+  margin: -5px 0 15px 0;
+  font-weight: 300;
+  font-size: ${({ theme }) => `${theme.spacing.small} `};
+  display: flex;
+  text-transform: none;
+  align-items: center;
+  cursor: pointer;
+`
+const FAQAnswer = styled.p`
+  font-size: ${({ theme }) => `${theme.spacing.small} `};
+  font-weight: 300;
+  padding: ${({ theme }) => `${theme.spacing.medium} `};
+`
+const ToggleImage = styled.img``
+const FAQItems = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => `${theme.spacing.small} `};
+`
 
 function FrequentQuestion({ question, answer }) {
   const [showing, setShowing] = useState(false);
@@ -18,11 +177,11 @@ function FrequentQuestion({ question, answer }) {
 
   return (
     <div className={showing ? "faq-item showing" : "faq-item"}>
-      <h3 onClick={toggleShowing}>
-        <img alt="collapse/expand" />
+      <FAQQuestion onClick={toggleShowing}>
+        <ToggleImage className="toggle-image" alt="collapse/expand" />
         {question}
-      </h3>
-      <p className="answer">{answer}</p>
+      </FAQQuestion>
+      <FAQAnswer>{answer}</FAQAnswer>
     </div>
   );
 }
@@ -45,9 +204,9 @@ function Faqs() {
   ];
   return (
     <div>
-      <h2>{t("nbt_faqs")}</h2>
-      <p className="intro-text">{t("help_faqs_intro")}</p>
-      <div className="faq-items">
+      <HeplHeading>{t("nbt_faqs")}</HeplHeading>
+      <IntroText>{t("help_faqs_intro")}</IntroText>
+      <FAQItems>
         {help_faq.map((faq) => {
           return (
             <>
@@ -64,7 +223,7 @@ function Faqs() {
             </>
           );
         })}
-      </div>
+      </FAQItems>
     </div>
   );
 }
@@ -135,14 +294,14 @@ function Contact() {
   return (
     <form className="help-contact">
       <h2>{t("nbt_contact")}</h2>
-      <p className="intro-text">
+      <HelpText>
         {t("help_contact_intro_line1")}
         <br />
         {t("help_contact_intro_line2")}
-      </p>
+      </HelpText>
       <label htmlFor="problem">
         {t("help_contact_problem_label")}
-        <textarea
+        <TextArea
           type="textarea"
           name="problem"
           inputMode="text"
@@ -153,7 +312,7 @@ function Contact() {
           }}
         />
       </label>
-      <div className="drop-zone-label">
+      <DropZoneLabel>
         {t("help_contact_picture_label")}
         <div
           className={dragOver ? "picture-drop-zone dragover" : "picture-drop-zone"}
@@ -163,13 +322,13 @@ function Contact() {
           onDragLeave={handleDragLeave}
         >
           <input type="file" ref={fileRef} multiple accept="image/*" onChange={handleChange} />
-          <button type="button" onClick={handleClick}>
+          <HelpButton type="button" onClick={handleClick}>
             {filenames.map((name) => {
               return (
-                <div className="filename" key={name}>
+                <FileName key={name}>
                   <img alt="" />
                   {name}
-                </div>
+                </FileName>
               );
             })}
             {filenames.length === 0 && (
@@ -179,13 +338,13 @@ function Contact() {
               </>
             )}
             {filenames.length > 0 && <span className="text">click to change files</span>}
-          </button>
-          <div className="drag-text">{t("help_contact_picture_drag")}</div>
+          </HelpButton>
+          <DragText>{t("help_contact_picture_drag")}</DragText>
         </div>
-      </div>
-      <button type="button" className="contact-submit" onClick={handleSubmit}>
+      </DropZoneLabel>
+      <ContactSubmitButton type="button" className="contact-submit" onClick={handleSubmit}>
         {t("help_contact_submit")}
-      </button>
+      </ContactSubmitButton>
     </form>
   );
 }
@@ -200,16 +359,20 @@ function Help({ selection }) {
         {selection === "faqs" && <Faqs />}
         {selection === "contact" && <Contact />}
       </div>
-      <div className="help-support panel">
-        <div className="topper">
+
+      <HelpSupport className="panel">
+
+        <Topper>
           <Logo />
-          <div className="support-team">
+          <SupportTeam>
             <h2>{t("help_support_header")}</h2>
             <div className="sub">{t("help_support_slogan")}</div>
-          </div>
-        </div>
-        <div className="contact-buttons">
-          <button
+          </SupportTeam>
+        </Topper>
+
+
+        <ContactButtons>
+          <ContactButton
             type="button"
             className="support-message"
             onClick={() => {
@@ -217,9 +380,9 @@ function Help({ selection }) {
             }}
           >
             <img alt="" />
-            <span className="text">{t("help_support_message_btn")}</span>
-          </button>
-          <button
+            <SupportButtonText>{t("help_support_message_btn")}</SupportButtonText>
+          </ContactButton>
+          <ContactButton
             type="button"
             className="support-call"
             onClick={() => {
@@ -227,29 +390,31 @@ function Help({ selection }) {
             }}
           >
             <img alt="" />
-            <span className="text">{t("help_support_call_btn")}</span>
-          </button>
-        </div>
-        <div className="contact-info">
-          <div className="main">
-            <div className="top">
+            <SupportButtonText>{t("help_support_call_btn")}</SupportButtonText>
+          </ContactButton>
+        </ContactButtons>
+
+
+        <ContactInfo>
+          <ContentWrapper>
+            <ContentWrapper>
               <Logo size="small" stacked={false} />
-              <div className="business-name">A Little World gUG</div>
-            </div>
-            <div className="bottom">
-              <div className="contacts">
-                <a href="mailto:support@little-world.com">
+              <BusinessName>A Little World gUG</BusinessName>
+            </ContentWrapper>
+            <BottomCard>
+              <Contacts>
+                <ContactLink href="mailto:support@little-world.com">
                   <img className="email-icon" alt="e-mail" />
                   support@little-world.com
-                </a>
-                <a href="tel:+4915234777471">
+                </ContactLink>
+                <ContactLink href="tel:+4915234777471">
                   <img className="mobile-icon" alt="mobile" />
                   +49 152 34 777 471
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="socials">
+                </ContactLink>
+              </Contacts>
+            </BottomCard>
+          </ContentWrapper>
+          <SocialLinks>
             <a href="https://www.linkedin.com/company/76488145/">
               <img className="icon-linkedin" alt="linked in" />
             </a>
@@ -259,9 +424,9 @@ function Help({ selection }) {
             <a href="https://www.instagram.com/littleworld_de/">
               <img className="icon-instagram" alt="instagram" />
             </a>
-          </div>
-        </div>
-      </div>
+          </SocialLinks>
+        </ContactInfo>
+      </HelpSupport>
     </div>
   );
 }

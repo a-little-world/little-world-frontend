@@ -124,6 +124,15 @@ export const unmatch = ({ reason, userHash }) =>
     }),
   });
 
+export const updateMatchData = (page, pageItems) =>
+  fetch(`${BACKEND_URL}/api/matches/confirmed/?page=${page}&itemsPerPage=${pageItems}`, {
+    method: "GET",
+    headers: {
+      "X-CSRFToken": Cookies.get("csrftoken"),
+      "Content-Type": "application/json",
+    },
+  });
+
 export const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
   fetch(`${BACKEND_URL}/api/profile/`, {
     method: "POST",
@@ -193,7 +202,7 @@ export const signUp = async ({
       first_name: firstName,
       second_name: lastName,
       birth_year: birthYear,
-      // mailing_list: mailingList,
+      newsletter_subscribed: mailingList,
     }),
   });
   if (response.ok) return response.json();
