@@ -118,7 +118,7 @@ const Login = () => {
         >
           {t("login.submit_btn")}
         </StyledCta>
-        <Link to={`/${SIGN_UP_ROUTE}`} buttonAppearance="Secondary">
+        <Link to={`/${SIGN_UP_ROUTE}`} buttonAppearance={ButtonAppearance.Secondary}>
           {t("login.change_location_cta")}
         </Link>
       </StyledForm>

@@ -1,8 +1,10 @@
 import {
+  ButtonAppearance,
   ButtonSizes,
   Checkbox,
   InputWidth,
   Label,
+  Link,
   Text,
   TextInput,
   TextTypes,
@@ -15,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 import { signUp } from "../../api";
 import { initialise } from "../../features/userData";
-import { APP_ROUTE } from "../../routes";
+import { APP_ROUTE, LOGIN_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import {
   NameContainer,
@@ -24,7 +26,6 @@ import {
   StyledCta,
   StyledForm,
   Title,
-  ToLogin,
 } from "./SignUp.styles";
 
 export const registerInput = ({ register, name, options }) => {
@@ -224,7 +225,9 @@ const SignUp = () => {
         >
           {t("sign_up.submit_btn")}
         </StyledCta>
-        <ToLogin center>{t("sign_up.change_location_cta")}</ToLogin>
+        <Link to={`/${LOGIN_ROUTE}`} buttonAppearance={ButtonAppearance.Secondary}>
+          {t("sign_up.change_location_cta")}
+        </Link>
       </StyledForm>
     </StyledCard>
   );

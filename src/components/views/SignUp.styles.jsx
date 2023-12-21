@@ -30,7 +30,7 @@ export const Buttons = styled.div`
 `;
 
 export const StyledCta = styled(Button)`
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 export const Title = styled(Text)`
@@ -54,22 +54,6 @@ export const NameInputs = styled.div`
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
-export const ChangeLocation = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-
-  a {
-    border: none;
-  }
-`;
-
 export const FormDescription = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.small};
-`;
-
-export const ToLogin = styled(Text)`
-  width: 100%;
 `;

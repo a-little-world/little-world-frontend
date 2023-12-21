@@ -535,7 +535,7 @@
   "sign_up.terms_label": "I accept the <a {\"href\": \"https://home.little-world.com/en/nutzungsbedingungen/\"}>terms of use</a>",
   "sign_up.privacy_policy": "Please take note of our <a {\"href\": \"https://home.little-world.com/en/datenschutz/\"}>privacy policy</a>",
   "sign_up.submit_btn": "Create Account",
-  "sign_up.change_location_cta": "Already have an account? <a {\"href\": \"/login\"}>Sign In</a>",
+  "sign_up.change_location_cta": "Sign In",
 
   "login.title": "Sign In",
   "login.email_label": "Email",
