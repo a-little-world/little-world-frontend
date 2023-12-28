@@ -2,6 +2,7 @@ import { GlobalStyles } from "@a-little-world/little-world-design-system";
 import React from "react";
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import { IS_CAPACITOR_BUILD } from "./ENVIRONMENT";
 
 import ActiveCall from "./call";
 import RouterError from "./components/blocks/ErrorView/ErrorView";
@@ -36,6 +37,8 @@ import {
 } from "./routes";
 import theme from "./theme";
 
+const isCapaitor = IS_CAPACITOR_BUILD || false;
+
 const Root = () => {
   return (
     <ThemeProvider theme={theme}>
@@ -45,12 +48,9 @@ const Root = () => {
   );
 };
 
-const router = createBrowserRouter(
-  [
-    {
-      path: BASE_ROUTE,
-      element: <Root />,
-      children: [
+
+
+const ROOT_ROUTES = [
         {
           path: LOGIN_ROUTE,
           element: (
@@ -167,10 +167,30 @@ const router = createBrowserRouter(
             },
           ],
         },
-      ],
+]
+
+if (isCapaitor) {
+  ROOT_ROUTES.push({
+          path: "",
+          element: (
+            <FormLayout>
+              <Login />
+            </FormLayout>
+          ),
+          errorElement: <RouterError />,
+        })
+}
+
+const router = createBrowserRouter(
+  [
+    {
+      path: BASE_ROUTE,
+      element: <Root />,
+      children: ROOT_ROUTES,
     },
   ],
   { basename: "/" }
 );
+
 
 export default router;
