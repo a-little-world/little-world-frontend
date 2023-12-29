@@ -6,7 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import sanitizeHtml from "sanitize-html";
 
-import { BACKEND_URL, DEVELOPMENT, PRODUCTION } from "../ENVIRONMENT";
+import { BACKEND_URL, DEVELOPMENT, IS_CAPACITOR_BUILD, PRODUCTION } from "../ENVIRONMENT";
 import AppointmentsLayout from "../layout/layout";
 import Link from "../path-prepend";
 import { getAppRoute } from "../routes";
@@ -132,12 +132,13 @@ class Chat extends Component {
       selectedDialog: null,
       socket: new ReconnectingWebSocket(
         `${PRODUCTION ? "wss" : "ws"}://${
-          DEVELOPMENT ? BACKEND_URL.substring(7) : window.origin.split("//").pop()
+          IS_CAPACITOR_BUILD ? (BACKEND_URL.split("//").pop()) : (DEVELOPMENT ? BACKEND_URL.substring(7) : window.origin.split("//").pop())
         }/api/chat/ws`
       ) /* without the 'https://' */,
       userWasSelected: !!this.props.userPk,
       open: false,
     };
+    console.log("SOCKET", this.state.socket);
     // some js magic
     this.performSendingMessage = this.performSendingMessage.bind(this);
     this.addMessage = this.addMessage.bind(this);
