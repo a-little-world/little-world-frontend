@@ -5,8 +5,22 @@ const config: CapacitorConfig = {
   appName: 'littleworld',
   webDir: 'build',
   server: {
-    androidScheme: 'https'
-  }
+    // androidScheme: 'https',
+    hostname: '10.0.2.2',
+    cleartext: true
+  },
+  plugins: {
+    CapacitorHttp: {
+      enabled: true,
+    },
+    CapacitorCookies: {
+      enabled: true
+    }
+  },
+  android: {
+    allowMixedContent: true
+  },
+  bundledWebRuntime: false,
 };
 
 export default config;
