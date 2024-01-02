@@ -40,12 +40,11 @@
   overflow: hidden;
   min-height: 45px;
 
-
-  @media(max-width: 500) {
+  @media (max-width: 500) {
     /* padding: 9px 18px; */
     min-height: 60px;
   }
-  @media(max-width: 1200px) {
+  @media (max-width: 1200px) {
     /* padding: 6px 12px; */
     min-height: 52px;
   }
@@ -66,7 +65,7 @@
 }
 
 .toggle-image {
-  content: url("./images/arrow-down.svg");
+  content: url("../../images/arrow-down.svg");
   height: 1em;
   margin: 5px;
   transition: all ease-in-out 0.3s;
@@ -138,7 +137,7 @@
 }
 
 .picture-drop-zone img {
-  content: url("./images/picture.svg");
+  content: url("../../images/picture.svg");
   height: 32px;
   width: 32px;
 }
@@ -174,16 +173,6 @@
   margin: auto;
 }
 
-.support-team {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.support-team h2 {
-  margin: 0;
-}
-
 .contact-buttons {
   display: flex;
   gap: 20px;
@@ -202,18 +191,6 @@
   font-size: 14px;
   flex-grow: 1;
   padding: 15px;
-}
-
-.contact-buttons button img {
-  height: 48px;
-}
-
-button.support-message img {
-  content: url("./images/chat-orange.svg");
-}
-
-button.support-call img {
-  content: url("./images/call-orange.svg");
 }
 
 .help-support .contact-info {
@@ -255,19 +232,19 @@ button.support-call img {
 }
 
 img.web-icon {
-  content: url("./images/icons/web.svg");
+  content: url("../../images/icons/web.svg");
 }
 
 img.email-icon {
-  content: url("./images/icons/email.svg");
+  content: url("../../images/icons/email.svg");
 }
 
 img.phone-icon {
-  content: url("./images/icons/phone.svg");
+  content: url("../../images/icons/phone.svg");
 }
 
 img.mobile-icon {
-  content: url("./images/icons/mobile.svg");
+  content: url("../../images/icons/mobile.svg");
 }
 
 .socials {
@@ -278,19 +255,18 @@ img.mobile-icon {
   justify-content: end;
 }
 
-
 .icon-linkedin {
-  content: url("./images/icons/linkedin.svg");
+  content: url("../../images/icons/linkedin.svg");
 }
 
 .icon-facebook {
-  content: url("./images/icons/facebook.svg");
+  content: url("../../images/icons/facebook.svg");
 }
 
 .icon-instagram {
-  content: url("./images/icons/instagram.svg");
+  content: url("../../images/icons/instagram.svg");
 }
 
 .icon-twitter {
-  content: url("./images/icons/twitter.svg");
+  content: url("../../images/icons/twitter.svg");
 }

@@ -15,10 +15,9 @@ import NbtSelector from "./components/blocks/NbtSelector";
 import NewMatchCard from "./components/blocks/NewMatchCard";
 import NotificationPanel from "./components/blocks/NotificationPanel";
 import PartnerProfiles from "./components/blocks/PartnerProfiles";
-import { BACKEND_PATH } from "./ENVIRONMENT";
-import { addUnconfirmed, removePreMatch, setUsers, updateConfirmedData } from "./features/userData";
-import { changeMatchCategory, removeMatch } from "./features/userData";
-import Help from "./help";
+import Help from "./components/views/Help";
+import CustomPagination from "./CustomPagination";
+import { changeMatchCategory, removeMatch, updateConfirmedData } from "./features/userData";
 import "./i18n";
 import Notifications from "./notifications";
 import Profile from "./profile";
@@ -27,7 +26,6 @@ import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";
 import "./main.css";
-import CustomPagination from "./CustomPagination";
 
 const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
   const usesAvatar = profile.image_type === "avatar";
@@ -116,11 +114,12 @@ function Main() {
       const data = await res.json();
       if (data) {
         dispatch(updateConfirmedData(data.data.confirmed_matches));
-      setCurrentPage(page);
+        setCurrentPage(page);
       }
-    }
-    else {
-      console.error(`Cancelling match searching failed with error ${res.status}: ${res.statusText}`);
+    } else {
+      console.error(
+        `Cancelling match searching failed with error ${res.status}: ${res.statusText}`
+      );
     }
   };
 
@@ -132,9 +131,9 @@ function Main() {
     : [];
 
   useEffect(() => {
-    const totalPage = ((matches?.confirmed?.totalItems) / pageItems);
-    setTotalPages(Math.ceil(totalPage))
-  }, [matches])
+    const totalPage = matches?.confirmed?.totalItems / pageItems;
+    setTotalPages(Math.ceil(totalPage));
+  }, [matches]);
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
@@ -175,9 +174,8 @@ function Main() {
   }, [location, use]);
 
   const onPageChange = (page) => {
-    handlePageChange(page)
-  }
-
+    handlePageChange(page);
+  };
 
   return (
     <AppLayout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
@@ -198,14 +196,13 @@ function Main() {
                   />
                   <NotificationPanel />
                 </div>
-                {
-                  totalPages > 1 &&
+                {totalPages > 1 && (
                   <CustomPagination
                     totalPages={totalPages}
                     currentPage={currentPage}
                     onPageChange={onPageChange}
                   />
-                }
+                )}
               </>
             )}
             {topSelection === "community_calls" && <CommunityCalls />}

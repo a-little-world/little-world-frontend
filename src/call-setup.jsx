@@ -29,7 +29,7 @@ function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText })
   );
 }
 
-function VideoControls({ signalInfo }) {
+export function VideoControls({ signalInfo }) {
   return (
     <div className="video-controls">
       <SignalIndicator
@@ -60,12 +60,6 @@ function VideoControls({ signalInfo }) {
 }
 
 function VideoFrame({ Video, Audio }) {
-  const { t } = useTranslation();
-  const quality = "good";
-  const qualityText = t(`pcs_signal_${quality}`);
-  const updateText = t("pcs_signal_update");
-  const signalInfo = { quality, qualityText, updateText };
-
   return (
     <div className="local-video-container">
       <div id="container" className="video-frame" alt="video">
@@ -187,6 +181,10 @@ function AudioOutputSelect() {
 
 function CallSetup({ userPk, setCallSetupPartner }) {
   const { t } = useTranslation();
+  const quality = "good";
+  const qualityText = t(`pcs_signal_${quality}`);
+  const updateText = t("pcs_signal_update");
+  const signalInfo = { quality, qualityText, updateText };
 
   const videoRef = useRef();
   const [videoTrackId, setVideoTrackId] = useState(null);
@@ -233,7 +231,7 @@ function CallSetup({ userPk, setCallSetupPartner }) {
       <span className="subtitle">{t("pcs_sub_heading")}</span>
       {mediaPermission && (
         <>
-          <VideoFrame Video={videoRef} Audio={audioRef} />
+          <VideoFrame Video={videoRef} Audio={audioRef} signalInfo={signalInfo} />
           <div className="av-setup-dropdowns">
             <VideoInputSelect setVideo={setVideo} />
             <AudioInputSelect setAudio={setAudio} />

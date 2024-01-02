@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
 import { resendVerificationEmail, verifyEmail } from "../../api";
-import { CHANGE_EMAIL_ROUTE, LOGIN_ROUTE } from "../../routes";
+import { CHANGE_EMAIL_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import { registerInput } from "./SignUp";
 import { Buttons, FormDescription, StyledCard, StyledForm, Title } from "./SignUp.styles";

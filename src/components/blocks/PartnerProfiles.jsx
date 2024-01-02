@@ -1,6 +1,6 @@
 import { Modal } from "@a-little-world/little-world-design-system";
 import Cookies from "js-cookie";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -35,7 +35,7 @@ function PartnerProfiles({ setCallSetupPartner, setShowCancel, totalPaginations 
       .then((response) => {
         if (response) {
           // If this request works, we can safely update our state to 'searching'
-          dispatch(updateSearchState(updatedState === "idle" ? false : true));
+          dispatch(updateSearchState(updatedState !== "idle"));
         }
       })
       .catch((error) => console.error(error));
@@ -47,27 +47,29 @@ function PartnerProfiles({ setCallSetupPartner, setShowCancel, totalPaginations 
 
   return (
     <div className="profiles">
-      {matchesDisplay
-        .map((match) => {
-          return (
-            <ProfileBox
-              key={match.partner.id}
-              userPk={match.partner.id}
-              profile={match.partner}
-              isSelf={false}
-              openPartnerModal={setPartnerActionData}
-              setCallSetupPartner={setCallSetupPartner}
-              isOnline={match.partner.is_online}
-            />
-          );
-        })}
-      {
-        totalPaginations === matches.confirmed.currentPage &&
+      {matchesDisplay.map((match) => {
+        return (
+          <ProfileBox
+            key={match.partner.id}
+            userPk={match.partner.id}
+            profile={match.partner}
+            isSelf={false}
+            openPartnerModal={setPartnerActionData}
+            setCallSetupPartner={setCallSetupPartner}
+            isOnline={match.partner.is_online}
+          />
+        );
+      })}
+      {totalPaginations === matches.confirmed.currentPage && (
         <>
           {!user.isSearching && (
-            <button type="button" className="match-status find-new" onClick={updateUserMatchingState}>
+            <button
+              type="button"
+              className="match-status find-new"
+              onClick={updateUserMatchingState}
+            >
               <img alt="plus" />
-              {(!user.isSearching) && t("matching_state_not_searching_trans")}
+              {!user.isSearching && t("matching_state_not_searching_trans")}
               {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
             </button>
           )}
@@ -85,7 +87,7 @@ function PartnerProfiles({ setCallSetupPartner, setShowCancel, totalPaginations 
             </div>
           )}
         </>
-      }
+      )}
       <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
         {!!partnerActionData && (
           <PartnerActionCard data={partnerActionData} onClose={onModalClose} />

@@ -67,10 +67,6 @@
   flex-direction: column;
 }
 
-.nav-bar-top .selector > span {
-  display: inherit;
-}
-
 .nav-bar-top input + label {
   font-size: 18px;
   color: #36a9e0;
@@ -309,11 +305,6 @@ button.match-status {
     top: 0;
     padding: 0;
     z-index: 1;
-  }
-  .nav-bar-top .selector {
-    margin: auto;
-    max-width: 100%;
-    overflow: hidden;
   }
 
   .content-area-main {
