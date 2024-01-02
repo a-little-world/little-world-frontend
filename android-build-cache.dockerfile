@@ -9,4 +9,4 @@ RUN ./node_modules/.bin/webpack --env PUBLIC_PATH= --env DEV_TOOL=none --env DEB
 RUN ./node_modules/.bin/capacitor sync
 RUN cd ./android && ./gradlew assembleDebug
 
-RUN ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]
