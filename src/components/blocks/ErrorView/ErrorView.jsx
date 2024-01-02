@@ -10,7 +10,7 @@ import Layout from "../Layout/AppLayout";
 const ErrorCard = styled(Card)`
   text-align: center;
   align-items: center;
-  justif-content: space-between;
+  justify-content: center;
   padding: ${({ theme }) => theme.spacing.xxlarge};
   gap: ${({ theme }) => theme.spacing.large};
   max-width: 800px;

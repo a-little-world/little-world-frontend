@@ -31,18 +31,18 @@ const optionsKeys = {
 };
 
 const translations = {
-  faceColor: "skin tone",
+  faceColor: "skin_tone",
   earSize: "ears",
-  hairStyle: "hair",
-  hairColor: "hair color",
-  hatStyle: "hat",
-  hatColor: "hat color",
+  hairStyle: "hair_style",
+  hairColor: "hair_color",
+  hatStyle: "hat_style",
+  hatColor: "hat_color",
   eyeStyle: "eyes",
   glassesStyle: "glasses",
   noseStyle: "nose",
   mouthStyle: "mouth",
-  shirtStyle: "shirt",
-  shirtColor: "shirt color",
+  shirtStyle: "shirt_style",
+  shirtColor: "shirt_color",
   eyeBrowStyle: "eyebrows",
   bgColor: "background",
 };
@@ -117,16 +117,16 @@ const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
         <Avatar style={{ width: "100%", height: "100%" }} {...editorConfig} />
       </AvatarContainer>
       <Controls>
-        {controls.map(([optionKey, colorKey], index) => {
+        {controls.map(([optionKey, colorKey]) => {
           return (
-            <ControlColumn key={`control ${index}`}>
+            <ControlColumn key={`control ${optionKey}`}>
               {optionKey && (
                 <OptionToggle
                   onClick={() => {
                     updateAvatar(optionKey);
                   }}
                 >
-                  {translations[optionKey]}
+                  {t(`profile_pic.avatar_${translations[optionKey]}`)}
                 </OptionToggle>
               )}
               {colorKey && (
@@ -144,10 +144,10 @@ const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
         })}
       </Controls>
       <Buttons>
-        <Button onClick={handleSave}>{t("profile_pic.save_avatar")}</Button>
         <Button appearance={ButtonAppearance.Secondary} onClick={closeEditor}>
           {t("profile_pic.discard_avatar")}
         </Button>
+        <Button onClick={handleSave}>{t("profile_pic.save_avatar")}</Button>
       </Buttons>
     </Editor>
   );

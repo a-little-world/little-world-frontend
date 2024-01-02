@@ -15,6 +15,7 @@ import { updateProfile } from "../../../features/userData";
 import { getAppRoute } from "../../../routes";
 import { ComponentTypes, getFormComponent } from "../../../userForm/formContent";
 import getFormPage from "../../../userForm/formPages";
+import DropdownWithInput from "../DropdownWithInput/DropdownWithInput";
 import Note from "../Note/Note";
 import ProfilePic from "../ProfilePic/ProfilePic";
 import RadioGroupWithInput from "../RadioGroupWithInput/RadioGroupWithInput";
@@ -96,6 +97,11 @@ const Form = () => {
                 control={control}
                 {...component}
               />
+            );
+
+          if (component?.type === ComponentTypes.dropdownWithInput)
+            return (
+              <DropdownWithInput key={DropdownWithInput.name} control={control} {...component} />
             );
 
           return (

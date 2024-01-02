@@ -37,6 +37,7 @@ const ChangeEmail = () => {
   }, [setFocus]);
 
   const onError = (e) => {
+    setIsSubmitting(false);
     if (e?.message) {
       setError(
         e.cause ?? "root.serverError",
@@ -59,10 +60,7 @@ const ChangeEmail = () => {
         setIsSubmitting(false);
         navigate(`/${VERIFY_EMAIL_ROUTE}`);
       })
-      .catch((error) => {
-        onError(error);
-        setIsSubmitting(false);
-      });
+      .catch(onError);
   };
 
   return (

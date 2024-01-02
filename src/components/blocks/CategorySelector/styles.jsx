@@ -1,3 +1,4 @@
+import { Text } from "@a-little-world/little-world-design-system";
 import styled from "styled-components";
 
 export const CategorySelectorWrapper = styled.div`
@@ -57,5 +58,10 @@ export const TextSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 1;
   gap: ${({ theme }) => theme.spacing.small};
+`;
+
+export const CategoryNote = styled(Text)`
+  margin-top: auto;
 `;

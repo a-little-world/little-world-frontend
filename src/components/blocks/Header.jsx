@@ -9,10 +9,11 @@ import LanguageSelector from "./LanguageSelector/LanguageSelector";
 const StyledHeader = styled.header`
   display: flex;
   align-items: center;
+  position: sticky;
+  top: 0;
   justify-content: space-between;
   border-bottom: 1px solid $grey;
   padding: ${({ theme }) => theme.spacing.small};
-  position: relative;
   background-color: white;
   height: 90px;
   z-index: 10;

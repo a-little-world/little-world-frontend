@@ -1,8 +1,10 @@
 import {
+  ButtonAppearance,
   ButtonSizes,
   Checkbox,
   InputWidth,
   Label,
+  Link,
   Text,
   TextInput,
   TextTypes,
@@ -10,9 +12,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { signUp } from "../../api";
+import { initialise } from "../../features/userData";
+import { APP_ROUTE, LOGIN_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import {
   NameContainer,
@@ -21,7 +26,6 @@ import {
   StyledCta,
   StyledForm,
   Title,
-  ToLogin,
 } from "./SignUp.styles";
 
 export const registerInput = ({ register, name, options }) => {
@@ -34,6 +38,7 @@ export const registerInput = ({ register, name, options }) => {
 };
 
 const SignUp = () => {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -52,6 +57,7 @@ const SignUp = () => {
   }, [setFocus]);
 
   const onError = (e) => {
+    setIsSubmitting(false);
     if (e?.message) {
       setError(
         e.cause ?? "root.serverError",
@@ -68,15 +74,14 @@ const SignUp = () => {
 
   const onFormSubmit = async (data) => {
     setIsSubmitting(true);
+
     signUp(data)
-      .then(() => {
+      .then((signUpData) => {
+        dispatch(initialise(signUpData));
         setIsSubmitting(false);
-        navigate("/app");
+        navigate(`/${APP_ROUTE}/`);
       })
-      .catch((error) => {
-        onError(error);
-        setIsSubmitting(false);
-      });
+      .catch(onError);
   };
 
   return (
@@ -94,10 +99,10 @@ const SignUp = () => {
               {...registerInput({
                 register,
                 name: "firstName",
-                options: { required: t("error.required") },
+                options: { required: "error.required" },
               })}
               id="firstName"
-              error={errors?.firstName?.message}
+              error={t(errors?.firstName?.message)}
               placeholder={t("sign_up.first_name_placeholder")}
               type="text"
             />
@@ -105,10 +110,10 @@ const SignUp = () => {
               {...registerInput({
                 register,
                 name: "lastName",
-                options: { required: t("error.required") },
+                options: { required: "error.required" },
               })}
               id="lastName"
-              error={errors?.lastName?.message}
+              error={t(errors?.lastName?.message)}
               placeholder={t("sign_up.second_name_placeholder")}
               type="text"
             />
@@ -118,11 +123,11 @@ const SignUp = () => {
           {...registerInput({
             register,
             name: "email",
-            options: { required: t("error.required") },
+            options: { required: "error.required" },
           })}
           id="email"
           label={t("sign_up.email_label")}
-          error={errors?.email?.message}
+          error={t(errors?.email?.message)}
           placeholder={t("sign_up.email_placeholder")}
           type="email"
         />
@@ -130,10 +135,13 @@ const SignUp = () => {
           {...registerInput({
             register,
             name: "password",
-            options: { required: t("error.required") },
+            options: {
+              required: "error.required",
+              minLength: { message: "error.password_min_length", value: 8 },
+            },
           })}
           id="password"
-          error={errors?.password?.message}
+          error={t(errors?.password?.message)}
           label={t("sign_up.password_label")}
           placeholder={t("sign_up.password_placeholder")}
           type="password"
@@ -143,25 +151,26 @@ const SignUp = () => {
             register,
             name: "confirmPassword",
             options: {
-              required: t("error.required"),
-              passwordsMatch: (v) => getValues().password === v || t("confirmPasswordError"),
+              required: "error.required",
+              validate: (v, values) => values.password === v || t("error.passwords_do_not_match"),
+              minLength: { message: "error.password_min_length", value: 8 },
             },
           })}
           label={t("sign_up.confirm_password_label")}
           id="confirmPassword"
-          error={errors?.confirmPassword?.message}
+          error={t(errors?.confirmPassword?.message)}
           type="password"
         />
         <TextInput
           {...registerInput({
             register,
             name: "birthYear",
-            options: { required: t("error.required") },
+            options: { required: "error.required" },
           })}
           label={t("sign_up.birth_year_label")}
           labelTooltip={t("sign_up.birth_year_tooltip")}
           id="birthYear"
-          error={errors?.birthYear?.message}
+          error={t(errors?.birthYear?.message)}
           placeholder={t("sign_up.birth_year_placeholder")}
           type="number"
           width={InputWidth.Small}
@@ -170,9 +179,27 @@ const SignUp = () => {
         />
         <Controller
           defaultValue={false}
+          name="mailingList"
+          control={control}
+          render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
+            <Checkbox
+              id="mailingList"
+              name={name}
+              inputRef={ref}
+              onCheckedChange={(val) => onChange({ target: { value: val } })}
+              onBlur={onBlur}
+              value={value}
+              error={t(error?.message)}
+              label={t("sign_up.mailing_list_label")}
+              required={false}
+            />
+          )}
+        />
+        <Controller
+          defaultValue={false}
           name="terms"
           control={control}
-          rules={{ required: t("error.required") }}
+          rules={{ required: "error.required" }}
           render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
             <Checkbox
               id="terms"
@@ -181,7 +208,7 @@ const SignUp = () => {
               onCheckedChange={(val) => onChange({ target: { value: val } })}
               onBlur={onBlur}
               value={value}
-              error={error?.message}
+              error={t(error?.message)}
               label={t("sign_up.terms_label")}
             />
           )}
@@ -198,7 +225,9 @@ const SignUp = () => {
         >
           {t("sign_up.submit_btn")}
         </StyledCta>
-        <ToLogin center>{t("sign_up.change_location_cta")}</ToLogin>
+        <Link to={`/${LOGIN_ROUTE}`} buttonAppearance={ButtonAppearance.Secondary}>
+          {t("sign_up.change_location_cta")}
+        </Link>
       </StyledForm>
     </StyledCard>
   );

@@ -3,7 +3,6 @@ import {
   ArrowRightIcon,
   Button,
   ButtonVariations,
-  ImageIcon,
   InputError,
   Modal,
   PencilIcon,
@@ -20,9 +19,9 @@ import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Avatar, { genConfig } from "react-nice-avatar";
 import { useSelector } from "react-redux";
+import { useTheme } from "styled-components";
 
 import { USER_FIELDS } from "../../../constants";
-import theme from "../../../theme";
 import ProfileImage from "../../atoms/ProfileImage";
 import AvatarEditor from "./AvatarEditor";
 import {
@@ -35,6 +34,7 @@ import {
   InteractiveArea,
   ProfilePicWrapper,
   SelectionPanel,
+  StyledFileIcon,
   TrashButton,
   UploadArea,
   UploadLabel,
@@ -46,9 +46,11 @@ const IMAGE_TYPES = {
 };
 
 const ProfilePic = ({ control, setValue }) => {
+  const theme = useTheme();
   const [imageType, setImageType] = useState(IMAGE_TYPES.image);
   const [avatarConfig, setAvatarConfig] = useState(genConfig());
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
+  const [avatarIndex, setAvatarIndex] = useState(0);
   const [avatarList, setAvatarList] = useState([]);
   const [uploadedImage, setUploadedImage] = useState("");
   const userData = useSelector((state) => state.userData.user.profile);
@@ -82,8 +84,10 @@ const ProfilePic = ({ control, setValue }) => {
     if (!isEmpty(userData?.avatar_config)) {
       setValue(USER_FIELDS.avatar, userData.avatar_config);
       setAvatarConfig(userData.avatar_config);
+      setAvatarList([userData.avatar_config]);
     } else {
       setValue(USER_FIELDS.avatar, avatarConfig);
+      setAvatarList([avatarConfig]);
     }
   }, [userData?.avatar_config]);
 
@@ -98,12 +102,19 @@ const ProfilePic = ({ control, setValue }) => {
   };
 
   const onPrevAvatar = () => {
-    updateAvatar(avatarList[avatarList.length - 1]);
+    updateAvatar(avatarList[avatarIndex - 1]);
+    setAvatarIndex((index) => index - 1);
   };
 
   const onNextAvatar = () => {
-    setAvatarList((list) => [...list, avatarConfig]);
-    updateAvatar(genConfig());
+    if (avatarIndex === avatarList.length - 1) {
+      const newConfig = genConfig();
+      updateAvatar(newConfig);
+      setAvatarList((list) => [...list, newConfig]);
+    } else {
+      updateAvatar(avatarList[avatarIndex + 1]);
+    }
+    setAvatarIndex((index) => index + 1);
   };
 
   const openAvatarEditor = () => setShowAvatarEditor(true);
@@ -117,118 +128,128 @@ const ProfilePic = ({ control, setValue }) => {
         control={control}
         rules={{ required: imageType === IMAGE_TYPES.image && !uploadedImage }}
         render={({ field: { onChange, onBlur, name, ref }, fieldState: { error } }) => (
-          <SelectionPanel
-            onClick={() => onImageSelection(IMAGE_TYPES.image)}
-            $selected={imageType === IMAGE_TYPES.image}
-            $error={!isEmpty(error)}
-          >
-            <ImageContainer>
-              {uploadedImage ? (
-                <ProfileImage image={uploadedImage} size="medium" circle>
-                  <TrashButton onClick={onImageDelete} variation="Icon" type="button">
-                    <TrashIcon color="white" />
-                  </TrashButton>
-                </ProfileImage>
-              ) : (
-                <CircleButton
-                  htmlFor="fileInput"
-                  onClick={() => fileInputRef.current?.click()}
-                  variation="Secondary"
+          <>
+            <SelectionPanel
+              onClick={() => onImageSelection(IMAGE_TYPES.image)}
+              $selected={imageType === IMAGE_TYPES.image}
+              $error={!isEmpty(error)}
+            >
+              <ImageContainer>
+                {uploadedImage ? (
+                  <ProfileImage image={uploadedImage} size="medium" circle>
+                    <TrashButton onClick={onImageDelete} variation="Icon" type="button">
+                      <TrashIcon color={theme.color.surface.disabled} />
+                    </TrashButton>
+                  </ProfileImage>
+                ) : (
+                  <CircleButton
+                    htmlFor="fileInput"
+                    onClick={() => fileInputRef.current?.click()}
+                    variation="Secondary"
+                    type="button"
+                  >
+                    <PlusIcon color="#36a9e0" />
+                  </CircleButton>
+                )}
+              </ImageContainer>
+              <UploadArea>
+                <UploadLabel htmlFor="fileInput">
+                  <StyledFileIcon />
+                  <Text color="#36a9e0" bold type={TextTypes.Body3} tag="h4">
+                    {t("profile_pic.click_to_upload")}
+                  </Text>
+                  <Text color="#A6A6A6" type={TextTypes.Body3}>
+                    {t("profile_pic.drop_image")}
+                  </Text>
+                </UploadLabel>
+                <FileInput
+                  value={undefined}
+                  ref={(e) => {
+                    ref(e);
+                    fileInputRef.current = e;
+                  }}
+                  type="file"
+                  name={name}
+                  id="fileInput"
+                  onBlur={onBlur}
+                  onChange={(e) => {
+                    onChange(e);
+                    onImageUpload(e);
+                  }}
+                  accept="image/x-png, image/png, image/jpeg"
+                />
+              </UploadArea>
+            </SelectionPanel>
+            <SelectionPanel
+              onClick={() => onImageSelection(IMAGE_TYPES.avatar)}
+              $selected={imageType === IMAGE_TYPES.avatar}
+            >
+              <AvatarInfo>
+                <Text bold type={TextTypes.Body3} tag="h4" color="black">
+                  {t("profile_pic.avatar_selection")}
+                </Text>
+                <ToolTip
+                  text={t("profile_pic.avatar_tooltip")}
+                  trigger={
+                    <Button variation={ButtonVariations.Icon} type="button">
+                      <QuestionIcon
+                        label="questionIcon"
+                        labelId="questionIcon"
+                        color="#36a9e0"
+                        height={16}
+                        width={16}
+                      />
+                    </Button>
+                  }
+                />
+              </AvatarInfo>
+              <InteractiveArea>
+                <AvatarSelection>
+                  <Button
+                    variation={ButtonVariations.Control}
+                    disabled={avatarIndex === 0}
+                    onClick={onPrevAvatar}
+                    type="button"
+                  >
+                    <ArrowLeftIcon width={6} />
+                  </Button>
+                  <div>
+                    <Avatar style={{ width: "8rem", height: "8rem" }} {...avatarConfig} />
+                  </div>
+                  <Button variation={ButtonVariations.Control} onClick={onNextAvatar} type="button">
+                    <ArrowRightIcon width={6} />
+                  </Button>
+                </AvatarSelection>
+
+                <Text type={TextTypes.Body3} color="#A6A6A6" center>
+                  {t("profile_pic.randomize_avatar")}
+                </Text>
+                <AvatarEditorButton
+                  variation={ButtonVariations.Inline}
+                  onClick={openAvatarEditor}
                   type="button"
+                  color="#36a9e0"
                 >
-                  <PlusIcon color="#36a9e0" />
-                </CircleButton>
-              )}
-            </ImageContainer>
-            <UploadArea>
-              <UploadLabel htmlFor="fileInput">
-                <ImageIcon />
-                <Text color="#36a9e0" bold type={TextTypes.Body3} tag="h4">
-                  {t("profile_pic.click_to_upload")}
-                </Text>
-                <Text color="#A6A6A6" type={TextTypes.Body3}>
-                  {t("profile_pic.drop_image")}
-                </Text>
-              </UploadLabel>
-              <FileInput
-                value={undefined}
-                ref={(e) => {
-                  ref(e);
-                  fileInputRef.current = e;
-                }}
-                type="file"
-                name={name}
-                id="fileInput"
-                onBlur={onBlur}
-                onChange={(e) => {
-                  onChange(e);
-                  onImageUpload(e);
-                }}
-                accept="image/x-png, image/png, image/jpeg"
-              />
-              <InputError
-                bottom={theme.spacing.xxxsmall}
-                right={theme.spacing.xxsmall}
-                left={theme.spacing.small}
-                visible={!isEmpty(error)}
-              >
-                {t("validation.image_upload_required")}
-              </InputError>
-            </UploadArea>
-          </SelectionPanel>
+                  <PencilIcon color="#36a9e0" width={12} />
+                  <Text type={TextTypes.Body3} bold color="#36a9e0" tag="h4">
+                    {t("profile_pic.edit_avatar")}
+                  </Text>
+                </AvatarEditorButton>
+              </InteractiveArea>
+            </SelectionPanel>
+            <InputError
+              right={0}
+              bottom="-16px"
+              textAlign="left"
+              textType={TextTypes.Body3}
+              visible={!isEmpty(error)}
+              style={{ fontSize: "1rem" }}
+            >
+              {t("validation.image_upload_required")}
+            </InputError>
+          </>
         )}
       />
-      <SelectionPanel
-        onClick={() => onImageSelection(IMAGE_TYPES.avatar)}
-        $selected={imageType === IMAGE_TYPES.avatar}
-      >
-        <AvatarInfo>
-          <Text bold type={TextTypes.Body3} tag="h4" color="black">
-            {t("profile_pic.avatar_selection")}
-          </Text>
-          <ToolTip
-            text={t("profile_pic.avatar_tooltip")}
-            trigger={
-              <Button variation={ButtonVariations.Icon} type="button">
-                <QuestionIcon
-                  label="questionIcon"
-                  labelId="questionIcon"
-                  color="#36a9e0"
-                  height={16}
-                  width={16}
-                />
-              </Button>
-            }
-          />
-        </AvatarInfo>
-        <InteractiveArea>
-          <AvatarSelection>
-            <Button variation={ButtonVariations.Control} onClick={onPrevAvatar} type="button">
-              <ArrowLeftIcon width={6} />
-            </Button>
-            <div>
-              <Avatar style={{ width: "8rem", height: "8rem" }} {...avatarConfig} />
-            </div>
-            <Button variation={ButtonVariations.Control} onClick={onNextAvatar} type="button">
-              <ArrowRightIcon width={6} />
-            </Button>
-          </AvatarSelection>
-
-          <Text type={TextTypes.Body3} color="#A6A6A6" center>
-            {t("profile_pic.randomize_avatar")}
-          </Text>
-          <AvatarEditorButton
-            variation={ButtonVariations.Inline}
-            onClick={openAvatarEditor}
-            type="button"
-          >
-            <PencilIcon color="#36a9e0" width={12} />
-            <Text type={TextTypes.Body3} bold color="#36a9e0" tag="h4">
-              {t("profile_pic.edit_avatar")}
-            </Text>
-          </AvatarEditorButton>
-        </InteractiveArea>
-      </SelectionPanel>
 
       <Modal open={showAvatarEditor} onClose={closeAvatarEditor}>
         <AvatarEditor

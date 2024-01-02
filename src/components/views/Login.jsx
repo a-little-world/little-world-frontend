@@ -1,8 +1,9 @@
 import {
   Button,
+  ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
-  Text,
+  Link,
   TextInput,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
@@ -15,10 +16,10 @@ import { useTheme } from "styled-components";
 
 import { login } from "../../api";
 import { initialise } from "../../features/userData";
-import { APP_ROUTE } from "../../routes";
+import { APP_ROUTE, SIGN_UP_ROUTE } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import { registerInput } from "./SignUp";
-import { ChangeLocation, StyledCard, StyledCta, StyledForm, Title } from "./SignUp.styles";
+import { StyledCard, StyledCta, StyledForm, Title } from "./SignUp.styles";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const Login = () => {
   }, [setFocus]);
 
   const onError = (e) => {
+    setIsSubmitting(false);
     if (e?.message) {
       setError(
         e.cause ?? "root.serverError",
@@ -59,18 +61,12 @@ const Login = () => {
     setIsSubmitting(true);
 
     login(data)
-      .then((data) => {
-        data.json().then((data) => {
-          console.log("INIT DATA", data);
-          dispatch(initialise(data));
-          setIsSubmitting(false);
-          navigate(`/${APP_ROUTE}/`);
-        });
-      })
-      .catch((error) => {
-        onError(error);
+      .then((loginData) => {
+        dispatch(initialise(loginData));
         setIsSubmitting(false);
-      });
+        navigate(`/${APP_ROUTE}/`);
+      })
+      .catch(onError);
   };
 
   return (
@@ -83,11 +79,11 @@ const Login = () => {
           {...registerInput({
             register,
             name: "email",
-            options: { required: t("error.required") },
+            options: { required: "error.required" },
           })}
           id="email"
           label={t("login.email_label")}
-          error={errors?.email?.message}
+          error={t(errors?.email?.message)}
           placeholder={t("login.email_placeholder")}
           type="email"
         />
@@ -95,10 +91,10 @@ const Login = () => {
           {...registerInput({
             register,
             name: "password",
-            options: { required: t("error.required") },
+            options: { required: "error.required" },
           })}
           id="password"
-          error={errors?.password?.message}
+          error={t(errors?.password?.message)}
           label={t("login.password_label")}
           placeholder={t("login.password_placeholder")}
           type="password"
@@ -122,10 +118,9 @@ const Login = () => {
         >
           {t("login.submit_btn")}
         </StyledCta>
-        <ChangeLocation>
-          <Text>{t("login.or")}</Text>
-          <Text>{t("login.change_location_cta")}</Text>
-        </ChangeLocation>
+        <Link to={`/${SIGN_UP_ROUTE}`} buttonAppearance={ButtonAppearance.Secondary}>
+          {t("login.change_location_cta")}
+        </Link>
       </StyledForm>
     </StyledCard>
   );
