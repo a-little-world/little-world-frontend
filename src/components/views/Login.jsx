@@ -38,6 +38,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("MOUNTING");
     setFocus("email");
   }, [setFocus]);
 
