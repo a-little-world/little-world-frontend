@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
-import { CORE_WS_PATH, CORE_WS_SHEME } from "./ENVIRONMENT";
+import { CORE_WS_PATH, CORE_WS_SHEME, IS_CAPACITOR_BUILD, BACKEND_URL } from "./ENVIRONMENT";
 
 import "./App.css";
+
+const SOCKET_URL = IS_CAPACITOR_BUILD ? (CORE_WS_SHEME + BACKEND_URL.split("//").pop() + CORE_WS_PATH) : (CORE_WS_SHEME + window.location.host + CORE_WS_PATH);
 
 const WebsocketBridge = () => {
   /**
@@ -16,7 +18,7 @@ const WebsocketBridge = () => {
    * } --> this will triger a simple redux dispatch in the frontend
    */
   const dispatch = useDispatch();
-  const [socketUrl, setSocketUrl] = useState(CORE_WS_SHEME + window.location.host + CORE_WS_PATH);
+  const [socketUrl, setSocketUrl] = useState(SOCKET_URL);
   const [messageHistory, setMessageHistory] = useState([]);
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 

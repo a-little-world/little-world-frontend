@@ -580,5 +580,9 @@
   "change_email.input_label": "E-mail",
   "change_email.input_placeholder": "beispiel@gmail.com",
   "change_email.submit_btn": "Neue E-mail bestätigen",
-  "change_email.back_btn": "Abbrechen"
+  "change_email.back_btn": "Abbrechen",
+  "all_notes_label": "Alle",
+  "favorite_notes_label": "Favoriet",
+  "archived_notes_label": "Gearchiveerd",
+  "notes_textarea_placeholder": "Vul hier uw tekst in..."
 }
