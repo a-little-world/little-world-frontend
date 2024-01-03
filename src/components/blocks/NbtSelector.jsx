@@ -3,11 +3,14 @@ import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 
 const Selector = styled.div`
-  display: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: ${({ theme }) => theme.spacing.xxsmall};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.small}) {
+      justify-content: flex-start;
       display: flex;
     }
   `}

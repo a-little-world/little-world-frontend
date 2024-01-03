@@ -1,86 +1,94 @@
+import { Gradients, MessageIcon, PhoneIcon } from "@a-little-world/little-world-design-system";
 import { t } from "i18next";
 import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
-
-import { filterMessagesForDialog } from "./chat/chat.lib";
-import Logo from "./components/atoms/Logo";
-import { setStatus } from "./features/userData";
-import { CHAT_ROUTE, getAppRoute } from "./routes";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
+
+import { CHAT_ROUTE, getAppRoute } from "../../routes";
+import Logo from "../atoms/Logo";
+import MenuLink from "../atoms/MenuLink";
+
 import "./help.css";
 
 const IntroText = styled.h1`
   font-size: 14px;
   font-weight: 300;
   margin: ${({ theme }) => `${theme.spacing.xsmall} ${theme.spacing.medium}`};
-`
+`;
 const HelpSupport = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: ${({ theme }) => `${theme.spacing.large} `};
   height: fit-content;
-`
+
+  ${({ theme }) =>
+    `
+    padding: ${theme.spacing.small};
+    @media (min-width: ${theme.breakpoints.small}) {
+      padding: ${theme.spacing.large};
+    }`}
+`;
 const Topper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: auto;
-`
+`;
 const SupportTeam = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  h2{
+  h2 {
     margin: 0;
   }
-`
+`;
 const ContactButtons = styled.div`
   display: flex;
-  gap: ${({ theme }) => `${theme.spacing.medium} `};
+  justify-content: center;
   width: 100%;
   box-sizing: border-box;
-  padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.xxxsmall}`};
-`
-const ContactButton = styled.button`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: ${({ theme }) => `${theme.spacing.medium} `};
-  background: rgba(230, 232, 236, 0.2);
-  justify-content: center;
-  font-size: ${({ theme }) => `${theme.spacing.small} `};
-  flex-grow: 1;
-  padding: ${({ theme }) => `${theme.spacing.small} `};
 
-  img{
-    height: 48px;
-  }
-`
+  ${({ theme }) =>
+    `
+    gap: ${theme.spacing.small};
+    padding: ${theme.spacing.medium} ${theme.spacing.xxxsmall};
+
+    @media (min-width: ${theme.breakpoints.small}) {
+      gap: ${theme.spacing.medium};
+      padding: ${theme.spacing.medium} ${theme.spacing.xxxsmall};
+    }`}
+`;
+
 const ContactInfo = styled.div`
   display: flex;
   background: rgba(230, 232, 236, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.12);
-  padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
   border-radius: ${({ theme }) => `${theme.spacing.xxsmall} `};
-  margin-top: auto;
-  gap: 50px;
-`
+  width: 100%;
+
+  ${({ theme }) =>
+    `
+    padding: ${theme.spacing.medium};
+    gap: ${theme.spacing.small};
+    @media (min-width: ${theme.breakpoints.small}) {
+      padding: ${theme.spacing.medium} ${theme.spacing.large};
+      gap: ${theme.spacing.xlarge};
+    }`}
+`;
 const Contacts = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => `${theme.spacing.xxxsmall} `};
+  gap: ${({ theme }) => `${theme.spacing.xxsmall} `};
   white-space: nowrap;
-`
+`;
 const HeplHeading = styled.h2`
   text-transform: none;
   margin: 0;
   margin-top: 1.5rem;
-`
+`;
 const SocialLinks = styled.div`
   display: flex;
   flex-direction: column;
@@ -92,17 +100,15 @@ const SocialLinks = styled.div`
     display: flex;
     padding: ${({ theme }) => `${theme.spacing.xxxsmall} `};
   }
-`
+`;
 const BusinessName = styled.div`
   color: rgb(54, 169, 224);
   font-size: ${({ theme }) => `${theme.spacing.xsmall} `};
   margin: ${({ theme }) => `${theme.spacing.xxsmall}  ${theme.spacing.xxxsmall}`};
-`
-const BottomCard = styled.div`
-  display: flex;
-`
-const ContentWrapper = styled.div``
-const DropZoneLabel = styled.div``
+`;
+
+const ContentWrapper = styled.div``;
+const DropZoneLabel = styled.div``;
 const HelpButton = styled.button`
   display: flex;
   flex-direction: column;
@@ -111,15 +117,15 @@ const HelpButton = styled.button`
   color: #36a9e0;
   font-weight: 600;
   font-size: ${({ theme }) => `${theme.spacing.small} `};
-`
+`;
 const SupportButtonText = styled.span`
   font-size: 1rem;
-`
+`;
 const ContactLink = styled.a`
   display: flex;
   text-align: center;
   gap: 0.3rem;
-`
+`;
 const ContactSubmitButton = styled.button`
   color: white;
   font-weight: 700;
@@ -127,29 +133,29 @@ const ContactSubmitButton = styled.button`
   background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
   margin-left: auto;
   margin-top: auto;
-  padding: ${({ theme }) => `${theme.spacing.xsmall}  ${theme.spacing.medium}`};
-`
+  padding: ${({ theme }) => `${theme.spacing.xsmall} ${theme.spacing.medium}`};
+`;
 const DragText = styled.div`
   font-weight: 300;
   font-size: ${({ theme }) => `${theme.spacing.small} `};
   color: #5f5f5f;
-`
+`;
 const FileName = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 const TextArea = styled.textarea`
   resize: none;
   height: 122px;
   font-family: "Signika Negative";
   padding: ${({ theme }) => `${theme.spacing.small} `};
   font-size: ${({ theme }) => `${theme.spacing.small} `};
-`
+`;
 const HelpText = styled.p`
   font-size: ${({ theme }) => `${theme.spacing.small} `};
   font-weight: 300;
   margin: ${({ theme }) => `${theme.spacing.medium}  ${theme.spacing.xsmall}`};
-`
+`;
 const FAQQuestion = styled.h3`
   margin: -5px 0 15px 0;
   font-weight: 300;
@@ -158,18 +164,18 @@ const FAQQuestion = styled.h3`
   text-transform: none;
   align-items: center;
   cursor: pointer;
-`
+`;
 const FAQAnswer = styled.p`
   font-size: ${({ theme }) => `${theme.spacing.small} `};
   font-weight: 300;
   padding: ${({ theme }) => `${theme.spacing.medium} `};
-`
-const ToggleImage = styled.img``
+`;
+const ToggleImage = styled.img``;
 const FAQItems = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => `${theme.spacing.small} `};
-`
+`;
 
 function FrequentQuestion({ question, answer }) {
   const [showing, setShowing] = useState(false);
@@ -211,10 +217,10 @@ function Faqs() {
           return (
             <>
               <h2>{t(`faq::section_title::${faq.section}`)}</h2>
-              {faq.questions.map((question, i) => {
+              {faq.questions.map((question) => {
                 return (
                   <FrequentQuestion
-                    key={i}
+                    key={t(`faq::section_content::${faq.section}::${question}::question`)}
                     question={t(`faq::section_content::${faq.section}::${question}::question`)}
                     answer={t(`faq::section_content::${faq.section}::${question}::answer`)}
                   />
@@ -351,7 +357,6 @@ function Contact() {
 
 function Help({ selection }) {
   const adminUser = useSelector((state) => state.userData.matches.support.items[0]);
-  const navigate = useNavigate();
 
   return (
     <div className="content-area-main">
@@ -361,7 +366,6 @@ function Help({ selection }) {
       </div>
 
       <HelpSupport className="panel">
-
         <Topper>
           <Logo />
           <SupportTeam>
@@ -370,30 +374,20 @@ function Help({ selection }) {
           </SupportTeam>
         </Topper>
 
-
         <ContactButtons>
-          <ContactButton
-            type="button"
-            className="support-message"
-            onClick={() => {
-              navigate(`/${getAppRoute(CHAT_ROUTE)}/`, { state: { userPk: adminUser.patner.id } });
-            }}
-          >
-            <img alt="" />
+          <MenuLink to={getAppRoute(CHAT_ROUTE)} state={{ userPk: adminUser.partner.id }}>
+            <MessageIcon
+              gradient={Gradients.Orange}
+              label="message support"
+              labelId="message_support"
+            />
             <SupportButtonText>{t("help_support_message_btn")}</SupportButtonText>
-          </ContactButton>
-          <ContactButton
-            type="button"
-            className="support-call"
-            onClick={() => {
-              window.open("tel:+4915234777471");
-            }}
-          >
-            <img alt="" />
+          </MenuLink>
+          <MenuLink to="tel:+4915234777471">
+            <PhoneIcon gradient={Gradients.Orange} label="call support" labelId="call_support" />
             <SupportButtonText>{t("help_support_call_btn")}</SupportButtonText>
-          </ContactButton>
+          </MenuLink>
         </ContactButtons>
-
 
         <ContactInfo>
           <ContentWrapper>
@@ -401,18 +395,16 @@ function Help({ selection }) {
               <Logo size="small" stacked={false} />
               <BusinessName>A Little World gUG</BusinessName>
             </ContentWrapper>
-            <BottomCard>
-              <Contacts>
-                <ContactLink href="mailto:support@little-world.com">
-                  <img className="email-icon" alt="e-mail" />
-                  support@little-world.com
-                </ContactLink>
-                <ContactLink href="tel:+4915234777471">
-                  <img className="mobile-icon" alt="mobile" />
-                  +49 152 34 777 471
-                </ContactLink>
-              </Contacts>
-            </BottomCard>
+            <Contacts>
+              <ContactLink href="mailto:support@little-world.com">
+                <img className="email-icon" alt="e-mail" />
+                support@little-world.com
+              </ContactLink>
+              <ContactLink href="tel:+4915234777471">
+                <img className="mobile-icon" alt="mobile" />
+                +49 152 34 777 471
+              </ContactLink>
+            </Contacts>
           </ContentWrapper>
           <SocialLinks>
             <a href="https://www.linkedin.com/company/76488145/">

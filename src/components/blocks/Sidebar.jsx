@@ -72,7 +72,6 @@ function Sidebar({ sidebarMobile }) {
           .then((response) => {
             if (response.status === 200) {
               navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
-              navigate(0); // to reload the page
             } else {
               console.error("server error", response.status, response.statusText);
             }

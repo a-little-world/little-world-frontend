@@ -124,13 +124,6 @@ label {
   display: block;
 }
 
-/* button hover */
-input:not([type="radio"]:checked) + label:hover,
-a:not(.selected):hover {
-  filter: brightness(120%) contrast(120%);
-  cursor: pointer;
-}
-
 input:checked + label {
   user-select: none;
 }
