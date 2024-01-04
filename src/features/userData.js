@@ -30,6 +30,10 @@ export const userDataSlice = createSlice({
       const { category, match } = action.payload;
       state.matches[category].items.push(match);
     },
+    addIncomingCall: (state, action) => {
+      const { userId } = action.payload;
+      state.incomingCalls.push({ userId });
+    },
     removeMatch: (state, action) => {
       const { category, match } = action.payload;
       const { id, ...rest } = match;
