@@ -154,7 +154,8 @@ function Main() {
     setShowSidebarMobile(false);
   }, [location]);
 
-  document.body.classList.remove("hide-mobile-header");
+  // TODO: this cause a react hook initalization error, not sure what this used to acive but I think we can get rid of it?
+  // document.body.classList.remove("hide-mobile-header");
 
   // Manage the top navbar & extrac case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   const use = location.pathname.split("/")[2] || (userPk ? "profile" : "main");
