@@ -176,7 +176,7 @@ function Main() {
   const onPageChange = (page) => {
     handlePageChange(page);
   };
-
+  
   return (
     <AppLayout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
       <div className="content-area">
@@ -243,19 +243,19 @@ function Main() {
         {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
       </div>
       <Modal
-        open={matches?.proposed?.length || matches?.unconfirmed?.length}
+        open={matches?.proposed?.items?.length || matches?.unconfirmed?.items?.length}
         locked={false}
         onClose={() => {}}
       >
-        {(matches?.proposed?.length || matches?.unconfirmed?.length) &&
+        {(matches?.proposed?.items?.length || matches?.unconfirmed?.items?.length) &&
           MatchCardComponent({
-            isVolunteer: user?.userType === "volunteer",
-            onConfirm,
-            onPartialConfirm,
-            showNewMatch: Boolean(!preMatches?.length),
-            userData: matches?.proposed?.length
-              ? matches?.proposed.items[0]
-              : matches?.unconfirmed.items[0],
+            showNewMatch: Boolean(!matches?.proposed?.items?.length),
+            matchId: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].id
+              : matches?.unconfirmed.items[0].id,
+            profile: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].partner
+              : matches?.unconfirmed.items[0].partner,
           })}
       </Modal>
     </AppLayout>
