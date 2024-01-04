@@ -60,6 +60,13 @@ export function VideoControls({ signalInfo }) {
 }
 
 function VideoFrame({ Video, Audio }) {
+  const { t } = useTranslation();
+
+  const quality = "good";
+  const qualityText = t(`pcs_signal_${quality}`);
+  const updateText = t("pcs_signal_update");
+  const signalInfo = { quality, qualityText, updateText }
+
   return (
     <div className="local-video-container">
       <div id="container" className="video-frame" alt="video">
@@ -179,7 +186,7 @@ function AudioOutputSelect() {
   );
 }
 
-function CallSetup({ userPk, setCallSetupPartner }) {
+function CallSetup({ userPk, removeCallSetupPartner }) {
   const { t } = useTranslation();
   const quality = "good";
   const qualityText = t(`pcs_signal_${quality}`);
@@ -226,7 +233,7 @@ function CallSetup({ userPk, setCallSetupPartner }) {
 
   return (
     <div className="modal-box">
-      <button type="button" className="modal-close" onClick={() => setCallSetupPartner(null)} />
+      <button type="button" className="modal-close" onClick={removeCallSetupPartner} />
       <h3 className="title">{t("pcs_main_heading")}</h3>
       <span className="subtitle">{t("pcs_sub_heading")}</span>
       {mediaPermission && (

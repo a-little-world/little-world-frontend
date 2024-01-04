@@ -15,6 +15,7 @@ import NbtSelector from "./components/blocks/NbtSelector";
 import NewMatchCard from "./components/blocks/NewMatchCard";
 import NotificationPanel from "./components/blocks/NotificationPanel";
 import PartnerProfiles from "./components/blocks/PartnerProfiles";
+import { initCallSetup, cancelCallSetup } from "./features/userData";
 import Help from "./components/views/Help";
 import CustomPagination from "./CustomPagination";
 import { changeMatchCategory, removeMatch, updateConfirmedData } from "./features/userData";
@@ -109,6 +110,7 @@ function Main() {
   // In order to define the frontent paginator numbers
   const pageItems = 10;
   const handlePageChange = async (page) => {
+    // TODO: can be refactored using our redux stor
     const res = await updateMatchData(page, pageItems);
     if (res && res.status === 200) {
       const data = await res.json();
@@ -126,6 +128,7 @@ function Main() {
   const user = useSelector((state) => state.userData.user);
   const matches = useSelector((state) => state.userData.matches);
   const incomingCalls = useSelector((state) => state.userData.incomingCalls);
+  const callSetup = useSelector((state) => state.userData.callSetup);
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
@@ -136,19 +139,10 @@ function Main() {
   }, [matches]);
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
-  const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
-
   const [showCancelSearching, setShowCancelSearching] = useState(false);
 
-  const setCallSetupPartner = (partnerKey) => {
-    document.body.style.overflow = partnerKey ? "hidden" : "";
-    setCallSetupPartnerKey(partnerKey);
-    if (!partnerKey) {
-      removeActiveTracks();
-    }
-  };
-
-  removeActiveTracks();
+  // TODO: should not be called on main reload, removing might have side effects though
+  // removeActiveTracks();
 
   useEffect(() => {
     setShowSidebarMobile(false);
@@ -191,7 +185,9 @@ function Main() {
               <>
                 <div className="content-area-main">
                   <PartnerProfiles
-                    setCallSetupPartner={setCallSetupPartner}
+                    setCallSetupPartner={(partner) => {
+                      dispatch(initCallSetup({ userId: partner }))
+                    }}
                     setShowCancel={setShowCancelSearching}
                     totalPaginations={totalPages}
                   />
@@ -226,13 +222,15 @@ function Main() {
       </div>
       <div
         className={
-          callSetupPartner || incomingCalls?.length || showCancelSearching
+          callSetup || incomingCalls?.length || showCancelSearching
             ? "overlay-shade"
             : "overlay-shade hidden"
         }
       >
-        {callSetupPartner && (
-          <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
+        {callSetup && (
+          <CallSetup userPk={callSetup?.userId} removeCallSetupPartner={() => {
+            dispatch(cancelCallSetup());
+          }} />
         )}
         {incomingCalls.length > 0 && (
           <IncomingCall
