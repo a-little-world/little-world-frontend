@@ -16,8 +16,9 @@ export const userDataSlice = createSlice({
       state.matches = action.payload?.matches;
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
-      state.incomingCalls = action.payload?.incomingCalls || [];
-      state.callSetup = action.payload?.callSetup || null;
+      state.incomingCalls = action.payload?.incomingCalls || []; // [{ userId: user.hash }] or []
+      state.callSetup = action.payload?.callSetup || null; // { userId: user.hash } or null
+      state.activeCall = action.payload?.activeCall || null; // { userId: user.hash, tracks: {} } or null
     },
     updateProfile: (state, action) => {
       Object.keys(action.payload).forEach((key) => {
@@ -32,6 +33,13 @@ export const userDataSlice = createSlice({
     },
     cancelCallSetup: (state, action) => {
       state.callSetup = null;
+    },
+    initActiveCall: (state, action) => {
+      const { userId, tracks } = action.payload;
+      state.activeCall = { userId, tracks };
+    },
+    stopActiveCall: (state, action) => {
+      state.activeCall = null; 
     },
     addMatch: (state, action) => {
       const { category, match } = action.payload;
@@ -97,7 +105,9 @@ export const {
   blockIncomingCall,
   updateConfirmedData,
   initCallSetup,
-  cancelCallSetup
+  cancelCallSetup,
+  initActiveCall,
+  stopActiveCall
 } = userDataSlice.actions;
 
 export const selectMatchByPartnerId = (matches, partnerId) => {
