@@ -16,6 +16,18 @@ import "./call-setup.css";
 
 import signalWifi from "./images/signal-wifi.svg";
 
+
+if(!window.activeTracks)
+  window.activeTracks = []
+
+export const clearActiveTracks = () => {
+  console.log("CLEARING ACTIVE TRACKS", window.activeTracks)
+  window.activeTracks.forEach(track => {
+    track.stop()
+  });
+  window.activeTracks = []
+}
+
 function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText }) {
   const signalQualityImage = {
     good: signalWifi,
@@ -188,14 +200,6 @@ function AudioOutputSelect() {
   );
 }
 
-window.activeTracks = []
-
-const clearActiveTracks = () => {
-  window.activeTracks.forEach(track => {
-    track.stop()
-  });
-  window.activeTracks = []
-}
 
 function CallSetup({ userPk, removeCallSetupPartner }) {
   const { t } = useTranslation();
