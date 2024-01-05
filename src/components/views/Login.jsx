@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "styled-components";
+import { useSearchParams } from "react-router-dom"
 
 import { login } from "../../api";
 import { initialise } from "../../features/userData";
@@ -25,6 +26,8 @@ const Login = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const theme = useTheme();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -65,7 +68,13 @@ const Login = () => {
       .then((loginData) => {
         dispatch(initialise(loginData));
         setIsSubmitting(false);
-        navigate(`/${APP_ROUTE}/`);
+        
+        console.log("SEARCH PARAMS",searchParams.get("next"));
+        if (searchParams.get("next")) {
+          navigate(searchParams.get("next"));
+        }else{
+          navigate(`/${APP_ROUTE}/`);
+        }
       })
       .catch(onError);
   };
