@@ -2,8 +2,10 @@
 import Cookies from "js-cookie";
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { initCallSetup, cancelCallSetup, initActiveCall, stopActiveCall } from "./features/userData";
 import { useLocation, useNavigate } from "react-router-dom";
+import { clearActiveTracks } from "./call-setup";
 
 import Chat from "./chat/chat-full-view";
 import { BACKEND_URL } from "./ENVIRONMENT";
@@ -232,6 +234,8 @@ function ToggleButton({ id, text, alt, onChange, defaultChecked, disabled }) {
 
 function VideoControls() {
   const { t } = useTranslation();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const setSideSelection = useContext(SetSideContext);
 
@@ -277,10 +281,15 @@ function VideoControls() {
         <span className="text">{t("vc_fs_btn_chat")}</span>
       </button>
       <Timer />
-      <Link to={getAppRoute("")} className="end-call">
+      <button onClick={() => {
+        clearActiveTracks();
+        console.log('cancel call')
+        dispatch(stopActiveCall())
+        navigate(getAppRoute(""))
+      }} className="end-call">
         <div className="img" alt="end call" />
         <span className="text">{t("vc_fs_btn_end_call")}</span>
-      </Link>
+      </button>
     </div>
   );
 }
@@ -913,9 +922,11 @@ function CallScreen() {
     const videoMuted = localStorage.getItem("video muted") === "true";
     const audioMuted = localStorage.getItem("audio muted") === "true";
     getVideoTrack(videoId, videoMuted).then((track) => {
+      window.activeTracks.push(track);
       track.attach(videoRef.current);
     });
     getAudioTrack(audioId, audioMuted).then((track) => {
+      window.activeTracks.push(track);
       track.attach(audioRef.current);
     });
     joinRoom(selfPk, userPk);

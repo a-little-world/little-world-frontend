@@ -1,6 +1,7 @@
 export const BASE_ROUTE = "/";
 export const APP_ROUTE = "app";
 export const CALL_ROUTE = "call";
+export const CALL_SETUP_ROUTE = "call-setup/:userId?/";
 export const PARTNERS_ROUTE = "partners";
 export const CHAT_ROUTE = "chat";
 export const NOTIFICATIONS_ROUTE = "notifications";

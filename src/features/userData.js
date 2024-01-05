@@ -16,11 +16,9 @@ export const userDataSlice = createSlice({
       state.matches = action.payload?.matches;
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
-      state.incomingCalls = [
-        {
-          userId: '<some-user-id-that-is-match-of-that-user>',
-        },
-      ];
+      state.incomingCalls = action.payload?.incomingCalls || []; // [{ userId: user.hash }] or []
+      state.callSetup = action.payload?.callSetup || null; // { userId: user.hash } or null
+      state.activeCall = action.payload?.activeCall || null; // { userId: user.hash, tracks: {} } or null
     },
     updateProfile: (state, action) => {
       Object.keys(action.payload).forEach(key => {
@@ -37,9 +35,26 @@ export const userDataSlice = createSlice({
     updateSearchState: (state, action) => {
       state.user.isSearching = action.payload;
     },
+    initCallSetup: (state, action) => {
+      state.callSetup = action.payload;
+    },
+    cancelCallSetup: (state, action) => {
+      state.callSetup = null;
+    },
+    initActiveCall: (state, action) => {
+      const { userId, tracks } = action.payload;
+      state.activeCall = { userId, tracks };
+    },
+    stopActiveCall: (state, action) => {
+      state.activeCall = null;
+    },
     addMatch: (state, action) => {
       const { category, match } = action.payload;
       state.matches[category].items.push(match);
+    },
+    addIncomingCall: (state, action) => {
+      const { userId } = action.payload;
+      state.incomingCalls.push({ userId });
     },
     removeMatch: (state, action) => {
       const { category, match } = action.payload;
@@ -106,6 +121,10 @@ export const {
   changeMatchCategory,
   blockIncomingCall,
   updateConfirmedData,
+  initCallSetup,
+  cancelCallSetup,
+  initActiveCall,
+  stopActiveCall,
 } = userDataSlice.actions;
 
 export const selectMatchByPartnerId = (matches, partnerId) => {

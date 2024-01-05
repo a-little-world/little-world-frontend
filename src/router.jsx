@@ -22,6 +22,7 @@ import {
   CALL_ROUTE,
   CHANGE_EMAIL_ROUTE,
   CHAT_ROUTE,
+  CALL_SETUP_ROUTE,
   FORGOT_PASSWORD_ROUTE,
   getAppRoute,
   HELP_ROUTE,
@@ -127,6 +128,10 @@ const ROOT_ROUTES = [
         {
           path: getAppRoute(CALL_ROUTE),
           element: <ActiveCall />,
+        },
+        {
+          path: getAppRoute(CALL_SETUP_ROUTE),
+          element: <Main />,
         },
         {
           path: getAppRoute(PARTNERS_ROUTE),
