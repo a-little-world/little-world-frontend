@@ -218,7 +218,6 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
     document.getElementById("video-toggle").checked = false;
     getVideoTrack(deviceId).then((track) => {
       const el = videoRef.current;
-      clearActiveTracks()
       track.attach(el);
       window.activeTracks.push(track)
     });
@@ -231,7 +230,6 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
     localStorage.setItem("audio muted", false); // always unmute when selecting new
     document.getElementById("audio-toggle").checked = false;
     getAudioTrack(deviceId).then((track) => {
-      clearActiveTracks()
       track.attach(audioRef.current)
       window.activeTracks.push(track)
     });
