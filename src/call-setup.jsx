@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "react-nice-avatar";
 import { useDispatch, useSelector } from "react-redux";
+import { initCallSetup, cancelCallSetup, initActiveCall, stopActiveCall } from "./features/userData";
+import { useNavigate } from "react-router-dom";
 
 import { blockIncomingCall, selectMatchByPartnerId } from "./features/userData";
 import "./i18n";
@@ -186,12 +188,24 @@ function AudioOutputSelect() {
   );
 }
 
+window.activeTracks = []
+
+const clearActiveTracks = () => {
+  window.activeTracks.forEach(track => {
+    track.stop()
+  });
+  window.activeTracks = []
+}
+
 function CallSetup({ userPk, removeCallSetupPartner }) {
   const { t } = useTranslation();
   const quality = "good";
   const qualityText = t(`pcs_signal_${quality}`);
   const updateText = t("pcs_signal_update");
   const signalInfo = { quality, qualityText, updateText };
+  const mediaStream = useRef();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const videoRef = useRef();
   const [videoTrackId, setVideoTrackId] = useState(null);
@@ -200,7 +214,9 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
     document.getElementById("video-toggle").checked = false;
     getVideoTrack(deviceId).then((track) => {
       const el = videoRef.current;
+      clearActiveTracks()
       track.attach(el);
+      window.activeTracks.push(track)
     });
     setVideoTrackId(deviceId);
   };
@@ -210,7 +226,11 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
   const setAudio = (deviceId) => {
     localStorage.setItem("audio muted", false); // always unmute when selecting new
     document.getElementById("audio-toggle").checked = false;
-    getAudioTrack(deviceId).then((track) => track.attach(audioRef.current));
+    getAudioTrack(deviceId).then((track) => {
+      clearActiveTracks()
+      track.attach(audioRef.current)
+      window.activeTracks.push(track)
+    });
     setAudioTrackId(deviceId);
   };
 
@@ -222,18 +242,43 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
   const [mediaPermission, setMediaPermission] = useState(null);
 
   useEffect(() => {
-    navigator.mediaDevices
+    let activeStream = null;
+    console.log("GETTING USER MEDIA")
+     navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
-      .then(() => setMediaPermission(true))
+      .then((stream) => {
+        if (mediaStream.current)
+          mediaStream.current.getTracks().forEach(track => track.stop());
+        activeStream = stream;
+        mediaStream.current = stream; // Set the reference for use outside the effect
+        setMediaPermission(true)
+      })
       .catch((e) => {
         console.error(e.name, e.message);
         setMediaPermission(false);
       });
+    return () => { // Cleanup function when component unmounts
+      if (activeStream) {
+        activeStream.getTracks().forEach(track => track.stop());
+      }
+      // If the reference is the same as the one we're cleaning up, clear it
+      if (mediaStream.current === activeStream) {
+        mediaStream.current = null;
+      }
+    };
   }, []);
 
   return (
     <div className="modal-box">
-      <button type="button" className="modal-close" onClick={removeCallSetupPartner} />
+      <button type="button" className="modal-close" onClick={() => {
+        removeCallSetupPartner();
+        if (mediaStream.current)
+          mediaStream.current.getTracks().forEach(track => {
+            console.log("CANCELLED", track)
+            track.stop()
+          });
+        clearActiveTracks()
+      }} />
       <h3 className="title">{t("pcs_main_heading")}</h3>
       <span className="subtitle">{t("pcs_sub_heading")}</span>
       {mediaPermission && (
@@ -244,13 +289,17 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
             <AudioInputSelect setAudio={setAudio} />
             <AudioOutputSelect />
           </div>
-          <Link
-            to={getAppRoute(CALL_ROUTE)}
+          <button
+            onClick={() => {
+              clearActiveTracks()
+              dispatch(initActiveCall({ userPk, tracks }))
+              dispatch(cancelCallSetup())
+              navigate(getAppRoute(CALL_ROUTE), { state: { userPk, tracks } });
+            }}
             className="av-setup-confirm"
-            state={{ userPk, tracks }}
           >
             {t("pcs_btn_join_call")}
-          </Link>
+          </button>
         </>
       )}
       {!mediaPermission && (
