@@ -129,6 +129,8 @@ function Main() {
   const matches = useSelector((state) => state.userData.matches);
   const incomingCalls = useSelector((state) => state.userData.incomingCalls);
   const callSetup = useSelector((state) => state.userData.callSetup);
+  const activeCall = useSelector((state) => state.userData.activeCall);
+
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
@@ -137,19 +139,20 @@ function Main() {
     const totalPage = matches?.confirmed?.totalItems / pageItems;
     setTotalPages(Math.ceil(totalPage));
   }, [matches]);
+  
+  useEffect(() => {
+    if(!callSetup && !activeCall) {
+      removeActiveTracks();
+      document.body.classList.remove("hide-mobile-header");
+    }
+  }, [callSetup, activeCall]);
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [showCancelSearching, setShowCancelSearching] = useState(false);
 
-  // TODO: should not be called on main reload, removing might have side effects though
-  // removeActiveTracks();
-
   useEffect(() => {
     setShowSidebarMobile(false);
   }, [location]);
-
-  // TODO: this cause a react hook initalization error, not sure what this used to acive but I think we can get rid of it?
-  // document.body.classList.remove("hide-mobile-header");
 
   // Manage the top navbar & extrac case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   const use = location.pathname.split("/")[2] || (userPk ? "profile" : "main");
@@ -172,6 +175,10 @@ function Main() {
     handlePageChange(page);
   };
   
+  const setCallSetupPartner = (partner) => {
+    dispatch(initCallSetup({ userId: partner }))
+  };
+  
   return (
     <AppLayout page={use} sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}>
       <div className="content-area">
@@ -185,9 +192,7 @@ function Main() {
               <>
                 <div className="content-area-main">
                   <PartnerProfiles
-                    setCallSetupPartner={(partner) => {
-                      dispatch(initCallSetup({ userId: partner }))
-                    }}
+                    setCallSetupPartner={setCallSetupPartner}
                     setShowCancel={setShowCancelSearching}
                     totalPaginations={totalPages}
                   />
@@ -206,7 +211,7 @@ function Main() {
           </div>
         )}
         {use === "chat" && (
-          <Chat showChat={use === "chat"} matchesInfo={dashboardVisibleMatches} userPk={userPk} />
+          <Chat showChat={use === "chat"} matchesInfo={dashboardVisibleMatches} userPk={userPk} setCallSetupPartner={setCallSetupPartner}/>
         )}
         {use === "notifications" && <Notifications />}
         {use === "profile" && (
@@ -230,6 +235,7 @@ function Main() {
         {callSetup && (
           <CallSetup userPk={callSetup?.userId} removeCallSetupPartner={() => {
             dispatch(cancelCallSetup());
+            removeActiveTracks();
           }} />
         )}
         {incomingCalls.length > 0 && (
