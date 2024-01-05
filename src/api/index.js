@@ -1,9 +1,20 @@
-import Cookies from "js-cookie";
+import { BACKEND_URL } from '../ENVIRONMENT';
+import { API_FIELDS, USER_FIELDS } from '../constants';
+import Cookies from 'js-cookie';
 
-import { USER_FIELDS } from "../constants";
-import { BACKEND_URL } from "../ENVIRONMENT";
+const formatApiError = responseBody => {
+  if (typeof responseBody === 'string') return new Error(responseBody);
+  const errorTypeApi = Object.keys(responseBody)?.[0];
+  const errorType = API_FIELDS[errorTypeApi] ?? errorTypeApi;
+  const errorTags = Object.values(responseBody)?.[0];
+  const errorTag = Array.isArray(errorTags) ? errorTags[0] : errorTags;
 
-export const mutateUserData = async (formData, onSucess, onFailure) => {
+  return new Error(errorTag, { cause: errorType ?? null });
+};
+
+export const completeForm = async () => null;
+
+export const mutateUserData = async (formData, onSuccess, onFailure) => {
   try {
     const { image } = formData;
     let data;
@@ -20,48 +31,53 @@ export const mutateUserData = async (formData, onSucess, onFailure) => {
       data = JSON.stringify(formData);
     }
 
-    const response = await fetch("/api/profile/", {
-      method: "POST",
+    const response = await fetch('/api/profile/', {
+      method: 'POST',
       headers: {
-        ...(image ? {} : { "Content-Type": "application/json" }),
-        "X-CSRFToken": Cookies.get("csrftoken"),
-        "X-UseTagsOnly": "true",
+        ...(image ? {} : { 'Content-Type': 'application/json' }),
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-UseTagsOnly': 'true',
       },
       body: data,
     });
+
     const responseBody = await response?.json();
     if (response.ok) {
-      onSucess(responseBody);
+      onSuccess(responseBody);
     } else {
-      const errorType = Object.keys(responseBody)?.[0];
-      const errorTag = Object.values(responseBody)?.[0]?.[0];
-
-      const error = new Error(errorTag, { cause: errorType ?? null });
+      const error = formatApiError(responseBody);
       throw error;
     }
   } catch (error) {
-    console.log("updating user data error");
-    onFailure(error);
+    console.log({ error });
+    if (error.message.includes('413')) {
+      onFailure(
+        new Error('validation.image_upload_required', {
+          cause: API_FIELDS.image,
+        }),
+      );
+    } else {
+      onFailure(error);
+    }
   }
 };
 
 export const fetchFormData = async () => {
   try {
-    const response = await fetch("/api/profile/?options=true", {
-      method: "GET",
+    const response = await fetch('/api/profile/?options=true', {
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": Cookies.get("csrftoken"),
-        "X-UseTagsOnly": "true",
+        'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-UseTagsOnly': 'true',
       },
     });
 
-    if (response.ok) {
-      return response.json();
-    }
-    throw Error(response.statusText);
+    const responseBody = await response?.json();
+    if (response.ok) return responseBody;
+    throw formatApiError(responseBody);
   } catch (error) {
-    console.log("fetching user data error", { error });
+    console.log('fetching user data error', { error });
   }
 };
 
@@ -69,12 +85,12 @@ export const confirmMatch = ({ userHash }) =>
   /** TODO: for consistency this api should also accept a matchId in the backend rather than userHashes ... */
   fetch(`${BACKEND_URL}/api/user/confirm_match/`, {
     /* TODO is incuded in main frontend data now! */
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-UseTagsOnly": true,
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-UseTagsOnly': true,
     },
     body: JSON.stringify({ matches: [userHash] }),
   });
@@ -82,12 +98,12 @@ export const confirmMatch = ({ userHash }) =>
 export const partiallyConfirmMatch = ({ acceptDeny, matchId }) =>
   fetch(`${BACKEND_URL}/api/user/match/confirm_deny/`, {
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-UseTagsOnly": true,
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': true,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       unconfirmed_match_hash: matchId,
       confirm: acceptDeny,
@@ -112,12 +128,12 @@ export const reportMatch = ({ reason, userHash }) => Promise.resolve();
 export const unmatch = ({ reason, userHash }) =>
   fetch(`${BACKEND_URL}/api/user/unmatch_self/`, {
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-UseTagsOnly": true,
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': true,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       other_user_hash: userHash,
       reason,
@@ -125,30 +141,38 @@ export const unmatch = ({ reason, userHash }) =>
   });
 
 export const updateMatchData = (page, pageItems) =>
-  fetch(`${BACKEND_URL}/api/matches/confirmed/?page=${page}&itemsPerPage=${pageItems}`, {
-    method: "GET",
-    headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "Content-Type": "application/json",
+  fetch(
+    `${BACKEND_URL}/api/matches/confirmed/?page=${page}&itemsPerPage=${pageItems}`,
+    {
+      method: 'GET',
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'Content-Type': 'application/json',
+      },
     },
-  });
+  );
 
-export const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag) => {
+export const postUserProfileUpdate = (
+  updateData,
+  onFailure,
+  onSuccess,
+  formTag,
+) => {
   fetch(`${BACKEND_URL}/api/profile/`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-UseTagsOnly": true, // This automaticly requests error tags instead of direct translations!
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-UseTagsOnly': true, // This automaticly requests error tags instead of direct translations!
     },
     body: JSON.stringify(updateData),
-  }).then((response) => {
+  }).then(response => {
     const { status, statusText } = response;
     if (![200, 400].includes(status)) {
-      console.error("server error", status, statusText);
+      console.error('server error', status, statusText);
     } else {
-      response.json().then((report) => {
+      response.json().then(report => {
         if (response.status === 200) {
           return onSuccess();
         }
@@ -162,20 +186,21 @@ export const postUserProfileUpdate = (updateData, onFailure, onSuccess, formTag)
 export const login = async ({ email, password }) => {
   const response = await fetch(`${BACKEND_URL}/api/user/login/`, {
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-UseTagsOnly": "True",
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'True',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       email,
       password,
     }),
   });
 
-  if (response.ok) return response.json();
-  throw Error(response.statusText);
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody);
 };
 
 export const signUp = async ({
@@ -189,12 +214,12 @@ export const signUp = async ({
 }) => {
   const response = await fetch(`${BACKEND_URL}/api/register/`, {
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-UseTagsOnly": "True",
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'True',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       email,
       password1: password,
@@ -205,88 +230,102 @@ export const signUp = async ({
       newsletter_subscribed: mailingList,
     }),
   });
-  if (response.ok) return response.json();
-  throw Error(response.statusText);
+
+  if (response.ok) return response?.json();
+  const responseBody = await response?.json();
+  console.log({ responseBody });
+  throw formatApiError(responseBody);
 };
 
 export const requestPasswordReset = async ({ email }) => {
-  const response = await fetch(`${BACKEND_URL}/api/resetpw/`, {
+  const response = await fetch(`${BACKEND_URL}/api/user/resetpw/`, {
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-UseTagsOnly": "True",
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'True',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       email,
     }),
   });
 
-  if (response.ok) return response.json();
-  throw Error(response.statusText);
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody);
 };
 
 export const resetPassword = async ({ password, token }) => {
-  const response = await fetch(`${BACKEND_URL}/api/resetpw/confirm/`, {
+  const response = await fetch(`${BACKEND_URL}/api/user/resetpw/confirm/`, {
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-UseTagsOnly": "True",
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'True',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       password,
       token,
     }),
   });
-  if (response.ok) return response.json();
-  throw Error(response.statusText);
+
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody);
 };
 
 export const verifyEmail = async ({ verificationCode }) => {
-  const response = await fetch(`${BACKEND_URL}/api/user/verify/email/${verificationCode}`, {
-    headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-UseTagsOnly": "True",
-      Accept: "application/json",
-      "Content-Type": "application/json",
+  const response = await fetch(
+    `${BACKEND_URL}/api/user/verify/email/${verificationCode}`,
+    {
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-UseTagsOnly': 'True',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
     },
-    method: "POST",
-  });
+  );
 
-  if (response.ok) return response.json();
-  throw Error(response.statusText);
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody);
 };
 
 export const resendVerificationEmail = async () => {
   const response = await fetch(`${BACKEND_URL}/api/user/verify/email_resend/`, {
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-UseTagsOnly": "True",
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'True',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    method: "POST",
+    method: 'POST',
   });
-  if (response.ok) return response.json();
-  throw Error(response.statusText);
+
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody);
 };
 
 export const setNewEmail = async ({ email }) => {
   const response = await fetch(`${BACKEND_URL}/api/user/change_email/`, {
     headers: {
-      "X-CSRFToken": Cookies.get("csrftoken"),
-      "X-UseTagsOnly": "True",
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'True',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       email,
     }),
   });
-  if (response.ok) return response.json();
-  throw Error(response.statusText);
+
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody);
 };

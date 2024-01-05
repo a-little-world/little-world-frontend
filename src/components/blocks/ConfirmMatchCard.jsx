@@ -1,8 +1,6 @@
 import {
   Button,
   ButtonAppearance,
-  Card,
-  CardSizes,
   Text,
   TextTypes,
 } from "@a-little-world/little-world-design-system";
@@ -11,38 +9,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import ProfileImage from "../atoms/ProfileImage";
-
-const ButtonsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  ${({ theme }) => `
-  gap: ${theme.spacing.small};
-  flex-wrap: wrap;
-
-  @media (min-width: ${theme.breakpoints.small}) {
-    gap: ${theme.spacing.large};
-    flex-wrap: nowrap;
-  }
-  `}
-`;
-
-const Centred = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-  text-align: center;
-
-  ${({ theme }) => `
-  margin-bottom: ${theme.spacing.medium};
-
-  @media (min-width: ${theme.breakpoints.small}) {
-    margin-bottom: ${theme.spacing.large};
-  }
-  `}
-`;
+import ModalCard, { ButtonsContainer, Centred } from "./Modal/ModalCard";
 
 const InfoContainer = styled.div`
   display: flex;
@@ -68,7 +35,7 @@ const ConfirmMatchCard = ({ name, onConfirm, onExit, onReject, image, imageType 
   };
 
   return (
-    <Card width={CardSizes.Large}>
+    <ModalCard>
       {rejected ? (
         <>
           <Centred>
@@ -114,7 +81,7 @@ const ConfirmMatchCard = ({ name, onConfirm, onExit, onReject, image, imageType 
           </ButtonsContainer>
         </>
       )}
-    </Card>
+    </ModalCard>
   );
 };
 

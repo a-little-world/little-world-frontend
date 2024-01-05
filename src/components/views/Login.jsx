@@ -44,16 +44,17 @@ const Login = () => {
 
   const onError = (e) => {
     setIsSubmitting(false);
+    console.log({e})
     if (e?.message) {
       setError(
         e.cause ?? "root.serverError",
-        { type: "custom", message: t(e.message) },
+        { type: "custom", message: e.message },
         { shouldFocus: true }
       );
     } else {
       setError("root.serverError", {
         type: "custom",
-        message: t(e?.message) || t("validation.generic_try_again"),
+        message: "validation.generic_try_again",
       });
     }
   };
@@ -109,7 +110,7 @@ const Login = () => {
           {t("login.forgot_password")}
         </Button>
         <FormMessage $visible={errors?.root?.serverError} $type={MessageTypes.Error}>
-          {errors?.root?.serverError?.message}
+          {t(errors?.root?.serverError?.message)}
         </FormMessage>
         <StyledCta
           type="submit"

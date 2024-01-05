@@ -1,4 +1,4 @@
-import { Gradients, MessageIcon, PhoneIcon } from "@a-little-world/little-world-design-system";
+import { Button, Gradients, Label, MessageIcon, PhoneIcon, Text, TextTypes, TextArea } from "@a-little-world/little-world-design-system";
 import { t } from "i18next";
 import Cookies from "js-cookie";
 import React, { useRef, useState } from "react";
@@ -144,13 +144,7 @@ const FileName = styled.div`
   display: flex;
   align-items: center;
 `;
-const TextArea = styled.textarea`
-  resize: none;
-  height: 122px;
-  font-family: "Signika Negative";
-  padding: ${({ theme }) => `${theme.spacing.small} `};
-  font-size: ${({ theme }) => `${theme.spacing.small} `};
-`;
+
 const HelpText = styled.p`
   font-size: ${({ theme }) => `${theme.spacing.small} `};
   font-weight: 300;
@@ -209,9 +203,9 @@ function Faqs() {
     },
   ];
   return (
-    <div>
-      <HeplHeading>{t("nbt_faqs")}</HeplHeading>
-      <IntroText>{t("help_faqs_intro")}</IntroText>
+    <>
+      <Text tag='h2' type={TextTypes.Heading2}>{t("nbt_faqs")}</Text>
+      <Text>{t("help_faqs_intro")}</Text>
       <FAQItems>
         {help_faq.map((faq) => {
           return (
@@ -230,7 +224,7 @@ function Faqs() {
           );
         })}
       </FAQItems>
-    </div>
+    </>
   );
 }
 
@@ -299,27 +293,21 @@ function Contact() {
 
   return (
     <form className="help-contact">
-      <h2>{t("nbt_contact")}</h2>
-      <HelpText>
-        {t("help_contact_intro_line1")}
-        <br />
-        {t("help_contact_intro_line2")}
-      </HelpText>
-      <label htmlFor="problem">
-        {t("help_contact_problem_label")}
-        <TextArea
-          type="textarea"
-          name="problem"
-          inputMode="text"
-          maxLength="300"
-          placeholder={t("help_contact_problem_placeholder")}
-          onChange={(e) => {
-            setHelpMessage(e.target.value);
-          }}
-        />
-      </label>
+      <Text tag='h2' type={TextTypes.Heading2}>{t("nbt_contact")}</Text>
+      <Text>{t("help_contact_intro_line1")}</Text>
+      <Text>{t("help_contact_intro_line2")}</Text>
+      <TextArea
+        label={t("help_contact_problem_label")}
+        name="problem"
+        inputMode="text"
+        maxLength="300"
+        placeholder={t("help_contact_problem_placeholder")}
+        onChange={(e) => {
+          setHelpMessage(e.target.value);
+        }}
+      />
       <DropZoneLabel>
-        {t("help_contact_picture_label")}
+        <Label bold>{t("help_contact_picture_label")}</Label>
         <div
           className={dragOver ? "picture-drop-zone dragover" : "picture-drop-zone"}
           onDrop={handleDrop}
@@ -348,9 +336,9 @@ function Contact() {
           <DragText>{t("help_contact_picture_drag")}</DragText>
         </div>
       </DropZoneLabel>
-      <ContactSubmitButton type="button" className="contact-submit" onClick={handleSubmit}>
+      <Button onClick={handleSubmit}>
         {t("help_contact_submit")}
-      </ContactSubmitButton>
+      </Button>
     </form>
   );
 }

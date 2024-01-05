@@ -21,7 +21,7 @@ import { changeMatchCategory, removeMatch, updateConfirmedData } from "./feature
 import "./i18n";
 import Notifications from "./notifications";
 import Profile from "./profile";
-import Settings from "./settings";
+import Settings from "./components/views/Settings";
 import { removeActiveTracks } from "./twilio-helper";
 
 import "./community-events.css";

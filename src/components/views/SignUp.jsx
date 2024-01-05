@@ -58,6 +58,7 @@ const SignUp = () => {
 
   const onError = (e) => {
     setIsSubmitting(false);
+    console.log({e})
     if (e?.message) {
       setError(
         e.cause ?? "root.serverError",
@@ -67,7 +68,7 @@ const SignUp = () => {
     } else {
       setError("root.serverError", {
         type: "custom",
-        message: t(e?.message) || t("validation.generic_try_again"),
+        message: t("validation.generic_try_again"),
       });
     }
   };
@@ -77,6 +78,7 @@ const SignUp = () => {
 
     signUp(data)
       .then((signUpData) => {
+        console.log(signUpData)
         dispatch(initialise(signUpData));
         setIsSubmitting(false);
         navigate(`/${APP_ROUTE}/`);

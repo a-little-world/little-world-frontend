@@ -1,5 +1,7 @@
 .help.panel {
   display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin: 0 auto;
   padding: 30px;
   height: fit-content;
@@ -10,21 +12,9 @@
 .help-contact {
   display: flex;
   flex-direction: column;
-  gap: 35px;
+  gap: 24px;
   margin: auto;
   min-width: 80%;
-}
-
-.help h2 {
-  text-transform: none;
-  margin: 0;
-  margin-top: 1.5rem;
-}
-
-.help p.intro-text {
-  font-size: 14px;
-  font-weight: 300;
-  margin: 20px 10px;
 }
 
 .faq-items {
@@ -146,16 +136,6 @@
   font-weight: 300;
   font-size: 15px;
   color: #5f5f5f;
-}
-
-.contact-submit {
-  color: white;
-  font-weight: 700;
-  font-size: 14px;
-  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
-  margin-left: auto;
-  margin-top: auto;
-  padding: 12px 20px;
 }
 
 .help-support {

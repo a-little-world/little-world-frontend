@@ -1,6 +1,7 @@
 import throttle from "lodash.throttle";
 import React, { Component } from "react";
-import { Button, Input, MessageList, Navbar, SideBar } from "react-chat-elements";
+import { Button, ButtonVariations, PhoneIcon } from '@a-little-world/little-world-design-system'
+import { Input, MessageList, Navbar, SideBar } from "react-chat-elements";
 import { withTranslation } from "react-i18next";
 import { toast, ToastContainer } from "react-toastify";
 import ReconnectingWebSocket from "reconnecting-websocket";
@@ -571,10 +572,11 @@ class Chat extends Component {
                 onChange={handleTextUpdate}
                 rightButtons={
                   <Button
-                    text={t("chat_send")}
                     disabled={this.state.socket.readyState !== 1}
                     onClick={() => this.performSendingMessage()}
-                  />
+                  >
+                    {t("chat_send")}
+                  </Button>
                 }
               />
             </div>
@@ -733,23 +735,17 @@ class Chat extends Component {
               }
               right={
                 <>
-                  <button type="button" className="free-appointments disabled">
-                    <span className="text">{t("chat_show_free_appointments")}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="suggest-appointment"
+                  {/* <Button
                     onClick={() => this.setOpen(true)}
                   >
-                    <span className="text">{t("chat_suggest_appointment")}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="call-start"
+                    {t("chat_suggest_appointment")}
+                  </Button> */}
+                  <Button
+                    variation={ButtonVariations.Icon}
                     onClick={() => this.props.setCallSetupPartner(userPk)}
                   >
-                    <img alt="start call" />
-                  </button>
+                    <PhoneIcon circular />
+                  </Button>
                 </>
               }
             />

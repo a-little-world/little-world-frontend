@@ -142,12 +142,6 @@ a {
   height: fit-content;
 }
 
-a,
-button,
-label {
-  border-radius: 100px;
-}
-
 button img {
   display: block;
 }

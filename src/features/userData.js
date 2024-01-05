@@ -1,14 +1,14 @@
-import { createSlice, createSelector } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 
 export const userDataSlice = createSlice({
-  name: "userData",
+  name: 'userData',
   initialState: {
     incomingCalls: [],
   },
   reducers: {
     initialise: (state, action) => {
       // TODO: this should NEVER be called twice will overwrite the full state
-      console.log("PAYLOAD", action.payload, { state, action });
+      console.log('PAYLOAD', action.payload, { state, action });
       // state = {...action.payload};
       state.communityEvents = action.payload?.communityEvents;
       state.user = action.payload?.user;
@@ -16,12 +16,23 @@ export const userDataSlice = createSlice({
       state.matches = action.payload?.matches;
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
-      state.incomingCalls = action.payload?.incomingCalls || [];
+      state.incomingCalls = [
+        {
+          userId: '<some-user-id-that-is-match-of-that-user>',
+        },
+      ];
     },
     updateProfile: (state, action) => {
-      Object.keys(action.payload).forEach((key) => {
+      Object.keys(action.payload).forEach(key => {
         state.user.profile[key] = action.payload[key];
       });
+    },
+    updateEmail: (state, action) => {
+      if (state.user) {
+        state.user.email = action.payload;
+      } else {
+        state.user = { email: action.payload };
+      }
     },
     updateSearchState: (state, action) => {
       state.user.isSearching = action.payload;
@@ -32,22 +43,27 @@ export const userDataSlice = createSlice({
     },
     removeMatch: (state, action) => {
       const { category, match } = action.payload;
-      const { id, ...rest } = match;
-      state.matches[category] = state.matches[category].items.filter((m) => m.id !== id);
+      const { id } = match;
+      state.matches[category] = state.matches[category].items.filter(
+        m => m.id !== id,
+      );
     },
     updateMatch: (state, action) => {
       const { category, match } = action.payload;
       const { id, ...rest } = match;
-      const matchIndex = state.matches[category].findIndex((m) => m.id === id);
+      const matchIndex = state.matches[category].findIndex(m => m.id === id);
       if (matchIndex !== -1)
-        state.matches[category][matchIndex] = { ...state.matches[category][matchIndex], ...rest };
+        state.matches[category][matchIndex] = {
+          ...state.matches[category][matchIndex],
+          ...rest,
+        };
     },
     updateMatchProfile: (state, action) => {
-      console.log("REDUCER", action.payload);
+      console.log('REDUCER', action.payload);
       const { partnerId, profile } = action.payload;
-      Object.keys(state.matches).forEach((category) => {
+      Object.keys(state.matches).forEach(category => {
         const matchIndex = state.matches[category].items.findIndex(
-          (m) => m.partner.id === partnerId
+          m => m.partner.id === partnerId,
         );
         if (matchIndex !== -1)
           state.matches[category].items[matchIndex].partner = {
@@ -58,15 +74,19 @@ export const userDataSlice = createSlice({
     },
     changeMatchCategory: (state, action) => {
       const { category, match, newCategory } = action.payload;
-      const matchToMove = state.matches[category].items.find((m) => m.id === match.id);
+      const matchToMove = state.matches[category].items.find(
+        m => m.id === match.id,
+      );
       state.matches[newCategory].items.push(matchToMove);
       state.matches[category].items = state.matches[category].items.filter(
-        (m) => m.id !== match.id
+        m => m.id !== match.id,
       );
     },
     blockIncomingCall: (state, action) => {
       const { userId } = action.payload;
-      state.incomingCalls = state.incomingCalls.filter((call) => call.userId !== userId);
+      state.incomingCalls = state.incomingCalls.filter(
+        call => call.userId !== userId,
+      );
     },
     updateConfirmedData: (state, action) => {
       state.matches.confirmed = action.payload;
@@ -76,10 +96,11 @@ export const userDataSlice = createSlice({
 
 export const {
   initialise,
+  addMatch,
+  updateEmail,
   updateProfile,
   updateSearchState,
   updateMatchProfile,
-  addMatch,
   updateMatch,
   removeMatch,
   changeMatchCategory,
@@ -89,16 +110,18 @@ export const {
 
 export const selectMatchByPartnerId = (matches, partnerId) => {
   for (const category in matches) {
-    const match = matches[category].items.find((m) => m.partner.id === partnerId);
+    const match = matches[category].items.find(m => m.partner.id === partnerId);
     if (match) return match;
   }
   return null;
 };
 
 export const selectMatchesDisplay = createSelector(
-  [(state) => state.userData.matches],
+  [state => state.userData.matches],
   ({ confirmed, support }) =>
-    confirmed.currentPage === 1 ? [...support.items, ...confirmed.items] : [...confirmed.items]
+    confirmed.currentPage === 1
+      ? [...support.items, ...confirmed.items]
+      : [...confirmed.items],
 );
 
 export default userDataSlice.reducer;

@@ -1,3 +1,14 @@
+import { resendVerificationEmail, verifyEmail } from '../../api';
+import { CHANGE_EMAIL_ROUTE } from '../../routes';
+import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import { registerInput } from './SignUp';
+import {
+  Buttons,
+  FormDescription,
+  StyledCard,
+  StyledForm,
+  Title,
+} from './SignUp.styles';
 import {
   Button,
   ButtonAppearance,
@@ -6,18 +17,13 @@ import {
   Text,
   TextInput,
   TextTypes,
-} from "@a-little-world/little-world-design-system";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import styled, { useTheme } from "styled-components";
-
-import { resendVerificationEmail, verifyEmail } from "../../api";
-import { CHANGE_EMAIL_ROUTE } from "../../routes";
-import FormMessage, { MessageTypes } from "../atoms/FormMessage";
-import { registerInput } from "./SignUp";
-import { Buttons, FormDescription, StyledCard, StyledForm, Title } from "./SignUp.styles";
+} from '@a-little-world/little-world-design-system';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import styled, { useTheme } from 'styled-components';
 
 const HelpText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
@@ -28,6 +34,7 @@ const VerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
+  const email = useSelector(state => state.userData.email);
 
   const {
     register,
@@ -40,20 +47,20 @@ const VerifyEmail = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFocus("verificationCode");
+    setFocus('verificationCode');
   }, [setFocus]);
 
-  const onError = (e) => {
+  const onError = e => {
     if (e?.message) {
       setError(
-        e.cause ?? "root.serverError",
-        { type: "custom", message: t(e.message) },
-        { shouldFocus: true }
+        e.cause ?? 'root.serverError',
+        { type: 'custom', message: t(e.message) },
+        { shouldFocus: true },
       );
     } else {
-      setError("root.serverError", {
-        type: "custom",
-        message: t(e?.message) || t("validation.generic_try_again"),
+      setError('root.serverError', {
+        type: 'custom',
+        message: t(e?.message) || t('validation.generic_try_again'),
       });
     }
   };
@@ -62,7 +69,10 @@ const VerifyEmail = () => {
     setIsSubmitting(true);
 
     resendVerificationEmail()
-      .then(() => setRequestSuccessful(true))
+      .then(() => {
+        setRequestSuccessful(true);
+        setIsSubmitting(false);
+      })
       .catch(onError);
   };
 
@@ -70,26 +80,26 @@ const VerifyEmail = () => {
     setIsSubmitting(true);
     verifyEmail({ verificationCode }).catch(onError);
   };
-
-  const email = "seanblundell@gmail.com";
-
+  console.log({ email });
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading2}>
-        {t("verify_email.title")}
+        {t('verify_email.title')}
       </Title>
-      <FormDescription>{t("verify_email.description", { email })}</FormDescription>
+      <FormDescription>
+        {t('verify_email.description', { email })}
+      </FormDescription>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
           {...registerInput({
             register,
-            name: "verficationCode",
-            options: { required: t("error.required") },
+            name: 'verficationCode',
+            options: { required: t('error.required') },
           })}
           id="text"
-          label={t("verify_email.input_label")}
+          label={t('verify_email.input_label')}
           error={errors?.verificationCode?.message}
-          placeholder={t("verify_email.code_placeholder")}
+          placeholder={t('verify_email.code_placeholder')}
           type="number"
         />
         <Button
@@ -97,15 +107,15 @@ const VerifyEmail = () => {
           color={theme.color.text.link}
           onClick={onResendCode}
         >
-          {t("verify_email.resend_code")}
+          {t('verify_email.resend_code')}
         </Button>
-        <HelpText>{t("verify_email.help_text")}</HelpText>
+        <HelpText>{t('verify_email.help_text')}</HelpText>
         <FormMessage
           $visible={requestSuccessful || errors?.root?.serverError}
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
           {requestSuccessful
-            ? t("verify_email.success_message")
+            ? t('verify_email.success_message')
             : errors?.root?.serverError?.message}
         </FormMessage>
         <Buttons>
@@ -115,7 +125,7 @@ const VerifyEmail = () => {
             color={theme.color.text.link}
             size={ButtonSizes.Medium}
           >
-            {t("verify_email.change_email_btn")}
+            {t('verify_email.change_email_btn')}
           </Button>
           <Button
             type="submit"
@@ -123,7 +133,7 @@ const VerifyEmail = () => {
             loading={isSubmitting}
             size={ButtonSizes.Medium}
           >
-            {t("verify_email.submit_btn")}
+            {t('verify_email.submit_btn')}
           </Button>
         </Buttons>
       </StyledForm>

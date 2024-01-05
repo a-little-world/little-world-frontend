@@ -75,11 +75,12 @@
       "last 1 safari version"
     ]
   },
+  "prettier": "@a-little-world/little-world-prettier-config",
   "devDependencies": {
+    "@a-little-world/little-world-prettier-config": "^1.0.1",
     "@capacitor/cli": "^5.6.0",
     "@svgr/webpack": "^6.5.1",
     "@testing-library/user-event": "^13.5.0",
-    "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "compression-webpack-plugin": "^10.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",

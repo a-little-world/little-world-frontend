@@ -52,7 +52,10 @@ const ResetPassword = () => {
     setIsSubmitting(true);
 
     resetPassword(data)
-      .then(() => setRequestSuccessful(true))
+      .then(() => {
+        setRequestSuccessful(true);
+        setIsSubmitting(false);
+      })
       .catch(onError);
   };
 

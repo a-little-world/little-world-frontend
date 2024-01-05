@@ -1,26 +1,34 @@
+import { setNewEmail } from '../../api';
+import { updateEmail } from '../../features/userData';
+import { VERIFY_EMAIL_ROUTE } from '../../routes';
+import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import { registerInput } from './SignUp';
+import {
+  Buttons,
+  FormDescription,
+  StyledCard,
+  StyledForm,
+  Title,
+} from './SignUp.styles';
 import {
   Button,
   ButtonAppearance,
   ButtonSizes,
   TextInput,
   TextTypes,
-} from "@a-little-world/little-world-design-system";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { useTheme } from "styled-components";
-
-import { setNewEmail } from "../../api";
-import { VERIFY_EMAIL_ROUTE } from "../../routes";
-import FormMessage, { MessageTypes } from "../atoms/FormMessage";
-import { registerInput } from "./SignUp";
-import { Buttons, FormDescription, StyledCard, StyledForm, Title } from "./SignUp.styles";
+} from '@a-little-world/little-world-design-system';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from 'styled-components';
 
 const ChangeEmail = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -33,21 +41,22 @@ const ChangeEmail = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFocus("email");
+    setFocus('email');
   }, [setFocus]);
 
-  const onError = (e) => {
+  const onError = e => {
     setIsSubmitting(false);
+    console.log({ e });
     if (e?.message) {
       setError(
-        e.cause ?? "root.serverError",
-        { type: "custom", message: t(e.message) },
-        { shouldFocus: true }
+        e.cause ?? 'root.serverError',
+        { type: 'custom', message: t(e.message) },
+        { shouldFocus: true },
       );
     } else {
-      setError("root.serverError", {
-        type: "custom",
-        message: t(e?.message) || t("validation.generic_try_again"),
+      setError('root.serverError', {
+        type: 'custom',
+        message: t(e?.message) || t('validation.generic_try_again'),
       });
     }
   };
@@ -58,6 +67,7 @@ const ChangeEmail = () => {
     setNewEmail({ email })
       .then(() => {
         setIsSubmitting(false);
+        dispatch(updateEmail(email));
         navigate(`/${VERIFY_EMAIL_ROUTE}`);
       })
       .catch(onError);
@@ -66,23 +76,26 @@ const ChangeEmail = () => {
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading2}>
-        {t("change_email.title")}
+        {t('change_email.title')}
       </Title>
-      <FormDescription>{t("change_email.description")}</FormDescription>
+      <FormDescription>{t('change_email.description')}</FormDescription>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
           {...registerInput({
             register,
-            name: "email",
-            options: { required: t("error.required") },
+            name: 'email',
+            options: { required: t('error.required') },
           })}
           id="email"
-          label={t("change_email.input_label")}
+          label={t('change_email.input_label')}
           error={errors?.email?.message}
-          placeholder={t("change_email.input_placeholder")}
+          placeholder={t('change_email.input_placeholder')}
           type="email"
         />
-        <FormMessage $visible={errors?.root?.serverError} $type={MessageTypes.Error}>
+        <FormMessage
+          $visible={errors?.root?.serverError}
+          $type={MessageTypes.Error}
+        >
           {errors?.root?.serverError?.message}
         </FormMessage>
         <Buttons>
@@ -92,7 +105,7 @@ const ChangeEmail = () => {
             color={theme.color.text.link}
             size={ButtonSizes.Medium}
           >
-            {t("change_email.back_btn")}
+            {t('change_email.back_btn')}
           </Button>
           <Button
             type="submit"
@@ -100,7 +113,7 @@ const ChangeEmail = () => {
             loading={isSubmitting}
             size={ButtonSizes.Medium}
           >
-            {t("change_email.submit_btn")}
+            {t('change_email.submit_btn')}
           </Button>
         </Buttons>
       </StyledForm>

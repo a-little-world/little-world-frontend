@@ -1,25 +1,30 @@
 import Cookies from "js-cookie";
+import { Button, ButtonAppearance, ButtonVariations, CloseIcon, Modal, Text, TextTypes } from '@a-little-world/little-world-design-system'
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "styled-components";
 
-import { BACKEND_URL, DEVELOPMENT } from "./ENVIRONMENT";
-import { updateProfile } from "./features/userData";
+import { BACKEND_URL, DEVELOPMENT } from "../../ENVIRONMENT";
+import { updateProfile } from "../../features/userData";
 
 import "./settings.css";
+import ModalCard, { ButtonsContainer, Centred } from "../blocks/Modal/ModalCard";
+import { RESET_PASSWORD_ROUTE } from "../../routes";
 
 function ListItem({ section, label, value, setEditing, map }) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const text = map ? map[value] : value;
 
   return (
     <div className={`item ${label}`}>
       <h3>{t(`sg_${section}_${label}`)}</h3>
       <span className="text">{text}</span>
-      <button type="button" className="edit" onClick={() => setEditing(label)}>
+      <Button variation={ButtonVariations.Inline} color={theme.color.text.link} onClick={() => setEditing(label)}>
         {t("sg_btn_change")}
-      </button>
+      </Button>
     </div>
   );
 }
@@ -140,26 +145,26 @@ function AtomicInput({ label, inputVal = "", handleChange = () => {}, refIn = un
 
 function PassChange({ refIn = undefined }) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const navigate = useNavigate();
-
-  const handleForgot = () => {
-    navigate("/password_reset/");
-    navigate(0);
-  };
 
   return (
     <>
       <AtomicInput label="password_current" refIn={refIn} />
-      <button type="button" className="forgot-password" onClick={handleForgot}>
+      <Button
+        variation={ButtonVariations.Inline}
+        onClick={() => navigate(`/${RESET_PASSWORD_ROUTE}/`)}
+        color={theme.color.text.link}
+      >
         {t("sg_personal_password_forgot")}
-      </button>
+      </Button>
       <AtomicInput label="password_new" />
       <AtomicInput label="password_new_rpt" />
     </>
   );
 }
 
-function ModalBox({ label, valueIn, setEditing }) {
+function EditFieldCard({ label, valueIn, setEditing }) {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const type = types[label];
@@ -238,14 +243,16 @@ function ModalBox({ label, valueIn, setEditing }) {
   }, [textInput]);
 
   return (
-    <div className="edit-modal modal-box">
-      <button type="button" className="modal-close" onClick={() => setEditing(false)} />
-      <h2>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</h2>
-      <div className="error-message">
-        {errors.map((errorTag) => {
-          return <div key={errorTag}>{`⚠️ ${t(errorTag)}`}</div>;
-        })}
-      </div>
+    <ModalCard>
+      <Centred>
+        <Text tag='h2' type={TextTypes.Heading2}>{t("sg_change_item", { item: t(`sg_personal_${label}`) })}</Text>
+        <div className="error-message">
+          {errors.map((errorTag) => {
+            return <div key={errorTag}>{`⚠️ ${t(errorTag)}`}</div>;
+          })}
+        </div>
+      </Centred>
+      
       <form onSubmit={handleSubmit}>
         <section className="inputs">
           {label === "display_language" && (
@@ -271,71 +278,69 @@ function ModalBox({ label, valueIn, setEditing }) {
             />
           )}
         </section>
-        <div className="buttons">
-          <button type="submit" className={waiting ? "save waiting" : "save"}>
-            {t("btn_save")}
-          </button>
-          <button
-            type="button"
-            className={waiting ? "cancel disabled" : "cancel"}
+        <ButtonsContainer>
+        <Button
+            appearance={ButtonAppearance.Secondary}
+            disabled={waiting}
             onClick={() => setEditing(false)}
           >
             {t("btn_cancel")}
-          </button>
-        </div>
+          </Button>
+          <Button type="submit" loading={waiting} disabled={waiting}>
+            {t("btn_save")}
+          </Button>
+        </ButtonsContainer>
       </form>
-    </div>
+    </ModalCard>
   );
 }
 
 
-function ConfirmAccountDeletetion({ 
-  showModal,
+function ConfirmAccountDeletion({ 
   setShowModal
 }) {
   const { t } = useTranslation();
 
-  return ( showModal &&
-  <div className={showModal ? "overlay-shade" : "overlay-shade hidden"}>
-    <div className="modal-box">
-      <button type="button" className="modal-close" onClick={() => setShowModal(false)} />
-      <div className="content">
-        <div className="message-text">{t("settings_delete_account_confirm_title")}</div>
-        <div className="buttons">
-          <button type="button" className="confirm" onClick={() => {
-            // call deletion api ...
-            // then reload page ...
-              fetch(`${BACKEND_URL}/api/user/delete_account/`, {
-                method: "POST",
-                headers: {
-                  "X-CSRFToken": Cookies.get("csrftoken"),
-                  "Content-Type": "application/json",
-                }
-              }).then((res) => {
-                if (res.ok) {
-                  window.location.reload();
-                } else {
-                  console.error(`Error ${res.status}: ${res.statusText}`);
-                }
-              })
-          }}>
-            {t("settings_delete_account_confirm_button")}
-          </button>
-          <button type="button" className="cancel" onClick={() => setShowModal(false)}>
-            {t("settings_delete_account_confirm_cancel")}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  return (
+    <ModalCard>
+      <Centred>
+        <Text tag="h2" type={TextTypes.Heading2}>{t("settings_delete_account_confirm_title")}</Text>
+      </Centred>
+      <ButtonsContainer>
+        <Button appearance={ButtonAppearance.Secondary} onClick={() => setShowModal(false)}>
+          {t("settings_delete_account_confirm_cancel")}
+        </Button>
+        <Button
+          backgroundColor='red'
+          onClick={() => {
+          // call deletion api ...
+          // then reload page ...
+            fetch(`${BACKEND_URL}/api/user/delete_account/`, {
+              method: "POST",
+              headers: {
+                "X-CSRFToken": Cookies.get("csrftoken"),
+                "Content-Type": "application/json",
+              }
+            }).then((res) => {
+              if (res.ok) {
+                window.location.reload();
+              } else {
+                console.error(`Error ${res.status}: ${res.statusText}`);
+              }
+            })
+        }}>
+          {t("settings_delete_account_confirm_button")}
+        </Button>
+      </ButtonsContainer>
+    </ModalCard>
   );
 }
 
 function Settings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const profile = useSelector((state) => state.userData.user.profile);
-
+  const profile = useSelector((state) => ({ email: state.userData.user.email, ...state.userData.user.profile }));
+  
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -360,11 +365,10 @@ function Settings() {
   return (
     <>
       <div className="header">
-        <span className="text">{t("sg_header")}</span>
+        <Text tag='h2' type={TextTypes.Heading2} color='black'>{t("sg_header")}</Text>
       </div>
       <div className="content panel">
         <section className="settings personal">
-          <h2>{t("sg_personal_header")}</h2>
           <div className="settings-items">
             {items.map((label) => {
               return (
@@ -387,28 +391,33 @@ function Settings() {
               );
             })}
             <div className="item">
-              <h3>{t("sg_personal_delete_account")}</h3>
-              <button type="button" className="delete-account"
-                  onClick={() => {
-                    setShowConfirm(true);
-                  }}>
+              <Button
+                appearance={ButtonAppearance.Secondary}
+                color={'red'}
+                backgroundColor={'red'}
+                onClick={() => {
+                  setShowConfirm(true);
+                }}
+              >
                 {t("sg_personal_delete_account_btn")}
-              </button>
+              </Button>
             </div>
           </div>
         </section>
       </div>
-      <div className={editing ? "overlay-shade" : "overlay-shade hidden"}>
+      <Modal open={editing} onClose={() => setEditing(false)}>
         {editing && (
-          <ModalBox
+          <EditFieldCard
             label={editing}
             valueIn={data[editing]}
             repeat={repeaters.includes(editing)}
             setEditing={setEditing}
           />
         )}
-      </div>
-      <ConfirmAccountDeletetion showModal={showConfirm} setShowModal={setShowConfirm}/>
+      </Modal>
+      <Modal open={showConfirm} onClose={() => setShowConfirm(false)}>
+        <ConfirmAccountDeletion setShowModal={setShowConfirm} />
+      </Modal>
     </>
   );
 }

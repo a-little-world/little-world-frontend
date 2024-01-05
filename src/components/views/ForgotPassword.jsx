@@ -31,7 +31,7 @@ export const ForgotPasswordDescription = styled(Text)`
 const ForgotPassword = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [requestSuccessful, setRequestSuccessful] = useState(true);
+  const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
 
   const {
@@ -67,7 +67,10 @@ const ForgotPassword = () => {
     setIsSubmitting(true);
 
     requestPasswordReset(data)
-      .then(() => setRequestSuccessful(true))
+      .then(() => {
+        setRequestSuccessful(true)
+        setIsSubmitting(false)
+      })
       .catch(onError);
   };
 

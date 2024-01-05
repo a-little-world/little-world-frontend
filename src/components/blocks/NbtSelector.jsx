@@ -1,12 +1,14 @@
 import React from "react";
+import { Button, ButtonAppearance } from '@a-little-world/little-world-design-system'
 import { useTranslation } from "react-i18next";
-import styled, { css } from "styled-components";
+import styled, { css, useTheme } from "styled-components";
 
 const Selector = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: ${({ theme }) => theme.spacing.xxsmall};
+  gap: ${({ theme }) => theme.spacing.xsmall};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.small}) {
@@ -16,42 +18,38 @@ const Selector = styled.div`
   `}
 `;
 
+const StyledOption = styled(Button)`
+  border-color: transparent;
+  &:disabled {
+    color: ${({ theme }) =>
+      theme.color.text.button
+    };
+    border: none;
+    background: ${({ theme }) =>
+      theme.color.gradient.blue10
+    };
+  }
+`
+
 function NbtSelector({ selection, setSelection, use }) {
   const { t } = useTranslation();
+  const theme = useTheme();
   if (!["main", "help"].includes(use)) {
     return null;
   }
 
   const nbtTopics = {
-    main: ["conversation_partners", "appointments", "community_calls"],
-    help: ["videos", "faqs", "contact"],
+    main: ["conversation_partners", "community_calls"],
+    help: ["faqs", "contact"],
   };
   const topics = nbtTopics[use];
 
-  const nbtDisabled = {
-    main: ["appointments"],
-    help: ["videos"],
-  };
-  const disabled = nbtDisabled[use];
   return (
     <Selector className="selector">
       {topics.map((topic) => (
-        <span className={topic} key={topic}>
-          <input
-            type="radio"
-            id={`${topic}-radio`}
-            value={topic}
-            checked={selection === topic}
-            name="sidebar"
-            onChange={(e) => setSelection(e.target.value)}
-          />
-          <label
-            htmlFor={`${topic}-radio`}
-            className={disabled && disabled.includes(topic) ? "disabled" : ""}
-          >
-            {t(`nbt_${topic}`)}
-          </label>
-        </span>
+        <StyledOption appearance={selection === topic ? ButtonAppearance.Primary : ButtonAppearance.Secondary} key={topic} onClick={() => setSelection(topic)} disabled={selection === topic}>
+          {t(`nbt_${topic}`)}
+        </StyledOption>
       ))}
     </Selector>
   );

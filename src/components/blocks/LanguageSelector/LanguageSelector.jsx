@@ -53,7 +53,7 @@ const LanguageSelector = () => {
         aria-label="switch language to English"
         variation={ButtonVariations.Inline}
         onClick={() => handleChangeLanguage(LANGUAGES.en)}
-        disabled={i18n.language === LANGUAGES.en}
+        disabled={i18n.language.includes(LANGUAGES.en)} // multiple en codes e.g. en-GB
       >
         EN
       </LanguageButton>
