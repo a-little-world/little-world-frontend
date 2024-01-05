@@ -2,9 +2,11 @@ import { Modal } from "@a-little-world/little-world-design-system";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-
+import { APP_ROUTE, SIGN_UP_ROUTE } from "./routes";
+import { useParams } from "react-router-dom";
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from "./api";
 import CallSetup, { IncomingCall } from "./call-setup";
+import { useNavigate } from "react-router-dom";
 import Chat from "./chat/chat-full-view";
 import CancelSearching from "./components/blocks/CancelSearching";
 import CommunityCalls from "./components/blocks/CommunityCalls";
@@ -100,9 +102,15 @@ const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
 };
 
 function Main() {
+  // for the case /call-setup/:userId?/
+  let { userId } = useParams();
+  
+  
   const location = useLocation();
   const { userPk } = location.state || {};
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
 
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -134,6 +142,13 @@ function Main() {
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
+  
+  useEffect(() => {
+    if (userId) {
+      dispatch(initCallSetup({ userId }));
+      navigate(`/${APP_ROUTE}/`); // Navigate back to base app route but with call setup open
+    }
+  }, [userId]);
 
   useEffect(() => {
     const totalPage = matches?.confirmed?.totalItems / pageItems;
