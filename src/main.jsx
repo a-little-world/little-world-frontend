@@ -1,7 +1,7 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import CustomPagination from './CustomPagination';
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
