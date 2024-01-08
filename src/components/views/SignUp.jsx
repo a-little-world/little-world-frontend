@@ -1,15 +1,3 @@
-import { signUp } from '../../api';
-import { initialise } from '../../features/userData';
-import { VERIFY_EMAIL_ROUTE, LOGIN_ROUTE } from '../../routes';
-import FormMessage, { MessageTypes } from '../atoms/FormMessage';
-import {
-  NameContainer,
-  NameInputs,
-  StyledCard,
-  StyledCta,
-  StyledForm,
-  Title,
-} from './SignUp.styles';
 import {
   ButtonAppearance,
   ButtonSizes,
@@ -26,6 +14,19 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
+import { signUp } from '../../api';
+import { initialise } from '../../features/userData';
+import { LOGIN_ROUTE, VERIFY_EMAIL_ROUTE } from '../../routes';
+import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import {
+  NameContainer,
+  NameInputs,
+  StyledCard,
+  StyledCta,
+  StyledForm,
+  Title,
+} from './SignUp.styles';
 
 export const registerInput = ({ register, name, options }) => {
   const { ref, ...rest } = register(name, options);

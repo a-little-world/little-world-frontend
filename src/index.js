@@ -1,30 +1,75 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 
-import App from "./App";
-import { IS_CAPACITOR_BUILD, DEVELOPMENT } from "./ENVIRONMENT";
-import { updateTranslationResources } from "./i18n";
-import reportWebVitals from "./reportWebVitals";
-import optionsTranslations from "./options_translations.json";
-
+import App from './App';
+import { DEVELOPMENT, IS_CAPACITOR_BUILD } from './ENVIRONMENT';
+import MessageCard from './components/blocks/Cards/MessageCard';
+import FormLayout from './components/blocks/Layout/FormLayout';
+import { updateTranslationResources } from './i18n';
+import optionsTranslations from './options_translations.json';
+import reportWebVitals from './reportWebVitals';
+import { Root } from './router';
 
 const isDevelopment = DEVELOPMENT;
 const isCapaitor = IS_CAPACITOR_BUILD || false;
 
+let root;
+
 window.renderApp = ({ initData }, { apiTranslations }) => {
-  updateTranslationResources({ apiTranslations }); // This adds all form translations from the backend!
+  updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
   // If not in development just render ...
-  const container = document.getElementById("root");
-  const root = createRoot(container);
-    root.render(
-      <React.StrictMode>
-        <App data={initData} />
-      </React.StrictMode>
-    );
+  const container = document.getElementById('root');
+
+  if (!root) {
+    root = createRoot(container);
+  }
+  root.render(
+    <React.StrictMode>
+      <App data={initData} />
+    </React.StrictMode>,
+  );
 
   reportWebVitals();
 };
 
+window.renderMessageView = (
+  {
+    title,
+    content,
+    confirmText,
+    rejectText,
+    onConfirm,
+    onReject,
+    linkText,
+    linkTo,
+  },
+  { apiTranslations },
+) => {
+  updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
+
+  const container = document.getElementById('root');
+  if (!root) {
+    root = createRoot(container);
+  }
+  root.render(
+    <React.StrictMode>
+      <Root>
+        <FormLayout>
+          <MessageCard
+            title={title}
+            content={content}
+            confirmText={confirmText}
+            rejectText={rejectText}
+            onConfirm={onConfirm}
+            onReject={onReject}
+            linkText={linkText}
+            linkTo={linkTo}
+          />
+        </FormLayout>
+      </Root>
+    </React.StrictMode>,
+  );
+};
 
 /**
  * 1. Frontend only development: trigger login simulator to auto login in remote server
@@ -33,19 +78,18 @@ window.renderApp = ({ initData }, { apiTranslations }) => {
  */
 
 if (isDevelopment && !isCapaitor) {
-  import("./loginSimulator.js").then((simulator) => {
-    simulator.simulatedAutoLogin().then((data) => {
+  import('./loginSimulator.js').then(simulator => {
+    simulator.simulatedAutoLogin().then(data => {
       const initData = data?.data;
       const apiTranslations = data?.api_translations;
-      
+
       window.renderApp({ initData }, { apiTranslations });
     });
   });
-}else if(isCapaitor){
+} else if (isCapaitor) {
+  const apiTranslations = JSON.parse(optionsTranslations.apiTranslations);
+  const data = { apiOptions: optionsTranslations.apiOptions };
+  console.log('DATA', data, apiTranslations, isCapaitor);
 
-  const apiTranslations = JSON.parse(optionsTranslations.apiTranslations)
-  const data = { apiOptions: optionsTranslations.apiOptions }
-  console.log("DATA", data, apiTranslations, isCapaitor)
-
-  window.renderApp({ initData : data }, { apiTranslations })
+  window.renderApp({ initData: data }, { apiTranslations });
 }

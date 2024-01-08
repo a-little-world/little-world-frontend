@@ -1,8 +1,8 @@
-import { Outlet } from "react-router-dom";
-import styled from "styled-components";
+import { Outlet } from 'react-router-dom';
+import styled from 'styled-components';
 
-import WebsocketBridge from "../../../WebsocketBridge";
-import Sidebar from "../Sidebar";
+import WebsocketBridge from '../../../WebsocketBridge';
+import Sidebar from '../Sidebar';
 
 const Wrapper = styled.div`
   overflow-x: hidden;
@@ -12,14 +12,12 @@ const Wrapper = styled.div`
   box-sizing: border-box;
 `;
 
-const AppLayout = ({ children, page, sidebarMobile }) => {
-  return (
-    <Wrapper $page={page} className={`main-page show-${page}`}>
-      <WebsocketBridge />
-      <Sidebar sidebarMobile={sidebarMobile} />
-      {children || <Outlet />}
-    </Wrapper>
-  );
-};
+const AppLayout = ({ children, page, sidebarMobile }) => (
+  <Wrapper $page={page} className={page ? `main-page show-${page}` : null}>
+    <WebsocketBridge />
+    <Sidebar sidebarMobile={sidebarMobile} />
+    {children || <Outlet />}
+  </Wrapper>
+);
 
 export default AppLayout;

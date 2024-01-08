@@ -1,14 +1,3 @@
-import { resendVerificationEmail, verifyEmail } from '../../api';
-import { CHANGE_EMAIL_ROUTE } from '../../routes';
-import FormMessage, { MessageTypes } from '../atoms/FormMessage';
-import { registerInput } from './SignUp';
-import {
-  Buttons,
-  FormDescription,
-  StyledCard,
-  StyledForm,
-  Title,
-} from './SignUp.styles';
 import {
   Button,
   ButtonAppearance,
@@ -24,6 +13,18 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
+
+import { resendVerificationEmail, verifyEmail } from '../../api';
+import { CHANGE_EMAIL_ROUTE } from '../../routes';
+import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import { registerInput } from './SignUp';
+import {
+  Buttons,
+  FormDescription,
+  StyledCard,
+  StyledForm,
+  Title,
+} from './SignUp.styles';
 
 const HelpText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};

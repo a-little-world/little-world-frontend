@@ -1,30 +1,45 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import Cookies from "js-cookie";
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { initCallSetup, cancelCallSetup, initActiveCall, stopActiveCall } from "./features/userData";
-import { useLocation, useNavigate } from "react-router-dom";
-import { clearActiveTracks } from "./call-setup";
+import Cookies from 'js-cookie';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-import Chat from "./chat/chat-full-view";
-import { BACKEND_URL } from "./ENVIRONMENT";
-import "./i18n";
-import Link from "./path-prepend";
-import { APP_ROUTE, getAppRoute } from "./routes";
+import './App.css';
+import { BACKEND_URL } from './ENVIRONMENT';
+import { clearActiveTracks } from './call-setup';
+import './call.css';
+import Chat from './chat/chat-full-view';
+import {
+  cancelCallSetup,
+  initActiveCall,
+  initCallSetup,
+  stopActiveCall,
+} from './features/userData';
+import './i18n';
+import { ReactComponent as FavoriteIcon } from './images/favorite.svg';
+import Link from './path-prepend';
+import { APP_ROUTE, getAppRoute } from './routes';
+import {
+  addUserNote,
+  deleteUserNote,
+  getUserNotes,
+  noteStatusUpdate,
+} from './services/userNotes';
 import {
   getAudioTrack,
   getVideoTrack,
   joinRoom,
   removeActiveTracks,
   toggleLocalTracks,
-} from "./twilio-helper";
-
-import "./App.css";
-import "./call.css";
-import { ReactComponent as FavoriteIcon } from './images/favorite.svg';
-import styled from "styled-components";
-import { addUserNote, deleteUserNote, getUserNotes, noteStatusUpdate } from "./services/userNotes";
+} from './twilio-helper';
 
 const Container = styled.div`
   display: flex;
@@ -45,19 +60,21 @@ const ButtonContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const Buttons = styled.button`
-
-`
+const Buttons = styled.button``;
 
 const AddNoteButton = styled.button`
-  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%) !important;
+  background: linear-gradient(
+    43.07deg,
+    #db590b -3.02%,
+    #f39325 93.96%
+  ) !important;
   border-radius: 100px;
   padding: 8px 6px;
   font-size: 14px;
   min-width: 66px;
   color: #f9f9f9;
   font-weight: 600;
-  display: ${(props) => (props.show ? 'block' : 'none')};
+  display: ${props => (props.show ? 'block' : 'none')};
 `;
 
 const WrapperContainer = styled.div`
@@ -80,9 +97,9 @@ const QuestionActions = styled.div`
 `;
 
 const QuestionActionsWrapper = styled.div`
-display: flex;
-justify-content: space-between;
-align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
 `;
 
 const CategoryButton = styled.button`
@@ -96,25 +113,26 @@ const CategoryButton = styled.button`
   margin: 0 4px;
   box-sizing: border-box;
   display: flex;
-  ${({ selected }) => selected &&
+  ${({ selected }) =>
+    selected &&
     `
     background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
     color: white;
-    `
-  };
+    `};
 `;
 
 const StyledImage = styled.img`
   height: 20px;
   width: 20px;
-  ${({ selected }) =>
-    selected &&
-    ` filter: brightness(0) invert(1); `
-  }
+  ${({ selected }) => selected && ` filter: brightness(0) invert(1); `}
 `;
 
 const EditButton = styled.button`
-  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%) !important;
+  background: linear-gradient(
+    43.07deg,
+    #db590b -3.02%,
+    #f39325 93.96%
+  ) !important;
   border-radius: 100px;
   font-size: 14px;
   min-width: ${({ theme }) => `${theme.spacing.xxlarge}`};
@@ -158,8 +176,7 @@ const NotesCard = styled.div`
   ${({ selected }) =>
     selected &&
     ` border-color: red;
-      padding: 15px; `
-  }
+      padding: 15px; `}
 `;
 
 const CardButton = styled.button`
@@ -168,10 +185,7 @@ const CardButton = styled.button`
   width: 100%;
   border-radius: inherit;
   text-align: left;
-  ${({ selected }) =>
-    selected &&
-    `  padding: 0; `
-  }
+  ${({ selected }) => selected && `  padding: 0; `}
 `;
 
 const CategoryWrapper = styled.div`
@@ -182,26 +196,28 @@ const CategoryWrapper = styled.div`
 `;
 
 function toggleFullscreen(t) {
-  const videoContainer = document.querySelector(".video-container");
-  const fullScreenTextEl = document.querySelector("label[for=fullscreen-toggle] .text");
+  const videoContainer = document.querySelector('.video-container');
+  const fullScreenTextEl = document.querySelector(
+    'label[for=fullscreen-toggle] .text',
+  );
   // would be nice to do text in CSS but we need translation support
 
   if (!document.fullscreenElement) {
     videoContainer.requestFullscreen();
-    fullScreenTextEl.innerHTML = t("vc_fs_btn_exit_fullscreen");
+    fullScreenTextEl.innerHTML = t('vc_fs_btn_exit_fullscreen');
   } else if (document.exitFullscreen) {
     document.exitFullscreen();
-    fullScreenTextEl.innerHTML = t("vc_fs_btn_enter_fullscreen");
+    fullScreenTextEl.innerHTML = t('vc_fs_btn_enter_fullscreen');
   }
 }
 
-const SetSideContext = createContext(() => { });
+const SetSideContext = createContext(() => {});
 
 function Timer() {
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setSeconds((currentSeconds) => currentSeconds + 1);
+      setSeconds(currentSeconds => currentSeconds + 1);
     }, 1000);
     return () => clearInterval(intervalId);
   });
@@ -209,7 +225,7 @@ function Timer() {
   const remainder = seconds % 60;
   const minutes = (seconds - remainder) / 60;
 
-  const two = (n) => (n < 10 ? `0${n}` : n);
+  const two = n => (n < 10 ? `0${n}` : n);
 
   return (
     <div className="call-time">
@@ -223,8 +239,13 @@ function Timer() {
 function ToggleButton({ id, text, alt, onChange, defaultChecked, disabled }) {
   return (
     <>
-      <input type="checkbox" id={id} defaultChecked={defaultChecked} onChange={onChange} />
-      <label htmlFor={id} className={disabled ? "disabled" : ""}>
+      <input
+        type="checkbox"
+        id={id}
+        defaultChecked={defaultChecked}
+        onChange={onChange}
+      />
+      <label htmlFor={id} className={disabled ? 'disabled' : ''}>
         <div className="img" alt={alt} />
         {text && <span className="text">{text}</span>}
       </label>
@@ -234,8 +255,8 @@ function ToggleButton({ id, text, alt, onChange, defaultChecked, disabled }) {
 
 function VideoControls() {
   const { t } = useTranslation();
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const setSideSelection = useContext(SetSideContext);
 
@@ -243,11 +264,11 @@ function VideoControls() {
     if (document.fullscreenElement) {
       toggleFullscreen(t);
     }
-    setSideSelection("chat");
+    setSideSelection('chat');
   };
 
-  const audioMuted = localStorage.getItem("audio muted") === "true";
-  const videoMuted = localStorage.getItem("video muted") === "true";
+  const audioMuted = localStorage.getItem('audio muted') === 'true';
+  const videoMuted = localStorage.getItem('video muted') === 'true';
 
   return (
     <div className="video-controls">
@@ -255,57 +276,66 @@ function VideoControls() {
         id="audio-toggle"
         alt="mute/unmute mic"
         defaultChecked={audioMuted}
-        onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
+        onChange={e => toggleLocalTracks(e.target.checked, 'audio')}
       />
       <ToggleButton
         id="video-toggle"
         alt="enable/disable webcam"
         defaultChecked={videoMuted}
-        onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
+        onChange={e => toggleLocalTracks(e.target.checked, 'video')}
       />
       <ToggleButton
         id="fullscreen-toggle"
-        text={t("vc_fs_btn_enter_fullscreen")}
+        text={t('vc_fs_btn_enter_fullscreen')}
         alt="toggle fullscreen"
         onChange={() => toggleFullscreen(t)}
       />
       <ToggleButton
         id="calendar-toggle"
-        text={t("vc_fs_btn_appointment")}
+        text={t('vc_fs_btn_appointment')}
         alt="calendar"
         disabled
       />
-      <ToggleButton id="help-toggle" text={t("vc_fs_btn_mistake")} alt="mistake" disabled />
+      <ToggleButton
+        id="help-toggle"
+        text={t('vc_fs_btn_mistake')}
+        alt="mistake"
+        disabled
+      />
       <button type="button" className="chat-show" onClick={showChat}>
         <div className="img" alt="show chat" />
-        <span className="text">{t("vc_fs_btn_chat")}</span>
+        <span className="text">{t('vc_fs_btn_chat')}</span>
       </button>
       <Timer />
-      <button onClick={() => {
-        clearActiveTracks();
-        console.log('cancel call')
-        dispatch(stopActiveCall())
-        navigate(getAppRoute(""))
-      }} className="end-call">
+      <button
+        onClick={() => {
+          clearActiveTracks();
+          console.log('cancel call');
+          dispatch(stopActiveCall());
+          navigate(getAppRoute(''));
+        }}
+        className="end-call"
+      >
         <div className="img" alt="end call" />
-        <span className="text">{t("vc_fs_btn_end_call")}</span>
+        <span className="text">{t('vc_fs_btn_end_call')}</span>
       </button>
     </div>
   );
 }
 
 function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
-  const buttons = ["chat", "translate", "questions", "notes"];
+  const buttons = ['chat', 'translate', 'questions', 'notes'];
   const disabled = [];
 
   return (
     <div className="video-controls top">
-      {buttons.map((name) => (
+      {buttons.map(name => (
         <button
           key={name}
           type="button"
-          className={`show-${name}${selectedOverlay === name ? " selected" : ""}${disabled.includes(name) ? " disabled" : ""
-            }`}
+          className={`show-${name}${
+            selectedOverlay === name ? ' selected' : ''
+          }${disabled.includes(name) ? ' disabled' : ''}`}
           onClick={() => setOverlay(name)}
         >
           <img alt={`show-${name}`} />
@@ -317,44 +347,44 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
 
 function SidebarQuestions() {
   const { t } = useTranslation();
-  const [selectedTopic, setTopic] = useState("Jokes");
+  const [selectedTopic, setTopic] = useState('Jokes');
   const [selectedQuestionId, setQuestionId] = useState(null);
 
   const dummyData = {
     Jokes: [
       {
         id: 1,
-        text: "How much wood would a wood chucker chuck if a woodchucker could chuck wood?",
+        text: 'How much wood would a wood chucker chuck if a woodchucker could chuck wood?',
       },
       {
         id: 2,
-        text: "What is the air speed velocity of an unladen swallow?",
+        text: 'What is the air speed velocity of an unladen swallow?',
       },
     ],
     Oliver: [
       {
         id: 3,
-        text: "Where is Oliver from?",
+        text: 'Where is Oliver from?',
       },
       {
         id: 4,
-        text: "Which part of Berlin?",
+        text: 'Which part of Berlin?',
       },
       {
         id: 5,
-        text: "Where did he get those glasses?",
+        text: 'Where did he get those glasses?',
       },
     ],
-    "Another Topic": [
+    'Another Topic': [
       {
         id: 6,
-        text: "nothing to see here",
+        text: 'nothing to see here',
       },
     ],
-    "Yet Another Topic": [
+    'Yet Another Topic': [
       {
         id: 7,
-        text: "what did you expect?",
+        text: 'what did you expect?',
       },
     ],
   };
@@ -366,14 +396,14 @@ function SidebarQuestions() {
   const removeQuestion = () => {
     // needs to go to backend
     const questionIdx = questionsData[selectedTopic].findIndex(
-      (item) => item.id === selectedQuestionId
+      item => item.id === selectedQuestionId,
     );
     questionsData[selectedTopic].splice(questionIdx, 1);
     setQuestionId(questionsData);
   };
 
-  const changeScroll = (direction) => {
-    const element = document.querySelector(".questions-categories .categories");
+  const changeScroll = direction => {
+    const element = document.querySelector('.questions-categories .categories');
     const scrollVelocity = {
       right: 100,
       left: -100,
@@ -384,15 +414,23 @@ function SidebarQuestions() {
   return (
     <div className="questions">
       <div className="questions-categories">
-        <button type="button" className="questions-left" onClick={() => changeScroll("left")}>
+        <button
+          type="button"
+          className="questions-left"
+          onClick={() => changeScroll('left')}
+        >
           <img alt="show left" />
         </button>
         <div className="categories">
-          {questionsTopics.map((topic) => (
+          {questionsTopics.map(topic => (
             <button
               key={topic}
               type="button"
-              className={selectedTopic === topic ? `${topic}-radio selected` : `${topic}-radio`}
+              className={
+                selectedTopic === topic
+                  ? `${topic}-radio selected`
+                  : `${topic}-radio`
+              }
               value={topic}
               onClick={() => setTopic(topic)}
             >
@@ -400,7 +438,11 @@ function SidebarQuestions() {
             </button>
           ))}
         </div>
-        <button type="button" className="questions-right" onClick={() => changeScroll("right")}>
+        <button
+          type="button"
+          className="questions-right"
+          onClick={() => changeScroll('right')}
+        >
           <img alt="show right" />
         </button>
       </div>
@@ -408,11 +450,15 @@ function SidebarQuestions() {
         {questionsData[selectedTopic].map(({ id, text }) => (
           <div
             key={id}
-            className={selectedQuestionId === id ? `question-${id} selected` : `question-${id}`}
+            className={
+              selectedQuestionId === id
+                ? `question-${id} selected`
+                : `question-${id}`
+            }
           >
             <button
               type="button"
-              className={selectedQuestionId === id ? "selected" : ""}
+              className={selectedQuestionId === id ? 'selected' : ''}
               onClick={() => setQuestionId(id)}
             >
               {text}
@@ -438,62 +484,69 @@ function SidebarQuestions() {
 }
 
 function SidebarNotes() {
-
-  const [selectedQuestionId, setSelectedQuestionId] = useState(null)
-  const [selectedTopic, setTopic] = useState("All");
-  const [data, setData] = useState(null)
-  const [initialData, setInitialData] = useState(null)
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const [selectedTopic, setTopic] = useState('All');
+  const [data, setData] = useState(null);
+  const [initialData, setInitialData] = useState(null);
 
   const { t } = useTranslation();
 
   const [note, setNote] = useState('');
   const [textareaContent, setTextareaContent] = useState('');
   const [isContentChanged, setIsContentChanged] = useState(false);
-  const [initialDataFetch, setInitialDataFetch] = useState(true)
-  const selfUserPreferedLang = useSelector(state => state.userData.user.profile.display_language)
+  const [initialDataFetch, setInitialDataFetch] = useState(true);
+  const selfUserPreferedLang = useSelector(
+    state => state.userData.user.profile.display_language,
+  );
 
   if (initialDataFetch) {
     getUserNotes()
-      .then((response) => {
-        if (response.error) setInitialData(null)
-        else setInitialData(response)
+      .then(response => {
+        if (response.error) setInitialData(null);
+        else setInitialData(response);
       })
-      .catch((error) => {
-        console.log('error occured while fetching notes')
+      .catch(error => {
+        console.log('error occured while fetching notes');
       });
-    setInitialDataFetch(false)
+    setInitialDataFetch(false);
   }
 
   useEffect(() => {
     let filteredData = [];
     if (selectedTopic === 'All') {
-      filteredData = initialData?.filter(note => !note.is_archived && !note.is_deleted);
+      filteredData = initialData?.filter(
+        note => !note.is_archived && !note.is_deleted,
+      );
     } else if (selectedTopic === 'is_favorite') {
-      filteredData = initialData?.filter(note => !note.is_deleted && !note.is_archived && note.is_favorite);
+      filteredData = initialData?.filter(
+        note => !note.is_deleted && !note.is_archived && note.is_favorite,
+      );
     } else {
       filteredData = initialData?.filter(note => note[selectedTopic]);
     }
-    const sortedData = filteredData?.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+    const sortedData = filteredData?.sort(
+      (a, b) => new Date(b.updated_at) - new Date(a.updated_at),
+    );
     setData(sortedData);
   }, [selectedTopic, initialData]);
 
-
   const handleAddNote = async () => {
-    const [sourcelang, targetLang] = selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
+    const [sourcelang, targetLang] =
+      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
     const response = await addUserNote(note, sourcelang, targetLang);
     setNote('');
     getUserNotes()
-      .then((response) => {
-        if (response.error) setInitialData(null)
-        else setInitialData(response)
+      .then(response => {
+        if (response.error) setInitialData(null);
+        else setInitialData(response);
       })
-      .catch((error) => {
+      .catch(error => {
         debugger;
       });
-    setInitialDataFetch(false)
-  }
+    setInitialDataFetch(false);
+  };
 
-  const handleNoteChange = (event) => {
+  const handleNoteChange = event => {
     setNote(event.target.value);
   };
 
@@ -503,20 +556,21 @@ function SidebarNotes() {
     setIsContentChanged(false);
   };
 
-  const handleTextareaChange = (e) => {
+  const handleTextareaChange = e => {
     setTextareaContent(e.target.value);
     setIsContentChanged(true);
   };
 
-  const handleNoteEdit = async (id) => {
+  const handleNoteEdit = async id => {
     const content = textareaContent;
-    const [sourcelang, targetLang] = selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
+    const [sourcelang, targetLang] =
+      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
     const FavoritedResponse = await noteStatusUpdate({
       note_id: id,
       note_text: content,
       source_language: sourcelang,
       target_language: targetLang,
-    })
+    });
     if (FavoritedResponse.status === 200) {
       const noteIndex = initialData.findIndex(note => note.id === id);
 
@@ -533,7 +587,7 @@ function SidebarNotes() {
         setIsContentChanged(false);
       }
     }
-  }
+  };
 
   const renderButton = (topic, label, imageClass) => (
     <CategoryButton
@@ -550,10 +604,11 @@ function SidebarNotes() {
           width={'20px'}
         />
       )}
-      {
-        topic === 'All' ? <span>{label}</span> : <span className="responsive-text">{label}</span>
-      }
-
+      {topic === 'All' ? (
+        <span>{label}</span>
+      ) : (
+        <span className="responsive-text">{label}</span>
+      )}
     </CategoryButton>
   );
 
@@ -591,8 +646,8 @@ function SidebarNotes() {
           actionType === 'remove'
             ? 'is_deleted'
             : actionType === 'favorite'
-              ? 'is_favorite'
-              : 'is_archived';
+            ? 'is_favorite'
+            : 'is_archived';
 
         updatedNotesData[noteIndex] = {
           ...updatedNotesData[noteIndex],
@@ -606,22 +661,21 @@ function SidebarNotes() {
     }
   };
   return (
-    <WrapperContainer className="rce-mlist" style={{border: 'none'}}>
+    <WrapperContainer className="rce-mlist" style={{ border: 'none' }}>
       <Container>
         <CategoryWrapper>
-          {renderButton('All', t("all_notes_label"))}
-          {renderButton('is_favorite', t("favorite_notes_label"), true)}
-          {renderButton('is_archived', t("archived_notes_label"), true)}
+          {renderButton('All', t('all_notes_label'))}
+          {renderButton('is_favorite', t('favorite_notes_label'), true)}
+          {renderButton('is_archived', t('archived_notes_label'), true)}
         </CategoryWrapper>
       </Container>
-      {
-        selectedTopic === 'All' &&
+      {selectedTopic === 'All' && (
         <form>
           <Container>
             <TextArea
               className="notes-text-area"
               rows="4"
-              placeholder={t("notes_textarea_placeholder")}
+              placeholder={t('notes_textarea_placeholder')}
               value={note}
               onChange={handleNoteChange}
             />
@@ -637,59 +691,80 @@ function SidebarNotes() {
             </ButtonContainer>
           </Container>
         </form>
-      }
+      )}
       <NotesCardWrapper>
-        {data && data?.filter(note => !note['is_deleted'])?.map(({ id, note, updated_at, is_favorite }) => (
-          <NotesCard
-            selected={selectedQuestionId === id}
-            key={id}
-          >
-            {selectedQuestionId !== id && (
-              <CardButton
-                selected={selectedQuestionId === id}
-                onClick={() => handleButtonClick(id, note[selfUserPreferedLang])}
-              >
-                {note[selfUserPreferedLang]}
-              </CardButton>
-            )}
-
-            {selectedQuestionId === id && (
-              <NoteCardTextArea
-                rows="4"
-                value={textareaContent}
-                onChange={handleTextareaChange}
-              />
-            )}
-            <QuestionActionsWrapper>
-              <WrapperContainer>
-                {selectedQuestionId === id && (
-                  <QuestionActions>
-                    <Buttons className="add-fovorite" onClick={() => handleNoteAction(id, 'favorite')}>
-                      {is_favorite ? <img className="favorite-icon" alt="fovorite note" /> : <img className="unfavorite-icon" alt="unfovorite note" />}
-                    </Buttons>
-                    <Buttons className="add-archives" onClick={() => handleNoteAction(id, 'archive')}>
-                      <img alt="archive note" />
-                    </Buttons>
-                    <Buttons className="remove-note" onClick={() => handleNoteAction(id, 'remove')}>
-                      <img alt="remove note" />
-                    </Buttons>
-                    <WrapperContainer>
-                      {isContentChanged && (
-                        <EditButton onClick={() => handleNoteEdit(id)}>
-                          Save
-                        </EditButton>
-                      )}
-                    </WrapperContainer>
-                  </QuestionActions>
+        {data &&
+          data
+            ?.filter(note => !note['is_deleted'])
+            ?.map(({ id, note, updated_at, is_favorite }) => (
+              <NotesCard selected={selectedQuestionId === id} key={id}>
+                {selectedQuestionId !== id && (
+                  <CardButton
+                    selected={selectedQuestionId === id}
+                    onClick={() =>
+                      handleButtonClick(id, note[selfUserPreferedLang])
+                    }
+                  >
+                    {note[selfUserPreferedLang]}
+                  </CardButton>
                 )}
-              </WrapperContainer>
-              <UpdatedAtLabel>{new Date(updated_at).toLocaleDateString()}</UpdatedAtLabel>
-            </QuestionActionsWrapper>
-          </NotesCard>
-        ))
-        }
-      </NotesCardWrapper>
 
+                {selectedQuestionId === id && (
+                  <NoteCardTextArea
+                    rows="4"
+                    value={textareaContent}
+                    onChange={handleTextareaChange}
+                  />
+                )}
+                <QuestionActionsWrapper>
+                  <WrapperContainer>
+                    {selectedQuestionId === id && (
+                      <QuestionActions>
+                        <Buttons
+                          className="add-fovorite"
+                          onClick={() => handleNoteAction(id, 'favorite')}
+                        >
+                          {is_favorite ? (
+                            <img
+                              className="favorite-icon"
+                              alt="fovorite note"
+                            />
+                          ) : (
+                            <img
+                              className="unfavorite-icon"
+                              alt="unfovorite note"
+                            />
+                          )}
+                        </Buttons>
+                        <Buttons
+                          className="add-archives"
+                          onClick={() => handleNoteAction(id, 'archive')}
+                        >
+                          <img alt="archive note" />
+                        </Buttons>
+                        <Buttons
+                          className="remove-note"
+                          onClick={() => handleNoteAction(id, 'remove')}
+                        >
+                          <img alt="remove note" />
+                        </Buttons>
+                        <WrapperContainer>
+                          {isContentChanged && (
+                            <EditButton onClick={() => handleNoteEdit(id)}>
+                              Save
+                            </EditButton>
+                          )}
+                        </WrapperContainer>
+                      </QuestionActions>
+                    )}
+                  </WrapperContainer>
+                  <UpdatedAtLabel>
+                    {new Date(updated_at).toLocaleDateString()}
+                  </UpdatedAtLabel>
+                </QuestionActionsWrapper>
+              </NotesCard>
+            ))}
+      </NotesCardWrapper>
     </WrapperContainer>
   );
 }
@@ -697,32 +772,32 @@ function SidebarNotes() {
 function TranslationDropdown({ side, selected, setter }) {
   const { t } = useTranslation();
   const languages = [
-    "en",
-    "sa",
-    "bg",
-    "ma",
-    "ca",
-    "fr",
-    "gr",
-    "in",
-    "it",
-    "kr",
-    "ir",
-    "pl",
-    "ru",
-    "es",
-    "tr",
-    "uk",
-    "vn",
-    "de",
+    'en',
+    'sa',
+    'bg',
+    'ma',
+    'ca',
+    'fr',
+    'gr',
+    'in',
+    'it',
+    'kr',
+    'ir',
+    'pl',
+    'ru',
+    'es',
+    'tr',
+    'uk',
+    'vn',
+    'de',
   ];
   return (
     <select
       name={`${side}-language-select`}
-      onChange={(e) => setter(e.target.value)}
+      onChange={e => setter(e.target.value)}
       value={selected}
     >
-      {languages.map((code) => (
+      {languages.map(code => (
         <option key={code} value={code}>
           {t(`lang-${code}`)}
         </option>
@@ -733,28 +808,28 @@ function TranslationDropdown({ side, selected, setter }) {
 
 function TranslationBox() {
   const { t } = useTranslation();
-  const [fromLang, setFromLang] = useState("en");
-  const [toLang, setToLang] = useState("de");
+  const [fromLang, setFromLang] = useState('en');
+  const [toLang, setToLang] = useState('de');
   const [isSwapped, setIsSwapped] = useState(false);
 
-  const [leftText, setLeftText] = useState("");
-  const [rigthText, setRightText] = useState("");
+  const [leftText, setLeftText] = useState('');
+  const [rigthText, setRightText] = useState('');
 
-  const handleChangeLeft = (event) => {
+  const handleChangeLeft = event => {
     setLeftText(event.target.value);
   };
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (leftText === "") {
+      if (leftText === '') {
         return;
       }
 
       fetch(`${BACKEND_URL}/api/user/translate/`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "X-CSRFToken": Cookies.get("csrftoken"),
-          "Content-Type": "application/x-www-form-urlencoded",
+          'X-CSRFToken': Cookies.get('csrftoken'),
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
           source_lang: fromLang,
@@ -762,15 +837,15 @@ function TranslationBox() {
           text: leftText,
         }).toString(),
       })
-        .then((response) => {
+        .then(response => {
           if (response.status === 200) {
             return response.json();
           }
-          console.error("server error", response.status, response.statusText);
+          console.error('server error', response.status, response.statusText);
           return false;
         })
         .then(({ trans }) => setRightText(trans))
-        .catch((error) => console.error(error));
+        .catch(error => console.error(error));
     }, 1000);
 
     return () => clearTimeout(delayDebounceFn);
@@ -790,23 +865,35 @@ function TranslationBox() {
   return (
     <div className="translation-box">
       <div className="left">
-        <TranslationDropdown side="left" selected={fromLang} setter={setFromLang} />
+        <TranslationDropdown
+          side="left"
+          selected={fromLang}
+          setter={setFromLang}
+        />
         <textarea
-          placeholder={t("vc_translator_type_here")}
+          placeholder={t('vc_translator_type_here')}
           value={leftText}
           onChange={handleChangeLeft}
         />
       </div>
       <button
         type="button"
-        className={isSwapped ? "swap-languages swapped" : "swap-languages"}
+        className={isSwapped ? 'swap-languages swapped' : 'swap-languages'}
         onClick={swapLang}
       >
         <img alt="swap languages" />
       </button>
       <div className="right">
-        <TranslationDropdown side="right" selected={toLang} setter={setToLang} />
-        <textarea placeholder={t("vc_translator_type_here")} readOnly value={rigthText} />
+        <TranslationDropdown
+          side="right"
+          selected={toLang}
+          setter={setToLang}
+        />
+        <textarea
+          placeholder={t('vc_translator_type_here')}
+          readOnly
+          value={rigthText}
+        />
       </div>
     </div>
   );
@@ -819,14 +906,18 @@ function MobileDrawer({ content, setOverlay }) {
   return (
     <div className={`call-drawer-container ${content}`}>
       <div className="call-drawer">
-        <button className="arrow-down" type="button" onClick={() => setOverlay(null)}>
+        <button
+          className="arrow-down"
+          type="button"
+          onClick={() => setOverlay(null)}
+        >
           <img alt="hide drawer" />
         </button>
         <div className="drawer-content">
-          {content === "chat" && <Chat userPk={userPk} />}
-          {content === "translate" && <TranslationBox />}
-          {content === "questions" && <SidebarQuestions />}
-          {content === "notes" && <SidebarNotes />}
+          {content === 'chat' && <Chat userPk={userPk} />}
+          {content === 'translate' && <TranslationBox />}
+          {content === 'questions' && <SidebarQuestions />}
+          {content === 'notes' && <SidebarNotes />}
         </div>
       </div>
     </div>
@@ -839,10 +930,13 @@ function VideoFrame({ video, audio }) {
   return (
     <div className="video-border">
       <div className="video-container">
-        <MobileVideoControlsTop selectedOverlay={selectedOverlay} setOverlay={setOverlay} />
+        <MobileVideoControlsTop
+          selectedOverlay={selectedOverlay}
+          setOverlay={setOverlay}
+        />
         <div
           id="foreign-container"
-          className={selectedOverlay ? "video-frame blur" : "video-frame"}
+          className={selectedOverlay ? 'video-frame blur' : 'video-frame'}
           alt="video"
         />
         <div className="local-video-container inset">
@@ -861,15 +955,15 @@ function Sidebar({ sideSelection }) {
   const location = useLocation();
 
   const { userPk } = location.state || {};
-  const sidebarTopics = ["chat", "questions", "notes"];
+  const sidebarTopics = ['chat', 'questions', 'notes'];
   const setSideSelection = useContext(SetSideContext);
-  const handleChange = (e) => setSideSelection(e.target.value);
+  const handleChange = e => setSideSelection(e.target.value);
   const disabled = [];
 
   return (
     <div className="call-sidebar">
       <div className="sidebar-selector">
-        {sidebarTopics.map((topic) => (
+        {sidebarTopics.map(topic => (
           <span key={topic}>
             <input
               type="radio"
@@ -881,7 +975,7 @@ function Sidebar({ sideSelection }) {
             />
             <label
               htmlFor={`${topic}-radio`}
-              className={disabled.includes(topic) ? "disabled" : ""}
+              className={disabled.includes(topic) ? 'disabled' : ''}
             >
               {t(`vc_btn_${topic}`)}
             </label>
@@ -889,17 +983,17 @@ function Sidebar({ sideSelection }) {
         ))}
       </div>
       <div className="sidebar-content">
-        {sideSelection === "chat" && <Chat userPk={userPk} />}
-        {sideSelection === "questions" && <SidebarQuestions />}
-        {sideSelection === "notes" && <SidebarNotes />}
+        {sideSelection === 'chat' && <Chat userPk={userPk} />}
+        {sideSelection === 'questions' && <SidebarQuestions />}
+        {sideSelection === 'notes' && <SidebarNotes />}
       </div>
     </div>
   );
 }
 
 function CallScreen() {
-  const [sideSelection, setSideSelection] = useState("chat");
-  const selfPk = useSelector((state) => state.userData.user.id);
+  const [sideSelection, setSideSelection] = useState('chat');
+  const selfPk = useSelector(state => state.userData.user.id);
   const navigate = useNavigate();
   const location = useLocation();
   const { userPk, tracks } = location.state || {};
@@ -917,22 +1011,22 @@ function CallScreen() {
     }
     const { videoId, audioId } = tracks || {};
     if (!(videoId && audioId)) {
-      console.error("videoId audioId", videoId, audioId);
+      console.error('videoId audioId', videoId, audioId);
     }
-    const videoMuted = localStorage.getItem("video muted") === "true";
-    const audioMuted = localStorage.getItem("audio muted") === "true";
-    getVideoTrack(videoId, videoMuted).then((track) => {
+    const videoMuted = localStorage.getItem('video muted') === 'true';
+    const audioMuted = localStorage.getItem('audio muted') === 'true';
+    getVideoTrack(videoId, videoMuted).then(track => {
       window.activeTracks.push(track);
       track.attach(videoRef.current);
     });
-    getAudioTrack(audioId, audioMuted).then((track) => {
+    getAudioTrack(audioId, audioMuted).then(track => {
       window.activeTracks.push(track);
       track.attach(audioRef.current);
     });
     joinRoom(selfPk, userPk);
   });
 
-  document.body.style.overflow = ""; // unset after call overlay
+  document.body.style.overflow = ''; // unset after call overlay
 
   return (
     <div className="call-screen">

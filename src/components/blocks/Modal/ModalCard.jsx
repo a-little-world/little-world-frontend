@@ -6,19 +6,26 @@ export const ButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%:
 
   ${({ theme }) => `
-  gap: ${theme.spacing.small};
-  flex-wrap: wrap;
+    gap: ${theme.spacing.medium};
+    flex-wrap: wrap;
 
-  > button {
-    flex: 1;
-  }
+    > button {
+      flex: 1;
+    }
 
-  @media (min-width: ${theme.breakpoints.small}) {
-    gap: ${theme.spacing.large};
-    flex-wrap: nowrap;
-  }
+    @media (max-width: ${theme.breakpoints.medium}) {
+      > button:first-child {
+        order: 1;
+      }
+    }
+
+    @media (min-width: ${theme.breakpoints.medium}) {
+      gap: ${theme.spacing.large};
+      flex-wrap: no-wrap;
+    }
   `}
 `;
 

@@ -1,3 +1,8 @@
+import { Modal } from '@a-little-world/little-world-design-system';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import CustomPagination from './CustomPagination';
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
 import CallSetup, { IncomingCall } from './call-setup';
@@ -16,26 +21,18 @@ import Help from './components/views/Help';
 import Profile from './components/views/Profile';
 import Settings from './components/views/Settings';
 import {
-  initCallSetup,
-  cancelCallSetup,
   blockIncomingCall,
-} from './features/userData';
-import {
+  cancelCallSetup,
   changeMatchCategory,
+  initCallSetup,
   removeMatch,
   updateConfirmedData,
 } from './features/userData';
 import './i18n';
 import './main.css';
 import Notifications from './notifications';
-import { APP_ROUTE, SIGN_UP_ROUTE } from './routes';
+import { APP_ROUTE } from './routes';
 import { removeActiveTracks } from './twilio-helper';
-import { Modal } from '@a-little-world/little-world-design-system';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 
 const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
   const usesAvatar = profile.image_type === 'avatar';
@@ -177,7 +174,7 @@ function Main() {
     setShowSidebarMobile(false);
   }, [location]);
 
-  // Manage the top navbar & extrac case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
+  // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   const use = location.pathname.split('/')[2] || (userPk ? 'profile' : 'main');
   const [topSelection, setTopSelection] = useState(null);
   const selfProfile = user?.id === userPk || typeof userPk === 'undefined';

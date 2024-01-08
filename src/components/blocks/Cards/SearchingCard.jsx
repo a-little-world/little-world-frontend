@@ -1,5 +1,3 @@
-import SearchingSvg from '../../../images/match-searching.svg';
-import { USER_FORM_ROUTE } from '../../../routes';
 import {
   Button,
   ButtonAppearance,
@@ -12,6 +10,9 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
+import SearchingSvg from '../../../images/match-searching.svg';
+import { USER_FORM_ROUTE } from '../../../routes';
 
 const StyledCard = styled(Card)`
   margin: 0 auto;
