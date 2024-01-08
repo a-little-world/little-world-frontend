@@ -16,12 +16,7 @@ export const userDataSlice = createSlice({
       state.matches = action.payload?.matches;
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
-      state.incomingCalls = [
-        {
-          userId:
-            'd20095ab-b24a-421e-9d61-816ae184c36d-454b2663-0abc-403d-bb07-9825b79695d6',
-        },
-      ];
+      state.incomingCalls = action.payload?.incomingCalls || []; // [{ userId: user.hash }] or []
       state.callSetup = action.payload?.callSetup || null; // { userId: user.hash } or null
       state.activeCall = action.payload?.activeCall || null; // { userId: user.hash, tracks: {} } or null
     },

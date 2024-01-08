@@ -159,7 +159,7 @@ function Main() {
     const totalPage =
       (matches?.confirmed?.totalItems + matches?.support?.totalItems) /
       pageItems;
-    console.log({ totalPage, matches });
+
     setTotalPages(Math.ceil(totalPage) || 1);
   }, [matches]);
 
