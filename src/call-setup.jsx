@@ -1,40 +1,63 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import Avatar from "react-nice-avatar";
-import { useDispatch, useSelector } from "react-redux";
-import { initCallSetup, cancelCallSetup, initActiveCall, stopActiveCall } from "./features/userData";
-import { useNavigate } from "react-router-dom";
+import './call-setup.css';
+import ProfileImage from './components/atoms/ProfileImage';
+import ModalCard, {
+  ButtonsContainer,
+  Centred,
+} from './components/blocks/Modal/ModalCard';
+import {
+  initCallSetup,
+  cancelCallSetup,
+  initActiveCall,
+  stopActiveCall,
+} from './features/userData';
+import { blockIncomingCall, selectMatchByPartnerId } from './features/userData';
+import './i18n';
+import signalWifi from './images/signal-wifi.svg';
+import Link from './path-prepend';
+import { CALL_ROUTE, getAppRoute } from './routes';
+import {
+  getAudioTrack,
+  getVideoTrack,
+  toggleLocalTracks,
+} from './twilio-helper';
+import {
+  Button,
+  ButtonAppearance,
+  Text,
+  TextTypes,
+} from '@a-little-world/little-world-design-system';
+import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import Avatar from 'react-nice-avatar';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-import { blockIncomingCall, selectMatchByPartnerId } from "./features/userData";
-import "./i18n";
-import Link from "./path-prepend";
-import { CALL_ROUTE, getAppRoute } from "./routes";
-import { getAudioTrack, getVideoTrack, toggleLocalTracks } from "./twilio-helper";
-
-import "./call-setup.css";
-
-import signalWifi from "./images/signal-wifi.svg";
-
-
-if(!window.activeTracks)
-  window.activeTracks = []
+if (!window.activeTracks) window.activeTracks = [];
 
 export const clearActiveTracks = () => {
-  console.log("CLEARING ACTIVE TRACKS", window.activeTracks)
+  console.log('CLEARING ACTIVE TRACKS', window.activeTracks);
   window.activeTracks.forEach(track => {
-    track.stop()
+    track.stop();
   });
-  window.activeTracks = []
-}
+  window.activeTracks = [];
+};
 
-function SignalIndicator({ signalQuality, signalQualityText, signalUpdateText }) {
+function SignalIndicator({
+  signalQuality,
+  signalQualityText,
+  signalUpdateText,
+}) {
   const signalQualityImage = {
     good: signalWifi,
   };
   return (
     <button type="button" className="signal-button">
-      <img id="signalQuality" alt={signalQualityText} src={signalQualityImage[signalQuality]} />
+      <img
+        id="signalQuality"
+        alt={signalQualityText}
+        src={signalQualityImage[signalQuality]}
+      />
       <div className="text">
         {signalQualityText}&nbsp;
         <span className="signal-update">{signalUpdateText}</span>
@@ -55,7 +78,7 @@ export function VideoControls({ signalInfo }) {
         type="checkbox"
         id="audio-toggle"
         defaultChecked={false}
-        onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
+        onChange={e => toggleLocalTracks(e.target.checked, 'audio')}
       />
       <label htmlFor="audio-toggle">
         <div className="img" alt="toggle audio" />
@@ -64,7 +87,7 @@ export function VideoControls({ signalInfo }) {
         type="checkbox"
         id="video-toggle"
         defaultChecked={false}
-        onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
+        onChange={e => toggleLocalTracks(e.target.checked, 'video')}
       />
       <label htmlFor="video-toggle">
         <div className="img" alt="toggle video" />
@@ -76,10 +99,10 @@ export function VideoControls({ signalInfo }) {
 function VideoFrame({ Video, Audio }) {
   const { t } = useTranslation();
 
-  const quality = "good";
+  const quality = 'good';
   const qualityText = t(`pcs_signal_${quality}`);
-  const updateText = t("pcs_signal_update");
-  const signalInfo = { quality, qualityText, updateText }
+  const updateText = t('pcs_signal_update');
+  const signalInfo = { quality, qualityText, updateText };
 
   return (
     <div className="local-video-container">
@@ -98,11 +121,11 @@ function VideoInputSelect({ setVideo }) {
   // get avaiable devices
   const [videoInDevices, setVideoInDevices] = useState([]);
   useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((deviceList) => {
+    navigator.mediaDevices.enumerateDevices().then(deviceList => {
       const devices = deviceList
-        .filter(({ kind }) => kind === "videoinput")
-        .filter(({ label }) => !label.endsWith("facing back")) // don't show rear cameras
-        .filter(({ deviceId }) => deviceId !== "default"); // prevent dupes
+        .filter(({ kind }) => kind === 'videoinput')
+        .filter(({ label }) => !label.endsWith('facing back')) // don't show rear cameras
+        .filter(({ deviceId }) => deviceId !== 'default'); // prevent dupes
       setVideoInDevices(devices);
     });
   }, []);
@@ -114,18 +137,20 @@ function VideoInputSelect({ setVideo }) {
     }
   }, [videoInDevices]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const deviceId = e.target.value;
     setVideo(deviceId);
   };
 
   return (
     <div className="webcam-select">
-      <label htmlFor="webcam-select">{t("pcs_camera_label")}</label>
+      <label htmlFor="webcam-select">{t('pcs_camera_label')}</label>
       <select name="webcam-select" onChange={handleChange}>
-        {videoInDevices.map((deviceInfo) => (
+        {videoInDevices.map(deviceInfo => (
           <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-            {deviceInfo.label.endsWith("facing front") ? t("pcs_front_camera") : deviceInfo.label}
+            {deviceInfo.label.endsWith('facing front')
+              ? t('pcs_front_camera')
+              : deviceInfo.label}
           </option>
         ))}
       </select>
@@ -139,10 +164,10 @@ function AudioInputSelect({ setAudio }) {
   // get avaiable devices
   const [audioInDevices, setAudioInDevices] = useState([]);
   useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((deviceList) => {
+    navigator.mediaDevices.enumerateDevices().then(deviceList => {
       const devices = deviceList
-        .filter(({ kind }) => kind === "audioinput")
-        .filter(({ deviceId }) => deviceId !== "default"); // prevent dupes
+        .filter(({ kind }) => kind === 'audioinput')
+        .filter(({ deviceId }) => deviceId !== 'default'); // prevent dupes
       setAudioInDevices(devices);
     });
   }, []);
@@ -154,16 +179,16 @@ function AudioInputSelect({ setAudio }) {
     }
   }, [audioInDevices]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const deviceId = e.target.value;
     setAudio(deviceId);
   };
 
   return (
     <div className="mic-select">
-      <label htmlFor="mic-select">{t("pcs_mic_label")}</label>
+      <label htmlFor="mic-select">{t('pcs_mic_label')}</label>
       <select name="mic-select" onChange={handleChange}>
-        {audioInDevices.map((deviceInfo) => (
+        {audioInDevices.map(deviceInfo => (
           <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
             {deviceInfo.label}
           </option>
@@ -178,19 +203,19 @@ function AudioOutputSelect() {
 
   const [audioOutDevices, setAudioOutDevices] = useState([]);
   useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((deviceList) => {
+    navigator.mediaDevices.enumerateDevices().then(deviceList => {
       const devices = deviceList
-        .filter((deviceInfo) => deviceInfo.kind === "audiooutput")
-        .filter((deviceInfo) => deviceInfo.deviceId !== "default");
+        .filter(deviceInfo => deviceInfo.kind === 'audiooutput')
+        .filter(deviceInfo => deviceInfo.deviceId !== 'default');
       setAudioOutDevices(devices);
     });
   }, []);
 
   return (
     <div className="speaker-select">
-      <label htmlFor="speaker-select">{t("pcs_speaker_label")}</label>
+      <label htmlFor="speaker-select">{t('pcs_speaker_label')}</label>
       <select name="speaker-select">
-        {audioOutDevices.map((deviceInfo) => (
+        {audioOutDevices.map(deviceInfo => (
           <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
             {deviceInfo.label}
           </option>
@@ -200,12 +225,11 @@ function AudioOutputSelect() {
   );
 }
 
-
 function CallSetup({ userPk, removeCallSetupPartner }) {
   const { t } = useTranslation();
-  const quality = "good";
+  const quality = 'good';
   const qualityText = t(`pcs_signal_${quality}`);
-  const updateText = t("pcs_signal_update");
+  const updateText = t('pcs_signal_update');
   const signalInfo = { quality, qualityText, updateText };
   const mediaStream = useRef();
   const navigate = useNavigate();
@@ -213,25 +237,25 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
 
   const videoRef = useRef();
   const [videoTrackId, setVideoTrackId] = useState(null);
-  const setVideo = (deviceId) => {
-    localStorage.setItem("video muted", false); // always unmute when selecting new
-    document.getElementById("video-toggle").checked = false;
-    getVideoTrack(deviceId).then((track) => {
+  const setVideo = deviceId => {
+    localStorage.setItem('video muted', false); // always unmute when selecting new
+    document.getElementById('video-toggle').checked = false;
+    getVideoTrack(deviceId).then(track => {
       const el = videoRef.current;
       track.attach(el);
-      window.activeTracks.push(track)
+      window.activeTracks.push(track);
     });
     setVideoTrackId(deviceId);
   };
 
   const audioRef = useRef();
   const [audioTrackId, setAudioTrackId] = useState(null);
-  const setAudio = (deviceId) => {
-    localStorage.setItem("audio muted", false); // always unmute when selecting new
-    document.getElementById("audio-toggle").checked = false;
-    getAudioTrack(deviceId).then((track) => {
-      track.attach(audioRef.current)
-      window.activeTracks.push(track)
+  const setAudio = deviceId => {
+    localStorage.setItem('audio muted', false); // always unmute when selecting new
+    document.getElementById('audio-toggle').checked = false;
+    getAudioTrack(deviceId).then(track => {
+      track.attach(audioRef.current);
+      window.activeTracks.push(track);
     });
     setAudioTrackId(deviceId);
   };
@@ -245,21 +269,22 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
 
   useEffect(() => {
     let activeStream = null;
-    console.log("GETTING USER MEDIA")
-     navigator.mediaDevices
+    console.log('GETTING USER MEDIA');
+    navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
-      .then((stream) => {
+      .then(stream => {
         if (mediaStream.current)
           mediaStream.current.getTracks().forEach(track => track.stop());
         activeStream = stream;
         mediaStream.current = stream; // Set the reference for use outside the effect
-        setMediaPermission(true)
+        setMediaPermission(true);
       })
-      .catch((e) => {
+      .catch(e => {
         console.error(e.name, e.message);
         setMediaPermission(false);
       });
-    return () => { // Cleanup function when component unmounts
+    return () => {
+      // Cleanup function when component unmounts
       if (activeStream) {
         activeStream.getTracks().forEach(track => track.stop());
       }
@@ -272,20 +297,28 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
 
   return (
     <div className="modal-box">
-      <button type="button" className="modal-close" onClick={() => {
-        removeCallSetupPartner();
-        if (mediaStream.current)
-          mediaStream.current.getTracks().forEach(track => {
-            console.log("CANCELLED", track)
-            track.stop()
-          });
-        clearActiveTracks()
-      }} />
-      <h3 className="title">{t("pcs_main_heading")}</h3>
-      <span className="subtitle">{t("pcs_sub_heading")}</span>
+      <button
+        type="button"
+        className="modal-close"
+        onClick={() => {
+          removeCallSetupPartner();
+          if (mediaStream.current)
+            mediaStream.current.getTracks().forEach(track => {
+              console.log('CANCELLED', track);
+              track.stop();
+            });
+          clearActiveTracks();
+        }}
+      />
+      <h3 className="title">{t('pcs_main_heading')}</h3>
+      <span className="subtitle">{t('pcs_sub_heading')}</span>
       {mediaPermission && (
         <>
-          <VideoFrame Video={videoRef} Audio={audioRef} signalInfo={signalInfo} />
+          <VideoFrame
+            Video={videoRef}
+            Audio={audioRef}
+            signalInfo={signalInfo}
+          />
           <div className="av-setup-dropdowns">
             <VideoInputSelect setVideo={setVideo} />
             <AudioInputSelect setAudio={setAudio} />
@@ -293,14 +326,14 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
           </div>
           <button
             onClick={() => {
-              clearActiveTracks()
-              dispatch(initActiveCall({ userPk, tracks }))
-              dispatch(cancelCallSetup())
+              clearActiveTracks();
+              dispatch(initActiveCall({ userPk, tracks }));
+              dispatch(cancelCallSetup());
               navigate(getAppRoute(CALL_ROUTE), { state: { userPk, tracks } });
             }}
             className="av-setup-confirm"
           >
-            {t("pcs_btn_join_call")}
+            {t('pcs_btn_join_call')}
           </button>
         </>
       )}
@@ -318,39 +351,33 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
   );
 }
 
-function IncomingCall({ userPk, matchesInfo, setVisible, setCallSetupPartner }) {
+function IncomingCall({ userPk, onAnswerCall, onRejectCall }) {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const matches = useSelector((state) => state.userData.matches);
-  const { partner: profile, ...match } = selectMatchByPartnerId(matches, userPk);
-  console.log("INCOMING CALL", match, matches, userPk);
-  const usesAvatar = profile.image_type === "avatar";
-  const answerCall = () => {
-    setCallSetupPartner(userPk);
-  };
-  const rejectCall = () => {
-    dispatch(blockIncomingCall({ userId: userPk }));
-  };
+  const matches = useSelector(state => state.userData.matches);
+  if (!userPk) return null;
+  const { partner: profile } = selectMatchByPartnerId(matches, userPk);
+
+  const usesAvatar = profile.image_type === 'avatar';
+
   return (
-    <div className="modal-box incoming-call-modal">
-      <button type="button" className="modal-close" onClick={rejectCall} />
-      <div className="content">
-        {usesAvatar ? (
-          <Avatar className="profile-avatar" {...profile.avatar_config} />
-        ) : (
-          <img alt="match" className="profile-image" src={profile.image} />
-        )}
-        <div className="message-text">{`${profile.first_name} ${t("pcs_waiting")}`}</div>
-        <div className="buttons">
-          <button type="button" className="answer-call" onClick={answerCall}>
-            {t("pcs_btn_join_call")}
-          </button>
-          <button type="button" className="reject-call" onClick={rejectCall}>
-            {t("pcs_btn_reject_call")}
-          </button>
-        </div>
-      </div>
-    </div>
+    <ModalCard>
+      <button type="button" className="modal-close" onClick={onRejectCall} />
+      <Centred>
+        <ProfileImage
+          image={usesAvatar ? profile.avatar_config : profile.image}
+          imageType={profile.image_type}
+        />
+        <Text tag="h3" type={TextTypes.Heading2}>
+          {`${profile.first_name} ${t('pcs_waiting')}`}
+        </Text>
+      </Centred>
+      <ButtonsContainer>
+        <Button appearance={ButtonAppearance.Secondary} onClick={onRejectCall}>
+          {t('pcs_btn_reject_call')}
+        </Button>
+        <Button onClick={onAnswerCall}>{t('pcs_btn_join_call')}</Button>
+      </ButtonsContainer>
+    </ModalCard>
   );
 }
 

@@ -1,3 +1,4 @@
+import { reportMatch, unmatch } from '../../../api';
 import {
   Button,
   ButtonAppearance,
@@ -8,16 +9,14 @@ import {
   TextArea,
   TextTypes,
   UnmatchedImage,
-} from "@a-little-world/little-world-design-system";
-import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import styled from "styled-components";
+} from '@a-little-world/little-world-design-system';
+import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
-import { reportMatch, unmatch } from "../../api";
-
-export const PARTNER_ACTION_REPORT = "report";
-export const PARTNER_ACTION_UNMATCH = "unmatch";
+export const PARTNER_ACTION_REPORT = 'report';
+export const PARTNER_ACTION_UNMATCH = 'unmatch';
 
 const PartnerActionForm = styled.form`
   display: flex;
@@ -65,16 +64,16 @@ function PartnerActionCard({ data, onClose }) {
     reset();
   };
 
-  const handlePartnerAction = (formData) => {
+  const handlePartnerAction = formData => {
     const action = isUnmatch ? unmatch : reportMatch;
 
     action({ userPk: data.userPk, reason: formData.reason })
       .then(() => setConfirmed(true))
       .catch(() =>
-        setError("root.serverError", {
-          type: "server",
+        setError('root.serverError', {
+          type: 'server',
           message: t(`${data.type}_modal_reason_error_server`),
-        })
+        }),
       );
   };
 
@@ -88,14 +87,18 @@ function PartnerActionCard({ data, onClose }) {
             <ExclamationIcon
               width="64px"
               height="64px"
-              label={t("report_modal_exclamation_label")}
+              label={t('report_modal_exclamation_label')}
             />
           )}
           <Text type={TextTypes.Body2} tag="h3" center>
             {t(`${data?.type}_modal_confirmation`, { name: data.userName })}
           </Text>
-          {isUnmatch && <Text center>{t("unmatch_modal_search_again")}</Text>}
-          <Button type="button" appearance={ButtonAppearance.Secondary} onClick={handleOnClose}>
+          {isUnmatch && <Text center>{t('unmatch_modal_search_again')}</Text>}
+          <Button
+            type="button"
+            appearance={ButtonAppearance.Secondary}
+            onClick={handleOnClose}
+          >
             {t(`${data?.type}_modal_close_btn`)}
           </Button>
         </Centred>
@@ -126,7 +129,9 @@ function PartnerActionCard({ data, onClose }) {
               }) => (
                 <TextArea
                   inputRef={ref}
-                  label={t(`${data?.type}_modal_reason_label`, { name: data.userName })}
+                  label={t(`${data?.type}_modal_reason_label`, {
+                    name: data.userName,
+                  })}
                   error={error?.message}
                   placeholder={t(`${data?.type}_modal_reason_placeholder`)}
                   onChange={onChange}
@@ -138,8 +143,14 @@ function PartnerActionCard({ data, onClose }) {
             />
           </ReasonWrapper>
           <ButtonsWrapper>
-            <Button type="submit">{t(`${data?.type}_modal_confirm_btn`)}</Button>
-            <Button type="button" appearance={ButtonAppearance.Secondary} onClick={handleOnClose}>
+            <Button type="submit">
+              {t(`${data?.type}_modal_confirm_btn`)}
+            </Button>
+            <Button
+              type="button"
+              appearance={ButtonAppearance.Secondary}
+              onClick={handleOnClose}
+            >
               {t(`${data?.type}_modal_cancel_btn`)}
             </Button>
           </ButtonsWrapper>

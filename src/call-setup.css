@@ -1,4 +1,4 @@
-@import "video.css";
+@import 'video.css';
 
 /*titles area*/
 
@@ -34,7 +34,7 @@
   border: 1px solid #e6e8ec;
   border-radius: 8px;
   box-sizing: border-box;
-  font-family: "Signika Negative";
+  font-family: 'Signika Negative';
   font-size: 15px;
   color: #a6a6a6;
 }
@@ -44,13 +44,13 @@
 }
 
 .webcam-select select {
-  background-image: url("./images/camera.svg");
+  background-image: url('./images/camera.svg');
 }
 .mic-select select {
-  background-image: url("./images/microphone.svg");
+  background-image: url('./images/microphone.svg');
 }
 .speaker-select select {
-  background-image: url("./images/speaker.svg");
+  background-image: url('./images/speaker.svg');
 }
 
 .av-setup-confirm {
@@ -100,26 +100,4 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.answer-call,
-.reject-call {
-  padding: 12px 16px;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  border-radius: 90px;
-  font-weight: 600;
-  font-size: 18px;
-}
-
-.answer-call {
-  color: white;
-  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
-}
-
-.reject-call {
-  background: #ffffff;
-  border: 2px solid #0063af;
-  color: #0063af;
 }

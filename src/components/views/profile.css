@@ -8,33 +8,6 @@
   flex-grow: 1;
 }
 
-.profile-box .profile-avatar {
-  text-align: left;
-}
-
-.new-match {
-  /* TODO: @tbscode temporary indication this should be a 'NEW' svg or similar in future */
-  background-color: rgb(252, 224, 172);
-}
-
-.show-profile .profile-box {
-  text-align: center;
-  margin-bottom: auto;
-}
-
-.show-profile .profile-box .text {
-  font-size: 22px;
-  font-weight: 400;
-}
-
-.show-profile .profile-box .buttons {
-  justify-content: space-around;
-}
-
-.show-profile .profile-box .buttons .profile {
-  display: none;
-}
-
 .profile-detail {
   flex: 1 1 0;
   display: flex;
@@ -47,7 +20,7 @@
 }
 
 .show-profile .back img {
-  content: url("./images/arrow-back.svg");
+  content: url('../../images/arrow-back.svg');
   vertical-align: middle;
   padding: 15px;
 }
@@ -76,13 +49,13 @@
 }
 
 .profile-detail button.edit img {
-  content: url("./images/edit2.svg");
+  content: url('../../images/edit2.svg');
 }
 .profile-detail button.save img {
-  content: url("./images/check.svg");
+  content: url('../../images/check.svg');
 }
 .profile-detail button.cancel img {
-  content: url("./images/close.svg");
+  content: url('../../images/close.svg');
 }
 
 .profile-text,
@@ -131,7 +104,7 @@
 }
 
 .selected-topics .interest-item img {
-  content: url("./images/close-pop-up.svg");
+  content: url('../../images/close-pop-up.svg');
   filter: hue-rotate(180deg);
 }
 
@@ -169,7 +142,7 @@ button.unmatch {
 }
 
 button.unmatch img {
-  content: url("./images/close-pop-up.svg");
+  content: url('../../images/close-pop-up.svg');
 }
 
 .online-indicator {
@@ -205,9 +178,5 @@ button.unmatch img {
 @media screen and (width < 1024px) {
   .show-profile .selector {
     display: none;
-  }
-
-  .show-profile .profile-box {
-    width: 100%;
   }
 }

@@ -1,8 +1,6 @@
+import { Card, CardSizes } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import styled from 'styled-components';
-import {
-  Card, CardSizes
-} from "@a-little-world/little-world-design-system";
 
 export const ButtonsContainer = styled.div`
   display: flex;
@@ -40,9 +38,8 @@ export const Centred = styled.div`
   `}
 `;
 
-const ModalCard = ({ children }) =>
-  <Card width={CardSizes.Large}>
-    {children}
-  </Card>
+const ModalCard = ({ children }) => (
+  <Card width={CardSizes.Large}>{children}</Card>
+);
 
-export default ModalCard
+export default ModalCard;

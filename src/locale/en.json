@@ -19,7 +19,7 @@
   "pcs_btn_speaker_test": "Test Speakers",
   "pcs_btn_join_call": "Join call",
   "pcs_btn_reject_call": "Cancel call",
-  "pcs_waiting": "is waiting for you…",
+  "pcs_waiting": "is calling you…",
   "pcs_camera_label": "Selected camera",
   "pcs_mic_label": "Selected Microphone",
   "pcs_speaker_label": "Selected speakers",
@@ -141,7 +141,15 @@
   "profile_expectations": "Which languages do you speak and how well? ",
   "profile_since": "Member since {{date}}",
   "profile_choose_interests": "Select Interests",
-  "weekdays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  "weekdays": [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+  ],
   "month_short": [
     "jan",
     "feb",

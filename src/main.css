@@ -36,21 +36,21 @@
 }
 
 .sidebar .messages img {
-  content: url("./images/sidebar/chat.svg");
+  content: url('./images/sidebar/chat.svg');
 }
 .sidebar .notifications img {
-  content: url("./images/sidebar/notifications.svg");
+  content: url('./images/sidebar/notifications.svg');
 }
 .sidebar .my_profile img {
-  content: url("./images/sidebar/profile.svg");
+  content: url('./images/sidebar/profile.svg');
 }
 
 .sidebar .settings img {
-  content: url("./images/sidebar/settings.svg");
+  content: url('./images/sidebar/settings.svg');
 }
 
 .sidebar .admin_panel img {
-  content: url("./images/sidebar/settings.svg");
+  content: url('./images/sidebar/settings.svg');
 }
 
 .content-area {
@@ -83,6 +83,7 @@
 .content-area-main {
   display: flex;
   flex: 1 1 0;
+  align-items: flex-start;
 }
 
 .profiles {
@@ -94,7 +95,6 @@
   height: fit-content;
 }
 
-.profile-box,
 .match-status {
   width: 360px;
   margin: 0 auto;
@@ -159,77 +159,6 @@
   text-overflow: ellipsis;
 }
 
-.profile-box .buttons {
-  display: flex;
-  flex-direction: row;
-  margin-top: 10px;
-  gap: 10px;
-  width: 100%;
-}
-
-.profile-box .buttons a,
-.profile-box .buttons button {
-  background: rgba(230, 232, 236, 0.2);
-  border-radius: 25px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-  width: 80px;
-  flex: 1 1 0;
-  font-size: inherit;
-}
-
-.match-status {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 15px;
-  text-align: center;
-  color: #f28d00;
-  border-style: dashed;
-  border-width: 2px;
-}
-
-button.match-status {
-  height: auto !important;
-}
-
-.match-status.find-new img {
-  content: url("./images/plus-with-circle.svg");
-  width: 115px;
-  margin-bottom: 30px;
-  margin-top: 110px;
-  height: 115px;
-  cursor: pointer;
-}
-
-.match-status.searching {
-  font-size: 16px;
-}
-
-.match-status.searching img {
-  content: url("./images/match-searching.svg");
-  height: 210px;
-}
-
-.match-status.searching .change-criteria {
-  padding: 16px 44px;
-  margin: auto;
-  background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
-  border-radius: 90px;
-  font-weight: 600;
-  color: #fcfcfd;
-}
-
-.match-status.searching .cancel-search {
-  padding: 10px;
-  color: rgba(54, 169, 224, 1);
-  margin-top: -15px;
-  font-weight: 600;
-  font-size: 14px;
-}
-
 .notification-panel {
   margin-left: auto;
   margin-bottom: auto;
@@ -245,7 +174,7 @@ button.match-status {
 }
 
 .unmatch-modal img.unmatched {
-  content: url("./images/unmatched.svg");
+  content: url('./images/unmatched.svg');
   margin: 20px;
 }
 
@@ -286,7 +215,7 @@ button.match-status {
   }
 
   .mobile-header .menu img {
-    content: url("./images/button-menu.svg");
+    content: url('./images/button-menu.svg');
   }
 
   .mobile-header .notification.disabled {
@@ -295,7 +224,7 @@ button.match-status {
   }
 
   .mobile-header .notification img {
-    content: url("./images/button-bell.svg");
+    content: url('./images/button-bell.svg');
   }
 
   .nav-bar-top {
@@ -380,15 +309,15 @@ button.match-status {
 }
 
 .notification-item img.appointment {
-  content: url("./images/notifications/appointment.svg");
+  content: url('./images/notifications/appointment.svg');
 }
 
 .notification-item img.new-friend {
-  content: url("./images/notifications/new-friend.svg");
+  content: url('./images/notifications/new-friend.svg');
 }
 
 .notification-item img.missed-call {
-  content: url("./images/notifications/missed-call.svg");
+  content: url('./images/notifications/missed-call.svg');
 }
 
 .notification-headline {
@@ -417,7 +346,7 @@ button.match-status {
 .show-main .modal-box textarea {
   resize: none;
   height: 122px;
-  font-family: "Signika Negative";
+  font-family: 'Signika Negative';
   padding: 15px;
   font-size: 16px;
   width: 100%;
@@ -477,7 +406,7 @@ button.match-status {
     padding: 6px;
   }
   .sidebar button.close img {
-    content: url("./images/close-pop-up.svg");
+    content: url('./images/close-pop-up.svg');
     filter: grayscale(1);
   }
 
