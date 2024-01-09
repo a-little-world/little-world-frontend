@@ -3,16 +3,16 @@ import {
   ButtonAppearance,
   TextInput,
   TextTypes,
-} from "@a-little-world/little-world-design-system";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+} from '@a-little-world/little-world-design-system';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
-import { resetPassword } from "../../api";
-import { LOGIN_ROUTE } from "../../routes";
-import FormMessage, { MessageTypes } from "../atoms/FormMessage";
-import { StyledCard, StyledForm, Title } from "./SignUp.styles";
+import { resetPassword } from '../../api';
+import { LOGIN_ROUTE } from '../../routes';
+import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 const ResetPassword = () => {
   const { t } = useTranslation();
@@ -30,25 +30,25 @@ const ResetPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFocus("email");
+    setFocus('email');
   }, [setFocus]);
 
-  const onError = (e) => {
+  const onError = e => {
     if (e?.message) {
       setError(
-        e.cause ?? "root.serverError",
-        { type: "custom", message: t(e.message) },
-        { shouldFocus: true }
+        e.cause ?? 'root.serverError',
+        { type: 'custom', message: t(e.message) },
+        { shouldFocus: true },
       );
     } else {
-      setError("root.serverError", {
-        type: "custom",
-        message: t(e?.message) || t("validation.generic_try_again"),
+      setError('root.serverError', {
+        type: 'custom',
+        message: t(e?.message) || t('validation.generic_try_again'),
       });
     }
   };
 
-  const onFormSubmit = async (data) => {
+  const onFormSubmit = async data => {
     setIsSubmitting(true);
 
     resetPassword(data)
@@ -62,31 +62,32 @@ const ResetPassword = () => {
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading2}>
-        {t("reset_password.title")}
+        {t('reset_password.title')}
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
           {...registerInput({
             register,
-            name: "password",
-            options: { required: t("error.required") },
+            name: 'password',
+            options: { required: t('error.required') },
           })}
           id="password"
           error={errors?.password?.message}
-          label={t("reset_password.password_label")}
-          placeholder={t("reset_password.password_placeholder")}
+          label={t('reset_password.password_label')}
+          placeholder={t('reset_password.password_placeholder')}
           type="password"
         />
         <TextInput
           {...registerInput({
             register,
-            name: "confirmPassword",
+            name: 'confirmPassword',
             options: {
-              required: t("error.required"),
-              passwordsMatch: (v, values) => values.password === v || t("confirmPasswordError"),
+              required: t('error.required'),
+              passwordsMatch: (v, values) =>
+                values.password === v || t('confirmPasswordError'),
             },
           })}
-          label={t("reset_password.confirm_password_label")}
+          label={t('reset_password.confirm_password_label')}
           id="confirmPassword"
           error={errors?.confirmPassword?.message}
           type="password"
@@ -96,14 +97,17 @@ const ResetPassword = () => {
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
           {requestSuccessful
-            ? t("forgot_password.success_message")
+            ? t('forgot_password.success_message')
             : errors?.root?.serverError?.message}
         </FormMessage>
-        <Button appearance={ButtonAppearance.Secondary} onClick={() => navigate(`/${LOGIN_ROUTE}`)}>
-          {t("reset_password.to_login")}
+        <Button
+          appearance={ButtonAppearance.Secondary}
+          onClick={() => navigate(`/${LOGIN_ROUTE}`)}
+        >
+          {t('reset_password.to_login')}
         </Button>
         <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-          {t("reset_password.submit_btn")}
+          {t('reset_password.submit_btn')}
         </Button>
       </StyledForm>
     </StyledCard>

@@ -1,5 +1,5 @@
-import { Button, Card, Text } from "@a-little-world/little-world-design-system";
-import styled from "styled-components";
+import { Button, Card, Text } from '@a-little-world/little-world-design-system';
+import styled from 'styled-components';
 
 export const StyledCard = styled(Card)`
   position: relative;
@@ -20,13 +20,6 @@ export const StyledForm = styled.form`
   gap: ${({ theme }) => theme.spacing.xxxsmall};
   align-items: flex-start;
   flex-grow: 1;
-`;
-
-export const Buttons = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
 `;
 
 export const StyledCta = styled(Button)`

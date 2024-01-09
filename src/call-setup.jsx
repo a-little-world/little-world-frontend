@@ -1,14 +1,24 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import './call-setup.css';
-import ProfileImage from './components/atoms/ProfileImage';
-import ModalCard, {
-  ButtonsContainer,
-  Centred,
-} from './components/blocks/Modal/ModalCard';
 import {
-  initCallSetup,
+  Button,
+  ButtonAppearance,
+  Text,
+  TextTypes,
+} from '@a-little-world/little-world-design-system';
+import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import Avatar from 'react-nice-avatar';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import './call-setup.css';
+import { ButtonsContainer } from './components/atoms/ButtonsContainer';
+import ProfileImage from './components/atoms/ProfileImage';
+import ModalCard, { Centred } from './components/blocks/Cards/ModalCard';
+import {
   cancelCallSetup,
   initActiveCall,
+  initCallSetup,
   stopActiveCall,
 } from './features/userData';
 import { blockIncomingCall, selectMatchByPartnerId } from './features/userData';
@@ -21,17 +31,6 @@ import {
   getVideoTrack,
   toggleLocalTracks,
 } from './twilio-helper';
-import {
-  Button,
-  ButtonAppearance,
-  Text,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
-import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import Avatar from 'react-nice-avatar';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 if (!window.activeTracks) window.activeTracks = [];
 

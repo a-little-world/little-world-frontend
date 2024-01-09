@@ -4,25 +4,19 @@ import {
   Text,
   TextInput,
   TextTypes,
-} from "@a-little-world/little-world-design-system";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import styled, { useTheme } from "styled-components";
+} from '@a-little-world/little-world-design-system';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import styled, { useTheme } from 'styled-components';
 
-import { requestPasswordReset } from "../../api";
-import { LOGIN_ROUTE } from "../../routes";
-import FormMessage, { MessageTypes } from "../atoms/FormMessage";
-import { registerInput } from "./SignUp";
-import { StyledCard, StyledForm, Title } from "./SignUp.styles";
-
-const Buttons = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-`;
+import { requestPasswordReset } from '../../api';
+import { LOGIN_ROUTE } from '../../routes';
+import { ButtonsContainer } from '../atoms/ButtonsContainer';
+import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import { registerInput } from './SignUp';
+import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 export const ForgotPasswordDescription = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
@@ -45,31 +39,31 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFocus("email");
+    setFocus('email');
   }, [setFocus]);
 
-  const onError = (e) => {
+  const onError = e => {
     if (e?.message) {
       setError(
-        e.cause ?? "root.serverError",
-        { type: "custom", message: t(e.message) },
-        { shouldFocus: true }
+        e.cause ?? 'root.serverError',
+        { type: 'custom', message: t(e.message) },
+        { shouldFocus: true },
       );
     } else {
-      setError("root.serverError", {
-        type: "custom",
-        message: t(e?.message) || t("validation.generic_try_again"),
+      setError('root.serverError', {
+        type: 'custom',
+        message: t(e?.message) || t('validation.generic_try_again'),
       });
     }
   };
 
-  const onFormSubmit = async (data) => {
+  const onFormSubmit = async data => {
     setIsSubmitting(true);
 
     requestPasswordReset(data)
       .then(() => {
-        setRequestSuccessful(true)
-        setIsSubmitting(false)
+        setRequestSuccessful(true);
+        setIsSubmitting(false);
       })
       .catch(onError);
   };
@@ -77,20 +71,22 @@ const ForgotPassword = () => {
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading2}>
-        {t("forgot_password.title")}
+        {t('forgot_password.title')}
       </Title>
-      <ForgotPasswordDescription>{t("forgot_password.description")}</ForgotPasswordDescription>
+      <ForgotPasswordDescription>
+        {t('forgot_password.description')}
+      </ForgotPasswordDescription>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
           {...registerInput({
             register,
-            name: "email",
-            options: { required: t("error.required") },
+            name: 'email',
+            options: { required: t('error.required') },
           })}
           id="email"
-          label={t("forgot_password.email_label")}
+          label={t('forgot_password.email_label')}
           error={errors?.email?.message}
-          placeholder={t("forgot_password.email_placeholder")}
+          placeholder={t('forgot_password.email_placeholder')}
           type="email"
         />
         <FormMessage
@@ -98,21 +94,21 @@ const ForgotPassword = () => {
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
           {requestSuccessful
-            ? t("forgot_password.success_message")
+            ? t('forgot_password.success_message')
             : errors?.root?.serverError?.message}
         </FormMessage>
-        <Buttons>
+        <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}
             onClick={() => navigate(`/${LOGIN_ROUTE}`)}
             color={theme.color.text.link}
           >
-            {t("forgot_password.cancel_btn")}
+            {t('forgot_password.cancel_btn')}
           </Button>
           <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
-            {t("forgot_password.submit_btn")}
+            {t('forgot_password.submit_btn')}
           </Button>
-        </Buttons>
+        </ButtonsContainer>
       </StyledForm>
     </StyledCard>
   );

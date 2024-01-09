@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import SearchingSvg from '../../../images/match-searching.svg';
-import { USER_FORM_ROUTE } from '../../../routes';
+import { USER_FORM_ROUTE, getAppRoute } from '../../../routes';
 
 const StyledCard = styled(Card)`
   margin: 0 auto;
@@ -38,7 +38,7 @@ export function SearchingCard({ setShowCancel }) {
       {/* matchState === "pending" && t("matching_state_found_unconfirmed_trans") */}
       <Link
         buttonAppearance={ButtonAppearance.Primary}
-        to={`/${USER_FORM_ROUTE}`}
+        to={getAppRoute(USER_FORM_ROUTE)}
       >
         {t('cp_modify_search')}
       </Link>

@@ -17,15 +17,8 @@ import { BACKEND_URL } from './ENVIRONMENT';
 import { clearActiveTracks } from './call-setup';
 import './call.css';
 import Chat from './chat/chat-full-view';
-import {
-  cancelCallSetup,
-  initActiveCall,
-  initCallSetup,
-  stopActiveCall,
-} from './features/userData';
+import { stopActiveCall } from './features/userData';
 import './i18n';
-import { ReactComponent as FavoriteIcon } from './images/favorite.svg';
-import Link from './path-prepend';
 import { APP_ROUTE, getAppRoute } from './routes';
 import {
   addUserNote,

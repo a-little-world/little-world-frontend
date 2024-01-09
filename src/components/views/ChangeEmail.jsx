@@ -1,15 +1,3 @@
-import { setNewEmail } from '../../api';
-import { updateEmail } from '../../features/userData';
-import { VERIFY_EMAIL_ROUTE } from '../../routes';
-import FormMessage, { MessageTypes } from '../atoms/FormMessage';
-import { registerInput } from './SignUp';
-import {
-  Buttons,
-  FormDescription,
-  StyledCard,
-  StyledForm,
-  Title,
-} from './SignUp.styles';
 import {
   Button,
   ButtonAppearance,
@@ -23,6 +11,19 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
+
+import { setNewEmail } from '../../api';
+import { updateEmail } from '../../features/userData';
+import { VERIFY_EMAIL_ROUTE } from '../../routes';
+import { ButtonsContainer } from '../atoms/ButtonsContainer';
+import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import { registerInput } from './SignUp';
+import {
+  FormDescription,
+  StyledCard,
+  StyledForm,
+  Title,
+} from './SignUp.styles';
 
 const ChangeEmail = () => {
   const { t } = useTranslation();
@@ -46,7 +47,7 @@ const ChangeEmail = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    console.log({ e });
+
     if (e?.message) {
       setError(
         e.cause ?? 'root.serverError',
@@ -98,7 +99,7 @@ const ChangeEmail = () => {
         >
           {errors?.root?.serverError?.message}
         </FormMessage>
-        <Buttons>
+        <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}
             onClick={() => navigate(`/${VERIFY_EMAIL_ROUTE}`)}
@@ -115,7 +116,7 @@ const ChangeEmail = () => {
           >
             {t('change_email.submit_btn')}
           </Button>
-        </Buttons>
+        </ButtonsContainer>
       </StyledForm>
     </StyledCard>
   );

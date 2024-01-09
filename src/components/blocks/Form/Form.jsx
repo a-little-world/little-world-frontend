@@ -1,3 +1,16 @@
+import {
+  Button,
+  ButtonAppearance,
+  ButtonSizes,
+  ProgressBar,
+  TextTypes,
+} from '@a-little-world/little-world-design-system';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import { completeForm, mutateUserData } from '../../../api';
 import { updateProfile } from '../../../features/userData';
 import { getAppRoute } from '../../../routes';
@@ -18,17 +31,6 @@ import {
   SubmitError,
   Title,
 } from './styles';
-import {
-  Button,
-  ButtonAppearance,
-  ProgressBar,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 const Form = () => {
   const { t } = useTranslation();
@@ -59,7 +61,7 @@ const Form = () => {
 
   const onFormSuccess = response => {
     dispatch(updateProfile(response));
-    // if (step === totalSteps) completeForm()
+    if (step === totalSteps) completeForm();
     navigate(getAppRoute(nextPage));
   };
 
@@ -140,12 +142,15 @@ const Form = () => {
             <Button
               appearance={ButtonAppearance.Secondary}
               onClick={handleBackClick}
+              size={ButtonSizes.Small}
               type="button"
             >
               {t('btn.back')}
             </Button>
           )}
-          <Button type="submit">{t('btn.next')}</Button>
+          <Button type="submit" size={ButtonSizes.Small}>
+            {t('btn.next')}
+          </Button>
         </ButtonsSection>
       </StyledForm>
     </StyledCard>

@@ -1,7 +1,10 @@
-import { Button, ButtonAppearance } from "@a-little-world/little-world-design-system";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import Avatar from "react-nice-avatar";
+import {
+  Button,
+  ButtonAppearance,
+} from '@a-little-world/little-world-design-system';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import Avatar from 'react-nice-avatar';
 
 import {
   AvatarContainer,
@@ -11,69 +14,85 @@ import {
   Controls,
   Editor,
   OptionToggle,
-} from "./styles";
+} from './styles';
 
 const optionsKeys = {
-  faceColor: "faceColor",
-  earSize: "earSize",
-  hairStyle: "hairStyle",
-  hairColor: "hairColor",
-  hatStyle: "hatStyle",
-  hatColor: "hatColor",
-  eyeStyle: "eyeStyle",
-  glassesStyle: "glassesStyle",
-  noseStyle: "noseStyle",
-  mouthStyle: "mouthStyle",
-  shirtStyle: "shirtStyle",
-  shirtColor: "shirtColor",
-  eyeBrowStyle: "eyeBrowStyle",
-  bgColor: "bgColor",
+  faceColor: 'faceColor',
+  earSize: 'earSize',
+  hairStyle: 'hairStyle',
+  hairColor: 'hairColor',
+  hatStyle: 'hatStyle',
+  hatColor: 'hatColor',
+  eyeStyle: 'eyeStyle',
+  glassesStyle: 'glassesStyle',
+  noseStyle: 'noseStyle',
+  mouthStyle: 'mouthStyle',
+  shirtStyle: 'shirtStyle',
+  shirtColor: 'shirtColor',
+  eyeBrowStyle: 'eyeBrowStyle',
+  bgColor: 'bgColor',
 };
 
 const translations = {
-  faceColor: "skin_tone",
-  earSize: "ears",
-  hairStyle: "hair_style",
-  hairColor: "hair_color",
-  hatStyle: "hat_style",
-  hatColor: "hat_color",
-  eyeStyle: "eyes",
-  glassesStyle: "glasses",
-  noseStyle: "nose",
-  mouthStyle: "mouth",
-  shirtStyle: "shirt_style",
-  shirtColor: "shirt_color",
-  eyeBrowStyle: "eyebrows",
-  bgColor: "background",
+  faceColor: 'skin_tone',
+  earSize: 'ears',
+  hairStyle: 'hair_style',
+  hairColor: 'hair_color',
+  hatStyle: 'hat_style',
+  hatColor: 'hat_color',
+  eyeStyle: 'eyes',
+  glassesStyle: 'glasses',
+  noseStyle: 'nose',
+  mouthStyle: 'mouth',
+  shirtStyle: 'shirt_style',
+  shirtColor: 'shirt_color',
+  eyeBrowStyle: 'eyebrows',
+  bgColor: 'background',
 };
 
 const options = {
-  faceColor: ["#F9C9B6", "#AC6651", "#8d5524", "#c68642", "#e0ac69", "#f1c27d", "#ffdbac"],
-  earSize: ["small", "big"],
-  hairColor: ["#77311D", "#FC909F", "#D2EFF3", "#506AF4", "#F48150"],
-  hairStyle: ["normal", "womanLong", "womanShort", "thick", "mohawk"],
+  faceColor: [
+    '#F9C9B6',
+    '#AC6651',
+    '#8d5524',
+    '#c68642',
+    '#e0ac69',
+    '#f1c27d',
+    '#ffdbac',
+  ],
+  earSize: ['small', 'big'],
+  hairColor: ['#77311D', '#FC909F', '#D2EFF3', '#506AF4', '#F48150'],
+  hairStyle: ['normal', 'womanLong', 'womanShort', 'thick', 'mohawk'],
   hairColorRandom: [false],
-  hatColor: ["#000000", "#ffffff", "#77311D", "#FC909F", "#D2EFF3", "#506AF4", "#F48150"],
-  hatStyle: ["beanie", "turban", "none"],
-  eyeStyle: ["circle", "oval", "smile"],
-  glassesStyle: ["round", "square", "none"],
-  noseStyle: ["short", "long", "round"],
-  mouthStyle: ["laugh", "smile", "peace"],
-  shirtStyle: ["hoody", "short", "polo"],
-  eyeBrowStyle: ["up", "upWoman"],
-  shirtColor: ["#9287FF", "#6BD9E9", "#FC909F", "#F4D150", "#77311D"],
+  hatColor: [
+    '#000000',
+    '#ffffff',
+    '#77311D',
+    '#FC909F',
+    '#D2EFF3',
+    '#506AF4',
+    '#F48150',
+  ],
+  hatStyle: ['beanie', 'turban', 'none'],
+  eyeStyle: ['circle', 'oval', 'smile'],
+  glassesStyle: ['round', 'square', 'none'],
+  noseStyle: ['short', 'long', 'round'],
+  mouthStyle: ['laugh', 'smile', 'peace'],
+  shirtStyle: ['hoody', 'short', 'polo'],
+  eyeBrowStyle: ['up', 'upWoman'],
+  shirtColor: ['#9287FF', '#6BD9E9', '#FC909F', '#F4D150', '#77311D'],
   bgColor: [
-    "#9287FF",
-    "#6BD9E9",
-    "#FC909F",
-    "#F4D150",
-    "#E0DDFF",
-    "#D2EFF3",
-    "#FFEDEF",
-    "#FFEBA4",
-    "#506AF4",
-    "#F48150",
-    "#74D153",
+    '#9287FF',
+    '#6BD9E9',
+    '#FC909F',
+    '#F4D150',
+    '#E0DDFF',
+    '#D2EFF3',
+    '#FFEDEF',
+    '#FFEBA4',
+    '#506AF4',
+    '#F48150',
+    '#74D153',
   ],
   isGradient: [false],
 };
@@ -96,13 +115,16 @@ const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
   const [editorConfig, setEditorConfig] = useState(config);
   const { t } = useTranslation();
 
-  const updateAvatar = (key) => {
+  const updateAvatar = key => {
     const maxVal = options[key].length - 1;
     const currentIndex = options[key].indexOf(editorConfig[key]);
 
-    setEditorConfig((state) => ({
+    setEditorConfig(state => ({
       ...state,
-      [key]: currentIndex >= maxVal ? options[key][0] : options[key][currentIndex + 1],
+      [key]:
+        currentIndex >= maxVal
+          ? options[key][0]
+          : options[key][currentIndex + 1],
     }));
   };
 
@@ -114,7 +136,7 @@ const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
   return (
     <Editor>
       <AvatarContainer>
-        <Avatar style={{ width: "100%", height: "100%" }} {...editorConfig} />
+        <Avatar style={{ width: '100%', height: '100%' }} {...editorConfig} />
       </AvatarContainer>
       <Controls>
         {controls.map(([optionKey, colorKey]) => {
@@ -145,9 +167,9 @@ const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
       </Controls>
       <Buttons>
         <Button appearance={ButtonAppearance.Secondary} onClick={closeEditor}>
-          {t("profile_pic.discard_avatar")}
+          {t('profile_pic.discard_avatar')}
         </Button>
-        <Button onClick={handleSave}>{t("profile_pic.save_avatar")}</Button>
+        <Button onClick={handleSave}>{t('profile_pic.save_avatar')}</Button>
       </Buttons>
     </Editor>
   );

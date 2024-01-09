@@ -1,6 +1,7 @@
+import Cookies from 'js-cookie';
+
 import { BACKEND_URL } from '../ENVIRONMENT';
 import { API_FIELDS, USER_FIELDS } from '../constants';
-import Cookies from 'js-cookie';
 
 const formatApiError = responseBody => {
   if (typeof responseBody === 'string') return new Error(responseBody);
@@ -12,7 +13,15 @@ const formatApiError = responseBody => {
   return new Error(errorTag, { cause: errorType ?? null });
 };
 
-export const completeForm = async () => null;
+export const completeForm = () =>
+  fetch('/api/profile/completed/', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'true',
+    },
+  });
 
 export const mutateUserData = async (formData, onSuccess, onFailure) => {
   try {
@@ -42,14 +51,16 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
     });
 
     const responseBody = await response?.json();
+    console.log({ responseBody, response });
     if (response.ok) {
       onSuccess(responseBody);
     } else {
+      console.log('formatError');
       const error = formatApiError(responseBody);
       throw error;
     }
   } catch (error) {
-    console.log({ error });
+    console.log({ ...error });
     if (error.message.includes('413')) {
       onFailure(
         new Error('validation.image_upload_required', {

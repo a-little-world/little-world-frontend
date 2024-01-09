@@ -1,12 +1,3 @@
-import { BACKEND_URL } from '../../ENVIRONMENT';
-import {
-  selectMatchesDisplay,
-  updateSearchState,
-} from '../../features/userData';
-import PlusImage from '../../images/plus-with-circle.svg';
-import PartnerActionCard from './Cards/PartnerActionCard';
-import ProfileCard from './Cards/ProfileCard';
-import { SearchingCard } from './Cards/SearchingCard';
 import {
   CardSizes,
   Modal,
@@ -19,10 +10,21 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { BACKEND_URL } from '../../ENVIRONMENT';
+import {
+  selectMatchesDisplay,
+  updateSearchState,
+} from '../../features/userData';
+import PlusImage from '../../images/plus-with-circle.svg';
+import PartnerActionCard from './Cards/PartnerActionCard';
+import ProfileCard from './Cards/ProfileCard';
+import { SearchingCard } from './Cards/SearchingCard';
+
 const FindNewPartner = styled.button`
   text-align: center;
 
   border: 2px dashed ${({ theme }) => theme.color.border.selected};
+  border-radius: 40px;
   border-width: 2px;
   width: ${CardSizes.Small};
   padding: ${({ theme }) => `${theme.spacing.xxlarge} ${theme.spacing.large}`};
@@ -30,6 +32,8 @@ const FindNewPartner = styled.button`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%;
   position: relative;
 
   > img {

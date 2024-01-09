@@ -3,8 +3,7 @@ import {
   ButtonSizes,
   Checkbox,
   InputWidth,
-  Label,
-  Link,
+  Label, // Link,
   Text,
   TextInput,
   TextTypes,
@@ -13,11 +12,11 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { signUp } from '../../api';
 import { initialise } from '../../features/userData';
-import { LOGIN_ROUTE, VERIFY_EMAIL_ROUTE } from '../../routes';
+import { LOGIN_ROUTE, VERIFY_EMAIL_ROUTE, getAppRoute } from '../../routes';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import {
   NameContainer,
@@ -58,7 +57,6 @@ const SignUp = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    console.log({ e });
     if (e?.message) {
       setError(
         e.cause ?? 'root.serverError',
@@ -78,10 +76,12 @@ const SignUp = () => {
 
     signUp(data)
       .then(signUpData => {
-        console.log(signUpData);
         dispatch(initialise(signUpData));
         setIsSubmitting(false);
-        navigate(`/${VERIFY_EMAIL_ROUTE}/`);
+        const nextRoute = signUpData.user?.emailVerified
+          ? getAppRoute()
+          : `/${VERIFY_EMAIL_ROUTE}/`;
+        navigate(nextRoute);
       })
       .catch(onError);
   };

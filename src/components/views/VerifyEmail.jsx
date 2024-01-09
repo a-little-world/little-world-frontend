@@ -16,10 +16,10 @@ import styled, { useTheme } from 'styled-components';
 
 import { resendVerificationEmail, verifyEmail } from '../../api';
 import { CHANGE_EMAIL_ROUTE } from '../../routes';
+import { ButtonsContainer } from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { registerInput } from './SignUp';
 import {
-  Buttons,
   FormDescription,
   StyledCard,
   StyledForm,
@@ -35,7 +35,7 @@ const VerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
-  const email = useSelector(state => state.userData.email);
+  const email = useSelector(state => state.userData.user.email);
 
   const {
     register,
@@ -81,7 +81,7 @@ const VerifyEmail = () => {
     setIsSubmitting(true);
     verifyEmail({ verificationCode }).catch(onError);
   };
-  console.log({ email });
+
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading2}>
@@ -119,7 +119,7 @@ const VerifyEmail = () => {
             ? t('verify_email.success_message')
             : errors?.root?.serverError?.message}
         </FormMessage>
-        <Buttons>
+        <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}
             onClick={() => navigate(`/${CHANGE_EMAIL_ROUTE}`)}
@@ -136,7 +136,7 @@ const VerifyEmail = () => {
           >
             {t('verify_email.submit_btn')}
           </Button>
-        </Buttons>
+        </ButtonsContainer>
       </StyledForm>
     </StyledCard>
   );
