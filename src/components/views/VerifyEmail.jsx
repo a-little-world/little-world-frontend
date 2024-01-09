@@ -94,7 +94,7 @@ const VerifyEmail = () => {
         <TextInput
           {...registerInput({
             register,
-            name: 'verficationCode',
+            name: 'verificationCode',
             options: { required: t('error.required') },
           })}
           id="text"
