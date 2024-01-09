@@ -40,6 +40,7 @@ const Form = () => {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
     setValue,
     setError,
   } = useForm({ shouldUnregister: true });
@@ -67,6 +68,7 @@ const Form = () => {
 
   const handleBackClick = e => {
     e.preventDefault();
+    reset({ values: {} });
     navigate(getAppRoute(prevPage));
   };
 

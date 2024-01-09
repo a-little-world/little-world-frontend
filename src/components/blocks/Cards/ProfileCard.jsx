@@ -1,16 +1,8 @@
-import { CHAT_ROUTE, getAppRoute } from '../../../routes';
-import MenuLink from '../../atoms/MenuLink';
-import ProfileImage from '../../atoms/ProfileImage';
-import {
-  PARTNER_ACTION_REPORT,
-  PARTNER_ACTION_UNMATCH,
-} from './PartnerActionCard';
 import {
   Button,
   ButtonVariations,
   Card,
   CardSizes,
-  designTokens,
   DotsIcon,
   Gradients,
   MessageIcon,
@@ -18,11 +10,20 @@ import {
   Popover,
   ProfileIcon,
   Text,
+  designTokens,
 } from '@a-little-world/little-world-design-system';
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
+
+import { CHAT_ROUTE, getAppRoute } from '../../../routes';
+import MenuLink from '../../atoms/MenuLink';
+import ProfileImage from '../../atoms/ProfileImage';
+import {
+  PARTNER_ACTION_REPORT,
+  PARTNER_ACTION_UNMATCH,
+} from './PartnerActionCard';
 
 export const StyledCard = styled(Card)`
   align-items: center;

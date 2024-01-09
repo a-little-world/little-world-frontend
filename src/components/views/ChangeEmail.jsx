@@ -15,7 +15,7 @@ import { useTheme } from 'styled-components';
 import { setNewEmail } from '../../api';
 import { updateEmail } from '../../features/userData';
 import { VERIFY_EMAIL_ROUTE } from '../../routes';
-import { ButtonsContainer } from '../atoms/ButtonsContainer';
+import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { registerInput } from './SignUp';
 import {

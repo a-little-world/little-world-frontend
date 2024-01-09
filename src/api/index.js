@@ -49,7 +49,7 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
       },
       body: data,
     });
-
+    console.log({ response });
     const responseBody = await response?.json();
     console.log({ responseBody, response });
     if (response.ok) {
@@ -60,7 +60,7 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
       throw error;
     }
   } catch (error) {
-    console.log({ ...error });
+    console.log({ ...error, error, message: error.message });
     if (error.message.includes('413')) {
       onFailure(
         new Error('validation.image_upload_required', {
@@ -340,3 +340,11 @@ export const setNewEmail = async ({ email }) => {
   if (response.ok) return responseBody;
   throw formatApiError(responseBody);
 };
+
+export const changeSearchStatePost = updatedState =>
+  fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': Cookies.get('csrftoken'),
+    },
+  });

@@ -16,7 +16,7 @@ import { useTheme } from 'styled-components';
 import { BACKEND_URL, DEVELOPMENT } from '../../ENVIRONMENT';
 import { updateProfile } from '../../features/userData';
 import { RESET_PASSWORD_ROUTE } from '../../routes';
-import { ButtonsContainer } from '../atoms/ButtonsContainer';
+import ButtonsContainer from '../atoms/ButtonsContainer';
 import ModalCard, { Centred } from '../blocks/Cards/ModalCard';
 import './settings.css';
 

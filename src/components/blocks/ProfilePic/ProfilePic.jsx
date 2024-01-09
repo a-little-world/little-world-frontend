@@ -12,18 +12,18 @@ import {
   TextTypes,
   ToolTip,
   TrashIcon,
-} from "@a-little-world/little-world-design-system";
-import { isEmpty } from "lodash";
-import React, { useEffect, useRef, useState } from "react";
-import { Controller } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import Avatar, { genConfig } from "react-nice-avatar";
-import { useSelector } from "react-redux";
-import { useTheme } from "styled-components";
+} from '@a-little-world/little-world-design-system';
+import { isEmpty } from 'lodash';
+import React, { useEffect, useRef, useState } from 'react';
+import { Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import Avatar, { genConfig } from 'react-nice-avatar';
+import { useSelector } from 'react-redux';
+import { useTheme } from 'styled-components';
 
-import { USER_FIELDS } from "../../../constants";
-import ProfileImage from "../../atoms/ProfileImage";
-import AvatarEditor from "./AvatarEditor";
+import { USER_FIELDS } from '../../../constants';
+import ProfileImage from '../../atoms/ProfileImage';
+import AvatarEditor from './AvatarEditor';
 import {
   AvatarEditorButton,
   AvatarInfo,
@@ -38,11 +38,11 @@ import {
   TrashButton,
   UploadArea,
   UploadLabel,
-} from "./styles";
+} from './styles';
 
 const IMAGE_TYPES = {
-  avatar: "avatar",
-  image: "image",
+  avatar: 'avatar',
+  image: 'image',
 };
 
 const ProfilePic = ({ control, setValue }) => {
@@ -52,12 +52,12 @@ const ProfilePic = ({ control, setValue }) => {
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [avatarIndex, setAvatarIndex] = useState(0);
   const [avatarList, setAvatarList] = useState([]);
-  const [uploadedImage, setUploadedImage] = useState("");
-  const userData = useSelector((state) => state.userData.user.profile);
+  const [uploadedImage, setUploadedImage] = useState('');
+  const userData = useSelector(state => state.userData.user.profile);
   const { t } = useTranslation();
   const fileInputRef = useRef(null);
 
-  const onImageUpload = (e) => {
+  const onImageUpload = e => {
     const file = e.target.files[0];
     const image = URL.createObjectURL(file);
 
@@ -71,7 +71,7 @@ const ProfilePic = ({ control, setValue }) => {
     setValue(USER_FIELDS.imageType, imageType);
   };
 
-  const onImageSelection = (type) => {
+  const onImageSelection = type => {
     setImageType(type);
     setValue(USER_FIELDS.imageType, type);
   };
@@ -95,7 +95,7 @@ const ProfilePic = ({ control, setValue }) => {
     if (userData?.image) setUploadedImage(userData.image);
   }, [userData?.image]);
 
-  const updateAvatar = (config) => {
+  const updateAvatar = config => {
     setAvatarConfig(config);
     setValue(USER_FIELDS.avatar, config);
     setValue(USER_FIELDS.imageType, imageType);
@@ -103,18 +103,18 @@ const ProfilePic = ({ control, setValue }) => {
 
   const onPrevAvatar = () => {
     updateAvatar(avatarList[avatarIndex - 1]);
-    setAvatarIndex((index) => index - 1);
+    setAvatarIndex(index => index - 1);
   };
 
   const onNextAvatar = () => {
     if (avatarIndex === avatarList.length - 1) {
       const newConfig = genConfig();
       updateAvatar(newConfig);
-      setAvatarList((list) => [...list, newConfig]);
+      setAvatarList(list => [...list, newConfig]);
     } else {
       updateAvatar(avatarList[avatarIndex + 1]);
     }
-    setAvatarIndex((index) => index + 1);
+    setAvatarIndex(index => index + 1);
   };
 
   const openAvatarEditor = () => setShowAvatarEditor(true);
@@ -127,7 +127,10 @@ const ProfilePic = ({ control, setValue }) => {
         name={USER_FIELDS.image}
         control={control}
         rules={{ required: imageType === IMAGE_TYPES.image && !uploadedImage }}
-        render={({ field: { onChange, onBlur, name, ref }, fieldState: { error } }) => (
+        render={({
+          field: { onChange, onBlur, name, ref },
+          fieldState: { error },
+        }) => (
           <>
             <SelectionPanel
               onClick={() => onImageSelection(IMAGE_TYPES.image)}
@@ -137,7 +140,11 @@ const ProfilePic = ({ control, setValue }) => {
               <ImageContainer>
                 {uploadedImage ? (
                   <ProfileImage image={uploadedImage} size="medium" circle>
-                    <TrashButton onClick={onImageDelete} variation="Icon" type="button">
+                    <TrashButton
+                      onClick={onImageDelete}
+                      variation="Icon"
+                      type="button"
+                    >
                       <TrashIcon color={theme.color.surface.disabled} />
                     </TrashButton>
                   </ProfileImage>
@@ -156,15 +163,15 @@ const ProfilePic = ({ control, setValue }) => {
                 <UploadLabel htmlFor="fileInput">
                   <StyledFileIcon />
                   <Text color="#36a9e0" bold type={TextTypes.Body3} tag="h4">
-                    {t("profile_pic.click_to_upload")}
+                    {t('profile_pic.click_to_upload')}
                   </Text>
                   <Text color="#A6A6A6" type={TextTypes.Body3}>
-                    {t("profile_pic.drop_image")}
+                    {t('profile_pic.drop_image')}
                   </Text>
                 </UploadLabel>
                 <FileInput
                   value={undefined}
-                  ref={(e) => {
+                  ref={e => {
                     ref(e);
                     fileInputRef.current = e;
                   }}
@@ -172,7 +179,7 @@ const ProfilePic = ({ control, setValue }) => {
                   name={name}
                   id="fileInput"
                   onBlur={onBlur}
-                  onChange={(e) => {
+                  onChange={e => {
                     onChange(e);
                     onImageUpload(e);
                   }}
@@ -186,10 +193,10 @@ const ProfilePic = ({ control, setValue }) => {
             >
               <AvatarInfo>
                 <Text bold type={TextTypes.Body3} tag="h4" color="black">
-                  {t("profile_pic.avatar_selection")}
+                  {t('profile_pic.avatar_selection')}
                 </Text>
                 <ToolTip
-                  text={t("profile_pic.avatar_tooltip")}
+                  text={t('profile_pic.avatar_tooltip')}
                   trigger={
                     <Button variation={ButtonVariations.Icon} type="button">
                       <QuestionIcon
@@ -214,15 +221,22 @@ const ProfilePic = ({ control, setValue }) => {
                     <ArrowLeftIcon width={6} />
                   </Button>
                   <div>
-                    <Avatar style={{ width: "8rem", height: "8rem" }} {...avatarConfig} />
+                    <Avatar
+                      style={{ width: '8rem', height: '8rem' }}
+                      {...avatarConfig}
+                    />
                   </div>
-                  <Button variation={ButtonVariations.Control} onClick={onNextAvatar} type="button">
+                  <Button
+                    variation={ButtonVariations.Control}
+                    onClick={onNextAvatar}
+                    type="button"
+                  >
                     <ArrowRightIcon width={6} />
                   </Button>
                 </AvatarSelection>
 
                 <Text type={TextTypes.Body3} color="#A6A6A6" center>
-                  {t("profile_pic.randomize_avatar")}
+                  {t('profile_pic.randomize_avatar')}
                 </Text>
                 <AvatarEditorButton
                   variation={ButtonVariations.Inline}
@@ -232,7 +246,7 @@ const ProfilePic = ({ control, setValue }) => {
                 >
                   <PencilIcon color="#36a9e0" width={12} />
                   <Text type={TextTypes.Body3} bold color="#36a9e0" tag="h4">
-                    {t("profile_pic.edit_avatar")}
+                    {t('profile_pic.edit_avatar')}
                   </Text>
                 </AvatarEditorButton>
               </InteractiveArea>
@@ -243,9 +257,9 @@ const ProfilePic = ({ control, setValue }) => {
               textAlign="left"
               textType={TextTypes.Body3}
               visible={!isEmpty(error)}
-              style={{ fontSize: "1rem" }}
+              style={{ fontSize: '1rem' }}
             >
-              {t("validation.image_upload_required")}
+              {t('validation.image_upload_required')}
             </InputError>
           </>
         )}

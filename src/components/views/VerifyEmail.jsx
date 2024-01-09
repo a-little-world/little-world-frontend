@@ -16,7 +16,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { resendVerificationEmail, verifyEmail } from '../../api';
 import { CHANGE_EMAIL_ROUTE } from '../../routes';
-import { ButtonsContainer } from '../atoms/ButtonsContainer';
+import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { registerInput } from './SignUp';
 import {

@@ -7,24 +7,20 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Avatar from 'react-nice-avatar';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import './call-setup.css';
-import { ButtonsContainer } from './components/atoms/ButtonsContainer';
+import ButtonsContainer from './components/atoms/ButtonsContainer';
 import ProfileImage from './components/atoms/ProfileImage';
 import ModalCard, { Centred } from './components/blocks/Cards/ModalCard';
 import {
   cancelCallSetup,
   initActiveCall,
-  initCallSetup,
-  stopActiveCall,
+  selectMatchByPartnerId,
 } from './features/userData';
-import { blockIncomingCall, selectMatchByPartnerId } from './features/userData';
 import './i18n';
 import signalWifi from './images/signal-wifi.svg';
-import Link from './path-prepend';
 import { CALL_ROUTE, getAppRoute } from './routes';
 import {
   getAudioTrack,

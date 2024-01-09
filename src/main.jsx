@@ -8,7 +8,7 @@ import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
 import CallSetup, { IncomingCall } from './call-setup';
 import Chat from './chat/chat-full-view';
 import './community-events.css';
-import CancelSearching from './components/blocks/CancelSearching';
+import CancelSearchCard from './components/blocks/Cards/CancelSearchCard';
 import ConfirmMatchCard from './components/blocks/Cards/ConfirmMatchCard';
 import NewMatchCard from './components/blocks/Cards/NewMatchCard';
 import CommunityCalls from './components/blocks/CommunityCalls';
@@ -290,7 +290,12 @@ function Main() {
           />
         </Modal>
         {showCancelSearching && (
-          <CancelSearching setShowCancel={setShowCancelSearching} />
+          <Modal
+            open={showCancelSearching}
+            onClose={() => setShowCancelSearching(false)}
+          >
+            <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
+          </Modal>
         )}
       </div>
       <Modal

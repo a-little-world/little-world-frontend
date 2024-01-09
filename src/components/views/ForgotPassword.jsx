@@ -13,7 +13,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { requestPasswordReset } from '../../api';
 import { LOGIN_ROUTE } from '../../routes';
-import { ButtonsContainer } from '../atoms/ButtonsContainer';
+import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { registerInput } from './SignUp';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';

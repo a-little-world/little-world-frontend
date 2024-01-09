@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { ButtonsContainer } from '../../atoms/ButtonsContainer';
+import ButtonsContainer from '../../atoms/ButtonsContainer';
 
 const StyledCard = styled(Card)`
   text-align: center;
