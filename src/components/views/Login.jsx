@@ -17,7 +17,7 @@ import { useSearchParams } from "react-router-dom"
 
 import { login } from "../../api";
 import { initialise } from "../../features/userData";
-import { APP_ROUTE, SIGN_UP_ROUTE } from "../../routes";
+import { APP_ROUTE, SIGN_UP_ROUTE, USER_FORM_ROUTE, VERIFY_EMAIL_ROUTE, getAppRoute } from "../../routes";
 import FormMessage, { MessageTypes } from "../atoms/FormMessage";
 import { registerInput } from "./SignUp";
 import { StyledCard, StyledCta, StyledForm, Title } from "./SignUp.styles";
@@ -70,12 +70,19 @@ const Login = () => {
         dispatch(initialise(loginData));
         setIsSubmitting(false);
         
-        console.log("SEARCH PARAMS",searchParams.get("next"));
-        if (searchParams.get("next")) {
+        if (!loginData.user.emailVerified) {
+          navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
+        }else if(!loginData.user.userFormCompleted){
+          navigate(getAppRoute(USER_FORM_ROUTE));
+        }else if (searchParams.get("next")) {
+          // users can be redirected from /login?next=<url>
+          // consider this route after the requried for entry forms verify-email / user-form
           navigate(searchParams.get("next"));
         }else{
+          // per default route to /app on successful login
           navigate(`/${APP_ROUTE}/`);
         }
+
       })
       .catch(onError);
   };

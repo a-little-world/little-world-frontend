@@ -37,6 +37,7 @@ const VerifyEmail = () => {
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
   const email = useSelector(state => state.userData.user.email);
+  const userFormCompleted = useSelector(state => state.userData.user.userFormCompleted);
 
   const {
     register,
@@ -83,7 +84,19 @@ const VerifyEmail = () => {
     verifyEmail({ verificationCode }).then((responseBody) => {
       setIsSubmitting(false);
       setRequestSuccessful(true);
-      navigate(getAppRoute(USER_FORM_ROUTE));
+      
+      if(!userFormCompleted){
+        // only navigate to /user-form when it's not completed
+        // when a user changes email they can see verify-email again but can go directly to /app after
+        navigate(getAppRoute(USER_FORM_ROUTE));
+      }else if (searchParams.get("next")) {
+        // users can be redirected from /login?next=<url>
+        // consider this route after the requried for entry forms verify-email / user-form
+        navigate(searchParams.get("next"));
+      }else{
+        navigate(`/${APP_ROUTE}/`);
+      }
+      
     }).catch(onError);
   };
 
