@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { resendVerificationEmail, verifyEmail } from '../../api';
-import { CHANGE_EMAIL_ROUTE } from '../../routes';
+import { CHANGE_EMAIL_ROUTE, USER_FORM_ROUTE, getAppRoute } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { registerInput } from './SignUp';
@@ -25,6 +25,7 @@ import {
   StyledForm,
   Title,
 } from './SignUp.styles';
+import { set } from 'lodash';
 
 const HelpText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
@@ -79,7 +80,11 @@ const VerifyEmail = () => {
 
   const onFormSubmit = async ({ verificationCode }) => {
     setIsSubmitting(true);
-    verifyEmail({ verificationCode }).catch(onError);
+    verifyEmail({ verificationCode }).then((responseBody) => {
+      setIsSubmitting(false);
+      setRequestSuccessful(true);
+      navigate(getAppRoute(USER_FORM_ROUTE));
+    }).catch(onError);
   };
 
   return (
