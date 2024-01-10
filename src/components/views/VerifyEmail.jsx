@@ -7,11 +7,12 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { set } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { resendVerificationEmail, verifyEmail } from '../../api';
@@ -25,7 +26,6 @@ import {
   StyledForm,
   Title,
 } from './SignUp.styles';
-import { set } from 'lodash';
 
 const HelpText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
@@ -37,7 +37,11 @@ const VerifyEmail = () => {
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
   const email = useSelector(state => state.userData.user.email);
-  const userFormCompleted = useSelector(state => state.userData.user.userFormCompleted);
+  const userFormCompleted = useSelector(
+    state => state.userData.user.userFormCompleted,
+  );
+
+  const [searchParams] = useSearchParams();
 
   const {
     register,
@@ -81,23 +85,25 @@ const VerifyEmail = () => {
 
   const onFormSubmit = async ({ verificationCode }) => {
     setIsSubmitting(true);
-    verifyEmail({ verificationCode }).then((responseBody) => {
-      setIsSubmitting(false);
-      setRequestSuccessful(true);
-      
-      if(!userFormCompleted){
-        // only navigate to /user-form when it's not completed
-        // when a user changes email they can see verify-email again but can go directly to /app after
-        navigate(getAppRoute(USER_FORM_ROUTE));
-      }else if (searchParams.get("next")) {
-        // users can be redirected from /login?next=<url>
-        // consider this route after the requried for entry forms verify-email / user-form
-        navigate(searchParams.get("next"));
-      }else{
-        navigate(`/${APP_ROUTE}/`);
-      }
-      
-    }).catch(onError);
+    verifyEmail({ verificationCode })
+      .then(responseBody => {
+        setIsSubmitting(false);
+        setRequestSuccessful(true);
+
+        if (!userFormCompleted) {
+          // only navigate to /user-form when it's not completed
+          // when a user changes email they can see verify-email
+          // again but can go directly to /app after
+          navigate(getAppRoute(USER_FORM_ROUTE));
+        } else if (searchParams.get('next')) {
+          // users can be redirected from /login?next=<url>
+          // consider this route after the requried for entry forms verify-email / user-form
+          navigate(searchParams.get('next'));
+        } else {
+          navigate(getAppRoute(''));
+        }
+      })
+      .catch(onError);
   };
 
   return (

@@ -6,27 +6,33 @@ import {
   Link,
   TextInput,
   TextTypes,
-} from "@a-little-world/little-world-design-system";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useTheme } from "styled-components";
-import { useSearchParams } from "react-router-dom"
+} from '@a-little-world/little-world-design-system';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import { useTheme } from 'styled-components';
 
-import { login } from "../../api";
-import { initialise } from "../../features/userData";
-import { APP_ROUTE, SIGN_UP_ROUTE, USER_FORM_ROUTE, VERIFY_EMAIL_ROUTE, getAppRoute } from "../../routes";
-import FormMessage, { MessageTypes } from "../atoms/FormMessage";
-import { registerInput } from "./SignUp";
-import { StyledCard, StyledCta, StyledForm, Title } from "./SignUp.styles";
+import { login } from '../../api';
+import { initialise } from '../../features/userData';
+import {
+  APP_ROUTE,
+  SIGN_UP_ROUTE,
+  USER_FORM_ROUTE,
+  VERIFY_EMAIL_ROUTE,
+  getAppRoute,
+} from '../../routes';
+import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import { registerInput } from './SignUp';
+import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 const Login = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const theme = useTheme();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -41,48 +47,45 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("MOUNTING");
-    setFocus("email");
+    setFocus('email');
   }, [setFocus]);
 
-  const onError = (e) => {
+  const onError = e => {
     setIsSubmitting(false);
-    console.log({e})
     if (e?.message) {
       setError(
-        e.cause ?? "root.serverError",
-        { type: "custom", message: e.message },
-        { shouldFocus: true }
+        e.cause ?? 'root.serverError',
+        { type: 'custom', message: e.message },
+        { shouldFocus: true },
       );
     } else {
-      setError("root.serverError", {
-        type: "custom",
-        message: "validation.generic_try_again",
+      setError('root.serverError', {
+        type: 'custom',
+        message: 'validation.generic_try_again',
       });
     }
   };
 
-  const onFormSubmit = async (data) => {
+  const onFormSubmit = async data => {
     setIsSubmitting(true);
 
     login(data)
-      .then((loginData) => {
+      .then(loginData => {
         dispatch(initialise(loginData));
         setIsSubmitting(false);
-        
+
         if (!loginData.user.emailVerified) {
           navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
-        }else if(!loginData.user.userFormCompleted){
+        } else if (!loginData.user.userFormCompleted) {
           navigate(getAppRoute(USER_FORM_ROUTE));
-        }else if (searchParams.get("next")) {
+        } else if (searchParams.get('next')) {
           // users can be redirected from /login?next=<url>
           // consider this route after the requried for entry forms verify-email / user-form
-          navigate(searchParams.get("next"));
-        }else{
+          navigate(searchParams.get('next'));
+        } else {
           // per default route to /app on successful login
-          navigate(`/${APP_ROUTE}/`);
+          navigate(getAppRoute(''));
         }
-
       })
       .catch(onError);
   };
@@ -90,42 +93,45 @@ const Login = () => {
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading2}>
-        {t("login.title")}
+        {t('login.title')}
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
           {...registerInput({
             register,
-            name: "email",
-            options: { required: "error.required" },
+            name: 'email',
+            options: { required: 'error.required' },
           })}
           id="email"
-          label={t("login.email_label")}
+          label={t('login.email_label')}
           error={t(errors?.email?.message)}
-          placeholder={t("login.email_placeholder")}
+          placeholder={t('login.email_placeholder')}
           type="email"
         />
         <TextInput
           {...registerInput({
             register,
-            name: "password",
-            options: { required: "error.required" },
+            name: 'password',
+            options: { required: 'error.required' },
           })}
           id="password"
           error={t(errors?.password?.message)}
-          label={t("login.password_label")}
-          placeholder={t("login.password_placeholder")}
+          label={t('login.password_label')}
+          placeholder={t('login.password_placeholder')}
           type="password"
         />
 
         <Button
           variation={ButtonVariations.Inline}
-          onClick={() => navigate("/forgot-password")}
+          onClick={() => navigate('/forgot-password')}
           color={theme.color.text.link}
         >
-          {t("login.forgot_password")}
+          {t('login.forgot_password')}
         </Button>
-        <FormMessage $visible={errors?.root?.serverError} $type={MessageTypes.Error}>
+        <FormMessage
+          $visible={errors?.root?.serverError}
+          $type={MessageTypes.Error}
+        >
           {t(errors?.root?.serverError?.message)}
         </FormMessage>
         <StyledCta
@@ -134,10 +140,13 @@ const Login = () => {
           loading={isSubmitting}
           size={ButtonSizes.Stretch}
         >
-          {t("login.submit_btn")}
+          {t('login.submit_btn')}
         </StyledCta>
-        <Link to={`/${SIGN_UP_ROUTE}`} buttonAppearance={ButtonAppearance.Secondary}>
-          {t("login.change_location_cta")}
+        <Link
+          to={`/${SIGN_UP_ROUTE}`}
+          buttonAppearance={ButtonAppearance.Secondary}
+        >
+          {t('login.change_location_cta')}
         </Link>
       </StyledForm>
     </StyledCard>
