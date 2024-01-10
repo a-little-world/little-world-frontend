@@ -7,7 +7,6 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { set } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -58,6 +57,7 @@ const VerifyEmail = () => {
   }, [setFocus]);
 
   const onError = e => {
+    setIsSubmitting(false);
     if (e?.message) {
       setError(
         e.cause ?? 'root.serverError',
@@ -86,14 +86,13 @@ const VerifyEmail = () => {
   const onFormSubmit = async ({ verificationCode }) => {
     setIsSubmitting(true);
     verifyEmail({ verificationCode })
-      .then(responseBody => {
+      .then(() => {
         setIsSubmitting(false);
         setRequestSuccessful(true);
 
         if (!userFormCompleted) {
           // only navigate to /user-form when it's not completed
-          // when a user changes email they can see verify-email
-          // again but can go directly to /app after
+          // when a user changes email they see verify-email again but can go directly to /app after
           navigate(getAppRoute(USER_FORM_ROUTE));
         } else if (searchParams.get('next')) {
           // users can be redirected from /login?next=<url>

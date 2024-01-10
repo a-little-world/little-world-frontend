@@ -11,14 +11,12 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
 import { login } from '../../api';
 import { initialise } from '../../features/userData';
 import {
-  APP_ROUTE,
   SIGN_UP_ROUTE,
   USER_FORM_ROUTE,
   VERIFY_EMAIL_ROUTE,

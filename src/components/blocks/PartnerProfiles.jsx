@@ -97,8 +97,7 @@ function PartnerProfiles({
           isOnline={match.partner.is_online}
         />
       ))}
-      {totalPaginations === matches.confirmed.currentPage &&
-      user.isSearching ? (
+      {user.isSearching ? (
         <SearchingCard setShowCancel={setShowCancel} />
       ) : (
         <FindNewPartner type="button" onClick={updateUserMatchingState}>

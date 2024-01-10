@@ -11,14 +11,28 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { BACKEND_URL, DEVELOPMENT } from '../../ENVIRONMENT';
 import { updateProfile } from '../../features/userData';
 import { RESET_PASSWORD_ROUTE } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
+import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { Centred } from '../blocks/Cards/ModalCard';
 import './settings.css';
+
+const SettingsItem = styled.div``;
+
+const Field = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const FieldTitle = styled(Text)`
+  color: ${({ theme }) => theme.color.text.primary};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+`;
 
 function ListItem({ section, label, value, setEditing, map }) {
   const { t } = useTranslation();
@@ -26,17 +40,36 @@ function ListItem({ section, label, value, setEditing, map }) {
   const text = map ? map[value] : value;
 
   return (
-    <div className={`item ${label}`}>
-      <h3>{t(`sg_${section}_${label}`)}</h3>
-      <span className="text">{text}</span>
-      <Button
-        variation={ButtonVariations.Inline}
-        color={theme.color.text.link}
-        onClick={() => setEditing(label)}
+    <SettingsItem>
+      <FieldTitle
+        tag="h3"
+        type={TextTypes.Heading3}
+        color={theme.color.text.primary}
       >
-        {t('sg_btn_change')}
-      </Button>
-    </div>
+        {t(`settings.${section}_${label}`)}
+      </FieldTitle>
+      <Field>
+        <Text>{text}</Text>
+        <Button
+          variation={ButtonVariations.Inline}
+          color={theme.color.text.link}
+          onClick={() => setEditing(label)}
+        >
+          {t('settings.edit_button')}
+        </Button>
+      </Field>
+    </SettingsItem>
+    // <div className={`item ${label}`}>
+    //   <h3>{t(`settings.${section}_${label}`)}</h3>
+    //   <span className="text">{text}</span>
+    //   <Button
+    //     variation={ButtonVariations.Inline}
+    //     color={theme.color.text.link}
+    //     onClick={() => setEditing(label)}
+    //   >
+    //     {t('settings.edit_button')}
+    //   </Button>
+    // </div>
   );
 }
 
@@ -154,7 +187,7 @@ function AtomicInput({
 
   return (
     <label className="input-container">
-      {t(`sg_personal_${label}`)}
+      {t(`settings.personal_${label}`)}
       <input {...inputProps} />
     </label>
   );
@@ -173,7 +206,7 @@ function PassChange({ refIn = undefined }) {
         onClick={() => navigate(`/${RESET_PASSWORD_ROUTE}/`)}
         color={theme.color.text.link}
       >
-        {t('sg_personal_password_forgot')}
+        {t('settings.personal_password_forgot')}
       </Button>
       <AtomicInput label="password_new" />
       <AtomicInput label="password_new_rpt" />
@@ -276,7 +309,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     <ModalCard>
       <Centred>
         <Text tag="h2" type={TextTypes.Heading2}>
-          {t('sg_change_item', { item: t(`sg_personal_${label}`) })}
+          {t('settings.edit_item', { item: t(`settings.personal_${label}`) })}
         </Text>
         <div className="error-message">
           {errors.map(errorTag => {
@@ -289,7 +322,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
         <section className="inputs">
           {label === 'display_language' && (
             <label className="input-container">
-              {t('sg_personal_display_language')}
+              {t('settings.personal_display_language')}
               <select name="lang-select" defaultValue={valueIn} ref={textInput}>
                 {Object.entries(displayLanguages).map(([code, lang]) => (
                   <option key={code} value={code}>
@@ -301,7 +334,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
           )}
           {['email', 'password'].includes(label) && (
             <span className="warning-notice">
-              {t(`sg_personal_${label}_change_warning`)}
+              {t(`settings.personal_${label}_change_warning`)}
             </span>
           )}
           {label === 'password' && <PassChange refIn={textInput} />}
@@ -338,50 +371,6 @@ function EditFieldCard({ label, valueIn, setEditing }) {
   );
 }
 
-function ConfirmAccountDeletion({ setShowModal }) {
-  const { t } = useTranslation();
-
-  return (
-    <ModalCard>
-      <Centred>
-        <Text tag="h2" type={TextTypes.Heading2}>
-          {t('settings_delete_account_confirm_title')}
-        </Text>
-      </Centred>
-      <ButtonsContainer>
-        <Button
-          appearance={ButtonAppearance.Secondary}
-          onClick={() => setShowModal(false)}
-        >
-          {t('settings_delete_account_confirm_cancel')}
-        </Button>
-        <Button
-          backgroundColor="red"
-          onClick={() => {
-            // call deletion api ...
-            // then reload page ...
-            fetch(`${BACKEND_URL}/api/user/delete_account/`, {
-              method: 'POST',
-              headers: {
-                'X-CSRFToken': Cookies.get('csrftoken'),
-                'Content-Type': 'application/json',
-              },
-            }).then(res => {
-              if (res.ok) {
-                window.location.reload();
-              } else {
-                console.error(`Error ${res.status}: ${res.statusText}`);
-              }
-            });
-          }}
-        >
-          {t('settings_delete_account_confirm_button')}
-        </Button>
-      </ButtonsContainer>
-    </ModalCard>
-  );
-}
-
 function Settings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -414,7 +403,7 @@ function Settings() {
     <>
       <div className="header">
         <Text tag="h2" type={TextTypes.Heading2} color="black">
-          {t('sg_header')}
+          {t('settings.title')}
         </Text>
       </div>
       <div className="content panel">
@@ -449,7 +438,7 @@ function Settings() {
                   setShowConfirm(true);
                 }}
               >
-                {t('sg_personal_delete_account_btn')}
+                {t('settings.personal_delete_account_button')}
               </Button>
             </div>
           </div>
@@ -466,7 +455,7 @@ function Settings() {
         )}
       </Modal>
       <Modal open={showConfirm} onClose={() => setShowConfirm(false)}>
-        <ConfirmAccountDeletion setShowModal={setShowConfirm} />
+        <DeleteAccountCard setShowModal={setShowConfirm} />
       </Modal>
     </>
   );

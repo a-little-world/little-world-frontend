@@ -88,6 +88,7 @@ const Form = () => {
   };
 
   const onFormSubmit = async data => {
+    console.log({ data });
     mutateUserData(data, onFormSuccess, onError);
   };
 

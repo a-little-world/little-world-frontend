@@ -49,27 +49,21 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
       },
       body: data,
     });
-    console.log({ response });
-    const responseBody = await response?.json();
-    console.log({ responseBody, response });
+
     if (response.ok) {
+      const responseBody = await response?.json();
       onSuccess(responseBody);
     } else {
-      console.log('formatError');
+      if (response.status === 413)
+        throw new Error('validation.image_upload_required', {
+          cause: API_FIELDS.image,
+        });
+      const responseBody = await response?.json();
       const error = formatApiError(responseBody);
       throw error;
     }
   } catch (error) {
-    console.log({ ...error, error, message: error.message });
-    if (error.message.includes('413')) {
-      onFailure(
-        new Error('validation.image_upload_required', {
-          cause: API_FIELDS.image,
-        }),
-      );
-    } else {
-      onFailure(error);
-    }
+    onFailure(error);
   }
 };
 
