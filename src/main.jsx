@@ -206,7 +206,7 @@ function Main() {
   const onRejectCall = () => {
     dispatch(blockIncomingCall({ userId: incomingCalls[0]?.userId }));
   };
-
+  console.log({ incomingCalls, callSetup });
   return (
     <AppLayout
       page={use}
@@ -265,39 +265,36 @@ function Main() {
         {use === 'help' && <Help selection={topSelection} />}
         {use === 'settings' && <Settings />}
       </div>
-      <div
-        className={
-          callSetup || incomingCalls?.length || showCancelSearching
-            ? 'overlay-shade'
-            : 'overlay-shade hidden'
-        }
+
+      <Modal open={callSetup} locked>
+        <CallSetup
+          userPk={callSetup?.userId}
+          removeCallSetupPartner={() => {
+            dispatch(cancelCallSetup());
+            removeActiveTracks();
+          }}
+        />
+      </Modal>
+      <Modal
+        open={incomingCalls[0]?.userId && !callSetup}
+        onClose={onRejectCall}
       >
-        {callSetup && (
-          <CallSetup
-            userPk={callSetup?.userId}
-            removeCallSetupPartner={() => {
-              dispatch(cancelCallSetup());
-              removeActiveTracks();
-            }}
-          />
-        )}
-        <Modal open={incomingCalls[0]?.userId} onClose={onRejectCall}>
-          <IncomingCall
-            matchesInfo={dashboardVisibleMatches}
-            userPk={incomingCalls[0]?.userId}
-            onAnswerCall={onAnswerCall}
-            onRejectCall={onRejectCall}
-          />
+        <IncomingCall
+          matchesInfo={dashboardVisibleMatches}
+          userPk={incomingCalls[0]?.userId}
+          onAnswerCall={onAnswerCall}
+          onRejectCall={onRejectCall}
+        />
+      </Modal>
+      {showCancelSearching && (
+        <Modal
+          open={showCancelSearching}
+          onClose={() => setShowCancelSearching(false)}
+        >
+          <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
         </Modal>
-        {showCancelSearching && (
-          <Modal
-            open={showCancelSearching}
-            onClose={() => setShowCancelSearching(false)}
-          >
-            <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
-          </Modal>
-        )}
-      </div>
+      )}
+
       <Modal
         open={
           matches?.proposed?.items?.length ||

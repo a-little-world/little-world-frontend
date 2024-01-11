@@ -37,6 +37,9 @@ export const userDataSlice = createSlice({
     },
     initCallSetup: (state, action) => {
       state.callSetup = action.payload;
+      state.incomingCalls = state.incomingCalls.filter(
+        call => call.userId !== action.payload?.userId,
+      );
     },
     cancelCallSetup: (state, action) => {
       state.callSetup = null;

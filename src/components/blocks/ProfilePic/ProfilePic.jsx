@@ -72,8 +72,17 @@ const ProfilePic = ({ control, setValue }) => {
   };
 
   const onImageSelection = type => {
+    if (type === imageType) return;
     setImageType(type);
     setValue(USER_FIELDS.imageType, type);
+    // remove other image type value
+    if (type === IMAGE_TYPES.image) {
+      setValue(USER_FIELDS.avatar, null);
+      setValue(USER_FIELDS.image, uploadedImage);
+    } else {
+      setValue(USER_FIELDS.avatar, avatarConfig);
+      setValue(USER_FIELDS.image, null);
+    }
   };
 
   useEffect(() => {

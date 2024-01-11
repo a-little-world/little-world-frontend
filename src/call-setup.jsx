@@ -2,6 +2,7 @@
 import {
   Button,
   ButtonAppearance,
+  ButtonSizes,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -319,17 +320,17 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
             <AudioInputSelect setAudio={setAudio} />
             <AudioOutputSelect />
           </div>
-          <button
+          <Button
             onClick={() => {
               clearActiveTracks();
               dispatch(initActiveCall({ userPk, tracks }));
               dispatch(cancelCallSetup());
               navigate(getAppRoute(CALL_ROUTE), { state: { userPk, tracks } });
             }}
-            className="av-setup-confirm"
+            size={ButtonSizes.Stretch}
           >
             {t('pcs_btn_join_call')}
-          </button>
+          </Button>
         </>
       )}
       {!mediaPermission && (

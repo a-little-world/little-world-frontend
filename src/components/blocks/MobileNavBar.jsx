@@ -1,10 +1,10 @@
-import { Text, TextTypes } from "@a-little-world/little-world-design-system";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
-import styled from "styled-components";
+import { Text, TextTypes } from '@a-little-world/little-world-design-system';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 
-import Logo from "../atoms/Logo";
+import Logo from '../atoms/Logo';
 
 const LogoContainer = styled.div`
   display: flex;
@@ -15,8 +15,9 @@ const LogoContainer = styled.div`
 const Title = styled(Text)`
   font-weight: 700;
   font-size: 28px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   text-transform: capitalize;
 `;
 
@@ -24,12 +25,17 @@ function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
   const location = useLocation();
   const { userPk } = location.state || {};
-  const key = location.pathname.split("/").slice(-1)[0] || (userPk ? "user" : "home");
-  const isHome = key === "home";
+  const key =
+    location.pathname.split('/').slice(-1)[0] || (userPk ? 'user' : 'home');
+  const isHome = key === 'home';
 
   return (
     <div className="mobile-header">
-      <button type="button" className="menu" onClick={() => setShowSidebarMobile(true)}>
+      <button
+        type="button"
+        className="menu"
+        onClick={() => setShowSidebarMobile(true)}
+      >
         <img alt="open menu" />
       </button>
       <LogoContainer>

@@ -1,9 +1,13 @@
 import {
   Button,
   ButtonAppearance,
+  ButtonSizes,
   ButtonVariations,
+  Dropdown,
   Modal,
+  PencilIcon,
   Text,
+  TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
@@ -14,14 +18,21 @@ import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { BACKEND_URL, DEVELOPMENT } from '../../ENVIRONMENT';
+import { mutateUserData } from '../../api';
 import { updateProfile } from '../../features/userData';
 import { RESET_PASSWORD_ROUTE } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
-import ModalCard, { Centred } from '../blocks/Cards/ModalCard';
+import ModalCard from '../blocks/Cards/ModalCard';
+import { SubmitError } from '../blocks/Form/styles';
 import './settings.css';
 
-const SettingsItem = styled.div``;
+const SettingsItem = styled.div`
+  max-width: 360px;
+  &:last-of-type {
+    margin-top: ${({ theme }) => theme.spacing.small};
+  }
+`;
 
 const Field = styled.div`
   display: flex;
@@ -34,10 +45,9 @@ const FieldTitle = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;
 
-function ListItem({ section, label, value, setEditing, map }) {
+function ListItem({ section, label, value, setEditing }) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const text = map ? map[value] : value;
 
   return (
     <SettingsItem>
@@ -49,27 +59,17 @@ function ListItem({ section, label, value, setEditing, map }) {
         {t(`settings.${section}_${label}`)}
       </FieldTitle>
       <Field>
-        <Text>{text}</Text>
+        <Text>{value}</Text>
         <Button
           variation={ButtonVariations.Inline}
           color={theme.color.text.link}
           onClick={() => setEditing(label)}
         >
+          <PencilIcon height="12px" width="16px" />
           {t('settings.edit_button')}
         </Button>
       </Field>
     </SettingsItem>
-    // <div className={`item ${label}`}>
-    //   <h3>{t(`settings.${section}_${label}`)}</h3>
-    //   <span className="text">{text}</span>
-    //   <Button
-    //     variation={ButtonVariations.Inline}
-    //     color={theme.color.text.link}
-    //     onClick={() => setEditing(label)}
-    //   >
-    //     {t('settings.edit_button')}
-    //   </Button>
-    // </div>
   );
 }
 
@@ -88,10 +88,10 @@ const allowedChars = {
   numeric: /^[0-9]*$/, // numbers only
   email: /^[a-z0-9@.+-]*$/i, // alphanumeric and @ . + -
 };
-const displayLanguages = {
-  en: '🇬🇧 English',
-  de: '🇩🇪 Deutsch',
-};
+const displayLanguages = [
+  { value: 'en', label: '🇬🇧 English' },
+  { value: 'de', label: '🇩🇪 Deutsch' },
+];
 
 const repeaters = ['password', 'email'];
 
@@ -148,51 +148,6 @@ const allowedCodes = [
   46, // delete
 ];
 
-function AtomicInput({
-  label,
-  inputVal = '',
-  handleChange = () => {},
-  refIn = undefined,
-}) {
-  const { t } = useTranslation();
-  const type = types[label] || types[label.slice(0, 8)]; // password_new_rpt -> password TODO: what fucked implementation is this?
-  const controlled = ['tel', 'numeric', 'email'].includes(type);
-
-  const onKeyDown = e => {
-    if (
-      controlled &&
-      !e.ctrlKey &&
-      !allowedCodes.includes(e.keyCode) &&
-      allowedChars[type].test(e.key) === false
-    ) {
-      e.preventDefault(); // prevent unwanted keypresses registering
-    }
-  };
-
-  const inputProps = {
-    type: type === 'numeric' ? 'text' : type,
-    name: label,
-    inputMode: type,
-    pattern: type === 'numeric' ? '[0-9]*' : undefined,
-    onChange: handleChange,
-    onKeyDown,
-    ref: refIn,
-  };
-
-  if (controlled) {
-    inputProps.value = inputVal || '';
-  } else {
-    inputProps.defaultValue = inputVal || '';
-  }
-
-  return (
-    <label className="input-container">
-      {t(`settings.personal_${label}`)}
-      <input {...inputProps} />
-    </label>
-  );
-}
-
 function PassChange({ refIn = undefined }) {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -200,7 +155,11 @@ function PassChange({ refIn = undefined }) {
 
   return (
     <>
-      <AtomicInput label="password_current" refIn={refIn} />
+      <TextInput
+        label={t('settings.personal_password_current')}
+        inputRef={refIn}
+        type="password"
+      />
       <Button
         variation={ButtonVariations.Inline}
         onClick={() => navigate(`/${RESET_PASSWORD_ROUTE}/`)}
@@ -208,8 +167,11 @@ function PassChange({ refIn = undefined }) {
       >
         {t('settings.personal_password_forgot')}
       </Button>
-      <AtomicInput label="password_new" />
-      <AtomicInput label="password_new_rpt" />
+      <TextInput label={t('settings.personal_password_new')} type="password" />
+      <TextInput
+        label={t('settings.personal_password_new_rpt')}
+        type="password"
+      />
     </>
   );
 }
@@ -222,7 +184,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
   const [waiting, setWaiting] = useState(false);
   const [errors, setErrors] = useState([]);
   const textInput = useRef();
-
+  console.log({ valueIn });
   const handleChange = e => {
     const val = e.target.value;
     if (
@@ -239,10 +201,10 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     dispatch(updateProfile(data));
     setEditing(false);
   };
-  const onResponseFailure = report => {
-    console.log('REPORT', report);
+  const onResponseFailure = error => {
     const backendLabel = label;
-    const errorsList = report[backendLabel] || ['unknown error'];
+    const errorsList = error[backendLabel] || ['unknown error'];
+    console.log({ backendLabel, error });
     setErrors(errorsList); // update error message(s)
     setWaiting(false);
   };
@@ -251,51 +213,44 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     e.preventDefault();
     setErrors([]); // clear existing errors
     const val = e.target.elements[0].value;
+    setWaiting(true);
 
-    if (label === 'display_language') {
-      const langCode = val;
-      dispatch(updateProfile({ display_language: langCode }));
-      Cookies.set('frontendLang', langCode);
-      i18n.changeLanguage(langCode);
-      submitItem(label, langCode)
-        .then(onResponseSuccess)
-        .catch(onResponseFailure);
-    } else {
-      setWaiting(true);
-      if (label == 'password') {
-        const values = Array.from(e.target.elements)
-          .filter(({ tagName }) => tagName !== 'BUTTON')
-          .map(x => x.value);
+    if (label === 'password') {
+      const values = Array.from(e.target.elements)
+        .filter(({ tagName }) => tagName !== 'BUTTON')
+        .map(x => x.value);
 
-        const [currentPw, newPw, newPwCopy] = values;
-        // we check the new passwords match on frontend, so only need to send one to backend
-        if (newPw !== newPwCopy) {
-          setErrors(['request_errors.fe_mismatch']);
-          console.log(111, t('request_errors.fe_mismatch'));
-          setWaiting(false);
-        } else {
-          // submit data
-          apiChangePw(currentPw, newPw)
-            .then(onResponseSuccess)
-            .catch(onResponseFailure)
-            .then(() => {
-              window.location.reload();
-            });
-        }
-      } else if (type === 'email') {
-        // DISABLE; DANGEROUS
-        if (!DEVELOPMENT)
-          apiChangeEmail(value)
-            .then(onResponseSuccess)
-            .catch(onResponseFailure)
-            .then(() => {
-              window.location.reload();
-            });
+      const [currentPw, newPw, newPwCopy] = values;
+      // we check the new passwords match on frontend, so only need to send one to backend
+      if (newPw !== newPwCopy) {
+        setErrors(['request_errors.fe_mismatch']);
+        console.log(111, t('request_errors.fe_mismatch'));
+        setWaiting(false);
       } else {
-        submitItem(label, value)
+        // submit data
+        apiChangePw(currentPw, newPw)
           .then(onResponseSuccess)
-          .catch(onResponseFailure);
+          .catch(onResponseFailure)
+          .then(() => {
+            window.location.reload();
+          });
       }
+    } else if (type === 'email') {
+      // DISABLE; DANGEROUS
+      if (!DEVELOPMENT)
+        apiChangeEmail(value)
+          .then(onResponseSuccess)
+          .catch(onResponseFailure)
+          .then(() => {
+            window.location.reload();
+          });
+    } else {
+      if (label === 'display_language') {
+        dispatch(updateProfile({ display_language: val }));
+        Cookies.set('frontendLang', val);
+        i18n.changeLanguage(val);
+      }
+      mutateUserData({ [label]: val }, onResponseSuccess, onResponseFailure);
     }
   };
 
@@ -304,33 +259,21 @@ function EditFieldCard({ label, valueIn, setEditing }) {
       textInput.current.focus();
     }
   }, [textInput]);
-
+  console.log({ errors });
   return (
     <ModalCard>
-      <Centred>
-        <Text tag="h2" type={TextTypes.Heading2}>
-          {t('settings.edit_item', { item: t(`settings.personal_${label}`) })}
-        </Text>
-        <div className="error-message">
-          {errors.map(errorTag => {
-            return <div key={errorTag}>{`⚠️ ${t(errorTag)}`}</div>;
-          })}
-        </div>
-      </Centred>
-
+      <Text tag="h2" type={TextTypes.Heading2} center>
+        {t('settings.edit_item', { item: t(`settings.personal_${label}`) })}
+      </Text>
       <form onSubmit={handleSubmit}>
         <section className="inputs">
           {label === 'display_language' && (
-            <label className="input-container">
-              {t('settings.personal_display_language')}
-              <select name="lang-select" defaultValue={valueIn} ref={textInput}>
-                {Object.entries(displayLanguages).map(([code, lang]) => (
-                  <option key={code} value={code}>
-                    {lang}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <Dropdown
+              label={t('settings.personal_display_language')}
+              inputRef={textInput}
+              options={displayLanguages}
+              value={valueIn}
+            />
           )}
           {['email', 'password'].includes(label) && (
             <span className="warning-notice">
@@ -346,14 +289,19 @@ function EditFieldCard({ label, valueIn, setEditing }) {
             'postal_code',
             'birth_year',
           ].includes(label) && (
-            <AtomicInput
-              label={label}
-              inputVal={value}
-              handleChange={handleChange}
-              refIn={textInput}
+            <TextInput
+              label={t(`settings.personal_${label}`)}
+              value={value}
+              onChange={handleChange}
+              inputRef={textInput}
             />
           )}
         </section>
+        {/* errors?.root?.serverError */}
+        <SubmitError $visible={errors.length}>
+          {errors.map(errorTag => t(errorTag))}
+          {/* {errors?.root?.serverError?.message} */}
+        </SubmitError>
         <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}
@@ -396,7 +344,11 @@ function Settings() {
   ];
 
   const data = Object.fromEntries(
-    items.map(item => [item, item === 'password' ? '********' : profile[item]]),
+    items.map(item => {
+      let val = profile[item];
+      if (item === 'password') val = '********';
+      return [item, val];
+    }),
   );
 
   return (
@@ -409,38 +361,40 @@ function Settings() {
       <div className="content panel">
         <section className="settings personal">
           <div className="settings-items">
-            {items.map(label => {
-              return (
-                <ListItem
-                  key={label}
-                  section="personal"
-                  label={label}
-                  value={data[label]}
-                  setEditing={
-                    label !== 'profilePicture'
-                      ? setEditing
-                      : () => {
-                          /* For profile picture we just open the userform frontend for now */
-                          navigate('/formpage?pages=6');
-                          navigate(0); /* Reload page */
-                        }
-                  }
-                  map={label === 'display_language' ? displayLanguages : false}
-                />
-              );
-            })}
-            <div className="item">
+            {items.map(label => (
+              <ListItem
+                key={label}
+                section="personal"
+                label={label}
+                value={
+                  label === 'display_language'
+                    ? t(`settings.display_language_${data[label]}`)
+                    : data[label]
+                }
+                setEditing={
+                  label !== 'profilePicture'
+                    ? setEditing
+                    : () => {
+                        /* For profile picture we just open the userform frontend for now */
+                        navigate('/formpage?pages=6');
+                        navigate(0); /* Reload page */
+                      }
+                }
+              />
+            ))}
+            <SettingsItem>
               <Button
                 appearance={ButtonAppearance.Secondary}
-                color={'red'}
-                backgroundColor={'red'}
+                color="red"
+                backgroundColor="red"
+                size={ButtonSizes.Large}
                 onClick={() => {
                   setShowConfirm(true);
                 }}
               >
                 {t('settings.personal_delete_account_button')}
               </Button>
-            </div>
+            </SettingsItem>
           </div>
         </section>
       </div>

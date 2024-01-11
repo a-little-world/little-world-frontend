@@ -107,6 +107,8 @@
   "settings.title": "Settings",
   "settings.edit_item": "Edit {{item}}",
   "settings.edit_button": "Edit",
+  "settings.display_language_en": "🇬🇧 English",
+  "settings.display_language_de": "🇩🇪 Deutsch",
   "settings.personal_password_change_warning": "Please note that you will need to log in again after changing your password.",
   "settings.personal_email_change_warning": "Please note that after changing your email address, you will receive a new verification email and will need to enter a new code.",
   "settings.personal_profilePicture": "Profile picture",

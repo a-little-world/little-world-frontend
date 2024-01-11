@@ -27,14 +27,11 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
   try {
     const { image } = formData;
     let data;
+    // need to handle image file differently for api request
     if (image) {
       data = new FormData();
       for (const key in formData) {
-        if (key === USER_FIELDS.avatar) {
-          data.append(key, JSON.stringify(formData[key]));
-        } else {
-          data.append(key, formData[key]);
-        }
+        if (key !== USER_FIELDS.avatar) data.append(key, formData[key]);
       }
     } else {
       data = JSON.stringify(formData);

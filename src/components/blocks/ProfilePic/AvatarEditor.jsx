@@ -141,7 +141,7 @@ const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
       <Controls>
         {controls.map(([optionKey, colorKey]) => {
           return (
-            <ControlColumn key={`control ${optionKey}`}>
+            <ControlColumn key={`control ${optionKey} ${colorKey}`}>
               {optionKey && (
                 <OptionToggle
                   onClick={() => {
