@@ -11,10 +11,11 @@ const ButtonsContainer = styled.div`
     flex-wrap: wrap;
 
     @media (max-width: ${theme.breakpoints.small}) {
-      > button {
+      > button,
+      > a {
         width: 100%;
       }
-      > button:first-child {
+      > *:first-child {
         order: 1;
       }
     }
@@ -23,7 +24,8 @@ const ButtonsContainer = styled.div`
       gap: ${theme.spacing.large};
       flex-wrap: no-wrap;
 
-      > button {
+      > button,
+      > a {
         flex: 1;
       }
     }

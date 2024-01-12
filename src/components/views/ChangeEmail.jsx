@@ -2,6 +2,7 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
+  Link,
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -100,14 +101,13 @@ const ChangeEmail = () => {
           {errors?.root?.serverError?.message}
         </FormMessage>
         <ButtonsContainer>
-          <Button
-            appearance={ButtonAppearance.Secondary}
-            onClick={() => getAppRoute(VERIFY_EMAIL_ROUTE)}
-            color={theme.color.text.link}
-            size={ButtonSizes.Medium}
+          <Link
+            buttonAppearance={ButtonAppearance.Secondary}
+            buttonSize={ButtonSizes.Medium}
+            to={getAppRoute(VERIFY_EMAIL_ROUTE)}
           >
             {t('change_email.back_btn')}
-          </Button>
+          </Link>
           <Button
             type="submit"
             disabled={isSubmitting}
