@@ -71,7 +71,7 @@ const Header = () => {
     i18n: { language },
     t,
   } = useTranslation();
-  const userId = useSelector(state => state.userData.user.id);
+  const userId = useSelector(state => state.userData?.user?.id);
 
   return (
     <StyledHeader>
