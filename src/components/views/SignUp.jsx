@@ -16,7 +16,12 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { signUp } from '../../api';
 import { initialise } from '../../features/userData';
-import { LOGIN_ROUTE, VERIFY_EMAIL_ROUTE, getAppRoute } from '../../routes';
+import {
+  LOGIN_ROUTE,
+  VERIFY_EMAIL_ROUTE,
+  getAppRoute,
+  passAuthenticationBoundary,
+} from '../../routes';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import {
   NameContainer,
@@ -76,6 +81,7 @@ const SignUp = () => {
 
     signUp(data)
       .then(signUpData => {
+        passAuthenticationBoundary();
         dispatch(initialise(signUpData));
         setIsSubmitting(false);
         const nextRoute = signUpData.user?.emailVerified
