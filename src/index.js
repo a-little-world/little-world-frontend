@@ -89,7 +89,6 @@ if (isDevelopment && !isCapacitor) {
 } else if (isCapacitor) {
   const apiTranslations = JSON.parse(optionsTranslations.apiTranslations);
   const data = { apiOptions: optionsTranslations.apiOptions };
-  console.log('DATA', data, apiTranslations, isCapacitor);
 
   window.renderApp({ initData: data }, { apiTranslations });
 }

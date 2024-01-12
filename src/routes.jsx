@@ -13,7 +13,7 @@ export const SIGN_UP_ROUTE = 'sign-up';
 export const CHANGE_EMAIL_ROUTE = 'change-email';
 export const VERIFY_EMAIL_ROUTE = 'verify-email';
 export const FORGOT_PASSWORD_ROUTE = 'forgot-password';
-export const RESET_PASSWORD_ROUTE = 'reset-password';
+export const RESET_PASSWORD_ROUTE = 'reset-password/:userId/:token';
 export const USER_FORM_ROUTE = 'user-form';
 export const WP_HOME_ROUTE = 'https://home.little-world.com';
 export const TERMS_ROUTE = 'nutzungsbedingungen';
@@ -23,3 +23,8 @@ export const getHomeRoute = (locale, slug) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
 export const getAppRoute = slug => `/${APP_ROUTE}/${slug ?? ''}`;
 export const getUserFormRoute = slug => `/${USER_FORM_ROUTE}/${slug}`;
+
+// should be called when passing from unauthenticated to authenticated state
+export const passAuthenticationBoundary = () => {
+  window.unloadCookieBanner();
+};

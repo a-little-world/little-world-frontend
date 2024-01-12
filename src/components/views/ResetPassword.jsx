@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { resetPassword } from '../../api';
 import { LOGIN_ROUTE } from '../../routes';
@@ -16,6 +17,8 @@ import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 const ResetPassword = () => {
   const { t } = useTranslation();
+  const { token } = useParams();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
 
@@ -51,7 +54,7 @@ const ResetPassword = () => {
   const onFormSubmit = async data => {
     setIsSubmitting(true);
 
-    resetPassword(data)
+    resetPassword({ ...data, token })
       .then(() => {
         setRequestSuccessful(true);
         setIsSubmitting(false);

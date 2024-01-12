@@ -22,6 +22,7 @@ import {
   USER_FORM_ROUTE,
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
+  passAuthenticationBoundary,
 } from '../../routes';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { registerInput } from './SignUp';
@@ -71,6 +72,8 @@ const Login = () => {
       .then(loginData => {
         dispatch(initialise(loginData));
         setIsSubmitting(false);
+
+        passAuthenticationBoundary();
 
         if (!loginData.user.emailVerified) {
           navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
