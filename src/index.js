@@ -1,8 +1,10 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { Provider, useDispatch } from 'react-redux';
 
 import App from './App';
 import { DEVELOPMENT, IS_CAPACITOR_BUILD } from './ENVIRONMENT';
+import store from './app/store';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import { updateTranslationResources } from './i18n';
@@ -53,20 +55,22 @@ window.renderMessageView = (
   }
   root.render(
     <React.StrictMode>
-      <Root>
-        <FormLayout>
-          <MessageCard
-            title={title}
-            content={content}
-            confirmText={confirmText}
-            rejectText={rejectText}
-            onConfirm={onConfirm}
-            onReject={onReject}
-            linkText={linkText}
-            linkTo={linkTo}
-          />
-        </FormLayout>
-      </Root>
+      <Provider store={store}>
+        <Root>
+          <FormLayout>
+            <MessageCard
+              title={title}
+              content={content}
+              confirmText={confirmText}
+              rejectText={rejectText}
+              onConfirm={onConfirm}
+              onReject={onReject}
+              linkText={linkText}
+              linkTo={linkTo}
+            />
+          </FormLayout>
+        </Root>
+      </Provider>
     </React.StrictMode>,
   );
 };
