@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 import { resetPassword } from '../../api';
 import { LOGIN_ROUTE } from '../../routes';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import { registerInput } from './SignUp';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 const ResetPassword = () => {
