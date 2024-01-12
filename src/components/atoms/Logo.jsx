@@ -3,11 +3,6 @@ import styled, { css } from 'styled-components';
 import LogoImageSvg from '../../images/logo-image.svg';
 import LogoTextSvg from '../../images/logo-text.svg';
 
-/* <div className="logos">
-  <img alt="little" className="logo-image" />
-  <img alt="little world" className="logo-text" />
-</div>; */
-
 const LogoSizes = {
   Small: 'small',
   Medium: 'medium',

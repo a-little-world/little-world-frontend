@@ -9,17 +9,10 @@ import Logo from '../atoms/Logo';
 const LogoContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
+  gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
-const Title = styled(Text)`
-  font-weight: 700;
-  font-size: 28px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  text-transform: capitalize;
-`;
+const Title = styled(Text)``;
 
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();

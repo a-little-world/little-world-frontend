@@ -152,7 +152,7 @@ function ProfileCard({
       </ProfileInfo>
       {!isSelf && (
         <Actions>
-          <MenuLink to={getAppRoute('')} state={{ userPk }}>
+          <MenuLink to={getAppRoute()} state={{ userPk }}>
             <ProfileIcon
               gradient={Gradients.Orange}
               label="visit profile"

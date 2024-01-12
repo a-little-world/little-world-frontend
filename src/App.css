@@ -108,7 +108,7 @@ button {
   .profile-component,
   .profile-component .content,
   .call-screen {
-    gap: 30px;
+    gap: 24px;
   }
 }
 

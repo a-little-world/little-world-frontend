@@ -21,5 +21,5 @@ export const PRIVACY_ROUTE = 'datenschutz';
 
 export const getHomeRoute = (locale, slug) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
-export const getAppRoute = slug => `/${APP_ROUTE}/${slug}`;
+export const getAppRoute = slug => `/${APP_ROUTE}/${slug ?? ''}`;
 export const getUserFormRoute = slug => `/${USER_FORM_ROUTE}/${slug}`;

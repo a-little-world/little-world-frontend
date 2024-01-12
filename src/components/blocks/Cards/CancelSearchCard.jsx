@@ -7,16 +7,11 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
 
 import { changeSearchStatePost } from '../../../api';
 import { updateSearchState } from '../../../features/userData';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ModalCard from './ModalCard';
-
-const CancelSearchTitle = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.medium};
-`;
 
 function CancelSearchCard({ onClose }) {
   const { t } = useTranslation();
@@ -37,9 +32,9 @@ function CancelSearchCard({ onClose }) {
 
   return (
     <ModalCard>
-      <CancelSearchTitle tag="h2" center type={TextTypes.Heading2}>
+      <Text tag="h2" center type={TextTypes.Heading2}>
         {t('cp_cancel_search_confirm')}
-      </CancelSearchTitle>
+      </Text>
       <ButtonsContainer>
         <Button appearance={ButtonAppearance.Secondary} onClick={onClose}>
           {t('cp_cancel_search_reject')}

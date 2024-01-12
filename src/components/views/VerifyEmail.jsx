@@ -99,7 +99,7 @@ const VerifyEmail = () => {
           // consider this route after the requried for entry forms verify-email / user-form
           navigate(searchParams.get('next'));
         } else {
-          navigate(getAppRoute(''));
+          navigate(getAppRoute());
         }
       })
       .catch(onError);
@@ -145,7 +145,7 @@ const VerifyEmail = () => {
         <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}
-            onClick={() => navigate(`/${CHANGE_EMAIL_ROUTE}`)}
+            onClick={() => navigate(getAppRoute(CHANGE_EMAIL_ROUTE))}
             color={theme.color.text.link}
             size={ButtonSizes.Medium}
           >

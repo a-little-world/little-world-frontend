@@ -14,7 +14,7 @@ import { useTheme } from 'styled-components';
 
 import { setNewEmail } from '../../api';
 import { updateEmail } from '../../features/userData';
-import { VERIFY_EMAIL_ROUTE } from '../../routes';
+import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { registerInput } from './SignUp';
@@ -69,7 +69,7 @@ const ChangeEmail = () => {
       .then(() => {
         setIsSubmitting(false);
         dispatch(updateEmail(email));
-        navigate(`/${VERIFY_EMAIL_ROUTE}`);
+        navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
       })
       .catch(onError);
   };
@@ -102,7 +102,7 @@ const ChangeEmail = () => {
         <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}
-            onClick={() => navigate(`/${VERIFY_EMAIL_ROUTE}`)}
+            onClick={() => getAppRoute(VERIFY_EMAIL_ROUTE)}
             color={theme.color.text.link}
             size={ButtonSizes.Medium}
           >

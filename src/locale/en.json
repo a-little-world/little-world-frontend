@@ -10,8 +10,8 @@
     "help": "Help",
     "settings": "Settings"
   },
-  "btn_save": "save",
-  "btn_cancel": "cancel",
+  "btn_save": "Save",
+  "btn_cancel": "Cancel",
   "pcs_main_heading": "Set up",
   "pcs_sub_heading": "Would you like to join this conversation?",
   "pcs_signal_good": "Signal Good",

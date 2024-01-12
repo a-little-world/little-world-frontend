@@ -235,7 +235,6 @@ export const signUp = async ({
 
   if (response.ok) return response?.json();
   const responseBody = await response?.json();
-  console.log({ responseBody });
   throw formatApiError(responseBody);
 };
 
@@ -325,6 +324,23 @@ export const setNewEmail = async ({ email }) => {
     body: JSON.stringify({
       email,
     }),
+  });
+
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody);
+};
+
+export const setNewPassword = async data => {
+  const response = await fetch(`${BACKEND_URL}/api/user/changepw/`, {
+    headers: {
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'True',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
   });
 
   const responseBody = await response?.json();

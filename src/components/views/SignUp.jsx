@@ -3,7 +3,8 @@ import {
   ButtonSizes,
   Checkbox,
   InputWidth,
-  Label, // Link,
+  Label,
+  Link,
   Text,
   TextInput,
   TextTypes,
@@ -12,7 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { signUp } from '../../api';
 import { initialise } from '../../features/userData';
@@ -80,7 +81,7 @@ const SignUp = () => {
         setIsSubmitting(false);
         const nextRoute = signUpData.user?.emailVerified
           ? getAppRoute()
-          : `/${VERIFY_EMAIL_ROUTE}/`;
+          : getAppRoute(VERIFY_EMAIL_ROUTE);
         navigate(nextRoute);
       })
       .catch(onError);

@@ -1,9 +1,9 @@
-import React from "react";
-import { Controller } from "react-hook-form";
+import React from 'react';
+import { Controller } from 'react-hook-form';
 
-const ERROR_DE_MISSING = "profile.lang-de-missing";
+const ERROR_DE_MISSING = 'profile.lang-de-missing';
 
-const firstDuplicate = (arr) => {
+const firstDuplicate = arr => {
   const elementSet = new Set();
 
   for (let i = 0; i < arr.length; i++) {
@@ -18,7 +18,9 @@ const addErrorToLangSkill = (dropdownProps, error) => {
   const numberOfValues = dropdownProps.values.length;
   const errors = Array(numberOfValues).fill(undefined);
   const errorIndex =
-    error.message === ERROR_DE_MISSING ? numberOfValues - 1 : firstDuplicate(dropdownProps.values);
+    error.message === ERROR_DE_MISSING
+      ? numberOfValues - 1
+      : firstDuplicate(dropdownProps.values);
 
   errors.splice(errorIndex, 1, error?.message);
   return { ...dropdownProps, errors };
@@ -30,7 +32,7 @@ const FormStep = ({ content, control }) => {
     dataField,
     updater,
     currentValue,
-    valueKey = "value",
+    valueKey = 'value',
     errorRules,
     ...props
   } = content;
@@ -38,10 +40,13 @@ const FormStep = ({ content, control }) => {
   if (dataField) {
     return (
       <Controller
-        render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => {
+        render={({
+          field: { onChange, onBlur, value, name, ref },
+          fieldState: { error },
+        }) => {
           const componentProps = {
             ...props,
-            [updater]: (eventOrValue) => {
+            [updater]: eventOrValue => {
               const newVal = eventOrValue?.target
                 ? eventOrValue
                 : { target: { value: eventOrValue } };
@@ -49,9 +54,12 @@ const FormStep = ({ content, control }) => {
               onChange(newVal);
             },
             [valueKey]: value,
-            ...(dataField === "lang_skill" && error
+            ...(dataField === 'lang_skill' && error
               ? {
-                  firstDropdown: addErrorToLangSkill(props.firstDropdown, error),
+                  firstDropdown: addErrorToLangSkill(
+                    props.firstDropdown,
+                    error,
+                  ),
                 }
               : {}),
           };

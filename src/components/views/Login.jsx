@@ -17,6 +17,7 @@ import { useTheme } from 'styled-components';
 import { login } from '../../api';
 import { initialise } from '../../features/userData';
 import {
+  FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
   USER_FORM_ROUTE,
   VERIFY_EMAIL_ROUTE,
@@ -29,7 +30,6 @@ import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 const Login = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const theme = useTheme();
   const [searchParams] = useSearchParams();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,7 +82,7 @@ const Login = () => {
           navigate(searchParams.get('next'));
         } else {
           // per default route to /app on successful login
-          navigate(getAppRoute(''));
+          navigate(getAppRoute());
         }
       })
       .catch(onError);
@@ -119,13 +119,9 @@ const Login = () => {
           type="password"
         />
 
-        <Button
-          variation={ButtonVariations.Inline}
-          onClick={() => navigate('/forgot-password')}
-          color={theme.color.text.link}
-        >
+        <Link to={`/${FORGOT_PASSWORD_ROUTE}/`}>
           {t('login.forgot_password')}
-        </Button>
+        </Link>
         <FormMessage
           $visible={errors?.root?.serverError}
           $type={MessageTypes.Error}

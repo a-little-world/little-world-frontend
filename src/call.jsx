@@ -303,9 +303,8 @@ function VideoControls() {
       <button
         onClick={() => {
           clearActiveTracks();
-          console.log('cancel call');
           dispatch(stopActiveCall());
-          navigate(getAppRoute(''));
+          navigate(getAppRoute());
         }}
         className="end-call"
       >

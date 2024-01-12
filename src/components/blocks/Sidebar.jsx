@@ -61,7 +61,7 @@ function Sidebar({ sidebarMobile }) {
   const navigate = useNavigate();
 
   const buttonData = [
-    { label: 'start', path: getAppRoute(''), Icon: DashboardIcon },
+    { label: 'start', path: getAppRoute(), Icon: DashboardIcon },
     { label: 'messages', path: getAppRoute(CHAT_ROUTE), Icon: MessageIcon },
     {
       label: 'my_profile',

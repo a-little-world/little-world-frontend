@@ -1,16 +1,30 @@
-import throttle from "lodash.throttle";
-import React, { Component } from "react";
-import { Button, ButtonVariations, PhoneIcon } from '@a-little-world/little-world-design-system'
-import { Input, MessageList, Navbar, SideBar } from "react-chat-elements";
-import { withTranslation } from "react-i18next";
-import { toast, ToastContainer } from "react-toastify";
-import ReconnectingWebSocket from "reconnecting-websocket";
-import sanitizeHtml from "sanitize-html";
+import {
+  Button,
+  ButtonVariations,
+  PhoneIcon,
+} from '@a-little-world/little-world-design-system';
+import throttle from 'lodash.throttle';
+import React, { Component } from 'react';
+import { Input, MessageList, Navbar, SideBar } from 'react-chat-elements';
+import 'react-chat-elements/dist/main.css';
+import { withTranslation } from 'react-i18next';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ReconnectingWebSocket from 'reconnecting-websocket';
+import sanitizeHtml from 'sanitize-html';
 
-import { BACKEND_URL, DEVELOPMENT, IS_CAPACITOR_BUILD, PRODUCTION } from "../ENVIRONMENT";
-import AppointmentsLayout from "../layout/layout";
-import Link from "../path-prepend";
-import { getAppRoute } from "../routes";
+import {
+  BACKEND_URL,
+  DEVELOPMENT,
+  IS_CAPACITOR_BUILD,
+  PRODUCTION,
+} from '../ENVIRONMENT';
+import AppointmentsLayout from '../layout/layout';
+import Link from '../path-prepend';
+import { getAppRoute } from '../routes';
+import ChatItem from './ChatItem-override';
+import ChatList from './ChatList-override';
+import './chat-override.css';
 import {
   createNewDialogModelFromIncomingMessageBox,
   fetchDialogs,
@@ -23,14 +37,7 @@ import {
   sendIsTypingMessage,
   sendMessageReadMessage,
   sendOutgoingTextMessage,
-} from "./chat.lib";
-import ChatItem from "./ChatItem-override";
-import ChatList from "./ChatList-override";
-
-import "react-chat-elements/dist/main.css";
-import "react-toastify/dist/ReactToastify.css";
-
-import "./chat-override.css";
+} from './chat.lib';
 
 // Monkey path, disables only success toast, on if not in DEVELOPMENT
 // We like to keep the error messages (if any), so in that case we can help users to debug
@@ -46,34 +53,36 @@ const TYPING_TIMEOUT = 5000;
 const chatItemSortingFunction = (a, b) => b.date - a.date;
 
 const defaultArcivedChatAvatar = {
-  sex: "man",
-  faceColor: "#000",
-  earSize: "big",
-  eyeStyle: "circle",
-  noseStyle: "long",
-  mouthStyle: "smile",
-  shirtStyle: "short",
-  glassesStyle: "round",
-  hairColor: "#000",
-  hairStyle: "thick",
-  hatStyle: "none",
-  hatColor: "#000",
-  eyeBrowStyle: "up",
-  shirtColor: "#000",
-  bgColor: "#fff",
+  sex: 'man',
+  faceColor: '#000',
+  earSize: 'big',
+  eyeStyle: 'circle',
+  noseStyle: 'long',
+  mouthStyle: 'smile',
+  shirtStyle: 'short',
+  glassesStyle: 'round',
+  hairColor: '#000',
+  hairStyle: 'thick',
+  hatStyle: 'none',
+  hatColor: '#000',
+  eyeBrowStyle: 'up',
+  shirtColor: '#000',
+  bgColor: '#fff',
 };
 
 /* add image source and user's name to dialogList, which is used by chatList/item */
 const addMatchesInfo = (dialogList, matchesInfo) => {
   if (matchesInfo) {
-    const result = dialogList.map((dialog) => {
-      console.log("MATCHINFO", matchesInfo);
-      const matchInfo = matchesInfo.filter(({ partner }) => partner.id === dialog.alt)[0];
-      console.log("FOUND INFO", matchInfo);
+    const result = dialogList.map(dialog => {
+      console.log('MATCHINFO', matchesInfo);
+      const matchInfo = matchesInfo.filter(
+        ({ partner }) => partner.id === dialog.alt,
+      )[0];
+      console.log('FOUND INFO', matchInfo);
       if (matchInfo === undefined) {
         return Object.assign(dialog, {
           avatar: defaultArcivedChatAvatar,
-          title: "Could not retrieve user info",
+          title: 'Could not retrieve user info',
         });
       }
 
@@ -81,9 +90,14 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
        * one with object speader so that the object prototype is not altered
        */
       const matchProfile = matchInfo.partner;
-      const usesAvatar = matchProfile.image_type === "avatar";
-      let avatarImgOrDefault = usesAvatar ? matchProfile.avatar_config : matchProfile.image;
-      if (matchProfile.image === null && Object.keys(matchProfile.avatar_config).length === 0) {
+      const usesAvatar = matchProfile.image_type === 'avatar';
+      let avatarImgOrDefault = usesAvatar
+        ? matchProfile.avatar_config
+        : matchProfile.image;
+      if (
+        matchProfile.image === null &&
+        Object.keys(matchProfile.avatar_config).length === 0
+      ) {
         avatarImgOrDefault = defaultArcivedChatAvatar;
       }
       return Object.assign(dialog, {
@@ -104,8 +118,8 @@ class Chat extends Component {
 
     this.clearTextInput = () => {
       if (this.textInput) {
-        this.textInput.value = "";
-        this.textInput.style.height = "";
+        this.textInput.value = '';
+        this.textInput.style.height = '';
         // shrinks input box immediately after sending message, rather than
         // doing so on new text input
       }
@@ -132,14 +146,18 @@ class Chat extends Component {
       selfInfo: null,
       selectedDialog: null,
       socket: new ReconnectingWebSocket(
-        `${PRODUCTION ? "wss" : "ws"}://${
-          IS_CAPACITOR_BUILD ? (BACKEND_URL.split("//").pop()) : (DEVELOPMENT ? BACKEND_URL.substring(7) : window.origin.split("//").pop())
-        }/api/chat/ws`
+        `${PRODUCTION ? 'wss' : 'ws'}://${
+          IS_CAPACITOR_BUILD
+            ? BACKEND_URL.split('//').pop()
+            : DEVELOPMENT
+            ? BACKEND_URL.substring(7)
+            : window.origin.split('//').pop()
+        }/api/chat/ws`,
       ) /* without the 'https://' */,
       userWasSelected: !!this.props.userPk,
       open: false,
     };
-    console.log("SOCKET", this.state.socket);
+    console.log('SOCKET', this.state.socket);
     // some js magic
     this.performSendingMessage = this.performSendingMessage.bind(this);
     this.addMessage = this.addMessage.bind(this);
@@ -157,9 +175,11 @@ class Chat extends Component {
       const val = this.searchInput.input.value;
 
       if (!val || val.length === 0) {
-        this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
+        this.setState(prevState => ({
+          filteredDialogList: prevState.dialogList,
+        }));
       } else {
-        this.setState((prevState) => ({
+        this.setState(prevState => ({
           filteredDialogList: prevState.dialogList.filter(function (el) {
             return el.title.toLowerCase().includes(val.toLowerCase());
           }),
@@ -169,8 +189,9 @@ class Chat extends Component {
   }
 
   componentDidMount() {
-    this.textInput = document.getElementById("test-input").firstChild.firstChild;
-    fetchMessages().then((r) => {
+    this.textInput =
+      document.getElementById('test-input').firstChild.firstChild;
+    fetchMessages().then(r => {
       if (r.tag === 0) {
         this.setState({ messageList: r.fields[0] });
       } else {
@@ -178,14 +199,14 @@ class Chat extends Component {
       }
     });
 
-    fetchDialogs().then((r) => {
+    fetchDialogs().then(r => {
       const tmpMatchIdMap = {};
       for (let i = 0; i < r.fields[0].length; i++) {
         tmpMatchIdMap[r.fields[0][i].id] = r.fields[0][i].alt;
       }
       if (this.props.userPkMappingCallback !== undefined) {
         this.props.userPkMappingCallback(tmpMatchIdMap);
-        console.log("SENDING MAPPING", tmpMatchIdMap);
+        console.log('SENDING MAPPING', tmpMatchIdMap);
       }
       this.setState({ userMatchPkMap: tmpMatchIdMap });
       if (r.tag === 0) {
@@ -205,7 +226,7 @@ class Chat extends Component {
         toast.error(r.fields[0]);
       }
     });
-    fetchSelfInfo().then((r) => {
+    fetchSelfInfo().then(r => {
       if (r.tag === 0) {
         this.setState({ selfInfo: r.fields[0] });
       } else {
@@ -225,7 +246,7 @@ class Chat extends Component {
     };
 
     socket.onopen = function (e) {
-      toast.success("Connected!", toastOptions);
+      toast.success('Connected!', toastOptions);
       that.setState({ socketConnectionState: socket.readyState });
     };
     socket.onmessage = function (e) {
@@ -238,7 +259,7 @@ class Chat extends Component {
         changePKOnlineStatus: that.changePKOnlineStatus,
         setMessageIdAsRead: that.setMessageIdAsRead,
         newUnreadCount: that.newUnreadCount,
-        performAdminCallBackAction: (action) => {
+        performAdminCallBackAction: action => {
           that.props.adminActionCallback(action);
         },
       });
@@ -247,22 +268,22 @@ class Chat extends Component {
       }
     };
     socket.onclose = function (e) {
-      toast.info("Disconnected...", toastOptions);
+      toast.info('Disconnected...', toastOptions);
       that.setState({ socketConnectionState: socket.readyState });
     };
   }
 
   componentDidUpdate() {
     // scroll message box to bottom when messages are updated
-    const scrollEl = document.querySelector(".rce-mlist");
+    const scrollEl = document.querySelector('.rce-mlist');
     scrollEl.scrollTop = scrollEl.scrollHeight;
   }
 
   setMessageIdAsRead(msg_id) {
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       messageList: prevState.messageList.map(function (el) {
         if (el.data.message_id.Equals(msg_id)) {
-          return { ...el, status: "read" };
+          return { ...el, status: 'read' };
         }
         return el;
       }),
@@ -271,16 +292,16 @@ class Chat extends Component {
 
   getSocketState() {
     if (this.state.socket.readyState === 0) {
-      return "Connecting...";
+      return 'Connecting...';
     }
     if (this.state.socket.readyState === 1) {
-      return "Connected";
+      return 'Connected';
     }
     if (this.state.socket.readyState === 2) {
-      return "Disconnecting...";
+      return 'Disconnecting...';
     }
     if (this.state.socket.readyState === 3) {
-      return "Disconnected";
+      return 'Disconnected';
     }
   }
 
@@ -293,19 +314,19 @@ class Chat extends Component {
     }
 
     this.setState({ selectedDialog: item });
-    this.setState((prevState) => ({
-      dialogList: prevState.dialogList.map((el) =>
+    this.setState(prevState => ({
+      dialogList: prevState.dialogList.map(el =>
         el.id === item.id
-          ? { ...el, statusColorType: "encircle" }
-          : { ...el, statusColorType: undefined }
+          ? { ...el, statusColorType: 'encircle' }
+          : { ...el, statusColorType: undefined },
       ),
     }));
-    this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
+    this.setState(prevState => ({ filteredDialogList: prevState.dialogList }));
     markMessagesForDialogAsRead(
       this.state.socket,
       item,
       this.state.messageList,
-      this.setMessageIdAsRead
+      this.setMessageIdAsRead,
     );
   }
 
@@ -340,18 +361,18 @@ class Chat extends Component {
       // this.props.updateMatchesOnlineStates(stateMapping, false);
     }
     this.setState({ onlinePKs: onlines });
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       dialogList: prevState.dialogList.map(function (el) {
         if (el.id === pk) {
           if (onoff) {
-            return { ...el, statusColor: "lightgreen" };
+            return { ...el, statusColor: 'lightgreen' };
           }
-          return { ...el, statusColor: "" };
+          return { ...el, statusColor: '' };
         }
         return el;
       }),
     }));
-    this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
+    this.setState(prevState => ({ filteredDialogList: prevState.dialogList }));
   }
 
   addMessage(msg) {
@@ -361,8 +382,12 @@ class Chat extends Component {
       this.state.selectedDialog &&
       this.state.selectedDialog.id === msg.data.dialog_id
     ) {
-      sendMessageReadMessage(this.state.socket, msg.data.dialog_id, msg.data.message_id);
-      msg.status = "read";
+      sendMessageReadMessage(
+        this.state.socket,
+        msg.data.dialog_id,
+        msg.data.message_id,
+      );
+      msg.status = 'read';
     }
     const list = this.state.messageList;
     list.push(msg);
@@ -373,7 +398,7 @@ class Chat extends Component {
     let doesntNeedLastMessageSet = false;
     if (!msg.data.out) {
       const dialogs = this.state.dialogList;
-      const hasDialogAlready = dialogs.some((e) => e.id === msg.data.dialog_id);
+      const hasDialogAlready = dialogs.some(e => e.id === msg.data.dialog_id);
       if (!hasDialogAlready) {
         const d = createNewDialogModelFromIncomingMessageBox(msg);
         dialogs.push(d);
@@ -384,7 +409,7 @@ class Chat extends Component {
       }
     }
     if (!doesntNeedLastMessageSet) {
-      this.setState((prevState) => ({
+      this.setState(prevState => ({
         dialogList: prevState.dialogList.map(function (el) {
           if (el.id === msg.data.dialog_id) {
             return { ...el, subtitle: getSubtitleTextFromMessageBox(msg) };
@@ -394,24 +419,24 @@ class Chat extends Component {
       }));
     }
 
-    this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
+    this.setState(prevState => ({ filteredDialogList: prevState.dialogList }));
   }
 
   replaceMessageId(old_id, new_id) {
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       messageList: prevState.messageList.map(function (el) {
         if (el.data.message_id.Equals(old_id)) {
-          let new_status = "";
+          let new_status = '';
           if (el.data.out) {
-            new_status = "sent";
+            new_status = 'sent';
           } else if (
             prevState.selectedDialog &&
             prevState.selectedDialog.id === el.data.dialog_id
           ) {
             sendMessageReadMessage(prevState.socket, el.data.dialog_id, new_id);
-            new_status = "read";
+            new_status = 'read';
           } else {
-            new_status = "received";
+            new_status = 'received';
           }
           return {
             ...el,
@@ -430,7 +455,7 @@ class Chat extends Component {
   }
 
   newUnreadCount(dialog_id, count) {
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       dialogList: prevState.dialogList.map(function (el) {
         if (el.id === dialog_id) {
           return { ...el, unread: count };
@@ -438,7 +463,7 @@ class Chat extends Component {
         return el;
       }),
     }));
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       selectedDialog:
         prevState.selectedDialog && prevState.selectedDialog.id === dialog_id
           ? {
@@ -447,7 +472,7 @@ class Chat extends Component {
             }
           : prevState.selectedDialog,
     }));
-    this.setState((prevState) => ({ filteredDialogList: prevState.dialogList }));
+    this.setState(prevState => ({ filteredDialogList: prevState.dialogList }));
   }
 
   performSendingMessage() {
@@ -456,7 +481,7 @@ class Chat extends Component {
         this.state.socket,
         this.textInput.value,
         this.state.selectedDialog.id, // id is not always userPk as it stands
-        this.state.selfInfo
+        this.state.selfInfo,
       );
       this.clearTextInput();
 
@@ -469,7 +494,7 @@ class Chat extends Component {
   Core = () => {
     const { t } = this.props;
 
-    const handleTextUpdate = (e) => {
+    const handleTextUpdate = e => {
       this.textInput = e.target;
     };
 
@@ -482,19 +507,21 @@ class Chat extends Component {
           <div className="partner-request">
             <div className="match-notify">
               <img className="match-celebrate" alt="" />
-              <div className="text">{t("chat_success_message", { userName })}</div>
+              <div className="text">
+                {t('chat_success_message', { userName })}
+              </div>
             </div>
             <div className="match-process">
-              <div className="this-request">{t("chat_request_header")}</div>
+              <div className="this-request">{t('chat_request_header')}</div>
               <div className="buttons">
                 <button type="button" className="request-accept">
-                  {t("chat_request_accept")}
+                  {t('chat_request_accept')}
                 </button>
                 <button type="button" className="request-deny">
-                  {t("chat_request_decline")}
+                  {t('chat_request_decline')}
                 </button>
                 <button type="button" className="request-info">
-                  {t("chat_request_more_info")}
+                  {t('chat_request_more_info')}
                 </button>
               </div>
             </div>
@@ -509,14 +536,15 @@ class Chat extends Component {
                 x.onDownload();
               }}
               downButtonBadge={
-                this.state.selectedDialog && this.state.selectedDialog.unread > 0
+                this.state.selectedDialog &&
+                this.state.selectedDialog.unread > 0
                   ? this.state.selectedDialog.unread
-                  : ""
+                  : ''
               }
               dataSource={filterMessagesForDialog(
                 this.state.selectedDialog,
-                this.state.messageList
-              ).map((msg) => {
+                this.state.messageList,
+              ).map(msg => {
                 return {
                   ...msg,
                   text: (
@@ -524,10 +552,17 @@ class Chat extends Component {
                       className="styled-message-box"
                       dangerouslySetInnerHTML={{
                         __html: sanitizeHtml(msg.text, {
-                          allowedTags: ["b", "i", "em", "strong", "a", "button"],
+                          allowedTags: [
+                            'b',
+                            'i',
+                            'em',
+                            'strong',
+                            'a',
+                            'button',
+                          ],
                           allowedAttributes: {
-                            a: ["href", "target"],
-                            button: ["data-cal-link", "data-cal-config"],
+                            a: ['href', 'target'],
+                            button: ['data-cal-link', 'data-cal-config'],
                           },
                         }),
                       }}
@@ -538,11 +573,11 @@ class Chat extends Component {
             />
             <div id="test-input">
               <Input
-                placeholder={t("chat_input_text")}
+                placeholder={t('chat_input_text')}
                 defaultValue=""
                 id="textInput"
                 multiline
-                onKeyPress={(e) => {
+                onKeyPress={e => {
                   if (e.charCode !== 13) {
                     this.isTyping();
                   }
@@ -575,7 +610,7 @@ class Chat extends Component {
                     disabled={this.state.socket.readyState !== 1}
                     onClick={() => this.performSendingMessage()}
                   >
-                    {t("chat_send")}
+                    {t('chat_send')}
                   </Button>
                 }
               />
@@ -598,7 +633,7 @@ class Chat extends Component {
 
     if (this.props.userPk && !userPk) {
       // this happens when clicking "message" button on a user profile
-      document.body.classList.add("hide-mobile-header");
+      document.body.classList.add('hide-mobile-header');
     }
 
     if (this.props.userPk && !this.props.matchesInfo) {
@@ -608,41 +643,50 @@ class Chat extends Component {
        */
       return <Core />;
     }
-    const clickUser = (item) => {
+    const clickUser = item => {
       this.selectDialog(item);
       this.setState({ userWasSelected: true });
-      document.body.classList.add("hide-mobile-header");
+      document.body.classList.add('hide-mobile-header');
     };
 
     return (
       <>
         {this.state.open && (
           <div className="overlay-shade">
-            <div className="modal-box " style={{ height: "auto", minWidth: "50%" }}>
+            <div
+              className="modal-box "
+              style={{ height: 'auto', minWidth: '50%' }}
+            >
               <AppointmentsLayout setClose={this.setClose} id={userPk} />
             </div>
           </div>
         )}
         <div className="header">
-          <span className="text">{t("chat_header")}</span>
+          <span className="text">{t('chat_header')}</span>
         </div>
-        <div className={this.props.showChat ? "container" : "container disable-chat"}>
+        <div
+          className={
+            this.props.showChat ? 'container' : 'container disable-chat'
+          }
+        >
           <div
             className={
-              this.state.userWasSelected ? "chat-list-box" : "chat-list-box active-panel-mobile"
+              this.state.userWasSelected
+                ? 'chat-list-box'
+                : 'chat-list-box active-panel-mobile'
             }
           >
             <SideBar
               type="light"
               data={{
-                className: "",
+                className: '',
                 top: (
                   <div className="chat-list">
                     <ToastContainer />
                     <h3 className="chat-header" />
                     <Input
-                      placeholder={t("chat_search")}
-                      onKeyPress={(e) => {
+                      placeholder={t('chat_search')}
+                      onKeyPress={e => {
                         if (e.charCode !== 13) {
                           this.localSearch();
                         }
@@ -670,7 +714,7 @@ class Chat extends Component {
               {!pending && (
                 <Link className="find-partner">
                   <img className="plus" alt="add" />
-                  {t("chat_find_new_person")}
+                  {t('chat_find_new_person')}
                 </Link>
               )}
               {pending && (
@@ -678,16 +722,18 @@ class Chat extends Component {
                   <div className="content">
                     <img className="searching" alt="Search in progress" />
                     <div className="text">
-                      <div className="header">{t("chat_search_running_header")}</div>
-                      {t("chat_search_running_text")}
+                      <div className="header">
+                        {t('chat_search_running_header')}
+                      </div>
+                      {t('chat_search_running_text')}
                     </div>
                   </div>
                   <div className="buttons">
                     <button type="button" className="cancel">
-                      {t("chat_search_cancel")}
+                      {t('chat_search_cancel')}
                     </button>
                     <button type="button" className="change">
-                      {t("chat_search_change")}
+                      {t('chat_search_change')}
                     </button>
                   </div>
                 </div>
@@ -696,7 +742,9 @@ class Chat extends Component {
           </div>
           <div
             className={
-              this.state.userWasSelected ? "right-panel active-panel-mobile" : "right-panel"
+              this.state.userWasSelected
+                ? 'right-panel active-panel-mobile'
+                : 'right-panel'
             }
           >
             <Navbar
@@ -706,28 +754,36 @@ class Chat extends Component {
                     type="button"
                     className="chat-back"
                     onClick={() => {
-                      document.body.classList.remove("hide-mobile-header");
+                      document.body.classList.remove('hide-mobile-header');
                       this.setState({ userWasSelected: false });
                     }}
                   >
                     <img alt="return to chat partner selection" />
                   </button>
-                  <Link to={getAppRoute("")} state={{ userPk }} className="profile">
+                  <Link
+                    to={getAppRoute()}
+                    state={{ userPk }}
+                    className="profile"
+                  >
                     <ChatItem
                       {...this.state.selectedDialog}
                       date={null}
                       unread={0}
                       statusColor={
                         this.state.selectedDialog &&
-                        this.state.onlinePKs.includes(this.state.selectedDialog.id)
-                          ? "lightgreen"
-                          : ""
+                        this.state.onlinePKs.includes(
+                          this.state.selectedDialog.id,
+                        )
+                          ? 'lightgreen'
+                          : ''
                       }
                       subtitle={
                         this.state.selectedDialog &&
-                        this.state.typingPKs.includes(this.state.selectedDialog.id)
-                          ? "typing..."
-                          : ""
+                        this.state.typingPKs.includes(
+                          this.state.selectedDialog.id,
+                        )
+                          ? 'typing...'
+                          : ''
                       }
                     />
                   </Link>
@@ -751,10 +807,10 @@ class Chat extends Component {
             />
             <div className="buttons-mobile">
               <button type="button" className="free-appointments disabled">
-                <span className="text">{t("chat_show_free_appointments")}</span>
+                <span className="text">{t('chat_show_free_appointments')}</span>
               </button>
               <button type="button" className="suggest-appointment disabled">
-                <span className="text">{t("chat_suggest_appointment")}</span>
+                <span className="text">{t('chat_suggest_appointment')}</span>
               </button>
             </div>
             <Core />

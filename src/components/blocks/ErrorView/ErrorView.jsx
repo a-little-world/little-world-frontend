@@ -7,7 +7,7 @@ const RouterError = () => (
     <MessageCard
       title="error_view.title"
       linkText="error_view.button"
-      linkTo={getAppRoute('')}
+      linkTo={getAppRoute()}
     />
   </Layout>
 );

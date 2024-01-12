@@ -41,7 +41,7 @@ const AppointmentsLayout = ({ setClose, id }) => {
   const [tableSelection, setTableSelection] = React.useState('first');
   const matches = useSelector(state => state.userData.matches);
   const user = useSelector(state => state.userData.user);
-  console.log({ user, matches });
+
   let selectedUser = matches.find(el => el.user.hash === id);
 
   let data =

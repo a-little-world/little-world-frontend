@@ -1,3 +1,8 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+
 import { postUserProfileUpdate } from '../../api';
 import { updateProfile } from '../../features/userData';
 import '../../i18n';
@@ -5,10 +10,6 @@ import Link from '../../path-prepend';
 import { getAppRoute } from '../../routes';
 import ProfileCard from '../blocks/Cards/ProfileCard';
 import './profile.css';
-import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 
 function InterestsSelector({ inTopicSelection }) {
   const { t } = useTranslation();
@@ -317,7 +318,7 @@ function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
     <div className="profile-component">
       <div className="header">
         {!isSelf && (
-          <Link to={getAppRoute('')} className="back">
+          <Link to={getAppRoute()} className="back">
             <img alt="back button" />
           </Link>
         )}

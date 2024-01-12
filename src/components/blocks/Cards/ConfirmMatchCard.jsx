@@ -18,10 +18,10 @@ const InfoContainer = styled.div`
   gap: 16px;
 
   ${({ theme }) => `
-  margin-bottom: ${theme.spacing.large};
+  margin-bottom: ${theme.spacing.xxsmall};
 
   @media (min-width: ${theme.breakpoints.small}) {
-    margin-bottom: ${theme.spacing.xlarge};
+    margin-bottom: ${theme.spacing.small};
   }
   `}
 `;

@@ -79,7 +79,7 @@
 .incoming-call-modal .content {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 24px;
 }
 
 .incoming-call-modal .profile-avatar,

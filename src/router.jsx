@@ -38,7 +38,7 @@ import {
 } from './routes';
 import theme from './theme';
 
-const isCapaitor = IS_CAPACITOR_BUILD || false;
+const isCapacitor = IS_CAPACITOR_BUILD || false;
 
 export const Root = ({ children }) => (
   <ThemeProvider theme={theme}>
@@ -85,24 +85,6 @@ const ROOT_ROUTES = [
     errorElement: <RouterError />,
   },
   {
-    path: VERIFY_EMAIL_ROUTE,
-    element: (
-      <FormLayout>
-        <VerifyEmail />
-      </FormLayout>
-    ),
-    errorElement: <RouterError />,
-  },
-  {
-    path: CHANGE_EMAIL_ROUTE,
-    element: (
-      <FormLayout>
-        <ChangeEmail />
-      </FormLayout>
-    ),
-    errorElement: <RouterError />,
-  },
-  {
     path: USER_FORM_ROUTE,
     element: <FormLayout />,
     errorElement: <RouterError />,
@@ -125,6 +107,24 @@ const ROOT_ROUTES = [
   {
     path: `${APP_ROUTE}/:id`,
     element: <RouterError />,
+    errorElement: <RouterError />,
+  },
+  {
+    path: getAppRoute(VERIFY_EMAIL_ROUTE),
+    element: (
+      <FormLayout>
+        <VerifyEmail />
+      </FormLayout>
+    ),
+    errorElement: <RouterError />,
+  },
+  {
+    path: getAppRoute(CHANGE_EMAIL_ROUTE),
+    element: (
+      <FormLayout>
+        <ChangeEmail />
+      </FormLayout>
+    ),
     errorElement: <RouterError />,
   },
   {
@@ -176,7 +176,7 @@ const ROOT_ROUTES = [
   },
 ];
 
-if (isCapaitor) {
+if (isCapacitor) {
   ROOT_ROUTES.push({
     path: '',
     element: (

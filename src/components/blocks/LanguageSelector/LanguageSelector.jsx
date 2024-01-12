@@ -1,10 +1,13 @@
-import { Button, ButtonVariations } from "@a-little-world/little-world-design-system";
-import Cookies from "js-cookie";
-import { useTranslation } from "react-i18next";
-import styled, { css } from "styled-components";
+import {
+  Button,
+  ButtonVariations,
+} from '@a-little-world/little-world-design-system';
+import Cookies from 'js-cookie';
+import { useTranslation } from 'react-i18next';
+import styled, { css } from 'styled-components';
 
-import { LANGUAGES } from "../../../constants";
-import { COOKIE_LANG } from "../../../i18n";
+import { LANGUAGES } from '../../../constants';
+import { COOKIE_LANG } from '../../../i18n';
 
 const Selector = styled.div`
   display: flex;
@@ -33,7 +36,7 @@ const LanguageButton = styled(Button)`
 const LanguageSelector = () => {
   const { i18n } = useTranslation();
 
-  const handleChangeLanguage = (lang) => {
+  const handleChangeLanguage = lang => {
     i18n.changeLanguage(lang);
     Cookies.set(COOKIE_LANG, lang);
   };

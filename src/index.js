@@ -11,7 +11,7 @@ import reportWebVitals from './reportWebVitals';
 import { Root } from './router';
 
 const isDevelopment = DEVELOPMENT;
-const isCapaitor = IS_CAPACITOR_BUILD || false;
+const isCapacitor = IS_CAPACITOR_BUILD || false;
 
 let root;
 
@@ -77,7 +77,7 @@ window.renderMessageView = (
  * 3. Capaitor build, call the `renderApp` directly as its used in full static export
  */
 
-if (isDevelopment && !isCapaitor) {
+if (isDevelopment && !isCapacitor) {
   import('./loginSimulator.js').then(simulator => {
     simulator.simulatedAutoLogin().then(data => {
       const initData = data?.data;
@@ -86,10 +86,10 @@ if (isDevelopment && !isCapaitor) {
       window.renderApp({ initData }, { apiTranslations });
     });
   });
-} else if (isCapaitor) {
+} else if (isCapacitor) {
   const apiTranslations = JSON.parse(optionsTranslations.apiTranslations);
   const data = { apiOptions: optionsTranslations.apiOptions };
-  console.log('DATA', data, apiTranslations, isCapaitor);
+  console.log('DATA', data, apiTranslations, isCapacitor);
 
   window.renderApp({ initData: data }, { apiTranslations });
 }

@@ -206,7 +206,7 @@ function Main() {
   const onRejectCall = () => {
     dispatch(blockIncomingCall({ userId: incomingCalls[0]?.userId }));
   };
-  console.log({ incomingCalls, callSetup });
+
   return (
     <AppLayout
       page={use}

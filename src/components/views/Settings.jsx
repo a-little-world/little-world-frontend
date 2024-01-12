@@ -3,7 +3,9 @@ import {
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
+  Card,
   Dropdown,
+  Link,
   Modal,
   PencilIcon,
   Text,
@@ -11,21 +13,43 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import styled, { useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
-import { BACKEND_URL, DEVELOPMENT } from '../../ENVIRONMENT';
-import { mutateUserData } from '../../api';
+import { DEVELOPMENT } from '../../ENVIRONMENT';
+import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
 import { updateProfile } from '../../features/userData';
-import { RESET_PASSWORD_ROUTE } from '../../routes';
+import { FORGOT_PASSWORD_ROUTE } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
+import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard from '../blocks/Cards/ModalCard';
-import { SubmitError } from '../blocks/Form/styles';
-import './settings.css';
+import { registerInput } from './SignUp';
+
+const types = {
+  first_name: 'text',
+  second_name: 'text',
+  email: 'email',
+  password: 'password',
+  phone_mobile: 'tel',
+  postal_code: 'number',
+  birth_year: 'number',
+};
+
+const displayLanguages = [
+  { value: 'en', label: '🇬🇧 English' },
+  { value: 'de', label: '🇩🇪 Deutsch' },
+];
+
+const repeaters = ['password', 'email'];
+
+const StyledFormMessage = styled(FormMessage)`
+  margin-bottom: ${({ theme }) => theme.spacing.small};
+`;
 
 const SettingsItem = styled.div`
   max-width: 360px;
@@ -43,6 +67,36 @@ const Field = styled.div`
 const FieldTitle = styled(Text)`
   color: ${({ theme }) => theme.color.text.primary};
   margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+`;
+
+const ForgotPasswordLink = styled(Link)`
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+`;
+
+const ContentPanel = styled(Card)`
+  border: 1px solid ${({ theme }) => theme.color.border.subtle};
+
+  ${({ theme }) => css`
+    margin: ${theme.spacing.xxsmall};
+    @media (min-width: ${theme.breakpoints.small}) {
+      padding: ${theme.spacing.small};
+      margin: ${theme.spacing.small};
+    }
+    @media (min-width: ${theme.breakpoints.large}) {
+      padding: ${theme.spacing.medium};
+      margin: 0;
+    }
+  `}
+`;
+
+const Items = styled.div`
+  border: 1px solid ${({ theme }) => theme.color.border.subtle};
+  background: ${({ theme }) => theme.color.surface.secondary};
+  padding: ${({ theme }) => theme.spacing.small};
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
 `;
 
 function ListItem({ section, label, value, setEditing }) {
@@ -73,244 +127,183 @@ function ListItem({ section, label, value, setEditing }) {
   );
 }
 
-const types = {
-  display_language: 'select',
-  first_name: 'text',
-  second_name: 'text',
-  email: 'email',
-  password: 'password',
-  phone_mobile: 'tel',
-  postal_code: 'numeric',
-  birth_year: 'numeric',
-};
-const allowedChars = {
-  tel: /^[+]?[0-9- ]*$/, // numbers spaces, dashes. can start with one +
-  numeric: /^[0-9]*$/, // numbers only
-  email: /^[a-z0-9@.+-]*$/i, // alphanumeric and @ . + -
-};
-const displayLanguages = [
-  { value: 'en', label: '🇬🇧 English' },
-  { value: 'de', label: '🇩🇪 Deutsch' },
-];
-
-const repeaters = ['password', 'email'];
-
-const submitItem = (item, newValue) => {
-  return submitData({ [item]: newValue }, '/api/profile/');
-};
-
-const submitData = (data, endpoint) => {
-  return fetch(`${BACKEND_URL}${endpoint}`, {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-UseTagsOnly': true, // This automaticly requests error tags instead of direct translations!
-    },
-    body: JSON.stringify(data),
-  }).then(response => {
-    const { status, statusText } = response;
-    if (status === 200) {
-      return response.json();
-    } else {
-      throw new Error(`Error "${status}" submitting data: ${statusText}`);
-    }
-  });
-};
-
-const apiChangePw = (oldPass, newPass) => {
-  const data = {
-    password_old: oldPass,
-    password_new: newPass,
-    password_new2: newPass,
-  };
-  return submitData(data, '/api/user/changepw/');
-};
-
-const apiChangeEmail = email =>
-  submitData({ email }, '/api/user/change_email/');
-/* WARNING: this will log the user out of the dashboard and require to enter a new verification code ( impossible using only this frontend ) */
-
-const allowedCodes = [
-  // copied from profile.jsx. should globalise.
-  8, // backspace
-  16, // shift - for selection
-  17, // ctrl - for word deletion
-  33, // pageUp
-  34, // pageDown
-  35, // end
-  36, // home
-  37, // left arrow
-  38, // up arrow
-  39, // right arrow
-  40, // down arrow
-  46, // delete
-];
-
-function PassChange({ refIn = undefined }) {
-  const { t } = useTranslation();
-  const theme = useTheme();
-  const navigate = useNavigate();
-
-  return (
-    <>
-      <TextInput
-        label={t('settings.personal_password_current')}
-        inputRef={refIn}
-        type="password"
-      />
-      <Button
-        variation={ButtonVariations.Inline}
-        onClick={() => navigate(`/${RESET_PASSWORD_ROUTE}/`)}
-        color={theme.color.text.link}
-      >
-        {t('settings.personal_password_forgot')}
-      </Button>
-      <TextInput label={t('settings.personal_password_new')} type="password" />
-      <TextInput
-        label={t('settings.personal_password_new_rpt')}
-        type="password"
-      />
-    </>
-  );
-}
-
 function EditFieldCard({ label, valueIn, setEditing }) {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const type = types[label];
-  const [value, setValue] = useState(valueIn);
-  const [waiting, setWaiting] = useState(false);
-  const [errors, setErrors] = useState([]);
-  const textInput = useRef();
-  console.log({ valueIn });
-  const handleChange = e => {
-    const val = e.target.value;
-    if (
-      !['tel', 'numeric', 'email'].includes(type) ||
-      allowedChars[type].test(val)
-    ) {
-      setValue(val);
-    } else {
-      e.preventDefault();
-    }
-  };
+  const needsRelogin = ['email', 'password'].includes(label);
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    setFocus,
+  } = useForm();
 
   const onResponseSuccess = data => {
     dispatch(updateProfile(data));
     setEditing(false);
-  };
-  const onResponseFailure = error => {
-    const backendLabel = label;
-    const errorsList = error[backendLabel] || ['unknown error'];
-    console.log({ backendLabel, error });
-    setErrors(errorsList); // update error message(s)
-    setWaiting(false);
+    if (needsRelogin) window.location.reload();
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    setErrors([]); // clear existing errors
-    const val = e.target.elements[0].value;
-    setWaiting(true);
+  const onError = e => {
+    setIsSubmitting(false);
+    if (e?.message) {
+      setError(
+        e.cause ?? 'root.serverError',
+        { type: 'custom', message: t(e.message) },
+        { shouldFocus: true },
+      );
+    } else {
+      setError('root.serverError', {
+        type: 'custom',
+        message: t('validation.generic_try_again'),
+      });
+    }
+  };
 
+  const onFormSubmit = data => {
+    setIsSubmitting(true);
     if (label === 'password') {
-      const values = Array.from(e.target.elements)
-        .filter(({ tagName }) => tagName !== 'BUTTON')
-        .map(x => x.value);
-
-      const [currentPw, newPw, newPwCopy] = values;
-      // we check the new passwords match on frontend, so only need to send one to backend
-      if (newPw !== newPwCopy) {
-        setErrors(['request_errors.fe_mismatch']);
-        console.log(111, t('request_errors.fe_mismatch'));
-        setWaiting(false);
-      } else {
-        // submit data
-        apiChangePw(currentPw, newPw)
-          .then(onResponseSuccess)
-          .catch(onResponseFailure)
-          .then(() => {
-            window.location.reload();
-          });
-      }
+      setNewPassword(data).then(onResponseSuccess).catch(onError);
     } else if (type === 'email') {
       // DISABLE; DANGEROUS
       if (!DEVELOPMENT)
-        apiChangeEmail(value)
-          .then(onResponseSuccess)
-          .catch(onResponseFailure)
-          .then(() => {
-            window.location.reload();
-          });
+        setNewEmail(data).then(onResponseSuccess).catch(onError);
+    } else if (label === 'display_language') {
+      Cookies.set('frontendLang', data.display_language);
+      i18n.changeLanguage(data.display_language);
+      onResponseSuccess(data);
     } else {
-      if (label === 'display_language') {
-        dispatch(updateProfile({ display_language: val }));
-        Cookies.set('frontendLang', val);
-        i18n.changeLanguage(val);
-      }
-      mutateUserData({ [label]: val }, onResponseSuccess, onResponseFailure);
+      mutateUserData(data, onResponseSuccess, onError);
     }
   };
 
   useEffect(() => {
-    if (textInput.current) {
-      textInput.current.focus();
-    }
-  }, [textInput]);
-  console.log({ errors });
+    setFocus(label);
+  }, [setFocus, label]);
+
   return (
     <ModalCard>
       <Text tag="h2" type={TextTypes.Heading2} center>
         {t('settings.edit_item', { item: t(`settings.personal_${label}`) })}
       </Text>
-      <form onSubmit={handleSubmit}>
-        <section className="inputs">
-          {label === 'display_language' && (
-            <Dropdown
-              label={t('settings.personal_display_language')}
-              inputRef={textInput}
-              options={displayLanguages}
-              value={valueIn}
-            />
-          )}
-          {['email', 'password'].includes(label) && (
-            <span className="warning-notice">
-              {t(`settings.personal_${label}_change_warning`)}
-            </span>
-          )}
-          {label === 'password' && <PassChange refIn={textInput} />}
-          {[
-            'first_name',
-            'second_name',
-            'email',
-            'phone_mobile',
-            'postal_code',
-            'birth_year',
-          ].includes(label) && (
+      {needsRelogin && (
+        <Text>{t(`settings.personal_${label}_change_warning`)}</Text>
+      )}
+      <form onSubmit={handleSubmit(onFormSubmit)}>
+        {label === 'display_language' && (
+          <Controller
+            defaultValue={valueIn}
+            name={label}
+            control={control}
+            rules={{ required: 'error.required' }}
+            render={({
+              field: { onChange, onBlur, value, name, ref },
+              fieldState: { error },
+            }) => (
+              <Dropdown
+                name={name}
+                inputRef={ref}
+                onValueChange={val => onChange({ target: { value: val } })}
+                onBlur={onBlur}
+                value={value}
+                error={t(error?.message)}
+                label={t('settings.personal_display_language')}
+                options={displayLanguages}
+              />
+            )}
+          />
+        )}
+        {label === 'password' && (
+          <>
             <TextInput
-              label={t(`settings.personal_${label}`)}
-              value={value}
-              onChange={handleChange}
-              inputRef={textInput}
+              {...registerInput({
+                register,
+                name: 'password_old',
+                options: {
+                  required: 'error.required',
+                  minLength: { message: 'error.password_min_length', value: 8 },
+                },
+              })}
+              error={t(errors?.password_old?.message)}
+              label={t('settings.personal_password_current')}
+              type="password"
             />
-          )}
-        </section>
-        {/* errors?.root?.serverError */}
-        <SubmitError $visible={errors.length}>
-          {errors.map(errorTag => t(errorTag))}
-          {/* {errors?.root?.serverError?.message} */}
-        </SubmitError>
+
+            <ForgotPasswordLink to={`/${FORGOT_PASSWORD_ROUTE}/`}>
+              {t('settings.personal_password_forgot')}
+            </ForgotPasswordLink>
+            <TextInput
+              {...registerInput({
+                register,
+                name: 'password_new',
+                options: {
+                  required: 'error.required',
+                  minLength: { message: 'error.password_min_length', value: 8 },
+                },
+              })}
+              error={t(errors?.password_new?.message)}
+              label={t('settings.personal_password_current')}
+              type="password"
+            />
+            <TextInput
+              {...registerInput({
+                register,
+                name: 'password_new2',
+                options: {
+                  required: 'error.required',
+                  validate: (v, values) =>
+                    values.password_new === v ||
+                    t('error.passwords_do_not_match'),
+                  minLength: { message: 'error.password_min_length', value: 8 },
+                },
+              })}
+              label={t('settings.personal_password_new_rpt')}
+              error={t(errors?.password_new2?.message)}
+              type="password"
+            />
+          </>
+        )}
+        {[
+          'first_name',
+          'second_name',
+          'email',
+          'phone_mobile',
+          'postal_code',
+          'birth_year',
+        ].includes(label) && (
+          <TextInput
+            {...registerInput({
+              register,
+              name: label,
+              options: { required: 'error.required' },
+            })}
+            error={t(errors?.[label]?.message)}
+            label={t(`settings.personal_${label}`)}
+            defaultValue={valueIn}
+            type={types[label]}
+          />
+        )}
+        <StyledFormMessage
+          $visible={errors?.root?.serverError}
+          $type={MessageTypes.Error}
+        >
+          {t(errors?.root?.serverError?.message)}
+        </StyledFormMessage>
         <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}
-            disabled={waiting}
+            disabled={isSubmitting}
             onClick={() => setEditing(false)}
           >
             {t('btn_cancel')}
           </Button>
-          <Button type="submit" loading={waiting} disabled={waiting}>
+          <Button type="submit" loading={isSubmitting} disabled={isSubmitting}>
             {t('btn_save')}
           </Button>
         </ButtonsContainer>
@@ -358,55 +351,51 @@ function Settings() {
           {t('settings.title')}
         </Text>
       </div>
-      <div className="content panel">
-        <section className="settings personal">
-          <div className="settings-items">
-            {items.map(label => (
-              <ListItem
-                key={label}
-                section="personal"
-                label={label}
-                value={
-                  label === 'display_language'
-                    ? t(`settings.display_language_${data[label]}`)
-                    : data[label]
-                }
-                setEditing={
-                  label !== 'profilePicture'
-                    ? setEditing
-                    : () => {
-                        /* For profile picture we just open the userform frontend for now */
-                        navigate('/formpage?pages=6');
-                        navigate(0); /* Reload page */
-                      }
-                }
-              />
-            ))}
-            <SettingsItem>
-              <Button
-                appearance={ButtonAppearance.Secondary}
-                color="red"
-                backgroundColor="red"
-                size={ButtonSizes.Large}
-                onClick={() => {
-                  setShowConfirm(true);
-                }}
-              >
-                {t('settings.personal_delete_account_button')}
-              </Button>
-            </SettingsItem>
-          </div>
-        </section>
-      </div>
+      <ContentPanel>
+        <Items>
+          {items.map(label => (
+            <ListItem
+              key={label}
+              section="personal"
+              label={label}
+              value={
+                label === 'display_language'
+                  ? t(`settings.display_language_${data[label]}`)
+                  : data[label]
+              }
+              setEditing={
+                label !== 'profilePicture'
+                  ? setEditing
+                  : () => {
+                      /* For profile picture we just open the userform frontend for now */
+                      navigate('/formpage?pages=6');
+                      navigate(0); /* Reload page */
+                    }
+              }
+            />
+          ))}
+          <SettingsItem>
+            <Button
+              appearance={ButtonAppearance.Secondary}
+              color="red"
+              backgroundColor="red"
+              size={ButtonSizes.Large}
+              onClick={() => {
+                setShowConfirm(true);
+              }}
+            >
+              {t('settings.personal_delete_account_button')}
+            </Button>
+          </SettingsItem>
+        </Items>
+      </ContentPanel>
       <Modal open={editing} onClose={() => setEditing(false)}>
-        {editing && (
-          <EditFieldCard
-            label={editing}
-            valueIn={data[editing]}
-            repeat={repeaters.includes(editing)}
-            setEditing={setEditing}
-          />
-        )}
+        <EditFieldCard
+          label={editing}
+          valueIn={data[editing]}
+          repeat={repeaters.includes(editing)}
+          setEditing={setEditing}
+        />
       </Modal>
       <Modal open={showConfirm} onClose={() => setShowConfirm(false)}>
         <DeleteAccountCard setShowModal={setShowConfirm} />

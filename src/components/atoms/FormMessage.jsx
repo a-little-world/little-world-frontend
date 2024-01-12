@@ -1,8 +1,8 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 export const MessageTypes = {
-  Error: "error",
-  Success: "success",
+  Error: 'error',
+  Success: 'success',
 };
 
 const FormMessage = styled.div`
@@ -13,7 +13,7 @@ const FormMessage = styled.div`
   min-height: ${({ theme }) => theme.spacing.large};
   padding: ${({ theme }) => theme.spacing.xxsmall};
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
-  transition: ${({ $visible }) => ($visible ? "opacity 1s" : "none")};
+  transition: ${({ $visible }) => ($visible ? 'opacity 1s' : 'none')};
   text-align: center;
   margin: ${({ theme }) => theme.spacing.xxsmall} 0;
 
@@ -29,7 +29,7 @@ const FormMessage = styled.div`
         background: ${({ theme }) => theme.color.surface.success};
         color: ${({ theme }) => theme.color.text.success};
       `;
-    return "";
+    return '';
   }})
 `;
 

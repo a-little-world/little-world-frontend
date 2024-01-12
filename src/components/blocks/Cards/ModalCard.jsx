@@ -5,21 +5,23 @@ import styled from 'styled-components';
 export const Centred = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: ${({ theme }) => theme.spacing.medium};
   align-items: center;
   text-align: center;
 
   ${({ theme }) => `
-  margin-bottom: ${theme.spacing.medium};
-
-  @media (min-width: ${theme.breakpoints.small}) {
-    margin-bottom: ${theme.spacing.large};
-  }
+    @media (min-width: ${theme.breakpoints.small}) {
+      margin-bottom: ${theme.spacing.xxsmall};
+    }
   `}
 `;
 
+export const StyledCard = styled(Card)`
+  gap: ${({ theme }) => theme.spacing.medium};
+`;
+
 const ModalCard = ({ children }) => (
-  <Card width={CardSizes.Large}>{children}</Card>
+  <StyledCard width={CardSizes.Large}>{children}</StyledCard>
 );
 
 export default ModalCard;
