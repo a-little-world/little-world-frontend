@@ -58,7 +58,7 @@ const MessageCard = ({
         </ButtonsContainer>
       )}
       {linkTo && (
-        <Link to={linkTo} buttonAppearance={ButtonAppearance.Primary}>
+        <Link href={linkTo} buttonAppearance={ButtonAppearance.Primary}>
           {t(linkText)}
         </Link>
       )}
