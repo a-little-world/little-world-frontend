@@ -26,5 +26,10 @@ export const getUserFormRoute = slug => `/${USER_FORM_ROUTE}/${slug}`;
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {
-  window.unloadCookieBanner();
+  try {
+    window.unloadCookieBanner();
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error("Coudn't unload cookie banner", e);
+  }
 };
