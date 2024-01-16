@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { signUp } from '../../api';
 import { initialise } from '../../features/userData';
+import { onFormError, registerInput } from '../../helpers/form';
 import {
   LOGIN_ROUTE,
   VERIFY_EMAIL_ROUTE,
@@ -33,15 +34,6 @@ import {
   Title,
 } from './SignUp.styles';
 
-export const registerInput = ({ register, name, options }) => {
-  const { ref, ...rest } = register(name, options);
-
-  return {
-    ...rest,
-    inputRef: ref,
-  };
-};
-
 const SignUp = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -50,6 +42,7 @@ const SignUp = () => {
 
   const {
     control,
+    getValues,
     register,
     handleSubmit,
     formState: { errors },
@@ -63,18 +56,7 @@ const SignUp = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    if (e?.message) {
-      setError(
-        e.cause ?? 'root.serverError',
-        { type: 'custom', message: t(e.message) },
-        { shouldFocus: true },
-      );
-    } else {
-      setError('root.serverError', {
-        type: 'custom',
-        message: t('validation.generic_try_again'),
-      });
-    }
+    onFormError({ e, formFields: getValues(), setError, t });
   };
 
   const onFormSubmit = async data => {

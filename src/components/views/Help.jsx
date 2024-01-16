@@ -1,4 +1,5 @@
 import {
+  Accordion,
   Button,
   Card,
   CardSizes,
@@ -10,9 +11,8 @@ import {
   TextArea,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { t } from 'i18next';
 import Cookies from 'js-cookie';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -161,46 +161,24 @@ const FileName = styled.div`
   align-items: center;
 `;
 
-const FAQQuestion = styled.h3`
-  margin: -5px 0 15px 0;
-  font-weight: 300;
-  font-size: ${({ theme }) => `${theme.spacing.small} `};
+const FAQContainer = styled.div`
   display: flex;
-  text-transform: none;
-  align-items: center;
-  cursor: pointer;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
 `;
 
-const FAQAnswer = styled.p`
-  font-size: ${({ theme }) => `${theme.spacing.small} `};
-  font-weight: 300;
-  padding: ${({ theme }) => `${theme.spacing.medium} `};
-`;
-const ToggleImage = styled.img``;
 const FAQItems = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => `${theme.spacing.small} `};
+  margin-bottom: ${({ theme }) => `${theme.spacing.medium} `};
 `;
 
-function FrequentQuestion({ question, answer }) {
-  const [showing, setShowing] = useState(false);
-  const toggleShowing = () => setShowing(!showing);
+const FAQSectionTitle = styled(Text)`
+  margin-bottom: ${({ theme }) => `${theme.spacing.xxsmall} `};
+`;
 
-  return (
-    <div className={showing ? 'faq-item showing' : 'faq-item'}>
-      <FAQQuestion onClick={toggleShowing}>
-        <ToggleImage className="toggle-image" alt="collapse/expand" />
-        {question}
-      </FAQQuestion>
-      <FAQAnswer>{answer}</FAQAnswer>
-    </div>
-  );
-}
-
-function Faqs() {
-  const { t } = useTranslation();
-  const help_faq = [
+const generateFAQItems = t => {
+  const translationKeys = [
     {
       section: 'before_talk',
       questions: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'],
@@ -214,41 +192,44 @@ function Faqs() {
       questions: ['q1', 'q2', 'q3', 'q4', 'q5'],
     },
   ];
+
+  return translationKeys.map(({ section, questions }) => ({
+    section: t(`faq::section_title::${section}`),
+    items: questions.map(question => ({
+      header: t(`faq::section_content::${section}::${question}::question`),
+      content: t(`faq::section_content::${section}::${question}::answer`),
+    })),
+  }));
+};
+
+function Faqs() {
+  const { t } = useTranslation();
+  const [faqs, setFaqs] = useState([]);
+
+  useEffect(() => {
+    setFaqs(generateFAQItems(t));
+  }, [t]);
+
   return (
-    <>
+    <FAQContainer>
       <Text tag="h2" type={TextTypes.Heading2}>
         {t('nbt_faqs')}
       </Text>
       <Text>{t('help_faqs_intro')}</Text>
-      <FAQItems>
-        {help_faq.map(faq => {
-          return (
-            <>
-              <h2>{t(`faq::section_title::${faq.section}`)}</h2>
-              {faq.questions.map(question => {
-                return (
-                  <FrequentQuestion
-                    key={t(
-                      `faq::section_content::${faq.section}::${question}::question`,
-                    )}
-                    question={t(
-                      `faq::section_content::${faq.section}::${question}::question`,
-                    )}
-                    answer={t(
-                      `faq::section_content::${faq.section}::${question}::answer`,
-                    )}
-                  />
-                );
-              })}
-            </>
-          );
-        })}
-      </FAQItems>
-    </>
+      {faqs.map(faq => (
+        <FAQItems key={faq.section}>
+          <FAQSectionTitle bold type={TextTypes.Body2} color="black">
+            {faq.section}
+          </FAQSectionTitle>
+          <Accordion items={faq.items} />
+        </FAQItems>
+      ))}
+    </FAQContainer>
   );
 }
 
 function Contact() {
+  const { t } = useTranslation();
   const [dragOver, setDragOver] = useState(false);
   const [filenames, setFilenames] = useState([]);
   const [helpMessage, setHelpMessage] = useState('');
@@ -379,6 +360,7 @@ function Contact() {
 }
 
 function Help({ selection }) {
+  const { t } = useTranslation();
   const adminUser = useSelector(
     state => state.userData.matches.support.items[0],
   );
@@ -400,22 +382,21 @@ function Help({ selection }) {
         </Topper>
 
         <ContactButtons>
-          {adminUser?.partner?.id ||
-            (true && (
-              <MenuLink
-                to={getAppRoute(CHAT_ROUTE)}
-                // state={{ userPk: adminUser.partner.id }}
-              >
-                <MessageIcon
-                  gradient={Gradients.Orange}
-                  label="message support"
-                  labelId="message_support"
-                />
-                <SupportButtonText>
-                  {t('help_support_message_btn')}
-                </SupportButtonText>
-              </MenuLink>
-            ))}
+          {adminUser?.partner?.id && (
+            <MenuLink
+              to={getAppRoute(CHAT_ROUTE)}
+              // state={{ userPk: adminUser.partner.id }}
+            >
+              <MessageIcon
+                gradient={Gradients.Orange}
+                label="message support"
+                labelId="message_support"
+              />
+              <SupportButtonText>
+                {t('help_support_message_btn')}
+              </SupportButtonText>
+            </MenuLink>
+          )}
           <MenuLink to="tel:+4915234777471">
             <PhoneIcon
               gradient={Gradients.Orange}

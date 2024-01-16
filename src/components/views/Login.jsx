@@ -1,8 +1,6 @@
 import {
-  Button,
   ButtonAppearance,
   ButtonSizes,
-  ButtonVariations,
   Link,
   TextInput,
   TextTypes,
@@ -12,10 +10,10 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useTheme } from 'styled-components';
 
 import { login } from '../../api';
 import { initialise } from '../../features/userData';
+import { onFormError, registerInput } from '../../helpers/form';
 import {
   FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
@@ -25,7 +23,6 @@ import {
   passAuthenticationBoundary,
 } from '../../routes';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
-import { registerInput } from './SignUp';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 const Login = () => {
@@ -38,6 +35,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
     setError,
     setFocus,
@@ -51,18 +49,7 @@ const Login = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    if (e?.message) {
-      setError(
-        e.cause ?? 'root.serverError',
-        { type: 'custom', message: e.message },
-        { shouldFocus: true },
-      );
-    } else {
-      setError('root.serverError', {
-        type: 'custom',
-        message: 'validation.generic_try_again',
-      });
-    }
+    onFormError({ e, formFields: getValues(), setError, t });
   };
 
   const onFormSubmit = async data => {

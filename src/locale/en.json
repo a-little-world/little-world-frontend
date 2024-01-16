@@ -518,7 +518,7 @@
   "validation.generic_try_again": "There was a server issue. Please try again.",
   "validation.required": "*required",
 
-  "error_view.title": "Uh oh, something went wrong",
+  "error_view.title": "Uh oh, this page doesn't exist",
   "error_view.button": "Back to the start",
 
   "welcome.title": "Hey!",
@@ -565,10 +565,10 @@
   "forgot_password.success_message": "Request successful. Check your email to reset your password.",
 
   "reset_password.title": "Reset Password?",
-  "reset_password.description": "No need to worry! Just enter the email address you registered with. We will then send an email in order to set a new password.",
+  "reset_password.description": "Please enter your new password below and then hit confirm. ",
   "reset_password.password_label": "New Password",
   "reset_password.password_placeholder": "At least 8 characters",
-  "reset_password.confirm_password_label": "Confimr Password",
+  "reset_password.confirm_password_label": "Confirm Password",
   "reset_password.to_login": "To Login",
   "reset_password.submit_btn": "Reset Password",
   "reset_password.success_message": "Password successfully reset. You can now login in with your new password.",

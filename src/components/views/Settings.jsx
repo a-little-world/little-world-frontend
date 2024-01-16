@@ -23,12 +23,12 @@ import styled, { css, useTheme } from 'styled-components';
 import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
 import { updateProfile } from '../../features/userData';
+import { onFormError, registerInput } from '../../helpers/form';
 import { FORGOT_PASSWORD_ROUTE } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard from '../blocks/Cards/ModalCard';
-import { registerInput } from './SignUp';
 
 const types = {
   first_name: 'text',
@@ -139,6 +139,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     control,
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
     setError,
     setFocus,
@@ -152,18 +153,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
 
   const onError = e => {
     setIsSubmitting(false);
-    if (e?.message) {
-      setError(
-        e.cause ?? 'root.serverError',
-        { type: 'custom', message: t(e.message) },
-        { shouldFocus: true },
-      );
-    } else {
-      setError('root.serverError', {
-        type: 'custom',
-        message: t('validation.generic_try_again'),
-      });
-    }
+    onFormError({ e, formFields: getValues(), setError, t });
   };
 
   const onFormSubmit = data => {
@@ -258,8 +248,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
                 options: {
                   required: 'error.required',
                   validate: (v, values) =>
-                    values.password_new === v ||
-                    t('error.passwords_do_not_match'),
+                    values.password_new === v || 'error.passwords_do_not_match',
                   minLength: { message: 'error.password_min_length', value: 8 },
                 },
               })}

@@ -12,10 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { requestPasswordReset } from '../../api';
+import { onFormError, registerInput } from '../../helpers/form';
 import { LOGIN_ROUTE } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
-import { registerInput } from './SignUp';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 export const ForgotPasswordDescription = styled(Text)`
@@ -31,6 +31,7 @@ const ForgotPassword = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
     setError,
     setFocus,
@@ -43,18 +44,7 @@ const ForgotPassword = () => {
   }, [setFocus]);
 
   const onError = e => {
-    if (e?.message) {
-      setError(
-        e.cause ?? 'root.serverError',
-        { type: 'custom', message: t(e.message) },
-        { shouldFocus: true },
-      );
-    } else {
-      setError('root.serverError', {
-        type: 'custom',
-        message: t(e?.message) || t('validation.generic_try_again'),
-      });
-    }
+    onFormError({ e, formFields: getValues(), setError, t });
   };
 
   const onFormSubmit = async data => {

@@ -35,6 +35,7 @@ const MessageCard = ({
   linkTo,
 }) => {
   const { t } = useTranslation();
+
   return (
     <StyledCard>
       <Text type={TextTypes.Heading2}>{t(title)}</Text>
@@ -58,7 +59,11 @@ const MessageCard = ({
         </ButtonsContainer>
       )}
       {linkTo && (
-        <Link href={linkTo} buttonAppearance={ButtonAppearance.Primary}>
+        <Link
+          href={linkTo}
+          buttonAppearance={ButtonAppearance.Primary}
+          onClick={() => setTimeout(window?.location.reload(), 100)}
+        >
           {t(linkText)}
         </Link>
       )}

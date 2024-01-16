@@ -11,14 +11,13 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from 'styled-components';
 
 import { setNewEmail } from '../../api';
 import { updateEmail } from '../../features/userData';
+import { onFormError, registerInput } from '../../helpers/form';
 import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
-import { registerInput } from './SignUp';
 import {
   FormDescription,
   StyledCard,
@@ -28,12 +27,12 @@ import {
 
 const ChangeEmail = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
 
   const {
     register,
+    getValues,
     handleSubmit,
     formState: { errors },
     setError,
@@ -48,19 +47,7 @@ const ChangeEmail = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-
-    if (e?.message) {
-      setError(
-        e.cause ?? 'root.serverError',
-        { type: 'custom', message: t(e.message) },
-        { shouldFocus: true },
-      );
-    } else {
-      setError('root.serverError', {
-        type: 'custom',
-        message: t(e?.message) || t('validation.generic_try_again'),
-      });
-    }
+    onFormError({ e, formFields: getValues(), setError, t });
   };
 
   const onFormSubmit = async ({ email }) => {

@@ -306,7 +306,6 @@ const formPages = {
             label: t('notifications.phone_number_label'),
             type: 'tel',
             width: InputWidth.Medium,
-            infoText: t('notifications.info'),
           }),
           infoText: 'notifications.info',
         },

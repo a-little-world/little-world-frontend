@@ -13,6 +13,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { completeForm, mutateUserData } from '../../../api';
 import { updateProfile } from '../../../features/userData';
+import { onFormError } from '../../../helpers/form';
 import { getAppRoute } from '../../../routes';
 import {
   ComponentTypes,
@@ -38,6 +39,7 @@ const Form = () => {
 
   const {
     control,
+    getValues,
     handleSubmit,
     formState: { errors },
     reset,
@@ -73,18 +75,7 @@ const Form = () => {
   };
 
   const onError = e => {
-    if (e.message) {
-      setError(
-        e.cause ?? 'root.serverError',
-        { type: 'custom', message: t(e.message) },
-        { shouldFocus: true },
-      );
-    } else {
-      setError('root.serverError', {
-        type: 'custom',
-        message: t(e.message) || t('validation.generic_try_again'),
-      });
-    }
+    onFormError({ e, formFields: getValues(), setError, t });
   };
 
   const onFormSubmit = async data => {

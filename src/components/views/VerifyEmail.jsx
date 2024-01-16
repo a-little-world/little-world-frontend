@@ -15,10 +15,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { resendVerificationEmail, verifyEmail } from '../../api';
+import { onFormError, registerInput } from '../../helpers/form';
 import { CHANGE_EMAIL_ROUTE, USER_FORM_ROUTE, getAppRoute } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
-import { registerInput } from './SignUp';
 import {
   FormDescription,
   StyledCard,
@@ -45,6 +45,7 @@ const VerifyEmail = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
     setError,
     setFocus,
@@ -58,18 +59,7 @@ const VerifyEmail = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    if (e?.message) {
-      setError(
-        e.cause ?? 'root.serverError',
-        { type: 'custom', message: t(e.message) },
-        { shouldFocus: true },
-      );
-    } else {
-      setError('root.serverError', {
-        type: 'custom',
-        message: t(e?.message) || t('validation.generic_try_again'),
-      });
-    }
+    onFormError({ e, formFields: getValues(), setError, t });
   };
 
   const onResendCode = async () => {

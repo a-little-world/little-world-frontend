@@ -519,7 +519,7 @@
   "validation.generic_try_again": "Es gab ein Serverproblem. Bitte versuchen Sie es erneut.",
   "validation.required": "*erforderlich",
 
-  "error_view.title": "Uh oh, Es gab ein Problem",
+  "error_view.title": "Uh oh, Diese Seite existiert nicht",
   "error_view.button": "Zum Anfang",
 
   "welcome.title": "Hallo!",
@@ -565,14 +565,14 @@
   "forgot_password.submit_btn": "Neues Passwort anfordern",
   "forgot_password.success_message": "Neues Passwort anfordern",
 
-  "reset_password.title": "Reset Password?",
-  "reset_password.description": "No need to worry! Just enter the email address you registered with. We will then send an email in order to set a new password.",
-  "reset_password.password_label": "New Password",
-  "reset_password.password_placeholder": "At least 8 characters",
-  "reset_password.confirm_password_label": "Confimr Password",
-  "reset_password.to_login": "To Login",
-  "reset_password.submit_btn": "Reset Password",
-  "reset_password.success_message": "Password successfully reset. You can now login in with your new password.",
+  "reset_password.title": "Passwort zurücksetzen?",
+  "reset_password.description": "Bitte gib dein neues Passwort unten ein und bestätige es dann.",
+  "reset_password.password_label": "Neues Passwort",
+  "reset_password.password_placeholder": "Mindestens 8 Zeichen",
+  "reset_password.confirm_password_label": "Bestätige Passwort",
+  "reset_password.to_login": "Zum Anmelden",
+  "reset_password.submit_btn": "Passwort zurücksetzen",
+  "reset_password.success_message": "Du kannst dich jetzt mit deinem neuen Passwort einloggen.",
 
   "verify_email.title": "Gib den Bestätigungscode ein",
   "verify_email.description": "Um dein Konto zu bestätigen, gib bitte den 5-stelligen Code ein, den wir an {{ email }} gesendet haben.",
