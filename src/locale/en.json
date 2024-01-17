@@ -104,6 +104,9 @@
   "cp_cancel_search_confirm": "Are you sure?",
   "cp_cancel_search_reject": "Don't cancel search",
 
+  "community_events.show_more": "Show more",
+  "community_events.show_less": "Show less",
+
   "settings.title": "Settings",
   "settings.edit_item": "Edit {{item}}",
   "settings.edit_button": "Edit",

@@ -11,7 +11,7 @@ import './community-events.css';
 import CancelSearchCard from './components/blocks/Cards/CancelSearchCard';
 import ConfirmMatchCard from './components/blocks/Cards/ConfirmMatchCard';
 import NewMatchCard from './components/blocks/Cards/NewMatchCard';
-import CommunityCalls from './components/blocks/CommunityCalls';
+import CommunityEvents from './components/blocks/CommunityEvents/CommunityEvent';
 import AppLayout from './components/blocks/Layout/AppLayout';
 import MobileNavBar from './components/blocks/MobileNavBar';
 import NbtSelector from './components/blocks/NbtSelector';
@@ -242,7 +242,7 @@ function Main() {
                 )}
               </>
             )}
-            {topSelection === 'community_calls' && <CommunityCalls />}
+            {topSelection === 'community_calls' && <CommunityEvents />}
           </div>
         )}
         {use === 'chat' && (
@@ -294,7 +294,7 @@ function Main() {
           <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
         </Modal>
       )}
-
+      {/* 
       <Modal
         open={
           matches?.proposed?.items?.length ||
@@ -314,7 +314,7 @@ function Main() {
               ? matches?.proposed.items[0].partner
               : matches?.unconfirmed.items[0].partner,
           })}
-      </Modal>
+      </Modal> */}
     </AppLayout>
   );
 }

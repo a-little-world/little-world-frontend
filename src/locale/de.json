@@ -103,6 +103,9 @@
   "cp_cancel_search_confirm": "Bist du dir sicher?",
   "cp_cancel_search_reject": "Suche nicht abbrechen",
 
+  "community_events.show_more": "Mehr anzeigen",
+  "community_events.show_less": "Weniger anzeigen",
+
   "settings.title": "Einstellungen",
   "settings.edit_item": "{{item}} ändern",
   "settings.edit_button": "ändern",
