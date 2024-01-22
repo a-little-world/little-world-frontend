@@ -1,11 +1,10 @@
-import _ from "lodash";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import _ from 'lodash';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
-import Table from "./table";
-
-import style from "./style.module.css";
+import style from './style.module.css';
+import Table from './table';
 
 function findOverlap(array1, array2) {
   let overlap = [];
@@ -38,99 +37,112 @@ function findDifference(array1, array2) {
 
 const AppointmentsLayout = ({ setClose, id }) => {
   const { t } = useTranslation();
-  const [dateSelection, setDateSelection] = React.useState("");
-  const [tableSelection, setTableSelection] = React.useState("first");
-  const user = useSelector((state) => state.userData.raw);
+  const [dateSelection, setDateSelection] = React.useState('');
+  const [tableSelection, setTableSelection] = React.useState('first');
+  const matches = useSelector(state => state.userData.matches);
+  const user = useSelector(state => state.userData.user);
 
-  let selectedUser = user.matches.find((el) => el.user.hash === id);
+  let selectedUser = matches.find(el => el.user.hash === id);
 
   let data =
     selectedUser &&
     findOverlap(
       Object.entries(user.profile.availability),
-      Object.entries(selectedUser.profile.availability)
+      Object.entries(selectedUser.profile.availability),
     );
   let data1 =
     selectedUser &&
     findDifference(
       Object.entries(user.profile.availability),
-      Object.entries(selectedUser.profile.availability)
+      Object.entries(selectedUser.profile.availability),
     );
 
   return (
-    <div class={style["flex-grid"]}>
-      <div class={`${style["col"]} ${style["title"]}`}>
-        <label>{t("chat_appointment_title")}</label>
-        <button className={style["close-button"]} onClick={() => setClose(false)}>
+    <div class={style['flex-grid']}>
+      <div class={`${style['col']} ${style['title']}`}>
+        <label>{t('chat_appointment_title')}</label>
+        <button
+          className={style['close-button']}
+          onClick={() => setClose(false)}
+        >
           &times;
         </button>
       </div>
-      <div class={`${style["col"]} ${style["sub-title"]}`}>
-        <label>{t("chat_suggest_appointment_description")}</label>
+      <div class={`${style['col']} ${style['sub-title']}`}>
+        <label>{t('chat_suggest_appointment_description')}</label>
       </div>
-      <div class={style["col"]}>
-        <div class={style["container"]}>
-          <div className={style["image-container"]}>
-            <img src={selectedUser && selectedUser.profile.image} alt="selected user" srcset="" />
+      <div class={style['col']}>
+        <div class={style['container']}>
+          <div className={style['image-container']}>
+            <img
+              src={selectedUser && selectedUser.profile.image}
+              alt="selected user"
+              srcset=""
+            />
           </div>
           <label>{`${selectedUser && selectedUser.profile.first_name}${t(
-            "chat_appointment_send"
+            'chat_appointment_send',
           )}`}</label>
         </div>
       </div>
-      <div class={style["col"]}>
+      <div class={style['col']}>
         <Table
           data={data}
-          inSelect={tableSelection === "first"}
+          inSelect={tableSelection === 'first'}
           setSelect={() => {
-            setTableSelection("first");
+            setTableSelection('first');
           }}
           view={true}
           setDate={setDateSelection}
-          header={t("chat_appointment_message_overlap_header", {
+          header={t('chat_appointment_message_overlap_header', {
             userName: selectedUser.profile.first_name,
           })}
         />
       </div>
-      <div class={style["col"]}>
+      <div class={style['col']}>
         <Table
           data={data1}
-          inSelect={tableSelection === "second"}
+          inSelect={tableSelection === 'second'}
           setSelect={() => {
-            setTableSelection("second");
+            setTableSelection('second');
           }}
           view={true}
           setDate={setDateSelection}
-          header={t("chat_appointment_message_non_overlap_header", {
+          header={t('chat_appointment_message_non_overlap_header', {
             userName: selectedUser.profile.first_name,
           })}
         />
       </div>
-      <div class={style["btn-container"]}>
+      <div class={style['btn-container']}>
         <button
-          className={style["send-button"]}
+          className={style['send-button']}
           onClick={() => {
             setClose(true);
           }}
         >
-          {t("chat_appointment_abbort")}
+          {t('chat_appointment_abbort')}
         </button>
         <button
-          className={style["cancle-button"]}
+          className={style['cancle-button']}
           onClick={() => {
-            if (dateSelection !== "") {
+            if (dateSelection !== '') {
               const value = t(
-                tableSelection === "first"
-                  ? "chat_appointment_message_overlap"
-                  : "chat_appointment_message_non_overlap",
-                { userName: selectedUser.profile.first_name, date: dateSelection }
+                tableSelection === 'first'
+                  ? 'chat_appointment_message_overlap'
+                  : 'chat_appointment_message_non_overlap',
+                {
+                  userName: selectedUser.profile.first_name,
+                  date: dateSelection,
+                },
               );
-              document.getElementById("test-input").firstChild.firstChild.value = value;
+              document.getElementById(
+                'test-input',
+              ).firstChild.firstChild.value = value;
               setClose(true);
             }
           }}
         >
-          {t("chat_auggest_appointment_message")}
+          {t('chat_auggest_appointment_message')}
         </button>
       </div>
     </div>

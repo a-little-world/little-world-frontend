@@ -9,17 +9,26 @@ import {
   ProfileIcon,
   QuestionIcon,
   SettingsIcon,
-} from "@a-little-world/little-world-design-system";
-import Cookies from "js-cookie";
-import React, { useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
-import styled from "styled-components";
+} from '@a-little-world/little-world-design-system';
+import Cookies from 'js-cookie';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-import { BACKEND_PATH, BACKEND_URL } from "../../ENVIRONMENT";
-import { FetchNotificationsAsync } from "../../features/userData";
-import MenuLink from "../atoms/MenuLink";
+import { BACKEND_URL } from '../../ENVIRONMENT';
+import {
+  APP_ROUTE,
+  CHAT_ROUTE,
+  HELP_ROUTE,
+  LOGIN_ROUTE,
+  PROFILE_ROUTE,
+  SETTINGS_ROUTE,
+  getAppRoute,
+} from '../../routes';
+import Logo from '../atoms/Logo';
+import MenuLink from '../atoms/MenuLink';
 
 const Unread = styled.div`
   position: absolute;
@@ -38,6 +47,10 @@ const Unread = styled.div`
   line-height: 100%;
 `;
 
+const StyledLogo = styled(Logo)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
 function UnreadDot({ count }) {
   return <Unread>{count}</Unread>;
 }
@@ -46,85 +59,81 @@ function Sidebar({ sidebarMobile }) {
   const location = useLocation();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const self = useSelector((state) => state.userData.self);
 
   const buttonData = [
-    { label: "start", path: "/", Icon: DashboardIcon },
-    { label: "messages", path: "/chat", Icon: MessageIcon },
-    { label: "my_profile", path: "/profile", Icon: ProfileIcon },
-    { label: "help", path: "/help", Icon: QuestionIcon },
-    { label: "settings", path: "/settings", Icon: SettingsIcon },
+    { label: 'start', path: getAppRoute(), Icon: DashboardIcon },
+    { label: 'messages', path: getAppRoute(CHAT_ROUTE), Icon: MessageIcon },
     {
-      label: "log_out",
+      label: 'my_profile',
+      path: getAppRoute(PROFILE_ROUTE),
+      Icon: ProfileIcon,
+    },
+    { label: 'help', path: getAppRoute(HELP_ROUTE), Icon: QuestionIcon },
+    {
+      label: 'settings',
+      path: getAppRoute(SETTINGS_ROUTE),
+      Icon: SettingsIcon,
+    },
+    {
+      label: 'log_out',
       clickEvent: () => {
         fetch(`${BACKEND_URL}/api/user/logout/`, {
-          method: "GET",
-          headers: { "X-CSRFToken": Cookies.get("csrftoken") },
+          method: 'GET',
+          headers: { 'X-CSRFToken': Cookies.get('csrftoken') },
         })
-          .then((response) => {
+          .then(response => {
             if (response.status === 200) {
-              navigate("/login/"); // Redirect only valid in production
-              navigate(0); // to reload the page
+              navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
             } else {
-              console.error("server error", response.status, response.statusText);
+              console.error(
+                'server error',
+                response.status,
+                response.statusText,
+              );
             }
           })
-          .catch((error) => console.error(error));
+          .catch(error => console.error(error));
       },
     },
   ];
 
-  if (self.isAdmin) {
-    buttonData.push({
-      label: "admin_panel",
-      clickEvent: () => {
-        navigate("/admin/"); // Redirect only valid in production
-        navigate(0); // to reload the page
-      },
-    });
-  }
+  const [showSidebarMobile, setShowSidebarMobile] = [
+    sidebarMobile?.get,
+    sidebarMobile?.set,
+  ];
 
-  const [showSidebarMobile, setShowSidebarMobile] = [sidebarMobile.get, sidebarMobile.set];
-
-  const notifications = useSelector((state) => state.userData.notifications);
+  const notifications = useSelector(state => state.userData.notifications);
 
   const unread = {
-    notifications: notifications.filter(({ status }) => status === "unread"),
+    notifications: notifications.unread.items.filter(
+      ({ status }) => status === 'unread',
+    ),
     messages: [],
   };
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(FetchNotificationsAsync({ pageNumber: 1, itemPerPage: 20 }));
-  }, []);
-
   return (
     <>
-      <div className={showSidebarMobile ? "sidebar" : "sidebar hidden"}>
-        <div className="logos">
-          <img alt="little" className="logo-image" />
-          <img alt="little world" className="logo-text" />
-        </div>
-        {buttonData.map(({ label, path, clickEvent, Icon }) =>
-          typeof clickEvent === typeof undefined ? (
+      <div className={showSidebarMobile ? 'sidebar' : 'sidebar hidden'}>
+        <StyledLogo />
+        {buttonData.map(({ label, path, clickEvent, Icon }) => {
+          const isActive = location.pathname === `/${APP_ROUTE}${path}`;
+          return typeof clickEvent === typeof undefined ? (
             <MenuLink
               to={path}
               key={label}
               $appearance={
-                location.pathname === `${BACKEND_PATH}${path}`
-                  ? ButtonAppearance.Secondary
-                  : ButtonAppearance.Primary
+                isActive ? ButtonAppearance.Secondary : ButtonAppearance.Primary
               }
             >
-              {["messages", "notifications"].includes(label) && Boolean(unread[label].length) && (
-                <UnreadDot count={unread[label].length} />
-              )}
+              {['messages', 'notifications'].includes(label) &&
+                Boolean(unread[label].length) && (
+                  <UnreadDot count={unread[label].length} />
+                )}
               <Icon
                 label={label}
                 labelId={label}
-                {...(location.pathname === `${BACKEND_PATH}${path}`
-                  ? { color: "white" }
+                {...(isActive
+                  ? { color: 'white' }
                   : { gradient: Gradients.Blue })}
               />
               {t(`nbs_${label}`)}
@@ -135,22 +144,22 @@ function Sidebar({ sidebarMobile }) {
               type="button"
               variation={ButtonVariations.Option}
               appearance={
-                location.pathname === `${BACKEND_PATH}${path}`
-                  ? ButtonAppearance.Secondary
-                  : ButtonAppearance.Primary
+                isActive ? ButtonAppearance.Secondary : ButtonAppearance.Primary
               }
               onClick={clickEvent}
             >
               <LogoutIcon color="#5f5f5f" label={label} labelId={label} />
               {t(`nbs_${label}`)}
             </Button>
-          )
-        )}
+          );
+        })}
       </div>
-      <div className="mobile-shade" onClick={() => setShowSidebarMobile(false)} />
+      <div
+        className="mobile-shade"
+        onClick={() => setShowSidebarMobile(false)}
+      />
     </>
   );
-  // else  return <h1>no notifications</h1>
 }
 
 export default Sidebar;

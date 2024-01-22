@@ -15,7 +15,7 @@ export function simulatedAutoLogin(username = baseLogin.username, password = bas
     body: JSON.stringify({
       username,
       password,
-      dev_dataset: "main_frontend",
+      dev_dataset: "main_frontend_v2",
     }),
   }).then((response) => {
     if (response.ok) {

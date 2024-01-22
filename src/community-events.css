@@ -4,6 +4,10 @@
   gap: 20px;
   flex: 1 1 0;
   max-width: 1200px;
+
+  @media screen and (width < 1024px) {
+    padding: 16px;
+  }
 }
 
 .community-event {
@@ -11,31 +15,16 @@
   gap: 20px;
 }
 
-.community-event .frequency {
-  flex: 1 0.1 160px;
-  min-width: 50px;
+.frequency {
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  align-items: center;
 }
 
-.community-event .frequency img {
-  content: url("./images/coffee.webp");
-  object-fit: cover;
-  height: 100%;
-  width: 100%;
-}
-
-.community-event .frequency-text {
-  background: white;
-  border-radius: 100px;
-  padding: 5px 15px;
-  margin: 12px;
-  position: absolute;
-  bottom: 0;
+.frequency img {
+  content: url('./images/coffee.webp');
 }
 
 /* main area */
@@ -75,22 +64,13 @@
 }
 
 .community-event button.appointment img {
-  content: url("./images/new-appointment.svg");
+  content: url('./images/new-appointment.svg');
 }
 
 .community-event button.call img {
-  content: url("./images/call-orange.svg");
-}
-
-.community-event .event-info h3 {
-  margin: 0;
-  font-weight: 700 !important;
-  font-size: 32px !important;
-}
-
-.community-event .event-info .text {
-  font-size: 15px;
-  color: rgba(119, 126, 144, 0.7);
+  content: url('./images/call-orange.svg');
+  width: 40px;
+  height: 40px;
 }
 
 .community-event .dateTime {
@@ -123,11 +103,6 @@
 
   .community-event {
     flex-direction: column;
-  }
-
-  .community-event .frequency {
-    width: 100%;
-    align-items: start;
   }
 
   .community-event .main button {

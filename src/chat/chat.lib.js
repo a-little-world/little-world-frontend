@@ -3,7 +3,7 @@
 /* eslint-disable camelcase */
 
 /* eslint-disable import/extensions */
-import { BACKEND_URL, DEFAULT_LOGIN_PASSWORD, DEFAULT_LOGIN_USERNAME } from "../ENVIRONMENT";
+import { BACKEND_URL, DEFAULT_LOGIN_PASSWORD, DEFAULT_LOGIN_USERNAME, IS_CAPACITOR_BUILD } from "../ENVIRONMENT";
 import { contains, map as map_1, sortBy } from "./.fable/fable-library.3.1.7/Array.js";
 import { FSharpResult$2, Result_Bind, Result_Map } from "./.fable/fable-library.3.1.7/Choice.js";
 import { compare } from "./.fable/fable-library.3.1.7/Date.js";
@@ -419,7 +419,7 @@ export function sendMessageReadMessage(sock, user_pk, message_id) {
 // TODO: bettherway to embed the urls
 // export const backendUrl = BACKEND_URL; // ((process.env.LOCAL_DEBUG == "1") ? 'http://localhost:60' : 'https://littleworld-test.com');  //"http://localhost:60";
 
-export const backendUrl = window.location.origin + "/api/chat";
+export const backendUrl = IS_CAPACITOR_BUILD ? (BACKEND_URL + "/api/chat"): (window.location.origin + "/api/chat");
 
 export const messagesEndpoint = toText(printf("%s/messages/"))(backendUrl);
 

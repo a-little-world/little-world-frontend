@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-
-import {
-  archiveNotif,
-  ArchiveNotificationAsync,
-  FetchNotificationsAsync,
-  readNotif,
-  ReadNotificationAsync,
-} from "./features/userData";
-
 import "./notifications.css";
 
 function timeToStr(seconds, t) {
@@ -77,20 +68,16 @@ function Notifications() {
   });
 
   const loadMore = (page) => {
-    dispatch(FetchNotificationsAsync({ pageNumber: page, itemPerPage: 20 }));
-    setNotifications([...notifications, ...data]);
-    setPage(page);
-    if (page * 10 > data.length) setHasMore(false);
   };
 
   useEffect(() => {
     status === "data" && setNotifications(data);
   }, [JSON.stringify(data), status, dispatch]);
   const archive = (id) => {
-    dispatch(ArchiveNotificationAsync(id));
+    // TODO
   };
   const markRead = (id) => {
-    dispatch(ReadNotificationAsync(id));
+    // TODO
   };
   return (
     <>
