@@ -11,7 +11,6 @@ import { withTranslation } from 'react-i18next';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import sanitizeHtml from 'sanitize-html';
 
 import {
   BACKEND_URL,
@@ -19,6 +18,7 @@ import {
   IS_CAPACITOR_BUILD,
   PRODUCTION,
 } from '../ENVIRONMENT';
+import ChatCore from '../components/blocks/ChatCore/ChatCore';
 import AppointmentsLayout from '../layout/layout';
 import Link from '../path-prepend';
 import { getAppRoute } from '../routes';
@@ -30,13 +30,11 @@ import {
   fetchDialogs,
   fetchMessages,
   fetchSelfInfo,
-  filterMessagesForDialog,
   getSubtitleTextFromMessageBox,
   handleIncomingWebsocketMessage,
   markMessagesForDialogAsRead,
   sendIsTypingMessage,
   sendMessageReadMessage,
-  sendOutgoingTextMessage,
 } from './chat.lib';
 
 // Monkey path, disables only success toast, on if not in DEVELOPMENT
@@ -50,7 +48,7 @@ const successShowOnlyIfDevelopment = function () {
 toast.success = successShowOnlyIfDevelopment;
 
 const TYPING_TIMEOUT = 5000;
-const chatItemSortingFunction = (a, b) => b.date - a.date;
+// const chatItemSortingFunction = (a, b) => b.date - a.date;
 
 const defaultArcivedChatAvatar = {
   sex: 'man',
@@ -114,22 +112,22 @@ class Chat extends Component {
   constructor(props) {
     super(props);
     // Refs
-    this.textInput = null;
+    // this.textInput = null;
 
-    this.clearTextInput = () => {
-      if (this.textInput) {
-        this.textInput.value = '';
-        this.textInput.style.height = '';
-        // shrinks input box immediately after sending message, rather than
-        // doing so on new text input
-      }
-    };
+    // this.clearTextInput = () => {
+    //   if (this.textInput) {
+    //     this.textInput.value = '';
+    //     this.textInput.style.height = '';
+    //     // shrinks input box immediately after sending message, rather than
+    //     // doing so on new text input
+    //   }
+    // };
 
-    this.searchInput = null;
+    // this.searchInput = null;
 
-    this.clearSearchInput = () => {
-      if (this.searchInput) this.searchInput.clear();
-    };
+    // this.clearSearchInput = () => {
+    //   if (this.searchInput) this.searchInput.clear();
+    // };
 
     this.state = {
       socketConnectionState: 0,
@@ -167,30 +165,28 @@ class Chat extends Component {
     this.setMessageIdAsRead = this.setMessageIdAsRead.bind(this);
     this.newUnreadCount = this.newUnreadCount.bind(this);
 
-    this.isTyping = throttle(() => {
-      sendIsTypingMessage(this.state.socket);
-    }, TYPING_TIMEOUT);
+    // this.isTyping = throttle(() => {
+    //   sendIsTypingMessage(this.state.socket);
+    // }, TYPING_TIMEOUT);
 
-    this.localSearch = throttle(() => {
-      const val = this.searchInput.input.value;
+    //   this.localSearch = throttle(() => {
+    //     const val = this.searchInput.input.value;
 
-      if (!val || val.length === 0) {
-        this.setState(prevState => ({
-          filteredDialogList: prevState.dialogList,
-        }));
-      } else {
-        this.setState(prevState => ({
-          filteredDialogList: prevState.dialogList.filter(function (el) {
-            return el.title.toLowerCase().includes(val.toLowerCase());
-          }),
-        }));
-      }
-    }, 100);
+    //     if (!val || val.length === 0) {
+    //       this.setState(prevState => ({
+    //         filteredDialogList: prevState.dialogList,
+    //       }));
+    //     } else {
+    //       this.setState(prevState => ({
+    //         filteredDialogList: prevState.dialogList.filter(function (el) {
+    //           return el.title.toLowerCase().includes(val.toLowerCase());
+    //         }),
+    //       }));
+    //     }
+    //   }, 100);
   }
 
   componentDidMount() {
-    this.textInput =
-      document.getElementById('test-input').firstChild.firstChild;
     fetchMessages().then(r => {
       if (r.tag === 0) {
         this.setState({ messageList: r.fields[0] });
@@ -475,151 +471,151 @@ class Chat extends Component {
     this.setState(prevState => ({ filteredDialogList: prevState.dialogList }));
   }
 
-  performSendingMessage() {
-    if (this.state.selectedDialog && (this.textInput || {}).value) {
-      const msgBox = sendOutgoingTextMessage(
-        this.state.socket,
-        this.textInput.value,
-        this.state.selectedDialog.id, // id is not always userPk as it stands
-        this.state.selfInfo,
-      );
-      this.clearTextInput();
+  // performSendingMessage() {
+  //   if (this.state.selectedDialog && (this.textInput || {}).value) {
+  //     const msgBox = sendOutgoingTextMessage(
+  //       this.state.socket,
+  //       this.textInput.value,
+  //       this.state.selectedDialog.id, // id is not always userPk as it stands
+  //       this.state.selfInfo,
+  //     );
+  //     this.clearTextInput();
 
-      if (msgBox) {
-        this.addMessage(msgBox);
-      }
-    }
-  }
+  //     if (msgBox) {
+  //       this.addMessage(msgBox);
+  //     }
+  //   }
+  // }
 
-  Core = () => {
-    const { t } = this.props;
+  // Core = () => {
+  //   const { t } = this.props;
 
-    const handleTextUpdate = e => {
-      this.textInput = e.target;
-    };
+  //   const handleTextUpdate = e => {
+  //     this.textInput = e.target;
+  //   };
 
-    const chatRequest = false;
-    const userName = (this.state.selectedDialog || {}).title;
+  //   const chatRequest = false;
+  //   const userName = (this.state.selectedDialog || {}).title;
 
-    return (
-      <div className="flex-container">
-        {chatRequest && (
-          <div className="partner-request">
-            <div className="match-notify">
-              <img className="match-celebrate" alt="" />
-              <div className="text">
-                {t('chat_success_message', { userName })}
-              </div>
-            </div>
-            <div className="match-process">
-              <div className="this-request">{t('chat_request_header')}</div>
-              <div className="buttons">
-                <button type="button" className="request-accept">
-                  {t('chat_request_accept')}
-                </button>
-                <button type="button" className="request-deny">
-                  {t('chat_request_decline')}
-                </button>
-                <button type="button" className="request-info">
-                  {t('chat_request_more_info')}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        {!chatRequest && (
-          <>
-            <MessageList
-              className="message-list"
-              lockable
-              onDownload={(x, i, e) => {
-                x.onDownload();
-              }}
-              downButtonBadge={
-                this.state.selectedDialog &&
-                this.state.selectedDialog.unread > 0
-                  ? this.state.selectedDialog.unread
-                  : ''
-              }
-              dataSource={filterMessagesForDialog(
-                this.state.selectedDialog,
-                this.state.messageList,
-              ).map(msg => {
-                return {
-                  ...msg,
-                  text: (
-                    <div
-                      className="styled-message-box"
-                      dangerouslySetInnerHTML={{
-                        __html: sanitizeHtml(msg.text, {
-                          allowedTags: [
-                            'b',
-                            'i',
-                            'em',
-                            'strong',
-                            'a',
-                            'button',
-                          ],
-                          allowedAttributes: {
-                            a: ['href', 'target'],
-                            button: ['data-cal-link', 'data-cal-config'],
-                          },
-                        }),
-                      }}
-                    />
-                  ),
-                };
-              })}
-            />
-            <div id="test-input">
-              <Input
-                placeholder={t('chat_input_text')}
-                defaultValue=""
-                id="textInput"
-                multiline
-                onKeyPress={e => {
-                  if (e.charCode !== 13) {
-                    this.isTyping();
-                  }
-                  if (e.shiftKey && e.charCode === 13) {
-                    if (this.state.socket.readyState === 1) {
-                      e.preventDefault();
-                      this.performSendingMessage();
-                    }
-                    return false;
-                  }
-                  if (e.charCode === 13) {
-                    /**
-                      * TODO: in the future we want this to auto send on two enters on mobile maybe?
-                      * Also we might want shift enter to make a new line on desktop instad of sending?
-                      * https://app.clickup.com/t/863h7880p
-                    if(e.target.value.endsWith("\n\n")){
-                      if (this.state.socket.readyState === 1) {
-                        e.preventDefault();
-                        this.performSendingMessage();
-                      }
-                      return false;
-                    } */
+  //   return (
+  //     <div className="flex-container">
+  //       {chatRequest && (
+  //         <div className="partner-request">
+  //           <div className="match-notify">
+  //             <img className="match-celebrate" alt="" />
+  //             <div className="text">
+  //               {t('chat_success_message', { userName })}
+  //             </div>
+  //           </div>
+  //           <div className="match-process">
+  //             <div className="this-request">{t('chat_request_header')}</div>
+  //             <div className="buttons">
+  //               <button type="button" className="request-accept">
+  //                 {t('chat_request_accept')}
+  //               </button>
+  //               <button type="button" className="request-deny">
+  //                 {t('chat_request_decline')}
+  //               </button>
+  //               <button type="button" className="request-info">
+  //                 {t('chat_request_more_info')}
+  //               </button>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       )}
+  //       {!chatRequest && (
+  //         <>
+  //           <MessageList
+  //             className="message-list"
+  //             lockable
+  //             onDownload={(x, i, e) => {
+  //               x.onDownload();
+  //             }}
+  //             downButtonBadge={
+  //               this.state.selectedDialog &&
+  //               this.state.selectedDialog.unread > 0
+  //                 ? this.state.selectedDialog.unread
+  //                 : ''
+  //             }
+  //             dataSource={filterMessagesForDialog(
+  //               this.state.selectedDialog,
+  //               this.state.messageList,
+  //             ).map(msg => {
+  //               return {
+  //                 ...msg,
+  //                 text: (
+  //                   <div
+  //                     className="styled-message-box"
+  //                     dangerouslySetInnerHTML={{
+  //                       __html: sanitizeHtml(msg.text, {
+  //                         allowedTags: [
+  //                           'b',
+  //                           'i',
+  //                           'em',
+  //                           'strong',
+  //                           'a',
+  //                           'button',
+  //                         ],
+  //                         allowedAttributes: {
+  //                           a: ['href', 'target'],
+  //                           button: ['data-cal-link', 'data-cal-config'],
+  //                         },
+  //                       }),
+  //                     }}
+  //                   />
+  //                 ),
+  //               };
+  //             })}
+  //           />
+  //           <div id="test-input">
+  //             <Input
+  //               placeholder={t('chat_input_text')}
+  //               defaultValue=""
+  //               id="textInput"
+  //               multiline
+  //               onKeyPress={e => {
+  //                 if (e.charCode !== 13) {
+  //                   this.isTyping();
+  //                 }
+  //                 if (e.shiftKey && e.charCode === 13) {
+  //                   if (this.state.socket.readyState === 1) {
+  //                     e.preventDefault();
+  //                     this.performSendingMessage();
+  //                   }
+  //                   return false;
+  //                 }
+  //                 if (e.charCode === 13) {
+  //                   /**
+  //                     * TODO: in the future we want this to auto send on two enters on mobile maybe?
+  //                     * Also we might want shift enter to make a new line on desktop instad of sending?
+  //                     * https://app.clickup.com/t/863h7880p
+  //                   if(e.target.value.endsWith("\n\n")){
+  //                     if (this.state.socket.readyState === 1) {
+  //                       e.preventDefault();
+  //                       this.performSendingMessage();
+  //                     }
+  //                     return false;
+  //                   } */
 
-                    return true;
-                  }
-                }}
-                onChange={handleTextUpdate}
-                rightButtons={
-                  <Button
-                    disabled={this.state.socket.readyState !== 1}
-                    onClick={() => this.performSendingMessage()}
-                  >
-                    {t('chat_send')}
-                  </Button>
-                }
-              />
-            </div>
-          </>
-        )}
-      </div>
-    );
-  };
+  //                   return true;
+  //                 }
+  //               }}
+  //               onChange={handleTextUpdate}
+  //               rightButtons={
+  //                 <Button
+  //                   disabled={this.state.socket.readyState !== 1}
+  //                   onClick={() => this.performSendingMessage()}
+  //                 >
+  //                   {t('chat_send')}
+  //                 </Button>
+  //               }
+  //             />
+  //           </div>
+  //         </>
+  //       )}
+  //     </div>
+  //   );
+  // };
 
   setOpen = () => this.setState({ open: true });
 
@@ -813,7 +809,7 @@ class Chat extends Component {
                 <span className="text">{t('chat_suggest_appointment')}</span>
               </button>
             </div>
-            <Core />
+            <ChatCore />
           </div>
         </div>
       </>
