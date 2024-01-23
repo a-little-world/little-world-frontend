@@ -52,9 +52,9 @@ function NotificationPanel() {
           </div>
         ))}
       </div>
-      <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
+      {/* <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
         {t('nbr_show_all')}
-      </Link>
+      </Link> */}
     </div>
   );
 }
