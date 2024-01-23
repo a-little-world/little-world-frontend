@@ -25,32 +25,16 @@
   padding: 15px;
 }
 
-.show-profile h3 {
-  margin: 5px 0;
-  font-size: 22px;
-  font-weight: 500;
-}
-
 .profile-text .buttons {
   display: flex;
   position: absolute;
   right: 30px;
 }
 
-.profile-detail button.edit {
-  padding: 15px;
-  position: absolute;
-  top: 15px;
-  right: 15px;
-}
-
 .profile-detail button img {
   height: 28px;
 }
 
-.profile-detail button.edit img {
-  content: url('../../images/edit2.svg');
-}
 .profile-detail button.save img {
   content: url('../../images/check.svg');
 }
@@ -77,12 +61,6 @@
   gap: 15px;
   flex-wrap: wrap;
   position: relative;
-}
-
-.selected-topics button.edit {
-  position: absolute;
-  top: 15px;
-  right: 15px;
 }
 
 .interest-item {

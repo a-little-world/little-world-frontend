@@ -158,6 +158,16 @@
   "chat_request_accept": "Accept",
   "chat_request_more_info": "More info",
   "chat_send": "Send",
+
+  "profile.self_profile_title": "My Profile",
+  "profile.match_profile_title": "{{userName}}'s Profile",
+  "profile.description_title": "About",
+  "profile.additional_interests_title": "Additional Interests",
+  "profile.interests_title": "Interests",
+  "profile.language_skill_title": "Interests",
+  "profile.save_btn": "Save",
+  "profile.cancel_btn": "Cancel",
+
   "profile_back": "Back",
   "profile_my_profile": "My Profile",
   "profile_match_profile": "{{userName}}'s Profile",

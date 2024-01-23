@@ -1,14 +1,31 @@
+import {
+  Button,
+  ButtonVariations,
+  MultiSelection,
+  PencilIcon,
+  Text,
+  TextArea,
+  TextTypes,
+} from '@a-little-world/little-world-design-system';
+import { current } from '@reduxjs/toolkit';
 import React, { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
 import { postUserProfileUpdate } from '../../api';
 import { updateProfile } from '../../features/userData';
+import { formatMultiSelectionOptions, registerInput } from '../../helpers/form';
 import '../../i18n';
 import Link from '../../path-prepend';
 import { getAppRoute } from '../../routes';
-import ProfileCard from '../blocks/Cards/ProfileCard';
+import {
+  EditButton,
+  Field,
+  FieldTitle,
+  ProfileSection,
+} from './Profile.styles';
 import './profile.css';
 
 function InterestsSelector({ inTopicSelection }) {
@@ -55,17 +72,21 @@ function InterestsSelector({ inTopicSelection }) {
   };
 
   return (
-    <div className="topics">
-      <h3>{t('profile_topics')}</h3>
+    <ProfileSection>
+      <Text tag="h3" type={TextTypes.Heading2}>
+        {t('profile_topics')}
+      </Text>
       <div className="selected-topics">
         {isSelf && (
-          <button
-            type="button"
-            className="edit"
+          <EditButton
+            variation={ButtonVariations.Icon}
             onClick={() => setEditing(true)}
           >
-            <img alt="edit" />
-          </button>
+            <PencilIcon
+              label="edit interests button"
+              labelId="edit-interests-btn"
+            />
+          </EditButton>
         )}
         {topicSelection.map(interest => {
           const topicOptions = interestChoices.filter(
@@ -77,6 +98,12 @@ function InterestsSelector({ inTopicSelection }) {
             </div>
           );
         })}
+        {/* <MultiSelection
+          onSelection={null}
+          preSelected={topicSelection}
+          options={formatMultiSelectionOptions({ data: interestChoices, t })}
+        /> */}
+
         <div className={editing ? 'overlay-shade' : 'overlay-shade hidden'}>
           {editing && (
             <div className="topics-selector modal-box">
@@ -115,7 +142,7 @@ function InterestsSelector({ inTopicSelection }) {
         </div>
       </div>
       {errorText && <div style={{ color: 'red' }}>{errorText}</div>}
-    </div>
+    </ProfileSection>
   );
 }
 
@@ -223,8 +250,8 @@ function TextBox({ subject, topicText = '', formTag }) {
   }, [editState]);
 
   return (
-    <div className={subject}>
-      <h3>{t(`profile_${subject.replace('-', '_')}`)}</h3>
+    <ProfileSection className={subject}>
+      <Text tag="h3">{t(`profile_${subject.replace('-', '_')}`)}</Text>
       <div className="profile-text">
         {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
         <p
@@ -246,13 +273,15 @@ function TextBox({ subject, topicText = '', formTag }) {
           </p>
         )}
         {isSelf && !editState && (
-          <button
-            type="button"
-            className="edit"
+          <EditButton
+            variation={ButtonVariations.Icon}
             onClick={() => setEditState(true)}
           >
-            <img alt="edit" />
-          </button>
+            <PencilIcon
+              label="edit interests button"
+              labelId="edit-interests-btn"
+            />
+          </EditButton>
         )}
         {isSelf && editState && (
           <div className="buttons">
@@ -275,44 +304,91 @@ function TextBox({ subject, topicText = '', formTag }) {
         )}
       </div>
       {errorText && <div style={{ color: 'red' }}>{errorText}</div>}
-    </div>
+    </ProfileSection>
   );
 }
 
-function ProfileDetail({ profile }) {
-  // prevent erroring out when empty data sent (due to promise delay?)
-  if (!profile) {
-    return null;
-  }
+const ProfileDetail = ({ children, currentValue, editable, field }) => {
+  const { t } = useTranslation();
+  const {
+    control,
+    getValues,
+    register,
+    handleSubmit,
+    formState: { errors },
+    resetField,
+    setError,
+    setFocus,
+    watch,
+  } = useForm({ defaultValues: { [field]: currentValue } });
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const dispatch = useDispatch();
+  const watchField = watch(field);
+  console.log({ watchField });
+
+  useEffect(() => {
+    if (watchField !== currentValue) setIsEditing(true);
+  }, [watchField, setIsEditing]);
+
+  const onSave = data => {
+    dispatch(updateProfile({ [field]: data }));
+    setIsEditing(false);
+  };
+
+  const onCancel = () => {
+    setIsEditing(false);
+    resetField(field);
+  };
 
   return (
-    <div className="profile-detail">
-      <TextBox
-        subject="about"
-        topicText={profile.description}
-        formTag="description"
-      />
-      <InterestsSelector inTopicSelection={profile.interests} />
-      <TextBox
-        subject="extra_topics"
-        topicText={profile.additional_interests}
-        formTag="additional_interests"
-      />
-      <TextBox
-        subject="expectations"
-        topicText={profile.language_skill_description}
-        formTag="language_skill_description"
-      />
-    </div>
+    <ProfileSection>
+      <FieldTitle tag="h3" type={TextTypes.Body2} bold>
+        {t(`profile.${field}_title`)}
+      </FieldTitle>
+      <Field>
+        {editable && (
+          <EditButton
+            variation={ButtonVariations.Icon}
+            onClick={() => setEditorOpen(true)}
+          >
+            <PencilIcon
+              label="edit interests button"
+              labelId="edit-interests-btn"
+            />
+          </EditButton>
+        )}
+        <form onSubmit={onSave}>
+          <TextArea
+            {...registerInput({
+              register,
+              name: field,
+              options: { required: 'error.required' },
+            })}
+            error={t(errors?.[field]?.message)}
+          />
+          {isEditing && (
+            <>
+              <Button onClick={onCancel}>{t('profile.cancel_btn')}</Button>
+              <Button type="submit">{t('profile.save_btn')}</Button>
+            </>
+          )}
+        </form>
+      </Field>
+    </ProfileSection>
   );
-}
+};
 
 function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
   const { t } = useTranslation();
+  // const location = useLocation();
+
+  // const { userPk } = location.state || {};
+  // const isSelf = !userPk;
 
   const profileTitle = isSelf
-    ? t('profile_my_profile')
-    : t('profile_match_profile', { userName: profile.first_name });
+    ? t('profile.self_profile_title')
+    : t('profile.match_profile_title', { userName: profile.first_name });
 
   return (
     <div className="profile-component">
@@ -325,8 +401,23 @@ function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
         <span className="text">{profileTitle}</span>
       </div>
       <div className="content-area-main">
-        <ProfileDetail isSelf={isSelf} profile={profile} />
-        <ProfileCard
+        <div className="profile-detail">
+          <ProfileDetail
+            field="description"
+            currentValue={profile.description}
+          />
+          <InterestsSelector inTopicSelection={profile.interests} />
+          <ProfileDetail
+            field="additional_interests"
+            currentValue={profile.additional_interests}
+          />
+          <TextBox
+            subject="expectations"
+            topicText={profile.language_skill_description}
+            formTag="language_skill_description"
+          />
+        </div>
+        <ProfileSection
           userPk={userPk}
           profile={profile}
           description="" /* don't show description on profile page as it's already shown in full */
