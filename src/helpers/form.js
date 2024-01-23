@@ -1,7 +1,10 @@
 const ROOT_SERVER_ERROR = 'root.serverError';
 
 export const onFormError = ({ e, formFields, setError, t }) => {
-  const cause = Object.keys(formFields).includes(e.cause) || ROOT_SERVER_ERROR;
+  const cause = Object.keys(formFields).includes(e.cause)
+    ? e.cause
+    : ROOT_SERVER_ERROR;
+
   if (e.message) {
     setError(
       cause,
