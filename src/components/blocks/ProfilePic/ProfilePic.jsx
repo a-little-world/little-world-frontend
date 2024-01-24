@@ -171,10 +171,10 @@ const ProfilePic = ({ control, setValue }) => {
               <UploadArea>
                 <UploadLabel htmlFor="fileInput">
                   <StyledFileIcon />
-                  <Text color="#36a9e0" bold type={TextTypes.Body3} tag="h4">
+                  <Text color="#36a9e0" bold type={TextTypes.Body5} tag="h4">
                     {t('profile_pic.click_to_upload')}
                   </Text>
-                  <Text color="#A6A6A6" type={TextTypes.Body3}>
+                  <Text color="#A6A6A6" type={TextTypes.Body5}>
                     {t('profile_pic.drop_image')}
                   </Text>
                 </UploadLabel>
@@ -201,7 +201,7 @@ const ProfilePic = ({ control, setValue }) => {
               $selected={imageType === IMAGE_TYPES.avatar}
             >
               <AvatarInfo>
-                <Text bold type={TextTypes.Body3} tag="h4" color="black">
+                <Text bold type={TextTypes.Body5} tag="h4">
                   {t('profile_pic.avatar_selection')}
                 </Text>
                 <ToolTip
@@ -244,7 +244,7 @@ const ProfilePic = ({ control, setValue }) => {
                   </Button>
                 </AvatarSelection>
 
-                <Text type={TextTypes.Body3} color="#A6A6A6" center>
+                <Text type={TextTypes.Body5} color="#A6A6A6" center>
                   {t('profile_pic.randomize_avatar')}
                 </Text>
                 <AvatarEditorButton
@@ -254,7 +254,7 @@ const ProfilePic = ({ control, setValue }) => {
                   color="#36a9e0"
                 >
                   <PencilIcon color="#36a9e0" width={12} />
-                  <Text type={TextTypes.Body3} bold color="#36a9e0" tag="h4">
+                  <Text type={TextTypes.Body5} bold color="#36a9e0" tag="h4">
                     {t('profile_pic.edit_avatar')}
                   </Text>
                 </AvatarEditorButton>
@@ -264,7 +264,7 @@ const ProfilePic = ({ control, setValue }) => {
               right={0}
               bottom="-16px"
               textAlign="left"
-              textType={TextTypes.Body3}
+              textType={TextTypes.Body5}
               visible={!isEmpty(error)}
               style={{ fontSize: '1rem' }}
             >

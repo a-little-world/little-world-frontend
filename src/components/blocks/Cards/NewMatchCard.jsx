@@ -1,4 +1,3 @@
-import ProfileImage from '../../atoms/ProfileImage';
 import {
   Button,
   Card,
@@ -8,6 +7,8 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
+import ProfileImage from '../../atoms/ProfileImage';
 
 const Centred = styled.div`
   display: flex;
@@ -31,15 +32,15 @@ const NewMatchCard = ({ name, image, imageType, onExit }) => {
   return (
     <Card width={CardSizes.Large}>
       <Centred>
-        <Text tag="h2" type={TextTypes.Heading2}>
+        <Text tag="h2" type={TextTypes.Heading4}>
           {t('new_match_title')}
         </Text>
 
         <ProfileImage image={image} imageType={imageType} />
-        <Text type={TextTypes.Body3}>
+        <Text type={TextTypes.Body5}>
           {t('new_match_description', { name })}
         </Text>
-        <Text tag="h3" type={TextTypes.Body3}>
+        <Text tag="h3" type={TextTypes.Body5}>
           {t('new_match_instruction')}
         </Text>
       </Centred>
