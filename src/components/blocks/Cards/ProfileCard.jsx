@@ -37,6 +37,8 @@ export const StyledCard = styled(Card)`
     `}
 `;
 
+export const ProfileImageButton = styled.button``;
+
 export const ProfileInfo = styled.div`
   width: 100%;
   display: flex;
@@ -84,6 +86,7 @@ function ProfileCard({
   isSelf,
   isOnline,
   openPartnerModal,
+  openEditImage,
   setCallSetupPartner,
   type,
 }) {
@@ -95,10 +98,13 @@ function ProfileCard({
       width={CardSizes.Small}
       $unconfirmedMatch={type === 'unconfirmed'}
     >
-      <ProfileImage
-        image={usesAvatar ? profile.avatar_config : profile.image}
-        imageType={profile.image_type}
-      />
+      <ProfileImageButton onClick={openEditImage} type="button">
+        <ProfileImage
+          image={usesAvatar ? profile.avatar_config : profile.image}
+          imageType={profile.image_type}
+        />
+      </ProfileImageButton>
+
       {/* temp disabled type === "match" */}
       {false && (
         <Popover
