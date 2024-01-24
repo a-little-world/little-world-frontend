@@ -38,7 +38,7 @@ const MessageCard = ({
 
   return (
     <StyledCard>
-      <Text type={TextTypes.Heading2}>{t(title)}</Text>
+      <Text type={TextTypes.Heading4}>{t(title)}</Text>
       {content && <Text>{t(content)}</Text>}
       {(onConfirm || onReject) && (
         <ButtonsContainer>

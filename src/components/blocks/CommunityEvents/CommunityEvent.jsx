@@ -50,9 +50,7 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
       </ImageContainer>
       <Main>
         <EventInfo>
-          <EventTitle type={TextTypes.Heading2} color="black">
-            {title}
-          </EventTitle>
+          <EventTitle type={TextTypes.Heading4}>{title}</EventTitle>
           <Text>{wordsToShow}</Text>
           {!isShortText && (
             <Button
@@ -66,21 +64,21 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
         </EventInfo>
         <DateTime>
           {frequency === 'weekly' && (
-            <Text type={TextTypes.Body1} bold>
+            <Text type={TextTypes.Body3} bold>
               {t(`weekdays::${dateTime.getDay()}`)}
             </Text>
           )}
           {frequency === 'once' && (
             <>
-              <Text type={TextTypes.Body1} bold>
+              <Text type={TextTypes.Body3} bold>
                 {two(dateTime.getDate())}
               </Text>
-              <Text type={TextTypes.Body1} bold>
+              <Text type={TextTypes.Body3} bold>
                 {t(`month_short::${dateTime.getMonth()}`)}
               </Text>
             </>
           )}
-          <Text type={TextTypes.Body1} bold>
+          <Text type={TextTypes.Body3} bold>
             {`${two(dateTime.getHours())}:${two(dateTime.getMinutes())}`}
           </Text>
         </DateTime>

@@ -65,8 +65,7 @@ const Field = styled.div`
 `;
 
 const FieldTitle = styled(Text)`
-  color: ${({ theme }) => theme.color.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 const ForgotPasswordLink = styled(Link)`
@@ -96,7 +95,11 @@ const Items = styled.div`
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.medium};
+`;
+
+const ModalTitle = styled(Text)`
+  color: ${({ theme }) => theme.color.text.highlight};
 `;
 
 function ListItem({ section, label, value, setEditing }) {
@@ -105,11 +108,7 @@ function ListItem({ section, label, value, setEditing }) {
 
   return (
     <SettingsItem>
-      <FieldTitle
-        tag="h3"
-        type={TextTypes.Heading3}
-        color={theme.color.text.primary}
-      >
+      <FieldTitle tag="h3" type={TextTypes.Heading6} bold>
         {t(`settings.${section}_${label}`)}
       </FieldTitle>
       <Field>
@@ -179,9 +178,9 @@ function EditFieldCard({ label, valueIn, setEditing }) {
 
   return (
     <ModalCard>
-      <Text tag="h2" type={TextTypes.Heading2} center>
+      <ModalTitle tag="h2" type={TextTypes.Heading4} center>
         {t('settings.edit_item', { item: t(`settings.personal_${label}`) })}
-      </Text>
+      </ModalTitle>
       {needsRelogin && (
         <Text>{t(`settings.personal_${label}_change_warning`)}</Text>
       )}
@@ -336,7 +335,7 @@ function Settings() {
   return (
     <>
       <div className="header">
-        <Text tag="h2" type={TextTypes.Heading2} color="black">
+        <Text tag="h2" type={TextTypes.Heading3}>
           {t('settings.title')}
         </Text>
       </div>

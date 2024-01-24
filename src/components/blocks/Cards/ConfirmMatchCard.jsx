@@ -47,19 +47,19 @@ const ConfirmMatchCard = ({
       {rejected ? (
         <>
           <Centred>
-            <Text tag="h2" type={TextTypes.Heading2}>
+            <Text tag="h2" type={TextTypes.Heading4}>
               {t('rejected_match_title')}
             </Text>
           </Centred>
           <Centred>
-            <Text bold type={TextTypes.Body3}>
+            <Text bold type={TextTypes.Body5}>
               {t('rejected_match_description', { name })}
             </Text>
           </Centred>
           <InfoContainer>
-            <Text type={TextTypes.Body3}>{t('rejected_match_info_1')}</Text>
-            <Text type={TextTypes.Body3}>{t('rejected_match_info_2')}</Text>
-            <Text type={TextTypes.Body3}>{t('rejected_match_info_3')}</Text>
+            <Text type={TextTypes.Body5}>{t('rejected_match_info_1')}</Text>
+            <Text type={TextTypes.Body5}>{t('rejected_match_info_2')}</Text>
+            <Text type={TextTypes.Body5}>{t('rejected_match_info_3')}</Text>
           </InfoContainer>
           <Button
             type="button"
@@ -72,15 +72,15 @@ const ConfirmMatchCard = ({
       ) : (
         <>
           <Centred>
-            <Text tag="h2" type={TextTypes.Heading2}>
+            <Text tag="h2" type={TextTypes.Heading4}>
               {t('confirm_match_title')}
             </Text>
 
             <ProfileImage image={image} imageType={imageType} />
-            <Text type={TextTypes.Body3}>
+            <Text type={TextTypes.Body5}>
               {t('confirm_match_description', { name })}
             </Text>
-            <Text tag="h3" type={TextTypes.Body3}>
+            <Text tag="h3" type={TextTypes.Body5}>
               {t('confirm_match_instruction')}
             </Text>
           </Centred>

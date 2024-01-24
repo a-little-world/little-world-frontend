@@ -97,7 +97,7 @@ const VerifyEmail = () => {
 
   return (
     <StyledCard>
-      <Title tag="h2" type={TextTypes.Heading2}>
+      <Title tag="h2" type={TextTypes.Heading4}>
         {t('verify_email.title')}
       </Title>
       <FormDescription>

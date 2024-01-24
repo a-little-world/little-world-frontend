@@ -18,7 +18,7 @@ function DeleteAccountCard({ setShowModal }) {
   return (
     <ModalCard>
       <Centred>
-        <Text tag="h2" type={TextTypes.Heading2}>
+        <Text tag="h2" type={TextTypes.Heading4}>
           {t('settings.delete_account_modal_title')}
         </Text>
       </Centred>
