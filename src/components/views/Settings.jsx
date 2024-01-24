@@ -335,7 +335,7 @@ function Settings() {
   return (
     <>
       <div className="header">
-        <Text tag="h2" type={TextTypes.Heading3}>
+        <Text tag="h2" type={TextTypes.Body2} bold>
           {t('settings.title')}
         </Text>
       </div>
