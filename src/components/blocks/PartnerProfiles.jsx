@@ -102,7 +102,7 @@ function PartnerProfiles({
       ) : (
         <FindNewPartner type="button" onClick={updateUserMatchingState}>
           <img src={PlusImage} alt="change matching status icon" />
-          <Text type={TextTypes.Body2}>
+          <Text type={TextTypes.Body3}>
             {t('matching_state_not_searching_trans')}
           </Text>
           {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}

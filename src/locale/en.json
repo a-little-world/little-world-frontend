@@ -130,8 +130,8 @@
   "settings.personal_delete_account": "Delete account",
   "settings.personal_delete_account_button": "Delete My Account",
   "settings.delete_account_confirm_button": "Delete Account",
-  "settings_delete_account_modal_title": "Are you sure you want to permanently delete your account?",
-  "settings_delete_account_modal_cancel": "Cancel",
+  "settings.delete_account_modal_title": "Are you sure you want to permanently delete your account?",
+  "settings.delete_account_modal_cancel": "Cancel",
 
   "chat_appointment_title": "Suggest an appointment",
   "chat_appointment_abbort": "Cancel",

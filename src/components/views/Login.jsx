@@ -80,7 +80,7 @@ const Login = () => {
 
   return (
     <StyledCard>
-      <Title tag="h2" type={TextTypes.Heading2}>
+      <Title tag="h2" type={TextTypes.Heading4}>
         {t('login.title')}
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>

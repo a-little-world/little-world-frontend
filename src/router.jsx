@@ -194,6 +194,11 @@ const router = createBrowserRouter(
       path: BASE_ROUTE,
       element: <Root />,
       children: ROOT_ROUTES,
+      errorElement: (
+        <Root>
+          <RouterError />
+        </Root>
+      ),
     },
   ],
   { basename: '/' },

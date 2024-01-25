@@ -9,6 +9,7 @@ import {
   TextArea,
   TextContent,
   TextInput,
+  TextTypes,
 } from '@a-little-world/little-world-design-system';
 
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
@@ -42,7 +43,7 @@ export const getFormComponent = (
 ) => {
   const props = getProps?.(t);
   if (type === ComponentTypes.text)
-    return { Component: Text, type: 'Body3', ...props };
+    return { Component: Text, type: TextTypes.Body5, ...props };
 
   if (type === ComponentTypes.infoText) return { Component: Note, ...props };
 

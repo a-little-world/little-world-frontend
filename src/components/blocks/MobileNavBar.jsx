@@ -34,7 +34,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
       <LogoContainer>
         <Logo stacked={false} displayText={isHome} />
         {!isHome && (
-          <Title tag="h1" type={TextTypes.Heading2} color="black">
+          <Title tag="h1" type={TextTypes.Heading4}>
             {t(`headers::${key}`)}
           </Title>
         )}

@@ -64,7 +64,7 @@ const ChangeEmail = () => {
 
   return (
     <StyledCard>
-      <Title tag="h2" type={TextTypes.Heading2}>
+      <Title tag="h2" type={TextTypes.Heading4}>
         {t('change_email.title')}
       </Title>
       <FormDescription>{t('change_email.description')}</FormDescription>

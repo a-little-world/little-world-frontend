@@ -55,7 +55,7 @@ const ResetPassword = () => {
 
   return (
     <StyledCard>
-      <Title tag="h2" type={TextTypes.Heading2}>
+      <Title tag="h2" type={TextTypes.Heading4}>
         {t('reset_password.title')}
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>

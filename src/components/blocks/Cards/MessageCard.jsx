@@ -24,6 +24,10 @@ const StyledCard = styled(Card)`
   margin: 0 auto;
 `;
 
+const ModalTitle = styled(Text)`
+  color: ${({ theme }) => theme.color.text.highlight};
+`;
+
 const MessageCard = ({
   title,
   content,
@@ -38,7 +42,7 @@ const MessageCard = ({
 
   return (
     <StyledCard>
-      <Text type={TextTypes.Heading2}>{t(title)}</Text>
+      <ModalTitle type={TextTypes.Heading4}>{t(title)}</ModalTitle>
       {content && <Text>{t(content)}</Text>}
       {(onConfirm || onReject) && (
         <ButtonsContainer>

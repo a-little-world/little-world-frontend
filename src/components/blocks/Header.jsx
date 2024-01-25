@@ -84,13 +84,13 @@ const Header = () => {
       <Policies>
         <Link
           href={getHomeRoute(language, TERMS_ROUTE)}
-          textType={TextTypes.Body4}
+          textType={TextTypes.Body6}
         >
           {t('header.terms')}
         </Link>
         <Link
           href={getHomeRoute(language, PRIVACY_ROUTE)}
-          textType={TextTypes.Body4}
+          textType={TextTypes.Body6}
         >
           {t('header.privacy')}
         </Link>

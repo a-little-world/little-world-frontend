@@ -32,7 +32,7 @@ function CancelSearchCard({ onClose }) {
 
   return (
     <ModalCard>
-      <Text tag="h2" center type={TextTypes.Heading2}>
+      <Text tag="h2" center type={TextTypes.Heading4}>
         {t('cp_cancel_search_confirm')}
       </Text>
       <ButtonsContainer>

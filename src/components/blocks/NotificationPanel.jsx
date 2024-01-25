@@ -35,7 +35,7 @@ function NotificationPanel() {
           image={usesAvatar ? user.profile.avatar_config : user.profile.image}
           imageType={user.profile.image_type}
         />
-        <Text tag="h3" type={TextTypes.Body1} bold>
+        <Text tag="h3" type={TextTypes.Body3} bold>
           {`${user.profile.first_name} ${user.profile.second_name}`}
         </Text>
       </ProfileInfo>
@@ -52,9 +52,9 @@ function NotificationPanel() {
           </div>
         ))}
       </div>
-      <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
+      {/* <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
         {t('nbr_show_all')}
-      </Link>
+      </Link> */}
     </div>
   );
 }

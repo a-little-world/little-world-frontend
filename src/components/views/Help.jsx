@@ -174,7 +174,7 @@ const FAQItems = styled.div`
 `;
 
 const FAQSectionTitle = styled(Text)`
-  margin-bottom: ${({ theme }) => `${theme.spacing.xxsmall} `};
+  margin-bottom: ${({ theme }) => `${theme.spacing.xsmall} `};
 `;
 
 const generateFAQItems = t => {
@@ -212,13 +212,13 @@ function Faqs() {
 
   return (
     <FAQContainer>
-      <Text tag="h2" type={TextTypes.Heading2}>
+      <Text tag="h2" type={TextTypes.Heading4}>
         {t('nbt_faqs')}
       </Text>
       <Text>{t('help_faqs_intro')}</Text>
       {faqs.map(faq => (
         <FAQItems key={faq.section}>
-          <FAQSectionTitle bold type={TextTypes.Body2} color="black">
+          <FAQSectionTitle bold type={TextTypes.Body3}>
             {faq.section}
           </FAQSectionTitle>
           <Accordion items={faq.items} />
@@ -299,7 +299,7 @@ function Contact() {
 
   return (
     <form className="help-contact">
-      <Text tag="h2" type={TextTypes.Heading2}>
+      <Text tag="h2" type={TextTypes.Heading4}>
         {t('nbt_contact')}
       </Text>
       <Text>{t('help_contact_intro_line1')}</Text>

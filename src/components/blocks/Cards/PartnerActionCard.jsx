@@ -1,4 +1,3 @@
-import { reportMatch, unmatch } from '../../../api';
 import {
   Button,
   ButtonAppearance,
@@ -14,6 +13,8 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
+import { reportMatch, unmatch } from '../../../api';
 
 export const PARTNER_ACTION_REPORT = 'report';
 export const PARTNER_ACTION_UNMATCH = 'unmatch';
@@ -90,7 +91,7 @@ function PartnerActionCard({ data, onClose }) {
               label={t('report_modal_exclamation_label')}
             />
           )}
-          <Text type={TextTypes.Body2} tag="h3" center>
+          <Text type={TextTypes.Body3} tag="h3" center>
             {t(`${data?.type}_modal_confirmation`, { name: data.userName })}
           </Text>
           {isUnmatch && <Text center>{t('unmatch_modal_search_again')}</Text>}
@@ -104,7 +105,7 @@ function PartnerActionCard({ data, onClose }) {
         </Centred>
       ) : (
         <PartnerActionForm onSubmit={handleSubmit(handlePartnerAction)}>
-          <Text type={TextTypes.Heading2} tag="h2" center>
+          <Text type={TextTypes.Heading4} tag="h2" center>
             {t(`${data?.type}_modal_title`, { name: data.userName })}
           </Text>
           <Text>

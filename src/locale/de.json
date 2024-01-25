@@ -128,8 +128,8 @@
   "settings.personal_delete_account": "account löschen",
   "settings.personal_delete_account_button": "jetzt meinen account löschen",
   "settings.delete_account_confirm_button": "Konto löschen",
-  "settings_delete_account_modal_title": "Sind Sie sicher, dass Sie Ihr Konto dauerhaft löschen möchten?",
-  "settings_delete_account_modal_cancel": "Abbrechen",
+  "settings.delete_account_modal_title": "Sind Sie sicher, dass Sie Ihr Konto dauerhaft löschen möchten?",
+  "settings.delete_account_modal_cancel": "Abbrechen",
 
   "chat_appointment_title": "Termin vorschagen",
   "chat_appointment_abbort": "Abbrechen",
