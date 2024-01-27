@@ -13,7 +13,7 @@ import {
 import Cookies from 'js-cookie';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -57,6 +57,7 @@ function UnreadDot({ count }) {
 
 function Sidebar({ sidebarMobile }) {
   const location = useLocation();
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -83,6 +84,7 @@ function Sidebar({ sidebarMobile }) {
         })
           .then(response => {
             if (response.status === 200) {
+              dispatch({ type: 'userData/reset', payload: {} }); // clears all existing user data
               navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
             } else {
               console.error(
