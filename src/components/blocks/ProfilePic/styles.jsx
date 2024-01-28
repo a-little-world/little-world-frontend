@@ -1,5 +1,8 @@
-import { Button, ImageIcon } from "@a-little-world/little-world-design-system";
-import styled from "styled-components";
+import {
+  Button,
+  ImageSearchIcon,
+} from '@a-little-world/little-world-design-system';
+import styled from 'styled-components';
 
 export const ProfilePicWrapper = styled.div`
   position: relative;
@@ -33,8 +36,13 @@ export const SelectionPanel = styled.div`
 `;
 
 export const ImageContainer = styled.div`
-  display: flex;
-  align-items: center;
+  display: none;
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.small}) {
+      display: flex;
+      align-items: center;
+    }`}
 `;
 
 export const InteractiveArea = styled.div`
@@ -70,21 +78,7 @@ export const CircleButton = styled(Button)`
 
 export const TrashButton = styled(Button)`
   position: absolute;
-  bottom: 32px;
-`;
-
-export const AvatarInfo = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-  width: 154px;
-
-  ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.small}) {
-        flex-direction: column;
-    }`}
+  bottom: ${({ theme }) => theme.spacing.large};
 `;
 
 export const AvatarSelection = styled.div`
@@ -225,11 +219,17 @@ export const Buttons = styled.div`
 `;
 
 export const AvatarEditorButton = styled(Button)`
-  padding: ${({ theme }) => theme.spacing.xxxsmall};
+  padding: 0 ${({ theme }) => theme.spacing.xxxsmall};
   border-radius: 5px;
 `;
 
-export const StyledFileIcon = styled(ImageIcon)`
-  color: ${({ theme }) => theme.color.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+export const StyledFileIcon = styled(ImageSearchIcon)`
+  display: none;
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.small}) {
+      display: block;
+      color: ${theme.color.surface.bold};
+      margin-bottom: ${theme.spacing.xxsmall};
+  }`}
 `;

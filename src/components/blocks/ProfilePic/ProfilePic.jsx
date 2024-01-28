@@ -1,16 +1,16 @@
 import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
   Button,
   ButtonVariations,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ImageSearchIcon,
   InputError,
+  Label,
   Modal,
   PencilIcon,
   PlusIcon,
-  QuestionIcon,
   Text,
   TextTypes,
-  ToolTip,
   TrashIcon,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
@@ -26,7 +26,6 @@ import ProfileImage from '../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import {
   AvatarEditorButton,
-  AvatarInfo,
   AvatarSelection,
   CircleButton,
   FileInput,
@@ -45,8 +44,59 @@ const IMAGE_TYPES = {
   image: 'image',
 };
 
-const ProfilePic = ({ control, setValue }) => {
+const CircleImage = ({
+  className,
+  Icon,
+  fileInputRef,
+  uploadedImage,
+  onImageDelete,
+}) => {
   const theme = useTheme();
+  return uploadedImage ? (
+    <ProfileImage
+      className={className}
+      image={uploadedImage}
+      size="medium"
+      circle
+    >
+      <TrashButton
+        onClick={onImageDelete}
+        variation={ButtonVariations.Icon}
+        type="button"
+      >
+        <TrashIcon color={theme.color.surface.disabled} />
+      </TrashButton>
+    </ProfileImage>
+  ) : (
+    <CircleButton
+      className={className}
+      htmlFor="fileInput"
+      onClick={() => fileInputRef.current?.click()}
+      variation="Secondary"
+      type="button"
+    >
+      <Icon color="#36a9e0" />
+    </CircleButton>
+  );
+};
+
+const MobileCircleImage = styled(CircleImage)`
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.small}) {
+      justify-content: flex-start;
+      display: flex;
+    }
+
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.medium};
+      border: 1px solid ${theme.color.border.subtle};
+      border-radius: 30px;
+      box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
+    }
+  `}
+`;
+
+const ProfilePic = ({ control, setValue }) => {
   const [imageType, setImageType] = useState(IMAGE_TYPES.image);
   const [avatarConfig, setAvatarConfig] = useState(genConfig());
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
@@ -147,30 +197,22 @@ const ProfilePic = ({ control, setValue }) => {
               $error={!isEmpty(error)}
             >
               <ImageContainer>
-                {uploadedImage ? (
-                  <ProfileImage image={uploadedImage} size="medium" circle>
-                    <TrashButton
-                      onClick={onImageDelete}
-                      variation="Icon"
-                      type="button"
-                    >
-                      <TrashIcon color={theme.color.surface.disabled} />
-                    </TrashButton>
-                  </ProfileImage>
-                ) : (
-                  <CircleButton
-                    htmlFor="fileInput"
-                    onClick={() => fileInputRef.current?.click()}
-                    variation="Secondary"
-                    type="button"
-                  >
-                    <PlusIcon color="#36a9e0" />
-                  </CircleButton>
-                )}
+                <CircleImage
+                  Icon={PlusIcon}
+                  onImageDelete={onImageDelete}
+                  fileInputRef={fileInputRef}
+                  uploadedImage={uploadedImage}
+                />
               </ImageContainer>
               <UploadArea>
                 <UploadLabel htmlFor="fileInput">
-                  <StyledFileIcon />
+                  <CircleImage
+                    Icon={ImageSearchIcon}
+                    onImageDelete={onImageDelete}
+                    fileInputRef={fileInputRef}
+                    uploadedImage={uploadedImage}
+                  />
+                  <StyledFileIcon width={40} height={40} />
                   <Text color="#36a9e0" bold type={TextTypes.Body5} tag="h4">
                     {t('profile_pic.click_to_upload')}
                   </Text>
@@ -200,25 +242,6 @@ const ProfilePic = ({ control, setValue }) => {
               onClick={() => onImageSelection(IMAGE_TYPES.avatar)}
               $selected={imageType === IMAGE_TYPES.avatar}
             >
-              <AvatarInfo>
-                <Text bold type={TextTypes.Body5} tag="h4">
-                  {t('profile_pic.avatar_selection')}
-                </Text>
-                <ToolTip
-                  text={t('profile_pic.avatar_tooltip')}
-                  trigger={
-                    <Button variation={ButtonVariations.Icon} type="button">
-                      <QuestionIcon
-                        label="questionIcon"
-                        labelId="questionIcon"
-                        color="#36a9e0"
-                        height={16}
-                        width={16}
-                      />
-                    </Button>
-                  }
-                />
-              </AvatarInfo>
               <InteractiveArea>
                 <AvatarSelection>
                   <Button
@@ -227,7 +250,7 @@ const ProfilePic = ({ control, setValue }) => {
                     onClick={onPrevAvatar}
                     type="button"
                   >
-                    <ArrowLeftIcon width={6} />
+                    <ChevronLeftIcon width={6} />
                   </Button>
                   <div>
                     <Avatar
@@ -240,9 +263,16 @@ const ProfilePic = ({ control, setValue }) => {
                     onClick={onNextAvatar}
                     type="button"
                   >
-                    <ArrowRightIcon width={6} />
+                    <ChevronRightIcon width={6} />
                   </Button>
                 </AvatarSelection>
+                <Label
+                  bold
+                  toolTipText={t('profile_pic.avatar_tooltip')}
+                  marginBottom="0"
+                >
+                  {t('profile_pic.avatar_selection')}
+                </Label>
 
                 <Text type={TextTypes.Body5} color="#A6A6A6" center>
                   {t('profile_pic.randomize_avatar')}

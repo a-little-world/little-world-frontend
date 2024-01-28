@@ -174,7 +174,11 @@ const FAQItems = styled.div`
 `;
 
 const FAQSectionTitle = styled(Text)`
-  margin-bottom: ${({ theme }) => `${theme.spacing.xsmall} `};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+`;
+
+const ContentTitle = styled(Text)`
+  color: ${({ theme }) => theme.color.text.highlight};
 `;
 
 const generateFAQItems = t => {
@@ -212,9 +216,9 @@ function Faqs() {
 
   return (
     <FAQContainer>
-      <Text tag="h2" type={TextTypes.Heading4}>
+      <ContentTitle tag="h2" type={TextTypes.Heading4}>
         {t('nbt_faqs')}
-      </Text>
+      </ContentTitle>
       <Text>{t('help_faqs_intro')}</Text>
       {faqs.map(faq => (
         <FAQItems key={faq.section}>
@@ -299,9 +303,9 @@ function Contact() {
 
   return (
     <form className="help-contact">
-      <Text tag="h2" type={TextTypes.Heading4}>
+      <ContentTitle tag="h2" type={TextTypes.Heading4}>
         {t('nbt_contact')}
-      </Text>
+      </ContentTitle>
       <Text>{t('help_contact_intro_line1')}</Text>
       <Text>{t('help_contact_intro_line2')}</Text>
       <TextArea

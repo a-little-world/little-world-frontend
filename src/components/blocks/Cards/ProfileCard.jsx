@@ -6,6 +6,7 @@ import {
   DotsIcon,
   Gradients,
   MessageIcon,
+  PencilIcon,
   PhoneIcon,
   Popover,
   ProfileIcon,
@@ -28,8 +29,11 @@ import {
 export const StyledCard = styled(Card)`
   align-items: center;
   margin: 0 auto;
+  border-color: ${({ theme }) => theme.color.border.subtle};
   align-items: center;
   position: relative;
+  text-align: ${({ $isSelf }) => ($isSelf ? 'center' : 'left')};
+
   ${({ $unconfirmedMatch }) =>
     $unconfirmedMatch &&
     css`
@@ -37,7 +41,22 @@ export const StyledCard = styled(Card)`
     `}
 `;
 
-export const ProfileImageButton = styled.button``;
+export const ProfileImageButton = styled.button`
+  position: relative;
+  transition: filter 0.5s;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+`;
+
+export const EditIcon = styled(PencilIcon)`
+  position: absolute;
+  bottom: ${({ theme }) => theme.spacing.xxsmall};
+  right: ${({ theme }) => theme.spacing.xxsmall};
+  width: fit-content;
+  color: ${({ theme }) => theme.color.surface.bold};
+`;
 
 export const ProfileInfo = styled.div`
   width: 100%;
@@ -45,8 +64,8 @@ export const ProfileInfo = styled.div`
   flex-direction: column;
 
   ${({ theme }) => `
-  gap: ${theme.spacing.small};
-  margin-bottom: ${theme.spacing.xsmall};
+    gap: ${theme.spacing.small};
+    margin-bottom: ${theme.spacing.xsmall};
   `};
 `;
 
@@ -54,9 +73,9 @@ export const MatchMenuToggle = styled(Button)`
   position: absolute;
 
   ${({ theme }) => `
-  padding: ${theme.spacing.xxxsmall} ${theme.spacing.xxsmall};
-  top: ${theme.spacing.xsmall};
-  right: ${theme.spacing.xsmall};
+    padding: ${theme.spacing.xxxsmall} ${theme.spacing.xxsmall};
+    top: ${theme.spacing.xsmall};
+    right: ${theme.spacing.xsmall};
   `};
 `;
 
@@ -96,14 +115,23 @@ function ProfileCard({
   return (
     <StyledCard
       width={CardSizes.Small}
+      $isSelf={isSelf}
       $unconfirmedMatch={type === 'unconfirmed'}
     >
-      <ProfileImageButton onClick={openEditImage} type="button">
+      {isSelf && openEditImage ? (
+        <ProfileImageButton onClick={openEditImage} type="button">
+          <ProfileImage
+            image={usesAvatar ? profile.avatar_config : profile.image}
+            imageType={profile.image_type}
+          />
+          <EditIcon circular height="16px" width="16px" />
+        </ProfileImageButton>
+      ) : (
         <ProfileImage
           image={usesAvatar ? profile.avatar_config : profile.image}
           imageType={profile.image_type}
         />
-      </ProfileImageButton>
+      )}
 
       {/* temp disabled type === "match" */}
       {false && (

@@ -2,7 +2,7 @@ import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import Logo from '../atoms/Logo';
 
@@ -14,6 +14,26 @@ const LogoContainer = styled.div`
 
 const Title = styled(Text)``;
 
+const MobileHeader = styled.div`
+  display: flex;
+  background: ${({ theme }) => theme.color.surface.primary};
+  border-radius: unset;
+  margin: unset;
+  position: sticky;
+  top: 0;
+  padding: 10px 0;
+  justify-content: space-around;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  width: 100%;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: none;
+    }
+  `};
+`;
+
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
   const location = useLocation();
@@ -23,7 +43,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
   const isHome = key === 'home';
 
   return (
-    <div className="mobile-header">
+    <MobileHeader className="mobile-header">
       <button
         type="button"
         className="menu"
@@ -42,7 +62,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
       <button className="notification disabled" type="button">
         <img alt="show notifications" />
       </button>
-    </div>
+    </MobileHeader>
   );
 }
 

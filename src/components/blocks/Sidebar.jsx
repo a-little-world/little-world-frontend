@@ -15,7 +15,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
 import {
@@ -29,6 +29,39 @@ import {
 } from '../../routes';
 import Logo from '../atoms/Logo';
 import MenuLink from '../atoms/MenuLink';
+
+const SidebarContainer = styled.nav`
+  border: 1px solid ${({ theme }) => theme.color.border.subtle};
+  box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
+  background: ${({ theme }) => theme.color.surface.primary};
+  padding: ${({ theme }) => theme.spacing.medium};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  margin: 0;
+  left: 0;
+  transition: left 0.4s;
+  overflow-y: scroll;
+  width: fit-content;
+  left: ${({ $visibleOnMobile }) => ($visibleOnMobile ? '0' : '-100%')};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      position: relative;
+      margin-bottom: auto;
+      width: unset;
+      border-radius: 30px;
+      overflow-y: visible;
+      left: 0;
+    }
+  `};
+`;
 
 const Unread = styled.div`
   position: absolute;
@@ -113,7 +146,10 @@ function Sidebar({ sidebarMobile }) {
 
   return (
     <>
-      <div className={showSidebarMobile ? 'sidebar' : 'sidebar hidden'}>
+      <SidebarContainer
+        $visibleOnMobile={showSidebarMobile}
+        className={showSidebarMobile ? 'sidebar' : 'sidebar hidden'}
+      >
         <StyledLogo />
         {buttonData.map(({ label, path, clickEvent, Icon }) => {
           const isActive = location.pathname === `/${APP_ROUTE}${path}`;
@@ -153,7 +189,7 @@ function Sidebar({ sidebarMobile }) {
             </Button>
           );
         })}
-      </div>
+      </SidebarContainer>
       <div
         className="mobile-shade"
         onClick={() => setShowSidebarMobile(false)}

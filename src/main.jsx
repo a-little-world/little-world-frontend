@@ -2,6 +2,7 @@ import { Modal } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 
 import CustomPagination from './CustomPagination';
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
@@ -104,6 +105,26 @@ const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
     />
   );
 };
+
+const Content = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+  padding-bottom: ${({ theme }) => theme.spacing.medium};
+  width: 100%;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: 0;
+      gap: ${theme.spacing.small};
+    }
+
+    @media (min-width: ${theme.breakpoints.large}) {
+      gap: ${theme.spacing.medium};
+    }
+  `};
+`;
 
 function Main() {
   // for the case /call-setup/:userId?/
@@ -212,15 +233,13 @@ function Main() {
       page={use}
       sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
     >
-      <div className="content-area">
-        <div className="nav-bar-top">
-          <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-          <NbtSelector
-            selection={topSelection}
-            setSelection={setTopSelection}
-            use={use}
-          />
-        </div>
+      <Content>
+        <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
+        <NbtSelector
+          selection={topSelection}
+          setSelection={setTopSelection}
+          use={use}
+        />
         {use === 'main' && (
           <div>
             {topSelection === 'conversation_partners' && (
@@ -264,7 +283,7 @@ function Main() {
         )}
         {use === 'help' && <Help selection={topSelection} />}
         {use === 'settings' && <Settings />}
-      </div>
+      </Content>
 
       <Modal open={callSetup} locked>
         <CallSetup
