@@ -21,13 +21,6 @@
   flex-direction: column;
 }
 
-/* main content area */
-.content-area-main {
-  display: flex;
-  flex: 1 1 0;
-  align-items: flex-start;
-}
-
 .profiles {
   display: grid;
   width: 100%;
@@ -145,10 +138,6 @@
     background: none;
   }
 
-  .mobile-header .menu img {
-    content: url('./images/button-menu.svg');
-  }
-
   .mobile-header .notification.disabled {
     display: unset !important;
     visibility: hidden;
@@ -156,11 +145,6 @@
 
   .mobile-header .notification img {
     content: url('./images/button-bell.svg');
-  }
-
-  .content-area-main {
-    gap: 20px;
-    flex-direction: column;
   }
 }
 
@@ -273,18 +257,12 @@
   box-sizing: border-box;
 }
 
-.mobile-shade,
 .sidebar .active-user,
 .sidebar .close {
   display: none;
 }
 
 @media screen and (width < 1024px) {
-  .sidebar.hidden + .mobile-shade {
-    opacity: 0;
-    pointer-events: none;
-  }
-
   .sidebar .active-user {
     height: unset;
     width: 100%;
@@ -305,22 +283,6 @@
   .sidebar button.close img {
     content: url('./images/close-pop-up.svg');
     filter: grayscale(1);
-  }
-
-  .content-area-main {
-    gap: 20px;
-    flex-direction: column;
-  }
-
-  .mobile-shade {
-    display: block;
-    background: rgb(0 0 0 / 30%);
-    z-index: 2;
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
-    pointer-events: all;
-    transition: opacity 0.5s;
   }
 }
 

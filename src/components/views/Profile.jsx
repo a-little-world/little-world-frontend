@@ -1,197 +1,29 @@
 import {
-  Button,
-  ButtonAppearance,
-  ButtonSizes,
-  ButtonVariations,
   Modal,
   MultiDropdown,
-  PencilIcon,
   Text,
-  TextTypes,
+  TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import styled, { css } from 'styled-components';
+import { useSelector } from 'react-redux';
 
-import { postUserProfileUpdate } from '../../api';
-import { updateProfile } from '../../features/userData';
 import '../../i18n';
 import {
   ComponentTypes,
   formatDataField,
   getFormComponent,
 } from '../../userForm/formContent';
-import ButtonsContainer from '../atoms/ButtonsContainer';
 import PageHeader from '../atoms/PageHeader';
-import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
 import ProfileCard from '../blocks/Cards/ProfileCard';
-import FormStep from '../blocks/Form/FormStep';
-import { SubmitError } from '../blocks/Form/styles';
-import ProfilePic from '../blocks/ProfilePic/ProfilePic';
 import {
   Details,
-  EditButton,
-  Field,
-  FieldTitle,
-  ProfileSection,
-} from './Profile.styles';
-import './profile.css';
-
-const PageContent = styled.section`
-  display: flex;
-  flex-direction: column-reverse;
-  gap: ${({ theme }) => theme.spacing.medium};
-  align-items: flex-start;
-  padding: ${({ theme }) => theme.spacing.small};
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      padding: 0;
-    }
-    @media (min-width: ${theme.breakpoints.large}) {
-      flex-direction: row;
-    }
-  `};
-`;
-
-const Interest = styled.div`
-  font-family: 'Signika Negative';
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: ${({ theme }) => theme.color.surface.primary};
-  border-radius: 10px;
-  box-shadow: 0px 1px 5px rgb(0 0 0 / 30%);
-  border-radius: 1000px;
-  border: 2px solid ${({ theme }) => theme.color.border.selected};
-  color: ${({ theme }) => theme.color.text.primary};
-  padding: ${({ theme }) =>
-    `${theme.spacing.xxxsmall} ${theme.spacing.xsmall}`};
-  min-width: 60px;
-  height: 33px;
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.small}) {
-      padding: ${theme.spacing.xxsmall} ${theme.spacing.small};
-      min-width: 80px;
-      height: 45px;
-    }
-  `}
-`;
-
-const InterestsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${({ theme }) => theme.spacing.xsmall};
-  padding-top: ${({ theme }) => theme.spacing.xxxsmall};
-`;
-
-function Interests({ interests, options }) {
-  const { t } = useTranslation();
-  const selected = options.filter(option => interests.includes(option.value));
-
-  return (
-    <InterestsContainer>
-      {selected.map(interest => (
-        <Interest key={interest.value} className="interest-item">
-          <Text tag="span">{t(interest.tag)}</Text>
-        </Interest>
-      ))}
-    </InterestsContainer>
-  );
-}
-
-const TextField = styled.div`
-  border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  border-radius: 15px;
-  background: ${({ theme }) => theme.color.surface.disabled};
-  // box-shadow: 0px 1px 5px rgb(0 0 0 / 30%);
-  padding: ${({ theme }) => theme.spacing.small};
-`;
-
-const ProfileDetail = ({
-  content,
-  children,
-  editable = true,
-  setEditingField,
-}) => {
-  const { t } = useTranslation();
-
-  return (
-    <ProfileSection>
-      <FieldTitle tag="h3" type={TextTypes.Body3} bold>
-        {t(`profile.${content.dataField}_title`)}
-      </FieldTitle>
-      <Field>
-        {editable && (
-          <EditButton
-            variation={ButtonVariations.Icon}
-            onClick={() => setEditingField(content.dataField)}
-          >
-            <PencilIcon
-              label="edit interests button"
-              labelId="edit-interests-btn"
-              width="16"
-              height="16"
-              circular
-            />
-          </EditButton>
-        )}
-        {children}
-      </Field>
-    </ProfileSection>
-  );
-};
-
-const ProfileEditor = ({ content, field, onClose }) => {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-  } = useForm();
-
-  const onSave = data => {
-    dispatch(updateProfile(data));
-    onClose();
-  };
-
-  const onCancel = () => {
-    onClose();
-  };
-
-  return (
-    <ModalCard>
-      <ModalTitle>{t(`profile.editor_title_${content.dataField}`)}</ModalTitle>
-      <form onSubmit={handleSubmit(onSave)}>
-        {field === 'image' ? (
-          <ProfilePic control={control} setValue={setValue} />
-        ) : (
-          <FormStep control={control} content={content} />
-        )}
-        <SubmitError $visible={errors?.root?.serverError}>
-          {errors?.root?.serverError?.message}
-        </SubmitError>
-        <ButtonsContainer>
-          <Button
-            appearance={ButtonAppearance.Secondary}
-            onClick={onCancel}
-            size={ButtonSizes.Small}
-          >
-            {t('profile.cancel_btn')}
-          </Button>
-          <Button type="submit" size={ButtonSizes.Small}>
-            {t('profile.save_btn')}
-          </Button>
-        </ButtonsContainer>
-      </form>
-    </ModalCard>
-  );
-};
+  PageContent,
+  TextField,
+} from '../blocks/Profile/styles';
+import Interests from '../blocks/Profile/Interests';
+import ProfileEditor from '../blocks/Profile/ProfileEditor';
+import ProfileDetail from '../blocks/Profile/ProfileDetail';
 
 function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
   const { t } = useTranslation();
@@ -210,6 +42,7 @@ function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
         currentValue: profile.description,
         getProps: trans => ({
           errorRules: { required: trans('validation.required') },
+          size: TextAreaSize.Medium,
         }),
       },
       t,
@@ -231,7 +64,10 @@ function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
       type: ComponentTypes.textArea,
       dataField: 'additional_interests',
       currentValue: profile.additional_interests,
-    }),
+      getProps: () => ({
+        size: TextAreaSize.Medium,
+      }),
+    }, t),
     lang_skill: getFormComponent(
       {
         type: ComponentTypes.multiDropdown,

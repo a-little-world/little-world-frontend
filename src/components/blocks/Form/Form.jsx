@@ -22,7 +22,7 @@ import {
 import getFormPage from '../../../userForm/formPages';
 import DropdownWithInput from '../DropdownWithInput/DropdownWithInput';
 import Note from '../Note/Note';
-import ProfilePic from '../ProfilePic/ProfilePic';
+import ProfilePic from '../Profile/ProfilePic/ProfilePic';
 import RadioGroupWithInput from '../RadioGroupWithInput/RadioGroupWithInput';
 import FormStep from './FormStep';
 import {

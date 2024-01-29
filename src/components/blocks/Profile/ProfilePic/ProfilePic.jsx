@@ -19,10 +19,10 @@ import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Avatar, { genConfig } from 'react-nice-avatar';
 import { useSelector } from 'react-redux';
-import { useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
-import { USER_FIELDS } from '../../../constants';
-import ProfileImage from '../../atoms/ProfileImage';
+import { USER_FIELDS } from '../../../../constants';
+import ProfileImage from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import {
   AvatarEditorButton,
@@ -46,7 +46,7 @@ const IMAGE_TYPES = {
 
 const CircleImage = ({
   className,
-  Icon,
+  icon,
   fileInputRef,
   uploadedImage,
   onImageDelete,
@@ -75,23 +75,18 @@ const CircleImage = ({
       variation="Secondary"
       type="button"
     >
-      <Icon color="#36a9e0" />
+      {icon}
     </CircleButton>
   );
 };
 
 const MobileCircleImage = styled(CircleImage)`
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.small}) {
-      justify-content: flex-start;
-      display: flex;
-    }
+    display: flex;
+    margin-bottom: ${theme.spacing.xsmall};
 
-    @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.medium};
-      border: 1px solid ${theme.color.border.subtle};
-      border-radius: 30px;
-      box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
+    @media (min-width: ${theme.breakpoints.small}) {
+      display: none;
     }
   `}
 `;
@@ -198,7 +193,7 @@ const ProfilePic = ({ control, setValue }) => {
             >
               <ImageContainer>
                 <CircleImage
-                  Icon={PlusIcon}
+                  icon={<PlusIcon color="#36a9e0" width={48} height={48} />}
                   onImageDelete={onImageDelete}
                   fileInputRef={fileInputRef}
                   uploadedImage={uploadedImage}
@@ -206,13 +201,13 @@ const ProfilePic = ({ control, setValue }) => {
               </ImageContainer>
               <UploadArea>
                 <UploadLabel htmlFor="fileInput">
-                  <CircleImage
-                    Icon={ImageSearchIcon}
+                  <MobileCircleImage
+                    icon={<ImageSearchIcon color="#36a9e0" width={56} height={56} />}
                     onImageDelete={onImageDelete}
                     fileInputRef={fileInputRef}
                     uploadedImage={uploadedImage}
                   />
-                  <StyledFileIcon width={40} height={40} />
+                  <StyledFileIcon width={56} height={56} />
                   <Text color="#36a9e0" bold type={TextTypes.Body5} tag="h4">
                     {t('profile_pic.click_to_upload')}
                   </Text>

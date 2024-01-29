@@ -14,7 +14,7 @@ import {
 
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
 import Note from '../components/blocks/Note/Note';
-import ProfilePic from '../components/blocks/ProfilePic/ProfilePic';
+import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
 import { formatMultiSelectionOptions } from '../helpers/form';
 
 export const ComponentTypes = {

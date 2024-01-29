@@ -84,6 +84,25 @@ const StyledLogo = styled(Logo)`
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
+const MobileOverlay = styled.div`
+  opacity: ${({ $visibleOnMobile }) => ($visibleOnMobile ? 1 : 0)};
+  pointer-events: none;
+  display: ${({ $visibleOnMobile }) => ($visibleOnMobile ? 'block' : 'none')};
+  background: rgb(0 0 0 / 30%);
+  z-index: 2;
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  pointer-events: all;
+  transition: opacity 0.5s;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: none;
+    }
+  `};
+`;
+
 function UnreadDot({ count }) {
   return <Unread>{count}</Unread>;
 }
@@ -143,13 +162,10 @@ function Sidebar({ sidebarMobile }) {
     ),
     messages: [],
   };
-
+console.log(showSidebarMobile)
   return (
     <>
-      <SidebarContainer
-        $visibleOnMobile={showSidebarMobile}
-        className={showSidebarMobile ? 'sidebar' : 'sidebar hidden'}
-      >
+      <SidebarContainer $visibleOnMobile={showSidebarMobile}>
         <StyledLogo />
         {buttonData.map(({ label, path, clickEvent, Icon }) => {
           const isActive = location.pathname === `/${APP_ROUTE}${path}`;
@@ -190,9 +206,9 @@ function Sidebar({ sidebarMobile }) {
           );
         })}
       </SidebarContainer>
-      <div
-        className="mobile-shade"
+      <MobileOverlay
         onClick={() => setShowSidebarMobile(false)}
+        $visibleOnMobile={showSidebarMobile}
       />
     </>
   );

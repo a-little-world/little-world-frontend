@@ -23,7 +23,7 @@ export const SelectionPanel = styled.div`
   align-items: stretch;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
+  padding: ${({ theme }) => theme.spacing.small};
   flex-wrap: wrap;
 
   margin-bottom: ${({ theme }) => theme.spacing.small};
@@ -70,10 +70,16 @@ export const UploadArea = styled(InteractiveArea)`
 export const CircleButton = styled(Button)`
   border-radius: 50%;
   border: 3px solid #36a9e0;
-  background: #e6e8ec66;
+  background: ${({ theme }) => theme.color.surface.primary};
 
-  width: 154px;
-  height: 154px;
+  width: 119px;
+  height: 119px;
+
+  ${({ theme }) =>
+  `@media (min-width: ${theme.breakpoints.small}) {
+    width: 154px;
+    height: 154px;
+  }`}
 `;
 
 export const TrashButton = styled(Button)`

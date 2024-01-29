@@ -97,10 +97,6 @@
 }
 
 @media screen and (width < 1024px) {
-  .content-area-main {
-    padding: 10px;
-  }
-
   .community-event {
     flex-direction: column;
   }

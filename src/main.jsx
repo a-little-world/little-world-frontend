@@ -126,6 +126,22 @@ const Content = styled.section`
   `};
 `;
 
+const Matches = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      flex-direction: row;
+      gap: ${theme.spacing.medium};
+      padding: 0;
+    }
+ `};
+`;
+
 function Main() {
   // for the case /call-setup/:userId?/
   let { userId } = useParams();
@@ -241,28 +257,25 @@ function Main() {
           use={use}
         />
         {use === 'main' && (
-          <div>
-            {topSelection === 'conversation_partners' && (
-              <>
-                <div className="content-area-main">
-                  <PartnerProfiles
-                    setCallSetupPartner={setCallSetupPartner}
-                    setShowCancel={setShowCancelSearching}
-                    totalPaginations={totalPages}
-                  />
-                  <NotificationPanel />
-                </div>
-                {totalPages > 1 && (
-                  <CustomPagination
-                    totalPages={totalPages}
-                    currentPage={currentPage}
-                    onPageChange={onPageChange}
-                  />
-                )}
-              </>
-            )}
-            {topSelection === 'community_calls' && <CommunityEvents />}
-          </div>
+          topSelection === 'conversation_partners' ? (
+            <>
+              <Matches className="content-area-main">
+                <PartnerProfiles
+                  setCallSetupPartner={setCallSetupPartner}
+                  setShowCancel={setShowCancelSearching}
+                  totalPaginations={totalPages}
+                />
+                <NotificationPanel />
+              </Matches>
+              {totalPages > 1 && (
+                <CustomPagination
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  onPageChange={onPageChange}
+                />
+              )}
+            </>
+          ) : <CommunityEvents />
         )}
         {use === 'chat' && (
           <Chat

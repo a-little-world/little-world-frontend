@@ -25,6 +25,7 @@ import {
   PARTNER_ACTION_REPORT,
   PARTNER_ACTION_UNMATCH,
 } from './PartnerActionCard';
+import OnlineIndicator from '../../atoms/OnlineIndicator';
 
 export const StyledCard = styled(Card)`
   align-items: center;
@@ -175,11 +176,7 @@ function ProfileCard({
           </PartnerMenuOption>
         </Popover>
       )}
-      <div
-        className={isOnline ? 'online-indicator online' : 'online-indicator'}
-      >
-        online <span className="light" />
-      </div>
+      <OnlineIndicator isOnline={isOnline || true} />
       <ProfileInfo className="profile-info">
         <Text className="name">{`${profile.first_name}`}</Text>
         <Text className="text">{profile.description}</Text>

@@ -1,11 +1,37 @@
 import { Button, Card, Text } from '@a-little-world/little-world-design-system';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+export const PageContent = styled.section`
+  display: flex;
+  flex-direction: column-reverse;
+  gap: ${({ theme }) => theme.spacing.medium};
+  align-items: flex-start;
+  padding: ${({ theme }) => theme.spacing.small};
+  width: 100%;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: 0;
+    }
+    @media (min-width: ${theme.breakpoints.large}) {
+      flex-direction: row;
+    }
+  `};
+`;
+
+export const TextField = styled.div`
+  border: 1px solid ${({ theme }) => theme.color.border.subtle};
+  border-radius: 15px;
+  background: ${({ theme }) => theme.color.surface.disabled};
+  padding: ${({ theme }) => theme.spacing.small};
+`;
 
 export const Details = styled.div`
   flex: 1 1 0;
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
+  width: 100%;
 `;
 
 export const ProfileSection = styled(Card)`

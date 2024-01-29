@@ -1,4 +1,4 @@
-import { Text, TextTypes } from '@a-little-world/little-world-design-system';
+import { Button, ButtonVariations, Gradients, MenuIcon, Text, TextTypes } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
@@ -21,8 +21,9 @@ const MobileHeader = styled.div`
   margin: unset;
   position: sticky;
   top: 0;
-  padding: 10px 0;
-  justify-content: space-around;
+  padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.small}`};
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  justify-content: space-between;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   z-index: 1;
   width: 100%;
@@ -44,13 +45,13 @@ function MobileNavBar({ setShowSidebarMobile }) {
 
   return (
     <MobileHeader className="mobile-header">
-      <button
+      <Button
         type="button"
-        className="menu"
+        variation={ButtonVariations.Icon}
         onClick={() => setShowSidebarMobile(true)}
       >
-        <img alt="open menu" />
-      </button>
+        <MenuIcon label="open menu" labelId='open-menu' circular width={24} height={24} gradient={Gradients.Blue} />
+      </Button>
       <LogoContainer>
         <Logo stacked={false} displayText={isHome} />
         {!isHome && (
