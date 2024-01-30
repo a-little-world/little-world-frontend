@@ -22,6 +22,7 @@ export const userDataSlice = createSlice({
     },
     updateProfile: (state, action) => {
       Object.keys(action.payload).forEach(key => {
+        console.log({ key, payload: action.payload[key], profile: state.user.profile[key] })
         state.user.profile[key] = action.payload[key];
       });
     },

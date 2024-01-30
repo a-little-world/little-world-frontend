@@ -103,6 +103,8 @@ function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
     },
   };
 
+  console.log({ profile });
+
   return (
     <>
       <PageHeader canGoBack={!isSelf} text={profileTitle} />

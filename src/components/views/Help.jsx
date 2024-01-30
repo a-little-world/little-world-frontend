@@ -9,6 +9,7 @@ import {
   PhoneIcon,
   Text,
   TextArea,
+  TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
@@ -327,7 +328,7 @@ function Contact() {
         name="problem"
         inputMode="text"
         maxLength="300"
-        size={TextArea.Medium}
+        size={TextAreaSize.Medium}
         placeholder={t('help_contact_problem_placeholder')}
         onChange={e => {
           setHelpMessage(e.target.value);

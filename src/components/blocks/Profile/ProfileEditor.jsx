@@ -26,6 +26,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
   const isImage = field === 'image';
 
   const onFormSuccess = data => {
+    console.log({ data })
     dispatch(updateProfile(data));
     onClose();
   };
@@ -35,6 +36,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
   };
 
   const onSave = data => {
+    // onFormSuccess({data});
     mutateUserData(data, onFormSuccess, onError);
   };
 
