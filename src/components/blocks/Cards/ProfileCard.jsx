@@ -176,7 +176,7 @@ function ProfileCard({
           </PartnerMenuOption>
         </Popover>
       )}
-      <OnlineIndicator isOnline={isOnline || true} />
+      <OnlineIndicator isOnline={isOnline} />
       <ProfileInfo className="profile-info">
         <Text className="name">{`${profile.first_name}`}</Text>
         <Text className="text">{profile.description}</Text>
