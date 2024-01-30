@@ -162,7 +162,7 @@ function Sidebar({ sidebarMobile }) {
     ),
     messages: [],
   };
-console.log(showSidebarMobile)
+
   return (
     <>
       <SidebarContainer $visibleOnMobile={showSidebarMobile}>

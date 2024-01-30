@@ -173,16 +173,6 @@
   "profile.save_btn": "Save",
   "profile.cancel_btn": "Cancel",
 
-  "profile_back": "Back",
-  "profile_my_profile": "My Profile",
-  "profile_match_profile": "{{userName}}'s Profile",
-  "profile_edit_profile": "Edit profile",
-  "profile_about": "About",
-  "profile_topics": "What topics would you like to talk about?",
-  "profile_extra_topics": "Other Topics",
-  "profile_expectations": "Which languages do you speak and how well? ",
-  "profile_since": "Member since {{date}}",
-  "profile_choose_interests": "Select Interests",
   "weekdays": [
     "Sunday",
     "Monday",
