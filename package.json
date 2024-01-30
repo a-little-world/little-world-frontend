@@ -30,7 +30,7 @@
   },
   "prettier": "@a-little-world/little-world-prettier-config",
   "dependencies": {
-    "@a-little-world/little-world-design-system": "^1.14.4",
+    "@a-little-world/little-world-design-system": "^1.14.5",
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",

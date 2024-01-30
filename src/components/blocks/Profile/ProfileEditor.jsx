@@ -2,6 +2,7 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
+  CardSizes,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -13,17 +14,28 @@ import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';
 import { SubmitError } from '../Form/styles';
 import ProfilePic from './ProfilePic/ProfilePic';
+import { mutateUserData } from '../../../api';
+import { onFormError } from '../../../helpers/form';
 
 const ProfileEditor = ({ content, field, onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const {
-    control, handleSubmit, formState: { errors }, setValue,
+    control, getValues, handleSubmit, formState: { errors }, setError, setValue,
   } = useForm();
+  const isImage = field === 'image';
 
-  const onSave = data => {
+  const onFormSuccess = data => {
     dispatch(updateProfile(data));
     onClose();
+  };
+
+  const onError = e => {
+    onFormError({ e, formFields: getValues(), setError, t });
+  };
+
+  const onSave = data => {
+    mutateUserData(data, onFormSuccess, onError);
   };
 
   const onCancel = () => {
@@ -31,10 +43,10 @@ const ProfileEditor = ({ content, field, onClose }) => {
   };
 
   return (
-    <ModalCard>
+    <ModalCard size={isImage ? CardSizes.Large : CardSizes.Medium}>
       <ModalTitle>{t(`profile.editor_title_${content.dataField}`)}</ModalTitle>
       <form onSubmit={handleSubmit(onSave)}>
-        {field === 'image' ? (
+        {isImage ? (
           <ProfilePic control={control} setValue={setValue} />
         ) : (
           <FormStep control={control} content={content} />

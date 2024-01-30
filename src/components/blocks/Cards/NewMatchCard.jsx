@@ -30,7 +30,7 @@ const NewMatchCard = ({ name, image, imageType, onExit }) => {
   const { t } = useTranslation();
 
   return (
-    <Card width={CardSizes.Large}>
+    <Card width={CardSizes.Medium}>
       <Centred>
         <Text tag="h2" type={TextTypes.Heading4}>
           {t('new_match_title')}

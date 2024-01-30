@@ -16,6 +16,7 @@ const Title = styled(Text)``;
 
 const MobileHeader = styled.div`
   display: flex;
+  height: 72px;
   background: ${({ theme }) => theme.color.surface.primary};
   border-radius: unset;
   margin: unset;
@@ -34,6 +35,11 @@ const MobileHeader = styled.div`
     }
   `};
 `;
+
+const Spacer = styled.div`
+ display: flex;
+ flex-shrink: 0;
+`
 
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
@@ -60,9 +66,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
           </Title>
         )}
       </LogoContainer>
-      <button className="notification disabled" type="button">
-        <img alt="show notifications" />
-      </button>
+      <Spacer />
     </MobileHeader>
   );
 }

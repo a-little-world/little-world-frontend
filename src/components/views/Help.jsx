@@ -40,7 +40,12 @@ const HelpContainer = styled.div`
   }`}
 `;
 
-const HelpPanel = styled(Card)``;
+const HelpPanel = styled(Card)`
+  ${({ theme }) => `
+  @media (min-width: ${theme.breakpoints.medium}) {
+    max-width: ${CardSizes.Medium};
+  }`}
+`;
 
 const HelpSupport = styled(Card)`
   display: flex;
@@ -48,7 +53,7 @@ const HelpSupport = styled(Card)`
   align-items: center;
   height: fit-content;
   width: 100%;
-  max-width: ${CardSizes.Large};
+  max-width: ${CardSizes.Medium};
 
   ${({ theme }) => `
     padding: ${theme.spacing.medium} ${theme.spacing.small};
@@ -73,6 +78,13 @@ const SupportTeam = styled.div`
     margin: 0;
   }
 `;
+
+const ContactForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.medium};
+`;
+
 const ContactButtons = styled.div`
   display: flex;
   justify-content: center;
@@ -95,14 +107,16 @@ const ContactInfo = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: ${({ theme }) => `${theme.spacing.xxsmall} `};
   width: 100%;
+  justify-content: space-between;
 
   ${({ theme }) =>
     `
     padding: ${theme.spacing.medium};
     gap: ${theme.spacing.small};
+
     @media (min-width: ${theme.breakpoints.small}) {
       padding: ${theme.spacing.medium};
-      gap: ${theme.spacing.xlarge};
+      gap: ${theme.spacing.medium};
     }`}
 `;
 const Contacts = styled.div`
@@ -302,7 +316,7 @@ function Contact() {
   }
 
   return (
-    <form className="help-contact">
+    <ContactForm>
       <ContentTitle tag="h2" type={TextTypes.Heading4}>
         {t('nbt_contact')}
       </ContentTitle>
@@ -313,6 +327,7 @@ function Contact() {
         name="problem"
         inputMode="text"
         maxLength="300"
+        size={TextArea.Medium}
         placeholder={t('help_contact_problem_placeholder')}
         onChange={e => {
           setHelpMessage(e.target.value);
@@ -359,7 +374,7 @@ function Contact() {
         </div>
       </DropZoneLabel>
       <Button onClick={handleSubmit}>{t('help_contact_submit')}</Button>
-    </form>
+    </ContactForm>
   );
 }
 
@@ -371,7 +386,7 @@ function Help({ selection }) {
 
   return (
     <HelpContainer>
-      <HelpPanel width={CardSizes.Large}>
+      <HelpPanel>
         {selection === 'faqs' && <Faqs />}
         {selection === 'contact' && <Contact />}
       </HelpPanel>

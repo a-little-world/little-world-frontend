@@ -21,7 +21,7 @@ export const PageContent = styled.section`
 
 export const TextField = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  border-radius: 15px;
+  border-radius: 10px;
   background: ${({ theme }) => theme.color.surface.disabled};
   padding: ${({ theme }) => theme.spacing.small};
 `;
