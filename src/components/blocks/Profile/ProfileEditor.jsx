@@ -8,25 +8,30 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
+
+import { mutateUserData } from '../../../api';
 import { updateProfile } from '../../../features/userData';
-import ButtonsContainer from '../../atoms/ButtonsContainer';
+import { onFormError } from '../../../helpers/form';
 import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';
 import { FormButtons, SubmitError } from '../Form/styles';
 import ProfilePic from './ProfilePic/ProfilePic';
-import { mutateUserData } from '../../../api';
-import { onFormError } from '../../../helpers/form';
 
 const ProfileEditor = ({ content, field, onClose }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const {
-    control, getValues, handleSubmit, formState: { errors }, setError, setValue,
+    control,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    setValue,
   } = useForm();
   const isImage = field === 'image';
 
   const onFormSuccess = data => {
-    dispatch(updateProfile({ lang_skill: [{ lang: 'german', level: 'level-1'}, { lang: 'french', level: 'level-1'}]}));
+    dispatch(updateProfile(data));
     onClose();
   };
 
