@@ -12,7 +12,7 @@ import { updateProfile } from '../../../features/userData';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';
-import { SubmitError } from '../Form/styles';
+import { FormButtons, SubmitError } from '../Form/styles';
 import ProfilePic from './ProfilePic/ProfilePic';
 import { mutateUserData } from '../../../api';
 import { onFormError } from '../../../helpers/form';
@@ -26,8 +26,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
   const isImage = field === 'image';
 
   const onFormSuccess = data => {
-    console.log({ data })
-    dispatch(updateProfile(data));
+    dispatch(updateProfile({ lang_skill: [{ lang: 'german', level: 'level-1'}, { lang: 'french', level: 'level-1'}]}));
     onClose();
   };
 
@@ -36,7 +35,6 @@ const ProfileEditor = ({ content, field, onClose }) => {
   };
 
   const onSave = data => {
-    // onFormSuccess({data});
     mutateUserData(data, onFormSuccess, onError);
   };
 
@@ -56,7 +54,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
         <SubmitError $visible={errors?.root?.serverError}>
           {errors?.root?.serverError?.message}
         </SubmitError>
-        <ButtonsContainer>
+        <FormButtons>
           <Button
             appearance={ButtonAppearance.Secondary}
             onClick={onCancel}
@@ -67,7 +65,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
           <Button type="submit" size={ButtonSizes.Small}>
             {t('profile.save_btn')}
           </Button>
-        </ButtonsContainer>
+        </FormButtons>
       </form>
     </ModalCard>
   );

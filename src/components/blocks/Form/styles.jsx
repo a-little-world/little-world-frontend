@@ -19,13 +19,27 @@ export const StyledCard = styled(Card)`
     }`}
 `;
 
-export const ButtonsSection = styled.div`
+export const FormButtons = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${({ $hasBackBtn }) =>
-    $hasBackBtn ? 'space-between' : 'flex-end'};
+  justify-content: ${({ $onlyOneBtn }) =>
+    $onlyOneBtn ? 'flex-end' : 'space-between'};
   width: 100%;
   margin-top: auto;
+  gap: ${({ theme }) => theme.spacing.large};
+  flex-wrap: wrap;
+
+  > button {
+    flex: 1;
+  }
+
+  ${({ theme }) =>
+  `@media (min-width: ${theme.breakpoints.small}) {
+    > button {
+      flex: unset;
+    }
+  }`}
+
 `;
 
 export const SubmitError = styled.div`

@@ -19,6 +19,8 @@ const StyledAvatar = styled(Avatar)`
   border-radius: 100%;
   box-sizing: border-box;
   text-align: initial;
+  background-clip: padding-box;
+  transform: translateZ(0)
 `;
 
 export const CircleImage = styled.div`

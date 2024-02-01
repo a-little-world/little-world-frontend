@@ -26,7 +26,7 @@ import ProfilePic from '../Profile/ProfilePic/ProfilePic';
 import RadioGroupWithInput from '../RadioGroupWithInput/RadioGroupWithInput';
 import FormStep from './FormStep';
 import {
-  ButtonsSection,
+  FormButtons,
   StyledCard,
   StyledForm,
   SubmitError,
@@ -130,7 +130,7 @@ const Form = () => {
         <SubmitError $visible={errors?.root?.serverError}>
           {errors?.root?.serverError?.message}
         </SubmitError>
-        <ButtonsSection $hasBackBtn={Boolean(prevPage)}>
+        <FormButtons $onlyOneBtn={!Boolean(prevPage)}>
           {Boolean(prevPage) && (
             <Button
               appearance={ButtonAppearance.Secondary}
@@ -144,7 +144,7 @@ const Form = () => {
           <Button type="submit" size={ButtonSizes.Small}>
             {t('btn.next')}
           </Button>
-        </ButtonsSection>
+        </FormButtons>
       </StyledForm>
     </StyledCard>
   );

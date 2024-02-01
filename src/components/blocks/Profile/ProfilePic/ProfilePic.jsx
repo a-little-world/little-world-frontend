@@ -85,7 +85,7 @@ const MobileCircleImage = styled(CircleImage)`
     display: flex;
     margin-bottom: ${theme.spacing.xsmall};
 
-    @media (min-width: ${theme.breakpoints.small}) {
+    @media (min-width: ${theme.breakpoints.medium}) {
       display: none;
     }
   `}

@@ -16,6 +16,8 @@ const Title = styled(Text)``;
 
 const MobileHeader = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   height: 72px;
   background: ${({ theme }) => theme.color.surface.primary};
   border-radius: unset;
@@ -24,7 +26,6 @@ const MobileHeader = styled.div`
   top: 0;
   padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.small}`};
   gap: ${({ theme }) => theme.spacing.xxsmall};
-  justify-content: space-between;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   z-index: 1;
   width: 100%;
@@ -51,22 +52,21 @@ function MobileNavBar({ setShowSidebarMobile }) {
 
   return (
     <MobileHeader className="mobile-header">
+      <LogoContainer>
+        <Logo stacked={false} displayText={isHome} />
+        {!isHome && (
+          <Title tag="h1" type={TextTypes.Body1} bold>
+            {t(`headers::${key}`)}
+          </Title>
+        )}
+      </LogoContainer>
       <Button
         type="button"
         variation={ButtonVariations.Icon}
         onClick={() => setShowSidebarMobile(true)}
       >
-        <MenuIcon label="open menu" labelId='open-menu' circular width={24} height={24} gradient={Gradients.Blue} />
+        <MenuIcon label="open menu" labelId='open-menu' width={24} height={24} gradient={Gradients.Blue} />
       </Button>
-      <LogoContainer>
-        <Logo stacked={false} displayText={isHome} />
-        {!isHome && (
-          <Title tag="h1" type={TextTypes.Heading4}>
-            {t(`headers::${key}`)}
-          </Title>
-        )}
-      </LogoContainer>
-      <Spacer />
     </MobileHeader>
   );
 }

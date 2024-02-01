@@ -169,7 +169,7 @@
   "profile.editor_title_additional_interests": "Update your Additional Interests",
   "profile.editor_title_interests": "Update your Interests",
   "profile.editor_title_lang_skill": "Update your Language Skills",
-  "profile.editor_title_image": "Update your Image",
+  "profile.editor_title_image": "Your Image",
   "profile.save_btn": "Save",
   "profile.cancel_btn": "Cancel",
 
@@ -292,7 +292,7 @@
   "help_contact_picture_label": "Add pictures to explain the problem (optional)",
   "help_contact_picture_btn": "click to upload",
   "help_contact_picture_drag": "or drag and drop image here",
-  "help_contact_submit": "submit",
+  "help_contact_submit": "Submit",
   "help_support_header": "support team",
   "help_support_slogan": "We're here for you!",
   "help_support_message_btn": "chat now",

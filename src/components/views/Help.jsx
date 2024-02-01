@@ -194,6 +194,12 @@ const FAQSectionTitle = styled(Text)`
 
 const ContentTitle = styled(Text)`
   color: ${({ theme }) => theme.color.text.highlight};
+  text-align: center;
+
+  ${({ theme }) => `
+  @media (min-width: ${theme.breakpoints.small}) {
+    text-align: left;
+  }`}
 `;
 
 const generateFAQItems = t => {

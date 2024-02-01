@@ -1,6 +1,6 @@
 import { GlobalStyles } from '@a-little-world/little-world-design-system';
 import React from 'react';
-import { Outlet, createBrowserRouter } from 'react-router-dom';
+import { Outlet, createBrowserRouter, ScrollRestoration } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
@@ -42,6 +42,7 @@ const isCapacitor = IS_CAPACITOR_BUILD || false;
 
 export const Root = ({ children }) => (
   <ThemeProvider theme={theme}>
+    <ScrollRestoration />
     <GlobalStyles />
     {children || <Outlet />}
   </ThemeProvider>
