@@ -150,8 +150,7 @@ function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
               />
             ) : (
               <Text>
-                Add your language skills now so we can provide you with the best
-                possible match
+                {t(`profile.lang_skill${isSelf ? '_self' : ''}_undefined`)}
               </Text>
             )}
           </ProfileDetail>
