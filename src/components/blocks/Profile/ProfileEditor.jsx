@@ -8,6 +8,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
+import styled from 'styled-components';
 
 import { mutateUserData } from '../../../api';
 import { updateProfile } from '../../../features/userData';
@@ -15,7 +16,16 @@ import { onFormError } from '../../../helpers/form';
 import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';
 import { FormButtons, SubmitError } from '../Form/styles';
-import ProfilePic from './ProfilePic/ProfilePic';
+
+const EditorForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+const EditorTitle = styled(ModalTitle)`
+  margin-bottom: ${({ theme }) => theme.spacing.small};
+`;
 
 const ProfileEditor = ({ content, field, onClose }) => {
   const { t } = useTranslation();
@@ -26,7 +36,6 @@ const ProfileEditor = ({ content, field, onClose }) => {
     handleSubmit,
     formState: { errors },
     setError,
-    setValue,
   } = useForm();
   const isImage = field === 'image';
 
@@ -49,13 +58,11 @@ const ProfileEditor = ({ content, field, onClose }) => {
 
   return (
     <ModalCard size={isImage ? CardSizes.Large : CardSizes.Medium}>
-      <ModalTitle>{t(`profile.editor_title_${content.dataField}`)}</ModalTitle>
-      <form onSubmit={handleSubmit(onSave)}>
-        {isImage ? (
-          <ProfilePic control={control} setValue={setValue} />
-        ) : (
-          <FormStep control={control} content={content} />
-        )}
+      <EditorForm onSubmit={handleSubmit(onSave)}>
+        <EditorTitle>
+          {t(`profile.editor_title_${content.dataField}`)}
+        </EditorTitle>
+        <FormStep control={control} content={content} />
         <SubmitError $visible={errors?.root?.serverError}>
           {errors?.root?.serverError?.message}
         </SubmitError>
@@ -71,7 +78,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
             {t('profile.save_btn')}
           </Button>
         </FormButtons>
-      </form>
+      </EditorForm>
     </ModalCard>
   );
 };
