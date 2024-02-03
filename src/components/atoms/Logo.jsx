@@ -28,7 +28,7 @@ const LogoImage = styled.img`
 
 const LogoText = styled.img`
   max-width: 100%;
-  width: ${({ $size }) => ($size === LogoSizes.Small ? '30px' : '70px')};
+  width: ${({ $size }) => ($size === LogoSizes.Small ? '30px' : '80px')};
 `;
 
 const Logo = ({

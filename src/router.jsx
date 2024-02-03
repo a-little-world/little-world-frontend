@@ -1,6 +1,10 @@
 import { GlobalStyles } from '@a-little-world/little-world-design-system';
 import React from 'react';
-import { Outlet, createBrowserRouter } from 'react-router-dom';
+import {
+  Outlet,
+  ScrollRestoration,
+  createBrowserRouter,
+} from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 
 import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
@@ -23,6 +27,7 @@ import {
   CALL_SETUP_ROUTE,
   CHANGE_EMAIL_ROUTE,
   CHAT_ROUTE,
+  EDIT_FORM_ROUTE,
   FORGOT_PASSWORD_ROUTE,
   HELP_ROUTE,
   LOGIN_ROUTE,
@@ -42,6 +47,7 @@ const isCapacitor = IS_CAPACITOR_BUILD || false;
 
 export const Root = ({ children }) => (
   <ThemeProvider theme={theme}>
+    <ScrollRestoration />
     <GlobalStyles />
     {children || <Outlet />}
   </ThemeProvider>
@@ -93,6 +99,17 @@ const ROOT_ROUTES = [
         path: '',
         element: <Welcome />,
       },
+      {
+        path: ':slug',
+        element: <Form />,
+      },
+    ],
+  },
+  {
+    path: getAppRoute(EDIT_FORM_ROUTE),
+    element: <FormLayout />,
+    errorElement: <RouterError />,
+    children: [
       {
         path: ':slug',
         element: <Form />,
@@ -194,6 +211,11 @@ const router = createBrowserRouter(
       path: BASE_ROUTE,
       element: <Root />,
       children: ROOT_ROUTES,
+      errorElement: (
+        <Root>
+          <RouterError />
+        </Root>
+      ),
     },
   ],
   { basename: '/' },

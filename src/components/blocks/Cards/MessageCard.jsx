@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import ButtonsContainer from '../../atoms/ButtonsContainer';
+import { ModalTitle } from './ModalCard';
 
 const StyledCard = styled(Card)`
   text-align: center;
@@ -38,7 +39,7 @@ const MessageCard = ({
 
   return (
     <StyledCard>
-      <Text type={TextTypes.Heading2}>{t(title)}</Text>
+      <ModalTitle>{t(title)}</ModalTitle>
       {content && <Text>{t(content)}</Text>}
       {(onConfirm || onReject) && (
         <ButtonsContainer>

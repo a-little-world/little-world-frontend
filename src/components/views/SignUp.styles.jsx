@@ -28,6 +28,7 @@ export const StyledCta = styled(Button)`
 
 export const Title = styled(Text)`
   text-align: center;
+  color: ${({ theme }) => theme.color.text.highlight};
   width: 100%;
   margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;

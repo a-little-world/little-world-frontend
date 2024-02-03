@@ -9,6 +9,7 @@ import {
   PhoneIcon,
   Text,
   TextArea,
+  TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
@@ -40,7 +41,12 @@ const HelpContainer = styled.div`
   }`}
 `;
 
-const HelpPanel = styled(Card)``;
+const HelpPanel = styled(Card)`
+  ${({ theme }) => `
+  @media (min-width: ${theme.breakpoints.medium}) {
+    max-width: ${CardSizes.Medium};
+  }`}
+`;
 
 const HelpSupport = styled(Card)`
   display: flex;
@@ -48,7 +54,7 @@ const HelpSupport = styled(Card)`
   align-items: center;
   height: fit-content;
   width: 100%;
-  max-width: ${CardSizes.Large};
+  max-width: ${CardSizes.Medium};
 
   ${({ theme }) => `
     padding: ${theme.spacing.medium} ${theme.spacing.small};
@@ -73,6 +79,13 @@ const SupportTeam = styled.div`
     margin: 0;
   }
 `;
+
+const ContactForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.medium};
+`;
+
 const ContactButtons = styled.div`
   display: flex;
   justify-content: center;
@@ -95,14 +108,16 @@ const ContactInfo = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: ${({ theme }) => `${theme.spacing.xxsmall} `};
   width: 100%;
+  justify-content: space-between;
 
   ${({ theme }) =>
     `
     padding: ${theme.spacing.medium};
     gap: ${theme.spacing.small};
+
     @media (min-width: ${theme.breakpoints.small}) {
       padding: ${theme.spacing.medium};
-      gap: ${theme.spacing.xlarge};
+      gap: ${theme.spacing.medium};
     }`}
 `;
 const Contacts = styled.div`
@@ -174,7 +189,17 @@ const FAQItems = styled.div`
 `;
 
 const FAQSectionTitle = styled(Text)`
-  margin-bottom: ${({ theme }) => `${theme.spacing.xxsmall} `};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+`;
+
+const ContentTitle = styled(Text)`
+  color: ${({ theme }) => theme.color.text.highlight};
+  text-align: center;
+
+  ${({ theme }) => `
+  @media (min-width: ${theme.breakpoints.small}) {
+    text-align: left;
+  }`}
 `;
 
 const generateFAQItems = t => {
@@ -212,13 +237,13 @@ function Faqs() {
 
   return (
     <FAQContainer>
-      <Text tag="h2" type={TextTypes.Heading2}>
+      <ContentTitle tag="h2" type={TextTypes.Heading4}>
         {t('nbt_faqs')}
-      </Text>
+      </ContentTitle>
       <Text>{t('help_faqs_intro')}</Text>
       {faqs.map(faq => (
         <FAQItems key={faq.section}>
-          <FAQSectionTitle bold type={TextTypes.Body2} color="black">
+          <FAQSectionTitle bold type={TextTypes.Body3}>
             {faq.section}
           </FAQSectionTitle>
           <Accordion items={faq.items} />
@@ -298,10 +323,10 @@ function Contact() {
   }
 
   return (
-    <form className="help-contact">
-      <Text tag="h2" type={TextTypes.Heading2}>
+    <ContactForm>
+      <ContentTitle tag="h2" type={TextTypes.Heading4}>
         {t('nbt_contact')}
-      </Text>
+      </ContentTitle>
       <Text>{t('help_contact_intro_line1')}</Text>
       <Text>{t('help_contact_intro_line2')}</Text>
       <TextArea
@@ -309,6 +334,7 @@ function Contact() {
         name="problem"
         inputMode="text"
         maxLength="300"
+        size={TextAreaSize.Medium}
         placeholder={t('help_contact_problem_placeholder')}
         onChange={e => {
           setHelpMessage(e.target.value);
@@ -355,7 +381,7 @@ function Contact() {
         </div>
       </DropZoneLabel>
       <Button onClick={handleSubmit}>{t('help_contact_submit')}</Button>
-    </form>
+    </ContactForm>
   );
 }
 
@@ -367,7 +393,7 @@ function Help({ selection }) {
 
   return (
     <HelpContainer>
-      <HelpPanel width={CardSizes.Large}>
+      <HelpPanel>
         {selection === 'faqs' && <Faqs />}
         {selection === 'contact' && <Contact />}
       </HelpPanel>

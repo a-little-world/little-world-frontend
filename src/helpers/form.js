@@ -1,7 +1,10 @@
 const ROOT_SERVER_ERROR = 'root.serverError';
 
 export const onFormError = ({ e, formFields, setError, t }) => {
-  const cause = Object.keys(formFields).includes(e.cause) || ROOT_SERVER_ERROR;
+  const cause = Object.keys(formFields).includes(e.cause)
+    ? e.cause
+    : ROOT_SERVER_ERROR;
+
   if (e.message) {
     setError(
       cause,
@@ -15,6 +18,7 @@ export const onFormError = ({ e, formFields, setError, t }) => {
     });
   }
 };
+
 export const registerInput = ({ register, name, options }) => {
   const { ref, ...rest } = register(name, options);
 
@@ -23,3 +27,6 @@ export const registerInput = ({ register, name, options }) => {
     inputRef: ref,
   };
 };
+
+export const formatMultiSelectionOptions = ({ data, t }) =>
+  data?.map(item => ({ ...item, tag: t(item.tag) }));

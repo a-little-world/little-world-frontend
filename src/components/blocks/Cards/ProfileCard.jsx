@@ -6,6 +6,7 @@ import {
   DotsIcon,
   Gradients,
   MessageIcon,
+  PencilIcon,
   PhoneIcon,
   Popover,
   ProfileIcon,
@@ -24,17 +25,38 @@ import {
   PARTNER_ACTION_REPORT,
   PARTNER_ACTION_UNMATCH,
 } from './PartnerActionCard';
+import OnlineIndicator from '../../atoms/OnlineIndicator';
 
 export const StyledCard = styled(Card)`
   align-items: center;
   margin: 0 auto;
+  border-color: ${({ theme }) => theme.color.border.subtle};
   align-items: center;
   position: relative;
+  text-align: ${({ $isSelf }) => ($isSelf ? 'center' : 'left')};
+
   ${({ $unconfirmedMatch }) =>
     $unconfirmedMatch &&
     css`
       background-color: rgb(252, 224, 172);
     `}
+`;
+
+export const ProfileImageButton = styled.button`
+  position: relative;
+  transition: filter 0.5s;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+`;
+
+export const EditIcon = styled(PencilIcon)`
+  position: absolute;
+  bottom: ${({ theme }) => theme.spacing.xxsmall};
+  right: ${({ theme }) => theme.spacing.xxsmall};
+  width: fit-content;
+  color: ${({ theme }) => theme.color.surface.bold};
 `;
 
 export const ProfileInfo = styled.div`
@@ -43,8 +65,8 @@ export const ProfileInfo = styled.div`
   flex-direction: column;
 
   ${({ theme }) => `
-  gap: ${theme.spacing.small};
-  margin-bottom: ${theme.spacing.xsmall};
+    gap: ${theme.spacing.small};
+    margin-bottom: ${theme.spacing.xsmall};
   `};
 `;
 
@@ -52,9 +74,9 @@ export const MatchMenuToggle = styled(Button)`
   position: absolute;
 
   ${({ theme }) => `
-  padding: ${theme.spacing.xxxsmall} ${theme.spacing.xxsmall};
-  top: ${theme.spacing.xsmall};
-  right: ${theme.spacing.xsmall};
+    padding: ${theme.spacing.xxxsmall} ${theme.spacing.xxsmall};
+    top: ${theme.spacing.xsmall};
+    right: ${theme.spacing.xsmall};
   `};
 `;
 
@@ -84,6 +106,7 @@ function ProfileCard({
   isSelf,
   isOnline,
   openPartnerModal,
+  openEditImage,
   setCallSetupPartner,
   type,
 }) {
@@ -93,12 +116,24 @@ function ProfileCard({
   return (
     <StyledCard
       width={CardSizes.Small}
+      $isSelf={isSelf}
       $unconfirmedMatch={type === 'unconfirmed'}
     >
-      <ProfileImage
-        image={usesAvatar ? profile.avatar_config : profile.image}
-        imageType={profile.image_type}
-      />
+      {isSelf && openEditImage ? (
+        <ProfileImageButton onClick={openEditImage} type="button">
+          <ProfileImage
+            image={usesAvatar ? profile.avatar_config : profile.image}
+            imageType={profile.image_type}
+          />
+          <EditIcon circular height="16px" width="16px" />
+        </ProfileImageButton>
+      ) : (
+        <ProfileImage
+          image={usesAvatar ? profile.avatar_config : profile.image}
+          imageType={profile.image_type}
+        />
+      )}
+
       {/* temp disabled type === "match" */}
       {false && (
         <Popover
@@ -141,11 +176,7 @@ function ProfileCard({
           </PartnerMenuOption>
         </Popover>
       )}
-      <div
-        className={isOnline ? 'online-indicator online' : 'online-indicator'}
-      >
-        online <span className="light" />
-      </div>
+      <OnlineIndicator isOnline={isOnline} />
       <ProfileInfo className="profile-info">
         <Text className="name">{`${profile.first_name}`}</Text>
         <Text className="text">{profile.description}</Text>

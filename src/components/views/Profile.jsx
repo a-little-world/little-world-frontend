@@ -1,340 +1,180 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {
+  Modal,
+  MultiDropdown,
+  Text,
+  TextAreaSize,
+} from '@a-little-world/little-world-design-system';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-import { postUserProfileUpdate } from '../../api';
-import { updateProfile } from '../../features/userData';
 import '../../i18n';
-import Link from '../../path-prepend';
-import { getAppRoute } from '../../routes';
+import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes';
+import {
+  ComponentTypes,
+  formatDataField,
+  getFormComponent,
+} from '../../userForm/formContent';
+import PageHeader from '../atoms/PageHeader';
 import ProfileCard from '../blocks/Cards/ProfileCard';
-import './profile.css';
+import Interests from '../blocks/Profile/Interests';
+import ProfileDetail from '../blocks/Profile/ProfileDetail';
+import ProfileEditor from '../blocks/Profile/ProfileEditor';
+import { Details, PageContent, TextField } from '../blocks/Profile/styles';
 
-function InterestsSelector({ inTopicSelection }) {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const interestChoices = useSelector(
-    state => state.userData.apiOptions.profile.interests,
-  );
-  const [topicSelection, setTopicSelection] = useState(inTopicSelection);
-
-  const [editing, setEditing] = useState(false);
-  const [errorText, setErrorText] = useState('');
-
-  const location = useLocation();
-  const { userPk } = location.state || {};
-  const isSelf = !userPk;
-
-  const toggleInterest = topicValue => {
-    const newSelection = topicSelection.includes(topicValue)
-      ? topicSelection.filter(item => item !== topicValue) // remove item
-      : [...topicSelection, topicValue]; // add item
-
-    setTopicSelection(() => newSelection);
-  };
-
-  const saveTopics = () => {
-    postUserProfileUpdate(
-      { interests: topicSelection },
-      errorTags => {
-        const errorTextStr = errorTags.map(e => t(e)).join(', ');
-        setErrorText(errorTextStr);
-        setEditing(false);
-      },
-      () => {
-        dispatch(updateProfile({ interests: topicSelection }));
-        setEditing(false);
-      },
-      'interests',
-    );
-  };
-
-  const cancelTopics = () => {
-    setEditing(false);
-  };
-
-  return (
-    <div className="topics">
-      <h3>{t('profile_topics')}</h3>
-      <div className="selected-topics">
-        {isSelf && (
-          <button
-            type="button"
-            className="edit"
-            onClick={() => setEditing(true)}
-          >
-            <img alt="edit" />
-          </button>
-        )}
-        {topicSelection.map(interest => {
-          const topicOptions = interestChoices.filter(
-            c => c.value === interest,
-          )[0];
-          return (
-            <div key={topicOptions.value} className="interest-item">
-              <span className="text">{t(topicOptions.tag)}</span>
-            </div>
-          );
-        })}
-        <div className={editing ? 'overlay-shade' : 'overlay-shade hidden'}>
-          {editing && (
-            <div className="topics-selector modal-box">
-              <button
-                type="button"
-                className="modal-close"
-                onClick={cancelTopics}
-              />
-              <h3>{t('profile_choose_interests')}</h3>
-              <div className="items">
-                {interestChoices.map(choice => (
-                  <button
-                    key={choice.value}
-                    type="button"
-                    className={
-                      topicSelection.includes(choice.value)
-                        ? 'interest-item selected-item'
-                        : 'interest-item'
-                    }
-                    onClick={() => toggleInterest(choice.value)}
-                  >
-                    <span className="text">{t(choice.tag)}</span>
-                  </button>
-                ))}
-              </div>
-              <div className="buttons">
-                <button type="button" className="save" onClick={saveTopics}>
-                  {t('btn_save')}
-                </button>
-                <button type="button" className="cancel" onClick={cancelTopics}>
-                  {t('btn_cancel')}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      {errorText && <div style={{ color: 'red' }}>{errorText}</div>}
-    </div>
-  );
-}
-
-function TextBox({ subject, topicText = '', formTag }) {
-  const { t } = useTranslation();
-  const location = useLocation();
-  const editorRef = useRef();
-  const [editState, setEditState] = useState(false);
-  const dispatch = useDispatch();
-
-  const [errorText, setErrorText] = useState(''); // TODO: maybe if error add a reload button that loads the old default of this field
-  const [textLen, setTextLen] = useState(0);
-
-  const { userPk } = location.state || {};
-  const isSelf = !userPk;
-
-  const saveChange = () => {
-    const html = editorRef.current.innerHTML;
-
-    /* Unpick the weirdness that browsers are doing to the DOM when multiple returns
-     * are included. If this is not done innerText will insert 2n-1 new lines and
-     * giving different results between contenteditable and fixed content.
-     */
-    editorRef.current.innerHTML = html
-      .replaceAll('<div><br></div>', '<br>')
-      .replace('<div>', '<br>')
-      .replace('</div>', '');
-    const text = editorRef.current.innerText;
-    postUserProfileUpdate(
-      { [formTag]: text },
-      tag => {
-        setErrorText(t(tag));
-        setEditState(false);
-      },
-      () => {
-        dispatch(updateProfile({ [formTag]: text }));
-        setEditState(false);
-      },
-      formTag,
-    );
-  };
-
-  const allowedCodes = [
-    8, // backspace
-    16, // shift - for selection
-    17, // ctrl - for word deletion
-    33, // pageUp
-    34, // pageDown
-    35, // end
-    36, // home
-    37, // left arrow
-    38, // up arrow
-    39, // right arrow
-    40, // down arrow
-    46, // delete
-  ];
-  const maxLen = 999;
-
-  const handleKeyDown = e => {
-    // preventing keyPresses needs to run on keyDown
-    if (e.ctrlKey) {
-      return; // allow ctrl + anything
-    }
-    if (allowedCodes.includes(e.keyCode)) {
-      return; // don't calculate length if not necessary
-    }
-    const el = editorRef.current;
-    const len = el.innerText.length;
-    if (len >= maxLen) {
-      e.preventDefault();
-    }
-  };
-
-  const handleKeyUp = () => {
-    // handling paste needs to run on keyUp
-    const el = editorRef.current;
-    const text = el.innerText;
-    if (text.length > maxLen) {
-      el.innerText = text.substring(0, maxLen);
-    }
-    setTextLen(el.innerText.length);
-  };
-
-  // Call to the api to update the user form
-
-  const handlePaste = e => {
-    // ensures pastes are sent as unformatted plain text
-    e.preventDefault();
-    const text = e.clipboardData.getData('text');
-    window.document.execCommand('insertText', false, text); // WARN: this is deprecated, but nothing else does the same. still widely supported at creation.
-    handleKeyUp(); // trim if too long.
-  };
-
-  useEffect(() => {
-    if (editState) {
-      editorRef.current.innerText = topicText;
-      setTextLen(topicText.length);
-
-      // initialise cursor at end of text
-      const el = editorRef.current;
-      const target = el.lastChild || el;
-      window.getSelection().removeAllRanges(); // need to run this first otherwise selection will fail with empty text when mouse focus is in element area
-      window.getSelection().setPosition(target, target.length);
-    }
-  }, [editState]);
-
-  return (
-    <div className={subject}>
-      <h3>{t(`profile_${subject.replace('-', '_')}`)}</h3>
-      <div className="profile-text">
-        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-        <p
-          contentEditable={editState}
-          ref={editorRef}
-          onKeyDown={handleKeyDown}
-          onKeyUp={handleKeyUp}
-          onPaste={handlePaste}
-          style={editState ? {} : { display: 'none' }}
-        />
-        {!editState && (
-          <p>
-            {topicText.split('\n').map((line, i) => (
-              <React.Fragment key={i}>
-                {line}
-                {i < topicText.split('\n').length - 1 ? <br /> : ''}
-              </React.Fragment>
-            ))}
-          </p>
-        )}
-        {isSelf && !editState && (
-          <button
-            type="button"
-            className="edit"
-            onClick={() => setEditState(true)}
-          >
-            <img alt="edit" />
-          </button>
-        )}
-        {isSelf && editState && (
-          <div className="buttons">
-            <button
-              type="button"
-              className="cancel"
-              onClick={() => setEditState(false)}
-            >
-              <img alt={t('btn_cancel')} />
-            </button>
-            <button type="button" className="save" onClick={saveChange}>
-              <img alt={t('btn_save')} />
-            </button>
-          </div>
-        )}
-        {editState && (
-          <div className="character-limit">
-            {textLen}/{maxLen}
-          </div>
-        )}
-      </div>
-      {errorText && <div style={{ color: 'red' }}>{errorText}</div>}
-    </div>
-  );
-}
-
-function ProfileDetail({ profile }) {
-  // prevent erroring out when empty data sent (due to promise delay?)
-  if (!profile) {
-    return null;
-  }
-
-  return (
-    <div className="profile-detail">
-      <TextBox
-        subject="about"
-        topicText={profile.description}
-        formTag="description"
-      />
-      <InterestsSelector inTopicSelection={profile.interests} />
-      <TextBox
-        subject="extra_topics"
-        topicText={profile.additional_interests}
-        formTag="additional_interests"
-      />
-      <TextBox
-        subject="expectations"
-        topicText={profile.language_skill_description}
-        formTag="language_skill_description"
-      />
-    </div>
-  );
-}
+const getProfileFields = ({ profile, formOptions, t }) => ({
+  description: getFormComponent(
+    {
+      type: ComponentTypes.textArea,
+      dataField: 'description',
+      currentValue: profile.description,
+      getProps: trans => ({
+        errorRules: { required: trans('validation.required') },
+        size: TextAreaSize.Medium,
+      }),
+    },
+    t,
+  ),
+  interests: getFormComponent(
+    {
+      type: ComponentTypes.multiSelection,
+      currentValue: profile.interests,
+      dataField: 'interests',
+      formData: formOptions?.interests,
+      getProps: trans => ({
+        label: trans('interests.selection_label'),
+        labelTooltip: trans('interests.selection_tooltip'),
+      }),
+    },
+    t,
+  ),
+  additional_interests: getFormComponent(
+    {
+      type: ComponentTypes.textArea,
+      dataField: 'additional_interests',
+      currentValue: profile.additional_interests,
+      getProps: () => ({
+        size: TextAreaSize.Medium,
+      }),
+    },
+    t,
+  ),
+  lang_skill: getFormComponent(
+    {
+      type: ComponentTypes.multiDropdown,
+      dataField: 'lang_skill',
+      currentValue: profile.lang_skill,
+      getProps: trans => ({
+        addMoreLabel: trans('self_info.language_add_more'),
+        label: trans('self_info.language_skills_label'),
+        labelTooltip: trans('self_info.language_skills_tooltip'),
+        firstDropdown: {
+          dataField: 'lang',
+          ariaLabel: trans('self_info.language_selector_label'),
+          placeholder: trans('self_info.language_selector_placeholder'),
+          options: formatDataField(formOptions?.lang_skill.lang, trans),
+          values: profile?.lang_skill?.map(el => el.lang),
+          lockedValue: 'german',
+          errors: [],
+        },
+        secondDropdown: {
+          dataField: 'level',
+          ariaLabel: trans('self_info.language_level_label'),
+          placeholder: trans('self_info.language_level_placeholder'),
+          options: formatDataField(formOptions?.lang_skill.level, trans),
+          values: profile?.lang_skill?.map(el => el.level),
+          errors: [],
+        },
+      }),
+    },
+    t,
+  ),
+});
 
 function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
   const { t } = useTranslation();
+  const formOptions = useSelector(state => state.userData.formOptions);
+  const [editingField, setEditingField] = useState(null);
+  const [profileFields, setProfileFields] = useState(
+    getProfileFields({ profile, formOptions, t }),
+  );
+  const navigate = useNavigate();
 
   const profileTitle = isSelf
-    ? t('profile_my_profile')
-    : t('profile_match_profile', { userName: profile.first_name });
+    ? t('profile.self_profile_title')
+    : t('profile.match_profile_title', { userName: profile.first_name });
+
+  useEffect(() => {
+    setProfileFields(getProfileFields({ profile, formOptions, t }));
+  }, [profile, formOptions]);
 
   return (
-    <div className="profile-component">
-      <div className="header">
-        {!isSelf && (
-          <Link to={getAppRoute()} className="back">
-            <img alt="back button" />
-          </Link>
-        )}
-        <span className="text">{profileTitle}</span>
-      </div>
-      <div className="content-area-main">
-        <ProfileDetail isSelf={isSelf} profile={profile} />
+    <>
+      <PageHeader canGoBack={!isSelf} text={profileTitle} />
+      <PageContent>
+        <Details>
+          <ProfileDetail
+            editable={isSelf}
+            content={profileFields.description}
+            setEditingField={setEditingField}
+          >
+            <TextField>{profile.description}</TextField>
+          </ProfileDetail>
+          <ProfileDetail
+            editable={isSelf}
+            content={profileFields.interests}
+            setEditingField={setEditingField}
+          >
+            <Interests
+              interests={profile.interests}
+              options={formOptions.interests}
+            />
+          </ProfileDetail>
+          <ProfileDetail
+            editable={isSelf}
+            content={profileFields.additional_interests}
+            setEditingField={setEditingField}
+          >
+            <TextField>{profile.additional_interests}</TextField>
+          </ProfileDetail>
+          <ProfileDetail
+            editable={isSelf}
+            content={profileFields.lang_skill}
+            setEditingField={setEditingField}
+          >
+            {profile.lang_skill?.length ? (
+              <MultiDropdown
+                {...profileFields.lang_skill}
+                locked
+                label={undefined}
+              />
+            ) : (
+              <Text>
+                {t(`profile.lang_skill${isSelf ? '_self' : ''}_undefined`)}
+              </Text>
+            )}
+          </ProfileDetail>
+        </Details>
         <ProfileCard
           userPk={userPk}
           profile={profile}
           description="" /* don't show description on profile page as it's already shown in full */
           isSelf={isSelf}
           setCallSetupPartner={setCallSetupPartner}
+          openEditImage={() =>
+            navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
+          }
         />
-      </div>
-    </div>
+      </PageContent>
+      <Modal open={editingField} onClose={() => setEditingField(null)}>
+        <ProfileEditor
+          onClose={() => setEditingField(null)}
+          field={editingField}
+          content={profileFields[editingField]}
+        />
+      </Modal>
+    </>
   );
 }
 

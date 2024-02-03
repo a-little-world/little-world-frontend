@@ -9,11 +9,13 @@ import {
   TextArea,
   TextContent,
   TextInput,
+  TextTypes,
 } from '@a-little-world/little-world-design-system';
 
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
 import Note from '../components/blocks/Note/Note';
-import ProfilePic from '../components/blocks/ProfilePic/ProfilePic';
+import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
+import { formatMultiSelectionOptions } from '../helpers/form';
 
 export const ComponentTypes = {
   infoText: 'infoText',
@@ -41,7 +43,7 @@ export const getFormComponent = (
 ) => {
   const props = getProps?.(t);
   if (type === ComponentTypes.text)
-    return { Component: Text, type: 'Body3', ...props };
+    return { Component: Text, type: TextTypes.Body5, ...props };
 
   if (type === ComponentTypes.infoText) return { Component: Note, ...props };
 
@@ -118,7 +120,7 @@ export const getFormComponent = (
       updater: 'onSelection',
       valueKey: 'preSelected',
       currentValue: currentValue || [],
-      options: formData?.map(item => ({ ...item, tag: t(item.tag) })),
+      options: formatMultiSelectionOptions({ data: formData, t }),
       ...props,
     };
 

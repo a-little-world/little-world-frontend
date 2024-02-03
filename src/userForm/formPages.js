@@ -186,9 +186,9 @@ const formPages = {
     components: [
       {
         type: ComponentTypes.dropdown,
-        currentValue: userData?.lang_level,
-        dataField: 'lang_level',
-        formData: getUserTypeOptions(userData?.user_type, options?.lang_level),
+        currentValue: userData?.min_lang_level_partner,
+        dataField: 'min_lang_level_partner',
+        formData: options?.min_lang_level_partner,
         getProps: t => ({
           label: t('partner1.language_level'),
           errorRules: { required: t('validation.required') },

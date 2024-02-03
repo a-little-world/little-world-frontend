@@ -20,6 +20,9 @@ export const userDataSlice = createSlice({
       state.callSetup = action.payload?.callSetup || null; // { userId: user.hash } or null
       state.activeCall = action.payload?.activeCall || null; // { userId: user.hash, tracks: {} } or null
     },
+    reset: (state, action) => {
+      state.user = null;
+    },
     updateProfile: (state, action) => {
       Object.keys(action.payload).forEach(key => {
         state.user.profile[key] = action.payload[key];

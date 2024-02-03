@@ -14,6 +14,7 @@ export const CHANGE_EMAIL_ROUTE = 'change-email';
 export const VERIFY_EMAIL_ROUTE = 'verify-email';
 export const FORGOT_PASSWORD_ROUTE = 'forgot-password';
 export const RESET_PASSWORD_ROUTE = 'reset-password/:userId/:token';
+export const EDIT_FORM_ROUTE = 'edit';
 export const USER_FORM_ROUTE = 'user-form';
 export const WP_HOME_ROUTE = 'https://home.little-world.com';
 export const TERMS_ROUTE = 'nutzungsbedingungen';

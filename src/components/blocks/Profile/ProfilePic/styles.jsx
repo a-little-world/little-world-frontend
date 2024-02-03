@@ -1,5 +1,8 @@
-import { Button, ImageIcon } from "@a-little-world/little-world-design-system";
-import styled from "styled-components";
+import {
+  Button,
+  ImageSearchIcon,
+} from '@a-little-world/little-world-design-system';
+import styled from 'styled-components';
 
 export const ProfilePicWrapper = styled.div`
   position: relative;
@@ -20,34 +23,46 @@ export const SelectionPanel = styled.div`
   align-items: stretch;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
+  padding: ${({ theme }) => theme.spacing.xxsmall};
   flex-wrap: wrap;
+  overflow: hidden;
 
-  margin-bottom: ${({ theme }) => theme.spacing.small};
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 
   ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.small}) {
+    `@media (min-width: ${theme.breakpoints.medium}) {
       flex-wrap: nowrap;
       padding: ${theme.spacing.medium};
+      margin-bottom: ${theme.spacing.small};
     }`}
 `;
 
 export const ImageContainer = styled.div`
-  display: flex;
-  align-items: center;
+  display: none;
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.medium}) {
+      display: flex;
+      align-items: center;
+    }`}
 `;
 
 export const InteractiveArea = styled.div`
-  background: #e6e8ec66;
+  background: ${({ theme }) => theme.color.surface.secondary};
   border-radius: 10px;
   cursor: pointer;
-  padding: ${({ theme }) => theme.spacing.medium};
+  padding: ${({ theme }) => theme.spacing.xsmall};
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   flex-grow: 1;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+
+  ${({ theme }) =>
+  `@media (min-width: ${theme.breakpoints.medium}) {
+    padding: ${theme.spacing.medium};
+  }`}
 `;
 
 export const UploadArea = styled(InteractiveArea)`
@@ -61,30 +76,22 @@ export const UploadArea = styled(InteractiveArea)`
 
 export const CircleButton = styled(Button)`
   border-radius: 50%;
-  border: 3px solid #36a9e0;
-  background: #e6e8ec66;
+  border: 3px solid ${({ theme }) => theme.color.surface.bold};
+  background: ${({ theme }) => theme.color.surface.primary};
 
-  width: 154px;
-  height: 154px;
+  width: 119px;
+  height: 119px;
+
+  ${({ theme }) =>
+  `@media (min-width: ${theme.breakpoints.medium}) {
+    width: 154px;
+    height: 154px;
+  }`}
 `;
 
 export const TrashButton = styled(Button)`
   position: absolute;
-  bottom: 32px;
-`;
-
-export const AvatarInfo = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-  width: 154px;
-
-  ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.small}) {
-        flex-direction: column;
-    }`}
+  bottom: ${({ theme }) => theme.spacing.large};
 `;
 
 export const AvatarSelection = styled.div`
@@ -159,7 +166,7 @@ export const Controls = styled.div`
     top: 0%;
     position: absolute;
     padding: 2px;
-    background: #fff;
+    background: ${({ theme }) => theme.color.surface.primary};
     font-size: 14px;
     color: #111;
     border-radius: 10px;
@@ -225,11 +232,17 @@ export const Buttons = styled.div`
 `;
 
 export const AvatarEditorButton = styled(Button)`
-  padding: ${({ theme }) => theme.spacing.xxxsmall};
+  padding: 0 ${({ theme }) => theme.spacing.xxxsmall};
   border-radius: 5px;
 `;
 
-export const StyledFileIcon = styled(ImageIcon)`
-  color: ${({ theme }) => theme.color.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+export const StyledFileIcon = styled(ImageSearchIcon)`
+  display: none;
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.medium}) {
+      display: block;
+      color: ${theme.color.surface.bold};
+      margin-bottom: ${theme.spacing.xxsmall};
+  }`}
 `;

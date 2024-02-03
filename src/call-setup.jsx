@@ -363,7 +363,7 @@ function IncomingCall({ userPk, onAnswerCall, onRejectCall }) {
           image={usesAvatar ? profile.avatar_config : profile.image}
           imageType={profile.image_type}
         />
-        <Text tag="h3" type={TextTypes.Heading2}>
+        <Text tag="h3" type={TextTypes.Heading4}>
           {`${profile.first_name} ${t('pcs_waiting')}`}
         </Text>
       </Centred>

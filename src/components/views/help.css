@@ -9,14 +9,6 @@
   box-sizing: content-box;
 }
 
-.help-contact {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin: auto;
-  min-width: 80%;
-}
-
 .faq-items {
   display: flex;
   flex-direction: column;
@@ -55,7 +47,7 @@
 }
 
 .toggle-image {
-  content: url("../../images/arrow-down.svg");
+  content: url('../../images/arrow-down.svg');
   height: 1em;
   margin: 5px;
   transition: all ease-in-out 0.3s;
@@ -71,15 +63,6 @@
   padding: 20px;
 }
 
-.help-contact textarea {
-  resize: none;
-  height: 122px;
-  font-family: "Signika Negative";
-  padding: 15px;
-  font-size: 16px;
-}
-
-.help-contact textarea,
 .picture-drop-zone,
 .faq-item p {
   width: 100%;
@@ -127,7 +110,7 @@
 }
 
 .picture-drop-zone img {
-  content: url("../../images/picture.svg");
+  content: url('../../images/picture.svg');
   height: 32px;
   width: 32px;
 }
@@ -212,19 +195,19 @@
 }
 
 img.web-icon {
-  content: url("../../images/icons/web.svg");
+  content: url('../../images/icons/web.svg');
 }
 
 img.email-icon {
-  content: url("../../images/icons/email.svg");
+  content: url('../../images/icons/email.svg');
 }
 
 img.phone-icon {
-  content: url("../../images/icons/phone.svg");
+  content: url('../../images/icons/phone.svg');
 }
 
 img.mobile-icon {
-  content: url("../../images/icons/mobile.svg");
+  content: url('../../images/icons/mobile.svg');
 }
 
 .socials {
@@ -236,17 +219,17 @@ img.mobile-icon {
 }
 
 .icon-linkedin {
-  content: url("../../images/icons/linkedin.svg");
+  content: url('../../images/icons/linkedin.svg');
 }
 
 .icon-facebook {
-  content: url("../../images/icons/facebook.svg");
+  content: url('../../images/icons/facebook.svg');
 }
 
 .icon-instagram {
-  content: url("../../images/icons/instagram.svg");
+  content: url('../../images/icons/instagram.svg');
 }
 
 .icon-twitter {
-  content: url("../../images/icons/twitter.svg");
+  content: url('../../images/icons/twitter.svg');
 }
