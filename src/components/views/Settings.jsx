@@ -27,8 +27,9 @@ import { onFormError, registerInput } from '../../helpers/form';
 import { FORGOT_PASSWORD_ROUTE } from '../../routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
+import PageHeader from '../atoms/PageHeader';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
-import ModalCard from '../blocks/Cards/ModalCard';
+import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
 
 const types = {
   first_name: 'text',
@@ -72,18 +73,26 @@ const ForgotPasswordLink = styled(Link)`
   margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;
 
+const SettingsWrapper = styled.div`
+  ${({ theme }) => css`
+    padding: ${theme.spacing.small};
+    width: 100%;
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: 0;
+    }
+  `}
+`;
+
 const ContentPanel = styled(Card)`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
+  width: 100%;
 
   ${({ theme }) => css`
-    margin: ${theme.spacing.xxsmall};
     @media (min-width: ${theme.breakpoints.small}) {
       padding: ${theme.spacing.small};
-      margin: ${theme.spacing.small};
     }
     @media (min-width: ${theme.breakpoints.large}) {
       padding: ${theme.spacing.medium};
-      margin: 0;
     }
   `}
 `;
@@ -96,10 +105,6 @@ const Items = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
-`;
-
-const ModalTitle = styled(Text)`
-  color: ${({ theme }) => theme.color.text.highlight};
 `;
 
 function ListItem({ section, label, value, setEditing }) {
@@ -178,7 +183,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
 
   return (
     <ModalCard>
-      <ModalTitle tag="h2" type={TextTypes.Heading4} center>
+      <ModalTitle>
         {t('settings.edit_item', { item: t(`settings.personal_${label}`) })}
       </ModalTitle>
       {needsRelogin && (
@@ -334,49 +339,47 @@ function Settings() {
 
   return (
     <>
-      <div className="header">
-        <Text tag="h2" type={TextTypes.Body2} bold>
-          {t('settings.title')}
-        </Text>
-      </div>
-      <ContentPanel>
-        <Items>
-          {items.map(label => (
-            <ListItem
-              key={label}
-              section="personal"
-              label={label}
-              value={
-                label === 'display_language'
-                  ? t(`settings.display_language_${data[label]}`)
-                  : data[label]
-              }
-              setEditing={
-                label !== 'profilePicture'
-                  ? setEditing
-                  : () => {
-                      /* For profile picture we just open the userform frontend for now */
-                      navigate('/formpage?pages=6');
-                      navigate(0); /* Reload page */
-                    }
-              }
-            />
-          ))}
-          <SettingsItem>
-            <Button
-              appearance={ButtonAppearance.Secondary}
-              color="red"
-              backgroundColor="red"
-              size={ButtonSizes.Large}
-              onClick={() => {
-                setShowConfirm(true);
-              }}
-            >
-              {t('settings.personal_delete_account_button')}
-            </Button>
-          </SettingsItem>
-        </Items>
-      </ContentPanel>
+      <PageHeader text={t('settings.title')} />
+      <SettingsWrapper>
+        <ContentPanel>
+          <Items>
+            {items.map(label => (
+              <ListItem
+                key={label}
+                section="personal"
+                label={label}
+                value={
+                  label === 'display_language'
+                    ? t(`settings.display_language_${data[label]}`)
+                    : data[label]
+                }
+                setEditing={
+                  label !== 'profilePicture'
+                    ? setEditing
+                    : () => {
+                        /* For profile picture we just open the userform frontend for now */
+                        navigate('/formpage?pages=6');
+                        navigate(0); /* Reload page */
+                      }
+                }
+              />
+            ))}
+            <SettingsItem>
+              <Button
+                appearance={ButtonAppearance.Secondary}
+                color="red"
+                backgroundColor="red"
+                size={ButtonSizes.Large}
+                onClick={() => {
+                  setShowConfirm(true);
+                }}
+              >
+                {t('settings.personal_delete_account_button')}
+              </Button>
+            </SettingsItem>
+          </Items>
+        </ContentPanel>
+      </SettingsWrapper>
       <Modal open={editing} onClose={() => setEditing(false)}>
         <EditFieldCard
           label={editing}

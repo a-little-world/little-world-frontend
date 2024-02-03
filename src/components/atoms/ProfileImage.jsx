@@ -19,6 +19,8 @@ const StyledAvatar = styled(Avatar)`
   border-radius: 100%;
   box-sizing: border-box;
   text-align: initial;
+  background-clip: padding-box;
+  transform: translateZ(0)
 `;
 
 export const CircleImage = styled.div`
@@ -48,9 +50,9 @@ export const Image = styled.img`
   border-radius: 30px;
   object-fit: cover;
 
-  ${({ theme }) =>
+  ${({ theme, $size }) =>
     `@media (min-width: ${theme.breakpoints.small}) {
-      height: ${({ $size }) => ImageSizes[$size]};;
+      height: ${ImageSizes[$size]};
     }`}
 `;
 

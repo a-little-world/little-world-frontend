@@ -14,7 +14,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { completeForm, mutateUserData } from '../../../api';
 import { updateProfile } from '../../../features/userData';
 import { onFormError } from '../../../helpers/form';
-import { getAppRoute } from '../../../routes';
+import { EDIT_FORM_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes';
 import {
   ComponentTypes,
   getFormComponent,
@@ -22,11 +22,11 @@ import {
 import getFormPage from '../../../userForm/formPages';
 import DropdownWithInput from '../DropdownWithInput/DropdownWithInput';
 import Note from '../Note/Note';
-import ProfilePic from '../ProfilePic/ProfilePic';
+import ProfilePic from '../Profile/ProfilePic/ProfilePic';
 import RadioGroupWithInput from '../RadioGroupWithInput/RadioGroupWithInput';
 import FormStep from './FormStep';
 import {
-  ButtonsSection,
+  FormButtons,
   StyledCard,
   StyledForm,
   SubmitError,
@@ -53,7 +53,9 @@ const Form = () => {
   ]);
   const navigate = useNavigate();
   const location = useLocation();
-  const slug = location.pathname.split('/').slice(-1)[0];
+  const paths = location.pathname.split('/');
+  const slug = paths.slice(-1)[0];
+  const isEditPath = paths[2] === EDIT_FORM_ROUTE;
 
   const { title, note, step, totalSteps, components, nextPage, prevPage } =
     getFormPage({
@@ -65,13 +67,13 @@ const Form = () => {
   const onFormSuccess = response => {
     dispatch(updateProfile(response));
     if (step === totalSteps) completeForm();
-    navigate(getAppRoute(nextPage));
+    navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));
   };
 
   const handleBackClick = e => {
     e.preventDefault();
     reset({ values: {} });
-    navigate(getAppRoute(prevPage));
+    navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : prevPage));
   };
 
   const onError = e => {
@@ -88,7 +90,7 @@ const Form = () => {
         {t(title)}
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
-        {step && <ProgressBar max={totalSteps} value={step} />}
+        {step && !isEditPath && <ProgressBar max={totalSteps} value={step} />}
         {note && <Note>{t(note)}</Note>}
         {components.map(component => {
           // ProfilePic updates multiple data fields
@@ -130,7 +132,7 @@ const Form = () => {
         <SubmitError $visible={errors?.root?.serverError}>
           {errors?.root?.serverError?.message}
         </SubmitError>
-        <ButtonsSection $hasBackBtn={Boolean(prevPage)}>
+        <FormButtons $onlyOneBtn={!Boolean(prevPage)}>
           {Boolean(prevPage) && (
             <Button
               appearance={ButtonAppearance.Secondary}
@@ -144,7 +146,7 @@ const Form = () => {
           <Button type="submit" size={ButtonSizes.Small}>
             {t('btn.next')}
           </Button>
-        </ButtonsSection>
+        </FormButtons>
       </StyledForm>
     </StyledCard>
   );

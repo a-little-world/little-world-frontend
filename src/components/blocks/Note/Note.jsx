@@ -13,21 +13,23 @@ const StyledNote = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
-const Note = ({ children, center = true }) => {
-  return (
-    <StyledNote $center={center}>
-      <InfoIcon
-        height="16px"
-        width="16px"
-        color="#36A9E0"
-        label="info icon"
-        labelId="info icon"
-      />
-      <Text type={TextTypes.Body6} color="#A6A6A6">
-        {children}
-      </Text>
-    </StyledNote>
-  );
-};
+const StyledInfoIcon = styled(InfoIcon)`
+  color: ${({ theme }) => theme.color.status.info};
+  flex-shrink: 0;
+`;
+
+const Note = ({ children, center = true }) => (
+  <StyledNote $center={center}>
+    <StyledInfoIcon
+      height="16px"
+      width="16px"
+      label="info icon"
+      labelId="info icon"
+    />
+    <Text type={TextTypes.Body6} color="#A6A6A6">
+      {children}
+    </Text>
+  </StyledNote>
+);
 
 export default Note;

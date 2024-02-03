@@ -18,6 +18,7 @@ export const onFormError = ({ e, formFields, setError, t }) => {
     });
   }
 };
+
 export const registerInput = ({ register, name, options }) => {
   const { ref, ...rest } = register(name, options);
 
@@ -26,3 +27,6 @@ export const registerInput = ({ register, name, options }) => {
     inputRef: ref,
   };
 };
+
+export const formatMultiSelectionOptions = ({ data, t }) =>
+  data?.map(item => ({ ...item, tag: t(item.tag) }));

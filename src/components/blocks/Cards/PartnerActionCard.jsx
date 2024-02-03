@@ -79,7 +79,7 @@ function PartnerActionCard({ data, onClose }) {
   };
 
   return (
-    <Card width={CardSizes.Large}>
+    <Card width={CardSizes.Medium}>
       {confirmed ? (
         <Centred>
           {isUnmatch ? (

@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import ButtonsContainer from '../../atoms/ButtonsContainer';
+import { ModalTitle } from './ModalCard';
 
 const StyledCard = styled(Card)`
   text-align: center;
@@ -22,10 +23,6 @@ const StyledCard = styled(Card)`
   max-width: 800px;
   max-height: 320px;
   margin: 0 auto;
-`;
-
-const ModalTitle = styled(Text)`
-  color: ${({ theme }) => theme.color.text.highlight};
 `;
 
 const MessageCard = ({
@@ -42,7 +39,7 @@ const MessageCard = ({
 
   return (
     <StyledCard>
-      <ModalTitle type={TextTypes.Heading4}>{t(title)}</ModalTitle>
+      <ModalTitle>{t(title)}</ModalTitle>
       {content && <Text>{t(content)}</Text>}
       {(onConfirm || onReject) && (
         <ButtonsContainer>

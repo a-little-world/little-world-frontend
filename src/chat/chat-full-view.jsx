@@ -38,6 +38,7 @@ import {
   sendMessageReadMessage,
   sendOutgoingTextMessage,
 } from './chat.lib';
+import PageHeader from '../components/atoms/PageHeader';
 
 // Monkey path, disables only success toast, on if not in DEVELOPMENT
 // We like to keep the error messages (if any), so in that case we can help users to debug
@@ -661,9 +662,7 @@ class Chat extends Component {
             </div>
           </div>
         )}
-        <div className="header">
-          <span className="text">{t('chat_header')}</span>
-        </div>
+        <PageHeader text={t('chat_header')} />
         <div
           className={
             this.props.showChat ? 'container' : 'container disable-chat'

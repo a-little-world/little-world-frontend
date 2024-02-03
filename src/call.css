@@ -1,4 +1,4 @@
-@import "video.css";
+@import 'video.css';
 
 /* non-fullscreen view */
 .call-screen {
@@ -88,7 +88,7 @@
 }
 
 .swap-languages img {
-  content: url("./images/switch-language.svg");
+  content: url('./images/switch-language.svg');
   height: 20px;
 }
 
@@ -161,19 +161,19 @@
 }
 
 .questions-categories .questions-left img {
-  content: url("./images/arrow-left.svg");
+  content: url('./images/arrow-left.svg');
 }
 
 .questions-categories .questions-right img {
-  content: url("./images/arrow-right.svg");
+  content: url('./images/arrow-right.svg');
 }
 
-.right-arrow-image img{
-  content: url("./images/arrow-right.svg");
+.right-arrow-image img {
+  content: url('./images/arrow-right.svg');
 }
 
 .left-arrow-image img {
-  content: url("./images/arrow-left.svg");
+  content: url('./images/arrow-left.svg');
 }
 
 .questions-categories .categories {
@@ -243,15 +243,15 @@
 }
 
 .question-action .yes img {
-  content: url("./images/check.svg");
+  content: url('./images/check.svg');
 }
 
 .question-action .edit img {
-  content: url("./images/edit.svg");
+  content: url('./images/edit.svg');
 }
 
 .question-action .no img {
-  content: url("./images/close.svg");
+  content: url('./images/close.svg');
 }
 
 @media screen and (width < 1024px) {
@@ -321,7 +321,7 @@ button.arrow-down {
 }
 
 .arrow-down img {
-  content: url("./images/arrow-down.svg");
+  content: url('./images/arrow-down.svg');
 }
 
 .drawer-content {
@@ -330,43 +330,43 @@ button.arrow-down {
 }
 
 .image-for-is_favorite-notes {
-  content: url("./images/favorite.svg");
+  content: url('./images/favorite.svg');
 }
 
 .image-for-is_archived-notes {
-  content: url("./images/archive_icon.svg");
+  content: url('./images/archive_icon.svg');
 }
 
 .image-for-is_deleted-notes {
-  content: url("./images/delete_icon.svg");
+  content: url('./images/delete_icon.svg');
 }
 
 .add-fovorite .favorite-icon {
   width: 22px;
-  content: url("./images/favorite.svg");
+  content: url('./images/favorite.svg');
 }
 
 .add-fovorite .unfavorite-icon {
   width: 22px;
-  content: url("./images/star.svg");
+  content: url('./images/star.svg');
 }
 
 .add-archives img {
   width: 22px;
-  content: url("./images/archive_icon.svg");
+  content: url('./images/archive_icon.svg');
 }
 
 .remove-note img {
   width: 22px;
-  content: url("./images/delete_icon.svg");
+  content: url('./images/delete_icon.svg');
 }
 
 .restore-note img {
   width: 22px;
-  content: url("./images/restore_icon.svg");
+  content: url('./images/restore_icon.svg');
 }
 
-@media(max-width: 600px) {
+@media (max-width: 600px) {
   .responsive-text {
     display: none;
   }

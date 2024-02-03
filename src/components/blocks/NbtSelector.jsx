@@ -1,7 +1,10 @@
-import React from "react";
-import { Button, ButtonAppearance } from '@a-little-world/little-world-design-system'
-import { useTranslation } from "react-i18next";
-import styled, { css, useTheme } from "styled-components";
+import {
+  Button,
+  ButtonAppearance,
+} from '@a-little-world/little-world-design-system';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import styled, { css } from 'styled-components';
 
 const Selector = styled.div`
   display: flex;
@@ -9,11 +12,20 @@ const Selector = styled.div`
   justify-content: center;
   padding: ${({ theme }) => theme.spacing.xxsmall};
   gap: ${({ theme }) => theme.spacing.xsmall};
+  width: 100%;
+  background: ${({ theme }) => theme.color.surface.primary};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.small}) {
       justify-content: flex-start;
       display: flex;
+    }
+
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.medium};
+      border: 1px solid ${theme.color.border.subtle};
+      border-radius: 30px;
+      box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
     }
   `}
 `;
@@ -21,33 +33,37 @@ const Selector = styled.div`
 const StyledOption = styled(Button)`
   border-color: transparent;
   &:disabled {
-    color: ${({ theme }) =>
-      theme.color.text.button
-    };
+    color: ${({ theme }) => theme.color.text.button};
     border: none;
-    background: ${({ theme }) =>
-      theme.color.gradient.blue10
-    };
+    background: ${({ theme }) => theme.color.gradient.blue10};
   }
-`
+`;
 
 function NbtSelector({ selection, setSelection, use }) {
   const { t } = useTranslation();
-  const theme = useTheme();
-  if (!["main", "help"].includes(use)) {
+  if (!['main', 'help'].includes(use)) {
     return null;
   }
 
   const nbtTopics = {
-    main: ["conversation_partners", "community_calls"],
-    help: ["faqs", "contact"],
+    main: ['conversation_partners', 'community_calls'],
+    help: ['faqs', 'contact'],
   };
   const topics = nbtTopics[use];
 
   return (
     <Selector className="selector">
-      {topics.map((topic) => (
-        <StyledOption appearance={selection === topic ? ButtonAppearance.Primary : ButtonAppearance.Secondary} key={topic} onClick={() => setSelection(topic)} disabled={selection === topic}>
+      {topics.map(topic => (
+        <StyledOption
+          appearance={
+            selection === topic
+              ? ButtonAppearance.Primary
+              : ButtonAppearance.Secondary
+          }
+          key={topic}
+          onClick={() => setSelection(topic)}
+          disabled={selection === topic}
+        >
           {t(`nbt_${topic}`)}
         </StyledOption>
       ))}

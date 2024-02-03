@@ -51,12 +51,10 @@ button {
 
 /* all items that live on top of the main background */
 .panel,
-.sidebar,
-.nav-bar-top,
 .notification-panel,
 .chat-list-box,
 .show-chat .right-panel,
-.main-page .header,
+/* .main-page .header, */
 .profile-detail > div,
 .modal-box,
 .call-and-text,
@@ -69,43 +67,10 @@ button {
   padding: 20px;
 }
 
-/* hide top nav bar in all desktop by default */
-@media screen and (width >= 1024px) {
-  .nav-bar-top {
-    display: none;
-  }
-}
-
-/* page header / title */
-.main-page .header {
-  font-weight: 700;
-  font-size: 28px;
-  display: flex;
-  height: 84px;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: space-between;
-}
-
-@media screen and (width < 1024px) {
-  .main-page .header {
-    display: none;
-  }
-}
-
-.main-page .header .text {
-  margin-left: 12px;
-  margin-right: auto;
-}
-
 /* parent items of above elements, setting consistent gap between */
 @media screen and (width >= 1024px) {
-  .main-page,
   .main-page .content-area,
-  .main-page .content-area-main,
   .show-chat .container,
-  .profile-component,
-  .profile-component .content,
   .call-screen {
     gap: 24px;
   }
