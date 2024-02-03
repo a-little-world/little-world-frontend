@@ -22,14 +22,15 @@ const StyledHeader = styled.header`
   border-bottom: 1px solid $grey;
   padding: ${({ theme }) => theme.spacing.small};
   background-color: white;
-  height: 90px;
+  height: 72px;
   z-index: 10;
   width: 100%;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
   gap: ${({ theme }) => theme.spacing.xxxsmall};
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.small}) {
+    @media (min-width: ${theme.breakpoints.medium}) {
+      height: 90px;
       padding: ${theme.spacing.large};
     }
   `}
