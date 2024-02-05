@@ -11,6 +11,7 @@ import { Input, MessageList, Navbar, SideBar } from 'react-chat-elements';
 import 'react-chat-elements/dist/main.css';
 import { withTranslation } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReconnectingWebSocket from 'reconnecting-websocket';
@@ -88,7 +89,7 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
 const Chat = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const selectedChat = useSelector(state => state.chats.selectedChat);
+  const selectedChat = useSelector(state => state?.chats?.selectedChat);
   const chats = useSelector(state => state.chats);
   const user = useSelector(state => state.user);
   const messages = useSelector(state => state.messages);
@@ -96,15 +97,15 @@ const Chat = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   //   const [messageList, setMessageList] = useState([]);
   //   const [dialogList, setDialogList] = useState([]);
   //   const [filteredDialogList, setFilteredDialogList] = useState([]);
-  //   const [appointmentsOpen, setAppointmentsOpen] = useState(false);
-  //   const [showChat, setShowChat] = useState(false);
-  //   const [userWasSelected, setUserWasSelected] = useState(false);
+  const [appointmentsOpen, setAppointmentsOpen] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [userWasSelected, setUserWasSelected] = useState(false);
   //   const [pending, setPending] = useState(false);
   //   const [onlinePKs, setOnlinePks] = useState([]);
   //   const [typingPKs, setTypingPks] = useState([]);
   let searchInput;
 
-  console.log({ dialogList, messageList });
+  // console.log({ dialogList, messageList });
 
   const selectDialog = item => {
     // do nothing when clicking on the already-selected chat
@@ -222,6 +223,8 @@ const Chat = ({ userPk, setCallSetupPartner, matchesInfo }) => {
     setUserWasSelected(true);
     document.body.classList.add('hide-mobile-header');
   };
+  console.log({ chats });
+  return null;
 
   return (
     <>
