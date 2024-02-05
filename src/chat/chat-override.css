@@ -385,6 +385,7 @@
 
 .container {
   flex-grow: 1;
+  width: 100%;
 }
 
 .flex-container {
@@ -484,6 +485,13 @@
   }
 }
 
+@media screen and (width < 700px) {
+  .container .chat-list-box,
+  .show-chat .container .right-panel {
+    border-radius: 0;
+  }
+}
+
 @media screen and (width < 1024px) {
   #root {
     flex-grow: 1;
@@ -492,11 +500,6 @@
   .main-page {
     height: 100%;
     box-sizing: border-box;
-  }
-
-  .container .chat-list-box,
-  .show-chat .container .right-panel {
-    border-radius: 0;
   }
 
   .show-chat .right-panel {
