@@ -63,10 +63,11 @@ const Form = () => {
       formOptions,
       userData,
     });
+  const isLastStep = step === totalSteps;
 
   const onFormSuccess = response => {
     dispatch(updateProfile(response));
-    if (step === totalSteps) completeForm();
+    if (isLastStep) completeForm();
     navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));
   };
 
@@ -140,11 +141,11 @@ const Form = () => {
               size={ButtonSizes.Small}
               type="button"
             >
-              {t('btn.back')}
+              {t('form.btn_back')}
             </Button>
           )}
           <Button type="submit" size={ButtonSizes.Small}>
-            {t('btn.next')}
+            {t(`form.btn_${isLastStep ? 'complete' : 'next'}`)}
           </Button>
         </FormButtons>
       </StyledForm>

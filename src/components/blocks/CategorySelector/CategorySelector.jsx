@@ -1,5 +1,5 @@
 import {
-  ProfileIcon,
+  ProfileChatIcon,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -36,13 +36,13 @@ const CategorySelector = ({ categories, onUpdate }) => {
           $selected={panelSelected === category.value}
           type="button"
         >
-          <ProfileIcon
+          <ProfileChatIcon
             label={category.value}
             labelId={category.tag}
-            color={category.color}
+            gradient={category.gradient}
           />
           <TextSection>
-            <Text type={TextTypes.Body4} bold color={category.color} tag="h4">
+            <Text type={TextTypes.Body3} bold color={category.color} tag="h4">
               {category.label}
             </Text>
             <Text type={TextTypes.Body5}>{category.description}</Text>

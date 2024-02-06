@@ -1,6 +1,7 @@
 import {
   ContentTypes,
   InputWidth,
+  TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 
 import { USER_TYPES } from '../constants';
@@ -57,12 +58,24 @@ const formPages = {
     nextPage: 'user-form/interests',
     components: [
       {
+        type: ComponentTypes.dropdown,
+        currentValue: userData?.gender,
+        dataField: 'gender',
+        formData: options?.gender,
+        getProps: t => ({
+          label: t('self_info.gender_label'),
+          labelTooltip: t('self_info.gender_tooltip'),
+          errorRules: { required: t('validation.required') },
+        }),
+      },
+      {
         type: ComponentTypes.textInput,
         currentValue: userData?.postal_code,
         dataField: 'postal_code',
         formData: options?.postal_code,
         getProps: t => ({
           label: t('self_info.post_code_label'),
+          labelTooltip: t('self_info.post_code_tooltip'),
           errorRules: { required: t('validation.required') },
           width: InputWidth.Small,
         }),
@@ -81,6 +94,7 @@ const formPages = {
                 ),
                 getProps: t => ({
                   label: t('self_info.target_group_label'),
+                  labelTooltip: t('self_info.target_group_tooltip'),
                   errorRules: { required: t('validation.required') },
                 }),
                 textInputVal: getUserTypeOptions(
@@ -98,13 +112,6 @@ const formPages = {
               },
             },
           ]),
-      {
-        type: ComponentTypes.radio,
-        currentValue: userData?.gender,
-        dataField: 'gender',
-        formData: options?.gender,
-        getProps: t => ({ label: t('self_info.gender_label') }),
-      },
       {
         type: ComponentTypes.multiDropdown,
         currentValue: userData?.lang_skill,
@@ -143,6 +150,17 @@ const formPages = {
     nextPage: 'user-form/picture',
     components: [
       {
+        type: ComponentTypes.multiSelection,
+        currentValue: userData?.interests,
+        dataField: 'interests',
+        formData: options?.interests,
+        getProps: t => ({
+          label: t('interests.selection_label'),
+          labelTooltip: t('interests.selection_tooltip'),
+          errorRules: { required: t('validation.required') },
+        }),
+      },
+      {
         type: ComponentTypes.textArea,
         formData: options?.description,
         currentValue: userData?.description,
@@ -151,16 +169,7 @@ const formPages = {
           label: t('interests.description_label'),
           labelTooltip: t('interests.description_tooltip'),
           placeholder: t('interests.description_placeholder'),
-        }),
-      },
-      {
-        type: ComponentTypes.multiSelection,
-        currentValue: userData?.interests,
-        dataField: 'interests',
-        formData: options?.interests,
-        getProps: t => ({
-          label: t('interests.selection_label'),
-          labelTooltip: t('interests.selection_tooltip'),
+          size: TextAreaSize.Medium,
         }),
       },
     ],
@@ -230,6 +239,7 @@ const formPages = {
         ),
         getProps: t => ({
           label: t('partner2.speech_medium'),
+          labelTooltip: t('partner2.speech_medium_tooltip'),
           errorRules: { required: t('validation.required') },
         }),
       },
@@ -304,6 +314,7 @@ const formPages = {
           formData: options?.phone_mobile,
           getProps: t => ({
             label: t('notifications.phone_number_label'),
+            labelTooltip: t('notifications.phone_number_tooltip'),
             type: 'tel',
             width: InputWidth.Medium,
           }),
@@ -336,6 +347,7 @@ const formPages = {
             },
             { type: ContentTypes.Paragraph, text: t('conditions.disclaimer') },
           ],
+          marginBottom: '12px',
         }),
       },
       {
