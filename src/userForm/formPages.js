@@ -194,16 +194,6 @@ const formPages = {
     nextPage: 'user-form/partner-2',
     components: [
       {
-        type: ComponentTypes.dropdown,
-        currentValue: userData?.min_lang_level_partner,
-        dataField: 'min_lang_level_partner',
-        formData: options?.min_lang_level_partner,
-        getProps: t => ({
-          label: t('partner1.language_level'),
-          errorRules: { required: t('validation.required') },
-        }),
-      },
-      {
         type: ComponentTypes.radio,
         currentValue: userData?.target_group,
         dataField: 'target_group',
@@ -213,6 +203,16 @@ const formPages = {
         ),
         getProps: t => ({
           label: t('partner1.target_group'),
+          errorRules: { required: t('validation.required') },
+        }),
+      },
+      {
+        type: ComponentTypes.dropdown,
+        currentValue: userData?.min_lang_level_partner,
+        dataField: 'min_lang_level_partner',
+        formData: options?.min_lang_level_partner,
+        getProps: t => ({
+          label: t('partner1.language_level'),
           errorRules: { required: t('validation.required') },
         }),
       },
@@ -357,6 +357,7 @@ const formPages = {
         getProps: t => ({
           label: t('conditions.checkbox_label'),
           errorRules: { required: t('validation.required') },
+          id: 'conditions checkbox',
         }),
       },
     ],

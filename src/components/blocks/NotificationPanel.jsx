@@ -42,15 +42,17 @@ function NotificationPanel() {
       <hr />
       <div className="notifications-header">{t('nbr_notifications')}</div>
       <div className="notifications-content">
-        {notifications.unread.items.map(({ hash, type, title, created_at }) => (
-          <div key={hash} className="notification-item">
-            <img className="appointment" alt={type} />
-            <div className="info">
-              <div className="notification-headline">{title}</div>
-              <div className="notification-time">{created_at}</div>
+        {notifications?.unread?.items.map(
+          ({ hash, type, title, created_at }) => (
+            <div key={hash} className="notification-item">
+              <img className="appointment" alt={type} />
+              <div className="info">
+                <div className="notification-headline">{title}</div>
+                <div className="notification-time">{created_at}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          ),
+        )}
       </div>
       {/* <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
         {t('nbr_show_all')}
