@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { completeForm, mutateUserData } from '../../../api';
-import { updateProfile } from '../../../features/userData';
+import { updateProfile, updateSearchState } from '../../../features/userData';
 import { onFormError } from '../../../helpers/form';
 import { EDIT_FORM_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes';
 import {
@@ -67,7 +67,10 @@ const Form = () => {
 
   const onFormSuccess = response => {
     dispatch(updateProfile(response));
-    if (isLastStep) completeForm();
+    if (isLastStep) {
+      completeForm();
+      dispatch(updateSearchState(true));
+    }
     navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));
   };
 

@@ -8,7 +8,8 @@
     "notifications": "Notifications",
     "profile": "My profile",
     "help": "Help",
-    "settings": "Settings"
+    "settings": "Settings",
+    "picture": "Edit Image"
   },
 
   "btn_save": "Save",
