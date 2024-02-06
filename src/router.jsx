@@ -47,9 +47,9 @@ import theme from './theme';
 
 const isCapacitor = IS_CAPACITOR_BUILD || false;
 
-export const Root = ({ children }) => (
+export const Root = ({ children, restoreScroll = true }) => (
   <ThemeProvider theme={theme}>
-    <ScrollRestoration />
+    {restoreScroll && <ScrollRestoration />}
     <GlobalStyles />
     {children || <Outlet />}
   </ThemeProvider>
