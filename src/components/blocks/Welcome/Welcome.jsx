@@ -27,12 +27,8 @@ const Welcome = () => {
       <IntroText center bold>
         {t('welcome.intro')}
       </IntroText>
-      <Text tag="span" center>
-        {t('welcome.description')}
-      </Text>
-      <NoteText tag="span" center>
-        {t('welcome.note')}
-      </NoteText>
+      <IntroText center>{t('welcome.description')}</IntroText>
+      <NoteText center>{t('welcome.note')}</NoteText>
       <Button
         size={ButtonSizes.Large}
         onClick={() => navigate(FIRST_FORM_STEP)}
