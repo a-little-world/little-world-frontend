@@ -115,6 +115,7 @@ export const userDataSlice = createSlice({
       state.matches.confirmed = action.payload;
     },
     getQuestions: (state, { payload }) => {
+      console.log(payload);
       state.questions = payload;
     },
     getUnarchivedQuestions: (state, { payload }) => {
@@ -165,7 +166,7 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 };
 
 export const FetchUnarchivedQuestions = () => async dispatch => {
-  const result = await questionsDuringCall.getUnArchivedQuestions();
+  const result = []; //await questionsDuringCall.getUnArchivedQuestions();
   dispatch(getUnarchivedQuestions(result));
 };
 

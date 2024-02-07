@@ -1,4 +1,10 @@
-import { Button, Card } from '@a-little-world/little-world-design-system';
+import {
+  Button,
+  ButtonVariations,
+  Card,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from '@a-little-world/little-world-design-system';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -39,21 +45,21 @@ const TopicButton = styled.button`
 `;
 
 const QuestionCard = styled.div`
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid ${({ theme }) => theme.color.border.subtle};
   box-sizing: border-box;
   border-radius: 18px;
   margin-top: ${({ theme }) => theme.spacing.xsmall};
-  background: #f9fafb;
+  background: ${({ theme }) => theme.color.surface.primary};
   width: 100%;
   display: block;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  ${props =>
-    props.selected &&
+  ${({ selected, theme }) =>
+    selected &&
     `
-    border-color: red;
+    border-color: ${theme.color.border.selected};
   `}
 `;
 
@@ -89,10 +95,11 @@ const Categories = styled.div`
   overflow-x: hidden;
   padding: ${({ theme }) => theme.spacing.xxxsmall};
 
-  ${({ selected }) =>
+  ${({ selected, theme }) =>
     selected &&
-    ` border-color: red;
-      padding: 15px; `}
+    ` border-color: ${theme.color.border.selected};
+      padding: 15px;
+    `}
 `;
 
 const QuestionCategories = styled.div`
@@ -100,9 +107,12 @@ const QuestionCategories = styled.div`
   align-items: center;
 `;
 
+const CategoryControl = styled(Button)`
+  flex-shrink: 0;
+`;
+
 function QuestionCards() {
   const { t } = useTranslation();
-  const questionsData = useSelector(state => state.userData?.questions?.data);
   const questionDataFromApi = useSelector(
     state => state.userData?.questions?.data,
   );
@@ -185,13 +195,17 @@ function QuestionCards() {
   return (
     <SidebarCard>
       <QuestionCategories>
-        <button
-          type="button"
-          className="questions-left"
+        <CategoryControl
+          variation={ButtonVariations.Control}
           onClick={() => changeScroll('left')}
         >
-          <img className="left-scroll-icon" alt="show left" />
-        </button>
+          <ChevronLeftIcon
+            label="prev conversation topics"
+            labelId="topics left control"
+            width={6}
+            height={10}
+          />
+        </CategoryControl>
         <Categories ref={categoriesRef}>
           {topicList?.map(topic => (
             <TopicButton
@@ -217,13 +231,17 @@ function QuestionCards() {
             {t('question_category_archived')}
           </TopicButton>
         </Categories>
-        <button
-          type="button"
-          className="questions-right"
+        <CategoryControl
+          variation={ButtonVariations.Control}
           onClick={() => changeScroll('right')}
         >
-          <img className="right-scroll-icon" alt="show right" />
-        </button>
+          <ChevronRightIcon
+            label="next topics"
+            labelId="topics right control"
+            width={6}
+            height={10}
+          />
+        </CategoryControl>
       </QuestionCategories>
       <QuestionContentCard>
         {unarchived

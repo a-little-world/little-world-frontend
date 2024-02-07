@@ -138,14 +138,6 @@
   appearance: none;
 }
 
-.questions-categories .questions-left img {
-  content: url('./images/arrow-left.svg');
-}
-
-.questions-categories .questions-right img {
-  content: url('./images/arrow-right.svg');
-}
-
 .right-arrow-image img {
   content: url('./images/arrow-right.svg');
 }
