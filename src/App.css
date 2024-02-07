@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css?family=Signika+Negative:300,400,500,600&subset=latin,latin-ext");
-
 /* hide ES-lint complaining on page load */
 #webpack-dev-server-client-overlay {
   display: none;
@@ -11,9 +9,8 @@ html {
 
 body {
   height: 100%;
-  max-width: 1790px; /* 3 columns */
   margin: 0 auto;
-  background: url("./images/background.svg");
+  background: url('./images/background.svg');
   background-repeat: no-repeat;
   background-size: 100% auto;
   background-color: #f2dabc;
@@ -23,8 +20,9 @@ body {
 
 body,
 button {
-  font-family: "Signika Negative", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: 'Signika Negative', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -53,18 +51,11 @@ button {
 
 /* all items that live on top of the main background */
 .panel,
-.profile-box,
-.match-status,
-.sidebar,
-.nav-bar-top,
 .notification-panel,
-.community-event,
 .chat-list-box,
 .show-chat .right-panel,
-.show-profile .profile-box,
-.main-page .header,
+/* .main-page .header, */
 .profile-detail > div,
-.show-profile .profile-box,
 .modal-box,
 .call-and-text,
 .call-sidebar {
@@ -76,67 +67,22 @@ button {
   padding: 20px;
 }
 
-/* hide top nav bar in all desktop by default */
-@media screen and (width >= 1024px) {
-  .nav-bar-top {
-    display: none;
-  }
-}
-/* hide switcher on all (for mobile) except main page */
-.nav-bar-top .selector {
-  display: none;
-}
-
-/* page header / title */
-.main-page .header {
-  font-weight: 700;
-  font-size: 28px;
-  display: flex;
-  height: 84px;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: space-between;
-}
-
-@media screen and (width < 1024px) {
-  .main-page .header {
-    display: none;
-  }
-}
-
-.main-page .header .text {
-  margin-left: 12px;
-  margin-right: auto;
-}
-
 /* parent items of above elements, setting consistent gap between */
 @media screen and (width >= 1024px) {
-  .main-page,
   .main-page .content-area,
-  .main-page .content-area-main,
   .show-chat .container,
-  .profile-component,
-  .profile-component .content,
   .call-screen {
-    gap: 30px;
+    gap: 24px;
   }
 }
 
-input[type="radio"],
-input[type="checkbox"] {
+input[type='radio'],
+input[type='checkbox'] {
   display: none;
 }
 
 label {
   display: block;
-}
-
-/* button hover */
-input:not([type="radio"]:checked) + label:hover,
-button:not(.selected):hover,
-a:not(.selected):hover {
-  filter: brightness(120%) contrast(120%);
-  cursor: pointer;
 }
 
 input:checked + label {
@@ -152,27 +98,9 @@ a {
 button,
 a {
   background: none;
-  border: 1px solid rgba(0, 0, 0, 0.06);
   color: inherit;
   padding: 0;
   height: fit-content;
-}
-
-/*
-button::first-letter,
-button .text::first-letter,
-label::first-letter,
-input[type="radio"] + label,
-h1,
-h2,
-h3 {
-  text-transform: capitalize;
-}*/
-
-a,
-button,
-label {
-  border-radius: 100px;
 }
 
 button img {
@@ -184,34 +112,11 @@ button img {
   display: none !important;
 }
 
-/* button press */
-input:not([type="radio"]:checked):active + label,
-button:not(.selected):active,
-a:not(.selected):active {
-  transform: translate(2px, 2px);
-}
-
-label,
-button,
-a {
-  transition: transform 0.1s ease;
-}
-
 @media (width < 1024px) {
   body {
     background-image: none;
     background-color: #fff0e0;
   }
-}
-
-img.logo-image {
-  content: url("./images/logo-image.svg");
-  max-width: 100%;
-}
-
-img.logo-text {
-  content: url("./images/logo-text.svg");
-  max-width: 100%;
 }
 
 .waiting {
@@ -275,7 +180,7 @@ img.logo-text {
   right: 20px;
   width: 40px;
   height: 40px;
-  background-image: url("images/close-pop-up.svg");
+  background-image: url('images/close-pop-up.svg');
   filter: grayscale(1);
   background-position: center;
   background-repeat: no-repeat;

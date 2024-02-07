@@ -1,44 +1,73 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
+import {
+  Button,
+  ButtonAppearance,
+} from '@a-little-world/little-world-design-system';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import styled, { css } from 'styled-components';
+
+const Selector = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+  gap: ${({ theme }) => theme.spacing.xsmall};
+  width: 100%;
+  background: ${({ theme }) => theme.color.surface.primary};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.small}) {
+      justify-content: flex-start;
+      display: flex;
+    }
+
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.medium};
+      border: 1px solid ${theme.color.border.subtle};
+      border-radius: 30px;
+      box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
+    }
+  `}
+`;
+
+export const StyledOption = styled(Button)`
+  border-color: transparent;
+  &:disabled {
+    color: ${({ theme }) => theme.color.text.button};
+    border: none;
+    background: ${({ theme }) => theme.color.gradient.blue10};
+  }
+`;
 
 function NbtSelector({ selection, setSelection, use }) {
   const { t } = useTranslation();
-  if (!["main", "help"].includes(use)) {
+  if (!['main', 'help'].includes(use)) {
     return null;
   }
 
   const nbtTopics = {
-    main: ["conversation_partners", "appointments", "community_calls"],
-    help: ["videos", "faqs", "contact"],
+    main: ['conversation_partners', 'community_calls'],
+    help: ['faqs', 'contact'],
   };
   const topics = nbtTopics[use];
 
-  const nbtDisabled = {
-    main: ["appointments"],
-    help: ["videos"],
-  };
-  const disabled = nbtDisabled[use];
   return (
-    <div className="selector">
-      {topics.map((topic) => (
-        <span className={topic} key={topic}>
-          <input
-            type="radio"
-            id={`${topic}-radio`}
-            value={topic}
-            checked={selection === topic}
-            name="sidebar"
-            onChange={(e) => setSelection(e.target.value)}
-          />
-          <label
-            htmlFor={`${topic}-radio`}
-            className={disabled && disabled.includes(topic) ? "disabled" : ""}
-          >
-            {t(`nbt_${topic}`)}
-          </label>
-        </span>
+    <Selector className="selector">
+      {topics.map(topic => (
+        <StyledOption
+          appearance={
+            selection === topic
+              ? ButtonAppearance.Primary
+              : ButtonAppearance.Secondary
+          }
+          key={topic}
+          onClick={() => setSelection(topic)}
+          disabled={selection === topic}
+        >
+          {t(`nbt_${topic}`)}
+        </StyledOption>
       ))}
-    </div>
+    </Selector>
   );
 }
 

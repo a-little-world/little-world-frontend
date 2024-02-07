@@ -1,48 +1,36 @@
-import { GlobalStyles } from "@a-little-world/little-world-design-system";
-import React from "react";
-import { Provider, useDispatch } from "react-redux";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { ThemeProvider } from "styled-components";
+import React from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { RouterProvider } from 'react-router-dom';
 
-import store from "./app/store";
-import ActiveCall from "./call";
-import { BACKEND_PATH } from "./ENVIRONMENT";
-import { initialise } from "./features/userData";
-import Main from "./main";
-import theme from "./theme";
+import './App.css';
+import WebsocketBridge from './WebsocketBridge';
+import store from './app/store';
+import { initialise } from './features/userData';
+import router from './router';
 
-import "./App.css";
-
-function HandleRoutes({ data }) {
+function InitializeDux({ data }) {
   const dispatch = useDispatch();
   dispatch(initialise(data));
-  return (
-    <Router>
-      <Routes>
-        <Route path={`${BACKEND_PATH}/`}>
-          <Route index element={<Main />} />
-          <Route path="call" element={<ActiveCall />} />
-          <Route path="partners" element={<Main />} />
-          <Route path="chat" element={<Main />} />
-          <Route path="notifications" element={<Main />} />
-          <Route path="profile" element={<Main />} />
-          <Route path="help" element={<Main />} />
-          <Route path="settings" element={<Main />} />
-          <Route path="*" element="404" />
-        </Route>
-      </Routes>
-    </Router>
-  );
 }
 
-function App({ initData }) {
+function AuthGuard({ children }) {
+  const user = useSelector(state => state.userData.user);
+  // TODO: should also check 1. 'session_id' present
+  // 2. if 'session_id' & user present, else fetch userData
+  return user ? children : null;
+}
+
+function App({ data }) {
+  // WebsocketBridge is here so it dones't reconnect on every AppLayout change
+  // But that means we need to manually connect it when userData is present
   return (
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
-        <GlobalStyles />
-        <HandleRoutes data={initData} />
-      </Provider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <AuthGuard>
+        <WebsocketBridge />
+      </AuthGuard>
+      <InitializeDux data={data} />
+      <RouterProvider router={router} />
+    </Provider>
   );
 }
 

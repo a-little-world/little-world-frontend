@@ -1,10 +1,11 @@
-import i18next from "i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import Cookies from "js-cookie";
-import { initReactI18next } from "react-i18next";
+import i18next from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import Cookies from 'js-cookie';
+import { initReactI18next } from 'react-i18next';
 
-import translationDE from "./locale/de.json";
-import translationEN from "./locale/en.json";
+import { LANGUAGES } from './constants';
+import translationDE from './locale/de.json';
+import translationEN from './locale/en.json';
 
 i18next
   .use(LanguageDetector)
@@ -13,8 +14,8 @@ i18next
     /*
     I'm overwriting the seperators here since the backend also uses '.' in the translations!
     */
-    nsSeparator: ":::",
-    keySeparator: "::",
+    nsSeparator: ':::',
+    keySeparator: '::',
     resources: {
       en: {
         translation: translationEN,
@@ -23,11 +24,12 @@ i18next
         translation: translationDE,
       },
     },
-    fallbackLng: "en",
+    languages: [LANGUAGES.en, LANGUAGES.de],
+    fallbackLng: LANGUAGES.de,
   });
 
-const cookieName = "frontendLang";
-const cookie = Cookies.get(cookieName);
+export const COOKIE_LANG = 'frontendLang';
+const cookie = Cookies.get(COOKIE_LANG);
 if (cookie !== undefined) {
   i18next.changeLanguage(cookie);
 }
@@ -37,9 +39,9 @@ export const updateTranslationResources = ({ apiTranslations }) => {
   /*
   This upates the current translations resources with all backend translations!
   */
-  Object.keys(apiTranslations).forEach((lang) => {
-    i18next.addResourceBundle(lang, "translation", {
-      ...i18next.getResourceBundle(lang, "translation"),
+  Object.keys(apiTranslations).forEach(lang => {
+    i18next.addResourceBundle(lang, 'translation', {
+      ...i18next.getResourceBundle(lang, 'translation'),
       ...apiTranslations[lang],
     });
   });

@@ -1,57 +1,81 @@
-import { Modal } from "@a-little-world/little-world-design-system";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Modal } from '@a-little-world/little-world-design-system';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 
-import { confirmMatch, partiallyConfirmMatch } from "./api";
-import CallSetup, { IncomingCall } from "./call-setup";
-import Chat from "./chat/chat-full-view";
-import CancelSearching from "./components/blocks/CancelSearching";
-import CommunityCalls from "./components/blocks/CommunityCalls";
-import ConfirmMatchCard from "./components/blocks/ConfirmMatchCard";
-import MobileNavBar from "./components/blocks/MobileNavBar";
-import NbtSelector from "./components/blocks/NbtSelector";
-import NbtSelectorAdmin from "./components/blocks/NbtSelectorAdmin";
-import NewMatchCard from "./components/blocks/NewMatchCard";
-import NotificationPanel from "./components/blocks/NotificationPanel";
-import PartnerProfiles from "./components/blocks/PartnerProfiles";
-import Sidebar from "./components/blocks/Sidebar";
-import { BACKEND_PATH } from "./ENVIRONMENT";
-import { addUnconfirmed, removePreMatch, setUsers } from "./features/userData";
-import Help from "./help";
-import "./i18n";
-import Notifications from "./notifications";
-import Profile from "./profile";
-import Settings from "./settings";
-import { removeActiveTracks } from "./twilio-helper";
+import CustomPagination from './CustomPagination';
+import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
+import CallSetup, { IncomingCall } from './call-setup';
+import Chat from './chat/chat-full-view';
+import './community-events.css';
+import CancelSearchCard from './components/blocks/Cards/CancelSearchCard';
+import ConfirmMatchCard from './components/blocks/Cards/ConfirmMatchCard';
+import NewMatchCard from './components/blocks/Cards/NewMatchCard';
+import CommunityEvents from './components/blocks/CommunityEvents/CommunityEvent';
+import AppLayout from './components/blocks/Layout/AppLayout';
+import NbtSelector from './components/blocks/NbtSelector';
+import NotificationPanel from './components/blocks/NotificationPanel';
+import PartnerProfiles from './components/blocks/PartnerProfiles';
+import Help from './components/views/Help';
+import Profile from './components/views/Profile';
+import Settings from './components/views/Settings';
+import {
+  blockIncomingCall,
+  cancelCallSetup,
+  changeMatchCategory,
+  initCallSetup,
+  removeMatch,
+  updateConfirmedData,
+} from './features/userData';
+import './i18n';
+import './main.css';
+import Notifications from './notifications';
+import { APP_ROUTE } from './routes';
+import { removeActiveTracks } from './twilio-helper';
 
-import "./community-events.css";
-import "./main.css";
+const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
+  const usesAvatar = profile.image_type === 'avatar';
+  const dispatch = useDispatch();
 
-function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, userData }) {
   return showNewMatch ? (
     <NewMatchCard
-      name={userData.firstName}
-      imageType={userData.usesAvatar ? "avatar" : "image"}
-      image={userData.usesAvatar ? userData.avatarCfg : userData.imgSrc}
+      name={profile.first_name}
+      imageType={profile.image_type}
+      image={usesAvatar ? profile.avatar_config : profile.image}
       onExit={() => {
-        confirmMatch({ userHash: userData?.userPk })
-          .then(onConfirm)
-          .then(() => {})
-          .catch((error) => console.error(error));
+        confirmMatch({ userHash: profile.id })
+          .then(res => {
+            if (res.ok) {
+              dispatch(
+                changeMatchCategory({
+                  match: { id: matchId },
+                  category: 'unconfirmed',
+                  newCategory: 'confirmed',
+                }),
+              );
+            }
+          })
+          .catch(error => console.error(error));
       }}
     />
   ) : (
     <ConfirmMatchCard
-      name={userData.first_name}
-      imageType={userData.image_type}
-      image={userData.avatar_image}
+      name={profile.first_name}
+      imageType={profile.image_type}
+      image={usesAvatar ? profile.avatar_config : profile.image}
       onConfirm={() => {
-        partiallyConfirmMatch({ acceptDeny: true, userHash: userData?.hash }).then((res) => {
+        partiallyConfirmMatch({ acceptDeny: true, matchId }).then(res => {
           if (res.ok) {
-            res.json().then((data) => {
-              // The user_data hash incase of a 'partial confirm will be the matching hash!
-              onPartialConfirm(userData['hash'] ,data["match"]);
+            res.json().then(() => {
+              // Change 'proposed' to 'unconfirmed' so it will render the 'new match' popup next
+              dispatch(
+                changeMatchCategory({
+                  match: { id: matchId },
+                  category: 'proposed',
+                  newCategory: 'unconfirmed',
+                }),
+              );
             });
           } else {
             // TODO: Add toast error explainer or some error message
@@ -59,260 +83,261 @@ function getMatchCardComponent({ onConfirm, onPartialConfirm, showNewMatch, user
         });
       }}
       onReject={() => {
-        partiallyConfirmMatch({ acceptDeny: false, userHash: userData?.hash }).then((res) => {
+        partiallyConfirmMatch({ acceptDeny: false, matchId }).then(res => {
           if (res.ok) {
-            res.json().then(() => {});
+            res.json().then(() => {
+              dispatch(
+                removeMatch({
+                  category: 'proposed',
+                  match: { id: matchId },
+                }),
+              );
+            });
           } else {
             // TODO: Add toast error explainer or some error message
           }
         });
       }}
       onExit={() => {
-        onPartialConfirm();
+        // TODO IMPORTANT: Now it's impossible to 'ingnore' confirming a match
       }}
     />
   );
-}
-
-const userDataDefaultTransform = (data) => {
-  return {
-    userPk: data.user.hash,
-    firstName: data.profile.first_name,
-    lastName: "",
-    imgSrc: data.profile.image,
-    avatarCfg: data.profile.avatar_config,
-    usesAvatar: data.profile.image_type === "avatar",
-    description: data.profile.description,
-    type: "match",
-    extraInfo: {
-      about: data.profile.description,
-      interestTopics: data.profile.interests,
-      extraTopics: data.profile.additional_interests,
-      expectations: data.profile.language_skill_description,
-    },
-  }
 };
 
+const Content = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+  padding-bottom: ${({ theme }) => theme.spacing.medium};
+  width: 100%;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: 0;
+      gap: ${theme.spacing.small};
+    }
+
+    @media (min-width: ${theme.breakpoints.large}) {
+      gap: ${theme.spacing.medium};
+    }
+  `};
+`;
+
+const Matches = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      flex-direction: row;
+      gap: ${theme.spacing.medium};
+      padding: 0;
+    }
+  `};
+`;
+
 function Main() {
+  // for the case /call-setup/:userId?/
+  let { userId } = useParams();
+
   const location = useLocation();
   const { userPk } = location.state || {};
   const dispatch = useDispatch();
-
-  const [userProfile, setUserProfile] = useState(null);
-
-  const usersInital = useSelector((state) => state.userData.users);
-  const [users, updateUsers] = useState(usersInital);
-
-  const initalPreMatches = useSelector((state) => state.userData.self.stateInfo.preMatches);
-  const matchesInfo = usersInital.filter(({ type }) => type !== "self");
-
-  const initialPartiallyConfirmedMatches = useSelector((state) =>
-    matchesInfo.find(
-      (match) => match?.userPk === state.userData.self?.stateInfo?.unconfirmedMatches?.[0]
-    )
-  );
-  
-  useEffect(() => {
-    updateUsers(usersInital);
-  }, [usersInital]);
-
-  const self = useSelector((state) => state.userData.self);
-
-  const [preMatches, setPreMatches] = useState(initalPreMatches);
-  const [partiallyConfirmedMatches, setPartiallyConfirmedMatches] = useState(
-    initialPartiallyConfirmedMatches ? [initialPartiallyConfirmedMatches] : []
-  );
-
-  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
-  const [callSetupPartner, setCallSetupPartnerKey] = useState(null);
-  const [matchesOnlineStates, setMatchesOnlineStates] = useState({});
-  const [userPkToChatIdMap, setUserPkToChatIdMap] = useState({});
-
-  const [showCancelSearching, setShowCancelSearching] = useState(false);
-  const [showIncoming, setShowIncoming] = useState(false);
-  const [incomingUserPk, setIncomingUserPk] = useState(null);
   const navigate = useNavigate();
 
-  const onModalClose = () => {
-    setPreMatches([]);
-    setPartiallyConfirmedMatches([]);
-  };
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const onConfirm = ({ status, statusText }) => {
-    if (status === 200) {
-      setPartiallyConfirmedMatches([]);
+  // In order to define the frontent paginator numbers
+  const pageItems = 10;
+  const handlePageChange = async page => {
+    // TODO: can be refactored using our redux stor
+    const res = await updateMatchData(page, pageItems);
+    if (res && res.status === 200) {
+      const data = await res.json();
+      if (data) {
+        dispatch(updateConfirmedData(data.data.confirmed_matches));
+        setCurrentPage(page);
+      }
     } else {
-      console.error("server error", status, statusText);
-    }
-  };
-  
-  function updateUsersAndUnconfirmed(matchingId ,match) {
-    return dispatch => {
-      console.log("DISPATCHING", match, matchingId);
-      dispatch(addUnconfirmed(match.user.hash));
-      dispatch(removePreMatch(matchingId));
-      const userObj = userDataDefaultTransform(match)
-      console.log("USER OBJ", userObj);
-      dispatch(setUsers(userObj));
-    }
-  }
-
-  const onPartialConfirm = (matchingId, match) => {
-    if (match && matchingId) {
-      const newUser = userDataDefaultTransform(match);
-      dispatch(updateUsersAndUnconfirmed(matchingId, match));
-      setPartiallyConfirmedMatches([newUser]);
-      setPreMatches(preMatches.filter((match) => match.hash !== matchingId));
-    }else{
-      setPartiallyConfirmedMatches([]);
-      setPreMatches([]);
+      console.error(
+        `Cancelling match searching failed with error ${res.status}: ${res.statusText}`,
+      );
     }
   };
 
-  const setCallSetupPartner = (partnerKey) => {
-    document.body.style.overflow = partnerKey ? "hidden" : "";
-    setCallSetupPartnerKey(partnerKey);
-    if (!partnerKey) {
+  const user = useSelector(state => state.userData.user);
+  const matches = useSelector(state => state.userData.matches);
+  const incomingCalls = useSelector(state => state.userData.incomingCalls);
+  const callSetup = useSelector(state => state.userData.callSetup);
+  const activeCall = useSelector(state => state.userData.activeCall);
+
+  const dashboardVisibleMatches = matches
+    ? [...matches.support.items, ...matches.confirmed.items]
+    : [];
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(initCallSetup({ userId }));
+      navigate(`/${APP_ROUTE}/`); // Navigate back to base app route but with call setup open
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    const totalPage =
+      (matches?.confirmed?.totalItems + matches?.support?.totalItems) /
+      pageItems;
+
+    setTotalPages(Math.ceil(totalPage) || 1);
+  }, [matches]);
+
+  useEffect(() => {
+    if (!callSetup && !activeCall) {
       removeActiveTracks();
+      document.body.classList.remove('hide-mobile-header');
     }
-  };
+  }, [callSetup, activeCall]);
 
-  removeActiveTracks();
+  const [showCancelSearching, setShowCancelSearching] = useState(false);
 
-  useEffect(() => {
-    setShowSidebarMobile(false);
-  }, [location]);
-
-  document.body.classList.remove("hide-mobile-header");
-
-  const use = location.pathname.split("/").slice(-1)[0] || (userPk ? "profile" : "main");
-
+  // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
+  const use = location.pathname.split('/')[2] || (userPk ? 'profile' : 'main');
   const [topSelection, setTopSelection] = useState(null);
+  const selfProfile = user?.id === userPk || typeof userPk === 'undefined';
+  const selectedProfile = dashboardVisibleMatches.find(
+    match => match?.partner?.id === userPk,
+  )?.partner;
+
   useEffect(() => {
-    if (use === "main") {
-      setTopSelection("conversation_partners");
+    if (use === 'main') {
+      setTopSelection('conversation_partners');
     }
-    if (use === "help") {
-      setTopSelection("contact");
+    if (use === 'help') {
+      setTopSelection('contact');
     }
   }, [location, use]);
 
-  const updateOnlineState = (userOnlinePk, status) => {
-    matchesOnlineStates[userOnlinePk] = status;
-    setMatchesOnlineStates({ ...matchesOnlineStates }); // spreading creates a copy if we use the same var state wont update
+  const onPageChange = page => {
+    handlePageChange(page);
   };
 
-  const adminActionCallback = (action) => {
-    // This will later be moved to a whole new websocket
-    // The new socket should then only receive messages from the backend
-    // Current implementation allows all matches to send 'admin actions'
-    // Although they are filtered this could with some modifications allow other users to send these callbacks to their matches.
-    // This is not desirable ( see ISSUE #112 )
-    if (action.includes("reload")) {
-      // Backend says frontend should reload the page
-      navigate(BACKEND_PATH);
-      navigate(0);
-    } else if (action.includes("entered_call")) {
-      const params = action.substring(action.indexOf("(") + 1, action.indexOf(")")).split(":");
-
-      // Backend says a partner has entered the call
-      setShowIncoming(true);
-      setIncomingUserPk(params[1]);
-    } else if (action.includes("exited_call")) {
-      // Backend says a partner has exited the call
-      setShowIncoming(false);
-    }
+  const setCallSetupPartner = partner => {
+    dispatch(initCallSetup({ userId: partner }));
   };
 
-  const initChatComponent = (backgroundMode) => {
-    return (
-      <Chat
-        backgroundMode={backgroundMode}
-        showChat={use === "chat"}
-        matchesInfo={matchesInfo}
-        userPk={userPk}
-        setCallSetupPartner={setCallSetupPartner}
-        userPkMappingCallback={setUserPkToChatIdMap}
-        updateMatchesOnlineStates={updateOnlineState}
-        adminActionCallback={adminActionCallback}
-      />
-    );
+  const onAnswerCall = () => {
+    setCallSetupPartner(incomingCalls[0]?.userId);
+  };
+
+  const onRejectCall = () => {
+    dispatch(blockIncomingCall({ userId: incomingCalls[0]?.userId }));
   };
 
   return (
-    <div className={`main-page show-${use}`}>
-      <Sidebar sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }} />
-      <div className="content-area">
-        <div className="nav-bar-top">
-          <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-          {!self.isAdmin ? (
-            <NbtSelector selection={topSelection} setSelection={setTopSelection} use={use} />
-          ) : (
-            <NbtSelectorAdmin
-              selection={topSelection}
-              setSelection={setTopSelection}
-              use={use}
-              adminInfos={self.adminInfos}
-            />
-          )}
-        </div>
-        {use === "main" && (
-          <div className="content-area-main">
-            {topSelection === "conversation_partners" && (
-              <>
+    <AppLayout page={use}>
+      <Content>
+        <NbtSelector
+          selection={topSelection}
+          setSelection={setTopSelection}
+          use={use}
+        />
+        {use === 'main' &&
+          (topSelection === 'conversation_partners' ? (
+            <>
+              <Matches className="content-area-main">
                 <PartnerProfiles
                   setCallSetupPartner={setCallSetupPartner}
-                  matchesOnlineStates={matchesOnlineStates}
                   setShowCancel={setShowCancelSearching}
+                  totalPaginations={totalPages}
                 />
                 <NotificationPanel />
-              </>
-            )}
-            {topSelection === "community_calls" && <CommunityCalls />}
-          </div>
-        )}
-        {use === "chat" && initChatComponent(false)}
-        {use === "notifications" && <Notifications />}
-        {use === "profile" && <Profile setCallSetupPartner={setCallSetupPartner} userPk={userPk} />}
-        {use === "help" && <Help selection={topSelection} />}
-        {use === "settings" && <Settings userData={userProfile} />}
-      </div>
-      <div
-        className={
-          callSetupPartner || showIncoming || showCancelSearching
-            ? "overlay-shade"
-            : "overlay-shade hidden"
-        }
-      >
-        {callSetupPartner && (
-          <CallSetup userPk={callSetupPartner} setCallSetupPartner={setCallSetupPartner} />
-        )}
-        {incomingUserPk && showIncoming && (
-          <IncomingCall
-            matchesInfo={matchesInfo}
-            userPk={incomingUserPk}
-            setVisible={setShowIncoming}
+              </Matches>
+              {totalPages > 1 && (
+                <CustomPagination
+                  totalPages={totalPages}
+                  currentPage={currentPage}
+                  onPageChange={onPageChange}
+                />
+              )}
+            </>
+          ) : (
+            <CommunityEvents />
+          ))}
+        {use === 'chat' && (
+          <Chat
+            showChat={use === 'chat'}
+            matchesInfo={dashboardVisibleMatches}
+            userPk={userPk}
             setCallSetupPartner={setCallSetupPartner}
           />
         )}
-        {showCancelSearching && <CancelSearching setShowCancel={setShowCancelSearching} />}
-      </div>
+        {use === 'notifications' && <Notifications />}
+        {use === 'profile' && (
+          <Profile
+            setCallSetupPartner={setCallSetupPartner}
+            isSelf={selfProfile}
+            profile={selfProfile ? user.profile : selectedProfile}
+            userPk={selfProfile ? user.id : userPk}
+          />
+        )}
+        {use === 'help' && <Help selection={topSelection} />}
+        {use === 'settings' && <Settings />}
+      </Content>
+
+      <Modal open={callSetup} locked>
+        <CallSetup
+          userPk={callSetup?.userId}
+          removeCallSetupPartner={() => {
+            dispatch(cancelCallSetup());
+            removeActiveTracks();
+          }}
+        />
+      </Modal>
       <Modal
-        open={preMatches?.length || partiallyConfirmedMatches?.length}
-        locked={false}
-        onClose={onModalClose}
+        open={incomingCalls[0]?.userId && !callSetup}
+        onClose={onRejectCall}
       >
-        {(preMatches?.length || partiallyConfirmedMatches?.length) &&
-          getMatchCardComponent({
-            isVolunteer: self.userType === "volunteer",
-            onConfirm,
-            onPartialConfirm,
-            showNewMatch: Boolean(!preMatches?.length),
-            userData: preMatches?.length ? preMatches[0] : partiallyConfirmedMatches[0],
+        <IncomingCall
+          matchesInfo={dashboardVisibleMatches}
+          userPk={incomingCalls[0]?.userId}
+          onAnswerCall={onAnswerCall}
+          onRejectCall={onRejectCall}
+        />
+      </Modal>
+      {showCancelSearching && (
+        <Modal
+          open={showCancelSearching}
+          onClose={() => setShowCancelSearching(false)}
+        >
+          <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
+        </Modal>
+      )}
+      <Modal
+        open={
+          matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length
+        }
+        locked={false}
+        onClose={() => {}}
+      >
+        {(matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length) &&
+          MatchCardComponent({
+            showNewMatch: Boolean(!matches?.proposed?.items?.length),
+            matchId: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].id
+              : matches?.unconfirmed.items[0].id,
+            profile: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].partner
+              : matches?.unconfirmed.items[0].partner,
           })}
       </Modal>
-      {!(use === "chat") && <div className="disable-chat">{initChatComponent(true)}</div>}
-    </div>
+    </AppLayout>
   );
 }
 

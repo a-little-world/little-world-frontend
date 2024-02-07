@@ -1,72 +1,177 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import Cookies from "js-cookie";
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import {
+  Button,
+  ButtonAppearance,
+  Card,
+} from '@a-little-world/little-world-design-system';
+import Cookies from 'js-cookie';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-import Chat from "./chat/chat-full-view";
-import { BACKEND_PATH, BACKEND_URL } from "./ENVIRONMENT";
-import "./i18n";
-import Link from "./path-prepend";
+import './App.css';
+import { BACKEND_URL } from './ENVIRONMENT';
+import { clearActiveTracks } from './call-setup';
+import './call.css';
+import Chat from './chat/chat-full-view';
+import { StyledOption } from './components/blocks/NbtSelector';
+import QuestionCards from './components/blocks/QuestionCards';
+import { stopActiveCall } from './features/userData';
+import {
+  FetchQuestionsDataAsync,
+  FetchUnarchivedQuestions,
+} from './features/userData';
+import './i18n';
+import { APP_ROUTE, getAppRoute } from './routes';
+import {
+  addUserNote,
+  deleteUserNote,
+  getUserNotes,
+  noteStatusUpdate,
+} from './services/userNotes';
 import {
   getAudioTrack,
   getVideoTrack,
   joinRoom,
   removeActiveTracks,
   toggleLocalTracks,
-} from "./twilio-helper";
+} from './twilio-helper';
 
-import "./App.css";
-import "./call.css";
-import { FetchQuestionsDataAsync, FetchUnArchivedQuestions } from "./features/userData";
-import { questionsDuringCall } from "./services/questionsDuringCall";
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
-import {
-  Button,
-  Card,
-} from "@a-little-world/little-world-design-system";
-import styled from "styled-components";
+const TextArea = styled.textarea`
+  position: relative;
+  background: #f9f9f9;
+  border-radius: 20px;
+  padding: 10px;
+  color: #a6a6a6;
+  box-sizing: content-box;
+`;
 
-const TopicButton = styled.button`
-  font-size: 1rem;
-  font-weight: normal;
-  min-width: fit-content;
-  padding: ${({ theme }) => theme.spacing.xsmall};
-  border-radius: 23px;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const Buttons = styled.button``;
+
+const AddNoteButton = styled.button`
+  background: linear-gradient(
+    43.07deg,
+    #db590b -3.02%,
+    #f39325 93.96%
+  ) !important;
+  border-radius: 100px;
+  padding: 8px 6px;
+  font-size: 14px;
+  min-width: 66px;
+  color: #f9f9f9;
+  font-weight: 600;
+  display: ${props => (props.show ? 'block' : 'none')};
+`;
+
+const WrapperContainer = styled.div`
+  width: 100%;
+`;
+
+const UpdatedAtLabel = styled.div`
+  font-size: ${({ theme }) => `${theme.spacing.xsmall}`};
+  color: #626262;
+  padding-bottom: ${({ theme }) => `${theme.spacing.xxxsmall}`};
+  padding-right: ${({ theme }) => `${theme.spacing.xsmall}`};
+  align-self: end;
+`;
+
+const QuestionActions = styled.div`
+  height: ${({ theme }) => `${theme.spacing.medium}`};
+  margin-top: ${({ theme }) => `${theme.spacing.xxxsmall}`};
+  display: flex;
+  gap: ${({ theme }) => `${theme.spacing.xxxsmall}`};
+`;
+
+const QuestionActionsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+`;
+
+const CategoryButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.xxsmall}`};
+  border-radius: ${({ theme }) => `${theme.spacing.medium}`};
   font-style: normal;
   font-weight: 500;
-  font-size: 18px;
+  font-size: ${({ theme }) => `${theme.spacing.small}`};
   white-space: nowrap;
   border: 2px solid #ef8a21;
-  margin: 0px ${({ theme }) => theme.spacing.xxxsmall};
+  margin: 0 4px;
   box-sizing: border-box;
-  ${(props) =>
-    props.selected &&
+  display: flex;
+  ${({ selected }) =>
+    selected &&
     `
     background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
     color: white;
-  `}
+    `};
 `;
 
-const SidebarCard = styled(Card)`
-  width: 100%;
-  height: 100%;
+const StyledImage = styled.img`
+  height: 20px;
+  width: 20px;
+  ${({ selected }) => selected && ` filter: brightness(0) invert(1); `}
+`;
+
+const EditButton = styled.button`
+  background: linear-gradient(
+    43.07deg,
+    #db590b -3.02%,
+    #f39325 93.96%
+  ) !important;
+  border-radius: 100px;
+  font-size: 14px;
+  min-width: ${({ theme }) => `${theme.spacing.xxlarge}`};
+  color: #f9f9f9;
+  font-weight: 600;
+  height: ${({ theme }) => `${theme.spacing.medium}`};
+`;
+
+const NoteCardTextArea = styled.textarea`
+  border: none;
+  background: #f9fafb;
+  outline: none;
+
+  &:focus {
+    outline: none;
+    border: none;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+    border: none;
+  }
+`;
+
+const NotesCardWrapper = styled.div`
   display: flex;
   flex-direction: column;
-   background: transparent;
-  border: none;
-  box-shadow: none;
-  padding: ${({ theme }) => theme.spacing.xxsmall};
-
+  flex-grow: 1;
 `;
 
-const QuestionCard = styled.div`
-  border: 1px solid rgba(0, 0, 0, 0.05);
+const NotesCard = styled.div`
+  border: 1px solid rgb(0 0 0 / 5%);
   box-sizing: border-box;
-  border-radius: 18px;
-  margin-top: ${({ theme }) => theme.spacing.xsmall};
+  border-radius: ${({ theme }) => `${theme.spacing.small}`};
+  margin-top: ${({ theme }) => `${theme.spacing.xsmall}`};
   background: #f9fafb;
   width: 100%;
   display: block;
@@ -74,65 +179,48 @@ const QuestionCard = styled.div`
   flex-direction: column;
   align-items: center;
 
-  ${(props) =>
+  ${props =>
     props.selected &&
     `
     border-color: red;
   `}
 `;
 
-const QuestionContentCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  @media(min-width: 500px){
-  padding: 0px;
-}
+const CardButton = styled.button`
+  padding: ${({ theme }) => `${theme.spacing.small}`};
+  font-size: unset;
+  width: 100%;
+  border-radius: inherit;
+  text-align: left;
+  ${({ selected }) => selected && `  padding: 0; `}
 `;
 
-const QuestionButton = styled(Button)`
-  padding: 0px;
-  background: transparent;
-  color: black;
-  padding: ${({ theme }) => theme.spacing.xsmall};
-  height: fit-content;
-  font-size: 16px;
-  font-weight: normal;
-`;
-
-const ArchiveButton = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.xxxsmall};
-  padding: 0px ${({ theme }) => theme.spacing.xsmall};
-
-`;
-
-const QuestionCategories = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Categories = styled.div`
+const CategoryWrapper = styled.div`
   display: flex;
   overflow-x: hidden;
-  padding: ${({ theme }) => theme.spacing.xxxsmall};
-`
+  padding: 2px;
+  margin-bottom: ${({ theme }) => `${theme.spacing.xxsmall}`};
+`;
 
-
+const SidebarSelector = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: ${({ theme }) => `${theme.spacing.xxxsmall}`};
+`;
 
 function toggleFullscreen(t) {
-  const videoContainer = document.querySelector(".video-container");
-  const fullScreenTextEl = document.querySelector("label[for=fullscreen-toggle] .text");
+  const videoContainer = document.querySelector('.video-container');
+  const fullScreenTextEl = document.querySelector(
+    'label[for=fullscreen-toggle] .text',
+  );
   // would be nice to do text in CSS but we need translation support
 
   if (!document.fullscreenElement) {
     videoContainer.requestFullscreen();
-    fullScreenTextEl.innerHTML = t("vc_fs_btn_exit_fullscreen");
+    fullScreenTextEl.innerHTML = t('vc_fs_btn_exit_fullscreen');
   } else if (document.exitFullscreen) {
     document.exitFullscreen();
-    fullScreenTextEl.innerHTML = t("vc_fs_btn_enter_fullscreen");
+    fullScreenTextEl.innerHTML = t('vc_fs_btn_enter_fullscreen');
   }
 }
 
@@ -142,7 +230,7 @@ function Timer() {
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setSeconds((currentSeconds) => currentSeconds + 1);
+      setSeconds(currentSeconds => currentSeconds + 1);
     }, 1000);
     return () => clearInterval(intervalId);
   });
@@ -150,7 +238,7 @@ function Timer() {
   const remainder = seconds % 60;
   const minutes = (seconds - remainder) / 60;
 
-  const two = (n) => (n < 10 ? `0${n}` : n);
+  const two = n => (n < 10 ? `0${n}` : n);
 
   return (
     <div className="call-time">
@@ -164,8 +252,13 @@ function Timer() {
 function ToggleButton({ id, text, alt, onChange, defaultChecked, disabled }) {
   return (
     <>
-      <input type="checkbox" id={id} defaultChecked={defaultChecked} onChange={onChange} />
-      <label htmlFor={id} className={disabled ? "disabled" : ""}>
+      <input
+        type="checkbox"
+        id={id}
+        defaultChecked={defaultChecked}
+        onChange={onChange}
+      />
+      <label htmlFor={id} className={disabled ? 'disabled' : ''}>
         <div className="img" alt={alt} />
         {text && <span className="text">{text}</span>}
       </label>
@@ -175,6 +268,8 @@ function ToggleButton({ id, text, alt, onChange, defaultChecked, disabled }) {
 
 function VideoControls() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const setSideSelection = useContext(SetSideContext);
 
@@ -182,11 +277,11 @@ function VideoControls() {
     if (document.fullscreenElement) {
       toggleFullscreen(t);
     }
-    setSideSelection("chat");
+    setSideSelection('chat');
   };
 
-  const audioMuted = localStorage.getItem("audio muted") === "true";
-  const videoMuted = localStorage.getItem("video muted") === "true";
+  const audioMuted = localStorage.getItem('audio muted') === 'true';
+  const videoMuted = localStorage.getItem('video muted') === 'true';
 
   return (
     <div className="video-controls">
@@ -194,53 +289,65 @@ function VideoControls() {
         id="audio-toggle"
         alt="mute/unmute mic"
         defaultChecked={audioMuted}
-        onChange={(e) => toggleLocalTracks(e.target.checked, "audio")}
+        onChange={e => toggleLocalTracks(e.target.checked, 'audio')}
       />
       <ToggleButton
         id="video-toggle"
         alt="enable/disable webcam"
         defaultChecked={videoMuted}
-        onChange={(e) => toggleLocalTracks(e.target.checked, "video")}
+        onChange={e => toggleLocalTracks(e.target.checked, 'video')}
       />
       <ToggleButton
         id="fullscreen-toggle"
-        text={t("vc_fs_btn_enter_fullscreen")}
+        text={t('vc_fs_btn_enter_fullscreen')}
         alt="toggle fullscreen"
         onChange={() => toggleFullscreen(t)}
       />
       <ToggleButton
         id="calendar-toggle"
-        text={t("vc_fs_btn_appointment")}
+        text={t('vc_fs_btn_appointment')}
         alt="calendar"
         disabled
       />
-      <ToggleButton id="help-toggle" text={t("vc_fs_btn_mistake")} alt="mistake" disabled />
+      <ToggleButton
+        id="help-toggle"
+        text={t('vc_fs_btn_mistake')}
+        alt="mistake"
+        disabled
+      />
       <button type="button" className="chat-show" onClick={showChat}>
         <div className="img" alt="show chat" />
-        <span className="text">{t("vc_fs_btn_chat")}</span>
+        <span className="text">{t('vc_fs_btn_chat')}</span>
       </button>
       <Timer />
-      <Link to="/" className="end-call">
+      <button
+        onClick={() => {
+          clearActiveTracks();
+          dispatch(stopActiveCall());
+          navigate(getAppRoute());
+        }}
+        className="end-call"
+      >
         <div className="img" alt="end call" />
-        <span className="text">{t("vc_fs_btn_end_call")}</span>
-      </Link>
+        <span className="text">{t('vc_fs_btn_end_call')}</span>
+      </button>
     </div>
   );
 }
 
 function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
-  const buttons = ["chat", "translate", "questions", "notes"];
-  const disabled = ["notes"];
+  const buttons = ['chat', 'translate', 'questions', 'notes'];
+  const disabled = ['notes'];
 
   return (
     <div className="video-controls top">
-      {buttons.map((name) => (
+      {buttons.map(name => (
         <button
           key={name}
           type="button"
-          className={`show-${name}${selectedOverlay === name ? " selected" : ""}${
-            disabled.includes(name) ? " disabled" : ""
-          }`}
+          className={`show-${name}${
+            selectedOverlay === name ? ' selected' : ''
+          }${disabled.includes(name) ? ' disabled' : ''}`}
           onClick={() => setOverlay(name)}
         >
           <img alt={`show-${name}`} />
@@ -250,204 +357,321 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
   );
 }
 
-function SidebarQuestions() {
+function SidebarNotes() {
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const [selectedTopic, setTopic] = useState('All');
+  const [data, setData] = useState(null);
+  const [initialData, setInitialData] = useState(null);
+
   const { t } = useTranslation();
-  const questionDataFromApi = useSelector((state) => state.userData?.questions?.data);
-  const questionTitleDataFromApi = useSelector((state) => state.userData?.questions?.category);
-  const archivedQuestionsFromApi = useSelector((state) => state.userData?.archivedQuestions);
 
-  const selfUserPreferedLang = localStorage.i18nextLng
-  const [selectedQuestionId, setQuestionId] = useState(null);
+  const [note, setNote] = useState('');
+  const [textareaContent, setTextareaContent] = useState('');
+  const [isContentChanged, setIsContentChanged] = useState(false);
+  const [initialDataFetch, setInitialDataFetch] = useState(true);
+  const selfUserPreferedLang = useSelector(
+    state => state.userData.user.profile.display_language,
+  );
 
-  const topicList = questionTitleDataFromApi?.map((item) => item[selfUserPreferedLang]);
-  const [selectedTopic, setTopic] = useState(topicList ? topicList[0] : null);
-
-  const [archived, setArchived] = useState(archivedQuestionsFromApi ? archivedQuestionsFromApi : [])
-  const [unarchived, setUnarchived] = useState(questionDataFromApi);
+  if (initialDataFetch) {
+    getUserNotes()
+      .then(response => {
+        if (response.error) setInitialData(null);
+        else setInitialData(response);
+      })
+      .catch(error => {
+        console.log('error occured while fetching notes');
+      });
+    setInitialDataFetch(false);
+  }
 
   useEffect(() => {
-    // condition for selecting the top item of the category
-    if (selectedTopic === 'Archived') {
-      if (archived.length !== 0) setQuestionId(archived[0]?.id)
+    let filteredData = [];
+    if (selectedTopic === 'All') {
+      filteredData = initialData?.filter(
+        note => !note.is_archived && !note.is_deleted,
+      );
+    } else if (selectedTopic === 'is_favorite') {
+      filteredData = initialData?.filter(
+        note => !note.is_deleted && !note.is_archived && note.is_favorite,
+      );
+    } else {
+      filteredData = initialData?.filter(note => note[selectedTopic]);
     }
-    else {
-      const matchingQuestion = unarchived?.find((item) => item?.category_name[selfUserPreferedLang] === selectedTopic);
-      if (matchingQuestion?.id) {
-        setQuestionId(matchingQuestion?.id)
+    const sortedData = filteredData?.sort(
+      (a, b) => new Date(b.updated_at) - new Date(a.updated_at),
+    );
+    setData(sortedData);
+  }, [selectedTopic, initialData]);
+
+  const handleAddNote = async () => {
+    const [sourcelang, targetLang] =
+      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
+    const response = await addUserNote(note, sourcelang, targetLang);
+    setNote('');
+    getUserNotes()
+      .then(response => {
+        if (response.error) setInitialData(null);
+        else setInitialData(response);
+      })
+      .catch(error => {
+        debugger;
+      });
+    setInitialDataFetch(false);
+  };
+
+  const handleNoteChange = event => {
+    setNote(event.target.value);
+  };
+
+  const handleButtonClick = (id, content) => {
+    setSelectedQuestionId(id);
+    setTextareaContent(content);
+    setIsContentChanged(false);
+  };
+
+  const handleTextareaChange = e => {
+    setTextareaContent(e.target.value);
+    setIsContentChanged(true);
+  };
+
+  const handleNoteEdit = async id => {
+    const content = textareaContent;
+    const [sourcelang, targetLang] =
+      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
+    const FavoritedResponse = await noteStatusUpdate({
+      note_id: id,
+      note_text: content,
+      source_language: sourcelang,
+      target_language: targetLang,
+    });
+    if (FavoritedResponse.status === 200) {
+      const noteIndex = initialData.findIndex(note => note.id === id);
+
+      if (noteIndex !== -1) {
+        const updatedNotesData = [...initialData];
+
+        updatedNotesData[noteIndex] = {
+          ...updatedNotesData[noteIndex],
+          note: { en: content, de: content },
+          updated_at: new Date().toISOString(),
+        };
+        setInitialData(updatedNotesData);
+        setNote('');
+        setIsContentChanged(false);
       }
-    }
-  }, [selectedTopic, unarchived, archived])
-
-
-  // function to archive the card and store the card in Archived list
-  const archiveQuestion = async (id) => {
-    const response = await questionsDuringCall.archiveQuestion(id)
-    if (response === 'error') {
-      console.log('Internal Server Error')
-    }
-    else {
-      const questionToArchive = unarchived.find((question) => question.id === id);
-      if (questionToArchive) {
-        setUnarchived(unarchived.filter((question) => question.id !== id));
-        setArchived([...archived, questionToArchive]);
-      }
-    }
-  }
-
-  // function to un-archive the card and store the card back to unarchived list
-  const unArchiveQuestion = async (id) => {
-    const response = await questionsDuringCall.unArchiveQuestion(id)
-
-    if (response === 'error') {
-      console.log('Internal Server Error')
-    }
-    else {
-      const questionToUnarchive = archived.find((question) => question.id === id);
-      if (questionToUnarchive) {
-        setArchived((prevArchived) => prevArchived.filter((question) => question.id !== id));
-        setUnarchived((prevData) => [...prevData, questionToUnarchive]);
-      }
-    }
-  }
-  const categoriesRef = useRef(null);
-
-  const changeScroll = (direction) => {
-    const scrollVelocity = {
-      right: 100,
-      left: -100,
-    };
-    if (categoriesRef.current) {
-      categoriesRef.current.scrollLeft += scrollVelocity[direction];
     }
   };
 
-  return (
-    <SidebarCard>
-      <QuestionCategories>
-        <button type="button" className="questions-left" onClick={() => changeScroll("left")}>
-          <img className="left-scroll-icon" alt="show left" />
-        </button>
-        <Categories ref={categoriesRef}>
-          {topicList?.map((topic) => (
-            <TopicButton
-              key={topic}
-              type="button"
-              selected={selectedTopic === topic}
-              value={topic}
-              onClick={() => setTopic(topic)}
-            >
-              {topic}
-            </TopicButton>
-          ))}
-
-          <TopicButton
-            key='Archived'
-            type="button"
-            selected={selectedTopic === 'Archived'}
-            value='Archived'
-            onClick={() => { setTopic('Archived') }}
-          >
-            {t("question_category_archived")}
-          </TopicButton>
-
-        </Categories>
-        <button type="button" className="questions-right" onClick={() => changeScroll("right")}>
-          <img className="right-scroll-icon" alt="show right" />
-        </button>
-      </QuestionCategories>
-      <QuestionContentCard>
-        {
-          unarchived
-            ?.filter((question) => question.category_name[selfUserPreferedLang] === selectedTopic)
-            ?.map(({ id, content }) => (
-              <QuestionCard
-                key={id}
-                selected={selectedQuestionId === id}
-              >
-                <QuestionButton
-                  type="button"
-                  selected={selectedQuestionId === id}
-                  onClick={() => setQuestionId(id)}
-                >
-                  {content[selfUserPreferedLang]}
-                </QuestionButton>
-                {selectedQuestionId === id && (
-                  <ArchiveButton>
-                    <button type="button" className="yes" onClick={() => archiveQuestion(id)}>
-                      <img className="accept-question-icon" alt="accept question" />
-                    </button>
-                  </ArchiveButton>
-                )}
-              </QuestionCard>
-            ))}
-
-        {
-          selectedTopic == 'Archived' &&
-          archived?.map(({ id, content }) => {
-            return (
-              <QuestionCard
-                key={id}
-                selected={selectedQuestionId === id}
-              >
-                <QuestionButton
-                  type="button"
-                  selected={selectedQuestionId === id}
-                  onClick={() => setQuestionId(id)}
-                >
-                  {content[selfUserPreferedLang]}
-                </QuestionButton>
-
-                {selectedQuestionId === id && (
-                  <ArchiveButton>
-                    <button type="button" className="unarchive" onClick={() => unArchiveQuestion(id)}>
-                      <img className="unarchive-question-icon" alt="accept question" />
-                    </button>
-                  </ArchiveButton>
-                )}
-              </QuestionCard>
-            )
-          })
-        }
-
-
-      </QuestionContentCard>
-    </SidebarCard>
+  const renderButton = (topic, label, imageClass) => (
+    <CategoryButton
+      selected={selectedTopic === topic}
+      value={topic}
+      onClick={() => setTopic(topic)}
+    >
+      {imageClass && (
+        <StyledImage
+          className={`image-for-${topic}-notes`}
+          selected={selectedTopic === topic}
+          alt="category-icon"
+          height={'20px'}
+          width={'20px'}
+        />
+      )}
+      {topic === 'All' ? (
+        <span>{label}</span>
+      ) : (
+        <span className="responsive-text">{label}</span>
+      )}
+    </CategoryButton>
   );
-}
 
-function SidebarNotes() {
-  return <div className="notes">notes stuff goes here</div>;
+  const handleNoteAction = async (id, actionType) => {
+    const noteIndex = initialData.findIndex(note => note.id === id);
+    if (noteIndex === -1) return;
+
+    const updatedNotesData = [...initialData];
+
+    try {
+      let response;
+
+      switch (actionType) {
+        case 'favorite':
+          response = await noteStatusUpdate({
+            note_id: id,
+            is_favorite: !updatedNotesData[noteIndex].is_favorite,
+          });
+          break;
+        case 'remove':
+          response = await deleteUserNote(id);
+          break;
+        case 'archive':
+          response = await noteStatusUpdate({
+            note_id: id,
+            is_archived: !updatedNotesData[noteIndex].is_archived,
+          });
+          break;
+        default:
+          break;
+      }
+
+      if (response && response.status === 200) {
+        const updatedField =
+          actionType === 'remove'
+            ? 'is_deleted'
+            : actionType === 'favorite'
+            ? 'is_favorite'
+            : 'is_archived';
+
+        updatedNotesData[noteIndex] = {
+          ...updatedNotesData[noteIndex],
+          [updatedField]: !updatedNotesData[noteIndex][updatedField],
+        };
+
+        setInitialData(updatedNotesData);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  return (
+    <WrapperContainer className="rce-mlist" style={{ border: 'none' }}>
+      <Container>
+        <CategoryWrapper>
+          {renderButton('All', t('all_notes_label'))}
+          {renderButton('is_favorite', t('favorite_notes_label'), true)}
+          {renderButton('is_archived', t('archived_notes_label'), true)}
+        </CategoryWrapper>
+      </Container>
+      {selectedTopic === 'All' && (
+        <form>
+          <Container>
+            <TextArea
+              className="notes-text-area"
+              rows="4"
+              placeholder={t('notes_textarea_placeholder')}
+              value={note}
+              onChange={handleNoteChange}
+            />
+            <ButtonContainer>
+              <AddNoteButton
+                className="add-note-btn"
+                type="button"
+                show={note ? true : false}
+                onClick={handleAddNote}
+              >
+                Add Note
+              </AddNoteButton>
+            </ButtonContainer>
+          </Container>
+        </form>
+      )}
+      <NotesCardWrapper>
+        {data &&
+          data
+            ?.filter(note => !note['is_deleted'])
+            ?.map(({ id, note, updated_at, is_favorite }) => (
+              <NotesCard selected={selectedQuestionId === id} key={id}>
+                {selectedQuestionId !== id && (
+                  <CardButton
+                    selected={selectedQuestionId === id}
+                    onClick={() =>
+                      handleButtonClick(id, note[selfUserPreferedLang])
+                    }
+                  >
+                    {note[selfUserPreferedLang]}
+                  </CardButton>
+                )}
+
+                {selectedQuestionId === id && (
+                  <NoteCardTextArea
+                    rows="4"
+                    value={textareaContent}
+                    onChange={handleTextareaChange}
+                  />
+                )}
+                <QuestionActionsWrapper>
+                  <WrapperContainer>
+                    {selectedQuestionId === id && (
+                      <QuestionActions>
+                        <Buttons
+                          className="add-fovorite"
+                          onClick={() => handleNoteAction(id, 'favorite')}
+                        >
+                          {is_favorite ? (
+                            <img
+                              className="favorite-icon"
+                              alt="fovorite note"
+                            />
+                          ) : (
+                            <img
+                              className="unfavorite-icon"
+                              alt="unfovorite note"
+                            />
+                          )}
+                        </Buttons>
+                        <Buttons
+                          className="add-archives"
+                          onClick={() => handleNoteAction(id, 'archive')}
+                        >
+                          <img alt="archive note" />
+                        </Buttons>
+                        <Buttons
+                          className="remove-note"
+                          onClick={() => handleNoteAction(id, 'remove')}
+                        >
+                          <img alt="remove note" />
+                        </Buttons>
+                        <WrapperContainer>
+                          {isContentChanged && (
+                            <EditButton onClick={() => handleNoteEdit(id)}>
+                              Save
+                            </EditButton>
+                          )}
+                        </WrapperContainer>
+                      </QuestionActions>
+                    )}
+                  </WrapperContainer>
+                  <UpdatedAtLabel>
+                    {new Date(updated_at).toLocaleDateString()}
+                  </UpdatedAtLabel>
+                </QuestionActionsWrapper>
+              </NotesCard>
+            ))}
+      </NotesCardWrapper>
+    </WrapperContainer>
+  );
 }
 
 function TranslationDropdown({ side, selected, setter }) {
   const { t } = useTranslation();
   const languages = [
-    "en",
-    "sa",
-    "bg",
-    "ma",
-    "ca",
-    "fr",
-    "gr",
-    "in",
-    "it",
-    "kr",
-    "ir",
-    "pl",
-    "ru",
-    "es",
-    "tr",
-    "uk",
-    "vn",
-    "de",
+    'en',
+    'sa',
+    'bg',
+    'ma',
+    'ca',
+    'fr',
+    'gr',
+    'in',
+    'it',
+    'kr',
+    'ir',
+    'pl',
+    'ru',
+    'es',
+    'tr',
+    'uk',
+    'vn',
+    'de',
   ];
   return (
     <select
       name={`${side}-language-select`}
-      onChange={(e) => setter(e.target.value)}
+      onChange={e => setter(e.target.value)}
       value={selected}
     >
-      {languages.map((code) => (
+      {languages.map(code => (
         <option key={code} value={code}>
           {t(`lang-${code}`)}
         </option>
@@ -458,28 +682,28 @@ function TranslationDropdown({ side, selected, setter }) {
 
 function TranslationBox() {
   const { t } = useTranslation();
-  const [fromLang, setFromLang] = useState("en");
-  const [toLang, setToLang] = useState("de");
+  const [fromLang, setFromLang] = useState('en');
+  const [toLang, setToLang] = useState('de');
   const [isSwapped, setIsSwapped] = useState(false);
 
-  const [leftText, setLeftText] = useState("");
-  const [rigthText, setRightText] = useState("");
+  const [leftText, setLeftText] = useState('');
+  const [rigthText, setRightText] = useState('');
 
-  const handleChangeLeft = (event) => {
+  const handleChangeLeft = event => {
     setLeftText(event.target.value);
   };
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      if (leftText === "") {
+      if (leftText === '') {
         return;
       }
 
       fetch(`${BACKEND_URL}/api/user/translate/`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "X-CSRFToken": Cookies.get("csrftoken"),
-          "Content-Type": "application/x-www-form-urlencoded",
+          'X-CSRFToken': Cookies.get('csrftoken'),
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
           source_lang: fromLang,
@@ -487,15 +711,15 @@ function TranslationBox() {
           text: leftText,
         }).toString(),
       })
-        .then((response) => {
+        .then(response => {
           if (response.status === 200) {
             return response.json();
           }
-          console.error("server error", response.status, response.statusText);
+          console.error('server error', response.status, response.statusText);
           return false;
         })
         .then(({ trans }) => setRightText(trans))
-        .catch((error) => console.error(error));
+        .catch(error => console.error(error));
     }, 1000);
 
     return () => clearTimeout(delayDebounceFn);
@@ -515,23 +739,35 @@ function TranslationBox() {
   return (
     <div className="translation-box">
       <div className="left">
-        <TranslationDropdown side="left" selected={fromLang} setter={setFromLang} />
+        <TranslationDropdown
+          side="left"
+          selected={fromLang}
+          setter={setFromLang}
+        />
         <textarea
-          placeholder={t("vc_translator_type_here")}
+          placeholder={t('vc_translator_type_here')}
           value={leftText}
           onChange={handleChangeLeft}
         />
       </div>
       <button
         type="button"
-        className={isSwapped ? "swap-languages swapped" : "swap-languages"}
+        className={isSwapped ? 'swap-languages swapped' : 'swap-languages'}
         onClick={swapLang}
       >
         <img alt="swap languages" />
       </button>
       <div className="right">
-        <TranslationDropdown side="right" selected={toLang} setter={setToLang} />
-        <textarea placeholder={t("vc_translator_type_here")} readOnly value={rigthText} />
+        <TranslationDropdown
+          side="right"
+          selected={toLang}
+          setter={setToLang}
+        />
+        <textarea
+          placeholder={t('vc_translator_type_here')}
+          readOnly
+          value={rigthText}
+        />
       </div>
     </div>
   );
@@ -544,14 +780,18 @@ function MobileDrawer({ content, setOverlay }) {
   return (
     <div className={`call-drawer-container ${content}`}>
       <div className="call-drawer">
-        <button className="arrow-down" type="button" onClick={() => setOverlay(null)}>
+        <button
+          className="arrow-down"
+          type="button"
+          onClick={() => setOverlay(null)}
+        >
           <img alt="hide drawer" />
         </button>
         <div className="drawer-content">
-          {content === "chat" && <Chat userPk={userPk} />}
-          {content === "translate" && <TranslationBox />}
-          {content === "questions" && <SidebarQuestions />}
-          {content === "notes" && <SidebarNotes />}
+          {content === 'chat' && <Chat userPk={userPk} />}
+          {content === 'translate' && <TranslationBox />}
+          {content === 'questions' && <QuestionCards />}
+          {content === 'notes' && <SidebarNotes />}
         </div>
       </div>
     </div>
@@ -564,10 +804,13 @@ function VideoFrame({ video, audio }) {
   return (
     <div className="video-border">
       <div className="video-container">
-        <MobileVideoControlsTop selectedOverlay={selectedOverlay} setOverlay={setOverlay} />
+        <MobileVideoControlsTop
+          selectedOverlay={selectedOverlay}
+          setOverlay={setOverlay}
+        />
         <div
           id="foreign-container"
-          className={selectedOverlay ? "video-frame blur" : "video-frame"}
+          className={selectedOverlay ? 'video-frame blur' : 'video-frame'}
           alt="video"
         />
         <div className="local-video-container inset">
@@ -586,45 +829,41 @@ function Sidebar({ sideSelection }) {
   const location = useLocation();
 
   const { userPk } = location.state || {};
-  const sidebarTopics = ["chat", "questions", "notes"];
+  const sidebarTopics = ['chat', 'questions'];
   const setSideSelection = useContext(SetSideContext);
-  const handleChange = (e) => setSideSelection(e.target.value);
-  const disabled = ["notes"];
+
+  const disabled = ['notes'];
 
   return (
     <div className="call-sidebar">
-      <div className="sidebar-selector">
-        {sidebarTopics.map((topic) => (
-          <span key={topic}>
-            <input
-              type="radio"
-              id={`${topic}-radio`}
-              value={topic}
-              checked={sideSelection === topic}
-              name="sidebar"
-              onChange={handleChange}
-            />
-            <label
-              htmlFor={`${topic}-radio`}
-              className={disabled.includes(topic) ? "disabled" : ""}
-            >
-              {t(`vc_btn_${topic}`)}
-            </label>
-          </span>
+      <SidebarSelector className="sidebar-selector">
+        {sidebarTopics.map(topic => (
+          <StyledOption
+            appearance={
+              sideSelection === topic
+                ? ButtonAppearance.Primary
+                : ButtonAppearance.Secondary
+            }
+            key={topic}
+            onClick={() => setSideSelection(topic)}
+            disabled={sideSelection === topic}
+          >
+            {t(`vc_btn_${topic}`)}
+          </StyledOption>
         ))}
-      </div>
+      </SidebarSelector>
       <div className="sidebar-content">
-        {sideSelection === "chat" && <Chat userPk={userPk} />}
-        {sideSelection === "questions" && <SidebarQuestions />}
-        {sideSelection === "notes" && <SidebarNotes />}
+        {sideSelection === 'chat' && <Chat userPk={userPk} />}
+        {sideSelection === 'questions' && <QuestionCards />}
+        {sideSelection === 'notes' && <SidebarNotes />}
       </div>
     </div>
   );
 }
 
 function CallScreen() {
-  const [sideSelection, setSideSelection] = useState("chat");
-  const selfPk = useSelector((state) => state.userData.self.userPk);
+  const [sideSelection, setSideSelection] = useState('chat');
+  const selfPk = useSelector(state => state.userData.user.id);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
@@ -638,30 +877,32 @@ function CallScreen() {
   removeActiveTracks();
 
   useEffect(() => {
-    dispatch(FetchQuestionsDataAsync())
-    dispatch(FetchUnArchivedQuestions())
+    dispatch(FetchQuestionsDataAsync());
+    dispatch(FetchUnarchivedQuestions());
   }, []);
 
   useEffect(() => {
     if (!userPk) {
-      navigate(`${BACKEND_PATH}/`);
+      navigate(`/${APP_ROUTE}/`);
     }
     const { videoId, audioId } = tracks || {};
     if (!(videoId && audioId)) {
-      console.error("videoId audioId", videoId, audioId);
+      console.error('videoId audioId', videoId, audioId);
     }
-    const videoMuted = localStorage.getItem("video muted") === "true";
-    const audioMuted = localStorage.getItem("audio muted") === "true";
-    getVideoTrack(videoId, videoMuted).then((track) => {
+    const videoMuted = localStorage.getItem('video muted') === 'true';
+    const audioMuted = localStorage.getItem('audio muted') === 'true';
+    getVideoTrack(videoId, videoMuted).then(track => {
+      window.activeTracks.push(track);
       track.attach(videoRef.current);
     });
-    getAudioTrack(audioId, audioMuted).then((track) => {
+    getAudioTrack(audioId, audioMuted).then(track => {
+      window.activeTracks.push(track);
       track.attach(audioRef.current);
     });
     joinRoom(selfPk, userPk);
-  }, [userPk, tracks]);
+  });
 
-  document.body.style.overflow = ""; // unset after call overlay
+  document.body.style.overflow = ''; // unset after call overlay
 
   return (
     <div className="call-screen">
