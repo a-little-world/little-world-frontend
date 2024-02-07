@@ -20,20 +20,22 @@ import styled, { css } from 'styled-components';
 
 import { CHAT_ROUTE, getAppRoute } from '../../../routes';
 import MenuLink from '../../atoms/MenuLink';
+import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
 import {
   PARTNER_ACTION_REPORT,
   PARTNER_ACTION_UNMATCH,
 } from './PartnerActionCard';
-import OnlineIndicator from '../../atoms/OnlineIndicator';
+
+export const PROFILE_CARD_HEIGHT = '408px';
 
 export const StyledCard = styled(Card)`
   align-items: center;
-  margin: 0 auto;
   border-color: ${({ theme }) => theme.color.border.subtle};
   align-items: center;
   position: relative;
   text-align: ${({ $isSelf }) => ($isSelf ? 'center' : 'left')};
+  order: 1;
 
   ${({ $unconfirmedMatch }) =>
     $unconfirmedMatch &&
@@ -100,11 +102,28 @@ export const Actions = styled.div`
   max-width: 498px;
 `;
 
+export const Tag = styled.div`
+  width: 80px;
+  height: 80px;
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+  position: absolute;
+  top: ${({ theme }) => theme.spacing.xxsmall};
+  right: ${({ theme }) => theme.spacing.xxsmall};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: ${({ theme }) => theme.color.text.reverse};
+  background-color: ${({ theme }) => theme.color.surface.secondary};
+  border-radius: 100%;
+`;
+
 function ProfileCard({
   userPk,
   profile,
   isSelf,
   isOnline,
+  isSupport,
   openPartnerModal,
   openEditImage,
   setCallSetupPartner,
@@ -177,8 +196,17 @@ function ProfileCard({
         </Popover>
       )}
       <OnlineIndicator isOnline={isOnline} />
+      {isSupport && (
+        <Tag>
+          👋
+          <br />
+          Here to help
+        </Tag>
+      )}
       <ProfileInfo className="profile-info">
-        <Text className="name">{`${profile.first_name}`}</Text>
+        <Text className="name">
+          {profile.first_name + (isSupport ? ' (Support)' : '')}
+        </Text>
         <Text className="text">{profile.description}</Text>
       </ProfileInfo>
       {!isSelf && (

@@ -125,7 +125,7 @@ const Content = styled.section`
   `};
 `;
 
-const Matches = styled.div`
+const Home = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -249,14 +249,14 @@ function Main() {
         {use === 'main' &&
           (topSelection === 'conversation_partners' ? (
             <>
-              <Matches className="content-area-main">
+              <Home className="content-area-main">
                 <PartnerProfiles
                   setCallSetupPartner={setCallSetupPartner}
                   setShowCancel={setShowCancelSearching}
                   totalPaginations={totalPages}
                 />
                 <NotificationPanel />
-              </Matches>
+              </Home>
               {totalPages > 1 && (
                 <CustomPagination
                   totalPages={totalPages}
