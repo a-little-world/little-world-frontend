@@ -489,6 +489,7 @@
   .container .chat-list-box,
   .show-chat .container .right-panel {
     border-radius: 0;
+    width: 100%;
   }
 }
 
