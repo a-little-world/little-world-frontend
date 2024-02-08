@@ -115,11 +115,24 @@ export const userDataSlice = createSlice({
       state.matches.confirmed = action.payload;
     },
     getQuestions: (state, { payload }) => {
-      console.log(payload);
       state.questions = payload;
     },
-    getUnarchivedQuestions: (state, { payload }) => {
-      state.archivedQuestions = payload;
+    switchQuestionCategory: (state, { payload }) => {
+      const { card, archived } = payload;
+
+      if (archived) {
+        state.questions.cards[card.category] = state.questions.cards[
+          card.category
+        ].filter(c => c.uuid !== card.uuid);
+
+        state.questions.cards['archived'].push(card);
+      } else {
+        state.questions.cards['archived'] = state.questions.cards[
+          'archived'
+        ].filter(c => c.uuid !== card.uuid);
+
+        state.questions.cards[card.category].push(card);
+      }
     },
   },
 });
@@ -141,6 +154,7 @@ export const {
   initActiveCall,
   stopActiveCall,
   getQuestions,
+  switchQuestionCategory,
   getUnarchivedQuestions,
 } = userDataSlice.actions;
 
@@ -165,9 +179,19 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
   dispatch(getQuestions(result));
 };
 
-export const FetchUnarchivedQuestions = () => async dispatch => {
-  const result = []; //await questionsDuringCall.getUnArchivedQuestions();
-  dispatch(getUnarchivedQuestions(result));
-};
+export const postArchieveQuestion =
+  (card, archive = true) =>
+  async dispatch => {
+    const result = await questionsDuringCall.archieveQuestion(
+      card?.uuid,
+      archive,
+    );
+    dispatch(
+      switchQuestionCategory({
+        card,
+        archived: archive,
+      }),
+    );
+  };
 
 export default userDataSlice.reducer;

@@ -7,10 +7,11 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { questionsDuringCall } from '../../services/questionsDuringCall';
+import { postArchieveQuestion } from '../../features/userData';
 
 const SidebarCard = styled(Card)`
   width: 100%;
@@ -112,75 +113,23 @@ const CategoryControl = styled(Button)`
 `;
 
 function QuestionCards() {
-  const { t } = useTranslation();
-  const questionDataFromApi = useSelector(
-    state => state.userData?.questions?.data,
+  const dispatch = useDispatch();
+  const cardsByCategory = useSelector(
+    state => state.userData?.questions?.cards,
   );
-  const questionTitleDataFromApi = useSelector(
-    state => state.userData?.questions?.category,
+
+  const cardCategories = useSelector(
+    state => state.userData?.questions?.categories,
   );
-  const archivedQuestionsFromApi = useSelector(
-    state => state.userData?.archivedQuestions,
-  );
+
+  const categoriesRef = useRef(null);
 
   const selfUserPreferedLang = localStorage.i18nextLng;
   const [selectedQuestionId, setQuestionId] = useState(null);
 
-  const topicList = questionTitleDataFromApi?.map(
-    item => item[selfUserPreferedLang],
+  const [selectedTopic, setTopic] = useState(
+    cardCategories ? cardCategories[0]?.uuid : null,
   );
-  const [selectedTopic, setTopic] = useState(topicList ? topicList[0] : null);
-
-  const [archived, setArchived] = useState(
-    archivedQuestionsFromApi ? archivedQuestionsFromApi : [],
-  );
-  const [unarchived, setUnarchived] = useState(questionDataFromApi);
-
-  useEffect(() => {
-    // condition for selecting the top item of the category
-    if (selectedTopic === 'Archived') {
-      if (archived.length !== 0) setQuestionId(archived[0]?.id);
-    } else {
-      const matchingQuestion = unarchived?.find(
-        item => item?.category_name[selfUserPreferedLang] === selectedTopic,
-      );
-      if (matchingQuestion?.id) {
-        setQuestionId(matchingQuestion?.id);
-      }
-    }
-  }, [selectedTopic, unarchived, archived]);
-
-  // function to archive the card and store the card in Archived list
-  const archiveQuestion = async id => {
-    const response = await questionsDuringCall.archiveQuestion(id);
-    if (response === 'error') {
-      console.log('Internal Server Error');
-    } else {
-      const questionToArchive = unarchived.find(question => question.id === id);
-      if (questionToArchive) {
-        setUnarchived(unarchived.filter(question => question.id !== id));
-        setArchived([...archived, questionToArchive]);
-      }
-    }
-  };
-
-  // function to un-archive the card and store the card back to unarchived list
-  const unArchiveQuestion = async id => {
-    const response = await questionsDuringCall.unArchiveQuestion(id);
-
-    if (response === 'error') {
-      console.log('Internal Server Error');
-    } else {
-      const questionToUnarchive = archived.find(question => question.id === id);
-      if (questionToUnarchive) {
-        setArchived(prevArchived =>
-          prevArchived.filter(question => question.id !== id),
-        );
-        setUnarchived(prevData => [...prevData, questionToUnarchive]);
-      }
-    }
-  };
-  const categoriesRef = useRef(null);
 
   const changeScroll = direction => {
     const scrollVelocity = {
@@ -191,6 +140,8 @@ function QuestionCards() {
       categoriesRef.current.scrollLeft += scrollVelocity[direction];
     }
   };
+
+  console.log('SELECTED TOPIC', selectedTopic);
 
   return (
     <SidebarCard>
@@ -207,29 +158,17 @@ function QuestionCards() {
           />
         </CategoryControl>
         <Categories ref={categoriesRef}>
-          {topicList?.map(topic => (
+          {cardCategories?.map(topic => (
             <TopicButton
-              key={topic}
+              key={topic?.uuid}
               type="button"
-              selected={selectedTopic === topic}
-              value={topic}
-              onClick={() => setTopic(topic)}
+              selected={selectedTopic === topic?.uuid}
+              value={topic?.uuid}
+              onClick={() => setTopic(topic?.uuid)}
             >
-              {topic}
+              {topic.content[`${selfUserPreferedLang}`]}
             </TopicButton>
           ))}
-
-          <TopicButton
-            key="Archived"
-            type="button"
-            selected={selectedTopic === 'Archived'}
-            value="Archived"
-            onClick={() => {
-              setTopic('Archived');
-            }}
-          >
-            {t('question_category_archived')}
-          </TopicButton>
         </Categories>
         <CategoryControl
           variation={ButtonVariations.Control}
@@ -244,63 +183,57 @@ function QuestionCards() {
         </CategoryControl>
       </QuestionCategories>
       <QuestionContentCard>
-        {unarchived
-          ?.filter(
-            question =>
-              question.category_name[selfUserPreferedLang] === selectedTopic,
-          )
-          ?.map(({ id, content }) => (
-            <QuestionCard key={id} selected={selectedQuestionId === id}>
-              <QuestionButton
-                type="button"
-                selected={selectedQuestionId === id}
-                onClick={() => setQuestionId(id)}
-              >
-                {content[selfUserPreferedLang]}
-              </QuestionButton>
-              {selectedQuestionId === id && (
-                <ArchiveButton>
-                  <button
-                    type="button"
-                    className="yes"
-                    onClick={() => archiveQuestion(id)}
-                  >
-                    <img
-                      className="accept-question-icon"
-                      alt="accept question"
-                    />
-                  </button>
-                </ArchiveButton>
-              )}
-            </QuestionCard>
-          ))}
-
-        {selectedTopic == 'Archived' &&
-          archived?.map(({ id, content }) => {
+        {cardsByCategory &&
+          cardsByCategory[selectedTopic]?.length > 0 &&
+          cardsByCategory[selectedTopic]?.map(card => {
             return (
-              <QuestionCard key={id} selected={selectedQuestionId === id}>
+              <QuestionCard
+                key={card?.uuid}
+                selected={selectedQuestionId === card?.uuid}
+              >
                 <QuestionButton
                   type="button"
-                  selected={selectedQuestionId === id}
-                  onClick={() => setQuestionId(id)}
+                  selected={selectedQuestionId === card?.uuid}
+                  onClick={() => {
+                    setQuestionId(card?.uuid);
+                  }}
                 >
-                  {content[selfUserPreferedLang]}
+                  {card?.content[selfUserPreferedLang]}
                 </QuestionButton>
-
-                {selectedQuestionId === id && (
-                  <ArchiveButton>
-                    <button
-                      type="button"
-                      className="unarchive"
-                      onClick={() => unArchiveQuestion(id)}
-                    >
-                      <img
-                        className="unarchive-question-icon"
-                        alt="accept question"
-                      />
-                    </button>
-                  </ArchiveButton>
-                )}
+                {selectedQuestionId === card?.uuid &&
+                  selectedTopic !== 'archived' && (
+                    <ArchiveButton>
+                      <button
+                        type="button"
+                        className="yes"
+                        onClick={() => {
+                          dispatch(postArchieveQuestion(card, true));
+                        }}
+                      >
+                        <img
+                          className="accept-question-icon"
+                          alt="accept question"
+                        />
+                      </button>
+                    </ArchiveButton>
+                  )}
+                {selectedQuestionId === card?.uuid &&
+                  selectedTopic === 'archived' && (
+                    <ArchiveButton>
+                      <button
+                        type="button"
+                        className="unarchive"
+                        onClick={() => {
+                          dispatch(postArchieveQuestion(card, false));
+                        }}
+                      >
+                        <img
+                          className="unarchive-question-icon"
+                          alt="accept question"
+                        />
+                      </button>
+                    </ArchiveButton>
+                  )}
               </QuestionCard>
             );
           })}

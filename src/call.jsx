@@ -25,10 +25,7 @@ import Chat from './chat/chat-full-view';
 import { StyledOption } from './components/blocks/NbtSelector';
 import QuestionCards from './components/blocks/QuestionCards';
 import { stopActiveCall } from './features/userData';
-import {
-  FetchQuestionsDataAsync,
-  FetchUnarchivedQuestions,
-} from './features/userData';
+import { FetchQuestionsDataAsync } from './features/userData';
 import './i18n';
 import { APP_ROUTE, getAppRoute } from './routes';
 import {
@@ -878,7 +875,6 @@ function CallScreen() {
 
   useEffect(() => {
     dispatch(FetchQuestionsDataAsync());
-    dispatch(FetchUnarchivedQuestions());
   }, []);
 
   useEffect(() => {
