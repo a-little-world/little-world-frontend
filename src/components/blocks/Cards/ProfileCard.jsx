@@ -36,12 +36,14 @@ export const StyledCard = styled(Card)`
   position: relative;
   text-align: ${({ $isSelf }) => ($isSelf ? 'center' : 'left')};
   order: 1;
+  gap: ${({ theme }) => theme.spacing.small};
+  height: ${PROFILE_CARD_HEIGHT};
 
   ${({ $unconfirmedMatch }) =>
     $unconfirmedMatch &&
     css`
       background-color: rgb(252, 224, 172);
-    `}
+    `};
 `;
 
 export const ProfileImageButton = styled.button`
@@ -67,8 +69,9 @@ export const ProfileInfo = styled.div`
   flex-direction: column;
 
   ${({ theme }) => `
-    gap: ${theme.spacing.small};
-    margin-bottom: ${theme.spacing.xsmall};
+    padding-left: ${theme.spacing.xxxsmall};
+    gap: ${theme.spacing.xxsmall};
+    margin-bottom: ${theme.spacing.xxsmall};
   `};
 `;
 
@@ -103,8 +106,8 @@ export const Actions = styled.div`
 `;
 
 export const Tag = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 140px;
+  height: 40px;
   padding: ${({ theme }) => theme.spacing.xxsmall};
   position: absolute;
   top: ${({ theme }) => theme.spacing.xxsmall};
@@ -116,6 +119,20 @@ export const Tag = styled.div`
   color: ${({ theme }) => theme.color.text.reverse};
   background-color: ${({ theme }) => theme.color.surface.secondary};
   border-radius: 100%;
+
+  background-color: #9287ff;
+  color: white;
+  border-radius: 30px;
+  border: 3px solid #e6e8ec;
+  text-transform: capitalize;
+  filter: drop-shadow(0px 4px 4px rgb(0 0 0 / 25%));
+`;
+
+export const Description = styled(Text)`
+  color: ${({ theme }) => theme.color.text.secondary};
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 `;
 
 function ProfileCard({
@@ -196,18 +213,21 @@ function ProfileCard({
         </Popover>
       )}
       <OnlineIndicator isOnline={isOnline} />
-      {isSupport && (
+      {/* {isSupport && (
         <Tag>
-          👋
-          <br />
-          Here to help
+          👋 Here to help
         </Tag>
-      )}
-      <ProfileInfo className="profile-info">
-        <Text className="name">
-          {profile.first_name + (isSupport ? ' (Support)' : '')}
+      )} */}
+      <ProfileInfo>
+        <Text type={'Body3'} bold>
+          {profile.first_name +
+            (isSupport ? t('profile_card.support_user') : '')}
         </Text>
-        <Text className="text">{profile.description}</Text>
+        <Description>
+          {isSupport
+            ? t('profile_card.support_description')
+            : profile.description}
+        </Description>
       </ProfileInfo>
       {!isSelf && (
         <Actions>

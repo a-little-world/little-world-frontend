@@ -21,53 +21,58 @@ import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
 const StyledCard = styled(Card)`
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.small};
+  border-color: ${({ theme }) => theme.color.border.subtle};
+  gap: ${({ theme, $hasMatch }) =>
+    $hasMatch ? theme.spacing.small : theme.spacing.xxsmall};
   justify-content: center;
   order: 0;
   height: ${PROFILE_CARD_HEIGHT};
-
-  > img {
-    height: 140px;
-  }
 `;
 
 const WelcomeTitle = styled(Text)`
   color: ${({ theme }) => theme.color.text.link};
+  max-width: 260px; // ensures it wraps correctly
 `;
 
 const CancelSearchButton = styled(Button)`
   color: ${({ theme }) => theme.color.text.link};
 `;
 
-const PendingIcon = styled(ClockDashedIcon)`
-  color: ${({ theme }) => theme.color.surface.highlight};
+const SearchingImage = styled.img`
+  height: ${({ $hasMatch }) => ($hasMatch ? '140px' : '80px')};
+  margin-bottom: ${({ theme, $hasMatch }) =>
+    $hasMatch ? '0' : theme.spacing.xxxsmall};
+`;
+
+const Note = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
 export function SearchingCard({ setShowCancel, hasMatch }) {
   const { t } = useTranslation();
   return (
-    <StyledCard width={CardSizes.Small}>
+    <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
       {hasMatch ? (
         <>
-          <img alt="" src={SearchingSvg} />
+          <SearchingImage
+            alt="searching image"
+            src={SearchingSvg}
+            $hasMatch={hasMatch}
+          />
           <Text center>{t('matching_state_searching_trans')}</Text>
         </>
       ) : (
         <>
           <WelcomeTitle tag="h3" type={TextTypes.Body1} bold center>
-            Welcome to
-            <br />
-            Little World
+            {t('searching_card.welcome')}
           </WelcomeTitle>
-          <PendingIcon height={48} width={48} />
-          <Text>
-            We are busy finding the best match for you. You'll receive a
-            notification once we have!
-          </Text>
-          <Text>
-            Please note this can take a few weeks, so we appreciate your
-            patience.
-          </Text>
+          <SearchingImage
+            alt="searching image"
+            src={SearchingSvg}
+            $hasMatch={hasMatch}
+          />
+          <Text center>{t('searching_card.info_1')}</Text>
+          <Note center>{t('searching_card.info_2')}</Note>
         </>
       )}
 
