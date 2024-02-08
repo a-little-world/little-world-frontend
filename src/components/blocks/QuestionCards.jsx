@@ -7,10 +7,12 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { FetchQuestionsDataAsync } from '../../features/userData';
 import { postArchieveQuestion } from '../../features/userData';
 
 const SidebarCard = styled(Card)`
@@ -124,7 +126,9 @@ function QuestionCards() {
 
   const categoriesRef = useRef(null);
 
-  const selfUserPreferedLang = localStorage.i18nextLng;
+  const { i18n } = useTranslation();
+
+  const selfUserPreferedLang = i18n.language;
   const [selectedQuestionId, setQuestionId] = useState(null);
 
   const [selectedTopic, setTopic] = useState(
@@ -141,7 +145,9 @@ function QuestionCards() {
     }
   };
 
-  console.log('SELECTED TOPIC', selectedTopic);
+  useEffect(() => {
+    dispatch(FetchQuestionsDataAsync());
+  }, []);
 
   return (
     <SidebarCard>

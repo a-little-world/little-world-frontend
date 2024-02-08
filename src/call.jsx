@@ -25,7 +25,6 @@ import Chat from './chat/chat-full-view';
 import { StyledOption } from './components/blocks/NbtSelector';
 import QuestionCards from './components/blocks/QuestionCards';
 import { stopActiveCall } from './features/userData';
-import { FetchQuestionsDataAsync } from './features/userData';
 import './i18n';
 import { APP_ROUTE, getAppRoute } from './routes';
 import {
@@ -872,10 +871,6 @@ function CallScreen() {
    * returing to main page, causing webcam lights to remain on.
    */
   removeActiveTracks();
-
-  useEffect(() => {
-    dispatch(FetchQuestionsDataAsync());
-  }, []);
 
   useEffect(() => {
     if (!userPk) {
