@@ -1798,7 +1798,6 @@ const DATA = {
 
 class QuestionsDuringCall {
   async getQuestions() {
-    return DATA;
     let response = await fetch(`${BACKEND_URL}/api/question/`, {
       method: 'GET',
       headers: {
