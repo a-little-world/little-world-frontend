@@ -5,12 +5,14 @@ import {
   CardSizes,
   DotsIcon,
   Gradients,
+  Logo,
   MessageIcon,
   PencilIcon,
   PhoneIcon,
   Popover,
   ProfileIcon,
   Text,
+  TextTypes,
   designTokens,
 } from '@a-little-world/little-world-design-system';
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
@@ -20,26 +22,30 @@ import styled, { css } from 'styled-components';
 
 import { CHAT_ROUTE, getAppRoute } from '../../../routes';
 import MenuLink from '../../atoms/MenuLink';
+import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
 import {
   PARTNER_ACTION_REPORT,
   PARTNER_ACTION_UNMATCH,
 } from './PartnerActionCard';
-import OnlineIndicator from '../../atoms/OnlineIndicator';
+
+export const PROFILE_CARD_HEIGHT = '408px';
 
 export const StyledCard = styled(Card)`
   align-items: center;
-  margin: 0 auto;
   border-color: ${({ theme }) => theme.color.border.subtle};
   align-items: center;
   position: relative;
   text-align: ${({ $isSelf }) => ($isSelf ? 'center' : 'left')};
+  order: 1;
+  gap: ${({ theme }) => theme.spacing.small};
+  height: ${PROFILE_CARD_HEIGHT};
 
   ${({ $unconfirmedMatch }) =>
     $unconfirmedMatch &&
     css`
       background-color: rgb(252, 224, 172);
-    `}
+    `};
 `;
 
 export const ProfileImageButton = styled.button`
@@ -65,8 +71,9 @@ export const ProfileInfo = styled.div`
   flex-direction: column;
 
   ${({ theme }) => `
-    gap: ${theme.spacing.small};
-    margin-bottom: ${theme.spacing.xsmall};
+    padding-left: ${theme.spacing.xxxsmall};
+    gap: ${theme.spacing.xxsmall};
+    margin-bottom: ${theme.spacing.xxsmall};
   `};
 `;
 
@@ -100,11 +107,44 @@ export const Actions = styled.div`
   max-width: 498px;
 `;
 
+export const NameContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const Tag = styled(Text)`
+  width: 104px;
+  height: 34px;
+  font-family: revert;
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: ${({ theme }) => theme.color.text.reverse};
+  background-color: ${({ theme }) => theme.color.surface.primary};
+  border-radius: 30px;
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
+  color: ${({ theme }) => theme.color.text.heading};
+  border: 2px solid ${({ theme }) => theme.color.border.bold};
+  filter: drop-shadow(0px 1px 3px rgb(0 0 0 / 22%));
+  line-height: 1.1;
+`;
+
+export const Description = styled(Text)`
+  color: ${({ theme }) => theme.color.text.secondary};
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+`;
+
 function ProfileCard({
   userPk,
   profile,
   isSelf,
   isOnline,
+  isSupport,
   openPartnerModal,
   openEditImage,
   setCallSetupPartner,
@@ -177,9 +217,24 @@ function ProfileCard({
         </Popover>
       )}
       <OnlineIndicator isOnline={isOnline} />
-      <ProfileInfo className="profile-info">
-        <Text className="name">{`${profile.first_name}`}</Text>
-        <Text className="text">{profile.description}</Text>
+      <ProfileInfo>
+        <NameContainer>
+          <Text type={'Body3'} bold>
+            {profile.first_name}
+          </Text>
+          {isSupport && (
+            <Tag type={TextTypes.Body6} bold>
+              {t('profile_card.support_user')}
+              <Logo height="12px" width="12px" />
+            </Tag>
+          )}
+        </NameContainer>
+
+        <Description>
+          {isSupport
+            ? t('profile_card.support_description')
+            : profile.description}
+        </Description>
       </ProfileInfo>
       {!isSelf && (
         <Actions>

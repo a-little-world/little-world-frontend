@@ -63,10 +63,9 @@ export const FrequencyTitle = styled(Text)`
 export const Main = styled.div`
   display: flex;
   flex-direction: column;
-  // justify-content: space-evenly;
   flex: 1 1 100%;
   ${({ theme }) => `
-  gap: ${theme.spacing.small};
+    gap: ${theme.spacing.small};
   `}
 `;
 
@@ -82,7 +81,7 @@ export const DateTime = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   > p {
-    color: #166ba5; // ${({ theme }) => theme.color.status.info};
+    color: ${({ theme }) => theme.color.text.heading};
   }
 `;
 

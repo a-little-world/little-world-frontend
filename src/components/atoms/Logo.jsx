@@ -26,20 +26,23 @@ const LogoImage = styled.img`
   width: ${({ $size }) => ($size === LogoSizes.Small ? '30px' : '70px')};
 `;
 
-const LogoText = styled.img`
+export const LogoText = styled.img`
   max-width: 100%;
   width: ${({ $size }) => ($size === LogoSizes.Small ? '30px' : '80px')};
 `;
 
 const Logo = ({
   className,
+  displayImage = true,
   displayText = true,
   stacked = true,
   size = LogoSizes.Medium,
 }) => {
   return (
     <LogoContainer className={className} $stacked={stacked}>
-      <LogoImage src={LogoImageSvg} alt="Little World Logo" $size={size} />
+      {displayImage && (
+        <LogoImage src={LogoImageSvg} alt="Little World Logo" $size={size} />
+      )}
       {displayText && (
         <LogoText src={LogoTextSvg} alt="Little World" $size={size} />
       )}

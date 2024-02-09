@@ -8,32 +8,30 @@ import Cookies from 'js-cookie';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
-import {
+import userData, {
   selectMatchesDisplay,
   updateSearchState,
 } from '../../features/userData';
 import PlusImage from '../../images/plus-with-circle.svg';
 import PartnerActionCard from './Cards/PartnerActionCard';
-import ProfileCard from './Cards/ProfileCard';
+import ProfileCard, { PROFILE_CARD_HEIGHT } from './Cards/ProfileCard';
 import { SearchingCard } from './Cards/SearchingCard';
 
 const FindNewPartner = styled.button`
   text-align: center;
-
   border: 2px dashed ${({ theme }) => theme.color.border.selected};
   border-radius: 40px;
   border-width: 2px;
   width: ${CardSizes.Small};
   padding: ${({ theme }) => `${theme.spacing.xxlarge} ${theme.spacing.large}`};
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: ${PROFILE_CARD_HEIGHT};
   position: relative;
 
   > img {
@@ -42,6 +40,21 @@ const FindNewPartner = styled.button`
     height: 115px;
     cursor: pointer;
   }
+`;
+
+const Matches = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      gap: ${theme.spacing.medium};
+    }
+  `};
 `;
 
 function PartnerProfiles({
@@ -85,7 +98,7 @@ function PartnerProfiles({
   };
 
   return (
-    <div className="profiles">
+    <Matches>
       {matchesDisplay.map(match => (
         <ProfileCard
           key={match.partner.id}
@@ -95,10 +108,14 @@ function PartnerProfiles({
           openPartnerModal={setPartnerActionData}
           setCallSetupPartner={setCallSetupPartner}
           isOnline={match.partner.is_online}
+          isSupport={match.partner.user_type === 'support'}
         />
       ))}
       {user.isSearching ? (
-        <SearchingCard setShowCancel={setShowCancel} />
+        <SearchingCard
+          setShowCancel={setShowCancel}
+          hasMatch={!user.hasMatch}
+        />
       ) : (
         <FindNewPartner type="button" onClick={updateUserMatchingState}>
           <img src={PlusImage} alt="change matching status icon" />
@@ -113,7 +130,7 @@ function PartnerProfiles({
           <PartnerActionCard data={partnerActionData} onClose={onModalClose} />
         )}
       </Modal>
-    </div>
+    </Matches>
   );
 }
 
