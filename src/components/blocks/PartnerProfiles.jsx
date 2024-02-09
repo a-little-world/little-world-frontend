@@ -107,8 +107,8 @@ function PartnerProfiles({
           isSelf={false}
           openPartnerModal={setPartnerActionData}
           setCallSetupPartner={setCallSetupPartner}
-          isOnline={match.partner.is_online}
-          isSupport={match.partner.user_type === 'support'}
+          isOnline={match.partner.isOnline}
+          isSupport={match.partner.isSupport}
         />
       ))}
       {user.isSearching ? (
