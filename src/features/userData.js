@@ -1,5 +1,7 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 
+import { questionsDuringCall } from '../services/questionsDuringCall';
+
 export const userDataSlice = createSlice({
   name: 'userData',
   initialState: {
@@ -112,6 +114,26 @@ export const userDataSlice = createSlice({
     updateConfirmedData: (state, action) => {
       state.matches.confirmed = action.payload;
     },
+    getQuestions: (state, { payload }) => {
+      state.questions = payload;
+    },
+    switchQuestionCategory: (state, { payload }) => {
+      const { card, archived } = payload;
+
+      if (archived) {
+        state.questions.cards[card.category] = state.questions.cards[
+          card.category
+        ].filter(c => c.uuid !== card.uuid);
+
+        state.questions.cards['archived'].push(card);
+      } else {
+        state.questions.cards['archived'] = state.questions.cards[
+          'archived'
+        ].filter(c => c.uuid !== card.uuid);
+
+        state.questions.cards[card.category].push(card);
+      }
+    },
   },
 });
 
@@ -131,6 +153,9 @@ export const {
   cancelCallSetup,
   initActiveCall,
   stopActiveCall,
+  getQuestions,
+  switchQuestionCategory,
+  getUnarchivedQuestions,
 } = userDataSlice.actions;
 
 export const selectMatchByPartnerId = (matches, partnerId) => {
@@ -148,5 +173,25 @@ export const selectMatchesDisplay = createSelector(
       ? [...support.items, ...confirmed.items]
       : [...confirmed.items],
 );
+
+export const FetchQuestionsDataAsync = () => async dispatch => {
+  const result = await questionsDuringCall.getQuestions();
+  dispatch(getQuestions(result));
+};
+
+export const postArchieveQuestion =
+  (card, archive = true) =>
+  async dispatch => {
+    const result = await questionsDuringCall.archieveQuestion(
+      card?.uuid,
+      archive,
+    );
+    dispatch(
+      switchQuestionCategory({
+        card,
+        archived: archive,
+      }),
+    );
+  };
 
 export default userDataSlice.reducer;

@@ -317,7 +317,7 @@ function Main() {
           <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
         </Modal>
       )}
-      <Modal
+      {/* <Modal
         open={
           matches?.proposed?.items?.length ||
           matches?.unconfirmed?.items?.length
@@ -336,7 +336,7 @@ function Main() {
               ? matches?.proposed.items[0].partner
               : matches?.unconfirmed.items[0].partner,
           })}
-      </Modal>
+      </Modal> */}
     </AppLayout>
   );
 }

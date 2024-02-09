@@ -276,7 +276,6 @@
   "help_support_slogan": "We're here for you!",
   "help_support_message_btn": "chat now",
   "help_support_call_btn": "call now",
-
   "faq": {
     "section_title": {
       "before_talk": "Before the conversation",
@@ -368,6 +367,7 @@
       }
     }
   },
+  "question_category_archived": "Archived",
 
   "error.required": "Required",
   "error.password_min_length": "Password too short",

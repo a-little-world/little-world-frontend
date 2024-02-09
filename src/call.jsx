@@ -1,4 +1,9 @@
 /* eslint-disable jsx-a11y/media-has-caption */
+import {
+  Button,
+  ButtonAppearance,
+  Card,
+} from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
 import React, {
   createContext,
@@ -17,6 +22,8 @@ import { BACKEND_URL } from './ENVIRONMENT';
 import { clearActiveTracks } from './call-setup';
 import './call.css';
 import Chat from './chat/chat-full-view';
+import { StyledOption } from './components/blocks/NbtSelector';
+import QuestionCards from './components/blocks/QuestionCards';
 import { stopActiveCall } from './features/userData';
 import './i18n';
 import { APP_ROUTE, getAppRoute } from './routes';
@@ -166,10 +173,13 @@ const NotesCard = styled.div`
   display: block;
   display: flex;
   flex-direction: column;
-  ${({ selected }) =>
-    selected &&
-    ` border-color: red;
-      padding: 15px; `}
+  align-items: center;
+
+  ${props =>
+    props.selected &&
+    `
+    border-color: red;
+  `}
 `;
 
 const CardButton = styled.button`
@@ -186,6 +196,12 @@ const CategoryWrapper = styled.div`
   overflow-x: hidden;
   padding: 2px;
   margin-bottom: ${({ theme }) => `${theme.spacing.xxsmall}`};
+`;
+
+const SidebarSelector = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: ${({ theme }) => `${theme.spacing.xxxsmall}`};
 `;
 
 function toggleFullscreen(t) {
@@ -317,7 +333,7 @@ function VideoControls() {
 
 function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
   const buttons = ['chat', 'translate', 'questions', 'notes'];
-  const disabled = [];
+  const disabled = ['notes'];
 
   return (
     <div className="video-controls top">
@@ -333,144 +349,6 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
           <img alt={`show-${name}`} />
         </button>
       ))}
-    </div>
-  );
-}
-
-function SidebarQuestions() {
-  const { t } = useTranslation();
-  const [selectedTopic, setTopic] = useState('Jokes');
-  const [selectedQuestionId, setQuestionId] = useState(null);
-
-  const dummyData = {
-    Jokes: [
-      {
-        id: 1,
-        text: 'How much wood would a wood chucker chuck if a woodchucker could chuck wood?',
-      },
-      {
-        id: 2,
-        text: 'What is the air speed velocity of an unladen swallow?',
-      },
-    ],
-    Oliver: [
-      {
-        id: 3,
-        text: 'Where is Oliver from?',
-      },
-      {
-        id: 4,
-        text: 'Which part of Berlin?',
-      },
-      {
-        id: 5,
-        text: 'Where did he get those glasses?',
-      },
-    ],
-    'Another Topic': [
-      {
-        id: 6,
-        text: 'nothing to see here',
-      },
-    ],
-    'Yet Another Topic': [
-      {
-        id: 7,
-        text: 'what did you expect?',
-      },
-    ],
-  };
-
-  const [questionsData, setQuestions] = useState(dummyData);
-
-  const questionsTopics = Object.keys(questionsData);
-
-  const removeQuestion = () => {
-    // needs to go to backend
-    const questionIdx = questionsData[selectedTopic].findIndex(
-      item => item.id === selectedQuestionId,
-    );
-    questionsData[selectedTopic].splice(questionIdx, 1);
-    setQuestionId(questionsData);
-  };
-
-  const changeScroll = direction => {
-    const element = document.querySelector('.questions-categories .categories');
-    const scrollVelocity = {
-      right: 100,
-      left: -100,
-    };
-    element.scrollLeft += scrollVelocity[direction];
-  };
-
-  return (
-    <div className="questions">
-      <div className="questions-categories">
-        <button
-          type="button"
-          className="questions-left"
-          onClick={() => changeScroll('left')}
-        >
-          <img alt="show left" />
-        </button>
-        <div className="categories">
-          {questionsTopics.map(topic => (
-            <button
-              key={topic}
-              type="button"
-              className={
-                selectedTopic === topic
-                  ? `${topic}-radio selected`
-                  : `${topic}-radio`
-              }
-              value={topic}
-              onClick={() => setTopic(topic)}
-            >
-              {topic}
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          className="questions-right"
-          onClick={() => changeScroll('right')}
-        >
-          <img alt="show right" />
-        </button>
-      </div>
-      <div className="questions-content">
-        {questionsData[selectedTopic].map(({ id, text }) => (
-          <div
-            key={id}
-            className={
-              selectedQuestionId === id
-                ? `question-${id} selected`
-                : `question-${id}`
-            }
-          >
-            <button
-              type="button"
-              className={selectedQuestionId === id ? 'selected' : ''}
-              onClick={() => setQuestionId(id)}
-            >
-              {text}
-            </button>
-            {selectedQuestionId === id && (
-              <div className="question-action">
-                <button type="button" className="yes">
-                  <img alt="accept question" />
-                </button>
-                <button type="button" className="edit">
-                  <img alt="edit question" />
-                </button>
-                <button type="button" className="no" onClick={removeQuestion}>
-                  <img alt="reject question" />
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
@@ -908,7 +786,7 @@ function MobileDrawer({ content, setOverlay }) {
         <div className="drawer-content">
           {content === 'chat' && <Chat userPk={userPk} />}
           {content === 'translate' && <TranslationBox />}
-          {content === 'questions' && <SidebarQuestions />}
+          {content === 'questions' && <QuestionCards />}
           {content === 'notes' && <SidebarNotes />}
         </div>
       </div>
@@ -947,36 +825,32 @@ function Sidebar({ sideSelection }) {
   const location = useLocation();
 
   const { userPk } = location.state || {};
-  const sidebarTopics = ['chat', 'questions', 'notes'];
+  const sidebarTopics = ['chat', 'questions'];
   const setSideSelection = useContext(SetSideContext);
-  const handleChange = e => setSideSelection(e.target.value);
-  const disabled = [];
+
+  const disabled = ['notes'];
 
   return (
     <div className="call-sidebar">
-      <div className="sidebar-selector">
+      <SidebarSelector className="sidebar-selector">
         {sidebarTopics.map(topic => (
-          <span key={topic}>
-            <input
-              type="radio"
-              id={`${topic}-radio`}
-              value={topic}
-              checked={sideSelection === topic}
-              name="sidebar"
-              onChange={handleChange}
-            />
-            <label
-              htmlFor={`${topic}-radio`}
-              className={disabled.includes(topic) ? 'disabled' : ''}
-            >
-              {t(`vc_btn_${topic}`)}
-            </label>
-          </span>
+          <StyledOption
+            appearance={
+              sideSelection === topic
+                ? ButtonAppearance.Primary
+                : ButtonAppearance.Secondary
+            }
+            key={topic}
+            onClick={() => setSideSelection(topic)}
+            disabled={sideSelection === topic}
+          >
+            {t(`vc_btn_${topic}`)}
+          </StyledOption>
         ))}
-      </div>
+      </SidebarSelector>
       <div className="sidebar-content">
         {sideSelection === 'chat' && <Chat userPk={userPk} />}
-        {sideSelection === 'questions' && <SidebarQuestions />}
+        {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </div>
     </div>
@@ -987,6 +861,7 @@ function CallScreen() {
   const [sideSelection, setSideSelection] = useState('chat');
   const selfPk = useSelector(state => state.userData.user.id);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const { userPk, tracks } = location.state || {};
   const videoRef = useRef();
