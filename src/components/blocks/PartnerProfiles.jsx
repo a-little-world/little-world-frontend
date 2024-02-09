@@ -96,7 +96,7 @@ function PartnerProfiles({
   const onModalClose = () => {
     setPartnerActionData(null);
   };
-  console.log({ matches });
+
   return (
     <Matches>
       {matchesDisplay.map(match => (
@@ -107,12 +107,15 @@ function PartnerProfiles({
           isSelf={false}
           openPartnerModal={setPartnerActionData}
           setCallSetupPartner={setCallSetupPartner}
-          isOnline={match.partner.is_online || true}
+          isOnline={match.partner.is_online}
           isSupport={match.partner.user_type === 'support'}
         />
       ))}
       {user.isSearching ? (
-        <SearchingCard setShowCancel={setShowCancel} hasMatch={user.hasMatch} />
+        <SearchingCard
+          setShowCancel={setShowCancel}
+          hasMatch={!user.hasMatch}
+        />
       ) : (
         <FindNewPartner type="button" onClick={updateUserMatchingState}>
           <img src={PlusImage} alt="change matching status icon" />

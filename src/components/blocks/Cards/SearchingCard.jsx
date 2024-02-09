@@ -27,8 +27,8 @@ const StyledCard = styled(Card)`
 `;
 
 const WelcomeTitle = styled(Text)`
-  color: ${({ theme }) => theme.color.text.link};
-  max-width: 260px; // ensures it wraps correctly
+  color: ${({ theme }) => theme.color.text.heading};
+  max-width: 270px; // ensures it wraps correctly
 `;
 
 const CancelSearchButton = styled(Button)`

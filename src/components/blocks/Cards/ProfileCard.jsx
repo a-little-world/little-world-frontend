@@ -5,6 +5,7 @@ import {
   CardSizes,
   DotsIcon,
   Gradients,
+  Logo,
   MessageIcon,
   PencilIcon,
   PhoneIcon,
@@ -113,25 +114,22 @@ export const NameContainer = styled.div`
 `;
 
 export const Tag = styled(Text)`
-  width: 124px;
-  height: 32px;
+  width: 104px;
+  height: 34px;
   font-family: revert;
   padding: ${({ theme }) => theme.spacing.xxsmall};
-  // top: ${({ theme }) => theme.spacing.xxsmall};
-  // right: ${({ theme }) => theme.spacing.xxsmall};
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: ${({ theme }) => theme.color.text.reverse};
-  background-color: ${({ theme }) => theme.color.surface.secondary};
-  border-radius: 100%;
-
-  background-color: #6264a7;
-  color: white;
+  background-color: ${({ theme }) => theme.color.surface.primary};
   border-radius: 30px;
-  border: 2px solid #e6e8ec;
-  filter: drop-shadow(0px 4px 4px rgb(0 0 0 / 25%));
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
+  color: ${({ theme }) => theme.color.text.heading};
+  border: 2px solid ${({ theme }) => theme.color.border.bold};
+  filter: drop-shadow(0px 1px 3px rgb(0 0 0 / 22%));
+  line-height: 1.1;
 `;
 
 export const Description = styled(Text)`
@@ -219,22 +217,15 @@ function ProfileCard({
         </Popover>
       )}
       <OnlineIndicator isOnline={isOnline} />
-      {/* {isSupport && (
-        <Tag>
-          👋 Here to help
-        </Tag>
-      )} */}
       <ProfileInfo>
         <NameContainer>
           <Text type={'Body3'} bold>
             {profile.first_name}
-
-            {/* {profile.first_name +
-            (isSupport ? t('profile_card.support_user') : '')} */}
           </Text>
           {isSupport && (
             <Tag type={TextTypes.Body6} bold>
-              Support User
+              {t('profile_card.support_user')}
+              <Logo height="12px" width="12px" />
             </Tag>
           )}
         </NameContainer>
