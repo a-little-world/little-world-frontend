@@ -9,15 +9,14 @@ export const userDataSlice = createSlice({
     initialise: (state, action) => {
       // TODO: this should NEVER be called twice will overwrite the full state
       console.log('PAYLOAD', action.payload, { state, action });
-      // state = {...action.payload};
+
       state.communityEvents = action.payload?.communityEvents;
-      state.user = action.payload?.user;
-      state.notifications = action.payload?.notifications;
-      state.matches = {
-        ...action.payload?.matches,
-        support: action.payload?.matches?.confirmed,
-        confirmed: action.payload?.matches?.support,
+      state.user = {
+        ...action.payload?.user,
+        hasMatch: !!action.payload?.matches?.confirmed?.totalItems,
       };
+      state.notifications = action.payload?.notifications;
+      state.matches = action.payload?.matches;
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
       state.incomingCalls = action.payload?.incomingCalls || []; // [{ userId: user.hash }] or []

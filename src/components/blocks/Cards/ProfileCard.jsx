@@ -11,6 +11,7 @@ import {
   Popover,
   ProfileIcon,
   Text,
+  TextTypes,
   designTokens,
 } from '@a-little-world/little-world-design-system';
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
@@ -105,13 +106,19 @@ export const Actions = styled.div`
   max-width: 498px;
 `;
 
-export const Tag = styled.div`
-  width: 140px;
-  height: 40px;
+export const NameContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+export const Tag = styled(Text)`
+  width: 124px;
+  height: 32px;
+  font-family: revert;
   padding: ${({ theme }) => theme.spacing.xxsmall};
-  position: absolute;
-  top: ${({ theme }) => theme.spacing.xxsmall};
-  right: ${({ theme }) => theme.spacing.xxsmall};
+  // top: ${({ theme }) => theme.spacing.xxsmall};
+  // right: ${({ theme }) => theme.spacing.xxsmall};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,11 +127,10 @@ export const Tag = styled.div`
   background-color: ${({ theme }) => theme.color.surface.secondary};
   border-radius: 100%;
 
-  background-color: #9287ff;
+  background-color: #6264a7;
   color: white;
   border-radius: 30px;
-  border: 3px solid #e6e8ec;
-  text-transform: capitalize;
+  border: 2px solid #e6e8ec;
   filter: drop-shadow(0px 4px 4px rgb(0 0 0 / 25%));
 `;
 
@@ -219,10 +225,20 @@ function ProfileCard({
         </Tag>
       )} */}
       <ProfileInfo>
-        <Text type={'Body3'} bold>
-          {profile.first_name +
-            (isSupport ? t('profile_card.support_user') : '')}
-        </Text>
+        <NameContainer>
+          <Text type={'Body3'} bold>
+            {profile.first_name}
+
+            {/* {profile.first_name +
+            (isSupport ? t('profile_card.support_user') : '')} */}
+          </Text>
+          {isSupport && (
+            <Tag type={TextTypes.Body6} bold>
+              Support User
+            </Tag>
+          )}
+        </NameContainer>
+
         <Description>
           {isSupport
             ? t('profile_card.support_description')

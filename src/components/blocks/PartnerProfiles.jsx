@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
-import {
+import userData, {
   selectMatchesDisplay,
   updateSearchState,
 } from '../../features/userData';
@@ -96,7 +96,7 @@ function PartnerProfiles({
   const onModalClose = () => {
     setPartnerActionData(null);
   };
-  console.log({ matchesDisplay });
+  console.log({ matches });
   return (
     <Matches>
       {matchesDisplay.map(match => (
@@ -108,11 +108,11 @@ function PartnerProfiles({
           openPartnerModal={setPartnerActionData}
           setCallSetupPartner={setCallSetupPartner}
           isOnline={match.partner.is_online || true}
-          isSupport
+          isSupport={match.partner.user_type === 'support'}
         />
       ))}
       {user.isSearching ? (
-        <SearchingCard setShowCancel={setShowCancel} hasMatch={false} />
+        <SearchingCard setShowCancel={setShowCancel} hasMatch={user.hasMatch} />
       ) : (
         <FindNewPartner type="button" onClick={updateUserMatchingState}>
           <img src={PlusImage} alt="change matching status icon" />

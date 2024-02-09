@@ -4,8 +4,6 @@ import {
   ButtonVariations,
   Card,
   CardSizes,
-  ClockDashedIcon,
-  Gradients,
   Link,
   Text,
   TextTypes,
@@ -16,7 +14,6 @@ import styled from 'styled-components';
 
 import SearchingSvg from '../../../images/match-searching.svg';
 import { USER_FORM_ROUTE, getAppRoute } from '../../../routes';
-import Logo, { LogoText } from '../../atoms/Logo';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
 const StyledCard = styled(Card)`
@@ -25,7 +22,7 @@ const StyledCard = styled(Card)`
   gap: ${({ theme, $hasMatch }) =>
     $hasMatch ? theme.spacing.small : theme.spacing.xxsmall};
   justify-content: center;
-  order: 0;
+  order: ${({ $hasMatch }) => ($hasMatch ? 1 : 0)};
   height: ${PROFILE_CARD_HEIGHT};
 `;
 
