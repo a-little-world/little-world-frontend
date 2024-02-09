@@ -1,7 +1,7 @@
 const baseUrl = 'http://localhost:3333';
 const baseLogin = {
-  username: 'herrduenschnlate+2@gmail.com',
-  password: 'Test123!',
+  username: 'devuser@mail.com',
+  password: 'Test321!',
 };
 
 // eslint-disable-next-line import/prefer-default-export
