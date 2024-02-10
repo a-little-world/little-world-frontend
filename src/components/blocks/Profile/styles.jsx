@@ -5,7 +5,7 @@ export const PageContent = styled.section`
   display: flex;
   flex-direction: column-reverse;
   gap: ${({ theme }) => theme.spacing.medium};
-  align-items: flex-start;
+  align-items: center;
   padding: ${({ theme }) => theme.spacing.small};
   width: 100%;
 
@@ -14,6 +14,7 @@ export const PageContent = styled.section`
       padding: 0;
     }
     @media (min-width: ${theme.breakpoints.large}) {
+      align-items: flex-start;
       flex-direction: row;
     }
   `};

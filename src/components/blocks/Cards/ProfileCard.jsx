@@ -39,13 +39,18 @@ export const StyledCard = styled(Card)`
   text-align: ${({ $isSelf }) => ($isSelf ? 'center' : 'left')};
   order: 1;
   gap: ${({ theme }) => theme.spacing.small};
-  height: ${PROFILE_CARD_HEIGHT};
 
   ${({ $unconfirmedMatch }) =>
     $unconfirmedMatch &&
     css`
       background-color: rgb(252, 224, 172);
     `};
+
+  ${({ theme, $isSelf }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      height: ${({ $isSelf }) => ($isSelf ? 'initial' : PROFILE_CARD_HEIGHT)};
+    }
+  `};
 `;
 
 export const ProfileImageButton = styled.button`
