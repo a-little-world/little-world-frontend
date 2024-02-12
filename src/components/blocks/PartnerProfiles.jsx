@@ -112,10 +112,7 @@ function PartnerProfiles({
         />
       ))}
       {user.isSearching ? (
-        <SearchingCard
-          setShowCancel={setShowCancel}
-          hasMatch={!user.hasMatch}
-        />
+        <SearchingCard setShowCancel={setShowCancel} hasMatch={user.hasMatch} />
       ) : (
         <FindNewPartner type="button" onClick={updateUserMatchingState}>
           <img src={PlusImage} alt="change matching status icon" />
