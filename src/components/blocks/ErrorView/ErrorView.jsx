@@ -1,8 +1,8 @@
 import { getAppRoute } from '../../../routes';
 import MessageCard from '../Cards/MessageCard';
-import Layout from '../Layout/AppLayout';
+import AppLayout from '../Layout/AppLayout';
 
-const RouterError = () => (
+const RouterError = ({ Layout = AppLayout }) => (
   <Layout>
     <MessageCard
       title="error_view.title"

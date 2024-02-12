@@ -1,7 +1,7 @@
-import { Text } from "@a-little-world/little-world-design-system";
-import styled from "styled-components";
+import { Text } from '@a-little-world/little-world-design-system';
+import styled from 'styled-components';
 
-import { StyledCard } from "../Form/styles";
+import { StyledCard } from '../Form/styles';
 
 export const WelcomeCard = styled(StyledCard)`
   align-items: center;
@@ -11,6 +11,7 @@ export const WelcomeCard = styled(StyledCard)`
 
 export const IntroText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.small};
+  max-width: 500px;
 `;
 
 export const NoteText = styled(Text)`

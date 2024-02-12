@@ -350,17 +350,9 @@
 }
 
 /* send button */
-.rce-input-buttons .rce-button:last-child {
-  /* :last-child only needed to override react-chat-elements CSS */
-  background: linear-gradient(
-    43.07deg,
-    #db590b -3.02%,
-    #f39325 93.96%
-  ) !important;
-  border-radius: 100px;
-  padding: 8px 6px;
-  font-size: 14px;
-  min-width: 66px;
+.rce-input-buttons button {
+  height: 38px !important;
+  min-width: 94px !important;
 }
 
 .rce-input-textarea,
@@ -385,6 +377,7 @@
 
 .container {
   flex-grow: 1;
+  width: 100%;
 }
 
 .flex-container {
@@ -484,6 +477,19 @@
   }
 }
 
+@media screen and (width < 700px) {
+  .container .chat-list-box,
+  .show-chat .container .right-panel {
+    border-radius: 0;
+    width: 100%;
+    height: calc(100vh - 96px);
+  }
+
+  .show-chat .container .right-panel {
+    height: calc(100vh - 24px);
+  }
+}
+
 @media screen and (width < 1024px) {
   #root {
     flex-grow: 1;
@@ -492,11 +498,6 @@
   .main-page {
     height: 100%;
     box-sizing: border-box;
-  }
-
-  .container .chat-list-box,
-  .show-chat .container .right-panel {
-    border-radius: 0;
   }
 
   .show-chat .right-panel {

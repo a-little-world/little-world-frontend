@@ -4,6 +4,8 @@ import {
 } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
+import ProfileImage, { ImageSizes } from '../../../atoms/ProfileImage';
+
 export const ProfilePicWrapper = styled.div`
   position: relative;
 `;
@@ -60,7 +62,7 @@ export const InteractiveArea = styled.div`
   gap: ${({ theme }) => theme.spacing.xxsmall};
 
   ${({ theme }) =>
-  `@media (min-width: ${theme.breakpoints.medium}) {
+    `@media (min-width: ${theme.breakpoints.medium}) {
     padding: ${theme.spacing.medium};
   }`}
 `;
@@ -74,18 +76,29 @@ export const UploadArea = styled(InteractiveArea)`
   }
 `;
 
+export const StyledProfileImage = styled(ProfileImage)`
+  width: ${ImageSizes.small};
+  height: ${ImageSizes.small};
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.medium}) {
+    width: ${ImageSizes.medium};
+    height: ${ImageSizes.medium};
+  }`}
+`;
+
 export const CircleButton = styled(Button)`
   border-radius: 50%;
   border: 3px solid ${({ theme }) => theme.color.surface.bold};
   background: ${({ theme }) => theme.color.surface.primary};
 
-  width: 119px;
-  height: 119px;
+  width: ${ImageSizes.small};
+  height: ${ImageSizes.small};
 
   ${({ theme }) =>
-  `@media (min-width: ${theme.breakpoints.medium}) {
-    width: 154px;
-    height: 154px;
+    `@media (min-width: ${theme.breakpoints.medium}) {
+    width: ${ImageSizes.medium};
+    height: ${ImageSizes.medium};
   }`}
 `;
 

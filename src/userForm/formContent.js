@@ -2,6 +2,7 @@ import {
   Checkbox,
   CheckboxGrid,
   Dropdown,
+  Gradients,
   MultiDropdown,
   MultiSelection,
   RadioGroup,
@@ -89,6 +90,7 @@ export const getFormComponent = (
     const categories = [
       {
         ...formData?.[0],
+        gradient: Gradients.Blue,
         color: '#36a9e0',
         label: t('user_type.learner_label'),
         description: t('user_type.learner_description'),
@@ -96,7 +98,8 @@ export const getFormComponent = (
       },
       {
         ...formData?.[1],
-        color: '#F9BA6E',
+        gradient: Gradients.Orange,
+        color: '#e87818',
         label: t('user_type.volunteer_label'),
         description: t('user_type.volunteer_description'),
         note: t('user_type.volunteer_note'),

@@ -11,9 +11,11 @@ import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
 import ActiveCall from './call';
 import RouterError from './components/blocks/ErrorView/ErrorView';
 import Form from './components/blocks/Form/Form';
+import AppLayout from './components/blocks/Layout/AppLayout';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import Welcome from './components/blocks/Welcome/Welcome';
 import ChangeEmail from './components/views/ChangeEmail';
+import EditView from './components/views/Edit';
 import ForgotPassword from './components/views/ForgotPassword';
 import Login from './components/views/Login';
 import ResetPassword from './components/views/ResetPassword';
@@ -45,9 +47,9 @@ import theme from './theme';
 
 const isCapacitor = IS_CAPACITOR_BUILD || false;
 
-export const Root = ({ children }) => (
+export const Root = ({ children, restoreScroll = true }) => (
   <ThemeProvider theme={theme}>
-    <ScrollRestoration />
+    {restoreScroll && <ScrollRestoration />}
     <GlobalStyles />
     {children || <Outlet />}
   </ThemeProvider>
@@ -61,7 +63,7 @@ const ROOT_ROUTES = [
         <Login />
       </FormLayout>
     ),
-    errorElement: <RouterError />,
+    errorElement: <RouterError Layout={FormLayout} />,
   },
   {
     path: SIGN_UP_ROUTE,
@@ -70,7 +72,7 @@ const ROOT_ROUTES = [
         <SignUp />
       </FormLayout>
     ),
-    errorElement: <RouterError />,
+    errorElement: <RouterError Layout={FormLayout} />,
   },
   {
     path: FORGOT_PASSWORD_ROUTE,
@@ -79,7 +81,7 @@ const ROOT_ROUTES = [
         <ForgotPassword />
       </FormLayout>
     ),
-    errorElement: <RouterError />,
+    errorElement: <RouterError Layout={FormLayout} />,
   },
   {
     path: RESET_PASSWORD_ROUTE,
@@ -88,12 +90,12 @@ const ROOT_ROUTES = [
         <ResetPassword />
       </FormLayout>
     ),
-    errorElement: <RouterError />,
+    errorElement: <RouterError Layout={FormLayout} />,
   },
   {
     path: USER_FORM_ROUTE,
     element: <FormLayout />,
-    errorElement: <RouterError />,
+    errorElement: <RouterError Layout={FormLayout} />,
     children: [
       {
         path: '',
@@ -107,12 +109,12 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(EDIT_FORM_ROUTE),
-    element: <FormLayout />,
+    element: <AppLayout />,
     errorElement: <RouterError />,
     children: [
       {
         path: ':slug',
-        element: <Form />,
+        element: <EditView />,
       },
     ],
   },
@@ -133,7 +135,7 @@ const ROOT_ROUTES = [
         <VerifyEmail />
       </FormLayout>
     ),
-    errorElement: <RouterError />,
+    errorElement: <RouterError Layout={FormLayout} />,
   },
   {
     path: getAppRoute(CHANGE_EMAIL_ROUTE),
@@ -142,7 +144,7 @@ const ROOT_ROUTES = [
         <ChangeEmail />
       </FormLayout>
     ),
-    errorElement: <RouterError />,
+    errorElement: <RouterError Layout={FormLayout} />,
   },
   {
     path: getAppRoute(CALL_ROUTE),
@@ -179,7 +181,7 @@ const ROOT_ROUTES = [
   {
     path: getAppRoute(USER_FORM_ROUTE),
     element: <FormLayout />,
-    errorElement: <RouterError />,
+    errorElement: <RouterError Layout={FormLayout} />,
     children: [
       {
         path: '',

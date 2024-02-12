@@ -13,7 +13,6 @@ import ConfirmMatchCard from './components/blocks/Cards/ConfirmMatchCard';
 import NewMatchCard from './components/blocks/Cards/NewMatchCard';
 import CommunityEvents from './components/blocks/CommunityEvents/CommunityEvent';
 import AppLayout from './components/blocks/Layout/AppLayout';
-import MobileNavBar from './components/blocks/MobileNavBar';
 import NbtSelector from './components/blocks/NbtSelector';
 import NotificationPanel from './components/blocks/NotificationPanel';
 import PartnerProfiles from './components/blocks/PartnerProfiles';
@@ -126,7 +125,7 @@ const Content = styled.section`
   `};
 `;
 
-const Matches = styled.div`
+const Home = styled.div`
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -139,7 +138,7 @@ const Matches = styled.div`
       gap: ${theme.spacing.medium};
       padding: 0;
     }
- `};
+  `};
 `;
 
 function Main() {
@@ -204,12 +203,7 @@ function Main() {
     }
   }, [callSetup, activeCall]);
 
-  const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const [showCancelSearching, setShowCancelSearching] = useState(false);
-
-  useEffect(() => {
-    setShowSidebarMobile(false);
-  }, [location]);
 
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   const use = location.pathname.split('/')[2] || (userPk ? 'profile' : 'main');
@@ -245,28 +239,24 @@ function Main() {
   };
 
   return (
-    <AppLayout
-      page={use}
-      sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
-    >
+    <AppLayout page={use}>
       <Content>
-        <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
         <NbtSelector
           selection={topSelection}
           setSelection={setTopSelection}
           use={use}
         />
-        {use === 'main' && (
-          topSelection === 'conversation_partners' ? (
+        {use === 'main' &&
+          (topSelection === 'conversation_partners' ? (
             <>
-              <Matches className="content-area-main">
+              <Home className="content-area-main">
                 <PartnerProfiles
                   setCallSetupPartner={setCallSetupPartner}
                   setShowCancel={setShowCancelSearching}
                   totalPaginations={totalPages}
                 />
                 <NotificationPanel />
-              </Matches>
+              </Home>
               {totalPages > 1 && (
                 <CustomPagination
                   totalPages={totalPages}
@@ -275,8 +265,9 @@ function Main() {
                 />
               )}
             </>
-          ) : <CommunityEvents />
-        )}
+          ) : (
+            <CommunityEvents />
+          ))}
         {use === 'chat' && (
           <Chat
             showChat={use === 'chat'}
@@ -326,7 +317,7 @@ function Main() {
           <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
         </Modal>
       )}
-      <Modal
+      {/* <Modal
         open={
           matches?.proposed?.items?.length ||
           matches?.unconfirmed?.items?.length
@@ -345,7 +336,7 @@ function Main() {
               ? matches?.proposed.items[0].partner
               : matches?.unconfirmed.items[0].partner,
           })}
-      </Modal>
+      </Modal> */}
     </AppLayout>
   );
 }

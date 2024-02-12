@@ -22,7 +22,7 @@ import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
 import { USER_FIELDS } from '../../../../constants';
-import ProfileImage from '../../../atoms/ProfileImage';
+import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import {
   AvatarEditorButton,
@@ -34,6 +34,7 @@ import {
   ProfilePicWrapper,
   SelectionPanel,
   StyledFileIcon,
+  StyledProfileImage,
   TrashButton,
   UploadArea,
   UploadLabel,
@@ -53,7 +54,7 @@ const CircleImage = ({
 }) => {
   const theme = useTheme();
   return uploadedImage ? (
-    <ProfileImage
+    <StyledProfileImage
       className={className}
       image={uploadedImage}
       size="medium"
@@ -66,7 +67,7 @@ const CircleImage = ({
       >
         <TrashIcon color={theme.color.surface.disabled} />
       </TrashButton>
-    </ProfileImage>
+    </StyledProfileImage>
   ) : (
     <CircleButton
       className={className}
@@ -110,8 +111,10 @@ const ProfilePic = ({ control, setValue }) => {
     setValue(USER_FIELDS.image, file);
   };
 
-  const onImageDelete = () => {
+  const onImageDelete = e => {
+    e.preventDefault();
     setUploadedImage(null);
+    fileInputRef.current.value = '';
     setValue(USER_FIELDS.image, null);
     setValue(USER_FIELDS.imageType, imageType);
   };
@@ -202,7 +205,9 @@ const ProfilePic = ({ control, setValue }) => {
               <UploadArea>
                 <UploadLabel htmlFor="fileInput">
                   <MobileCircleImage
-                    icon={<ImageSearchIcon color="#36a9e0" width={56} height={56} />}
+                    icon={
+                      <ImageSearchIcon color="#36a9e0" width={56} height={56} />
+                    }
                     onImageDelete={onImageDelete}
                     fileInputRef={fileInputRef}
                     uploadedImage={uploadedImage}
@@ -249,7 +254,10 @@ const ProfilePic = ({ control, setValue }) => {
                   </Button>
                   <div>
                     <Avatar
-                      style={{ width: '8rem', height: '8rem' }}
+                      style={{
+                        width: ImageSizes.small,
+                        height: ImageSizes.small,
+                      }}
                       {...avatarConfig}
                     />
                   </div>

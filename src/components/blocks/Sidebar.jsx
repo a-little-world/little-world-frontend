@@ -13,7 +13,7 @@ import {
 import Cookies from 'js-cookie';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
@@ -159,7 +159,7 @@ function Sidebar({ sidebarMobile }) {
   const notifications = useSelector(state => state.userData.notifications);
 
   const unread = {
-    notifications: notifications.unread.items.filter(
+    notifications: notifications?.unread?.items.filter(
       ({ status }) => status === 'unread',
     ),
     messages: [],
@@ -180,7 +180,7 @@ function Sidebar({ sidebarMobile }) {
               }
             >
               {['messages', 'notifications'].includes(label) &&
-                Boolean(unread[label].length) && (
+                Boolean(unread[label]?.length) && (
                   <UnreadDot count={unread[label].length} />
                 )}
               <Icon

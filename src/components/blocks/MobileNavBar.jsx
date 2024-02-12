@@ -1,4 +1,11 @@
-import { Button, ButtonVariations, Gradients, MenuIcon, Text, TextTypes } from '@a-little-world/little-world-design-system';
+import {
+  Button,
+  ButtonVariations,
+  Gradients,
+  MenuIcon,
+  Text,
+  TextTypes,
+} from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
@@ -38,9 +45,9 @@ const MobileHeader = styled.div`
 `;
 
 const Spacer = styled.div`
- display: flex;
- flex-shrink: 0;
-`
+  display: flex;
+  flex-shrink: 0;
+`;
 
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
@@ -65,7 +72,13 @@ function MobileNavBar({ setShowSidebarMobile }) {
         variation={ButtonVariations.Icon}
         onClick={() => setShowSidebarMobile(true)}
       >
-        <MenuIcon label="open menu" labelId='open-menu' width={24} height={24} gradient={Gradients.Blue} />
+        <MenuIcon
+          label="open menu"
+          labelId="open-menu"
+          width={24}
+          height={24}
+          gradient={Gradients.Blue}
+        />
       </Button>
     </MobileHeader>
   );

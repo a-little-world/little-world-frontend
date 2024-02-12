@@ -30,7 +30,7 @@ const Selector = styled.div`
   `}
 `;
 
-const StyledOption = styled(Button)`
+export const StyledOption = styled(Button)`
   border-color: transparent;
   &:disabled {
     color: ${({ theme }) => theme.color.text.button};

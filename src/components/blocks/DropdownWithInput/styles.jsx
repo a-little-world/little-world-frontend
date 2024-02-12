@@ -1,5 +1,7 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-export const TextInputWrapper = styled.div`
-  display: block;
+export const Container = styled.div`
+  > *:nth-child(2) {
+    margin-left: ${({ theme }) => theme.spacing.xsmall};
+  }
 `;
