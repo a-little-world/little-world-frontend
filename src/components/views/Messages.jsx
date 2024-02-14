@@ -23,7 +23,7 @@ import {
   IS_CAPACITOR_BUILD,
   PRODUCTION,
 } from '../../ENVIRONMENT';
-import { fetchMessage } from '../../api/chat';
+import { fetchChats, fetchMessage } from '../../api/chat';
 import ChatItem from '../../chat/ChatItem-override';
 import ChatList from '../../chat/ChatList-override';
 import '../../chat/chat-override.css';
@@ -136,7 +136,7 @@ const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   };
 
   useEffect(() => {
-    fetchMessage().then(response => {
+    fetchChats().then(response => {
       console.log({ response });
       setMessageList(response.data);
     });
