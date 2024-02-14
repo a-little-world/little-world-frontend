@@ -45,7 +45,7 @@ const Note = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
-export function SearchingCard({ setShowCancel, hasMatch }) {
+export function SearchingCard({ setShowCancel, hasMatch, hadPreMatchingCall }) {
   const { t } = useTranslation();
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
@@ -63,13 +63,23 @@ export function SearchingCard({ setShowCancel, hasMatch }) {
           <WelcomeTitle tag="h3" type={TextTypes.Body1} bold center>
             {t('searching_card.welcome')}
           </WelcomeTitle>
-          <SearchingImage
-            alt="searching image"
-            src={SearchingSvg}
-            $hasMatch={hasMatch}
-          />
-          <Text center>{t('searching_card.info_1')}</Text>
-          <Note center>{t('searching_card.info_2')}</Note>
+          {hadPreMatchingCall ? (
+            <>
+              <SearchingImage
+                alt="searching image"
+                src={SearchingSvg}
+                $hasMatch={hasMatch}
+              />
+              <Text center>{t('searching_card.info_1')}</Text>
+              <Note center>{t('searching_card.info_2')}</Note>
+            </>
+          ) : (
+            <>
+              <MatchingCallImage alt="matching call image" src={SearchingSvg} />
+              <Text center>{t('searching_card.pre_match_call_info_1')}</Text>
+              <Note center>{t('searching_card.pre_match_call_info_2')}</Note>
+            </>
+          )}
         </>
       )}
 
