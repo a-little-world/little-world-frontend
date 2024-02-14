@@ -23,6 +23,7 @@ import {
   IS_CAPACITOR_BUILD,
   PRODUCTION,
 } from '../../ENVIRONMENT';
+import { fetchMessage } from '../../api/chat';
 import ChatItem from '../../chat/ChatItem-override';
 import ChatList from '../../chat/ChatList-override';
 import '../../chat/chat-override.css';
@@ -42,8 +43,10 @@ import {
 import AppointmentsLayout from '../../layout/layout';
 import Link from '../../path-prepend';
 import { getAppRoute } from '../../routes';
+import PageHeader from '../atoms/PageHeader';
+import { Chat } from '../blocks/ChatCore/Chat';
 import ChatCore from '../blocks/ChatCore/ChatCore';
-import { ChatHeader } from './Chat.styles';
+import { ChatDashboard, MessagesPanel } from './Messages.styles';
 
 const chatItemSortingFunction = (a, b) => b.date - a.date;
 
@@ -86,7 +89,7 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
   return dialogList;
 };
 
-const Chat = ({ userPk, setCallSetupPartner, matchesInfo }) => {
+const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const selectedChat = useSelector(state => state?.chats?.selectedChat);
@@ -94,7 +97,7 @@ const Chat = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   const user = useSelector(state => state.user);
   const messages = useSelector(state => state.messages);
   //   const [selectedDialog, setSelectedDialog] = useState(null);
-  //   const [messageList, setMessageList] = useState([]);
+  const [messageList, setMessageList] = useState([]);
   //   const [dialogList, setDialogList] = useState([]);
   //   const [filteredDialogList, setFilteredDialogList] = useState([]);
   const [appointmentsOpen, setAppointmentsOpen] = useState(false);
@@ -133,12 +136,9 @@ const Chat = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   };
 
   useEffect(() => {
-    fetchMessages().then(r => {
-      if (r.tag === 0) {
-        setMessageList(r.fields[0]);
-      } else {
-        toast.error(r.fields[0]);
-      }
+    fetchMessage().then(response => {
+      console.log({ response });
+      setMessageList(response.data);
     });
 
     fetchDialogs().then(r => {
@@ -223,8 +223,16 @@ const Chat = ({ userPk, setCallSetupPartner, matchesInfo }) => {
     setUserWasSelected(true);
     document.body.classList.add('hide-mobile-header');
   };
-  console.log({ chats });
-  return null;
+  console.log({ chats, messages, messageList });
+  return (
+    <>
+      <PageHeader text={t('chat_header')}></PageHeader>
+      <ChatDashboard>
+        <MessagesPanel messages={messageList} />
+        <Chat messages={messageList} />
+      </ChatDashboard>
+    </>
+  );
 
   return (
     <>
@@ -382,4 +390,4 @@ const Chat = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   );
 };
 
-export default Chat;
+export default Messages;

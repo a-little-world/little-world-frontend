@@ -16,8 +16,8 @@ import AppLayout from './components/blocks/Layout/AppLayout';
 import NbtSelector from './components/blocks/NbtSelector';
 import NotificationPanel from './components/blocks/NotificationPanel';
 import PartnerProfiles from './components/blocks/PartnerProfiles';
-import Chat from './components/views/Chat';
 import Help from './components/views/Help';
+import Messages from './components/views/Messages';
 import Profile from './components/views/Profile';
 import Settings from './components/views/Settings';
 import {
@@ -112,6 +112,7 @@ const Content = styled.section`
   padding: 0;
   padding-bottom: ${({ theme }) => theme.spacing.medium};
   width: 100%;
+  min-width: 0;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
@@ -140,6 +141,8 @@ const Home = styled.div`
     }
   `};
 `;
+
+const isViewportHeight = ['chat'];
 
 function Main() {
   // for the case /call-setup/:userId?/
@@ -239,7 +242,7 @@ function Main() {
   };
 
   return (
-    <AppLayout page={use}>
+    <AppLayout page={use} isVH={isViewportHeight.includes(use)}>
       <Content>
         <NbtSelector
           selection={topSelection}
@@ -269,7 +272,7 @@ function Main() {
             <CommunityEvents />
           ))}
         {use === 'chat' && (
-          <Chat
+          <Messages
             showChat={use === 'chat'}
             matchesInfo={dashboardVisibleMatches}
             userPk={userPk}

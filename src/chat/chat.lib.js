@@ -3,14 +3,46 @@
 /* eslint-disable camelcase */
 
 /* eslint-disable import/extensions */
-import { BACKEND_URL, DEFAULT_LOGIN_PASSWORD, DEFAULT_LOGIN_USERNAME, IS_CAPACITOR_BUILD } from "../ENVIRONMENT";
-import { contains, map as map_1, sortBy } from "./.fable/fable-library.3.1.7/Array.js";
-import { FSharpResult$2, Result_Bind, Result_Map } from "./.fable/fable-library.3.1.7/Choice.js";
-import { compare } from "./.fable/fable-library.3.1.7/Date.js";
-import { fromDate, now } from "./.fable/fable-library.3.1.7/DateOffset.js";
-import { empty, ofArray, singleton } from "./.fable/fable-library.3.1.7/List.js";
-import { fromInteger, toInt } from "./.fable/fable-library.3.1.7/Long.js";
-import { defaultArg, map, some } from "./.fable/fable-library.3.1.7/Option.js";
+import {
+  BACKEND_URL,
+  DEFAULT_LOGIN_PASSWORD,
+  DEFAULT_LOGIN_USERNAME,
+  IS_CAPACITOR_BUILD,
+} from '../ENVIRONMENT';
+import {
+  Types_RequestProperties,
+  tryFetch as tryFetchSimple,
+} from './.fable/Fable.Fetch.2.2.0/Fetch.fs.js';
+import {
+  PromiseBuilder__Delay_62FBFDE1,
+  PromiseBuilder__Run_212F1D4B,
+  mapResult,
+} from './.fable/Fable.Promise.2.0.0/Promise.fs.js';
+import { promise } from './.fable/Fable.Promise.2.0.0/PromiseImpl.fs.js';
+import {
+  array as array_3,
+  fromString,
+} from './.fable/Thoth.Json.5.1.0/Decode.fs.js';
+import { Enum_int, tuple2 } from './.fable/Thoth.Json.5.1.0/Encode.fs.js';
+import {
+  contains,
+  map as map_1,
+  sortBy,
+} from './.fable/fable-library.3.1.7/Array.js';
+import {
+  FSharpResult$2,
+  Result_Bind,
+  Result_Map,
+} from './.fable/fable-library.3.1.7/Choice.js';
+import { compare } from './.fable/fable-library.3.1.7/Date.js';
+import { fromDate, now } from './.fable/fable-library.3.1.7/DateOffset.js';
+import {
+  empty,
+  ofArray,
+  singleton,
+} from './.fable/fable-library.3.1.7/List.js';
+import { fromInteger, toInt } from './.fable/fable-library.3.1.7/Long.js';
+import { defaultArg, map, some } from './.fable/fable-library.3.1.7/Option.js';
 import {
   bool_type,
   class_type,
@@ -19,59 +51,53 @@ import {
   record_type,
   string_type,
   unit_type,
-} from "./.fable/fable-library.3.1.7/Reflection.js";
-import { printf, toConsole, toText } from "./.fable/fable-library.3.1.7/String.js";
-import { Record } from "./.fable/fable-library.3.1.7/Types.js";
-import { stringHash, uncurry } from "./.fable/fable-library.3.1.7/Util.js";
+} from './.fable/fable-library.3.1.7/Reflection.js';
 import {
-  tryFetch as tryFetchSimple,
-  Types_RequestProperties,
-} from "./.fable/Fable.Fetch.2.2.0/Fetch.fs.js";
-import {
-  mapResult,
-  PromiseBuilder__Delay_62FBFDE1,
-  PromiseBuilder__Run_212F1D4B,
-} from "./.fable/Fable.Promise.2.0.0/Promise.fs.js";
-import { promise } from "./.fable/Fable.Promise.2.0.0/PromiseImpl.fs.js";
-import { array as array_3, fromString } from "./.fable/Thoth.Json.5.1.0/Decode.fs.js";
-import { Enum_int, tuple2 } from "./.fable/Thoth.Json.5.1.0/Encode.fs.js";
+  printf,
+  toConsole,
+  toText,
+} from './.fable/fable-library.3.1.7/String.js';
+import { Record } from './.fable/fable-library.3.1.7/Types.js';
+import { stringHash, uncurry } from './.fable/fable-library.3.1.7/Util.js';
 import {
   ChatItem,
   DialogsResponse_get_Decoder,
   GenericUserPKMessage_get_Decoder,
   MessageBox,
   MessageBox$reflection,
-  MessageBox__HasDbId,
   MessageBoxData,
   MessageBoxDataStatus,
+  MessageBox__HasDbId,
   MessageModelFile_get_Decoder,
-  MessagesResponse_get_Decoder,
   MessageTypeErrorOccured_get_Decoder,
   MessageTypeFileMessage_get_Decoder,
   MessageTypeMessageIdCreated_get_Decoder,
   MessageTypeMessageRead_get_Decoder,
   MessageTypeNewUnreadCount_get_Decoder,
-  MessageTypesDecoder,
   MessageTypeTextMessage_get_Decoder,
-  msgTypeEncoder,
+  MessageTypesDecoder,
+  MessagesResponse_get_Decoder,
   UserInfoResponse_get_Decoder,
-} from "./Types.fs.js";
-import { generateRandomId, humanFileSize } from "./Utils.fs.js";
+  msgTypeEncoder,
+} from './Types.fs.js';
+import { generateRandomId, humanFileSize } from './Utils.fs.js';
 
 export const defaultDataStatus = new MessageBoxDataStatus(true, 0, false);
 
 const getPhotoString = () => {}; // replace with no-op for now
 
 function tryFetch(url, options) {
-  const login_user = window.localStorage.getItem("current_login_user") || DEFAULT_LOGIN_USERNAME;
-  const login_pass = window.localStorage.getItem("current_login_pass") || DEFAULT_LOGIN_PASSWORD;
+  const login_user =
+    window.localStorage.getItem('current_login_user') || DEFAULT_LOGIN_USERNAME;
+  const login_pass =
+    window.localStorage.getItem('current_login_pass') || DEFAULT_LOGIN_PASSWORD;
 
   const headers_1 = new Types_RequestProperties(1, {
     Authorization: `Basic ${btoa(`${login_user}:${login_pass}`)}`,
   });
 
   const headers_2 = new Types_RequestProperties(1, {
-    credentials: "include",
+    credentials: 'include',
   });
 
   const updated_ops = ofArray([headers_1, headers_2]);
@@ -80,87 +106,94 @@ function tryFetch(url, options) {
 
 export function createOnDownload(uri, filename, e) {
   const pr = mapResult(
-    (x) => {
+    x => {
       const u = URL.createObjectURL(x);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = u;
-      a.setAttribute("download", filename);
+      a.setAttribute('download', filename);
       a.click();
-      void window.setTimeout((_arg1_1) => {
+      void window.setTimeout(_arg1_1 => {
         URL.revokeObjectURL(u);
       }, 200);
     },
     PromiseBuilder__Run_212F1D4B(
       promise,
       PromiseBuilder__Delay_62FBFDE1(promise, () => {
-        return tryFetch(uri, empty()).then((_arg1) => {
+        return tryFetch(uri, empty()).then(_arg1 => {
           const resp = _arg1;
           if (resp.tag === 1) {
             const e_1 = resp.fields[0];
             return Promise.resolve(new FSharpResult$2(1, e_1.message));
           } else {
             const r = resp.fields[0];
-            return r.blob().then((_arg2) => {
+            return r.blob().then(_arg2 => {
               const b = _arg2;
               return Promise.resolve(new FSharpResult$2(0, b));
             });
           }
         });
-      })
-    )
+      }),
+    ),
   );
   pr.then();
 }
 
 export function getSubtitleTextFromMessageModel(msg) {
   return defaultArg(
-    map((x) => {
+    map(x => {
       if (x.out) {
         return `You: ${x.text}`;
       } else {
         return x.text;
       }
     }, msg),
-    ""
+    '',
   );
 }
 
 export function getSubtitleTextFromMessageBox(msg) {
   return defaultArg(
-    map((x) => {
+    map(x => {
       if (x.data.out) {
         return `You: ${x.text}`;
       } else {
         return x.text;
       }
     }, msg),
-    ""
+    '',
   );
 }
 
 export function createMessageBoxFromMessageTypeTextMessage(message) {
   const avatar = getPhotoString(message.sender, 150);
   return new MessageBox(
-    "left",
-    "text",
+    'left',
+    'text',
     message.text,
     message.sender_username,
-    "waiting",
+    'waiting',
     avatar,
     fromDate(new Date()),
-    new MessageBoxData(message.sender, message.random_id, false, void 0, void 0, void 0),
-    void 0
+    new MessageBoxData(
+      message.sender,
+      message.random_id,
+      false,
+      void 0,
+      void 0,
+      void 0,
+    ),
+    void 0,
   );
 }
 
 export function createMessageBoxFromMessageTypeFileMessage(message) {
   const avatar = getPhotoString(message.sender, 150);
   return new MessageBox(
-    "left",
-    "file",
+    'left',
+    'file',
     message.file.name,
     message.sender_username,
-    "waiting",
+    'waiting',
     avatar,
     fromDate(new Date()),
     new MessageBoxData(
@@ -169,11 +202,11 @@ export function createMessageBoxFromMessageTypeFileMessage(message) {
       false,
       humanFileSize(message.file.size),
       message.file.url,
-      defaultDataStatus
+      defaultDataStatus,
     ),
-    (e) => {
+    e => {
       createOnDownload(message.file.url, message.file.name, e);
-    }
+    },
   );
 }
 
@@ -183,28 +216,28 @@ export function createMessageBoxFromOutgoingMessage(
   self_pk,
   self_username,
   random_id,
-  file_data
+  file_data,
 ) {
   const avatar = getPhotoString(self_pk, 150);
-  const dataStatus = map((_arg1) => defaultDataStatus, file_data);
-  const size = map((x) => humanFileSize(x.size), file_data);
-  const uri = map((x_1) => x_1.url, file_data);
-  const tpe = file_data != null ? "file" : "text";
+  const dataStatus = map(_arg1 => defaultDataStatus, file_data);
+  const size = map(x => humanFileSize(x.size), file_data);
+  const uri = map(x_1 => x_1.url, file_data);
+  const tpe = file_data != null ? 'file' : 'text';
   return new MessageBox(
-    "right",
+    'right',
     tpe,
     text,
     self_username,
-    "waiting",
+    'waiting',
     avatar,
     fromDate(new Date()),
     new MessageBoxData(user_pk, random_id, true, size, uri, dataStatus),
     map(
-      (x_2) => (e) => {
+      x_2 => e => {
         createOnDownload(x_2.url, x_2.name, e);
       },
-      file_data
-    )
+      file_data,
+    ),
   );
 }
 
@@ -213,13 +246,13 @@ export function createNewDialogModelFromIncomingMessageBox(m) {
     m.data.dialog_id,
     getPhotoString(m.data.dialog_id, void 0),
     true,
-    "lightgreen",
+    'lightgreen',
     void 0,
     m.title,
     m.title,
     m.date,
     m.text,
-    1
+    1,
   );
 }
 
@@ -230,7 +263,7 @@ export class WSHandlingCallbacks extends Record {
     addPKToTyping,
     changePKOnlineStatus,
     setMessageIdAsRead,
-    newUnreadCount
+    newUnreadCount,
   ) {
     super();
     this.addMessage = addMessage;
@@ -243,161 +276,195 @@ export class WSHandlingCallbacks extends Record {
 }
 
 export function WSHandlingCallbacks$reflection() {
-  return record_type("App.WSHandlingCallbacks", [], WSHandlingCallbacks, () => [
-    ["addMessage", lambda_type(MessageBox$reflection(), unit_type)],
+  return record_type('App.WSHandlingCallbacks', [], WSHandlingCallbacks, () => [
+    ['addMessage', lambda_type(MessageBox$reflection(), unit_type)],
     [
-      "replaceMessageId",
-      lambda_type(class_type("System.Int64"), lambda_type(class_type("System.Int64"), unit_type)),
+      'replaceMessageId',
+      lambda_type(
+        class_type('System.Int64'),
+        lambda_type(class_type('System.Int64'), unit_type),
+      ),
     ],
-    ["addPKToTyping", lambda_type(string_type, unit_type)],
-    ["changePKOnlineStatus", lambda_type(string_type, lambda_type(bool_type, unit_type))],
-    ["setMessageIdAsRead", lambda_type(class_type("System.Int64"), unit_type)],
-    ["newUnreadCount", lambda_type(string_type, lambda_type(int32_type, unit_type))],
+    ['addPKToTyping', lambda_type(string_type, unit_type)],
+    [
+      'changePKOnlineStatus',
+      lambda_type(string_type, lambda_type(bool_type, unit_type)),
+    ],
+    ['setMessageIdAsRead', lambda_type(class_type('System.Int64'), unit_type)],
+    [
+      'newUnreadCount',
+      lambda_type(string_type, lambda_type(int32_type, unit_type)),
+    ],
   ]);
 }
 
 export function handleIncomingWebsocketMessage(sock, message, callbacks) {
-  const res = Result_Bind((o) => {
+  const res = Result_Bind(o => {
     switch (o) {
       case 1: {
-        toConsole(printf("Received MessageTypes.WentOnline - %s"))(message);
-        return Result_Map((d_2) => {
+        toConsole(printf('Received MessageTypes.WentOnline - %s'))(message);
+        return Result_Map(d_2 => {
           callbacks.changePKOnlineStatus(d_2.user_pk, true);
         }, fromString(uncurry(2, GenericUserPKMessage_get_Decoder()), message));
       }
       case 2: {
-        toConsole(printf("Received MessageTypes.WentOffline - %s"))(message);
-        return Result_Map((d_3) => {
+        toConsole(printf('Received MessageTypes.WentOffline - %s'))(message);
+        return Result_Map(d_3 => {
           callbacks.changePKOnlineStatus(d_3.user_pk, false);
         }, fromString(uncurry(2, GenericUserPKMessage_get_Decoder()), message));
       }
       case 3: {
-        toConsole(printf("Received MessageTypes.TextMessage - %s"))(message);
+        toConsole(printf('Received MessageTypes.TextMessage - %s'))(message);
         const messageText = JSON.parse(message).text;
 
-        if (messageText.includes("[TMPADMIN]")) {
+        if (messageText.includes('[TMPADMIN]')) {
           callbacks.performAdminCallBackAction(messageText);
           return { tag: 0 };
         }
         return Result_Map(
           callbacks.addMessage,
           Result_Map(
-            (message_1) => createMessageBoxFromMessageTypeTextMessage(message_1),
-            fromString(uncurry(2, MessageTypeTextMessage_get_Decoder()), message)
-          )
+            message_1 => createMessageBoxFromMessageTypeTextMessage(message_1),
+            fromString(
+              uncurry(2, MessageTypeTextMessage_get_Decoder()),
+              message,
+            ),
+          ),
         );
       }
       case 4: {
-        toConsole(printf("Received MessageTypes.FileMessage - %s"))(message);
+        toConsole(printf('Received MessageTypes.FileMessage - %s'))(message);
         return Result_Map(
           callbacks.addMessage,
           Result_Map(
-            (message_2) => createMessageBoxFromMessageTypeFileMessage(message_2),
-            fromString(uncurry(2, MessageTypeFileMessage_get_Decoder()), message)
-          )
+            message_2 => createMessageBoxFromMessageTypeFileMessage(message_2),
+            fromString(
+              uncurry(2, MessageTypeFileMessage_get_Decoder()),
+              message,
+            ),
+          ),
         );
       }
       case 5: {
-        toConsole(printf("Received MessageTypes.IsTyping - %s"))(message);
-        return Result_Map((d_1) => {
+        toConsole(printf('Received MessageTypes.IsTyping - %s'))(message);
+        return Result_Map(d_1 => {
           callbacks.addPKToTyping(d_1.user_pk);
         }, fromString(uncurry(2, GenericUserPKMessage_get_Decoder()), message));
       }
       case 6: {
-        toConsole(printf("Received MessageTypes.MessageRead - %s"))(message);
-        return Result_Map((d_4) => {
+        toConsole(printf('Received MessageTypes.MessageRead - %s'))(message);
+        return Result_Map(d_4 => {
           callbacks.setMessageIdAsRead(d_4.message_id);
         }, fromString(uncurry(2, MessageTypeMessageRead_get_Decoder()), message));
       }
       case 7: {
-        toConsole(printf("Received MessageTypes.ErrorOccured - %s"))(message);
-        const decoded = fromString(uncurry(2, MessageTypeErrorOccured_get_Decoder()), message);
+        toConsole(printf('Received MessageTypes.ErrorOccured - %s'))(message);
+        const decoded = fromString(
+          uncurry(2, MessageTypeErrorOccured_get_Decoder()),
+          message,
+        );
         if (decoded.tag === 1) {
           const e = decoded.fields[0];
           return new FSharpResult$2(1, e);
         } else {
           const err = decoded.fields[0];
-          const msg = toText(printf("Error: %A, message %s"))(err.error[0])(err.error[1]);
+          const msg = toText(printf('Error: %A, message %s'))(err.error[0])(
+            err.error[1],
+          );
           return new FSharpResult$2(1, msg);
         }
       }
       case 8: {
-        toConsole(printf("Received MessageTypes.MessageIdCreated - %s"))(message);
-        return Result_Map((d) => {
+        toConsole(printf('Received MessageTypes.MessageIdCreated - %s'))(
+          message,
+        );
+        return Result_Map(d => {
           callbacks.replaceMessageId(d.random_id, d.db_id);
         }, fromString(uncurry(2, MessageTypeMessageIdCreated_get_Decoder()), message));
       }
       case 9: {
-        toConsole(printf("Received MessageTypes.NewUnreadCount - %s"))(message);
-        return Result_Map((d_5) => {
+        toConsole(printf('Received MessageTypes.NewUnreadCount - %s'))(message);
+        return Result_Map(d_5 => {
           callbacks.newUnreadCount(d_5.sender, d_5.unread_count);
         }, fromString(uncurry(2, MessageTypeNewUnreadCount_get_Decoder()), message));
       }
       default: {
         const x = o | 0;
-        toConsole(printf("Received unhandled MessageType %A"))(x);
+        toConsole(printf('Received unhandled MessageType %A'))(x);
         return new FSharpResult$2(0, void 0);
       }
     }
   }, fromString(uncurry(2, MessageTypesDecoder), message));
   if (res.tag === 1) {
     const e_1 = res.fields[0];
-    toConsole(printf("Error while processing message %s - error: %s"))(message)(e_1);
+    toConsole(printf('Error while processing message %s - error: %s'))(message)(
+      e_1,
+    );
     const data = singleton([
-      "error",
+      'error',
       tuple2(
-        (value) => Enum_int(value),
-        (value_1) => value_1,
+        value => Enum_int(value),
+        value_1 => value_1,
         1,
-        toText(printf("msg_type decoding error - %s"))(e_1)
+        toText(printf('msg_type decoding error - %s'))(e_1),
       ),
     ]);
     sock.send(msgTypeEncoder(7, data));
-    return toText(printf("Error occured - %s"))(e_1);
+    return toText(printf('Error occured - %s'))(e_1);
   } else {
     return void 0;
   }
 }
 
 export function sendOutgoingTextMessage(sock, text, user_pk, self_info) {
-  toConsole(printf("Sending text message: \u0027%A\u0027, user_pk:\u0027%A\u0027"))(text)(user_pk);
+  toConsole(
+    printf('Sending text message: \u0027%A\u0027, user_pk:\u0027%A\u0027'),
+  )(text)(user_pk);
   const randomId = generateRandomId();
   const data = ofArray([
-    ["text", text],
-    ["user_pk", user_pk],
-    ["random_id", ~~toInt(randomId)],
+    ['text', text],
+    ['user_pk', user_pk],
+    ['random_id', ~~toInt(randomId)],
   ]);
   const encodedMsg = msgTypeEncoder(3, data);
 
   sock.send(encodedMsg);
   return map(
-    (x) => createMessageBoxFromOutgoingMessage(text, user_pk, x.pk, x.username, randomId, void 0),
-    self_info
+    x =>
+      createMessageBoxFromOutgoingMessage(
+        text,
+        user_pk,
+        x.pk,
+        x.username,
+        randomId,
+        void 0,
+      ),
+    self_info,
   );
 }
 
 export function sendOutgoingFileMessage(sock, user_pk, file_data, self_info) {
-  toConsole(printf("Sending file message: \u0027%s\u0027, user_pk:\u0027%s\u0027"))(file_data.id)(
-    user_pk
-  );
+  toConsole(
+    printf('Sending file message: \u0027%s\u0027, user_pk:\u0027%s\u0027'),
+  )(file_data.id)(user_pk);
   const randomId = generateRandomId();
   const data = ofArray([
-    ["file_id", file_data.id],
-    ["user_pk", user_pk],
-    ["random_id", ~~toInt(randomId)],
+    ['file_id', file_data.id],
+    ['user_pk', user_pk],
+    ['random_id', ~~toInt(randomId)],
   ]);
   sock.send(msgTypeEncoder(4, data));
   return map(
-    (x) =>
+    x =>
       createMessageBoxFromOutgoingMessage(
         file_data.name,
         user_pk,
         x.pk,
         x.username,
         randomId,
-        file_data
+        file_data,
       ),
-    self_info
+    self_info,
   );
 }
 
@@ -407,11 +474,13 @@ export function sendIsTypingMessage(sock) {
 
 export function sendMessageReadMessage(sock, user_pk, message_id) {
   toConsole(
-    printf("Sending \u0027read\u0027 message for message_id \u0027%i\u0027, user_pk:\u0027%A\u0027")
+    printf(
+      'Sending \u0027read\u0027 message for message_id \u0027%i\u0027, user_pk:\u0027%A\u0027',
+    ),
   )(message_id)(user_pk);
   const data = ofArray([
-    ["user_pk", user_pk],
-    ["message_id", ~~toInt(message_id)],
+    ['user_pk', user_pk],
+    ['message_id', ~~toInt(message_id)],
   ]);
   sock.send(msgTypeEncoder(6, data));
 }
@@ -419,54 +488,59 @@ export function sendMessageReadMessage(sock, user_pk, message_id) {
 // TODO: bettherway to embed the urls
 // export const backendUrl = BACKEND_URL; // ((process.env.LOCAL_DEBUG == "1") ? 'http://localhost:60' : 'https://littleworld-test.com');  //"http://localhost:60";
 
-export const backendUrl = IS_CAPACITOR_BUILD ? (BACKEND_URL + "/api/chat"): (window.location.origin + "/api/chat");
+export const backendUrl = IS_CAPACITOR_BUILD
+  ? BACKEND_URL + '/api/chat'
+  : window.location.origin + '/api/chat';
 
-export const messagesEndpoint = toText(printf("%s/messages/"))(backendUrl);
+export const messagesEndpoint = toText(printf('%s/messages/'))(backendUrl);
 
-export const dialogsEndpoint = toText(printf("%s/dialogs/"))(backendUrl);
+export const dialogsEndpoint = toText(printf('%s/dialogs/'))(backendUrl);
 function dialogsEndpointByPage(page) {
-  return dialogsEndpoint + "?page=" + page;
+  return dialogsEndpoint + '?page=' + page;
 }
 
 function dialogsEndpointByUserPk(pk) {
-  return dialogsEndpoint + "?usr_hash=" + pk;
+  return dialogsEndpoint + '?usr_hash=' + pk;
 }
 
-export const selfEndpoint = toText(printf("%s/self/"))(backendUrl);
+export const selfEndpoint = toText(printf('%s/self/'))(backendUrl);
 
-export const usersEndpoint = toText(printf("%s/users/"))(backendUrl);
+export const usersEndpoint = toText(printf('%s/users/'))(backendUrl);
 
-export const uploadEndpoint = toText(printf("%s/upload/"))(backendUrl);
+export const uploadEndpoint = toText(printf('%s/upload/'))(backendUrl);
 
 export function uploadFile(f, csrfToken) {
   return PromiseBuilder__Run_212F1D4B(
     promise,
     PromiseBuilder__Delay_62FBFDE1(promise, () => {
       const data = new FormData();
-      data.append("file", f[0]);
+      data.append('file', f[0]);
       const headers_2 = new Types_RequestProperties(1, {
-        "X-CSRFToken": csrfToken,
+        'X-CSRFToken': csrfToken,
       });
       const props = ofArray([
-        new Types_RequestProperties(0, "POST"),
+        new Types_RequestProperties(0, 'POST'),
         new Types_RequestProperties(2, data),
         headers_2,
       ]);
-      return tryFetch(uploadEndpoint, props).then((_arg1) => {
+      return tryFetch(uploadEndpoint, props).then(_arg1 => {
         const resp = _arg1;
         if (resp.tag === 1) {
           const e = resp.fields[0];
           return Promise.resolve(new FSharpResult$2(1, e.message));
         } else {
           const r = resp.fields[0];
-          return r.text().then((_arg2) => {
+          return r.text().then(_arg2 => {
             const text = _arg2;
-            const decoded = fromString(uncurry(2, MessageModelFile_get_Decoder()), text);
+            const decoded = fromString(
+              uncurry(2, MessageModelFile_get_Decoder()),
+              text,
+            );
             return Promise.resolve(decoded);
           });
         }
       });
-    })
+    }),
   );
 }
 
@@ -474,95 +548,103 @@ export function fetchSelfInfo() {
   return PromiseBuilder__Run_212F1D4B(
     promise,
     PromiseBuilder__Delay_62FBFDE1(promise, () =>
-      tryFetch(selfEndpoint, empty()).then((_arg1) => {
+      tryFetch(selfEndpoint, empty()).then(_arg1 => {
         const resp = _arg1;
         if (resp.tag === 1) {
           const e = resp.fields[0];
           return Promise.resolve(new FSharpResult$2(1, e.message));
         } else {
           const r = resp.fields[0];
-          return r.text().then((_arg2) => {
+          return r.text().then(_arg2 => {
             const text = _arg2;
-            const decoded = fromString(uncurry(2, UserInfoResponse_get_Decoder()), text);
+            const decoded = fromString(
+              uncurry(2, UserInfoResponse_get_Decoder()),
+              text,
+            );
             return Promise.resolve(decoded);
           });
         }
-      })
-    )
+      }),
+    ),
   );
 }
 
 export function fetchUsersList(existing) {
-  const existingPks = map_1((x) => x.id, existing);
+  const existingPks = map_1(x => x.id, existing);
   return mapResult(
-    (x_1) =>
+    x_1 =>
       map_1(
-        (dialog_1) =>
+        dialog_1 =>
           new ChatItem(
             dialog_1.pk,
             getPhotoString(dialog_1.pk, void 0),
             true,
-            "",
+            '',
             void 0,
             dialog_1.username,
             dialog_1.username,
             now(),
-            "",
-            0
+            '',
+            0,
           ),
         x_1.filter(
-          (dialog) =>
+          dialog =>
             !contains(dialog.pk, existingPks, {
               Equals: (x_2, y) => x_2 === y,
-              GetHashCode: (x_2) => stringHash(x_2),
-            })
-        )
+              GetHashCode: x_2 => stringHash(x_2),
+            }),
+        ),
       ),
     PromiseBuilder__Run_212F1D4B(
       promise,
       PromiseBuilder__Delay_62FBFDE1(promise, () =>
-        tryFetch(usersEndpoint, empty()).then((_arg1) => {
+        tryFetch(usersEndpoint, empty()).then(_arg1 => {
           const resp = _arg1;
           if (resp.tag === 1) {
             const e = resp.fields[0];
             return Promise.resolve(new FSharpResult$2(1, e.message));
           } else {
             const r = resp.fields[0];
-            return r.text().then((_arg2) => {
+            return r.text().then(_arg2 => {
               let decoder;
               const text = _arg2;
               const decoded = fromString(
                 uncurry(
                   2,
                   ((decoder = UserInfoResponse_get_Decoder()),
-                  (path) => (value) => array_3(uncurry(2, decoder), path, value))
+                  path => value => array_3(uncurry(2, decoder), path, value)),
                 ),
-                text
+                text,
               );
               return Promise.resolve(decoded);
             });
           }
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 }
 
 export function fetchMessages() {
   return mapResult(
-    (x) =>
+    x =>
       sortBy(
-        (x_4) => x_4.date,
-        map_1((message) => {
-          const t = message.file != null ? "file" : "text";
+        x_4 => x_4.date,
+        map_1(message => {
+          const t = message.file != null ? 'file' : 'text';
           let status;
           const matchValue_1 = [message.out, message.read];
-          status = matchValue_1[1] ? "read" : matchValue_1[0] ? "sent" : "received";
+          status = matchValue_1[1]
+            ? 'read'
+            : matchValue_1[0]
+            ? 'sent'
+            : 'received';
           const avatar = getPhotoString(message.sender, 150);
+          console.log({ avatar });
           const dialog_id = message.out ? message.recipient : message.sender;
-          const dataStatus = map((_arg1_1) => defaultDataStatus, message.file);
-          const size = map((x_1) => humanFileSize(x_1.size), message.file);
-          const uri = map((x_2) => x_2.url, message.file);
+          const dataStatus = map(_arg1_1 => defaultDataStatus, message.file);
+          const size = map(x_1 => humanFileSize(x_1.size), message.file);
+          const uri = map(x_2 => x_2.url, message.file);
           let text_1;
           const matchValue_2 = message.file;
           if (matchValue_2 == null) {
@@ -572,7 +654,7 @@ export function fetchMessages() {
             text_1 = f.name;
           }
           return new MessageBox(
-            message.out ? "right" : "left",
+            message.out ? 'right' : 'left',
             t,
             text_1,
             message.sender_username,
@@ -585,39 +667,42 @@ export function fetchMessages() {
               message.out,
               size,
               uri,
-              dataStatus
+              dataStatus,
             ),
             map(
-              (x_3) => (e_1) => {
+              x_3 => e_1 => {
                 createOnDownload(x_3.url, x_3.name, e_1);
               },
-              message.file
-            )
+              message.file,
+            ),
           );
         }, x.data),
         {
           Compare: (x_5, y) => compare(x_5, y),
-        }
+        },
       ),
     PromiseBuilder__Run_212F1D4B(
       promise,
       PromiseBuilder__Delay_62FBFDE1(promise, () =>
-        tryFetch(messagesEndpoint, empty()).then((_arg1) => {
+        tryFetch(messagesEndpoint, empty()).then(_arg1 => {
           const resp = _arg1;
           if (resp.tag === 1) {
             const e = resp.fields[0];
             return Promise.resolve(new FSharpResult$2(1, e.message));
           } else {
             const r = resp.fields[0];
-            return r.text().then((_arg2) => {
+            return r.text().then(_arg2 => {
               const text = _arg2;
-              const decoded = fromString(uncurry(2, MessagesResponse_get_Decoder()), text);
+              const decoded = fromString(
+                uncurry(2, MessagesResponse_get_Decoder()),
+                text,
+              );
               return Promise.resolve(decoded);
             });
           }
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 }
 
@@ -627,20 +712,25 @@ export function filterMessagesForDialog(d, messages) {
   } else {
     const dialog = d;
 
-    return messages.filter((m) => m.data.dialog_id === dialog.id);
+    return messages.filter(m => m.data.dialog_id === dialog.id);
   }
 }
 
-export function markMessagesForDialogAsRead(sock, d, messages, msgReadCallback) {
+export function markMessagesForDialogAsRead(
+  sock,
+  d,
+  messages,
+  msgReadCallback,
+) {
   filterMessagesForDialog(d, messages)
-    .filter((y) => {
-      if (y.status !== "read" ? y.data.out === false : false) {
+    .filter(y => {
+      if (y.status !== 'read' ? y.data.out === false : false) {
         return MessageBox__HasDbId(y);
       } else {
         return false;
       }
     })
-    .forEach((x) => {
+    .forEach(x => {
       msgReadCallback(x.data.message_id);
       sendMessageReadMessage(sock, d.id, x.data.message_id);
     });
@@ -655,44 +745,47 @@ export function fetchDialogs(page = null, user_pk = null) {
     dialogGet = dialogsEndpointByPage(page);
   }
   return mapResult(
-    (x) =>
+    x =>
       map_1(
-        (dialog) =>
+        dialog =>
           new ChatItem(
             dialog.other_user_id,
             getPhotoString(dialog.other_user_id, void 0),
             true,
-            "",
+            '',
             void 0,
             dialog.username,
             dialog.username,
             defaultArg(
-              map((x_1) => x_1.sent, dialog.last_message),
-              dialog.created
+              map(x_1 => x_1.sent, dialog.last_message),
+              dialog.created,
             ),
             getSubtitleTextFromMessageModel(dialog.last_message),
-            dialog.unread_count
+            dialog.unread_count,
           ),
-        x.data
+        x.data,
       ),
     PromiseBuilder__Run_212F1D4B(
       promise,
       PromiseBuilder__Delay_62FBFDE1(promise, () =>
-        tryFetch(dialogGet, empty()).then((_arg1) => {
+        tryFetch(dialogGet, empty()).then(_arg1 => {
           const resp = _arg1;
           if (resp.tag === 1) {
             const e = resp.fields[0];
             return Promise.resolve(new FSharpResult$2(1, e.message));
           } else {
             const r = resp.fields[0];
-            return r.text().then((_arg2) => {
+            return r.text().then(_arg2 => {
               const text = _arg2;
-              const decoded = fromString(uncurry(2, DialogsResponse_get_Decoder()), text);
+              const decoded = fromString(
+                uncurry(2, DialogsResponse_get_Decoder()),
+                text,
+              );
               return Promise.resolve(decoded);
             });
           }
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
 }

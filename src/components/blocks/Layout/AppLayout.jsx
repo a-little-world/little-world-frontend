@@ -12,6 +12,12 @@ const Wrapper = styled.div`
   min-height: 100vh;
   box-sizing: border-box;
 
+  ${({ $isVH }) =>
+    $isVH &&
+    css`
+      max-height: 100vh;
+    `}
+
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: ${theme.spacing.small};
@@ -26,7 +32,7 @@ const Wrapper = styled.div`
   `};
 `;
 
-const AppLayout = ({ children, page }) => {
+const AppLayout = ({ children, isVH, page }) => {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
   const location = useLocation();
 
@@ -35,7 +41,7 @@ const AppLayout = ({ children, page }) => {
   }, [location]);
 
   return (
-    <Wrapper className={page ? `main-page show-${page}` : null}>
+    <Wrapper className={page ? `main-page show-${page}` : null} $isVH={isVH}>
       <Sidebar
         sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
       />
