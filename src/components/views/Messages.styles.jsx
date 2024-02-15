@@ -68,20 +68,25 @@ export const Preview = styled(Text)`
   text-overflow: ellipsis;
 `;
 
-export const MessagesPanel = ({ messages }) => {
-  const fakeDate = formatDistance(subDays(new Date(), 3), new Date(), {
-    addSuffix: true,
-  });
-
+export const MessagesPanel = ({ messages, selectChat }) => {
   return (
     <Panel>
       {messages?.map((message, index) => (
-        <Message $selected={!index}>
-          <UserImage circle imageType={'avatar'} size={'xsmall'} />
+        <Message $selected={!index} onClick={() => selectChat(message.uuid)}>
+          <UserImage
+            circle
+            image={message.partner.image}
+            imageType={message.partner.image_type}
+            size={'xsmall'}
+          />
           <Details>
             <Top>
-              <Text bold>{message.sender_username}</Text>
-              <Time type={TextTypes.Body6}>{fakeDate}</Time>
+              <Text bold>{message.partner.first_name}</Text>
+              <Time type={TextTypes.Body6}>
+                {formatDistance(message.created, new Date(), {
+                  addSuffix: true,
+                })}
+              </Time>
             </Top>
             <Preview>{message.text}</Preview>
           </Details>

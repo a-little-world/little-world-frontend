@@ -91,8 +91,9 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
 
 const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   const { t } = useTranslation();
+  const [selectedChat, setSelectedChat] = useState(null);
+
   const dispatch = useDispatch();
-  const selectedChat = useSelector(state => state?.chats?.selectedChat);
   const chats = useSelector(state => state.chats);
   const user = useSelector(state => state.user);
   const messages = useSelector(state => state.messages);
@@ -138,7 +139,8 @@ const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   useEffect(() => {
     fetchChats().then(response => {
       console.log({ response });
-      setMessageList(response.data);
+      setMessageList(response.results);
+      setSelectedChat(response.results[0].uuid);
     });
 
     fetchDialogs().then(r => {
@@ -228,8 +230,8 @@ const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
     <>
       <PageHeader text={t('chat_header')}></PageHeader>
       <ChatDashboard>
-        <MessagesPanel messages={messageList} />
-        <Chat messages={messageList} />
+        <MessagesPanel messages={messageList} selectChat={setSelectedChat} />
+        <Chat messages={messageList} chatId={selectedChat} />
       </ChatDashboard>
     </>
   );

@@ -26,7 +26,7 @@ const StyledAvatar = styled(Avatar)`
 
 export const CircleImage = styled.div`
   border-radius: 50%;
-  border: 8px solid #e6e8ec;
+  border: ${({ $size }) => ($size === 'xsmall' ? '4px' : '8px')} solid #e6e8ec;
   background: ${({ $image }) => `url(${$image})`};
   background-size: cover;
   background-position: center;

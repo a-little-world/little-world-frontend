@@ -4,7 +4,7 @@ import { formatApiError } from '.';
 import { BACKEND_URL } from '../ENVIRONMENT';
 
 export const fetchChatMessages = async ({ id }) => {
-  const response = await fetch(`${BACKEND_URL}/api/messages/${id}`, {
+  const response = await fetch(`${BACKEND_URL}/api/messages/${id}/`, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),
       'X-UseTagsOnly': 'True',
@@ -19,8 +19,8 @@ export const fetchChatMessages = async ({ id }) => {
   throw formatApiError(responseBody);
 };
 
-export const fetchChats = async ({ id }) => {
-  const response = await fetch(`${BACKEND_URL}/api/chats`, {
+export const fetchChats = async () => {
+  const response = await fetch(`${BACKEND_URL}/api/chats/`, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),
       'X-UseTagsOnly': 'True',
@@ -36,7 +36,7 @@ export const fetchChats = async ({ id }) => {
 };
 
 export const sendMessage = async ({ id }) => {
-  const response = await fetch(`${BACKEND_URL}/api/messages/${id}/send`, {
+  const response = await fetch(`${BACKEND_URL}/api/messages/${id}/send/`, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),
       'X-UseTagsOnly': 'True',

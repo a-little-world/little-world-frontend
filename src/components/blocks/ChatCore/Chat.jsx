@@ -8,8 +8,10 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { format, formatDistance, formatRelative, subDays } from 'date-fns';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { fetchChatMessages } from '../../../api/chat';
 import ProfileImage from '../../atoms/ProfileImage';
 
 export const Panel = styled(Card)`
@@ -90,11 +92,20 @@ export const Preview = styled(Text)`
   text-overflow: ellipsis;
 `;
 
-export const Chat = ({ messages }) => {
+export const Chat = ({ chatId }) => {
+  const [chatData, setChatData] = useState(null);
   const fakeDate = formatDistance(subDays(new Date(), 3), new Date(), {
     addSuffix: true,
   });
 
+  useEffect(() => {
+    if (chatId)
+      fetchChatMessages({ id: chatId }).then(data => {
+        console.log({ data });
+        setChatData(data);
+      });
+  }, [chatId]);
+  console.log({ chatId });
   return (
     <Panel>
       <TopSection>
@@ -106,14 +117,14 @@ export const Chat = ({ messages }) => {
           <PhoneIcon circular />
         </Button>
       </TopSection>
-      <Messages>
+      {/* <Messages>
         {messages?.map((message, index) => (
           <Message $isSelf={index % 2 === 0}>
             <MessageText $isSelf={index % 2 === 0}>{message.text}</MessageText>
             <Time type={TextTypes.Body6}>{fakeDate}</Time>
           </Message>
         ))}
-      </Messages>
+      </Messages> */}
       <WriteSection>
         <MessageBox maxLength={null} />
         <Button>Send</Button>
