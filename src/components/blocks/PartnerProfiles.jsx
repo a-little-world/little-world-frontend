@@ -116,7 +116,7 @@ function PartnerProfiles({
       {user.isSearching ? (
         <SearchingCard
           setShowCancel={setShowCancel}
-          hasMatch={user.hasMatch}
+          hasMatch={!user.hasMatch}
           hadPreMatchingCall={user.hadPreMatchingCall}
         />
       ) : (
