@@ -13,6 +13,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { formatTime } from '../../../helpers/date';
 import SearchingSvg from '../../../images/match-searching.svg';
 import AppointmentSvg from '../../../images/new-appointment.svg';
 import { USER_FORM_ROUTE, getAppRoute } from '../../../routes';
@@ -52,6 +53,13 @@ const Note = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
+const getCardState = ({ hasMatch, hadPreMatchingCall, hasAppointment }) => {
+  if (hasMatch) return 'matched';
+  if (hadPreMatchingCall) return 'pre_match_call_completed';
+  if (hasAppointment) return 'pre_match_call_booked';
+  return 'pre_match_call_not_booked';
+};
+
 export function SearchingCard({
   calComAppointmentLink,
   hasMatch,
@@ -60,6 +68,11 @@ export function SearchingCard({
   setShowCancel,
 }) {
   const { t } = useTranslation();
+  const cardState = getCardState({
+    hasMatch,
+    hadPreMatchingCall,
+    hasAppointment: !!preMatchingAppointment,
+  });
   console.log({ preMatchingAppointment });
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
@@ -78,24 +91,21 @@ export function SearchingCard({
             {t('searching_card.welcome')}
           </WelcomeTitle>
           {hadPreMatchingCall ? (
-            <>
-              <SearchingImage
-                alt="searching image"
-                src={SearchingSvg}
-                $hasMatch={hasMatch}
-              />
-              <Text center>{t('searching_card.info_1')}</Text>
-              <Note center>{t('searching_card.info_2')}</Note>
-            </>
+            <SearchingImage
+              alt="searching image"
+              src={SearchingSvg}
+              $hasMatch={hasMatch}
+            />
           ) : (
-            <>
-              <MatchingCallImage
-                alt="matching call image"
-                src={AppointmentSvg}
-              />
-              <Text center>{t('searching_card.pre_match_call_info_1')}</Text>
-              <Note center>{t('searching_card.pre_match_call_info_2')}</Note>
-            </>
+            <MatchingCallImage alt="matching call image" src={AppointmentSvg} />
+          )}
+          <Text center>{t(`searching_card.${cardState}_info_1`)}</Text>
+          <Note center>{t(`searching_card.${cardState}_info_2`)}</Note>
+          {cardState === 'pre_match_call_booked' && (
+            <Text type={TextTypes.Body4} bold>
+              {formatTime(new Date(preMatchingAppointment.start_time))} -{' '}
+              {formatTime(new Date(preMatchingAppointment.end_time))}
+            </Text>
           )}
         </>
       )}
@@ -122,7 +132,7 @@ export function SearchingCard({
           onClick={() => null}
           size={ButtonSizes.Stretch}
         >
-          {t('searching_card.pre_match_call_cta')}
+          {t(`searching_card.${cardState}_cta`)}
         </Button>
       )}
     </StyledCard>
