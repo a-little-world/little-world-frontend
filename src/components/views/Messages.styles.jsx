@@ -34,6 +34,7 @@ export const Panel = styled(Card)`
     display: ${$selectedChat ? 'none' : 'flex'};
     @media (min-width: ${theme.breakpoints.medium}) {
       display: flex;
+      width: 400px;
     }
   `}
 `;
