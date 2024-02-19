@@ -4,26 +4,41 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { format, formatDistance, formatRelative, subDays } from 'date-fns';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import ProfileImage from '../atoms/ProfileImage';
 
 export const ChatDashboard = styled.div`
+  position: relative;
   display: flex;
   width: 100%;
   gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.xxsmall};
   overflow-y: scroll;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: 0;
+    }
+  `}
 `;
 
 export const Panel = styled(Card)`
-  width: 400px;
   padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.small}`};
   gap: ${({ theme }) => theme.spacing.xxsmall};
   overflow-y: scroll;
   flex-shrink: 0;
+  width: 100%;
+
+  ${({ theme, $selectedChat }) => css`
+    display: ${$selectedChat ? 'none' : 'flex'};
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: flex;
+    }
+  `}
 `;
 
-export const Message = styled.div`
+export const Message = styled.button`
   display: flex;
   position: relative;
   gap: ${({ theme }) => theme.spacing.small};
@@ -68,11 +83,14 @@ export const Preview = styled(Text)`
   text-overflow: ellipsis;
 `;
 
-export const MessagesPanel = ({ messages, selectChat }) => {
+export const MessagesPanel = ({ messages, selectChat, selectedChat }) => {
   return (
-    <Panel>
+    <Panel $selectedChat={selectedChat}>
       {messages?.map((message, index) => (
-        <Message $selected={!index} onClick={() => selectChat(message.uuid)}>
+        <Message
+          $selected={message.uuid === selectedChat}
+          onClick={() => selectChat(message.uuid)}
+        >
           <UserImage
             circle
             image={message.partner.image}

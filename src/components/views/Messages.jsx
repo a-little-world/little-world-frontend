@@ -92,6 +92,7 @@ const addMatchesInfo = (dialogList, matchesInfo) => {
 const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
   const { t } = useTranslation();
   const [selectedChat, setSelectedChat] = useState(null);
+  const [chatInFocus, setChatInFocus] = useState(false);
 
   const dispatch = useDispatch();
   const chats = useSelector(state => state.chats);
@@ -140,7 +141,7 @@ const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
     fetchChats().then(response => {
       console.log({ response });
       setMessageList(response.results);
-      setSelectedChat(response.results[0].uuid);
+      // setSelectedChat(response.results[0].uuid);
     });
 
     fetchDialogs().then(r => {
@@ -225,13 +226,27 @@ const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
     setUserWasSelected(true);
     document.body.classList.add('hide-mobile-header');
   };
+
+  const handleOnChatBackBtn = () => {
+    setSelectedChat(null);
+    setChatInFocus(false);
+  };
   console.log({ chats, messages, messageList });
   return (
     <>
       <PageHeader text={t('chat_header')}></PageHeader>
       <ChatDashboard>
-        <MessagesPanel messages={messageList} selectChat={setSelectedChat} />
-        <Chat messages={messageList} chatId={selectedChat} />
+        <MessagesPanel
+          messages={messageList}
+          selectChat={setSelectedChat}
+          selectedChat={selectedChat}
+        />
+        <Chat
+          messages={messageList}
+          chatId={selectedChat || messageList[0]?.uuid}
+          isFullScreen={selectedChat}
+          onBackButton={handleOnChatBackBtn}
+        />
       </ChatDashboard>
     </>
   );

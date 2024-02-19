@@ -1,4 +1,5 @@
 import {
+  ArrowLeftIcon,
   Button,
   ButtonVariations,
   Card,
@@ -9,7 +10,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { format, formatDistance, formatRelative, subDays } from 'date-fns';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { fetchChatMessages } from '../../../api/chat';
 import ProfileImage from '../../atoms/ProfileImage';
@@ -21,6 +22,21 @@ export const Panel = styled(Card)`
   min-height: 0;
   padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.small}`};
   gap: ${({ theme }) => theme.spacing.xsmall};
+
+  ${({ theme, $isFullScreen }) =>
+    $isFullScreen
+      ? css`
+          display: flex;
+          @media (min-width: ${theme.breakpoints.medium}) {
+            position: relative;
+          }
+        `
+      : css`
+          display: none;
+          @media (min-width: ${theme.breakpoints.medium}) {
+            display: flex;
+          }
+        `}
 `;
 
 export const Details = styled.div`
@@ -85,6 +101,12 @@ export const MessageBox = styled(TextArea)`
   background: ${({ theme }) => theme.color.surface.secondary};
 `;
 
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
 export const Preview = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
   overflow: hidden;
@@ -92,7 +114,18 @@ export const Preview = styled(Text)`
   text-overflow: ellipsis;
 `;
 
-export const Chat = ({ chatId }) => {
+const BackButton = styled(Button)`
+  display: ${({ $show }) => ($show ? 'flex' : 'none')};
+  color: ${({ theme }) => theme.color.text.link};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: none;
+    }
+  `}
+`;
+
+export const Chat = ({ chatId, isFullScreen, onBackButton }) => {
   const [chatData, setChatData] = useState(null);
   const fakeDate = formatDistance(subDays(new Date(), 3), new Date(), {
     addSuffix: true,
@@ -105,14 +138,28 @@ export const Chat = ({ chatId }) => {
         setChatData(data);
       });
   }, [chatId]);
-  console.log({ chatId });
+  console.log({ chatId, isFullScreen });
   return (
-    <Panel>
+    <Panel $isFullScreen={isFullScreen}>
       <TopSection>
-        <div>
+        <UserInfo>
+          <BackButton
+            variation={ButtonVariations.Icon}
+            onClick={onBackButton}
+            $show={isFullScreen && !!onBackButton}
+          >
+            <ArrowLeftIcon
+              labelId="return to profile"
+              label="return to profile"
+              width="16"
+              height="16"
+            />
+          </BackButton>
           <UserImage circle imageType={'avatar'} size={'xsmall'} />
-          <Text bold>Sean</Text>
-        </div>
+          <Text bold type={TextTypes.Body4}>
+            Sean
+          </Text>
+        </UserInfo>
         <Button variation={ButtonVariations.Icon}>
           <PhoneIcon circular />
         </Button>
