@@ -247,7 +247,9 @@ function Main() {
           use={use}
         />
         {use === 'main' &&
-          (topSelection === 'conversation_partners' ? (
+          (topSelection === 'community_calls' ? (
+            <CommunityEvents />
+          ) : (
             <>
               <Home className="content-area-main">
                 <PartnerProfiles
@@ -265,8 +267,6 @@ function Main() {
                 />
               )}
             </>
-          ) : (
-            <CommunityEvents />
           ))}
         {use === 'chat' && (
           <Chat

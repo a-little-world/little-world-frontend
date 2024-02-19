@@ -52,8 +52,15 @@ const Note = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
-export function SearchingCard({ setShowCancel, hasMatch, hadPreMatchingCall }) {
+export function SearchingCard({
+  calComAppointmentLink,
+  hasMatch,
+  hadPreMatchingCall,
+  preMatchingAppointment,
+  setShowCancel,
+}) {
   const { t } = useTranslation();
+  console.log({ preMatchingAppointment });
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
       {hasMatch ? (
@@ -93,7 +100,7 @@ export function SearchingCard({ setShowCancel, hasMatch, hadPreMatchingCall }) {
         </>
       )}
 
-      {hadPreMatchingCall ? (
+      {hadPreMatchingCall || hasMatch ? (
         <>
           <Link
             buttonAppearance={ButtonAppearance.Primary}
@@ -110,7 +117,7 @@ export function SearchingCard({ setShowCancel, hasMatch, hadPreMatchingCall }) {
         </>
       ) : (
         <Button
-          data-cal-link="herr-duenschnlate-iiscv9/15min?email=herrduenschnlate%2B21211%40gmail.com&amp;hash=cfeb8c8e-e4b4-427e-923a-c1ca9eb242d1-1afa6cb2-7a39-4fe0-b453-101b58417819&amp;bookingcode=e155fdb1-c91d-4a96-b2e3-8fa0b399034b"
+          data-cal-link={calComAppointmentLink}
           data-cal-config='{"layout":"month_view"}'
           onClick={() => null}
           size={ButtonSizes.Stretch}

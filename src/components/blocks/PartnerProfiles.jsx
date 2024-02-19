@@ -33,6 +33,7 @@ const FindNewPartner = styled.button`
   justify-content: center;
   height: ${PROFILE_CARD_HEIGHT};
   position: relative;
+  order: 1;
 
   > img {
     width: 115px;
@@ -116,8 +117,9 @@ function PartnerProfiles({
       {user.isSearching ? (
         <SearchingCard
           setShowCancel={setShowCancel}
-          hasMatch={!user.hasMatch}
+          hasMatch={user.hasMatch}
           hadPreMatchingCall={user.hadPreMatchingCall}
+          preMatchingAppointment={user.preMatchingAppointment}
         />
       ) : (
         <FindNewPartner type="button" onClick={updateUserMatchingState}>
