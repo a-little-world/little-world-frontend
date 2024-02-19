@@ -105,7 +105,7 @@ export const Chat = ({ chatId }) => {
         setChatData(data);
       });
   }, [chatId]);
-  console.log({ chatId });
+  console.log({ chatId, chatData });
   return (
     <Panel>
       <TopSection>
@@ -117,14 +117,14 @@ export const Chat = ({ chatId }) => {
           <PhoneIcon circular />
         </Button>
       </TopSection>
-      {/* <Messages>
-        {messages?.map((message, index) => (
+      <Messages>
+        {chatData?.results?.map((message, index) => (
           <Message $isSelf={index % 2 === 0}>
             <MessageText $isSelf={index % 2 === 0}>{message.text}</MessageText>
             <Time type={TextTypes.Body6}>{fakeDate}</Time>
           </Message>
         ))}
-      </Messages> */}
+      </Messages>
       <WriteSection>
         <MessageBox maxLength={null} />
         <Button>Send</Button>
