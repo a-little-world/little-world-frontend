@@ -120,6 +120,15 @@ export const userDataSlice = createSlice({
     getQuestions: (state, { payload }) => {
       state.questions = payload;
     },
+    preMatchingAppointmentBooked: (state, action) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          preMatchingAppointment: action.payload,
+        },
+      };
+    },
     switchQuestionCategory: (state, { payload }) => {
       const { card, archived } = payload;
 

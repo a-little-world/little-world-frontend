@@ -246,6 +246,7 @@ function Main() {
           setSelection={setTopSelection}
           use={use}
         />
+
         {use === 'main' &&
           (topSelection === 'community_calls' ? (
             <CommunityEvents />
