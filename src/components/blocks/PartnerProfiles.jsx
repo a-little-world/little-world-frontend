@@ -33,7 +33,7 @@ const FindNewPartner = styled.button`
   justify-content: center;
   height: ${PROFILE_CARD_HEIGHT};
   position: relative;
-  order: 1;
+  order: ${({ $hasMatch }) => ($hasMatch ? 1 : 0)};
 
   > img {
     width: 115px;
@@ -97,9 +97,7 @@ function PartnerProfiles({
   const onModalClose = () => {
     setPartnerActionData(null);
   };
-
   console.log({ user });
-
   return (
     <Matches>
       {matchesDisplay.map(match => (
@@ -123,7 +121,11 @@ function PartnerProfiles({
           preMatchingAppointment={user.preMatchingAppointment}
         />
       ) : (
-        <FindNewPartner type="button" onClick={updateUserMatchingState}>
+        <FindNewPartner
+          type="button"
+          onClick={updateUserMatchingState}
+          $hasMatch={user.hasMatch}
+        >
           <img src={PlusImage} alt="change matching status icon" />
           <Text type={TextTypes.Body3}>
             {t('matching_state_not_searching_trans')}
