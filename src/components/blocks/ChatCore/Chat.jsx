@@ -1,6 +1,7 @@
 import {
   ArrowLeftIcon,
   Button,
+  ButtonSizes,
   ButtonVariations,
   Card,
   PhoneIcon,
@@ -10,6 +11,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { format, formatDistance, formatRelative, subDays } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
 import { fetchChatMessages } from '../../../api/chat';
@@ -21,7 +23,7 @@ export const Panel = styled(Card)`
   min-width: 0;
   min-height: 0;
   padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.small}`};
-  gap: ${({ theme }) => theme.spacing.xsmall};
+  gap: ${({ theme }) => theme.spacing.small};
 
   ${({ theme, $isFullScreen }) =>
     $isFullScreen
@@ -65,7 +67,7 @@ export const TopSection = styled.div`
 
 export const WriteSection = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
@@ -125,7 +127,12 @@ const BackButton = styled(Button)`
   `}
 `;
 
+const SendButton = styled(Button)`
+  height: 36px;
+`;
+
 export const Chat = ({ chatId, isFullScreen, onBackButton }) => {
+  const { t } = useTranslation();
   const [chatData, setChatData] = useState(null);
   const fakeDate = formatDistance(subDays(new Date(), 3), new Date(), {
     addSuffix: true,
@@ -173,8 +180,11 @@ export const Chat = ({ chatId, isFullScreen, onBackButton }) => {
         ))}
       </Messages>
       <WriteSection>
-        <MessageBox maxLength={null} />
-        <Button>Send</Button>
+        <MessageBox
+          maxLength={null}
+          placeholder={t('chat.text_area_placeholder')}
+        />
+        <SendButton size={ButtonSizes.Small}>Send</SendButton>
       </WriteSection>
     </Panel>
   );
