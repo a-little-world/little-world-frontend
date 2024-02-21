@@ -35,8 +35,8 @@ export const fetchChats = async () => {
   throw formatApiError(responseBody);
 };
 
-export const sendMessage = async ({ id }) => {
-  const response = await fetch(`${BACKEND_URL}/api/messages/${id}/send/`, {
+export const sendMessage = async ({ chatId, text }) => {
+  const response = await fetch(`${BACKEND_URL}/api/messages/${chatId}/send/`, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),
       'X-UseTagsOnly': 'True',
@@ -44,6 +44,7 @@ export const sendMessage = async ({ id }) => {
       'Content-Type': 'application/json',
     },
     method: 'POST',
+    body: JSON.stringify({ text }),
   });
 
   const responseBody = await response?.json();

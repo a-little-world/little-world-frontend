@@ -11,10 +11,12 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { format, formatDistance, formatRelative, subDays } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { fetchChatMessages } from '../../../api/chat';
+import { fetchChatMessages, sendMessage } from '../../../api/chat';
+import { onFormError, registerInput } from '../../../helpers/form';
 import ProfileImage from '../../atoms/ProfileImage';
 
 export const Panel = styled(Card)`
@@ -66,7 +68,7 @@ export const TopSection = styled.div`
   width: 100%;
 `;
 
-export const WriteSection = styled.div`
+export const WriteSection = styled.form`
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -138,10 +140,15 @@ const SendButton = styled(Button)`
 
 export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
   const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    getValues,
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm({ shouldUnregister: true });
   const [chatData, setChatData] = useState(null);
-  const fakeDate = formatDistance(subDays(new Date(), 3), new Date(), {
-    addSuffix: true,
-  });
 
   useEffect(() => {
     if (chatId)
@@ -149,6 +156,17 @@ export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
         setChatData(data);
       });
   }, [chatId]);
+
+  const onSubmitError = e => {
+    setIsSubmitting(false);
+    onFormError({ e, formFields: getValues(), setError, t });
+  };
+
+  const onSendMessage = ({ text }) => {
+    sendMessage({ text, chatId })
+      .then(data => console.log({ data }))
+      .catch(onSubmitError);
+  };
 
   return (
     <Panel $isFullScreen={isFullScreen}>
@@ -169,7 +187,11 @@ export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
           <UserImage
             circle
             size={'xsmall'}
-            image={partner?.image}
+            image={
+              partner?.image_type === 'avatar'
+                ? partner?.avatar_config
+                : partner?.image
+            }
             imageType={partner?.image_type}
           />
           <Text bold type={TextTypes.Body4}>
@@ -184,16 +206,29 @@ export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
         {chatData?.results?.map((message, index) => (
           <Message $isSelf={index % 2 === 0} key={message.uuid}>
             <MessageText $isSelf={index % 2 === 0}>{message.text}</MessageText>
-            <Time type={TextTypes.Body6}>{fakeDate}</Time>
+            <Time type={TextTypes.Body6}>
+              {formatDistance(message.created, new Date(), {
+                addSuffix: true,
+              })}
+            </Time>
           </Message>
         ))}
       </Messages>
-      <WriteSection>
+      <WriteSection onSubmit={handleSubmit(onSendMessage)}>
         <MessageBox
+          {...registerInput({
+            register,
+            name: 'text',
+            options: { required: 'error.required' },
+          })}
+          id="text"
+          error={t(errors?.text?.message)}
           maxLength={null}
           placeholder={t('chat.text_area_placeholder')}
         />
-        <SendButton size={ButtonSizes.Small}>Send</SendButton>
+        <SendButton size={ButtonSizes.Small} type="submit">
+          Send
+        </SendButton>
       </WriteSection>
     </Panel>
   );

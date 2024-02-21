@@ -94,7 +94,11 @@ export const MessagesPanel = ({ messages, selectChat, selectedChat }) => {
         >
           <UserImage
             circle
-            image={message.partner.image}
+            image={
+              message.partner.image_type === 'avatar'
+                ? message.partner.avatar_config
+                : message.partner.image
+            }
             imageType={message.partner.image_type}
             size={'xsmall'}
           />
