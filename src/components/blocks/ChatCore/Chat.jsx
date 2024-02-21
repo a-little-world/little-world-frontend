@@ -56,6 +56,7 @@ export const UserImage = styled(ProfileImage)`
 
 export const Time = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
+  padding-left: ${({ theme }) => theme.spacing.small};
 `;
 
 export const TopSection = styled.div`
@@ -89,7 +90,11 @@ const Message = styled.div`
 `;
 
 const MessageText = styled(Text)`
-  padding: ${({ theme }) => theme.spacing.xxsmall};
+  padding: ${({ theme }) => theme.spacing.xsmall};
+  border: 1px solid ${({ theme }) => theme.color.border.subtle};
+  border-radius: 24px;
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+
   ${({ $isSelf, theme }) =>
     $isSelf &&
     `
@@ -131,7 +136,7 @@ const SendButton = styled(Button)`
   height: 36px;
 `;
 
-export const Chat = ({ chatId, isFullScreen, onBackButton }) => {
+export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
   const { t } = useTranslation();
   const [chatData, setChatData] = useState(null);
   const fakeDate = formatDistance(subDays(new Date(), 3), new Date(), {
@@ -141,11 +146,10 @@ export const Chat = ({ chatId, isFullScreen, onBackButton }) => {
   useEffect(() => {
     if (chatId)
       fetchChatMessages({ id: chatId }).then(data => {
-        console.log({ data });
         setChatData(data);
       });
   }, [chatId]);
-  console.log({ chatId, isFullScreen });
+
   return (
     <Panel $isFullScreen={isFullScreen}>
       <TopSection>
@@ -162,9 +166,14 @@ export const Chat = ({ chatId, isFullScreen, onBackButton }) => {
               height="16"
             />
           </BackButton>
-          <UserImage circle imageType={'avatar'} size={'xsmall'} />
+          <UserImage
+            circle
+            size={'xsmall'}
+            image={partner?.image}
+            imageType={partner?.image_type}
+          />
           <Text bold type={TextTypes.Body4}>
-            Sean
+            {partner?.first_name}
           </Text>
         </UserInfo>
         <Button variation={ButtonVariations.Icon}>
@@ -173,7 +182,7 @@ export const Chat = ({ chatId, isFullScreen, onBackButton }) => {
       </TopSection>
       <Messages>
         {chatData?.results?.map((message, index) => (
-          <Message $isSelf={index % 2 === 0}>
+          <Message $isSelf={index % 2 === 0} key={message.uuid}>
             <MessageText $isSelf={index % 2 === 0}>{message.text}</MessageText>
             <Time type={TextTypes.Body6}>{fakeDate}</Time>
           </Message>

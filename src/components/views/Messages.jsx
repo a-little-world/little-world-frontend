@@ -144,27 +144,6 @@ const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
       // setSelectedChat(response.results[0].uuid);
     });
 
-    fetchDialogs().then(r => {
-      const tmpMatchIdMap = {};
-      for (let i = 0; i < r.fields[0].length; i++) {
-        tmpMatchIdMap[r.fields[0][i].id] = r.fields[0][i].alt;
-      }
-
-      if (r.tag === 0) {
-        return dialogList;
-      }
-      const list = addMatchesInfo(r.fields[0], matchesInfo); // add name and imgSrc
-      setDialogList(list);
-      setFilteredDialogList(list);
-
-      // set selected dialog to match the userPk if supplied, otherwise use first
-      if (userPk) {
-        const userDialog = dialogList.filter(({ alt }) => alt === userPk)[0];
-        selectDialog(userDialog);
-      } else {
-        selectDialog(list[0]);
-      }
-    });
     //   this.setState({ socketConnectionState: this.state.socket.readyState });
     //   const that = this;
     //   const { socket } = this.state;
@@ -242,10 +221,14 @@ const Messages = ({ userPk, setCallSetupPartner, matchesInfo }) => {
           selectedChat={selectedChat}
         />
         <Chat
-          messages={messageList}
           chatId={selectedChat || messageList[0]?.uuid}
           isFullScreen={selectedChat}
           onBackButton={handleOnChatBackBtn}
+          partner={
+            selectedChat
+              ? messageList?.find(item => item?.uuid === selectedChat)?.partner
+              : messageList[0]?.partner
+          }
         />
       </ChatDashboard>
     </>
