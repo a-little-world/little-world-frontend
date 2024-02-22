@@ -1,8 +1,6 @@
 import {
   Button,
-  ButtonAppearance,
   ButtonVariations,
-  Link,
   PhoneIcon,
   Text,
   TextTypes,
@@ -12,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
+import { formatTime } from '../../../helpers/date';
 import {
   Buttons,
   DateTime,
@@ -27,9 +26,6 @@ import {
 function CommunityEvent({ _key, frequency, description, title, time, link }) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const two = n => (n < 10 ? `0${n}` : n);
-
-  const dateTime = new Date(time);
 
   const [showFullText, setShowFullText] = useState(false);
   const initialWordsDescription = description.split(' ');
@@ -37,6 +33,7 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
     ? initialWordsDescription.join(' ')
     : initialWordsDescription.slice(0, 15).join(' ');
   const isShortText = initialWordsDescription.length <= 15;
+  const dateTime = new Date(time);
 
   const toggleText = () => {
     setShowFullText(!showFullText);
@@ -79,7 +76,7 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
             </>
           )}
           <Text type={TextTypes.Body3} bold>
-            {`${two(dateTime.getHours())}:${two(dateTime.getMinutes())}`}
+            {formatTime(dateTime)}
           </Text>
         </DateTime>
         <Buttons>
