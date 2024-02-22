@@ -145,6 +145,8 @@
   "settings.delete_account_modal_title": "Bist du sicher, dass du dein Konto dauerhaft löschen willst?",
   "settings.delete_account_modal_cancel": "Abbrechen",
 
+  "chat.send_btn": "Senden",
+  "chat.text_area_placeholder": "Schreib eine Nachricht",
   "chat_appointment_title": "Termin vorschlagen",
   "chat_appointment_abbort": "Abbrechen",
   "chat_appointment_send": " Termin vorschlagen",

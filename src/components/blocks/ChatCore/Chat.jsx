@@ -4,6 +4,7 @@ import {
   ButtonSizes,
   ButtonVariations,
   Card,
+  CheckIcon,
   PhoneIcon,
   Text,
   TextArea,
@@ -57,8 +58,11 @@ export const UserImage = styled(ProfileImage)`
 `;
 
 export const Time = styled(Text)`
+  display: flex;
+  align-items: center;
   color: ${({ theme }) => theme.color.text.secondary};
   padding-left: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
 export const TopSection = styled.div`
@@ -81,7 +85,7 @@ export const Messages = styled.div`
   border-radius: 20px;
   flex-grow: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.small};
   overflow-y: scroll;
@@ -92,7 +96,7 @@ const Message = styled.div`
 `;
 
 const MessageText = styled(Text)`
-  padding: ${({ theme }) => theme.spacing.xsmall};
+  padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: 24px;
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
@@ -136,6 +140,7 @@ const BackButton = styled(Button)`
 
 const SendButton = styled(Button)`
   height: 36px;
+  min-width: unset;
 `;
 
 export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
@@ -167,6 +172,8 @@ export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
       .then(data => console.log({ data }))
       .catch(onSubmitError);
   };
+
+  console.log({ chatData });
 
   return (
     <Panel $isFullScreen={isFullScreen}>
@@ -207,6 +214,11 @@ export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
           <Message $isSelf={index % 2 === 0} key={message.uuid}>
             <MessageText $isSelf={index % 2 === 0}>{message.text}</MessageText>
             <Time type={TextTypes.Body6}>
+              {message.read ? (
+                <CheckIcon width="8px" height="8px" />
+              ) : (
+                <CheckIcon width="8px" height="8px" />
+              )}
               {formatDistance(message.created, new Date(), {
                 addSuffix: true,
               })}
@@ -227,7 +239,7 @@ export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
           placeholder={t('chat.text_area_placeholder')}
         />
         <SendButton size={ButtonSizes.Small} type="submit">
-          Send
+          {t('chat.send_btn')}
         </SendButton>
       </WriteSection>
     </Panel>

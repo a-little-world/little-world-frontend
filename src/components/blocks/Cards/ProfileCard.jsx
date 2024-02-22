@@ -167,6 +167,7 @@ function ProfileCard({
       {isSelf && openEditImage ? (
         <ProfileImageButton onClick={openEditImage} type="button">
           <ProfileImage
+            circle
             image={usesAvatar ? profile.avatar_config : profile.image}
             imageType={profile.image_type}
           />

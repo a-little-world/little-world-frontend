@@ -148,6 +148,8 @@
   "settings.delete_account_modal_title": "Are you sure you want to permanently delete your account?",
   "settings.delete_account_modal_cancel": "Cancel",
 
+  "chat.send_btn": "Send",
+  "chat.text_area_placeholder": "Write a message...",
   "chat_appointment_title": "Suggest an appointment",
   "chat_appointment_abbort": "Cancel",
   "chat_appointment_send": " suggest appintment",

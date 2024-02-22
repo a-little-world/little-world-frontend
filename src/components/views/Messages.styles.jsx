@@ -45,11 +45,13 @@ export const Message = styled.button`
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.xxsmall};
   border-radius: 20px;
+  border: 2px solid ${({ theme }) => theme.color.border.reversed};
+  transition: 0.25s;
 
   ${({ $selected, theme }) =>
     $selected &&
     `
-    border: 2px solid ${theme.color.border.selected};
+    border-color: ${theme.color.border.selected};
     background: ${theme.color.surface.secondary};
 `}
 `;
