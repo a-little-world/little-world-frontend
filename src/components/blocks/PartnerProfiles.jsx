@@ -97,7 +97,7 @@ function PartnerProfiles({
   const onModalClose = () => {
     setPartnerActionData(null);
   };
-  console.log({ user });
+
   return (
     <Matches>
       {matchesDisplay.map(match => (

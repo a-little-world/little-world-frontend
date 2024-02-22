@@ -73,7 +73,7 @@ export function SearchingCard({
     hadPreMatchingCall,
     hasAppointment: !!preMatchingAppointment,
   });
-  console.log({ preMatchingAppointment });
+
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
       {hasMatch ? (
@@ -100,12 +100,18 @@ export function SearchingCard({
             <MatchingCallImage alt="matching call image" src={AppointmentSvg} />
           )}
           <Text center>{t(`searching_card.${cardState}_info_1`)}</Text>
-          <Note center>{t(`searching_card.${cardState}_info_2`)}</Note>
-          {cardState === 'pre_match_call_booked' && (
-            <Text type={TextTypes.Body4} bold>
-              {formatTime(new Date(preMatchingAppointment.start_time))} -{' '}
-              {formatTime(new Date(preMatchingAppointment.end_time))}
-            </Text>
+          {cardState === 'pre_match_call_booked' ? (
+            <>
+              <Text type={TextTypes.Body4} bold>
+                {new Date(preMatchingAppointment.start_time).toDateString()}
+              </Text>
+              <Note type={TextTypes.Body4} bold>
+                {formatTime(new Date(preMatchingAppointment.start_time))} -{' '}
+                {formatTime(new Date(preMatchingAppointment.end_time))}
+              </Note>
+            </>
+          ) : (
+            <Note center>{t(`searching_card.${cardState}_info_2`)}</Note>
           )}
         </>
       )}
