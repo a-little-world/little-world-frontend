@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonAppearance,
+  ButtonSizes,
   ButtonVariations,
   Card,
   CardSizes,
@@ -12,7 +13,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { formatTime } from '../../../helpers/date';
 import SearchingSvg from '../../../images/match-searching.svg';
+import AppointmentSvg from '../../../images/new-appointment.svg';
 import { USER_FORM_ROUTE, getAppRoute } from '../../../routes';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
@@ -41,12 +44,36 @@ const SearchingImage = styled.img`
     $hasMatch ? '0' : theme.spacing.xxxsmall};
 `;
 
+const MatchingCallImage = styled.img`
+  height: 80px;
+  margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
+`;
+
 const Note = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
-export function SearchingCard({ setShowCancel, hasMatch }) {
+const getCardState = ({ hasMatch, hadPreMatchingCall, hasAppointment }) => {
+  if (hasMatch) return 'matched';
+  if (hadPreMatchingCall) return 'pre_match_call_completed';
+  if (hasAppointment) return 'pre_match_call_booked';
+  return 'pre_match_call_not_booked';
+};
+
+export function SearchingCard({
+  calComAppointmentLink,
+  hasMatch,
+  hadPreMatchingCall,
+  preMatchingAppointment,
+  setShowCancel,
+}) {
   const { t } = useTranslation();
+  const cardState = getCardState({
+    hasMatch,
+    hadPreMatchingCall,
+    hasAppointment: !!preMatchingAppointment,
+  });
+
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
       {hasMatch ? (
@@ -63,28 +90,57 @@ export function SearchingCard({ setShowCancel, hasMatch }) {
           <WelcomeTitle tag="h3" type={TextTypes.Body1} bold center>
             {t('searching_card.welcome')}
           </WelcomeTitle>
-          <SearchingImage
-            alt="searching image"
-            src={SearchingSvg}
-            $hasMatch={hasMatch}
-          />
-          <Text center>{t('searching_card.info_1')}</Text>
-          <Note center>{t('searching_card.info_2')}</Note>
+          {hadPreMatchingCall ? (
+            <SearchingImage
+              alt="searching image"
+              src={SearchingSvg}
+              $hasMatch={hasMatch}
+            />
+          ) : (
+            <MatchingCallImage alt="matching call image" src={AppointmentSvg} />
+          )}
+          <Text center>{t(`searching_card.${cardState}_info_1`)}</Text>
+          {cardState === 'pre_match_call_booked' ? (
+            <>
+              <Text type={TextTypes.Body4} bold>
+                {new Date(preMatchingAppointment.start_time).toDateString()}
+              </Text>
+              <Note type={TextTypes.Body4} bold>
+                {formatTime(new Date(preMatchingAppointment.start_time))} -{' '}
+                {formatTime(new Date(preMatchingAppointment.end_time))}
+              </Note>
+            </>
+          ) : (
+            <Note center>{t(`searching_card.${cardState}_info_2`)}</Note>
+          )}
         </>
       )}
 
-      <Link
-        buttonAppearance={ButtonAppearance.Primary}
-        to={getAppRoute(USER_FORM_ROUTE)}
-      >
-        {t('cp_modify_search')}
-      </Link>
-      <CancelSearchButton
-        variation={ButtonVariations.Inline}
-        onClick={() => setShowCancel(true)}
-      >
-        {t('cp_cancel_search')}
-      </CancelSearchButton>
+      {hadPreMatchingCall || hasMatch ? (
+        <>
+          <Link
+            buttonAppearance={ButtonAppearance.Primary}
+            to={getAppRoute(USER_FORM_ROUTE)}
+          >
+            {t('cp_modify_search')}
+          </Link>
+          <CancelSearchButton
+            variation={ButtonVariations.Inline}
+            onClick={() => setShowCancel(true)}
+          >
+            {t('cp_cancel_search')}
+          </CancelSearchButton>
+        </>
+      ) : (
+        <Button
+          data-cal-link={calComAppointmentLink}
+          data-cal-config='{"layout":"month_view"}'
+          onClick={() => null}
+          size={ButtonSizes.Stretch}
+        >
+          {t(`searching_card.${cardState}_cta`)}
+        </Button>
+      )}
     </StyledCard>
   );
 }

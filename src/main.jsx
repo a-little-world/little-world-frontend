@@ -248,7 +248,9 @@ function Main() {
         />
 
         {use === 'main' &&
-          (topSelection === 'conversation_partners' ? (
+          (topSelection === 'community_calls' ? (
+            <CommunityEvents />
+          ) : (
             <>
               <Home className="content-area-main">
                 <PartnerProfiles
@@ -266,8 +268,6 @@ function Main() {
                 />
               )}
             </>
-          ) : (
-            <CommunityEvents />
           ))}
         {use === 'chat' && (
           <Chat
@@ -318,7 +318,7 @@ function Main() {
           <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
         </Modal>
       )}
-      {
+      {/* {
         <Modal
           open={
             matches?.proposed?.items?.length ||
@@ -339,7 +339,7 @@ function Main() {
                 : matches?.unconfirmed.items[0].partner,
             })}
         </Modal>
-      }
+      } */}
     </AppLayout>
   );
 }

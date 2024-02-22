@@ -33,6 +33,7 @@ const FindNewPartner = styled.button`
   justify-content: center;
   height: ${PROFILE_CARD_HEIGHT};
   position: relative;
+  order: ${({ $hasMatch }) => ($hasMatch ? 1 : 0)};
 
   > img {
     width: 115px;
@@ -112,9 +113,19 @@ function PartnerProfiles({
         />
       ))}
       {user.isSearching ? (
-        <SearchingCard setShowCancel={setShowCancel} hasMatch={user.hasMatch} />
+        <SearchingCard
+          setShowCancel={setShowCancel}
+          hasMatch={user.hasMatch}
+          calComAppointmentLink={user.calComAppointmentLink}
+          hadPreMatchingCall={user.hadPreMatchingCall}
+          preMatchingAppointment={user.preMatchingAppointment}
+        />
       ) : (
-        <FindNewPartner type="button" onClick={updateUserMatchingState}>
+        <FindNewPartner
+          type="button"
+          onClick={updateUserMatchingState}
+          $hasMatch={user.hasMatch}
+        >
           <img src={PlusImage} alt="change matching status icon" />
           <Text type={TextTypes.Body3}>
             {t('matching_state_not_searching_trans')}

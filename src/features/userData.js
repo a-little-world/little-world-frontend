@@ -121,6 +121,7 @@ export const userDataSlice = createSlice({
       state.questions = payload;
     },
     preMatchingAppointmentBooked: (state, action) => {
+      console.log('PRE_MATCHING_BOOKED');
       return {
         ...state,
         user: {
