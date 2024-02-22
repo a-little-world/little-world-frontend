@@ -119,6 +119,7 @@ function PartnerProfiles({
           calComAppointmentLink={user.calComAppointmentLink}
           hadPreMatchingCall={user.hadPreMatchingCall}
           preMatchingAppointment={user.preMatchingAppointment}
+          preMatchingCallJoinLink={user.preMatchingCallJoinLink}
         />
       ) : (
         <FindNewPartner
