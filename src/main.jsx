@@ -318,7 +318,6 @@ function Main() {
           <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
         </Modal>
       )}
-      {/* {
         <Modal
           open={
             matches?.proposed?.items?.length ||
@@ -339,7 +338,6 @@ function Main() {
                 : matches?.unconfirmed.items[0].partner,
             })}
         </Modal>
-      } */}
     </AppLayout>
   );
 }
