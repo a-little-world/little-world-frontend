@@ -115,10 +115,6 @@ function PartnerProfiles({
       {user.isSearching ? (
         <SearchingCard
           setShowCancel={setShowCancel}
-          hasMatch={user.hasMatch}
-          calComAppointmentLink={user.calComAppointmentLink}
-          hadPreMatchingCall={user.hadPreMatchingCall}
-          preMatchingAppointment={user.preMatchingAppointment}
         />
       ) : (
         <FindNewPartner
