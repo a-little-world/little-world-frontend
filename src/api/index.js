@@ -13,8 +13,8 @@ const formatApiError = responseBody => {
   return new Error(errorTag, { cause: errorType ?? null });
 };
 
-export const completeForm = () =>
-  fetch('/api/profile/completed/', {
+export const completeForm = async () => {
+  const res = await fetch('/api/profile/completed/', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -22,6 +22,10 @@ export const completeForm = () =>
       'X-UseTagsOnly': 'true',
     },
   });
+  
+  const updatedUser = await res?.json();
+  return updatedUser; 
+}
 
 export const mutateUserData = async (formData, onSuccess, onFailure) => {
   try {
