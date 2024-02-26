@@ -12,6 +12,7 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
+import { useSelector } from 'react-redux';
 
 import { formatTime } from '../../../helpers/date';
 import SearchingSvg from '../../../images/match-searching.svg';
@@ -69,16 +70,18 @@ const getCardState = ({ hasMatch, hadPreMatchingCall, hasAppointment }) => {
 };
 
 export function SearchingCard({
-  calComAppointmentLink,
-  hasMatch,
-  hadPreMatchingCall,
-  preMatchingAppointment,
-  preMatchingCallJoinLink,
   setShowCancel,
 }) {
   const { t } = useTranslation();
+  
+  const user = useSelector(state => state.userData.user.hasMatch);
+  const hadPreMatchingCall = useSelector(state => state.userData.user.hadPreMatchingCall);
+  const preMatchingAppointment = useSelector(state => state.userData.user.preMatchingAppointment);
+  const calComAppointmentLink = useSelector(state => state.userData.user.calComAppointmentLink);
+
+  
   const cardState = getCardState({
-    hasMatch,
+    hasMatch: user.hasMatch,
     hadPreMatchingCall,
     hasAppointment: !!preMatchingAppointment,
   });
@@ -86,13 +89,13 @@ export function SearchingCard({
   const isBookedState = cardState === 'pre_match_call_booked';
 
   return (
-    <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
-      {hasMatch ? (
+    <StyledCard width={CardSizes.Small} $hasMatch={user.hasMatch}>
+      {user.hasMatch ? (
         <>
           <SearchingImage
             alt="searching image"
             src={SearchingSvg}
-            $hasMatch={hasMatch}
+            $hasMatch={user.hasMatch}
           />
           <Text center>{t('matching_state_searching_trans')}</Text>
         </>
@@ -105,7 +108,7 @@ export function SearchingCard({
             <SearchingImage
               alt="searching image"
               src={SearchingSvg}
-              $hasMatch={hasMatch}
+              $hasMatch={user.hasMatch}
             />
           ) : (
             <MatchingCallImage alt="matching call image" src={AppointmentSvg} />
@@ -127,7 +130,7 @@ export function SearchingCard({
         </>
       )}
 
-      {hadPreMatchingCall || hasMatch ? (
+      {hadPreMatchingCall || user.hasMatch ? (
         <>
           <Link
             buttonAppearance={ButtonAppearance.Primary}
