@@ -74,7 +74,7 @@ export function SearchingCard({
 }) {
   const { t } = useTranslation();
   
-  const user = useSelector(state => state.userData.user.hasMatch);
+  const hasMatch = useSelector(state => state.userData.user.hasMatch);
   const hadPreMatchingCall = useSelector(state => state.userData.user.hadPreMatchingCall);
   const preMatchingAppointment = useSelector(state => state.userData.user.preMatchingAppointment);
   const calComAppointmentLink = useSelector(state => state.userData.user.calComAppointmentLink);
@@ -82,7 +82,7 @@ export function SearchingCard({
 
   
   const cardState = getCardState({
-    hasMatch: user.hasMatch,
+    hasMatch,
     hadPreMatchingCall,
     hasAppointment: !!preMatchingAppointment,
   });
@@ -90,13 +90,13 @@ export function SearchingCard({
   const isBookedState = cardState === 'pre_match_call_booked';
 
   return (
-    <StyledCard width={CardSizes.Small} $hasMatch={user.hasMatch}>
-      {user.hasMatch ? (
+    <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
+      {hasMatch ? (
         <>
           <SearchingImage
             alt="searching image"
             src={SearchingSvg}
-            $hasMatch={user.hasMatch}
+            $hasMatch={hasMatch}
           />
           <Text center>{t('matching_state_searching_trans')}</Text>
         </>
@@ -109,7 +109,7 @@ export function SearchingCard({
             <SearchingImage
               alt="searching image"
               src={SearchingSvg}
-              $hasMatch={user.hasMatch}
+              $hasMatch={hasMatch}
             />
           ) : (
             <MatchingCallImage alt="matching call image" src={AppointmentSvg} />
@@ -131,7 +131,7 @@ export function SearchingCard({
         </>
       )}
 
-      {hadPreMatchingCall || user.hasMatch ? (
+      {hadPreMatchingCall || hasMatch ? (
         <>
           <Link
             buttonAppearance={ButtonAppearance.Primary}
