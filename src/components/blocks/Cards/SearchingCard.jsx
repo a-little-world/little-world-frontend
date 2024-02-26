@@ -78,6 +78,7 @@ export function SearchingCard({
   const hadPreMatchingCall = useSelector(state => state.userData.user.hadPreMatchingCall);
   const preMatchingAppointment = useSelector(state => state.userData.user.preMatchingAppointment);
   const calComAppointmentLink = useSelector(state => state.userData.user.calComAppointmentLink);
+  const preMatchingCallJoinLink = useSelector(state => state.userData.user.preMatchingCallJoinLink);
 
   
   const cardState = getCardState({
