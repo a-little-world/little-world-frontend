@@ -51,9 +51,9 @@ export const Message = styled.button`
   ${({ $selected, theme }) =>
     $selected &&
     `
-    border-color: ${theme.color.border.selected};
-    background: ${theme.color.surface.secondary};
-`}
+      border-color: ${theme.color.border.selected};
+      background: ${theme.color.surface.secondary};
+  `}
 `;
 
 export const Details = styled.div`

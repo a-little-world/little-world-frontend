@@ -14,9 +14,11 @@ import { format, formatDistance, formatRelative, subDays } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import styled, { css } from 'styled-components';
 
 import { fetchChatMessages, sendMessage } from '../../../api/chat';
+import { initCallSetup } from '../../../features/userData';
 import { onFormError, registerInput } from '../../../helpers/form';
 import ProfileImage from '../../atoms/ProfileImage';
 
@@ -120,6 +122,17 @@ const UserInfo = styled.div`
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
+const NoMessages = styled(Text)`
+  height: 100%;
+  background: ${({ theme }) => theme.color.surface.tertiary};
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
 export const Preview = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
   overflow: hidden;
@@ -143,37 +156,23 @@ const SendButton = styled(Button)`
   min-width: unset;
 `;
 
-export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
-  const { t } = useTranslation();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const {
-    getValues,
-    register,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm({ shouldUnregister: true });
-  const [chatData, setChatData] = useState(null);
+const ChatContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: ${({ theme }) => theme.spacing.small};
+`;
 
-  useEffect(() => {
-    if (chatId)
-      fetchChatMessages({ id: chatId }).then(data => {
-        setChatData(data);
-      });
-  }, [chatId]);
-
-  const onSubmitError = e => {
-    setIsSubmitting(false);
-    onFormError({ e, formFields: getValues(), setError, t });
+export const ChatWithUserInfo = ({
+  chatId,
+  isFullScreen,
+  onBackButton,
+  partner,
+}) => {
+  const dispatch = useDispatch();
+  const callPartner = () => {
+    dispatch(initCallSetup({ userId: partner?.id }));
   };
-
-  const onSendMessage = ({ text }) => {
-    sendMessage({ text, chatId })
-      .then(data => console.log({ data }))
-      .catch(onSubmitError);
-  };
-
-  console.log({ chatData });
 
   return (
     <Panel $isFullScreen={isFullScreen}>
@@ -205,26 +204,77 @@ export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
             {partner?.first_name}
           </Text>
         </UserInfo>
-        <Button variation={ButtonVariations.Icon}>
+        <Button variation={ButtonVariations.Control} onClick={callPartner}>
           <PhoneIcon circular />
         </Button>
       </TopSection>
+      <Chat chatId={chatId} partner={partner} />
+    </Panel>
+  );
+};
+export const Chat = ({ chatId, partner }) => {
+  const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    getValues,
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setError,
+  } = useForm({ shouldUnregister: true });
+  const [chatData, setChatData] = useState([]);
+
+  useEffect(() => {
+    if (chatId)
+      fetchChatMessages({ id: chatId }).then(data => {
+        setChatData(data);
+      });
+  }, [chatId]);
+
+  const onSubmitError = e => {
+    setIsSubmitting(false);
+    onFormError({ e, formFields: getValues(), setError, t });
+  };
+
+  const onSendMessage = ({ text }) => {
+    setIsSubmitting(true);
+    sendMessage({ text, chatId })
+      .then(data => {
+        console.log({ data });
+        reset();
+        setIsSubmitting(false);
+      })
+      .catch(onSubmitError);
+  };
+
+  return (
+    <ChatContainer>
       <Messages>
-        {chatData?.results?.map((message, index) => (
-          <Message $isSelf={index % 2 === 0} key={message.uuid}>
-            <MessageText $isSelf={index % 2 === 0}>{message.text}</MessageText>
-            <Time type={TextTypes.Body6}>
-              {message.read ? (
-                <CheckIcon width="8px" height="8px" />
-              ) : (
-                <CheckIcon width="8px" height="8px" />
-              )}
-              {formatDistance(message.created, new Date(), {
-                addSuffix: true,
-              })}
-            </Time>
-          </Message>
-        ))}
+        {chatData?.results ? (
+          chatData?.results?.map((message, index) => (
+            <Message $isSelf={index % 2 === 0} key={message.uuid}>
+              <MessageText $isSelf={index % 2 === 0}>
+                {message.text}
+              </MessageText>
+              <Time type={TextTypes.Body6}>
+                {message.read ? (
+                  <CheckIcon width="8px" height="8px" />
+                ) : (
+                  <CheckIcon width="8px" height="8px" />
+                )}
+                {formatDistance(message.created, new Date(), {
+                  addSuffix: true,
+                })}
+              </Time>
+            </Message>
+          ))
+        ) : (
+          <NoMessages type={TextTypes.Body4}>
+            You have no messages yet. Send a message now!
+          </NoMessages>
+        )}
       </Messages>
       <WriteSection onSubmit={handleSubmit(onSendMessage)}>
         <MessageBox
@@ -238,10 +288,14 @@ export const Chat = ({ chatId, isFullScreen, onBackButton, partner }) => {
           maxLength={null}
           placeholder={t('chat.text_area_placeholder')}
         />
-        <SendButton size={ButtonSizes.Small} type="submit">
+        <SendButton
+          size={ButtonSizes.Small}
+          type="submit"
+          disabled={isSubmitting}
+        >
           {t('chat.send_btn')}
         </SendButton>
       </WriteSection>
-    </Panel>
+    </ChatContainer>
   );
 };

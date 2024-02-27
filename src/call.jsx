@@ -21,10 +21,14 @@ import './App.css';
 import { BACKEND_URL } from './ENVIRONMENT';
 import { clearActiveTracks } from './call-setup';
 import './call.css';
-import Chat from './chat/chat-full-view';
+import { Chat } from './components/blocks/ChatCore/Chat';
 import { StyledOption } from './components/blocks/NbtSelector';
 import QuestionCards from './components/blocks/QuestionCards';
-import { stopActiveCall } from './features/userData';
+import {
+  getMatchByPartnerId,
+  getPartner,
+  stopActiveCall,
+} from './features/userData';
 import './i18n';
 import { APP_ROUTE, getAppRoute } from './routes';
 import {
@@ -772,6 +776,9 @@ function TranslationBox() {
 function MobileDrawer({ content, setOverlay }) {
   const location = useLocation();
   const { userPk } = location.state || {};
+  const match = useSelector(state =>
+    getMatchByPartnerId(state.userData.matches, userPk),
+  );
 
   return (
     <div className={`call-drawer-container ${content}`}>
@@ -784,7 +791,15 @@ function MobileDrawer({ content, setOverlay }) {
           <img alt="hide drawer" />
         </button>
         <div className="drawer-content">
-          {content === 'chat' && <Chat userPk={userPk} />}
+          {content === 'chat' && (
+            <Chat
+              chatId={match.chatId}
+              isFullScreen={false}
+              onBackButton={null}
+              partner={match.partner}
+              renderUserInfo={false}
+            />
+          )}
           {content === 'translate' && <TranslationBox />}
           {content === 'questions' && <QuestionCards />}
           {content === 'notes' && <SidebarNotes />}
@@ -825,9 +840,11 @@ function Sidebar({ sideSelection }) {
   const location = useLocation();
 
   const { userPk } = location.state || {};
+  const match = useSelector(state =>
+    getMatchByPartnerId(state.userData.matches, userPk),
+  );
   const sidebarTopics = ['chat', 'questions'];
   const setSideSelection = useContext(SetSideContext);
-
   const disabled = ['notes'];
 
   return (
@@ -849,7 +866,15 @@ function Sidebar({ sideSelection }) {
         ))}
       </SidebarSelector>
       <div className="sidebar-content">
-        {sideSelection === 'chat' && <Chat userPk={userPk} />}
+        {sideSelection === 'chat' && (
+          <Chat
+            chatId={match.chatId}
+            isFullScreen={false}
+            onBackButton={null}
+            partner={match.partner}
+            renderUserInfo={false}
+          />
+        )}
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </div>
