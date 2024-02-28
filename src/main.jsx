@@ -7,7 +7,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import styled, { css } from 'styled-components';
 
 import CustomPagination from './CustomPagination';
-import { PRODUCTION } from './ENVIRONMENT';
+import { DEVELOPMENT, IS_CAPACITOR_BUILD, PRODUCTION } from './ENVIRONMENT';
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
 import CallSetup, { IncomingCall } from './call-setup';
 import './community-events.css';
@@ -237,7 +237,7 @@ function Main() {
       setConnectionState(socket.readyState);
     };
     return () => {
-      if (socket) socket.disconnect();
+      if (socket) socket.disconnect?.();
     };
   });
 
