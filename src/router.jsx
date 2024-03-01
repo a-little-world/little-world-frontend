@@ -33,6 +33,7 @@ import {
   FORGOT_PASSWORD_ROUTE,
   HELP_ROUTE,
   LOGIN_ROUTE,
+  MESSAGES_ROUTE,
   NOTIFICATIONS_ROUTE,
   PARTNERS_ROUTE,
   PROFILE_ROUTE,
@@ -160,6 +161,10 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(CHAT_ROUTE),
+    element: <Main />,
+  },
+  {
+    path: getAppRoute(MESSAGES_ROUTE),
     element: <Main />,
   },
   {

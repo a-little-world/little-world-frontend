@@ -8,9 +8,9 @@ import PageHeader from '../atoms/PageHeader';
 import { ChatWithUserInfo } from '../blocks/ChatCore/Chat';
 import { ChatDashboard, MessagesPanel } from './Messages.styles';
 
-const Messages = ({ userPk, matchesInfo }) => {
+const Messages = ({ userPk, matchesInfo, openChatWithId }) => {
   const { t } = useTranslation();
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState(openChatWithId);
   const [chatInFocus, setChatInFocus] = useState(false);
 
   const [messageList, setMessageList] = useState([]);

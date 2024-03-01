@@ -148,8 +148,8 @@ const Home = styled.div`
 const isViewportHeight = ['chat'];
 
 function Main() {
-  // for the case /call-setup/:userId?/
-  let { userId } = useParams();
+  // for the case /call-setup/:userId?/ and /chat/:chatId/
+  let { userId, chatId } = useParams();
 
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -297,7 +297,7 @@ function Main() {
   const onRejectCall = () => {
     dispatch(blockIncomingCall({ userId: incomingCalls[0]?.userId }));
   };
-  console.log({ dashboardVisibleMatches });
+  console.log({ use });
   return (
     <AppLayout page={use} isVH={isViewportHeight.includes(use)}>
       <ToastContainer />
@@ -332,7 +332,7 @@ function Main() {
           ))}
         {use === 'chat' && (
           <Messages
-            showChat={use === 'chat'}
+            openChatWithId={chatId}
             matchesInfo={dashboardVisibleMatches}
             userPk={userPk}
             setCallSetupPartner={setCallSetupPartner}

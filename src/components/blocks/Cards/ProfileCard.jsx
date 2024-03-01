@@ -20,7 +20,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { CHAT_ROUTE, getAppRoute } from '../../../routes';
+import { CHAT_ROUTE, getAppRoute, getChatRoute } from '../../../routes';
 import MenuLink from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
@@ -145,6 +145,7 @@ export const Description = styled(Text)`
 `;
 
 function ProfileCard({
+  chatId,
   userPk,
   profile,
   isSelf,
@@ -252,7 +253,7 @@ function ProfileCard({
             />
             {t('cp_profile')}
           </MenuLink>
-          <MenuLink to={getAppRoute(CHAT_ROUTE)} state={{ userPk }}>
+          <MenuLink to={getChatRoute(chatId)} state={{ userPk }}>
             <MessageIcon
               gradient={Gradients.Orange}
               label="chat icon"

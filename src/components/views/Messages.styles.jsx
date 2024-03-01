@@ -87,6 +87,7 @@ export const Preview = styled(Text)`
 `;
 
 export const MessagesPanel = ({ messages, selectChat, selectedChat }) => {
+  console.log({ messages });
   return (
     <Panel $selectedChat={selectedChat}>
       {messages?.map((message, index) => (

@@ -20,9 +20,9 @@ import styled, { css } from 'styled-components';
 import { BACKEND_URL } from '../../ENVIRONMENT';
 import {
   APP_ROUTE,
-  CHAT_ROUTE,
   HELP_ROUTE,
   LOGIN_ROUTE,
+  MESSAGES_ROUTE,
   PROFILE_ROUTE,
   SETTINGS_ROUTE,
   getAppRoute,
@@ -115,7 +115,7 @@ function Sidebar({ sidebarMobile }) {
 
   const buttonData = [
     { label: 'start', path: getAppRoute(), Icon: DashboardIcon },
-    { label: 'messages', path: getAppRoute(CHAT_ROUTE), Icon: MessageIcon },
+    { label: 'messages', path: getAppRoute(MESSAGES_ROUTE), Icon: MessageIcon },
     {
       label: 'my_profile',
       path: getAppRoute(PROFILE_ROUTE),

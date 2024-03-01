@@ -14,12 +14,14 @@ import { format, formatDistance, formatRelative, subDays } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { fetchChatMessages, sendMessage } from '../../../api/chat';
-import { initCallSetup } from '../../../features/userData';
+import { initCallSetup, setActiveChat } from '../../../features/userData';
 import { onFormError, registerInput } from '../../../helpers/form';
+import { MESSAGES_ROUTE, getAppRoute } from '../../../routes';
 import ProfileImage from '../../atoms/ProfileImage';
 
 export const Panel = styled(Card)`
@@ -161,6 +163,7 @@ const ChatContainer = styled.div`
   flex-direction: column;
   flex: 1;
   gap: ${({ theme }) => theme.spacing.small};
+  overflow-y: hidden;
 `;
 
 export const ChatWithUserInfo = ({
@@ -173,7 +176,7 @@ export const ChatWithUserInfo = ({
   const callPartner = () => {
     dispatch(initCallSetup({ userId: partner?.id }));
   };
-
+  console.log({ chatId });
   return (
     <Panel $isFullScreen={isFullScreen}>
       <TopSection>
@@ -214,8 +217,11 @@ export const ChatWithUserInfo = ({
 };
 export const Chat = ({ chatId, partner }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [chatData, setChatData] = useState([]);
+  const activeChat = useSelector(state => state.activeChat);
+  console.log({ activeChat });
   const {
     getValues,
     register,
@@ -224,13 +230,17 @@ export const Chat = ({ chatId, partner }) => {
     reset,
     setError,
   } = useForm({ shouldUnregister: true });
-  const [chatData, setChatData] = useState([]);
 
   useEffect(() => {
     if (chatId)
-      fetchChatMessages({ id: chatId }).then(data => {
-        setChatData(data);
-      });
+      fetchChatMessages({ id: chatId })
+        .then(data => {
+          setChatData(data);
+          dispatch(setActiveChat(data));
+        })
+        .catch(() => {
+          navigate(getAppRoute(MESSAGES_ROUTE));
+        });
   }, [chatId]);
 
   const onSubmitError = e => {

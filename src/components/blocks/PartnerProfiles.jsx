@@ -97,7 +97,7 @@ function PartnerProfiles({
   const onModalClose = () => {
     setPartnerActionData(null);
   };
-
+  console.log({ matchesDisplay });
   return (
     <Matches>
       {matchesDisplay.map(match => (
@@ -110,6 +110,7 @@ function PartnerProfiles({
           setCallSetupPartner={setCallSetupPartner}
           isOnline={match.partner.isOnline}
           isSupport={match.partner.isSupport}
+          chatId={match.chatId}
         />
       ))}
       {user.isSearching ? (

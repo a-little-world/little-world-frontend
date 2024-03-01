@@ -19,6 +19,8 @@ export const userDataSlice = createSlice({
       };
       state.notifications = action.payload?.notifications;
       state.matches = action.payload?.matches;
+      state.chats = action.payload?.matches.chats;
+      state.activeChat = null;
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
       state.incomingCalls = action.payload?.incomingCalls || []; // [{ userId: user.hash }] or []
@@ -147,6 +149,10 @@ export const userDataSlice = createSlice({
         state.questions.cards[card.category].push(card);
       }
     },
+    setActiveChat: (state, { payload }) => {
+      console.log({ payload });
+      state.activeChat = payload;
+    },
   },
 });
 
@@ -169,6 +175,7 @@ export const {
   getQuestions,
   switchQuestionCategory,
   getUnarchivedQuestions,
+  setActiveChat,
 } = userDataSlice.actions;
 
 export const selectMatchByPartnerId = (matches, partnerId) => {
