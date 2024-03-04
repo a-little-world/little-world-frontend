@@ -4,11 +4,12 @@ import {
   ButtonSizes,
   ButtonVariations,
   Card,
-  CheckIcon,
-  PhoneIcon,
   Text,
   TextArea,
   TextTypes,
+  TickDoubleIcon,
+  TickIcon,
+  VideoIcon,
 } from '@a-little-world/little-world-design-system';
 import { format, formatDistance, formatRelative, subDays } from 'date-fns';
 import { useEffect, useState } from 'react';
@@ -16,7 +17,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { fetchChatMessages, sendMessage } from '../../../api/chat';
 import { initCallSetup, setActiveChat } from '../../../features/userData';
@@ -72,7 +73,7 @@ export const Time = styled(Text)`
 export const TopSection = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   width: 100%;
 `;
 
@@ -97,6 +98,9 @@ export const Messages = styled.div`
 
 const Message = styled.div`
   align-self: ${({ $isSelf }) => ($isSelf ? 'flex-end' : 'flex-start')};
+  align-items: ${({ $isSelf }) => ($isSelf ? 'flex-end' : 'flex-start')};
+  display: flex;
+  flex-direction: column;
 `;
 
 const MessageText = styled(Text)`
@@ -172,6 +176,7 @@ export const ChatWithUserInfo = ({
   onBackButton,
   partner,
 }) => {
+  const theme = useTheme();
   const dispatch = useDispatch();
   const callPartner = () => {
     dispatch(initCallSetup({ userId: partner?.id }));
@@ -208,7 +213,14 @@ export const ChatWithUserInfo = ({
           </Text>
         </UserInfo>
         <Button variation={ButtonVariations.Control} onClick={callPartner}>
-          <PhoneIcon circular />
+          <VideoIcon
+            circular
+            width={24}
+            height={24}
+            color={theme.color.surface.secondary}
+            backgroundColor={theme.color.gradient.orange}
+            borderColor={theme.color.gradient.orange}
+          />
         </Button>
       </TopSection>
       <Chat chatId={chatId} partner={partner} />
@@ -218,10 +230,11 @@ export const ChatWithUserInfo = ({
 export const Chat = ({ chatId, partner }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [chatData, setChatData] = useState([]);
-  const activeChat = useSelector(state => state.activeChat);
-  console.log({ activeChat });
+  // const [chatData, setChatData] = useState([]);
+  const activeChat = useSelector(state => state.userData.activeChat);
+  // console.log({ activeChat });
   const {
     getValues,
     register,
@@ -235,7 +248,7 @@ export const Chat = ({ chatId, partner }) => {
     if (chatId)
       fetchChatMessages({ id: chatId })
         .then(data => {
-          setChatData(data);
+          // setChatData(data);
           dispatch(setActiveChat(data));
         })
         .catch(() => {
@@ -262,17 +275,17 @@ export const Chat = ({ chatId, partner }) => {
   return (
     <ChatContainer>
       <Messages>
-        {chatData?.results ? (
-          chatData?.results?.map((message, index) => (
+        {activeChat?.results ? (
+          activeChat?.results?.map((message, index) => (
             <Message $isSelf={index % 2 === 0} key={message.uuid}>
               <MessageText $isSelf={index % 2 === 0}>
                 {message.text}
               </MessageText>
               <Time type={TextTypes.Body6}>
                 {message.read ? (
-                  <CheckIcon width="8px" height="8px" />
+                  <TickDoubleIcon width="12px" height="12px" />
                 ) : (
-                  <CheckIcon width="8px" height="8px" />
+                  <TickIcon width="12px" height="12px" />
                 )}
                 {formatDistance(message.created, new Date(), {
                   addSuffix: true,
@@ -287,7 +300,7 @@ export const Chat = ({ chatId, partner }) => {
         )}
       </Messages>
       <WriteSection onSubmit={handleSubmit(onSendMessage)}>
-        <MessageBox
+        <TextArea
           {...registerInput({
             register,
             name: 'text',

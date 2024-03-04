@@ -11,30 +11,19 @@ import { ChatDashboard, MessagesPanel } from './Messages.styles';
 const Messages = ({ userPk, matchesInfo, openChatWithId }) => {
   const { t } = useTranslation();
   const [selectedChat, setSelectedChat] = useState(openChatWithId);
-  const [chatInFocus, setChatInFocus] = useState(false);
 
   const [messageList, setMessageList] = useState([]);
   const [appointmentsOpen, setAppointmentsOpen] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [userWasSelected, setUserWasSelected] = useState(false);
 
   useEffect(() => {
     fetchChats().then(response => {
       console.log({ response });
       setMessageList(response.results);
-      // setSelectedChat(response.results[0].uuid);
     });
   }, []);
 
-  const clickUser = item => {
-    selectDialog(item);
-    setUserWasSelected(true);
-    document.body.classList.add('hide-mobile-header');
-  };
-
   const handleOnChatBackBtn = () => {
     setSelectedChat(null);
-    setChatInFocus(false);
   };
 
   return (
