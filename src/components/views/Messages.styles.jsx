@@ -46,7 +46,7 @@ export const Message = styled.button`
   padding: ${({ theme }) => theme.spacing.xxsmall};
   border-radius: 20px;
   border: 2px solid ${({ theme }) => theme.color.border.reversed};
-  transition: 0.25s border-color, 0.25s background;
+  // transition: 0.25s border-color, 0.25s background;
 
   ${({ $selected, theme }) =>
     $selected &&

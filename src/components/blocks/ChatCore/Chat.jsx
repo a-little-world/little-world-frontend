@@ -300,7 +300,7 @@ export const Chat = ({ chatId, partner }) => {
         )}
       </Messages>
       <WriteSection onSubmit={handleSubmit(onSendMessage)}>
-        <TextArea
+        <MessageBox
           {...registerInput({
             register,
             name: 'text',

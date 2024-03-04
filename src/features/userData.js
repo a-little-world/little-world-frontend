@@ -19,7 +19,7 @@ export const userDataSlice = createSlice({
       };
       state.notifications = action.payload?.notifications;
       state.matches = action.payload?.matches;
-      state.chats = action.payload?.matches.chats;
+      state.chats = action.payload?.matches?.chats;
       state.activeChat = null;
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
@@ -34,7 +34,7 @@ export const userDataSlice = createSlice({
       state.user = {
         ...state.user,
         ...action.payload,
-      }
+      };
     },
     updateProfile: (state, action) => {
       Object.keys(action.payload).forEach(key => {
