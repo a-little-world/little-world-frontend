@@ -23,6 +23,7 @@ import { fetchChatMessages, sendMessage } from '../../../api/chat';
 import { initCallSetup, setActiveChat } from '../../../features/userData';
 import { onFormError, registerInput } from '../../../helpers/form';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../routes';
+import { addMessage } from '../../../features/userData';
 import ProfileImage from '../../atoms/ProfileImage';
 
 export const Panel = styled(Card)`
@@ -249,7 +250,10 @@ export const Chat = ({ chatId, partner }) => {
       fetchChatMessages({ id: chatId })
         .then(data => {
           // setChatData(data);
-          dispatch(setActiveChat(data));
+          dispatch(setActiveChat({
+            ...data,
+            chatId
+          }));
         })
         .catch(() => {
           navigate(getAppRoute(MESSAGES_ROUTE));
@@ -265,8 +269,13 @@ export const Chat = ({ chatId, partner }) => {
     setIsSubmitting(true);
     sendMessage({ text, chatId })
       .then(data => {
-        console.log({ data });
+        console.log(data);
         reset();
+        // @tbscode if message sending succeeds then it returns the message object
+        dispatch(addMessage({
+          message: data,
+          chatId,
+        }));
         setIsSubmitting(false);
       })
       .catch(onSubmitError);

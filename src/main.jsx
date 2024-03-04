@@ -3,16 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
-import ReconnectingWebSocket from 'reconnecting-websocket';
 import styled, { css } from 'styled-components';
 
 import CustomPagination from './CustomPagination';
-import {
-  BACKEND_URL,
-  DEVELOPMENT,
-  IS_CAPACITOR_BUILD,
-  PRODUCTION,
-} from './ENVIRONMENT';
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
 import CallSetup, { IncomingCall } from './call-setup';
 import './community-events.css';
@@ -192,60 +185,6 @@ function Main() {
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
 
-  const [socket, setSocket] = useState(
-    new ReconnectingWebSocket(
-      `${PRODUCTION ? 'wss' : 'ws'}://${
-        IS_CAPACITOR_BUILD
-          ? BACKEND_URL.split('//').pop()
-          : DEVELOPMENT
-          ? BACKEND_URL.substring(7)
-          : window.origin.split('//').pop()
-      }/api/chat/ws`,
-    ) /* without the 'https://' */,
-  );
-  const [connectionState, setConnectionState] = useState(false);
-
-  useEffect(() => {
-    const toastOptions = {
-      autoClose: 1500,
-      hideProgressBar: true,
-      closeOnClick: false,
-      pauseOnHover: false,
-      pauseOnFocusLoss: false,
-      draggable: false,
-    };
-
-    socket.onopen = function (e) {
-      toast.success('Connected!', toastOptions);
-      setConnectionState(socket.readyState);
-    };
-    socket.onmessage = function (e) {
-      setConnectionState(socket.readyState);
-
-      const errMsg = handleIncomingWebsocketMessage(socket, e.data, {
-        // addMessage: that.addMessage,
-        // replaceMessageId: that.replaceMessageId,
-        // addPKToTyping: that.addPKToTyping,
-        // changePKOnlineStatus: that.changePKOnlineStatus,
-        // setMessageIdAsRead: that.setMessageIdAsRead,
-        // newUnreadCount: that.newUnreadCount,
-        // performAdminCallBackAction: action => {
-        //   that.props.adminActionCallback(action);
-        // },
-      });
-      if (errMsg) {
-        toast.error(errMsg);
-      }
-    };
-    socket.onclose = function (e) {
-      toast.info('Disconnected...', toastOptions);
-      setConnectionState(socket.readyState);
-    };
-    return () => {
-      if (socket) socket.disconnect?.();
-    };
-  });
-
   useEffect(() => {
     if (userId) {
       dispatch(initCallSetup({ userId }));
@@ -384,26 +323,26 @@ function Main() {
           <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
         </Modal>
       )}
-        <Modal
-          open={
-            matches?.proposed?.items?.length ||
-            matches?.unconfirmed?.items?.length
-          }
-          locked={false}
-          onClose={() => {}}
-        >
-          {(matches?.proposed?.items?.length ||
-            matches?.unconfirmed?.items?.length) &&
-            MatchCardComponent({
-              showNewMatch: Boolean(!matches?.proposed?.items?.length),
-              matchId: matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].id
-                : matches?.unconfirmed.items[0].id,
-              profile: matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].partner
-                : matches?.unconfirmed.items[0].partner,
-            })}
-        </Modal>
+      <Modal
+        open={
+          matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length
+        }
+        locked={false}
+        onClose={() => { }}
+      >
+        {(matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length) &&
+          MatchCardComponent({
+            showNewMatch: Boolean(!matches?.proposed?.items?.length),
+            matchId: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].id
+              : matches?.unconfirmed.items[0].id,
+            profile: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].partner
+              : matches?.unconfirmed.items[0].partner,
+          })}
+      </Modal>
     </AppLayout>
   );
 }
