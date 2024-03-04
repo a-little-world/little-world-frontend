@@ -11,7 +11,8 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { useSelector } from 'react-redux';
 
 import { formatTime } from '../../../helpers/date';
 import SearchingSvg from '../../../images/match-searching.svg';
@@ -53,6 +54,14 @@ const Note = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
+const AppointmentButton = styled(Button)`
+  ${({ theme, $isLink }) =>
+    $isLink &&
+    css`
+      color: ${theme.color.text.link};
+    `}
+`;
+
 const getCardState = ({ hasMatch, hadPreMatchingCall, hasAppointment }) => {
   if (hasMatch) return 'matched';
   if (hadPreMatchingCall) return 'pre_match_call_completed';
@@ -61,18 +70,24 @@ const getCardState = ({ hasMatch, hadPreMatchingCall, hasAppointment }) => {
 };
 
 export function SearchingCard({
-  calComAppointmentLink,
-  hasMatch,
-  hadPreMatchingCall,
-  preMatchingAppointment,
   setShowCancel,
 }) {
   const { t } = useTranslation();
+  
+  const hasMatch = useSelector(state => state.userData.user.hasMatch);
+  const hadPreMatchingCall = useSelector(state => state.userData.user.hadPreMatchingCall);
+  const preMatchingAppointment = useSelector(state => state.userData.user.preMatchingAppointment);
+  const calComAppointmentLink = useSelector(state => state.userData.user.calComAppointmentLink);
+  const preMatchingCallJoinLink = useSelector(state => state.userData.user.preMatchingCallJoinLink);
+
+  
   const cardState = getCardState({
     hasMatch,
     hadPreMatchingCall,
     hasAppointment: !!preMatchingAppointment,
   });
+
+  const isBookedState = cardState === 'pre_match_call_booked';
 
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
@@ -100,16 +115,16 @@ export function SearchingCard({
             <MatchingCallImage alt="matching call image" src={AppointmentSvg} />
           )}
           <Text center>{t(`searching_card.${cardState}_info_1`)}</Text>
-          {cardState === 'pre_match_call_booked' ? (
-            <>
-              <Text type={TextTypes.Body4} bold>
+          {isBookedState ? (
+            <div>
+              <Text center type={TextTypes.Body4} bold>
                 {new Date(preMatchingAppointment.start_time).toDateString()}
               </Text>
-              <Note type={TextTypes.Body4} bold>
+              <Note center type={TextTypes.Body4} bold>
                 {formatTime(new Date(preMatchingAppointment.start_time))} -{' '}
                 {formatTime(new Date(preMatchingAppointment.end_time))}
               </Note>
-            </>
+            </div>
           ) : (
             <Note center>{t(`searching_card.${cardState}_info_2`)}</Note>
           )}
@@ -132,14 +147,28 @@ export function SearchingCard({
           </CancelSearchButton>
         </>
       ) : (
-        <Button
-          data-cal-link={calComAppointmentLink}
-          data-cal-config='{"layout":"month_view"}'
-          onClick={() => null}
-          size={ButtonSizes.Stretch}
-        >
-          {t(`searching_card.${cardState}_cta`)}
-        </Button>
+        <>
+          {isBookedState && (
+            <Link
+              buttonAppearance={ButtonAppearance.Primary}
+              to={preMatchingCallJoinLink}
+            >
+              {t(`searching_card.${cardState}_join_call`)}
+            </Link>
+          )}
+          <AppointmentButton
+            data-cal-link={calComAppointmentLink}
+            data-cal-config='{"layout":"month_view"}'
+            onClick={() => null}
+            size={ButtonSizes.Stretch}
+            variation={
+              isBookedState ? ButtonVariations.Inline : ButtonVariations.Basic
+            }
+            $isLink={isBookedState}
+          >
+            {t(`searching_card.${cardState}_cta`)}
+          </AppointmentButton>
+        </>
       )}
     </StyledCard>
   );

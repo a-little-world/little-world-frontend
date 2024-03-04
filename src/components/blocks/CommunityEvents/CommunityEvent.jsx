@@ -66,14 +66,9 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
             </Text>
           )}
           {frequency === 'once' && (
-            <>
-              <Text type={TextTypes.Body3} bold>
-                {two(dateTime.getDate())}
-              </Text>
-              <Text type={TextTypes.Body3} bold>
-                {t(`month_short::${dateTime.getMonth()}`)}
-              </Text>
-            </>
+            <Text type={TextTypes.Body3} bold tag="span">
+              {dateTime.toDateString()}
+            </Text>
           )}
           <Text type={TextTypes.Body3} bold>
             {formatTime(dateTime)}

@@ -30,6 +30,12 @@ export const userDataSlice = createSlice({
     reset: (state, action) => {
       state.user = null;
     },
+    updateUser: (state, action) => {
+      state.user = {
+        ...state.user,
+        ...action.payload,
+      }
+    },
     updateProfile: (state, action) => {
       Object.keys(action.payload).forEach(key => {
         state.user.profile[key] = action.payload[key];
@@ -173,6 +179,7 @@ export const {
   initActiveCall,
   stopActiveCall,
   getQuestions,
+  updateUser,
   switchQuestionCategory,
   getUnarchivedQuestions,
   setActiveChat,
