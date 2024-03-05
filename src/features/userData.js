@@ -128,6 +128,24 @@ export const userDataSlice = createSlice({
     getQuestions: (state, { payload }) => {
       state.questions = payload;
     },
+    addMessage: (state, action) => {
+      const { message, chatId } = action.payload;
+
+      if (state.chats?.[chatId]?.results) {
+        state.chats[chatId].results = [
+          message,
+          ...state.chats[chatId].results.filter(m => m.id === message.id)
+        ]
+      }
+      if (state.activeChat && state.activeChat.chatId === chatId) {
+        state.activeChat = {
+          ...state.activeChat,
+          results: [message,
+            ...state.activeChat.results.filter(m => m.id === message.id), message
+          ]
+        }
+      }
+    },
     preMatchingAppointmentBooked: (state, action) => {
       console.log('PRE_MATCHING_BOOKED');
       return {
@@ -165,6 +183,7 @@ export const userDataSlice = createSlice({
 export const {
   initialise,
   addMatch,
+  addMessage,
   updateEmail,
   updateProfile,
   updateSearchState,
@@ -215,17 +234,17 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-  async dispatch => {
-    const result = await questionsDuringCall.archieveQuestion(
-      card?.uuid,
-      archive,
-    );
-    dispatch(
-      switchQuestionCategory({
-        card,
-        archived: archive,
-      }),
-    );
-  };
+    async dispatch => {
+      const result = await questionsDuringCall.archieveQuestion(
+        card?.uuid,
+        archive,
+      );
+      dispatch(
+        switchQuestionCategory({
+          card,
+          archived: archive,
+        }),
+      );
+    };
 
 export default userDataSlice.reducer;
