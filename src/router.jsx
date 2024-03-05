@@ -180,6 +180,10 @@ const ROOT_ROUTES = [
     element: <Main />,
   },
   {
+    path: getAppRoute(NOTIFICATIONS_ROUTE),
+    element: <Main />,
+  },
+  {
     path: getAppRoute(SETTINGS_ROUTE),
     element: <Main />,
   },

@@ -26,6 +26,7 @@ import NotificationPanel from './components/blocks/NotificationPanel';
 import PartnerProfiles from './components/blocks/PartnerProfiles';
 import Help from './components/views/Help';
 import Messages from './components/views/Messages';
+import Notifications from './components/views/Notifications.tsx';
 import Profile from './components/views/Profile';
 import Settings from './components/views/Settings';
 import {
@@ -38,7 +39,6 @@ import {
 } from './features/userData';
 import './i18n';
 import './main.css';
-import Notifications from './notifications';
 import { APP_ROUTE } from './routes';
 import { removeActiveTracks } from './twilio-helper';
 
@@ -384,26 +384,26 @@ function Main() {
           <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
         </Modal>
       )}
-        <Modal
-          open={
-            matches?.proposed?.items?.length ||
-            matches?.unconfirmed?.items?.length
-          }
-          locked={false}
-          onClose={() => {}}
-        >
-          {(matches?.proposed?.items?.length ||
-            matches?.unconfirmed?.items?.length) &&
-            MatchCardComponent({
-              showNewMatch: Boolean(!matches?.proposed?.items?.length),
-              matchId: matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].id
-                : matches?.unconfirmed.items[0].id,
-              profile: matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].partner
-                : matches?.unconfirmed.items[0].partner,
-            })}
-        </Modal>
+      <Modal
+        open={
+          matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length
+        }
+        locked={false}
+        onClose={() => {}}
+      >
+        {(matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length) &&
+          MatchCardComponent({
+            showNewMatch: Boolean(!matches?.proposed?.items?.length),
+            matchId: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].id
+              : matches?.unconfirmed.items[0].id,
+            profile: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].partner
+              : matches?.unconfirmed.items[0].partner,
+          })}
+      </Modal>
     </AppLayout>
   );
 }
