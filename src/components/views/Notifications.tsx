@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import '../../notifications.css';
 import PageHeader from '../atoms/PageHeader.jsx';
-import { Toolbar } from './Notifications.styles';
+import { Toolbar } from './Notifications.styles.tsx';
 
 function timeToStr(seconds: number, t: TFunction) {
   if (seconds < 60) {

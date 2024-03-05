@@ -97,7 +97,7 @@ function PartnerProfiles({
   const onModalClose = () => {
     setPartnerActionData(null);
   };
-  console.log({ matchesDisplay });
+
   return (
     <Matches>
       {matchesDisplay.map(match => (
@@ -114,9 +114,7 @@ function PartnerProfiles({
         />
       ))}
       {user.isSearching ? (
-        <SearchingCard
-          setShowCancel={setShowCancel}
-        />
+        <SearchingCard setShowCancel={setShowCancel} />
       ) : (
         <FindNewPartner
           type="button"

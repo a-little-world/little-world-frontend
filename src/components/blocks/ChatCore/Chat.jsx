@@ -11,19 +11,19 @@ import {
   TickIcon,
   VideoIcon,
 } from '@a-little-world/little-world-design-system';
-import { format, formatDistance, formatRelative, subDays } from 'date-fns';
+import { formatDistance } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 
 import { fetchChatMessages, sendMessage } from '../../../api/chat';
-import { initCallSetup, setActiveChat } from '../../../features/userData';
+import { initCallSetup } from '../../../features/userData';
+import { addMessage } from '../../../features/userData';
 import { onFormError, registerInput } from '../../../helpers/form';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../routes';
-import { addMessage } from '../../../features/userData';
 import ProfileImage from '../../atoms/ProfileImage';
 
 export const Panel = styled(Card)`
@@ -33,6 +33,7 @@ export const Panel = styled(Card)`
   min-height: 0;
   padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.small}`};
   gap: ${({ theme }) => theme.spacing.small};
+  box-shadow: none;
 
   ${({ theme, $isFullScreen }) =>
     $isFullScreen
@@ -87,7 +88,7 @@ export const WriteSection = styled.form`
 
 export const Messages = styled.div`
   height: 100%;
-  border: 2px solid ${({ theme }) => theme.color.border.subtle};
+  border: 2px solid ${({ theme }) => theme.color.border.minimal};
   border-radius: 20px;
   flex-grow: 1;
   display: flex;
@@ -102,9 +103,11 @@ const Message = styled.div`
   align-items: ${({ $isSelf }) => ($isSelf ? 'flex-end' : 'flex-start')};
   display: flex;
   flex-direction: column;
+  width: 90%;
 `;
 
 const MessageText = styled(Text)`
+  position: relative;
   padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: 24px;
@@ -115,6 +118,54 @@ const MessageText = styled(Text)`
     `
    background: ${theme.color.surface.message};
 `}
+
+  &::before {
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    bottom: -9px;
+    border: 5px solid;
+
+    ${({ theme, $isSelf }) =>
+      $isSelf
+        ? css`
+            border-color: ${theme.color.border.subtle}
+              ${theme.color.border.subtle} transparent transparent;
+            left: auto;
+            right: 15px;
+          `
+        : css`
+            border-color: ${theme.color.border.subtle} transparent transparent
+              ${theme.color.border.subtle};
+            right: auto;
+            left: 15px;
+          `}
+  }
+
+  &::after {
+    content: ' ';
+    position: absolute;
+    width: 0;
+    height: 0;
+    bottom: -7px;
+    border: 5px solid;
+
+    ${({ theme, $isSelf }) =>
+      $isSelf
+        ? css`
+            border-color: ${theme.color.surface.message}
+              ${theme.color.surface.message} transparent transparent;
+            left: auto;
+            right: 16px;
+          `
+        : css`
+            border-color: ${theme.color.surface.primary} transparent transparent
+              ${theme.color.surface.primary};
+            right: auto;
+            left: 16px;
+          `}
+  }
 `;
 
 export const MessageBox = styled(TextArea)`
@@ -126,7 +177,7 @@ export const MessageBox = styled(TextArea)`
 const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
+  gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 const NoMessages = styled(Text)`
@@ -182,7 +233,7 @@ export const ChatWithUserInfo = ({
   const callPartner = () => {
     dispatch(initCallSetup({ userId: partner?.id }));
   };
-  console.log({ chatId });
+
   return (
     <Panel $isFullScreen={isFullScreen}>
       <TopSection>
@@ -228,14 +279,14 @@ export const ChatWithUserInfo = ({
     </Panel>
   );
 };
-export const Chat = ({ chatId, partner }) => {
+export const Chat = ({ chatId }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const [chatData, setChatData] = useState([]);
-  const activeChat = useSelector(state => state.userData.activeChat);
-  // console.log({ activeChat });
+  const [chatData, setChatData] = useState(null);
+
   const {
     getValues,
     register,
@@ -249,11 +300,7 @@ export const Chat = ({ chatId, partner }) => {
     if (chatId)
       fetchChatMessages({ id: chatId })
         .then(data => {
-          // setChatData(data);
-          dispatch(setActiveChat({
-            ...data,
-            chatId
-          }));
+          setChatData(data);
         })
         .catch(() => {
           navigate(getAppRoute(MESSAGES_ROUTE));
@@ -272,41 +319,55 @@ export const Chat = ({ chatId, partner }) => {
         console.log(data);
         reset();
         // @tbscode if message sending succeeds then it returns the message object
-        dispatch(addMessage({
-          message: data,
-          chatId,
-        }));
+        dispatch(
+          addMessage({
+            message: data,
+            chatId,
+          }),
+        );
         setIsSubmitting(false);
       })
       .catch(onSubmitError);
   };
+  const msg = `Hallo Sean und herzlich willkommen bei Little World!
+
+  Ich bin Tim, Mitbegründer und CTO von Little World. Danke, dass du ein Teil unserer Plattform geworden bist!
+  
+  Bevors richtig los geht musst du mit mir einen 15 minuetigen video call termin vereinbaren. 
+                                              
+  Dort werden wir zusmmen deine such angaben ueberpruefen und ich werde dir die nachsten schritte zur teilnahme bei little world erklaern.
+                                              
+  Bitte buche dafuer einen termin in dem volgenden kalender: `;
 
   return (
     <ChatContainer>
       <Messages>
-        {activeChat?.results ? (
-          activeChat?.results?.map((message, index) => (
-            <Message $isSelf={index % 2 === 0} key={message.uuid}>
-              <MessageText $isSelf={index % 2 === 0}>
-                {message.text}
-              </MessageText>
-              <Time type={TextTypes.Body6}>
-                {message.read ? (
-                  <TickDoubleIcon width="12px" height="12px" />
-                ) : (
-                  <TickIcon width="12px" height="12px" />
-                )}
-                {formatDistance(message.created, new Date(), {
-                  addSuffix: true,
-                })}
-              </Time>
-            </Message>
-          ))
-        ) : (
-          <NoMessages type={TextTypes.Body4}>
-            You have no messages yet. Send a message now!
-          </NoMessages>
-        )}
+        {chatData?.results &&
+          (chatData?.results.length ? (
+            chatData?.results?.map((message, index) => (
+              <Message $isSelf={index % 2 === 0} key={message.uuid}>
+                <MessageText $isSelf={index % 2 === 0}>{msg}</MessageText>
+                <Time type={TextTypes.Body6}>
+                  {!message.read ? (
+                    <TickDoubleIcon
+                      color={theme.color.status.info}
+                      width="16px"
+                      height="16px"
+                    />
+                  ) : (
+                    <TickIcon width="16px" height="16px" />
+                  )}
+                  {formatDistance(message.created, new Date(), {
+                    addSuffix: true,
+                  })}
+                </Time>
+              </Message>
+            ))
+          ) : (
+            <NoMessages type={TextTypes.Body4}>
+              {t('chat.no_messages')}
+            </NoMessages>
+          ))}
       </Messages>
       <WriteSection onSubmit={handleSubmit(onSendMessage)}>
         <MessageBox

@@ -146,6 +146,8 @@
   "settings.delete_account_modal_title": "Bist du sicher, dass du dein Konto dauerhaft löschen willst?",
   "settings.delete_account_modal_cancel": "Abbrechen",
 
+  "chat.no_messages": "Du hast noch keine Nachrichten. Sende jetzt eine Nachricht!",
+  "chat.no_messages_preview": "Keine Nachrichten geteilt.",
   "chat.send_btn": "Senden",
   "chat.text_area_placeholder": "Schreib eine Nachricht",
   "chat_appointment_title": "Termin vorschlagen",

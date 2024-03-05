@@ -149,6 +149,8 @@
   "settings.delete_account_modal_title": "Are you sure you want to permanently delete your account?",
   "settings.delete_account_modal_cancel": "Cancel",
 
+  "chat.no_messages": "You have no messages yet. Send a message now!",
+  "chat.no_messages_preview": "No messages shared.",
   "chat.send_btn": "Send",
   "chat.text_area_placeholder": "Write a message...",
   "chat_appointment_title": "Suggest an appointment",

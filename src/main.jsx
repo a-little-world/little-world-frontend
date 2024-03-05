@@ -2,7 +2,6 @@ import { Modal } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
 import styled, { css } from 'styled-components';
 
 import CustomPagination from './CustomPagination';
@@ -114,6 +113,7 @@ const Content = styled.section`
   padding-bottom: ${({ theme }) => theme.spacing.medium};
   width: 100%;
   min-width: 0;
+  flex: 1;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
@@ -241,10 +241,9 @@ function Main() {
   const onRejectCall = () => {
     dispatch(blockIncomingCall({ userId: incomingCalls[0]?.userId }));
   };
-  console.log({ use });
+
   return (
     <AppLayout page={use} isVH={isViewportHeight.includes(use)}>
-      <ToastContainer />
       <Content>
         <NbtSelector
           selection={topSelection}

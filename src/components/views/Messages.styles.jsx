@@ -3,7 +3,8 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { format, formatDistance, formatRelative, subDays } from 'date-fns';
+import { formatDistance } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
 import ProfileImage from '../atoms/ProfileImage';
@@ -11,6 +12,7 @@ import ProfileImage from '../atoms/ProfileImage';
 export const ChatDashboard = styled.div`
   position: relative;
   display: flex;
+  flex: 1;
   width: 100%;
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.xxsmall};
@@ -29,6 +31,7 @@ export const Panel = styled(Card)`
   overflow-y: scroll;
   flex-shrink: 0;
   width: 100%;
+  box-shadow: none;
 
   ${({ theme, $selectedChat }) => css`
     display: ${$selectedChat ? 'none' : 'flex'};
@@ -46,13 +49,17 @@ export const Message = styled.button`
   padding: ${({ theme }) => theme.spacing.xxsmall};
   border-radius: 20px;
   border: 2px solid ${({ theme }) => theme.color.border.reversed};
+  align-items: center;
   // transition: 0.25s border-color, 0.25s background;
 
   ${({ $selected, theme }) =>
     $selected &&
     `
+    @media (min-width: ${theme.breakpoints.medium}) {
       border-color: ${theme.color.border.selected};
       background: ${theme.color.surface.secondary};
+    }
+      
   `}
 `;
 
@@ -62,6 +69,8 @@ export const Details = styled.div`
   flex-grow: 1;
   overflow: hidden;
   justify-content: center;
+  align-items: flex-start;
+  text-align: left;
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
@@ -84,15 +93,27 @@ export const Preview = styled(Text)`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 `;
 
-export const MessagesPanel = ({ messages, selectChat, selectedChat }) => {
-  console.log({ selectedChat });
+export const UnreadIndicator = styled.span`
+  border-radius: 50%;
+  height: 10px;
+  width: 10px;
+  background: ${({ theme }) => theme.color.gradient.orange};
+`;
+
+export const ChatsPanel = ({ chats, selectChat, selectedChat }) => {
+  const { t } = useTranslation();
   return (
     <Panel $selectedChat={selectedChat}>
-      {messages?.map((message, index) => (
+      {chats?.map((message, index) => (
         <Message
-          $selected={message.uuid === selectedChat}
+          key={message.uuid}
+          $selected={selectedChat ? message.uuid === selectedChat : !index}
           onClick={() => selectChat(message.uuid)}
         >
           <UserImage
@@ -108,13 +129,18 @@ export const MessagesPanel = ({ messages, selectChat, selectedChat }) => {
           <Details>
             <Top>
               <Text bold>{message.partner.first_name}</Text>
-              <Time type={TextTypes.Body6}>
-                {formatDistance(message.created, new Date(), {
-                  addSuffix: true,
-                })}
-              </Time>
+              {!!message?.newest_message?.created && (
+                <Time type={TextTypes.Body6}>
+                  {formatDistance(message.newest_message.created, new Date(), {
+                    addSuffix: true,
+                  })}
+                </Time>
+              )}
             </Top>
-            <Preview>{message.text}</Preview>
+            <Preview>
+              {message.newest_message?.text || t('chat.no_messages_preview')}
+              {!!message.unread_count && <UnreadIndicator />}
+            </Preview>
           </Details>
         </Message>
       ))}
