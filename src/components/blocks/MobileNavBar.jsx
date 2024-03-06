@@ -54,7 +54,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
   const location = useLocation();
   const { userPk } = location.state || {};
   const key = location.pathname.split('/')[2] || (userPk ? 'user' : 'home');
-  console.log({ key, location: location.pathname.split('/') });
+
   const isHome = key === 'home';
 
   return (

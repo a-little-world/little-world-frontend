@@ -3,24 +3,27 @@ import Cookies from 'js-cookie';
 import { formatApiError } from '.';
 import { BACKEND_URL } from '../ENVIRONMENT';
 
-export const fetchChatMessages = async ({ id }) => {
-  const response = await fetch(`${BACKEND_URL}/api/messages/${id}/?page_size=20`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': 'True',
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+export const fetchChatMessages = async ({ id, page }) => {
+  const response = await fetch(
+    `${BACKEND_URL}/api/messages/${id}/?page=${page}&page_size=20`,
+    {
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-UseTagsOnly': 'True',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
     },
-    method: 'GET',
-  });
+  );
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
   throw formatApiError(responseBody);
 };
 
-export const fetchChats = async () => {
-  const response = await fetch(`${BACKEND_URL}/api/chats/?paginate_by=20`, {
+export const fetchChats = async ({ page }) => {
+  const response = await fetch(`${BACKEND_URL}/api/chats/?page=${page}`, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),
       'X-UseTagsOnly': 'True',

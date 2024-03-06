@@ -26,7 +26,7 @@ export const ChatDashboard = styled.div`
 `;
 
 export const Panel = styled(Card)`
-  padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.small}`};
+  padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
   gap: ${({ theme }) => theme.spacing.xxsmall};
   overflow-y: scroll;
   flex-shrink: 0;
@@ -38,6 +38,10 @@ export const Panel = styled(Card)`
     @media (min-width: ${theme.breakpoints.medium}) {
       display: flex;
       width: 400px;
+    }
+
+    @media (min-width: ${theme.breakpoints.large}) {
+      padding: ${theme.spacing.medium};
     }
   `}
 `;
@@ -106,13 +110,14 @@ export const UnreadIndicator = styled.span`
   background: ${({ theme }) => theme.color.gradient.orange};
 `;
 
-export const ChatsPanel = ({ chats, selectChat, selectedChat }) => {
+export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
   const { t } = useTranslation();
+
   return (
     <Panel $selectedChat={selectedChat}>
       {chats?.map((message, index) => (
         <Message
-          key={message.uuid}
+          key={`chat_${message.uuid + index}`}
           $selected={selectedChat ? message.uuid === selectedChat : !index}
           onClick={() => selectChat(message.uuid)}
         >
@@ -144,6 +149,7 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat }) => {
           </Details>
         </Message>
       ))}
+      <div ref={scrollRef} />
     </Panel>
   );
 };

@@ -3,224 +3,43 @@ import {
   Button,
   ButtonSizes,
   ButtonVariations,
-  Card,
   Text,
-  TextArea,
   TextTypes,
   TickDoubleIcon,
   TickIcon,
   VideoIcon,
 } from '@a-little-world/little-world-design-system';
 import { formatDistance } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { isEmpty } from 'lodash';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import styled, { css, useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import { fetchChatMessages, sendMessage } from '../../../api/chat';
 import { initCallSetup } from '../../../features/userData';
 import { addMessage } from '../../../features/userData';
 import { onFormError, registerInput } from '../../../helpers/form';
+import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../routes';
-import ProfileImage from '../../atoms/ProfileImage';
-
-export const Panel = styled(Card)`
-  flex-grow: 1;
-  width: 100%;
-  min-width: 0;
-  min-height: 0;
-  padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.small}`};
-  gap: ${({ theme }) => theme.spacing.small};
-  box-shadow: none;
-
-  ${({ theme, $isFullScreen }) =>
-    $isFullScreen
-      ? css`
-          display: flex;
-          @media (min-width: ${theme.breakpoints.medium}) {
-            position: relative;
-          }
-        `
-      : css`
-          display: none;
-          @media (min-width: ${theme.breakpoints.medium}) {
-            display: flex;
-          }
-        `}
-`;
-
-export const Details = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow: hidden;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-`;
-
-export const UserImage = styled(ProfileImage)`
-  flex-shrink: 0;
-`;
-
-export const Time = styled(Text)`
-  display: flex;
-  align-items: center;
-  color: ${({ theme }) => theme.color.text.secondary};
-  padding-left: ${({ theme }) => theme.spacing.small};
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
-`;
-
-export const TopSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`;
-
-export const WriteSection = styled.form`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-`;
-
-export const Messages = styled.div`
-  height: 100%;
-  border: 2px solid ${({ theme }) => theme.color.border.minimal};
-  border-radius: 20px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column-reverse;
-  gap: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) => theme.spacing.small};
-  overflow-y: scroll;
-`;
-
-const Message = styled.div`
-  align-self: ${({ $isSelf }) => ($isSelf ? 'flex-end' : 'flex-start')};
-  align-items: ${({ $isSelf }) => ($isSelf ? 'flex-end' : 'flex-start')};
-  display: flex;
-  flex-direction: column;
-  width: 90%;
-`;
-
-const MessageText = styled(Text)`
-  position: relative;
-  padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
-  border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  border-radius: 24px;
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
-
-  ${({ $isSelf, theme }) =>
-    $isSelf &&
-    `
-   background: ${theme.color.surface.message};
-`}
-
-  &::before {
-    content: ' ';
-    position: absolute;
-    width: 0;
-    height: 0;
-    bottom: -9px;
-    border: 5px solid;
-
-    ${({ theme, $isSelf }) =>
-      $isSelf
-        ? css`
-            border-color: ${theme.color.border.subtle}
-              ${theme.color.border.subtle} transparent transparent;
-            left: auto;
-            right: 15px;
-          `
-        : css`
-            border-color: ${theme.color.border.subtle} transparent transparent
-              ${theme.color.border.subtle};
-            right: auto;
-            left: 15px;
-          `}
-  }
-
-  &::after {
-    content: ' ';
-    position: absolute;
-    width: 0;
-    height: 0;
-    bottom: -7px;
-    border: 5px solid;
-
-    ${({ theme, $isSelf }) =>
-      $isSelf
-        ? css`
-            border-color: ${theme.color.surface.message}
-              ${theme.color.surface.message} transparent transparent;
-            left: auto;
-            right: 16px;
-          `
-        : css`
-            border-color: ${theme.color.surface.primary} transparent transparent
-              ${theme.color.surface.primary};
-            right: auto;
-            left: 16px;
-          `}
-  }
-`;
-
-export const MessageBox = styled(TextArea)`
-  height: 36px;
-  border-radius: 100px;
-  background: ${({ theme }) => theme.color.surface.secondary};
-`;
-
-const UserInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.xsmall};
-`;
-
-const NoMessages = styled(Text)`
-  height: 100%;
-  background: ${({ theme }) => theme.color.surface.tertiary};
-  border-radius: 10px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  display: flex;
-  padding: ${({ theme }) => theme.spacing.xxsmall};
-`;
-
-export const Preview = styled(Text)`
-  color: ${({ theme }) => theme.color.text.secondary};
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-`;
-
-const BackButton = styled(Button)`
-  display: ${({ $show }) => ($show ? 'flex' : 'none')};
-  color: ${({ theme }) => theme.color.text.link};
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      display: none;
-    }
-  `}
-`;
-
-const SendButton = styled(Button)`
-  height: 36px;
-  min-width: unset;
-`;
-
-const ChatContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: ${({ theme }) => theme.spacing.small};
-  overflow-y: hidden;
-`;
+import {
+  BackButton,
+  ChatContainer,
+  Message,
+  MessageBox,
+  MessageText,
+  Messages,
+  NoMessages,
+  Panel,
+  SendButton,
+  Time,
+  TopSection,
+  UserImage,
+  UserInfo,
+  WriteSection,
+} from './Chat.styles.tsx';
 
 export const ChatWithUserInfo = ({
   chatId,
@@ -230,6 +49,7 @@ export const ChatWithUserInfo = ({
 }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
+
   const callPartner = () => {
     dispatch(initCallSetup({ userId: partner?.id }));
   };
@@ -275,7 +95,7 @@ export const ChatWithUserInfo = ({
           />
         </Button>
       </TopSection>
-      <Chat chatId={chatId} partner={partner} />
+      <Chat chatId={chatId} />
     </Panel>
   );
 };
@@ -285,7 +105,18 @@ export const Chat = ({ chatId }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [chatData, setChatData] = useState(null);
+
+  const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
+  const {
+    items: chatData,
+    initialLoad,
+    scrollRef,
+  } = useInfiniteScroll({
+    fetchItems: fetchChatMessages,
+    fetchArgs: { id: chatId },
+    fetchCondition: !!chatId,
+    onError,
+  });
 
   const {
     getValues,
@@ -295,17 +126,6 @@ export const Chat = ({ chatId }) => {
     reset,
     setError,
   } = useForm({ shouldUnregister: true });
-
-  useEffect(() => {
-    if (chatId)
-      fetchChatMessages({ id: chatId })
-        .then(data => {
-          setChatData(data);
-        })
-        .catch(() => {
-          navigate(getAppRoute(MESSAGES_ROUTE));
-        });
-  }, [chatId]);
 
   const onSubmitError = e => {
     setIsSubmitting(false);
@@ -329,44 +149,40 @@ export const Chat = ({ chatId }) => {
       })
       .catch(onSubmitError);
   };
-  const msg = `Hallo Sean und herzlich willkommen bei Little World!
-
-  Ich bin Tim, Mitbegründer und CTO von Little World. Danke, dass du ein Teil unserer Plattform geworden bist!
-  
-  Bevors richtig los geht musst du mit mir einen 15 minuetigen video call termin vereinbaren. 
-                                              
-  Dort werden wir zusmmen deine such angaben ueberpruefen und ich werde dir die nachsten schritte zur teilnahme bei little world erklaern.
-                                              
-  Bitte buche dafuer einen termin in dem volgenden kalender: `;
 
   return (
     <ChatContainer>
       <Messages>
-        {chatData?.results &&
-          (chatData?.results.length ? (
-            chatData?.results?.map((message, index) => (
-              <Message $isSelf={index % 2 === 0} key={message.uuid}>
-                <MessageText $isSelf={index % 2 === 0}>{msg}</MessageText>
-                <Time type={TextTypes.Body6}>
-                  {!message.read ? (
-                    <TickDoubleIcon
-                      color={theme.color.status.info}
-                      width="16px"
-                      height="16px"
-                    />
-                  ) : (
-                    <TickIcon width="16px" height="16px" />
-                  )}
-                  {formatDistance(message.created, new Date(), {
-                    addSuffix: true,
-                  })}
-                </Time>
-              </Message>
-            ))
-          ) : (
+        {initialLoad &&
+          (isEmpty(chatData) ? (
             <NoMessages type={TextTypes.Body4}>
               {t('chat.no_messages')}
             </NoMessages>
+          ) : (
+            <>
+              {chatData?.map((message, index) => (
+                <Message $isSelf={index % 2 === 0} key={message.uuid}>
+                  <MessageText $isSelf={index % 2 === 0}>
+                    {message.text}
+                  </MessageText>
+                  <Time type={TextTypes.Body6}>
+                    {!message.read ? (
+                      <TickDoubleIcon
+                        color={theme.color.status.info}
+                        width="16px"
+                        height="16px"
+                      />
+                    ) : (
+                      <TickIcon width="16px" height="16px" />
+                    )}
+                    {formatDistance(message.created, new Date(), {
+                      addSuffix: true,
+                    })}
+                  </Time>
+                </Message>
+              ))}
+              <div ref={scrollRef} />
+            </>
           ))}
       </Messages>
       <WriteSection onSubmit={handleSubmit(onSendMessage)}>

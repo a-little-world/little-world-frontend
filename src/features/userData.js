@@ -200,7 +200,7 @@ export const selectMatchByPartnerId = (matches, partnerId) => {
 
 export const getMatchByPartnerId = (matches, partnerId) => {
   const allMatches = [...matches.support.items, ...matches.confirmed.items];
-  console.log(allMatches, partnerId);
+
   const partner = allMatches.find(match => match?.partner?.id === partnerId);
   return partner;
 };
