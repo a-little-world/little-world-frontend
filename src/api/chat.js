@@ -38,6 +38,24 @@ export const fetchChats = async ({ page }) => {
   throw formatApiError(responseBody);
 };
 
+
+export const markChatMessagesRead = async ({ chatId }) => {
+  const response = await fetch(`${BACKEND_URL}/api/messages/${chatId}/chat_read/`, {
+    headers: {
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'True',
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
+
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody);
+};
+
 export const sendMessage = async ({ chatId, text }) => {
   const response = await fetch(`${BACKEND_URL}/api/messages/${chatId}/send/`, {
     headers: {
