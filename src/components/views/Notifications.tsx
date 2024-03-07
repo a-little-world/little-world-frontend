@@ -76,7 +76,7 @@ function Notifications() {
   return (
     <>
       <PageHeader text={t('notifications.title')} />
-      <Toolbar className="buttons select-showing">
+      <Toolbar>
         <Button onClick={() => setFilter('all')}>
           <BellIcon labelId="bell_icon" label=" all notifications" />
           {t('notifications.filter_all')}
@@ -90,7 +90,7 @@ function Notifications() {
         </Button>
         <Button onClick={() => setFilter('archive')}>
           <ArchiveIcon labelId="archive_icon" label="archive icon" />
-          {t('notifications.archive')}
+          {t('notifications.archived')}
         </Button>
       </Toolbar>
 
@@ -104,13 +104,10 @@ function Notifications() {
                   <Text>{description}</Text>
                 </Info>
                 <Status>
-                  {state === 'unread' && (
-                    <UnreadIndicator className="unread-indicator" />
-                  )}
+                  {state === 'unread' && <UnreadIndicator />}
                   {state !== 'archive' && (
                     <Button
                       variation={ButtonVariations.Control}
-                      className="archive-item"
                       onClick={() => archive(hash)}
                     >
                       <ArchiveIcon
@@ -122,9 +119,11 @@ function Notifications() {
                     </Button>
                   )}
                   <CreatedAt>
-                    {formatDistance(created_at, new Date(), {
-                      addSuffix: true,
-                    })}
+                    <Text>
+                      {formatDistance(created_at, new Date(), {
+                        addSuffix: true,
+                      })}
+                    </Text>
                   </CreatedAt>
                 </Status>
               </Notification>

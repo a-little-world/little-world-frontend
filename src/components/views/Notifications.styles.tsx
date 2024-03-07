@@ -1,7 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export const Toolbar = styled.div``;
+export const Toolbar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.small};
+`;
 
 export const Notification = styled.div<{ $state: string }>`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
@@ -22,3 +27,5 @@ export const Info = styled.div``;
 export const UnreadIndicator = styled.div``;
 
 export const Status = styled.div``;
+
+export const CreatedAt = styled.div``;

@@ -528,6 +528,9 @@
   "welcome.button": "Jetzt starten",
 
   "notifications.title": "Notifications",
+  "notifications.filter_all": "Alle",
+  "notifications.filter_unread": "Ungelesen",
+  "notifications.archived": "Archiviert",
 
   "sign_up.title": "Konto erstellen",
   "sign_up.name_label": "Dein Name",

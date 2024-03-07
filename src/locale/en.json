@@ -518,6 +518,9 @@
   "validation.required": "*required",
 
   "notifications.title": "Notifications",
+  "notifications.filter_all": "All",
+  "notifications.filter_unread": "Unread",
+  "notifications.archived": "Archived",
 
   "error_view.title": "Uh oh, this page doesn't exist",
   "error_view.button": "Back to the start",

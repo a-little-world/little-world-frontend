@@ -19,7 +19,11 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
 import { fetchChatMessages, sendMessage } from '../../../api/chat';
-import { initCallSetup } from '../../../features/userData';
+import {
+  getMessagesByChatId,
+  initCallSetup,
+  updateMessages,
+} from '../../../features/userData';
 import { addMessage } from '../../../features/userData';
 import { onFormError, registerInput } from '../../../helpers/form';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
@@ -106,16 +110,17 @@ export const Chat = ({ chatId }) => {
   const dispatch = useDispatch();
   const userId = useSelector(state => state.userData.user?.id);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const activeChat = useSelector(state =>
+    getMessagesByChatId(state.userData.messages, chatId, state),
+  );
 
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
-  const {
-    items: chatData,
-    initialLoad,
-    scrollRef,
-  } = useInfiniteScroll({
+  const { initialLoad, scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
     fetchArgs: { id: chatId },
     fetchCondition: !!chatId,
+    items: activeChat,
+    setItems: items => dispatch(updateMessages({ chatId, items })),
     onError,
   });
 
@@ -149,18 +154,18 @@ export const Chat = ({ chatId }) => {
       })
       .catch(onSubmitError);
   };
-
+  console.log({ initialLoad });
   return (
     <ChatContainer>
       <Messages>
         {initialLoad &&
-          (isEmpty(chatData) ? (
+          (isEmpty(activeChat) ? (
             <NoMessages type={TextTypes.Body4}>
               {t('chat.no_messages')}
             </NoMessages>
           ) : (
             <>
-              {chatData?.map((message, index) => (
+              {activeChat?.map((message, index) => (
                 <Message $isSelf={message.sender === userId} key={message.uuid}>
                   <MessageText $isSelf={message.sender === userId}>
                     {message.text}

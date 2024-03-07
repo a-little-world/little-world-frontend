@@ -19,7 +19,8 @@ export const userDataSlice = createSlice({
       };
       state.notifications = action.payload?.notifications;
       state.matches = action.payload?.matches;
-      state.chats = action.payload?.matches?.chats;
+      state.chats = [];
+      state.messages = {};
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
       state.incomingCalls = action.payload?.incomingCalls || []; // [{ userId: user.hash }] or []
@@ -92,7 +93,6 @@ export const userDataSlice = createSlice({
         };
     },
     updateMatchProfile: (state, action) => {
-      console.log('REDUCER', action.payload);
       const { partnerId, profile } = action.payload;
       Object.keys(state.matches).forEach(category => {
         const matchIndex = state.matches[category].items.findIndex(
@@ -127,18 +127,20 @@ export const userDataSlice = createSlice({
     getQuestions: (state, { payload }) => {
       state.questions = payload;
     },
+    updateMessages: (state, { payload }) => {
+      const { chatId, items } = payload;
+      state.messages = { ...state.messages, [chatId]: items };
+    },
     addMessage: (state, action) => {
       const { message, chatId } = action.payload;
-
-      if (state.chats?.[chatId]?.results) {
-        state.chats[chatId].results = [
-          message,
-          ...state.chats[chatId].results.filter(m => m.id === message.id),
-        ];
+      if (chatId) {
+        const newMessages = state.messages[chatId]
+          ? [message, ...state.messages[chatId]]
+          : [message];
+        state.messages[chatId] = newMessages;
       }
     },
     preMatchingAppointmentBooked: (state, action) => {
-      console.log('PRE_MATCHING_BOOKED');
       return {
         ...state,
         user: {
@@ -164,30 +166,35 @@ export const userDataSlice = createSlice({
         state.questions.cards[card.category].push(card);
       }
     },
+    updateChats: (state, { payload }) => {
+      state.chats = payload;
+    },
   },
 });
 
 export const {
-  initialise,
   addMatch,
   addMessage,
+  blockIncomingCall,
+  cancelCallSetup,
+  changeMatchCategory,
+  getQuestions,
+  getUnarchivedQuestions,
+  initActiveCall,
+  initCallSetup,
+  initialise,
+  removeMatch,
+  stopActiveCall,
+  switchQuestionCategory,
+  updateChats,
+  updateConfirmedData,
   updateEmail,
+  updateMatch,
+  updateMatchProfile,
+  updateMessages,
   updateProfile,
   updateSearchState,
-  updateMatchProfile,
-  updateMatch,
-  removeMatch,
-  changeMatchCategory,
-  blockIncomingCall,
-  updateConfirmedData,
-  initCallSetup,
-  cancelCallSetup,
-  initActiveCall,
-  stopActiveCall,
-  getQuestions,
   updateUser,
-  switchQuestionCategory,
-  getUnarchivedQuestions,
 } = userDataSlice.actions;
 
 export const selectMatchByPartnerId = (matches, partnerId) => {
@@ -203,6 +210,11 @@ export const getMatchByPartnerId = (matches, partnerId) => {
 
   const partner = allMatches.find(match => match?.partner?.id === partnerId);
   return partner;
+};
+
+export const getMessagesByChatId = (messages, chatId) => {
+  console.log({ messages, chatId });
+  return messages?.[chatId] || [];
 };
 
 export const selectMatchesDisplay = createSelector(
