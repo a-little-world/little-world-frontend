@@ -20,6 +20,7 @@ export const USER_FORM_ROUTE = 'user-form';
 export const WP_HOME_ROUTE = 'https://home.little-world.com';
 export const TERMS_ROUTE = 'nutzungsbedingungen';
 export const PRIVACY_ROUTE = 'datenschutz';
+export const JITSY_CALL_ROUTE = 'call_v2/:roomId?/';
 
 export const getHomeRoute = (locale, slug) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;

@@ -22,6 +22,7 @@ import ResetPassword from './components/views/ResetPassword';
 import SignUp from './components/views/SignUp';
 import VerifyEmail from './components/views/VerifyEmail';
 import Main from './main';
+import { CallV2 } from './callV2';
 import {
   APP_ROUTE,
   BASE_ROUTE,
@@ -32,6 +33,7 @@ import {
   EDIT_FORM_ROUTE,
   FORGOT_PASSWORD_ROUTE,
   HELP_ROUTE,
+  JITSY_CALL_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
   NOTIFICATIONS_ROUTE,
@@ -186,6 +188,10 @@ const ROOT_ROUTES = [
   {
     path: getAppRoute(SETTINGS_ROUTE),
     element: <Main />,
+  },
+  {
+    path: getAppRoute(JITSY_CALL_ROUTE),
+    element: <CallV2 />,
   },
   {
     path: getAppRoute(USER_FORM_ROUTE),
