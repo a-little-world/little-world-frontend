@@ -24,7 +24,6 @@ const useInfiniteScroll = ({
 
     fetchItems({ page: page + 1, ...fetchArgs })
       .then((response: any) => {
-        console.log({ response });
         setItems(prevResults => [...prevResults, ...response.results]);
         onSuccess?.();
         setPage(prevPage => prevPage + 1);

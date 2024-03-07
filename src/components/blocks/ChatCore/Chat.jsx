@@ -14,7 +14,7 @@ import { isEmpty } from 'lodash';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
@@ -104,6 +104,7 @@ export const Chat = ({ chatId }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userId = useSelector(state => state.userData.user?.id);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
@@ -136,7 +137,6 @@ export const Chat = ({ chatId }) => {
     setIsSubmitting(true);
     sendMessage({ text, chatId })
       .then(data => {
-        console.log(data);
         reset();
         // @tbscode if message sending succeeds then it returns the message object
         dispatch(
@@ -161,8 +161,8 @@ export const Chat = ({ chatId }) => {
           ) : (
             <>
               {chatData?.map((message, index) => (
-                <Message $isSelf={index % 2 === 0} key={message.uuid}>
-                  <MessageText $isSelf={index % 2 === 0}>
+                <Message $isSelf={message.sender === userId} key={message.uuid}>
+                  <MessageText $isSelf={message.sender === userId}>
                     {message.text}
                   </MessageText>
                   <Time type={TextTypes.Body6}>
