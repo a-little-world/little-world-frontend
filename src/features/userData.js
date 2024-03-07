@@ -132,12 +132,33 @@ export const userDataSlice = createSlice({
       state.messages = { ...state.messages, [chatId]: items };
     },
     addMessage: (state, action) => {
-      const { message, chatId } = action.payload;
+      const { message, chatId, senderIsSelf = false } = action.payload;
       if (chatId) {
         const newMessages = state.messages[chatId]
           ? [message, ...state.messages[chatId]]
           : [message];
         state.messages[chatId] = newMessages;
+      }
+      state.chats = state.chats.map(chat => {
+        if (chat.uuid === chatId) {
+          return {
+            ...chat,
+            unread_messages: senderIsSelf ? chat.unread_messages : chat.unread_messages + 1,
+            newest_message: message
+          };
+        }
+        return chat;
+      });
+    },
+    markChatMessagesRead: (state, action) => {
+      const { chatId, userId } = action.payload;
+      if (chatId in state.messages) {
+        state.messages[chatId] = state.messages[chatId].map(message => {
+          if (message.sender !== userId) {
+            return { ...message, read: true };
+          }
+          return message;
+        });
       }
     },
     preMatchingAppointmentBooked: (state, action) => {
@@ -183,6 +204,7 @@ export const {
   initActiveCall,
   initCallSetup,
   initialise,
+  markChatMessagesRead,
   removeMatch,
   stopActiveCall,
   switchQuestionCategory,
@@ -231,17 +253,17 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-  async dispatch => {
-    const result = await questionsDuringCall.archieveQuestion(
-      card?.uuid,
-      archive,
-    );
-    dispatch(
-      switchQuestionCategory({
-        card,
-        archived: archive,
-      }),
-    );
-  };
+    async dispatch => {
+      const result = await questionsDuringCall.archieveQuestion(
+        card?.uuid,
+        archive,
+      );
+      dispatch(
+        switchQuestionCategory({
+          card,
+          archived: archive,
+        }),
+      );
+    };
 
 export default userDataSlice.reducer;
