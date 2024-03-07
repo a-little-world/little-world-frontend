@@ -39,7 +39,7 @@ export const fetchChats = async ({ page }) => {
 };
 
 
-export const markChatMessagesRead = async ({ chatId }) => {
+export const markChatMessagesReadApi = async ({ chatId }) => {
   const response = await fetch(`${BACKEND_URL}/api/messages/${chatId}/chat_read/`, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),
