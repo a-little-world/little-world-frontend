@@ -12,7 +12,7 @@ const useInfiniteScroll = ({
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(!isEmpty(items));
   const scrollRef = useRef(null);
   var dependencyList: string = JSON.stringify(fetchArgs);
 
@@ -20,12 +20,11 @@ const useInfiniteScroll = ({
     // do not fetch if loading or on the last page
     if (!fetchCondition || loading || (!isEmpty(items) && page >= totalPages))
       return;
-    console.log({ fetchCondition, fetchArgs, items });
+
     setLoading(true);
 
     fetchItems({ page: page + 1, ...fetchArgs })
       .then((response: any) => {
-        console.log({ response });
         setItems([...items, ...response.results]);
         setPage(prevPage => prevPage + 1);
         setTotalPages(response.pages_total);
@@ -40,7 +39,6 @@ const useInfiniteScroll = ({
 
   useEffect(() => {
     // only fetch on mount and when page is reset to 0
-    console.log({ dependencyList, page });
     if (!page) fetchData();
   }, [page, dependencyList]);
 
@@ -49,7 +47,6 @@ const useInfiniteScroll = ({
     if (isEmpty(items)) {
       setPage(0);
       setTotalPages(0);
-      setInitialLoad(false);
     }
   }, [dependencyList]);
 

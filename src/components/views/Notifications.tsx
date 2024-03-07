@@ -16,10 +16,12 @@ import { useSelector } from 'react-redux';
 import '../../notifications.css';
 import PageHeader from '../atoms/PageHeader.jsx';
 import {
+  BottomContainer,
   CreatedAt,
   Info,
   Items,
   Notification,
+  Options,
   Status,
   Toolbar,
   UnreadIndicator,
@@ -77,7 +79,7 @@ function Notifications() {
     <>
       <PageHeader text={t('notifications.title')} />
       <Toolbar>
-        <Button onClick={() => setFilter('all')}>
+        {/* <Button onClick={() => setFilter('all')}>
           <BellIcon labelId="bell_icon" label=" all notifications" />
           {t('notifications.filter_all')}
         </Button>
@@ -91,7 +93,34 @@ function Notifications() {
         <Button onClick={() => setFilter('archive')}>
           <ArchiveIcon labelId="archive_icon" label="archive icon" />
           {t('notifications.archived')}
-        </Button>
+        </Button> */}
+        <div onClick={() => setFilter('all')}>
+          <BellIcon
+            labelId="bell_icon"
+            label=" all notifications"
+            width="16px"
+            height="16px"
+          />
+          {t('notifications.filter_all')}
+        </div>
+        <div onClick={() => setFilter('unread')}>
+          <ClockIcon
+            labelId="clock_icon"
+            label="unread icon"
+            width="16px"
+            height="16px"
+          />
+          {t('notifications.filter_unread')}
+        </div>
+        <div onClick={() => setFilter('archive')}>
+          <ArchiveIcon
+            labelId="archive_icon"
+            label="archive icon"
+            width="16px"
+            height="16px"
+          />
+          {t('notifications.archived')}
+        </div>
       </Toolbar>
 
       <Items>
@@ -103,21 +132,24 @@ function Notifications() {
                   <Text type={TextTypes.Heading5}>{title}</Text>
                   <Text>{description}</Text>
                 </Info>
-                <Status>
-                  {state === 'unread' && <UnreadIndicator />}
-                  {state !== 'archive' && (
-                    <Button
-                      variation={ButtonVariations.Control}
-                      onClick={() => archive(hash)}
-                    >
-                      <ArchiveIcon
-                        labelId="archive_icon"
-                        label="archive icon"
-                        width="12px"
-                        height="12px"
-                      />
-                    </Button>
-                  )}
+                <BottomContainer>
+                  <Options>
+                    {state === 'unread' && <UnreadIndicator />}
+                    {state !== 'archive' && (
+                      <Button
+                        variation={ButtonVariations.Control}
+                        onClick={() => archive(hash)}
+                      >
+                        <ArchiveIcon
+                          labelId="archive_icon"
+                          label="archive icon"
+                          width="12px"
+                          height="12px"
+                        />
+                      </Button>
+                    )}
+                  </Options>
+
                   <CreatedAt>
                     <Text>
                       {formatDistance(created_at, new Date(), {
@@ -125,7 +157,7 @@ function Notifications() {
                       })}
                     </Text>
                   </CreatedAt>
-                </Status>
+                </BottomContainer>
               </Notification>
             );
           },
