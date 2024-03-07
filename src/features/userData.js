@@ -132,7 +132,7 @@ export const userDataSlice = createSlice({
       state.messages = { ...state.messages, [chatId]: items };
     },
     addMessage: (state, action) => {
-      const { message, chatId } = action.payload;
+      const { message, chatId, senderIsSelf = false } = action.payload;
       if (chatId) {
         const newMessages = state.messages[chatId]
           ? [message, ...state.messages[chatId]]
@@ -141,7 +141,11 @@ export const userDataSlice = createSlice({
       }
       state.chats = state.chats.map(chat => {
         if (chat.uuid === chatId) {
-          return { ...chat, newest_message: message };
+          return {
+            ...chat,
+            unread_messages: senderIsSelf ? chat.unread_messages : chat.unread_messages + 1,
+            newest_message: message
+          };
         }
         return chat;
       });
@@ -150,7 +154,7 @@ export const userDataSlice = createSlice({
       const { chatId, userId } = action.payload;
       if (chatId in state.messages) {
         state.messages[chatId] = state.messages[chatId].map(message => {
-          if (message.receiver === userId) {
+          if (message.sender !== userId) {
             return { ...message, read: true };
           }
           return message;
