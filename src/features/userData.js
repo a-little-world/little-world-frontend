@@ -139,6 +139,12 @@ export const userDataSlice = createSlice({
           : [message];
         state.messages[chatId] = newMessages;
       }
+      state.chats = state.chats.map(chat => {
+        if (chat.uuid === chatId) {
+          return { ...chat, newest_message: message };
+        }
+        return chat;
+      });
     },
     preMatchingAppointmentBooked: (state, action) => {
       return {
@@ -232,17 +238,17 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-  async dispatch => {
-    const result = await questionsDuringCall.archieveQuestion(
-      card?.uuid,
-      archive,
-    );
-    dispatch(
-      switchQuestionCategory({
-        card,
-        archived: archive,
-      }),
-    );
-  };
+    async dispatch => {
+      const result = await questionsDuringCall.archieveQuestion(
+        card?.uuid,
+        archive,
+      );
+      dispatch(
+        switchQuestionCategory({
+          card,
+          archived: archive,
+        }),
+      );
+    };
 
 export default userDataSlice.reducer;
