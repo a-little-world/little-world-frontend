@@ -148,11 +148,14 @@ export const userDataSlice = createSlice({
     },
     markChatMessagesRead: (state, action) => {
       const { chatId, userId } = action.payload;
-      state.chats[chatId].results.forEach(message => {
-        if (message.sender.id === userId) {
-          message.read = true;
-        }
-      });
+      if (chatId in state.messages) {
+        state.messages[chatId] = state.messages[chatId].map(message => {
+          if (message.receiver === userId) {
+            return { ...message, read: true };
+          }
+          return message;
+        });
+      }
     },
     preMatchingAppointmentBooked: (state, action) => {
       return {
@@ -197,6 +200,7 @@ export const {
   initActiveCall,
   initCallSetup,
   initialise,
+  markChatMessagesRead,
   removeMatch,
   stopActiveCall,
   switchQuestionCategory,
