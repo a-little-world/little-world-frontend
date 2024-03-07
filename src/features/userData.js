@@ -146,6 +146,14 @@ export const userDataSlice = createSlice({
         return chat;
       });
     },
+    markChatMessagesRead: (state, action) => {
+      const { chatId, userId } = action.payload;
+      state.chats[chatId].results.forEach(message => {
+        if (message.sender.id === userId) {
+          message.read = true;
+        }
+      });
+    },
     preMatchingAppointmentBooked: (state, action) => {
       return {
         ...state,
