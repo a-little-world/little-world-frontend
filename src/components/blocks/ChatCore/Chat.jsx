@@ -11,16 +11,18 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { formatDistance } from 'date-fns';
 import { isEmpty } from 'lodash';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
-import { fetchChatMessages, sendMessage } from '../../../api/chat';
+import { fetchChatMessages, markChatMessagesReadApi, sendMessage } from '../../../api/chat';
 import {
+  markChatMessagesRead,
   getMessagesByChatId,
+  getChatByChatId,
   initCallSetup,
   updateMessages,
 } from '../../../features/userData';
@@ -113,6 +115,9 @@ export const Chat = ({ chatId }) => {
   const activeChat = useSelector(state =>
     getMessagesByChatId(state.userData.messages, chatId, state),
   );
+  const activeChatObject = useSelector(state =>
+    getChatByChatId(state.userData.chats, chatId),
+  );
 
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
   const { initialLoad, scrollRef } = useInfiniteScroll({
@@ -138,16 +143,34 @@ export const Chat = ({ chatId }) => {
     onFormError({ e, formFields: getValues(), setError, t });
   };
 
+  const onMarkMessagesRead = () => {
+    markChatMessagesReadApi({ chatId }).then(() => {
+      dispatch(
+        markChatMessagesRead({
+          chatId,
+          userId
+        })
+      )
+    });
+  }
+
+  useEffect(() => {
+    // 'unread_messages_count' also updates when new message are added
+    if (activeChatObject?.unread_count > 0) {
+      onMarkMessagesRead();
+    }
+  }, [activeChatObject, chatId]);
+
   const onSendMessage = ({ text }) => {
     setIsSubmitting(true);
     sendMessage({ text, chatId })
       .then(data => {
         reset();
-        // @tbscode if message sending succeeds then it returns the message object
         dispatch(
           addMessage({
             message: data,
             chatId,
+            senderIsSelf: true,
           }),
         );
         setIsSubmitting(false);
@@ -171,7 +194,7 @@ export const Chat = ({ chatId }) => {
                     {message.text}
                   </MessageText>
                   <Time type={TextTypes.Body6}>
-                    {!message.read ? (
+                    {message.read ? (
                       <TickDoubleIcon
                         color={theme.color.status.info}
                         width="16px"

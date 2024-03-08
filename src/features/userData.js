@@ -143,7 +143,7 @@ export const userDataSlice = createSlice({
         if (chat.uuid === chatId) {
           return {
             ...chat,
-            unread_messages: senderIsSelf ? chat.unread_messages : chat.unread_messages + 1,
+            unread_count: senderIsSelf ? chat.unread_count : chat.unread_count + 1,
             newest_message: message
           };
         }
@@ -160,6 +160,15 @@ export const userDataSlice = createSlice({
           return message;
         });
       }
+      state.chats = state.chats.map(chat => {
+        if (chat.uuid === chatId) {
+          return {
+            ...chat,
+            unread_count: 0,
+          };
+        }
+        return chat;
+      });
     },
     preMatchingAppointmentBooked: (state, action) => {
       return {
@@ -237,6 +246,10 @@ export const getMatchByPartnerId = (matches, partnerId) => {
 export const getMessagesByChatId = (messages, chatId) => {
   return messages?.[chatId] || [];
 };
+
+export const getChatByChatId = (chats, chatId) => {
+  return chats.find(chat => chat.uuid === chatId);
+}
 
 export const selectMatchesDisplay = createSelector(
   [state => state.userData.matches],
