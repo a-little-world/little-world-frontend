@@ -18,13 +18,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
-import { fetchChatMessages, markChatMessagesReadApi, sendMessage } from '../../../api/chat';
+import { fetchChat, fetchChatMessages, markChatMessagesReadApi, sendMessage } from '../../../api/chat';
 import {
   markChatMessagesRead,
   getMessagesByChatId,
   getChatByChatId,
   initCallSetup,
   updateMessages,
+  insertChat,
 } from '../../../features/userData';
 import { addMessage } from '../../../features/userData';
 import { onFormError, registerInput } from '../../../helpers/form';
@@ -156,6 +157,13 @@ export const Chat = ({ chatId }) => {
   }
 
   useEffect(() => {
+    // if activeChatObject === undefined we know the specific chat isn't jet loaded
+    if (!activeChatObject) {
+      fetchChat({ chatId }).then(data => {
+        dispatch(insertChat(data))
+      });
+      return
+    }
     // 'unread_messages_count' also updates when new message are added
     if (activeChatObject?.unread_count > 0) {
       onMarkMessagesRead();

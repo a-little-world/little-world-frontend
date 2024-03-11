@@ -204,6 +204,10 @@ export const userDataSlice = createSlice({
         state.questions.cards[card.category].push(card);
       }
     },
+    insertChat: (state, { payload }) => {
+      state.chats = [payload, ...state.chats];
+      state.chats = sortChats(state.chats);
+    },
     updateChats: (state, { payload }) => {
       state.chats = payload;
       state.chats = sortChats(state.chats);
@@ -214,6 +218,7 @@ export const userDataSlice = createSlice({
 export const {
   addMatch,
   addMessage,
+  insertChat,
   blockIncomingCall,
   cancelCallSetup,
   changeMatchCategory,
