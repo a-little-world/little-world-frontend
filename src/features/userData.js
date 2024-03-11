@@ -149,9 +149,13 @@ export const userDataSlice = createSlice({
         }
         return chat;
       });
+
+      if (!senderIsSelf) {
+        state.chats = sortChats(state.chats);
+      }
     },
     markChatMessagesRead: (state, action) => {
-      const { chatId, userId } = action.payload;
+      const { chatId, userId, actorIsSelf = false } = action.payload;
       if (chatId in state.messages) {
         state.messages[chatId] = state.messages[chatId].map(message => {
           if (message.sender !== userId) {
@@ -169,6 +173,10 @@ export const userDataSlice = createSlice({
         }
         return chat;
       });
+
+      if (!actorIsSelf) {
+        state.chats = sortChats(state.chats);
+      }
     },
     preMatchingAppointmentBooked: (state, action) => {
       return {
@@ -198,6 +206,7 @@ export const userDataSlice = createSlice({
     },
     updateChats: (state, { payload }) => {
       state.chats = payload;
+      state.chats = sortChats(state.chats);
     },
   },
 });
@@ -227,6 +236,21 @@ export const {
   updateSearchState,
   updateUser,
 } = userDataSlice.actions;
+
+export const sortChats = (chats) => {
+  const sorted = chats.sort((a, b) => {
+    // First by unread_count in descending order
+    if (a.unread_count > b.unread_count) {
+      return -1;
+    }
+    if (a.unread_count < b.unread_count) {
+      return 1;
+    }
+    // Then by created in ascending order if unread_count is equal
+    return new Date(a.created) - new Date(b.created);
+  });
+  return sorted;
+}
 
 export const selectMatchByPartnerId = (matches, partnerId) => {
   for (const category in matches) {

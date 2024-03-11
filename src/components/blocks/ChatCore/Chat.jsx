@@ -148,7 +148,8 @@ export const Chat = ({ chatId }) => {
       dispatch(
         markChatMessagesRead({
           chatId,
-          userId
+          userId,
+          actorIsSelf: true
         })
       )
     });
