@@ -22,7 +22,10 @@ const WebsocketBridge = () => {
   const dispatch = useDispatch();
   const [socketUrl, setSocketUrl] = useState(SOCKET_URL);
   const [messageHistory, setMessageHistory] = useState([]);
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
+    shouldReconnect: (closeEvent) => true,
+    reconnectAttempts: 10
+  });
 
   useEffect(() => {
     if (lastMessage !== null) {
