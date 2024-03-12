@@ -1,4 +1,5 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { isEmpty, uniqBy } from 'lodash';
 
 import { questionsDuringCall } from '../services/questionsDuringCall';
 
@@ -19,7 +20,7 @@ export const userDataSlice = createSlice({
       };
       state.notifications = action.payload?.notifications;
       state.matches = action.payload?.matches;
-      state.chats = [];
+      state.chats = {};
       state.messages = {};
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
@@ -134,37 +135,42 @@ export const userDataSlice = createSlice({
     addMessage: (state, action) => {
       const { message, chatId, senderIsSelf = false } = action.payload;
       if (chatId) {
-        const newMessages = state.messages[chatId]
-          ? [message, ...state.messages[chatId]]
+        const newMessages = state.messages[chatId]?.results
+          ? [message, ...state.messages[chatId].results]
           : [message];
-        state.messages[chatId] = newMessages;
+        state.messages[chatId].results = newMessages;
       }
-      state.chats = state.chats.map(chat => {
+      const newChats = state.chats.results?.map(chat => {
         if (chat.uuid === chatId) {
           return {
             ...chat,
-            unread_count: senderIsSelf ? chat.unread_count : chat.unread_count + 1,
-            newest_message: message
+            unread_count: senderIsSelf
+              ? chat.unread_count
+              : chat.unread_count + 1,
+            newest_message: message,
           };
         }
         return chat;
       });
 
-      if (!senderIsSelf) {
-        state.chats = sortChats(state.chats);
-      }
+      state.chats = {
+        ...state.chats,
+        results: sortChats(newChats),
+      };
     },
     markChatMessagesRead: (state, action) => {
       const { chatId, userId, actorIsSelf = false } = action.payload;
       if (chatId in state.messages) {
-        state.messages[chatId] = state.messages[chatId].map(message => {
-          if (message.sender !== userId) {
-            return { ...message, read: true };
-          }
-          return message;
-        });
+        state.messages[chatId].results = state.messages[chatId]?.results.map(
+          message => {
+            if (message.sender !== userId) {
+              return { ...message, read: true };
+            }
+            return message;
+          },
+        );
       }
-      state.chats = state.chats.map(chat => {
+      const newChats = state.chats.results?.map(chat => {
         if (chat.uuid === chatId) {
           return {
             ...chat,
@@ -174,9 +180,10 @@ export const userDataSlice = createSlice({
         return chat;
       });
 
-      if (!actorIsSelf) {
-        state.chats = sortChats(state.chats);
-      }
+      state.chats = {
+        ...state.chats,
+        results: sortChats(newChats),
+      };
     },
     preMatchingAppointmentBooked: (state, action) => {
       return {
@@ -205,12 +212,14 @@ export const userDataSlice = createSlice({
       }
     },
     insertChat: (state, { payload }) => {
-      state.chats = [payload, ...state.chats];
-      state.chats = sortChats(state.chats);
+      const chatResults = isEmpty(state.chats)
+        ? [payload]
+        : [payload, ...state.chats.results];
+      state.chats.results = sortChats(chatResults);
     },
     updateChats: (state, { payload }) => {
-      state.chats = payload;
-      state.chats = sortChats(state.chats);
+      const { results, ...rest } = payload;
+      state.chats = { results: sortChats(results), ...rest };
     },
   },
 });
@@ -242,20 +251,18 @@ export const {
   updateUser,
 } = userDataSlice.actions;
 
-export const sortChats = (chats) => {
+export const sortChats = chats => {
   const sorted = chats.sort((a, b) => {
-    // First by unread_count in descending order
-    if (a.unread_count > b.unread_count) {
-      return -1;
-    }
-    if (a.unread_count < b.unread_count) {
-      return 1;
-    }
-    // Then by created in ascending order if unread_count is equal
-    return new Date(a.created) - new Date(b.created);
+    // by newest_message.created in ascending order if unread_count is equal
+    if (!a.newest_message?.created) return 1;
+    if (!b.newest_message?.created) return -1;
+    return (
+      new Date(b.newest_message.created) - new Date(a.newest_message.created)
+    );
   });
-  return sorted;
-}
+
+  return uniqBy(sorted, 'uuid');
+};
 
 export const selectMatchByPartnerId = (matches, partnerId) => {
   for (const category in matches) {
@@ -277,8 +284,8 @@ export const getMessagesByChatId = (messages, chatId) => {
 };
 
 export const getChatByChatId = (chats, chatId) => {
-  return chats.find(chat => chat.uuid === chatId);
-}
+  return chats.results?.find(chat => chat.uuid === chatId);
+};
 
 export const selectMatchesDisplay = createSelector(
   [state => state.userData.matches],
@@ -295,17 +302,17 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-    async dispatch => {
-      const result = await questionsDuringCall.archieveQuestion(
-        card?.uuid,
-        archive,
-      );
-      dispatch(
-        switchQuestionCategory({
-          card,
-          archived: archive,
-        }),
-      );
-    };
+  async dispatch => {
+    const result = await questionsDuringCall.archieveQuestion(
+      card?.uuid,
+      archive,
+    );
+    dispatch(
+      switchQuestionCategory({
+        card,
+        archived: archive,
+      }),
+    );
+  };
 
 export default userDataSlice.reducer;

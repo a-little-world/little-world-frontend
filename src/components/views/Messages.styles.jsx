@@ -2,10 +2,13 @@ import {
   Card,
   Text,
   TextTypes,
+  TickDoubleIcon,
+  TickIcon,
 } from '@a-little-world/little-world-design-system';
 import { formatDistance } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import styled, { css } from 'styled-components';
+import { useSelector } from 'react-redux';
+import styled, { css, useTheme } from 'styled-components';
 
 import ProfileImage from '../atoms/ProfileImage';
 
@@ -54,7 +57,6 @@ export const Message = styled.button`
   border-radius: 20px;
   border: 2px solid ${({ theme }) => theme.color.border.reversed};
   align-items: center;
-  // transition: 0.25s border-color, 0.25s background;
 
   ${({ $selected, theme }) =>
     $selected &&
@@ -112,6 +114,8 @@ export const UnreadIndicator = styled.span`
 
 export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
   const { t } = useTranslation();
+  const userId = useSelector(state => state.userData.user?.id);
+  const theme = useTheme();
 
   return (
     <Panel $selectedChat={selectedChat}>
@@ -144,6 +148,16 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
             </Top>
             <Preview>
               {message.newest_message?.text || t('chat.no_messages_preview')}
+              {message.newest_message?.sender === userId &&
+                (message.newest_message?.read ? (
+                  <TickDoubleIcon
+                    color={theme.color.status.info}
+                    width="16px"
+                    height="16px"
+                  />
+                ) : (
+                  <TickIcon width="16px" height="16px" />
+                ))}
               {!!message.unread_count && <UnreadIndicator />}
             </Preview>
           </Details>

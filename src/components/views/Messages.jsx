@@ -13,11 +13,14 @@ const Messages = ({ openChatWithId }) => {
   const { t } = useTranslation();
   const [selectedChat, setSelectedChat] = useState(openChatWithId);
   const chats = useSelector(state => state.userData.chats);
+  const items = chats?.results;
   const dispatch = useDispatch();
   const { scrollRef } = useIniniteScroll({
     fetchItems: fetchChats,
     setItems: items => dispatch(updateChats(items)),
-    items: chats,
+    currentPage: chats?.currentPage,
+    totalPages: chats?.totalPages,
+    items,
   });
 
   const handleOnChatBackBtn = () => {
@@ -29,19 +32,19 @@ const Messages = ({ openChatWithId }) => {
       <PageHeader text={t('chat_header')}></PageHeader>
       <ChatDashboard>
         <ChatsPanel
-          chats={chats}
+          chats={items}
           selectChat={setSelectedChat}
           selectedChat={selectedChat}
           scrollRef={scrollRef}
         />
         <ChatWithUserInfo
-          chatId={selectedChat || chats[0]?.uuid}
+          chatId={selectedChat || items?.[0]?.uuid}
           isFullScreen={selectedChat}
           onBackButton={handleOnChatBackBtn}
           partner={
             selectedChat
-              ? chats?.find(item => item?.uuid === selectedChat)?.partner
-              : chats[0]?.partner
+              ? items?.find(item => item?.uuid === selectedChat)?.partner
+              : items?.[0]?.partner
           }
         />
       </ChatDashboard>

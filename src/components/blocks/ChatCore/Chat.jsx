@@ -18,14 +18,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
-import { fetchChat, fetchChatMessages, markChatMessagesReadApi, sendMessage } from '../../../api/chat';
 import {
-  markChatMessagesRead,
-  getMessagesByChatId,
+  fetchChat,
+  fetchChatMessages,
+  markChatMessagesReadApi,
+  sendMessage,
+} from '../../../api/chat';
+import {
   getChatByChatId,
+  getMessagesByChatId,
   initCallSetup,
-  updateMessages,
   insertChat,
+  markChatMessagesRead,
+  updateMessages,
 } from '../../../features/userData';
 import { addMessage } from '../../../features/userData';
 import { onFormError, registerInput } from '../../../helpers/form';
@@ -113,19 +118,22 @@ export const Chat = ({ chatId }) => {
   const dispatch = useDispatch();
   const userId = useSelector(state => state.userData.user?.id);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const activeChat = useSelector(state =>
+  const messages = useSelector(state =>
     getMessagesByChatId(state.userData.messages, chatId, state),
   );
-  const activeChatObject = useSelector(state =>
+  const messagesResult = messages?.results;
+  const activeChat = useSelector(state =>
     getChatByChatId(state.userData.chats, chatId),
   );
 
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
-  const { initialLoad, scrollRef } = useInfiniteScroll({
+  const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
     fetchArgs: { id: chatId },
     fetchCondition: !!chatId,
-    items: activeChat,
+    items: messagesResult,
+    currentPage: messages?.currentPage,
+    totalPages: messages?.totalPages,
     setItems: items => dispatch(updateMessages({ chatId, items })),
     onError,
   });
@@ -150,25 +158,24 @@ export const Chat = ({ chatId }) => {
         markChatMessagesRead({
           chatId,
           userId,
-          actorIsSelf: true
-        })
-      )
+          actorIsSelf: true,
+        }),
+      );
     });
-  }
+  };
 
   useEffect(() => {
-    // if activeChatObject === undefined we know the specific chat isn't jet loaded
-    if (!activeChatObject) {
+    // if activeChat === undefined we know the specific chat isn't loaded yet
+    if (!activeChat && chatId) {
       fetchChat({ chatId }).then(data => {
-        dispatch(insertChat(data))
+        dispatch(insertChat(data));
       });
-      return
     }
     // 'unread_messages_count' also updates when new message are added
-    if (activeChatObject?.unread_count > 0) {
+    if (activeChat?.unread_count > 0) {
       onMarkMessagesRead();
     }
-  }, [activeChatObject, chatId]);
+  }, [activeChat, chatId]);
 
   const onSendMessage = ({ text }) => {
     setIsSubmitting(true);
@@ -186,18 +193,18 @@ export const Chat = ({ chatId }) => {
       })
       .catch(onSubmitError);
   };
-  console.log({ initialLoad });
+
   return (
     <ChatContainer>
       <Messages>
-        {initialLoad &&
-          (isEmpty(activeChat) ? (
+        {messages.currentPage &&
+          (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
               {t('chat.no_messages')}
             </NoMessages>
           ) : (
             <>
-              {activeChat?.map((message, index) => (
+              {messagesResult?.map((message, index) => (
                 <Message $isSelf={message.sender === userId} key={message.uuid}>
                   <MessageText $isSelf={message.sender === userId}>
                     {message.text}
