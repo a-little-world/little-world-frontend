@@ -38,14 +38,9 @@ const Messages = ({ openChatWithId }) => {
           scrollRef={scrollRef}
         />
         <ChatWithUserInfo
-          chatId={selectedChat || items?.[0]?.uuid}
-          isFullScreen={selectedChat}
+          chatId={selectedChat}
           onBackButton={handleOnChatBackBtn}
-          partner={
-            selectedChat
-              ? items?.find(item => item?.uuid === selectedChat)?.partner
-              : items?.[0]?.partner
-          }
+          partner={items?.find(item => item?.uuid === selectedChat)?.partner}
         />
       </ChatDashboard>
     </>

@@ -122,7 +122,7 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
       {chats?.map((message, index) => (
         <Message
           key={`chat_${message.uuid + index}`}
-          $selected={selectedChat ? message.uuid === selectedChat : !index}
+          $selected={message.uuid === selectedChat}
           onClick={() => selectChat(message.uuid)}
         >
           <UserImage

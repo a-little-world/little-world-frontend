@@ -3,6 +3,8 @@ import {
   Button,
   ButtonSizes,
   ButtonVariations,
+  Gradients,
+  GroupChatIcon,
   Text,
   TextTypes,
   TickDoubleIcon,
@@ -43,6 +45,7 @@ import {
   MessageBox,
   MessageText,
   Messages,
+  NoChatSelected,
   NoMessages,
   Panel,
   SendButton,
@@ -53,27 +56,23 @@ import {
   WriteSection,
 } from './Chat.styles.tsx';
 
-export const ChatWithUserInfo = ({
-  chatId,
-  isFullScreen,
-  onBackButton,
-  partner,
-}) => {
+export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const callPartner = () => {
     dispatch(initCallSetup({ userId: partner?.id }));
   };
 
-  return (
-    <Panel $isFullScreen={isFullScreen}>
+  return chatId ? (
+    <Panel>
       <TopSection>
         <UserInfo>
           <BackButton
             variation={ButtonVariations.Icon}
             onClick={onBackButton}
-            $show={isFullScreen && !!onBackButton}
+            $show={!!onBackButton}
           >
             <ArrowLeftIcon
               labelId="return to profile"
@@ -109,6 +108,15 @@ export const ChatWithUserInfo = ({
       </TopSection>
       <Chat chatId={chatId} />
     </Panel>
+  ) : (
+    <NoChatSelected>
+      <GroupChatIcon
+        gradient={Gradients.Blue}
+        width={'144px'}
+        height={'144px'}
+      />
+      <Text type={TextTypes.Body4}>{t('chat.not_selected')}</Text>
+    </NoChatSelected>
   );
 };
 export const Chat = ({ chatId }) => {

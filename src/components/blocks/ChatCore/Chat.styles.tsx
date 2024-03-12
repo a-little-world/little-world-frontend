@@ -8,7 +8,8 @@ import styled, { css } from 'styled-components';
 
 import ProfileImage from '../../atoms/ProfileImage.jsx';
 
-export const Panel = styled(Card)<{ $isFullScreen?: boolean }>`
+export const Panel = styled(Card)`
+  display: flex;
   flex-grow: 1;
   width: 100%;
   min-width: 0;
@@ -17,25 +18,30 @@ export const Panel = styled(Card)<{ $isFullScreen?: boolean }>`
   gap: ${({ theme }) => theme.spacing.small};
   box-shadow: none;
 
-  ${({ theme, $isFullScreen }) => css`
-  ${
-    $isFullScreen
-      ? css`
-          display: flex;
-          @media (min-width: ${theme.breakpoints.medium}) {
-            position: relative;
-          }
-        `
-      : css`
-          display: none;
-          @media (min-width: ${theme.breakpoints.medium}) {
-            display: flex;
-          }
-        `
-  }}
-      @media (min-width: ${theme.breakpoints.large}) {
-        padding: ${theme.spacing.medium};
-      }
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      position: relative;
+    }
+
+    @media (min-width: ${theme.breakpoints.large}) {
+      padding: ${theme.spacing.medium};
+    }
+  `}
+`;
+
+export const NoChatSelected = styled(Panel)`
+  background: ${({ theme }) => theme.color.surface.secondary};
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: ${({ theme }) => theme.spacing.medium};
+
+  ${({ theme }) => css`
+    display: none;
+    @media (min-width: ${theme.breakpoints.medium}) {
+      position: relative;
+      display: flex;
+    }
   `}
 `;
 
