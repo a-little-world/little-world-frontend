@@ -220,7 +220,7 @@ function toggleFullscreen(t) {
   }
 }
 
-const SetSideContext = createContext(() => {});
+const SidebarSelectionContext = createContext();
 
 function Timer() {
   const [seconds, setSeconds] = useState(0);
@@ -267,7 +267,8 @@ function VideoControls() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const setSideSelection = useContext(SetSideContext);
+  const { setSideSelection } = useContext(SidebarSelectionContext);
+
 
   const showChat = () => {
     if (document.fullscreenElement) {
@@ -341,9 +342,8 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
         <button
           key={name}
           type="button"
-          className={`show-${name}${
-            selectedOverlay === name ? ' selected' : ''
-          }${disabled.includes(name) ? ' disabled' : ''}`}
+          className={`show-${name}${selectedOverlay === name ? ' selected' : ''
+            }${disabled.includes(name) ? ' disabled' : ''}`}
           onClick={() => setOverlay(name)}
         >
           <img alt={`show-${name}`} />
@@ -516,8 +516,8 @@ function SidebarNotes() {
           actionType === 'remove'
             ? 'is_deleted'
             : actionType === 'favorite'
-            ? 'is_favorite'
-            : 'is_archived';
+              ? 'is_favorite'
+              : 'is_archived';
 
         updatedNotesData[noteIndex] = {
           ...updatedNotesData[noteIndex],
@@ -820,13 +820,13 @@ function VideoFrame({ video, audio }) {
   );
 }
 
-function Sidebar({ sideSelection }) {
+function Sidebar() {
   const { t } = useTranslation();
   const location = useLocation();
 
   const { userPk } = location.state || {};
   const sidebarTopics = ['chat', 'questions'];
-  const setSideSelection = useContext(SetSideContext);
+  const { setSideSelection, sideSelection } = useContext(SidebarSelectionContext);
 
   const disabled = ['notes'];
 
@@ -857,8 +857,17 @@ function Sidebar({ sideSelection }) {
   );
 }
 
-function CallScreen() {
+export const SidebarSelectionProvider = ({ children }) => {
   const [sideSelection, setSideSelection] = useState('chat');
+
+  return (
+    <SidebarSelectionContext.Provider value={{ sideSelection, setSideSelection }}>
+      {children}
+    </SidebarSelectionContext.Provider>
+  );
+};
+
+function CallScreen() {
   const selfPk = useSelector(state => state.userData.user.id);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -897,13 +906,13 @@ function CallScreen() {
 
   return (
     <div className="call-screen">
-      <SetSideContext.Provider value={setSideSelection}>
+      <SidebarSelectionProvider>
         <div className="call-and-text">
           <VideoFrame video={videoRef} audio={audioRef} />
           <TranslationBox />
         </div>
-        <Sidebar sideSelection={sideSelection} />
-      </SetSideContext.Provider>
+        <Sidebar />
+      </SidebarSelectionProvider>
     </div>
   );
 }
