@@ -5,6 +5,7 @@ import {
   ButtonVariations,
   Gradients,
   GroupChatIcon,
+  SendIcon,
   Text,
   TextTypes,
   TickDoubleIcon,
@@ -253,8 +254,17 @@ export const Chat = ({ chatId }) => {
           size={ButtonSizes.Small}
           type="submit"
           disabled={isSubmitting}
+          variation={ButtonVariations.Icon}
         >
-          {t('chat.send_btn')}
+          <SendIcon
+            label={t('chat.send_btn')}
+            labelId={'send_icon'}
+            circular
+            width="20"
+            height="20"
+            color={theme.color.text.reversed}
+            backgroundColor={theme.color.gradient.orange}
+          />
         </SendButton>
       </WriteSection>
     </ChatContainer>

@@ -115,7 +115,11 @@ const Content = styled.section`
   min-width: 0;
   flex: 1;
 
-  ${({ theme }) => css`
+  ${({ theme, $isVH }) => css`
+    ${$isVH &&
+    css`
+      overflow: hidden;
+    `}
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: 0;
       gap: ${theme.spacing.small};
@@ -244,7 +248,7 @@ function Main() {
 
   return (
     <AppLayout page={use} isVH={isViewportHeight.includes(use)}>
-      <Content>
+      <Content $isVH={isViewportHeight.includes(use)}>
         <NbtSelector
           selection={topSelection}
           setSelection={setTopSelection}
