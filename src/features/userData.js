@@ -133,14 +133,19 @@ export const userDataSlice = createSlice({
       state.messages = { ...state.messages, [chatId]: items };
     },
     addMessage: (state, action) => {
-      const { message, chatId, senderIsSelf = false } = action.payload;
-      if (chatId) {
+      const { message, chatId, senderIsSelf = false, metaChatObj = null } = action.payload;
+      const chatIsLoaded = chatId in state.messages;
+      if (chatIsLoaded) {
         const newMessages = state.messages[chatId]?.results
           ? [message, ...state.messages[chatId].results]
           : [message];
         state.messages[chatId].results = newMessages;
+      } else {
+        if (!metaChatObj)
+          throw new Error('No meta data for chat but chatId is not present in state.messages! The server should have deliverd the meta data for the chat.')
+        // this chat has never been loaded we can ignore inserting the actual messages, we only care about inserting the chat as messages will fetch one the chat is clicked!
       }
-      const newChats = state.chats.results?.map(chat => {
+      state.chats.results = chatIsLoaded ? state.chats.results?.map(chat => {
         if (chat.uuid === chatId) {
           return {
             ...chat,
@@ -151,11 +156,11 @@ export const userDataSlice = createSlice({
           };
         }
         return chat;
-      });
+      }) : [metaChatObj, ...state.chats.results];
 
       state.chats = {
         ...state.chats,
-        results: sortChats(newChats),
+        results: sortChats(state.chats.results),
       };
     },
     markChatMessagesRead: (state, action) => {
@@ -302,17 +307,17 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-  async dispatch => {
-    const result = await questionsDuringCall.archieveQuestion(
-      card?.uuid,
-      archive,
-    );
-    dispatch(
-      switchQuestionCategory({
-        card,
-        archived: archive,
-      }),
-    );
-  };
+    async dispatch => {
+      const result = await questionsDuringCall.archieveQuestion(
+        card?.uuid,
+        archive,
+      );
+      dispatch(
+        switchQuestionCategory({
+          card,
+          archived: archive,
+        }),
+      );
+    };
 
 export default userDataSlice.reducer;
