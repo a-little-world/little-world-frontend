@@ -156,8 +156,7 @@ export const userDataSlice = createSlice({
           };
         }
         return chat;
-      }) : [metaChatObj, ...state.chats.results];
-
+      }) : [metaChatObj, ...state.chats.results.filter(chat => chat.uuid !== chatId)];
       state.chats = {
         ...state.chats,
         results: sortChats(state.chats.results),
