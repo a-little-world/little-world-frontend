@@ -35,8 +35,10 @@ export const ModalTitle = ({ children, ...rest }) => (
   </Title>
 );
 
-const ModalCard = ({ children, size }) => (
-  <StyledCard width={size || CardSizes.Medium}>{children}</StyledCard>
+const ModalCard = ({ className, children, size }) => (
+  <StyledCard className={className} width={size || CardSizes.Medium}>
+    {children}
+  </StyledCard>
 );
 
 export default ModalCard;
