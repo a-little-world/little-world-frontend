@@ -1,36 +1,60 @@
-import React from 'react';
-import styled from 'styled-components';
+import { Button } from '@a-little-world/little-world-design-system';
+import styled, { css } from 'styled-components';
 
 export const Toolbar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  //   gap: ${({ theme }) => theme.spacing.small};
-  border: 1px solid ${({ theme }) => theme.color.border.moderate};
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.small}`};
+  width: 100%;
 
-  border-radius: 20px;
-
-  > div {
-    padding: 8px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
-
-    &:not(:last-child) {
-      border-right: 1px solid black;
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      width: unset;
+      padding: ${({ theme }) => `0 ${theme.spacing.xxsmall}`};
     }
-  }
+  `}
 `;
 
-export const Notification = styled.div<{ $state: string }>`
+export const ToolbarButton = styled(Button)<{ $isActive: boolean }>`
+  border-bottom: 2px solid
+    ${({ theme, $isActive }) =>
+      $isActive ? theme.color.border.highlight : theme.color.border.reversed};
+  color: ${({ theme, $isActive }) =>
+    $isActive ? theme.color.text.highlight : theme.color.text.primary};
+  font-weight: bold;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  padding: ${({ theme }) => `${theme.spacing.xxsmall} 0`};
+  flex: 1;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      gap: ${({ theme }) => theme.spacing.xxxsmall};
+      padding: ${({ theme }) => `${theme.spacing.xxxsmall} 0`};
+    }
+  `}
+`;
+
+export const Notification = styled.div<{
+  $state: string;
+  $highlight?: boolean;
+}>`
   display: flex;
   flex-direction: column;
-  border: 1px solid ${({ theme }) => theme.color.border.subtle};
+  border: 2px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: 20px;
   width: 100%;
+  max-width: 720px;
   padding: ${({ theme }) => theme.spacing.small};
   gap: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme, $highlight }) =>
+    $highlight &&
+    css`
+      border-color: ${theme.color.border.selected};
+      background: ${theme.color.gradient.orange};
+    `}
 `;
 
 export const Options = styled.div`
@@ -43,11 +67,22 @@ export const Items = styled.div`
   width: 100%;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: 0;
+    }
+  `}
 `;
 
 export const Info = styled.div``;
 
-export const UnreadIndicator = styled.div``;
+export const UnreadIndicator = styled.div`
+  position: absolute;
+  top: ${({ theme }) => theme.spacing.small};
+  right: ${({ theme }) => theme.spacing.small};
+`;
 
 export const BottomContainer = styled.div`
   display: flex;
@@ -56,4 +91,7 @@ export const BottomContainer = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
 `;
 
-export const CreatedAt = styled.div``;
+export const CreatedAt = styled.div<{ $highlight?: boolean }>`
+  color: ${({ theme, $highlight }) =>
+    $highlight ? theme.color.text.reversed : theme.color.status.info};
+`;

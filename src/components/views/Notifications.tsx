@@ -24,6 +24,7 @@ import {
   Options,
   Status,
   Toolbar,
+  ToolbarButton,
   UnreadIndicator,
 } from './Notifications.styles.tsx';
 
@@ -79,22 +80,11 @@ function Notifications() {
     <>
       <PageHeader text={t('notifications.title')} />
       <Toolbar>
-        {/* <Button onClick={() => setFilter('all')}>
-          <BellIcon labelId="bell_icon" label=" all notifications" />
-          {t('notifications.filter_all')}
-        </Button>
-        <Button
-          onClick={() => setFilter('unread')}
-          appearance={ButtonAppearance.Secondary}
+        <ToolbarButton
+          onClick={() => setFilter('all')}
+          variation={ButtonVariations.Icon}
+          $isActive={filter === 'all'}
         >
-          <ClockIcon labelId="clock_icon" label="unread icon" />
-          {t('notifications.filter_unread')}
-        </Button>
-        <Button onClick={() => setFilter('archive')}>
-          <ArchiveIcon labelId="archive_icon" label="archive icon" />
-          {t('notifications.archived')}
-        </Button> */}
-        <div onClick={() => setFilter('all')}>
           <BellIcon
             labelId="bell_icon"
             label=" all notifications"
@@ -102,8 +92,13 @@ function Notifications() {
             height="16px"
           />
           {t('notifications.filter_all')}
-        </div>
-        <div onClick={() => setFilter('unread')}>
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => setFilter('unread')}
+          appearance={ButtonAppearance.Secondary}
+          variation={ButtonVariations.Icon}
+          $isActive={filter === 'unread'}
+        >
           <ClockIcon
             labelId="clock_icon"
             label="unread icon"
@@ -111,8 +106,12 @@ function Notifications() {
             height="16px"
           />
           {t('notifications.filter_unread')}
-        </div>
-        <div onClick={() => setFilter('archive')}>
+        </ToolbarButton>
+        <ToolbarButton
+          onClick={() => setFilter('archive')}
+          variation={ButtonVariations.Icon}
+          $isActive={filter === 'archive'}
+        >
           <ArchiveIcon
             labelId="archive_icon"
             label="archive icon"
@@ -120,16 +119,17 @@ function Notifications() {
             height="16px"
           />
           {t('notifications.archived')}
-        </div>
+        </ToolbarButton>
       </Toolbar>
 
       <Items>
         {notifications?.map(
-          ({ hash, state, type, title, description, created_at }) => {
+          ({ hash, state, title, description, created_at }, index) => {
+            if (filter !== 'all' && filter !== state) return null;
             return (
-              <Notification key={hash} $state={state}>
+              <Notification key={hash} $state={state} $highlight={!index}>
                 <Info>
-                  <Text type={TextTypes.Heading5}>{title}</Text>
+                  <Text type={TextTypes.Heading6}>{title}</Text>
                   <Text>{description}</Text>
                 </Info>
                 <BottomContainer>
@@ -137,20 +137,20 @@ function Notifications() {
                     {state === 'unread' && <UnreadIndicator />}
                     {state !== 'archive' && (
                       <Button
-                        variation={ButtonVariations.Control}
+                        variation={ButtonVariations.Icon}
                         onClick={() => archive(hash)}
                       >
                         <ArchiveIcon
                           labelId="archive_icon"
                           label="archive icon"
-                          width="12px"
-                          height="12px"
+                          width="16"
+                          height="16"
                         />
                       </Button>
                     )}
                   </Options>
 
-                  <CreatedAt>
+                  <CreatedAt $highlight={!index}>
                     <Text>
                       {formatDistance(created_at, new Date(), {
                         addSuffix: true,
