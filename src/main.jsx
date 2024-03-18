@@ -6,8 +6,9 @@ import styled, { css } from 'styled-components';
 
 import CustomPagination from './CustomPagination';
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
-import CallSetup, { IncomingCall } from './call-setup';
+import { IncomingCall } from './call-setup';
 import './community-events.css';
+import CallSetup from './components/blocks/Calls/CallSetup.tsx';
 import CancelSearchCard from './components/blocks/Cards/CancelSearchCard';
 import ConfirmMatchCard from './components/blocks/Cards/ConfirmMatchCard';
 import NewMatchCard from './components/blocks/Cards/NewMatchCard';

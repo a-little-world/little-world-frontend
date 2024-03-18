@@ -273,7 +273,6 @@ function VideoControls() {
 
   const { setSideSelection } = useContext(SidebarSelectionContext);
 
-
   const showChat = () => {
     if (document.fullscreenElement) {
       toggleFullscreen(t);
@@ -346,8 +345,9 @@ function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
         <button
           key={name}
           type="button"
-          className={`show-${name}${selectedOverlay === name ? ' selected' : ''
-            }${disabled.includes(name) ? ' disabled' : ''}`}
+          className={`show-${name}${
+            selectedOverlay === name ? ' selected' : ''
+          }${disabled.includes(name) ? ' disabled' : ''}`}
           onClick={() => setOverlay(name)}
         >
           <img alt={`show-${name}`} />
@@ -520,8 +520,8 @@ function SidebarNotes() {
           actionType === 'remove'
             ? 'is_deleted'
             : actionType === 'favorite'
-              ? 'is_favorite'
-              : 'is_archived';
+            ? 'is_favorite'
+            : 'is_archived';
 
         updatedNotesData[noteIndex] = {
           ...updatedNotesData[noteIndex],
@@ -844,7 +844,9 @@ function Sidebar() {
     getMatchByPartnerId(state.userData.matches, userPk),
   );
   const sidebarTopics = ['chat', 'questions'];
-  const { setSideSelection, sideSelection } = useContext(SidebarSelectionContext);
+  const { setSideSelection, sideSelection } = useContext(
+    SidebarSelectionContext,
+  );
   const disabled = ['notes'];
 
   return (
@@ -866,15 +868,7 @@ function Sidebar() {
         ))}
       </SidebarSelector>
       <div className="sidebar-content">
-        {sideSelection === 'chat' && (
-          <Chat
-            chatId={match.chatId}
-            isFullScreen={false}
-            onBackButton={null}
-            partner={match.partner}
-            renderUserInfo={false}
-          />
-        )}
+        {sideSelection === 'chat' && <Chat chatId={match.chatId} />}
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </div>
@@ -886,7 +880,9 @@ export const SidebarSelectionProvider = ({ children }) => {
   const [sideSelection, setSideSelection] = useState('chat');
 
   return (
-    <SidebarSelectionContext.Provider value={{ sideSelection, setSideSelection }}>
+    <SidebarSelectionContext.Provider
+      value={{ sideSelection, setSideSelection }}
+    >
       {children}
     </SidebarSelectionContext.Provider>
   );
