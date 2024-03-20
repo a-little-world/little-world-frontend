@@ -14,7 +14,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { formatDistance } from 'date-fns';
 import { isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -125,6 +125,7 @@ export const Chat = ({ chatId }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const messagesRef = useRef();
   const userId = useSelector(state => state.userData.user?.id);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const messages = useSelector(state =>
@@ -136,6 +137,7 @@ export const Chat = ({ chatId }) => {
   );
 
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
+
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
     fetchArgs: { id: chatId },
@@ -154,6 +156,7 @@ export const Chat = ({ chatId }) => {
     formState: { errors },
     reset,
     setError,
+    setFocus,
   } = useForm({ shouldUnregister: true });
 
   const onSubmitError = e => {
@@ -186,6 +189,10 @@ export const Chat = ({ chatId }) => {
     }
   }, [activeChat, chatId]);
 
+  useEffect(() => {
+    setFocus('text');
+  }, [setFocus]);
+
   const onSendMessage = ({ text }) => {
     setIsSubmitting(true);
     sendMessage({ text, chatId })
@@ -199,13 +206,14 @@ export const Chat = ({ chatId }) => {
           }),
         );
         setIsSubmitting(false);
+        messagesRef.current.scrollTop = 0;
       })
       .catch(onSubmitError);
   };
 
   return (
     <ChatContainer>
-      <Messages>
+      <Messages ref={messagesRef}>
         {messages.currentPage &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
