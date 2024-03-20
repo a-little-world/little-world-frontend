@@ -16,21 +16,24 @@ import {
 import '@livekit/components-styles';
 import { Track } from 'livekit-client';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { getAppRoute } from '../../routes';
 import { Chat } from '../blocks/ChatCore/Chat';
 
 const serverUrl = 'wss://little-world-6fxox5nm.livekit.cloud';
 const api_key = 'APIo7MLm3fJDRX5';
 const secret_key = 'PT7WGIlSzg2fpiS4pDXQA4j7a1VKWbjriJMcTLfme4JB';
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjU3ODMzNzA4ODEsImlzcyI6IkFQSW83TUxtM2ZKRFJYNSIsIm5iZiI6MTcxMDQ5ODA2Miwic3ViIjoic2VhbiIsInZpZGVvIjp7ImNhblB1Ymxpc2giOnRydWUsImNhblB1Ymxpc2hEYXRhIjp0cnVlLCJjYW5TdWJzY3JpYmUiOnRydWUsInJvb20iOiJ6aW1tZXIiLCJyb29tSm9pbiI6dHJ1ZX19.oZfNDDSy_f6lptgVccRgZZA_9zvEurip6gkoBRD1mHA';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTA5NjU4MDcsImlzcyI6IkFQSW83TUxtM2ZKRFJYNSIsIm5iZiI6MTcxMDk0NDIwNywic3ViIjoic2VhbiIsInZpZGVvIjp7ImNhblB1Ymxpc2giOnRydWUsImNhblB1Ymxpc2hEYXRhIjp0cnVlLCJjYW5TdWJzY3JpYmUiOnRydWUsInJvb20iOiJ6aW1tZXIiLCJyb29tSm9pbiI6dHJ1ZX19.0tzeTLzrTt7jJQS2vCWmOozk1MVMZhm42l5TL5AoHmU';
 
 const CallLayout = styled.div`
   display: flex;
 `;
 
 export function LiveKitCall() {
+  const navigate = useNavigate();
   const toggleChat = () => {
     console.log('TOGGGELLLLLLING');
   };
@@ -45,6 +48,7 @@ export function LiveKitCall() {
           // Use the default LiveKit theme for nice styles.
           data-lk-theme="default"
           style={{ height: '100vh' }}
+          onDisconnected={() => navigate(getAppRoute())}
         >
           {/* <ChatToggle onClick={toggleChat} />
         <Chat /> */}

@@ -313,6 +313,13 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
     };
   }, []);
 
+  const handleJoin = () => {
+    clearActiveTracks();
+    dispatch(initActiveCall({ userPk, tracks }));
+    dispatch(cancelCallSetup());
+    navigate(getAppRoute('live-kit'), { state: { userPk, tracks } });
+  };
+
   return (
     <CallSetupCard>
       <CloseButton
@@ -345,18 +352,8 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
       </div>
       {mediaPermission && (
         <>
-          <PreJoin />
-          {/* <VideoFrame
-            Video={videoRef}
-            Audio={audioRef}
-            signalInfo={signalInfo}
-          />
-          <div className="av-setup-dropdowns">
-            <VideoInputSelect setVideo={setVideo} />
-            <AudioInputSelect setAudio={setAudio} />
-            <AudioOutputSelect />
-          </div> */}
-          <Button
+          <PreJoin onSubmit={handleJoin} joinLabel={t('pcs_btn_join_call')} />
+          {/* <Button
             onClick={() => {
               clearActiveTracks();
               dispatch(initActiveCall({ userPk, tracks }));
@@ -367,7 +364,7 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
             style={{ alignSelf: 'center' }}
           >
             {t('pcs_btn_join_call')}
-          </Button>
+          </Button> */}
         </>
       )}
       {!mediaPermission && (
