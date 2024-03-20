@@ -257,6 +257,7 @@ export const Chat = ({ chatId }) => {
           error={t(errors?.text?.message)}
           maxLength={null}
           placeholder={t('chat.text_area_placeholder')}
+          onSubmit={() => handleSubmit(onSendMessage)()}
         />
         <SendButton
           size={ButtonSizes.Small}
