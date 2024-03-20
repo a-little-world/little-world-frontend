@@ -221,9 +221,12 @@ export const Chat = ({ chatId }) => {
             </NoMessages>
           ) : (
             <>
-              {messagesResult?.map((message, index) => (
+              {messagesResult?.map(message => (
                 <Message $isSelf={message.sender === userId} key={message.uuid}>
-                  <MessageText $isSelf={message.sender === userId}>
+                  <MessageText
+                    $isSelf={message.sender === userId}
+                    disableParser={!message.parsable}
+                  >
                     {message.text}
                   </MessageText>
                   <Time type={TextTypes.Body6}>
