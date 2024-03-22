@@ -3,6 +3,7 @@ import Avatar from 'react-nice-avatar';
 import styled from 'styled-components';
 
 export const ImageSizes = {
+  xsmall: '72px',
   small: '128px',
   medium: '154px',
   large: '180px',
@@ -14,7 +15,7 @@ const StyledAvatar = styled(Avatar)`
   display: block;
   border-radius: 20px;
   object-fit: cover;
-  border: 8px solid #e6e8ec;
+  border: ${({ $size }) => ($size === 'xsmall' ? '4px' : '8px')} solid #e6e8ec;
   filter: drop-shadow(0px 4px 4px rgb(0 0 0 / 25%));
   border-radius: 100%;
   box-sizing: border-box;
@@ -25,7 +26,7 @@ const StyledAvatar = styled(Avatar)`
 
 export const CircleImage = styled.div`
   border-radius: 50%;
-  border: 8px solid #e6e8ec;
+  border: ${({ $size }) => ($size === 'xsmall' ? '4px' : '8px')} solid #e6e8ec;
   background: ${({ $image }) => `url(${$image})`};
   background-size: cover;
   background-position: center;
@@ -64,7 +65,8 @@ function ProfileImage({
   circle,
   size = 'large',
 }) {
-  if (imageType === 'avatar') return <StyledAvatar {...image} $size={size} />;
+  if (imageType === 'avatar')
+    return <StyledAvatar className={className} {...image} $size={size} />;
   return circle ? (
     <CircleImage
       className={className}

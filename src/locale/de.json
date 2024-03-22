@@ -146,6 +146,11 @@
   "settings.delete_account_modal_title": "Bist du sicher, dass du dein Konto dauerhaft löschen willst?",
   "settings.delete_account_modal_cancel": "Abbrechen",
 
+  "chat.not_selected": "Öffne einen bestimmten Chat, indem du ihn in der linken Seitenleiste anklickst",
+  "chat.no_messages": "Du hast noch keine Nachrichten. Sende jetzt eine Nachricht!",
+  "chat.no_messages_preview": "Keine Nachrichten geteilt.",
+  "chat.send_btn": "Senden",
+  "chat.text_area_placeholder": "Schreib eine Nachricht",
   "chat_appointment_title": "Termin vorschlagen",
   "chat_appointment_abbort": "Abbrechen",
   "chat_appointment_send": " Termin vorschlagen",
@@ -461,11 +466,11 @@
   "conditions.disclaimer": "Bisher haben unsere Teilnehmer äußerst positive Erfahrungen gemacht - wir möchten, dass dies auch so bleibt. Solltest du irgendwelche Fragen, auch zur Nutzung, oder Probleme haben, kontaktiere uns gerne jederzeit.",
   "conditions.checkbox_label": "<bold>Ich werde die gelisteten Grundsätze einhalten und akzeptiere die</bold> <a {\"href\": \"https://home.little-world.com/nutzungsbedingungen\", \"style\": { \"font-weight\": \"bold\" }, \"target\": \"_blank\"}>Haftungsbeschränkungen</a>.",
 
-  "notifications.title": "Und als letzten Schritt...",
-  "notifications.description": "Sobald wir ein Match für dich gefunden haben, benachrichtigen wir dich. Ich möchte...",
-  "notifications.phone_number_label": "Deine Telefonnummer",
-  "notifications.phone_number_tooltip": "Deine Telefonnummer ist ausschließlich für das Team von Little World sichtbar. Deine Nummer wird nie an Dritte weitergegeben und du erhälst keinerlei Werbeanrufe.",
-  "notifications.info": "Deine Telefonnummer wird sicher gespeichert und nie weitergegeben.",
+  "user_form_notifications.title": "Und als letzten Schritt...",
+  "user_form_notifications.description": "Sobald wir ein Match für dich gefunden haben, benachrichtigen wir dich. Ich möchte...",
+  "user_form_notifications.phone_number_label": "Deine Telefonnummer",
+  "user_form_notifications.phone_number_tooltip": "Deine Telefonnummer ist ausschließlich für das Team von Little World sichtbar. Deine Nummer wird nie an Dritte weitergegeben und du erhälst keinerlei Werbeanrufe.",
+  "user_form_notifications.info": "Deine Telefonnummer wird sicher gespeichert und nie weitergegeben.",
 
   "profile_pic.upload_image": "Bitte lade ein Profilfoto von dir hoch, auf dem dein Gesicht zu erkennen ist.",
   "profile_pic.click_to_upload": "Zum Hochladen klicken",
@@ -522,6 +527,11 @@
   "welcome.description": "Lass uns mit ein paar kurzen Fragen starten, um das bestmögliche Gegenüber für dich zu finden und deine Bedürfnisse zu berücksichtigen.",
   "welcome.note": "Sämtliche Angaben kannst du jederzeit wieder ändern.",
   "welcome.button": "Jetzt starten",
+
+  "notifications.title": "Notifications",
+  "notifications.filter_all": "Alle",
+  "notifications.filter_unread": "Ungelesen",
+  "notifications.archived": "Archiviert",
 
   "sign_up.title": "Konto erstellen",
   "sign_up.name_label": "Dein Name",

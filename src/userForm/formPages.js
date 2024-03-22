@@ -288,7 +288,7 @@ const formPages = {
     ],
   }),
   notifications: ({ options, userData }) => ({
-    title: 'notifications.title',
+    title: 'user_form_notifications.title',
     step: userData?.user_type === USER_TYPES.volunteer ? 8 : 7,
     totalSteps: getSteps(userData?.user_type),
     prevPage: 'user-form/availability',
@@ -297,7 +297,7 @@ const formPages = {
       {
         type: ComponentTypes.text,
         getProps: t => ({
-          children: t('notifications.description'),
+          children: t('user_form_notifications.description'),
         }),
       },
       {
@@ -313,12 +313,12 @@ const formPages = {
           dataField: 'phone_mobile',
           formData: options?.phone_mobile,
           getProps: t => ({
-            label: t('notifications.phone_number_label'),
-            labelTooltip: t('notifications.phone_number_tooltip'),
+            label: t('user_form_notifications.phone_number_label'),
+            labelTooltip: t('user_form_notifications.phone_number_tooltip'),
             type: 'tel',
             width: InputWidth.Medium,
           }),
-          infoText: 'notifications.info',
+          infoText: 'user_form_notifications.info',
         },
       },
     ],

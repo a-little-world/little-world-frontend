@@ -3,7 +3,8 @@ export const APP_ROUTE = 'app';
 export const CALL_ROUTE = 'call';
 export const CALL_SETUP_ROUTE = 'call-setup/:userId?/';
 export const PARTNERS_ROUTE = 'partners';
-export const CHAT_ROUTE = 'chat';
+export const CHAT_ROUTE = 'chat/:chatId/';
+export const MESSAGES_ROUTE = 'chat';
 export const NOTIFICATIONS_ROUTE = 'notifications';
 export const PROFILE_ROUTE = 'profile';
 export const HELP_ROUTE = 'help';
@@ -24,6 +25,7 @@ export const getHomeRoute = (locale, slug) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
 export const getAppRoute = slug => `/${APP_ROUTE}/${slug ?? ''}`;
 export const getUserFormRoute = slug => `/${USER_FORM_ROUTE}/${slug}`;
+export const getChatRoute = id => getAppRoute(`${MESSAGES_ROUTE}/${id}`);
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {

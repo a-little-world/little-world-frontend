@@ -110,12 +110,11 @@ function PartnerProfiles({
           setCallSetupPartner={setCallSetupPartner}
           isOnline={match.partner.isOnline}
           isSupport={match.partner.isSupport}
+          chatId={match.chatId}
         />
       ))}
       {user.isSearching ? (
-        <SearchingCard
-          setShowCancel={setShowCancel}
-        />
+        <SearchingCard setShowCancel={setShowCancel} />
       ) : (
         <FindNewPartner
           type="button"

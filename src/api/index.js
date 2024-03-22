@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { BACKEND_URL } from '../ENVIRONMENT';
 import { API_FIELDS, USER_FIELDS } from '../constants';
 
-const formatApiError = responseBody => {
+export const formatApiError = responseBody => {
   if (typeof responseBody === 'string') return new Error(responseBody);
   const errorTypeApi = Object.keys(responseBody)?.[0];
   const errorType = API_FIELDS[errorTypeApi] ?? errorTypeApi;

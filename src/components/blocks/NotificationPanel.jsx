@@ -23,8 +23,6 @@ function NotificationPanel() {
 
   const user = useSelector(state => state.userData.user);
   const usesAvatar = user.profile.image_type === 'avatar';
-  const matches = useSelector(state => state.userData.matches);
-  const usersDisplay = [...matches.confirmed.items, ...matches.proposed.items];
   const notifications = useSelector(state => state.userData.notifications);
 
   return (

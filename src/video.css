@@ -12,7 +12,7 @@ video {
   aspect-ratio: 16/9;
   width: 576px;
   max-width: 100%;
-  margin: 15px auto;
+  margin: 0 auto;
   background-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -56,7 +56,7 @@ video {
   color: #f39325;
 }
 
-.video-controls > input[type="checkbox"] {
+.video-controls > input[type='checkbox'] {
   display: none;
 }
 
@@ -116,31 +116,31 @@ video {
 }
 
 input#audio-toggle + label .img {
-  background-image: url("images/videobuttons/microphone-on.svg");
+  background-image: url('images/videobuttons/microphone-on.svg');
 }
 
 input#audio-toggle:checked + label .img {
-  background-image: url("images/videobuttons/microphone-off.svg");
+  background-image: url('images/videobuttons/microphone-off.svg');
 }
 
 input#video-toggle + label .img {
-  background-image: url("images/videobuttons/camera-on.svg");
+  background-image: url('images/videobuttons/camera-on.svg');
 }
 
 input#video-toggle:checked + label .img {
-  background-image: url("images/videobuttons/camera-off.svg");
+  background-image: url('images/videobuttons/camera-off.svg');
 }
 
 input#fullscreen-toggle + label .img {
-  background-image: url("images/videobuttons/fullscreen-enter.svg");
+  background-image: url('images/videobuttons/fullscreen-enter.svg');
 }
 
 input#fullscreen-toggle:checked + label .img {
-  background-image: url("images/videobuttons/fullscreen-exit.svg");
+  background-image: url('images/videobuttons/fullscreen-exit.svg');
 }
 
 input#calendar-toggle + label .img {
-  background-image: url("images/videobuttons/calendar.svg");
+  background-image: url('images/videobuttons/calendar.svg');
 }
 /* 
 input#calendar-toggle:checked + label .img {
@@ -148,7 +148,7 @@ input#calendar-toggle:checked + label .img {
 } */
 
 input#help-toggle + label .img {
-  background-image: url("images/videobuttons/exclamation-mark.svg");
+  background-image: url('images/videobuttons/exclamation-mark.svg');
 }
 /* 
 input#help-toggle:checked + label .img {
@@ -156,7 +156,7 @@ input#help-toggle:checked + label .img {
 } */
 
 .chat-show .img {
-  background-image: url("images/videobuttons/chat.svg");
+  background-image: url('images/videobuttons/chat.svg');
 }
 
 .call-time {
@@ -171,7 +171,7 @@ input#help-toggle:checked + label .img {
 }
 
 .end-call .img {
-  background-image: url("images/videobuttons/call-end.svg");
+  background-image: url('images/videobuttons/call-end.svg');
 }
 
 #foreign-container {
@@ -257,16 +257,16 @@ input#help-toggle:checked + label .img {
   }
 
   .video-controls.top .show-chat img {
-    content: url("images/videobuttons/chat.svg");
+    content: url('images/videobuttons/chat.svg');
   }
   .video-controls.top .show-translate img {
-    content: url("images/videobuttons/translate.svg");
+    content: url('images/videobuttons/translate.svg');
   }
   .video-controls.top .show-questions img {
-    content: url("images/videobuttons/questions.svg");
+    content: url('images/videobuttons/questions.svg');
   }
   .video-controls.top .show-notes img {
-    content: url("images/videobuttons/notes.svg");
+    content: url('images/videobuttons/notes.svg');
   }
 
   .local-video-container.inset {

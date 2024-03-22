@@ -3,6 +3,8 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
+  ButtonVariations,
+  CloseIcon,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -10,6 +12,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 
 import './call-setup.css';
 import ButtonsContainer from './components/atoms/ButtonsContainer';
@@ -38,6 +41,28 @@ export const clearActiveTracks = () => {
   });
   window.activeTracks = [];
 };
+
+const CloseButton = styled(Button)`
+  position: absolute;
+
+  ${({ theme }) => css`
+    right: ${theme.spacing.small};
+    top: ${theme.spacing.small};
+    @media (min-width: ${theme.breakpoints.medium}) {
+      right: ${theme.spacing.medium};
+      top: ${theme.spacing.medium};
+    }
+  `}
+`;
+
+const CallSetupCard = styled(ModalCard)`
+  ${({ theme }) => css`
+    padding: ${theme.spacing.large};
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.medium};
+    }
+  `}
+`;
 
 function SignalIndicator({
   signalQuality,
@@ -265,7 +290,7 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
 
   useEffect(() => {
     let activeStream = null;
-    console.log('GETTING USER MEDIA');
+
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: true })
       .then(stream => {
@@ -292,22 +317,35 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
   }, []);
 
   return (
-    <div className="modal-box">
-      <button
-        type="button"
-        className="modal-close"
+    <CallSetupCard>
+      <CloseButton
+        variation={ButtonVariations.Icon}
         onClick={() => {
           removeCallSetupPartner();
           if (mediaStream.current)
             mediaStream.current.getTracks().forEach(track => {
-              console.log('CANCELLED', track);
               track.stop();
             });
           clearActiveTracks();
         }}
-      />
-      <h3 className="title">{t('pcs_main_heading')}</h3>
-      <span className="subtitle">{t('pcs_sub_heading')}</span>
+      >
+        {
+          <CloseIcon
+            label="close modal"
+            labelId="close_icon"
+            width="24"
+            height="24"
+          />
+        }
+      </CloseButton>
+      <div>
+        <Text center type={TextTypes.Heading4}>
+          {t('pcs_main_heading')}
+        </Text>
+        <Text center type={TextTypes.Body4}>
+          {t('pcs_sub_heading')}
+        </Text>
+      </div>
       {mediaPermission && (
         <>
           <VideoFrame
@@ -328,6 +366,7 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
               navigate(getAppRoute(CALL_ROUTE), { state: { userPk, tracks } });
             }}
             size={ButtonSizes.Stretch}
+            style={{ alignSelf: 'center' }}
           >
             {t('pcs_btn_join_call')}
           </Button>
@@ -343,7 +382,7 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
           See https://support.google.com/chrome/answer/2693767 for instructions.
         </>
       )}
-    </div>
+    </CallSetupCard>
   );
 }
 

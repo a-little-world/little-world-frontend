@@ -1,0 +1,75 @@
+import { isEmpty } from 'lodash';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+const useInfiniteScroll = ({
+  fetchItems,
+  fetchArgs = {},
+  fetchCondition = true,
+  items = [],
+  currentPage = 0,
+  totalPages = 0,
+  setItems,
+  onError,
+}) => {
+  const [loading, setLoading] = useState(false);
+  const scrollRef = useRef(null);
+  var dependencyList: string = JSON.stringify(fetchArgs);
+
+  const fetchData = useCallback(async () => {
+    // do not fetch if loading or on the last page
+    if (
+      !fetchCondition ||
+      loading ||
+      (!isEmpty(items) && currentPage >= totalPages)
+    )
+      return;
+
+    setLoading(true);
+
+    fetchItems({ page: currentPage + 1, ...fetchArgs })
+      .then((response: any) => {
+        setItems({
+          totalPages: response.pages_total,
+          currentPage: currentPage + 1,
+          results: [...items, ...response.results],
+        });
+
+        setLoading(false);
+      })
+      .catch(() => {
+        onError?.();
+        setLoading(false);
+      });
+  }, [currentPage, loading, dependencyList, items]);
+
+  useEffect(() => {
+    // only fetch on mount and when page is reset to 0
+    if (!currentPage) fetchData();
+  }, [currentPage, dependencyList]);
+
+  // fetch on scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      const target = entries[0];
+      if (target.isIntersecting && !isEmpty(items)) {
+        fetchData();
+      }
+    });
+
+    if (scrollRef.current) {
+      observer.observe(scrollRef.current);
+    }
+
+    return () => {
+      if (scrollRef.current) {
+        observer.unobserve(scrollRef.current);
+      }
+    };
+  }, [fetchData]);
+
+  return {
+    scrollRef,
+  };
+};
+
+export default useInfiniteScroll;

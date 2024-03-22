@@ -18,7 +18,7 @@ export function simulatedAutoLogin(
     body: JSON.stringify({
       username,
       password,
-      dev_dataset: 'main_frontend_v2',
+      dev_dataset: 'main_frontend',
     }),
   }).then(response => {
     if (response.ok) {

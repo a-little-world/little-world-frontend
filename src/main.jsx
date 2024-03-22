@@ -7,7 +7,6 @@ import styled, { css } from 'styled-components';
 import CustomPagination from './CustomPagination';
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
 import CallSetup, { IncomingCall } from './call-setup';
-import Chat from './chat/chat-full-view';
 import './community-events.css';
 import CancelSearchCard from './components/blocks/Cards/CancelSearchCard';
 import ConfirmMatchCard from './components/blocks/Cards/ConfirmMatchCard';
@@ -18,6 +17,8 @@ import NbtSelector from './components/blocks/NbtSelector';
 import NotificationPanel from './components/blocks/NotificationPanel';
 import PartnerProfiles from './components/blocks/PartnerProfiles';
 import Help from './components/views/Help';
+import Messages from './components/views/Messages';
+import Notifications from './components/views/Notifications.tsx';
 import Profile from './components/views/Profile';
 import Settings from './components/views/Settings';
 import {
@@ -30,7 +31,6 @@ import {
 } from './features/userData';
 import './i18n';
 import './main.css';
-import Notifications from './notifications';
 import { APP_ROUTE } from './routes';
 import { removeActiveTracks } from './twilio-helper';
 
@@ -112,8 +112,14 @@ const Content = styled.section`
   padding: 0;
   padding-bottom: ${({ theme }) => theme.spacing.medium};
   width: 100%;
+  min-width: 0;
+  flex: 1;
 
-  ${({ theme }) => css`
+  ${({ theme, $isVH }) => css`
+    ${$isVH &&
+    css`
+      overflow: hidden;
+    `}
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: 0;
       gap: ${theme.spacing.small};
@@ -141,9 +147,11 @@ const Home = styled.div`
   `};
 `;
 
+const isViewportHeight = ['chat'];
+
 function Main() {
-  // for the case /call-setup/:userId?/
-  let { userId } = useParams();
+  // for the case /call-setup/:userId?/ and /chat/:chatId/
+  let { userId, chatId } = useParams();
 
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -239,8 +247,8 @@ function Main() {
   };
 
   return (
-    <AppLayout page={use}>
-      <Content>
+    <AppLayout page={use} isVH={isViewportHeight.includes(use)}>
+      <Content $isVH={isViewportHeight.includes(use)}>
         <NbtSelector
           selection={topSelection}
           setSelection={setTopSelection}
@@ -270,8 +278,8 @@ function Main() {
             </>
           ))}
         {use === 'chat' && (
-          <Chat
-            showChat={use === 'chat'}
+          <Messages
+            openChatWithId={chatId}
             matchesInfo={dashboardVisibleMatches}
             userPk={userPk}
             setCallSetupPartner={setCallSetupPartner}
@@ -318,26 +326,26 @@ function Main() {
           <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
         </Modal>
       )}
-        <Modal
-          open={
-            matches?.proposed?.items?.length ||
-            matches?.unconfirmed?.items?.length
-          }
-          locked={false}
-          onClose={() => {}}
-        >
-          {(matches?.proposed?.items?.length ||
-            matches?.unconfirmed?.items?.length) &&
-            MatchCardComponent({
-              showNewMatch: Boolean(!matches?.proposed?.items?.length),
-              matchId: matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].id
-                : matches?.unconfirmed.items[0].id,
-              profile: matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].partner
-                : matches?.unconfirmed.items[0].partner,
-            })}
-        </Modal>
+      <Modal
+        open={
+          matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length
+        }
+        locked={false}
+        onClose={() => {}}
+      >
+        {(matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length) &&
+          MatchCardComponent({
+            showNewMatch: Boolean(!matches?.proposed?.items?.length),
+            matchId: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].id
+              : matches?.unconfirmed.items[0].id,
+            profile: matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].partner
+              : matches?.unconfirmed.items[0].partner,
+          })}
+      </Modal>
     </AppLayout>
   );
 }

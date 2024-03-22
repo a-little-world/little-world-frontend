@@ -25,11 +25,7 @@ window.renderApp = ({ initData }, { apiTranslations }) => {
   if (!root) {
     root = createRoot(container);
   }
-  root.render(
-    <React.StrictMode>
-      <App data={initData} />
-    </React.StrictMode>,
-  );
+  root.render(<App data={initData} />);
 
   reportWebVitals();
 };
