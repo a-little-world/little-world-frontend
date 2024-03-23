@@ -217,6 +217,7 @@
     "Dez"
   ],
   "lang-en": "Englisch",
+  "lang-sa": "Arabisch",
   "lang-bg": "Bulgarisch",
   "lang-ma": "Mandarin",
   "lang-ca": "Cantonese",
@@ -382,8 +383,6 @@
       }
     }
   },
-  "lang-sa": "",
-  "lang-ua": "",
   "sg_personal_profilePicture": "Profilbild",
   "cp_find_new_partner": "Finde eine*n neue*n Gesprächspartner*in",
   "question_category_archived": "Archiviert",
@@ -532,6 +531,10 @@
   "notifications.filter_all": "Alle",
   "notifications.filter_unread": "Ungelesen",
   "notifications.archived": "Archiviert",
+
+  "translations.language_placholder": "Wähle eine Sprache...",
+  "translations.text_placeholder": "Typ zu übersetzen",
+  "translations.swap_languages": "Sprachen tauschen",
 
   "sign_up.title": "Konto erstellen",
   "sign_up.name_label": "Dein Name",

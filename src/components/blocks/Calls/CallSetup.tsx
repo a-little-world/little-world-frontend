@@ -58,6 +58,39 @@ const CallSetupCard = styled(ModalCard)`
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: ${theme.spacing.medium};
     }
+
+    .lk-prejoin {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+
+      .lk-video-container {
+        border-radius: ${theme.radius.large};
+      }
+
+      .lk-form-control {
+        display: none;
+      }
+    }
+
+    .lk-join-button {
+      font-weight: 700;
+      border-radius: 90px;
+      padding: ${theme.spacing.xsmall} ${theme.spacing.small};
+      height: 49px;
+      width: 100%;
+      color: ${theme.color.text.reversed};
+      border: none;
+      background: ${theme.color.gradient.orange};
+      transition: background-color 0.5s ease, filter 0.5s ease,
+        border-color 0.5s ease, color 0.5s ease, 0.4s;
+
+      &:not(:disabled):hover {
+        filter: brightness(80%);
+        transition: background-color 0.5s ease, filter 0.5s ease,
+          border-color 0.5s ease, color 0.5s ease, 0.4s;
+      }
+    }
   `}
 `;
 
@@ -84,240 +117,25 @@ function SignalIndicator({
   );
 }
 
-export function VideoControls({ signalInfo }) {
-  return (
-    <div className="video-controls">
-      <SignalIndicator
-        signalQuality={signalInfo.quality}
-        signalQualityText={signalInfo.qualityText}
-        signalUpdateText={signalInfo.updateText}
-      />
-      <input
-        type="checkbox"
-        id="audio-toggle"
-        defaultChecked={false}
-        onChange={e => toggleLocalTracks(e.target.checked, 'audio')}
-      />
-      <label htmlFor="audio-toggle">
-        <div className="img" alt="toggle audio" />
-      </label>
-      <input
-        type="checkbox"
-        id="video-toggle"
-        defaultChecked={false}
-        onChange={e => toggleLocalTracks(e.target.checked, 'video')}
-      />
-      <label htmlFor="video-toggle">
-        <div className="img" alt="toggle video" />
-      </label>
-    </div>
-  );
-}
-
-function VideoFrame({ Video, Audio }) {
-  const { t } = useTranslation();
-
-  const quality = 'good';
-  const qualityText = t(`pcs_signal_${quality}`);
-  const updateText = t('pcs_signal_update');
-  const signalInfo = { quality, qualityText, updateText };
-
-  return (
-    <div className="local-video-container">
-      <div id="container" className="video-frame" alt="video">
-        <video ref={Video} />
-        <audio ref={Audio} />
-      </div>
-      <VideoControls signalInfo={signalInfo} />
-    </div>
-  );
-}
-
-function VideoInputSelect({ setVideo }) {
-  const { t } = useTranslation();
-
-  // get avaiable devices
-  const [videoInDevices, setVideoInDevices] = useState([]);
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then(deviceList => {
-      const devices = deviceList
-        .filter(({ kind }) => kind === 'videoinput')
-        .filter(({ label }) => !label.endsWith('facing back')) // don't show rear cameras
-        .filter(({ deviceId }) => deviceId !== 'default'); // prevent dupes
-      setVideoInDevices(devices);
-    });
-  }, []);
-
-  // set the first device as initial when devices have been detected
-  useEffect(() => {
-    if (videoInDevices[0]) {
-      setVideo(videoInDevices[0].deviceId);
-    }
-  }, [videoInDevices]);
-
-  const handleChange = e => {
-    const deviceId = e.target.value;
-    setVideo(deviceId);
-  };
-
-  return (
-    <div className="webcam-select">
-      <label htmlFor="webcam-select">{t('pcs_camera_label')}</label>
-      <select name="webcam-select" onChange={handleChange}>
-        {videoInDevices.map(deviceInfo => (
-          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-            {deviceInfo.label.endsWith('facing front')
-              ? t('pcs_front_camera')
-              : deviceInfo.label}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
-
-function AudioInputSelect({ setAudio }) {
-  const { t } = useTranslation();
-
-  // get avaiable devices
-  const [audioInDevices, setAudioInDevices] = useState([]);
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then(deviceList => {
-      const devices = deviceList
-        .filter(({ kind }) => kind === 'audioinput')
-        .filter(({ deviceId }) => deviceId !== 'default'); // prevent dupes
-      setAudioInDevices(devices);
-    });
-  }, []);
-
-  // set the first device as initial when devices have been detected
-  useEffect(() => {
-    if (audioInDevices[0]) {
-      setAudio(audioInDevices[0].deviceId);
-    }
-  }, [audioInDevices]);
-
-  const handleChange = e => {
-    const deviceId = e.target.value;
-    setAudio(deviceId);
-  };
-
-  return (
-    <div className="mic-select">
-      <label htmlFor="mic-select">{t('pcs_mic_label')}</label>
-      <select name="mic-select" onChange={handleChange}>
-        {audioInDevices.map(deviceInfo => (
-          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-            {deviceInfo.label}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
-
-function AudioOutputSelect() {
-  const { t } = useTranslation();
-
-  const [audioOutDevices, setAudioOutDevices] = useState([]);
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then(deviceList => {
-      const devices = deviceList
-        .filter(deviceInfo => deviceInfo.kind === 'audiooutput')
-        .filter(deviceInfo => deviceInfo.deviceId !== 'default');
-      setAudioOutDevices(devices);
-    });
-  }, []);
-
-  return (
-    <div className="speaker-select">
-      <label htmlFor="speaker-select">{t('pcs_speaker_label')}</label>
-      <select name="speaker-select">
-        {audioOutDevices.map(deviceInfo => (
-          <option key={deviceInfo.deviceId} value={deviceInfo.deviceId}>
-            {deviceInfo.label}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
-
 function CallSetup({ userPk, removeCallSetupPartner }) {
   const { t } = useTranslation();
   const quality = 'good';
   const qualityText = t(`pcs_signal_${quality}`);
   const updateText = t('pcs_signal_update');
+  const username = useSelector(
+    state => state?.userData?.user?.profile?.first_name,
+  );
   const signalInfo = { quality, qualityText, updateText };
   const mediaStream = useRef();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const videoRef = useRef();
-  const [videoTrackId, setVideoTrackId] = useState(null);
-  const setVideo = deviceId => {
-    localStorage.setItem('video muted', false); // always unmute when selecting new
-    document.getElementById('video-toggle').checked = false;
-    getVideoTrack(deviceId).then(track => {
-      const el = videoRef.current;
-      track.attach(el);
-      window.activeTracks.push(track);
-    });
-    setVideoTrackId(deviceId);
-  };
-
-  const audioRef = useRef();
-  const [audioTrackId, setAudioTrackId] = useState(null);
-  const setAudio = deviceId => {
-    localStorage.setItem('audio muted', false); // always unmute when selecting new
-    document.getElementById('audio-toggle').checked = false;
-    getAudioTrack(deviceId).then(track => {
-      track.attach(audioRef.current);
-      window.activeTracks.push(track);
-    });
-    setAudioTrackId(deviceId);
-  };
-
-  const tracks = {
-    videoId: videoTrackId,
-    audioId: audioTrackId,
-  };
-
-  const [mediaPermission, setMediaPermission] = useState(null);
-
-  useEffect(() => {
-    let activeStream = null;
-
-    navigator.mediaDevices
-      .getUserMedia({ audio: true, video: true })
-      .then(stream => {
-        if (mediaStream.current)
-          mediaStream.current.getTracks().forEach(track => track.stop());
-        activeStream = stream;
-        mediaStream.current = stream; // Set the reference for use outside the effect
-        setMediaPermission(true);
-      })
-      .catch(e => {
-        console.error(e.name, e.message);
-        setMediaPermission(false);
-      });
-    return () => {
-      // Cleanup function when component unmounts
-      if (activeStream) {
-        activeStream.getTracks().forEach(track => track.stop());
-      }
-      // If the reference is the same as the one we're cleaning up, clear it
-      if (mediaStream.current === activeStream) {
-        mediaStream.current = null;
-      }
-    };
-  }, []);
-
-  const handleJoin = () => {
+  console.log({ username });
+  const handleJoin = values => {
+    console.log({ values });
     clearActiveTracks();
-    dispatch(initActiveCall({ userPk, tracks }));
+    dispatch(initActiveCall({ userPk, tracks: values }));
     dispatch(cancelCallSetup());
-    navigate(getAppRoute('live-kit'), { state: { userPk, tracks } });
+    navigate(getAppRoute('live-kit'), { state: { userPk, tracks: values } });
   };
 
   return (
@@ -350,33 +168,12 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
           {t('pcs_sub_heading')}
         </Text>
       </div>
-      {mediaPermission && (
-        <>
-          <PreJoin onSubmit={handleJoin} joinLabel={t('pcs_btn_join_call')} />
-          {/* <Button
-            onClick={() => {
-              clearActiveTracks();
-              dispatch(initActiveCall({ userPk, tracks }));
-              dispatch(cancelCallSetup());
-              navigate(getAppRoute(CALL_ROUTE), { state: { userPk, tracks } });
-            }}
-            size={ButtonSizes.Stretch}
-            style={{ alignSelf: 'center' }}
-          >
-            {t('pcs_btn_join_call')}
-          </Button> */}
-        </>
-      )}
-      {!mediaPermission && (
-        <>
-          <br />
-          Permission to use the camera and microphone is required.
-          <br />
-          Please give permission in your browser settings.
-          <br />
-          See https://support.google.com/chrome/answer/2693767 for instructions.
-        </>
-      )}
+      <PreJoin
+        onSubmit={handleJoin}
+        joinLabel={t('pcs_btn_join_call')}
+        defaults={{ username }}
+        persistUserChoices={false}
+      />
     </CallSetupCard>
   );
 }

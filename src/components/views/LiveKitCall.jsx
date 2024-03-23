@@ -20,16 +20,41 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { getAppRoute } from '../../routes';
-import { Chat } from '../blocks/ChatCore/Chat';
+import CallSidebar, {
+  SidebarSelectionProvider,
+} from '../blocks/Calls/CallSidebar.tsx';
+import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
 
 const serverUrl = 'wss://little-world-6fxox5nm.livekit.cloud';
 const api_key = 'APIo7MLm3fJDRX5';
 const secret_key = 'PT7WGIlSzg2fpiS4pDXQA4j7a1VKWbjriJMcTLfme4JB';
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTA5NjU4MDcsImlzcyI6IkFQSW83TUxtM2ZKRFJYNSIsIm5iZiI6MTcxMDk0NDIwNywic3ViIjoic2VhbiIsInZpZGVvIjp7ImNhblB1Ymxpc2giOnRydWUsImNhblB1Ymxpc2hEYXRhIjp0cnVlLCJjYW5TdWJzY3JpYmUiOnRydWUsInJvb20iOiJ6aW1tZXIiLCJyb29tSm9pbiI6dHJ1ZX19.0tzeTLzrTt7jJQS2vCWmOozk1MVMZhm42l5TL5AoHmU';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUzNzA2OTM4MDgsImlzcyI6IkFQSW83TUxtM2ZKRFJYNSIsIm5iZiI6MTcxMTAyNjUyOSwic3ViIjoiVGltIiwidmlkZW8iOnsiY2FuUHVibGlzaCI6dHJ1ZSwiY2FuUHVibGlzaERhdGEiOnRydWUsImNhblN1YnNjcmliZSI6dHJ1ZSwicm9vbSI6InppbW1lciIsInJvb21Kb2luIjp0cnVlfX0.lS-VycsQDW2wLyLv0aI3gPXt-1g4wtUspIwAyPBQRkQ';
 
 const CallLayout = styled.div`
+  --lk-border-radius: ${({ theme }) => theme.radius.medium};
+  :root {
+    --lk-border-radius: ${({ theme }) => theme.radius.medium};
+  }
   display: flex;
+  padding: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.medium};
+  min-height: 100vh;
+`;
+
+const VideoContainer = styled.div`
+  width: 75%;
+  border: 2px solid ${({ theme }) => theme.color.border.subtle};
+  border-radius: ${({ theme }) => theme.radius.medium};
+  padding: ${({ theme }) => theme.spacing.small};
+
+  .lk-room-container {
+    height: auto !important;
+  }
+
+  .lk-grid-layout {
+    border-radius: ${({ theme }) => theme.radius.small};
+  }
 `;
 
 export function LiveKitCall() {
@@ -38,31 +63,36 @@ export function LiveKitCall() {
     console.log('TOGGGELLLLLLING');
   };
   return (
-    <LayoutContextProvider>
-      <CallLayout>
-        <LiveKitRoom
-          video={true}
-          audio={true}
-          token={token}
-          serverUrl={serverUrl}
-          // Use the default LiveKit theme for nice styles.
-          data-lk-theme="default"
-          style={{ height: '100vh' }}
-          onDisconnected={() => navigate(getAppRoute())}
-        >
-          {/* <ChatToggle onClick={toggleChat} />
+    <SidebarSelectionProvider>
+      <LayoutContextProvider>
+        <CallLayout>
+          <VideoContainer>
+            <LiveKitRoom
+              video={true}
+              audio={true}
+              token={token}
+              serverUrl={serverUrl}
+              // Use the default LiveKit theme for nice styles.
+              // data-lk-theme="default"
+              onDisconnected={() => navigate(getAppRoute())}
+            >
+              {/* <ChatToggle onClick={toggleChat} />
         <Chat /> */}
-          {/* Your custom component with basic video conferencing functionality. */}
-          <MyVideoConference />
-          {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
-          <RoomAudioRenderer />
-          {/* Controls for the user to start/stop audio, video, and screen 
+              {/* Your custom component with basic video conferencing functionality. */}
+              <MyVideoConference />
+              {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
+              <RoomAudioRenderer />
+              {/* Controls for the user to start/stop audio, video, and screen 
       share tracks and to leave the room. */}
-          <ControlBar controls={{ chat: true }} />
-        </LiveKitRoom>
-        <Chat chatId="f56c4595-2619-4143-983a-3c1c733f47ca" />
-      </CallLayout>
-    </LayoutContextProvider>
+              <ControlBar controls={{ chat: true, screenShare: false }} />
+            </LiveKitRoom>
+            <TranslationTool />
+          </VideoContainer>
+
+          <CallSidebar />
+        </CallLayout>
+      </LayoutContextProvider>
+    </SidebarSelectionProvider>
   );
 }
 
@@ -83,10 +113,7 @@ function MyVideoConference() {
 
   console.log({ tracks });
   return (
-    <GridLayout
-      tracks={tracks}
-      style={{ height: 'calc(100vh - var(--lk-control-bar-height))' }}
-    >
+    <GridLayout tracks={tracks}>
       {/* The GridLayout accepts zero or one child. The child is used
       as a template to render all passed in tracks. */}
       <ParticipantTile trackRef={tracks[0]} />

@@ -234,7 +234,6 @@
   "lang-ru": "Russian",
   "lang-es": "Spanish",
   "lang-tr": "Turkish",
-  "lang-ua": "Ukrainian",
   "lang-vn": "Vietnamese",
   "lang-uk": "Ukrainian",
   "lang-de": "German",
@@ -522,6 +521,10 @@
   "notifications.filter_all": "All",
   "notifications.filter_unread": "Unread",
   "notifications.archived": "Archived",
+
+  "translations.language_placholder": "Select a language...",
+  "translations.text_placeholder": "Type to translate",
+  "translations.swap_languages": "Swap",
 
   "error_view.title": "Uh oh, this page doesn't exist",
   "error_view.button": "Back to the start",
