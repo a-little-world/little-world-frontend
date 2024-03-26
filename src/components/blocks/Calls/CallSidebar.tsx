@@ -29,6 +29,7 @@ import TranslationTool from '../TranslationTool/TranslationTool.tsx';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  //   transition: width ease 0.3s;
 `;
 
 const TextArea = styled.textarea`
@@ -542,7 +543,7 @@ function CallSidebar() {
       <div className="sidebar-content">
         {sideSelection === 'chat' && (
           <Chat
-            chatId={match.chatId}
+            chatId={match?.chatId}
             chatId="f56c4595-2619-4143-983a-3c1c733f47ca"
           />
         )}

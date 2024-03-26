@@ -81,7 +81,7 @@ const CallSetupCard = styled(ModalCard)`
       width: 100%;
       color: ${theme.color.text.reversed};
       border: none;
-      background: ${theme.color.gradient.orange};
+      background: ${theme.color.gradient.orange10};
       transition: background-color 0.5s ease, filter 0.5s ease,
         border-color 0.5s ease, color 0.5s ease, 0.4s;
 

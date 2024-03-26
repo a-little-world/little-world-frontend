@@ -1,9 +1,14 @@
+import { Button } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
 export const ToolContainer = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.xxsmall};
   align-items: flex-start;
+`;
+
+export const SwapBtn = styled(Button)`
+  margin-top: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 export const OriginalLanguage = styled.div`

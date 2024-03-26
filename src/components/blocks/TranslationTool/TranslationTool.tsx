@@ -3,7 +3,9 @@ import {
   ButtonVariations,
   Dropdown,
   SendIcon,
+  SwapIcon,
   TextArea,
+  TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
@@ -13,6 +15,7 @@ import { BACKEND_URL } from '../../../ENVIRONMENT.js';
 import {
   DesiredLanguage,
   OriginalLanguage,
+  SwapBtn,
   ToolContainer,
 } from './TranslationTool.styles.tsx';
 
@@ -97,6 +100,7 @@ function TranslationTool() {
     <ToolContainer>
       <OriginalLanguage>
         <Dropdown
+          maxWidth="100%"
           placeholder={t('translation.language_placeholder')}
           onValueChange={setFromLang}
           value={fromLang}
@@ -109,14 +113,20 @@ function TranslationTool() {
           placeholder={t('translations.text_placeholder')}
           value={leftText}
           onChange={handleChangeLeft}
-          maxLength={null}
+          size={TextAreaSize.Large}
         />
       </OriginalLanguage>
-      <Button onClick={swapLang} variation={ButtonVariations.Icon}>
-        <SendIcon label={t('translation.swap_languages')} />
-      </Button>
+      <SwapBtn onClick={swapLang} variation={ButtonVariations.Icon}>
+        <SwapIcon
+          label={t('translation.swap_languages')}
+          labelId={'swap_translations'}
+          width="16"
+          height="16"
+        />
+      </SwapBtn>
       <DesiredLanguage>
         <Dropdown
+          maxWidth="100%"
           placeholder={t('translation.language_placeholder')}
           onValueChange={setToLang}
           value={toLang}
@@ -125,7 +135,7 @@ function TranslationTool() {
             label: t(`lang-${lang}`),
           }))}
         />
-        <TextArea readOnly value={rigthText} maxLength={null} />
+        <TextArea readOnly value={rigthText} size={TextAreaSize.Large} />
       </DesiredLanguage>
     </ToolContainer>
   );

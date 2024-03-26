@@ -2,10 +2,10 @@ import { Button } from '@a-little-world/little-world-design-system';
 import {
   Chat as ChatLiveKit,
   ChatToggle,
-  ControlBar,
   ControlBarControls,
   GridLayout,
   LayoutContextProvider,
+  ControlBar as LiveKitControlBar,
   LiveKitRoom,
   ParticipantTile,
   RoomAudioRenderer,
@@ -17,12 +17,14 @@ import '@livekit/components-styles';
 import { Track } from 'livekit-client';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { getAppRoute } from '../../routes';
+import Drawer from '../atoms/Drawer.tsx';
 import CallSidebar, {
   SidebarSelectionProvider,
 } from '../blocks/Calls/CallSidebar.tsx';
+import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar.tsx';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
 
 const serverUrl = 'wss://little-world-6fxox5nm.livekit.cloud';
@@ -32,41 +34,103 @@ const token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUzNzA2OTM4MDgsImlzcyI6IkFQSW83TUxtM2ZKRFJYNSIsIm5iZiI6MTcxMTAyNjUyOSwic3ViIjoiVGltIiwidmlkZW8iOnsiY2FuUHVibGlzaCI6dHJ1ZSwiY2FuUHVibGlzaERhdGEiOnRydWUsImNhblN1YnNjcmliZSI6dHJ1ZSwicm9vbSI6InppbW1lciIsInJvb21Kb2luIjp0cnVlfX0.lS-VycsQDW2wLyLv0aI3gPXt-1g4wtUspIwAyPBQRkQ';
 
 const CallLayout = styled.div`
-  --lk-border-radius: ${({ theme }) => theme.radius.medium};
-  :root {
-    --lk-border-radius: ${({ theme }) => theme.radius.medium};
-  }
+  --lk-border-radius: 0;
+  --lk-control-active-bg: ${({ theme }) => theme.color.surface.contrast};
+  --lk-control-active-hover-bg: ${({ theme }) => theme.color.surface.contrast};
+  --lk-control-hover-bg: ${({ theme }) => theme.color.surface.contrast};
   display: flex;
-  padding: ${({ theme }) => theme.spacing.medium};
-  gap: ${({ theme }) => theme.spacing.medium};
   min-height: 100vh;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      --lk-border-radius: ${theme.radius.medium};
+      padding: ${theme.spacing.medium};
+      gap: ${({ theme }) => theme.spacing.medium};
+    }
+  `}
 `;
 
 const VideoContainer = styled.div`
-  width: 75%;
-  border: 2px solid ${({ theme }) => theme.color.border.subtle};
-  border-radius: ${({ theme }) => theme.radius.medium};
-  padding: ${({ theme }) => theme.spacing.small};
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
+  transition: width ease 0.3s, height ease 0.3s;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      width: ${({ $showChat }) => ($showChat ? '75%' : '100%')};
+      border: 2px solid ${({ theme }) => theme.color.border.subtle};
+      border-radius: ${({ theme }) => theme.radius.medium};
+      padding: ${({ theme }) => theme.spacing.small};
+    }
+  `}
 
   .lk-room-container {
     height: auto !important;
+    flex: 1;
+    transition: height ease 0.3s;
   }
 
-  .lk-grid-layout {
-    border-radius: ${({ theme }) => theme.radius.small};
+  .lk-control-bar {
+    position: absolute;
+    bottom: 0;
+    transform: translateX(50%);
+    right: 50%;
   }
+
+  .lk-participant-metadata-item {
+    color: ${({ theme }) => theme.color.text.primary};
+    background: ${({ theme }) => theme.color.surface.secondary};
+    opacity: 90%;
+  }
+
+  ${({ $isFullScreen }) =>
+    $isFullScreen &&
+    css`
+      --lk-border-radius: 0;
+      .lk-room-container {
+        height: 100vh !important;
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+      }
+    `}
 `;
 
 export function LiveKitCall() {
   const navigate = useNavigate();
-  const toggleChat = () => {
-    console.log('TOGGGELLLLLLING');
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [showChat, setShowChat] = useState(true);
+  const [showTranslator, setShowTranslator] = useState(true);
+  const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
+
+  const onChatToggle = () => {
+    setShowChat(prevState => !prevState);
   };
+
+  const onFullScreenToggle = () => {
+    setIsFullScreen(prevState => !prevState);
+  };
+
+  const onTranslatorToggle = () => {
+    setShowTranslator(prevState => !prevState);
+  };
+
+  const onMobileTranslatorToggle = () => {
+    setSelectedDrawerOption('translator');
+  };
+
+  const onMobileChatToggle = () => {
+    setSelectedDrawerOption('chat');
+  };
+
   return (
     <SidebarSelectionProvider>
       <LayoutContextProvider>
         <CallLayout>
-          <VideoContainer>
+          <VideoContainer $isFullScreen={isFullScreen} $showChat={showChat}>
             <LiveKitRoom
               video={true}
               audio={true}
@@ -76,20 +140,41 @@ export function LiveKitCall() {
               // data-lk-theme="default"
               onDisconnected={() => navigate(getAppRoute())}
             >
-              {/* <ChatToggle onClick={toggleChat} />
-        <Chat /> */}
-              {/* Your custom component with basic video conferencing functionality. */}
               <MyVideoConference />
               {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
               <RoomAudioRenderer />
               {/* Controls for the user to start/stop audio, video, and screen 
       share tracks and to leave the room. */}
-              <ControlBar controls={{ chat: true, screenShare: false }} />
+              {/* <LiveKitControlBar
+                controls={{ chat: true, screenShare: false }}
+              /> */}
+              <TopControlBar
+                onChatToggle={onMobileChatToggle}
+                onTranslatorToggle={onMobileTranslatorToggle}
+              />
+              <ControlBar
+                onChatToggle={onChatToggle}
+                onFullScreenToggle={onFullScreenToggle}
+                onTranslatorToggle={onTranslatorToggle}
+              />
             </LiveKitRoom>
-            <TranslationTool />
+            {!showTranslator && <TranslationTool />}
           </VideoContainer>
-
-          <CallSidebar />
+          <Drawer
+            title={'Translate'}
+            open={selectedDrawerOption === 'translator'}
+            onClose={() => setSelectedDrawerOption(null)}
+          >
+            <TranslationTool />
+          </Drawer>
+          <Drawer
+            title={'Chat'}
+            open={selectedDrawerOption === 'chat'}
+            onClose={() => setSelectedDrawerOption(null)}
+          >
+            <CallSidebar />
+          </Drawer>
+          {showChat && <CallSidebar />}
         </CallLayout>
       </LayoutContextProvider>
     </SidebarSelectionProvider>

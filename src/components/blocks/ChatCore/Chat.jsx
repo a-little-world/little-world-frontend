@@ -102,8 +102,8 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
             width={24}
             height={24}
             color={theme.color.surface.secondary}
-            backgroundColor={theme.color.gradient.orange}
-            borderColor={theme.color.gradient.orange}
+            backgroundColor={theme.color.gradient.orange10}
+            borderColor={theme.color.gradient.orange10}
           />
         </Button>
       </TopSection>
@@ -255,7 +255,6 @@ export const Chat = ({ chatId }) => {
           })}
           id="text"
           error={t(errors?.text?.message)}
-          maxLength={null}
           placeholder={t('chat.text_area_placeholder')}
           onSubmit={() => handleSubmit(onSendMessage)()}
         />
@@ -272,7 +271,7 @@ export const Chat = ({ chatId }) => {
             width="20"
             height="20"
             color={theme.color.text.reversed}
-            backgroundColor={theme.color.gradient.orange}
+            backgroundColor={theme.color.gradient.orange10}
           />
         </SendButton>
       </WriteSection>
