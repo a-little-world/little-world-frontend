@@ -1,3 +1,6 @@
+import { BACKEND_URL } from '../ENVIRONMENT';
+import Cookies from 'js-cookie';
+
 export const requestVideoAccessToken = async ({ partnerId }) => {
     const response = await fetch(`${BACKEND_URL}/api/livekit/authenticate`, {
         headers: {
