@@ -355,8 +355,8 @@ function SidebarNotes() {
           actionType === 'remove'
             ? 'is_deleted'
             : actionType === 'favorite'
-            ? 'is_favorite'
-            : 'is_archived';
+              ? 'is_favorite'
+              : 'is_archived';
 
         updatedNotesData[noteIndex] = {
           ...updatedNotesData[noteIndex],
@@ -544,7 +544,6 @@ function CallSidebar() {
         {sideSelection === 'chat' && (
           <Chat
             chatId={match?.chatId}
-            chatId="f56c4595-2619-4143-983a-3c1c733f47ca"
           />
         )}
         {sideSelection === 'questions' && <QuestionCards />}

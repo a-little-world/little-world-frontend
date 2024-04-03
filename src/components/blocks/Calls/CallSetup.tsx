@@ -16,6 +16,10 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import {
+  requestVideoAccessToken
+} from '../../../api/livekit';
+
+import {
   cancelCallSetup,
   initActiveCall,
   selectMatchByPartnerId,
@@ -119,6 +123,11 @@ function SignalIndicator({
 
 function CallSetup({ userPk, removeCallSetupPartner }) {
   const { t } = useTranslation();
+  const [token, setToken] = useState(null);
+  const [authData, setAuthData] = useState({
+    token: null,
+    livekitServerUrl: null,
+  });
   const quality = 'good';
   const qualityText = t(`pcs_signal_${quality}`);
   const updateText = t('pcs_signal_update');
@@ -135,8 +144,26 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
     clearActiveTracks();
     dispatch(initActiveCall({ userPk, tracks: values }));
     dispatch(cancelCallSetup());
-    navigate(getAppRoute('live-kit'), { state: { userPk, tracks: values } });
+    navigate(getAppRoute('live-kit'), { state: { userPk, token: authData.token, tracks: values, livekitServerUrl: authData.livekitServerUrl } });
   };
+
+  useEffect(() => {
+    // Request the video room access token
+    console.log('Requesting video access token for user:', userPk);
+    requestVideoAccessToken({
+      partnerId: userPk
+    }).then((res) => {
+      console.log('Token request response:', res);
+      setAuthData({
+        token: res.token,
+        livekitServerUrl: res.server_url
+      })
+    }).catch((err) => {
+      // TODO: handle token request rejection
+      console.error('Error requesting video access token:', err);
+    });
+
+  }, []);
 
   return (
     <CallSetupCard>
@@ -174,6 +201,8 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
         defaults={{ username }}
         persistUserChoices={false}
       />
+      {/** TODO: remove, instead join button should be disabled untill a room join token is fetched */}
+      {authData.token ? <span>Token loaded you can proceed</span> : <span>Fetching auth token</span>}
     </CallSetupCard>
   );
 }
