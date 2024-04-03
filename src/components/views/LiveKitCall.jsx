@@ -16,9 +16,9 @@ import {
 import '@livekit/components-styles';
 import { Track } from 'livekit-client';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-
+import { requestVideoAccessToken } from '../../api/livekit.js';
 import { getAppRoute } from '../../routes';
 import Drawer from '../atoms/Drawer.tsx';
 import CallSidebar, {
@@ -26,12 +26,6 @@ import CallSidebar, {
 } from '../blocks/Calls/CallSidebar.tsx';
 import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar.tsx';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
-
-const serverUrl = 'wss://little-world-6fxox5nm.livekit.cloud';
-const api_key = 'APIo7MLm3fJDRX5';
-const secret_key = 'PT7WGIlSzg2fpiS4pDXQA4j7a1VKWbjriJMcTLfme4JB';
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUzNzA2OTM4MDgsImlzcyI6IkFQSW83TUxtM2ZKRFJYNSIsIm5iZiI6MTcxMTAyNjUyOSwic3ViIjoiVGltIiwidmlkZW8iOnsiY2FuUHVibGlzaCI6dHJ1ZSwiY2FuUHVibGlzaERhdGEiOnRydWUsImNhblN1YnNjcmliZSI6dHJ1ZSwicm9vbSI6InppbW1lciIsInJvb21Kb2luIjp0cnVlfX0.lS-VycsQDW2wLyLv0aI3gPXt-1g4wtUspIwAyPBQRkQ';
 
 const CallLayout = styled.div`
   --lk-border-radius: 0;
@@ -98,13 +92,17 @@ const VideoContainer = styled.div`
       }
     `}
 `;
-
 export function LiveKitCall() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
+
+  const { userPk, tracks, token, livekitServerUrl } = location.state;
+
+  console.log({ userPk, tracks, token, livekitServerUrl })
 
   const onChatToggle = () => {
     setShowChat(prevState => !prevState);
@@ -130,15 +128,18 @@ export function LiveKitCall() {
     <SidebarSelectionProvider>
       <LayoutContextProvider>
         <CallLayout>
-          <VideoContainer $isFullScreen={isFullScreen} $showChat={showChat}>
+          <VideoContainer $is FullScreen={isFullScreen} $showChat={showChat}>
             <LiveKitRoom
               video={true}
               audio={true}
               token={token}
-              serverUrl={serverUrl}
+              serverUrl={livekitServerUrl}
               // Use the default LiveKit theme for nice styles.
               // data-lk-theme="default"
-              onDisconnected={() => navigate(getAppRoute())}
+              onDisconnected={() => {
+                console.log('disconnected');
+                //navigate(getAppRoute())
+              }}
             >
               <MyVideoConference />
               {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
@@ -174,7 +175,7 @@ export function LiveKitCall() {
           >
             <CallSidebar />
           </Drawer>
-          {showChat && <CallSidebar />}
+          <CallSidebar />
         </CallLayout>
       </LayoutContextProvider>
     </SidebarSelectionProvider>
