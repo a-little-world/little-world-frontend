@@ -1,8 +1,11 @@
 import { Button } from '@a-little-world/little-world-design-system';
 import {
+  CarouselLayout,
   Chat as ChatLiveKit,
   ChatToggle,
   ControlBarControls,
+  FocusLayout,
+  FocusLayoutContainer,
   GridLayout,
   LayoutContextProvider,
   ControlBar as LiveKitControlBar,
@@ -15,16 +18,21 @@ import {
 } from '@livekit/components-react';
 import '@livekit/components-styles';
 import { Track } from 'livekit-client';
+import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
+import { getMatchByPartnerId } from '../../features/userData.js';
 import { getAppRoute } from '../../routes';
 import Drawer from '../atoms/Drawer.tsx';
 import CallSidebar, {
   SidebarSelectionProvider,
 } from '../blocks/Calls/CallSidebar.tsx';
 import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar.tsx';
+import { Chat } from '../blocks/ChatCore/Chat.jsx';
+import QuestionCards from '../blocks/QuestionCards.jsx';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
 
 const serverUrl = 'wss://little-world-6fxox5nm.livekit.cloud';
@@ -55,6 +63,7 @@ const VideoContainer = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
   transition: width ease 0.3s, height ease 0.3s;
+  width: 100%;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
@@ -105,6 +114,14 @@ export function LiveKitCall() {
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const location = useLocation();
+  const { userPk } = location.state || {};
+  const match = useSelector(state =>
+    getMatchByPartnerId(state.userData.matches, userPk),
+  );
+
+  console.log({ userPk, match });
 
   const onChatToggle = () => {
     setShowChat(prevState => !prevState);
@@ -126,6 +143,11 @@ export function LiveKitCall() {
     setSelectedDrawerOption('chat');
   };
 
+  const onMobileQuestionsToggle = () => {
+    setSelectedDrawerOption('questions');
+  };
+  console.log({ selectedDrawerOption, connected });
+
   return (
     <SidebarSelectionProvider>
       <LayoutContextProvider>
@@ -136,9 +158,9 @@ export function LiveKitCall() {
               audio={true}
               token={token}
               serverUrl={serverUrl}
-              // Use the default LiveKit theme for nice styles.
-              // data-lk-theme="default"
+              onConnected={() => setConnected(true)}
               onDisconnected={() => navigate(getAppRoute())}
+              // simulateParticipants={2}
             >
               <MyVideoConference />
               {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
@@ -149,10 +171,13 @@ export function LiveKitCall() {
                 controls={{ chat: true, screenShare: false }}
               /> */}
               <TopControlBar
+                activeOption={selectedDrawerOption}
                 onChatToggle={onMobileChatToggle}
                 onTranslatorToggle={onMobileTranslatorToggle}
+                onQuestionCardsToggle={onMobileQuestionsToggle}
               />
               <ControlBar
+                isFullScreen={isFullScreen}
                 onChatToggle={onChatToggle}
                 onFullScreenToggle={onFullScreenToggle}
                 onTranslatorToggle={onTranslatorToggle}
@@ -172,7 +197,14 @@ export function LiveKitCall() {
             open={selectedDrawerOption === 'chat'}
             onClose={() => setSelectedDrawerOption(null)}
           >
-            <CallSidebar />
+            <Chat chatId={match?.chatId} />
+          </Drawer>
+          <Drawer
+            title={'Questions'}
+            open={selectedDrawerOption === 'questions'}
+            onClose={() => setSelectedDrawerOption(null)}
+          >
+            <QuestionCards />
           </Drawer>
           {showChat && <CallSidebar />}
         </CallLayout>
@@ -191,19 +223,20 @@ function MyVideoConference() {
     ],
     { onlySubscribed: false },
   );
-  const [permission, setPermission] = useState(false);
-
-  //   if (!permission)
-  //     return <Button onClick={() => setPermission(true)}>Give Permission</Button>;
 
   console.log({ tracks });
+
+  if (isEmpty(tracks)) return null;
+
   return (
-    <GridLayout tracks={tracks}>
-      {/* The GridLayout accepts zero or one child. The child is used
-      as a template to render all passed in tracks. */}
-      <ParticipantTile trackRef={tracks[0]} />
-      {/* <VideoTrack trackRef={tracks[0]} /> */}
-    </GridLayout>
+    <FocusLayoutContainer>
+      <FocusLayout trackRef={tracks[0]}>
+        <ParticipantTile />
+      </FocusLayout>
+      <CarouselLayout tracks={[...tracks, ...tracks]}>
+        <ParticipantTile />
+      </CarouselLayout>
+    </FocusLayoutContainer>
   );
 }
 

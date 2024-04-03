@@ -15,19 +15,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import {
-  cancelCallSetup,
-  initActiveCall,
-  selectMatchByPartnerId,
-} from '../../../features/userData';
-import signalWifi from '../../../images/signal-wifi.svg';
+import { cancelCallSetup, initActiveCall } from '../../../features/userData';
 import { CALL_ROUTE, getAppRoute } from '../../../routes';
 import {
   getAudioTrack,
   getVideoTrack,
   toggleLocalTracks,
 } from '../../../twilio-helper';
-import ModalCard, { Centred } from '../Cards/ModalCard';
+import ModalCard from '../Cards/ModalCard';
 
 if (!window.activeTracks) window.activeTracks = [];
 
@@ -93,29 +88,6 @@ const CallSetupCard = styled(ModalCard)`
     }
   `}
 `;
-
-function SignalIndicator({
-  signalQuality,
-  signalQualityText,
-  signalUpdateText,
-}) {
-  const signalQualityImage = {
-    good: signalWifi,
-  };
-  return (
-    <button type="button" className="signal-button">
-      <img
-        id="signalQuality"
-        alt={signalQualityText}
-        src={signalQualityImage[signalQuality]}
-      />
-      <div className="text">
-        {signalQualityText}&nbsp;
-        <span className="signal-update">{signalUpdateText}</span>
-      </div>
-    </button>
-  );
-}
 
 function CallSetup({ userPk, removeCallSetupPartner }) {
   const { t } = useTranslation();

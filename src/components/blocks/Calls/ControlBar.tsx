@@ -5,12 +5,13 @@ import {
   ButtonSizes,
   ButtonVariations,
   CloseIcon,
+  FullScreenExitIcon,
   FullScreenIcon,
   MessageIcon,
   MessageWithQuestionIcon,
   Text,
   TextTypes,
-  Translator,
+  TranslatorIcon,
 } from '@a-little-world/little-world-design-system';
 import {
   DisconnectButton,
@@ -71,10 +72,7 @@ const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
 const TOGGLE_CSS = css`
   background: ${({ theme }) => theme.color.surface.contrast || 'black'};
   color: ${({ theme }) => theme.color.text.control};
-  width: 44px;
-  height: 44px;
   border-radius: 50%;
-  padding: 0;
   transition: filter 0.5s ease;
 
   &:hover {
@@ -85,16 +83,19 @@ const TOGGLE_CSS = css`
 
 const Toggle = styled(TrackToggle)`
   ${TOGGLE_CSS};
+  width: 44px;
+  height: 44px;
 `;
 
-const ToggleBtn = styled(Button)<{ $desktopOnly?: boolean }>`
+const ToggleBtn = styled(Button)<{ $active: boolean; $desktopOnly?: boolean }>`
   ${TOGGLE_CSS};
 
-  ${({ $desktopOnly, theme }) => css`
+  ${({ $active, $desktopOnly, theme }) => css`
     display: ${$desktopOnly ? 'none' : 'flex'};
     @media (min-width: ${theme.breakpoints.large}) {
       display: flex;
     }
+    ${$active && `color: red`}
   `}
 `;
 
@@ -117,12 +118,14 @@ const StyledTimer = styled(Timer)<{ $desktopOnly?: boolean }>`
 `;
 
 type ControlBarProps = {
+  activeOption?: string;
   onChatToggle: () => void;
   onFullScreenToggle: () => void;
   onTranslatorToggle: () => void;
 };
 
 export const TopControlBar = ({
+  activeOption,
   onChatToggle,
   onQuestionCardsToggle,
   onTranslatorToggle,
@@ -130,18 +133,24 @@ export const TopControlBar = ({
   const { t } = useTranslation();
   return (
     <Bar $position="top">
-      <ToggleBtn onClick={onChatToggle} variation={ButtonVariations.Control}>
+      <ToggleBtn
+        $active={activeOption === 'chat'}
+        onClick={onChatToggle}
+        variation={ButtonVariations.Circle}
+      >
         <MessageIcon label={t('call.chat_label')} labelId="chat_toggle" />
       </ToggleBtn>
       <ToggleBtn
+        $active={activeOption === 'translator'}
         onClick={onTranslatorToggle}
-        variation={ButtonVariations.Control}
+        variation={ButtonVariations.Circle}
       >
-        <Translator label={t('call.chat_label')} labelId="chat_toggle" />
+        <TranslatorIcon label={t('call.chat_label')} labelId="chat_toggle" />
       </ToggleBtn>
       <ToggleBtn
+        $active={activeOption === 'questions'}
         onClick={onQuestionCardsToggle}
-        variation={ButtonVariations.Control}
+        variation={ButtonVariations.Circle}
       >
         <MessageWithQuestionIcon
           label="question cards"
@@ -153,6 +162,7 @@ export const TopControlBar = ({
 };
 
 function ControlBar({
+  isFullScreen,
   onChatToggle,
   onFullScreenToggle,
   onTranslatorToggle,
@@ -167,26 +177,33 @@ function ControlBar({
         <Toggle source={Track.Source.Camera} showIcon />
         <ToggleBtn
           onClick={onFullScreenToggle}
-          variation={ButtonVariations.Control}
+          variation={ButtonVariations.Circle}
         >
-          <FullScreenIcon
-            label="fullscreen video toggle"
-            labelId="fullscreen"
-          />
+          {isFullScreen ? (
+            <FullScreenExitIcon
+              label="exit fullscreen"
+              labelId={'exitFullScreen'}
+            />
+          ) : (
+            <FullScreenIcon
+              label="fullscreen video toggle"
+              labelId="fullscreen"
+            />
+          )}
         </ToggleBtn>
         <ToggleBtn
           $desktopOnly
           onClick={onChatToggle}
-          variation={ButtonVariations.Control}
+          variation={ButtonVariations.Circle}
         >
           <MessageIcon label={t('call.chat_label')} labelId="chat_toggle" />
         </ToggleBtn>
         <ToggleBtn
           $desktopOnly
           onClick={onTranslatorToggle}
-          variation={ButtonVariations.Control}
+          variation={ButtonVariations.Circle}
         >
-          <Translator label={t('call.chat_label')} labelId="chat_toggle" />
+          <TranslatorIcon label={t('call.chat_label')} labelId="chat_toggle" />
         </ToggleBtn>
       </Section>
       <Section>

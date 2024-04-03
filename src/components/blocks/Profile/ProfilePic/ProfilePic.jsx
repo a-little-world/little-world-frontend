@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonSizes,
   ButtonVariations,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -102,6 +103,7 @@ const ProfilePic = ({ control, setValue }) => {
   const userData = useSelector(state => state.userData.user.profile);
   const { t } = useTranslation();
   const fileInputRef = useRef(null);
+  const theme = useTheme();
 
   const onImageUpload = e => {
     const file = e.target.files[0];
@@ -245,12 +247,15 @@ const ProfilePic = ({ control, setValue }) => {
               <InteractiveArea>
                 <AvatarSelection>
                   <Button
-                    variation={ButtonVariations.Control}
+                    backgroundColor={theme.color.surface.primary}
+                    borderColor={theme.color.border.contrast}
+                    variation={ButtonVariations.Circle}
+                    size={ButtonSizes.Small}
                     disabled={avatarIndex === 0}
                     onClick={onPrevAvatar}
                     type="button"
                   >
-                    <ChevronLeftIcon width={6} />
+                    <ChevronLeftIcon />
                   </Button>
                   <div>
                     <Avatar
@@ -262,11 +267,14 @@ const ProfilePic = ({ control, setValue }) => {
                     />
                   </div>
                   <Button
-                    variation={ButtonVariations.Control}
+                    backgroundColor={theme.color.surface.primary}
+                    borderColor={theme.color.border.contrast}
+                    variation={ButtonVariations.Circle}
                     onClick={onNextAvatar}
+                    size={ButtonSizes.Small}
                     type="button"
                   >
-                    <ChevronRightIcon width={6} />
+                    <ChevronRightIcon />
                   </Button>
                 </AvatarSelection>
                 <Label

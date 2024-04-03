@@ -5,6 +5,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@a-little-world/little-world-design-system';
+import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { withTranslation } from 'react-i18next';
@@ -126,16 +127,12 @@ function QuestionCards() {
 
   const categoriesRef = useRef(null);
 
-  const { i18n } = useTranslation();
-
   // TODO: locked to only german untill we have a translation button, then use: i18n.language;
   const selfUserPreferedLang = 'de';
   const [selectedQuestionId, setQuestionId] = useState(null);
 
-  const [selectedTopic, setTopic] = useState(
-    cardCategories ? cardCategories[0]?.uuid : null,
-  );
-
+  const [selectedTopic, setTopic] = useState(cardCategories?.[0]?.uuid || null);
+  console.log({ selectedTopic, cardCategories });
   const changeScroll = direction => {
     const scrollVelocity = {
       right: 100,
@@ -147,14 +144,18 @@ function QuestionCards() {
   };
 
   useEffect(() => {
-    dispatch(FetchQuestionsDataAsync());
-  }, []);
+    if (isEmpty(cardCategories)) {
+      dispatch(FetchQuestionsDataAsync());
+    } else {
+      setTopic(cardCategories?.[0]?.uuid);
+    }
+  }, [cardCategories]);
 
   return (
     <SidebarCard>
       <QuestionCategories>
         <CategoryControl
-          variation={ButtonVariations.Control}
+          variation={ButtonVariations.Circle}
           onClick={() => changeScroll('left')}
         >
           <ChevronLeftIcon
@@ -178,7 +179,7 @@ function QuestionCards() {
           ))}
         </Categories>
         <CategoryControl
-          variation={ButtonVariations.Control}
+          variation={ButtonVariations.Circle}
           onClick={() => changeScroll('right')}
         >
           <ChevronRightIcon
@@ -190,8 +191,7 @@ function QuestionCards() {
         </CategoryControl>
       </QuestionCategories>
       <QuestionContentCard>
-        {cardsByCategory &&
-          cardsByCategory[selectedTopic]?.length > 0 &&
+        {cardsByCategory?.[selectedTopic]?.length > 0 &&
           cardsByCategory[selectedTopic]?.map(card => {
             return (
               <QuestionCard

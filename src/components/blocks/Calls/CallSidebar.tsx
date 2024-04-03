@@ -478,36 +478,6 @@ function SidebarNotes() {
   );
 }
 
-function MobileDrawer({ content, setOverlay }) {
-  const location = useLocation();
-  const { userPk } = location.state || {};
-  const match = useSelector(state =>
-    getMatchByPartnerId(state.userData.matches, userPk),
-  );
-
-  return (
-    <div className={`call-drawer-container ${content}`}>
-      <div className="call-drawer">
-        <button
-          className="arrow-down"
-          type="button"
-          onClick={() => setOverlay(null)}
-        >
-          <img alt="hide drawer" />
-        </button>
-        <div className="drawer-content">
-          {content === 'chat' && (
-            <Chat chatId={match.chatId} renderUserInfo={false} />
-          )}
-          {content === 'translate' && <TranslationTool />}
-          {content === 'questions' && <QuestionCards />}
-          {content === 'notes' && <SidebarNotes />}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function CallSidebar() {
   const { t } = useTranslation();
   const location = useLocation();
@@ -541,12 +511,7 @@ function CallSidebar() {
         ))}
       </SidebarSelector>
       <div className="sidebar-content">
-        {sideSelection === 'chat' && (
-          <Chat
-            chatId={match?.chatId}
-            chatId="f56c4595-2619-4143-983a-3c1c733f47ca"
-          />
-        )}
+        {sideSelection === 'chat' && <Chat chatId={match?.chatId} />}
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </div>

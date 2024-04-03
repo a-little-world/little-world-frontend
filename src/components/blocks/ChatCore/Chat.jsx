@@ -96,15 +96,13 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
             {partner?.first_name}
           </Text>
         </UserInfo>
-        <Button variation={ButtonVariations.Control} onClick={callPartner}>
-          <VideoIcon
-            circular
-            width={24}
-            height={24}
-            color={theme.color.surface.secondary}
-            backgroundColor={theme.color.gradient.orange10}
-            borderColor={theme.color.gradient.orange10}
-          />
+        <Button
+          variation={ButtonVariations.Circle}
+          onClick={callPartner}
+          size={ButtonSizes.Medium}
+          backgroundColor={theme.color.gradient.orange10}
+        >
+          <VideoIcon color={theme.color.surface.secondary} />
         </Button>
       </TopSection>
       <Chat chatId={chatId} />
@@ -259,19 +257,16 @@ export const Chat = ({ chatId }) => {
           onSubmit={() => handleSubmit(onSendMessage)()}
         />
         <SendButton
-          size={ButtonSizes.Small}
+          size={ButtonSizes.Medium}
           type="submit"
           disabled={isSubmitting}
-          variation={ButtonVariations.Icon}
+          variation={ButtonVariations.Circle}
+          backgroundColor={theme.color.gradient.orange10}
         >
           <SendIcon
             label={t('chat.send_btn')}
             labelId={'send_icon'}
-            circular
-            width="20"
-            height="20"
             color={theme.color.text.reversed}
-            backgroundColor={theme.color.gradient.orange10}
           />
         </SendButton>
       </WriteSection>

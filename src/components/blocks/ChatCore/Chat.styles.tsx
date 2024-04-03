@@ -214,4 +214,5 @@ export const ChatContainer = styled.div`
   flex: 1;
   gap: ${({ theme }) => theme.spacing.small};
   overflow-y: hidden;
+  width: 100%;
 `;

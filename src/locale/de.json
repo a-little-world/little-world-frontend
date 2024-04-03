@@ -146,6 +146,8 @@
   "settings.delete_account_modal_title": "Bist du sicher, dass du dein Konto dauerhaft löschen willst?",
   "settings.delete_account_modal_cancel": "Abbrechen",
 
+  "call.leave_btn": "Gespräch beenden",
+
   "chat.not_selected": "Öffne einen bestimmten Chat, indem du ihn in der linken Seitenleiste anklickst",
   "chat.no_messages": "Du hast noch keine Nachrichten. Sende jetzt eine Nachricht!",
   "chat.no_messages_preview": "Keine Nachrichten geteilt.",
