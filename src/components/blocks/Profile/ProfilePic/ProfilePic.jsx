@@ -250,12 +250,12 @@ const ProfilePic = ({ control, setValue }) => {
                     backgroundColor={theme.color.surface.primary}
                     borderColor={theme.color.border.contrast}
                     variation={ButtonVariations.Circle}
-                    size={ButtonSizes.Small}
+                    size={ButtonSizes.Medium}
                     disabled={avatarIndex === 0}
                     onClick={onPrevAvatar}
                     type="button"
                   >
-                    <ChevronLeftIcon />
+                    <ChevronLeftIcon width={6} height={10} />
                   </Button>
                   <div>
                     <Avatar
@@ -271,10 +271,10 @@ const ProfilePic = ({ control, setValue }) => {
                     borderColor={theme.color.border.contrast}
                     variation={ButtonVariations.Circle}
                     onClick={onNextAvatar}
-                    size={ButtonSizes.Small}
+                    size={ButtonSizes.Medium}
                     type="button"
                   >
-                    <ChevronRightIcon />
+                    <ChevronRightIcon width={6} height={10} />
                   </Button>
                 </AvatarSelection>
                 <Label

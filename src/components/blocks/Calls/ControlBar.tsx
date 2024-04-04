@@ -7,6 +7,7 @@ import {
   CloseIcon,
   FullScreenExitIcon,
   FullScreenIcon,
+  Gradients,
   MessageIcon,
   MessageWithQuestionIcon,
   Text,
@@ -53,6 +54,7 @@ const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
   padding: ${({ theme }) => theme.spacing.small};
   gap: ${({ theme }) => theme.spacing.xxsmall};
   overflow: scroll;
+  z-index: 10;
 
   ${({ $position, theme }) => {
     if ($position === 'top')
@@ -70,14 +72,19 @@ const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
 `;
 
 const TOGGLE_CSS = css`
-  background: ${({ theme }) => theme.color.surface.contrast || 'black'};
+  background: ${({ theme }) => theme.color.surface.contrast};
   color: ${({ theme }) => theme.color.text.control};
+  border-color: ${({ theme }) => theme.color.border.contrast};
   border-radius: 50%;
   transition: filter 0.5s ease;
 
   &:hover {
     filter: brightness(80%);
     transition: filter 0.5s ease;
+  }
+
+  svg {
+    overflow: visible;
   }
 `;
 
@@ -87,16 +94,20 @@ const Toggle = styled(TrackToggle)`
   height: 44px;
 `;
 
-const ToggleBtn = styled(Button)<{ $active: boolean; $desktopOnly?: boolean }>`
+const ToggleBtn = styled(Button)<{ $desktopOnly?: boolean }>`
   ${TOGGLE_CSS};
 
-  ${({ $active, $desktopOnly, theme }) => css`
+  ${({ $desktopOnly, theme }) => css`
     display: ${$desktopOnly ? 'none' : 'flex'};
     @media (min-width: ${theme.breakpoints.large}) {
       display: flex;
     }
-    ${$active && `color: red`}
   `}
+
+  svg {
+    height: 24px;
+    width: 24px;
+  }
 `;
 
 const DisconnectBtn = styled(Button)`
@@ -133,28 +144,33 @@ export const TopControlBar = ({
   const { t } = useTranslation();
   return (
     <Bar $position="top">
-      <ToggleBtn
-        $active={activeOption === 'chat'}
-        onClick={onChatToggle}
-        variation={ButtonVariations.Circle}
-      >
-        <MessageIcon label={t('call.chat_label')} labelId="chat_toggle" />
+      <ToggleBtn onClick={onChatToggle} variation={ButtonVariations.Circle}>
+        <MessageIcon
+          label={t('call.chat_label')}
+          labelId="chat_toggle"
+          gradient={activeOption === 'chat' ? Gradients.Orange : undefined}
+        />
       </ToggleBtn>
       <ToggleBtn
-        $active={activeOption === 'translator'}
         onClick={onTranslatorToggle}
         variation={ButtonVariations.Circle}
       >
-        <TranslatorIcon label={t('call.chat_label')} labelId="chat_toggle" />
+        <TranslatorIcon
+          label={t('call.chat_label')}
+          labelId="chat_toggle"
+          gradient={
+            activeOption === 'translator' ? Gradients.Orange : undefined
+          }
+        />
       </ToggleBtn>
       <ToggleBtn
-        $active={activeOption === 'questions'}
         onClick={onQuestionCardsToggle}
         variation={ButtonVariations.Circle}
       >
         <MessageWithQuestionIcon
           label="question cards"
           labelId="questionCards"
+          gradient={activeOption === 'questions' ? Gradients.Orange : undefined}
         />
       </ToggleBtn>
     </Bar>
@@ -176,6 +192,7 @@ function ControlBar({
         <Toggle source={Track.Source.Microphone} showIcon />
         <Toggle source={Track.Source.Camera} showIcon />
         <ToggleBtn
+          $desktopOnly
           onClick={onFullScreenToggle}
           variation={ButtonVariations.Circle}
         >

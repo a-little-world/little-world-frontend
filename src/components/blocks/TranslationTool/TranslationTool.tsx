@@ -40,7 +40,7 @@ const languages = [
   'de',
 ];
 
-function TranslationTool() {
+function TranslationTool({ className }: { className?: string }) {
   const { t } = useTranslation();
   const [fromLang, setFromLang] = useState('en');
   const [toLang, setToLang] = useState('de');
@@ -97,7 +97,7 @@ function TranslationTool() {
   };
 
   return (
-    <ToolContainer>
+    <ToolContainer className={className}>
       <OriginalLanguage>
         <Dropdown
           maxWidth="100%"

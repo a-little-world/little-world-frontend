@@ -49,11 +49,17 @@ const Spacer = styled.div`
   flex-shrink: 0;
 `;
 
+const specialPaths = ['chat'];
+
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
   const location = useLocation();
   const { userPk } = location.state || {};
-  const key = location.pathname.split('/')[2] || (userPk ? 'user' : 'home');
+  const paths = location.pathname.split('/');
+  // routes use different parts of the path to determine the header
+  const key =
+    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) ||
+    (userPk ? 'user' : 'home');
 
   const isHome = key === 'home';
 

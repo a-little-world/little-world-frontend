@@ -99,7 +99,7 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
         <Button
           variation={ButtonVariations.Circle}
           onClick={callPartner}
-          size={ButtonSizes.Medium}
+          size={ButtonSizes.Large}
           backgroundColor={theme.color.gradient.orange10}
         >
           <VideoIcon color={theme.color.surface.secondary} />
@@ -267,6 +267,8 @@ export const Chat = ({ chatId }) => {
             label={t('chat.send_btn')}
             labelId={'send_icon'}
             color={theme.color.text.reversed}
+            width="20"
+            height="20"
           />
         </SendButton>
       </WriteSection>

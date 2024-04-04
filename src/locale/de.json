@@ -147,6 +147,7 @@
   "settings.delete_account_modal_cancel": "Abbrechen",
 
   "call.leave_btn": "Gespräch beenden",
+  "call.waiting_for_partner": "Warten auf {{name}}...",
 
   "chat.not_selected": "Öffne einen bestimmten Chat, indem du ihn in der linken Seitenleiste anklickst",
   "chat.no_messages": "Du hast noch keine Nachrichten. Sende jetzt eine Nachricht!",

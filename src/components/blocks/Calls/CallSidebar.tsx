@@ -10,7 +10,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import '../../../App.css';
 import '../../../call.css';
@@ -188,6 +188,19 @@ const SidebarSelector = styled.div`
   display: flex;
   justify-content: center;
   gap: ${({ theme }) => `${theme.spacing.xxxsmall}`};
+`;
+
+const SidebarWrapper = styled.aside`
+  width: 25%;
+  display: none;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      display: flex;
+    }
+  `}
 `;
 
 const SidebarSelectionContext = createContext();
@@ -493,7 +506,7 @@ function CallSidebar() {
   const disabled = ['notes'];
 
   return (
-    <div className="call-sidebar">
+    <SidebarWrapper className="call-sidebar">
       <SidebarSelector className="sidebar-selector">
         {sidebarTopics.map(topic => (
           <StyledOption
@@ -515,7 +528,7 @@ function CallSidebar() {
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </div>
-    </div>
+    </SidebarWrapper>
   );
 }
 

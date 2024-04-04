@@ -204,8 +204,7 @@ export const BackButton = styled(Button)<{ $show: boolean }>`
 `;
 
 export const SendButton = styled(Button)`
-  height: 36px;
-  min-width: unset;
+  flex-shrink: 0;
 `;
 
 export const ChatContainer = styled.div`

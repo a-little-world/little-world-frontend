@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonSizes,
   ButtonVariations,
   Card,
   ChevronLeftIcon,
@@ -155,6 +156,7 @@ function QuestionCards() {
     <SidebarCard>
       <QuestionCategories>
         <CategoryControl
+          size={ButtonSizes.Medium}
           variation={ButtonVariations.Circle}
           onClick={() => changeScroll('left')}
         >
@@ -179,6 +181,7 @@ function QuestionCards() {
           ))}
         </Categories>
         <CategoryControl
+          size={ButtonSizes.Medium}
           variation={ButtonVariations.Circle}
           onClick={() => changeScroll('right')}
         >

@@ -5,6 +5,7 @@ export const ToolContainer = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   align-items: flex-start;
+  width: 100%;
 `;
 
 export const SwapBtn = styled(Button)`
