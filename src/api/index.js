@@ -22,9 +22,9 @@ export const completeForm = async () => {
       'X-UseTagsOnly': 'true',
     },
   });
-  
+
   const updatedUser = await res?.json();
-  return updatedUser; 
+  return updatedUser;
 }
 
 export const mutateUserData = async (formData, onSuccess, onFailure) => {
@@ -217,6 +217,7 @@ export const signUp = async ({
   firstName,
   lastName,
   mailingList,
+  company = null
 }) => {
   const response = await fetch(`${BACKEND_URL}/api/register/`, {
     headers: {
@@ -234,6 +235,7 @@ export const signUp = async ({
       second_name: lastName,
       birth_year: birthYear,
       newsletter_subscribed: mailingList,
+      company: company
     }),
   });
 

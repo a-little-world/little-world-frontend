@@ -9,6 +9,7 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +22,7 @@ import { onFormError, registerInput } from '../../helpers/form';
 import {
   LOGIN_ROUTE,
   VERIFY_EMAIL_ROUTE,
+  SIGN_UP_ROUTE,
   getAppRoute,
   passAuthenticationBoundary,
 } from '../../routes';
@@ -33,12 +35,27 @@ import {
   StyledForm,
   Title,
 } from './SignUp.styles';
+import { useSearchParams } from "react-router-dom";
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+
+  // User can sign-up with a ?company='name' query
+  // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [company, setCompany] = useState(Cookies.get('lw-company', null));
+
+  useEffect(() => {
+    if (searchParams.has('company')) {
+      Cookies.set('lw-company', searchParams.get('company'));
+      setCompany(searchParams.get('company'));
+      // Once the query param is stored in the cookie, we can remove it from the URL
+      setSearchParams(new URLSearchParams());
+    }
+  }, [searchParams]);
 
   const {
     control,
@@ -82,6 +99,26 @@ const SignUp = () => {
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <NameContainer>
+          {company && <>
+            <Label bold htmlFor="company" toolTipText={t('sign_up.company_tooltip')}>
+              {t('sign_up.company_tooltip')}: {company}
+            </Label>
+            <div style={{
+              display: 'none'
+            }}>
+              <TextInput
+                {...registerInput({
+                  register,
+                  name: 'company',
+                })}
+                defaultValue={company}
+                style={{ display: 'none' }}
+                id="company"
+                error={t(errors?.company?.message)}
+                type="text"
+              />
+            </div>
+          </>}
           <Label bold htmlFor="name" toolTipText={t('sign_up.name_tooltip')}>
             {t('sign_up.name_label')}
           </Label>
