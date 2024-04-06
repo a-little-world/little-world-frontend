@@ -101,7 +101,7 @@ const SignUp = () => {
         <NameContainer>
           {company && <>
             <Label bold htmlFor="company" toolTipText={t('sign_up.company_tooltip')}>
-              {t('sign_up.company_tooltip')}: {company}
+              {t('sign_up.company_name_label')}: {company}
             </Label>
             <div style={{
               display: 'none'
