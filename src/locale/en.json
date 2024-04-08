@@ -11,7 +11,6 @@
     "settings": "Settings",
     "picture": "Edit Image"
   },
-
   "btn_save": "Save",
   "btn_cancel": "Cancel",
   "pcs_main_heading": "Set up",
@@ -119,10 +118,8 @@
   "cp_cancel_search": "Cancel search",
   "cp_cancel_search_confirm": "Are you sure?",
   "cp_cancel_search_reject": "Don't cancel search",
-
   "community_events.show_more": "Show more",
   "community_events.show_less": "Show less",
-
   "settings.title": "Settings",
   "settings.edit_item": "Edit {{item}}",
   "settings.edit_button": "Edit",
@@ -148,7 +145,6 @@
   "settings.delete_account_confirm_button": "Delete Account",
   "settings.delete_account_modal_title": "Are you sure you want to permanently delete your account?",
   "settings.delete_account_modal_cancel": "Cancel",
-
   "chat.not_selected": "Open a specific chat by clicking on it in the left-hand side panel",
   "chat.no_messages": "You have no messages yet. Send a message now!",
   "chat.no_messages_preview": "No messages shared.",
@@ -179,7 +175,6 @@
   "chat_request_accept": "Accept",
   "chat_request_more_info": "More info",
   "chat_send": "Send",
-
   "profile.self_profile_title": "My Profile",
   "profile.match_profile_title": "{{userName}}'s Profile",
   "profile.description_title": "About",
@@ -195,7 +190,6 @@
   "profile.editor_title_image": "Your Image",
   "profile.save_btn": "Save",
   "profile.cancel_btn": "Cancel",
-
   "weekdays": [
     "Sunday",
     "Monday",
@@ -387,11 +381,9 @@
     }
   },
   "question_category_archived": "Archived",
-
   "error.required": "Required",
   "error.password_min_length": "Password too short",
   "error.passwords_do_not_match": "Passwords do not match",
-
   "form.btn_next": "Next",
   "form.btn_back": "Back",
   "form.btn_complete": "Complete Form",
@@ -455,13 +447,11 @@
   "availability.column6": "Friday",
   "availability.column7": "Saturday",
   "availability.column8": "Sunday",
-
   "user_form_notifications.title": "Last step...",
   "user_form_notifications.description": "As soon as we have found a match for you, we will notify you. I would like...",
   "user_form_notifications.phone_number_label": "Your telephone number",
   "user_form_notifications.phone_number_tooltip": "Your phone number will only be visible to the Little World team. Your number will never be passed on to third parties and you will not receive any promotional calls.",
   "user_form_notifications.info": "Your phone number is stored securely and never shared.",
-
   "conditions.title": "For a respectful interaction",
   "conditions.info_text": "When using Little World, there are some important principles to follow to protect both yourself and the people you are interacting with.",
   "conditions.heading": "Please read these principles carefully before you start!",
@@ -495,7 +485,6 @@
   "profile_pic.avatar_glasses": "Glasses",
   "profile_pic.avatar_hat_style": "Hat",
   "profile_pic.avatar_hat_color": "Hat color",
-
   "validation.phone_number_not_numeric": "Your phone number contains unallowed characters.",
   "validation.phone_number_too_short": "Your phone number seems to be too short.",
   "validation.phone_number_empty": "Wenn du per sms oder Telefon benachrichtig werden willst gib bitte deine Handy nummer an.",
@@ -517,24 +506,22 @@
   "validation.image_upload_required": "File upload failed, have you selected a file under 0.5MB? If you can't upload a file please use an avatar instead.",
   "validation.generic_try_again": "There was a server issue. Please try again.",
   "validation.required": "*required",
-
   "notifications.title": "Notifications",
   "notifications.filter_all": "All",
   "notifications.filter_unread": "Unread",
   "notifications.archived": "Archived",
-
   "error_view.title": "Uh oh, this page doesn't exist",
   "error_view.button": "Back to the start",
-
   "welcome.title": "Hey!",
   "welcome.intro": "Nice to have you here!",
   "welcome.description": "Let's start with a few short questions to find the best possible match for you and take your needs into account.",
   "welcome.note": "You can change the information given at any time.",
   "welcome.button": "Start Now",
-
   "sign_up.title": "Create account",
   "sign_up.name_label": "Your name",
   "sign_up.name_tooltip": "Enter your first and last name here",
+  "sign_up.company_tooltip": "If you are using Little World on behalf of your company, please enter the name of your company.",
+  "sign_up.company_name_label": "Company name",
   "sign_up.first_name_placeholder": "First name",
   "sign_up.second_name_placeholder": "Last name",
   "sign_up.email_label": "Email",
@@ -550,7 +537,6 @@
   "sign_up.privacy_policy": "Please take note of our <a {\"href\": \"https://home.little-world.com/en/datenschutz/\"}>privacy policy</a>",
   "sign_up.submit_btn": "Create Account",
   "sign_up.change_location_cta": "Sign In",
-
   "login.title": "Sign In",
   "login.email_label": "Email",
   "login.email_placeholder": "example@gmail.com",
@@ -560,7 +546,6 @@
   "login.forgot_password": "Forgot password?",
   "login.or": "Or",
   "login.change_location_cta": "Create New Account",
-
   "forgot_password.title": "Forgotten Password?",
   "forgot_password.description": "No need to worry! Just enter the email address you registered with. We will then send an email in order to set a new password.",
   "forgot_password.email_label": "Registered Email",
@@ -568,7 +553,6 @@
   "forgot_password.cancel_btn": "Cancel",
   "forgot_password.submit_btn": "Reset Password",
   "forgot_password.success_message": "Request successful. Check your email to reset your password.",
-
   "reset_password.title": "Reset Password?",
   "reset_password.description": "Please enter your new password below and then hit confirm. ",
   "reset_password.password_label": "New Password",
@@ -577,7 +561,6 @@
   "reset_password.to_login": "To Login",
   "reset_password.submit_btn": "Reset Password",
   "reset_password.success_message": "Password successfully reset. You can now login in with your new password.",
-
   "verify_email.title": "Verify your email",
   "verify_email.description": "To confirm your account, please enter the 5-digit code we sent to {{ email }}. If you did not receive an email, please check your spam folder.",
   "verify_email.input_label": "Code",
@@ -587,7 +570,6 @@
   "verify_email.change_email_btn": "Change Email",
   "verify_email.resend_code": "Resend code?",
   "verify_email.success_message": "Verification code resent.",
-
   "change_email.title": "Change your email",
   "change_email.description": "Please provide your new email address. We will then send you a 5-digit code to verify your new email address.",
   "change_email.input_label": "Email",
