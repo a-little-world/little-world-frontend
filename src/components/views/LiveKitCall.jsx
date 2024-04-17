@@ -188,9 +188,9 @@ function MyVideoConference() {
   const tracks = useTracks(
     [
       { source: Track.Source.Camera, withPlaceholder: true },
-      { source: Track.Source.ScreenShare, withPlaceholder: false },
+      //{ source: Track.Source.ScreenShare, withPlaceholder: false },
     ],
-    { onlySubscribed: false },
+    { onlySubscribed: true },
   );
   const [permission, setPermission] = useState(false);
 
@@ -200,10 +200,7 @@ function MyVideoConference() {
   console.log({ tracks });
   return (
     <GridLayout tracks={tracks}>
-      {/* The GridLayout accepts zero or one child. The child is used
-      as a template to render all passed in tracks. */}
-      <ParticipantTile trackRef={tracks[0]} />
-      {/* <VideoTrack trackRef={tracks[0]} /> */}
+      <ParticipantTile />
     </GridLayout>
   );
 }
