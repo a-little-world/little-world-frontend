@@ -26,6 +26,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { getMatchByPartnerId } from '../../features/userData.js';
+import { requestVideoAccessToken } from '../../api/livekit.js';
 import { getAppRoute } from '../../routes';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage.jsx';
@@ -36,12 +37,6 @@ import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar.tsx';
 import { Chat } from '../blocks/ChatCore/Chat.jsx';
 import QuestionCards from '../blocks/QuestionCards.jsx';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
-
-const serverUrl = 'wss://little-world-6fxox5nm.livekit.cloud';
-const api_key = 'APIo7MLm3fJDRX5';
-const secret_key = 'PT7WGIlSzg2fpiS4pDXQA4j7a1VKWbjriJMcTLfme4JB';
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjUzNzA2OTM4MDgsImlzcyI6IkFQSW83TUxtM2ZKRFJYNSIsIm5iZiI6MTcxMTAyNjUyOSwic3ViIjoiVGltIiwidmlkZW8iOnsiY2FuUHVibGlzaCI6dHJ1ZSwiY2FuUHVibGlzaERhdGEiOnRydWUsImNhblN1YnNjcmliZSI6dHJ1ZSwicm9vbSI6InppbW1lciIsInJvb21Kb2luIjp0cnVlfX0.lS-VycsQDW2wLyLv0aI3gPXt-1g4wtUspIwAyPBQRkQ';
 
 const CallLayout = styled.div`
   --lk-border-radius: 0;
@@ -176,6 +171,7 @@ const DesktopTranslationTool = styled(TranslationTool)`
 
 export function LiveKitCall() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
@@ -186,6 +182,10 @@ export function LiveKitCall() {
   const match = useSelector(state =>
     getMatchByPartnerId(state.userData.matches, userPk),
   );
+
+  const { userPk, tracks, token, livekitServerUrl } = location.state;
+
+  console.log({ userPk, tracks, token, livekitServerUrl })
 
   const onChatToggle = () => {
     setShowChat(prevState => !prevState);
@@ -216,12 +216,12 @@ export function LiveKitCall() {
     <SidebarSelectionProvider>
       <LayoutContextProvider>
         <CallLayout>
-          <VideoContainer $isFullScreen={isFullScreen} $showChat={showChat}>
+          <VideoContainer $is FullScreen={isFullScreen} $showChat={showChat}>
             <LiveKitRoom
               video={true}
               audio={true}
               token={token}
-              serverUrl={serverUrl}
+              serverUrl={livekitServerUrl}
               onConnected={() => setConnected(true)}
               onDisconnected={() => navigate(getAppRoute())}
             >
@@ -268,7 +268,7 @@ export function LiveKitCall() {
           >
             <QuestionCards />
           </Drawer>
-          {showChat && <CallSidebar />}
+          <CallSidebar />
         </CallLayout>
       </LayoutContextProvider>
     </SidebarSelectionProvider>
@@ -281,9 +281,9 @@ function MyVideoConference({ partnerImage, partnerImageType, partnerName }) {
   const tracks = useTracks(
     [
       { source: Track.Source.Camera, withPlaceholder: true },
-      { source: Track.Source.ScreenShare, withPlaceholder: false },
+      //{ source: Track.Source.ScreenShare, withPlaceholder: false },
     ],
-    { onlySubscribed: false },
+    { onlySubscribed: true },
   );
   const { t } = useTranslation();
 
