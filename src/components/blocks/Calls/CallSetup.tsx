@@ -97,7 +97,6 @@ const CallSetupCard = styled(ModalCard)`
 
 function CallSetup({ userPk, removeCallSetupPartner }) {
   const { t } = useTranslation();
-  const [token, setToken] = useState(null);
   const [authData, setAuthData] = useState({
     token: null,
     livekitServerUrl: null,
@@ -105,14 +104,15 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
   const quality = 'good';
   const qualityText = t(`pcs_signal_${quality}`);
   const updateText = t('pcs_signal_update');
+  const signalInfo = { quality, qualityText, updateText };
+
   const username = useSelector(
     state => state?.userData?.user?.profile?.first_name,
   );
-  const signalInfo = { quality, qualityText, updateText };
   const mediaStream = useRef();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  console.log({ username });
+
   const handleJoin = values => {
     console.log({ values });
     clearActiveTracks();
@@ -147,6 +147,8 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
       });
   }, []);
 
+  const handleValidate = () => !!authData.token;
+
   return (
     <CallSetupCard>
       <CloseButton
@@ -180,15 +182,10 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
       <PreJoin
         onSubmit={handleJoin}
         joinLabel={t('pcs_btn_join_call')}
+        onValidate={handleValidate}
         defaults={{ username }}
         persistUserChoices={false}
       />
-      {/** TODO: remove, instead join button should be disabled untill a room join token is fetched */}
-      {authData.token ? (
-        <span>Token loaded you can proceed</span>
-      ) : (
-        <span>Fetching auth token</span>
-      )}
     </CallSetupCard>
   );
 }

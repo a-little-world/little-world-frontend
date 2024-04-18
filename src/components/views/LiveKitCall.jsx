@@ -25,8 +25,8 @@ import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { getMatchByPartnerId } from '../../features/userData.js';
 import { requestVideoAccessToken } from '../../api/livekit.js';
+import { getMatchByPartnerId } from '../../features/userData.js';
 import { getAppRoute } from '../../routes';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage.jsx';
@@ -177,15 +177,13 @@ export function LiveKitCall() {
   const [showTranslator, setShowTranslator] = useState(true);
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
   const [connected, setConnected] = useState(false);
-  const location = useLocation();
-  const { userPk } = location.state || {};
+
+  const { userPk, tracks, token, livekitServerUrl } = location.state;
   const match = useSelector(state =>
     getMatchByPartnerId(state.userData.matches, userPk),
   );
 
-  const { userPk, tracks, token, livekitServerUrl } = location.state;
-
-  console.log({ userPk, tracks, token, livekitServerUrl })
+  console.log({ userPk, tracks, token, livekitServerUrl, match });
 
   const onChatToggle = () => {
     setShowChat(prevState => !prevState);
@@ -216,7 +214,7 @@ export function LiveKitCall() {
     <SidebarSelectionProvider>
       <LayoutContextProvider>
         <CallLayout>
-          <VideoContainer $is FullScreen={isFullScreen} $showChat={showChat}>
+          <VideoContainer $isFullScreen={isFullScreen} $showChat={showChat}>
             <LiveKitRoom
               video={true}
               audio={true}
@@ -279,10 +277,7 @@ function MyVideoConference({ partnerImage, partnerImageType, partnerName }) {
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
   const tracks = useTracks(
-    [
-      { source: Track.Source.Camera, withPlaceholder: true },
-      //{ source: Track.Source.ScreenShare, withPlaceholder: false },
-    ],
+    [{ source: Track.Source.Camera, withPlaceholder: true }],
     { onlySubscribed: true },
   );
   const { t } = useTranslation();
@@ -297,15 +292,17 @@ function MyVideoConference({ partnerImage, partnerImageType, partnerName }) {
         <ParticipantTile />
       </StyledGridLayout>
 
-      <WaitingTile>
-        <ProfileImage
-          circle
-          image={partnerImage}
-          imageType={partnerImageType}
-          size={'medium'}
-        />
-        <Text>{t('call.waiting_for_partner', { name: partnerName })}</Text>
-      </WaitingTile>
+      {tracks.length === 1 && (
+        <WaitingTile>
+          <ProfileImage
+            circle
+            image={partnerImage}
+            imageType={partnerImageType}
+            size={'medium'}
+          />
+          <Text>{t('call.waiting_for_partner', { name: partnerName })}</Text>
+        </WaitingTile>
+      )}
     </Videos>
 
     // <FocusLayoutContainer>
