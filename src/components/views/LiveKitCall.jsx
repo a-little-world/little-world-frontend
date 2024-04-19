@@ -117,7 +117,7 @@ const VideoContainer = styled.div`
 
 const StyledGridLayout = styled(GridLayout)`
   --lk-row-count: 1 !important;
-  [data-lk-local-participant='true'][data-lk-facing-mode='user'] {
+  .lk-participant-tile[data-lk-local-participant='true'] {
     position: absolute !important;
     top: 72px;
     right: 16px;
@@ -131,6 +131,31 @@ const StyledGridLayout = styled(GridLayout)`
         width: 20%;
       }
     `}
+  }
+
+  .lk-participant-tile[data-lk-video-muted='true'] {
+    background: ${({ theme }) => theme.color.surface.contrast};
+    svg {
+      max-height: 320px;
+    }
+  }
+
+  .lk-participant-tile[data-lk-video-muted='true'][data-lk-local-participant='true'] {
+    aspect-ratio: 16 / 9;
+  }
+
+  .lk-participant-metadata-item {
+    background: transparent;
+    color: ${({ theme }) => theme.color.text.tertiary};
+    opacity: 1;
+  }
+
+  .lk-participant-tile[data-lk-local-participant='false']
+    .lk-participant-metadata {
+    justify-content: flex-start;
+    top: ${({ theme }) => theme.spacing.small};
+    right: ${({ theme }) => theme.spacing.small};
+    bottom: unset;
   }
 `;
 
@@ -178,12 +203,12 @@ export function LiveKitCall() {
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
   const [connected, setConnected] = useState(false);
 
-  const { userPk, tracks, token, livekitServerUrl } = location.state;
+  const { userPk, token, livekitServerUrl } = location.state;
   const match = useSelector(state =>
     getMatchByPartnerId(state.userData.matches, userPk),
   );
 
-  console.log({ userPk, tracks, token, livekitServerUrl, match });
+  console.log({ userPk, match });
 
   const onChatToggle = () => {
     setShowChat(prevState => !prevState);
@@ -208,7 +233,6 @@ export function LiveKitCall() {
   const onMobileQuestionsToggle = () => {
     setSelectedDrawerOption('questions');
   };
-  console.log({ selectedDrawerOption, connected });
 
   return (
     <SidebarSelectionProvider>
@@ -225,8 +249,12 @@ export function LiveKitCall() {
             >
               <MyVideoConference
                 partnerName={match?.partner?.first_name}
-                partnerImage={match?.partner?.image}
-                partnerImageType={match?.partner?.imageType}
+                partnerImage={
+                  match?.partner?.image_type === 'avatar'
+                    ? match?.partner.avatar_config
+                    : match?.partner?.image
+                }
+                partnerImageType={match?.partner?.image_type}
               />
               {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
               <RoomAudioRenderer />
@@ -282,10 +310,8 @@ function MyVideoConference({ partnerImage, partnerImageType, partnerName }) {
   );
   const { t } = useTranslation();
 
-  console.log({ tracks });
-
   if (isEmpty(tracks)) return null;
-
+  console.log({ partnerImage, partnerImageType });
   return (
     <Videos>
       <StyledGridLayout tracks={tracks}>

@@ -133,7 +133,12 @@ export const userDataSlice = createSlice({
       state.messages = { ...state.messages, [chatId]: items };
     },
     addMessage: (state, action) => {
-      const { message, chatId, senderIsSelf = false, metaChatObj = null } = action.payload;
+      const {
+        message,
+        chatId,
+        senderIsSelf = false,
+        metaChatObj = null,
+      } = action.payload;
       const chatIsLoaded = chatId in state.messages;
       if (chatIsLoaded) {
         const newMessages = state.messages[chatId]?.results
@@ -142,21 +147,28 @@ export const userDataSlice = createSlice({
         state.messages[chatId].results = newMessages;
       } else {
         if (!metaChatObj)
-          throw new Error('No meta data for chat but chatId is not present in state.messages! The server should have deliverd the meta data for the chat.')
+          throw new Error(
+            'No meta data for chat but chatId is not present in state.messages! The server should have deliverd the meta data for the chat.',
+          );
         // this chat has never been loaded we can ignore inserting the actual messages, we only care about inserting the chat as messages will fetch one the chat is clicked!
       }
-      state.chats.results = chatIsLoaded ? state.chats.results?.map(chat => {
-        if (chat.uuid === chatId) {
-          return {
-            ...chat,
-            unread_count: senderIsSelf
-              ? chat.unread_count
-              : chat.unread_count + 1,
-            newest_message: message,
-          };
-        }
-        return chat;
-      }) : [metaChatObj, ...state.chats.results.filter(chat => chat.uuid !== chatId)];
+      state.chats.results = chatIsLoaded
+        ? state.chats.results?.map(chat => {
+            if (chat.uuid === chatId) {
+              return {
+                ...chat,
+                unread_count: senderIsSelf
+                  ? chat.unread_count
+                  : chat.unread_count + 1,
+                newest_message: message,
+              };
+            }
+            return chat;
+          })
+        : [
+            metaChatObj,
+            ...state.chats.results.filter(chat => chat.uuid !== chatId),
+          ];
       state.chats = {
         ...state.chats,
         results: sortChats(state.chats.results),
@@ -278,7 +290,7 @@ export const selectMatchByPartnerId = (matches, partnerId) => {
 
 export const getMatchByPartnerId = (matches, partnerId) => {
   const allMatches = [...matches.support.items, ...matches.confirmed.items];
-
+  console.log({ partnerId, allMatches });
   const partner = allMatches.find(match => match?.partner?.id === partnerId);
   return partner;
 };
@@ -306,17 +318,17 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-    async dispatch => {
-      const result = await questionsDuringCall.archieveQuestion(
-        card?.uuid,
-        archive,
-      );
-      dispatch(
-        switchQuestionCategory({
-          card,
-          archived: archive,
-        }),
-      );
-    };
+  async dispatch => {
+    const result = await questionsDuringCall.archieveQuestion(
+      card?.uuid,
+      archive,
+    );
+    dispatch(
+      switchQuestionCategory({
+        card,
+        archived: archive,
+      }),
+    );
+  };
 
 export default userDataSlice.reducer;

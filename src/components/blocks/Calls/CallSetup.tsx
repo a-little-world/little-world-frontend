@@ -1,14 +1,12 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import {
   Button,
-  ButtonAppearance,
-  ButtonSizes,
   ButtonVariations,
   CloseIcon,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { PreJoin } from '@livekit/components-react';
+import { LocalUserChoices, PreJoin } from '@livekit/components-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,18 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { requestVideoAccessToken } from '../../../api/livekit';
-import {
-  cancelCallSetup,
-  initActiveCall,
-  selectMatchByPartnerId,
-} from '../../../features/userData';
-import signalWifi from '../../../images/signal-wifi.svg';
-import { CALL_ROUTE, getAppRoute } from '../../../routes';
-import {
-  getAudioTrack,
-  getVideoTrack,
-  toggleLocalTracks,
-} from '../../../twilio-helper';
+import { cancelCallSetup, initActiveCall } from '../../../features/userData';
+import { getAppRoute } from '../../../routes';
 import ModalCard from '../Cards/ModalCard';
 
 if (!window.activeTracks) window.activeTracks = [];
@@ -92,6 +80,27 @@ const CallSetupCard = styled(ModalCard)`
           border-color 0.5s ease, color 0.5s ease, 0.4s;
       }
     }
+
+    .lk-device-menu {
+      background-color: ${({ theme }) => theme.color.surface.primary};
+      border-color: ${({ theme }) => theme.color.border.subtle};
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+      > ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+
+        > li {
+          border-radius: ${({ theme }) => theme.radius.xsmall};
+        }
+      }
+
+      li[data-lk-active='true'] {
+        background: ${({ theme }) => theme.color.surface.bold};
+        color: ${({ theme }) => theme.color.text.reversed};
+      }
+    }
   `}
 `;
 
@@ -101,6 +110,7 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
     token: null,
     livekitServerUrl: null,
   });
+
   const quality = 'good';
   const qualityText = t(`pcs_signal_${quality}`);
   const updateText = t('pcs_signal_update');
@@ -109,11 +119,11 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
   const username = useSelector(
     state => state?.userData?.user?.profile?.first_name,
   );
-  const mediaStream = useRef();
+  const mediaStream = useRef<MediaStream>();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleJoin = values => {
+  const handleJoin = (values: LocalUserChoices) => {
     console.log({ values });
     clearActiveTracks();
     dispatch(initActiveCall({ userPk, tracks: values }));
@@ -147,8 +157,12 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
       });
   }, []);
 
-  const handleValidate = () => !!authData.token;
-
+  const handleValidate = (values: LocalUserChoices) => {
+    console.log({ values });
+    return Boolean(
+      (values.audioDeviceId || values.videoDeviceId) && authData.token,
+    );
+  };
   return (
     <CallSetupCard>
       <CloseButton
