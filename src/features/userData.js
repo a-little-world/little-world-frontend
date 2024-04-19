@@ -6,7 +6,7 @@ import { questionsDuringCall } from '../services/questionsDuringCall';
 export const userDataSlice = createSlice({
   name: 'userData',
   initialState: {
-    incomingCalls: [],
+    activeCallRooms: []
   },
   reducers: {
     initialise: (state, action) => {
@@ -24,7 +24,7 @@ export const userDataSlice = createSlice({
       state.messages = {};
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
-      state.incomingCalls = action.payload?.incomingCalls || []; // [{ userId: user.hash }] or []
+      state.activeCallRooms = action.payload?.activeCallRooms || [];
       state.callSetup = action.payload?.callSetup || null; // { userId: user.hash } or null
       state.activeCall = action.payload?.activeCall || null; // { userId: user.hash, tracks: {} } or null
     },
@@ -53,10 +53,13 @@ export const userDataSlice = createSlice({
       state.user.isSearching = action.payload;
     },
     initCallSetup: (state, action) => {
+      const { userId } = action.payload;
       state.callSetup = action.payload;
-      state.incomingCalls = state.incomingCalls.filter(
-        call => call.userId !== action.payload?.userId,
+
+      state.activeCallRooms = state.activeCallRooms.filter(
+        room => (room.activeUsers.filter(user => user === userId).length === 0)
       );
+
     },
     cancelCallSetup: (state, action) => {
       state.callSetup = null;
@@ -73,8 +76,9 @@ export const userDataSlice = createSlice({
       state.matches[category].items.push(match);
     },
     addIncomingCall: (state, action) => {
-      const { userId } = action.payload;
-      state.incomingCalls.push({ userId });
+      state.activeCallRooms = [...state.activeCallRooms.filter(
+        room => room.uuid !== action.payload.uuid
+      ), action.payload]
     },
     removeMatch: (state, action) => {
       const { category, match } = action.payload;
@@ -118,8 +122,8 @@ export const userDataSlice = createSlice({
     },
     blockIncomingCall: (state, action) => {
       const { userId } = action.payload;
-      state.incomingCalls = state.incomingCalls.filter(
-        call => call.userId !== userId,
+      state.activeCallRooms = state.activeCallRooms.filter(
+        room => room.partner.id !== userId
       );
     },
     updateConfirmedData: (state, action) => {
