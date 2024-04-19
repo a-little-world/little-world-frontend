@@ -182,7 +182,7 @@ function Main() {
 
   const user = useSelector(state => state.userData.user);
   const matches = useSelector(state => state.userData.matches);
-  const incomingCalls = useSelector(state => state.userData.incomingCalls);
+  const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
   const callSetup = useSelector(state => state.userData.callSetup);
   const activeCall = useSelector(state => state.userData.activeCall);
 
@@ -240,11 +240,11 @@ function Main() {
   };
 
   const onAnswerCall = () => {
-    setCallSetupPartner(incomingCalls[0]?.userId);
+    setCallSetupPartner(activeCallRooms[0]?.partner?.id);
   };
 
   const onRejectCall = () => {
-    dispatch(blockIncomingCall({ userId: incomingCalls[0]?.userId }));
+    dispatch(blockIncomingCall({ userId: activeCallRooms[0]?.partner?.id }));
   };
 
   return (
@@ -309,12 +309,13 @@ function Main() {
         />
       </Modal>
       <Modal
-        open={incomingCalls[0]?.userId && !callSetup}
+        open={activeCallRooms[0]?.uuid && !callSetup}
         onClose={onRejectCall}
       >
         <IncomingCall
           matchesInfo={dashboardVisibleMatches}
-          userPk={incomingCalls[0]?.userId}
+          userPk={activeCallRooms[0]?.partner.id}
+          userProfile={activeCallRooms[0]?.partner}
           onAnswerCall={onAnswerCall}
           onRejectCall={onRejectCall}
         />
@@ -333,7 +334,7 @@ function Main() {
           matches?.unconfirmed?.items?.length
         }
         locked={false}
-        onClose={() => {}}
+        onClose={() => { }}
       >
         {(matches?.proposed?.items?.length ||
           matches?.unconfirmed?.items?.length) &&

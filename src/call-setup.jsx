@@ -386,11 +386,9 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
   );
 }
 
-function IncomingCall({ userPk, onAnswerCall, onRejectCall }) {
+function IncomingCall({ userPk, userProfile, onAnswerCall, onRejectCall }) {
   const { t } = useTranslation();
-  const matches = useSelector(state => state.userData.matches);
-  if (!userPk) return null;
-  const { partner: profile } = selectMatchByPartnerId(matches, userPk);
+  const profile = userProfile
 
   const usesAvatar = profile.image_type === 'avatar';
 

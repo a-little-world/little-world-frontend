@@ -94,7 +94,7 @@ const Toggle = styled(TrackToggle)`
   height: 44px;
 `;
 
-const ToggleBtn = styled(Button)<{ $desktopOnly?: boolean }>`
+const ToggleBtn = styled(Button) <{ $desktopOnly?: boolean }>`
   ${TOGGLE_CSS};
 
   ${({ $desktopOnly, theme }) => css`
@@ -119,7 +119,7 @@ const Section = styled.div`
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
-const StyledTimer = styled(Timer)<{ $desktopOnly?: boolean }>`
+const StyledTimer = styled(Timer) <{ $desktopOnly?: boolean }>`
   ${({ $desktopOnly, theme }) => css`
     display: ${$desktopOnly ? 'none' : 'flex'};
     @media (min-width: ${theme.breakpoints.large}) {
