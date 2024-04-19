@@ -334,7 +334,7 @@ function Main() {
           matches?.unconfirmed?.items?.length
         }
         locked={false}
-        onClose={() => { }}
+        onClose={() => {}}
       >
         {(matches?.proposed?.items?.length ||
           matches?.unconfirmed?.items?.length) &&

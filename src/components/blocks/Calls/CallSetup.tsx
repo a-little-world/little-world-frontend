@@ -10,7 +10,7 @@ import { LocalUserChoices, PreJoin } from '@livekit/components-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { requestVideoAccessToken } from '../../../api/livekit';
@@ -106,6 +106,7 @@ const CallSetupCard = styled(ModalCard)`
 
 function CallSetup({ userPk, removeCallSetupPartner }) {
   const { t } = useTranslation();
+  const location = useLocation();
   const [authData, setAuthData] = useState({
     token: null,
     livekitServerUrl: null,
@@ -124,7 +125,6 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
   const dispatch = useDispatch();
 
   const handleJoin = (values: LocalUserChoices) => {
-    console.log({ values });
     clearActiveTracks();
     dispatch(initActiveCall({ userPk, tracks: values }));
     dispatch(cancelCallSetup());
@@ -134,6 +134,7 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
         token: authData.token,
         tracks: values,
         livekitServerUrl: authData.livekitServerUrl,
+        origin: location.pathname,
       },
     });
   };

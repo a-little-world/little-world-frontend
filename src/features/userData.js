@@ -57,9 +57,8 @@ export const userDataSlice = createSlice({
       state.callSetup = action.payload;
 
       state.activeCallRooms = state.activeCallRooms.filter(
-        room => (room.activeUsers.filter(user => user === userId).length === 0)
+        room => room.activeUsers.filter(user => user === userId).length === 0,
       );
-
     },
     cancelCallSetup: (state, action) => {
       state.callSetup = null;
@@ -69,9 +68,12 @@ export const userDataSlice = createSlice({
       state.activeCall = { userId, tracks };
     },
     addActiveCallRoom: (state, action) => {
-      state.activeCallRooms = [...state.activeCallRooms.filter(
-        room => room.uuid !== action.payload.uuid
-      ), action.payload];
+      state.activeCallRooms = [
+        ...state.activeCallRooms.filter(
+          room => room.uuid !== action.payload.uuid,
+        ),
+        action.payload,
+      ];
     },
     stopActiveCall: (state, action) => {
       state.activeCall = null;
@@ -81,9 +83,12 @@ export const userDataSlice = createSlice({
       state.matches[category].items.push(match);
     },
     addIncomingCall: (state, action) => {
-      state.activeCallRooms = [...state.activeCallRooms.filter(
-        room => room.uuid !== action.payload.uuid
-      ), action.payload]
+      state.activeCallRooms = [
+        ...state.activeCallRooms.filter(
+          room => room.uuid !== action.payload.uuid,
+        ),
+        action.payload,
+      ];
     },
     removeMatch: (state, action) => {
       const { category, match } = action.payload;
@@ -128,7 +133,7 @@ export const userDataSlice = createSlice({
     blockIncomingCall: (state, action) => {
       const { userId } = action.payload;
       state.activeCallRooms = state.activeCallRooms.filter(
-        room => room.partner.id !== userId
+        room => room.partner.id !== userId,
       );
     },
     updateConfirmedData: (state, action) => {
@@ -299,8 +304,12 @@ export const selectMatchByPartnerId = (matches, partnerId) => {
 
 export const getMatchByPartnerId = (matches, partnerId) => {
   const allMatches = [...matches.support.items, ...matches.confirmed.items];
-  console.log({ partnerId, allMatches });
   const partner = allMatches.find(match => match?.partner?.id === partnerId);
+  return partner;
+};
+
+export const getChatByPartnerId = (chats, partnerId) => {
+  const partner = chats.results.find(chat => chat?.partner?.id === partnerId);
   return partner;
 };
 

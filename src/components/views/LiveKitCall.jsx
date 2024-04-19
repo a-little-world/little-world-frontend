@@ -1,19 +1,10 @@
-import { Button, Text } from '@a-little-world/little-world-design-system';
+import { Text } from '@a-little-world/little-world-design-system';
 import {
-  CarouselLayout,
-  Chat as ChatLiveKit,
-  ChatToggle,
-  ControlBarControls,
-  FocusLayout,
-  FocusLayoutContainer,
   GridLayout,
   LayoutContextProvider,
-  ControlBar as LiveKitControlBar,
   LiveKitRoom,
   ParticipantTile,
   RoomAudioRenderer,
-  VideoConference,
-  VideoTrack,
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
@@ -26,8 +17,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { requestVideoAccessToken } from '../../api/livekit.js';
-import { blockIncomingCall, getMatchByPartnerId } from '../../features/userData.js';
-import { getAppRoute } from '../../routes';
+import {
+  blockIncomingCall,
+  getChatByPartnerId,
+  getMatchByPartnerId,
+} from '../../features/userData.js';
+import { MESSAGES_ROUTE, getAppRoute } from '../../routes';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage.jsx';
 import CallSidebar, {
@@ -201,15 +196,14 @@ export function LiveKitCall() {
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
-  const [connected, setConnected] = useState(false);
   const dispatch = useDispatch();
 
-  const { userPk, token, livekitServerUrl } = location.state;
+  const { origin, userPk, token, livekitServerUrl } = location.state;
   const match = useSelector(state =>
-    getMatchByPartnerId(state.userData.matches, userPk),
+    origin === getAppRoute(MESSAGES_ROUTE)
+      ? getChatByPartnerId(state.userData.chats, userPk)
+      : getMatchByPartnerId(state.userData.matches, userPk),
   );
-
-  console.log({ userPk, match });
 
   const onChatToggle = () => {
     setShowChat(prevState => !prevState);
@@ -245,12 +239,13 @@ export function LiveKitCall() {
               audio={true}
               token={token}
               serverUrl={livekitServerUrl}
-              onConnected={() => setConnected(true)}
               onDisconnected={() => {
-                dispatch(blockIncomingCall({
-                  userId: userPk
-                }))
-                navigate(getAppRoute())
+                dispatch(
+                  blockIncomingCall({
+                    userId: userPk,
+                  }),
+                );
+                navigate(getAppRoute());
               }}
             >
               <MyVideoConference
@@ -262,7 +257,6 @@ export function LiveKitCall() {
                 }
                 partnerImageType={match?.partner?.image_type}
               />
-              {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
               <RoomAudioRenderer />
               <TopControlBar
                 activeOption={selectedDrawerOption}
@@ -291,7 +285,7 @@ export function LiveKitCall() {
             open={selectedDrawerOption === 'chat'}
             onClose={() => setSelectedDrawerOption(null)}
           >
-            <Chat chatId={match?.chatId} />
+            <Chat chatId={match?.chatId || match?.uuid} />
           </Drawer>
           <Drawer
             title={'Questions'}
@@ -317,7 +311,7 @@ function MyVideoConference({ partnerImage, partnerImageType, partnerName }) {
   const { t } = useTranslation();
 
   if (isEmpty(tracks)) return null;
-  console.log({ partnerImage, partnerImageType });
+
   return (
     <Videos>
       <StyledGridLayout tracks={tracks}>
@@ -336,15 +330,6 @@ function MyVideoConference({ partnerImage, partnerImageType, partnerName }) {
         </WaitingTile>
       )}
     </Videos>
-
-    // <FocusLayoutContainer>
-    //   <FocusLayout trackRef={tracks[0]}>
-    //     <ParticipantTile />
-    //   </FocusLayout>
-    //   <CarouselLayout tracks={[...tracks, ...tracks]}>
-    //     <ParticipantTile />
-    //   </CarouselLayout>
-    // </FocusLayoutContainer>
   );
 }
 
