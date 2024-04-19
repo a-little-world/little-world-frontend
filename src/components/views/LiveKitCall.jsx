@@ -21,12 +21,12 @@ import { Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { requestVideoAccessToken } from '../../api/livekit.js';
-import { getMatchByPartnerId } from '../../features/userData.js';
+import { blockIncomingCall, getMatchByPartnerId } from '../../features/userData.js';
 import { getAppRoute } from '../../routes';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage.jsx';
@@ -177,6 +177,7 @@ export function LiveKitCall() {
   const [showTranslator, setShowTranslator] = useState(true);
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
   const [connected, setConnected] = useState(false);
+  const dispatch = useDispatch();
 
   const { userPk, tracks, token, livekitServerUrl } = location.state;
   const match = useSelector(state =>
@@ -221,7 +222,12 @@ export function LiveKitCall() {
               token={token}
               serverUrl={livekitServerUrl}
               onConnected={() => setConnected(true)}
-              onDisconnected={() => navigate(getAppRoute())}
+              onDisconnected={() => {
+                dispatch(blockIncomingCall({
+                  userId: userPk
+                }))
+                navigate(getAppRoute())
+              }}
             >
               <MyVideoConference
                 partnerName={match?.partner?.first_name}
