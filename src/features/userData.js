@@ -68,6 +68,11 @@ export const userDataSlice = createSlice({
       const { userId, tracks } = action.payload;
       state.activeCall = { userId, tracks };
     },
+    addActiveCallRoom: (state, action) => {
+      state.activeCallRooms = [...state.activeCallRooms.filter(
+        room => room.uuid !== action.payload.uuid
+      ), action.payload];
+    },
     stopActiveCall: (state, action) => {
       state.activeCall = null;
     },
