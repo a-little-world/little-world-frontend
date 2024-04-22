@@ -145,8 +145,13 @@ const StyledGridLayout = styled(GridLayout)`
 
   .lk-participant-metadata-item {
     background: transparent;
-    color: ${({ theme }) => theme.color.text.tertiary};
+    color: ${({ theme }) => theme.color.text.reversed};
     opacity: 1;
+  }
+
+  .lk-participant-tile[data-lk-video-muted='true']
+    .lk-participant-metadata-item {
+    color: ${({ theme }) => theme.color.text.tertiary};
   }
 
   .lk-participant-tile[data-lk-local-participant='false']
