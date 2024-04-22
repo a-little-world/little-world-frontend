@@ -115,7 +115,7 @@ const StyledGridLayout = styled(GridLayout)`
   .lk-participant-tile[data-lk-local-participant='true'] {
     position: absolute !important;
     top: 72px;
-    right: 16px;
+    right: ${({ theme }) => theme.spacing.small};
     width: 30%;
     z-index: 1;
     border-radius: 16px;
@@ -133,6 +133,10 @@ const StyledGridLayout = styled(GridLayout)`
     svg {
       max-height: 320px;
     }
+
+    .lk-participant-placeholder {
+      background: ${({ theme }) => theme.color.surface.contrast};
+    }
   }
 
   .lk-participant-tile[data-lk-video-muted='true'][data-lk-local-participant='true'] {
@@ -148,9 +152,16 @@ const StyledGridLayout = styled(GridLayout)`
   .lk-participant-tile[data-lk-local-participant='false']
     .lk-participant-metadata {
     justify-content: flex-start;
-    top: ${({ theme }) => theme.spacing.small};
-    right: ${({ theme }) => theme.spacing.small};
+    top: 80px;
+    left: ${({ theme }) => theme.spacing.small};
+    right: 0;
     bottom: unset;
+
+    ${({ theme }) => css`
+      @media (min-width: ${theme.breakpoints.large}) {
+        top: ${({ theme }) => theme.spacing.small};
+      }
+    `}
   }
 `;
 
@@ -206,6 +217,7 @@ export function LiveKitCall() {
     audioOptions,
     videoOptions,
   } = location.state;
+
   const match = useSelector(state =>
     origin === getAppRoute(MESSAGES_ROUTE)
       ? getChatByPartnerId(state.userData.chats, userPk)

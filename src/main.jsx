@@ -1,5 +1,5 @@
 import { Modal } from '@a-little-world/little-world-design-system';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -30,7 +30,7 @@ import {
   removeMatch,
   updateConfirmedData,
 } from './features/userData';
-import { removeActiveTracks } from './helpers/video.js';
+import { removeActiveTracks } from './helpers/video.ts';
 import './i18n';
 import './main.css';
 import { APP_ROUTE } from './routes';

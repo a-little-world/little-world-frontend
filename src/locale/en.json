@@ -4,6 +4,7 @@
   "headers": {
     "home": "Little World",
     "user": "User profile",
+    "call": "Call",
     "chat": "Messages",
     "notifications": "Notifications",
     "profile": "My profile",
