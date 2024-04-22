@@ -8,7 +8,6 @@ import {
 import { ThemeProvider } from 'styled-components';
 
 import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
-import ActiveCall from './call';
 import RouterError from './components/blocks/ErrorView/ErrorView';
 import Form from './components/blocks/Form/Form';
 import AppLayout from './components/blocks/Layout/AppLayout';
@@ -150,10 +149,6 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(CALL_ROUTE),
-    element: <ActiveCall />,
-  },
-  {
-    path: getAppRoute('live-kit'),
     element: <LiveKitCall />,
   },
   {

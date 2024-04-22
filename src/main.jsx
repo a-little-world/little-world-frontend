@@ -6,9 +6,9 @@ import styled, { css } from 'styled-components';
 
 import CustomPagination from './CustomPagination';
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
-import { IncomingCall } from './call-setup';
 import './community-events.css';
 import CallSetup from './components/blocks/Calls/CallSetup.tsx';
+import IncomingCall from './components/blocks/Calls/IncomingCall.tsx';
 import CancelSearchCard from './components/blocks/Cards/CancelSearchCard';
 import ConfirmMatchCard from './components/blocks/Cards/ConfirmMatchCard';
 import NewMatchCard from './components/blocks/Cards/NewMatchCard';
@@ -30,10 +30,10 @@ import {
   removeMatch,
   updateConfirmedData,
 } from './features/userData';
+import { removeActiveTracks } from './helpers/video.js';
 import './i18n';
 import './main.css';
 import { APP_ROUTE } from './routes';
-import { removeActiveTracks } from './twilio-helper';
 
 const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
   const usesAvatar = profile.image_type === 'avatar';

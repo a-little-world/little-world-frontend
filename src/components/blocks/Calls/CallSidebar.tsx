@@ -1,12 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { ButtonAppearance } from '@a-little-world/little-world-design-system';
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -24,7 +18,6 @@ import {
 import { Chat } from '../ChatCore/Chat';
 import { StyledOption } from '../NbtSelector';
 import QuestionCards from '../QuestionCards';
-import TranslationTool from '../TranslationTool/TranslationTool.tsx';
 
 const Container = styled.div`
   display: flex;

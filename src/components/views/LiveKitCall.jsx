@@ -198,13 +198,20 @@ export function LiveKitCall() {
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
   const dispatch = useDispatch();
 
-  const { origin, userPk, token, livekitServerUrl } = location.state;
+  const {
+    origin,
+    userPk,
+    token,
+    livekitServerUrl,
+    audioOptions,
+    videoOptions,
+  } = location.state;
   const match = useSelector(state =>
     origin === getAppRoute(MESSAGES_ROUTE)
       ? getChatByPartnerId(state.userData.chats, userPk)
       : getMatchByPartnerId(state.userData.matches, userPk),
   );
-
+  console.log({ audioOptions, videoOptions });
   const onChatToggle = () => {
     setShowChat(prevState => !prevState);
   };
@@ -235,8 +242,8 @@ export function LiveKitCall() {
         <CallLayout>
           <VideoContainer $isFullScreen={isFullScreen} $showChat={showChat}>
             <LiveKitRoom
-              video={true}
-              audio={true}
+              video={videoOptions}
+              audio={audioOptions}
               token={token}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {

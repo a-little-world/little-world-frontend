@@ -15,18 +15,12 @@ import styled, { css } from 'styled-components';
 
 import { requestVideoAccessToken } from '../../../api/livekit';
 import { cancelCallSetup, initActiveCall } from '../../../features/userData';
+import { clearActiveTracks } from '../../../helpers/video.ts';
 import { getAppRoute } from '../../../routes';
+import { CALL_ROUTE } from '../../../routes.jsx';
 import ModalCard from '../Cards/ModalCard';
 
 if (!window.activeTracks) window.activeTracks = [];
-
-export const clearActiveTracks = () => {
-  console.log('CLEARING ACTIVE TRACKS', window.activeTracks);
-  window.activeTracks.forEach(track => {
-    track.stop();
-  });
-  window.activeTracks = [];
-};
 
 const CloseButton = styled(Button)`
   position: absolute;
@@ -104,7 +98,12 @@ const CallSetupCard = styled(ModalCard)`
   `}
 `;
 
-function CallSetup({ userPk, removeCallSetupPartner }) {
+type CallSetupProps = {
+  userPk: string;
+  removeCallSetupPartner: () => void;
+};
+
+function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
   const { t } = useTranslation();
   const location = useLocation();
   const [authData, setAuthData] = useState({
@@ -128,11 +127,16 @@ function CallSetup({ userPk, removeCallSetupPartner }) {
     clearActiveTracks();
     dispatch(initActiveCall({ userPk, tracks: values }));
     dispatch(cancelCallSetup());
-    navigate(getAppRoute('live-kit'), {
+    navigate(getAppRoute(CALL_ROUTE), {
       state: {
         userPk,
         token: authData.token,
-        tracks: values,
+        audioOptions: values.audioEnabled
+          ? { deviceId: values.audioDeviceId }
+          : false,
+        videoOptions: values.videoEnabled
+          ? { deviceId: values.videoDeviceId }
+          : false,
         livekitServerUrl: authData.livekitServerUrl,
         origin: location.pathname,
       },
