@@ -172,6 +172,7 @@ function Main() {
       if (data) {
         dispatch(updateConfirmedData(data.data.confirmed_matches));
         setCurrentPage(page);
+        window.scrollTo(0, 0);
       }
     } else {
       console.error(
