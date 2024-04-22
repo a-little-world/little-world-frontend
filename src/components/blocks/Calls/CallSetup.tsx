@@ -163,7 +163,6 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
   }, []);
 
   const handleValidate = (values: LocalUserChoices) => {
-    console.log({ values });
     return Boolean(
       (values.audioDeviceId || values.videoDeviceId) && authData.token,
     );

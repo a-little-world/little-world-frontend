@@ -16,11 +16,11 @@ import Welcome from './components/blocks/Welcome/Welcome';
 import ChangeEmail from './components/views/ChangeEmail';
 import EditView from './components/views/Edit';
 import ForgotPassword from './components/views/ForgotPassword';
-import LiveKitCall from './components/views/LiveKitCall';
 import Login from './components/views/Login';
 import ResetPassword from './components/views/ResetPassword';
 import SignUp from './components/views/SignUp';
 import VerifyEmail from './components/views/VerifyEmail';
+import VideoCall from './components/views/VideoCall.jsx';
 import Main from './main';
 import {
   APP_ROUTE,
@@ -149,7 +149,7 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(CALL_ROUTE),
-    element: <LiveKitCall />,
+    element: <VideoCall />,
   },
   {
     path: getAppRoute(CALL_SETUP_ROUTE),
