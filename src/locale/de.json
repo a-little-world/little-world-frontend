@@ -394,6 +394,8 @@
   "error.required": "Erforderlich",
   "error.password_min_length": "Passwort zu kurz",
   "error.passwords_do_not_match": "Passwörter stimmen nicht überein",
+  "error.server_issue": "Problem bei der Verbindung zum Server. Bitte versuche es noch einmal.",
+  "error.permissions": "Um an einem Anruf teilnehmen zu können, musst du uns Zugang zu mindestens einem Mikrofon oder einer Kamera deines Geräts geben. Bitte überprüfe deine Berechtigungseinstellungen.",
 
   "form.btn_next": "Weiter",
   "form.btn_back": "Zurück",

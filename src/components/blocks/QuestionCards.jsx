@@ -75,6 +75,7 @@ const QuestionContentCard = styled(Card)`
   background: transparent;
   border: none;
   box-shadow: none;
+  overflow: scroll;
   @media (min-width: 500px) {
     padding: 0px;
   }

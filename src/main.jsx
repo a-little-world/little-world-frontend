@@ -1,5 +1,5 @@
 import { Modal } from '@a-little-world/little-world-design-system';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -30,7 +30,7 @@ import {
   removeMatch,
   updateConfirmedData,
 } from './features/userData';
-import { removeActiveTracks } from './helpers/video.ts';
+import { clearActiveTracks, removeActiveTracks } from './helpers/video.ts';
 import './i18n';
 import './main.css';
 import { APP_ROUTE } from './routes';
@@ -155,6 +155,7 @@ function Main() {
   let { userId, chatId } = useParams();
 
   const location = useLocation();
+
   const { userPk } = location.state || {};
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -190,6 +191,15 @@ function Main() {
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
+
+  useEffect(() => {
+    // clearActiveTracks();
+    if (location.state?.callEnded) {
+      location.state = { callEnded: false };
+      navigate('/app', { replace: true });
+      window.location.reload();
+    }
+  }, []);
 
   useEffect(() => {
     if (userId) {

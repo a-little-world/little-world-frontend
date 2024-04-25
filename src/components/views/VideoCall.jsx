@@ -4,12 +4,15 @@ import {
   LiveKitRoom,
   ParticipantTile,
   RoomAudioRenderer,
+  RoomContext,
+  useLiveKitRoom,
+  useRoomContext,
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
 import { Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -19,6 +22,7 @@ import {
   getChatByPartnerId,
   getMatchByPartnerId,
 } from '../../features/userData.js';
+import { clearActiveTracks } from '../../helpers/video.ts';
 import { MESSAGES_ROUTE, getAppRoute } from '../../routes.jsx';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage.jsx';
@@ -46,6 +50,7 @@ export function VideoCall() {
   const [showTranslator, setShowTranslator] = useState(true);
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
   const dispatch = useDispatch();
+  // const { room } = useLiveKitRoom();
 
   const {
     origin,
@@ -95,6 +100,7 @@ export function VideoCall() {
               video={videoOptions}
               audio={audioOptions}
               token={token}
+              // room={room}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
                 dispatch(
@@ -102,7 +108,9 @@ export function VideoCall() {
                     userId: userPk,
                   }),
                 );
-                navigate(getAppRoute());
+                // room?.disconnect();
+                navigate(getAppRoute(), { state: { callEnded: true } });
+                // clearActiveTracks();
               }}
             >
               <MyVideoConference
@@ -151,7 +159,7 @@ export function VideoCall() {
           >
             <QuestionCards />
           </Drawer>
-          <CallSidebar />
+          <CallSidebar isDisplayed={showChat} />
         </CallLayout>
       </LayoutContextProvider>
     </SidebarSelectionProvider>

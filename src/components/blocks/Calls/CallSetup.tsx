@@ -6,7 +6,11 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { LocalUserChoices, PreJoin } from '@livekit/components-react';
+import {
+  LocalUserChoices,
+  PreJoin,
+  usePreviewTracks,
+} from '@livekit/components-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,11 +22,10 @@ import { cancelCallSetup, initActiveCall } from '../../../features/userData';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { getAppRoute } from '../../../routes';
 import { CALL_ROUTE } from '../../../routes.jsx';
+import FormMessage, { MessageTypes } from '../../atoms/FormMessage.jsx';
 import ModalCard from '../Cards/ModalCard';
 
-if (!window.activeTracks) window.activeTracks = [];
-
-const CloseButton = styled(Button)`
+const CloseButton = styled.a`
   position: absolute;
 
   ${({ theme }) => css`
@@ -38,6 +41,8 @@ const CloseButton = styled(Button)`
 const CallSetupCard = styled(ModalCard)`
   ${({ theme }) => css`
     padding: ${theme.spacing.large};
+    gap: ${theme.spacing.xsmall};
+
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: ${theme.spacing.medium};
     }
@@ -110,6 +115,7 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
     token: null,
     livekitServerUrl: null,
   });
+  const [error, setError] = useState('');
 
   const quality = 'good';
   const qualityText = t(`pcs_signal_${quality}`);
@@ -119,14 +125,14 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
   const username = useSelector(
     state => state?.userData?.user?.profile?.first_name,
   );
-  const mediaStream = useRef<MediaStream>();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleJoin = (values: LocalUserChoices) => {
-    clearActiveTracks();
     dispatch(initActiveCall({ userPk, tracks: values }));
     dispatch(cancelCallSetup());
+    clearActiveTracks();
     navigate(getAppRoute(CALL_ROUTE), {
       state: {
         userPk,
@@ -150,34 +156,37 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
       partnerId: userPk,
     })
       .then(res => {
-        console.log('Token request response:', res);
         setAuthData({
           token: res.token,
           livekitServerUrl: res.server_url,
         });
       })
       .catch(err => {
-        // TODO: handle token request rejection
-        console.error('Error requesting video access token:', err);
+        setError('error.server_issue');
       });
   }, []);
 
+  const handleError = error => {
+    console.log({ error });
+    setError('error.permissions');
+  };
+
   const handleValidate = (values: LocalUserChoices) => {
-    return Boolean(
+    const isValid = Boolean(
       (values.audioDeviceId || values.videoDeviceId) && authData.token,
     );
+    if (isValid) setError('');
+    return isValid;
   };
+
   return (
     <CallSetupCard>
       <CloseButton
-        variation={ButtonVariations.Icon}
+        // variation={ButtonVariations.Icon}
+        href={'/app'}
         onClick={() => {
           removeCallSetupPartner();
-          if (mediaStream.current)
-            mediaStream.current.getTracks().forEach(track => {
-              track.stop();
-            });
-          clearActiveTracks();
+          // clearActiveTracks();
         }}
       >
         {
@@ -200,10 +209,16 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
       <PreJoin
         onSubmit={handleJoin}
         joinLabel={t('pcs_btn_join_call')}
+        onError={handleError}
         onValidate={handleValidate}
         defaults={{ username }}
         persistUserChoices={false}
       />
+      {error && (
+        <FormMessage $type={MessageTypes.Error} $visible>
+          {t(error)}
+        </FormMessage>
+      )}
     </CallSetupCard>
   );
 }

@@ -1,46 +1,22 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import {
   Button,
-  ButtonAppearance,
-  ButtonSizes,
   ButtonVariations,
-  CloseIcon,
   FullScreenExitIcon,
   FullScreenIcon,
   Gradients,
   MessageIcon,
   MessageWithQuestionIcon,
-  Text,
-  TextTypes,
   TranslatorIcon,
 } from '@a-little-world/little-world-design-system';
-import {
-  DisconnectButton,
-  PreJoin,
-  TrackToggle,
-  useDisconnectButton,
-} from '@livekit/components-react';
+import { TrackToggle, useDisconnectButton } from '@livekit/components-react';
 import { Track } from 'livekit-client';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import {
-  cancelCallSetup,
-  initActiveCall,
-  selectMatchByPartnerId,
-} from '../../../features/userData';
-import {
-  getAudioTrack,
-  getVideoTrack,
-  toggleLocalTracks,
-} from '../../../helpers/video';
-import signalWifi from '../../../images/signal-wifi.svg';
-import { CALL_ROUTE, getAppRoute } from '../../../routes';
 import Timer from '../../atoms/Timer.tsx';
-import ModalCard, { Centred } from '../Cards/ModalCard';
+import UnreadDot from '../../atoms/UnreadDot.tsx';
 
 const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
   width: 100%;
@@ -128,11 +104,19 @@ const StyledTimer = styled(Timer)<{ $desktopOnly?: boolean }>`
   `}
 `;
 
+type SharedControlBarProps = {
+  activeOption?: string;
+  onChatToggle: () => void;
+  onFullScreenToggle: () => void;
+  onTranslatorToggle: () => void;
+};
+
 type ControlBarProps = {
   activeOption?: string;
   onChatToggle: () => void;
   onFullScreenToggle: () => void;
   onTranslatorToggle: () => void;
+  isFullScreen: boolean;
 };
 
 export const TopControlBar = ({
@@ -140,7 +124,7 @@ export const TopControlBar = ({
   onChatToggle,
   onQuestionCardsToggle,
   onTranslatorToggle,
-}) => {
+}: { onQuestionCardsToggle: () => void } & SharedControlBarProps) => {
   const { t } = useTranslation();
   return (
     <Bar $position="top">
@@ -185,6 +169,7 @@ function ControlBar({
 }: ControlBarProps) {
   const { t } = useTranslation();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const hasUnreadMessage = false;
 
   return (
     <Bar $position="bottom">
@@ -213,6 +198,7 @@ function ControlBar({
           onClick={onChatToggle}
           variation={ButtonVariations.Circle}
         >
+          {hasUnreadMessage && <UnreadDot count={1} />}
           <MessageIcon label={t('call.chat_label')} labelId="chat_toggle" />
         </ToggleBtn>
         <ToggleBtn

@@ -9,8 +9,8 @@ export const CallLayout = styled.div`
   --lk-control-active-hover-bg: ${({ theme }) => theme.color.surface.contrast};
   --lk-control-hover-bg: ${({ theme }) => theme.color.surface.contrast};
   display: flex;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.large}) {

@@ -20,7 +20,7 @@ const StyledDrawer = styled(ReactDrawer)`
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.small};
   height: 80% !important;
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) =>
@@ -47,8 +47,8 @@ const Drawer = ({
           <ChevronDownIcon
             label="close drawer"
             labelId="closeDrawer"
-            width="24"
-            height="24"
+            width="16"
+            height="16"
           />
         </Button>
         {children}

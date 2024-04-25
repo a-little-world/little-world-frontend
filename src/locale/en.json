@@ -394,6 +394,8 @@
   "error.required": "Required",
   "error.password_min_length": "Password too short",
   "error.passwords_do_not_match": "Passwords do not match",
+  "error.server_issue": "Issue connecting to the server. Please try again.",
+  "error.permissions": "In order to join a call, you need to provide us access to at least one of your device's microphone or camera. Please check your permission settings.",
 
   "form.btn_next": "Next",
   "form.btn_back": "Back",

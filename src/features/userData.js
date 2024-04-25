@@ -6,7 +6,7 @@ import { questionsDuringCall } from '../services/questionsDuringCall';
 export const userDataSlice = createSlice({
   name: 'userData',
   initialState: {
-    activeCallRooms: []
+    // activeCallRooms: []
   },
   reducers: {
     initialise: (state, action) => {

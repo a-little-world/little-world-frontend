@@ -183,15 +183,15 @@ const SidebarSelector = styled.div`
   gap: ${({ theme }) => `${theme.spacing.xxxsmall}`};
 `;
 
-const SidebarWrapper = styled.aside`
+const SidebarWrapper = styled.aside<{ $isDisplayed: boolean }>`
   width: 25%;
   display: none;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
 
-  ${({ theme }) => css`
+  ${({ theme, $isDisplayed }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
-      display: flex;
+      display: ${$isDisplayed ? 'flex' : 'none'};
     }
   `}
 `;
@@ -484,7 +484,7 @@ function SidebarNotes() {
   );
 }
 
-function CallSidebar() {
+function CallSidebar({ isDisplayed }) {
   const { t } = useTranslation();
   const location = useLocation();
 
@@ -499,7 +499,7 @@ function CallSidebar() {
   const disabled = ['notes'];
 
   return (
-    <SidebarWrapper className="call-sidebar">
+    <SidebarWrapper className="call-sidebar" $isDisplayed={isDisplayed}>
       <SidebarSelector className="sidebar-selector">
         {sidebarTopics.map(topic => (
           <StyledOption
