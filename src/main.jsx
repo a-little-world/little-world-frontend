@@ -194,11 +194,6 @@ function Main() {
 
   useEffect(() => {
     // clearActiveTracks();
-    if (location.state?.callEnded) {
-      location.state = { callEnded: false };
-      navigate('/app', { replace: true });
-      window.location.reload();
-    }
   }, []);
 
   useEffect(() => {

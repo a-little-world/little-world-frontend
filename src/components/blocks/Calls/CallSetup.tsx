@@ -25,7 +25,7 @@ import { CALL_ROUTE } from '../../../routes.jsx';
 import FormMessage, { MessageTypes } from '../../atoms/FormMessage.jsx';
 import ModalCard from '../Cards/ModalCard';
 
-const CloseButton = styled.a`
+const CloseButton = styled(Button)`
   position: absolute;
 
   ${({ theme }) => css`
@@ -182,8 +182,7 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
   return (
     <CallSetupCard>
       <CloseButton
-        // variation={ButtonVariations.Icon}
-        href={'/app'}
+        variation={ButtonVariations.Icon}
         onClick={() => {
           removeCallSetupPartner();
           // clearActiveTracks();
