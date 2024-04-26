@@ -188,14 +188,12 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
           // clearActiveTracks();
         }}
       >
-        {
-          <CloseIcon
-            label="close modal"
-            labelId="close_icon"
-            width="24"
-            height="24"
-          />
-        }
+        <CloseIcon
+          label="close modal"
+          labelId="close_icon"
+          width="24"
+          height="24"
+        />
       </CloseButton>
       <div>
         <Text center type={TextTypes.Heading4}>
