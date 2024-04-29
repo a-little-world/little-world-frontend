@@ -118,10 +118,8 @@
   "cp_cancel_search": "Suche abbrechen",
   "cp_cancel_search_confirm": "Bist du dir sicher?",
   "cp_cancel_search_reject": "Suche nicht abbrechen",
-
   "community_events.show_more": "Mehr anzeigen",
   "community_events.show_less": "Weniger anzeigen",
-
   "settings.title": "Einstellungen",
   "settings.edit_item": "{{item}} ändern",
   "settings.edit_button": "ändern",
@@ -180,7 +178,6 @@
   "chat_request_accept": "Annehmen",
   "chat_request_more_info": "Mehr Infos",
   "chat_send": "Senden",
-
   "profile.self_profile_title": "Mein Profil",
   "profile.match_profile_title": "{{userName}}'s Profil",
   "profile.description_title": "Über",
@@ -196,7 +193,6 @@
   "profile.editor_title_image": "Dein Bild",
   "profile.save_btn": "Speichern",
   "profile.cancel_btn": "Zurück",
-
   "weekdays": [
     "Sonntag",
     "Montag",
@@ -295,7 +291,6 @@
   "help_support_slogan": "Wir sind für dich da!",
   "help_support_message_btn": "Jetzt chatten",
   "help_support_call_btn": "Jetzt anrufen",
-
   "faq": {
     "section_title": {
       "before_talk": "Vor dem Gespräch",
@@ -390,7 +385,6 @@
   "sg_personal_profilePicture": "Profilbild",
   "cp_find_new_partner": "Finde eine*n neue*n Gesprächspartner*in",
   "question_category_archived": "Archiviert",
-
   "error.required": "Erforderlich",
   "error.password_min_length": "Passwort zu kurz",
   "error.passwords_do_not_match": "Passwörter stimmen nicht überein",
@@ -408,7 +402,6 @@
   "user_type.learner_description": "Ich möchte selbst Deutsch sprechen üben.",
   "user_type.learner_label": "Deutschlernende",
   "user_type.learner_note": "mind. B1 Deutschniveau",
-
   "self_info.title": "Über dich...",
   "self_info.post_code_label": "Postleitzahl",
   "self_info.post_code_tooltip": "Als gemeinnützige Organisation geben wir regionalen Fördernden transparent und anonym Auskunft über unsere regionale Wirkung. Also z.B. „54 Personen in Atlantis“. Zudem werden wir bald auch in Person vermittlen.",
@@ -470,13 +463,11 @@
   "conditions.point4": "Jegliche Formen der <highlight>Diskriminierung</highlight> (u.a. Rassismus & Altersdiskriminierung) <highlight>oder Belästigung werden nicht geduldet</highlight>. Bitte melde jegliche Verstöße umgehend bei uns.",
   "conditions.disclaimer": "Bisher haben unsere Teilnehmer äußerst positive Erfahrungen gemacht - wir möchten, dass dies auch so bleibt. Solltest du irgendwelche Fragen, auch zur Nutzung, oder Probleme haben, kontaktiere uns gerne jederzeit.",
   "conditions.checkbox_label": "<bold>Ich werde die gelisteten Grundsätze einhalten und akzeptiere die</bold> <a {\"href\": \"https://home.little-world.com/nutzungsbedingungen\", \"style\": { \"font-weight\": \"bold\" }, \"target\": \"_blank\"}>Haftungsbeschränkungen</a>.",
-
   "user_form_notifications.title": "Und als letzten Schritt...",
   "user_form_notifications.description": "Sobald wir ein Match für dich gefunden haben, benachrichtigen wir dich. Ich möchte...",
   "user_form_notifications.phone_number_label": "Deine Telefonnummer",
   "user_form_notifications.phone_number_tooltip": "Deine Telefonnummer ist ausschließlich für das Team von Little World sichtbar. Deine Nummer wird nie an Dritte weitergegeben und du erhälst keinerlei Werbeanrufe.",
   "user_form_notifications.info": "Deine Telefonnummer wird sicher gespeichert und nie weitergegeben.",
-
   "profile_pic.upload_image": "Bitte lade ein Profilfoto von dir hoch, auf dem dein Gesicht zu erkennen ist.",
   "profile_pic.click_to_upload": "Zum Hochladen klicken",
   "profile_pic.drop_image": "oder Bild ziehen und hier ablegen",
@@ -501,7 +492,6 @@
   "profile_pic.avatar_glasses": "Brille",
   "profile_pic.avatar_hat_style": "Hut",
   "profile_pic.avatar_hat_color": "Hut Farbe",
-
   "validation.phone_number_not_numeric": "Deine Handynummer enthält unerlaubte Zeichen.",
   "validation.phone_number_too_short": "Deine Handynummer scheint zu kurz zu sein.",
   "validation.phone_number_empty": "Wenn du per SMS oder Telefon benachrichtigt werden willst gib bitte deine Handynummer an.",
@@ -523,16 +513,13 @@
   "validation.image_upload_required": "Profil Bild upload ist fehlgeschlagen. Hast du ein Bild unter 0.5MB ausgewaehlt. Falls der Bild upload nicht gelingt erstelle dir bitte einen Avatar.",
   "validation.generic_try_again": "Es gab ein Serverproblem. Bitte versuche es erneut.",
   "validation.required": "*erforderlich",
-
   "error_view.title": "Uh oh, Diese Seite existiert nicht",
   "error_view.button": "Zum Anfang",
-
   "welcome.title": "Hallo!",
   "welcome.intro": "Schön, dass du da bist!",
   "welcome.description": "Lass uns mit ein paar kurzen Fragen starten, um das bestmögliche Gegenüber für dich zu finden und deine Bedürfnisse zu berücksichtigen.",
   "welcome.note": "Sämtliche Angaben kannst du jederzeit wieder ändern.",
   "welcome.button": "Jetzt starten",
-
   "notifications.title": "Notifications",
   "notifications.filter_all": "Alle",
   "notifications.filter_unread": "Ungelesen",
@@ -542,6 +529,8 @@
   "translations.text_placeholder": "Typ zu übersetzen",
   "translations.swap_languages": "Sprachen tauschen",
 
+  "sign_up.company_tooltip": "Wenn du Little World im Namen deines Unternehmens nutzt, gib bitte den Namen deines Unternehmens an.",
+  "sign_up.company_name_label": "Little World Partner",
   "sign_up.title": "Konto erstellen",
   "sign_up.name_label": "Dein Name",
   "sign_up.name_tooltip": "Gib hier deinen Vor- und Nachnamen ein",
@@ -560,7 +549,6 @@
   "sign_up.privacy_policy": "Bitte nimm unsere <a {\"href\": \"https://home.little-world.com/de/datenschutz/\"}>Datenschutzinformationen</a> zur Kenntnis",
   "sign_up.submit_btn": "Konto erstellen",
   "sign_up.change_location_cta": "Anmelden",
-
   "login.title": "Anmelden",
   "login.email_label": "E-mail",
   "login.email_placeholder": "example@gmail.com",
@@ -570,7 +558,6 @@
   "login.forgot_password": "Passwort vergessen?",
   "login.or": "Oder",
   "login.change_location_cta": "Neues Konto erstellen",
-
   "forgot_password.title": "Passwort vergessen?",
   "forgot_password.description": "Kein Grund zur Sorge! Gib einfach die E-Mail Adresse ein, mit der du dich registriert hast. Wir senden dir dann ein neues Passwort zu.",
   "forgot_password.email_label": "Registrierte E-mail",
@@ -578,7 +565,6 @@
   "forgot_password.cancel_btn": "Abbrechen",
   "forgot_password.submit_btn": "Neues Passwort anfordern",
   "forgot_password.success_message": "Neues Passwort anfordern",
-
   "reset_password.title": "Passwort zurücksetzen?",
   "reset_password.description": "Bitte gib dein neues Passwort unten ein und bestätige es dann.",
   "reset_password.password_label": "Neues Passwort",
@@ -587,7 +573,6 @@
   "reset_password.to_login": "Zum Anmelden",
   "reset_password.submit_btn": "Passwort zurücksetzen",
   "reset_password.success_message": "Du kannst dich jetzt mit deinem neuen Passwort einloggen.",
-
   "verify_email.title": "Gib den Bestätigungscode ein",
   "verify_email.description": "Um dein Konto zu bestätigen, gib bitte den 5-stelligen Code ein, den wir an {{ email }} gesendet haben.",
   "verify_email.input_label": "Code",
@@ -597,7 +582,6 @@
   "verify_email.change_email_btn": "E-mail Adresse ändern",
   "verify_email.resend_code": "Bestätigungscode erneut senden",
   "verify_email.success_message": "Bestätigungscode erneut gesendet",
-
   "change_email.title": "E-Mail Adresse ändern",
   "change_email.description": "Bitte gib deine neue E-Mail Adresse ein.",
   "change_email.input_label": "E-mail",
