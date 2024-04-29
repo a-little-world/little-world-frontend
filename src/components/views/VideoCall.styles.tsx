@@ -146,7 +146,7 @@ export const StyledGridLayout = styled(GridLayout)`
   }
 `;
 
-export const WaitingTile = styled.div`
+export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
   color: ${({ theme }) => theme.color.text.reversed};
   background: ${({ theme }) => '#323232' || theme.color.surface.contrast};
   height: 100%;
@@ -160,9 +160,9 @@ export const WaitingTile = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
 
-  ${({ theme }) => css`
+  ${({ theme, $isFullScreen }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
-      border-radius: ${theme.radius.small};
+      border-radius: ${$isFullScreen ? 0 : theme.radius.small};
     }
   `}
 `;

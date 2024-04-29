@@ -4,15 +4,12 @@ import {
   LiveKitRoom,
   ParticipantTile,
   RoomAudioRenderer,
-  RoomContext,
-  useLiveKitRoom,
-  useRoomContext,
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
 import { Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -22,7 +19,7 @@ import {
   getChatByPartnerId,
   getMatchByPartnerId,
 } from '../../features/userData.js';
-import { clearActiveTracks } from '../../helpers/video.ts';
+import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../routes.jsx';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage.jsx';
@@ -50,7 +47,12 @@ export function VideoCall() {
   const [showTranslator, setShowTranslator] = useState(true);
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
   const dispatch = useDispatch();
-  // const { room } = useLiveKitRoom();
+
+  useKeyboardShortcut({
+    condition: isFullScreen,
+    key: 'Escape',
+    onKeyPressed: () => setIsFullScreen(false),
+  });
 
   const {
     origin,
@@ -68,7 +70,12 @@ export function VideoCall() {
   );
 
   const onChatToggle = () => {
-    setShowChat(prevState => !prevState);
+    if (isFullScreen) {
+      setShowChat(true);
+      setIsFullScreen(false);
+    } else {
+      setShowChat(prevState => !prevState);
+    }
   };
 
   const onFullScreenToggle = () => {
@@ -76,7 +83,12 @@ export function VideoCall() {
   };
 
   const onTranslatorToggle = () => {
-    setShowTranslator(prevState => !prevState);
+    if (isFullScreen) {
+      setShowTranslator(true);
+      setIsFullScreen(false);
+    } else {
+      setShowTranslator(prevState => !prevState);
+    }
   };
 
   const onMobileTranslatorToggle = () => {
@@ -100,7 +112,6 @@ export function VideoCall() {
               video={videoOptions}
               audio={audioOptions}
               token={token}
-              // room={room}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
                 dispatch(
@@ -108,12 +119,11 @@ export function VideoCall() {
                     userId: userPk,
                   }),
                 );
-                // room?.disconnect();
                 navigate(getAppRoute(), { state: { callEnded: true } });
-                // clearActiveTracks();
               }}
             >
               <MyVideoConference
+                isFullScreen={isFullScreen}
                 partnerName={match?.partner?.first_name}
                 partnerImage={
                   match?.partner?.image_type === 'avatar'
@@ -136,7 +146,7 @@ export function VideoCall() {
                 onTranslatorToggle={onTranslatorToggle}
               />
             </LiveKitRoom>
-            {!showTranslator && <DesktopTranslationTool />}
+            {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>
           <Drawer
             title={'Translate'}
@@ -166,7 +176,12 @@ export function VideoCall() {
   );
 }
 
-function MyVideoConference({ partnerImage, partnerImageType, partnerName }) {
+function MyVideoConference({
+  isFullScreen,
+  partnerImage,
+  partnerImageType,
+  partnerName,
+}) {
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
   const tracks = useTracks(
@@ -184,7 +199,7 @@ function MyVideoConference({ partnerImage, partnerImageType, partnerName }) {
       </StyledGridLayout>
 
       {tracks.length === 1 && (
-        <WaitingTile>
+        <WaitingTile $isFullScreen={isFullScreen}>
           <ProfileImage
             circle
             image={partnerImage}

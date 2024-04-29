@@ -219,7 +219,7 @@ export const Chat = ({ chatId }) => {
             </NoMessages>
           ) : (
             <>
-              {messagesResult?.map((message, index) => (
+              {messagesResult?.map(message => (
                 <Message $isSelf={message.sender === userId} key={message.uuid}>
                   <MessageText $isSelf={message.sender === userId}>
                     {message.text}
