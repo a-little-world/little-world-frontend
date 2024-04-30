@@ -39,6 +39,8 @@ import {
   WaitingTile,
 } from './VideoCall.styles.tsx';
 
+const LOCAL_PARTICIPANT = 'LocalParticipant';
+
 export function VideoCall() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,6 +65,7 @@ export function VideoCall() {
     videoOptions,
   } = location.state;
 
+  const profile = useSelector(state => state.userData.user.profile);
   const match = useSelector(state =>
     origin === getAppRoute(MESSAGES_ROUTE)
       ? getChatByPartnerId(state.userData.chats, userPk)
@@ -131,6 +134,12 @@ export function VideoCall() {
                     : match?.partner?.image
                 }
                 partnerImageType={match?.partner?.image_type}
+                selfImage={
+                  profile.image_type === 'avatar'
+                    ? profile.avatar_config
+                    : profile?.image
+                }
+                selfImageType={profile.image_type}
               />
               <RoomAudioRenderer />
               <TopControlBar
@@ -181,6 +190,8 @@ function MyVideoConference({
   partnerImage,
   partnerImageType,
   partnerName,
+  selfImage,
+  selfImageType,
 }) {
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
@@ -188,14 +199,30 @@ function MyVideoConference({
     [{ source: Track.Source.Camera, withPlaceholder: true }],
     { onlySubscribed: true },
   );
+
   const { t } = useTranslation();
+  const placeholders = {};
+  tracks.forEach(track => {
+    if (track.participant) {
+      const isLocal =
+        track?.participant?.constructor?.name === LOCAL_PARTICIPANT;
+      placeholders[track.participant.identity] = (
+        <ProfileImage
+          circle
+          image={isLocal ? selfImage : partnerImage}
+          imageType={isLocal ? selfImageType : partnerImageType}
+          size={'flex'}
+        />
+      );
+    }
+  });
 
   if (isEmpty(tracks)) return null;
 
   return (
     <Videos>
       <StyledGridLayout tracks={tracks}>
-        <ParticipantTile />
+        <ParticipantTile placeholders={placeholders} />
       </StyledGridLayout>
 
       {tracks.length === 1 && (

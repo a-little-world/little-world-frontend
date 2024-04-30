@@ -95,6 +95,7 @@ export const StyledGridLayout = styled(GridLayout)`
     width: 30%;
     z-index: 1;
     border-radius: 16px;
+    aspect-ratio: 16 / 9;
 
     ${({ theme }) => css`
       @media (min-width: ${theme.breakpoints.large}) {
@@ -102,21 +103,31 @@ export const StyledGridLayout = styled(GridLayout)`
         width: 20%;
       }
     `}
+
+    .lk-participant-metadata-item:first-child {
+      display: none;
+    }
+
+    .lk-participant-metadata {
+      justify-content: flex-end;
+    }
+  }
+
+  .lk-participant-placeholder {
+    padding: ${({ theme }) => theme.spacing.xxsmall};
+    background: ${({ theme }) => theme.color.text.secondary};
+    border-radius: 0;
+
+    svg {
+      padding: 0;
+    }
   }
 
   .lk-participant-tile[data-lk-video-muted='true'] {
-    background: ${({ theme }) => theme.color.surface.contrast};
+    background: ${({ theme }) => theme.color.text.secondary};
     svg {
       max-height: 320px;
     }
-
-    .lk-participant-placeholder {
-      background: ${({ theme }) => theme.color.surface.contrast};
-    }
-  }
-
-  .lk-participant-tile[data-lk-video-muted='true'][data-lk-local-participant='true'] {
-    aspect-ratio: 16 / 9;
   }
 
   .lk-participant-metadata-item {
@@ -148,7 +159,7 @@ export const StyledGridLayout = styled(GridLayout)`
 
 export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
   color: ${({ theme }) => theme.color.text.reversed};
-  background: ${({ theme }) => '#323232' || theme.color.surface.contrast};
+  background: ${({ theme }) => theme.color.text.secondary};
   height: 100%;
   width: 100%;
   position: absolute;
@@ -179,4 +190,28 @@ export const DesktopTranslationTool = styled(TranslationTool)`
       display: flex;
     }
   `}
+`;
+
+export const MEDIA_DEVICE_MENU_CSS = css`
+  .lk-device-menu {
+    background-color: ${({ theme }) => theme.color.surface.primary};
+    border-color: ${({ theme }) => theme.color.border.subtle};
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+    > ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      > li {
+        border-radius: ${({ theme }) => theme.radius.xsmall};
+        color: ${({ theme }) => theme.color.text.primary};
+      }
+    }
+
+    li[data-lk-active='true'] {
+      background: ${({ theme }) => theme.color.surface.bold};
+      color: ${({ theme }) => theme.color.text.reversed};
+    }
+  }
 `;

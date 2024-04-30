@@ -9,7 +9,11 @@ import {
   MessageWithQuestionIcon,
   TranslatorIcon,
 } from '@a-little-world/little-world-design-system';
-import { TrackToggle, useDisconnectButton } from '@livekit/components-react';
+import {
+  MediaDeviceMenu,
+  TrackToggle,
+  useDisconnectButton,
+} from '@livekit/components-react';
 import { Track } from 'livekit-client';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +21,7 @@ import styled, { css } from 'styled-components';
 
 import Timer from '../../atoms/Timer.tsx';
 import UnreadDot from '../../atoms/UnreadDot.tsx';
+import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 
 const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
   width: 100%;
@@ -29,7 +34,7 @@ const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
   flex-wrap: nowrap;
   padding: ${({ theme }) => theme.spacing.small};
   gap: ${({ theme }) => theme.spacing.xxsmall};
-  overflow: scroll;
+  overflow: visible;
   z-index: 10;
 
   ${({ $position, theme }) => {
@@ -66,8 +71,9 @@ const TOGGLE_CSS = css`
 
 const Toggle = styled(TrackToggle)`
   ${TOGGLE_CSS};
-  width: 44px;
-  height: 44px;
+  height: 100%;
+  padding: ${({ theme }) =>
+    `0 ${theme.spacing.xxxsmall} 0 ${theme.spacing.small}`};
 `;
 
 const ToggleBtn = styled(Button)<{ $desktopOnly?: boolean }>`
@@ -102,6 +108,43 @@ const StyledTimer = styled(Timer)<{ $desktopOnly?: boolean }>`
       display: flex;
     }
   `}
+`;
+
+const MediaControl = styled.div`
+  background: ${({ theme }) => theme.color.surface.contrast};
+  color: ${({ theme }) => theme.color.text.control};
+  border-color: ${({ theme }) => theme.color.border.contrast};
+  border-radius: ${({ theme }) => theme.radius.large};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
+  height: 44px;
+
+  ${MEDIA_DEVICE_MENU_CSS};
+
+  .lk-button-menu {
+    padding: ${({ theme }) =>
+      `0 ${theme.spacing.small} 0 ${theme.spacing.xxxsmall}`};
+
+    &[aria-pressed='true'] {
+      &::after {
+        transform: rotate(135deg);
+        margin-bottom: -2px;
+      }
+    }
+
+    &::after {
+      width: 6px;
+      height: 6px;
+      margin: 0;
+      margin-bottom: 2px;
+    }
+
+    &::hover {
+      background-color: none;
+    }
+  }
 `;
 
 type SharedControlBarProps = {
@@ -174,8 +217,14 @@ function ControlBar({
   return (
     <Bar $position="bottom">
       <Section>
-        <Toggle source={Track.Source.Microphone} showIcon />
-        <Toggle source={Track.Source.Camera} showIcon />
+        <MediaControl>
+          <Toggle source={Track.Source.Microphone} showIcon />
+          <MediaDeviceMenu kind="audioinput" />
+        </MediaControl>
+        <MediaControl>
+          <Toggle source={Track.Source.Camera} showIcon />
+          <MediaDeviceMenu kind="videoinput" />
+        </MediaControl>
         <ToggleBtn
           $desktopOnly
           onClick={onFullScreenToggle}

@@ -12,10 +12,8 @@ function useKeyboardShortcut({
   onKeyPressed,
 }: UseKeyboardShortcutArgs) {
   useEffect(() => {
-    console.log({ condition });
     if (!condition) return;
     function keyDownHandler(e: globalThis.KeyboardEvent) {
-      console.log({ condition, key });
       if (e.key === key) {
         e.preventDefault();
         onKeyPressed();

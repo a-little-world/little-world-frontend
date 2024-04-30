@@ -101,7 +101,7 @@ function TranslationTool({ className }: { className?: string }) {
       <OriginalLanguage>
         <Dropdown
           maxWidth="100%"
-          placeholder={t('translation.language_placeholder')}
+          placeholder={t('translator.language_placeholder')}
           onValueChange={setFromLang}
           value={fromLang}
           options={languages.map(lang => ({
@@ -110,7 +110,7 @@ function TranslationTool({ className }: { className?: string }) {
           }))}
         />
         <TextArea
-          placeholder={t('translations.text_placeholder')}
+          placeholder={t('translator.text_placeholder')}
           value={leftText}
           onChange={handleChangeLeft}
           size={TextAreaSize.Large}
@@ -118,7 +118,7 @@ function TranslationTool({ className }: { className?: string }) {
       </OriginalLanguage>
       <SwapBtn onClick={swapLang} variation={ButtonVariations.Icon}>
         <SwapIcon
-          label={t('translation.swap_languages')}
+          label={t('translator.swap_languages')}
           labelId={'swap_translations'}
           width="16"
           height="16"
@@ -127,7 +127,7 @@ function TranslationTool({ className }: { className?: string }) {
       <DesiredLanguage>
         <Dropdown
           maxWidth="100%"
-          placeholder={t('translation.language_placeholder')}
+          placeholder={t('translator.language_placeholder')}
           onValueChange={setToLang}
           value={toLang}
           options={languages.map(lang => ({
@@ -135,7 +135,12 @@ function TranslationTool({ className }: { className?: string }) {
             label: t(`lang-${lang}`),
           }))}
         />
-        <TextArea readOnly value={rigthText} size={TextAreaSize.Large} />
+        <TextArea
+          readOnly
+          value={rigthText}
+          size={TextAreaSize.Large}
+          placeholder={t('translator.translated_placeholder')}
+        />
       </DesiredLanguage>
     </ToolContainer>
   );
