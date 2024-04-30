@@ -518,9 +518,10 @@
   "notifications.filter_unread": "Unread",
   "notifications.archived": "Archived",
 
-  "translations.language_placholder": "Select a language...",
-  "translations.text_placeholder": "Type to translate",
-  "translations.swap_languages": "Swap",
+  "translator.language_placholder": "Select a language...",
+  "translator.text_placeholder": "Type to translate.",
+  "translator.swap_languages": "Swap",
+  "translator.translated_placeholder": "Your translation will appear here.",
 
   "error_view.title": "Uh oh, this page doesn't exist",
   "error_view.button": "Back to the start",

@@ -525,9 +525,10 @@
   "notifications.filter_unread": "Ungelesen",
   "notifications.archived": "Archiviert",
 
-  "translations.language_placholder": "Wähle eine Sprache...",
-  "translations.text_placeholder": "Typ zu übersetzen",
-  "translations.swap_languages": "Sprachen tauschen",
+  "translator.language_placholder": "Wähle eine Sprache...",
+  "translator.text_placeholder": "Typ zu übersetzen",
+  "translator.swap_languages": "Sprachen tauschen",
+  "translator.translated_placeholder": "Übersetzung erscheint hier.",
 
   "sign_up.company_tooltip": "Wenn du Little World im Namen deines Unternehmens nutzt, gib bitte den Namen deines Unternehmens an.",
   "sign_up.company_name_label": "Little World Partner",

@@ -7,12 +7,8 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import {
-  LocalUserChoices,
-  PreJoin,
-  usePreviewTracks,
-} from '@livekit/components-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { LocalUserChoices, PreJoin } from '@livekit/components-react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -24,6 +20,7 @@ import { clearActiveTracks } from '../../../helpers/video.ts';
 import { getAppRoute } from '../../../routes';
 import { CALL_ROUTE } from '../../../routes.jsx';
 import FormMessage, { MessageTypes } from '../../atoms/FormMessage.jsx';
+import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
 
 const CloseButton = styled(Button)`
@@ -81,26 +78,7 @@ const CallSetupCard = styled(ModalCard)`
       }
     }
 
-    .lk-device-menu {
-      background-color: ${({ theme }) => theme.color.surface.primary};
-      border-color: ${({ theme }) => theme.color.border.subtle};
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-
-      > ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-
-        > li {
-          border-radius: ${({ theme }) => theme.radius.xsmall};
-        }
-      }
-
-      li[data-lk-active='true'] {
-        background: ${({ theme }) => theme.color.surface.bold};
-        color: ${({ theme }) => theme.color.text.reversed};
-      }
-    }
+    ${MEDIA_DEVICE_MENU_CSS}
   `}
 `;
 

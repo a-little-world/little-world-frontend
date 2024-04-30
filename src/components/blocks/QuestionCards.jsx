@@ -134,7 +134,7 @@ function QuestionCards() {
   const [selectedQuestionId, setQuestionId] = useState(null);
 
   const [selectedTopic, setTopic] = useState(cardCategories?.[0]?.uuid || null);
-  console.log({ selectedTopic, cardCategories });
+
   const changeScroll = direction => {
     const scrollVelocity = {
       right: 100,

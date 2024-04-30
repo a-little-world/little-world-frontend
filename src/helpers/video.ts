@@ -32,14 +32,9 @@ export const saveTrack = (track, id) => {
 export const clearActiveTracks = () => {
   // LiveKit isn't handling disconnecting user's devices so we must do it manually
   const video = document.querySelector('video');
-  const audio = document.querySelector('audio');
 
   const vidStream = video?.srcObject as MediaStream;
-  const audioStream = audio?.srcObject as MediaStream;
-
   const vidTracks = vidStream?.getTracks();
-  const audioTracks = audioStream?.getTracks();
-  console.log({ audioTracks, audio, vidTracks, video });
 
   vidTracks?.map(track => {
     track?.stop();
