@@ -19,26 +19,7 @@ import {
   ToolContainer,
 } from './TranslationTool.styles.tsx';
 
-const languages = [
-  'en',
-  'sa',
-  'bg',
-  'ma',
-  'ca',
-  'fr',
-  'gr',
-  'in',
-  'it',
-  'kr',
-  'ir',
-  'pl',
-  'ru',
-  'es',
-  'tr',
-  'uk',
-  'vn',
-  'de',
-];
+import { LANGUAGES, requestTranslation } from '../../../api/googletrans.js';
 
 function TranslationTool({ className }: { className?: string }) {
   const { t } = useTranslation();
@@ -59,26 +40,12 @@ function TranslationTool({ className }: { className?: string }) {
         return;
       }
 
-      fetch(`${BACKEND_URL}/api/user/translate/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': Cookies.get('csrftoken'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          source_lang: fromLang,
-          target_lang: toLang,
-          text: leftText,
-        }).toString(),
-      })
-        .then(response => {
-          if (response.status === 200) {
-            return response.json();
-          }
-          console.error('server error', response.status, response.statusText);
-          return false;
-        })
-        .then(({ trans }) => setRightText(trans))
+
+      requestTranslation({
+        sourceLang: fromLang,
+        targetLang: toLang,
+        text: leftText,
+      }).then(({ translatedText }) => setRightText(translatedText))
         .catch(error => console.error(error));
     }, 1000);
 
@@ -104,9 +71,9 @@ function TranslationTool({ className }: { className?: string }) {
           placeholder={t('translator.language_placeholder')}
           onValueChange={setFromLang}
           value={fromLang}
-          options={languages.map(lang => ({
-            value: lang,
-            label: t(`lang-${lang}`),
+          options={LANGUAGES.map(lang => ({
+            value: lang.language,
+            label: `${lang.name} - ${lang.language}`
           }))}
         />
         <TextArea
@@ -130,9 +97,9 @@ function TranslationTool({ className }: { className?: string }) {
           placeholder={t('translator.language_placeholder')}
           onValueChange={setToLang}
           value={toLang}
-          options={languages.map(lang => ({
-            value: lang,
-            label: t(`lang-${lang}`),
+          options={LANGUAGES.map(lang => ({
+            value: lang.language,
+            label: `${lang.name} - ${lang.language}`
           }))}
         />
         <TextArea
