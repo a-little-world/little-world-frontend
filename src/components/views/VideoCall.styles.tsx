@@ -115,7 +115,7 @@ export const StyledGridLayout = styled(GridLayout)`
 
   .lk-participant-placeholder {
     padding: ${({ theme }) => theme.spacing.xxsmall};
-    background: ${({ theme }) => theme.color.text.secondary};
+    background: ${({ theme }) => theme.color.surface.contrast};
     border-radius: 0;
 
     svg {
@@ -154,6 +154,10 @@ export const StyledGridLayout = styled(GridLayout)`
         top: ${theme.spacing.small};
       }
     `}
+
+    .lk-participant-placeholder {
+      background: ${({ theme }) => theme.color.text.secondary};
+    }
   }
 `;
 

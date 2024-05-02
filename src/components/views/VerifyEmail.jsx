@@ -59,7 +59,7 @@ const VerifyEmail = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    onFormError({ e, formFields: getValues(), setError, t });
+    onFormError({ e, formFields: getValues(), setError });
   };
 
   const onResendCode = async () => {
@@ -112,7 +112,7 @@ const VerifyEmail = () => {
           })}
           id="text"
           label={t('verify_email.input_label')}
-          error={errors?.verificationCode?.message}
+          error={t(errors?.verificationCode?.message)}
           placeholder={t('verify_email.code_placeholder')}
           type="number"
         />
@@ -130,7 +130,7 @@ const VerifyEmail = () => {
         >
           {requestSuccessful
             ? t('verify_email.success_message')
-            : errors?.root?.serverError?.message}
+            : t(errors?.root?.serverError?.message)}
         </FormMessage>
         <ButtonsContainer>
           <Button

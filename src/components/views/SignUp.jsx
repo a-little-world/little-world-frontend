@@ -15,14 +15,15 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { signUp } from '../../api';
 import { initialise } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form';
 import {
   LOGIN_ROUTE,
-  VERIFY_EMAIL_ROUTE,
   SIGN_UP_ROUTE,
+  VERIFY_EMAIL_ROUTE,
   getAppRoute,
   passAuthenticationBoundary,
 } from '../../routes';
@@ -35,7 +36,6 @@ import {
   StyledForm,
   Title,
 } from './SignUp.styles';
-import { useSearchParams } from "react-router-dom";
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -73,7 +73,7 @@ const SignUp = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    onFormError({ e, formFields: getValues(), setError, t });
+    onFormError({ e, formFields: getValues(), setError });
   };
 
   const onFormSubmit = async data => {
@@ -99,26 +99,34 @@ const SignUp = () => {
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <NameContainer>
-          {company && <>
-            <Label bold htmlFor="company" toolTipText={t('sign_up.company_tooltip')}>
-              {t('sign_up.company_name_label')}: {company}
-            </Label>
-            <div style={{
-              display: 'none'
-            }}>
-              <TextInput
-                {...registerInput({
-                  register,
-                  name: 'company',
-                })}
-                defaultValue={company}
-                style={{ display: 'none' }}
-                id="company"
-                error={t(errors?.company?.message)}
-                type="text"
-              />
-            </div>
-          </>}
+          {company && (
+            <>
+              <Label
+                bold
+                htmlFor="company"
+                toolTipText={t('sign_up.company_tooltip')}
+              >
+                {t('sign_up.company_name_label')}: {company}
+              </Label>
+              <div
+                style={{
+                  display: 'none',
+                }}
+              >
+                <TextInput
+                  {...registerInput({
+                    register,
+                    name: 'company',
+                  })}
+                  defaultValue={company}
+                  style={{ display: 'none' }}
+                  id="company"
+                  error={t(errors?.company?.message)}
+                  type="text"
+                />
+              </div>
+            </>
+          )}
           <Label bold htmlFor="name" toolTipText={t('sign_up.name_tooltip')}>
             {t('sign_up.name_label')}
           </Label>
@@ -253,7 +261,7 @@ const SignUp = () => {
           $visible={errors?.root?.serverError}
           $type={MessageTypes.Error}
         >
-          {errors?.root?.serverError?.message}
+          {t(errors?.root?.serverError?.message)}
         </FormMessage>
         <StyledCta
           type="submit"

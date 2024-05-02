@@ -39,7 +39,7 @@ const ResetPassword = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    onFormError({ e, formFields: getValues(), setError, t });
+    onFormError({ e, formFields: getValues(), setError });
   };
 
   const onFormSubmit = async data => {
@@ -96,7 +96,7 @@ const ResetPassword = () => {
         >
           {requestSuccessful
             ? t('forgot_password.success_message')
-            : errors?.root?.serverError?.message}
+            : t(errors?.root?.serverError?.message)}
         </FormMessage>
         <ButtonsContainer>
           <Link
