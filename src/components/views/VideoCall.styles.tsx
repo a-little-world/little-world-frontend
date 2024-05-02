@@ -43,6 +43,7 @@ export const VideoContainer = styled.div<{
   .lk-room-container {
     height: auto !important;
     flex: 1;
+    min-height: 0;
     transition: height ease 0.3s;
   }
 
@@ -95,10 +96,11 @@ export const StyledGridLayout = styled(GridLayout)`
     width: 30%;
     z-index: 1;
     border-radius: 16px;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 9 / 16;
 
     ${({ theme }) => css`
       @media (min-width: ${theme.breakpoints.large}) {
+        aspect-ratio: 16 / 9;
         top: ${theme.spacing.small};
         width: 20%;
       }
@@ -158,6 +160,10 @@ export const StyledGridLayout = styled(GridLayout)`
     .lk-participant-placeholder {
       background: ${({ theme }) => theme.color.text.secondary};
     }
+  }
+
+  video {
+    object-fit: contain !important;
   }
 `;
 

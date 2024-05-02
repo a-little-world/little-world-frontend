@@ -25,6 +25,7 @@ const StyledDrawer = styled(ReactDrawer)`
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) =>
     `${theme.radius.small} ${theme.radius.small} 0 0`};
+  overflow: scroll;
 `;
 
 type DrawerProps = {
