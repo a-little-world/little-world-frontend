@@ -99,10 +99,13 @@ export const StyledGridLayout = styled(GridLayout)`
     aspect-ratio: 9 / 16;
 
     ${({ theme }) => css`
-      @media (min-width: ${theme.breakpoints.large}) {
+      @media (min-width: ${theme.breakpoints.medium}) {
         aspect-ratio: 16 / 9;
-        top: ${theme.spacing.small};
         width: 20%;
+      }
+
+      @media (min-width: ${theme.breakpoints.large}) {
+        top: ${theme.spacing.small};
       }
     `}
 
