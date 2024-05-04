@@ -1,17 +1,14 @@
 import {
-  Button,
   ButtonVariations,
   Dropdown,
-  SendIcon,
   SwapIcon,
   TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
-import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BACKEND_URL } from '../../../ENVIRONMENT.js';
+import { LANGUAGES, requestTranslation } from '../../../api/googletrans.js';
 import {
   DesiredLanguage,
   OriginalLanguage,
@@ -19,19 +16,23 @@ import {
   ToolContainer,
 } from './TranslationTool.styles.tsx';
 
-import { LANGUAGES, requestTranslation } from '../../../api/googletrans.js';
-
 function TranslationTool({ className }: { className?: string }) {
   const { t } = useTranslation();
   const [fromLang, setFromLang] = useState('en');
   const [toLang, setToLang] = useState('de');
   const [isSwapped, setIsSwapped] = useState(false);
-
+  const [error, setError] = useState(undefined);
+  console.log({ error });
   const [leftText, setLeftText] = useState('');
   const [rigthText, setRightText] = useState('');
 
   const handleChangeLeft = event => {
     setLeftText(event.target.value);
+  };
+
+  const onError = e => {
+    console.log({ e });
+    setError(e.message ? t(e.message) : t('validation.generic_try_again'));
   };
 
   useEffect(() => {
@@ -40,13 +41,13 @@ function TranslationTool({ className }: { className?: string }) {
         return;
       }
 
-
       requestTranslation({
         sourceLang: fromLang,
         targetLang: toLang,
         text: leftText,
-      }).then(({ translatedText }) => setRightText(translatedText))
-        .catch(error => console.error(error));
+      })
+        .then(({ translatedText }) => setRightText(translatedText))
+        .catch(onError);
     }, 1000);
 
     return () => clearTimeout(delayDebounceFn);
@@ -73,7 +74,7 @@ function TranslationTool({ className }: { className?: string }) {
           value={fromLang}
           options={LANGUAGES.map(lang => ({
             value: lang.language,
-            label: `${lang.name} - ${lang.language}`
+            label: `${lang.name} - ${lang.language}`,
           }))}
         />
         <TextArea
@@ -81,6 +82,7 @@ function TranslationTool({ className }: { className?: string }) {
           value={leftText}
           onChange={handleChangeLeft}
           size={TextAreaSize.Large}
+          error={error}
         />
       </OriginalLanguage>
       <SwapBtn onClick={swapLang} variation={ButtonVariations.Icon}>
@@ -99,7 +101,7 @@ function TranslationTool({ className }: { className?: string }) {
           value={toLang}
           options={LANGUAGES.map(lang => ({
             value: lang.language,
-            label: `${lang.name} - ${lang.language}`
+            label: `${lang.name} - ${lang.language}`,
           }))}
         />
         <TextArea

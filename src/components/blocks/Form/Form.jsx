@@ -12,7 +12,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { completeForm, mutateUserData } from '../../../api';
-import { updateProfile, updateUser, updateSearchState } from '../../../features/userData';
+import {
+  updateProfile,
+  updateSearchState,
+  updateUser,
+} from '../../../features/userData';
 import { onFormError } from '../../../helpers/form';
 import { EDIT_FORM_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes';
 import {
@@ -68,7 +72,7 @@ const Form = () => {
   const onFormSuccess = response => {
     dispatch(updateProfile(response));
     if (isLastStep) {
-      completeForm().then((updatedUser) => {
+      completeForm().then(updatedUser => {
         dispatch(updateUser(updatedUser));
       });
     }
@@ -82,7 +86,7 @@ const Form = () => {
   };
 
   const onError = e => {
-    onFormError({ e, formFields: getValues(), setError, t });
+    onFormError({ e, formFields: getValues(), setError });
   };
 
   const onFormSubmit = async data => {
@@ -135,7 +139,7 @@ const Form = () => {
           );
         })}
         <SubmitError $visible={errors?.root?.serverError}>
-          {errors?.root?.serverError?.message}
+          {t(errors?.root?.serverError?.message)}
         </SubmitError>
         <FormButtons $onlyOneBtn={!Boolean(prevPage)}>
           {Boolean(prevPage) && (

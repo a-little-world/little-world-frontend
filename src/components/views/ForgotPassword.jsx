@@ -44,7 +44,7 @@ const ForgotPassword = () => {
   }, [setFocus]);
 
   const onError = e => {
-    onFormError({ e, formFields: getValues(), setError, t });
+    onFormError({ e, formFields: getValues(), setError });
   };
 
   const onFormSubmit = async data => {
@@ -75,7 +75,7 @@ const ForgotPassword = () => {
           })}
           id="email"
           label={t('forgot_password.email_label')}
-          error={errors?.email?.message}
+          error={t(errors?.email?.message)}
           placeholder={t('forgot_password.email_placeholder')}
           type="email"
         />
@@ -85,7 +85,7 @@ const ForgotPassword = () => {
         >
           {requestSuccessful
             ? t('forgot_password.success_message')
-            : errors?.root?.serverError?.message}
+            : t(errors?.root?.serverError?.message)}
         </FormMessage>
         <ButtonsContainer>
           <Button
