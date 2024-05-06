@@ -28,13 +28,14 @@ import CallSidebar, {
 } from '../blocks/Calls/CallSidebar.tsx';
 import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar.tsx';
 import { Chat } from '../blocks/ChatCore/Chat.jsx';
-import QuestionCards from '../blocks/QuestionCards.jsx';
+import QuestionCards from '../blocks/QuestionCards/QuestionCards.tsx';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
 import {
   CallLayout,
   DesktopTranslationTool,
   StyledGridLayout,
   VideoContainer,
+  VideoPlaceholder,
   Videos,
   WaitingTile,
 } from './VideoCall.styles.tsx';
@@ -207,7 +208,7 @@ function MyVideoConference({
       const isLocal =
         track?.participant?.constructor?.name === LOCAL_PARTICIPANT;
       placeholders[track.participant.identity] = (
-        <ProfileImage
+        <VideoPlaceholder
           circle
           image={isLocal ? selfImage : partnerImage}
           imageType={isLocal ? selfImageType : partnerImageType}

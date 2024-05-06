@@ -17,7 +17,7 @@ import {
 } from '../../../services/userNotes';
 import { Chat } from '../ChatCore/Chat';
 import { StyledOption } from '../NbtSelector';
-import QuestionCards from '../QuestionCards';
+import QuestionCards from '../QuestionCards/QuestionCards.tsx';
 
 const Container = styled.div`
   display: flex;
