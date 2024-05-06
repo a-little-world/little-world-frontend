@@ -106,8 +106,7 @@ function Profile() {
 
   const matches = useSelector(state => state.userData.matches);
   const user = useSelector(state => state.userData.user);
-  const isSelf =
-    user?.id === userPk || !userId || typeof userPk === 'undefined';
+  const isSelf = user?.id === userPk || !userId;
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
