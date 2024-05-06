@@ -20,7 +20,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { CHAT_ROUTE, getAppRoute, getChatRoute } from '../../../routes';
+import {
+  CHAT_ROUTE,
+  PROFILE_ROUTE,
+  getAppRoute,
+  getChatRoute,
+} from '../../../routes';
 import MenuLink from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
@@ -245,7 +250,10 @@ function ProfileCard({
       </ProfileInfo>
       {!isSelf && (
         <Actions>
-          <MenuLink to={getAppRoute()} state={{ userPk }}>
+          <MenuLink
+            to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
+            state={{ userPk }}
+          >
             <ProfileIcon
               gradient={Gradients.Orange}
               label="visit profile"

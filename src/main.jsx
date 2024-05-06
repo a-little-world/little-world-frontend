@@ -19,7 +19,6 @@ import PartnerProfiles from './components/blocks/PartnerProfiles';
 import Help from './components/views/Help';
 import Messages from './components/views/Messages';
 import Notifications from './components/views/Notifications.tsx';
-import Profile from './components/views/Profile';
 import Settings from './components/views/Settings';
 import {
   blockIncomingCall,
@@ -151,7 +150,7 @@ const isViewportHeight = ['chat'];
 
 function Main() {
   // for the case /call-setup/:userId?/ and /chat/:chatId/
-  let { userId, chatId } = useParams();
+  const { userId, chatId } = useParams();
 
   const location = useLocation();
   const { userPk } = location.state || {};
@@ -179,7 +178,6 @@ function Main() {
     }
   };
 
-  const user = useSelector(state => state.userData.user);
   const matches = useSelector(state => state.userData.matches);
   const incomingCalls = useSelector(state => state.userData.incomingCalls);
   const callSetup = useSelector(state => state.userData.callSetup);
@@ -216,10 +214,6 @@ function Main() {
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   const use = location.pathname.split('/')[2] || (userPk ? 'profile' : 'main');
   const [topSelection, setTopSelection] = useState(null);
-  const selfProfile = user?.id === userPk || typeof userPk === 'undefined';
-  const selectedProfile = dashboardVisibleMatches.find(
-    match => match?.partner?.id === userPk,
-  )?.partner;
 
   useEffect(() => {
     if (use === 'main') {
@@ -286,14 +280,6 @@ function Main() {
           />
         )}
         {use === 'notifications' && <Notifications />}
-        {use === 'profile' && (
-          <Profile
-            setCallSetupPartner={setCallSetupPartner}
-            isSelf={selfProfile}
-            profile={selfProfile ? user.profile : selectedProfile}
-            userPk={selfProfile ? user.id : userPk}
-          />
-        )}
         {use === 'help' && <Help selection={topSelection} />}
         {use === 'settings' && <Settings />}
       </Content>

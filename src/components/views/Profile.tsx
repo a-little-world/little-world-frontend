@@ -4,11 +4,13 @@ import {
   Text,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
+import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import { fetchProfile } from '../../api/profile.ts';
 import '../../i18n';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes';
 import {
@@ -92,22 +94,55 @@ const getProfileFields = ({ profile, formOptions, t }) => ({
   ),
 });
 
-function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
+function Profile() {
   const { t } = useTranslation();
+  let { userId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { userPk } = location.state || {};
   const formOptions = useSelector(state => state.userData.formOptions);
   const [editingField, setEditingField] = useState(null);
-  const [profileFields, setProfileFields] = useState(
-    getProfileFields({ profile, formOptions, t }),
+
+  const matches = useSelector(state => state.userData.matches);
+  const user = useSelector(state => state.userData.user);
+  const isSelf =
+    user?.id === userPk || !userId || typeof userPk === 'undefined';
+  const dashboardVisibleMatches = matches
+    ? [...matches.support.items, ...matches.confirmed.items]
+    : [];
+  const [profile, setProfile] = useState(
+    isSelf
+      ? user?.profile
+      : dashboardVisibleMatches.find(match => match?.partner?.id === userPk)
+          ?.partner,
   );
-  const navigate = useNavigate();
+  const [profileFields, setProfileFields] = useState(
+    profile ? getProfileFields({ profile, formOptions, t }) : {},
+  );
+
+  useEffect(() => {
+    if (!isSelf && !profile) {
+      fetchProfile({ userId })
+        .then(data => {
+          setProfile(data.match.partner);
+        })
+        .catch(error => {
+          throw error;
+        });
+    }
+  }, []);
 
   const profileTitle = isSelf
     ? t('profile.self_profile_title')
-    : t('profile.match_profile_title', { userName: profile.first_name });
+    : t('profile.match_profile_title', { userName: profile?.first_name });
 
   useEffect(() => {
-    setProfileFields(getProfileFields({ profile, formOptions, t }));
+    if (profile)
+      setProfileFields(getProfileFields({ profile, formOptions, t }));
   }, [profile, formOptions]);
+
+  if (isEmpty(profile) || isEmpty(profileFields)) return null;
 
   return (
     <>
@@ -161,13 +196,13 @@ function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
           profile={profile}
           description="" /* don't show description on profile page as it's already shown in full */
           isSelf={isSelf}
-          setCallSetupPartner={setCallSetupPartner}
+          // setCallSetupPartner={setCallSetupPartner}
           openEditImage={() =>
             navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
           }
         />
       </PageContent>
-      <Modal open={editingField} onClose={() => setEditingField(null)}>
+      <Modal open={!!editingField} onClose={() => setEditingField(null)}>
         <ProfileEditor
           onClose={() => setEditingField(null)}
           field={editingField}

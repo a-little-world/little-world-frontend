@@ -11,13 +11,14 @@ import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
 import ActiveCall from './call';
 import RouterError from './components/blocks/ErrorView/ErrorView';
 import Form from './components/blocks/Form/Form';
-import AppLayout from './components/blocks/Layout/AppLayout';
+import AppLayout, { FullAppLayout } from './components/blocks/Layout/AppLayout';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import Welcome from './components/blocks/Welcome/Welcome';
 import ChangeEmail from './components/views/ChangeEmail';
 import EditView from './components/views/Edit';
 import ForgotPassword from './components/views/ForgotPassword';
 import Login from './components/views/Login';
+import Profile from './components/views/Profile.tsx';
 import ResetPassword from './components/views/ResetPassword';
 import SignUp from './components/views/SignUp';
 import VerifyEmail from './components/views/VerifyEmail';
@@ -36,11 +37,11 @@ import {
   MESSAGES_ROUTE,
   NOTIFICATIONS_ROUTE,
   PARTNERS_ROUTE,
-  PROFILE_ROUTE,
   RESET_PASSWORD_ROUTE,
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   USER_FORM_ROUTE,
+  USER_PROFILE_ROUTE,
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
 } from './routes';
@@ -172,8 +173,12 @@ const ROOT_ROUTES = [
     element: <Main />,
   },
   {
-    path: getAppRoute(PROFILE_ROUTE),
-    element: <Main />,
+    path: getAppRoute(USER_PROFILE_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Profile />
+      </FullAppLayout>
+    ),
   },
   {
     path: getAppRoute(HELP_ROUTE),
