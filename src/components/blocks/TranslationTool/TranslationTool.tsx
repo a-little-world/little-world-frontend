@@ -22,7 +22,7 @@ function TranslationTool({ className }: { className?: string }) {
   const [toLang, setToLang] = useState('de');
   const [isSwapped, setIsSwapped] = useState(false);
   const [error, setError] = useState(undefined);
-  console.log({ error });
+
   const [leftText, setLeftText] = useState('');
   const [rigthText, setRightText] = useState('');
 
@@ -31,7 +31,6 @@ function TranslationTool({ className }: { className?: string }) {
   };
 
   const onError = e => {
-    console.log({ e });
     setError(e.message ? t(e.message) : t('validation.generic_try_again'));
   };
 

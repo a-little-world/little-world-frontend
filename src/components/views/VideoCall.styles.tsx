@@ -1,6 +1,7 @@
 import { GridLayout } from '@livekit/components-react';
 import styled, { css } from 'styled-components';
 
+import ProfileImage from '../atoms/ProfileImage.jsx';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
 
 export const CallLayout = styled.div`
@@ -99,10 +100,13 @@ export const StyledGridLayout = styled(GridLayout)`
     aspect-ratio: 9 / 16;
 
     ${({ theme }) => css`
-      @media (min-width: ${theme.breakpoints.large}) {
+      @media (min-width: ${theme.breakpoints.medium}) {
         aspect-ratio: 16 / 9;
-        top: ${theme.spacing.small};
         width: 20%;
+      }
+
+      @media (min-width: ${theme.breakpoints.large}) {
+        top: ${theme.spacing.small};
       }
     `}
 
@@ -224,4 +228,16 @@ export const MEDIA_DEVICE_MENU_CSS = css`
       color: ${({ theme }) => theme.color.text.reversed};
     }
   }
+`;
+
+export const VideoPlaceholder = styled(ProfileImage)`
+  height: auto;
+  width: 100%;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      width: auto;
+      height: 100%;
+    }
+  `}
 `;
