@@ -207,6 +207,11 @@ function MyVideoConference({
     if (track.participant) {
       const isLocal =
         track?.participant?.constructor?.name === LOCAL_PARTICIPANT;
+      console.log({
+        track,
+        isLocal,
+        name: track?.participant?.constructor?.name,
+      });
       placeholders[track.participant.identity] = (
         <VideoPlaceholder
           circle
@@ -219,7 +224,7 @@ function MyVideoConference({
   });
 
   if (isEmpty(tracks)) return null;
-
+  console.log({ placeholders });
   return (
     <Videos>
       <StyledGridLayout tracks={tracks}>
