@@ -5,6 +5,7 @@
     "home": "Little World",
     "user": "Benutzerprofil",
     "chat": "Nachrichten",
+    "call": "Anruf",
     "notifications": "Benachrichtigungen",
     "profile": "Mein Profil",
     "help": "Hilfe erhalten",
@@ -143,6 +144,10 @@
   "settings.delete_account_confirm_button": "Konto löschen",
   "settings.delete_account_modal_title": "Bist du sicher, dass du dein Konto dauerhaft löschen willst?",
   "settings.delete_account_modal_cancel": "Abbrechen",
+
+  "call.leave_btn": "Gespräch beenden",
+  "call.waiting_for_partner": "Warten auf {{name}}...",
+
   "chat.not_selected": "Öffne einen bestimmten Chat, indem du ihn in der linken Seitenleiste anklickst",
   "chat.no_messages": "Du hast noch keine Nachrichten. Sende jetzt eine Nachricht!",
   "chat.no_messages_preview": "Keine Nachrichten geteilt.",
@@ -212,6 +217,7 @@
     "Dez"
   ],
   "lang-en": "Englisch",
+  "lang-sa": "Arabisch",
   "lang-bg": "Bulgarisch",
   "lang-ma": "Mandarin",
   "lang-ca": "Cantonese",
@@ -376,14 +382,15 @@
       }
     }
   },
-  "lang-sa": "",
-  "lang-ua": "",
   "sg_personal_profilePicture": "Profilbild",
   "cp_find_new_partner": "Finde eine*n neue*n Gesprächspartner*in",
   "question_category_archived": "Archiviert",
   "error.required": "Erforderlich",
   "error.password_min_length": "Passwort zu kurz",
   "error.passwords_do_not_match": "Passwörter stimmen nicht überein",
+  "error.server_issue": "Problem bei der Verbindung zum Server. Bitte versuche es noch einmal.",
+  "error.permissions": "Um an einem Anruf teilnehmen zu können, musst du uns Zugang zu mindestens einem Mikrofon oder einer Kamera deines Geräts geben. Bitte überprüfe deine Berechtigungseinstellungen.",
+
   "form.btn_next": "Weiter",
   "form.btn_back": "Zurück",
   "form.btn_complete": "Umfrage beenden",
@@ -517,6 +524,12 @@
   "notifications.filter_all": "Alle",
   "notifications.filter_unread": "Ungelesen",
   "notifications.archived": "Archiviert",
+
+  "translator.language_placholder": "Wähle eine Sprache...",
+  "translator.text_placeholder": "Typ zu übersetzen",
+  "translator.swap_languages": "Sprachen tauschen",
+  "translator.translated_placeholder": "Übersetzung erscheint hier.",
+
   "sign_up.company_tooltip": "Wenn du Little World im Namen deines Unternehmens nutzt, gib bitte den Namen deines Unternehmens an.",
   "sign_up.company_name_label": "Little World Partner",
   "sign_up.title": "Konto erstellen",

@@ -53,7 +53,7 @@ export const Notification = styled.div<{
     $highlight &&
     css`
       border-color: ${theme.color.border.selected};
-      background: ${theme.color.gradient.orange};
+      background: ${theme.color.gradient.orange10};
     `}
 `;
 

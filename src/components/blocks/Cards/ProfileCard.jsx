@@ -8,11 +8,11 @@ import {
   Logo,
   MessageIcon,
   PencilIcon,
-  PhoneIcon,
   Popover,
   ProfileIcon,
   Text,
   TextTypes,
+  VideoIcon,
   designTokens,
 } from '@a-little-world/little-world-design-system';
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
@@ -20,7 +20,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { CHAT_ROUTE, getAppRoute, getChatRoute } from '../../../routes';
+import { getAppRoute, getChatRoute } from '../../../routes';
 import MenuLink from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
@@ -48,7 +48,7 @@ export const StyledCard = styled(Card)`
 
   ${({ theme, $isSelf }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      height: ${({ $isSelf }) => ($isSelf ? 'initial' : PROFILE_CARD_HEIGHT)};
+      height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
     }
   `};
 `;
@@ -266,10 +266,11 @@ function ProfileCard({
             variation={ButtonVariations.Option}
             onClick={() => setCallSetupPartner(userPk)}
           >
-            <PhoneIcon
+            <VideoIcon
               gradient={Gradients.Orange}
               label="call icon"
               labelId="call_icon"
+              width={38}
             />
             {t('cp_call')}
           </Button>

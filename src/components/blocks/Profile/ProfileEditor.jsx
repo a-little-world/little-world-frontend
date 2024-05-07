@@ -45,7 +45,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
   };
 
   const onError = e => {
-    onFormError({ e, formFields: getValues(), setError, t });
+    onFormError({ e, formFields: getValues(), setError });
   };
 
   const onSave = data => {
@@ -64,7 +64,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
         </EditorTitle>
         <FormStep control={control} content={content} />
         <SubmitError $visible={errors?.root?.serverError}>
-          {errors?.root?.serverError?.message}
+          {t(errors?.root?.serverError?.message)}
         </SubmitError>
         <FormButtons>
           <Button

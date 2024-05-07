@@ -8,8 +8,7 @@ import {
 import { ThemeProvider } from 'styled-components';
 
 import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
-import ActiveCall from './call';
-import RouterError from './components/blocks/ErrorView/ErrorView';
+import RouterError from './components/blocks/ErrorView/ErrorView.tsx';
 import Form from './components/blocks/Form/Form';
 import AppLayout from './components/blocks/Layout/AppLayout';
 import FormLayout from './components/blocks/Layout/FormLayout';
@@ -21,6 +20,7 @@ import Login from './components/views/Login';
 import ResetPassword from './components/views/ResetPassword';
 import SignUp from './components/views/SignUp';
 import VerifyEmail from './components/views/VerifyEmail';
+import VideoCall from './components/views/VideoCall.jsx';
 import Main from './main';
 import {
   APP_ROUTE,
@@ -149,7 +149,7 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(CALL_ROUTE),
-    element: <ActiveCall />,
+    element: <VideoCall />,
   },
   {
     path: getAppRoute(CALL_SETUP_ROUTE),

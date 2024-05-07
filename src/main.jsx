@@ -6,8 +6,9 @@ import styled, { css } from 'styled-components';
 
 import CustomPagination from './CustomPagination';
 import { confirmMatch, partiallyConfirmMatch, updateMatchData } from './api';
-import CallSetup, { IncomingCall } from './call-setup';
 import './community-events.css';
+import CallSetup from './components/blocks/Calls/CallSetup.tsx';
+import IncomingCall from './components/blocks/Calls/IncomingCall.tsx';
 import CancelSearchCard from './components/blocks/Cards/CancelSearchCard';
 import ConfirmMatchCard from './components/blocks/Cards/ConfirmMatchCard';
 import NewMatchCard from './components/blocks/Cards/NewMatchCard';
@@ -29,10 +30,10 @@ import {
   removeMatch,
   updateConfirmedData,
 } from './features/userData';
+import { clearActiveTracks, removeActiveTracks } from './helpers/video.ts';
 import './i18n';
 import './main.css';
 import { APP_ROUTE } from './routes';
-import { removeActiveTracks } from './twilio-helper';
 
 const MatchCardComponent = ({ showNewMatch, matchId, profile }) => {
   const usesAvatar = profile.image_type === 'avatar';
@@ -154,6 +155,7 @@ function Main() {
   let { userId, chatId } = useParams();
 
   const location = useLocation();
+
   const { userPk } = location.state || {};
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -171,6 +173,7 @@ function Main() {
       if (data) {
         dispatch(updateConfirmedData(data.data.confirmed_matches));
         setCurrentPage(page);
+        window.scrollTo(0, 0);
       }
     } else {
       console.error(
@@ -181,13 +184,17 @@ function Main() {
 
   const user = useSelector(state => state.userData.user);
   const matches = useSelector(state => state.userData.matches);
-  const incomingCalls = useSelector(state => state.userData.incomingCalls);
+  const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
   const callSetup = useSelector(state => state.userData.callSetup);
   const activeCall = useSelector(state => state.userData.activeCall);
 
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
+
+  useEffect(() => {
+    // clearActiveTracks();
+  }, []);
 
   useEffect(() => {
     if (userId) {
@@ -239,11 +246,11 @@ function Main() {
   };
 
   const onAnswerCall = () => {
-    setCallSetupPartner(incomingCalls[0]?.userId);
+    setCallSetupPartner(activeCallRooms[0]?.partner?.id);
   };
 
   const onRejectCall = () => {
-    dispatch(blockIncomingCall({ userId: incomingCalls[0]?.userId }));
+    dispatch(blockIncomingCall({ userId: activeCallRooms[0]?.partner?.id }));
   };
 
   return (
@@ -308,12 +315,13 @@ function Main() {
         />
       </Modal>
       <Modal
-        open={incomingCalls[0]?.userId && !callSetup}
+        open={activeCallRooms[0]?.uuid && !callSetup}
         onClose={onRejectCall}
       >
         <IncomingCall
           matchesInfo={dashboardVisibleMatches}
-          userPk={incomingCalls[0]?.userId}
+          userPk={activeCallRooms[0]?.partner.id}
+          userProfile={activeCallRooms[0]?.partner}
           onAnswerCall={onAnswerCall}
           onRejectCall={onRejectCall}
         />
