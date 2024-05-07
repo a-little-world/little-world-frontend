@@ -1,4 +1,3 @@
-import { Modal } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -6,22 +5,15 @@ import styled, { css } from 'styled-components';
 
 import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/index.js';
-import CallSetup, { IncomingCall } from '../../call-setup.jsx';
 import '../../community-events.css';
-import {
-  blockIncomingCall,
-  cancelCallSetup,
-  initCallSetup,
-  updateConfirmedData,
-} from '../../features/userData.js';
+import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
 import '../../main.css';
 import { APP_ROUTE } from '../../routes.jsx';
-import { removeActiveTracks } from '../../twilio-helper.js';
-import CancelSearchCard from '../blocks/Cards/CancelSearchCard.jsx';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.jsx';
 import NbtSelector from '../blocks/NbtSelector.jsx';
 import NotificationPanel from '../blocks/NotificationPanel.jsx';
 import PartnerProfiles from '../blocks/PartnerProfiles.jsx';
+import { removeActiveTracks } from './helpers/video.ts';
 
 const Home = styled.div`
   display: flex;
@@ -61,6 +53,7 @@ function Main() {
       if (data) {
         dispatch(updateConfirmedData(data.data.confirmed_matches));
         setCurrentPage(page);
+        window.scrollTo(0, 0);
       }
     } else {
       console.error(
@@ -72,6 +65,7 @@ function Main() {
   const matches = useSelector(state => state.userData.matches);
   const callSetup = useSelector(state => state.userData.callSetup);
   const activeCall = useSelector(state => state.userData.activeCall);
+  const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
 
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]

@@ -4,6 +4,7 @@
   "headers": {
     "home": "Little World",
     "user": "User profile",
+    "call": "Call",
     "chat": "Messages",
     "notifications": "Notifications",
     "profile": "My profile",
@@ -145,6 +146,10 @@
   "settings.delete_account_confirm_button": "Delete Account",
   "settings.delete_account_modal_title": "Are you sure you want to permanently delete your account?",
   "settings.delete_account_modal_cancel": "Cancel",
+
+  "call.leave_btn": "End call",
+  "call.waiting_for_partner": "Waiting for {{name}} to join the call...",
+
   "chat.not_selected": "Open a specific chat by clicking on it in the left-hand side panel",
   "chat.no_messages": "You have no messages yet. Send a message now!",
   "chat.no_messages_preview": "No messages shared.",
@@ -228,7 +233,6 @@
   "lang-ru": "Russian",
   "lang-es": "Spanish",
   "lang-tr": "Turkish",
-  "lang-ua": "Ukrainian",
   "lang-vn": "Vietnamese",
   "lang-uk": "Ukrainian",
   "lang-de": "German",
@@ -384,6 +388,9 @@
   "error.required": "Required",
   "error.password_min_length": "Password too short",
   "error.passwords_do_not_match": "Passwords do not match",
+  "error.server_issue": "Issue connecting to the server. Please try again.",
+  "error.permissions": "In order to join a call, you need to provide us access to at least one of your device's microphone or camera. Please check your permission settings.",
+
   "form.btn_next": "Next",
   "form.btn_back": "Back",
   "form.btn_complete": "Complete Form",
@@ -510,6 +517,12 @@
   "notifications.filter_all": "All",
   "notifications.filter_unread": "Unread",
   "notifications.archived": "Archived",
+
+  "translator.language_placholder": "Select a language...",
+  "translator.text_placeholder": "Type to translate.",
+  "translator.swap_languages": "Swap",
+  "translator.translated_placeholder": "Your translation will appear here.",
+
   "error_view.title": "Uh oh, this page doesn't exist",
   "error_view.button": "Back to the start",
   "welcome.title": "Hey!",

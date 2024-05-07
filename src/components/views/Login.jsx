@@ -49,7 +49,7 @@ const Login = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    onFormError({ e, formFields: getValues(), setError, t });
+    onFormError({ e, formFields: getValues(), setError });
   };
 
   const onFormSubmit = async data => {

@@ -1,118 +1,27 @@
 import {
-  Button,
+  ButtonSizes,
   ButtonVariations,
-  Card,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@a-little-world/little-world-design-system';
+import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { withTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import styled from 'styled-components';
 
-import { FetchQuestionsDataAsync } from '../../features/userData';
-import { postArchieveQuestion } from '../../features/userData';
-
-const SidebarCard = styled(Card)`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  padding: ${({ theme }) => theme.spacing.xxsmall};
-`;
-
-const TopicButton = styled.button`
-  font-size: 1rem;
-  font-weight: normal;
-  min-width: fit-content;
-  padding: ${({ theme }) => theme.spacing.xsmall};
-  border-radius: 23px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
-  white-space: nowrap;
-  border: 2px solid #ef8a21;
-  margin: 0px ${({ theme }) => theme.spacing.xxxsmall};
-  box-sizing: border-box;
-  ${props =>
-    props.selected &&
-    `
-    background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
-    color: white;
-  `}
-`;
-
-const QuestionCard = styled.div`
-  border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  box-sizing: border-box;
-  border-radius: 18px;
-  margin-top: ${({ theme }) => theme.spacing.xsmall};
-  background: ${({ theme }) => theme.color.surface.primary};
-  width: 100%;
-  display: block;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  ${({ selected, theme }) =>
-    selected &&
-    `
-    border-color: ${theme.color.border.selected};
-  `}
-`;
-
-const QuestionContentCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  @media (min-width: 500px) {
-    padding: 0px;
-  }
-`;
-
-const QuestionButton = styled(Button)`
-  padding: 0px;
-  background: transparent;
-  color: black;
-  padding: ${({ theme }) => theme.spacing.xsmall};
-  height: fit-content;
-  font-size: 16px;
-  font-weight: normal;
-`;
-
-const ArchiveButton = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.xxxsmall};
-  padding: 0px ${({ theme }) => theme.spacing.xsmall};
-`;
-
-const Categories = styled.div`
-  display: flex;
-  overflow-x: hidden;
-  padding: ${({ theme }) => theme.spacing.xxxsmall};
-
-  ${({ selected, theme }) =>
-    selected &&
-    ` border-color: ${theme.color.border.selected};
-      padding: 15px;
-    `}
-`;
-
-const QuestionCategories = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const CategoryControl = styled(Button)`
-  flex-shrink: 0;
-`;
+import { FetchQuestionsDataAsync } from '../../../features/userData';
+import { postArchieveQuestion } from '../../../features/userData';
+import {
+  ArchiveButton,
+  Categories,
+  CategoryControl,
+  QuestionButton,
+  QuestionCard,
+  QuestionCategories,
+  QuestionContentCard,
+  SidebarCard,
+  TopicButton,
+} from './QuestionCards.styles.tsx';
 
 function QuestionCards() {
   const dispatch = useDispatch();
@@ -124,19 +33,15 @@ function QuestionCards() {
     state => state.userData?.questions?.categories,
   );
 
-  const categoriesRef = useRef(null);
-
-  const { i18n } = useTranslation();
+  const categoriesRef = useRef<HTMLDivElement>(null);
 
   // TODO: locked to only german untill we have a translation button, then use: i18n.language;
   const selfUserPreferedLang = 'de';
   const [selectedQuestionId, setQuestionId] = useState(null);
 
-  const [selectedTopic, setTopic] = useState(
-    cardCategories ? cardCategories[0]?.uuid : null,
-  );
+  const [selectedTopic, setTopic] = useState(cardCategories?.[0]?.uuid || null);
 
-  const changeScroll = direction => {
+  const changeScroll = (direction: 'left' | 'right') => {
     const scrollVelocity = {
       right: 100,
       left: -100,
@@ -147,14 +52,19 @@ function QuestionCards() {
   };
 
   useEffect(() => {
-    dispatch(FetchQuestionsDataAsync());
-  }, []);
+    if (isEmpty(cardCategories)) {
+      dispatch(FetchQuestionsDataAsync());
+    } else {
+      setTopic(cardCategories?.[0]?.uuid);
+    }
+  }, [cardCategories]);
 
   return (
     <SidebarCard>
       <QuestionCategories>
         <CategoryControl
-          variation={ButtonVariations.Control}
+          size={ButtonSizes.Medium}
+          variation={ButtonVariations.Circle}
           onClick={() => changeScroll('left')}
         >
           <ChevronLeftIcon
@@ -169,7 +79,7 @@ function QuestionCards() {
             <TopicButton
               key={topic?.uuid}
               type="button"
-              selected={selectedTopic === topic?.uuid}
+              $selected={selectedTopic === topic?.uuid}
               value={topic?.uuid}
               onClick={() => setTopic(topic?.uuid)}
             >
@@ -178,7 +88,8 @@ function QuestionCards() {
           ))}
         </Categories>
         <CategoryControl
-          variation={ButtonVariations.Control}
+          size={ButtonSizes.Medium}
+          variation={ButtonVariations.Circle}
           onClick={() => changeScroll('right')}
         >
           <ChevronRightIcon
@@ -190,17 +101,14 @@ function QuestionCards() {
         </CategoryControl>
       </QuestionCategories>
       <QuestionContentCard>
-        {cardsByCategory &&
-          cardsByCategory[selectedTopic]?.length > 0 &&
+        {cardsByCategory?.[selectedTopic]?.length > 0 &&
           cardsByCategory[selectedTopic]?.map(card => {
             return (
               <QuestionCard
                 key={card?.uuid}
-                selected={selectedQuestionId === card?.uuid}
+                $selected={selectedQuestionId === card?.uuid}
               >
                 <QuestionButton
-                  type="button"
-                  selected={selectedQuestionId === card?.uuid}
                   onClick={() => {
                     setQuestionId(card?.uuid);
                   }}

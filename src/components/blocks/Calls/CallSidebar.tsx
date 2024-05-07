@@ -1,53 +1,28 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import {
-  Button,
-  ButtonAppearance,
-  Card,
-} from '@a-little-world/little-world-design-system';
-import Cookies from 'js-cookie';
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { ButtonAppearance } from '@a-little-world/little-world-design-system';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 
-import './App.css';
-import { BACKEND_URL } from './ENVIRONMENT';
-import { clearActiveTracks } from './call-setup';
-import './call.css';
-import { Chat } from './components/blocks/ChatCore/Chat';
-import { StyledOption } from './components/blocks/NbtSelector';
-import QuestionCards from './components/blocks/QuestionCards';
-import {
-  getMatchByPartnerId,
-  getPartner,
-  stopActiveCall,
-} from './features/userData';
-import './i18n';
-import { APP_ROUTE, getAppRoute } from './routes';
+import '../../../App.css';
+import '../../../call.css';
+import { getMatchByPartnerId } from '../../../features/userData';
 import {
   addUserNote,
   deleteUserNote,
   getUserNotes,
   noteStatusUpdate,
-} from './services/userNotes';
-import {
-  getAudioTrack,
-  getVideoTrack,
-  joinRoom,
-  removeActiveTracks,
-  toggleLocalTracks,
-} from './twilio-helper';
+} from '../../../services/userNotes';
+import { Chat } from '../ChatCore/Chat';
+import { StyledOption } from '../NbtSelector';
+import QuestionCards from '../QuestionCards/QuestionCards.tsx';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  //   transition: width ease 0.3s;
 `;
 
 const TextArea = styled.textarea`
@@ -120,9 +95,9 @@ const CategoryButton = styled.button`
   ${({ selected }) =>
     selected &&
     `
-    background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
-    color: white;
-    `};
+      background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
+      color: white;
+      `};
 `;
 
 const StyledImage = styled.img`
@@ -182,8 +157,8 @@ const NotesCard = styled.div`
   ${props =>
     props.selected &&
     `
-    border-color: red;
-  `}
+      border-color: red;
+    `}
 `;
 
 const CardButton = styled.button`
@@ -208,154 +183,20 @@ const SidebarSelector = styled.div`
   gap: ${({ theme }) => `${theme.spacing.xxxsmall}`};
 `;
 
-function toggleFullscreen(t) {
-  const videoContainer = document.querySelector('.video-container');
-  const fullScreenTextEl = document.querySelector(
-    'label[for=fullscreen-toggle] .text',
-  );
-  // would be nice to do text in CSS but we need translation support
+const SidebarWrapper = styled.aside<{ $isDisplayed: boolean }>`
+  width: 25%;
+  display: none;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
 
-  if (!document.fullscreenElement) {
-    videoContainer.requestFullscreen();
-    fullScreenTextEl.innerHTML = t('vc_fs_btn_exit_fullscreen');
-  } else if (document.exitFullscreen) {
-    document.exitFullscreen();
-    fullScreenTextEl.innerHTML = t('vc_fs_btn_enter_fullscreen');
-  }
-}
+  ${({ theme, $isDisplayed }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      display: ${$isDisplayed ? 'flex' : 'none'};
+    }
+  `}
+`;
 
 const SidebarSelectionContext = createContext();
-
-function Timer() {
-  const [seconds, setSeconds] = useState(0);
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setSeconds(currentSeconds => currentSeconds + 1);
-    }, 1000);
-    return () => clearInterval(intervalId);
-  });
-
-  const remainder = seconds % 60;
-  const minutes = (seconds - remainder) / 60;
-
-  const two = n => (n < 10 ? `0${n}` : n);
-
-  return (
-    <div className="call-time">
-      <span className="text">
-        {two(minutes)}:{two(remainder)}
-      </span>
-    </div>
-  );
-}
-
-function ToggleButton({ id, text, alt, onChange, defaultChecked, disabled }) {
-  return (
-    <>
-      <input
-        type="checkbox"
-        id={id}
-        defaultChecked={defaultChecked}
-        onChange={onChange}
-      />
-      <label htmlFor={id} className={disabled ? 'disabled' : ''}>
-        <div className="img" alt={alt} />
-        {text && <span className="text">{text}</span>}
-      </label>
-    </>
-  );
-}
-
-function VideoControls() {
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const { setSideSelection } = useContext(SidebarSelectionContext);
-
-
-  const showChat = () => {
-    if (document.fullscreenElement) {
-      toggleFullscreen(t);
-    }
-    setSideSelection('chat');
-  };
-
-  const audioMuted = localStorage.getItem('audio muted') === 'true';
-  const videoMuted = localStorage.getItem('video muted') === 'true';
-
-  return (
-    <div className="video-controls">
-      <ToggleButton
-        id="audio-toggle"
-        alt="mute/unmute mic"
-        defaultChecked={audioMuted}
-        onChange={e => toggleLocalTracks(e.target.checked, 'audio')}
-      />
-      <ToggleButton
-        id="video-toggle"
-        alt="enable/disable webcam"
-        defaultChecked={videoMuted}
-        onChange={e => toggleLocalTracks(e.target.checked, 'video')}
-      />
-      <ToggleButton
-        id="fullscreen-toggle"
-        text={t('vc_fs_btn_enter_fullscreen')}
-        alt="toggle fullscreen"
-        onChange={() => toggleFullscreen(t)}
-      />
-      <ToggleButton
-        id="calendar-toggle"
-        text={t('vc_fs_btn_appointment')}
-        alt="calendar"
-        disabled
-      />
-      <ToggleButton
-        id="help-toggle"
-        text={t('vc_fs_btn_mistake')}
-        alt="mistake"
-        disabled
-      />
-      <button type="button" className="chat-show" onClick={showChat}>
-        <div className="img" alt="show chat" />
-        <span className="text">{t('vc_fs_btn_chat')}</span>
-      </button>
-      <Timer />
-      <button
-        onClick={() => {
-          clearActiveTracks();
-          dispatch(stopActiveCall());
-          navigate(getAppRoute());
-        }}
-        className="end-call"
-      >
-        <div className="img" alt="end call" />
-        <span className="text">{t('vc_fs_btn_end_call')}</span>
-      </button>
-    </div>
-  );
-}
-
-function MobileVideoControlsTop({ selectedOverlay, setOverlay }) {
-  const buttons = ['chat', 'translate', 'questions', 'notes'];
-  const disabled = ['notes'];
-
-  return (
-    <div className="video-controls top">
-      {buttons.map(name => (
-        <button
-          key={name}
-          type="button"
-          className={`show-${name}${selectedOverlay === name ? ' selected' : ''
-            }${disabled.includes(name) ? ' disabled' : ''}`}
-          onClick={() => setOverlay(name)}
-        >
-          <img alt={`show-${name}`} />
-        </button>
-      ))}
-    </div>
-  );
-}
 
 function SidebarNotes() {
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
@@ -520,8 +361,8 @@ function SidebarNotes() {
           actionType === 'remove'
             ? 'is_deleted'
             : actionType === 'favorite'
-              ? 'is_favorite'
-              : 'is_archived';
+            ? 'is_favorite'
+            : 'is_archived';
 
         updatedNotesData[noteIndex] = {
           ...updatedNotesData[noteIndex],
@@ -643,199 +484,7 @@ function SidebarNotes() {
   );
 }
 
-function TranslationDropdown({ side, selected, setter }) {
-  const { t } = useTranslation();
-  const languages = [
-    'en',
-    'sa',
-    'bg',
-    'ma',
-    'ca',
-    'fr',
-    'gr',
-    'in',
-    'it',
-    'kr',
-    'ir',
-    'pl',
-    'ru',
-    'es',
-    'tr',
-    'uk',
-    'vn',
-    'de',
-  ];
-  return (
-    <select
-      name={`${side}-language-select`}
-      onChange={e => setter(e.target.value)}
-      value={selected}
-    >
-      {languages.map(code => (
-        <option key={code} value={code}>
-          {t(`lang-${code}`)}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-function TranslationBox() {
-  const { t } = useTranslation();
-  const [fromLang, setFromLang] = useState('en');
-  const [toLang, setToLang] = useState('de');
-  const [isSwapped, setIsSwapped] = useState(false);
-
-  const [leftText, setLeftText] = useState('');
-  const [rigthText, setRightText] = useState('');
-
-  const handleChangeLeft = event => {
-    setLeftText(event.target.value);
-  };
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (leftText === '') {
-        return;
-      }
-
-      fetch(`${BACKEND_URL}/api/user/translate/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': Cookies.get('csrftoken'),
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          source_lang: fromLang,
-          target_lang: toLang,
-          text: leftText,
-        }).toString(),
-      })
-        .then(response => {
-          if (response.status === 200) {
-            return response.json();
-          }
-          console.error('server error', response.status, response.statusText);
-          return false;
-        })
-        .then(({ trans }) => setRightText(trans))
-        .catch(error => console.error(error));
-    }, 1000);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [leftText]);
-
-  const swapLang = () => {
-    const oldFromLang = fromLang;
-    const oldToLang = toLang;
-    setFromLang(oldToLang);
-    setToLang(oldFromLang);
-    const tmpLeftText = leftText;
-    setRightText(tmpLeftText);
-    setLeftText(rigthText);
-    setIsSwapped(!isSwapped);
-  };
-
-  return (
-    <div className="translation-box">
-      <div className="left">
-        <TranslationDropdown
-          side="left"
-          selected={fromLang}
-          setter={setFromLang}
-        />
-        <textarea
-          placeholder={t('vc_translator_type_here')}
-          value={leftText}
-          onChange={handleChangeLeft}
-        />
-      </div>
-      <button
-        type="button"
-        className={isSwapped ? 'swap-languages swapped' : 'swap-languages'}
-        onClick={swapLang}
-      >
-        <img alt="swap languages" />
-      </button>
-      <div className="right">
-        <TranslationDropdown
-          side="right"
-          selected={toLang}
-          setter={setToLang}
-        />
-        <textarea
-          placeholder={t('vc_translator_type_here')}
-          readOnly
-          value={rigthText}
-        />
-      </div>
-    </div>
-  );
-}
-
-function MobileDrawer({ content, setOverlay }) {
-  const location = useLocation();
-  const { userPk } = location.state || {};
-  const match = useSelector(state =>
-    getMatchByPartnerId(state.userData.matches, userPk),
-  );
-
-  return (
-    <div className={`call-drawer-container ${content}`}>
-      <div className="call-drawer">
-        <button
-          className="arrow-down"
-          type="button"
-          onClick={() => setOverlay(null)}
-        >
-          <img alt="hide drawer" />
-        </button>
-        <div className="drawer-content">
-          {content === 'chat' && (
-            <Chat
-              chatId={match.chatId}
-              isFullScreen={false}
-              onBackButton={null}
-              partner={match.partner}
-              renderUserInfo={false}
-            />
-          )}
-          {content === 'translate' && <TranslationBox />}
-          {content === 'questions' && <QuestionCards />}
-          {content === 'notes' && <SidebarNotes />}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function VideoFrame({ video, audio }) {
-  const [selectedOverlay, setOverlay] = useState(null);
-
-  return (
-    <div className="video-border">
-      <div className="video-container">
-        <MobileVideoControlsTop
-          selectedOverlay={selectedOverlay}
-          setOverlay={setOverlay}
-        />
-        <div
-          id="foreign-container"
-          className={selectedOverlay ? 'video-frame blur' : 'video-frame'}
-          alt="video"
-        />
-        <div className="local-video-container inset">
-          <video ref={video} />
-          <audio ref={audio} />
-        </div>
-        <VideoControls />
-        <MobileDrawer content={selectedOverlay} setOverlay={setOverlay} />
-      </div>
-    </div>
-  );
-}
-
-function Sidebar() {
+function CallSidebar({ isDisplayed }) {
   const { t } = useTranslation();
   const location = useLocation();
 
@@ -844,11 +493,13 @@ function Sidebar() {
     getMatchByPartnerId(state.userData.matches, userPk),
   );
   const sidebarTopics = ['chat', 'questions'];
-  const { setSideSelection, sideSelection } = useContext(SidebarSelectionContext);
+  const { setSideSelection, sideSelection } = useContext(
+    SidebarSelectionContext,
+  );
   const disabled = ['notes'];
 
   return (
-    <div className="call-sidebar">
+    <SidebarWrapper className="call-sidebar" $isDisplayed={isDisplayed}>
       <SidebarSelector className="sidebar-selector">
         {sidebarTopics.map(topic => (
           <StyledOption
@@ -866,19 +517,11 @@ function Sidebar() {
         ))}
       </SidebarSelector>
       <div className="sidebar-content">
-        {sideSelection === 'chat' && (
-          <Chat
-            chatId={match.chatId}
-            isFullScreen={false}
-            onBackButton={null}
-            partner={match.partner}
-            renderUserInfo={false}
-          />
-        )}
+        {sideSelection === 'chat' && <Chat chatId={match?.chatId} />}
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </div>
-    </div>
+    </SidebarWrapper>
   );
 }
 
@@ -886,60 +529,12 @@ export const SidebarSelectionProvider = ({ children }) => {
   const [sideSelection, setSideSelection] = useState('chat');
 
   return (
-    <SidebarSelectionContext.Provider value={{ sideSelection, setSideSelection }}>
+    <SidebarSelectionContext.Provider
+      value={{ sideSelection, setSideSelection }}
+    >
       {children}
     </SidebarSelectionContext.Provider>
   );
 };
 
-function CallScreen() {
-  const selfPk = useSelector(state => state.userData.user.id);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const location = useLocation();
-  const { userPk, tracks } = location.state || {};
-  const videoRef = useRef();
-  const audioRef = useRef();
-
-  /* remove the video stream from call-setup otherwise it can hang around after
-   * returing to main page, causing webcam lights to remain on.
-   */
-  removeActiveTracks();
-
-  useEffect(() => {
-    if (!userPk) {
-      navigate(`/${APP_ROUTE}/`);
-    }
-    const { videoId, audioId } = tracks || {};
-    if (!(videoId && audioId)) {
-      console.error('videoId audioId', videoId, audioId);
-    }
-    const videoMuted = localStorage.getItem('video muted') === 'true';
-    const audioMuted = localStorage.getItem('audio muted') === 'true';
-    getVideoTrack(videoId, videoMuted).then(track => {
-      window.activeTracks.push(track);
-      track.attach(videoRef.current);
-    });
-    getAudioTrack(audioId, audioMuted).then(track => {
-      window.activeTracks.push(track);
-      track.attach(audioRef.current);
-    });
-    joinRoom(selfPk, userPk);
-  });
-
-  document.body.style.overflow = ''; // unset after call overlay
-
-  return (
-    <div className="call-screen">
-      <SidebarSelectionProvider>
-        <div className="call-and-text">
-          <VideoFrame video={videoRef} audio={audioRef} />
-          <TranslationBox />
-        </div>
-        <Sidebar />
-      </SidebarSelectionProvider>
-    </div>
-  );
-}
-
-export default CallScreen;
+export default CallSidebar;

@@ -6,7 +6,7 @@ import { questionsDuringCall } from '../services/questionsDuringCall';
 export const userDataSlice = createSlice({
   name: 'userData',
   initialState: {
-    incomingCalls: [],
+    // activeCallRooms: []
   },
   reducers: {
     initialise: (state, action) => {
@@ -24,7 +24,7 @@ export const userDataSlice = createSlice({
       state.messages = {};
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
-      state.incomingCalls = action.payload?.incomingCalls || []; // [{ userId: user.hash }] or []
+      state.activeCallRooms = action.payload?.activeCallRooms || [];
       state.callSetup = action.payload?.callSetup || null; // { userId: user.hash } or null
       state.activeCall = action.payload?.activeCall || null; // { userId: user.hash, tracks: {} } or null
     },
@@ -53,9 +53,11 @@ export const userDataSlice = createSlice({
       state.user.isSearching = action.payload;
     },
     initCallSetup: (state, action) => {
+      const { userId } = action.payload;
       state.callSetup = action.payload;
-      state.incomingCalls = state.incomingCalls.filter(
-        call => call.userId !== action.payload?.userId,
+
+      state.activeCallRooms = state.activeCallRooms.filter(
+        room => room.activeUsers.filter(user => user === userId).length === 0,
       );
     },
     cancelCallSetup: (state, action) => {
@@ -65,6 +67,14 @@ export const userDataSlice = createSlice({
       const { userId, tracks } = action.payload;
       state.activeCall = { userId, tracks };
     },
+    addActiveCallRoom: (state, action) => {
+      state.activeCallRooms = [
+        ...state.activeCallRooms.filter(
+          room => room.uuid !== action.payload.uuid,
+        ),
+        action.payload,
+      ];
+    },
     stopActiveCall: (state, action) => {
       state.activeCall = null;
     },
@@ -73,8 +83,12 @@ export const userDataSlice = createSlice({
       state.matches[category].items.push(match);
     },
     addIncomingCall: (state, action) => {
-      const { userId } = action.payload;
-      state.incomingCalls.push({ userId });
+      state.activeCallRooms = [
+        ...state.activeCallRooms.filter(
+          room => room.uuid !== action.payload.uuid,
+        ),
+        action.payload,
+      ];
     },
     removeMatch: (state, action) => {
       const { category, match } = action.payload;
@@ -118,8 +132,8 @@ export const userDataSlice = createSlice({
     },
     blockIncomingCall: (state, action) => {
       const { userId } = action.payload;
-      state.incomingCalls = state.incomingCalls.filter(
-        call => call.userId !== userId,
+      state.activeCallRooms = state.activeCallRooms.filter(
+        room => room.partner.id !== userId,
       );
     },
     updateConfirmedData: (state, action) => {
@@ -133,7 +147,12 @@ export const userDataSlice = createSlice({
       state.messages = { ...state.messages, [chatId]: items };
     },
     addMessage: (state, action) => {
-      const { message, chatId, senderIsSelf = false, metaChatObj = null } = action.payload;
+      const {
+        message,
+        chatId,
+        senderIsSelf = false,
+        metaChatObj = null,
+      } = action.payload;
       const chatIsLoaded = chatId in state.messages;
       if (chatIsLoaded) {
         const newMessages = state.messages[chatId]?.results
@@ -142,21 +161,28 @@ export const userDataSlice = createSlice({
         state.messages[chatId].results = newMessages;
       } else {
         if (!metaChatObj)
-          throw new Error('No meta data for chat but chatId is not present in state.messages! The server should have deliverd the meta data for the chat.')
+          throw new Error(
+            'No meta data for chat but chatId is not present in state.messages! The server should have deliverd the meta data for the chat.',
+          );
         // this chat has never been loaded we can ignore inserting the actual messages, we only care about inserting the chat as messages will fetch one the chat is clicked!
       }
-      state.chats.results = chatIsLoaded ? state.chats.results?.map(chat => {
-        if (chat.uuid === chatId) {
-          return {
-            ...chat,
-            unread_count: senderIsSelf
-              ? chat.unread_count
-              : chat.unread_count + 1,
-            newest_message: message,
-          };
-        }
-        return chat;
-      }) : [metaChatObj, ...state.chats.results.filter(chat => chat.uuid !== chatId)];
+      state.chats.results = chatIsLoaded
+        ? state.chats.results?.map(chat => {
+            if (chat.uuid === chatId) {
+              return {
+                ...chat,
+                unread_count: senderIsSelf
+                  ? chat.unread_count
+                  : chat.unread_count + 1,
+                newest_message: message,
+              };
+            }
+            return chat;
+          })
+        : [
+            metaChatObj,
+            ...state.chats.results.filter(chat => chat.uuid !== chatId),
+          ];
       state.chats = {
         ...state.chats,
         results: sortChats(state.chats.results),
@@ -278,8 +304,12 @@ export const selectMatchByPartnerId = (matches, partnerId) => {
 
 export const getMatchByPartnerId = (matches, partnerId) => {
   const allMatches = [...matches.support.items, ...matches.confirmed.items];
-
   const partner = allMatches.find(match => match?.partner?.id === partnerId);
+  return partner;
+};
+
+export const getChatByPartnerId = (chats, partnerId) => {
+  const partner = chats.results.find(chat => chat?.partner?.id === partnerId);
   return partner;
 };
 
@@ -306,17 +336,17 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-    async dispatch => {
-      const result = await questionsDuringCall.archieveQuestion(
-        card?.uuid,
-        archive,
-      );
-      dispatch(
-        switchQuestionCategory({
-          card,
-          archived: archive,
-        }),
-      );
-    };
+  async dispatch => {
+    const result = await questionsDuringCall.archieveQuestion(
+      card?.uuid,
+      archive,
+    );
+    dispatch(
+      switchQuestionCategory({
+        card,
+        archived: archive,
+      }),
+    );
+  };
 
 export default userDataSlice.reducer;

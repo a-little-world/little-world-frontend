@@ -204,8 +204,7 @@ export const BackButton = styled(Button)<{ $show: boolean }>`
 `;
 
 export const SendButton = styled(Button)`
-  height: 36px;
-  min-width: unset;
+  flex-shrink: 0;
 `;
 
 export const ChatContainer = styled.div`
@@ -214,4 +213,5 @@ export const ChatContainer = styled.div`
   flex: 1;
   gap: ${({ theme }) => theme.spacing.small};
   overflow-y: hidden;
+  width: 100%;
 `;

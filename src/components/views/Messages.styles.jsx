@@ -109,7 +109,7 @@ export const UnreadIndicator = styled.span`
   border-radius: 50%;
   height: 10px;
   width: 10px;
-  background: ${({ theme }) => theme.color.gradient.orange};
+  background: ${({ theme }) => theme.color.gradient.orange10};
 `;
 
 export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {

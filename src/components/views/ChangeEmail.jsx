@@ -47,7 +47,7 @@ const ChangeEmail = () => {
 
   const onError = e => {
     setIsSubmitting(false);
-    onFormError({ e, formFields: getValues(), setError, t });
+    onFormError({ e, formFields: getValues(), setError });
   };
 
   const onFormSubmit = async ({ email }) => {
@@ -77,7 +77,7 @@ const ChangeEmail = () => {
           })}
           id="email"
           label={t('change_email.input_label')}
-          error={errors?.email?.message}
+          error={t(errors?.email?.message)}
           placeholder={t('change_email.input_placeholder')}
           type="email"
         />
@@ -85,7 +85,7 @@ const ChangeEmail = () => {
           $visible={errors?.root?.serverError}
           $type={MessageTypes.Error}
         >
-          {errors?.root?.serverError?.message}
+          {t(errors?.root?.serverError?.message)}
         </FormMessage>
         <ButtonsContainer>
           <Link

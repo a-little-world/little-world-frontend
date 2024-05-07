@@ -29,6 +29,7 @@ import {
 } from '../../routes';
 import Logo from '../atoms/Logo';
 import MenuLink from '../atoms/MenuLink';
+import UnreadDot from '../atoms/UnreadDot.tsx';
 
 const SidebarContainer = styled.nav`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
@@ -63,23 +64,6 @@ const SidebarContainer = styled.nav`
   `};
 `;
 
-const Unread = styled.div`
-  position: absolute;
-  top: ${({ theme }) => theme.spacing.xxsmall};
-  right: ${({ theme }) => theme.spacing.xxsmall};
-  background: ${({ theme }) => theme.color.surface.highlight};
-  color: ${({ theme }) => theme.color.text.button};
-  height: 16px;
-  aspect-ratio: 1;
-  border-radius: 100%;
-  font-weight: 600;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 100%;
-`;
-
 const StyledLogo = styled(Logo)`
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
@@ -102,10 +86,6 @@ const MobileOverlay = styled.div`
     }
   `};
 `;
-
-function UnreadDot({ count }) {
-  return <Unread>{count}</Unread>;
-}
 
 function Sidebar({ sidebarMobile }) {
   const location = useLocation();

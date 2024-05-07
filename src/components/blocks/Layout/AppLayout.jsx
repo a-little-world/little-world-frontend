@@ -4,13 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import CallSetup, { IncomingCall } from '../../../call-setup';
 import { initCallSetup } from '../../../features/userData';
-import { removeActiveTracks } from '../../../twilio-helper';
+import CallSetup from '../Calls/CallSetup.tsx';
+import IncomingCall from '../Calls/IncomingCall.tsx';
 import CancelSearchCard from '../Cards/CancelSearchCard';
 import { MatchCardComponent } from '../Cards/MatchCard.tsx';
 import MobileNavBar from '../MobileNavBar';
 import Sidebar from '../Sidebar';
+import { removeActiveTracks } from './helpers/video.ts';
 
 const isViewportHeight = ['chat'];
 
@@ -92,7 +93,7 @@ export const FullAppLayout = ({ children }) => {
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
   const matches = useSelector(state => state.userData.matches);
-  const incomingCalls = useSelector(state => state.userData.incomingCalls);
+  const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
   const callSetup = useSelector(state => state.userData.callSetup);
   const activeCall = useSelector(state => state.userData.activeCall);
 
@@ -120,11 +121,11 @@ export const FullAppLayout = ({ children }) => {
   };
 
   const onAnswerCall = () => {
-    setCallSetupPartner(incomingCalls[0]?.userId);
+    setCallSetupPartner(activeCallRooms[0]?.partner?.id);
   };
 
   const onRejectCall = () => {
-    dispatch(blockIncomingCall({ userId: incomingCalls[0]?.userId }));
+    dispatch(blockIncomingCall({ userId: activeCallRooms[0]?.partner?.id }));
   };
 
   return (
