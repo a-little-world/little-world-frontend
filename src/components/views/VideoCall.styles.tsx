@@ -237,7 +237,7 @@ export const VideoPlaceholder = styled(ProfileImage)`
   width: 100%;
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
+    @media (min-width: ${theme.breakpoints.small}) {
       width: auto;
       height: 100%;
     }
