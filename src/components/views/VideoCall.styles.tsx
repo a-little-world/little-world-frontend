@@ -95,18 +95,20 @@ export const StyledGridLayout = styled(GridLayout)`
     top: 72px;
     right: ${({ theme }) => theme.spacing.small};
     width: 30%;
+    max-height: 50%;
     z-index: 1;
     border-radius: 16px;
     aspect-ratio: 9 / 16;
 
     ${({ theme }) => css`
-      @media (min-width: ${theme.breakpoints.medium}) {
+      @media (min-width: ${theme.breakpoints.small}) {
         aspect-ratio: 16 / 9;
-        width: 20%;
+        width: 25%;
       }
 
       @media (min-width: ${theme.breakpoints.large}) {
         top: ${theme.spacing.small};
+        width: 20%;
       }
     `}
 

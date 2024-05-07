@@ -21,6 +21,8 @@ const BorderSizes = {
 const StyledAvatar = styled(Avatar)`
   width: ${({ $size }) => ($size === 'flex' ? 'auto' : ImageSizes[$size])};
   height: ${({ $size }) => ImageSizes[$size]};
+  max-height: ${ImageSizes.large};
+  max-width: ${ImageSizes.large};
   display: block;
   object-fit: cover;
   border: ${({ $size }) => BorderSizes[$size]} solid #e6e8ec;
@@ -31,7 +33,6 @@ const StyledAvatar = styled(Avatar)`
   background-clip: padding-box;
   transform: translateZ(0);
   aspect-ratio: 1;
-  max-height: ${ImageSizes.large};
 `;
 
 export const CircleImage = styled.div`
@@ -42,13 +43,14 @@ export const CircleImage = styled.div`
   background-position: center;
   width: ${({ $size }) => ($size === 'flex' ? 'auto' : ImageSizes[$size])};
   height: ${({ $size }) => ImageSizes[$size]};
+  max-height: ${ImageSizes.large};
+  max-width: ${ImageSizes.large};
   display: flex;
   align-items: end;
   justify-content: center;
   padding: ${({ theme }) => theme.spacing.small};
   position: relative;
   aspect-ratio: 1;
-  max-height: ${ImageSizes.large};
 `;
 
 export const Image = styled.img`

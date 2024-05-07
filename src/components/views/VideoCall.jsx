@@ -8,6 +8,7 @@ import {
 } from '@livekit/components-react';
 import '@livekit/components-styles';
 import { Track } from 'livekit-client';
+import { LocalParticipant } from 'livekit-client';
 import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -39,8 +40,6 @@ import {
   Videos,
   WaitingTile,
 } from './VideoCall.styles.tsx';
-
-const LOCAL_PARTICIPANT = 'LocalParticipant';
 
 export function VideoCall() {
   const navigate = useNavigate();
@@ -205,13 +204,8 @@ function MyVideoConference({
   const placeholders = {};
   tracks.forEach(track => {
     if (track.participant) {
-      const isLocal =
-        track?.participant?.constructor?.name === LOCAL_PARTICIPANT;
-      console.log({
-        track,
-        isLocal,
-        name: track?.participant?.constructor?.name,
-      });
+      const isLocal = track?.participant instanceof LocalParticipant;
+
       placeholders[track.participant.identity] = (
         <VideoPlaceholder
           circle
@@ -224,7 +218,7 @@ function MyVideoConference({
   });
 
   if (isEmpty(tracks)) return null;
-  console.log({ placeholders });
+
   return (
     <Videos>
       <StyledGridLayout tracks={tracks}>
