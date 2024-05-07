@@ -6,12 +6,11 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { TFunction, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { fetchProfile } from '../../api/profile.ts';
-import '../../i18n';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes';
 import {
   ComponentTypes,
@@ -25,13 +24,13 @@ import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
 import { Details, PageContent, TextField } from '../blocks/Profile/styles';
 
-const getProfileFields = ({ profile, formOptions, t }) => ({
+const getProfileFields = ({ profile, formOptions, t }: { t: TFunction }) => ({
   description: getFormComponent(
     {
       type: ComponentTypes.textArea,
       dataField: 'description',
       currentValue: profile.description,
-      getProps: trans => ({
+      getProps: (trans: TFunction) => ({
         errorRules: { required: trans('validation.required') },
         size: TextAreaSize.Medium,
       }),
@@ -44,7 +43,7 @@ const getProfileFields = ({ profile, formOptions, t }) => ({
       currentValue: profile.interests,
       dataField: 'interests',
       formData: formOptions?.interests,
-      getProps: trans => ({
+      getProps: (trans: TFunction) => ({
         label: trans('interests.selection_label'),
         labelTooltip: trans('interests.selection_tooltip'),
       }),
@@ -67,7 +66,7 @@ const getProfileFields = ({ profile, formOptions, t }) => ({
       type: ComponentTypes.multiDropdown,
       dataField: 'lang_skill',
       currentValue: profile.lang_skill,
-      getProps: trans => ({
+      getProps: (trans: TFunction) => ({
         addMoreLabel: trans('self_info.language_add_more'),
         label: trans('self_info.language_skills_label'),
         labelTooltip: trans('self_info.language_skills_tooltip'),

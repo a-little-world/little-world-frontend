@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import { fetchChats } from '../../api/chat';
 import { updateChats } from '../../features/userData.js';
@@ -9,9 +10,10 @@ import PageHeader from '../atoms/PageHeader';
 import { ChatWithUserInfo } from '../blocks/ChatCore/Chat';
 import { ChatDashboard, ChatsPanel } from './Messages.styles';
 
-const Messages = ({ openChatWithId }) => {
+const Messages = () => {
+  const { chatId } = useParams();
   const { t } = useTranslation();
-  const [selectedChat, setSelectedChat] = useState(openChatWithId);
+  const [selectedChat, setSelectedChat] = useState(chatId);
   const chats = useSelector(state => state.userData.chats);
   const items = chats?.results;
   const dispatch = useDispatch();

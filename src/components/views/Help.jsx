@@ -21,6 +21,7 @@ import styled from 'styled-components';
 import { CHAT_ROUTE, getAppRoute } from '../../routes';
 import Logo from '../atoms/Logo';
 import MenuLink from '../atoms/MenuLink';
+import NbtSelector from '../blocks/NbtSelector';
 import './help.css';
 
 const HelpContainer = styled.div`
@@ -385,85 +386,95 @@ function Contact() {
   );
 }
 
-function Help({ selection }) {
+function Help() {
   const { t } = useTranslation();
+  const [subpage, selectSubpage] = useState('contact');
   const adminUser = useSelector(
     state => state.userData.matches.support.items[0],
   );
 
   return (
-    <HelpContainer>
-      <HelpPanel>
-        {selection === 'faqs' && <Faqs />}
-        {selection === 'contact' && <Contact />}
-      </HelpPanel>
+    <>
+      <NbtSelector
+        selection={subpage}
+        setSelection={selectSubpage}
+        use={'help'}
+      />
+      <HelpContainer>
+        <HelpPanel>
+          {subpage === 'faqs' && <Faqs />}
+          {subpage === 'contact' && <Contact />}
+        </HelpPanel>
 
-      <HelpSupport>
-        <Topper>
-          <Logo />
-          <SupportTeam>
-            <h2>{t('help_support_header')}</h2>
-            <div className="sub">{t('help_support_slogan')}</div>
-          </SupportTeam>
-        </Topper>
+        <HelpSupport>
+          <Topper>
+            <Logo />
+            <SupportTeam>
+              <h2>{t('help_support_header')}</h2>
+              <div className="sub">{t('help_support_slogan')}</div>
+            </SupportTeam>
+          </Topper>
 
-        <ContactButtons>
-          {adminUser?.partner?.id && (
-            <MenuLink
-              to={getAppRoute(CHAT_ROUTE)}
-              // state={{ userPk: adminUser.partner.id }}
-            >
-              <MessageIcon
+          <ContactButtons>
+            {adminUser?.partner?.id && (
+              <MenuLink
+                to={getAppRoute(CHAT_ROUTE)}
+                // state={{ userPk: adminUser.partner.id }}
+              >
+                <MessageIcon
+                  gradient={Gradients.Orange}
+                  label="message support"
+                  labelId="message_support"
+                />
+                <SupportButtonText>
+                  {t('help_support_message_btn')}
+                </SupportButtonText>
+              </MenuLink>
+            )}
+            <MenuLink to="tel:+4915234777471">
+              <PhoneIcon
                 gradient={Gradients.Orange}
-                label="message support"
-                labelId="message_support"
+                label="call support"
+                labelId="call_support"
               />
               <SupportButtonText>
-                {t('help_support_message_btn')}
+                {t('help_support_call_btn')}
               </SupportButtonText>
             </MenuLink>
-          )}
-          <MenuLink to="tel:+4915234777471">
-            <PhoneIcon
-              gradient={Gradients.Orange}
-              label="call support"
-              labelId="call_support"
-            />
-            <SupportButtonText>{t('help_support_call_btn')}</SupportButtonText>
-          </MenuLink>
-        </ContactButtons>
+          </ContactButtons>
 
-        <ContactInfo>
-          <ContentWrapper>
+          <ContactInfo>
             <ContentWrapper>
-              <Logo size="small" stacked={false} />
-              <BusinessName>A Little World gUG</BusinessName>
+              <ContentWrapper>
+                <Logo size="small" stacked={false} />
+                <BusinessName>A Little World gUG</BusinessName>
+              </ContentWrapper>
+              <Contacts>
+                <ContactLink href="mailto:support@little-world.com">
+                  <img className="email-icon" alt="e-mail" />
+                  support@little-world.com
+                </ContactLink>
+                <ContactLink href="tel:+4915234777471">
+                  <img className="mobile-icon" alt="mobile" />
+                  +49 152 34 777 471
+                </ContactLink>
+              </Contacts>
             </ContentWrapper>
-            <Contacts>
-              <ContactLink href="mailto:support@little-world.com">
-                <img className="email-icon" alt="e-mail" />
-                support@little-world.com
-              </ContactLink>
-              <ContactLink href="tel:+4915234777471">
-                <img className="mobile-icon" alt="mobile" />
-                +49 152 34 777 471
-              </ContactLink>
-            </Contacts>
-          </ContentWrapper>
-          <SocialLinks>
-            <a href="https://www.linkedin.com/company/76488145/">
-              <img className="icon-linkedin" alt="linked in" />
-            </a>
-            <a href="https://www.facebook.com/profile.php?id=100071509163812">
-              <img className="icon-facebook" alt="facebook" />
-            </a>
-            <a href="https://www.instagram.com/littleworld_de/">
-              <img className="icon-instagram" alt="instagram" />
-            </a>
-          </SocialLinks>
-        </ContactInfo>
-      </HelpSupport>
-    </HelpContainer>
+            <SocialLinks>
+              <a href="https://www.linkedin.com/company/76488145/">
+                <img className="icon-linkedin" alt="linked in" />
+              </a>
+              <a href="https://www.facebook.com/profile.php?id=100071509163812">
+                <img className="icon-facebook" alt="facebook" />
+              </a>
+              <a href="https://www.instagram.com/littleworld_de/">
+                <img className="icon-instagram" alt="instagram" />
+              </a>
+            </SocialLinks>
+          </ContactInfo>
+        </HelpSupport>
+      </HelpContainer>
+    </>
   );
 }
 

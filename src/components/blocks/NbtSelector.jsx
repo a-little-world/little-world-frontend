@@ -39,16 +39,17 @@ export const StyledOption = styled(Button)`
   }
 `;
 
+const nbtTopics = {
+  main: ['conversation_partners', 'community_calls'],
+  help: ['contact', 'faqs'],
+};
+
 function NbtSelector({ selection, setSelection, use }) {
   const { t } = useTranslation();
   if (!['main', 'help'].includes(use)) {
     return null;
   }
 
-  const nbtTopics = {
-    main: ['conversation_partners', 'community_calls'],
-    help: ['faqs', 'contact'],
-  };
   const topics = nbtTopics[use];
 
   return (
