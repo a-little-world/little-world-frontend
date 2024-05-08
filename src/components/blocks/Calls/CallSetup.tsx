@@ -137,12 +137,10 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
   const dispatch = useDispatch();
 
   const handleJoin = (values: LocalUserChoices) => {
-    dispatch(initActiveCall({ userPk, tracks: values }));
-    dispatch(cancelCallSetup());
-    clearActiveTracks();
-    navigate(getAppRoute(CALL_ROUTE), {
-      state: {
-        userPk,
+    dispatch(
+      initActiveCall({
+        userId: userPk,
+        tracks: values,
         token: authData.token,
         audioOptions: values.audioEnabled
           ? { deviceId: values.audioDeviceId }
@@ -152,8 +150,11 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
           : false,
         livekitServerUrl: authData.livekitServerUrl,
         origin: location.pathname,
-      },
-    });
+      }),
+    );
+    dispatch(cancelCallSetup());
+    clearActiveTracks();
+    navigate(getAppRoute(CALL_ROUTE));
   };
 
   useEffect(() => {

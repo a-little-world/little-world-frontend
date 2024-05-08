@@ -43,7 +43,6 @@ import {
 
 export function VideoCall() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
@@ -58,18 +57,18 @@ export function VideoCall() {
 
   const {
     origin,
-    userPk,
+    userId,
     token,
     livekitServerUrl,
     audioOptions,
     videoOptions,
-  } = location.state;
+  } = useSelector(state => state.userData.activeCall);
 
   const profile = useSelector(state => state.userData.user.profile);
   const match = useSelector(state =>
     origin === getAppRoute(MESSAGES_ROUTE)
-      ? getChatByPartnerId(state.userData.chats, userPk)
-      : getMatchByPartnerId(state.userData.matches, userPk),
+      ? getChatByPartnerId(state.userData.chats, userId)
+      : getMatchByPartnerId(state.userData.matches, userId),
   );
 
   const onChatToggle = () => {
@@ -119,7 +118,7 @@ export function VideoCall() {
               onDisconnected={() => {
                 dispatch(
                   blockIncomingCall({
-                    userId: userPk,
+                    userId,
                   }),
                 );
                 navigate(getAppRoute(), { state: { callEnded: true } });
