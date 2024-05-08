@@ -58,7 +58,7 @@ export function VideoCall() {
     useSelector(state => state.userData.activeCall);
 
   const profile = useSelector(state => state.userData.user.profile);
-  const match = useSelector(state =>
+  const chat = useSelector(state =>
     getChatByPartnerId(state.userData.chats, userId),
   );
 
@@ -117,13 +117,13 @@ export function VideoCall() {
             >
               <MyVideoConference
                 isFullScreen={isFullScreen}
-                partnerName={match?.partner?.first_name}
+                partnerName={chat?.partner?.first_name}
                 partnerImage={
-                  match?.partner?.image_type === 'avatar'
-                    ? match?.partner.avatar_config
-                    : match?.partner?.image
+                  chat?.partner?.image_type === 'avatar'
+                    ? chat?.partner.avatar_config
+                    : chat?.partner?.image
                 }
-                partnerImageType={match?.partner?.image_type}
+                partnerImageType={chat?.partner?.image_type}
                 selfImage={
                   profile.image_type === 'avatar'
                     ? profile.avatar_config
@@ -159,7 +159,7 @@ export function VideoCall() {
             open={selectedDrawerOption === 'chat'}
             onClose={() => setSelectedDrawerOption(null)}
           >
-            <Chat chatId={match?.chatId || match?.uuid} />
+            <Chat chatId={chat?.uuid} />
           </Drawer>
           <Drawer
             title={'Questions'}
@@ -168,7 +168,7 @@ export function VideoCall() {
           >
             <QuestionCards />
           </Drawer>
-          <CallSidebar isDisplayed={showChat} />
+          <CallSidebar isDisplayed={showChat} chatId={chat?.uuid} />
         </CallLayout>
       </LayoutContextProvider>
     </SidebarSelectionProvider>
