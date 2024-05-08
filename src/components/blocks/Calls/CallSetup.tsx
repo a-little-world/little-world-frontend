@@ -15,7 +15,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { requestVideoAccessToken } from '../../../api/livekit';
-import { cancelCallSetup, initActiveCall } from '../../../features/userData';
+import {
+  cancelCallSetup,
+  initActiveCall,
+  insertChat,
+} from '../../../features/userData';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { getAppRoute } from '../../../routes';
 import { CALL_ROUTE } from '../../../routes.jsx';
@@ -117,7 +121,6 @@ type CallSetupProps = {
 
 function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
   const { t } = useTranslation();
-  const location = useLocation();
   const [authData, setAuthData] = useState({
     token: null,
     livekitServerUrl: null,
@@ -149,7 +152,6 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
           ? { deviceId: values.videoDeviceId }
           : false,
         livekitServerUrl: authData.livekitServerUrl,
-        origin: location.pathname,
       }),
     );
     dispatch(cancelCallSetup());
@@ -164,6 +166,7 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
       partnerId: userPk,
     })
       .then(res => {
+        dispatch(insertChat(res.chat));
         setAuthData({
           token: res.token,
           livekitServerUrl: res.server_url,

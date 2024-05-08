@@ -241,7 +241,7 @@ export const userDataSlice = createSlice({
     insertChat: (state, { payload }) => {
       const chatResults = isEmpty(state.chats)
         ? [payload]
-        : [payload, ...state.chats.results];
+        : [...state.chats.results, payload];
       state.chats.results = sortChats(chatResults);
     },
     updateChats: (state, { payload }) => {

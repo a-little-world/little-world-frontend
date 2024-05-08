@@ -13,15 +13,14 @@ import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import {
   blockIncomingCall,
   getChatByPartnerId,
-  getMatchByPartnerId,
 } from '../../features/userData.js';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
-import { MESSAGES_ROUTE, getAppRoute } from '../../routes.jsx';
+import { getAppRoute } from '../../routes.jsx';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage.jsx';
 import CallSidebar, {
@@ -55,20 +54,12 @@ export function VideoCall() {
     onKeyPressed: () => setIsFullScreen(false),
   });
 
-  const {
-    origin,
-    userId,
-    token,
-    livekitServerUrl,
-    audioOptions,
-    videoOptions,
-  } = useSelector(state => state.userData.activeCall);
+  const { userId, token, livekitServerUrl, audioOptions, videoOptions } =
+    useSelector(state => state.userData.activeCall);
 
   const profile = useSelector(state => state.userData.user.profile);
   const match = useSelector(state =>
-    origin === getAppRoute(MESSAGES_ROUTE)
-      ? getChatByPartnerId(state.userData.chats, userId)
-      : getMatchByPartnerId(state.userData.matches, userId),
+    getChatByPartnerId(state.userData.chats, userId),
   );
 
   const onChatToggle = () => {
