@@ -5,9 +5,7 @@ import { questionsDuringCall } from '../services/questionsDuringCall';
 
 export const userDataSlice = createSlice({
   name: 'userData',
-  initialState: {
-    // activeCallRooms: []
-  },
+  initialState: {},
   reducers: {
     initialise: (state, action) => {
       // TODO: this should NEVER be called twice will overwrite the full state
@@ -64,8 +62,7 @@ export const userDataSlice = createSlice({
       state.callSetup = null;
     },
     initActiveCall: (state, action) => {
-      const { userId, tracks } = action.payload;
-      state.activeCall = { userId, tracks };
+      state.activeCall = action.payload;
     },
     addActiveCallRoom: (state, action) => {
       state.activeCallRooms = [
@@ -168,21 +165,21 @@ export const userDataSlice = createSlice({
       }
       state.chats.results = chatIsLoaded
         ? state.chats.results?.map(chat => {
-          if (chat.uuid === chatId) {
-            return {
-              ...chat,
-              unread_count: senderIsSelf
-                ? chat.unread_count
-                : chat.unread_count + 1,
-              newest_message: message,
-            };
-          }
-          return chat;
-        })
+            if (chat.uuid === chatId) {
+              return {
+                ...chat,
+                unread_count: senderIsSelf
+                  ? chat.unread_count
+                  : chat.unread_count + 1,
+                newest_message: message,
+              };
+            }
+            return chat;
+          })
         : [
-          metaChatObj,
-          ...state.chats.results.filter(chat => chat.uuid !== chatId),
-        ];
+            metaChatObj,
+            ...state.chats.results.filter(chat => chat.uuid !== chatId),
+          ];
       state.chats = {
         ...state.chats,
         results: sortChats(state.chats.results),
@@ -244,7 +241,7 @@ export const userDataSlice = createSlice({
     insertChat: (state, { payload }) => {
       const chatResults = isEmpty(state.chats)
         ? [payload]
-        : [payload, ...state.chats.results];
+        : [...state.chats.results, payload];
       state.chats.results = sortChats(chatResults);
     },
     updateChats: (state, { payload }) => {
@@ -336,17 +333,17 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-    async dispatch => {
-      const result = await questionsDuringCall.archieveQuestion(
-        card?.uuid,
-        archive,
-      );
-      dispatch(
-        switchQuestionCategory({
-          card,
-          archived: archive,
-        }),
-      );
-    };
+  async dispatch => {
+    const result = await questionsDuringCall.archieveQuestion(
+      card?.uuid,
+      archive,
+    );
+    dispatch(
+      switchQuestionCategory({
+        card,
+        archived: archive,
+      }),
+    );
+  };
 
 export default userDataSlice.reducer;

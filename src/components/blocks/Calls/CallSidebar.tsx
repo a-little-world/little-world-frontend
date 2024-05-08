@@ -8,7 +8,7 @@ import styled, { css } from 'styled-components';
 
 import '../../../App.css';
 import '../../../call.css';
-import { getMatchByPartnerId } from '../../../features/userData';
+import { getChatByPartnerId } from '../../../features/userData';
 import {
   addUserNote,
   deleteUserNote,
@@ -484,14 +484,8 @@ function SidebarNotes() {
   );
 }
 
-function CallSidebar({ isDisplayed }) {
+function CallSidebar({ isDisplayed, chatId }) {
   const { t } = useTranslation();
-  const location = useLocation();
-
-  const { userPk } = location.state || {};
-  const match = useSelector(state =>
-    getMatchByPartnerId(state.userData.matches, userPk),
-  );
   const sidebarTopics = ['chat', 'questions'];
   const { setSideSelection, sideSelection } = useContext(
     SidebarSelectionContext,
@@ -517,7 +511,7 @@ function CallSidebar({ isDisplayed }) {
         ))}
       </SidebarSelector>
       <div className="sidebar-content">
-        {sideSelection === 'chat' && <Chat chatId={match?.chatId} />}
+        {sideSelection === 'chat' && <Chat chatId={chatId} />}
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </div>

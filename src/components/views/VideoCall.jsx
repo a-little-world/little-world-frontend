@@ -13,15 +13,14 @@ import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import {
   blockIncomingCall,
   getChatByPartnerId,
-  getMatchByPartnerId,
 } from '../../features/userData.js';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
-import { MESSAGES_ROUTE, getAppRoute } from '../../routes.jsx';
+import { getAppRoute } from '../../routes.jsx';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage.jsx';
 import CallSidebar, {
@@ -43,7 +42,6 @@ import {
 
 export function VideoCall() {
   const navigate = useNavigate();
-  const location = useLocation();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
@@ -56,20 +54,12 @@ export function VideoCall() {
     onKeyPressed: () => setIsFullScreen(false),
   });
 
-  const {
-    origin,
-    userPk,
-    token,
-    livekitServerUrl,
-    audioOptions,
-    videoOptions,
-  } = location.state;
+  const { userId, token, livekitServerUrl, audioOptions, videoOptions } =
+    useSelector(state => state.userData.activeCall);
 
   const profile = useSelector(state => state.userData.user.profile);
-  const match = useSelector(state =>
-    origin === getAppRoute(MESSAGES_ROUTE)
-      ? getChatByPartnerId(state.userData.chats, userPk)
-      : getMatchByPartnerId(state.userData.matches, userPk),
+  const chat = useSelector(state =>
+    getChatByPartnerId(state.userData.chats, userId),
   );
 
   const onChatToggle = () => {
@@ -119,7 +109,7 @@ export function VideoCall() {
               onDisconnected={() => {
                 dispatch(
                   blockIncomingCall({
-                    userId: userPk,
+                    userId,
                   }),
                 );
                 navigate(getAppRoute(), { state: { callEnded: true } });
@@ -127,13 +117,13 @@ export function VideoCall() {
             >
               <MyVideoConference
                 isFullScreen={isFullScreen}
-                partnerName={match?.partner?.first_name}
+                partnerName={chat?.partner?.first_name}
                 partnerImage={
-                  match?.partner?.image_type === 'avatar'
-                    ? match?.partner.avatar_config
-                    : match?.partner?.image
+                  chat?.partner?.image_type === 'avatar'
+                    ? chat?.partner.avatar_config
+                    : chat?.partner?.image
                 }
-                partnerImageType={match?.partner?.image_type}
+                partnerImageType={chat?.partner?.image_type}
                 selfImage={
                   profile.image_type === 'avatar'
                     ? profile.avatar_config
@@ -169,7 +159,7 @@ export function VideoCall() {
             open={selectedDrawerOption === 'chat'}
             onClose={() => setSelectedDrawerOption(null)}
           >
-            <Chat chatId={match?.chatId || match?.uuid} />
+            <Chat chatId={chat?.uuid} />
           </Drawer>
           <Drawer
             title={'Questions'}
@@ -178,7 +168,7 @@ export function VideoCall() {
           >
             <QuestionCards />
           </Drawer>
-          <CallSidebar isDisplayed={showChat} />
+          <CallSidebar isDisplayed={showChat} chatId={chat?.uuid} />
         </CallLayout>
       </LayoutContextProvider>
     </SidebarSelectionProvider>
