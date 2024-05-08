@@ -5,9 +5,7 @@ import { questionsDuringCall } from '../services/questionsDuringCall';
 
 export const userDataSlice = createSlice({
   name: 'userData',
-  initialState: {
-    // activeCallRooms: []
-  },
+  initialState: {},
   reducers: {
     initialise: (state, action) => {
       // TODO: this should NEVER be called twice will overwrite the full state
@@ -20,7 +18,7 @@ export const userDataSlice = createSlice({
       };
       state.notifications = action.payload?.notifications;
       state.matches = action.payload?.matches;
-      state.chats = {};
+      state.chats = action.payload?.chats;
       state.messages = {};
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
@@ -64,8 +62,7 @@ export const userDataSlice = createSlice({
       state.callSetup = null;
     },
     initActiveCall: (state, action) => {
-      const { userId, tracks } = action.payload;
-      state.activeCall = { userId, tracks };
+      state.activeCall = action.payload;
     },
     addActiveCallRoom: (state, action) => {
       state.activeCallRooms = [
@@ -244,7 +241,7 @@ export const userDataSlice = createSlice({
     insertChat: (state, { payload }) => {
       const chatResults = isEmpty(state.chats)
         ? [payload]
-        : [payload, ...state.chats.results];
+        : [...state.chats.results, payload];
       state.chats.results = sortChats(chatResults);
     },
     updateChats: (state, { payload }) => {

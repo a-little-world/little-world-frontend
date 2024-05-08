@@ -32,10 +32,14 @@ const WebsocketBridge = () => {
       setMessageHistory((prev) => prev.concat(lastMessage));
       const message = JSON.parse(lastMessage.data);
       console.log('CORE SOCKET:', message);
-      dispatch({
-        type: `userData/${message.action}`,
-        payload: message.payload,
-      });
+      try {
+        dispatch({
+          type: `userData/${message.action}`,
+          payload: message.payload,
+        });
+      } catch (e) {
+        console.warn('CORE SOCKET ERROR:', e);
+      }
     }
   }, [dispatch, lastMessage, setMessageHistory]);
 
