@@ -4,14 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { initCallSetup } from '../../../features/userData';
+import { cancelCallSetup, initCallSetup } from '../../../features/userData';
+import { removeActiveTracks } from '../../../helpers/video.ts';
 import CallSetup from '../Calls/CallSetup.tsx';
 import IncomingCall from '../Calls/IncomingCall.tsx';
-import CancelSearchCard from '../Cards/CancelSearchCard';
 import { MatchCardComponent } from '../Cards/MatchCard.tsx';
 import MobileNavBar from '../MobileNavBar';
 import Sidebar from '../Sidebar';
-import { removeActiveTracks } from './helpers/video.ts';
 
 const isViewportHeight = ['chat'];
 
@@ -68,25 +67,6 @@ const Content = styled.section`
   `};
 `;
 
-// const AppLayout = ({ children, isVH, page }) => {
-//   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
-//   const location = useLocation();
-
-//   useEffect(() => {
-//     setShowSidebarMobile(false);
-//   }, [location]);
-
-//   return (
-//     <Wrapper className={page ? `main-page show-${page}` : null} $isVH={isVH}>
-//       <Sidebar
-//         sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
-//       />
-//       <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
-//       {children || <Outlet />}
-//     </Wrapper>
-//   );
-// };
-
 export const FullAppLayout = ({ children }) => {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -98,7 +78,6 @@ export const FullAppLayout = ({ children }) => {
   const activeCall = useSelector(state => state.userData.activeCall);
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
-  const [showCancelSearching, setShowCancelSearching] = useState(false);
 
   const dashboardVisibleMatches = matches
     ? [...matches.support.items, ...matches.confirmed.items]
@@ -147,24 +126,18 @@ export const FullAppLayout = ({ children }) => {
         />
       </Modal>
       <Modal
-        open={incomingCalls[0]?.userId && !callSetup}
+        open={activeCallRooms[0]?.uuid && !callSetup}
         onClose={onRejectCall}
       >
         <IncomingCall
           matchesInfo={dashboardVisibleMatches}
-          userPk={incomingCalls[0]?.userId}
+          userPk={activeCallRooms[0]?.partner.id}
+          userProfile={activeCallRooms[0]?.partner}
           onAnswerCall={onAnswerCall}
           onRejectCall={onRejectCall}
         />
       </Modal>
-      {showCancelSearching && (
-        <Modal
-          open={showCancelSearching}
-          onClose={() => setShowCancelSearching(false)}
-        >
-          <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
-        </Modal>
-      )}
+
       <Modal
         open={
           matches?.proposed?.items?.length ||

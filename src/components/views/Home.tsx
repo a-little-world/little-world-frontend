@@ -1,19 +1,20 @@
+import { Modal } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/index.js';
 import '../../community-events.css';
 import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
+import { removeActiveTracks } from '../../helpers/video.ts';
 import '../../main.css';
-import { APP_ROUTE } from '../../routes.jsx';
+import CancelSearchCard from '../blocks/Cards/CancelSearchCard';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.jsx';
 import NbtSelector from '../blocks/NbtSelector.jsx';
 import NotificationPanel from '../blocks/NotificationPanel.jsx';
 import PartnerProfiles from '../blocks/PartnerProfiles.jsx';
-import { removeActiveTracks } from './helpers/video.ts';
 
 const Home = styled.div`
   display: flex;
@@ -34,14 +35,11 @@ const Home = styled.div`
 function Main() {
   // for the case /call-setup/:userId?/
   const { userId } = useParams();
-
-  const location = useLocation();
-  const { userPk } = location.state || {};
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showCancelSearching, setShowCancelSearching] = useState(false);
 
   // In order to define the frontent paginator numbers
   const pageItems = 10;
@@ -65,18 +63,6 @@ function Main() {
   const matches = useSelector(state => state.userData.matches);
   const callSetup = useSelector(state => state.userData.callSetup);
   const activeCall = useSelector(state => state.userData.activeCall);
-  const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
-
-  const dashboardVisibleMatches = matches
-    ? [...matches.support.items, ...matches.confirmed.items]
-    : [];
-
-  useEffect(() => {
-    if (userId) {
-      dispatch(initCallSetup({ userId }));
-      navigate(`/${APP_ROUTE}/`); // Navigate back to base app route but with call setup open
-    }
-  }, [userId]);
 
   useEffect(() => {
     const totalPage =
@@ -85,6 +71,12 @@ function Main() {
 
     setTotalPages(Math.ceil(totalPage) || 1);
   }, [matches]);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(initCallSetup({ userId }));
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (!callSetup && !activeCall) {
@@ -126,6 +118,14 @@ function Main() {
             />
           )}
         </>
+      )}
+      {showCancelSearching && (
+        <Modal
+          open={showCancelSearching}
+          onClose={() => setShowCancelSearching(false)}
+        >
+          <CancelSearchCard onClose={() => setShowCancelSearching(false)} />
+        </Modal>
       )}
     </>
   );
