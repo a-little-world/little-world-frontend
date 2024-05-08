@@ -8,7 +8,6 @@ import {
 import { ThemeProvider } from 'styled-components';
 
 import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
-import CallSetup from './components/blocks/Calls/CallSetup.tsx';
 import RouterError from './components/blocks/ErrorView/ErrorView.tsx';
 import Form from './components/blocks/Form/Form';
 import { FullAppLayout } from './components/blocks/Layout/AppLayout';

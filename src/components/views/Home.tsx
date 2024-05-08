@@ -8,7 +8,6 @@ import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/index.js';
 import '../../community-events.css';
 import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
-import { removeActiveTracks } from '../../helpers/video.ts';
 import '../../main.css';
 import CancelSearchCard from '../blocks/Cards/CancelSearchCard';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.jsx';
@@ -61,8 +60,6 @@ function Main() {
   };
 
   const matches = useSelector(state => state.userData.matches);
-  const callSetup = useSelector(state => state.userData.callSetup);
-  const activeCall = useSelector(state => state.userData.activeCall);
 
   useEffect(() => {
     const totalPage =
@@ -78,21 +75,10 @@ function Main() {
     }
   }, [userId]);
 
-  useEffect(() => {
-    if (!callSetup && !activeCall) {
-      removeActiveTracks();
-      document.body.classList.remove('hide-mobile-header');
-    }
-  }, [callSetup, activeCall]);
-
   const [subpage, setSubpage] = useState('conversation_partners');
 
   const onPageChange = page => {
     handlePageChange(page);
-  };
-
-  const setCallSetupPartner = partner => {
-    dispatch(initCallSetup({ userId: partner }));
   };
 
   return (
@@ -102,9 +88,8 @@ function Main() {
         <CommunityEvents />
       ) : (
         <>
-          <Home className="content-area-main">
+          <Home>
             <PartnerProfiles
-              setCallSetupPartner={setCallSetupPartner}
               setShowCancel={setShowCancelSearching}
               totalPaginations={totalPages}
             />

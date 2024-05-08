@@ -58,14 +58,9 @@ const Matches = styled.div`
   `};
 `;
 
-function PartnerProfiles({
-  setCallSetupPartner,
-  setShowCancel,
-  totalPaginations,
-}) {
+function PartnerProfiles({ setShowCancel, totalPaginations }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const matches = useSelector(state => state.userData.matches);
   const matchesDisplay = useSelector(selectMatchesDisplay);
   const user = useSelector(state => state.userData.user);
   const [partnerActionData, setPartnerActionData] = useState(null);
@@ -107,7 +102,6 @@ function PartnerProfiles({
           profile={match.partner}
           isSelf={false}
           openPartnerModal={setPartnerActionData}
-          setCallSetupPartner={setCallSetupPartner}
           isOnline={match.partner.isOnline}
           isSupport={match.partner.isSupport}
           chatId={match.chatId}

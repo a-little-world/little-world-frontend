@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { cancelCallSetup, initCallSetup } from '../../../features/userData';
-import { removeActiveTracks } from '../../../helpers/video.ts';
+import { initCallSetup } from '../../../features/userData';
 import CallSetup from '../Calls/CallSetup.tsx';
 import IncomingCall from '../Calls/IncomingCall.tsx';
 import { MatchCardComponent } from '../Cards/MatchCard.tsx';
@@ -90,17 +89,12 @@ export const FullAppLayout = ({ children }) => {
 
   useEffect(() => {
     if (!callSetup && !activeCall) {
-      removeActiveTracks();
       document.body.classList.remove('hide-mobile-header');
     }
   }, [callSetup, activeCall]);
 
-  const setCallSetupPartner = partner => {
-    dispatch(initCallSetup({ userId: partner }));
-  };
-
   const onAnswerCall = () => {
-    setCallSetupPartner(activeCallRooms[0]?.partner?.id);
+    dispatch(initCallSetup({ userId: activeCallRooms[0]?.partner?.id }));
   };
 
   const onRejectCall = () => {
@@ -108,7 +102,7 @@ export const FullAppLayout = ({ children }) => {
   };
 
   return (
-    <Wrapper className={page ? `main-page show-${page}` : null} $isVH={isVH}>
+    <Wrapper $isVH={isVH}>
       <Sidebar
         sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
       />
@@ -117,13 +111,7 @@ export const FullAppLayout = ({ children }) => {
       <Content $isVH={isVH}>{children || <Outlet />}</Content>
 
       <Modal open={callSetup} locked>
-        <CallSetup
-          userPk={callSetup?.userId}
-          removeCallSetupPartner={() => {
-            dispatch(cancelCallSetup());
-            removeActiveTracks();
-          }}
-        />
+        <CallSetup userPk={callSetup?.userId} />
       </Modal>
       <Modal
         open={activeCallRooms[0]?.uuid && !callSetup}

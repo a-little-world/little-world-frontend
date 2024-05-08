@@ -194,7 +194,6 @@ function Profile() {
           profile={profile}
           description="" /* don't show description on profile page as it's already shown in full */
           isSelf={isSelf}
-          // setCallSetupPartner={setCallSetupPartner}
           openEditImage={() =>
             navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
           }

@@ -11,7 +11,7 @@ import { LocalUserChoices, PreJoin } from '@livekit/components-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { requestVideoAccessToken } from '../../../api/livekit';
@@ -119,7 +119,7 @@ type CallSetupProps = {
   removeCallSetupPartner: () => void;
 };
 
-function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
+function CallSetup({ userPk }: CallSetupProps) {
   const { t } = useTranslation();
   const [authData, setAuthData] = useState({
     token: null,
@@ -178,7 +178,6 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
   }, []);
 
   const handleError = error => {
-    console.log({ error });
     setError('error.permissions');
   };
 
@@ -195,7 +194,7 @@ function CallSetup({ userPk, removeCallSetupPartner }: CallSetupProps) {
       <CloseButton
         variation={ButtonVariations.Icon}
         onClick={() => {
-          removeCallSetupPartner();
+          dispatch(cancelCallSetup());
         }}
       >
         <CloseIcon
