@@ -174,6 +174,7 @@ export const SidebarWrapper = styled.aside<{ $isDisplayed: boolean }>`
   border-radius: ${({ theme }) => theme.radius.large};
   box-sizing: border-box;
   padding: ${({ theme }) => theme.spacing.small};
+  flex-shrink: 0;
 
   ${({ theme, $isDisplayed }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
