@@ -53,7 +53,7 @@ function NbtSelector({ selection, setSelection, use }) {
   const topics = nbtTopics[use];
 
   return (
-    <Selector className="selector">
+    <Selector>
       {topics.map(topic => (
         <StyledOption
           appearance={

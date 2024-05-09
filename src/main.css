@@ -83,11 +83,6 @@
   color: rgba(119, 126, 144, 0.7);
 }
 
-.notification-panel .show-all {
-  color: rgba(54, 169, 224, 1);
-  padding: 10px;
-}
-
 .sidebar .active-user,
 .sidebar .close {
   display: none;
