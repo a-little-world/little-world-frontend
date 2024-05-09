@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { fetchChats } from '../../api/chat';
 import { updateChats } from '../../features/userData.js';
 import useIniniteScroll from '../../hooks/useInfiniteScroll.tsx';
+import { MESSAGES_ROUTE, getAppRoute } from '../../routes.jsx';
 import PageHeader from '../atoms/PageHeader';
 import { ChatWithUserInfo } from '../blocks/ChatCore/Chat';
 import { ChatDashboard, ChatsPanel } from './Messages.styles';
@@ -13,6 +14,7 @@ import { ChatDashboard, ChatsPanel } from './Messages.styles';
 const Messages = () => {
   const { chatId } = useParams();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [selectedChat, setSelectedChat] = useState(chatId);
   const chats = useSelector(state => state.userData.chats);
   const items = chats?.results;
@@ -27,6 +29,7 @@ const Messages = () => {
 
   const handleOnChatBackBtn = () => {
     setSelectedChat(null);
+    navigate(getAppRoute(MESSAGES_ROUTE));
   };
 
   return (

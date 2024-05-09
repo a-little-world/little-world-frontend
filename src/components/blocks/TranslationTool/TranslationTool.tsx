@@ -67,6 +67,7 @@ function TranslationTool({ className }: { className?: string }) {
     <ToolContainer className={className}>
       <OriginalLanguage>
         <Dropdown
+          key={fromLang}
           maxWidth="100%"
           placeholder={t('translator.language_placeholder')}
           onValueChange={setFromLang}
@@ -94,6 +95,7 @@ function TranslationTool({ className }: { className?: string }) {
       </SwapBtn>
       <DesiredLanguage>
         <Dropdown
+          key={toLang}
           maxWidth="100%"
           placeholder={t('translator.language_placeholder')}
           onValueChange={setToLang}

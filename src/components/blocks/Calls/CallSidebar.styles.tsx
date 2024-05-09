@@ -168,7 +168,7 @@ export const SidebarWrapper = styled.aside<{ $isDisplayed: boolean }>`
   display: none;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
-  border: 1px solid ${({ theme }) => theme.color.border.subtle};
+  border: 2px solid ${({ theme }) => theme.color.border.subtle};
   box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
   background: ${({ theme }) => theme.color.surface.primary};
   border-radius: ${({ theme }) => theme.radius.large};
