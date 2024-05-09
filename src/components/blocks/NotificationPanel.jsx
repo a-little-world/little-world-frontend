@@ -1,8 +1,4 @@
-import {
-  Link,
-  Text,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
+import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -31,7 +27,7 @@ function NotificationPanel() {
         <ProfileImage
           circle
           image={usesAvatar ? user.profile.avatar_config : user.profile.image}
-          imageType={user.profile.image_type}
+          imageType={user?.profile.image_type}
         />
         <Text tag="h3" type={TextTypes.Body3} bold>
           {`${user.profile.first_name} ${user.profile.second_name}`}

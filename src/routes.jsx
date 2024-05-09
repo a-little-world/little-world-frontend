@@ -6,6 +6,7 @@ export const PARTNERS_ROUTE = 'partners';
 export const CHAT_ROUTE = 'chat/:chatId/';
 export const MESSAGES_ROUTE = 'chat';
 export const NOTIFICATIONS_ROUTE = 'notifications';
+export const USER_PROFILE_ROUTE = 'profile/:userId?/';
 export const PROFILE_ROUTE = 'profile';
 export const HELP_ROUTE = 'help';
 export const SETTINGS_ROUTE = 'settings';

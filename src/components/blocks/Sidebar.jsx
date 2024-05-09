@@ -150,7 +150,8 @@ function Sidebar({ sidebarMobile }) {
       <SidebarContainer $visibleOnMobile={showSidebarMobile}>
         <StyledLogo />
         {buttonData.map(({ label, path, clickEvent, Icon }) => {
-          const isActive = location.pathname === `/${APP_ROUTE}${path}`;
+          const isActive = location.pathname === path;
+
           return typeof clickEvent === typeof undefined ? (
             <MenuLink
               to={path}

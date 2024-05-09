@@ -1,12 +1,3 @@
-.show-notifications .header {
-  justify-content: space-between;
-}
-
-.show-notifications .select-showing {
-  display: flex;
-  gap: 8px;
-}
-
 .select-showing button {
   padding: 10px;
   border: 1.5px solid #f39325;
@@ -19,16 +10,16 @@
 }
 
 .select-showing .all img {
-  content: url("./images/notifications/showing/all.svg");
+  content: url('./images/notifications/showing/all.svg');
 }
 
 .select-showing .unread img {
-  content: url("./images/notifications/showing/unread.svg");
+  content: url('./images/notifications/showing/unread.svg');
 }
 
 .select-showing .archive img,
 .notification-item .status .archive-item img {
-  content: url("./images/notifications/showing/archive.svg");
+  content: url('./images/notifications/showing/archive.svg');
 }
 
 .select-showing .selected {
@@ -38,12 +29,6 @@
 
 .select-showing .selected img {
   filter: brightness(0) invert(1);
-}
-
-.show-notifications .content {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
 }
 
 .notification-item {

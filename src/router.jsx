@@ -10,18 +10,23 @@ import { ThemeProvider } from 'styled-components';
 import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
 import RouterError from './components/blocks/ErrorView/ErrorView.tsx';
 import Form from './components/blocks/Form/Form';
-import AppLayout from './components/blocks/Layout/AppLayout';
+import { FullAppLayout } from './components/blocks/Layout/AppLayout';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import Welcome from './components/blocks/Welcome/Welcome';
 import ChangeEmail from './components/views/ChangeEmail';
 import EditView from './components/views/Edit';
 import ForgotPassword from './components/views/ForgotPassword';
+import Help from './components/views/Help.jsx';
+import Main from './components/views/Home.tsx';
 import Login from './components/views/Login';
+import Messages from './components/views/Messages.jsx';
+import Notifications from './components/views/Notifications.tsx';
+import Profile from './components/views/Profile.tsx';
 import ResetPassword from './components/views/ResetPassword';
+import Settings from './components/views/Settings.jsx';
 import SignUp from './components/views/SignUp';
 import VerifyEmail from './components/views/VerifyEmail';
 import VideoCall from './components/views/VideoCall.jsx';
-import Main from './main';
 import {
   APP_ROUTE,
   BASE_ROUTE,
@@ -36,11 +41,11 @@ import {
   MESSAGES_ROUTE,
   NOTIFICATIONS_ROUTE,
   PARTNERS_ROUTE,
-  PROFILE_ROUTE,
   RESET_PASSWORD_ROUTE,
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   USER_FORM_ROUTE,
+  USER_PROFILE_ROUTE,
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
 } from './routes';
@@ -110,7 +115,7 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(EDIT_FORM_ROUTE),
-    element: <AppLayout />,
+    element: <FullAppLayout />,
     errorElement: <RouterError />,
     children: [
       {
@@ -121,7 +126,11 @@ const ROOT_ROUTES = [
   },
   {
     path: APP_ROUTE,
-    element: <Main />,
+    element: (
+      <FullAppLayout>
+        <Main />
+      </FullAppLayout>
+    ),
     errorElement: <RouterError />,
   },
   {
@@ -153,7 +162,11 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(CALL_SETUP_ROUTE),
-    element: <Main />,
+    element: (
+      <FullAppLayout>
+        <Main />
+      </FullAppLayout>
+    ),
   },
   {
     path: getAppRoute(PARTNERS_ROUTE),
@@ -161,31 +174,59 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(CHAT_ROUTE),
-    element: <Main />,
+    element: (
+      <FullAppLayout>
+        <Messages />
+      </FullAppLayout>
+    ),
   },
   {
     path: getAppRoute(MESSAGES_ROUTE),
-    element: <Main />,
+    element: (
+      <FullAppLayout>
+        <Messages />
+      </FullAppLayout>
+    ),
   },
   {
     path: getAppRoute(NOTIFICATIONS_ROUTE),
-    element: <Main />,
+    element: (
+      <FullAppLayout>
+        <Notifications />
+      </FullAppLayout>
+    ),
   },
   {
-    path: getAppRoute(PROFILE_ROUTE),
-    element: <Main />,
+    path: getAppRoute(USER_PROFILE_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Profile />
+      </FullAppLayout>
+    ),
   },
   {
     path: getAppRoute(HELP_ROUTE),
-    element: <Main />,
+    element: (
+      <FullAppLayout>
+        <Help />
+      </FullAppLayout>
+    ),
   },
   {
     path: getAppRoute(NOTIFICATIONS_ROUTE),
-    element: <Main />,
+    element: (
+      <FullAppLayout>
+        <Notifications />
+      </FullAppLayout>
+    ),
   },
   {
     path: getAppRoute(SETTINGS_ROUTE),
-    element: <Main />,
+    element: (
+      <FullAppLayout>
+        <Settings />
+      </FullAppLayout>
+    ),
   },
   {
     path: getAppRoute(USER_FORM_ROUTE),

@@ -4,12 +4,13 @@ import {
   Text,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
+import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { TFunction, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import '../../i18n';
+import { fetchProfile } from '../../api/profile.ts';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes';
 import {
   ComponentTypes,
@@ -23,13 +24,13 @@ import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
 import { Details, PageContent, TextField } from '../blocks/Profile/styles';
 
-const getProfileFields = ({ profile, formOptions, t }) => ({
+const getProfileFields = ({ profile, formOptions, t }: { t: TFunction }) => ({
   description: getFormComponent(
     {
       type: ComponentTypes.textArea,
       dataField: 'description',
       currentValue: profile.description,
-      getProps: trans => ({
+      getProps: (trans: TFunction) => ({
         errorRules: { required: trans('validation.required') },
         size: TextAreaSize.Medium,
       }),
@@ -42,7 +43,7 @@ const getProfileFields = ({ profile, formOptions, t }) => ({
       currentValue: profile.interests,
       dataField: 'interests',
       formData: formOptions?.interests,
-      getProps: trans => ({
+      getProps: (trans: TFunction) => ({
         label: trans('interests.selection_label'),
         labelTooltip: trans('interests.selection_tooltip'),
       }),
@@ -65,7 +66,7 @@ const getProfileFields = ({ profile, formOptions, t }) => ({
       type: ComponentTypes.multiDropdown,
       dataField: 'lang_skill',
       currentValue: profile.lang_skill,
-      getProps: trans => ({
+      getProps: (trans: TFunction) => ({
         addMoreLabel: trans('self_info.language_add_more'),
         label: trans('self_info.language_skills_label'),
         labelTooltip: trans('self_info.language_skills_tooltip'),
@@ -92,22 +93,54 @@ const getProfileFields = ({ profile, formOptions, t }) => ({
   ),
 });
 
-function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
+function Profile() {
   const { t } = useTranslation();
+  let { userId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { userPk } = location.state || {};
   const formOptions = useSelector(state => state.userData.formOptions);
   const [editingField, setEditingField] = useState(null);
-  const [profileFields, setProfileFields] = useState(
-    getProfileFields({ profile, formOptions, t }),
+
+  const matches = useSelector(state => state.userData.matches);
+  const user = useSelector(state => state.userData.user);
+  const isSelf = user?.id === userPk || !userId;
+  const dashboardVisibleMatches = matches
+    ? [...matches.support.items, ...matches.confirmed.items]
+    : [];
+  const [profile, setProfile] = useState(
+    isSelf
+      ? user?.profile
+      : dashboardVisibleMatches.find(match => match?.partner?.id === userPk)
+          ?.partner,
   );
-  const navigate = useNavigate();
+  const [profileFields, setProfileFields] = useState(
+    profile ? getProfileFields({ profile, formOptions, t }) : {},
+  );
+
+  useEffect(() => {
+    if (!isSelf && !profile) {
+      fetchProfile({ userId })
+        .then(data => {
+          setProfile(data.match.partner);
+        })
+        .catch(error => {
+          throw error;
+        });
+    }
+  }, []);
 
   const profileTitle = isSelf
     ? t('profile.self_profile_title')
-    : t('profile.match_profile_title', { userName: profile.first_name });
+    : t('profile.match_profile_title', { userName: profile?.first_name });
 
   useEffect(() => {
-    setProfileFields(getProfileFields({ profile, formOptions, t }));
+    if (profile)
+      setProfileFields(getProfileFields({ profile, formOptions, t }));
   }, [profile, formOptions]);
+
+  if (isEmpty(profile) || isEmpty(profileFields)) return null;
 
   return (
     <>
@@ -161,13 +194,12 @@ function Profile({ setCallSetupPartner, isSelf, profile, userPk }) {
           profile={profile}
           description="" /* don't show description on profile page as it's already shown in full */
           isSelf={isSelf}
-          setCallSetupPartner={setCallSetupPartner}
           openEditImage={() =>
             navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
           }
         />
       </PageContent>
-      <Modal open={editingField} onClose={() => setEditingField(null)}>
+      <Modal open={!!editingField} onClose={() => setEditingField(null)}>
         <ProfileEditor
           onClose={() => setEditingField(null)}
           field={editingField}

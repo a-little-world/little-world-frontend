@@ -18,9 +18,11 @@ import {
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import styled, { css } from 'styled-components';
 
-import { getAppRoute, getChatRoute } from '../../../routes';
+import { initCallSetup } from '../../../features/userData';
+import { PROFILE_ROUTE, getAppRoute, getChatRoute } from '../../../routes';
 import MenuLink from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
@@ -153,10 +155,10 @@ function ProfileCard({
   isSupport,
   openPartnerModal,
   openEditImage,
-  setCallSetupPartner,
   type,
 }) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const usesAvatar = profile.image_type === 'avatar';
 
   return (
@@ -245,7 +247,10 @@ function ProfileCard({
       </ProfileInfo>
       {!isSelf && (
         <Actions>
-          <MenuLink to={getAppRoute()} state={{ userPk }}>
+          <MenuLink
+            to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
+            state={{ userPk }}
+          >
             <ProfileIcon
               gradient={Gradients.Orange}
               label="visit profile"
@@ -264,7 +269,7 @@ function ProfileCard({
           <Button
             type="button"
             variation={ButtonVariations.Option}
-            onClick={() => setCallSetupPartner(userPk)}
+            onClick={() => dispatch(initCallSetup({ userId: userPk }))}
           >
             <VideoIcon
               gradient={Gradients.Orange}
