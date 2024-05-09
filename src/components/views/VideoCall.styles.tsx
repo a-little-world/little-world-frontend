@@ -38,6 +38,7 @@ export const VideoContainer = styled.div<{
       border: 2px solid ${theme.color.border.subtle};
       border-radius: ${theme.radius.medium};
       padding: ${theme.spacing.small};
+      box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
     }
   `}
 

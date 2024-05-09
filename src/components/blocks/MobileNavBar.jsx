@@ -8,7 +8,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import Logo from '../atoms/Logo';
@@ -49,19 +49,21 @@ const Spacer = styled.div`
   flex-shrink: 0;
 `;
 
-const specialPaths = ['chat'];
+const specialPaths = ['chat', 'profile'];
 
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
   const location = useLocation();
-  const { userPk } = location.state || {};
+  const { userId } = useParams();
   const paths = location.pathname.split('/');
   // routes use different parts of the path to determine the header
-  const key =
-    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) ||
-    (userPk ? 'user' : 'home');
+  let key =
+    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) || 'home';
 
   const isHome = key === 'home';
+  if (key === 'profile' && userId) {
+    key = 'user';
+  }
 
   return (
     <MobileHeader className="mobile-header">
