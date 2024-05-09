@@ -9,39 +9,4 @@ export const clearActiveTracks = () => {
     track?.stop();
     vidStream.removeTrack(track);
   });
-
-  // navigator.mediaDevices
-  //   .getUserMedia({ video: false, audio: true })
-  //   .then((mediaStream: MediaStream) => {
-  //     const tracks = mediaStream.getTracks();
-  //     console.log({ mediaStream, tracks });
-  //     tracks?.forEach(track => {
-  //       track.stop();
-  //       mediaStream.removeTrack(track);
-  //     });
-  //   });
-
-  // navigator.mediaDevices
-  //   .getUserMedia({ video: true, audio: true })
-  //   .then((mediaStream: MediaStream) => {
-  //     const tracks = mediaStream.getTracks();
-  //     console.log({ mediaStream, tracks });
-  //     tracks?.forEach(track => {
-  //       track?.stop();
-  //       // mediaStream.removeTrack(track);
-  //     });
-  //   })
-  //   .catch(error => console.log('media error', { error }));
-
-  // navigator.mediaDevices
-  //   .getUserMedia({ video: true, audio: false })
-  //   .then((mediaStream: MediaStream) => {
-  //     const tracks = mediaStream.getTracks();
-  //     console.log({ mediaStream, tracks });
-  //     tracks?.forEach(track => {
-  //       track?.stop();
-  //       mediaStream.removeTrack(track);
-  //     });
-  //   })
-  //   .catch(error => console.log('media error', { error }));
 };
