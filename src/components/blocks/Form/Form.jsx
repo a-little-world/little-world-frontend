@@ -55,6 +55,7 @@ const Form = () => {
     state.userData.formOptions,
     state.userData.user.profile,
   ]);
+
   const navigate = useNavigate();
   const location = useLocation();
   const paths = location.pathname.split('/');

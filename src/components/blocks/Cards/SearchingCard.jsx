@@ -11,10 +11,10 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import styled, { css } from 'styled-components';
 import { useSelector } from 'react-redux';
+import styled, { css } from 'styled-components';
 
-import { formatTime } from '../../../helpers/date';
+import { formatDate, formatTime } from '../../../helpers/date.ts';
 import SearchingSvg from '../../../images/match-searching.svg';
 import AppointmentSvg from '../../../images/new-appointment.svg';
 import { USER_FORM_ROUTE, getAppRoute } from '../../../routes';
@@ -69,18 +69,26 @@ const getCardState = ({ hasMatch, hadPreMatchingCall, hasAppointment }) => {
   return 'pre_match_call_not_booked';
 };
 
-export function SearchingCard({
-  setShowCancel,
-}) {
-  const { t } = useTranslation();
-  
-  const hasMatch = useSelector(state => state.userData.user.hasMatch);
-  const hadPreMatchingCall = useSelector(state => state.userData.user.hadPreMatchingCall);
-  const preMatchingAppointment = useSelector(state => state.userData.user.preMatchingAppointment);
-  const calComAppointmentLink = useSelector(state => state.userData.user.calComAppointmentLink);
-  const preMatchingCallJoinLink = useSelector(state => state.userData.user.preMatchingCallJoinLink);
+export function SearchingCard({ setShowCancel }) {
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
 
-  
+  const hasMatch = useSelector(state => state.userData.user.hasMatch);
+  const hadPreMatchingCall = useSelector(
+    state => state.userData.user.hadPreMatchingCall,
+  );
+  const preMatchingAppointment = useSelector(
+    state => state.userData.user.preMatchingAppointment,
+  );
+  const calComAppointmentLink = useSelector(
+    state => state.userData.user.calComAppointmentLink,
+  );
+  const preMatchingCallJoinLink = useSelector(
+    state => state.userData.user.preMatchingCallJoinLink,
+  );
+
   const cardState = getCardState({
     hasMatch,
     hadPreMatchingCall,
@@ -114,19 +122,22 @@ export function SearchingCard({
           ) : (
             <MatchingCallImage alt="matching call image" src={AppointmentSvg} />
           )}
-          <Text center>{t(`searching_card.${cardState}_info_1`)}</Text>
-          {isBookedState ? (
+          <Text center>
+            {t(`searching_card.${'pre_match_call_booked'}_info_1`)}
+          </Text>
+          {true ? (
             <div>
               <Text center type={TextTypes.Body4} bold>
-                {new Date(preMatchingAppointment.start_time).toDateString()}
+                {formatDate(new Date(), 'cccc, LLLL do', language)}
               </Text>
               <Note center type={TextTypes.Body4} bold>
-                {formatTime(new Date(preMatchingAppointment.start_time))} -{' '}
-                {formatTime(new Date(preMatchingAppointment.end_time))}
+                {formatTime(new Date())} - {formatTime(new Date())}
               </Note>
             </div>
           ) : (
-            <Note center>{t(`searching_card.${cardState}_info_2`)}</Note>
+            <Note center>
+              {t(`searching_card.${'pre_match_call_booked'}_info_2`)}
+            </Note>
           )}
         </>
       )}

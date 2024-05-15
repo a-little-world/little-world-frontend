@@ -1,7 +1,19 @@
 import { Text } from '@a-little-world/little-world-design-system';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const Events = styled.div``;
+export const Events = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
+  flex: 1 1 0;
+  max-width: 1200px;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      padding: ${theme.spacing.small};
+    }
+  `}
+`;
 
 export const Event = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
@@ -27,6 +39,11 @@ export const ImageContainer = styled.div`
   min-width: 120px;
   width: 100%;
   max-height: 216px;
+  border-radius: ${({ theme }) => theme.radius.medium};
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
 
   @media (min-width: ${({ theme }) => theme.breakpoints.small}) {
     width: 40%;

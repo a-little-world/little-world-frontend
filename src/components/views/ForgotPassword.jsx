@@ -45,6 +45,7 @@ const ForgotPassword = () => {
 
   const onError = e => {
     onFormError({ e, formFields: getValues(), setError });
+    setIsSubmitting(false);
   };
 
   const onFormSubmit = async data => {

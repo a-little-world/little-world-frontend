@@ -74,6 +74,7 @@ export const CategoryButton = styled.button`
   margin: 0 4px;
   box-sizing: border-box;
   display: flex;
+
   ${({ selected }) =>
     selected &&
     `
@@ -163,6 +164,7 @@ export const SidebarSelector = styled.div`
   justify-content: center;
   gap: ${({ theme }) => `${theme.spacing.xxxsmall}`};
 `;
+
 export const SidebarWrapper = styled.aside<{ $isDisplayed: boolean }>`
   width: 25%;
   display: none;

@@ -21,7 +21,7 @@ import styled from 'styled-components';
 import { CHAT_ROUTE, getAppRoute } from '../../routes';
 import Logo from '../atoms/Logo';
 import MenuLink from '../atoms/MenuLink';
-import NbtSelector from '../blocks/NbtSelector';
+import ContentSelector from '../blocks/ContentSelector.tsx';
 import './help.css';
 
 const HelpContainer = styled.div`
@@ -395,7 +395,7 @@ function Help() {
 
   return (
     <>
-      <NbtSelector
+      <ContentSelector
         selection={subpage}
         setSelection={selectSubpage}
         use={'help'}

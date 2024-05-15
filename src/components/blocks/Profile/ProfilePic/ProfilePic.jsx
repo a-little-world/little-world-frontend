@@ -154,6 +154,16 @@ const ProfilePic = ({ control, setValue }) => {
     if (userData?.image) setUploadedImage(userData.image);
   }, [userData?.image]);
 
+  const handleDrop = event => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+
+    if (files.length > 0) {
+      onImageSelection(IMAGE_TYPES.image);
+      onImageUpload({ target: { files } });
+    }
+  };
+
   const updateAvatar = config => {
     setAvatarConfig(config);
     setValue(USER_FIELDS.avatar, config);
@@ -204,7 +214,10 @@ const ProfilePic = ({ control, setValue }) => {
                   uploadedImage={uploadedImage}
                 />
               </ImageContainer>
-              <UploadArea>
+              <UploadArea
+                onDrop={handleDrop}
+                onDragOver={event => event.preventDefault()}
+              >
                 <UploadLabel htmlFor="fileInput">
                   <MobileCircleImage
                     icon={

@@ -5,6 +5,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { initCallSetup } from '../../../features/userData';
+import '../../../main.css';
 import CallSetup from '../Calls/CallSetup.tsx';
 import IncomingCall from '../Calls/IncomingCall.tsx';
 import { MatchCardComponent } from '../Cards/MatchCard.tsx';

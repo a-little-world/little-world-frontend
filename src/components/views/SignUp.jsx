@@ -22,7 +22,6 @@ import { initialise } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form';
 import {
   LOGIN_ROUTE,
-  SIGN_UP_ROUTE,
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
   passAuthenticationBoundary,
@@ -256,7 +255,7 @@ const SignUp = () => {
             />
           )}
         />
-        <Text bold>{t('sign_up.privacy_policy')}</Text>
+        <Text>{t('sign_up.privacy_policy')}</Text>
         <FormMessage
           $visible={errors?.root?.serverError}
           $type={MessageTypes.Error}

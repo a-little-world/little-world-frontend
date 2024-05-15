@@ -15,7 +15,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
 import {
@@ -92,6 +92,7 @@ function Sidebar({ sidebarMobile }) {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const buttonData = [
     { label: 'start', path: getAppRoute(), Icon: DashboardIcon },
@@ -168,7 +169,7 @@ function Sidebar({ sidebarMobile }) {
                 label={label}
                 labelId={label}
                 {...(isActive
-                  ? { color: 'white' }
+                  ? { color: theme.color.surface.primary }
                   : { gradient: Gradients.Blue })}
               />
               {t(`nbs_${label}`)}

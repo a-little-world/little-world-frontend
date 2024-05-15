@@ -25,7 +25,7 @@ export const completeForm = async () => {
 
   const updatedUser = await res?.json();
   return updatedUser;
-}
+};
 
 export const mutateUserData = async (formData, onSuccess, onFailure) => {
   try {
@@ -217,7 +217,7 @@ export const signUp = async ({
   firstName,
   lastName,
   mailingList,
-  company = null
+  company = null,
 }) => {
   const response = await fetch(`${BACKEND_URL}/api/register/`, {
     headers: {
@@ -235,7 +235,7 @@ export const signUp = async ({
       second_name: lastName,
       birth_year: birthYear,
       newsletter_subscribed: mailingList,
-      company: company
+      company: company,
     }),
   });
 
@@ -259,6 +259,7 @@ export const requestPasswordReset = async ({ email }) => {
   });
 
   const responseBody = await response?.json();
+
   if (response.ok) return responseBody;
   throw formatApiError(responseBody);
 };

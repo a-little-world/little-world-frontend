@@ -51,7 +51,6 @@ button {
 
 /* all items that live on top of the main background */
 .panel,
-.notification-panel,
 .chat-list-box,
 .profile-detail > div,
 .call-and-text {

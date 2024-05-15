@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
-import { formatTime } from '../../../helpers/date';
+import { formatDate, formatTime } from '../../../helpers/date.ts';
 import {
   Buttons,
   DateTime,
@@ -18,13 +18,17 @@ import {
   EventImage,
   EventInfo,
   EventTitle,
+  Events,
   FrequencyTitle,
   ImageContainer,
   Main,
 } from './styles';
 
 function CommunityEvent({ _key, frequency, description, title, time, link }) {
-  const { t } = useTranslation();
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
   const theme = useTheme();
 
   const [showFullText, setShowFullText] = useState(false);
@@ -43,7 +47,9 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
     <Event key={_key}>
       <ImageContainer className="frequency">
         <EventImage alt="" />
-        <FrequencyTitle>{frequency}</FrequencyTitle>
+        <FrequencyTitle>
+          {t(`community_events.frequency_${frequency}`)}
+        </FrequencyTitle>
       </ImageContainer>
       <Main>
         <EventInfo>
@@ -62,12 +68,13 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
         <DateTime>
           {frequency === 'weekly' && (
             <Text type={TextTypes.Body3} bold>
-              {t(`weekdays::${dateTime.getDay()}`)}
+              {/* {t(`weekdays::${dateTime.getDay()}`)} */}
+              {formatDate(dateTime, 'cccc', language)}
             </Text>
           )}
           {frequency === 'once' && (
             <Text type={TextTypes.Body3} bold tag="span">
-              {dateTime.toDateString()}
+              {formatDate(dateTime, 'cccc, LLLL do', language)}
             </Text>
           )}
           <Text type={TextTypes.Body3} bold>
@@ -99,11 +106,11 @@ function CommunityEvents() {
   const events = useSelector(state => state.userData.communityEvents);
 
   return (
-    <div className="community-calls">
+    <Events>
       {events.items.map(eventData => (
         <CommunityEvent key={eventData.id} _key={eventData.id} {...eventData} />
       ))}
-    </div>
+    </Events>
   );
 }
 
