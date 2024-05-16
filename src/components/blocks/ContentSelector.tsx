@@ -32,6 +32,7 @@ const Selector = styled.div`
 
 export const StyledOption = styled(Button)`
   border-color: transparent;
+
   &:disabled {
     color: ${({ theme }) => theme.color.text.button};
     border: none;
@@ -44,7 +45,13 @@ const nbtTopics = {
   help: ['contact', 'faqs'],
 };
 
-function NbtSelector({ selection, setSelection, use }) {
+type ContentSelector = {
+  selection: string;
+  setSelection: () => string;
+  use: string;
+};
+
+function ContentSelector({ selection, setSelection, use }: ContentSelector) {
   const { t } = useTranslation();
   if (!['main', 'help'].includes(use)) {
     return null;
@@ -72,4 +79,4 @@ function NbtSelector({ selection, setSelection, use }) {
   );
 }
 
-export default NbtSelector;
+export default ContentSelector;

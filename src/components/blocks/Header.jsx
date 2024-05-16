@@ -19,9 +19,9 @@ const StyledHeader = styled.header`
   position: sticky;
   top: 0;
   justify-content: space-between;
-  border-bottom: 1px solid $grey;
+  border-bottom: 1px solid ${({ theme }) => theme.color.border.subtle};
   padding: ${({ theme }) => theme.spacing.small};
-  background-color: white;
+  background-color: ${({ theme }) => theme.color.surface.primary};
   height: 72px;
   z-index: 10;
   width: 100%;

@@ -36,6 +36,7 @@ import {
   updateMessages,
 } from '../../../features/userData';
 import { addMessage } from '../../../features/userData';
+import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput } from '../../../helpers/form';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../routes';
@@ -119,7 +120,10 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
   );
 };
 export const Chat = ({ chatId }) => {
-  const { t } = useTranslation();
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -237,9 +241,7 @@ export const Chat = ({ chatId }) => {
                     ) : (
                       <TickIcon width="16px" height="16px" />
                     )}
-                    {formatDistance(message.created, new Date(), {
-                      addSuffix: true,
-                    })}
+                    {formatTimeDistance(message.created, new Date(), language)}
                   </Time>
                 </Message>
               ))}

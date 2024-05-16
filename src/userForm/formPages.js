@@ -94,7 +94,6 @@ const formPages = {
                 ),
                 getProps: t => ({
                   label: t('self_info.target_group_label'),
-                  labelTooltip: t('self_info.target_group_tooltip'),
                   errorRules: { required: t('validation.required') },
                 }),
                 textInputVal: getUserTypeOptions(
@@ -107,6 +106,7 @@ const formPages = {
                 dataField: 'other_target_group',
                 getProps: t => ({
                   label: t('self_info.other_target_group_label'),
+                  labelTooltip: t('self_info.target_group_tooltip'),
                   width: InputWidth.Medium,
                 }),
               },
@@ -168,7 +168,9 @@ const formPages = {
         getProps: t => ({
           label: t('interests.description_label'),
           labelTooltip: t('interests.description_tooltip'),
-          placeholder: t('interests.description_placeholder'),
+          placeholder: t(
+            `interests.description_placeholder_${userData?.user_type}`,
+          ),
           size: TextAreaSize.Medium,
         }),
       },
@@ -348,16 +350,6 @@ const formPages = {
             { type: ContentTypes.Paragraph, text: t('conditions.disclaimer') },
           ],
           marginBottom: '12px',
-        }),
-      },
-      {
-        type: ComponentTypes.checkbox,
-        currentValue: userData?.liability_accepted,
-        dataField: 'liability_accepted',
-        getProps: t => ({
-          label: t('conditions.checkbox_label'),
-          errorRules: { required: t('validation.required') },
-          id: 'conditions checkbox',
         }),
       },
     ],

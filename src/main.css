@@ -1,18 +1,4 @@
-.notification-panel {
-  margin-left: auto;
-  margin-bottom: auto;
-  flex: 0 1 350px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
 @media (width < 1024px) {
-  .notification-panel {
-    display: none;
-  }
-
   .mobile-header button {
     border: none;
     background: none;
@@ -25,90 +11,6 @@
 
   .mobile-header .notification img {
     content: url('./images/button-bell.svg');
-  }
-}
-
-.notification-panel hr {
-  border: none;
-  height: 1px;
-  width: 100%;
-  background-color: #e6e8ec;
-}
-
-.notifications-header {
-  font-size: 22px;
-}
-
-.notifications-content {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 10px;
-}
-
-.notification-item {
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 19px 22px;
-  background: #ffffff;
-  border: 1px solid #f2f2f2;
-  box-sizing: border-box;
-  border-radius: 15px;
-  display: flex;
-  gap: 15px;
-}
-
-.notification-item img.appointment {
-  content: url('./images/notifications/appointment.svg');
-}
-
-.notification-item img.new-friend {
-  content: url('./images/notifications/new-friend.svg');
-}
-
-.notification-item img.missed-call {
-  content: url('./images/notifications/missed-call.svg');
-}
-
-.notification-headline {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 24px;
-}
-
-.notification-time {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 17px;
-  color: rgba(119, 126, 144, 0.7);
-}
-
-.sidebar .active-user,
-.sidebar .close {
-  display: none;
-}
-
-@media screen and (width < 1024px) {
-  .sidebar .active-user {
-    height: unset;
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 18px;
-  }
-
-  .sidebar .close {
-    display: unset;
-  }
-
-  .sidebar button.close {
-    align-self: end;
-    background: rgba(230, 232, 236, 0.4);
-    margin: 10px 10px 0 0;
-    padding: 6px;
-  }
-  .sidebar button.close img {
-    content: url('./images/close-pop-up.svg');
-    filter: grayscale(1);
   }
 }
 

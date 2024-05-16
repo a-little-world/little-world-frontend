@@ -5,11 +5,11 @@ import {
   TickDoubleIcon,
   TickIcon,
 } from '@a-little-world/little-world-design-system';
-import { formatDistance } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
+import { formatTimeDistance } from '../../helpers/date.ts';
 import ProfileImage from '../atoms/ProfileImage';
 
 export const ChatDashboard = styled.div`
@@ -113,7 +113,10 @@ export const UnreadIndicator = styled.span`
 `;
 
 export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
-  const { t } = useTranslation();
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
   const userId = useSelector(state => state.userData.user?.id);
   const theme = useTheme();
 
@@ -140,9 +143,11 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
               <Text bold>{message.partner.first_name}</Text>
               {!!message?.newest_message?.created && (
                 <Time type={TextTypes.Body6}>
-                  {formatDistance(message.newest_message.created, new Date(), {
-                    addSuffix: true,
-                  })}
+                  {formatTimeDistance(
+                    message.newest_message.created,
+                    new Date(),
+                    language,
+                  )}
                 </Time>
               )}
             </Top>

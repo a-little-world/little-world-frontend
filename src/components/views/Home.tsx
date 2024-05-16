@@ -8,11 +8,10 @@ import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/index.js';
 import '../../community-events.css';
 import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
-import '../../main.css';
 import CancelSearchCard from '../blocks/Cards/CancelSearchCard';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.jsx';
-import NbtSelector from '../blocks/NbtSelector.jsx';
-import NotificationPanel from '../blocks/NotificationPanel.jsx';
+import ContentSelector from '../blocks/ContentSelector.tsx';
+import NotificationPanel from '../blocks/NotificationPanel.tsx';
 import PartnerProfiles from '../blocks/PartnerProfiles.jsx';
 
 const Home = styled.div`
@@ -83,7 +82,11 @@ function Main() {
 
   return (
     <>
-      <NbtSelector selection={subpage} setSelection={setSubpage} use={'main'} />
+      <ContentSelector
+        selection={subpage}
+        setSelection={setSubpage}
+        use={'main'}
+      />
       {subpage === 'community_calls' ? (
         <CommunityEvents />
       ) : (

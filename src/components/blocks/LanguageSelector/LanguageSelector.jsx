@@ -28,7 +28,7 @@ const LanguageButton = styled(Button)`
   ${({ disabled }) =>
     disabled &&
     css`
-      background: white !important;
+      background: ${({ theme }) => theme.color.surface.primary} !important;
       color: ${({ theme }) => theme.color.text.highlight} !important;
     `}
 `;

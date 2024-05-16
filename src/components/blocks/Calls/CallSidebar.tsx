@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import '../../../App.css';
 import '../../../call.css';
 import { Chat } from '../ChatCore/Chat';
-import { StyledOption } from '../NbtSelector';
+import { StyledOption } from '../ContentSelector.tsx';
 import QuestionCards from '../QuestionCards/QuestionCards.tsx';
 import {
   SidebarContent,
@@ -42,7 +42,7 @@ function CallSidebar({ isDisplayed, chatId }) {
           </StyledOption>
         ))}
       </SidebarSelector>
-      <SidebarContent className="sidebar-content">
+      <SidebarContent>
         {sideSelection === 'chat' && <Chat chatId={chatId} />}
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}

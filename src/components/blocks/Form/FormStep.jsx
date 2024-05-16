@@ -1,5 +1,6 @@
 import React from 'react';
 import { Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 const ERROR_DE_MISSING = 'profile.lang-de-missing';
 
@@ -37,6 +38,8 @@ const FormStep = ({ content, control }) => {
     ...props
   } = content;
 
+  const { t } = useTranslation();
+
   if (dataField) {
     return (
       <Controller
@@ -70,7 +73,7 @@ const FormStep = ({ content, control }) => {
               value={value}
               onBlur={onBlur}
               inputRef={ref}
-              error={error?.message}
+              error={t(error?.message)}
               {...componentProps}
             />
           );

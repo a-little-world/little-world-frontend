@@ -1,13 +1,16 @@
-import { GlobalStyles } from '@a-little-world/little-world-design-system';
+import {
+  CustomThemeProvider,
+  GlobalStyles,
+} from '@a-little-world/little-world-design-system';
 import React from 'react';
 import {
   Outlet,
   ScrollRestoration,
   createBrowserRouter,
 } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
 
 import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
+import { ModeSwitch } from './components/atoms/ModeSwitch.tsx';
 import RouterError from './components/blocks/ErrorView/ErrorView.tsx';
 import Form from './components/blocks/Form/Form';
 import { FullAppLayout } from './components/blocks/Layout/AppLayout';
@@ -49,16 +52,16 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
 } from './routes';
-import theme from './theme';
 
 const isCapacitor = IS_CAPACITOR_BUILD || false;
 
 export const Root = ({ children, restoreScroll = true }) => (
-  <ThemeProvider theme={theme}>
+  <CustomThemeProvider>
     {restoreScroll && <ScrollRestoration />}
     <GlobalStyles />
     {children || <Outlet />}
-  </ThemeProvider>
+    <ModeSwitch />
+  </CustomThemeProvider>
 );
 
 const ROOT_ROUTES = [
