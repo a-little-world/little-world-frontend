@@ -111,7 +111,7 @@ export function SearchingCard({ setShowCancel }) {
       ) : (
         <>
           <WelcomeTitle tag="h3" type={TextTypes.Body1} bold center>
-            {t('searching_card.welcome')}
+            {t(`searching_card.${cardState}_title`)}
           </WelcomeTitle>
           {hadPreMatchingCall ? (
             <SearchingImage
@@ -122,10 +122,8 @@ export function SearchingCard({ setShowCancel }) {
           ) : (
             <MatchingCallImage alt="matching call image" src={AppointmentSvg} />
           )}
-          <Text center>
-            {t(`searching_card.${'pre_match_call_booked'}_info_1`)}
-          </Text>
-          {true ? (
+          <Text center>{t(`searching_card.${cardState}_info_1`)}</Text>
+          {isBookedState ? (
             <div>
               <Text center type={TextTypes.Body4} bold>
                 {formatDate(new Date(), 'cccc, LLLL do', language)}
@@ -135,9 +133,7 @@ export function SearchingCard({ setShowCancel }) {
               </Note>
             </div>
           ) : (
-            <Note center>
-              {t(`searching_card.${'pre_match_call_booked'}_info_2`)}
-            </Note>
+            <Note center>{t(`searching_card.${cardState}_info_2`)}</Note>
           )}
         </>
       )}

@@ -157,8 +157,10 @@ const ProfilePic = ({ control, setValue }) => {
   const handleDrop = event => {
     event.preventDefault();
     const files = event.dataTransfer.files;
-
-    if (files.length > 0) {
+    const isValidFile = ['image/x-png', 'image/png', 'image/jpeg'].includes(
+      files?.[0].type,
+    );
+    if (isValidFile) {
       onImageSelection(IMAGE_TYPES.image);
       onImageUpload({ target: { files } });
     }
