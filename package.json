@@ -2,7 +2,12 @@
   "name": "littleplanet",
   "version": "0.1.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "update-translations:de": "curl -X 'GET' 'http://localhost:8000/api/trans/de/' > src/locale/backend/de.json",
+    "update-translations:en": "curl -X 'GET' 'http://localhost:8000/api/trans/en/' > src/locale/backend/en.json",
+    "update-api-options": "curl -X 'GET' 'http://localhost:8000/api/options/' > src/api/apiOptions.json",
+    "update:dynamic": "npm run update-translations:de && npm run update-translations:en && npm run update-api-options"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
