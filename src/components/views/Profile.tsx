@@ -100,7 +100,6 @@ function Profile() {
   const navigate = useNavigate();
 
   const { userPk } = location.state || {};
-  const formOptions = useSelector(state => state.userData.formOptions);
   const [editingField, setEditingField] = useState(null);
 
   const matches = useSelector(state => state.userData.matches);
@@ -113,7 +112,7 @@ function Profile() {
     isSelf
       ? user?.profile
       : dashboardVisibleMatches.find(match => match?.partner?.id === userPk)
-          ?.partner,
+        ?.partner,
   );
   const [profileFields, setProfileFields] = useState(
     profile ? getProfileFields({ profile, formOptions, t }) : {},

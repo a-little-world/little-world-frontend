@@ -6,6 +6,8 @@ import { initReactI18next } from 'react-i18next';
 import { LANGUAGES } from './constants';
 import translationDE from './locale/de.json';
 import translationEN from './locale/en.json';
+import translationBackendDE from './locale/backend/de.json';
+import translationBackendEN from './locale/backend/en.json';
 
 i18next
   .use(LanguageDetector)
@@ -18,10 +20,16 @@ i18next
     keySeparator: '::',
     resources: {
       en: {
-        translation: translationEN,
+        translation: {
+          ...translationEN,
+          ...translationBackendEN,
+        },
       },
       de: {
-        translation: translationDE,
+        translation: {
+          ...translationDE,
+          ...translationBackendDE,
+        },
       },
     },
     languages: [LANGUAGES.en, LANGUAGES.de],
@@ -33,16 +41,3 @@ const cookie = Cookies.get(COOKIE_LANG);
 if (cookie !== undefined) {
   i18next.changeLanguage(cookie);
 }
-
-// eslint-disable-next-line import/prefer-default-export
-export const updateTranslationResources = ({ apiTranslations }) => {
-  /*
-  This upates the current translations resources with all backend translations!
-  */
-  Object.keys(apiTranslations).forEach(lang => {
-    i18next.addResourceBundle(lang, 'translation', {
-      ...i18next.getResourceBundle(lang, 'translation'),
-      ...apiTranslations[lang],
-    });
-  });
-};

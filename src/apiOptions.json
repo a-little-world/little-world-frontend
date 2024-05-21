@@ -1,0 +1,708 @@
+{
+    "profile": {
+        "target_group": [
+            {
+                "tag": "profile.target_group.any_vol",
+                "value": "any.vol"
+            },
+            {
+                "tag": "profile.target_group.any_ler",
+                "value": "any.ler"
+            },
+            {
+                "tag": "profile.target_group.refugee_vol",
+                "value": "refugee.vol"
+            },
+            {
+                "tag": "profile.target_group.refugee_ler",
+                "value": "refugee.ler"
+            },
+            {
+                "tag": "profile.target_group.student_vol",
+                "value": "student.vol"
+            },
+            {
+                "tag": "profile.target_group.student_ler",
+                "value": "student.ler"
+            },
+            {
+                "tag": "profile.target_group.worker_vol",
+                "value": "worker.vol"
+            },
+            {
+                "tag": "profile.target_group.worker_ler",
+                "value": "worker.ler"
+            }
+        ],
+        "speech_medium": [
+            {
+                "tag": "profile.speech_medium.any_vol",
+                "value": "any.vol"
+            },
+            {
+                "tag": "profile.speech_medium.any_ler",
+                "value": "any.ler"
+            },
+            {
+                "tag": "profile.speech_medium.video_vol",
+                "value": "video.vol"
+            },
+            {
+                "tag": "profile.speech_medium.video_ler",
+                "value": "video.ler"
+            },
+            {
+                "tag": "profile.speech_medium.phone_vol",
+                "value": "phone.vol"
+            },
+            {
+                "tag": "profile.speech_medium.phone_ler",
+                "value": "phone.ler"
+            }
+        ],
+        "user_type": [
+            {
+                "tag": "profile.user_type.learner",
+                "value": "learner"
+            },
+            {
+                "tag": "profile.user_type.volunteer",
+                "value": "volunteer"
+            }
+        ],
+        "partner_location": [
+            {
+                "tag": "profile.partner_location.anywhere_vol",
+                "value": "anywhere.vol"
+            },
+            {
+                "tag": "profile.partner_location.anywhere_ler",
+                "value": "anywhere.ler"
+            },
+            {
+                "tag": "profile.partner_location.close_vol",
+                "value": "close.vol"
+            },
+            {
+                "tag": "profile.partner_location.close_ler",
+                "value": "close.ler"
+            },
+            {
+                "tag": "profile.partner_location.far_vol",
+                "value": "far.vol"
+            },
+            {
+                "tag": "profile.partner_location.far_ler",
+                "value": "far.ler"
+            }
+        ],
+        "interests": [
+            {
+                "tag": "profile.interest.sport",
+                "value": "sport"
+            },
+            {
+                "tag": "profile.interest.art",
+                "value": "art"
+            },
+            {
+                "tag": "profile.interest.music",
+                "value": "music"
+            },
+            {
+                "tag": "profile.interest.literature",
+                "value": "literature"
+            },
+            {
+                "tag": "profile.interest.video",
+                "value": "video"
+            },
+            {
+                "tag": "profile.interest.fashion",
+                "value": "fashion"
+            },
+            {
+                "tag": "profile.interest.culture",
+                "value": "culture"
+            },
+            {
+                "tag": "profile.interest.travel",
+                "value": "travel"
+            },
+            {
+                "tag": "profile.interest.food",
+                "value": "food"
+            },
+            {
+                "tag": "profile.interest.politics",
+                "value": "politics"
+            },
+            {
+                "tag": "profile.interest.nature",
+                "value": "nature"
+            },
+            {
+                "tag": "profile.interest.science",
+                "value": "science"
+            },
+            {
+                "tag": "profile.interest.technology",
+                "value": "technology"
+            },
+            {
+                "tag": "profile.interest.history",
+                "value": "history"
+            },
+            {
+                "tag": "profile.interest.religion",
+                "value": "religion"
+            },
+            {
+                "tag": "profile.interest.sociology",
+                "value": "sociology"
+            },
+            {
+                "tag": "profile.interest.family",
+                "value": "family"
+            },
+            {
+                "tag": "profile.interest.psycology",
+                "value": "psycology"
+            },
+            {
+                "tag": "profile.interest.personal_development",
+                "value": "personal-development"
+            }
+        ],
+        "lang_level": [
+            {
+                "tag": "profile.lang_level.level_0_vol",
+                "value": "level-0.vol"
+            },
+            {
+                "tag": "profile.lang_level.level_0_ler",
+                "value": "level-0.ler"
+            },
+            {
+                "tag": "profile.lang_level.level_1_vol",
+                "value": "level-1.vol"
+            },
+            {
+                "tag": "profile.lang_level.level_1_ler",
+                "value": "level-1.ler"
+            },
+            {
+                "tag": "profile.lang_level.level_2_vol",
+                "value": "level-2.vol"
+            },
+            {
+                "tag": "profile.lang_level.level_2_ler",
+                "value": "level-2.ler"
+            },
+            {
+                "tag": "profile.lang_level.level_3_vol",
+                "value": "level-3.vol"
+            },
+            {
+                "tag": "profile.lang_level.level_3_ler",
+                "value": "level-3.ler"
+            }
+        ],
+        "min_lang_level_partner": [
+            {
+                "tag": "profile.min_lang_level_partner.level_0",
+                "value": "level-0"
+            },
+            {
+                "tag": "profile.min_lang_level_partner.level_1",
+                "value": "level-1"
+            },
+            {
+                "tag": "profile.min_lang_level_partner.level_2",
+                "value": "level-2"
+            },
+            {
+                "tag": "profile.min_lang_level_partner.level_3",
+                "value": "level-3"
+            }
+        ],
+        "notify_channel": [
+            {
+                "tag": "profile.notification_channel.email",
+                "value": "email"
+            },
+            {
+                "tag": "profile.notification_channel.sms",
+                "value": "sms"
+            }
+        ],
+        "image_type": [
+            {
+                "tag": "profile.image_type.avatar",
+                "value": "avatar"
+            },
+            {
+                "tag": "profile.image_type.image",
+                "value": "image"
+            }
+        ],
+        "gender": [
+            {
+                "tag": "profile.gender.any",
+                "value": "any"
+            },
+            {
+                "tag": "profile.gender.male",
+                "value": "male"
+            },
+            {
+                "tag": "profile.gender.female",
+                "value": "female"
+            }
+        ],
+        "partner_gender": [
+            {
+                "tag": "profile.partner_gender.any",
+                "value": "any"
+            },
+            {
+                "tag": "profile.partner_gender.male",
+                "value": "male"
+            },
+            {
+                "tag": "profile.partner_gender.female",
+                "value": "female"
+            }
+        ],
+        "display_language": [
+            {
+                "tag": "profile.display_language.de",
+                "value": "de"
+            },
+            {
+                "tag": "profile.display_language.en",
+                "value": "en"
+            }
+        ],
+        "target_groups": [
+            {
+                "tag": "profile.target_group.any_vol",
+                "value": "any.vol"
+            },
+            {
+                "tag": "profile.target_group.any_ler",
+                "value": "any.ler"
+            },
+            {
+                "tag": "profile.target_group.refugee_vol",
+                "value": "refugee.vol"
+            },
+            {
+                "tag": "profile.target_group.refugee_ler",
+                "value": "refugee.ler"
+            },
+            {
+                "tag": "profile.target_group.student_vol",
+                "value": "student.vol"
+            },
+            {
+                "tag": "profile.target_group.student_ler",
+                "value": "student.ler"
+            },
+            {
+                "tag": "profile.target_group.worker_vol",
+                "value": "worker.vol"
+            },
+            {
+                "tag": "profile.target_group.worker_ler",
+                "value": "worker.ler"
+            }
+        ],
+        "availability": {
+            "mo": [
+                {
+                    "value": "08_10",
+                    "tag": "val.availability.time_slot_08_10"
+                },
+                {
+                    "value": "10_12",
+                    "tag": "val.availability.time_slot_10_12"
+                },
+                {
+                    "value": "12_14",
+                    "tag": "val.availability.time_slot_12_14"
+                },
+                {
+                    "value": "14_16",
+                    "tag": "val.availability.time_slot_14_16"
+                },
+                {
+                    "value": "16_18",
+                    "tag": "val.availability.time_slot_16_18"
+                },
+                {
+                    "value": "18_20",
+                    "tag": "val.availability.time_slot_18_20"
+                },
+                {
+                    "value": "20_22",
+                    "tag": "val.availability.time_slot_20_22"
+                }
+            ],
+            "tu": [
+                {
+                    "value": "08_10",
+                    "tag": "val.availability.time_slot_08_10"
+                },
+                {
+                    "value": "10_12",
+                    "tag": "val.availability.time_slot_10_12"
+                },
+                {
+                    "value": "12_14",
+                    "tag": "val.availability.time_slot_12_14"
+                },
+                {
+                    "value": "14_16",
+                    "tag": "val.availability.time_slot_14_16"
+                },
+                {
+                    "value": "16_18",
+                    "tag": "val.availability.time_slot_16_18"
+                },
+                {
+                    "value": "18_20",
+                    "tag": "val.availability.time_slot_18_20"
+                },
+                {
+                    "value": "20_22",
+                    "tag": "val.availability.time_slot_20_22"
+                }
+            ],
+            "we": [
+                {
+                    "value": "08_10",
+                    "tag": "val.availability.time_slot_08_10"
+                },
+                {
+                    "value": "10_12",
+                    "tag": "val.availability.time_slot_10_12"
+                },
+                {
+                    "value": "12_14",
+                    "tag": "val.availability.time_slot_12_14"
+                },
+                {
+                    "value": "14_16",
+                    "tag": "val.availability.time_slot_14_16"
+                },
+                {
+                    "value": "16_18",
+                    "tag": "val.availability.time_slot_16_18"
+                },
+                {
+                    "value": "18_20",
+                    "tag": "val.availability.time_slot_18_20"
+                },
+                {
+                    "value": "20_22",
+                    "tag": "val.availability.time_slot_20_22"
+                }
+            ],
+            "th": [
+                {
+                    "value": "08_10",
+                    "tag": "val.availability.time_slot_08_10"
+                },
+                {
+                    "value": "10_12",
+                    "tag": "val.availability.time_slot_10_12"
+                },
+                {
+                    "value": "12_14",
+                    "tag": "val.availability.time_slot_12_14"
+                },
+                {
+                    "value": "14_16",
+                    "tag": "val.availability.time_slot_14_16"
+                },
+                {
+                    "value": "16_18",
+                    "tag": "val.availability.time_slot_16_18"
+                },
+                {
+                    "value": "18_20",
+                    "tag": "val.availability.time_slot_18_20"
+                },
+                {
+                    "value": "20_22",
+                    "tag": "val.availability.time_slot_20_22"
+                }
+            ],
+            "fr": [
+                {
+                    "value": "08_10",
+                    "tag": "val.availability.time_slot_08_10"
+                },
+                {
+                    "value": "10_12",
+                    "tag": "val.availability.time_slot_10_12"
+                },
+                {
+                    "value": "12_14",
+                    "tag": "val.availability.time_slot_12_14"
+                },
+                {
+                    "value": "14_16",
+                    "tag": "val.availability.time_slot_14_16"
+                },
+                {
+                    "value": "16_18",
+                    "tag": "val.availability.time_slot_16_18"
+                },
+                {
+                    "value": "18_20",
+                    "tag": "val.availability.time_slot_18_20"
+                },
+                {
+                    "value": "20_22",
+                    "tag": "val.availability.time_slot_20_22"
+                }
+            ],
+            "sa": [
+                {
+                    "value": "08_10",
+                    "tag": "val.availability.time_slot_08_10"
+                },
+                {
+                    "value": "10_12",
+                    "tag": "val.availability.time_slot_10_12"
+                },
+                {
+                    "value": "12_14",
+                    "tag": "val.availability.time_slot_12_14"
+                },
+                {
+                    "value": "14_16",
+                    "tag": "val.availability.time_slot_14_16"
+                },
+                {
+                    "value": "16_18",
+                    "tag": "val.availability.time_slot_16_18"
+                },
+                {
+                    "value": "18_20",
+                    "tag": "val.availability.time_slot_18_20"
+                },
+                {
+                    "value": "20_22",
+                    "tag": "val.availability.time_slot_20_22"
+                }
+            ],
+            "su": [
+                {
+                    "value": "08_10",
+                    "tag": "val.availability.time_slot_08_10"
+                },
+                {
+                    "value": "10_12",
+                    "tag": "val.availability.time_slot_10_12"
+                },
+                {
+                    "value": "12_14",
+                    "tag": "val.availability.time_slot_12_14"
+                },
+                {
+                    "value": "14_16",
+                    "tag": "val.availability.time_slot_14_16"
+                },
+                {
+                    "value": "16_18",
+                    "tag": "val.availability.time_slot_16_18"
+                },
+                {
+                    "value": "18_20",
+                    "tag": "val.availability.time_slot_18_20"
+                },
+                {
+                    "value": "20_22",
+                    "tag": "val.availability.time_slot_20_22"
+                }
+            ]
+        },
+        "lang_skill": {
+            "level": [
+                {
+                    "value": "level-0",
+                    "tag": "profile.lang_level.level_0"
+                },
+                {
+                    "value": "level-1",
+                    "tag": "profile.lang_level.level_1"
+                },
+                {
+                    "value": "level-2",
+                    "tag": "profile.lang_level.level_2"
+                },
+                {
+                    "value": "level-3",
+                    "tag": "profile.lang_level.level_3"
+                },
+                {
+                    "value": "level-4",
+                    "tag": "profile.lang_level.level_4_native.vol"
+                }
+            ],
+            "lang": [
+                {
+                    "value": "english",
+                    "tag": "profile.lang.english"
+                },
+                {
+                    "value": "german",
+                    "tag": "profile.lang.german"
+                },
+                {
+                    "value": "spanish",
+                    "tag": "profile.lang.spanish"
+                },
+                {
+                    "value": "french",
+                    "tag": "profile.lang.french"
+                },
+                {
+                    "value": "italian",
+                    "tag": "profile.lang.italian"
+                },
+                {
+                    "value": "dutch",
+                    "tag": "profile.lang.dutch"
+                },
+                {
+                    "value": "portuguese",
+                    "tag": "profile.lang.portuguese"
+                },
+                {
+                    "value": "russian",
+                    "tag": "profile.lang.russian"
+                },
+                {
+                    "value": "chinese",
+                    "tag": "profile.lang.chinese"
+                },
+                {
+                    "value": "japanese",
+                    "tag": "profile.lang.japanese"
+                },
+                {
+                    "value": "korean",
+                    "tag": "profile.lang.korean"
+                },
+                {
+                    "value": "arabic",
+                    "tag": "profile.lang.arabic"
+                },
+                {
+                    "value": "turkish",
+                    "tag": "profile.lang.turkish"
+                },
+                {
+                    "value": "swedish",
+                    "tag": "profile.lang.swedish"
+                },
+                {
+                    "value": "polish",
+                    "tag": "profile.lang.polish"
+                },
+                {
+                    "value": "danish",
+                    "tag": "profile.lang.danish"
+                },
+                {
+                    "value": "norwegian",
+                    "tag": "profile.lang.norwegian"
+                },
+                {
+                    "value": "finnish",
+                    "tag": "profile.lang.finnish"
+                },
+                {
+                    "value": "greek",
+                    "tag": "profile.lang.greek"
+                },
+                {
+                    "value": "czech",
+                    "tag": "profile.lang.czech"
+                },
+                {
+                    "value": "hungarian",
+                    "tag": "profile.lang.hungarian"
+                },
+                {
+                    "value": "romanian",
+                    "tag": "profile.lang.romanian"
+                },
+                {
+                    "value": "indonesian",
+                    "tag": "profile.lang.indonesian"
+                },
+                {
+                    "value": "hebrew",
+                    "tag": "profile.lang.hebrew"
+                },
+                {
+                    "value": "thai",
+                    "tag": "profile.lang.thai"
+                },
+                {
+                    "value": "vietnamese",
+                    "tag": "profile.lang.vietnamese"
+                },
+                {
+                    "value": "ukrainian",
+                    "tag": "profile.lang.ukrainian"
+                },
+                {
+                    "value": "slovak",
+                    "tag": "profile.lang.slovak"
+                },
+                {
+                    "value": "croatian",
+                    "tag": "profile.lang.croatian"
+                },
+                {
+                    "value": "serbian",
+                    "tag": "profile.lang.serbian"
+                },
+                {
+                    "value": "bulgarian",
+                    "tag": "profile.lang.bulgarian"
+                },
+                {
+                    "value": "lithuanian",
+                    "tag": "profile.lang.lithuanian"
+                },
+                {
+                    "value": "latvian",
+                    "tag": "profile.lang.latvian"
+                },
+                {
+                    "value": "estonian",
+                    "tag": "profile.lang.estonian"
+                },
+                {
+                    "value": "persian",
+                    "tag": "profile.lang.persian"
+                },
+                {
+                    "value": "afrikaans",
+                    "tag": "profile.lang.afrikaans"
+                },
+                {
+                    "value": "swahili",
+                    "tag": "profile.lang.swahili"
+                }
+            ]
+        }
+    }
+}

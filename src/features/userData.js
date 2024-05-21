@@ -20,8 +20,6 @@ export const userDataSlice = createSlice({
       state.matches = action.payload?.matches;
       state.chats = action.payload?.chats;
       state.messages = {};
-      state.apiOptions = action.payload?.apiOptions;
-      state.formOptions = action.payload?.apiOptions.profile;
       state.activeCallRooms = action.payload?.activeCallRooms || [];
       state.callSetup = action.payload?.callSetup || null; // { userId: user.hash } or null
       state.activeCall = action.payload?.activeCall || null; // { userId: user.hash, tracks: {} } or null
@@ -165,21 +163,21 @@ export const userDataSlice = createSlice({
       }
       state.chats.results = chatIsLoaded
         ? state.chats.results?.map(chat => {
-            if (chat.uuid === chatId) {
-              return {
-                ...chat,
-                unread_count: senderIsSelf
-                  ? chat.unread_count
-                  : chat.unread_count + 1,
-                newest_message: message,
-              };
-            }
-            return chat;
-          })
+          if (chat.uuid === chatId) {
+            return {
+              ...chat,
+              unread_count: senderIsSelf
+                ? chat.unread_count
+                : chat.unread_count + 1,
+              newest_message: message,
+            };
+          }
+          return chat;
+        })
         : [
-            metaChatObj,
-            ...state.chats.results.filter(chat => chat.uuid !== chatId),
-          ];
+          metaChatObj,
+          ...state.chats.results.filter(chat => chat.uuid !== chatId),
+        ];
       state.chats = {
         ...state.chats,
         results: sortChats(state.chats.results),
@@ -333,17 +331,17 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-  async dispatch => {
-    const result = await questionsDuringCall.archieveQuestion(
-      card?.uuid,
-      archive,
-    );
-    dispatch(
-      switchQuestionCategory({
-        card,
-        archived: archive,
-      }),
-    );
-  };
+    async dispatch => {
+      const result = await questionsDuringCall.archieveQuestion(
+        card?.uuid,
+        archive,
+      );
+      dispatch(
+        switchQuestionCategory({
+          card,
+          archived: archive,
+        }),
+      );
+    };
 
 export default userDataSlice.reducer;
