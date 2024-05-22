@@ -15,14 +15,12 @@ function InitializeDux({ data }) {
 
 function AuthGuard({ children }) {
   const user = useSelector(state => state.userData.user);
-  // TODO: should also check 1. 'session_id' present
-  // 2. if 'session_id' & user present, else fetch userData
   return user ? children : null;
 }
 
-function App({ data }) {
-  // WebsocketBridge is here so it dones't reconnect on every AppLayout change
-  // But that means we need to manually connect it when userData is present
+const ApiOptionsContext = React.createContext({});
+
+function App({ data, apiOptions }) {
   return (
     <Provider store={store}>
       <AuthGuard>

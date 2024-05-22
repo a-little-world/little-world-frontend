@@ -3,28 +3,32 @@ import { createRoot } from 'react-dom/client';
 import { Provider, useDispatch } from 'react-redux';
 
 import App from './App';
-import { DEVELOPMENT, IS_CAPACITOR_BUILD } from './ENVIRONMENT';
+import { DEVELOPMENT } from './ENVIRONMENT';
 import store from './app/store';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
-import optionsTranslations from './options_translations.json';
 import reportWebVitals from './reportWebVitals';
 import { Root } from './router';
+import { updateTranslationResources } from './i18n.js';
 
 const isDevelopment = DEVELOPMENT;
-const isCapacitor = IS_CAPACITOR_BUILD || false;
 
 let root;
 
-window.renderApp = ({ initData }) => {
+window.renderApp = ({
+  initData,
+  apiOptions,
+  backendTranslations
+}) => {
   console.log('renderApp', { initData })
   // If not in development just render ...
   const container = document.getElementById('root');
+  updateTranslationResources({ apiTranslations: backendTranslations });
 
   if (!root) {
     root = createRoot(container);
   }
-  root.render(<App data={initData} />);
+  root.render(<App data={initData} apiOptions={apiOptions} />);
 
   reportWebVitals();
 };
