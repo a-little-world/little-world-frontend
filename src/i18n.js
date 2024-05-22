@@ -39,6 +39,7 @@ export const updateTranslationResources = ({ apiTranslations }) => {
   /*
   This upates the current translations resources with all backend translations!
   */
+  console.log("INJECTED BACKEND TRANSLATIONS", apiTranslations);
   Object.keys(apiTranslations).forEach(lang => {
     i18next.addResourceBundle(lang, 'translation', {
       ...i18next.getResourceBundle(lang, 'translation'),

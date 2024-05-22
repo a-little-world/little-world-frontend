@@ -8,7 +8,7 @@ import store from './app/store';
 import { initialise } from './features/userData';
 import router from './router';
 
-function InitializeDux({ data }) {
+export function InitializeDux({ data }) {
   const dispatch = useDispatch();
   dispatch(initialise(data));
 }

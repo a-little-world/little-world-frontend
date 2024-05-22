@@ -11,13 +11,14 @@ import { updateTranslationResources } from './i18n';
 import optionsTranslations from './options_translations.json';
 import reportWebVitals from './reportWebVitals';
 import { Root } from './router';
+import { InitializeDux } from './App';
 
 const isDevelopment = DEVELOPMENT;
 const isCapacitor = IS_CAPACITOR_BUILD || false;
 
 let root;
 
-window.renderApp = ({ initData }, { apiTranslations }) => {
+window.renderApp = ({ initData, apiTranslations }) => {
   updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
   // If not in development just render ...
   const container = document.getElementById('root');
@@ -41,7 +42,7 @@ window.renderMessageView = (
     linkText,
     linkTo,
   },
-  { apiTranslations },
+  { apiOptions, apiTranslations },
 ) => {
   updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
 
@@ -66,6 +67,9 @@ window.renderMessageView = (
             />
           </FormLayout>
         </Root>
+        <InitializeDux data={{
+          apiOptions
+        }} />
       </Provider>
     </React.StrictMode>,
   );
@@ -77,7 +81,7 @@ window.renderMessageView = (
  * 3. Capaitor build, call the `renderApp` directly as its used in full static export
  */
 
-if (isDevelopment && !isCapacitor) {
+if (isDevelopment) {
   import('./loginSimulator.js').then(simulator => {
     simulator.simulatedAutoLogin().then(data => {
       const initData = data?.data;
@@ -86,9 +90,4 @@ if (isDevelopment && !isCapacitor) {
       window.renderApp({ initData }, { apiTranslations });
     });
   });
-} else if (isCapacitor) {
-  const apiTranslations = JSON.parse(optionsTranslations.apiTranslations);
-  const data = { apiOptions: optionsTranslations.apiOptions };
-
-  window.renderApp({ initData: data }, { apiTranslations });
 }
