@@ -53,6 +53,7 @@
   "profile_card.support_user": "Support",
   "profile_card.support_description": "👋 Hier, um dir zu helfen",
   "searching_card.welcome": "Willkommen bei Little World",
+  "searching_card.pre_match_call_completed_title": "Willkommen bei Little World",
   "searching_card.matched_info_1": "Wir suchen dein bestes Match und melden uns, wenn wir es gefunden haben!",
   "searching_card.matched_info_2": "Bitte hab etwas Geduld, da dies einige Wochen dauern kann.",
   "searching_card.pre_match_call_completed_info_1": "Wir suchen dein bestes Match und melden uns, wenn wir es gefunden haben!",
@@ -70,7 +71,6 @@
   "matching_state_searching_trans": "Wir suchen derzeit ein neues Match für dich",
   "matching_state_found_unconfirmed_trans": "Wir haben eine*n Gesprächspartner*in für dich gefunden!",
   "matching_state_found_confirmed_trans": "Weiter*n Gesprächspartner*in finden",
-
   "confirm_match_title": "Gesprächspartner*in gefunden! !",
   "confirm_match_description": "Aufgrund deinen Suchkriterien denken wir, dass <highlight>{{name}}</highlight> ein geeigneter Gesprächspartner für dich wäre.",
   "confirm_match_instruction": "Klicke auf Bestätigen, um jetzt mit ihnen zu chatten.",
@@ -146,10 +146,8 @@
   "settings.delete_account_confirm_button": "Konto löschen",
   "settings.delete_account_modal_title": "Bist du sicher, dass du dein Konto dauerhaft löschen willst?",
   "settings.delete_account_modal_cancel": "Abbrechen",
-
   "call.leave_btn": "Gespräch beenden",
   "call.waiting_for_partner": "Warten auf {{name}}...",
-
   "chat.not_selected": "Öffne einen bestimmten Chat, indem du ihn in der linken Seitenleiste anklickst",
   "chat.no_messages": "Du hast noch keine Nachrichten. Sende jetzt eine Nachricht!",
   "chat.no_messages_preview": "Schreibe die erste Nachricht",
@@ -392,7 +390,6 @@
   "error.passwords_do_not_match": "Passwörter stimmen nicht überein",
   "error.server_issue": "Problem bei der Verbindung zum Server. Bitte versuche es noch einmal.",
   "error.permissions": "Die Nutzung der Kamera und des Mikrofons erfordert deine Erlaubnis. Bitte erteile die Berechtigung in den Einstellungen deines Browsers. Anleitungen findest du unter https://support.google.com/chrome/answer/2693767 ",
-
   "form.btn_next": "Weiter",
   "form.btn_back": "Zurück",
   "form.btn_complete": "Umfrage beenden",
@@ -529,12 +526,10 @@
   "notifications.archived": "Archiviert",
   "notifications.show_all": "Alle ansehen",
   "notifications.none": "Keine neuen Benachrichtigungen",
-
   "translator.language_placholder": "Wähle eine Sprache...",
   "translator.text_placeholder": "Typ zu übersetzen",
   "translator.swap_languages": "Sprachen tauschen",
   "translator.translated_placeholder": "Übersetzung erscheint hier.",
-
   "sign_up.company_tooltip": "Wenn du Little World im Namen deines Unternehmens nutzt, gib bitte den Namen deines Unternehmens an.",
   "sign_up.company_name_label": "Little World Partner",
   "sign_up.title": "Konto erstellen",
