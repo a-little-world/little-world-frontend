@@ -5,7 +5,7 @@
 
 HOST="host.docker.internal:3000"
 #SERVER="host.docker.internal:8000"
-SERVER="stage.little-world.com"
+SERVER="form-v2.little-world.com"
 #HOST="192.168.178.1:3000"
 #HOST="timschupp.de"
 

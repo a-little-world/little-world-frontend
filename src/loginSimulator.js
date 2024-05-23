@@ -1,7 +1,7 @@
 const baseUrl = 'http://localhost:3333';
 const baseLogin = {
-  username: 'tim+docs@little-world.com',
-  password: "I'dLikeToViewTheDocs!",
+  username: 'herrduenschnlate+2@gmail.com',
+  password: "Test123!",
 };
 
 // eslint-disable-next-line import/prefer-default-export
