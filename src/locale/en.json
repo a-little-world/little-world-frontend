@@ -26,12 +26,7 @@
   "pcs_mic_label": "Selected Microphone",
   "pcs_speaker_label": "Selected speakers",
   "pcs_front_camera": "Front camera",
-  "vc_fs_btn_enter_fullscreen": "Fullscreen",
-  "vc_fs_btn_exit_fullscreen": "Exit Fullscreen",
-  "vc_fs_btn_appointment": "Appointment",
-  "vc_fs_btn_mistake": "Notice",
-  "vc_fs_btn_chat": "Chat",
-  "vc_fs_btn_end_call": "End call",
+
   "vc_btn_chat": "Chat",
   "vc_btn_questions": "Questions",
   "vc_btn_notes": "Notes",
@@ -50,7 +45,6 @@
   "cp_profile": "Profile",
   "cp_message": "Message",
   "cp_call": "Call",
-  "cp_find_new_partner": "Find new partner",
   "profile_card.support_user": "Support",
   "profile_card.support_description": "👋 Here to help",
   "searching_card.matched_title": "Welcome to Little World",
@@ -209,20 +203,7 @@
     "Friday",
     "Saturday"
   ],
-  "month_short": [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ],
+
   "lang-en": "English",
   "lang-sa": "Arabic",
   "lang-bg": "Bulgarian",
@@ -249,35 +230,9 @@
     "months": "{{n}} months ago",
     "years": "{{n}} years ago"
   },
-  "notif_age": {
-    "today": "today",
-    "week": "this week",
-    "older": "older"
-  },
   "nbt_contact": "Contact Us",
   "nbt_faqs": "FAQs",
-  "nbt_videos": "help videos",
-  "profile_interests": {
-    "sport_trans": "Sports",
-    "art_trans": "Art",
-    "music_trans": "Music",
-    "litreture_trans": "Literature",
-    "movie_trans": "Movies",
-    "fashion_trans": "Fashion",
-    "culture_trans": "Culture",
-    "travel_trans": "Travel",
-    "food_trans": "Food",
-    "politics_trans": "Politics",
-    "nature_trans": "Nature",
-    "scienece_trans": "Science",
-    "tech_trans": "Technology",
-    "history_trans": "History",
-    "religion_trans": "Religion",
-    "soziologie_trans": "TODO",
-    "family_trans": "Family",
-    "psycology_trans": "Psychology",
-    "pdev_trans": "Personal Development"
-  },
+
   "nm_main_header_settings": "Notifications",
   "nm_filter_all": "All",
   "nm_filter_unread": "Unread",
@@ -389,7 +344,7 @@
       }
     }
   },
-  "question_category_archived": "Archived",
+
   "error.required": "Required",
   "error.password_min_length": "Password too short",
   "error.passwords_do_not_match": "Passwords do not match",

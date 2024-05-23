@@ -15,6 +15,7 @@ const Switch = styled(Button)`
   bottom: ${({ theme }) => theme.spacing.large};
   right: ${({ theme }) => theme.spacing.large};
 `;
+
 export const ModeSwitch = () => {
   const location = useLocation();
   const theme = useTheme();
