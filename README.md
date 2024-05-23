@@ -4,7 +4,7 @@
 ## Local dev with remote API server
 
 ```bash
-npm run webpack
+npm run dev
 ./schrodingers-nginx.sh
 ```
 
