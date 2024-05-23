@@ -127,14 +127,14 @@ export function SearchingCard({ setShowCancel }) {
             <div>
               <Text center type={TextTypes.Body4} bold>
                 {formatDate(
-                  preMatchingAppointment.start_time,
+                  Date(preMatchingAppointment.start_time),
                   'cccc, do LLLL',
                   language,
                 )}
               </Text>
               <Note center type={TextTypes.Body4} bold>
-                {formatTime(preMatchingAppointment.start_time)} -{' '}
-                {formatTime(preMatchingAppointment.end_time)}
+                {formatTime(Date(preMatchingAppointment.start_time))} -{' '}
+                {formatTime(Date(preMatchingAppointment.end_time))}
               </Note>
             </div>
           ) : (
