@@ -8,7 +8,7 @@ exports.DEFAULT_LOGIN_USERNAME = this.DEVELOPMENT
 exports.DEFAULT_LOGIN_PASSWORD = this.DEVELOPMENT
   ? 'Test123'
   : 'aPassYouCantUse:)';
-exports.BACKEND_URL = this.DEVELOPMENT ? 'http://localhost:81' : '';
+exports.BACKEND_URL = this.DEVELOPMENT ? 'http://localhost:3333' : '';
 exports.BACKEND_PATH = this.DEVELOPMENT ? '' : '/app';
 exports.CORE_WS_SHEME = this.PRODUCTION ? 'wss://' : 'ws://';
 exports.CORE_WS_PATH = '/api/core/ws';
