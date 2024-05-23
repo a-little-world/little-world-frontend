@@ -2,7 +2,9 @@
   "name": "littleplanet",
   "version": "0.1.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "dev": "npx webpack serve --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
