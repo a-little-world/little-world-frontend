@@ -52,7 +52,7 @@ window.renderMessageView = (
   root.render(
     <React.StrictMode>
       <Provider store={store}>
-        <Root restoreScroll={false}>
+        <Root restoreScroll={false} includeModeSwitch={false}>
           <FormLayout>
             <MessageCard
               title={title}

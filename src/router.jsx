@@ -55,12 +55,12 @@ import {
 
 const isCapacitor = IS_CAPACITOR_BUILD || false;
 
-export const Root = ({ children, restoreScroll = true }) => (
+export const Root = ({ children, restoreScroll = true, includeModeSwitch = true }) => (
   <CustomThemeProvider>
     {restoreScroll && <ScrollRestoration />}
     <GlobalStyles />
     {children || <Outlet />}
-    <ModeSwitch />
+    {includeModeSwitch && <ModeSwitch />}
   </CustomThemeProvider>
 );
 
