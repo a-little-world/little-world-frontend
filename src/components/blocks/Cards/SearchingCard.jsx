@@ -126,10 +126,15 @@ export function SearchingCard({ setShowCancel }) {
           {isBookedState ? (
             <div>
               <Text center type={TextTypes.Body4} bold>
-                {formatDate(new Date(), 'cccc, LLLL do', language)}
+                {formatDate(
+                  preMatchingAppointment.start_time,
+                  'cccc, do LLLL',
+                  language,
+                )}
               </Text>
               <Note center type={TextTypes.Body4} bold>
-                {formatTime(new Date())} - {formatTime(new Date())}
+                {formatTime(preMatchingAppointment.start_time)} -{' '}
+                {formatTime(preMatchingAppointment.end_time)}
               </Note>
             </div>
           ) : (

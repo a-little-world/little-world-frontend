@@ -129,7 +129,6 @@ export const Tag = styled(Text)`
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: ${({ theme }) => theme.color.text.reverse};
   background-color: ${({ theme }) => theme.color.surface.primary};
   border-radius: 30px;
   gap: ${({ theme }) => theme.spacing.xxxsmall};
