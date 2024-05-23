@@ -2,7 +2,9 @@
   "name": "littleplanet",
   "version": "0.1.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "webpack": "npx webpack serve --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -91,7 +93,7 @@
     "typescript": "^5.3.3",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-bundle-tracker": "^1.8.0",
-    "webpack-cli": "^5.0.1",
+    "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.11.1"
   },
   "overrides": {

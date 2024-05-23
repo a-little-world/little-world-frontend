@@ -1,7 +1,7 @@
 const baseUrl = 'http://localhost:3333';
 const baseLogin = {
-  username: 'devuser@mail.com',
-  password: 'Test321!',
+  username: 'tim+docs@little-world.com',
+  password: "I'dLikeToViewTheDocs!",
 };
 
 // eslint-disable-next-line import/prefer-default-export
@@ -18,7 +18,7 @@ export function simulatedAutoLogin(
     body: JSON.stringify({
       username,
       password,
-      dev_dataset: 'main_frontend',
+      dev_dataset: "main_frontend"
     }),
   }).then(response => {
     if (response.ok) {

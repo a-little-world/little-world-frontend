@@ -87,7 +87,7 @@ if (isDevelopment) {
       const initData = data?.data;
       const apiTranslations = data?.api_translations;
 
-      window.renderApp({ initData }, { apiTranslations });
+      window.renderApp({ initData, apiTranslations });
     });
   });
 }
