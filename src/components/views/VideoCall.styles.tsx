@@ -77,6 +77,7 @@ export const VideoContainer = styled.div<{
         top: 0;
         left: 0;
         z-index: 1000;
+        background: ${theme.color.text.secondary};
       }
 
       [data-lk-local-participant='true'][data-lk-facing-mode='user'] {
