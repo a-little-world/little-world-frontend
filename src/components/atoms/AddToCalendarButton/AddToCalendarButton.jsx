@@ -15,7 +15,6 @@ export default function AddToCalendarButton({ calendarEvent }) {
   const { t } = useTranslation();
   const theme = useTheme();
   return (
-    <>
       <div className="add-to-calendar-wrapper">
         <Button
           type="button"
@@ -34,7 +33,6 @@ export default function AddToCalendarButton({ calendarEvent }) {
           <AddToCalendarButtonTooltip calendarEvent={calendarEvent} />
         )}
       </div>
-    </>
   );
 
   function handleClick(event) {
