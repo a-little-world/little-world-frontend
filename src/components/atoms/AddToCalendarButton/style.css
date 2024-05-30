@@ -1,4 +1,5 @@
 .add-to-calendar-wrapper {
+    align-content: center;
     position: relative;
     display: inline;
 }
