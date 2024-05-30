@@ -25,3 +25,22 @@ export const formatTimeDistance = (from: Date, to: Date, locale: string) => {
     locale: locale === LANGUAGES.de ? de : enGB,
   });
 };
+
+export function getEndTime(startDate: Date, durationInMinutes?: number, endDate?: Date) {
+  if (endDate) {
+    return endDate;
+  }
+
+  if (durationInMinutes) {
+    return addMinutesToDate(startDate, durationInMinutes);
+  }
+}
+
+export function addMinutesToDate(date: Date, minutes: number) {
+  const MINUTE_IN_MS = 60 * 1000;
+  return new Date(date.getTime() + minutes * MINUTE_IN_MS);
+}
+
+export function formatDateForCalendarUrl(date: Date) {
+  return date.toISOString().replace(/-|:|\.\d+/g, '');
+}

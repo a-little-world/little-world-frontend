@@ -24,7 +24,7 @@ import {
   Main,
 } from './styles';
 
-import AddToCalendarButton  from '../../atoms/AddToCalendarButton/AddToCalendarButton.jsx';
+import AddToCalendarButton  from '../../atoms/AddToCalendarButton.jsx';
 
 function CommunityEvent({ _key, frequency, description, title, time, link }) {
   const {
@@ -88,7 +88,7 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
             <img alt="add appointment" />
             <span className="text">Termin hinzufügen</span>
           </Button>
-            <Button
+          <Button
             type="button"
             variation={ButtonVariations.Basic}
             onClick={() => {
@@ -98,15 +98,16 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
             <PhoneIcon color={theme.color.surface.primary} width="20px" />
             <span className="text">Gespräch beitreten</span>
           </Button>
-            <AddToCalendarButton calendarEvent={{ title, description, dateTime, link }} />
+          <AddToCalendarButton calendarEvent={{ title, description, dateTime, link }} />
         </Buttons>
       </Main>
     </Event>
   );
 }
 
+function CommunityEvents() {
+  const events = useSelector(state => state.userData.communityEvents);
 
-function CommunityEvents({ events }) {
   return (
     <Events>
       {events.items.map(eventData => (

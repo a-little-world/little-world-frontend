@@ -557,5 +557,8 @@
   "favorite_notes_label": "Favorite",
   "archived_notes_label": "Archived",
   "notes_textarea_placeholder": "Enter your text here...",
-  "add_to_calendar": "Add to Calendar"
+  "add_to_calendar": "Add to Calendar",
+  "google_calendar": "Google Calendar",
+  "apple_calendar": "Apple Calendar",
+  "outlook_calendar": "Outlook Calendar"
 }
