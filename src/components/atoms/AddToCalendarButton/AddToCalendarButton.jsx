@@ -10,12 +10,18 @@ import {
   CalendarIcon
 } from '@a-little-world/little-world-design-system';
 
+const AddToCalendarWrapper = styled.div`
+   align-content: center;
+    position: relative;
+    display: inline;
+`
+
 export default function AddToCalendarButton({ calendarEvent }) {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const { t } = useTranslation();
   const theme = useTheme();
   return (
-      <div className="add-to-calendar-wrapper">
+      <AddToCalendarWrapper>
         <Button
           type="button"
           variation={ButtonVariations.Circle}
@@ -32,7 +38,7 @@ export default function AddToCalendarButton({ calendarEvent }) {
         {isTooltipVisible && (
           <AddToCalendarButtonTooltip calendarEvent={calendarEvent} />
         )}
-      </div>
+      </AddToCalendarWrapper>
   );
 
   function handleClick(event) {
