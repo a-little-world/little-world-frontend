@@ -24,7 +24,7 @@ import {
   Main,
 } from './styles';
 
-import AddToCalendarButton  from '../../atoms/AddToCalendarButton.jsx';
+import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
 
 function CommunityEvent({ _key, frequency, description, title, time, link }) {
   const {
@@ -98,7 +98,7 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
             <PhoneIcon color={theme.color.surface.primary} width="20px" />
             <span className="text">Gespräch beitreten</span>
           </Button>
-          <AddToCalendarButton calendarEvent={{ title, description, dateTime, link }} />
+          <AddToCalendarButton calendarEvent={{ title, description, startDate: dateTime, durationInMinutes: 60, link }} />
         </Buttons>
       </Main>
     </Event>

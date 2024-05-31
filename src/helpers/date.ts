@@ -26,14 +26,11 @@ export const formatTimeDistance = (from: Date, to: Date, locale: string) => {
   });
 };
 
-export function getEndTime(startDate: Date, durationInMinutes?: number, endDate?: Date) {
+export function getEndTime(startDate: Date, durationInMinutes: number, endDate?: Date) {
   if (endDate) {
     return endDate;
   }
-
-  if (durationInMinutes) {
-    return addMinutesToDate(startDate, durationInMinutes);
-  }
+  return addMinutesToDate(startDate, durationInMinutes);
 }
 
 export function addMinutesToDate(date: Date, minutes: number) {

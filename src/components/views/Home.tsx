@@ -59,7 +59,6 @@ function Main() {
   };
 
   const matches = useSelector(state => state.userData.matches);
-  const events = useSelector(state => state.userData.communityEvents);
 
   useEffect(() => {
     const totalPage =
@@ -89,7 +88,7 @@ function Main() {
         use={'main'}
       />
       {subpage === 'community_calls' ? (
-        <CommunityEvents events={events} />
+        <CommunityEvents />
       ) : (
         <>
           <Home>
