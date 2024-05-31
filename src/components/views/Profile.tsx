@@ -1,6 +1,7 @@
 import {
   Modal,
   MultiDropdown,
+  Tags,
   Text,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
@@ -19,7 +20,6 @@ import {
 } from '../../userForm/formContent';
 import PageHeader from '../atoms/PageHeader';
 import ProfileCard from '../blocks/Cards/ProfileCard';
-import Interests from '../blocks/Profile/Interests';
 import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
 import { Details, PageContent, TextField } from '../blocks/Profile/styles';
@@ -142,6 +142,10 @@ function Profile() {
 
   if (isEmpty(profile) || isEmpty(profileFields)) return null;
 
+  const selectedInterests = formOptions?.interests
+    ?.filter(option => profile.interests.includes(option.value))
+    .map(interest => t(interest.tag));
+
   return (
     <>
       <PageHeader canGoBack={!isSelf} text={profileTitle} />
@@ -159,10 +163,7 @@ function Profile() {
             content={profileFields.interests}
             setEditingField={setEditingField}
           >
-            <Interests
-              interests={profile.interests}
-              options={formOptions.interests}
-            />
+            <Tags content={selectedInterests} />
           </ProfileDetail>
           <ProfileDetail
             editable={isSelf}

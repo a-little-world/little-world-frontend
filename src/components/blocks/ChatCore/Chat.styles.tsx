@@ -4,6 +4,7 @@ import {
   Text,
   TextArea,
 } from '@a-little-world/little-world-design-system';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import ProfileImage from '../../atoms/ProfileImage.jsx';
@@ -214,4 +215,10 @@ export const ChatContainer = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
   overflow-y: hidden;
   width: 100%;
+`;
+
+export const ProfileLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
 `;

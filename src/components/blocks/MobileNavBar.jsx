@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import Logo from '../atoms/Logo';
+import Logo from '../atoms/Logo.tsx';
 
 const LogoContainer = styled.div`
   display: flex;
@@ -44,11 +44,6 @@ const MobileHeader = styled.div`
   `};
 `;
 
-const Spacer = styled.div`
-  display: flex;
-  flex-shrink: 0;
-`;
-
 const specialPaths = ['chat', 'profile'];
 
 function MobileNavBar({ setShowSidebarMobile }) {
@@ -68,7 +63,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
   return (
     <MobileHeader className="mobile-header">
       <LogoContainer>
-        <Logo stacked={false} displayText={isHome} />
+        <Logo stacked={false} displayText={isHome} asLink />
         {!isHome && (
           <Title tag="h1" type={TextTypes.Body1} bold>
             {t(`headers::${key}`)}

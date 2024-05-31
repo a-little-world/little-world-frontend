@@ -12,7 +12,6 @@ import {
   TickIcon,
   VideoIcon,
 } from '@a-little-world/little-world-design-system';
-import { formatDistance } from 'date-fns';
 import { isEmpty } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -39,7 +38,7 @@ import { addMessage } from '../../../features/userData';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput } from '../../../helpers/form';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
-import { MESSAGES_ROUTE, getAppRoute } from '../../../routes';
+import { MESSAGES_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes';
 import {
   BackButton,
   ChatContainer,
@@ -50,6 +49,7 @@ import {
   NoChatSelected,
   NoMessages,
   Panel,
+  ProfileLink,
   SendButton,
   Time,
   TopSection,
@@ -83,19 +83,21 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
               height="16"
             />
           </BackButton>
-          <UserImage
-            circle
-            size={'xsmall'}
-            image={
-              partner?.image_type === 'avatar'
-                ? partner?.avatar_config
-                : partner?.image
-            }
-            imageType={partner?.image_type}
-          />
-          <Text bold type={TextTypes.Body4}>
-            {partner?.first_name}
-          </Text>
+          <ProfileLink to={getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)}>
+            <UserImage
+              circle
+              size={'xsmall'}
+              image={
+                partner?.image_type === 'avatar'
+                  ? partner?.avatar_config
+                  : partner?.image
+              }
+              imageType={partner?.image_type}
+            />
+            <Text bold type={TextTypes.Body4}>
+              {partner?.first_name}
+            </Text>
+          </ProfileLink>
         </UserInfo>
         <Button
           variation={ButtonVariations.Circle}
@@ -234,12 +236,19 @@ export const Chat = ({ chatId }) => {
                   <Time type={TextTypes.Body6}>
                     {message.read ? (
                       <TickDoubleIcon
+                        labelId="messageReadIcon"
+                        label="message read icon"
                         color={theme.color.status.info}
                         width="16px"
                         height="16px"
                       />
                     ) : (
-                      <TickIcon width="16px" height="16px" />
+                      <TickIcon
+                        labelId="messageUnreadIcon"
+                        label="message unread icon"
+                        width="16px"
+                        height="16px"
+                      />
                     )}
                     {formatTimeDistance(message.created, new Date(), language)}
                   </Time>

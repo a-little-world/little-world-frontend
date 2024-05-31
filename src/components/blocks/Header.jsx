@@ -10,7 +10,7 @@ import {
   getAppRoute,
   getHomeRoute,
 } from '../../routes';
-import Logo from '../atoms/Logo';
+import Logo from '../atoms/Logo.tsx';
 import LanguageSelector from './LanguageSelector/LanguageSelector';
 
 const StyledHeader = styled.header`
