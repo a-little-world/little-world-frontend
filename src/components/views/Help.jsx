@@ -19,7 +19,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { CHAT_ROUTE, getAppRoute } from '../../routes';
-import Logo from '../atoms/Logo';
+import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink';
 import ContentSelector from '../blocks/ContentSelector.tsx';
 import './help.css';
@@ -223,7 +223,11 @@ const generateFAQItems = t => {
     section: t(`faq::section_title::${section}`),
     items: questions.map(question => ({
       header: t(`faq::section_content::${section}::${question}::question`),
-      content: t(`faq::section_content::${section}::${question}::answer`),
+      content: (
+        <Text>
+          {t(`faq::section_content::${section}::${question}::answer`)}
+        </Text>
+      ),
     })),
   }));
 };

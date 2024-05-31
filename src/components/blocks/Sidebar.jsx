@@ -19,7 +19,6 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
 import {
-  APP_ROUTE,
   HELP_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
@@ -27,7 +26,7 @@ import {
   SETTINGS_ROUTE,
   getAppRoute,
 } from '../../routes';
-import Logo from '../atoms/Logo';
+import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink';
 import UnreadDot from '../atoms/UnreadDot.tsx';
 
@@ -149,7 +148,7 @@ function Sidebar({ sidebarMobile }) {
   return (
     <>
       <SidebarContainer $visibleOnMobile={showSidebarMobile}>
-        <StyledLogo />
+        <StyledLogo asLink />
         {buttonData.map(({ label, path, clickEvent, Icon }) => {
           const isActive = location.pathname === path;
 

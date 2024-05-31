@@ -1,13 +1,13 @@
 import {
   ArrowLeftIcon,
-  Link,
+  Button,
+  ButtonVariations,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-
-import { getAppRoute } from '../../routes';
 
 const HeaderContainer = styled.div`
   display: none;
@@ -27,18 +27,26 @@ const HeaderContainer = styled.div`
   `}
 `;
 
+const BackButton = styled(Button)`
+  color: ${({ theme }) => theme.color.text.link};
+`;
+
 function PageHeader({ canGoBack, text }) {
+  const navigate = useNavigate();
   return (
     <HeaderContainer>
       {canGoBack && (
-        <Link to={getAppRoute()}>
+        <BackButton
+          variation={ButtonVariations.Icon}
+          onClick={() => navigate(-1)}
+        >
           <ArrowLeftIcon
             labelId="return to profile"
             label="return to profile"
             width="24"
             height="24"
           />
-        </Link>
+        </BackButton>
       )}
       <Text tag="h2" bold type={TextTypes.Body2}>
         {text}
