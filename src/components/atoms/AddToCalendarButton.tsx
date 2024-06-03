@@ -63,7 +63,7 @@ export default function AddToCalendarButton({ calendarEvent }: { calendarEvent: 
       }
     >
 
-      <Text type={TextTypes.Body5} bold center tag='h5'><b>{t('add_to_calendar')}</b></Text>
+      <Text type={TextTypes.Body5} bold center tag='h5'>{t('add_to_calendar')}</Text>
       <hr style={{ color: theme.color.border.reversed, width: "100%" }} />
 
       <AddToCalendarOption
