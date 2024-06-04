@@ -550,5 +550,9 @@
   "all_notes_label": "Alle",
   "favorite_notes_label": "Favoriet",
   "archived_notes_label": "Gearchiveerd",
-  "notes_textarea_placeholder": "Vul hier uw tekst in..."
+  "notes_textarea_placeholder": "Vul hier uw tekst in...",
+  "add_to_calendar": "Zum Kalender hinzufügen",
+  "google_calendar": "Google Kalender",
+  "apple_calendar": "Apple Kalender",
+  "outlook_calendar": "Outlook Kalender"
 }
