@@ -1,7 +1,7 @@
-import { Outlet } from "react-router-dom";
-import styled from "styled-components";
+import { Outlet } from 'react-router-dom';
+import styled from 'styled-components';
 
-import Header from "../Header";
+import Header from '../Header';
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,6 +14,7 @@ const Content = styled.div`
   display: flex;
   justify-content: center;
   flex: 1;
+  overflow: hidden;
 
   ${({ theme }) => `
   padding: ${theme.spacing.small};

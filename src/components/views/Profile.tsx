@@ -7,24 +7,41 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import { mutateUserData } from '../../api/index.js';
 import { fetchProfile } from '../../api/profile.ts';
+import { onFormError } from '../../helpers/form';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes';
 import {
   ComponentTypes,
   formatDataField,
   getFormComponent,
 } from '../../userForm/formContent';
+import { constructCheckboxes } from '../../userForm/formPages';
 import PageHeader from '../atoms/PageHeader';
 import ProfileCard from '../blocks/Cards/ProfileCard';
+import FormStep from '../blocks/Form/FormStep.jsx';
 import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
 import { Details, PageContent, TextField } from '../blocks/Profile/styles';
 
-const getProfileFields = ({ profile, formOptions, t }: { t: TFunction }) => ({
+const getProfileFields = ({
+  profile,
+  formOptions,
+  t,
+  isSelf,
+  selfAvailability,
+}: {
+  t: TFunction;
+  profile: any;
+  formOptions: any;
+  isSelf: boolean;
+  selfAvailability: any;
+}) => ({
   description: getFormComponent(
     {
       type: ComponentTypes.textArea,
@@ -57,6 +74,32 @@ const getProfileFields = ({ profile, formOptions, t }: { t: TFunction }) => ({
       currentValue: profile.additional_interests,
       getProps: () => ({
         size: TextAreaSize.Medium,
+      }),
+    },
+    t,
+  ),
+  availability: getFormComponent(
+    {
+      type: ComponentTypes.checkboxGrid,
+      dataField: 'availability',
+      currentValue: profile.availability,
+      getProps: (trans: TFunction) => ({
+        label: trans('availability.label'),
+        labelTooltip: trans('availability.tooltip'),
+        columnHeadings: Array(8)
+          .fill()
+          .map((_, index) => trans(`availability.column${index + 1}`)),
+        rowHeadings: Array(7)
+          .fill()
+          .map((_, index) => trans(`availability.row${index + 1}`)),
+        checkboxesByColumn: constructCheckboxes(
+          formOptions?.availability,
+          trans,
+        ),
+        preSelected: profile?.availability,
+        readOnly: !isSelf,
+        highlightCells: isSelf ? undefined : selfAvailability,
+        legendText: trans('availability.legend_text'),
       }),
     },
     t,
@@ -98,6 +141,7 @@ function Profile() {
   let { userId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const { control, getValues, handleSubmit, setError, watch } = useForm();
 
   const { userPk } = location.state || {};
   const formOptions = useSelector(state => state.userData.formOptions);
@@ -116,7 +160,15 @@ function Profile() {
           ?.partner,
   );
   const [profileFields, setProfileFields] = useState(
-    profile ? getProfileFields({ profile, formOptions, t }) : {},
+    profile
+      ? getProfileFields({
+          profile,
+          formOptions,
+          t,
+          isSelf,
+          selfAvailability: user?.profile?.availability,
+        })
+      : {},
   );
 
   useEffect(() => {
@@ -135,16 +187,51 @@ function Profile() {
     ? t('profile.self_profile_title')
     : t('profile.match_profile_title', { userName: profile?.first_name });
 
+  const onError = e => {
+    onFormError({ e, formFields: getValues(), setError });
+  };
+
+  const onSuccess = () => null;
+
+  const onFormSubmit = data => {
+    mutateUserData(data, onError, onSuccess);
+  };
+
+  useEffect(() => {
+    setProfile(
+      isSelf
+        ? user?.profile
+        : dashboardVisibleMatches.find(match => match?.partner?.id === userPk)
+            ?.partner,
+    );
+  }, [isSelf, user]);
+
   useEffect(() => {
     if (profile)
-      setProfileFields(getProfileFields({ profile, formOptions, t }));
+      setProfileFields(
+        getProfileFields({
+          profile,
+          formOptions,
+          t,
+          isSelf,
+          selfAvailability: user?.profile?.availability,
+        }),
+      );
   }, [profile, formOptions]);
+
+  useEffect(() => {
+    const subscription = watch(() => handleSubmit(onFormSubmit)());
+
+    return () => subscription.unsubscribe();
+  }, [handleSubmit, watch]);
 
   if (isEmpty(profile) || isEmpty(profileFields)) return null;
 
   const selectedInterests = formOptions?.interests
     ?.filter(option => profile.interests.includes(option.value))
     .map(interest => t(interest.tag));
+
+  console.log({ user, isSelf });
 
   return (
     <>
@@ -157,6 +244,13 @@ function Profile() {
             setEditingField={setEditingField}
           >
             <TextField>{profile.description}</TextField>
+          </ProfileDetail>
+          <ProfileDetail
+            editable={false}
+            content={profileFields.availability}
+            setEditingField={setEditingField}
+          >
+            <FormStep control={control} content={profileFields.availability} />
           </ProfileDetail>
           <ProfileDetail
             editable={isSelf}

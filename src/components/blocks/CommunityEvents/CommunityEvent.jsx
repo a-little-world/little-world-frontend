@@ -10,7 +10,12 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
-import { formatDate, formatTime } from '../../../helpers/date.ts';
+import {
+  formatDate,
+  formatEventTime,
+  formatTime,
+} from '../../../helpers/date.ts';
+import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
 import {
   Buttons,
   DateTime,
@@ -24,9 +29,15 @@ import {
   Main,
 } from './styles';
 
-import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
-
-function CommunityEvent({ _key, frequency, description, title, time, link }) {
+function CommunityEvent({
+  _key,
+  frequency,
+  description,
+  title,
+  time,
+  end_time,
+  link,
+}) {
   const {
     t,
     i18n: { language },
@@ -39,7 +50,8 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
     ? initialWordsDescription.join(' ')
     : initialWordsDescription.slice(0, 15).join(' ');
   const isShortText = initialWordsDescription.length <= 15;
-  const dateTime = new Date(time);
+  const startDate = new Date(time);
+  const endDate = end_time ? new Date(end_time) : null;
 
   const toggleText = () => {
     setShowFullText(!showFullText);
@@ -70,17 +82,16 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
         <DateTime>
           {frequency === 'weekly' && (
             <Text type={TextTypes.Body3} bold>
-              {/* {t(`weekdays::${dateTime.getDay()}`)} */}
-              {formatDate(dateTime, 'cccc', language)}
+              {formatDate(startDate, 'cccc', language)}
             </Text>
           )}
           {frequency === 'once' && (
             <Text type={TextTypes.Body3} bold tag="span">
-              {formatDate(dateTime, 'cccc, LLLL do', language)}
+              {formatDate(startDate, 'cccc, LLLL do', language)}
             </Text>
           )}
           <Text type={TextTypes.Body3} bold>
-            {formatTime(dateTime)}
+            {formatEventTime(startDate, endDate)}
           </Text>
         </DateTime>
         <Buttons>
@@ -98,7 +109,16 @@ function CommunityEvent({ _key, frequency, description, title, time, link }) {
             <PhoneIcon color={theme.color.surface.primary} width="20px" />
             <span className="text">Gespräch beitreten</span>
           </Button>
-          <AddToCalendarButton calendarEvent={{ title, description, startDate: dateTime, durationInMinutes: 60, link }} />
+          <AddToCalendarButton
+            calendarEvent={{
+              title,
+              description,
+              startDate,
+              endDate,
+              durationInMinutes: 60,
+              link,
+            }}
+          />
         </Buttons>
       </Main>
     </Event>

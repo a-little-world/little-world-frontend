@@ -7,6 +7,7 @@ import {
   GroupChatIcon,
   SendIcon,
   Text,
+  TextAreaSize,
   TextTypes,
   TickDoubleIcon,
   TickIcon,
@@ -105,7 +106,11 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
           size={ButtonSizes.Large}
           backgroundColor={theme.color.gradient.orange10}
         >
-          <VideoIcon color={theme.color.surface.secondary} />
+          <VideoIcon
+            color={theme.color.surface.secondary}
+            width={24}
+            height={24}
+          />
         </Button>
       </TopSection>
       <Chat chatId={chatId} />
@@ -269,9 +274,10 @@ export const Chat = ({ chatId }) => {
           error={t(errors?.text?.message)}
           placeholder={t('chat.text_area_placeholder')}
           onSubmit={() => handleSubmit(onSendMessage)()}
+          size={TextAreaSize.Medium}
         />
         <SendButton
-          size={ButtonSizes.Medium}
+          size={ButtonSizes.Large}
           type="submit"
           disabled={isSubmitting}
           variation={ButtonVariations.Circle}

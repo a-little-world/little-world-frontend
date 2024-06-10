@@ -33,6 +33,7 @@ export const Details = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
   width: 100%;
+  min-width: 0;
 `;
 
 export const ProfileSection = styled(Card)`

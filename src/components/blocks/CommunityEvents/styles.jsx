@@ -105,6 +105,7 @@ export const DateTime = styled.div`
 export const Buttons = styled.div`
   display: flex;
   margin-top: auto;
+  align-items: center;
 
   ${({ theme }) => `
     gap: ${theme.spacing.xsmall};
