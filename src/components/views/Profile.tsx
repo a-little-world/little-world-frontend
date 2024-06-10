@@ -248,11 +248,7 @@ function Profile() {
             content={profileFields.availability}
             setEditingField={setEditingField}
           >
-            <FormStep
-              key={userId + userPk + 'random' + isSelf}
-              control={control}
-              content={profileFields.availability}
-            />
+            <FormStep control={control} content={profileFields.availability} />
           </ProfileDetail>
           <ProfileDetail
             editable={isSelf}
