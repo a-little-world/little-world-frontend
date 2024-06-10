@@ -9,6 +9,11 @@ export const formatTime = (date: Date) => {
   return `${two(date.getHours())}:${two(date.getMinutes())}`;
 };
 
+export const formatEventTime = (date1: Date, date2: Date) => {
+  if (!date2) return formatTime(date1);
+  return `${formatTime(date1)} - ${formatTime(date2)}`;
+};
+
 export const formatDate = (
   date: Date,
   formatStr = 'cccc, LLLL do',
@@ -26,7 +31,11 @@ export const formatTimeDistance = (from: Date, to: Date, locale: string) => {
   });
 };
 
-export function getEndTime(startDate: Date, durationInMinutes: number, endDate?: Date) {
+export function getEndTime(
+  startDate: Date,
+  durationInMinutes: number,
+  endDate?: Date,
+) {
   if (endDate) {
     return endDate;
   }

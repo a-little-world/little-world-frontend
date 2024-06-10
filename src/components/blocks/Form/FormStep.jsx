@@ -1,3 +1,4 @@
+import { isObject } from 'lodash';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -66,9 +67,13 @@ const FormStep = ({ content, control }) => {
                 }
               : {}),
           };
+          const componentKey = isObject(currentValue)
+            ? JSON.stringify(currentValue)
+            : currentValue;
 
           return (
             <Component
+              key={name + componentKey}
               name={name}
               value={value}
               onBlur={onBlur}

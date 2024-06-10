@@ -1,17 +1,19 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import styled, { useTheme } from "styled-components";
 import {
   Button,
-  ButtonVariations,
   ButtonAppearance,
+  ButtonVariations,
   CalendarAddIcon,
   Popover,
+  Separator,
+  Text,
   TextTypes,
-  Text
 } from '@a-little-world/little-world-design-system';
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
-import { getEndTime, formatDateForCalendarUrl } from "../../helpers/date.ts";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import styled, { useTheme } from 'styled-components';
+
+import { formatDateForCalendarUrl, getEndTime } from '../../helpers/date.ts';
 
 export const AddToCalendarOption = styled(Button)`
   font-size: 1rem;
@@ -34,14 +36,20 @@ interface CalendarEvent {
   link: string;
 }
 
-export default function AddToCalendarButton({ calendarEvent }: { calendarEvent: CalendarEvent }) {
+export default function AddToCalendarButton({
+  calendarEvent,
+}: {
+  calendarEvent: CalendarEvent;
+}) {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const onCalendarOptionClick = (generateCalendar: (calendarEvent: CalendarEvent) => string) => {
+  const onCalendarOptionClick = (
+    generateCalendar: (calendarEvent: CalendarEvent) => string,
+  ) => {
     const url = generateCalendar(calendarEvent);
     window.open(url, '_blank');
-  }
+  };
 
   return (
     <Popover
@@ -58,13 +66,21 @@ export default function AddToCalendarButton({ calendarEvent }: { calendarEvent: 
           <CalendarAddIcon
             labelId="addToCalendar"
             label={t('new_translation')}
-            width="20" />
+            width="20"
+          />
         </Button>
       }
     >
-
-      <Text type={TextTypes.Body5} bold center tag='h5'>{t('add_to_calendar')}</Text>
-      <hr style={{ color: theme.color.border.reversed, width: "100%" }} />
+      <Text
+        type={TextTypes.Body5}
+        bold
+        center
+        tag="h5"
+        color={theme.color.text.heading}
+      >
+        {t('add_to_calendar')}
+      </Text>
+      <Separator spacing={theme.spacing.xsmall} />
 
       <AddToCalendarOption
         variation={ButtonVariations.Inline}
@@ -91,18 +107,25 @@ export default function AddToCalendarButton({ calendarEvent }: { calendarEvent: 
 }
 
 function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } = getFormattedCalendarDates(calendarEvent);
-  const encodedUrl = encodeURI([
-    'https://www.google.com/calendar/render',
-    '?action=TEMPLATE',
-    `&text=${calendarEvent.title || ''}`,
-    `&dates=${formattedStartDate || ''}`,
-    `/${formattedEndDate || ''}`,
-    `&details=${calendarEvent.description ? `${calendarEvent.description}\nhttps://little-world.com` : 'https://little-world.com'}`,
-    `&location=${calendarEvent.link || ''}`,
-    '&ctz=Europe%2FBerlin',
-    '&sprop=&sprop=name:'
-  ].join(''));
+  const { formattedStartDate, formattedEndDate } =
+    getFormattedCalendarDates(calendarEvent);
+  const encodedUrl = encodeURI(
+    [
+      'https://www.google.com/calendar/render',
+      '?action=TEMPLATE',
+      `&text=${calendarEvent.title || ''}`,
+      `&dates=${formattedStartDate || ''}`,
+      `/${formattedEndDate || ''}`,
+      `&details=${
+        calendarEvent.description
+          ? `${calendarEvent.description}\nhttps://little-world.com`
+          : 'https://little-world.com'
+      }`,
+      `&location=${calendarEvent.link || ''}`,
+      '&ctz=Europe%2FBerlin',
+      '&sprop=&sprop=name:',
+    ].join(''),
+  );
 
   // open encodeUrl in new target blank
   return encodedUrl;
@@ -110,14 +133,19 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
 
 function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
   const formattedStartDate = formatDateForCalendarUrl(calendarEvent.startDate);
-  const endDate = getEndTime(calendarEvent.startDate, calendarEvent.durationInMinutes, calendarEvent.endDate);
+  const endDate = getEndTime(
+    calendarEvent.startDate,
+    calendarEvent.durationInMinutes,
+    calendarEvent.endDate,
+  );
   const formattedEndDate = formatDateForCalendarUrl(endDate);
   return { formattedStartDate, formattedEndDate };
 }
 
 // Generates ICS for Apple and Outlook calendars
 function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } = getFormattedCalendarDates(calendarEvent);
+  const { formattedStartDate, formattedEndDate } =
+    getFormattedCalendarDates(calendarEvent);
   const encodedUrl = encodeURI(
     `data:text/calendar;charset=utf8,${[
       'BEGIN:VCALENDAR',
@@ -130,8 +158,8 @@ function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
       `DESCRIPTION:${calendarEvent.description || ''}`,
       `LOCATION:${calendarEvent.link || ''}`,
       'END:VEVENT',
-      'END:VCALENDAR'
-    ].join('\n')}`
+      'END:VCALENDAR',
+    ].join('\n')}`,
   );
 
   return encodedUrl;

@@ -15,7 +15,7 @@ const NUM_STEPS_LEARNER = 8;
 const getSteps = userType =>
   userType === USER_TYPES.volunteer ? NUM_STEPS_VOL : NUM_STEPS_LEARNER;
 
-const constructCheckboxes = (options, t) =>
+export const constructCheckboxes = (options, t) =>
   columnKeys.map(key =>
     options[key].map(({ value, tag }) => ({ name: t(tag), value, key })),
   );
