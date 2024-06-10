@@ -9,11 +9,12 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { mutateUserData } from '../../api/index.js';
 import { fetchProfile } from '../../api/profile.ts';
+import { updateProfile } from '../../features/userData';
 import { onFormError } from '../../helpers/form';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes';
 import {
@@ -141,6 +142,7 @@ function Profile() {
   let { userId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { control, getValues, handleSubmit, setError, watch } = useForm();
 
   const { userPk } = location.state || {};
@@ -191,10 +193,12 @@ function Profile() {
     onFormError({ e, formFields: getValues(), setError });
   };
 
-  const onSuccess = () => null;
+  const onFormSuccess = response => {
+    dispatch(updateProfile(response));
+  };
 
   const onFormSubmit = data => {
-    mutateUserData(data, onError, onSuccess);
+    mutateUserData(data, onFormSuccess, onError);
   };
 
   useEffect(() => {
