@@ -82,7 +82,7 @@ const getProfileFields = ({
     {
       type: ComponentTypes.checkboxGrid,
       dataField: 'availability',
-      currentValue: profile.availability,
+      currentValue: profile?.availability,
       getProps: (trans: TFunction) => ({
         label: trans('availability.label'),
         labelTooltip: trans('availability.tooltip'),
@@ -248,7 +248,11 @@ function Profile() {
             content={profileFields.availability}
             setEditingField={setEditingField}
           >
-            <FormStep control={control} content={profileFields.availability} />
+            <FormStep
+              key={userId + userPk + 'random' + isSelf}
+              control={control}
+              content={profileFields.availability}
+            />
           </ProfileDetail>
           <ProfileDetail
             editable={isSelf}
