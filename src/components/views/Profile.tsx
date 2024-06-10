@@ -231,8 +231,6 @@ function Profile() {
     ?.filter(option => profile.interests.includes(option.value))
     .map(interest => t(interest.tag));
 
-  console.log({ user, isSelf });
-
   return (
     <>
       <PageHeader canGoBack={!isSelf} text={profileTitle} />
