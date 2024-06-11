@@ -116,10 +116,9 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
       `&text=${calendarEvent.title || ''}`,
       `&dates=${formattedStartDate || ''}`,
       `/${formattedEndDate || ''}`,
-      `&details=${
-        calendarEvent.description
-          ? `${calendarEvent.description}\nhttps://little-world.com`
-          : 'https://little-world.com'
+      `&details=${calendarEvent.description
+        ? `${calendarEvent.description}\nhttps://little-world.com`
+        : 'https://little-world.com'
       }`,
       `&location=${calendarEvent.link || ''}`,
       '&ctz=Europe%2FBerlin',
@@ -144,23 +143,27 @@ function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
 
 // Generates ICS for Apple and Outlook calendars
 function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } =
-    getFormattedCalendarDates(calendarEvent);
-  const encodedUrl = encodeURI(
-    `data:text/calendar;charset=utf8,${[
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'BEGIN:VEVENT',
-      `URL:${document.URL}`,
-      `DTSTART:TZID=Europe/Berlin:${formattedStartDate || ''}`,
-      `DTEND:TZID=Europe/Berlin:${formattedEndDate || ''}`,
-      `SUMMARY:${calendarEvent.title || ''}`,
-      `DESCRIPTION:${calendarEvent.description || ''}`,
-      `LOCATION:${calendarEvent.link || ''}`,
-      'END:VEVENT',
-      'END:VCALENDAR',
-    ].join('\n')}`,
-  );
+  const { formattedStartDate, formattedEndDate } = getFormattedCalendarDates(calendarEvent);
 
+  const formattedStartDateTime = formattedStartDate.replace(/[-:]/g, '');
+  const formattedEndDateTime = formattedEndDate.replace(/[-:]/g, '');
+
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Your Company//NONSGML v1.0//EN',
+    'BEGIN:VEVENT',
+    `UID:${new Date().getTime()}`,
+    `URL:${document.URL}`,
+    `DTSTART;TZID=Europe/Berlin:${formattedStartDateTime}`,
+    `DTEND;TZID=Europe/Berlin:${formattedEndDateTime}`,
+    `SUMMARY:${calendarEvent.title || ''}`,
+    `DESCRIPTION:${calendarEvent.description || ''}`,
+    `LOCATION:${calendarEvent.link || ''}`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\n');
+
+  const encodedUrl = encodeURI(`data:text/calendar;charset=utf8,${icsContent}`);
   return encodedUrl;
 }
