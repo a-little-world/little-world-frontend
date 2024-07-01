@@ -490,6 +490,7 @@
   "resources.title": "Resources",
   "resources.heading_communication": "Intercultural Communication",
   "resources.workshops": "Workshops",
+  "resources.self_check_in": "<a {\"href\": \"https://www.coe.int/de/web/interculturalcities/intercultural-citizenship-test#0\"}>Hier kannst du dein Selbst-Check machen</a>",
 
   "translator.language_placholder": "Select a language...",
   "translator.text_placeholder": "Type to translate.",

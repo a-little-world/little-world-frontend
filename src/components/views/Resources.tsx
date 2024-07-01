@@ -51,6 +51,10 @@ const VIDEOS = {
       id: 'RFIqBk84ckc?si=7BMf1jEvXfkfSKiK',
       label: 'Interkulturelle Kommunikation - Teil 5',
     },
+    {
+      id: 'aaN4Htfkp4I?si=fy88MDx4-y7RNC-j',
+      label: 'Interkulturelle Kommunikation - Teil 6',
+    },
   ],
 };
 
@@ -84,6 +88,13 @@ export const Container = styled.div`
       // }`};
 `;
 
+export const CheckInText = styled(Text)`
+  margin-top: ${({ theme }) => theme.spacing.xxsmall};
+  span {
+    font-size: 1.125rem;
+  }
+`;
+
 function Resources() {
   const { t } = useTranslation();
 
@@ -97,7 +108,6 @@ function Resources() {
 
   return (
     <>
-      {/* <PageHeader text={t('resources.title')} /> */}
       <ContentSelector
         selection={subpage}
         setSelection={selectSubpage}
@@ -125,6 +135,7 @@ function Resources() {
               activeStep={videoId}
               onSelectStep={setVideoId}
             />
+            <CheckInText>{t('resources.self_check_in')}</CheckInText>
           </Container>
         </ContentCard>
       </Content>
