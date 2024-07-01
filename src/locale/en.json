@@ -9,6 +9,7 @@
     "notifications": "Notifications",
     "profile": "My profile",
     "help": "Help",
+    "resources": "Resources",
     "settings": "Settings",
     "picture": "Edit Image"
   },
@@ -35,6 +36,7 @@
   "nbs_messages": "Messages",
   "nbs_notifications": "Notifications",
   "nbs_my_profile": "My profile",
+  "nbs_resources": "Resources",
   "nbs_help": "Help",
   "nbs_settings": "Settings",
   "nbs_log_out": "Log out",
@@ -233,6 +235,7 @@
   },
   "nbt_contact": "Contact Us",
   "nbt_faqs": "FAQs",
+  "nbt_workshops": "Workshops",
 
   "nm_main_header_settings": "Notifications",
   "nm_filter_all": "All",
@@ -483,6 +486,10 @@
   "notifications.archived": "Archived",
   "notifications.show_all": "Show all",
   "notifications.none": "No new notications",
+
+  "resources.title": "Resources",
+  "resources.heading_communication": "Intercultural Communication",
+  "resources.workshops": "Workshops",
 
   "translator.language_placholder": "Select a language...",
   "translator.text_placeholder": "Type to translate.",

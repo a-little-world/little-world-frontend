@@ -8,6 +8,7 @@ export const MESSAGES_ROUTE = 'chat';
 export const NOTIFICATIONS_ROUTE = 'notifications';
 export const USER_PROFILE_ROUTE = 'profile/:userId?/';
 export const PROFILE_ROUTE = 'profile';
+export const RESOURCES_ROUTE = 'resources';
 export const HELP_ROUTE = 'help';
 export const SETTINGS_ROUTE = 'settings';
 export const LOGIN_ROUTE = 'login';

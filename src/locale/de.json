@@ -9,6 +9,7 @@
     "notifications": "Benachrichtigungen",
     "profile": "Mein Profil",
     "help": "Hilfe erhalten",
+    "resources": "Ressourcen",
     "settings": "Einstellungen",
     "picture": "Bild bearbeiten"
   },
@@ -34,6 +35,7 @@
   "nbs_start": "Start",
   "nbs_messages": "Nachrichten",
   "nbs_notifications": "Benachrichtigungen",
+  "nbs_resources": "Ressourcen",
   "nbs_my_profile": "Mein Profil",
   "nbs_help": "Hilfe erhalten",
   "nbs_settings": "Einstellungen",
@@ -230,6 +232,7 @@
   },
   "nbt_contact": "Kontakt",
   "nbt_faqs": "Häufige Fragen",
+  "nbt_workshops": "Workshops",
 
   "nm_main_header_settings": "Benachrichtigungen",
   "nm_filter_all": "Alle",
@@ -486,6 +489,11 @@
   "notifications.archived": "Archiviert",
   "notifications.show_all": "Alle ansehen",
   "notifications.none": "Keine neuen Benachrichtigungen",
+
+  "resources.title": "Ressourcen",
+  "resources.heading_communication": "Interkultural Kommunication",
+  "resources.workshops": "Workshops",
+
   "translator.language_placholder": "Wähle eine Sprache...",
   "translator.text_placeholder": "Typ zu übersetzen",
   "translator.swap_languages": "Sprachen tauschen",

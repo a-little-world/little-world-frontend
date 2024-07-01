@@ -9,7 +9,6 @@ import styled, { css } from 'styled-components';
 const Selector = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
   padding: ${({ theme }) => theme.spacing.xxsmall};
   gap: ${({ theme }) => theme.spacing.xsmall};
   width: 100%;
@@ -17,7 +16,6 @@ const Selector = styled.div`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.small}) {
-      justify-content: flex-start;
       display: flex;
     }
 
@@ -43,6 +41,7 @@ export const StyledOption = styled(Button)`
 const nbtTopics = {
   main: ['conversation_partners', 'community_calls'],
   help: ['contact', 'faqs'],
+  resources: ['workshops'],
 };
 
 type ContentSelector = {
@@ -53,7 +52,7 @@ type ContentSelector = {
 
 function ContentSelector({ selection, setSelection, use }: ContentSelector) {
   const { t } = useTranslation();
-  if (!['main', 'help'].includes(use)) {
+  if (!['main', 'help', 'resources'].includes(use)) {
     return null;
   }
 

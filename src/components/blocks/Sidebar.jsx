@@ -7,8 +7,10 @@ import {
   LogoutIcon,
   MessageIcon,
   ProfileIcon,
+  PuzzleIcon,
   QuestionIcon,
   SettingsIcon,
+  StackIcon,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
 import React from 'react';
@@ -23,6 +25,7 @@ import {
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
   PROFILE_ROUTE,
+  RESOURCES_ROUTE,
   SETTINGS_ROUTE,
   getAppRoute,
 } from '../../routes';
@@ -100,6 +103,11 @@ function Sidebar({ sidebarMobile }) {
       label: 'my_profile',
       path: getAppRoute(PROFILE_ROUTE),
       Icon: ProfileIcon,
+    },
+    {
+      label: 'resources',
+      path: getAppRoute(RESOURCES_ROUTE),
+      Icon: StackIcon,
     },
     { label: 'help', path: getAppRoute(HELP_ROUTE), Icon: QuestionIcon },
     {

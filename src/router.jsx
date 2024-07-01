@@ -26,6 +26,7 @@ import Messages from './components/views/Messages.jsx';
 import Notifications from './components/views/Notifications.tsx';
 import Profile from './components/views/Profile.tsx';
 import ResetPassword from './components/views/ResetPassword';
+import Resources from './components/views/Resources.tsx';
 import Settings from './components/views/Settings.jsx';
 import SignUp from './components/views/SignUp';
 import VerifyEmail from './components/views/VerifyEmail';
@@ -45,6 +46,7 @@ import {
   NOTIFICATIONS_ROUTE,
   PARTNERS_ROUTE,
   RESET_PASSWORD_ROUTE,
+  RESOURCES_ROUTE,
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   USER_FORM_ROUTE,
@@ -55,7 +57,11 @@ import {
 
 const isCapacitor = IS_CAPACITOR_BUILD || false;
 
-export const Root = ({ children, restoreScroll = true, includeModeSwitch = true }) => (
+export const Root = ({
+  children,
+  restoreScroll = true,
+  includeModeSwitch = true,
+}) => (
   <CustomThemeProvider>
     {restoreScroll && <ScrollRestoration />}
     <GlobalStyles />
@@ -180,6 +186,14 @@ const ROOT_ROUTES = [
     element: (
       <FullAppLayout>
         <Messages />
+      </FullAppLayout>
+    ),
+  },
+  {
+    path: getAppRoute(RESOURCES_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Resources />
       </FullAppLayout>
     ),
   },
