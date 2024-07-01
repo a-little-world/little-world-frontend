@@ -171,7 +171,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     } else if (label === 'display_language') {
       Cookies.set('frontendLang', data.display_language);
       i18n.changeLanguage(data.display_language);
-      onResponseSuccess(data);
+      mutateUserData(data, onResponseSuccess, onError);
     } else {
       mutateUserData(data, onResponseSuccess, onError);
     }
