@@ -3,10 +3,12 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { last } from 'lodash';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import useScrollToTop from '../../hooks/useScrollToTop.tsx';
 import Stepper from '../atoms/Stepper.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
 
@@ -16,7 +18,7 @@ const Content = styled.div`
   ${({ theme }) =>
     `
     width: 100%;
-    max-width: 1000px;
+    max-width: 1200px;
     padding: ${theme.spacing.xxsmall};
     @media (min-width: ${theme.breakpoints.medium}) {
      padding: 0;
@@ -27,33 +29,35 @@ const ContentCard = styled(Card)`
   flex-direction: column;
   width: 100%;
   gap: ${({ theme }) => theme.spacing.small};
+  padding-bottom: ${({ theme }) => theme.spacing.xlarge};
 `;
 
 const VIDEOS = {
   interculturalCommunication: [
     {
       id: 'HEAtdAeYiQg?si=CFfTat_UccuT-OL6',
-      label: 'Interkulturelle Kommunikation - Teil 1',
+      label: 'Interkulturelle Kommunikation - Achtsamer Umgang',
     },
     {
       id: 'aEVKGlXfNzk?si=dqJ5osXnDpHZ_rcq',
-      label: 'Interkulturelle Kommunikation - Teil 2',
+      label: 'Interkulturelle Kommunikation - Selbstreflexion',
     },
     {
       id: 'NmzP_hBtWmU?si=TAnA_ukURlcjIxD_',
-      label: 'Interkulturelle Kommunikation - Teil 3',
+      label: 'Interkulturelle Kommunikation - Fremdreflexion',
     },
     {
       id: 'tVmQYvID-4A?si=rhxinzEdDZITbA5Y',
-      label: 'Interkulturelle Kommunikation - Teil 4',
+      label: 'Interkulturelle Kommunikation - Umgang miteinander',
     },
     {
       id: 'RFIqBk84ckc?si=7BMf1jEvXfkfSKiK',
-      label: 'Interkulturelle Kommunikation - Teil 5',
+      label:
+        'Interkulturelle Kommunikation - Theorie muss sein: Kulturdimensionen',
     },
     {
       id: 'aaN4Htfkp4I?si=fy88MDx4-y7RNC-j',
-      label: 'Interkulturelle Kommunikation - Teil 6',
+      label: 'Interkulturelle Kommunikation - Sensibilisierung',
     },
   ],
 };
@@ -83,20 +87,35 @@ export const Container = styled.div`
     `
       gap: ${theme.spacing.small};
       // flex-wrap: no-wrap;
-      // @media (min-width: ${theme.breakpoints.medium}) {
-      //   flex-direction: row;
-      // }`};
+      @media (min-width: ${theme.breakpoints.medium}) {
+        gap: ${theme.spacing.medium};
+      }`};
 `;
 
 export const CheckInText = styled(Text)`
-  margin-top: ${({ theme }) => theme.spacing.xxsmall};
+  margin-top: ${({ theme }) => theme.spacing.xsmall};
   span {
     font-size: 1.125rem;
   }
 `;
 
+export const Description = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
+  border-top: 1px solid ${({ theme }) => theme.color.border.subtle};
+  padding-top: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) =>
+    `
+  @media (min-width: ${theme.breakpoints.medium}) {
+   padding-top: ${theme.spacing.medium};
+  }`};
+`;
+
 function Resources() {
   const { t } = useTranslation();
+  const scrollToTop = useScrollToTop();
 
   const [subpage, selectSubpage] = useState('workshops');
   const [videoId, setVideoId] = useState(
@@ -105,6 +124,13 @@ function Resources() {
   const title = VIDEOS.interculturalCommunication.find(
     item => item.id === videoId,
   )?.label;
+
+  const isLastStep = videoId === last(VIDEOS.interculturalCommunication)?.id;
+
+  const handleVideoSelect = (id: string) => {
+    setVideoId(id);
+    scrollToTop();
+  };
 
   return (
     <>
@@ -129,13 +155,19 @@ function Resources() {
                 allowFullScreen
               ></StyledIframe>
             </VideoContainer>
-
+            <Description>
+              <Text>{t('resources.description_communication')}</Text>
+              <Text>{t('resources.teacher_communication')}</Text>
+              <Text>{t('resources.method_communication')}</Text>
+            </Description>
             <Stepper
               steps={VIDEOS.interculturalCommunication}
               activeStep={videoId}
-              onSelectStep={setVideoId}
+              onSelectStep={handleVideoSelect}
             />
-            <CheckInText>{t('resources.self_check_in')}</CheckInText>
+            {isLastStep && (
+              <CheckInText center>{t('resources.self_check_in')}</CheckInText>
+            )}
           </Container>
         </ContentCard>
       </Content>

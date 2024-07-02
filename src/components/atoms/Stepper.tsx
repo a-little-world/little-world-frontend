@@ -19,6 +19,12 @@ const StepperContainer = styled.div`
   align-items: flex-start;
   border-top: 1px solid ${({ theme }) => theme.color.border.subtle};
   padding-top: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) =>
+    `
+@media (min-width: ${theme.breakpoints.medium}) {
+ padding-top: ${theme.spacing.medium};
+}`};
 `;
 
 const Step = styled.div`
