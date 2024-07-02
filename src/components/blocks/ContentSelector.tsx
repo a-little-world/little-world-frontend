@@ -41,7 +41,7 @@ export const StyledOption = styled(Button)`
 const nbtTopics = {
   main: ['conversation_partners', 'community_calls'],
   help: ['contact', 'faqs'],
-  resources: ['workshops'],
+  resources: ['trainings'],
 };
 
 type ContentSelector = {

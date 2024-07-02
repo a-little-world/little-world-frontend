@@ -60,7 +60,7 @@ const StepLabel = styled.div<{ isActive: boolean }>`
   font-size: 18px;
   color: ${props =>
     props.isActive
-      ? props.theme.color.text.heading
+      ? props.theme.color.surface.bold
       : props.theme.color.text.primary};
   height: 30px;
   display: flex;

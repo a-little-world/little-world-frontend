@@ -117,7 +117,7 @@ function Resources() {
   const { t } = useTranslation();
   const scrollToTop = useScrollToTop();
 
-  const [subpage, selectSubpage] = useState('workshops');
+  const [subpage, selectSubpage] = useState('trainings');
   const [videoId, setVideoId] = useState(
     VIDEOS.interculturalCommunication[0].id,
   );
@@ -159,6 +159,7 @@ function Resources() {
               <Text>{t('resources.description_communication')}</Text>
               <Text>{t('resources.teacher_communication')}</Text>
               <Text>{t('resources.method_communication')}</Text>
+              <Text>{t('resources.glossary_communication')}</Text>
             </Description>
             <Stepper
               steps={VIDEOS.interculturalCommunication}
