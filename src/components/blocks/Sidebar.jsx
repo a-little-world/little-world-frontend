@@ -28,7 +28,8 @@ import {
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
   getAppRoute,
-} from '../../routes';
+  isActiveRoute,
+} from '../../routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink';
 import UnreadDot from '../atoms/UnreadDot.tsx';
@@ -158,7 +159,7 @@ function Sidebar({ sidebarMobile }) {
       <SidebarContainer $visibleOnMobile={showSidebarMobile}>
         <StyledLogo asLink />
         {buttonData.map(({ label, path, clickEvent, Icon }) => {
-          const isActive = location.pathname === path;
+          const isActive = isActiveRoute(location.pathname, path);
 
           return typeof clickEvent === typeof undefined ? (
             <MenuLink

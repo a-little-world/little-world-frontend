@@ -26,7 +26,7 @@ import Messages from './components/views/Messages.jsx';
 import Notifications from './components/views/Notifications.tsx';
 import Profile from './components/views/Profile.tsx';
 import ResetPassword from './components/views/ResetPassword';
-import Resources from './components/views/Resources.tsx';
+import Resources from './components/views/Resources/Resources.tsx';
 import Settings from './components/views/Settings.jsx';
 import SignUp from './components/views/SignUp';
 import VerifyEmail from './components/views/VerifyEmail';
@@ -34,6 +34,7 @@ import VideoCall from './components/views/VideoCall.jsx';
 import {
   APP_ROUTE,
   BASE_ROUTE,
+  BEGINNERS_ROUTE,
   CALL_ROUTE,
   CALL_SETUP_ROUTE,
   CHANGE_EMAIL_ROUTE,
@@ -49,11 +50,12 @@ import {
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
+  TRAININGS_ROUTE,
   USER_FORM_ROUTE,
   USER_PROFILE_ROUTE,
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
-} from './routes';
+} from './routes.ts';
 
 const isCapacitor = IS_CAPACITOR_BUILD || false;
 
@@ -191,6 +193,22 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(RESOURCES_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Resources />
+      </FullAppLayout>
+    ),
+  },
+  {
+    path: getAppRoute(TRAININGS_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Resources />
+      </FullAppLayout>
+    ),
+  },
+  {
+    path: getAppRoute(BEGINNERS_ROUTE),
     element: (
       <FullAppLayout>
         <Resources />

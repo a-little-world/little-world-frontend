@@ -9,6 +9,8 @@ export const NOTIFICATIONS_ROUTE = 'notifications';
 export const USER_PROFILE_ROUTE = 'profile/:userId?/';
 export const PROFILE_ROUTE = 'profile';
 export const RESOURCES_ROUTE = 'resources';
+export const TRAININGS_ROUTE = 'resources/trainings';
+export const BEGINNERS_ROUTE = 'resources/beginners';
 export const HELP_ROUTE = 'help';
 export const SETTINGS_ROUTE = 'settings';
 export const LOGIN_ROUTE = 'login';
@@ -23,11 +25,20 @@ export const WP_HOME_ROUTE = 'https://home.little-world.com';
 export const TERMS_ROUTE = 'nutzungsbedingungen';
 export const PRIVACY_ROUTE = 'datenschutz';
 
-export const getHomeRoute = (locale, slug) =>
+export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
-export const getAppRoute = slug => `/${APP_ROUTE}/${slug ?? ''}`;
-export const getUserFormRoute = slug => `/${USER_FORM_ROUTE}/${slug}`;
-export const getChatRoute = id => getAppRoute(`${MESSAGES_ROUTE}/${id}`);
+export const getAppRoute = (slug: string) => `/${APP_ROUTE}/${slug ?? ''}`;
+export const getUserFormRoute = (slug: string) => `/${USER_FORM_ROUTE}/${slug}`;
+export const getChatRoute = (id: string) =>
+  getAppRoute(`${MESSAGES_ROUTE}/${id}`);
+export const getResourcesRoute = (slug: string) =>
+  getAppRoute(`${RESOURCES_ROUTE}/${slug}`);
+
+export const isActiveRoute = (locationPath: string, path: string) => {
+  return locationPath === path || path !== getAppRoute('')
+    ? locationPath?.includes(path)
+    : false;
+};
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {

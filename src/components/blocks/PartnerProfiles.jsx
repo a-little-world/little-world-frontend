@@ -16,6 +16,7 @@ import {
   updateSearchState,
 } from '../../features/userData';
 import PlusImage from '../../images/plus-with-circle.svg';
+import LanguageLevelCard from './Cards/LanguageLevelCard.tsx';
 import PartnerActionCard from './Cards/PartnerActionCard';
 import ProfileCard, { PROFILE_CARD_HEIGHT } from './Cards/ProfileCard';
 import { SearchingCard } from './Cards/SearchingCard';
@@ -63,6 +64,11 @@ function PartnerProfiles({ setShowCancel, totalPaginations }) {
   const dispatch = useDispatch();
   const matchesDisplay = useSelector(selectMatchesDisplay);
   const user = useSelector(state => state.userData.user);
+  const germanLevelInvalid = Boolean(
+    user?.profile?.lang_skill?.find(
+      skill => skill.lang === 'german' && skill.level === 'level-0',
+    ),
+  );
   const [partnerActionData, setPartnerActionData] = useState(null);
 
   function updateUserMatchingState() {
@@ -107,7 +113,9 @@ function PartnerProfiles({ setShowCancel, totalPaginations }) {
           chatId={match.chatId}
         />
       ))}
-      {user.isSearching ? (
+      {germanLevelInvalid ? (
+        <LanguageLevelCard />
+      ) : user.isSearching ? (
         <SearchingCard setShowCancel={setShowCancel} />
       ) : (
         <FindNewPartner
@@ -122,6 +130,7 @@ function PartnerProfiles({ setShowCancel, totalPaginations }) {
           {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
         </FindNewPartner>
       )}
+
       <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
         {!!partnerActionData && (
           <PartnerActionCard data={partnerActionData} onClose={onModalClose} />

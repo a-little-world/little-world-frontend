@@ -41,12 +41,12 @@ export const StyledOption = styled(Button)`
 const nbtTopics = {
   main: ['conversation_partners', 'community_calls'],
   help: ['contact', 'faqs'],
-  resources: ['trainings'],
+  resources: ['trainings', 'beginners'],
 };
 
 type ContentSelector = {
   selection: string;
-  setSelection: () => string;
+  setSelection: (selection: string) => void;
   use: string;
 };
 
@@ -60,7 +60,7 @@ function ContentSelector({ selection, setSelection, use }: ContentSelector) {
 
   return (
     <Selector>
-      {topics.map(topic => (
+      {topics.map((topic: string) => (
         <StyledOption
           appearance={
             selection === topic
