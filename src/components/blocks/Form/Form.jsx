@@ -18,7 +18,11 @@ import {
   updateUser,
 } from '../../../features/userData';
 import { onFormError } from '../../../helpers/form';
-import { EDIT_FORM_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes';
+import {
+  EDIT_FORM_ROUTE,
+  PROFILE_ROUTE,
+  getAppRoute,
+} from '../../../routes.ts';
 import {
   ComponentTypes,
   getFormComponent,

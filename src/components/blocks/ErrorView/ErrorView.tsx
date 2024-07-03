@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { getAppRoute } from '../../../routes.jsx';
+import { getAppRoute } from '../../../routes.ts';
 import MessageCard from '../Cards/MessageCard.jsx';
 import AppLayout from '../Layout/AppLayout.jsx';
 
@@ -20,7 +20,7 @@ const RouterError = ({ Layout = AppLayout }) => (
       <MessageCard
         title="error_view.title"
         linkText="error_view.button"
-        linkTo={getAppRoute()}
+        linkTo={getAppRoute('')}
       />
     </ErrorWrapper>
   </Layout>

@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
-import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../routes';
 import ProfileImage from '../atoms/ProfileImage';
 
 const ProfileInfo = styled.div`

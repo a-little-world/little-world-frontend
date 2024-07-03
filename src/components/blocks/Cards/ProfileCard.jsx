@@ -22,7 +22,7 @@ import { useDispatch } from 'react-redux';
 import styled, { css } from 'styled-components';
 
 import { initCallSetup } from '../../../features/userData';
-import { PROFILE_ROUTE, getAppRoute, getChatRoute } from '../../../routes';
+import { PROFILE_ROUTE, getAppRoute, getChatRoute } from '../../../routes.ts';
 import MenuLink from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';

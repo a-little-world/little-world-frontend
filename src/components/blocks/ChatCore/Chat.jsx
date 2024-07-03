@@ -39,7 +39,7 @@ import { addMessage } from '../../../features/userData';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput } from '../../../helpers/form';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
-import { MESSAGES_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes';
+import { MESSAGES_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes.ts';
 import {
   BackButton,
   ChatContainer,

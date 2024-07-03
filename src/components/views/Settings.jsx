@@ -24,7 +24,7 @@ import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
 import { updateProfile } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form';
-import { FORGOT_PASSWORD_ROUTE } from '../../routes';
+import { FORGOT_PASSWORD_ROUTE } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import PageHeader from '../atoms/PageHeader';

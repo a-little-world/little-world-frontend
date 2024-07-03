@@ -20,7 +20,7 @@ import {
   getChatByPartnerId,
 } from '../../features/userData.js';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
-import { getAppRoute } from '../../routes.jsx';
+import { getAppRoute } from '../../routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage.jsx';
 import CallSidebar, {

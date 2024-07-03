@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { fetchChats } from '../../api/chat';
 import { updateChats } from '../../features/userData.js';
 import useIniniteScroll from '../../hooks/useInfiniteScroll.tsx';
-import { MESSAGES_ROUTE, getAppRoute } from '../../routes.jsx';
+import { MESSAGES_ROUTE, getAppRoute } from '../../routes.ts';
 import PageHeader from '../atoms/PageHeader';
 import { ChatWithUserInfo } from '../blocks/ChatCore/Chat';
 import { ChatDashboard, ChatsPanel } from './Messages.styles';

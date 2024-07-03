@@ -21,8 +21,7 @@ import {
   insertChat,
 } from '../../../features/userData';
 import { clearActiveTracks } from '../../../helpers/video.ts';
-import { getAppRoute } from '../../../routes';
-import { CALL_ROUTE } from '../../../routes.jsx';
+import { CALL_ROUTE, getAppRoute } from '../../../routes.ts';
 import FormMessage, { MessageTypes } from '../../atoms/FormMessage.jsx';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';

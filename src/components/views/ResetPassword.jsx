@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom';
 
 import { resetPassword } from '../../api';
 import { onFormError, registerInput } from '../../helpers/form';
-import { LOGIN_ROUTE } from '../../routes';
+import { LOGIN_ROUTE } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';

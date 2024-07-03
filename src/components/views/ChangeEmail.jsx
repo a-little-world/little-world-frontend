@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { setNewEmail } from '../../api';
 import { updateEmail } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form';
-import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../routes';
+import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import {

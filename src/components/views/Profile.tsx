@@ -16,7 +16,7 @@ import { mutateUserData } from '../../api/index.js';
 import { fetchProfile } from '../../api/profile.ts';
 import { updateProfile } from '../../features/userData';
 import { onFormError } from '../../helpers/form';
-import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes';
+import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes.ts';
 import {
   ComponentTypes,
   formatDataField,

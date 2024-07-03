@@ -15,7 +15,7 @@ import {
   BEGINNERS_ROUTE,
   PROFILE_ROUTE,
   getAppRoute,
-} from '../../../routes.jsx';
+} from '../../../routes.ts';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard.jsx';
 
 const StyledCard = styled(Card)`

@@ -25,7 +25,7 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
   passAuthenticationBoundary,
-} from '../../routes';
+} from '../../routes.ts';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import {
   NameContainer,

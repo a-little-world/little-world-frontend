@@ -16,7 +16,11 @@ import styled, { useTheme } from 'styled-components';
 
 import { resendVerificationEmail, verifyEmail } from '../../api';
 import { onFormError, registerInput } from '../../helpers/form';
-import { CHANGE_EMAIL_ROUTE, USER_FORM_ROUTE, getAppRoute } from '../../routes';
+import {
+  CHANGE_EMAIL_ROUTE,
+  USER_FORM_ROUTE,
+  getAppRoute,
+} from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import {

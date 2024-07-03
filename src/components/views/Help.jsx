@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { CHAT_ROUTE, getAppRoute } from '../../routes';
+import { CHAT_ROUTE, getAppRoute } from '../../routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink';
 import ContentSelector from '../blocks/ContentSelector.tsx';
