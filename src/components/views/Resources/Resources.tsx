@@ -37,7 +37,6 @@ const renderResourceContent = (page: subpages) => {
 };
 
 function Resources() {
-  const params = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
