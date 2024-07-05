@@ -84,21 +84,21 @@ const formPages = {
         ? []
         : [
             {
-              dropdown: {
-                type: ComponentTypes.dropdownWithInput,
-                currentValue: userData?.target_group,
-                dataField: 'target_group',
+              type: ComponentTypes.multiCheckboxWithInput,
+              multiCheckbox: {
+                currentValue: userData?.target_groups,
+                dataField: 'target_groups',
                 formData: getUserTypeOptions(
                   userData?.user_type,
-                  options?.target_group,
+                  options?.target_groups,
                 ),
                 getProps: t => ({
-                  label: t('self_info.target_group_label'),
+                  heading: t('self_info.target_group_label'),
                   errorRules: { required: t('validation.required') },
                 }),
                 textInputVal: getUserTypeOptions(
                   userData?.user_type,
-                  options?.target_group,
+                  options?.target_groups,
                 )[0].value,
               },
               textInput: {
@@ -120,6 +120,7 @@ const formPages = {
           addMoreLabel: t('self_info.language_add_more'),
           label: t('self_info.language_skills_label'),
           labelTooltip: t('self_info.language_skills_tooltip'),
+          maxSegments: 8,
           firstDropdown: {
             dataField: 'lang',
             ariaLabel: t('self_info.language_selector_label'),

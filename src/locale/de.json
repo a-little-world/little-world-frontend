@@ -52,15 +52,15 @@
   "searching_card.matched_title": "Willkommen bei Little World",
   "searching_card.matched_info_1": "Wir suchen dein bestes Match und melden uns, wenn wir es gefunden haben!",
   "searching_card.matched_info_2": "Bitte hab etwas Geduld, da dies einige Wochen dauern kann.",
-  "searching_card.pre_match_call_completed_title": "So geht's weiter ✨",
+  "searching_card.pre_match_call_completed_title": "So geht's weiter",
   "searching_card.pre_match_call_completed_info_1": "Wir suchen dein bestes Match und melden uns, wenn wir es gefunden haben!",
   "searching_card.pre_match_call_completed_info_2": "Bitte hab etwas Geduld, da dies einige Wochen dauern kann.",
-  "searching_card.pre_match_call_booked_title": "So geht's weiter ✨",
+  "searching_card.pre_match_call_booked_title": "So geht's weiter",
   "searching_card.pre_match_call_booked_info_1": "Dein Einführungsgespräch mit uns findet auf Zoom per Videocall statt am:",
   "searching_card.pre_match_call_booked_info_2": "",
   "searching_card.pre_match_call_booked_cta": "Termin verschieben",
   "searching_card.pre_match_call_booked_join_call": "Videocall beitreiten",
-  "searching_card.pre_match_call_not_booked_title": "Willkommen - So geht's weiter",
+  "searching_card.pre_match_call_not_booked_title": "So geht's weiter",
   "searching_card.pre_match_call_not_booked_info_1": "Bevor es richtig losgeht, möchten wir dich in einem kurzen 15-minütigen Videogespräch kennenlernen.",
   "searching_card.pre_match_call_not_booked_info_2": "Dabei möchten wir deine Fragen beantworten, die Technik überprüfen, dir ein paar Tipps geben und dich sowie unsere Community schützen.",
   "searching_card.pre_match_call_not_booked_cta": "Gespräch buchen",
@@ -186,13 +186,11 @@
   "profile.match_profile_title": "{{userName}}'s Profil",
   "profile.availability_title": "Generelle zeitliche Verfügbarkeit",
   "profile.description_title": "Über",
-  "profile.additional_interests_title": "Weitere Themen",
   "profile.interests_title": "Themen",
   "profile.lang_skill_title": "Sprachkenntnisse",
   "profile.lang_skill_self_undefined": "Füge jetzt deine Sprachkenntnisse hinzu, damit wir dir den bestmöglichen Gesprächspartner vermitteln können",
   "profile.lang_skill_undefined": "Keine Sprachkenntnisse vorhanden",
   "profile.editor_title_description": "Über",
-  "profile.editor_title_additional_interests": "Weitere Themen",
   "profile.editor_title_interests": "Themen wählen",
   "profile.editor_title_lang_skill": "Sprachkenntnisse",
   "profile.editor_title_image": "Dein Bild",
@@ -299,6 +297,10 @@
         "q8": {
           "question": "Mein Match antwortet mir nicht?",
           "answer": "Bitte kontaktiere unseren Support. Aus Datenschutz-Gründen, geben wir weitere Kontaktdaten nicht weiter. Aber vielleicht erreichen wir dein Match noch auf anderen Wegen. Ansonsten finden wir gerne neue Gesprächspartner:innen für dich!"
+        },
+        "q9": {
+          "question": "Duzzen oder Siezen wir uns?",
+          "answer": "Bei Little World sind wir alle per Du – wir duzen uns also gerne. Falls dein Gesprächspartner lieber gesiezt werden möchte, ist es natürlich höflich, diesem Wunsch zu nachzukommen. 😊"
         }
       },
       "during_talk": {

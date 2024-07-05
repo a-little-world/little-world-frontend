@@ -207,7 +207,7 @@ const generateFAQItems = t => {
   const translationKeys = [
     {
       section: 'before_talk',
-      questions: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'],
+      questions: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9'],
     },
     {
       section: 'during_talk',
