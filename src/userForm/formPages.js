@@ -20,19 +20,6 @@ export const constructCheckboxes = (options, t) =>
     options[key].map(({ value, tag }) => ({ name: t(tag), value, key })),
   );
 
-const getUserTypeOptions = (userType, options) => {
-  const volunteer = [];
-  const learner = [];
-
-  options.forEach(element => {
-    const optionType = element.value.substring(element.value.indexOf('.') + 1);
-
-    (optionType === 'vol' ? volunteer : learner).push(element);
-  });
-
-  return userType === USER_TYPES.volunteer ? volunteer : learner;
-};
-
 // Object containing valid form pages, where key = route
 const formPages = {
   'user-type': ({ options, userData }) => ({
@@ -83,35 +70,29 @@ const formPages = {
       ...(userData?.user_type === USER_TYPES.volunteer
         ? []
         : [
-            {
-              type: ComponentTypes.multiCheckboxWithInput,
-              multiCheckbox: {
-                currentValue: userData?.target_groups,
-                dataField: 'target_groups',
-                formData: getUserTypeOptions(
-                  userData?.user_type,
-                  options?.target_groups,
-                ),
-                getProps: t => ({
-                  heading: t('self_info.target_group_label'),
-                  errorRules: { required: t('validation.required') },
-                }),
-                textInputVal: getUserTypeOptions(
-                  userData?.user_type,
-                  options?.target_groups,
-                )[0].value,
-              },
-              textInput: {
-                currentValue: userData?.other_target_group,
-                dataField: 'other_target_group',
-                getProps: t => ({
-                  label: t('self_info.other_target_group_label'),
-                  labelTooltip: t('self_info.target_group_tooltip'),
-                  width: InputWidth.Medium,
-                }),
-              },
+          {
+            type: ComponentTypes.multiCheckboxWithInput,
+            multiCheckbox: {
+              currentValue: userData?.target_groups,
+              dataField: 'target_groups',
+              formData: options?.target_groups,
+              getProps: t => ({
+                heading: t('self_info.target_group_label'),
+                errorRules: { required: t('validation.required') },
+              }),
+              textInputVal: options?.target_groups[0].value,
             },
-          ]),
+            textInput: {
+              currentValue: userData?.other_target_group,
+              dataField: 'other_target_group',
+              getProps: t => ({
+                label: t('self_info.other_target_group_label'),
+                labelTooltip: t('self_info.target_group_tooltip'),
+                width: InputWidth.Medium,
+              }),
+            },
+          },
+        ]),
       {
         type: ComponentTypes.multiDropdown,
         currentValue: userData?.lang_skill,
@@ -200,10 +181,7 @@ const formPages = {
         type: ComponentTypes.radio,
         currentValue: userData?.target_group,
         dataField: 'target_group',
-        formData: getUserTypeOptions(
-          userData?.user_type,
-          options?.target_group,
-        ),
+        formData: options?.target_group,
         getProps: t => ({
           label: t('partner1.target_group'),
           errorRules: { required: t('validation.required') },
@@ -236,10 +214,7 @@ const formPages = {
         type: ComponentTypes.radio,
         currentValue: userData?.speech_medium,
         dataField: 'speech_medium',
-        formData: getUserTypeOptions(
-          userData?.user_type,
-          options?.speech_medium,
-        ),
+        formData: options?.speech_medium,
         getProps: t => ({
           label: t('partner2.speech_medium'),
           labelTooltip: t('partner2.speech_medium_tooltip'),
