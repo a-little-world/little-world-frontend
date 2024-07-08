@@ -95,7 +95,7 @@ const ResetPassword = () => {
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
           {requestSuccessful
-            ? t('forgot_password.success_message')
+            ? t('reset_password.success_message')
             : t(errors?.root?.serverError?.message)}
         </FormMessage>
         <ButtonsContainer>

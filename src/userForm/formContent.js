@@ -3,6 +3,7 @@ import {
   CheckboxGrid,
   Dropdown,
   Gradients,
+  MultiCheckbox,
   MultiDropdown,
   MultiSelection,
   RadioGroup,
@@ -27,9 +28,12 @@ export const ComponentTypes = {
   radio: 'radio',
   radioWithInput: 'radioWithInput',
   panelSelector: 'panelSelector',
+  multiCheckbox: 'multiCheckbox',
+  multiCheckboxWithInput: 'multiCheckboxWithInput',
   multiSelection: 'multiSelection',
   multiDropdown: 'multiDropdown',
   dropdown: 'dropdown',
+  dropdownWithInput: 'dropdownWithInput',
   checkbox: 'checkbox',
   checkboxGrid: 'checkboxGrid',
   picture: 'picture',
@@ -162,6 +166,15 @@ export const getFormComponent = (
       updater: 'onCheckedChange',
       currentValue: currentValue || '',
       defaultChecked: currentValue || false,
+      ...props,
+    };
+
+  if (type === ComponentTypes.multiCheckbox)
+    return {
+      Component: MultiCheckbox,
+      dataField,
+      updater: 'onSelection',
+      currentValue: currentValue || '',
       ...props,
     };
 

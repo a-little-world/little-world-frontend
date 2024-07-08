@@ -32,7 +32,7 @@ const StyledCard = styled(Card)`
 
 const WelcomeTitle = styled(Text)`
   color: ${({ theme }) => theme.color.text.heading};
-  max-width: 270px; // ensures it wraps correctly
+  max-width: 280px; // ensures it wraps correctly
 `;
 
 const CancelSearchButton = styled(Button)`
@@ -127,14 +127,14 @@ export function SearchingCard({ setShowCancel }) {
             <div>
               <Text center type={TextTypes.Body4} bold>
                 {formatDate(
-                  new Date(preMatchingAppointment.start_time),
+                  new Date(preMatchingAppointment?.start_time),
                   'cccc, do LLLL',
                   language,
                 )}
               </Text>
               <Note center type={TextTypes.Body4} bold>
-                {formatTime(new Date(preMatchingAppointment.start_time))} -{' '}
-                {formatTime(new Date(preMatchingAppointment.end_time))}
+                {formatTime(new Date(preMatchingAppointment?.start_time))} -{' '}
+                {formatTime(new Date(preMatchingAppointment?.end_time))}
               </Note>
             </div>
           ) : (

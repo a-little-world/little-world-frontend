@@ -25,6 +25,7 @@ export const TextField = styled.div`
   border-radius: 10px;
   background: ${({ theme }) => theme.color.surface.disabled};
   padding: ${({ theme }) => theme.spacing.small};
+  white-space: pre-line;
 `;
 
 export const Details = styled.div`

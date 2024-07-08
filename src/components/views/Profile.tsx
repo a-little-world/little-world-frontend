@@ -68,17 +68,6 @@ const getProfileFields = ({
     },
     t,
   ),
-  additional_interests: getFormComponent(
-    {
-      type: ComponentTypes.textArea,
-      dataField: 'additional_interests',
-      currentValue: profile.additional_interests,
-      getProps: () => ({
-        size: TextAreaSize.Medium,
-      }),
-    },
-    t,
-  ),
   availability: getFormComponent(
     {
       type: ComponentTypes.checkboxGrid,
@@ -114,6 +103,7 @@ const getProfileFields = ({
         addMoreLabel: trans('self_info.language_add_more'),
         label: trans('self_info.language_skills_label'),
         labelTooltip: trans('self_info.language_skills_tooltip'),
+        maxSegments: 8,
         firstDropdown: {
           dataField: 'lang',
           ariaLabel: trans('self_info.language_selector_label'),
@@ -260,13 +250,6 @@ function Profile() {
             setEditingField={setEditingField}
           >
             <Tags content={selectedInterests} />
-          </ProfileDetail>
-          <ProfileDetail
-            editable={isSelf}
-            content={profileFields.additional_interests}
-            setEditingField={setEditingField}
-          >
-            <TextField>{profile.additional_interests}</TextField>
           </ProfileDetail>
           <ProfileDetail
             editable={isSelf}

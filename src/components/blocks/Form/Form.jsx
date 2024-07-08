@@ -29,6 +29,7 @@ import {
 } from '../../../userForm/formContent';
 import getFormPage from '../../../userForm/formPages';
 import DropdownWithInput from '../DropdownWithInput/DropdownWithInput';
+import MultiCheckboxWithInput from '../MultiCheckboxWithInput/MultiCheckboxWithInput.tsx';
 import Note from '../Note/Note';
 import ProfilePic from '../Profile/ProfilePic/ProfilePic';
 import RadioGroupWithInput from '../RadioGroupWithInput/RadioGroupWithInput';
@@ -130,6 +131,15 @@ const Form = () => {
             return (
               <DropdownWithInput
                 key={DropdownWithInput.name}
+                control={control}
+                {...component}
+              />
+            );
+
+          if (component?.type === ComponentTypes.multiCheckboxWithInput)
+            return (
+              <MultiCheckboxWithInput
+                key={MultiCheckboxWithInput.name}
                 control={control}
                 {...component}
               />
