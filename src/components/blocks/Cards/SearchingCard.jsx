@@ -99,7 +99,7 @@ export function SearchingCard({ setShowCancel }) {
 
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
-      {!hasMatch ? (
+      {hasMatch ? (
         <>
           <SearchingImage
             alt="searching image"

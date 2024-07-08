@@ -24,7 +24,7 @@ const MultiCheckboxWithInput = ({
   const { currentValue, dataField, formData, textInputVal, getProps } =
     multiCheckbox;
   const [displayTextInput, setDisplayTextInput] = useState(
-    textInputVal === currentValue,
+    currentValue.includes(textInputVal),
   );
   const { t } = useTranslation();
   const MultiCheckboxProps = getProps?.(t);
