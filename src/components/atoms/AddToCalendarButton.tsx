@@ -145,8 +145,8 @@ function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
 function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
   const { formattedStartDate, formattedEndDate } = getFormattedCalendarDates(calendarEvent);
 
-  const formattedStartDateTime = formattedStartDate.replace(/[-:]/g, '');
-  const formattedEndDateTime = formattedEndDate.replace(/[-:]/g, '');
+  const formattedStartDateTime = formattedStartDate.replace(/[-:]/g, '').replace('.000Z', 'Z');
+  const formattedEndDateTime = formattedEndDate.replace(/[-:]/g, '').replace('.000Z', 'Z');
 
   const icsContent = [
     'BEGIN:VCALENDAR',
@@ -155,8 +155,8 @@ function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
     'BEGIN:VEVENT',
     `UID:${new Date().getTime()}`,
     `URL:${document.URL}`,
-    `DTSTART;TZID=Europe/Berlin:${formattedStartDateTime}`,
-    `DTEND;TZID=Europe/Berlin:${formattedEndDateTime}`,
+    `DTSTART:${formattedStartDateTime}`,
+    `DTEND:${formattedEndDateTime}`,
     `SUMMARY:${calendarEvent.title || ''}`,
     `DESCRIPTION:${calendarEvent.description || ''}`,
     `LOCATION:${calendarEvent.link || ''}`,
