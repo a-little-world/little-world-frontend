@@ -1,16 +1,3 @@
 .frequency img {
   content: url('./images/coffee.webp');
 }
-
-.dateTime .date {
-  font-weight: 700;
-  font-size: 55px;
-}
-
-.dateTime .weekday,
-.dateTime .month,
-.dateTime .time {
-  font-weight: 600;
-  font-size: 30px;
-  text-transform: uppercase;
-}

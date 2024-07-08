@@ -10,11 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
-import {
-  formatDate,
-  formatEventTime,
-  formatTime,
-} from '../../../helpers/date.ts';
+import { formatDate, formatEventTime } from '../../../helpers/date.ts';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
 import {
   Buttons,

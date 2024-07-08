@@ -7,6 +7,7 @@ export const Events = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
   flex: 1 1 0;
   max-width: 1200px;
+  padding: 0 ${({ theme }) => theme.spacing.small};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
