@@ -63,8 +63,8 @@
   "searching_card.pre_match_call_booked_cta": "Termin verschieben",
   "searching_card.pre_match_call_booked_join_call": "Videocall beitreiten",
   "searching_card.pre_match_call_not_booked_title": "So geht's weiter",
-  "searching_card.pre_match_call_not_booked_info_1": "Bevor es richtig losgeht, möchten wir dich in einem kurzen 15-minütigen Videogespräch kennenlernen.",
-  "searching_card.pre_match_call_not_booked_info_2": "Dabei möchten wir deine Fragen beantworten, die Technik überprüfen, dir ein paar Tipps geben und dich sowie unsere Community schützen.",
+  "searching_card.pre_match_call_not_booked_info_1": "Bevor wir dich matchen, möchten wir dich in einem 30-minütigen Videogespräch kennenlernen.",
+  "searching_card.pre_match_call_not_booked_info_2": "Damit möchten wir deine Fragen beantworten, Tipps geben und ein wertschätzendes Miteinander in unserer Community sicherstellen.",
   "searching_card.pre_match_call_not_booked_cta": "Gespräch buchen",
 
   "language_level_card.title": "Steigere dein Deutschniveau",
@@ -453,7 +453,7 @@
   "profile_pic.title": "Dein Profilbild",
   "profile_pic.avatar_skin_tone": "Hautton",
   "profile_pic.avatar_hair_color": "Haarfarbe",
-  "profile_pic.avatar_hair_style": "Frisur",
+  "profile_pic.avatar_hair_style": "Frisur (m/w)",
   "profile_pic.avatar_eyes": "Augen",
   "profile_pic.avatar_eyebrows": "Augenbrauen",
   "profile_pic.avatar_nose": "Nase",
@@ -524,7 +524,7 @@
   "resources.beginners.disclaimer": "Sobald du das Niveau B1 erreicht hast, kannst du dein Sprachniveau bei Little World ändern. Dann können wir für dich einen Gesprächspartner suchen, mit dem du dich auf Deutsch austauschen kannst.",
 
   "translator.language_placholder": "Wähle eine Sprache...",
-  "translator.text_placeholder": "Typ zu übersetzen",
+  "translator.text_placeholder": "Tippen zum Übersetzen",
   "translator.swap_languages": "Sprachen tauschen",
   "translator.translated_placeholder": "Übersetzung erscheint hier.",
   "sign_up.company_tooltip": "Wenn du Little World im Namen deines Unternehmens nutzt, gib bitte den Namen deines Unternehmens an.",
