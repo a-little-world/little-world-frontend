@@ -12,11 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { completeForm, mutateUserData } from '../../../api';
-import {
-  updateProfile,
-  updateSearchState,
-  updateUser,
-} from '../../../features/userData';
+import { updateProfile, updateUser } from '../../../features/userData';
 import { onFormError } from '../../../helpers/form';
 import {
   EDIT_FORM_ROUTE,

@@ -440,7 +440,7 @@
   "conditions.point3": "For your safety, please <highlight>do not exchange private contact details</highlight> (address, phone number).",
   "conditions.point4": "Any form of <highlight>discrimination</highlight> (including racism & ageism) <highlight>or harassment will not be tolerated</highlight>. Please report any violations to us immediately.",
   "conditions.disclaimer": "So far, our participants have had a positive experience - we want it to stay that way. If you have any questions please contact us at any time.",
-  "conditions.checkbox_label": "<bold>I will comply with the listed principles and accept the</bold> <a {\"href\": \"https://home.little-world.com/nutzungsbedingungen\", \"style\": { \"font-weight\": \"bold\" }, \"target\": \"_blank\"}>limitations of liability</a>.",
+  "conditions.checkbox_label": "<bold>I will comply with the listed principles above.</bold>",
   "profile_pic.upload_image": "Please upload a profile picture of yourself that shows your face.",
   "profile_pic.click_to_upload": "Click to upload",
   "profile_pic.drop_image": "or drag image and drop here",
