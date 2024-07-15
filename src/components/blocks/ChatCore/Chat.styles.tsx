@@ -39,7 +39,7 @@ export const NoChatSelected = styled(Panel)`
 
   ${({ theme }) => css`
     display: none;
-    @media (min-width: ${theme.breakpoints.medium}) {
+    @media (min-width: ${theme.breakpoints.xlarge}) {
       position: relative;
       display: flex;
     }
@@ -107,6 +107,7 @@ export const MessageText = styled(Text)<{ $isSelf: boolean }>`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: 24px;
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+  max-width: 100%;
 
   ${({ $isSelf, theme }) =>
     $isSelf &&
@@ -164,10 +165,7 @@ export const MessageText = styled(Text)<{ $isSelf: boolean }>`
 `;
 
 export const MessageBox = styled(TextArea)`
-  height: 44px;
-  border-radius: 100px;
   background: ${({ theme }) => theme.color.surface.secondary};
-  padding: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 export const UserInfo = styled.div`
@@ -199,7 +197,7 @@ export const BackButton = styled(Button)<{ $show: boolean }>`
   color: ${({ theme }) => theme.color.text.link};
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
+    @media (min-width: ${theme.breakpoints.xlarge}) {
       display: none;
     }
   `}
@@ -207,6 +205,8 @@ export const BackButton = styled(Button)<{ $show: boolean }>`
 
 export const SendButton = styled(Button)`
   flex-shrink: 0;
+  align-self: flex-end;
+  margin-bottom: 17px;
 `;
 
 export const ChatContainer = styled.div`

@@ -84,16 +84,17 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
               height="16"
             />
           </BackButton>
+
           <ProfileLink to={getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)}>
             <UserImage
               circle
-              size={'xsmall'}
               image={
                 partner?.image_type === 'avatar'
                   ? partner?.avatar_config
                   : partner?.image
               }
               imageType={partner?.image_type}
+              size={'xsmall'}
             />
             <Text bold type={TextTypes.Body4}>
               {partner?.first_name}
@@ -144,7 +145,7 @@ export const Chat = ({ chatId }) => {
   const activeChat = useSelector(state =>
     getChatByChatId(state.userData.chats, chatId),
   );
-
+  const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
 
   const { scrollRef } = useInfiniteScroll({
@@ -216,6 +217,7 @@ export const Chat = ({ chatId }) => {
         );
         setIsSubmitting(false);
         messagesRef.current.scrollTop = 0;
+        setMessagesSent(curr => curr + 1);
       })
       .catch(onSubmitError);
   };
@@ -270,11 +272,13 @@ export const Chat = ({ chatId }) => {
             name: 'text',
             options: { required: 'error.required' },
           })}
+          key={`message ${messagesSent}`}
           id="text"
           error={t(errors?.text?.message)}
+          expandable
           placeholder={t('chat.text_area_placeholder')}
           onSubmit={() => handleSubmit(onSendMessage)()}
-          size={TextAreaSize.Medium}
+          size={TextAreaSize.Xsmall}
         />
         <SendButton
           size={ButtonSizes.Large}

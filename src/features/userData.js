@@ -291,14 +291,6 @@ export const sortChats = chats => {
   return uniqBy(sorted, 'uuid');
 };
 
-export const selectMatchByPartnerId = (matches, partnerId) => {
-  for (const category in matches) {
-    const match = matches[category].items.find(m => m.partner.id === partnerId);
-    if (match) return match;
-  }
-  return null;
-};
-
 export const getMatchByPartnerId = (matches, partnerId) => {
   const allMatches = [...matches.support.items, ...matches.confirmed.items];
   const partner = allMatches.find(match => match?.partner?.id === partnerId);

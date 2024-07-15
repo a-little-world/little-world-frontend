@@ -213,6 +213,8 @@ function CallSetup({ userPk }: CallSetupProps) {
       </div>
       <PreJoin
         onSubmit={handleJoin}
+        camLabel={t('pcs_camera_label')}
+        micLabel={t('pcs_mic_label')}
         joinLabel={t('pcs_btn_join_call')}
         onError={handleError}
         onValidate={handleValidate}
