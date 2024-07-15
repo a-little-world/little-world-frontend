@@ -70,29 +70,29 @@ const formPages = {
       ...(userData?.user_type === USER_TYPES.volunteer
         ? []
         : [
-          {
-            type: ComponentTypes.multiCheckboxWithInput,
-            multiCheckbox: {
-              currentValue: userData?.target_groups,
-              dataField: 'target_groups',
-              formData: options?.target_groups,
-              getProps: t => ({
-                heading: t('self_info.target_group_label'),
-                errorRules: { required: t('validation.required') },
-              }),
-              textInputVal: options?.target_groups[0].value,
+            {
+              type: ComponentTypes.multiCheckboxWithInput,
+              multiCheckbox: {
+                currentValue: userData?.target_groups,
+                dataField: 'target_groups',
+                formData: options?.target_groups,
+                getProps: t => ({
+                  heading: t('self_info.target_group_label'),
+                  errorRules: { required: t('validation.required') },
+                }),
+                textInputVal: options?.target_groups[0].value,
+              },
+              textInput: {
+                currentValue: userData?.other_target_group,
+                dataField: 'other_target_group',
+                getProps: t => ({
+                  label: t('self_info.other_target_group_label'),
+                  labelTooltip: t('self_info.target_group_tooltip'),
+                  width: InputWidth.Medium,
+                }),
+              },
             },
-            textInput: {
-              currentValue: userData?.other_target_group,
-              dataField: 'other_target_group',
-              getProps: t => ({
-                label: t('self_info.other_target_group_label'),
-                labelTooltip: t('self_info.target_group_tooltip'),
-                width: InputWidth.Medium,
-              }),
-            },
-          },
-        ]),
+          ]),
       {
         type: ComponentTypes.multiDropdown,
         currentValue: userData?.lang_skill,
@@ -326,6 +326,16 @@ const formPages = {
             { type: ContentTypes.Paragraph, text: t('conditions.disclaimer') },
           ],
           marginBottom: '12px',
+        }),
+      },
+      {
+        type: ComponentTypes.checkbox,
+        currentValue: userData?.liability_accepted,
+        dataField: 'liability_accepted',
+        getProps: t => ({
+          label: t('conditions.checkbox_label'),
+          errorRules: { required: t('validation.required') },
+          id: 'conditions checkbox',
         }),
       },
     ],

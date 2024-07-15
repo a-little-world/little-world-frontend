@@ -433,7 +433,7 @@
   "conditions.point3": "Bitte tausche zu deiner Sicherheit <highlight>keine privaten Kontaktdaten</highlight> aus (Adresse, Telefonnummer).",
   "conditions.point4": "Jegliche Formen der <highlight>Diskriminierung</highlight> (u.a. Rassismus & Altersdiskriminierung) <highlight>oder Belästigung werden nicht geduldet</highlight>. Bitte melde jegliche Verstöße umgehend bei uns.",
   "conditions.disclaimer": "Bisher haben unsere Teilnehmer äußerst positive Erfahrungen gemacht - wir möchten, dass dies auch so bleibt. Solltest du irgendwelche Fragen, auch zur Nutzung, oder Probleme haben, kontaktiere uns gerne jederzeit.",
-  "conditions.checkbox_label": "<bold>Ich werde die gelisteten Grundsätze einhalten und akzeptiere die</bold> <a {\"href\": \"https://home.little-world.com/nutzungsbedingungen\", \"style\": { \"font-weight\": \"bold\" }, \"target\": \"_blank\"}>Haftungsbeschränkungen</a>.",
+  "conditions.checkbox_label": "<bold>Ich werde die gelisteten Grundsätze einhalten.</bold>",
   "user_form_notifications.title": "Und als letzten Schritt...",
   "user_form_notifications.description": "Sobald wir ein Match für dich gefunden haben, benachrichtigen wir dich. Ich möchte...",
   "user_form_notifications.phone_number_label": "Deine Telefonnummer",
