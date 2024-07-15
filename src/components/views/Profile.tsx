@@ -14,7 +14,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { mutateUserData } from '../../api/index.js';
 import { fetchProfile } from '../../api/profile.ts';
-import { updateProfile } from '../../features/userData';
+import { getChatByPartnerId, updateProfile } from '../../features/userData';
 import { onFormError } from '../../helpers/form';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes.ts';
 import {
@@ -140,6 +140,7 @@ function Profile() {
   const [editingField, setEditingField] = useState(null);
 
   const matches = useSelector(state => state.userData.matches);
+
   const user = useSelector(state => state.userData.user);
   const isSelf = user?.id === userPk || !userId;
   const dashboardVisibleMatches = matches
@@ -161,6 +162,10 @@ function Profile() {
           selfAvailability: user?.profile?.availability,
         })
       : {},
+  );
+
+  const chat = useSelector(state =>
+    getChatByPartnerId(state.userData.chats, profile?.id),
   );
 
   useEffect(() => {
@@ -270,10 +275,11 @@ function Profile() {
           </ProfileDetail>
         </Details>
         <ProfileCard
+          chatId={chat?.uuid}
           userPk={userPk}
           profile={profile}
-          description="" /* don't show description on profile page as it's already shown in full */
           isSelf={isSelf}
+          onProfile
           openEditImage={() =>
             navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
           }

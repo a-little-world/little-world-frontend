@@ -48,6 +48,13 @@ export const StyledCard = styled(Card)`
       background-color: rgb(252, 224, 172);
     `};
 
+  ${({ $onProfile }) =>
+    $onProfile &&
+    css`
+      max-width: ${CardSizes.Small};
+      width: unset;
+    `};
+
   ${({ theme, $isSelf }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
@@ -108,7 +115,8 @@ export const PartnerMenuOption = styled(Button)`
 
 export const Actions = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: ${({ $onProfile }) =>
+    $onProfile ? '1fr 1fr' : '1fr 1fr 1fr'};
   column-gap: ${({ theme }) => theme.spacing.small};
   width: 100%;
   max-width: 498px;
@@ -117,7 +125,7 @@ export const Actions = styled.div`
 export const NameContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({ $isSelf }) => ($isSelf ? 'center' : 'space-between')};
 `;
 
 export const Tag = styled(Text)`
@@ -152,6 +160,7 @@ function ProfileCard({
   isSelf,
   isOnline,
   isSupport,
+  onProfile,
   openPartnerModal,
   openEditImage,
   type,
@@ -164,6 +173,7 @@ function ProfileCard({
     <StyledCard
       width={CardSizes.Small}
       $isSelf={isSelf}
+      $onProfile={onProfile}
       $unconfirmedMatch={type === 'unconfirmed'}
     >
       {isSelf && openEditImage ? (
@@ -226,7 +236,7 @@ function ProfileCard({
       )}
       <OnlineIndicator isOnline={isOnline} />
       <ProfileInfo>
-        <NameContainer>
+        <NameContainer $isSelf={isSelf}>
           <Text type={'Body3'} bold>
             {profile.first_name}
           </Text>
@@ -238,25 +248,29 @@ function ProfileCard({
           )}
         </NameContainer>
 
-        <Description>
-          {isSupport
-            ? t('profile_card.support_description')
-            : profile.description}
-        </Description>
+        {!onProfile && (
+          <Description>
+            {isSupport
+              ? t('profile_card.support_description')
+              : profile.description}
+          </Description>
+        )}
       </ProfileInfo>
       {!isSelf && (
-        <Actions>
-          <MenuLink
-            to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
-            state={{ userPk }}
-          >
-            <ProfileIcon
-              gradient={Gradients.Orange}
-              label="visit profile"
-              labelId="visit_profile"
-            />
-            {t('cp_profile')}
-          </MenuLink>
+        <Actions $onProfile={onProfile}>
+          {!onProfile && (
+            <MenuLink
+              to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
+              state={{ userPk }}
+            >
+              <ProfileIcon
+                gradient={Gradients.Orange}
+                label="visit profile"
+                labelId="visit_profile"
+              />
+              {t('cp_profile')}
+            </MenuLink>
+          )}
           <MenuLink to={getChatRoute(chatId)} state={{ userPk }}>
             <MessageIcon
               gradient={Gradients.Orange}

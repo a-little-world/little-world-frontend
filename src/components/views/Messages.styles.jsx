@@ -38,13 +38,11 @@ export const Panel = styled(Card)`
 
   ${({ theme, $selectedChat }) => css`
     display: ${$selectedChat ? 'none' : 'flex'};
-    @media (min-width: ${theme.breakpoints.medium}) {
-      display: flex;
-      width: 400px;
-    }
 
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media (min-width: ${theme.breakpoints.xlarge}) {
+      display: flex;
       padding: ${theme.spacing.medium};
+      width: 400px;
     }
   `}
 `;
