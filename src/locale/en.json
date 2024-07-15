@@ -63,7 +63,7 @@
   "searching_card.pre_match_call_booked_cta": "Reschedule",
   "searching_card.pre_match_call_booked_join_call": "Join video call",
   "searching_card.pre_match_call_not_booked_title": "So geht's weiter",
-  "searching_card.pre_match_call_not_booked_info_1": "Before we get going, we would like to get to know you in a short 15-minute video call",
+  "searching_card.pre_match_call_not_booked_info_1": "Before we match you, we would like to get to know you in a short 30-minute video call as a group.",
   "searching_card.pre_match_call_not_booked_info_2": "We'll answer your questions, give you a few tips, and help safeguard you and the rest of our community.",
   "searching_card.pre_match_call_not_booked_cta": "Book video call",
 
@@ -455,7 +455,7 @@
   "profile_pic.title": "Your Profile Picture",
   "profile_pic.avatar_skin_tone": "Skin tone",
   "profile_pic.avatar_hair_color": "Hair color",
-  "profile_pic.avatar_hair_style": "Hair style",
+  "profile_pic.avatar_hair_style": "Hair style (m/f)",
   "profile_pic.avatar_eyes": "Eyes",
   "profile_pic.avatar_eyebrows": "Eyebrows",
   "profile_pic.avatar_nose": "Nose",
