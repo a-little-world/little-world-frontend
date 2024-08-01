@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonAppearance,
+  Link,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -39,9 +40,15 @@ export const StyledOption = styled(Button)`
 `;
 
 const nbtTopics = {
-  main: ['conversation_partners', 'community_calls'],
+  ourWorld: ['support', 'about', 'stories'],
+  main: ['conversation_partners', 'events'],
   help: ['contact', 'faqs'],
   resources: ['trainings', 'beginners'],
+};
+
+const externalLinksTopics = {
+  about: 'https://home.little-world.com/ueber-uns',
+  stories: 'https://home.little-world.com/stories',
 };
 
 type ContentSelector = {
@@ -52,7 +59,7 @@ type ContentSelector = {
 
 function ContentSelector({ selection, setSelection, use }: ContentSelector) {
   const { t } = useTranslation();
-  if (!['main', 'help', 'resources'].includes(use)) {
+  if (!['ourWorld', 'main', 'help', 'resources'].includes(use)) {
     return null;
   }
 
@@ -60,20 +67,24 @@ function ContentSelector({ selection, setSelection, use }: ContentSelector) {
 
   return (
     <Selector>
-      {topics.map((topic: string) => (
-        <StyledOption
-          appearance={
-            selection === topic
-              ? ButtonAppearance.Primary
-              : ButtonAppearance.Secondary
-          }
-          key={topic}
-          onClick={() => setSelection(topic)}
-          disabled={selection === topic}
-        >
-          {t(`nbt_${topic}`)}
-        </StyledOption>
-      ))}
+      {topics.map((topic: string) =>
+        externalLinksTopics[topic] ? (
+          <Link href={externalLinksTopics[topic]}>{t(`nbt_${topic}`)}</Link>
+        ) : (
+          <StyledOption
+            appearance={
+              selection === topic
+                ? ButtonAppearance.Primary
+                : ButtonAppearance.Secondary
+            }
+            key={topic}
+            onClick={() => setSelection(topic)}
+            disabled={selection === topic}
+          >
+            {t(`nbt_${topic}`)}
+          </StyledOption>
+        ),
+      )}
     </Selector>
   );
 }

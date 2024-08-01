@@ -4,10 +4,10 @@ import {
   ButtonVariations,
   DashboardIcon,
   Gradients,
+  Logo as LogoIcon,
   LogoutIcon,
   MessageIcon,
   ProfileIcon,
-  PuzzleIcon,
   QuestionIcon,
   SettingsIcon,
   StackIcon,
@@ -24,6 +24,7 @@ import {
   HELP_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
+  OUR_WORLD_ROUTE,
   PROFILE_ROUTE,
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
@@ -117,6 +118,12 @@ function Sidebar({ sidebarMobile }) {
       Icon: SettingsIcon,
     },
     {
+      label: 'about_us',
+      path: getAppRoute(OUR_WORLD_ROUTE),
+      Icon: LogoIcon,
+      iconProps: { width: 40 },
+    },
+    {
       label: 'log_out',
       clickEvent: () => {
         fetch(`${BACKEND_URL}/api/user/logout/`, {
@@ -158,7 +165,7 @@ function Sidebar({ sidebarMobile }) {
     <>
       <SidebarContainer $visibleOnMobile={showSidebarMobile}>
         <StyledLogo asLink />
-        {buttonData.map(({ label, path, clickEvent, Icon }) => {
+        {buttonData.map(({ label, path, clickEvent, Icon, iconProps }) => {
           const isActive = isActiveRoute(location.pathname, path);
 
           return typeof clickEvent === typeof undefined ? (
@@ -179,6 +186,7 @@ function Sidebar({ sidebarMobile }) {
                 {...(isActive
                   ? { color: theme.color.surface.primary }
                   : { gradient: Gradients.Blue })}
+                {...iconProps}
               />
               {t(`nbs_${label}`)}
             </MenuLink>

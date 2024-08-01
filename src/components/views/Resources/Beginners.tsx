@@ -1,11 +1,12 @@
 import {
   Card,
   ContentTypes,
+  SwirlyLinesThinImage,
   TextContent,
 } from '@a-little-world/little-world-design-system';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 const ContentCard = styled(Card)`
   display: flex;
@@ -18,23 +19,28 @@ const ContentCard = styled(Card)`
     margin-bottom: ${({ theme }) => theme.spacing.medium};
   }
 
-  h3 {
-    color: ${({ theme }) => theme.color.text.highlight};
-  }
-
   h4:first-of-type {
     margin-top: ${({ theme }) => theme.spacing.medium};
+  }
+
+  p:last-of-type {
+    margin-bottom: ${({ theme }) => theme.spacing.medium};
   }
 `;
 
 const Beginners: FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   return (
     <ContentCard>
       <TextContent
         content={[
-          { type: ContentTypes.Title, text: t('resources.beginners.title') },
+          {
+            type: ContentTypes.Title,
+            text: t('resources.beginners.title'),
+            color: theme.color.text.title,
+          },
           {
             type: ContentTypes.Emphasize,
             text: t('resources.beginners.intro'),
@@ -77,6 +83,11 @@ const Beginners: FC = () => {
           {
             type: ContentTypes.Emphasize,
             text: t('resources.beginners.disclaimer'),
+          },
+          {
+            type: ContentTypes.Image,
+            text: 'SwirlyLines',
+            Image: SwirlyLinesThinImage,
           },
         ]}
       />

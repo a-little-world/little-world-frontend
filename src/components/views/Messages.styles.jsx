@@ -92,14 +92,19 @@ export const Top = styled.div`
   width: 100%;
 `;
 
-export const Preview = styled(Text)`
+export const Preview = styled.div`
+  color: ${({ theme }) => theme.color.text.secondary};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const PreviewText = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   width: 100%;
 `;
 
@@ -150,7 +155,9 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
               )}
             </Top>
             <Preview>
-              {message.newest_message?.text || t('chat.no_messages_preview')}
+              <PreviewText>
+                {message.newest_message?.text || t('chat.no_messages_preview')}
+              </PreviewText>
               {message.newest_message?.sender === userId &&
                 (message.newest_message?.read ? (
                   <TickDoubleIcon

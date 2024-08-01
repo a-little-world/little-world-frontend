@@ -6,7 +6,7 @@ import {
 import { last } from 'lodash';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import useScrollToTop from '../../../hooks/useScrollToTop.tsx';
 import Stepper from '../../atoms/Stepper.tsx';
@@ -108,6 +108,7 @@ const Trainings: FC = () => {
   const [videoId, setVideoId] = useState(
     VIDEOS.interculturalCommunication[0].id,
   );
+  const theme = useTheme();
 
   const handleVideoSelect = (id: string) => {
     setVideoId(id);
@@ -120,7 +121,7 @@ const Trainings: FC = () => {
   const isLastStep = videoId === last(VIDEOS.interculturalCommunication)?.id;
   return (
     <ContentCard>
-      <Text type={TextTypes.Body2} bold tag="h3">
+      <Text color={theme.color.text.title} type={TextTypes.Body2} bold tag="h2">
         {title}
       </Text>
       <Container>
