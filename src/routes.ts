@@ -1,5 +1,8 @@
 export const BASE_ROUTE = '/';
 export const APP_ROUTE = 'app';
+export const COMMUNITY_EVENTS_ROUTE = 'events';
+export const OUR_WORLD_ROUTE = 'our-world';
+export const SUPPORT_US_ROUTE = 'our-world/support';
 export const CALL_ROUTE = 'call';
 export const CALL_SETUP_ROUTE = 'call-setup/:userId?/';
 export const PARTNERS_ROUTE = 'partners';
@@ -28,11 +31,9 @@ export const PRIVACY_ROUTE = 'datenschutz';
 export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
 export const getAppRoute = (slug: string) => `/${APP_ROUTE}/${slug ?? ''}`;
+export const getAppSubpageRoute = (parent: string, slug: string) =>
+  getAppRoute(`${parent}/${slug}`);
 export const getUserFormRoute = (slug: string) => `/${USER_FORM_ROUTE}/${slug}`;
-export const getChatRoute = (id: string) =>
-  getAppRoute(`${MESSAGES_ROUTE}/${id}`);
-export const getResourcesRoute = (slug: string) =>
-  getAppRoute(`${RESOURCES_ROUTE}/${slug}`);
 
 export const isActiveRoute = (locationPath: string, path: string) => {
   return locationPath === path || path !== getAppRoute('')

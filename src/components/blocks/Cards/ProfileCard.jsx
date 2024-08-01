@@ -22,7 +22,12 @@ import { useDispatch } from 'react-redux';
 import styled, { css } from 'styled-components';
 
 import { initCallSetup } from '../../../features/userData';
-import { PROFILE_ROUTE, getAppRoute, getChatRoute } from '../../../routes.ts';
+import {
+  MESSAGES_ROUTE,
+  PROFILE_ROUTE,
+  getAppRoute,
+  getAppSubpageRoute,
+} from '../../../routes.ts';
 import MenuLink from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
@@ -271,7 +276,10 @@ function ProfileCard({
               {t('cp_profile')}
             </MenuLink>
           )}
-          <MenuLink to={getChatRoute(chatId)} state={{ userPk }}>
+          <MenuLink
+            to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
+            state={{ userPk }}
+          >
             <MessageIcon
               gradient={Gradients.Orange}
               label="chat icon"

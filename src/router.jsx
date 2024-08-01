@@ -16,6 +16,7 @@ import Form from './components/blocks/Form/Form';
 import { FullAppLayout } from './components/blocks/Layout/AppLayout';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import Welcome from './components/blocks/Welcome/Welcome';
+import AboutUs from './components/views/AboutUs/AboutUs.tsx';
 import ChangeEmail from './components/views/ChangeEmail';
 import EditView from './components/views/Edit';
 import ForgotPassword from './components/views/ForgotPassword';
@@ -39,17 +40,20 @@ import {
   CALL_SETUP_ROUTE,
   CHANGE_EMAIL_ROUTE,
   CHAT_ROUTE,
+  COMMUNITY_EVENTS_ROUTE,
   EDIT_FORM_ROUTE,
   FORGOT_PASSWORD_ROUTE,
   HELP_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
   NOTIFICATIONS_ROUTE,
+  OUR_WORLD_ROUTE,
   PARTNERS_ROUTE,
   RESET_PASSWORD_ROUTE,
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
+  SUPPORT_US_ROUTE,
   TRAININGS_ROUTE,
   USER_FORM_ROUTE,
   USER_PROFILE_ROUTE,
@@ -184,10 +188,35 @@ const ROOT_ROUTES = [
     element: <Main />,
   },
   {
+    path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Main />
+      </FullAppLayout>
+    ),
+    errorElement: <RouterError />,
+  },
+  {
     path: getAppRoute(CHAT_ROUTE),
     element: (
       <FullAppLayout>
         <Messages />
+      </FullAppLayout>
+    ),
+  },
+  {
+    path: getAppRoute(OUR_WORLD_ROUTE),
+    element: (
+      <FullAppLayout>
+        <AboutUs />
+      </FullAppLayout>
+    ),
+  },
+  {
+    path: getAppRoute(SUPPORT_US_ROUTE),
+    element: (
+      <FullAppLayout>
+        <AboutUs />
       </FullAppLayout>
     ),
   },

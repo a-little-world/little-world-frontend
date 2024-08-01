@@ -1,13 +1,19 @@
 import { Modal } from '@a-little-world/little-world-design-system';
+import { last } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/index.js';
 import '../../community-events.css';
 import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
+import {
+  COMMUNITY_EVENTS_ROUTE,
+  getAppRoute,
+  getAppSubpageRoute,
+} from '../../routes.ts';
 import CancelSearchCard from '../blocks/Cards/CancelSearchCard';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.jsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
@@ -30,10 +36,14 @@ const Home = styled.div`
   `};
 `;
 
+type subpages = 'events' | 'conversation_partners';
+
 function Main() {
   // for the case /call-setup/:userId?/
   const { userId } = useParams();
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -74,7 +84,15 @@ function Main() {
     }
   }, [userId]);
 
-  const [subpage, setSubpage] = useState('conversation_partners');
+  const subpage =
+    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)
+      ? 'events'
+      : 'conversation_partners';
+
+  const handleSubpageSelect = (subpage: subpages) => {
+    const nextPath = subpage !== 'conversation_partners' ? subpage : '';
+    navigate(getAppRoute(nextPath));
+  };
 
   const onPageChange = page => {
     handlePageChange(page);
@@ -84,10 +102,10 @@ function Main() {
     <>
       <ContentSelector
         selection={subpage}
-        setSelection={setSubpage}
+        setSelection={handleSubpageSelect}
         use={'main'}
       />
-      {subpage === 'community_calls' ? (
+      {subpage === 'events' ? (
         <CommunityEvents />
       ) : (
         <>

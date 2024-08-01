@@ -194,6 +194,7 @@ const formPages = {
         formData: options?.min_lang_level_partner,
         getProps: t => ({
           label: t('partner1.language_level'),
+          labelTooltip: t('partner1.language_level_tooltip'),
           errorRules: { required: t('validation.required') },
         }),
       },

@@ -1,6 +1,7 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { isEmpty, uniqBy } from 'lodash';
 
+import { MESSAGES_ROUTE, getAppSubpageRoute } from '../routes.ts';
 import { questionsDuringCall } from '../services/questionsDuringCall';
 
 export const userDataSlice = createSlice({
@@ -25,6 +26,10 @@ export const userDataSlice = createSlice({
       state.activeCallRooms = action.payload?.activeCallRooms || [];
       state.callSetup = action.payload?.callSetup || null; // { userId: user.hash } or null
       state.activeCall = action.payload?.activeCall || null; // { userId: user.hash, tracks: {} } or null
+      state.supportUrl = getAppSubpageRoute(
+        MESSAGES_ROUTE,
+        action.payload?.matches?.support?.items[0]?.chatId || '',
+      );
     },
     reset: (state, action) => {
       state.user = null;

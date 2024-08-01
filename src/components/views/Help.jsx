@@ -7,6 +7,7 @@ import {
   Label,
   MessageIcon,
   PhoneIcon,
+  TeacherImage,
   Text,
   TextArea,
   TextAreaSize,
@@ -18,9 +19,9 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import { CHAT_ROUTE, getAppRoute } from '../../routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink';
+import Socials from '../atoms/Socials.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
 import './help.css';
 
@@ -45,7 +46,7 @@ const HelpContainer = styled.div`
 const HelpPanel = styled(Card)`
   ${({ theme }) => `
   @media (min-width: ${theme.breakpoints.medium}) {
-    max-width: ${CardSizes.Medium};
+    max-width: ${CardSizes.Large};
   }`}
 `;
 
@@ -98,13 +99,14 @@ const ContactButtons = styled.div`
     padding: 0 ${theme.spacing.xxxsmall} ${theme.spacing.medium};
 
     @media (min-width: ${theme.breakpoints.small}) {
-      gap: ${theme.spacing.medium};
+      gap: ${theme.spacing.small};
       padding: 0 ${theme.spacing.xxxsmall} ${theme.spacing.medium};
     }`}
 `;
 
 const ContactInfo = styled.div`
   display: flex;
+  flex-direction: column;
   background: rgba(230, 232, 236, 0.2);
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: ${({ theme }) => `${theme.spacing.xxsmall} `};
@@ -118,33 +120,18 @@ const ContactInfo = styled.div`
 
     @media (min-width: ${theme.breakpoints.small}) {
       padding: ${theme.spacing.medium};
-      gap: ${theme.spacing.medium};
     }`}
 `;
 const Contacts = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => `${theme.spacing.xxsmall} `};
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  margin-bottom: ${({ theme }) => theme.spacing.small};
   white-space: nowrap;
 `;
 
-const SocialLinks = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => `${theme.spacing.xxsmall} `};
-  margin-left: auto;
-  justify-content: end;
-
-  img {
-    display: flex;
-    padding: ${({ theme }) => `${theme.spacing.xxxsmall} `};
-  }
-`;
-const BusinessName = styled.div`
-  color: rgb(54, 169, 224);
-  font-size: ${({ theme }) => `${theme.spacing.xsmall} `};
-  margin: ${({ theme }) =>
-    `${theme.spacing.xxsmall}  ${theme.spacing.xxxsmall}`};
+const BusinessName = styled(Text)`
+  color: ${({ theme }) => theme.color.text.heading};
 `;
 
 const ContentWrapper = styled.div``;
@@ -158,9 +145,7 @@ const HelpButton = styled.button`
   font-weight: 600;
   font-size: ${({ theme }) => `${theme.spacing.small} `};
 `;
-const SupportButtonText = styled.span`
-  font-size: 1rem;
-`;
+
 const ContactLink = styled.a`
   display: flex;
   text-align: center;
@@ -183,6 +168,12 @@ const FAQContainer = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
 `;
 
+const FAQImageWrapper = styled.div`
+  width: 80%;
+  max-width: 200px;
+  margin: 0 auto;
+`;
+
 const FAQItems = styled.div`
   display: flex;
   flex-direction: column;
@@ -194,7 +185,7 @@ const FAQSectionTitle = styled(Text)`
 `;
 
 const ContentTitle = styled(Text)`
-  color: ${({ theme }) => theme.color.text.highlight};
+  color: ${({ theme }) => theme.color.text.title};
   text-align: center;
 
   ${({ theme }) => `
@@ -242,10 +233,13 @@ function Faqs() {
 
   return (
     <FAQContainer>
-      <ContentTitle tag="h2" type={TextTypes.Heading4}>
+      <ContentTitle tag="h2" type={TextTypes.Body2} bold>
         {t('nbt_faqs')}
       </ContentTitle>
       <Text>{t('help_faqs_intro')}</Text>
+      <FAQImageWrapper>
+        <TeacherImage />
+      </FAQImageWrapper>
       {faqs.map(faq => (
         <FAQItems key={faq.section}>
           <FAQSectionTitle bold type={TextTypes.Body3}>
@@ -329,7 +323,7 @@ function Contact() {
 
   return (
     <ContactForm>
-      <ContentTitle tag="h2" type={TextTypes.Heading4}>
+      <ContentTitle tag="h2" type={TextTypes.Body2} bold>
         {t('nbt_contact')}
       </ContentTitle>
       <Text>{t('help_contact_intro_line1')}</Text>
@@ -385,7 +379,9 @@ function Contact() {
           <DragText>{t('help_contact_picture_drag')}</DragText>
         </div>
       </DropZoneLabel>
-      <Button onClick={handleSubmit}>{t('help_contact_submit')}</Button>
+      <Button onClick={handleSubmit} style={{ maxWidth: '100%' }}>
+        {t('help_contact_submit')}
+      </Button>
     </ContactForm>
   );
 }
@@ -396,6 +392,7 @@ function Help() {
   const adminUser = useSelector(
     state => state.userData.matches.support.items[0],
   );
+  const supportUrl = useSelector(state => state.userData.supportUrl);
 
   return (
     <>
@@ -421,18 +418,15 @@ function Help() {
 
           <ContactButtons>
             {adminUser?.partner?.id && (
-              <MenuLink
-                to={getAppRoute(CHAT_ROUTE)}
-                // state={{ userPk: adminUser.partner.id }}
-              >
+              <MenuLink to={supportUrl}>
                 <MessageIcon
                   gradient={Gradients.Orange}
                   label="message support"
                   labelId="message_support"
                 />
-                <SupportButtonText>
+                <Text tag="span" center>
                   {t('help_support_message_btn')}
-                </SupportButtonText>
+                </Text>
               </MenuLink>
             )}
             <MenuLink to="tel:+4915234777471">
@@ -441,40 +435,27 @@ function Help() {
                 label="call support"
                 labelId="call_support"
               />
-              <SupportButtonText>
+              <Text tag="span" center>
                 {t('help_support_call_btn')}
-              </SupportButtonText>
+              </Text>
             </MenuLink>
           </ContactButtons>
 
           <ContactInfo>
             <ContentWrapper>
-              <ContentWrapper>
-                <Logo size="small" stacked={false} />
-                <BusinessName>A Little World gUG</BusinessName>
-              </ContentWrapper>
-              <Contacts>
-                <ContactLink href="mailto:support@little-world.com">
-                  <img className="email-icon" alt="e-mail" />
-                  support@little-world.com
-                </ContactLink>
-                <ContactLink href="tel:+4915234777471">
-                  <img className="mobile-icon" alt="mobile" />
-                  +49 152 34 777 471
-                </ContactLink>
-              </Contacts>
+              <BusinessName bold>A Little World gUG</BusinessName>
             </ContentWrapper>
-            <SocialLinks>
-              <a href="https://www.linkedin.com/company/76488145/">
-                <img className="icon-linkedin" alt="linked in" />
-              </a>
-              <a href="https://www.facebook.com/profile.php?id=100071509163812">
-                <img className="icon-facebook" alt="facebook" />
-              </a>
-              <a href="https://www.instagram.com/littleworld_de/">
-                <img className="icon-instagram" alt="instagram" />
-              </a>
-            </SocialLinks>
+            <Contacts>
+              <ContactLink href="mailto:support@little-world.com">
+                <img className="email-icon" alt="e-mail" />
+                support@little-world.com
+              </ContactLink>
+              <ContactLink href="tel:+4915234777471">
+                <img className="mobile-icon" alt="mobile" />
+                +49 152 34 777 471
+              </ContactLink>
+            </Contacts>
+            <Socials type="social_media" gradient={Gradients.Blue} />
           </ContactInfo>
         </HelpSupport>
       </HelpContainer>

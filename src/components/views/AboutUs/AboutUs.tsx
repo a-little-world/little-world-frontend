@@ -1,16 +1,15 @@
 import { last } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
-  RESOURCES_ROUTE,
+  OUR_WORLD_ROUTE, //   getAboutUsRoute,
   getAppRoute,
   getAppSubpageRoute,
 } from '../../../routes.ts';
 import ContentSelector from '../../blocks/ContentSelector.tsx';
-import Beginners from './Beginners.tsx';
-import Trainings from './Trainings.tsx';
+import SupportUs from './SupportUs.tsx';
 
 const Content = styled.div`
   ${({ theme }) =>
@@ -23,30 +22,24 @@ const Content = styled.div`
     }`};
 `;
 
-const resourcesPages = {
-  trainings: Trainings,
-  beginners: Beginners,
-};
-
-type subpages = 'trainings' | 'beginners';
+type subpages = 'stories' | 'about' | 'support';
 
 const renderResourceContent = (page: subpages) => {
-  if (page === 'trainings') return <Trainings />;
-  if (page === 'beginners') return <Beginners />;
+  if (page === 'support') return <SupportUs />;
   return null;
 };
 
-function Resources() {
+function OurWorld() {
   const location = useLocation();
   const navigate = useNavigate();
 
   const subpage =
-    location.pathname === getAppRoute(RESOURCES_ROUTE)
-      ? 'trainings'
+    location.pathname === getAppRoute(OUR_WORLD_ROUTE)
+      ? 'support'
       : last(location.pathname.split('/'));
 
   const handleSubpageSelect = (subpage: subpages) => {
-    navigate(getAppSubpageRoute(RESOURCES_ROUTE, subpage));
+    navigate(getAppSubpageRoute(OUR_WORLD_ROUTE, subpage));
   };
 
   // useEffect(() => {
@@ -58,11 +51,11 @@ function Resources() {
       <ContentSelector
         selection={subpage}
         setSelection={handleSubpageSelect}
-        use={'resources'}
+        use={'ourWorld'}
       />
       <Content>{renderResourceContent(subpage)}</Content>
     </>
   );
 }
 
-export default Resources;
+export default OurWorld;
