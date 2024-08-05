@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 const SocialLinks = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.medium};
 `;
 
 export const SOCIALS_LIST = {
@@ -61,7 +61,7 @@ const Socials = ({
   return (
     <SocialLinks>
       {SOCIALS_LIST[type].map(({ Icon, url, labelId, label }: any) => (
-        <Link href={url} textDecoration={false}>
+        <Link key={label} href={url} textDecoration={false}>
           <Icon labelId={labelId} label={label} gradient={gradient} />
         </Link>
       ))}

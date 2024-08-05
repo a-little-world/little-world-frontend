@@ -4,6 +4,7 @@ import {
   ButtonVariations,
   DashboardIcon,
   Gradients,
+  HeartIcon,
   Logo as LogoIcon,
   LogoutIcon,
   MessageIcon,
@@ -120,8 +121,7 @@ function Sidebar({ sidebarMobile }) {
     {
       label: 'about_us',
       path: getAppRoute(OUR_WORLD_ROUTE),
-      Icon: LogoIcon,
-      iconProps: { width: 40 },
+      Icon: HeartIcon,
     },
     {
       label: 'log_out',

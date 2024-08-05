@@ -30,6 +30,7 @@ import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import PageHeader from '../atoms/PageHeader';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
+import MailingLists from '../blocks/MailingLists/MailingLists.tsx';
 
 const types = {
   first_name: 'text',
@@ -113,7 +114,7 @@ function ListItem({ section, label, value, setEditing }) {
 
   return (
     <SettingsItem>
-      <FieldTitle tag="h3" type={TextTypes.Heading6} bold>
+      <FieldTitle tag="h3" type={TextTypes.Body5} bold>
         {t(`settings.${section}_${label}`)}
       </FieldTitle>
       <Field>
@@ -312,6 +313,7 @@ function Settings() {
     email: state.userData.user.email,
     ...state.userData.user.profile,
   }));
+  const user = useSelector(state => state.userData.user);
 
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -364,6 +366,7 @@ function Settings() {
                 }
               />
             ))}
+            <MailingLists />
             <SettingsItem>
               <Button
                 appearance={ButtonAppearance.Secondary}
