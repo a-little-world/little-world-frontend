@@ -69,7 +69,9 @@ function ContentSelector({ selection, setSelection, use }: ContentSelector) {
     <Selector>
       {topics.map((topic: string) =>
         externalLinksTopics[topic] ? (
-          <Link href={externalLinksTopics[topic]}>{t(`nbt_${topic}`)}</Link>
+          <Link key={topic} href={externalLinksTopics[topic]}>
+            {t(`nbt_${topic}`)}
+          </Link>
         ) : (
           <StyledOption
             appearance={
