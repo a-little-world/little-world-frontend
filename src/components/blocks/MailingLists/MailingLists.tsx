@@ -2,10 +2,11 @@ import { Switch } from '@a-little-world/little-world-design-system';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { mutateUserData } from '../../../api';
+import { updateProfile } from '../../../features/userData';
 import { onFormError } from '../../../helpers/form.js';
 
 const MailingListsWrapper = styled.div``;
@@ -18,17 +19,22 @@ const MailingLists = ({
   hideLabel?: boolean;
 }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const { control, getValues, setError, watch, handleSubmit } = useForm();
   const subscribed = useSelector(
     state => state.userData.user.profile.newsletter_subscribed,
   );
+
+  const onFormSuccess = data => {
+    dispatch(updateProfile(data));
+  };
 
   const onError = e => {
     onFormError({ e, formFields: getValues(), setError, t });
   };
 
   const onToggle = data => {
-    mutateUserData(data, () => null, onError);
+    mutateUserData(data, onFormSuccess, onError);
   };
 
   useEffect(() => {

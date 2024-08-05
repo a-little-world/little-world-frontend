@@ -563,7 +563,7 @@
   "support_us.join_events.title": "An Gruppenveranstaltungen teilnehmen",
   "support_us.join_events.description": "Nimm an unseren Gruppenveranstaltungen teil, um dich mit unserer Gemeinschaft zu verbinden, zu lernen und deine Erfahrungen zu teilen.",
   "support_us.join_events.link_text": "An Veranstaltungen teilnehmen",
-  "support_us.join_events.link_href": "https://home.little-world.com/app/events",
+  "support_us.join_events.link_href": "/app/events",
   "support_us.intermediate_ways.title": "Mittlere Wege zu helfen",
   "support_us.organize_an_event.title": "Organisiere deine eigene Gruppenveranstaltung",
   "support_us.organize_an_event.description": "Teile deine Leidenschaft, dein Wissen oder die einzigartigen Aspekte deines Heimatlandes mit unserer Gemeinschaft, indem du eine Gruppenveranstaltung ausrichtest. Veranstaltungen können von 5 bis 30 Minuten dauern und bieten eine großartige Gelegenheit, Kontakte zu knüpfen, Deutsch zu üben, Neues zu lernen und interessante Gesprächsthemen zu entdecken.",
