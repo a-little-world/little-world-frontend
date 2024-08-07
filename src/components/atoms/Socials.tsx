@@ -24,7 +24,7 @@ export const SOCIALS_LIST = {
     },
     {
       Icon: FacebookIcon,
-      url: 'https://www.linkedin.com/company/little-world/',
+      url: 'https://www.facebook.com/LittleWorld.NonProfit/',
       label: 'facebook',
       labelId: 'fbIcon',
     },
