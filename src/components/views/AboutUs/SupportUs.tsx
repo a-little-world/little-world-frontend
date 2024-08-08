@@ -42,7 +42,7 @@ const ACCORDION_CONTENT_CSS = css`
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
         > div {
-            &:nth-child(odd) {
+            &:nth-child(even) {
                 & > div:first-child {
                   order: 1;
                 }
@@ -208,7 +208,6 @@ const SupportUsSegment = ({ label }: { label: string }) => {
 
   return (
     <Segment>
-      <ImageContainer>{SECTION_IMAGES[label] || ''}</ImageContainer>
       <SegmentContent>
         <Text type={TextTypes.Heading6} color={theme.color.text.title}>
           {t(`support_us.${label}.title`)}
@@ -218,6 +217,7 @@ const SupportUsSegment = ({ label }: { label: string }) => {
         </SegmentDescription>
         <SegmentCta label={label} />
       </SegmentContent>
+      <ImageContainer>{SECTION_IMAGES[label] || ''}</ImageContainer>
     </Segment>
   );
 };

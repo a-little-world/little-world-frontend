@@ -106,6 +106,10 @@ export const PreviewText = styled(Text)`
   white-space: nowrap;
   text-overflow: ellipsis;
   width: 100%;
+
+  button {
+    display: none;
+  }
 `;
 
 export const UnreadIndicator = styled.span`
@@ -125,54 +129,57 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
 
   return (
     <Panel $selectedChat={selectedChat}>
-      {chats?.map((message, index) => (
-        <Message
-          key={`chat_${message.uuid + index}`}
-          $selected={message.uuid === selectedChat}
-          onClick={() => selectChat(message.uuid)}
-        >
-          <UserImage
-            circle
-            image={
-              message.partner.image_type === 'avatar'
-                ? message.partner.avatar_config
-                : message.partner.image
-            }
-            imageType={message.partner.image_type}
-            size={'xsmall'}
-          />
-          <Details>
-            <Top>
-              <Text bold>{message.partner.first_name}</Text>
-              {!!message?.newest_message?.created && (
-                <Time type={TextTypes.Body6}>
-                  {formatTimeDistance(
-                    message.newest_message.created,
-                    new Date(),
-                    language,
-                  )}
-                </Time>
-              )}
-            </Top>
-            <Preview>
-              <PreviewText>
-                {message.newest_message?.text || t('chat.no_messages_preview')}
-              </PreviewText>
-              {message.newest_message?.sender === userId &&
-                (message.newest_message?.read ? (
-                  <TickDoubleIcon
-                    color={theme.color.status.info}
-                    width="16px"
-                    height="16px"
-                  />
-                ) : (
-                  <TickIcon width="16px" height="16px" />
-                ))}
-              {!!message.unread_count && <UnreadIndicator />}
-            </Preview>
-          </Details>
-        </Message>
-      ))}
+      {chats?.map((message, index) => {
+        return (
+          <Message
+            key={`chat_${message.uuid + index}`}
+            $selected={message.uuid === selectedChat}
+            onClick={() => selectChat(message.uuid)}
+          >
+            <UserImage
+              circle
+              image={
+                message.partner.image_type === 'avatar'
+                  ? message.partner.avatar_config
+                  : message.partner.image
+              }
+              imageType={message.partner.image_type}
+              size={'xsmall'}
+            />
+            <Details>
+              <Top>
+                <Text bold>{message.partner.first_name}</Text>
+                {!!message?.newest_message?.created && (
+                  <Time type={TextTypes.Body6}>
+                    {formatTimeDistance(
+                      message.newest_message.created,
+                      new Date(),
+                      language,
+                    )}
+                  </Time>
+                )}
+              </Top>
+              <Preview>
+                <PreviewText>
+                  {message.newest_message?.text ||
+                    t('chat.no_messages_preview')}
+                </PreviewText>
+                {message.newest_message?.sender === userId &&
+                  (message.newest_message?.read ? (
+                    <TickDoubleIcon
+                      color={theme.color.status.info}
+                      width="16px"
+                      height="16px"
+                    />
+                  ) : (
+                    <TickIcon width="16px" height="16px" />
+                  ))}
+                {!!message.unread_count && <UnreadIndicator />}
+              </Preview>
+            </Details>
+          </Message>
+        );
+      })}
       <div ref={scrollRef} />
     </Panel>
   );
