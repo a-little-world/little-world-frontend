@@ -248,7 +248,7 @@ function ProfileCard({
           {isSupport && (
             <Tag type={TextTypes.Body6} bold>
               {t('profile_card.support_user')}
-              <Logo height="12px" width="12px" />
+              <Logo height="16" width="16" />
             </Tag>
           )}
         </NameContainer>
