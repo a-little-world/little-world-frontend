@@ -210,7 +210,13 @@ const ProfilePic = ({ control, setValue }) => {
             >
               <ImageContainer>
                 <CircleImage
-                  icon={<PlusIcon color="#36a9e0" width={48} height={48} />}
+                  icon={
+                    <PlusIcon
+                      color={theme.color.text.accent}
+                      width={48}
+                      height={48}
+                    />
+                  }
                   onImageDelete={onImageDelete}
                   fileInputRef={fileInputRef}
                   uploadedImage={uploadedImage}
@@ -223,14 +229,23 @@ const ProfilePic = ({ control, setValue }) => {
                 <UploadLabel htmlFor="fileInput">
                   <MobileCircleImage
                     icon={
-                      <ImageSearchIcon color="#36a9e0" width={56} height={56} />
+                      <ImageSearchIcon
+                        color={theme.color.text.accent}
+                        width={56}
+                        height={56}
+                      />
                     }
                     onImageDelete={onImageDelete}
                     fileInputRef={fileInputRef}
                     uploadedImage={uploadedImage}
                   />
                   <StyledFileIcon width={56} height={56} />
-                  <Text color="#36a9e0" bold type={TextTypes.Body5} tag="h4">
+                  <Text
+                    color={theme.color.text.accent}
+                    bold
+                    type={TextTypes.Body5}
+                    tag="h4"
+                  >
                     {t('profile_pic.click_to_upload')}
                   </Text>
                   <Text color="#A6A6A6" type={TextTypes.Body5}>
@@ -307,10 +322,15 @@ const ProfilePic = ({ control, setValue }) => {
                   variation={ButtonVariations.Inline}
                   onClick={openAvatarEditor}
                   type="button"
-                  color="#36a9e0"
+                  color={theme.color.text.accent}
                 >
-                  <PencilIcon color="#36a9e0" width={12} />
-                  <Text type={TextTypes.Body5} bold color="#36a9e0" tag="h4">
+                  <PencilIcon color={theme.color.text.accent} width={12} />
+                  <Text
+                    type={TextTypes.Body5}
+                    bold
+                    color={theme.color.text.accent}
+                    tag="h4"
+                  >
                     {t('profile_pic.edit_avatar')}
                   </Text>
                 </AvatarEditorButton>

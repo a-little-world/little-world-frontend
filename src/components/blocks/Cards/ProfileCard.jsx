@@ -82,6 +82,7 @@ export const EditIcon = styled(PencilIcon)`
   right: ${({ theme }) => theme.spacing.xxsmall};
   width: fit-content;
   color: ${({ theme }) => theme.color.surface.bold};
+  border: 2px solid ${({ theme }) => theme.color.text.accent};
 `;
 
 export const ProfileInfo = styled.div`

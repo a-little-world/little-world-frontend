@@ -1,7 +1,6 @@
 import {
   Button,
   FriendshipImage,
-  Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { ButtonSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Button/Button';
@@ -10,7 +9,12 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { Title } from '../Form/styles';
-import { IntroText, NoteText, WelcomeCard } from './styles';
+import {
+  IntroText,
+  NoteText,
+  WelcomeCard,
+  WelcomeIllustration,
+} from './styles';
 
 const FIRST_FORM_STEP = 'user-type';
 
@@ -20,7 +24,7 @@ const Welcome = () => {
 
   return (
     <WelcomeCard>
-      <FriendshipImage />
+      <WelcomeIllustration />
       <Title tag="h2" center type={TextTypes.Heading4}>
         {t('welcome.title')}
       </Title>
