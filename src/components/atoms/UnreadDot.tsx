@@ -2,13 +2,13 @@ import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import styled from 'styled-components';
 
-export const Unread = styled(Text)`
+export const Unread = styled(Text)<{ $onIcon?: boolean }>`
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: ${({ $onIcon }) => ($onIcon ? '-9px' : '-6px')};
+  right: ${({ $onIcon }) => ($onIcon ? '-9px' : '-6px')};
   background: ${({ theme }) => theme.color.surface.highlight};
   color: ${({ theme }) => theme.color.text.button};
-  height: 22px;
+  height: ${({ $onIcon }) => ($onIcon ? '18px' : '22px')};
   aspect-ratio: 1;
   border-radius: 100%;
   font-weight: 600;
@@ -19,9 +19,9 @@ export const Unread = styled(Text)`
   line-height: 100%;
 `;
 
-function UnreadDot({ count }: { count: number }) {
+function UnreadDot({ count, onIcon }: { count: number; onIcon?: boolean }) {
   return (
-    <Unread type={TextTypes.Body6} bold>
+    <Unread type={TextTypes.Body6} bold $onIcon={onIcon}>
       {count}
     </Unread>
   );

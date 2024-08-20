@@ -6,12 +6,15 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { reduce } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import Logo from '../atoms/Logo.tsx';
+import UnreadDot from '../atoms/UnreadDot.tsx';
 
 const LogoContainer = styled.div`
   display: flex;
@@ -60,6 +63,14 @@ function MobileNavBar({ setShowSidebarMobile }) {
     key = 'user';
   }
 
+  const chats = useSelector(state => state.userData.chats);
+
+  const unreadCount = reduce(
+    chats.results,
+    (sum, chat) => sum + chat.unread_count,
+    0,
+  );
+
   return (
     <MobileHeader className="mobile-header">
       <LogoContainer>
@@ -82,6 +93,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
           height={24}
           gradient={Gradients.Blue}
         />
+        {!!unreadCount && <UnreadDot count={unreadCount} onIcon />}
       </Button>
     </MobileHeader>
   );
