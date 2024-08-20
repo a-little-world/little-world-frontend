@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { isEmpty, uniqBy } from 'lodash';
+import { isEmpty, some, uniqBy } from 'lodash';
 
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../routes.ts';
 import { questionsDuringCall } from '../services/questionsDuringCall';
@@ -168,7 +168,10 @@ export const userDataSlice = createSlice({
           );
         // this chat has never been loaded we can ignore inserting the actual messages, we only care about inserting the chat as messages will fetch one the chat is clicked!
       }
-      state.chats.results = chatIsLoaded
+      state.chats.results = some(
+        state.chats.results,
+        chat => chat.uuid === chatId,
+      )
         ? state.chats.results?.map(chat => {
             if (chat.uuid === chatId) {
               return {

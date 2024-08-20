@@ -147,6 +147,7 @@ export function SearchingCard({ setShowCancel }) {
         <>
           <Link
             buttonAppearance={ButtonAppearance.Primary}
+            buttonSize={ButtonSizes.Stretch}
             to={getAppRoute(USER_FORM_ROUTE)}
           >
             {t('cp_modify_search')}
@@ -163,6 +164,7 @@ export function SearchingCard({ setShowCancel }) {
           {isBookedState && (
             <Link
               buttonAppearance={ButtonAppearance.Primary}
+              buttonSize={ButtonSizes.Stretch}
               to={preMatchingCallJoinLink}
             >
               {t(`searching_card.${cardState}_join_call`)}

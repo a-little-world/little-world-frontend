@@ -273,6 +273,7 @@ const SignUp = () => {
         <Link
           to={`/${LOGIN_ROUTE}`}
           buttonAppearance={ButtonAppearance.Secondary}
+          buttonSize={ButtonSizes.Stretch}
         >
           {t('sign_up.change_location_cta')}
         </Link>

@@ -14,6 +14,7 @@ import {
   StackIcon,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
+import { reduce } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -153,12 +154,13 @@ function Sidebar({ sidebarMobile }) {
   ];
 
   const notifications = useSelector(state => state.userData.notifications);
+  const chats = useSelector(state => state.userData.chats);
 
   const unread = {
     notifications: notifications?.unread?.items.filter(
       ({ status }) => status === 'unread',
     ),
-    messages: [],
+    messages: reduce(chats.results, (sum, chat) => sum + chat.unread_count, 0),
   };
 
   return (
@@ -167,6 +169,7 @@ function Sidebar({ sidebarMobile }) {
         <StyledLogo asLink />
         {buttonData.map(({ label, path, clickEvent, Icon, iconProps }) => {
           const isActive = isActiveRoute(location.pathname, path);
+          const unreadCount = unread[label] ?? 0;
 
           return typeof clickEvent === typeof undefined ? (
             <MenuLink
@@ -176,10 +179,7 @@ function Sidebar({ sidebarMobile }) {
                 isActive ? ButtonAppearance.Secondary : ButtonAppearance.Primary
               }
             >
-              {['messages', 'notifications'].includes(label) &&
-                Boolean(unread[label]?.length) && (
-                  <UnreadDot count={unread[label].length} />
-                )}
+              {!!unreadCount && <UnreadDot count={unreadCount} />}
               <Icon
                 label={label}
                 labelId={label}

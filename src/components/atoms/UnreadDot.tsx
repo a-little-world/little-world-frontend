@@ -1,13 +1,14 @@
+import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import styled from 'styled-components';
 
-export const Unread = styled.div`
+export const Unread = styled(Text)`
   position: absolute;
-  top: ${({ theme }) => theme.spacing.xxsmall};
-  right: ${({ theme }) => theme.spacing.xxsmall};
+  top: -6px;
+  right: -6px;
   background: ${({ theme }) => theme.color.surface.highlight};
   color: ${({ theme }) => theme.color.text.button};
-  height: 16px;
+  height: 22px;
   aspect-ratio: 1;
   border-radius: 100%;
   font-weight: 600;
@@ -19,7 +20,11 @@ export const Unread = styled.div`
 `;
 
 function UnreadDot({ count }: { count: number }) {
-  return <Unread>{count}</Unread>;
+  return (
+    <Unread type={TextTypes.Body6} bold>
+      {count}
+    </Unread>
+  );
 }
 
 export default UnreadDot;

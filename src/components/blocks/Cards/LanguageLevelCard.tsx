@@ -1,5 +1,6 @@
 import {
   ButtonAppearance,
+  ButtonSizes,
   Card,
   CardSizes,
   Link,
@@ -32,7 +33,7 @@ const WelcomeTitle = styled(Text)`
   max-width: 270px; // ensures it wraps correctly
 `;
 
-const SearchingImage = styled.img`
+const SearchingImage = styled.img<{ $hasMatch?: boolean }>`
   height: 80px;
   margin-bottom: ${({ theme, $hasMatch }) =>
     $hasMatch ? '0' : theme.spacing.xxxsmall};
@@ -51,6 +52,7 @@ export function LanguageLevelCard() {
 
       <Link
         buttonAppearance={ButtonAppearance.Primary}
+        buttonSize={ButtonSizes.Stretch}
         to={getAppRoute(BEGINNERS_ROUTE)}
       >
         {t('language_level_card.cta')}

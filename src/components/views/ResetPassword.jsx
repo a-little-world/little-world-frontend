@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonAppearance,
+  ButtonSizes,
   Link,
   TextInput,
   TextTypes,
@@ -101,6 +102,7 @@ const ResetPassword = () => {
         <ButtonsContainer>
           <Link
             buttonAppearance={ButtonAppearance.Secondary}
+            buttonSize={ButtonSizes.Stretch}
             to={`/${LOGIN_ROUTE}`}
           >
             {t('reset_password.to_login')}

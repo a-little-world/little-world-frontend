@@ -63,6 +63,7 @@ const MessageCard = ({
         <Link
           href={linkTo}
           buttonAppearance={ButtonAppearance.Primary}
+          buttonSize={ButtonSizes.Stretch}
           onClick={() => setTimeout(window?.location.reload(), 100)}
         >
           {t(linkText)}

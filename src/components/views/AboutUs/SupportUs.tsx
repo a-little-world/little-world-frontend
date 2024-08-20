@@ -1,6 +1,7 @@
 import {
   Accordion,
   ButtonAppearance,
+  ButtonSizes,
   Card,
   ContentTypes,
   FriendshipImage,
