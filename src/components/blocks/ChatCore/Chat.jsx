@@ -194,10 +194,10 @@ export const Chat = ({ chatId }) => {
       });
     }
     // 'unread_messages_count' also updates when new message are added
-    if (activeChat?.unread_count > 0) {
+    if (activeChat?.unread_count > 0 && !isEmpty(messagesResult)) {
       onMarkMessagesRead();
     }
-  }, [activeChat, chatId]);
+  }, [activeChat, chatId, isEmpty(messagesResult)]);
 
   useEffect(() => {
     setFocus('text');

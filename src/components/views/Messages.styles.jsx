@@ -98,6 +98,7 @@ export const Preview = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
 export const PreviewText = styled(Text)`
@@ -130,6 +131,8 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
   return (
     <Panel $selectedChat={selectedChat}>
       {chats?.map((message, index) => {
+        const isSender = message.newest_message?.sender === userId;
+
         return (
           <Message
             key={`chat_${message.uuid + index}`}
@@ -164,8 +167,8 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
                   {message.newest_message?.text ||
                     t('chat.no_messages_preview')}
                 </PreviewText>
-                {message.newest_message?.sender === userId &&
-                  (message.newest_message?.read ? (
+                {isSender ? (
+                  message.newest_message?.read ? (
                     <TickDoubleIcon
                       color={theme.color.status.info}
                       width="16px"
@@ -173,8 +176,10 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
                     />
                   ) : (
                     <TickIcon width="16px" height="16px" />
-                  ))}
-                {!!message.unread_count && <UnreadIndicator />}
+                  )
+                ) : !!message.unread_count ? (
+                  <UnreadIndicator />
+                ) : null}
               </Preview>
             </Details>
           </Message>

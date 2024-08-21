@@ -184,10 +184,7 @@ export const userDataSlice = createSlice({
             }
             return chat;
           })
-        : [
-            metaChatObj,
-            ...state.chats.results.filter(chat => chat.uuid !== chatId),
-          ];
+        : [metaChatObj, ...state.chats.results];
       state.chats = {
         ...state.chats,
         results: sortChats(state.chats.results),
@@ -195,6 +192,7 @@ export const userDataSlice = createSlice({
     },
     markChatMessagesRead: (state, action) => {
       const { chatId, userId, actorIsSelf = false } = action.payload;
+
       if (chatId in state.messages) {
         state.messages[chatId].results = state.messages[chatId]?.results.map(
           message => {
