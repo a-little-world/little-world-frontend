@@ -14,7 +14,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { mutateUserData } from '../../api/index.js';
 import { fetchProfile } from '../../api/profile.ts';
-import { getChatByPartnerId, updateProfile } from '../../features/userData';
+import {
+  getChatByPartnerId,
+  getMatchByPartnerId,
+  updateProfile,
+} from '../../features/userData';
 import { onFormError } from '../../helpers/form';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes.ts';
 import {
@@ -139,18 +143,15 @@ function Profile() {
   const formOptions = useSelector(state => state.userData.formOptions);
   const [editingField, setEditingField] = useState(null);
 
-  const matches = useSelector(state => state.userData.matches);
+  const match = useSelector(state =>
+    getMatchByPartnerId(state.userData.matches, userPk),
+  );
 
   const user = useSelector(state => state.userData.user);
   const isSelf = user?.id === userPk || !userId;
-  const dashboardVisibleMatches = matches
-    ? [...matches.support.items, ...matches.confirmed.items]
-    : [];
+
   const [profile, setProfile] = useState(
-    isSelf
-      ? user?.profile
-      : dashboardVisibleMatches.find(match => match?.partner?.id === userPk)
-          ?.partner,
+    isSelf ? user?.profile : match?.partner,
   );
   const [profileFields, setProfileFields] = useState(
     profile
@@ -162,10 +163,6 @@ function Profile() {
           selfAvailability: user?.profile?.availability,
         })
       : {},
-  );
-
-  const chat = useSelector(state =>
-    getChatByPartnerId(state.userData.chats, profile?.id),
   );
 
   useEffect(() => {
@@ -197,12 +194,7 @@ function Profile() {
   };
 
   useEffect(() => {
-    setProfile(
-      isSelf
-        ? user?.profile
-        : dashboardVisibleMatches.find(match => match?.partner?.id === userPk)
-            ?.partner,
-    );
+    setProfile(isSelf ? user?.profile : match?.partner);
   }, [isSelf, user]);
 
   useEffect(() => {
@@ -275,7 +267,7 @@ function Profile() {
           </ProfileDetail>
         </Details>
         <ProfileCard
-          chatId={chat?.uuid}
+          chatId={match?.chatId}
           userPk={userPk}
           profile={profile}
           isSelf={isSelf}
