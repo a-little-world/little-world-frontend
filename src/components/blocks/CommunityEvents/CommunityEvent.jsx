@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
 import { formatDate, formatEventTime } from '../../../helpers/date.ts';
+import placeholderImage from '../../../images/coffee.webp';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
 import {
   Buttons,
@@ -29,6 +30,7 @@ function CommunityEvent({
   _key,
   frequency,
   description,
+  image,
   title,
   time,
   end_time,
@@ -55,8 +57,8 @@ function CommunityEvent({
 
   return (
     <Event key={_key}>
-      <ImageContainer className="frequency">
-        <EventImage alt="" />
+      <ImageContainer>
+        <EventImage alt="" src={image || placeholderImage} />
         <FrequencyTitle>
           {t(`community_events.frequency_${frequency}`)}
         </FrequencyTitle>

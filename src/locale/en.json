@@ -95,7 +95,7 @@
   "unmatch_modal_title": "Do you really want to unmatch from {{ name }}?",
   "unmatch_modal_description": "",
   "unmatch_modal_confirmation": "You have been unmatched with {{ name }}.",
-  "unmatch_modal_search_again": "Don't worry that it didn't work out. This happens and is perfectly normal.  Go to "Home" and click \"Find a new partner\" to search for a new conversation partner.",
+  "unmatch_modal_search_again": "Don't worry that it didn't work out. This happens and is perfectly normal.  Go to \"Home\" and click \"Find a new partner\" to search for a new conversation partner.",
   "unmatch_modal_reason_label": "Reason for unmatching with {{ name }}",
   "unmatch_modal_reason_placeholder": "Please provide us with reason of at least 50 characters so we can improve our matching process",
   "unmatch_modal_reason_error_required": "required",

@@ -95,7 +95,7 @@
   "unmatch_modal_title": "Kontakt zu {{ name }} wirklich beenden?",
   "unmatch_modal_description": "",
   "unmatch_modal_confirmation": "Dein Kontakt zu {{ name }} wurde beendet.",
-  "unmatch_modal_search_again": "Keine Sorge, dass es nicht geklappt habt. Das passiert und ist ganz normal. Klicke unter "Start" auf “Gespräch finden”, um nach neuen Gesprächspartnern zu suchen.",
+  "unmatch_modal_search_again": "Keine Sorge, dass es nicht geklappt habt. Das passiert und ist ganz normal. Klicke unter \"Start\" auf \"Gespräch finden\", um nach neuen Gesprächspartnern zu suchen.",
   "unmatch_modal_reason_label": "Darum willst du den Kontakt mit {{ name }} beenden",
   "unmatch_modal_reason_placeholder": "Bitte gib uns einen Grund mit mindestens 50 Zeichen an, damit wir unser Matching verbessern können.",
   "unmatch_modal_reason_error_required": "Erforderlich",

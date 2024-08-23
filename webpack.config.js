@@ -1,19 +1,20 @@
-const path = require("path");
-const webpack = require("webpack");
-const BundleTracker = require("webpack-bundle-tracker");
-const CompressionPlugin = require("compression-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
+const webpack = require('webpack');
+const BundleTracker = require('webpack-bundle-tracker');
+const CompressionPlugin = require('compression-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = function (env) {
-  let publicPath = "/";
-  const devTool = env.DEV_TOOL === "none" ? false : env.DEV_TOOL;
-  if (env.PUBLIC_PATH && env.PUBLIC_PATH !== "") publicPath = env.PUBLIC_PATH + publicPath;
-  // It is always assumed that the backend is mounted at /back
-  const outputPath = "./dist";
-  const entry = "./src";
+  let publicPath = '/';
+  const devTool = env.DEV_TOOL === 'none' ? false : env.DEV_TOOL;
+  if (env.PUBLIC_PATH && env.PUBLIC_PATH !== '')
+    publicPath = env.PUBLIC_PATH + publicPath;
+
+  const outputPath = './dist';
+  const entry = './src';
   const entryPoint = `${entry}/index.js`;
-  const debug = env.DEBUG === "1";
+  const debug = env.DEBUG === '1';
 
   return {
     context: __dirname,
@@ -22,40 +23,37 @@ const config = function (env) {
     },
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, ".src/"),
-        // '@django': path.resolve(__dirname, '../back/static/'),
+        '@': path.resolve(__dirname, '.src/'),
       },
     },
     output: {
       path: path.join(__dirname, outputPath),
-      filename: "[name]-[hash].js",
+      filename: '[name]-[hash].js',
       publicPath,
     },
     devServer: {
       historyApiFallback: true,
       port: 3000,
     },
-
     plugins: [
       new BundleTracker({
-        filename: path.join(__dirname, "./webpack-stats.json"),
+        filename: path.join(__dirname, './webpack-stats.json'),
       }),
       new CompressionPlugin(),
       new CopyPlugin({
         patterns: [
           {
-            from: path.resolve(__dirname, "./public"),
+            from: path.resolve(__dirname, './public'),
             to: path.join(__dirname, outputPath),
             globOptions: {
-              ignore: ["**/index.html"],
+              ignore: ['**/index.html'],
             },
           },
         ],
       }),
-      // ['styled-components', { ssr: false }],
       new HtmlWebpackPlugin({
         inject: true,
-        template: path.resolve("public/index.html"),
+        template: path.resolve('public/index.html'),
       }),
       new webpack.DefinePlugin({
         process: { env: {} },
@@ -67,38 +65,45 @@ const config = function (env) {
         {
           test: /\.(js|jsx|tsx|ts)$/,
           exclude: /node_modules/,
-          use: ["babel-loader"],
+          use: ['babel-loader'],
           resolve: {
-            extensions: [".js", ".jsx"],
+            extensions: ['.js', '.jsx'],
           },
-          include: [path.resolve(__dirname, "./src")],
+          include: [path.resolve(__dirname, './src')],
         },
         {
           test: /\.css$/,
-          use: ["style-loader", "css-loader"],
+          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.svg$/,
           use: [
             {
-              loader: "@svgr/webpack",
+              loader: '@svgr/webpack',
             },
             {
-              loader: "file-loader",
+              loader: 'file-loader',
             },
           ],
-          type: "javascript/auto",
+          type: 'javascript/auto',
           issuer: {
             and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
           },
         },
         {
-          test: /\.(png|jpg|gif|ttf)$/,
+          test: /\.(png|jpg|gif|ttf)$/i,
           use: {
-            loader: "file-loader",
+            loader: 'file-loader',
             options: {
-              name: "[name].[hash:8].[ext]",
+              name: '[name].[hash:8].[ext]',
             },
+          },
+        },
+        {
+          test: /\.(webp)$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'images/[name][ext]',
           },
         },
       ],

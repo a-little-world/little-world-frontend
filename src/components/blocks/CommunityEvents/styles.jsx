@@ -54,7 +54,7 @@ export const ImageContainer = styled.div`
 
 export const EventImage = styled.img`
   content: ${({ $content }) => $content || 'url(../../../images/coffee.webp)'};
-  content: url(../../../images/coffee.webp);
+
   height: 100%;
   width: 100%;
   object-fit: center;
