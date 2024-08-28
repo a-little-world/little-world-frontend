@@ -29,8 +29,8 @@ const useInfiniteScroll = ({
     fetchItems({ page: currentPage + 1, ...fetchArgs })
       .then((response: any) => {
         setItems({
-          totalPages: response.pages_total,
-          currentPage: currentPage + 1,
+          pages_total: response.pages_total,
+          page: currentPage + 1,
           results: [...items, ...response.results],
         });
 

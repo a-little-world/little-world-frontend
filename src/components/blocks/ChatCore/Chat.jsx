@@ -153,8 +153,8 @@ export const Chat = ({ chatId }) => {
     fetchArgs: { id: chatId },
     fetchCondition: !!chatId,
     items: messagesResult,
-    currentPage: messages?.currentPage,
-    totalPages: messages?.totalPages,
+    currentPage: messages?.page,
+    totalPages: messages?.total_pages,
     setItems: items => dispatch(updateMessages({ chatId, items })),
     onError,
   });
