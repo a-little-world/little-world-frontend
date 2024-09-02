@@ -30,7 +30,6 @@ export const Event = styled.div`
 
     @media (min-width: ${theme.breakpoints.small}) {
        flex-direction: row;
-       max-height: 320px;
     }
   `}
 `;

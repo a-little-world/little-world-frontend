@@ -147,14 +147,14 @@ export const Chat = ({ chatId }) => {
   );
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
-
+  console.log({ messages, chatId, activeChat });
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
     fetchArgs: { id: chatId },
     fetchCondition: !!chatId,
     items: messagesResult,
     currentPage: messages?.page,
-    totalPages: messages?.total_pages,
+    totalPages: messages?.pages_total,
     setItems: items => dispatch(updateMessages({ chatId, items })),
     onError,
   });
@@ -225,7 +225,7 @@ export const Chat = ({ chatId }) => {
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
-        {messages.currentPage &&
+        {messages.page &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
               {t('chat.no_messages')}
