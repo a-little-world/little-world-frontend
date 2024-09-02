@@ -22,8 +22,8 @@ const Messages = () => {
   const { scrollRef } = useIniniteScroll({
     fetchItems: fetchChats,
     setItems: items => dispatch(updateChats(items)),
-    currentPage: chats?.currentPage,
-    totalPages: chats?.totalPages,
+    currentPage: chats?.page,
+    totalPages: chats?.pages_total,
     items,
   });
 
