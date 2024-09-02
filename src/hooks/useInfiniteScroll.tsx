@@ -28,8 +28,9 @@ const useInfiniteScroll = ({
 
     fetchItems({ page: currentPage + 1, ...fetchArgs })
       .then((response: any) => {
+        console.log({ response });
         setItems({
-          pages_total: response.pages_total,
+          pages_total: response.pages_total || response.last_page,
           page: currentPage + 1,
           results: [...items, ...response.results],
         });
@@ -40,7 +41,7 @@ const useInfiniteScroll = ({
         onError?.();
         setLoading(false);
       });
-  }, [currentPage, loading, dependencyList, items]);
+  }, [currentPage, loading, dependencyList, items, fetchArgs]);
 
   useEffect(() => {
     // only fetch on mount and when page is reset to 0
