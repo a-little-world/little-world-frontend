@@ -10,6 +10,7 @@ import {
 } from '../../../routes.ts';
 import ContentSelector from '../../blocks/ContentSelector.tsx';
 import Beginners from './Beginners.tsx';
+import MyStory from './MyStory.tsx';
 import Trainings from './Trainings.tsx';
 
 const Content = styled.div`
@@ -28,11 +29,12 @@ const resourcesPages = {
   beginners: Beginners,
 };
 
-type subpages = 'trainings' | 'beginners';
+type subpages = 'trainings' | 'beginners' | 'story';
 
 const renderResourceContent = (page: subpages) => {
   if (page === 'trainings') return <Trainings />;
   if (page === 'beginners') return <Beginners />;
+  if (page === 'story') return <MyStory />;
   return null;
 };
 

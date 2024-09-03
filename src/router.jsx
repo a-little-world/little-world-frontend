@@ -46,6 +46,7 @@ import {
   HELP_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
+  MY_STORY_ROUTE,
   NOTIFICATIONS_ROUTE,
   OUR_WORLD_ROUTE,
   PARTNERS_ROUTE,
@@ -238,6 +239,14 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(BEGINNERS_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Resources />
+      </FullAppLayout>
+    ),
+  },
+  {
+    path: getAppRoute(MY_STORY_ROUTE),
     element: (
       <FullAppLayout>
         <Resources />

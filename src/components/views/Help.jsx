@@ -7,18 +7,23 @@ import {
   Label,
   MessageIcon,
   PhoneIcon,
+  StatusMessage,
   TeacherImage,
   Text,
   TextArea,
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { MessageTypes } from '@a-little-world/little-world-design-system/dist/esm/components/StatusMessage/StatusMessage';
 import Cookies from 'js-cookie';
 import React, { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import { submitHelpForm } from '../../api/index.js';
+import { onFormError, registerInput } from '../../helpers/form.js';
 import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink';
 import Socials from '../atoms/Socials.tsx';
@@ -85,7 +90,7 @@ const SupportTeam = styled.div`
 const ContactForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 const ContactButtons = styled.div`
@@ -194,6 +199,10 @@ const ContentTitle = styled(Text)`
   }`}
 `;
 
+const StyledIntro = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
 const generateFAQItems = t => {
   const translationKeys = [
     {
@@ -236,7 +245,7 @@ function Faqs() {
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
         {t('nbt_faqs')}
       </ContentTitle>
-      <Text>{t('help_faqs_intro')}</Text>
+      <Text>{t('help.faqs_intro')}</Text>
       <FAQImageWrapper>
         <TeacherImage />
       </FAQImageWrapper>
@@ -256,12 +265,30 @@ function Contact() {
   const { t } = useTranslation();
   const [dragOver, setDragOver] = useState(false);
   const [filenames, setFilenames] = useState([]);
-  const [helpMessage, setHelpMessage] = useState('');
-  const [formState, setFormState] = useState('idle');
-  const fileRef = useRef();
+  const [requestSuccessful, setRequestSuccessful] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
-    setFormState('pending');
+  const fileRef = useRef();
+  const {
+    register,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm();
+
+  const onError = e => {
+    onFormError({ e, formFields: getValues(), setError });
+    setIsSubmitting(false);
+  };
+
+  const onSuccess = response => {
+    setIsSubmitting(false);
+    setRequestSuccessful(true);
+  };
+
+  const onSubmit = formData => {
+    setIsSubmitting(true);
     const data = new FormData();
     for (let i = 0; i < fileRef.current.files.length; ++i) {
       const file = fileRef.current.files.item(i);
@@ -269,21 +296,8 @@ function Contact() {
 
       data.append('file', file, name);
     }
-    data.set('message', helpMessage);
-    fetch('/api/help_message/', {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': true,
-      },
-      method: 'POST',
-      body: data,
-    }).then(res => {
-      if (res.ok) {
-        setFormState('submitted');
-      } else {
-        setFormState('error');
-      }
-    });
+    data.append('message', formData.message);
+    submitHelpForm(data, onSuccess, onError);
   };
 
   const handleDrop = e => {
@@ -306,41 +320,28 @@ function Contact() {
     setFilenames(fileList);
   };
 
-  if (formState === 'pending') {
-    return <h2>Sending you message</h2>;
-  }
-  if (formState === 'submitted') {
-    return <h2>Your message has been submitted, thanks for your feedback!</h2>;
-  }
-  if (formState === 'error') {
-    return (
-      <h2>
-        There has been an error submitting your message, please try sending an
-        email.
-      </h2>
-    );
-  }
-
   return (
-    <ContactForm>
+    <ContactForm onSubmit={handleSubmit(onSubmit)}>
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
         {t('nbt_contact')}
       </ContentTitle>
-      <Text>{t('help_contact_intro_line1')}</Text>
-      <Text>{t('help_contact_intro_line2')}</Text>
+      <Text>{t('help.contact_intro_line1')}</Text>
+      <StyledIntro>{t('help.contact_intro_line2')}</StyledIntro>
       <TextArea
-        label={t('help_contact_problem_label')}
-        name="problem"
+        {...registerInput({
+          register,
+          name: 'message',
+          options: { required: 'error.required' },
+        })}
+        label={t('help.contact_problem_label')}
         inputMode="text"
         maxLength="300"
         size={TextAreaSize.Medium}
-        placeholder={t('help_contact_problem_placeholder')}
-        onChange={e => {
-          setHelpMessage(e.target.value);
-        }}
+        error={t(errors?.message?.message)}
+        placeholder={t('help.contact_problem_placeholder')}
       />
       <DropZoneLabel>
-        <Label bold>{t('help_contact_picture_label')}</Label>
+        <Label bold>{t('help.contact_picture_label')}</Label>
         <div
           className={
             dragOver ? 'picture-drop-zone dragover' : 'picture-drop-zone'
@@ -369,18 +370,30 @@ function Contact() {
             {filenames.length === 0 && (
               <>
                 <img alt="" />
-                <span className="text">{t('help_contact_picture_btn')}</span>
+                <span className="text">{t('help.contact_picture_btn')}</span>
               </>
             )}
             {filenames.length > 0 && (
               <span className="text">click to change files</span>
             )}
           </HelpButton>
-          <DragText>{t('help_contact_picture_drag')}</DragText>
+          <DragText>{t('help.contact_picture_drag')}</DragText>
         </div>
       </DropZoneLabel>
-      <Button onClick={handleSubmit} style={{ maxWidth: '100%' }}>
-        {t('help_contact_submit')}
+      <StatusMessage
+        $visible={requestSuccessful || errors?.root?.serverError}
+        $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+      >
+        {requestSuccessful
+          ? t('help.contact_form_submitted')
+          : t(errors?.root?.serverError?.message)}
+      </StatusMessage>
+      <Button
+        type="submit"
+        style={{ maxWidth: '100%' }}
+        disabled={isSubmitting}
+      >
+        {t('help.contact_submit')}
       </Button>
     </ContactForm>
   );
@@ -411,8 +424,8 @@ function Help() {
           <Topper>
             <Logo />
             <SupportTeam>
-              <h2>{t('help_support_header')}</h2>
-              <div className="sub">{t('help_support_slogan')}</div>
+              <h2>{t('help.support_header')}</h2>
+              <div className="sub">{t('help.support_slogan')}</div>
             </SupportTeam>
           </Topper>
 
@@ -425,7 +438,7 @@ function Help() {
                   labelId="message_support"
                 />
                 <Text tag="span" center>
-                  {t('help_support_message_btn')}
+                  {t('help.support_message_btn')}
                 </Text>
               </MenuLink>
             )}
@@ -436,7 +449,7 @@ function Help() {
                 labelId="call_support"
               />
               <Text tag="span" center>
-                {t('help_support_call_btn')}
+                {t('help.support_call_btn')}
               </Text>
             </MenuLink>
           </ContactButtons>

@@ -43,7 +43,7 @@ const nbtTopics = {
   ourWorld: ['support', 'about', 'stories'],
   main: ['conversation_partners', 'events'],
   help: ['contact', 'faqs'],
-  resources: ['trainings', 'beginners'],
+  resources: ['trainings', 'beginners', 'story'],
 };
 
 const externalLinksTopics = {

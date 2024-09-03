@@ -12,11 +12,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import SearchingSvg from '../../../images/match-searching.svg';
-import {
-  BEGINNERS_ROUTE,
-  PROFILE_ROUTE,
-  getAppRoute,
-} from '../../../routes.ts';
+import { BEGINNERS_ROUTE, getAppRoute } from '../../../routes.ts';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard.jsx';
 
 const StyledCard = styled(Card)`
