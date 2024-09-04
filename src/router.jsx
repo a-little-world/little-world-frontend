@@ -20,7 +20,7 @@ import AboutUs from './components/views/AboutUs/AboutUs.tsx';
 import ChangeEmail from './components/views/ChangeEmail';
 import EditView from './components/views/Edit';
 import ForgotPassword from './components/views/ForgotPassword';
-import Help from './components/views/Help.jsx';
+import Help from './components/views/Help.tsx';
 import Main from './components/views/Home.tsx';
 import Login from './components/views/Login';
 import Messages from './components/views/Messages.jsx';

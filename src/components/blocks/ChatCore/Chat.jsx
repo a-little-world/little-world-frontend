@@ -147,7 +147,7 @@ export const Chat = ({ chatId }) => {
   );
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
-  console.log({ messages, chatId, activeChat });
+
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
     fetchArgs: { id: chatId },

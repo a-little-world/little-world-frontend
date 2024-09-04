@@ -309,7 +309,6 @@ export const getChatByPartnerId = (chats, partnerId) => {
 };
 
 export const getMessagesByChatId = (messages, chatId) => {
-  console.log('getMessages', { messages, chatId });
   return messages?.[chatId] || [];
 };
 

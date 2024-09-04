@@ -1,9 +1,9 @@
 import {
   Accordion,
   Button,
-  Card,
-  CardSizes,
   Gradients,
+  ImageIcon,
+  ImageSearchIcon,
   Label,
   MessageIcon,
   PhoneIcon,
@@ -15,193 +15,47 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { MessageTypes } from '@a-little-world/little-world-design-system/dist/esm/components/StatusMessage/StatusMessage';
-import Cookies from 'js-cookie';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import { submitHelpForm } from '../../api/index.js';
 import { onFormError, registerInput } from '../../helpers/form.js';
 import Logo from '../atoms/Logo.tsx';
-import MenuLink from '../atoms/MenuLink';
+import MenuLink from '../atoms/MenuLink.jsx';
 import Socials from '../atoms/Socials.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
+import {
+  FileInput,
+  UploadArea,
+  UploadLabel,
+} from '../blocks/Profile/ProfilePic/styles.jsx';
+import {
+  BusinessName,
+  ContactButtons,
+  ContactForm,
+  ContactInfo,
+  ContactLink,
+  Contacts,
+  ContentTitle,
+  ContentWrapper,
+  DropZoneContainer,
+  FAQContainer,
+  FAQImageWrapper,
+  FAQItems,
+  FAQSectionTitle,
+  FileName,
+  FileText,
+  HelpContainer,
+  HelpPanel,
+  HelpSupport,
+  StyledIntro,
+  SupportTeam,
+  Topper,
+} from './Help.styles.tsx';
 import './help.css';
-
-const HelpContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  width: 100%;
-
-  ${({ theme }) => `
-    padding: ${theme.spacing.small};
-    gap: ${theme.spacing.medium};
-
-    @media (min-width: ${theme.breakpoints.large}) {
-      justify-content: flex-start;
-      flex-wrap: nowrap;
-      padding: ${theme.spacing.xxsmall};
-  }`}
-`;
-
-const HelpPanel = styled(Card)`
-  ${({ theme }) => `
-  @media (min-width: ${theme.breakpoints.medium}) {
-    max-width: ${CardSizes.Large};
-  }`}
-`;
-
-const HelpSupport = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: fit-content;
-  width: 100%;
-  max-width: ${CardSizes.Medium};
-
-  ${({ theme }) => `
-    padding: ${theme.spacing.medium} ${theme.spacing.small};
-    @media (min-width: ${theme.breakpoints.large}) {
-      padding: ${theme.spacing.large};
-      width: unset;
-      max-width: unset;
-    }`}
-`;
-const Topper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 auto ${({ theme }) => theme.spacing.medium};
-`;
-const SupportTeam = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  h2 {
-    margin: 0;
-  }
-`;
-
-const ContactForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xsmall};
-`;
-
-const ContactButtons = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  box-sizing: border-box;
-
-  ${({ theme }) => `
-    gap: ${theme.spacing.small};
-    padding: 0 ${theme.spacing.xxxsmall} ${theme.spacing.medium};
-
-    @media (min-width: ${theme.breakpoints.small}) {
-      gap: ${theme.spacing.small};
-      padding: 0 ${theme.spacing.xxxsmall} ${theme.spacing.medium};
-    }`}
-`;
-
-const ContactInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  background: rgba(230, 232, 236, 0.2);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: ${({ theme }) => `${theme.spacing.xxsmall} `};
-  width: 100%;
-  justify-content: space-between;
-
-  ${({ theme }) =>
-    `
-    padding: ${theme.spacing.medium};
-    gap: ${theme.spacing.small};
-
-    @media (min-width: ${theme.breakpoints.small}) {
-      padding: ${theme.spacing.medium};
-    }`}
-`;
-const Contacts = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-  margin-bottom: ${({ theme }) => theme.spacing.small};
-  white-space: nowrap;
-`;
-
-const BusinessName = styled(Text)`
-  color: ${({ theme }) => theme.color.text.heading};
-`;
-
-const ContentWrapper = styled.div``;
-const DropZoneLabel = styled.div``;
-const HelpButton = styled.button`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: ${({ theme }) => `${theme.spacing.xxsmall} `};
-  color: #36a9e0;
-  font-weight: 600;
-  font-size: ${({ theme }) => `${theme.spacing.small} `};
-`;
-
-const ContactLink = styled.a`
-  display: flex;
-  text-align: center;
-  gap: 0.3rem;
-`;
-
-const DragText = styled.div`
-  font-weight: 300;
-  font-size: ${({ theme }) => `${theme.spacing.small} `};
-  color: #5f5f5f;
-`;
-const FileName = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const FAQContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.small};
-`;
-
-const FAQImageWrapper = styled.div`
-  width: 80%;
-  max-width: 200px;
-  margin: 0 auto;
-`;
-
-const FAQItems = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: ${({ theme }) => `${theme.spacing.medium} `};
-`;
-
-const FAQSectionTitle = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
-`;
-
-const ContentTitle = styled(Text)`
-  color: ${({ theme }) => theme.color.text.title};
-  text-align: center;
-
-  ${({ theme }) => `
-  @media (min-width: ${theme.breakpoints.small}) {
-    text-align: left;
-  }`}
-`;
-
-const StyledIntro = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
-`;
 
 const generateFAQItems = t => {
   const translationKeys = [
@@ -230,6 +84,92 @@ const generateFAQItems = t => {
       ),
     })),
   }));
+};
+
+export const FileDropzone = ({
+  fileRef,
+  label,
+}: {
+  fileRef?: HTMLInputElement;
+  label: string;
+}) => {
+  const { t } = useTranslation();
+  const [filenames, setFilenames] = useState([]);
+  const [dragOver, setDragOver] = useState(false);
+  const theme = useTheme();
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const fileList = [...e.dataTransfer.items]
+      .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
+      .map(item => item.getAsFile().name);
+    setFilenames(current => [...current, fileList]);
+    setDragOver(false);
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => e.preventDefault();
+  const handleDragEnter = () => setDragOver(true);
+  const handleDragLeave = () => setDragOver(false);
+
+  const handleChange = () => {
+    const fileList = [...fileRef.current.files].map(file => file.name);
+    setFilenames(fileList);
+  };
+  return (
+    <DropZoneContainer>
+      <Label bold>{label}</Label>
+      <UploadArea
+        $dragging={dragOver}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        htmlFor="fileInput"
+        $padding={theme.spacing.xlarge}
+      >
+        <FileInput
+          type="file"
+          id="fileInput"
+          ref={fileRef}
+          multiple
+          accept="image/*"
+          onChange={handleChange}
+        />
+
+        {filenames.length === 0 ? (
+          <>
+            <ImageSearchIcon
+              label="file input icon"
+              labelId="fileInputIcon"
+              width={32}
+              height={32}
+              color={theme.color.text.accent}
+            />
+            <FileText tag="span">{t('help.contact_picture_btn')}</FileText>
+          </>
+        ) : (
+          <>
+            {filenames.map(name => (
+              <FileName key={name}>
+                <ImageIcon
+                  label="uploaded file"
+                  labelId="uploadedFileIcon"
+                  width="24"
+                  height="24"
+                />
+                {name}
+              </FileName>
+            ))}
+            <FileText tag="span">{t('help.contact_change_files')}</FileText>
+          </>
+        )}
+
+        <Text color={theme.color.text.secondary} tag="span">
+          {t('help.contact_picture_drag')}
+        </Text>
+      </UploadArea>
+    </DropZoneContainer>
+  );
 };
 
 function Faqs() {
@@ -263,12 +203,11 @@ function Faqs() {
 
 function Contact() {
   const { t } = useTranslation();
-  const [dragOver, setDragOver] = useState(false);
-  const [filenames, setFilenames] = useState([]);
+
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fileRef = useRef();
+  const fileRef = useRef<HTMLInputElement>();
   const {
     register,
     getValues,
@@ -300,26 +239,6 @@ function Contact() {
     submitHelpForm(data, onSuccess, onError);
   };
 
-  const handleDrop = e => {
-    e.preventDefault();
-    const fileList = [...e.dataTransfer.items]
-      .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
-      .map(item => item.getAsFile().name);
-    setFilenames(fileList);
-    setDragOver(false);
-  };
-
-  const handleDragOver = e => e.preventDefault();
-  const handleDragEnter = () => setDragOver(true);
-  const handleDragLeave = () => setDragOver(false);
-
-  const handleClick = () => fileRef.current.click();
-
-  const handleChange = () => {
-    const fileList = [...fileRef.current.files].map(file => file.name);
-    setFilenames(fileList);
-  };
-
   return (
     <ContactForm onSubmit={handleSubmit(onSubmit)}>
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
@@ -340,46 +259,8 @@ function Contact() {
         error={t(errors?.message?.message)}
         placeholder={t('help.contact_problem_placeholder')}
       />
-      <DropZoneLabel>
-        <Label bold>{t('help.contact_picture_label')}</Label>
-        <div
-          className={
-            dragOver ? 'picture-drop-zone dragover' : 'picture-drop-zone'
-          }
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-        >
-          <input
-            type="file"
-            ref={fileRef}
-            multiple
-            accept="image/*"
-            onChange={handleChange}
-          />
-          <HelpButton type="button" onClick={handleClick}>
-            {filenames.map(name => {
-              return (
-                <FileName key={name}>
-                  <img alt="" />
-                  {name}
-                </FileName>
-              );
-            })}
-            {filenames.length === 0 && (
-              <>
-                <img alt="" />
-                <span className="text">{t('help.contact_picture_btn')}</span>
-              </>
-            )}
-            {filenames.length > 0 && (
-              <span className="text">click to change files</span>
-            )}
-          </HelpButton>
-          <DragText>{t('help.contact_picture_drag')}</DragText>
-        </div>
-      </DropZoneLabel>
+      <FileDropzone fileRef={fileRef} label={t('help.contact_picture_label')} />
+
       <StatusMessage
         $visible={requestSuccessful || errors?.root?.serverError}
         $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
@@ -425,7 +306,7 @@ function Help() {
             <Logo />
             <SupportTeam>
               <h2>{t('help.support_header')}</h2>
-              <div className="sub">{t('help.support_slogan')}</div>
+              <div>{t('help.support_slogan')}</div>
             </SupportTeam>
           </Topper>
 

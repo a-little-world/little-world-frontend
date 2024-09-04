@@ -1,13 +1,20 @@
 import {
+  Button,
+  ButtonSizes,
   Card,
   ContentTypes,
-  FriendshipImage,
+  MessageTypes,
+  StatusMessage,
+  SwirlyLinesThickImage,
   SwirlyLinesThinImage,
   TextContent,
 } from '@a-little-world/little-world-design-system';
-import React, { FC } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
+
+import { submitHelpForm } from '../../../api/index.js';
+import { FileDropzone } from '../Help.tsx';
 
 const ContentCard = styled(Card)`
   display: flex;
@@ -17,9 +24,47 @@ const ContentCard = styled(Card)`
   padding-bottom: ${({ theme }) => theme.spacing.xlarge};
 `;
 
+const UploadContainer = styled.div`
+  max-width: 720px;
+  width: 100%;
+`;
+
+const UploadButton = styled(Button)`
+  max-width: 100%;
+  margin: ${({ theme }) => theme.spacing.small} 0;
+`;
+
 const MyStory: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [requestSuccessful, setRequestSuccessful] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const onError = e => {
+    setIsSubmitting(false);
+    setError(e?.message || t('resources.my_story.submit_error'));
+  };
+
+  const onSuccess = () => {
+    setIsSubmitting(false);
+    setRequestSuccessful(true);
+  };
+
+  const onFileUpload = () => {
+    setError(null);
+    setIsSubmitting(true);
+    const data = new FormData();
+    for (let i = 0; i < fileRef.current.files.length; ++i) {
+      const file = fileRef.current.files.item(i);
+      const { name } = file;
+
+      data.append('file', file, name);
+    }
+    data.append('message', 'My Story: Image Upload');
+    submitHelpForm(data, onSuccess, onError);
+  };
 
   return (
     <ContentCard>
@@ -74,13 +119,27 @@ const MyStory: FC = () => {
             text: t('resources.my_story.examples'),
             style: { marginBottom: theme.spacing.medium },
           },
-          {
-            type: ContentTypes.Image,
-            text: 'SwirlyLines',
-            Image: SwirlyLinesThinImage,
-          },
         ]}
       />
+      <UploadContainer>
+        <FileDropzone
+          label={t('resources.my_story.dropzone_label')}
+          fileRef={fileRef}
+        />
+        <UploadButton
+          onClick={onFileUpload}
+          disabled={isSubmitting}
+          size={ButtonSizes.Stretch}
+        >
+          {t('resources.my_story.upload_button')}
+        </UploadButton>
+        <StatusMessage
+          $visible={requestSuccessful || !!error}
+          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+        >
+          {requestSuccessful ? t('resources.my_story.submit_success') : error}
+        </StatusMessage>
+      </UploadContainer>
     </ContentCard>
   );
 };
