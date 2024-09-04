@@ -3,6 +3,8 @@ import {
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
+  MessageTypes,
+  StatusMessage,
   Text,
   TextInput,
   TextTypes,
@@ -22,7 +24,6 @@ import {
   getAppRoute,
 } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
-import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import {
   FormDescription,
   StyledCard,
@@ -128,14 +129,14 @@ const VerifyEmail = () => {
           {t('verify_email.resend_code')}
         </Button>
         <HelpText>{t('verify_email.help_text')}</HelpText>
-        <FormMessage
+        <StatusMessage
           $visible={requestSuccessful || errors?.root?.serverError}
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
           {requestSuccessful
             ? t('verify_email.success_message')
             : t(errors?.root?.serverError?.message)}
-        </FormMessage>
+        </StatusMessage>
         <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}

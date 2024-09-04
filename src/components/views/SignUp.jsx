@@ -5,6 +5,7 @@ import {
   InputWidth,
   Label,
   Link,
+  MessageTypes,
   Text,
   TextInput,
   TextTypes,
@@ -26,7 +27,6 @@ import {
   getAppRoute,
   passAuthenticationBoundary,
 } from '../../routes.ts';
-import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import {
   NameContainer,
   NameInputs,
@@ -256,12 +256,12 @@ const SignUp = () => {
           )}
         />
         <Text>{t('sign_up.privacy_policy')}</Text>
-        <FormMessage
+        <StatusMessage
           $visible={errors?.root?.serverError}
           $type={MessageTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
-        </FormMessage>
+        </StatusMessage>
         <StyledCta
           type="submit"
           disabled={isSubmitting}

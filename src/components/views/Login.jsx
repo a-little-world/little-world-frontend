@@ -2,6 +2,7 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Link,
+  StatusMessage,
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -22,7 +23,6 @@ import {
   getAppRoute,
   passAuthenticationBoundary,
 } from '../../routes.ts';
-import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 const Login = () => {
@@ -117,12 +117,12 @@ const Login = () => {
         <Link to={`/${FORGOT_PASSWORD_ROUTE}/`}>
           {t('login.forgot_password')}
         </Link>
-        <FormMessage
+        <StatusMessage
           $visible={errors?.root?.serverError}
           $type={MessageTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
-        </FormMessage>
+        </StatusMessage>
         <StyledCta
           type="submit"
           disabled={isSubmitting}

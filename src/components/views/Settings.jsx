@@ -6,8 +6,10 @@ import {
   Card,
   Dropdown,
   Link,
+  MessageTypes,
   Modal,
   PencilIcon,
+  StatusMessage,
   Text,
   TextInput,
   TextTypes,
@@ -26,7 +28,6 @@ import { updateProfile } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form';
 import { FORGOT_PASSWORD_ROUTE } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
-import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import PageHeader from '../atoms/PageHeader';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
@@ -49,7 +50,7 @@ const displayLanguages = [
 
 const repeaters = ['password', 'email'];
 
-const StyledFormMessage = styled(FormMessage)`
+const StyledFormMessage = styled(StatusMessage)`
   margin-bottom: ${({ theme }) => theme.spacing.small};
 `;
 
