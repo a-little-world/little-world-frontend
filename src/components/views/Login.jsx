@@ -2,6 +2,7 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Link,
+  MessageTypes,
   StatusMessage,
   TextInput,
   TextTypes,

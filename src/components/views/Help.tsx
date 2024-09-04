@@ -6,6 +6,7 @@ import {
   ImageSearchIcon,
   Label,
   MessageIcon,
+  MessageTypes,
   PhoneIcon,
   StatusMessage,
   TeacherImage,
@@ -14,7 +15,6 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { MessageTypes } from '@a-little-world/little-world-design-system/dist/esm/components/StatusMessage/StatusMessage';
 import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';

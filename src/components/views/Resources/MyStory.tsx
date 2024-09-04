@@ -5,8 +5,6 @@ import {
   ContentTypes,
   MessageTypes,
   StatusMessage,
-  SwirlyLinesThickImage,
-  SwirlyLinesThinImage,
   TextContent,
 } from '@a-little-world/little-world-design-system';
 import React, { FC, useRef, useState } from 'react';
