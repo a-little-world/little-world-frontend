@@ -72,26 +72,6 @@ export const InteractiveArea = styled.div`
   }`}
 `;
 
-// export const UploadArea = styled(InteractiveArea)`
-//   text-align: center;
-//   cursor: pointer;
-
-//   * {
-//     cursor: pointer;
-//   }
-
-//   ${({ $dragging }) =>
-//     $dragging &&
-//     css`
-//       border-style: dashed;
-//       filter: brightness(105%) contrast(105%);
-
-//       * {
-//         pointer-events: none;
-//       }
-//     `}
-// `;
-
 export const UploadArea = styled.label`
   ${INTERACTIVE_AREA_CSS}
   cursor: pointer;
