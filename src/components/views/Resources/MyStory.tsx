@@ -7,6 +7,7 @@ import {
   StatusMessage,
   TextContent,
 } from '@a-little-world/little-world-design-system';
+import { isEmpty } from 'lodash';
 import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
@@ -39,10 +40,11 @@ const MyStory: FC = () => {
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [hasFiles, setHasFiles] = useState(false);
 
   const onError = e => {
     setIsSubmitting(false);
-    setError(e?.message || t('resources.my_story.submit_error'));
+    setError(t(e?.message || 'resources.my_story.submit_error'));
   };
 
   const onSuccess = () => {
@@ -80,7 +82,7 @@ const MyStory: FC = () => {
           {
             type: ContentTypes.Paragraph,
             text: t('resources.my_story.description'),
-            style: { marginBottom: theme.spacing.medium },
+            style: { marginBottom: theme.spacing.small },
           },
           {
             type: ContentTypes.Subtitle,
@@ -123,11 +125,12 @@ const MyStory: FC = () => {
         <FileDropzone
           label={t('resources.my_story.dropzone_label')}
           fileRef={fileRef}
+          onFileChange={files => setHasFiles(!isEmpty(files))}
         />
         <UploadButton
           onClick={onFileUpload}
-          disabled={isSubmitting}
           size={ButtonSizes.Stretch}
+          disabled={isSubmitting || !hasFiles}
         >
           {t('resources.my_story.upload_button')}
         </UploadButton>

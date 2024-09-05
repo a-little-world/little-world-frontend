@@ -88,9 +88,11 @@ const generateFAQItems = t => {
 
 export const FileDropzone = ({
   fileRef,
+  onFileChange,
   label,
 }: {
   fileRef?: HTMLInputElement;
+  onFileChange: (files: any) => void;
   label: string;
 }) => {
   const { t } = useTranslation();
@@ -103,6 +105,7 @@ export const FileDropzone = ({
     const fileList = [...e.dataTransfer.items]
       .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
       .map(item => item.getAsFile().name);
+    onFileChange?.(fileList);
     setFilenames(current => [...current, fileList]);
     setDragOver(false);
   };
@@ -113,8 +116,10 @@ export const FileDropzone = ({
 
   const handleChange = () => {
     const fileList = [...fileRef.current.files].map(file => file.name);
+    onFileChange?.(fileList);
     setFilenames(fileList);
   };
+
   return (
     <DropZoneContainer>
       <Label bold>{label}</Label>

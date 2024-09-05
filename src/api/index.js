@@ -83,10 +83,8 @@ export const submitHelpForm = async (formData, onSuccess, onFailure) => {
       const responseBody = await response?.json();
       onSuccess(responseBody);
     } else {
-      // if (response.status === 413)
-      //   throw new Error('validation.image_upload_required', {
-      //     cause: API_FIELDS.image,
-      //   });
+      if (response.status === 413)
+        throw new Error('validation.image_upload_required');
       const responseBody = await response?.json();
       const error = formatApiError(responseBody);
       throw error;
