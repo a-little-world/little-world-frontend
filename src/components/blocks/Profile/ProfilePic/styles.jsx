@@ -2,7 +2,7 @@ import {
   Button,
   ImageSearchIcon,
 } from '@a-little-world/little-world-design-system';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import ProfileImage, { ImageSizes } from '../../../atoms/ProfileImage';
 
@@ -49,17 +49,22 @@ export const ImageContainer = styled.div`
     }`}
 `;
 
-export const InteractiveArea = styled.div`
+export const INTERACTIVE_AREA_CSS = css`
   background: ${({ theme }) => theme.color.surface.secondary};
+  border: 1px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: 10px;
   cursor: pointer;
-  padding: ${({ theme }) => theme.spacing.xsmall};
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   flex-grow: 1;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+export const InteractiveArea = styled.div`
+  ${INTERACTIVE_AREA_CSS}
+
+  padding: ${({ theme }) => theme.spacing.xsmall};
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
@@ -67,13 +72,32 @@ export const InteractiveArea = styled.div`
   }`}
 `;
 
-export const UploadArea = styled(InteractiveArea)`
-  text-align: center;
+export const UploadArea = styled.label`
+  ${INTERACTIVE_AREA_CSS}
   cursor: pointer;
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
+  padding: ${({ theme, $padding }) => $padding || theme.spacing.xsmall};
+  text-align: center;
 
   * {
     cursor: pointer;
   }
+
+  ${({ theme, $padding }) =>
+    `@media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${$padding || theme.spacing.medium};
+  }`}
+
+  ${({ $dragging }) =>
+    $dragging &&
+    css`
+      border-style: dashed;
+      filter: contrast(105%);
+
+      * {
+        pointer-events: none;
+      }
+    `}
 `;
 
 export const StyledProfileImage = styled(ProfileImage)`
@@ -127,13 +151,6 @@ export const FileInput = styled.input`
     position: absolute;
     opacity: 0;
   }
-`;
-
-export const UploadLabel = styled.label`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;
 
 export const RadioInput = styled.input`

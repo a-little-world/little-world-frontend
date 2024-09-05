@@ -68,6 +68,32 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
   }
 };
 
+export const submitHelpForm = async (formData, onSuccess, onFailure) => {
+  try {
+    const response = await fetch('/api/help_message/', {
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-UseTagsOnly': true,
+      },
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const responseBody = await response?.json();
+      onSuccess(responseBody);
+    } else {
+      if (response.status === 413)
+        throw new Error('validation.image_upload_required');
+      const responseBody = await response?.json();
+      const error = formatApiError(responseBody);
+      throw error;
+    }
+  } catch (error) {
+    onFailure(error);
+  }
+};
+
 export const fetchFormData = async () => {
   try {
     const response = await fetch('/api/profile/?options=true', {

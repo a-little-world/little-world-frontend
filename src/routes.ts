@@ -14,6 +14,7 @@ export const PROFILE_ROUTE = 'profile';
 export const RESOURCES_ROUTE = 'resources';
 export const TRAININGS_ROUTE = 'resources/trainings';
 export const BEGINNERS_ROUTE = 'resources/beginners';
+export const MY_STORY_ROUTE = 'resources/story';
 export const HELP_ROUTE = 'help';
 export const SETTINGS_ROUTE = 'settings';
 export const LOGIN_ROUTE = 'login';

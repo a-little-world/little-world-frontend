@@ -3,6 +3,8 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Link,
+  MessageTypes,
+  StatusMessage,
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -17,7 +19,6 @@ import { updateEmail } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form';
 import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
-import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import {
   FormDescription,
   StyledCard,
@@ -81,12 +82,12 @@ const ChangeEmail = () => {
           placeholder={t('change_email.input_placeholder')}
           type="email"
         />
-        <FormMessage
+        <StatusMessage
           $visible={errors?.root?.serverError}
           $type={MessageTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
-        </FormMessage>
+        </StatusMessage>
         <ButtonsContainer>
           <Link
             buttonAppearance={ButtonAppearance.Secondary}

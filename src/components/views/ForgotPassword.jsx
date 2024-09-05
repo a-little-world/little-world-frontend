@@ -1,6 +1,8 @@
 import {
   Button,
   ButtonAppearance,
+  MessageTypes,
+  StatusMessage,
   Text,
   TextInput,
   TextTypes,
@@ -15,7 +17,6 @@ import { requestPasswordReset } from '../../api';
 import { onFormError, registerInput } from '../../helpers/form';
 import { LOGIN_ROUTE } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
-import FormMessage, { MessageTypes } from '../atoms/FormMessage';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 export const ForgotPasswordDescription = styled(Text)`
@@ -80,14 +81,14 @@ const ForgotPassword = () => {
           placeholder={t('forgot_password.email_placeholder')}
           type="email"
         />
-        <FormMessage
+        <StatusMessage
           $visible={requestSuccessful || errors?.root?.serverError}
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
           {requestSuccessful
             ? t('forgot_password.success_message')
             : t(errors?.root?.serverError?.message)}
-        </FormMessage>
+        </StatusMessage>
         <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}

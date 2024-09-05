@@ -4,6 +4,8 @@ import {
   ButtonVariations,
   CloseIcon,
   Dropdown,
+  MessageTypes,
+  StatusMessage,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -22,7 +24,6 @@ import {
 } from '../../../features/userData';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { CALL_ROUTE, getAppRoute } from '../../../routes.ts';
-import FormMessage, { MessageTypes } from '../../atoms/FormMessage.jsx';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
 
@@ -222,9 +223,9 @@ function CallSetup({ userPk }: CallSetupProps) {
         persistUserChoices={false}
       />
       {error && (
-        <FormMessage $type={MessageTypes.Error} $visible>
+        <StatusMessage $type={MessageTypes.Error} $visible>
           {t(error)}
-        </FormMessage>
+        </StatusMessage>
       )}
     </CallSetupCard>
   );

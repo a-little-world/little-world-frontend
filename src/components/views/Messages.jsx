@@ -31,7 +31,7 @@ const Messages = () => {
     setSelectedChat(null);
     navigate(getAppRoute(MESSAGES_ROUTE));
   };
-  console.log({ selectedChat });
+
   return (
     <>
       <PageHeader text={t('chat_header')}></PageHeader>
