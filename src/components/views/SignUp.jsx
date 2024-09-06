@@ -5,6 +5,7 @@ import {
   InputWidth,
   Label,
   Link,
+  StatusMessage,
   MessageTypes,
   Text,
   TextInput,
