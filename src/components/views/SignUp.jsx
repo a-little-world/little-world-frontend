@@ -5,8 +5,8 @@ import {
   InputWidth,
   Label,
   Link,
-  StatusMessage,
   MessageTypes,
+  StatusMessage,
   Text,
   TextInput,
   TextTypes,
@@ -16,8 +16,7 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { signUp } from '../../api';
 import { initialise } from '../../features/userData';
