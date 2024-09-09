@@ -9,7 +9,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
@@ -74,6 +74,7 @@ export function SearchingCard({ setShowCancel }) {
     t,
     i18n: { language },
   } = useTranslation();
+  const appointmentBtn = useRef();
 
   const hasMatch = useSelector(state => state.userData.user.hasMatch);
   const hadPreMatchingCall = useSelector(
@@ -96,6 +97,12 @@ export function SearchingCard({ setShowCancel }) {
   });
 
   const isBookedState = cardState === 'pre_match_call_booked';
+
+  useEffect(() => {
+    if (!hadPreMatchingCall && appointmentBtn?.current) {
+      appointmentBtn.current?.click();
+    }
+  }, [hadPreMatchingCall]);
 
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
@@ -171,6 +178,7 @@ export function SearchingCard({ setShowCancel }) {
             </Link>
           )}
           <AppointmentButton
+            ref={appointmentBtn}
             data-cal-link={calComAppointmentLink}
             data-cal-config='{"layout":"month_view"}'
             onClick={() => null}
