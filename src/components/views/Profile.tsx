@@ -14,11 +14,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { mutateUserData } from '../../api/index.js';
 import { fetchProfile } from '../../api/profile.ts';
-import {
-  getChatByPartnerId,
-  getMatchByPartnerId,
-  updateProfile,
-} from '../../features/userData';
+import { USER_TYPES } from '../../constants/index';
+import { getMatchByPartnerId, updateProfile } from '../../features/userData';
 import { onFormError } from '../../helpers/form';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes.ts';
 import {
@@ -121,7 +118,12 @@ const getProfileFields = ({
           dataField: 'level',
           ariaLabel: trans('self_info.language_level_label'),
           placeholder: trans('self_info.language_level_placeholder'),
-          options: formatDataField(formOptions?.lang_skill.level, trans),
+          options: formatDataField(
+            formOptions?.lang_skill.level.slice(
+              profile?.user_type === USER_TYPES.volunteer ? 3 : 0,
+            ),
+            trans,
+          ),
           values: profile?.lang_skill?.map(el => el.level),
           errors: [],
         },
@@ -133,7 +135,7 @@ const getProfileFields = ({
 
 function Profile() {
   const { t } = useTranslation();
-  let { userId } = useParams();
+  const { userId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();

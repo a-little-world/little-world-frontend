@@ -115,12 +115,13 @@ const formPages = {
             dataField: 'level',
             ariaLabel: t('self_info.language_level_label'),
             placeholder: t('self_info.language_level_placeholder'),
-            options: formatDataField(options?.lang_skill.level, t),
+            options: formatDataField(
+              options?.lang_skill.level.slice(
+                userData?.user_type === USER_TYPES.volunteer ? 3 : 0,
+              ),
+              t,
+            ),
             values: userData?.lang_skill?.map(el => el.level),
-            lockedValue:
-              userData?.user_type === USER_TYPES.volunteer
-                ? 'level-4'
-                : undefined,
             errors: [],
           },
         }),
