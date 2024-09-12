@@ -26,7 +26,6 @@ import { USER_FIELDS } from '../../../../constants';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import {
-  AreaContainer,
   AvatarEditorButton,
   AvatarSelection,
   CircleButton,
@@ -156,7 +155,7 @@ const ProfilePic = ({ control, setValue }) => {
 
   const handleDrop = event => {
     event.preventDefault();
-    const files = event.dataTransfer.files;
+    const files = event?.dataTransfer?.files;
     const isValidFile = ['image/x-png', 'image/png', 'image/jpeg'].includes(
       files?.[0].type,
     );

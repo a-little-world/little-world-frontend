@@ -336,8 +336,7 @@ const formPages = {
   }),
 };
 
-const getFormPage = ({ slug, formOptions, userData }) => {
-  return formPages[slug]({ options: formOptions, userData });
-};
+const getFormPage = ({ slug, formOptions, userData }) =>
+  formPages[slug]({ options: formOptions, userData });
 
 export default getFormPage;
