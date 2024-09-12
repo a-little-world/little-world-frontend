@@ -39,7 +39,6 @@ import {
   StyledProfileImage,
   TrashButton,
   UploadArea,
-  UploadLabel,
 } from './styles';
 
 const IMAGE_TYPES = {

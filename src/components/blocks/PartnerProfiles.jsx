@@ -59,7 +59,7 @@ const Matches = styled.div`
   `};
 `;
 
-function PartnerProfiles({ setShowCancel, totalPaginations }) {
+function PartnerProfiles({ setShowCancel }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const matchesDisplay = useSelector(selectMatchesDisplay);

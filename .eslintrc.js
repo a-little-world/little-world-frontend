@@ -25,6 +25,7 @@ module.exports = {
     'react/jsx-one-expression-per-line': [0],
     'react/jsx-props-no-spreading': 'off',
     'react/jsx-no-bind': 'off',
+    'react/jsx-wrap-multilines': 1,
     'react/prefer-stateless-function': [1],
     'react/static-property-placement': [1, 'property assignment'],
     'react/react-in-jsx-scope': 'off',
