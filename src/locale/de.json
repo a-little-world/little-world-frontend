@@ -73,9 +73,9 @@
   "searching_card.pre_match_call_booked_info_2": "",
   "searching_card.pre_match_call_booked_cta": "Termin verschieben",
   "searching_card.pre_match_call_booked_join_call": "Videocall beitreiten",
-  "searching_card.pre_match_call_not_booked_title": "Werde Aktiv!",
-  "searching_card.pre_match_call_not_booked_info_1": "Wähle einen Termin für deine Einführung in die Plattform. In dieser Einführung erfährst du, wie die Plattform funktioniert, welche Möglichkeiten dir sie bietet und lernst unsere Regeln für ein respektvolles Miteinander kennen.",
-  "searching_card.pre_match_call_not_booked_info_2": "Diese Einführung ist verpflichtend, um dein Profil für das Matching freizuschalten.",
+  "searching_card.pre_match_call_not_booked_title": "So geht's weiter",
+  "searching_card.pre_match_call_not_booked_info_1": "Um dich matchen zu können, nimm bitte am <bold>verpflichtenden Einführungsgespräch</bold> teil.",
+  "searching_card.pre_match_call_not_booked_info_2": "Damit möchten wir deine Fragen beantworten, Tipps geben und ein wertschätzendes Miteinander in unserer Community sicherstellen.",
   "searching_card.pre_match_call_not_booked_cta": "Termin auswählen",
 
   "language_level_card.title": "Steigere dein Deutschniveau",
