@@ -115,7 +115,12 @@ const formPages = {
             dataField: 'level',
             ariaLabel: t('self_info.language_level_label'),
             placeholder: t('self_info.language_level_placeholder'),
-            options: formatDataField(options?.lang_skill.level, t),
+            options: formatDataField(
+              options?.lang_skill.level.slice(
+                userData?.user_type === USER_TYPES.volunteer ? 3 : 0,
+              ),
+              t,
+            ),
             values: userData?.lang_skill?.map(el => el.level),
             errors: [],
           },
@@ -184,17 +189,6 @@ const formPages = {
         formData: options?.target_group,
         getProps: t => ({
           label: t('partner1.target_group'),
-          errorRules: { required: t('validation.required') },
-        }),
-      },
-      {
-        type: ComponentTypes.dropdown,
-        currentValue: userData?.min_lang_level_partner,
-        dataField: 'min_lang_level_partner',
-        formData: options?.min_lang_level_partner,
-        getProps: t => ({
-          label: t('partner1.language_level'),
-          labelTooltip: t('partner1.language_level_tooltip'),
           errorRules: { required: t('validation.required') },
         }),
       },
@@ -343,8 +337,7 @@ const formPages = {
   }),
 };
 
-const getFormPage = ({ slug, formOptions, userData }) => {
-  return formPages[slug]({ options: formOptions, userData });
-};
+const getFormPage = ({ slug, formOptions, userData }) =>
+  formPages[slug]({ options: formOptions, userData });
 
 export default getFormPage;

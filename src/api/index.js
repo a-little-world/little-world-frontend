@@ -113,6 +113,20 @@ export const fetchFormData = async () => {
   }
 };
 
+export const fetchUserMatch = async ({ userId }) => {
+  const response = await fetch(`${BACKEND_URL}/api/profile/${userId}/match`, {
+    method: 'GET',
+    headers: {
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody);
+};
+
 export const confirmMatch = ({ userHash }) =>
   /** TODO: for consistency this api should also accept a matchId in the backend rather than userHashes ... */
   fetch(`${BACKEND_URL}/api/user/confirm_match/`, {
@@ -261,7 +275,7 @@ export const signUp = async ({
       second_name: lastName,
       birth_year: birthYear,
       newsletter_subscribed: mailingList,
-      company: company,
+      company,
     }),
   });
 

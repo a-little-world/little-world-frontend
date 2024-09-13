@@ -265,10 +265,7 @@ function ProfileCard({
       {!isSelf && (
         <Actions $onProfile={onProfile}>
           {!onProfile && (
-            <MenuLink
-              to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
-              state={{ userPk }}
-            >
+            <MenuLink to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}>
               <ProfileIcon
                 gradient={Gradients.Orange}
                 label="visit profile"

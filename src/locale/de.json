@@ -73,10 +73,10 @@
   "searching_card.pre_match_call_booked_info_2": "",
   "searching_card.pre_match_call_booked_cta": "Termin verschieben",
   "searching_card.pre_match_call_booked_join_call": "Videocall beitreiten",
-  "searching_card.pre_match_call_not_booked_title": "So geht's weiter",
-  "searching_card.pre_match_call_not_booked_info_1": "Bevor wir dich matchen, möchten wir dich in einem 30-minütigen Videogespräch kennenlernen.",
-  "searching_card.pre_match_call_not_booked_info_2": "Damit möchten wir deine Fragen beantworten, Tipps geben und ein wertschätzendes Miteinander in unserer Community sicherstellen.",
-  "searching_card.pre_match_call_not_booked_cta": "Gespräch buchen",
+  "searching_card.pre_match_call_not_booked_title": "Werde Aktiv!",
+  "searching_card.pre_match_call_not_booked_info_1": "Wähle einen Termin für deine Einführung in die Plattform. In dieser Einführung erfährst du, wie die Plattform funktioniert, welche Möglichkeiten dir sie bietet und lernst unsere Regeln für ein respektvolles Miteinander kennen.",
+  "searching_card.pre_match_call_not_booked_info_2": "Diese Einführung ist verpflichtend, um dein Profil für das Matching freizuschalten.",
+  "searching_card.pre_match_call_not_booked_cta": "Termin auswählen",
 
   "language_level_card.title": "Steigere dein Deutschniveau",
   "language_level_card.description": "Um an Gesprächen teilnehmen zu können, solltest du das B1-Niveau erreichen. Dafür haben wir die besten Ressourcen und Apps für dich zusammengestellt.",
@@ -376,7 +376,7 @@
 
   "form.btn_next": "Weiter",
   "form.btn_back": "Zurück",
-  "form.btn_complete": "Umfrage beenden",
+  "form.btn_complete": "Zur Terminbuchung",
   "user_type.title": "Wähle eine Kategorie",
   "user_type.info_text": "Diese Angaben sind nur für dich und das Team von Little World sichtbar.",
   "user_type.volunteer_description": "Ich möchte anderen dabei helfen Deutsch zu lernen.",

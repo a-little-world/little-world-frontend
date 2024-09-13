@@ -10,12 +10,13 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { mutateUserData } from '../../api/index.js';
+import { fetchUserMatch, mutateUserData } from '../../api/index.js';
 import { fetchProfile } from '../../api/profile.ts';
+import { USER_TYPES } from '../../constants/index';
 import {
-  getChatByPartnerId,
+  addMatch,
   getMatchByPartnerId,
   updateProfile,
 } from '../../features/userData';
@@ -27,7 +28,7 @@ import {
   getFormComponent,
 } from '../../userForm/formContent';
 import { constructCheckboxes } from '../../userForm/formPages';
-import PageHeader from '../atoms/PageHeader';
+import PageHeader from '../atoms/PageHeader.tsx';
 import ProfileCard from '../blocks/Cards/ProfileCard';
 import FormStep from '../blocks/Form/FormStep.jsx';
 import ProfileDetail from '../blocks/Profile/ProfileDetail';
@@ -121,7 +122,12 @@ const getProfileFields = ({
           dataField: 'level',
           ariaLabel: trans('self_info.language_level_label'),
           placeholder: trans('self_info.language_level_placeholder'),
-          options: formatDataField(formOptions?.lang_skill.level, trans),
+          options: formatDataField(
+            formOptions?.lang_skill.level.slice(
+              profile?.user_type === USER_TYPES.volunteer ? 3 : 0,
+            ),
+            trans,
+          ),
           values: profile?.lang_skill?.map(el => el.level),
           errors: [],
         },
@@ -133,22 +139,20 @@ const getProfileFields = ({
 
 function Profile() {
   const { t } = useTranslation();
-  let { userId } = useParams();
-  const location = useLocation();
+  const { userId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { control, getValues, handleSubmit, setError, watch } = useForm();
 
-  const { userPk } = location.state || {};
   const formOptions = useSelector(state => state.userData.formOptions);
   const [editingField, setEditingField] = useState(null);
 
   const match = useSelector(state =>
-    getMatchByPartnerId(state.userData.matches, userPk),
+    getMatchByPartnerId(state.userData.matches, userId),
   );
 
   const user = useSelector(state => state.userData.user);
-  const isSelf = user?.id === userPk || !userId;
+  const isSelf = user?.id === userId || !userId;
 
   const [profile, setProfile] = useState(
     isSelf ? user?.profile : match?.partner,
@@ -212,9 +216,16 @@ function Profile() {
 
   useEffect(() => {
     const subscription = watch(() => handleSubmit(onFormSubmit)());
-
     return () => subscription.unsubscribe();
   }, [handleSubmit, watch]);
+
+  useEffect(() => {
+    if (!isSelf && !match) {
+      fetchUserMatch({ userId }).then(res => {
+        dispatch(addMatch(res));
+      });
+    }
+  }, [isSelf, match, userId, dispatch]);
 
   if (isEmpty(profile) || isEmpty(profileFields)) return null;
 
@@ -268,7 +279,7 @@ function Profile() {
         </Details>
         <ProfileCard
           chatId={match?.chatId}
-          userPk={userPk}
+          userPk={userId}
           profile={profile}
           isSelf={isSelf}
           onProfile

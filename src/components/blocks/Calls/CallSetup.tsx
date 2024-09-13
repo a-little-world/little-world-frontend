@@ -116,7 +116,6 @@ const AudioOutputSelect = () => {
 
 type CallSetupProps = {
   userPk: string;
-  removeCallSetupPartner: () => void;
 };
 
 function CallSetup({ userPk }: CallSetupProps) {
