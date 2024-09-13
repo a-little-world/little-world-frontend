@@ -9,7 +9,7 @@ import { ComponentTypes, formatDataField } from './formContent';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
 
-const NUM_STEPS_VOL = 9;
+const NUM_STEPS_VOL = 8;
 const NUM_STEPS_LEARNER = 8;
 
 const getSteps = userType =>
@@ -168,10 +168,7 @@ const formPages = {
     step: 4,
     totalSteps: getSteps(userData?.user_type),
     prevPage: 'user-form/interests',
-    nextPage:
-      userData?.user_type === USER_TYPES.volunteer
-        ? 'user-form/partner-1'
-        : 'user-form/partner-2',
+    nextPage: 'user-form/partner-1',
     components: [{ type: ComponentTypes.picture }],
   }),
   'partner-1': ({ options, userData }) => ({
@@ -180,49 +177,29 @@ const formPages = {
     step: 5,
     totalSteps: getSteps(userData?.user_type),
     prevPage: 'user-form/picture',
-    nextPage: 'user-form/partner-2',
-    components: [
-      {
-        type: ComponentTypes.radio,
-        currentValue: userData?.target_group,
-        dataField: 'target_group',
-        formData: options?.target_group,
-        getProps: t => ({
-          label: t('partner1.target_group'),
-          errorRules: { required: t('validation.required') },
-        }),
-      },
-    ],
-  }),
-  'partner-2': ({ options, userData }) => ({
-    title: `partner2.${userData?.user_type}_title`,
-    note: 'partner2.info_text',
-    step: userData?.user_type === USER_TYPES.volunteer ? 6 : 5,
-    totalSteps: getSteps(userData?.user_type),
-    prevPage:
-      userData?.user_type === USER_TYPES.volunteer
-        ? 'user-form/partner-1'
-        : 'user-form/picture',
     nextPage: 'user-form/availability',
     components: [
-      {
-        type: ComponentTypes.radio,
-        currentValue: userData?.speech_medium,
-        dataField: 'speech_medium',
-        formData: options?.speech_medium,
-        getProps: t => ({
-          label: t('partner2.speech_medium'),
-          labelTooltip: t('partner2.speech_medium_tooltip'),
-          errorRules: { required: t('validation.required') },
-        }),
-      },
+      ...(userData?.user_type === USER_TYPES.volunteer
+        ? [
+            {
+              type: ComponentTypes.radio,
+              currentValue: userData?.target_group,
+              dataField: 'target_group',
+              formData: options?.target_group,
+              getProps: t => ({
+                label: t('partner1.target_group'),
+                errorRules: { required: t('validation.required') },
+              }),
+            },
+          ]
+        : []),
       {
         type: ComponentTypes.radio,
         currentValue: userData?.partner_gender,
         dataField: 'partner_gender',
         formData: options?.partner_gender,
         getProps: t => ({
-          label: t('partner2.partner_gender'),
+          label: t('partner1.partner_gender'),
           errorRules: { required: t('validation.required') },
         }),
       },
@@ -230,9 +207,9 @@ const formPages = {
   }),
   availability: ({ options, userData }) => ({
     title: 'availability.title',
-    step: userData?.user_type === USER_TYPES.volunteer ? 7 : 6,
+    step: 6,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: 'user-form/partner-2',
+    prevPage: 'user-form/partner-1',
     nextPage: 'user-form/notifications',
     components: [
       {
@@ -262,7 +239,7 @@ const formPages = {
   }),
   notifications: ({ options, userData }) => ({
     title: 'user_form_notifications.title',
-    step: userData?.user_type === USER_TYPES.volunteer ? 8 : 7,
+    step: 7,
     totalSteps: getSteps(userData?.user_type),
     prevPage: 'user-form/availability',
     nextPage: 'user-form/conditions',
@@ -299,7 +276,7 @@ const formPages = {
   conditions: ({ userData }) => ({
     title: 'conditions.title',
     note: 'conditions.info_text',
-    step: userData?.user_type === USER_TYPES.volunteer ? 9 : 8,
+    step: 8,
     totalSteps: getSteps(userData?.user_type),
     prevPage: 'user-form/notifications',
     nextPage: '',
