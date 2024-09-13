@@ -28,7 +28,7 @@ import { updateProfile } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form';
 import { FORGOT_PASSWORD_ROUTE } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
-import PageHeader from '../atoms/PageHeader';
+import PageHeader from '../atoms/PageHeader.tsx';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
 import MailingLists from '../blocks/MailingLists/MailingLists.tsx';

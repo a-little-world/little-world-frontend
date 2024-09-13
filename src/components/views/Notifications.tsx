@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
 import '../../notifications.css';
-import PageHeader from '../atoms/PageHeader.jsx';
+import PageHeader from '../atoms/PageHeader.tsx';
 import {
   BottomContainer,
   CreatedAt,
@@ -22,7 +22,6 @@ import {
   Items,
   Notification,
   Options,
-  Status,
   Toolbar,
   ToolbarButton,
   UnreadIndicator,
