@@ -27,7 +27,10 @@ import {
   formatDataField,
   getFormComponent,
 } from '../../userForm/formContent';
-import { constructCheckboxes } from '../../userForm/formPages';
+import {
+  constructCheckboxes,
+  restrictedLangLevels,
+} from '../../userForm/formPages';
 import PageHeader from '../atoms/PageHeader.tsx';
 import ProfileCard from '../blocks/Cards/ProfileCard';
 import FormStep from '../blocks/Form/FormStep.jsx';
@@ -109,6 +112,10 @@ const getProfileFields = ({
         label: trans('self_info.language_skills_label'),
         labelTooltip: trans('self_info.language_skills_tooltip'),
         maxSegments: 8,
+        restrictions:
+          profile?.user_type === USER_TYPES.volunteer
+            ? { german: restrictedLangLevels }
+            : {},
         firstDropdown: {
           dataField: 'lang',
           ariaLabel: trans('self_info.language_selector_label'),
@@ -122,12 +129,7 @@ const getProfileFields = ({
           dataField: 'level',
           ariaLabel: trans('self_info.language_level_label'),
           placeholder: trans('self_info.language_level_placeholder'),
-          options: formatDataField(
-            formOptions?.lang_skill.level.slice(
-              profile?.user_type === USER_TYPES.volunteer ? 3 : 0,
-            ),
-            trans,
-          ),
+          options: formatDataField(formOptions?.lang_skill.level, trans),
           values: profile?.lang_skill?.map(el => el.level),
           errors: [],
         },

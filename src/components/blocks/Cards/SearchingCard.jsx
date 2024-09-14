@@ -99,10 +99,10 @@ export function SearchingCard({ setShowCancel }) {
   const isBookedState = cardState === 'pre_match_call_booked';
 
   useEffect(() => {
-    if (!hadPreMatchingCall && appointmentBtn?.current) {
+    if (!hadPreMatchingCall && !isBookedState && appointmentBtn?.current) {
       appointmentBtn.current?.click();
     }
-  }, [hadPreMatchingCall]);
+  }, [hadPreMatchingCall, isBookedState]);
 
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>

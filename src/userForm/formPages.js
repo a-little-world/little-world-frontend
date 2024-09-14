@@ -8,6 +8,7 @@ import { USER_TYPES } from '../constants';
 import { ComponentTypes, formatDataField } from './formContent';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
+export const restrictedLangLevels = ['level-3', 'level-4'];
 
 const NUM_STEPS_VOL = 8;
 const NUM_STEPS_LEARNER = 8;
@@ -102,6 +103,10 @@ const formPages = {
           label: t('self_info.language_skills_label'),
           labelTooltip: t('self_info.language_skills_tooltip'),
           maxSegments: 8,
+          restrictions:
+            userData?.user_type === USER_TYPES.volunteer
+              ? { german: restrictedLangLevels }
+              : {},
           firstDropdown: {
             dataField: 'lang',
             ariaLabel: t('self_info.language_selector_label'),
@@ -115,12 +120,7 @@ const formPages = {
             dataField: 'level',
             ariaLabel: t('self_info.language_level_label'),
             placeholder: t('self_info.language_level_placeholder'),
-            options: formatDataField(
-              options?.lang_skill.level.slice(
-                userData?.user_type === USER_TYPES.volunteer ? 3 : 0,
-              ),
-              t,
-            ),
+            options: formatDataField(options?.lang_skill.level, t),
             values: userData?.lang_skill?.map(el => el.level),
             errors: [],
           },
