@@ -1,4 +1,4 @@
-import { isObject } from 'lodash';
+import { isObject, map } from 'lodash';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -16,15 +16,15 @@ const firstDuplicate = arr => {
   return -1;
 };
 
-const addErrorToLangSkill = (dropdownProps, error) => {
-  const numberOfValues = dropdownProps.values.length;
+const addErrorToLangSkill = ({ dropdownProps, error, values }) => {
+  const numberOfValues = values.length;
   const errors = Array(numberOfValues).fill(undefined);
   const errorIndex =
     error.message === ERROR_DE_MISSING
       ? numberOfValues - 1
-      : firstDuplicate(dropdownProps.values);
+      : firstDuplicate(values);
 
-  errors.splice(errorIndex, 1, error?.message);
+  errors.splice(errorIndex, 1, error);
   return { ...dropdownProps, errors };
 };
 
@@ -60,10 +60,11 @@ const FormStep = ({ content, control }) => {
             [valueKey]: value,
             ...(dataField === 'lang_skill' && error
               ? {
-                  firstDropdown: addErrorToLangSkill(
-                    props.firstDropdown,
-                    error,
-                  ),
+                  firstDropdown: addErrorToLangSkill({
+                    dropdownProps: props.firstDropdown,
+                    error: t(error?.message),
+                    values: map(value, val => val.lang),
+                  }),
                 }
               : {}),
           };

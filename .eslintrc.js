@@ -34,7 +34,7 @@ module.exports = {
     'react/function-component-definition': 'off',
     'react/require-default-props': 'off',
     'arrow-parens': 'off',
-    'object-curly-newline': [1, { multiline: true }],
+    'object-curly-newline': ['error', { multiline: true }],
     'operator-linebreak': [1],
     'no-confusing-arrow': 0,
     'no-unused-vars': 1,
