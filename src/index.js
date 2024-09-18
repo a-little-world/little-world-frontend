@@ -14,6 +14,7 @@ import { InitializeDux } from './App';
 
 const isDevelopment = DEVELOPMENT;
 const isCapacitor = IS_CAPACITOR_BUILD || false;
+const serviceWorker = "public/service-worker.js";
 
 let root;
 
@@ -74,6 +75,30 @@ window.renderMessageView = (
   );
 };
 
+const registerServiceWorker = () => {
+  navigator.serviceWorker.register(serviceWorker)
+    .then(registration => {
+      console.log('Service worker registered:', registration);
+
+      // Handle updates
+      registration.onupdatefound = () => {
+        const installingWorker = registration.installing;
+        installingWorker.onstatechange = () => {
+          if (installingWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              console.log('New content available; please refresh.');
+            } else {
+              console.log('Ready to update, please reload.');
+            }
+          }
+        };
+      };
+    })
+    .catch(error => {
+      console.error('Service worker registration failed:', error);
+    });
+};
+
 /**
  * 1. Frontend only development: trigger login simulator to auto login in remote server
  * 2. Frontend in Backend Development, just export `renderApp` will be called from within django view
@@ -87,6 +112,7 @@ if (isDevelopment) {
       const apiTranslations = data?.api_translations;
 
       window.renderApp({ initData, apiTranslations });
+      registerServiceWorker();
     });
   });
 }
