@@ -244,7 +244,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
                 },
               })}
               error={t(errors?.password_new?.message)}
-              label={t('settings.personal_password_current')}
+              label={t('settings.personal_password_new')}
               type="password"
             />
             <TextInput
