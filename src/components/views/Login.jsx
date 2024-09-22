@@ -15,7 +15,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { login } from '../../api';
 import { initialise } from '../../features/userData';
-import { onFormError, registerInput } from '../../helpers/form';
+import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,

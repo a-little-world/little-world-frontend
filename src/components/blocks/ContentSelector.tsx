@@ -51,13 +51,17 @@ const externalLinksTopics = {
   stories: 'https://home.little-world.com/stories',
 };
 
-type ContentSelector = {
+type ContentSelectorProps = {
   selection: string;
   setSelection: (selection: string) => void;
   use: string;
 };
 
-function ContentSelector({ selection, setSelection, use }: ContentSelector) {
+function ContentSelector({
+  selection,
+  setSelection,
+  use,
+}: ContentSelectorProps) {
   const { t } = useTranslation();
   if (!['ourWorld', 'main', 'help', 'resources'].includes(use)) {
     return null;

@@ -2,13 +2,13 @@ import { Separator } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import styled from 'styled-components';
 
-interface Step {
+interface StepProps {
   id: string;
   label: string;
 }
 
 interface StepperProps {
-  steps: Step[];
+  steps: StepProps[];
   activeStep: string;
   onSelectStep: (id: string) => void;
 }
@@ -84,30 +84,26 @@ const Stepper: React.FC<StepperProps> = ({
   steps,
   activeStep,
   onSelectStep,
-}) => {
-  return (
-    <StepperContainer>
-      {steps.map((step, index) => (
-        <Step key={step.id} onClick={() => onSelectStep(step.id)}>
-          <NumberContainer>
-            <StepNumber isActive={step.id === activeStep}>
-              {index + 1}
-            </StepNumber>
-            {steps.length - 1 !== index && (
-              <StyledSeparator>
-                <Separator
-                  background="darkGray"
-                  orientation={'vertical'}
-                  spacing={'0px'}
-                />
-              </StyledSeparator>
-            )}
-          </NumberContainer>
-          <StepLabel isActive={step.id === activeStep}>{step.label}</StepLabel>
-        </Step>
-      ))}
-    </StepperContainer>
-  );
-};
+}) => (
+  <StepperContainer>
+    {steps.map((step, index) => (
+      <Step key={step.id} onClick={() => onSelectStep(step.id)}>
+        <NumberContainer>
+          <StepNumber isActive={step.id === activeStep}>{index + 1}</StepNumber>
+          {steps.length - 1 !== index && (
+            <StyledSeparator>
+              <Separator
+                background="darkGray"
+                orientation="vertical"
+                spacing="0px"
+              />
+            </StyledSeparator>
+          )}
+        </NumberContainer>
+        <StepLabel isActive={step.id === activeStep}>{step.label}</StepLabel>
+      </Step>
+    ))}
+  </StepperContainer>
+);
 
 export default Stepper;

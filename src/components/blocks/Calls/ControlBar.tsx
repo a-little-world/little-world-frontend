@@ -233,7 +233,7 @@ function ControlBar({
           {isFullScreen ? (
             <FullScreenExitIcon
               label="exit fullscreen"
-              labelId={'exitFullScreen'}
+              labelId="exitFullScreen"
             />
           ) : (
             <FullScreenIcon

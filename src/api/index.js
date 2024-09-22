@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 import { BACKEND_URL } from '../ENVIRONMENT';
-import { API_FIELDS, USER_FIELDS } from '../constants';
+import { API_FIELDS, USER_FIELDS } from '../constants/index.ts';
 
 export const formatApiError = responseBody => {
   if (typeof responseBody === 'string') return new Error(responseBody);

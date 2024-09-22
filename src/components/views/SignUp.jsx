@@ -20,7 +20,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { signUp } from '../../api';
 import { initialise } from '../../features/userData';
-import { onFormError, registerInput } from '../../helpers/form';
+import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   LOGIN_ROUTE,
   VERIFY_EMAIL_ROUTE,

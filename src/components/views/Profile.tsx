@@ -14,7 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { fetchUserMatch, mutateUserData } from '../../api/index.js';
 import { fetchProfile } from '../../api/profile.ts';
-import { USER_TYPES } from '../../constants/index';
+import { USER_TYPES } from '../../constants/index.ts';
 import {
   addMatch,
   getMatchByPartnerId,

@@ -5,7 +5,6 @@ import {
   DashboardIcon,
   Gradients,
   HeartIcon,
-  Logo as LogoIcon,
   LogoutIcon,
   MessageIcon,
   ProfileIcon,
@@ -34,7 +33,7 @@ import {
   isActiveRoute,
 } from '../../routes.ts';
 import Logo from '../atoms/Logo.tsx';
-import MenuLink from '../atoms/MenuLink';
+import MenuLink from '../atoms/MenuLink.tsx';
 import UnreadDot from '../atoms/UnreadDot.tsx';
 
 const SidebarContainer = styled.nav`

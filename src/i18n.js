@@ -3,7 +3,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import Cookies from 'js-cookie';
 import { initReactI18next } from 'react-i18next';
 
-import { LANGUAGES } from './constants';
+import { LANGUAGES } from './constants/index.ts';
 import translationDE from './locale/de.json';
 import translationEN from './locale/en.json';
 
@@ -39,7 +39,7 @@ export const updateTranslationResources = ({ apiTranslations }) => {
   /*
   This upates the current translations resources with all backend translations!
   */
-  console.log("INJECTED BACKEND TRANSLATIONS", apiTranslations);
+  console.log('INJECTED BACKEND TRANSLATIONS', apiTranslations);
   Object.keys(apiTranslations).forEach(lang => {
     i18next.addResourceBundle(lang, 'translation', {
       ...i18next.getResourceBundle(lang, 'translation'),

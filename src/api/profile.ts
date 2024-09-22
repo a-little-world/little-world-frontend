@@ -3,7 +3,8 @@ import Cookies from 'js-cookie';
 import { BACKEND_URL } from '../ENVIRONMENT.js';
 import { formatApiError } from './index.js';
 
-export const fetchProfile = async ({ userId }) => {
+// eslint-disable-next-line import/prefer-default-export
+export const fetchProfile = async ({ userId }: { userId: string }) => {
   const response = await fetch(`${BACKEND_URL}/api/profile/${userId}/match`, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),

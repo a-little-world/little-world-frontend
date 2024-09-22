@@ -17,7 +17,7 @@ import {
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
 import Note from '../components/blocks/Note/Note';
 import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
-import { formatMultiSelectionOptions } from '../helpers/form';
+import { formatMultiSelectionOptions } from '../helpers/form.ts';
 
 export const ComponentTypes = {
   infoText: 'infoText',
@@ -178,10 +178,7 @@ export const getFormComponent = (
       ...props,
     };
 
-  if (type === ComponentTypes.picture)
-    return {
-      Component: ProfilePic,
-    };
+  if (type === ComponentTypes.picture) return { Component: ProfilePic };
 
   return null;
 };

@@ -40,22 +40,20 @@ const Drawer = ({
   direction = 'bottom',
   open,
   onClose,
-}: DrawerProps) => {
-  return (
-    <DrawerContainer>
-      <StyledDrawer open={open} onClose={onClose} direction={direction}>
-        <Button variation={ButtonVariations.Icon} onClick={onClose}>
-          <ChevronDownIcon
-            label="close drawer"
-            labelId="closeDrawer"
-            width="16"
-            height="16"
-          />
-        </Button>
-        {children}
-      </StyledDrawer>
-    </DrawerContainer>
-  );
-};
+}: DrawerProps) => (
+  <DrawerContainer>
+    <StyledDrawer open={open} onClose={onClose} direction={direction}>
+      <Button variation={ButtonVariations.Icon} onClick={onClose}>
+        <ChevronDownIcon
+          label="close drawer"
+          labelId="closeDrawer"
+          width="16"
+          height="16"
+        />
+      </Button>
+      {children}
+    </StyledDrawer>
+  </DrawerContainer>
+);
 
 export default Drawer;

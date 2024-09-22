@@ -32,14 +32,16 @@ export const ModeSwitch = () => {
       }
     >
       {isDarkMode ? (
-        <SunIcon label="turn dark mode on" labelId={'dark_mode_on_switch'} />
+        <SunIcon label="turn dark mode on" labelId="dark_mode_on_switch" />
       ) : (
         <MoonIcon
           label="turn light mode on"
-          labelId={'light_mode_on_switch'}
+          labelId="light_mode_on_switch"
           color={theme.color.text.highlight}
         />
       )}
     </Switch>
   );
 };
+
+export default ModeSwitch;

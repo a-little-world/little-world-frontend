@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { requestPasswordReset } from '../../api';
-import { onFormError, registerInput } from '../../helpers/form';
+import { onFormError, registerInput } from '../../helpers/form.ts';
 import { LOGIN_ROUTE } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';

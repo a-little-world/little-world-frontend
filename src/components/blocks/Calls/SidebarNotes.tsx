@@ -80,16 +80,14 @@ export function SidebarNotes() {
   const handleAddNote = async () => {
     const [sourcelang, targetLang] =
       selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
-    const response = await addUserNote(note, sourcelang, targetLang);
+    await addUserNote(note, sourcelang, targetLang);
     setNote('');
     getUserNotes()
       .then(response => {
         if (response.error) setInitialData(null);
         else setInitialData(response);
       })
-      .catch(error => {
-        debugger;
-      });
+      .catch(error => console.log({ error }));
     setInitialDataFetch(false);
   };
 
@@ -119,7 +117,7 @@ export function SidebarNotes() {
       target_language: targetLang,
     });
     if (FavoritedResponse.status === 200) {
-      const noteIndex = initialData.findIndex(note => note.id === id);
+      const noteIndex = initialData?.findIndex(note => note.id === id);
 
       if (noteIndex !== -1) {
         const updatedNotesData = [...initialData];
@@ -136,19 +134,27 @@ export function SidebarNotes() {
     }
   };
 
-  const renderButton = (topic, label, imageClass) => (
+  const renderButton = ({
+    topic,
+    label,
+    showImage,
+  }: {
+    topic: string;
+    label: string;
+    showImage?: boolean;
+  }) => (
     <CategoryButton
       selected={selectedTopic === topic}
       value={topic}
       onClick={() => setTopic(topic)}
     >
-      {imageClass && (
+      {showImage && (
         <StyledImage
           className={`image-for-${topic}-notes`}
           selected={selectedTopic === topic}
           alt="category-icon"
-          height={'20px'}
-          width={'20px'}
+          height="20px"
+          width="20px"
         />
       )}
 
@@ -214,9 +220,17 @@ export function SidebarNotes() {
     <WrapperContainer className="rce-mlist" style={{ border: 'none' }}>
       <Container>
         <CategoryWrapper>
-          {renderButton('All', t('all_notes_label'))}
-          {renderButton('is_favorite', t('favorite_notes_label'), true)}
-          {renderButton('is_archived', t('archived_notes_label'), true)}
+          {renderButton({ topic: 'All', label: t('all_notes_label') })}
+          {renderButton({
+            topic: 'is_favorite',
+            label: t('favorite_notes_label'),
+            showImage: true,
+          })}
+          {renderButton({
+            topic: 'is_archived',
+            label: t('archived_notes_label'),
+            showImage: true,
+          })}
         </CategoryWrapper>
       </Container>
       {selectedTopic === 'All' && (
@@ -233,7 +247,7 @@ export function SidebarNotes() {
               <AddNoteButton
                 className="add-note-btn"
                 type="button"
-                show={note ? true : false}
+                show={Boolean(note)}
                 onClick={handleAddNote}
               >
                 Add Note
@@ -245,7 +259,7 @@ export function SidebarNotes() {
       <NotesCardWrapper>
         {data &&
           data
-            ?.filter(note => !note['is_deleted'])
+            ?.filter(note => !note.is_deleted)
             ?.map(({ id, note, updated_at, is_favorite }) => (
               <NotesCard selected={selectedQuestionId === id} key={id}>
                 {selectedQuestionId !== id && (
@@ -318,3 +332,5 @@ export function SidebarNotes() {
     </WrapperContainer>
   );
 }
+
+export default SidebarNotes;

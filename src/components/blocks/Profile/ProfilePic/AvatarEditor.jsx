@@ -139,31 +139,29 @@ const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
         <Avatar style={{ width: '100%', height: '100%' }} {...editorConfig} />
       </AvatarContainer>
       <Controls>
-        {controls.map(([optionKey, colorKey]) => {
-          return (
-            <ControlColumn key={`control ${optionKey} ${colorKey}`}>
-              {optionKey && (
-                <OptionToggle
-                  onClick={() => {
-                    updateAvatar(optionKey);
-                  }}
-                >
-                  {t(`profile_pic.avatar_${translations[optionKey]}`)}
-                </OptionToggle>
-              )}
-              {colorKey && (
-                <ColorPicker
-                  background={editorConfig[colorKey]}
-                  ariaLabel={translations[colorKey]}
-                  key={colorKey}
-                  onClick={() => {
-                    updateAvatar(colorKey);
-                  }}
-                />
-              )}
-            </ControlColumn>
-          );
-        })}
+        {controls.map(([optionKey, colorKey]) => (
+          <ControlColumn key={`control ${optionKey} ${colorKey}`}>
+            {optionKey && (
+              <OptionToggle
+                onClick={() => {
+                  updateAvatar(optionKey);
+                }}
+              >
+                {t(`profile_pic.avatar_${translations[optionKey]}`)}
+              </OptionToggle>
+            )}
+            {colorKey && (
+              <ColorPicker
+                background={editorConfig[colorKey]}
+                ariaLabel={translations[colorKey]}
+                key={colorKey}
+                onClick={() => {
+                  updateAvatar(colorKey);
+                }}
+              />
+            )}
+          </ControlColumn>
+        ))}
       </Controls>
       <Buttons>
         <Button appearance={ButtonAppearance.Secondary} onClick={closeEditor}>

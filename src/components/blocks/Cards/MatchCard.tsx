@@ -89,3 +89,5 @@ export const MatchCardComponent = ({
     />
   );
 };
+
+export default MatchCardComponent;

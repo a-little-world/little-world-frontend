@@ -37,7 +37,7 @@ import {
 } from '../../../features/userData';
 import { addMessage } from '../../../features/userData';
 import { formatTimeDistance } from '../../../helpers/date.ts';
-import { onFormError, registerInput } from '../../../helpers/form';
+import { onFormError, registerInput } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes.ts';
 import {
@@ -59,74 +59,6 @@ import {
   WriteSection,
 } from './Chat.styles.tsx';
 
-export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
-  const theme = useTheme();
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-
-  const callPartner = () => {
-    dispatch(initCallSetup({ userId: partner?.id }));
-  };
-
-  return chatId ? (
-    <Panel>
-      <TopSection>
-        <UserInfo>
-          <BackButton
-            variation={ButtonVariations.Icon}
-            onClick={onBackButton}
-            $show={!!onBackButton}
-          >
-            <ArrowLeftIcon
-              labelId="return to profile"
-              label="return to profile"
-              width="16"
-              height="16"
-            />
-          </BackButton>
-
-          <ProfileLink to={getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)}>
-            <UserImage
-              circle
-              image={
-                partner?.image_type === 'avatar'
-                  ? partner?.avatar_config
-                  : partner?.image
-              }
-              imageType={partner?.image_type}
-              size={'xsmall'}
-            />
-            <Text bold type={TextTypes.Body4}>
-              {partner?.first_name}
-            </Text>
-          </ProfileLink>
-        </UserInfo>
-        <Button
-          variation={ButtonVariations.Circle}
-          onClick={callPartner}
-          size={ButtonSizes.Large}
-          backgroundColor={theme.color.gradient.orange10}
-        >
-          <VideoIcon
-            color={theme.color.surface.secondary}
-            width={24}
-            height={24}
-          />
-        </Button>
-      </TopSection>
-      <Chat chatId={chatId} />
-    </Panel>
-  ) : (
-    <NoChatSelected>
-      <GroupChatIcon
-        gradient={Gradients.Blue}
-        width={'144px'}
-        height={'144px'}
-      />
-      <Text type={TextTypes.Body4}>{t('chat.not_selected')}</Text>
-    </NoChatSelected>
-  );
-};
 export const Chat = ({ chatId }) => {
   const {
     t,
@@ -289,7 +221,7 @@ export const Chat = ({ chatId }) => {
         >
           <SendIcon
             label={t('chat.send_btn')}
-            labelId={'send_icon'}
+            labelId="send_icon"
             color={theme.color.text.reversed}
             width="20"
             height="20"
@@ -297,5 +229,70 @@ export const Chat = ({ chatId }) => {
         </SendButton>
       </WriteSection>
     </ChatContainer>
+  );
+};
+
+export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
+  const theme = useTheme();
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+
+  const callPartner = () => {
+    dispatch(initCallSetup({ userId: partner?.id }));
+  };
+
+  return chatId ? (
+    <Panel>
+      <TopSection>
+        <UserInfo>
+          <BackButton
+            variation={ButtonVariations.Icon}
+            onClick={onBackButton}
+            $show={!!onBackButton}
+          >
+            <ArrowLeftIcon
+              labelId="return to profile"
+              label="return to profile"
+              width="16"
+              height="16"
+            />
+          </BackButton>
+
+          <ProfileLink to={getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)}>
+            <UserImage
+              circle
+              image={
+                partner?.image_type === 'avatar'
+                  ? partner?.avatar_config
+                  : partner?.image
+              }
+              imageType={partner?.image_type}
+              size="xsmall"
+            />
+            <Text bold type={TextTypes.Body4}>
+              {partner?.first_name}
+            </Text>
+          </ProfileLink>
+        </UserInfo>
+        <Button
+          variation={ButtonVariations.Circle}
+          onClick={callPartner}
+          size={ButtonSizes.Large}
+          backgroundColor={theme.color.gradient.orange10}
+        >
+          <VideoIcon
+            color={theme.color.surface.secondary}
+            width={24}
+            height={24}
+          />
+        </Button>
+      </TopSection>
+      <Chat chatId={chatId} />
+    </Panel>
+  ) : (
+    <NoChatSelected>
+      <GroupChatIcon gradient={Gradients.Blue} width="144px" height="144px" />
+      <Text type={TextTypes.Body4}>{t('chat.not_selected')}</Text>
+    </NoChatSelected>
   );
 };

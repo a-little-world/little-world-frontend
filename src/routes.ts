@@ -31,16 +31,15 @@ export const PRIVACY_ROUTE = 'datenschutz';
 
 export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
-export const getAppRoute = (slug: string) => `/${APP_ROUTE}/${slug ?? ''}`;
+export const getAppRoute = (slug?: string) => `/${APP_ROUTE}/${slug ?? ''}`;
 export const getAppSubpageRoute = (parent: string, slug: string) =>
   getAppRoute(`${parent}/${slug}`);
 export const getUserFormRoute = (slug: string) => `/${USER_FORM_ROUTE}/${slug}`;
 
-export const isActiveRoute = (locationPath: string, path: string) => {
-  return locationPath === path || path !== getAppRoute('')
+export const isActiveRoute = (locationPath: string, path: string) =>
+  locationPath === path || path !== getAppRoute('')
     ? locationPath?.includes(path)
     : false;
-};
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {

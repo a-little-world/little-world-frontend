@@ -22,16 +22,12 @@ import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
 import { submitHelpForm } from '../../api/index.js';
-import { onFormError, registerInput } from '../../helpers/form.js';
+import { onFormError, registerInput } from '../../helpers/form.ts';
 import Logo from '../atoms/Logo.tsx';
-import MenuLink from '../atoms/MenuLink.jsx';
+import MenuLink from '../atoms/MenuLink.tsx';
 import Socials from '../atoms/Socials.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
-import {
-  FileInput,
-  UploadArea,
-  UploadLabel,
-} from '../blocks/Profile/ProfilePic/styles.jsx';
+import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles.jsx';
 import {
   BusinessName,
   ContactButtons,

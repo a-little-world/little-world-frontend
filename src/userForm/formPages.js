@@ -4,7 +4,7 @@ import {
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 
-import { USER_TYPES } from '../constants';
+import { USER_TYPES } from '../constants/index.ts';
 import { ComponentTypes, formatDataField } from './formContent';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
@@ -246,9 +246,7 @@ const formPages = {
     components: [
       {
         type: ComponentTypes.text,
-        getProps: t => ({
-          children: t('user_form_notifications.description'),
-        }),
+        getProps: t => ({ children: t('user_form_notifications.description') }),
       },
       {
         type: ComponentTypes.radioWithInput,

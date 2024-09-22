@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import { mutateUserData } from '../../../api';
 import { updateProfile } from '../../../features/userData';
-import { onFormError } from '../../../helpers/form.js';
+import { onFormError } from '../../../helpers/form.ts';
 
 const MailingListsWrapper = styled.div``;
 

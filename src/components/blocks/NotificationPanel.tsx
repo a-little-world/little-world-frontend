@@ -91,8 +91,8 @@ function NotificationPanel() {
   const notifications = useSelector(state => state.userData.notifications);
 
   return (
-    <Panel className="notification-panel">
-      <ProfileInfo className="active-user">
+    <Panel>
+      <ProfileInfo>
         <ProfileImage
           circle
           image={usesAvatar ? user.profile.avatar_config : user.profile.image}
@@ -115,7 +115,7 @@ function NotificationPanel() {
               <Notification key={hash} className="notification-item">
                 <CalendarIcon
                   circular
-                  label={'appointment notification icon'}
+                  label="appointment notification icon"
                   labelId={hash + 'appointment_notification'}
                   backgroundColor={theme.color.surface.message}
                   borderColor={theme.color.surface.message}

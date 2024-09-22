@@ -1,7 +1,7 @@
 import { format, formatDistance } from 'date-fns';
 import { de, enGB } from 'date-fns/locale';
 
-import { LANGUAGES } from '../constants/index.js';
+import { LANGUAGES } from '../constants/index.ts';
 
 const two = (n: number) => (n < 10 ? `0${n}` : n);
 
