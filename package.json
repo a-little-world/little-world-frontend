@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "lint-fix": "npm run lint -- --fix",
     "dev": "npx webpack serve --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development"
   },
   "eslintConfig": {

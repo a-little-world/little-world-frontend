@@ -48,14 +48,14 @@ export const StyledCard = styled(Card)`
   gap: ${({ theme }) => theme.spacing.small};
 
   ${({ $unconfirmedMatch }) =>
-    $unconfirmedMatch &&
-    css`
+    $unconfirmedMatch
+    && css`
       background-color: rgb(252, 224, 172);
     `};
 
   ${({ $onProfile }) =>
-    $onProfile &&
-    css`
+    $onProfile
+    && css`
       max-width: ${CardSizes.Small};
       width: unset;
     `};

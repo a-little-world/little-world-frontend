@@ -63,8 +63,7 @@ const Form = () => {
   const slug = paths.slice(-1)[0];
   const isEditPath = paths[2] === EDIT_FORM_ROUTE;
 
-  const { title, note, step, totalSteps, components, nextPage, prevPage } =
-    getFormPage({
+  const { title, note, step, totalSteps, components, nextPage, prevPage } =    getFormPage({
       slug,
       formOptions,
       userData,

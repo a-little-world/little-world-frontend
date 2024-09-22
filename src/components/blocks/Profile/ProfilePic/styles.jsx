@@ -89,8 +89,8 @@ export const UploadArea = styled.label`
   }`}
 
   ${({ $dragging }) =>
-    $dragging &&
-    css`
+    $dragging
+    && css`
       border-style: dashed;
       filter: contrast(105%);
 

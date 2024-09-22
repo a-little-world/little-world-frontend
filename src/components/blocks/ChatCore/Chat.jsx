@@ -34,8 +34,7 @@ import {
   insertChat,
   markChatMessagesRead,
   updateMessages,
-} from '../../../features/userData';
-import { addMessage } from '../../../features/userData';
+ addMessage } from '../../../features/userData';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
@@ -157,8 +156,8 @@ export const Chat = ({ chatId }) => {
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
-        {messages.page &&
-          (isEmpty(messagesResult) ? (
+        {messages.page
+          && (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
               {t('chat.no_messages')}
             </NoMessages>

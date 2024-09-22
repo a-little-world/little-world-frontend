@@ -116,7 +116,7 @@ function NotificationPanel() {
                 <CalendarIcon
                   circular
                   label="appointment notification icon"
-                  labelId={hash + 'appointment_notification'}
+                  labelId={`${hash  }appointment_notification`}
                   backgroundColor={theme.color.surface.message}
                   borderColor={theme.color.surface.message}
                   color={theme.color.text.highlight}

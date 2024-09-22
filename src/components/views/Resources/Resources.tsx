@@ -42,8 +42,7 @@ function Resources() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const subpage =
-    location.pathname === getAppRoute(RESOURCES_ROUTE)
+  const subpage =    location.pathname === getAppRoute(RESOURCES_ROUTE)
       ? 'trainings'
       : last(location.pathname.split('/'));
 
@@ -60,7 +59,7 @@ function Resources() {
       <ContentSelector
         selection={subpage}
         setSelection={handleSubpageSelect}
-        use={'resources'}
+        use="resources"
       />
       <Content>{renderResourceContent(subpage)}</Content>
     </>

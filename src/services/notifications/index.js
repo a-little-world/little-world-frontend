@@ -4,7 +4,7 @@ import { BACKEND_URL } from "../../ENVIRONMENT";
 
 class Notifications {
   async getAll({ pageNumber, itemPerPage }) {
-    let response = await fetch(
+    const response = await fetch(
       `${BACKEND_URL}/api/notification/?page=${pageNumber}&paginate_by=${itemPerPage}`,
       {
         method: "GET",
@@ -16,11 +16,12 @@ class Notifications {
         },
       }
     );
-    let data = await response.text();
+    const data = await response.text();
     return JSON.parse(data);
   }
+
   async archive(hashId) {
-    let response = await fetch(`${BACKEND_URL}/api/notification/archive`, {
+    const response = await fetch(`${BACKEND_URL}/api/notification/archive`, {
       method: "POST",
       body: JSON.stringify({
         hash: [hashId],
@@ -32,11 +33,12 @@ class Notifications {
         "X-UseTagsOnly": true,
       },
     });
-    let data = await response.text();
+    const data = await response.text();
     return JSON.parse(data);
   }
+
   async read(hashId) {
-    let response = await fetch(`${BACKEND_URL}/api/notification/read`, {
+    const response = await fetch(`${BACKEND_URL}/api/notification/read`, {
       method: "POST",
       body: JSON.stringify({
         hash: [hashId],
@@ -48,7 +50,7 @@ class Notifications {
         "X-UseTagsOnly": true,
       },
     });
-    let data = await response.text();
+    const data = await response.text();
     return JSON.parse(data);
   }
 }

@@ -50,8 +50,8 @@ export const Notification = styled.div<{
   gap: ${({ theme }) => theme.spacing.small};
 
   ${({ theme, $highlight }) =>
-    $highlight &&
-    css`
+    $highlight
+    && css`
       border-color: ${theme.color.border.selected};
       background: ${theme.color.gradient.orange10};
     `}

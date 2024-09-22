@@ -22,8 +22,8 @@ const Wrapper = styled.div`
   box-sizing: border-box;
 
   ${({ $isVH }) =>
-    $isVH &&
-    css`
+    $isVH
+    && css`
       max-height: 100vh;
     `}
 
@@ -52,8 +52,8 @@ const Content = styled.section`
   flex: 1;
 
   ${({ theme, $isVH }) => css`
-    ${$isVH &&
-    css`
+    ${$isVH
+    && css`
       overflow: hidden;
     `}
     @media (min-width: ${theme.breakpoints.medium}) {
@@ -129,14 +129,14 @@ export const FullAppLayout = ({ children }) => {
 
       <Modal
         open={
-          matches?.proposed?.items?.length ||
-          matches?.unconfirmed?.items?.length
+          matches?.proposed?.items?.length
+          || matches?.unconfirmed?.items?.length
         }
         locked={false}
         onClose={() => {}}
       >
-        {(matches?.proposed?.items?.length ||
-          matches?.unconfirmed?.items?.length) && (
+        {(matches?.proposed?.items?.length
+          || matches?.unconfirmed?.items?.length) && (
           <MatchCardComponent
             showNewMatch={Boolean(!matches?.proposed?.items?.length)}
             matchId={

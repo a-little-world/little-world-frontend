@@ -65,9 +65,8 @@ function Main() {
   const matches = useSelector(state => state.userData.matches);
 
   useEffect(() => {
-    const totalPage =
-      (matches?.confirmed?.totalItems + matches?.support?.totalItems) /
-      pageItems;
+    const totalPage =      (matches?.confirmed?.totalItems + matches?.support?.totalItems)
+      / pageItems;
 
     setTotalPages(Math.ceil(totalPage) || 1);
   }, [matches]);
@@ -78,8 +77,7 @@ function Main() {
     }
   }, [userId]);
 
-  const subpage =
-    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)
+  const subpage =    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)
       ? 'events'
       : 'conversation_partners';
 
@@ -97,7 +95,7 @@ function Main() {
       <ContentSelector
         selection={subpage}
         setSelection={handleSubpageSelect}
-        use={'main'}
+        use="main"
       />
       {subpage === 'events' ? (
         <CommunityEvents />

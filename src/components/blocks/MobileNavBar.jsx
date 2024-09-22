@@ -55,8 +55,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
   const { userId } = useParams();
   const paths = location.pathname.split('/');
   // routes use different parts of the path to determine the header
-  let key =
-    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) || 'home';
+  let key =    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) || 'home';
 
   const isHome = key === 'home';
   if (key === 'profile' && userId) {

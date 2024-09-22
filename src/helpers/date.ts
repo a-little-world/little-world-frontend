@@ -5,9 +5,7 @@ import { LANGUAGES } from '../constants/index.ts';
 
 const two = (n: number) => (n < 10 ? `0${n}` : n);
 
-export const formatTime = (date: Date) => {
-  return `${two(date.getHours())}:${two(date.getMinutes())}`;
-};
+export const formatTime = (date: Date) => `${two(date.getHours())}:${two(date.getMinutes())}`;
 
 export const formatEventTime = (date1: Date, date2: Date) => {
   if (!date2) return formatTime(date1);
@@ -18,18 +16,14 @@ export const formatDate = (
   date: Date,
   formatStr = 'cccc, LLLL do',
   locale: string,
-) => {
-  return format(date, formatStr, {
+) => format(date, formatStr, {
     locale: locale === LANGUAGES.de ? de : enGB,
   });
-};
 
-export const formatTimeDistance = (from: Date, to: Date, locale: string) => {
-  return formatDistance(from, to, {
+export const formatTimeDistance = (from: Date, to: Date, locale: string) => formatDistance(from, to, {
     addSuffix: true,
     locale: locale === LANGUAGES.de ? de : enGB,
   });
-};
 
 export function getEndTime(
   startDate: Date,

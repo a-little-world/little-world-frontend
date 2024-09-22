@@ -105,8 +105,7 @@ export function VideoCall() {
     onKeyPressed: () => setIsFullScreen(false),
   });
 
-  const { userId, token, livekitServerUrl, audioOptions, videoOptions } =
-    useSelector(state => state.userData.activeCall);
+  const { userId, token, livekitServerUrl, audioOptions, videoOptions } =    useSelector(state => state.userData.activeCall);
 
   const profile = useSelector(state => state.userData.user.profile);
   const chat = useSelector(state =>

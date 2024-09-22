@@ -294,7 +294,7 @@ function Help() {
       <ContentSelector
         selection={subpage}
         setSelection={selectSubpage}
-        use={'help'}
+        use="help"
       />
       <HelpContainer>
         <HelpPanel>

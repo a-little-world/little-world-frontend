@@ -48,8 +48,7 @@ function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
 }
 
 function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } =
-    getFormattedCalendarDates(calendarEvent);
+  const { formattedStartDate, formattedEndDate } =    getFormattedCalendarDates(calendarEvent);
   const encodedUrl = encodeURI(
     [
       'https://www.google.com/calendar/render',
@@ -74,8 +73,7 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
 
 // Generates ICS for Apple and Outlook calendars
 function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } =
-    getFormattedCalendarDates(calendarEvent);
+  const { formattedStartDate, formattedEndDate } =    getFormattedCalendarDates(calendarEvent);
 
   const formattedStartDateTime = formattedStartDate
     .replace(/[-:]/g, '')

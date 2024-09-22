@@ -218,15 +218,13 @@ export const userDataSlice = createSlice({
         results: sortChats(newChats),
       };
     },
-    preMatchingAppointmentBooked: (state, action) => {
-      return {
+    preMatchingAppointmentBooked: (state, action) => ({
         ...state,
         user: {
           ...state.user,
           preMatchingAppointment: action.payload,
         },
-      };
-    },
+      }),
     switchQuestionCategory: (state, { payload }) => {
       const { card, archived } = payload;
 
@@ -235,11 +233,9 @@ export const userDataSlice = createSlice({
           card.category
         ].filter(c => c.uuid !== card.uuid);
 
-        state.questions.cards['archived'].push(card);
+        state.questions.cards.archived.push(card);
       } else {
-        state.questions.cards['archived'] = state.questions.cards[
-          'archived'
-        ].filter(c => c.uuid !== card.uuid);
+        state.questions.cards.archived = state.questions.cards.archived.filter(c => c.uuid !== card.uuid);
 
         state.questions.cards[card.category].push(card);
       }
@@ -308,13 +304,9 @@ export const getChatByPartnerId = (chats, partnerId) => {
   return partner;
 };
 
-export const getMessagesByChatId = (messages, chatId) => {
-  return messages?.[chatId] || [];
-};
+export const getMessagesByChatId = (messages, chatId) => messages?.[chatId] || [];
 
-export const getChatByChatId = (chats, chatId) => {
-  return chats.results?.find(chat => chat.uuid === chatId);
-};
+export const getChatByChatId = (chats, chatId) => chats.results?.find(chat => chat.uuid === chatId);
 
 export const selectMatchesDisplay = createSelector(
   [state => state.userData.matches],
@@ -329,8 +321,7 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
   dispatch(getQuestions(result));
 };
 
-export const postArchieveQuestion =
-  (card, archive = true) =>
+export const postArchieveQuestion =  (card, archive = true) =>
   async dispatch => {
     const result = await questionsDuringCall.archieveQuestion(
       card?.uuid,

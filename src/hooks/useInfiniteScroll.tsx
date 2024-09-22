@@ -13,14 +13,14 @@ const useInfiniteScroll = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
-  var dependencyList: string = JSON.stringify(fetchArgs);
+  const dependencyList: string = JSON.stringify(fetchArgs);
 
   const fetchData = useCallback(async () => {
     // do not fetch if loading or on the last page
     if (
-      !fetchCondition ||
-      loading ||
-      (!isEmpty(items) && currentPage >= totalPages)
+      !fetchCondition
+      || loading
+      || (!isEmpty(items) && currentPage >= totalPages)
     )
       return;
 

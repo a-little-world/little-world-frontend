@@ -33,7 +33,7 @@ module.exports = {
     'react/function-component-definition': 'off',
     'react/require-default-props': 'off',
     'arrow-parens': 'off',
-    'operator-linebreak': [1],
+    'operator-linebreak': [1, 'after'],
     'no-confusing-arrow': 0,
     'no-unused-vars': 1,
     'no-nested-ternary': 1,

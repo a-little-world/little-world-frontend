@@ -26,8 +26,8 @@ const LanguageButton = styled(Button)`
   padding: ${({ theme }) => theme.spacing.xxsmall};
 
   ${({ disabled }) =>
-    disabled &&
-    css`
+    disabled
+    && css`
       background: ${({ theme }) => theme.color.surface.primary} !important;
       color: ${({ theme }) => theme.color.text.highlight} !important;
     `}

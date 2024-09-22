@@ -110,8 +110,8 @@ export const MessageText = styled(Text)<{ $isSelf: boolean }>`
   max-width: 100%;
 
   ${({ $isSelf, theme }) =>
-    $isSelf &&
-    `
+    $isSelf
+    && `
    background: ${theme.color.surface.message};
 `}
 

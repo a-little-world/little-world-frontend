@@ -102,8 +102,8 @@ function QuestionCards() {
         </CategoryControl>
       </QuestionCategories>
       <QuestionContentCard>
-        {cardsByCategory?.[selectedTopic]?.length > 0 &&
-          cardsByCategory[selectedTopic]?.map(card => (
+        {cardsByCategory?.[selectedTopic]?.length > 0
+          && cardsByCategory[selectedTopic]?.map(card => (
             <QuestionCard
               key={card?.uuid}
               $selected={selectedQuestionId === card?.uuid}
@@ -115,8 +115,8 @@ function QuestionCards() {
               >
                 {card?.content[selfUserPreferedLang]}
               </QuestionButton>
-              {selectedQuestionId === card?.uuid &&
-                selectedTopic !== 'archived' && (
+              {selectedQuestionId === card?.uuid
+                && selectedTopic !== 'archived' && (
                   <ArchiveButton>
                     <button
                       type="button"
@@ -132,8 +132,8 @@ function QuestionCards() {
                     </button>
                   </ArchiveButton>
                 )}
-              {selectedQuestionId === card?.uuid &&
-                selectedTopic === 'archived' && (
+              {selectedQuestionId === card?.uuid
+                && selectedTopic === 'archived' && (
                   <ArchiveButton>
                     <button
                       type="button"

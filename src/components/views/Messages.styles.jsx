@@ -147,7 +147,7 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
                   : message.partner.image
               }
               imageType={message.partner.image_type}
-              size={'xsmall'}
+              size="xsmall"
             />
             <Details>
               <Top>

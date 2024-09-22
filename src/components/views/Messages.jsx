@@ -34,7 +34,7 @@ const Messages = () => {
 
   return (
     <>
-      <PageHeader text={t('chat_header')}></PageHeader>
+      <PageHeader text={t('chat_header')} />
       <ChatDashboard>
         <ChatsPanel
           chats={items}

@@ -46,7 +46,7 @@ const Table = ({ view, data, setDate, header, inSelect, setSelect }) => {
 
   const handleSelect = (index) => {
     setSelect();
-    setDate(dates[index] + " um " + times[index]);
+    setDate(`${dates[index]  } um ${  times[index]}`);
     setSelectedIndex(selectedIndex === index ? -1 : index);
   };
 
@@ -56,19 +56,19 @@ const Table = ({ view, data, setDate, header, inSelect, setSelect }) => {
 
   if (view) {
     return (
-      <div className={style["container"]}>
+      <div className={style.container}>
         <p>{header}</p>
         <table>
           {data.map((row, index) => {
             dates[index] = getNextDate(row[0], row[1][0]);
-            times[index] = (Number(row[1][0].split("_")[0]) % 24) + ":00";
+            times[index] = `${Number(row[1][0].split("_")[0]) % 24  }:00`;
 
             return (
               <tr
-                className={selectedIndex === index ? style["selected"] : ""}
+                className={selectedIndex === index ? style.selected : ""}
                 onClick={() => handleSelect(index)}
               >
-                <td>{row[0] + ", " + dates[index]}</td>
+                <td>{`${row[0]  }, ${  dates[index]}`}</td>
                 <td>{times[index]}</td>
                 <td style={{ color: "#F39325", display: "flex", justifyContent: "space-between" }}>
                   Auswahl
@@ -76,7 +76,7 @@ const Table = ({ view, data, setDate, header, inSelect, setSelect }) => {
                     className={
                       selectedIndex === index
                         ? style["close-button"]
-                        : style["close-button"] + " " + style["unselect-button"]
+                        : `${style["close-button"]  } ${  style["unselect-button"]}`
                     }
                     onClick={() => handleSelect(index)}
                   >

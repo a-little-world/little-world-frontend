@@ -78,8 +78,7 @@ export function SidebarNotes() {
   }, [selectedTopic, initialData]);
 
   const handleAddNote = async () => {
-    const [sourcelang, targetLang] =
-      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
+    const [sourcelang, targetLang] =      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
     await addUserNote(note, sourcelang, targetLang);
     setNote('');
     getUserNotes()
@@ -108,8 +107,7 @@ export function SidebarNotes() {
 
   const handleNoteEdit = async id => {
     const content = textareaContent;
-    const [sourcelang, targetLang] =
-      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
+    const [sourcelang, targetLang] =      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
     const FavoritedResponse = await noteStatusUpdate({
       note_id: id,
       note_text: content,
@@ -198,8 +196,7 @@ export function SidebarNotes() {
       }
 
       if (response && response.status === 200) {
-        const updatedField =
-          actionType === 'remove'
+        const updatedField =          actionType === 'remove'
             ? 'is_deleted'
             : actionType === 'favorite'
             ? 'is_favorite'
@@ -257,8 +254,8 @@ export function SidebarNotes() {
         </form>
       )}
       <NotesCardWrapper>
-        {data &&
-          data
+        {data
+          && data
             ?.filter(note => !note.is_deleted)
             ?.map(({ id, note, updated_at, is_favorite }) => (
               <NotesCard selected={selectedQuestionId === id} key={id}>
