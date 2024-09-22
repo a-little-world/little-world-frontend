@@ -1,6 +1,6 @@
 import { last } from 'lodash';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
@@ -42,17 +42,14 @@ function Resources() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const subpage =    location.pathname === getAppRoute(RESOURCES_ROUTE) ?
-      'trainings' :
-      last(location.pathname.split('/'));
+  const subpage =
+    location.pathname === getAppRoute(RESOURCES_ROUTE)
+      ? 'trainings'
+      : last(location.pathname.split('/'));
 
-  const handleSubpageSelect = (subpage: subpages) => {
-    navigate(getAppSubpageRoute(RESOURCES_ROUTE, subpage));
+  const handleSubpageSelect = (page: subpages) => {
+    navigate(getAppSubpageRoute(RESOURCES_ROUTE, page));
   };
-
-  // useEffect(() => {
-  //   selectSubpage(last(location.pathname.split('/')));
-  // }, [location]);
 
   return (
     <>

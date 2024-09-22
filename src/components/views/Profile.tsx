@@ -20,7 +20,7 @@ import {
   getMatchByPartnerId,
   updateProfile,
 } from '../../features/userData';
-import { onFormError } from '../../helpers/form';
+import { onFormError } from '../../helpers/form.ts';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes.ts';
 import {
   ComponentTypes,
@@ -113,9 +113,9 @@ const getProfileFields = ({
         labelTooltip: trans('self_info.language_skills_tooltip'),
         maxSegments: 8,
         restrictions:
-          profile?.user_type === USER_TYPES.volunteer ?
-            { german: restrictedLangLevels } :
-            {},
+          profile?.user_type === USER_TYPES.volunteer
+            ? { german: restrictedLangLevels }
+            : {},
         firstDropdown: {
           dataField: 'lang',
           ariaLabel: trans('self_info.language_selector_label'),
@@ -160,15 +160,15 @@ function Profile() {
     isSelf ? user?.profile : match?.partner,
   );
   const [profileFields, setProfileFields] = useState(
-    profile ?
-      getProfileFields({
+    profile
+      ? getProfileFields({
           profile,
           formOptions,
           t,
           isSelf,
           selfAvailability: user?.profile?.availability,
-        }) :
-      {},
+        })
+      : {},
   );
 
   useEffect(() => {
@@ -183,9 +183,9 @@ function Profile() {
     }
   }, []);
 
-  const profileTitle = isSelf ?
-    t('profile.self_profile_title') :
-    t('profile.match_profile_title', { userName: profile?.first_name });
+  const profileTitle = isSelf
+    ? t('profile.self_profile_title')
+    : t('profile.match_profile_title', { userName: profile?.first_name });
 
   const onError = e => {
     onFormError({ e, formFields: getValues(), setError });

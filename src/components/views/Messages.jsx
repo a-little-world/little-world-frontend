@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { fetchChats } from '../../api/chat';
-import { updateChats } from '../../features/userData.js';
+import { updateChats } from '../../features/userData';
 import useIniniteScroll from '../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../routes.ts';
 import PageHeader from '../atoms/PageHeader.tsx';
@@ -21,7 +21,7 @@ const Messages = () => {
   const dispatch = useDispatch();
   const { scrollRef } = useIniniteScroll({
     fetchItems: fetchChats,
-    setItems: items => dispatch(updateChats(items)),
+    setItems: newItems => dispatch(updateChats(newItems)),
     currentPage: chats?.page,
     totalPages: chats?.pages_total,
     items,

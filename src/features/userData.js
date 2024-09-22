@@ -4,6 +4,20 @@ import { isEmpty, some, uniqBy } from 'lodash';
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../routes.ts';
 import { questionsDuringCall } from '../services/questionsDuringCall';
 
+export const sortChats = chats => {
+  const sorted = chats.sort((a, b) => {
+    // by newest_message.created in ascending order if unread_count is equal
+    if (!a.newest_message?.created) return 1;
+    if (!b.newest_message?.created) return -1;
+    return (
+      new Date(b.newest_message.created) - new Date(a.newest_message.created)
+    );
+  });
+
+  return uniqBy(sorted, 'uuid');
+};
+
+/* eslint no-param-reassign: 0 */
 export const userDataSlice = createSlice({
   name: 'userData',
   initialState: {},
@@ -31,7 +45,7 @@ export const userDataSlice = createSlice({
         action.payload?.matches?.support?.items[0]?.chatId || '',
       );
     },
-    reset: (state, action) => {
+    reset: state => {
       state.user = null;
     },
     updateUser: (state, action) => {
@@ -63,7 +77,7 @@ export const userDataSlice = createSlice({
         room => room.activeUsers.filter(user => user === userId).length === 0,
       );
     },
-    cancelCallSetup: (state, action) => {
+    cancelCallSetup: state => {
       state.callSetup = null;
     },
     initActiveCall: (state, action) => {
@@ -77,7 +91,7 @@ export const userDataSlice = createSlice({
         action.payload,
       ];
     },
-    stopActiveCall: (state, action) => {
+    stopActiveCall: state => {
       state.activeCall = null;
     },
     addMatch: (state, action) => {
@@ -157,34 +171,33 @@ export const userDataSlice = createSlice({
       } = action.payload;
       const chatIsLoaded = chatId in state.messages;
       if (chatIsLoaded) {
-        const newMessages = state.messages[chatId]?.results ?
-          [message, ...state.messages[chatId].results] :
-          [message];
+        const newMessages = state.messages[chatId]?.results
+          ? [message, ...state.messages[chatId].results]
+          : [message];
         state.messages[chatId].results = newMessages;
-      } else {
-        if (!metaChatObj)
-          throw new Error(
-            'No meta data for chat but chatId is not present in state.messages! The server should have deliverd the meta data for the chat.',
-          );
+      } else if (!metaChatObj) {
+        throw new Error(
+          'No meta data for chat but chatId is not present in state.messages! The server should have deliverd the meta data for the chat.',
+        );
         // this chat has never been loaded we can ignore inserting the actual messages, we only care about inserting the chat as messages will fetch one the chat is clicked!
       }
       state.chats.results = some(
         state.chats.results,
         chat => chat.uuid === chatId,
-      ) ?
-        state.chats.results?.map(chat => {
+      )
+        ? state.chats.results?.map(chat => {
             if (chat.uuid === chatId) {
               return {
                 ...chat,
-                unread_count: senderIsSelf ?
-                  chat.unread_count :
-                  chat.unread_count + 1,
+                unread_count: senderIsSelf
+                  ? chat.unread_count
+                  : chat.unread_count + 1,
                 newest_message: message,
               };
             }
             return chat;
-          }) :
-        [metaChatObj, ...state.chats.results];
+          })
+        : [metaChatObj, ...state.chats.results];
       state.chats = {
         ...state.chats,
         results: sortChats(state.chats.results),
@@ -219,12 +232,12 @@ export const userDataSlice = createSlice({
       };
     },
     preMatchingAppointmentBooked: (state, action) => ({
-        ...state,
-        user: {
-          ...state.user,
-          preMatchingAppointment: action.payload,
-        },
-      }),
+      ...state,
+      user: {
+        ...state.user,
+        preMatchingAppointment: action.payload,
+      },
+    }),
     switchQuestionCategory: (state, { payload }) => {
       const { card, archived } = payload;
 
@@ -235,15 +248,17 @@ export const userDataSlice = createSlice({
 
         state.questions.cards.archived.push(card);
       } else {
-        state.questions.cards.archived = state.questions.cards.archived.filter(c => c.uuid !== card.uuid);
+        state.questions.cards.archived = state.questions.cards.archived.filter(
+          c => c.uuid !== card.uuid,
+        );
 
         state.questions.cards[card.category].push(card);
       }
     },
     insertChat: (state, { payload }) => {
-      const chatResults = isEmpty(state.chats) ?
-        [payload] :
-        [...state.chats.results, payload];
+      const chatResults = isEmpty(state.chats)
+        ? [payload]
+        : [...state.chats.results, payload];
       state.chats.results = sortChats(chatResults);
     },
     updateChats: (state, { payload }) => {
@@ -280,19 +295,6 @@ export const {
   updateUser,
 } = userDataSlice.actions;
 
-export const sortChats = chats => {
-  const sorted = chats.sort((a, b) => {
-    // by newest_message.created in ascending order if unread_count is equal
-    if (!a.newest_message?.created) return 1;
-    if (!b.newest_message?.created) return -1;
-    return (
-      new Date(b.newest_message.created) - new Date(a.newest_message.created)
-    );
-  });
-
-  return uniqBy(sorted, 'uuid');
-};
-
 export const getMatchByPartnerId = (matches, partnerId) => {
   const allMatches = [...matches.support.items, ...matches.confirmed.items];
   const partner = allMatches.find(match => match?.partner?.id === partnerId);
@@ -304,16 +306,18 @@ export const getChatByPartnerId = (chats, partnerId) => {
   return partner;
 };
 
-export const getMessagesByChatId = (messages, chatId) => messages?.[chatId] || [];
+export const getMessagesByChatId = (messages, chatId) =>
+  messages?.[chatId] || [];
 
-export const getChatByChatId = (chats, chatId) => chats.results?.find(chat => chat.uuid === chatId);
+export const getChatByChatId = (chats, chatId) =>
+  chats.results?.find(chat => chat.uuid === chatId);
 
 export const selectMatchesDisplay = createSelector(
   [state => state.userData.matches],
   ({ confirmed, support }) =>
-    confirmed.currentPage === 1 ?
-      [...support.items, ...confirmed.items] :
-      [...confirmed.items],
+    confirmed.currentPage === 1
+      ? [...support.items, ...confirmed.items]
+      : [...confirmed.items],
 );
 
 export const FetchQuestionsDataAsync = () => async dispatch => {
@@ -321,7 +325,8 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
   dispatch(getQuestions(result));
 };
 
-export const postArchieveQuestion =  (card, archive = true) =>
+export const postArchieveQuestion =
+  (card, archive = true) =>
   async dispatch => {
     const result = await questionsDuringCall.archieveQuestion(
       card?.uuid,

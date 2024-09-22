@@ -12,7 +12,7 @@ export const Toolbar = styled.div`
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       width: unset;
-      padding: ${({ theme }) => `0 ${theme.spacing.xxsmall}`};
+      padding: 0 ${theme.spacing.xxsmall};
     }
   `}
 `;
@@ -30,8 +30,8 @@ export const ToolbarButton = styled(Button)<{ $isActive: boolean }>`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      gap: ${({ theme }) => theme.spacing.xxxsmall};
-      padding: ${({ theme }) => `${theme.spacing.xxxsmall} 0`};
+      gap: ${theme.spacing.xxxsmall};
+      padding: ${theme.spacing.xxxsmall} 0;
     }
   `}
 `;

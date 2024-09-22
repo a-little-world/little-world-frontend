@@ -25,7 +25,7 @@ import styled, { css, useTheme } from 'styled-components';
 import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
 import { updateProfile } from '../../features/userData';
-import { onFormError, registerInput } from '../../helpers/form';
+import { onFormError, registerInput } from '../../helpers/form.ts';
 import { FORGOT_PASSWORD_ROUTE } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import PageHeader from '../atoms/PageHeader.tsx';
@@ -314,7 +314,6 @@ function Settings() {
     email: state.userData.user.email,
     ...state.userData.user.profile,
   }));
-  const user = useSelector(state => state.userData.user);
 
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -352,14 +351,14 @@ function Settings() {
                 section="personal"
                 label={label}
                 value={
-                  label === 'display_language' ?
-                    t(`settings.display_language_${data[label]}`) :
-                    data[label]
+                  label === 'display_language'
+                    ? t(`settings.display_language_${data[label]}`)
+                    : data[label]
                 }
                 setEditing={
-                  label !== 'profilePicture' ?
-                    setEditing :
-                    () => {
+                  label !== 'profilePicture'
+                    ? setEditing
+                    : () => {
                         /* For profile picture we just open the userform frontend for now */
                         navigate('/formpage?pages=6');
                         navigate(0); /* Reload page */
