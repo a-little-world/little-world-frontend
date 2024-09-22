@@ -57,9 +57,9 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
       `&dates=${formattedStartDate || ''}`,
       `/${formattedEndDate || ''}`,
       `&details=${
-        calendarEvent.description
-          ? `${calendarEvent.description}\nhttps://little-world.com`
-          : 'https://little-world.com'
+        calendarEvent.description ?
+          `${calendarEvent.description}\nhttps://little-world.com` :
+          'https://little-world.com'
       }`,
       `&location=${calendarEvent.link || ''}`,
       '&ctz=Europe%2FBerlin',

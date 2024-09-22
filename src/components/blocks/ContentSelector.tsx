@@ -79,9 +79,9 @@ function ContentSelector({
         ) : (
           <StyledOption
             appearance={
-              selection === topic
-                ? ButtonAppearance.Primary
-                : ButtonAppearance.Secondary
+              selection === topic ?
+                ButtonAppearance.Primary :
+                ButtonAppearance.Secondary
             }
             key={topic}
             onClick={() => setSelection(topic)}

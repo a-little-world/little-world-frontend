@@ -169,15 +169,15 @@ export function VideoCall() {
                 isFullScreen={isFullScreen}
                 partnerName={chat?.partner?.first_name}
                 partnerImage={
-                  chat?.partner?.image_type === 'avatar'
-                    ? chat?.partner.avatar_config
-                    : chat?.partner?.image
+                  chat?.partner?.image_type === 'avatar' ?
+                    chat?.partner.avatar_config :
+                    chat?.partner?.image
                 }
                 partnerImageType={chat?.partner?.image_type}
                 selfImage={
-                  profile.image_type === 'avatar'
-                    ? profile.avatar_config
-                    : profile?.image
+                  profile.image_type === 'avatar' ?
+                    profile.avatar_config :
+                    profile?.image
                 }
                 selfImageType={profile.image_type}
               />

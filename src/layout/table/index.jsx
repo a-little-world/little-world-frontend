@@ -74,9 +74,9 @@ const Table = ({ view, data, setDate, header, inSelect, setSelect }) => {
                   Auswahl
                   <button
                     className={
-                      selectedIndex === index
-                        ? style["close-button"]
-                        : `${style["close-button"]  } ${  style["unselect-button"]}`
+                      selectedIndex === index ?
+                        style["close-button"] :
+                        `${style["close-button"]  } ${  style["unselect-button"]}`
                     }
                     onClick={() => handleSelect(index)}
                   >

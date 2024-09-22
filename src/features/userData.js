@@ -157,9 +157,9 @@ export const userDataSlice = createSlice({
       } = action.payload;
       const chatIsLoaded = chatId in state.messages;
       if (chatIsLoaded) {
-        const newMessages = state.messages[chatId]?.results
-          ? [message, ...state.messages[chatId].results]
-          : [message];
+        const newMessages = state.messages[chatId]?.results ?
+          [message, ...state.messages[chatId].results] :
+          [message];
         state.messages[chatId].results = newMessages;
       } else {
         if (!metaChatObj)
@@ -171,20 +171,20 @@ export const userDataSlice = createSlice({
       state.chats.results = some(
         state.chats.results,
         chat => chat.uuid === chatId,
-      )
-        ? state.chats.results?.map(chat => {
+      ) ?
+        state.chats.results?.map(chat => {
             if (chat.uuid === chatId) {
               return {
                 ...chat,
-                unread_count: senderIsSelf
-                  ? chat.unread_count
-                  : chat.unread_count + 1,
+                unread_count: senderIsSelf ?
+                  chat.unread_count :
+                  chat.unread_count + 1,
                 newest_message: message,
               };
             }
             return chat;
-          })
-        : [metaChatObj, ...state.chats.results];
+          }) :
+        [metaChatObj, ...state.chats.results];
       state.chats = {
         ...state.chats,
         results: sortChats(state.chats.results),
@@ -241,9 +241,9 @@ export const userDataSlice = createSlice({
       }
     },
     insertChat: (state, { payload }) => {
-      const chatResults = isEmpty(state.chats)
-        ? [payload]
-        : [...state.chats.results, payload];
+      const chatResults = isEmpty(state.chats) ?
+        [payload] :
+        [...state.chats.results, payload];
       state.chats.results = sortChats(chatResults);
     },
     updateChats: (state, { payload }) => {
@@ -311,9 +311,9 @@ export const getChatByChatId = (chats, chatId) => chats.results?.find(chat => ch
 export const selectMatchesDisplay = createSelector(
   [state => state.userData.matches],
   ({ confirmed, support }) =>
-    confirmed.currentPage === 1
-      ? [...support.items, ...confirmed.items]
-      : [...confirmed.items],
+    confirmed.currentPage === 1 ?
+      [...support.items, ...confirmed.items] :
+      [...confirmed.items],
 );
 
 export const FetchQuestionsDataAsync = () => async dispatch => {

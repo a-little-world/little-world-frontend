@@ -48,14 +48,14 @@ export const StyledCard = styled(Card)`
   gap: ${({ theme }) => theme.spacing.small};
 
   ${({ $unconfirmedMatch }) =>
-    $unconfirmedMatch
-    && css`
+    $unconfirmedMatch &&
+    css`
       background-color: rgb(252, 224, 172);
     `};
 
   ${({ $onProfile }) =>
-    $onProfile
-    && css`
+    $onProfile &&
+    css`
       max-width: ${CardSizes.Small};
       width: unset;
     `};
@@ -256,9 +256,9 @@ function ProfileCard({
 
         {!onProfile && (
           <Description>
-            {isSupport
-              ? t('profile_card.support_description')
-              : profile.description}
+            {isSupport ?
+              t('profile_card.support_description') :
+              profile.description}
           </Description>
         )}
       </ProfileInfo>

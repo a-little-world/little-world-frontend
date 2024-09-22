@@ -68,9 +68,9 @@ const formPages = {
           width: InputWidth.Small,
         }),
       },
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? []
-        : [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [] :
+        [
             {
               type: ComponentTypes.multiCheckboxWithInput,
               multiCheckbox: {
@@ -104,9 +104,9 @@ const formPages = {
           labelTooltip: t('self_info.language_skills_tooltip'),
           maxSegments: 8,
           restrictions:
-            userData?.user_type === USER_TYPES.volunteer
-              ? { german: restrictedLangLevels }
-              : {},
+            userData?.user_type === USER_TYPES.volunteer ?
+              { german: restrictedLangLevels } :
+              {},
           firstDropdown: {
             dataField: 'lang',
             ariaLabel: t('self_info.language_selector_label'),
@@ -179,8 +179,8 @@ const formPages = {
     prevPage: 'user-form/picture',
     nextPage: 'user-form/availability',
     components: [
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [
             {
               type: ComponentTypes.radio,
               currentValue: userData?.target_group,
@@ -191,8 +191,8 @@ const formPages = {
                 errorRules: { required: t('validation.required') },
               }),
             },
-          ]
-        : []),
+          ] :
+        []),
       {
         type: ComponentTypes.radio,
         currentValue: userData?.partner_gender,

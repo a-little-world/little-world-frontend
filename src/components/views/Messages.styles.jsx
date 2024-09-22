@@ -142,9 +142,9 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
             <UserImage
               circle
               image={
-                message.partner.image_type === 'avatar'
-                  ? message.partner.avatar_config
-                  : message.partner.image
+                message.partner.image_type === 'avatar' ?
+                  message.partner.avatar_config :
+                  message.partner.image
               }
               imageType={message.partner.image_type}
               size="xsmall"
@@ -177,7 +177,7 @@ export const ChatsPanel = ({ chats, selectChat, selectedChat, scrollRef }) => {
                   ) : (
                     <TickIcon width="16px" height="16px" />
                   )
-                ) : !!message.unread_count ? (
+                ) : message.unread_count ? (
                   <UnreadIndicator />
                 ) : null}
               </Preview>

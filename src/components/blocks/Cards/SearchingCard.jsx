@@ -56,8 +56,8 @@ const Note = styled(Text)`
 
 const AppointmentButton = styled(Button)`
   ${({ theme, $isLink }) =>
-    $isLink
-    && css`
+    $isLink &&
+    css`
       color: ${theme.color.text.link};
     `}
 `;

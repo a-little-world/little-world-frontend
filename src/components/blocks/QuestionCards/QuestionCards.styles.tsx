@@ -28,8 +28,8 @@ export const TopicButton = styled.button<{ $selected: boolean }>`
   box-sizing: border-box;
 
   ${({ $selected }) =>
-    $selected
-    && `
+    $selected &&
+    `
     background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
     color: white;
   `}
@@ -47,8 +47,8 @@ export const QuestionCard = styled.div<{ $selected: boolean }>`
   align-items: center;
 
   ${({ $selected, theme }) =>
-    $selected
-    && `
+    $selected &&
+    `
     border-color: ${theme.color.border.selected};
   `}
 `;

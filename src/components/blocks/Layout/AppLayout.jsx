@@ -22,8 +22,8 @@ const Wrapper = styled.div`
   box-sizing: border-box;
 
   ${({ $isVH }) =>
-    $isVH
-    && css`
+    $isVH &&
+    css`
       max-height: 100vh;
     `}
 
@@ -52,8 +52,8 @@ const Content = styled.section`
   flex: 1;
 
   ${({ theme, $isVH }) => css`
-    ${$isVH
-    && css`
+    ${$isVH &&
+    css`
       overflow: hidden;
     `}
     @media (min-width: ${theme.breakpoints.medium}) {
@@ -79,9 +79,9 @@ export const FullAppLayout = ({ children }) => {
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
-  const dashboardVisibleMatches = matches
-    ? [...matches.support.items, ...matches.confirmed.items]
-    : [];
+  const dashboardVisibleMatches = matches ?
+    [...matches.support.items, ...matches.confirmed.items] :
+    [];
 
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
@@ -129,25 +129,25 @@ export const FullAppLayout = ({ children }) => {
 
       <Modal
         open={
-          matches?.proposed?.items?.length
-          || matches?.unconfirmed?.items?.length
+          matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length
         }
         locked={false}
         onClose={() => {}}
       >
-        {(matches?.proposed?.items?.length
-          || matches?.unconfirmed?.items?.length) && (
+        {(matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length) && (
           <MatchCardComponent
             showNewMatch={Boolean(!matches?.proposed?.items?.length)}
             matchId={
-              matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].id
-                : matches?.unconfirmed.items[0].id
+              matches?.proposed?.items?.length ?
+                matches?.proposed.items[0].id :
+                matches?.unconfirmed.items[0].id
             }
             profile={
-              matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].partner
-                : matches?.unconfirmed.items[0].partner
+              matches?.proposed?.items?.length ?
+                matches?.proposed.items[0].partner :
+                matches?.unconfirmed.items[0].partner
             }
           />
         )}

@@ -156,8 +156,8 @@ export const Chat = ({ chatId }) => {
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
-        {messages.page
-          && (isEmpty(messagesResult) ? (
+        {messages.page &&
+          (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
               {t('chat.no_messages')}
             </NoMessages>
@@ -261,9 +261,9 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
             <UserImage
               circle
               image={
-                partner?.image_type === 'avatar'
-                  ? partner?.avatar_config
-                  : partner?.image
+                partner?.image_type === 'avatar' ?
+                  partner?.avatar_config :
+                  partner?.image
               }
               imageType={partner?.image_type}
               size="xsmall"

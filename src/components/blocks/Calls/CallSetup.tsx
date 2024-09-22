@@ -144,12 +144,12 @@ function CallSetup({ userPk }: CallSetupProps) {
         userId: userPk,
         tracks: values,
         token: authData.token,
-        audioOptions: values.audioEnabled
-          ? { deviceId: values.audioDeviceId }
-          : false,
-        videoOptions: values.videoEnabled
-          ? { deviceId: values.videoDeviceId }
-          : false,
+        audioOptions: values.audioEnabled ?
+          { deviceId: values.audioDeviceId } :
+          false,
+        videoOptions: values.videoEnabled ?
+          { deviceId: values.videoDeviceId } :
+          false,
         livekitServerUrl: authData.livekitServerUrl,
       }),
     );

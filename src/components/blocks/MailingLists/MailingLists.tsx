@@ -64,9 +64,9 @@ const MailingLists = ({
               defaultChecked={value}
               error={error?.message}
               label={
-                hideLabel
-                  ? undefined
-                  : t('mailing_lists.newsletter_subscription_toggle')
+                hideLabel ?
+                  undefined :
+                  t('mailing_lists.newsletter_subscription_toggle')
               }
               labelInline={inline}
               required={false}

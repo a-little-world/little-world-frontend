@@ -44,13 +44,13 @@ const AppointmentsLayout = ({ setClose, id }) => {
 
   const selectedUser = matches.find(el => el.user.hash === id);
 
-  const data =    selectedUser
-    && findOverlap(
+  const data =    selectedUser &&
+    findOverlap(
       Object.entries(user.profile.availability),
       Object.entries(selectedUser.profile.availability),
     );
-  const data1 =    selectedUser
-    && findDifference(
+  const data1 =    selectedUser &&
+    findDifference(
       Object.entries(user.profile.availability),
       Object.entries(selectedUser.profile.availability),
     );
@@ -125,9 +125,9 @@ const AppointmentsLayout = ({ setClose, id }) => {
           onClick={() => {
             if (dateSelection !== '') {
               const value = t(
-                tableSelection === 'first'
-                  ? 'chat_appointment_message_overlap'
-                  : 'chat_appointment_message_non_overlap',
+                tableSelection === 'first' ?
+                  'chat_appointment_message_overlap' :
+                  'chat_appointment_message_non_overlap',
                 {
                   userName: selectedUser.profile.first_name,
                   date: dateSelection,

@@ -76,8 +76,8 @@ export const CategoryButton = styled.button<{ selected: boolean }>`
   display: flex;
 
   ${({ selected }) =>
-    selected
-    && `
+    selected &&
+    `
       background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
       color: white;
       `};
@@ -138,8 +138,8 @@ export const NotesCard = styled.div<{ selected: boolean }>`
   align-items: center;
 
   ${({ selected }) =>
-    selected
-    && `
+    selected &&
+    `
       border-color: red;
     `}
 `;
@@ -194,8 +194,8 @@ export const SidebarContent = styled.div`
 
 export const CategoryLabel = styled(Text)<{ $desktopOnly: boolean }>`
   ${({ theme, $desktopOnly }) =>
-    $desktopOnly
-    && css`
+    $desktopOnly &&
+    css`
       display: none;
       @media (min-width: ${theme.breakpoints.medium}) {
         display: block;

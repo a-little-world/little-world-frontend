@@ -2,9 +2,9 @@ const ROOT_SERVER_ERROR = 'root.serverError';
 const TRY_AGAIN_ERROR = 'validation.generic_try_again';
 
 export const onFormError = ({ e, formFields, setError }) => {
-  const cause = Object.keys(formFields).includes(e.cause)
-    ? e.cause
-    : ROOT_SERVER_ERROR;
+  const cause = Object.keys(formFields).includes(e.cause) ?
+    e.cause :
+    ROOT_SERVER_ERROR;
 
   if (e.message) {
     setError(

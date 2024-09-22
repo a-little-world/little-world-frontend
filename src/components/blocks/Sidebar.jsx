@@ -182,9 +182,9 @@ function Sidebar({ sidebarMobile }) {
               <Icon
                 label={label}
                 labelId={label}
-                {...(isActive
-                  ? { color: theme.color.surface.primary }
-                  : { gradient: Gradients.Blue })}
+                {...(isActive ?
+                  { color: theme.color.surface.primary } :
+                  { gradient: Gradients.Blue })}
                 {...iconProps}
               />
               {t(`nbs_${label}`)}

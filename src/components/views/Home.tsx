@@ -65,8 +65,8 @@ function Main() {
   const matches = useSelector(state => state.userData.matches);
 
   useEffect(() => {
-    const totalPage =      (matches?.confirmed?.totalItems + matches?.support?.totalItems)
-      / pageItems;
+    const totalPage =      (matches?.confirmed?.totalItems + matches?.support?.totalItems) /
+      pageItems;
 
     setTotalPages(Math.ceil(totalPage) || 1);
   }, [matches]);
@@ -77,9 +77,9 @@ function Main() {
     }
   }, [userId]);
 
-  const subpage =    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)
-      ? 'events'
-      : 'conversation_partners';
+  const subpage =    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE) ?
+      'events' :
+      'conversation_partners';
 
   const handleSubpageSelect = (subpage: subpages) => {
     const nextPath = subpage !== 'conversation_partners' ? subpage : '';

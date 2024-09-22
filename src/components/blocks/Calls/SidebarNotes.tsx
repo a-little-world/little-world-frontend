@@ -196,11 +196,11 @@ export function SidebarNotes() {
       }
 
       if (response && response.status === 200) {
-        const updatedField =          actionType === 'remove'
-            ? 'is_deleted'
-            : actionType === 'favorite'
-            ? 'is_favorite'
-            : 'is_archived';
+        const updatedField =          actionType === 'remove' ?
+            'is_deleted' :
+            actionType === 'favorite' ?
+            'is_favorite' :
+            'is_archived';
 
         updatedNotesData[noteIndex] = {
           ...updatedNotesData[noteIndex],
@@ -254,8 +254,8 @@ export function SidebarNotes() {
         </form>
       )}
       <NotesCardWrapper>
-        {data
-          && data
+        {data &&
+          data
             ?.filter(note => !note.is_deleted)
             ?.map(({ id, note, updated_at, is_favorite }) => (
               <NotesCard selected={selectedQuestionId === id} key={id}>

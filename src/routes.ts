@@ -37,9 +37,9 @@ export const getAppSubpageRoute = (parent: string, slug: string) =>
 export const getUserFormRoute = (slug: string) => `/${USER_FORM_ROUTE}/${slug}`;
 
 export const isActiveRoute = (locationPath: string, path: string) =>
-  locationPath === path || path !== getAppRoute('')
-    ? locationPath?.includes(path)
-    : false;
+  locationPath === path || path !== getAppRoute('') ?
+    locationPath?.includes(path) :
+    false;
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {

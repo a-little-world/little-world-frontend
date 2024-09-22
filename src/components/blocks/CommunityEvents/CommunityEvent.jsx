@@ -44,9 +44,9 @@ function CommunityEvent({
 
   const [showFullText, setShowFullText] = useState(false);
   const initialWordsDescription = description.split(' ');
-  const wordsToShow = showFullText
-    ? initialWordsDescription.join(' ')
-    : initialWordsDescription.slice(0, 15).join(' ');
+  const wordsToShow = showFullText ?
+    initialWordsDescription.join(' ') :
+    initialWordsDescription.slice(0, 15).join(' ');
   const isShortText = initialWordsDescription.length <= 15;
   const startDate = new Date(time);
   const endDate = end_time ? new Date(end_time) : null;

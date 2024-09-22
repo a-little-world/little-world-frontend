@@ -83,9 +83,9 @@ const SignUp = () => {
         passAuthenticationBoundary();
         dispatch(initialise(signUpData));
         setIsSubmitting(false);
-        const nextRoute = signUpData.user?.emailVerified
-          ? getAppRoute()
-          : getAppRoute(VERIFY_EMAIL_ROUTE);
+        const nextRoute = signUpData.user?.emailVerified ?
+          getAppRoute() :
+          getAppRoute(VERIFY_EMAIL_ROUTE);
         navigate(nextRoute);
       })
       .catch(onError);

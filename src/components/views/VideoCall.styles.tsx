@@ -67,8 +67,8 @@ export const VideoContainer = styled.div<{
   }
 
   ${({ $isFullScreen, theme }) =>
-    $isFullScreen
-    && css`
+    $isFullScreen &&
+    css`
       --lk-border-radius: 0;
       .lk-room-container {
         height: 100vh !important;

@@ -19,9 +19,9 @@ const firstDuplicate = arr => {
 const addErrorToLangSkill = ({ dropdownProps, error, values }) => {
   const numberOfValues = values.length;
   const errors = Array(numberOfValues).fill(undefined);
-  const errorIndex =    error.message === ERROR_DE_MISSING
-      ? numberOfValues - 1
-      : firstDuplicate(values);
+  const errorIndex =    error.message === ERROR_DE_MISSING ?
+      numberOfValues - 1 :
+      firstDuplicate(values);
 
   errors.splice(errorIndex, 1, error);
   return { ...dropdownProps, errors };
@@ -50,26 +50,26 @@ const FormStep = ({ content, control }) => {
           const componentProps = {
             ...props,
             [updater]: eventOrValue => {
-              const newVal = eventOrValue?.target
-                ? eventOrValue
-                : { target: { value: eventOrValue } };
+              const newVal = eventOrValue?.target ?
+                eventOrValue :
+                { target: { value: eventOrValue } };
 
               onChange(newVal);
             },
             [valueKey]: value,
-            ...(dataField === 'lang_skill' && error
-              ? {
+            ...(dataField === 'lang_skill' && error ?
+              {
                   firstDropdown: addErrorToLangSkill({
                     dropdownProps: props.firstDropdown,
                     error: t(error?.message),
                     values: map(value, val => val.lang),
                   }),
-                }
-              : {}),
+                } :
+              {}),
           };
-          const componentKey = isObject(currentValue)
-            ? JSON.stringify(currentValue)
-            : currentValue;
+          const componentKey = isObject(currentValue) ?
+            JSON.stringify(currentValue) :
+            currentValue;
 
           return (
             <Component

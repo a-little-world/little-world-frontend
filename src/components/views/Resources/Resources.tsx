@@ -42,9 +42,9 @@ function Resources() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const subpage =    location.pathname === getAppRoute(RESOURCES_ROUTE)
-      ? 'trainings'
-      : last(location.pathname.split('/'));
+  const subpage =    location.pathname === getAppRoute(RESOURCES_ROUTE) ?
+      'trainings' :
+      last(location.pathname.split('/'));
 
   const handleSubpageSelect = (subpage: subpages) => {
     navigate(getAppSubpageRoute(RESOURCES_ROUTE, subpage));
