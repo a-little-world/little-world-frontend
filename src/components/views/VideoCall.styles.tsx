@@ -17,7 +17,7 @@ export const CallLayout = styled.div`
     @media (min-width: ${theme.breakpoints.large}) {
       --lk-border-radius: ${theme.radius.medium};
       padding: ${theme.spacing.medium};
-      gap: ${({ theme }) => theme.spacing.medium};
+      gap: ${theme.spacing.medium};
     }
   `}
 `;

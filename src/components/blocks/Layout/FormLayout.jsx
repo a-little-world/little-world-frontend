@@ -26,13 +26,11 @@ const Content = styled.div`
   `}
 `;
 
-const FormLayout = ({ children }) => {
-  return (
-    <Wrapper>
-      <Header />
-      <Content>{children || <Outlet />}</Content>
-    </Wrapper>
-  );
-};
+const FormLayout = ({ children }) => (
+  <Wrapper>
+    <Header />
+    <Content>{children || <Outlet />}</Content>
+  </Wrapper>
+);
 
 export default FormLayout;

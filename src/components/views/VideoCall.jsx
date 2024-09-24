@@ -7,27 +7,23 @@ import {
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { Track } from 'livekit-client';
-import { LocalParticipant } from 'livekit-client';
+import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  blockIncomingCall,
-  getChatByPartnerId,
-} from '../../features/userData.js';
+import { blockIncomingCall, getChatByPartnerId } from '../../features/userData';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute } from '../../routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
-import ProfileImage from '../atoms/ProfileImage.jsx';
+import ProfileImage from '../atoms/ProfileImage';
 import CallSidebar, {
   SidebarSelectionProvider,
 } from '../blocks/Calls/CallSidebar.tsx';
 import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar.tsx';
-import { Chat } from '../blocks/ChatCore/Chat.jsx';
+import { Chat } from '../blocks/ChatCore/Chat';
 import QuestionCards from '../blocks/QuestionCards/QuestionCards.tsx';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
 import {
@@ -40,7 +36,62 @@ import {
   WaitingTile,
 } from './VideoCall.styles.tsx';
 
-export function VideoCall() {
+function MyVideoConference({
+  isFullScreen,
+  partnerImage,
+  partnerImageType,
+  partnerName,
+  selfImage,
+  selfImageType,
+}) {
+  // `useTracks` returns all camera and screen share tracks. If a user
+  // joins without a published camera track, a placeholder track is returned.
+  const tracks = useTracks(
+    [{ source: Track.Source.Camera, withPlaceholder: true }],
+    { onlySubscribed: true },
+  );
+
+  const { t } = useTranslation();
+  const placeholders = {};
+  tracks.forEach(track => {
+    if (track.participant) {
+      const isLocal = track?.participant instanceof LocalParticipant;
+
+      placeholders[track.participant.identity] = (
+        <VideoPlaceholder
+          circle
+          image={isLocal ? selfImage : partnerImage}
+          imageType={isLocal ? selfImageType : partnerImageType}
+          size="flex"
+        />
+      );
+    }
+  });
+
+  if (isEmpty(tracks)) return null;
+
+  return (
+    <Videos>
+      <StyledGridLayout tracks={tracks}>
+        <ParticipantTile placeholders={placeholders} />
+      </StyledGridLayout>
+
+      {tracks.length === 1 && (
+        <WaitingTile $isFullScreen={isFullScreen}>
+          <ProfileImage
+            circle
+            image={partnerImage}
+            imageType={partnerImageType}
+            size="medium"
+          />
+          <Text>{t('call.waiting_for_partner', { name: partnerName })}</Text>
+        </WaitingTile>
+      )}
+    </Videos>
+  );
+}
+
+function VideoCall() {
   const navigate = useNavigate();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
@@ -148,21 +199,21 @@ export function VideoCall() {
             {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>
           <Drawer
-            title={'Translate'}
+            title="Translate"
             open={selectedDrawerOption === 'translator'}
             onClose={() => setSelectedDrawerOption(null)}
           >
             <TranslationTool />
           </Drawer>
           <Drawer
-            title={'Chat'}
+            title="Chat"
             open={selectedDrawerOption === 'chat'}
             onClose={() => setSelectedDrawerOption(null)}
           >
             <Chat chatId={chat?.uuid} />
           </Drawer>
           <Drawer
-            title={'Questions'}
+            title="Questions"
             open={selectedDrawerOption === 'questions'}
             onClose={() => setSelectedDrawerOption(null)}
           >
@@ -172,61 +223,6 @@ export function VideoCall() {
         </CallLayout>
       </LayoutContextProvider>
     </SidebarSelectionProvider>
-  );
-}
-
-function MyVideoConference({
-  isFullScreen,
-  partnerImage,
-  partnerImageType,
-  partnerName,
-  selfImage,
-  selfImageType,
-}) {
-  // `useTracks` returns all camera and screen share tracks. If a user
-  // joins without a published camera track, a placeholder track is returned.
-  const tracks = useTracks(
-    [{ source: Track.Source.Camera, withPlaceholder: true }],
-    { onlySubscribed: true },
-  );
-
-  const { t } = useTranslation();
-  const placeholders = {};
-  tracks.forEach(track => {
-    if (track.participant) {
-      const isLocal = track?.participant instanceof LocalParticipant;
-
-      placeholders[track.participant.identity] = (
-        <VideoPlaceholder
-          circle
-          image={isLocal ? selfImage : partnerImage}
-          imageType={isLocal ? selfImageType : partnerImageType}
-          size={'flex'}
-        />
-      );
-    }
-  });
-
-  if (isEmpty(tracks)) return null;
-
-  return (
-    <Videos>
-      <StyledGridLayout tracks={tracks}>
-        <ParticipantTile placeholders={placeholders} />
-      </StyledGridLayout>
-
-      {tracks.length === 1 && (
-        <WaitingTile $isFullScreen={isFullScreen}>
-          <ProfileImage
-            circle
-            image={partnerImage}
-            imageType={partnerImageType}
-            size={'medium'}
-          />
-          <Text>{t('call.waiting_for_partner', { name: partnerName })}</Text>
-        </WaitingTile>
-      )}
-    </Videos>
   );
 }
 

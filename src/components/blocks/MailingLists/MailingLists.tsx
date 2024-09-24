@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import { mutateUserData } from '../../../api';
 import { updateProfile } from '../../../features/userData';
-import { onFormError } from '../../../helpers/form.js';
+import { onFormError } from '../../../helpers/form.ts';
 
 const MailingListsWrapper = styled.div``;
 
@@ -64,9 +64,9 @@ const MailingLists = ({
               defaultChecked={value}
               error={error?.message}
               label={
-                hideLabel
-                  ? undefined
-                  : t('mailing_lists.newsletter_subscription_toggle')
+                hideLabel ?
+                  undefined :
+                  t('mailing_lists.newsletter_subscription_toggle')
               }
               labelInline={inline}
               required={false}

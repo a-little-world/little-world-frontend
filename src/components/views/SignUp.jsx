@@ -20,7 +20,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { signUp } from '../../api';
 import { initialise } from '../../features/userData';
-import { onFormError, registerInput } from '../../helpers/form';
+import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   LOGIN_ROUTE,
   VERIFY_EMAIL_ROUTE,
@@ -83,9 +83,9 @@ const SignUp = () => {
         passAuthenticationBoundary();
         dispatch(initialise(signUpData));
         setIsSubmitting(false);
-        const nextRoute = signUpData.user?.emailVerified
-          ? getAppRoute()
-          : getAppRoute(VERIFY_EMAIL_ROUTE);
+        const nextRoute = signUpData.user?.emailVerified ?
+          getAppRoute() :
+          getAppRoute(VERIFY_EMAIL_ROUTE);
         navigate(nextRoute);
       })
       .catch(onError);

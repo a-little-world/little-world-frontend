@@ -3,9 +3,10 @@ import React from 'react';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
 
+/* eslint-disable */
 class QuestionsDuringCall {
   async getQuestions(archived = true) {
-    let response = await fetch(
+    const response = await fetch(
       `${BACKEND_URL}/api/user/question_cards/?archived=${archived}&category=all`,
       {
         method: 'GET',
@@ -17,12 +18,12 @@ class QuestionsDuringCall {
         },
       },
     );
-    let data = await response.json();
+    const data = await response.json();
     return data;
   }
 
   async archieveQuestion(uuid, archive = true) {
-    let response = await fetch(`${BACKEND_URL}/api/user/archive_card/`, {
+    const response = await fetch(`${BACKEND_URL}/api/user/archive_card/`, {
       method: 'POST',
       headers: {
         'X-CSRFToken': Cookie.get('csrftoken'),
@@ -32,7 +33,7 @@ class QuestionsDuringCall {
       },
       body: JSON.stringify({ uuid, archive }),
     });
-    let data = await response.json();
+    const data = await response.json();
     return data;
   }
 }

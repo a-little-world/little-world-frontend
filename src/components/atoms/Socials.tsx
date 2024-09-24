@@ -57,16 +57,14 @@ const Socials = ({
 }: {
   gradient?: string;
   type: 'social_media' | 'join_groups';
-}) => {
-  return (
-    <SocialLinks>
-      {SOCIALS_LIST[type].map(({ Icon, url, labelId, label }: any) => (
-        <Link key={label} href={url} textDecoration={false}>
-          <Icon labelId={labelId} label={label} gradient={gradient} />
-        </Link>
-      ))}
-    </SocialLinks>
-  );
-};
+}) => (
+  <SocialLinks>
+    {SOCIALS_LIST[type].map(({ Icon, url, labelId, label }: any) => (
+      <Link key={label} href={url} textDecoration={false}>
+        <Icon labelId={labelId} label={label} gradient={gradient} />
+      </Link>
+    ))}
+  </SocialLinks>
+);
 
 export default Socials;

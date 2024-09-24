@@ -5,7 +5,6 @@ import {
   Card,
   Link,
   Text,
-  TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';

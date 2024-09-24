@@ -11,8 +11,7 @@ import FormStep from '../Form/FormStep';
 import { Container } from './styles';
 
 const DropdownWithInput = ({ control, dropdown, textInput }) => {
-  const { currentValue, dataField, formData, textInputVal, getProps } =
-    dropdown;
+  const { currentValue, dataField, formData, textInputVal, getProps } =    dropdown;
   const [displayTextInput, setDisplayTextInput] = useState(
     textInputVal === currentValue,
   );

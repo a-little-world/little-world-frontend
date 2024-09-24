@@ -21,8 +21,7 @@ const MultiCheckboxWithInput = ({
   multiCheckbox,
   textInput,
 }: MultiCheckboxWithInputProps) => {
-  const { currentValue, dataField, formData, textInputVal, getProps } =
-    multiCheckbox;
+  const { currentValue, dataField, formData, textInputVal, getProps } =    multiCheckbox;
   const [displayTextInput, setDisplayTextInput] = useState(
     currentValue.includes(textInputVal),
   );

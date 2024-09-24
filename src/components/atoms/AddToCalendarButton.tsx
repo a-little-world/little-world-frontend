@@ -36,6 +36,74 @@ interface CalendarEvent {
   link: string;
 }
 
+function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
+  const formattedStartDate = formatDateForCalendarUrl(calendarEvent.startDate);
+  const endDate = getEndTime(
+    calendarEvent.startDate,
+    calendarEvent.durationInMinutes,
+    calendarEvent.endDate,
+  );
+  const formattedEndDate = formatDateForCalendarUrl(endDate);
+  return { formattedStartDate, formattedEndDate };
+}
+
+function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
+  const { formattedStartDate, formattedEndDate } =
+    getFormattedCalendarDates(calendarEvent);
+  const encodedUrl = encodeURI(
+    [
+      'https://www.google.com/calendar/render',
+      '?action=TEMPLATE',
+      `&text=${calendarEvent.title || ''}`,
+      `&dates=${formattedStartDate || ''}`,
+      `/${formattedEndDate || ''}`,
+      `&details=${
+        calendarEvent.description
+          ? `${calendarEvent.description}\nhttps://little-world.com`
+          : 'https://little-world.com'
+      }`,
+      `&location=${calendarEvent.link || ''}`,
+      '&ctz=Europe%2FBerlin',
+      '&sprop=&sprop=name:',
+    ].join(''),
+  );
+
+  // open encodeUrl in new target blank
+  return encodedUrl;
+}
+
+// Generates ICS for Apple and Outlook calendars
+function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
+  const { formattedStartDate, formattedEndDate } =
+    getFormattedCalendarDates(calendarEvent);
+
+  const formattedStartDateTime = formattedStartDate
+    .replace(/[-:]/g, '')
+    .replace('.000Z', 'Z');
+  const formattedEndDateTime = formattedEndDate
+    .replace(/[-:]/g, '')
+    .replace('.000Z', 'Z');
+
+  const icsContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Your Company//NONSGML v1.0//EN',
+    'BEGIN:VEVENT',
+    `UID:${new Date().getTime()}`,
+    `URL:${document.URL}`,
+    `DTSTART:${formattedStartDateTime}`,
+    `DTEND:${formattedEndDateTime}`,
+    `SUMMARY:${calendarEvent.title || ''}`,
+    `DESCRIPTION:${calendarEvent.description || ''}`,
+    `LOCATION:${calendarEvent.link || ''}`,
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\n');
+
+  const encodedUrl = encodeURI(`data:text/calendar;charset=utf8,${icsContent}`);
+  return encodedUrl;
+}
+
 export default function AddToCalendarButton({
   calendarEvent,
 }: {
@@ -45,7 +113,7 @@ export default function AddToCalendarButton({
   const theme = useTheme();
 
   const onCalendarOptionClick = (
-    generateCalendar: (calendarEvent: CalendarEvent) => string,
+    generateCalendar: (calEvent: CalendarEvent) => string,
   ) => {
     const url = generateCalendar(calendarEvent);
     window.open(url, '_blank');
@@ -104,66 +172,4 @@ export default function AddToCalendarButton({
       </AddToCalendarOption>
     </Popover>
   );
-}
-
-function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } =
-    getFormattedCalendarDates(calendarEvent);
-  const encodedUrl = encodeURI(
-    [
-      'https://www.google.com/calendar/render',
-      '?action=TEMPLATE',
-      `&text=${calendarEvent.title || ''}`,
-      `&dates=${formattedStartDate || ''}`,
-      `/${formattedEndDate || ''}`,
-      `&details=${calendarEvent.description
-        ? `${calendarEvent.description}\nhttps://little-world.com`
-        : 'https://little-world.com'
-      }`,
-      `&location=${calendarEvent.link || ''}`,
-      '&ctz=Europe%2FBerlin',
-      '&sprop=&sprop=name:',
-    ].join(''),
-  );
-
-  // open encodeUrl in new target blank
-  return encodedUrl;
-}
-
-function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
-  const formattedStartDate = formatDateForCalendarUrl(calendarEvent.startDate);
-  const endDate = getEndTime(
-    calendarEvent.startDate,
-    calendarEvent.durationInMinutes,
-    calendarEvent.endDate,
-  );
-  const formattedEndDate = formatDateForCalendarUrl(endDate);
-  return { formattedStartDate, formattedEndDate };
-}
-
-// Generates ICS for Apple and Outlook calendars
-function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } = getFormattedCalendarDates(calendarEvent);
-
-  const formattedStartDateTime = formattedStartDate.replace(/[-:]/g, '').replace('.000Z', 'Z');
-  const formattedEndDateTime = formattedEndDate.replace(/[-:]/g, '').replace('.000Z', 'Z');
-
-  const icsContent = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Your Company//NONSGML v1.0//EN',
-    'BEGIN:VEVENT',
-    `UID:${new Date().getTime()}`,
-    `URL:${document.URL}`,
-    `DTSTART:${formattedStartDateTime}`,
-    `DTEND:${formattedEndDateTime}`,
-    `SUMMARY:${calendarEvent.title || ''}`,
-    `DESCRIPTION:${calendarEvent.description || ''}`,
-    `LOCATION:${calendarEvent.link || ''}`,
-    'END:VEVENT',
-    'END:VCALENDAR'
-  ].join('\n');
-
-  const encodedUrl = encodeURI(`data:text/calendar;charset=utf8,${icsContent}`);
-  return encodedUrl;
 }

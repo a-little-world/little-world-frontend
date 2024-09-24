@@ -21,8 +21,8 @@ export const addUserNote = async (note, source_language, target_language ) => {
         method: "POST",
         body: JSON.stringify({
             note_text: note,
-            source_language: source_language,
-            target_language: target_language,
+            source_language,
+            target_language,
         }),
         headers: {
             "X-CSRFToken": Cookie.get("csrftoken"),

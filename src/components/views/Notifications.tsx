@@ -13,7 +13,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 
-import '../../notifications.css';
 import PageHeader from '../atoms/PageHeader.tsx';
 import {
   BottomContainer,
@@ -27,6 +26,7 @@ import {
   UnreadIndicator,
 } from './Notifications.styles.tsx';
 
+/* eslint-disable */
 function Notifications() {
   const { t } = useTranslation();
   const notifications = useSelector(state => {

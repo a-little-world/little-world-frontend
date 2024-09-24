@@ -6,11 +6,12 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { FetchQuestionsDataAsync } from '../../../features/userData';
-import { postArchieveQuestion } from '../../../features/userData';
+import {
+  FetchQuestionsDataAsync,
+  postArchieveQuestion,
+} from '../../../features/userData';
 import {
   ArchiveButton,
   Categories,
@@ -102,56 +103,54 @@ function QuestionCards() {
       </QuestionCategories>
       <QuestionContentCard>
         {cardsByCategory?.[selectedTopic]?.length > 0 &&
-          cardsByCategory[selectedTopic]?.map(card => {
-            return (
-              <QuestionCard
-                key={card?.uuid}
-                $selected={selectedQuestionId === card?.uuid}
+          cardsByCategory[selectedTopic]?.map(card => (
+            <QuestionCard
+              key={card?.uuid}
+              $selected={selectedQuestionId === card?.uuid}
+            >
+              <QuestionButton
+                onClick={() => {
+                  setQuestionId(card?.uuid);
+                }}
               >
-                <QuestionButton
-                  onClick={() => {
-                    setQuestionId(card?.uuid);
-                  }}
-                >
-                  {card?.content[selfUserPreferedLang]}
-                </QuestionButton>
-                {selectedQuestionId === card?.uuid &&
-                  selectedTopic !== 'archived' && (
-                    <ArchiveButton>
-                      <button
-                        type="button"
-                        className="yes"
-                        onClick={() => {
-                          dispatch(postArchieveQuestion(card, true));
-                        }}
-                      >
-                        <img
-                          className="accept-question-icon"
-                          alt="accept question"
-                        />
-                      </button>
-                    </ArchiveButton>
-                  )}
-                {selectedQuestionId === card?.uuid &&
-                  selectedTopic === 'archived' && (
-                    <ArchiveButton>
-                      <button
-                        type="button"
-                        className="unarchive"
-                        onClick={() => {
-                          dispatch(postArchieveQuestion(card, false));
-                        }}
-                      >
-                        <img
-                          className="unarchive-question-icon"
-                          alt="accept question"
-                        />
-                      </button>
-                    </ArchiveButton>
-                  )}
-              </QuestionCard>
-            );
-          })}
+                {card?.content[selfUserPreferedLang]}
+              </QuestionButton>
+              {selectedQuestionId === card?.uuid &&
+                selectedTopic !== 'archived' && (
+                  <ArchiveButton>
+                    <button
+                      type="button"
+                      className="yes"
+                      onClick={() => {
+                        dispatch(postArchieveQuestion(card, true));
+                      }}
+                    >
+                      <img
+                        className="accept-question-icon"
+                        alt="accept question"
+                      />
+                    </button>
+                  </ArchiveButton>
+                )}
+              {selectedQuestionId === card?.uuid &&
+                selectedTopic === 'archived' && (
+                  <ArchiveButton>
+                    <button
+                      type="button"
+                      className="unarchive"
+                      onClick={() => {
+                        dispatch(postArchieveQuestion(card, false));
+                      }}
+                    >
+                      <img
+                        className="unarchive-question-icon"
+                        alt="accept question"
+                      />
+                    </button>
+                  </ArchiveButton>
+                )}
+            </QuestionCard>
+          ))}
       </QuestionContentCard>
     </SidebarCard>
   );

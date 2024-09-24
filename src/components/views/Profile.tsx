@@ -14,13 +14,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { fetchUserMatch, mutateUserData } from '../../api/index.js';
 import { fetchProfile } from '../../api/profile.ts';
-import { USER_TYPES } from '../../constants/index';
+import { USER_TYPES } from '../../constants/index.ts';
 import {
   addMatch,
   getMatchByPartnerId,
   updateProfile,
 } from '../../features/userData';
-import { onFormError } from '../../helpers/form';
+import { onFormError } from '../../helpers/form.ts';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes.ts';
 import {
   ComponentTypes,

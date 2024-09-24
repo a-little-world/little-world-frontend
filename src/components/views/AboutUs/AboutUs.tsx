@@ -33,13 +33,12 @@ function OurWorld() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const subpage =
-    location.pathname === getAppRoute(OUR_WORLD_ROUTE)
-      ? 'support'
-      : last(location.pathname.split('/'));
+  const subpage =    location.pathname === getAppRoute(OUR_WORLD_ROUTE) ?
+      'support' :
+      last(location.pathname.split('/'));
 
-  const handleSubpageSelect = (subpage: subpages) => {
-    navigate(getAppSubpageRoute(OUR_WORLD_ROUTE, subpage));
+  const handleSubpageSelect = (page: subpages) => {
+    navigate(getAppSubpageRoute(OUR_WORLD_ROUTE, page));
   };
 
   // useEffect(() => {
@@ -51,7 +50,7 @@ function OurWorld() {
       <ContentSelector
         selection={subpage}
         setSelection={handleSubpageSelect}
-        use={'ourWorld'}
+        use="ourWorld"
       />
       <Content>{renderResourceContent(subpage)}</Content>
     </>

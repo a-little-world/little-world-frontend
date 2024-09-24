@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { completeForm, mutateUserData } from '../../../api';
 import { updateProfile, updateUser } from '../../../features/userData';
-import { onFormError } from '../../../helpers/form';
+import { onFormError } from '../../../helpers/form.ts';
 import {
   EDIT_FORM_ROUTE,
   PROFILE_ROUTE,
@@ -63,8 +63,7 @@ const Form = () => {
   const slug = paths.slice(-1)[0];
   const isEditPath = paths[2] === EDIT_FORM_ROUTE;
 
-  const { title, note, step, totalSteps, components, nextPage, prevPage } =
-    getFormPage({
+  const { title, note, step, totalSteps, components, nextPage, prevPage } =    getFormPage({
       slug,
       formOptions,
       userData,
@@ -152,7 +151,7 @@ const Form = () => {
         <SubmitError $visible={errors?.root?.serverError}>
           {t(errors?.root?.serverError?.message)}
         </SubmitError>
-        <FormButtons $onlyOneBtn={!Boolean(prevPage)}>
+        <FormButtons $onlyOneBtn={Boolean(!prevPage)}>
           {Boolean(prevPage) && (
             <Button
               appearance={ButtonAppearance.Secondary}

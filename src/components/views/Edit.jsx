@@ -13,12 +13,10 @@ export const EditContainer = styled.section`
   `};
 `;
 
-const EditView = () => {
-  return (
-    <EditContainer>
-      <Form />
-    </EditContainer>
+const EditView = () => (
+  <EditContainer>
+    <Form />
+  </EditContainer>
   );
-};
 
 export default EditView;

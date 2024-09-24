@@ -63,7 +63,7 @@ export const QuestionActionsWrapper = styled.div`
   align-items: flex-end;
 `;
 
-export const CategoryButton = styled.button`
+export const CategoryButton = styled.button<{ selected: boolean }>`
   padding: ${({ theme }) => `${theme.spacing.xxsmall}`};
   border-radius: ${({ theme }) => `${theme.spacing.medium}`};
   font-style: normal;
@@ -83,7 +83,7 @@ export const CategoryButton = styled.button`
       `};
 `;
 
-export const StyledImage = styled.img`
+export const StyledImage = styled.img<{ selected: boolean }>`
   height: 20px;
   width: 20px;
   ${({ selected }) => selected && ` filter: brightness(0) invert(1); `}
@@ -125,7 +125,7 @@ export const NotesCardWrapper = styled.div`
   flex-grow: 1;
 `;
 
-export const NotesCard = styled.div`
+export const NotesCard = styled.div<{ selected: boolean }>`
   border: 1px solid rgb(0 0 0 / 5%);
   box-sizing: border-box;
   border-radius: ${({ theme }) => `${theme.spacing.small}`};
@@ -137,14 +137,14 @@ export const NotesCard = styled.div`
   flex-direction: column;
   align-items: center;
 
-  ${props =>
-    props.selected &&
+  ${({ selected }) =>
+    selected &&
     `
       border-color: red;
     `}
 `;
 
-export const CardButton = styled.button`
+export const CardButton = styled.button<{ selected: boolean }>`
   padding: ${({ theme }) => `${theme.spacing.small}`};
   font-size: unset;
   width: 100%;

@@ -15,7 +15,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { login } from '../../api';
 import { initialise } from '../../features/userData';
-import { onFormError, registerInput } from '../../helpers/form';
+import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
@@ -72,9 +72,9 @@ const Login = () => {
           // consider this route after the requried for entry forms verify-email / user-form
           // we add missing front `/` otherwise 'app' would incorrectly navigate to /login/app
           navigate(
-            searchParams.get('next').startsWith('/')
-              ? searchParams.get('next')
-              : `/${searchParams.get('next')}`,
+            searchParams.get('next').startsWith('/') ?
+              searchParams.get('next') :
+              `/${searchParams.get('next')}`,
           );
         } else {
           // per default route to /app on successful login

@@ -171,12 +171,12 @@ function CallSetup({ userPk }: CallSetupProps) {
           livekitServerUrl: res.server_url,
         });
       })
-      .catch(err => {
+      .catch(() => {
         setError('error.server_issue');
       });
   }, []);
 
-  const handleError = error => {
+  const handleError = () => {
     setError('error.permissions');
   };
 

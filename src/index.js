@@ -1,16 +1,15 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider, useDispatch } from 'react-redux';
+import { Provider } from 'react-redux';
 
-import App from './App';
+import App, { InitializeDux } from './App';
 import { DEVELOPMENT, IS_CAPACITOR_BUILD } from './ENVIRONMENT';
-import store from './app/store';
+import store from './app/store.ts';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
 import { Root } from './router';
-import { InitializeDux } from './App';
 
 const isDevelopment = DEVELOPMENT;
 const isCapacitor = IS_CAPACITOR_BUILD || false;
@@ -66,9 +65,11 @@ window.renderMessageView = (
             />
           </FormLayout>
         </Root>
-        <InitializeDux data={{
-          apiOptions
-        }} />
+        <InitializeDux
+          data={{
+            apiOptions,
+          }}
+        />
       </Provider>
     </React.StrictMode>,
   );

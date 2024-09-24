@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { requestPasswordReset } from '../../api';
-import { onFormError, registerInput } from '../../helpers/form';
+import { onFormError, registerInput } from '../../helpers/form.ts';
 import { LOGIN_ROUTE } from '../../routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';
@@ -85,9 +85,9 @@ const ForgotPassword = () => {
           $visible={requestSuccessful || errors?.root?.serverError}
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
-          {requestSuccessful
-            ? t('forgot_password.success_message')
-            : t(errors?.root?.serverError?.message)}
+          {requestSuccessful ?
+            t('forgot_password.success_message') :
+            t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Button

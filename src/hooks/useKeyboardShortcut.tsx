@@ -12,7 +12,7 @@ function useKeyboardShortcut({
   onKeyPressed,
 }: UseKeyboardShortcutArgs) {
   useEffect(() => {
-    if (!condition) return;
+    if (!condition) return undefined;
     function keyDownHandler(e: globalThis.KeyboardEvent) {
       if (e.key === key) {
         e.preventDefault();

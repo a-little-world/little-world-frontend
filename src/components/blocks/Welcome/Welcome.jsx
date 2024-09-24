@@ -1,8 +1,4 @@
-import {
-  Button,
-  FriendshipImage,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
+import { Button, TextTypes } from '@a-little-world/little-world-design-system';
 import { ButtonSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Button/Button';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

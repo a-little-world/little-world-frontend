@@ -4,7 +4,7 @@ import { RouterProvider } from 'react-router-dom';
 
 import './App.css';
 import WebsocketBridge from './WebsocketBridge';
-import store from './app/store';
+import store from './app/store.ts';
 import { initialise } from './features/userData';
 import router from './router';
 

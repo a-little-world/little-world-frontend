@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { initCallSetup } from '../../../features/userData';
+import { blockIncomingCall, initCallSetup } from '../../../features/userData';
 import '../../../main.css';
 import CallSetup from '../Calls/CallSetup.tsx';
 import IncomingCall from '../Calls/IncomingCall.tsx';
@@ -79,9 +79,9 @@ export const FullAppLayout = ({ children }) => {
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
-  const dashboardVisibleMatches = matches
-    ? [...matches.support.items, ...matches.confirmed.items]
-    : [];
+  const dashboardVisibleMatches = matches ?
+    [...matches.support.items, ...matches.confirmed.items] :
+    [];
 
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
@@ -140,14 +140,14 @@ export const FullAppLayout = ({ children }) => {
           <MatchCardComponent
             showNewMatch={Boolean(!matches?.proposed?.items?.length)}
             matchId={
-              matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].id
-                : matches?.unconfirmed.items[0].id
+              matches?.proposed?.items?.length ?
+                matches?.proposed.items[0].id :
+                matches?.unconfirmed.items[0].id
             }
             profile={
-              matches?.proposed?.items?.length
-                ? matches?.proposed.items[0].partner
-                : matches?.unconfirmed.items[0].partner
+              matches?.proposed?.items?.length ?
+                matches?.proposed.items[0].partner :
+                matches?.unconfirmed.items[0].partner
             }
           />
         )}

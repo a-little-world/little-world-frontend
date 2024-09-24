@@ -4,7 +4,7 @@ import {
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 
-import { USER_TYPES } from '../constants';
+import { USER_TYPES } from '../constants/index.ts';
 import { ComponentTypes, formatDataField } from './formContent';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
@@ -68,9 +68,9 @@ const formPages = {
           width: InputWidth.Small,
         }),
       },
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? []
-        : [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [] :
+        [
             {
               type: ComponentTypes.multiCheckboxWithInput,
               multiCheckbox: {
@@ -104,9 +104,9 @@ const formPages = {
           labelTooltip: t('self_info.language_skills_tooltip'),
           maxSegments: 8,
           restrictions:
-            userData?.user_type === USER_TYPES.volunteer
-              ? { german: restrictedLangLevels }
-              : {},
+            userData?.user_type === USER_TYPES.volunteer ?
+              { german: restrictedLangLevels } :
+              {},
           firstDropdown: {
             dataField: 'lang',
             ariaLabel: t('self_info.language_selector_label'),
@@ -179,8 +179,8 @@ const formPages = {
     prevPage: 'user-form/picture',
     nextPage: 'user-form/availability',
     components: [
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [
             {
               type: ComponentTypes.radio,
               currentValue: userData?.target_group,
@@ -191,8 +191,8 @@ const formPages = {
                 errorRules: { required: t('validation.required') },
               }),
             },
-          ]
-        : []),
+          ] :
+        []),
       {
         type: ComponentTypes.radio,
         currentValue: userData?.partner_gender,
@@ -246,9 +246,7 @@ const formPages = {
     components: [
       {
         type: ComponentTypes.text,
-        getProps: t => ({
-          children: t('user_form_notifications.description'),
-        }),
+        getProps: t => ({ children: t('user_form_notifications.description') }),
       },
       {
         type: ComponentTypes.radioWithInput,

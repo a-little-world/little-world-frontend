@@ -1,5 +1,5 @@
-import React from "react";
-import styled, { css } from "styled-components";
+import React from 'react';
+import styled, { css } from 'styled-components';
 
 const Pagination = styled.div`
   width: fit-content;
@@ -34,7 +34,7 @@ const PaginationItem = styled.li`
 `;
 
 const PaginationNumber = styled.button`
-${sharedItemStyles};
+  ${sharedItemStyles};
   margin: 0 3px;
   border-radius: 50%;
   height: ${({ theme }) => `${theme.spacing.xlarge}`};
@@ -56,14 +56,15 @@ ${sharedItemStyles};
 `;
 
 const PaginationDots = styled.span`
-${sharedItemStyles};
+  ${sharedItemStyles};
   font-size: 22px;
   cursor: default;
 `;
 
 const PaginationButton = styled.button`
-${sharedItemStyles};
-  padding: ${({ theme }) => `${theme.spacing.xxxsmall} ${theme.spacing.medium}`};
+  ${sharedItemStyles};
+  padding: ${({ theme }) =>
+    `${theme.spacing.xxxsmall} ${theme.spacing.medium}`};
   border-radius: ${({ theme }) => `${theme.spacing.xlarge}`};
 
   &.disableButton {
@@ -73,7 +74,10 @@ ${sharedItemStyles};
 
 const CustomPagination = ({ totalPages, currentPage, onPageChange }) => {
   const generatePageNumbers = () => {
-    const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+    const pageNumbers = Array.from(
+      { length: totalPages },
+      (_, index) => index + 1,
+    );
 
     if (totalPages > 3) {
       if (currentPage > 2) {
@@ -103,7 +107,6 @@ const CustomPagination = ({ totalPages, currentPage, onPageChange }) => {
     });
   };
 
-
   return (
     <Pagination>
       <PaginationList>
@@ -112,12 +115,12 @@ const CustomPagination = ({ totalPages, currentPage, onPageChange }) => {
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         >
           <PaginationButton className={currentPage === 1 && 'disableButton'}>
-            <i className="fas fa-angle-left"></i> Prev
+            <i className="fas fa-angle-left" /> Prev
           </PaginationButton>
         </PaginationItem>
 
-        {generatePageNumbers().map((page, index) => (
-          <React.Fragment key={index}>
+        {generatePageNumbers().map(page => (
+          <React.Fragment key={`page ${page}`}>
             {page === '...' ? (
               <PaginationDots>
                 <span>...</span>
@@ -137,8 +140,10 @@ const CustomPagination = ({ totalPages, currentPage, onPageChange }) => {
           className="btn next"
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         >
-          <PaginationButton className={totalPages === currentPage && 'disableButton'}>
-            Next <i className="fas fa-angle-right"></i>
+          <PaginationButton
+            className={totalPages === currentPage && 'disableButton'}
+          >
+            Next <i className="fas fa-angle-right" />
           </PaginationButton>
         </PaginationItem>
       </PaginationList>

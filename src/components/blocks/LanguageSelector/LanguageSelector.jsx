@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { LANGUAGES } from '../../../constants';
+import { LANGUAGES } from '../../../constants/index.ts';
 import { COOKIE_LANG } from '../../../i18n';
 
 const Selector = styled.div`

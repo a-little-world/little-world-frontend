@@ -42,7 +42,7 @@ const Wrapper = ({
 }: {
   asLink?: boolean;
   children: React.ReactNode;
-}) => (asLink ? <Link to={getAppRoute()}>{children}</Link> : <>{children}</>);
+}) => (asLink ? <Link to={getAppRoute()}>{children}</Link> : children);
 
 interface LogoProps {
   asLink?: boolean;
@@ -60,19 +60,17 @@ const Logo = ({
   displayText = true,
   stacked = true,
   size = LogoSizes.Medium,
-}: LogoProps) => {
-  return (
-    <Wrapper asLink={asLink}>
-      <LogoContainer className={className} $stacked={stacked}>
-        {displayImage && (
-          <LogoImage src={LogoImageSvg} alt="Little World Logo" $size={size} />
-        )}
-        {displayText && (
-          <LogoText src={LogoTextSvg} alt="Little World" $size={size} />
-        )}
-      </LogoContainer>
-    </Wrapper>
-  );
-};
+}: LogoProps) => (
+  <Wrapper asLink={asLink}>
+    <LogoContainer className={className} $stacked={stacked}>
+      {displayImage && (
+        <LogoImage src={LogoImageSvg} alt="Little World Logo" $size={size} />
+      )}
+      {displayText && (
+        <LogoText src={LogoTextSvg} alt="Little World" $size={size} />
+      )}
+    </LogoContainer>
+  </Wrapper>
+);
 
 export default Logo;

@@ -28,7 +28,7 @@ import {
   getAppRoute,
   getAppSubpageRoute,
 } from '../../../routes.ts';
-import MenuLink from '../../atoms/MenuLink';
+import MenuLink from '../../atoms/MenuLink.tsx';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
 import {
@@ -243,7 +243,7 @@ function ProfileCard({
       <OnlineIndicator isOnline={isOnline} />
       <ProfileInfo>
         <NameContainer $isSelf={isSelf}>
-          <Text type={'Body3'} bold>
+          <Text type={TextTypes.Body3} bold>
             {profile.first_name}
           </Text>
           {isSupport && (
@@ -256,9 +256,9 @@ function ProfileCard({
 
         {!onProfile && (
           <Description>
-            {isSupport
-              ? t('profile_card.support_description')
-              : profile.description}
+            {isSupport ?
+              t('profile_card.support_description') :
+              profile.description}
           </Description>
         )}
       </ProfileInfo>

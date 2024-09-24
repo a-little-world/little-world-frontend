@@ -12,7 +12,7 @@ import styled from 'styled-components';
 
 import { mutateUserData } from '../../../api';
 import { updateProfile } from '../../../features/userData';
-import { onFormError } from '../../../helpers/form';
+import { onFormError } from '../../../helpers/form.ts';
 import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';
 import { FormButtons, SubmitError } from '../Form/styles';

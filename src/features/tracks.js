@@ -1,7 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
+/* eslint no-param-reassign: 0 */
 export const tracksSlice = createSlice({
-  name: "tracks",
+  name: 'tracks',
   initialState: {
     videoId: null,
     audioId: null,

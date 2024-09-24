@@ -1,7 +1,6 @@
 import {
   Accordion,
   ButtonAppearance,
-  ButtonSizes,
   Card,
   ContentTypes,
   FriendshipImage,
@@ -21,12 +20,11 @@ import {
   WomanOnRocketImage,
 } from '@a-little-world/little-world-design-system';
 import { Gradients } from '@a-little-world/little-world-design-system/dist/esm/components/Icon/IconGradient';
-import { subscribe } from 'diagnostics_channel';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
+import { useSelector } from '../../../hooks/index.ts';
 import Socials, { SOCIALS_LIST } from '../../atoms/Socials.tsx';
 import MailingLists from '../../blocks/MailingLists/MailingLists.tsx';
 
@@ -248,14 +246,12 @@ const SupportUs: FC = () => {
       <SupportUsAccordion
         headerColor={theme.color.text.bold}
         contentCss={ACCORDION_CONTENT_CSS}
-        items={SECTIONS.map(section => {
-          return {
+        items={SECTIONS.map(section => ({
             header: t(`support_us.${section.title}.title`),
             content: section.items.map(label => (
               <SupportUsSegment key={label} label={label} />
             )),
-          };
-        })}
+          }))}
       />
       <PaperPlaneWrapper>
         <PaperPlaneImage />
