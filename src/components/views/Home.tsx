@@ -32,6 +32,8 @@ const Home = styled.div`
 
 type subpages = 'events' | 'conversation_partners';
 
+const PAGE_ITEMS = 10;
+
 function Main() {
   // for the case /call-setup/:userId?/
   const { userId } = useParams();
@@ -43,11 +45,9 @@ function Main() {
   const [currentPage, setCurrentPage] = useState(1);
   const [showCancelSearching, setShowCancelSearching] = useState(false);
 
-  // In order to define the frontent paginator numbers
-  const pageItems = 10;
   const handlePageChange = async page => {
     // TODO: can be refactored using our redux stor
-    const res = await updateMatchData(page, pageItems);
+    const res = await updateMatchData(page, PAGE_ITEMS);
     if (res && res.status === 200) {
       const data = await res.json();
       if (data) {
@@ -65,8 +65,10 @@ function Main() {
   const matches = useSelector(state => state.userData.matches);
 
   useEffect(() => {
-    const totalPage =      (matches?.confirmed?.totalItems + matches?.support?.totalItems) /
-      pageItems;
+    const totalItems =
+      (matches?.confirmed?.totalItems ?? 1) +
+      (matches?.support?.totalItems ?? 1);
+    const totalPage = totalItems / PAGE_ITEMS;
 
     setTotalPages(Math.ceil(totalPage) || 1);
   }, [matches]);
@@ -77,12 +79,13 @@ function Main() {
     }
   }, [userId]);
 
-  const subpage =    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE) ?
-      'events' :
-      'conversation_partners';
+  const subpage =
+    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)
+      ? 'events'
+      : 'conversation_partners';
 
-  const handleSubpageSelect = (subpage: subpages) => {
-    const nextPath = subpage !== 'conversation_partners' ? subpage : '';
+  const handleSubpageSelect = (page: subpages) => {
+    const nextPath = page !== 'conversation_partners' ? page : '';
     navigate(getAppRoute(nextPath));
   };
 

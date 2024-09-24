@@ -98,7 +98,7 @@ const options = {
 };
 
 const controls = [
-  [, optionsKeys.faceColor],
+  [null, optionsKeys.faceColor],
   [optionsKeys.earSize],
   [optionsKeys.hairStyle, optionsKeys.hairColor],
   [optionsKeys.hatStyle, optionsKeys.hatColor],
@@ -108,7 +108,7 @@ const controls = [
   [optionsKeys.noseStyle],
   [optionsKeys.mouthStyle],
   [optionsKeys.shirtStyle, optionsKeys.shirtColor],
-  [, optionsKeys.bgColor],
+  [null, optionsKeys.bgColor],
 ];
 
 const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
@@ -122,9 +122,9 @@ const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
     setEditorConfig(state => ({
       ...state,
       [key]:
-        currentIndex >= maxVal ?
-          options[key][0] :
-          options[key][currentIndex + 1],
+        currentIndex >= maxVal
+          ? options[key][0]
+          : options[key][currentIndex + 1],
     }));
   };
 

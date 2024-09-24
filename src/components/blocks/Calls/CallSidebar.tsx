@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import { ButtonAppearance } from '@a-little-world/little-world-design-system';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import '../../../App.css';
@@ -30,9 +30,9 @@ function CallSidebar({ isDisplayed, chatId }) {
         {sidebarTopics.map(topic => (
           <StyledOption
             appearance={
-              sideSelection === topic ?
-                ButtonAppearance.Primary :
-                ButtonAppearance.Secondary
+              sideSelection === topic
+                ? ButtonAppearance.Primary
+                : ButtonAppearance.Secondary
             }
             key={topic}
             onClick={() => setSideSelection(topic)}
@@ -54,10 +54,13 @@ function CallSidebar({ isDisplayed, chatId }) {
 export const SidebarSelectionProvider = ({ children }) => {
   const [sideSelection, setSideSelection] = useState('chat');
 
+  const value = useMemo(
+    () => ({ sideSelection, setSideSelection }),
+    [sideSelection, setSideSelection],
+  );
+
   return (
-    <SidebarSelectionContext.Provider
-      value={{ sideSelection, setSideSelection }}
-    >
+    <SidebarSelectionContext.Provider value={value}>
       {children}
     </SidebarSelectionContext.Provider>
   );

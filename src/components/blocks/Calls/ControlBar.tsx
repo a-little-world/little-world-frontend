@@ -49,6 +49,7 @@ const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
       return css`
         bottom: 0;
       `;
+    return null;
   }}
 `;
 
@@ -147,20 +148,16 @@ const MediaControl = styled.div`
   }
 `;
 
-type SharedControlBarProps = {
+interface SharedControlBarProps {
   activeOption?: string;
   onChatToggle: () => void;
-  onFullScreenToggle: () => void;
   onTranslatorToggle: () => void;
-};
+}
 
-type ControlBarProps = {
-  activeOption?: string;
-  onChatToggle: () => void;
+interface ControlBarProps extends SharedControlBarProps {
   onFullScreenToggle: () => void;
-  onTranslatorToggle: () => void;
   isFullScreen: boolean;
-};
+}
 
 export const TopControlBar = ({
   activeOption,

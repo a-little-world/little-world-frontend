@@ -34,6 +34,7 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
     // need to handle image file differently for api request
     if (image) {
       data = new FormData();
+      // eslint-disable-next-line
       for (const key in formData) {
         if (key !== USER_FIELDS.avatar) data.append(key, formData[key]);
       }
@@ -94,7 +95,7 @@ export const submitHelpForm = async (formData, onSuccess, onFailure) => {
   }
 };
 
-export const fetchFormData = async () => {
+export const fetchFormData = async ({ handleError }) => {
   try {
     const response = await fetch('/api/profile/?options=true', {
       method: 'GET',
@@ -109,7 +110,7 @@ export const fetchFormData = async () => {
     if (response.ok) return responseBody;
     throw formatApiError(responseBody);
   } catch (error) {
-    console.log('fetching user data error', { error });
+    throw handleError?.(error);
   }
 };
 

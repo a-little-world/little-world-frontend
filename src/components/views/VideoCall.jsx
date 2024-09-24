@@ -91,7 +91,7 @@ function MyVideoConference({
   );
 }
 
-export function VideoCall() {
+function VideoCall() {
   const navigate = useNavigate();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
@@ -105,7 +105,8 @@ export function VideoCall() {
     onKeyPressed: () => setIsFullScreen(false),
   });
 
-  const { userId, token, livekitServerUrl, audioOptions, videoOptions } =    useSelector(state => state.userData.activeCall);
+  const { userId, token, livekitServerUrl, audioOptions, videoOptions } =
+    useSelector(state => state.userData.activeCall);
 
   const profile = useSelector(state => state.userData.user.profile);
   const chat = useSelector(state =>
@@ -169,15 +170,15 @@ export function VideoCall() {
                 isFullScreen={isFullScreen}
                 partnerName={chat?.partner?.first_name}
                 partnerImage={
-                  chat?.partner?.image_type === 'avatar' ?
-                    chat?.partner.avatar_config :
-                    chat?.partner?.image
+                  chat?.partner?.image_type === 'avatar'
+                    ? chat?.partner.avatar_config
+                    : chat?.partner?.image
                 }
                 partnerImageType={chat?.partner?.image_type}
                 selfImage={
-                  profile.image_type === 'avatar' ?
-                    profile.avatar_config :
-                    profile?.image
+                  profile.image_type === 'avatar'
+                    ? profile.avatar_config
+                    : profile?.image
                 }
                 selfImageType={profile.image_type}
               />

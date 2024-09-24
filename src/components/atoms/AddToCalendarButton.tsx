@@ -48,7 +48,8 @@ function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
 }
 
 function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } =    getFormattedCalendarDates(calendarEvent);
+  const { formattedStartDate, formattedEndDate } =
+    getFormattedCalendarDates(calendarEvent);
   const encodedUrl = encodeURI(
     [
       'https://www.google.com/calendar/render',
@@ -57,9 +58,9 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
       `&dates=${formattedStartDate || ''}`,
       `/${formattedEndDate || ''}`,
       `&details=${
-        calendarEvent.description ?
-          `${calendarEvent.description}\nhttps://little-world.com` :
-          'https://little-world.com'
+        calendarEvent.description
+          ? `${calendarEvent.description}\nhttps://little-world.com`
+          : 'https://little-world.com'
       }`,
       `&location=${calendarEvent.link || ''}`,
       '&ctz=Europe%2FBerlin',
@@ -73,7 +74,8 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
 
 // Generates ICS for Apple and Outlook calendars
 function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } =    getFormattedCalendarDates(calendarEvent);
+  const { formattedStartDate, formattedEndDate } =
+    getFormattedCalendarDates(calendarEvent);
 
   const formattedStartDateTime = formattedStartDate
     .replace(/[-:]/g, '')
@@ -111,7 +113,7 @@ export default function AddToCalendarButton({
   const theme = useTheme();
 
   const onCalendarOptionClick = (
-    generateCalendar: (calendarEvent: CalendarEvent) => string,
+    generateCalendar: (calEvent: CalendarEvent) => string,
   ) => {
     const url = generateCalendar(calendarEvent);
     window.open(url, '_blank');

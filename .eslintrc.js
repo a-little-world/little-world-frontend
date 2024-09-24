@@ -20,7 +20,10 @@ module.exports = {
   rules: {
     'react-hooks/exhaustive-deps': 'warn',
     'react-hooks/rules-of-hooks': 'error',
-    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', 'tsx'] }],
+    'react/jsx-filename-extension': [
+      1,
+      { extensions: ['.js', '.jsx', '.tsx', '.ts'] },
+    ],
     'react/jsx-indent-props': [2, 2],
     'react/jsx-indent': [2, 2],
     'react/jsx-one-expression-per-line': [0],
@@ -32,6 +35,7 @@ module.exports = {
     'react/prop-types': ['off'],
     'react/function-component-definition': 'off',
     'react/require-default-props': 'off',
+    'import/extensions': 'off',
     'arrow-parens': 'off',
     'operator-linebreak': [1, 'after'],
     'no-confusing-arrow': 0,

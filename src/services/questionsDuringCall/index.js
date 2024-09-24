@@ -3,6 +3,7 @@ import React from 'react';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
 
+/* eslint-disable */
 class QuestionsDuringCall {
   async getQuestions(archived = true) {
     const response = await fetch(

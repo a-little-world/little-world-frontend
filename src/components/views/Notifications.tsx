@@ -26,6 +26,7 @@ import {
   UnreadIndicator,
 } from './Notifications.styles.tsx';
 
+/* eslint-disable */
 function Notifications() {
   const { t } = useTranslation();
   const notifications = useSelector(state => {

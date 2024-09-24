@@ -23,15 +23,15 @@ import ForgotPassword from './components/views/ForgotPassword';
 import Help from './components/views/Help.tsx';
 import Main from './components/views/Home.tsx';
 import Login from './components/views/Login';
-import Messages from './components/views/Messages.jsx';
+import Messages from './components/views/Messages';
 import Notifications from './components/views/Notifications.tsx';
 import Profile from './components/views/Profile.tsx';
 import ResetPassword from './components/views/ResetPassword';
 import Resources from './components/views/Resources/Resources.tsx';
-import Settings from './components/views/Settings.jsx';
+import Settings from './components/views/Settings';
 import SignUp from './components/views/SignUp';
 import VerifyEmail from './components/views/VerifyEmail';
-import VideoCall from './components/views/VideoCall.jsx';
+import VideoCall from './components/views/VideoCall';
 import {
   APP_ROUTE,
   BASE_ROUTE,

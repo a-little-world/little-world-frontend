@@ -18,11 +18,12 @@ export function simulatedAutoLogin(
     body: JSON.stringify({
       username,
       password,
-      dev_dataset: "main_frontend"
+      dev_dataset: 'main_frontend',
     }),
   }).then(response => {
     if (response.ok) {
       return response.json();
     }
+    throw new Error('Reponse not ok');
   });
 }

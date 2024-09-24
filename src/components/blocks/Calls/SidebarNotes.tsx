@@ -62,14 +62,14 @@ export function SidebarNotes() {
     let filteredData = [];
     if (selectedTopic === 'All') {
       filteredData = initialData?.filter(
-        note => !note.is_archived && !note.is_deleted,
+        item => !item.is_archived && !item.is_deleted,
       );
     } else if (selectedTopic === 'is_favorite') {
       filteredData = initialData?.filter(
-        note => !note.is_deleted && !note.is_archived && note.is_favorite,
+        item => !item.is_deleted && !item.is_archived && item.is_favorite,
       );
     } else {
-      filteredData = initialData?.filter(note => note[selectedTopic]);
+      filteredData = initialData?.filter(item => item[selectedTopic]);
     }
     const sortedData = filteredData?.sort(
       (a, b) => new Date(b.updated_at) - new Date(a.updated_at),
@@ -78,7 +78,8 @@ export function SidebarNotes() {
   }, [selectedTopic, initialData]);
 
   const handleAddNote = async () => {
-    const [sourcelang, targetLang] =      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
+    const [sourcelang, targetLang] =
+      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
     await addUserNote(note, sourcelang, targetLang);
     setNote('');
     getUserNotes()
@@ -107,7 +108,8 @@ export function SidebarNotes() {
 
   const handleNoteEdit = async id => {
     const content = textareaContent;
-    const [sourcelang, targetLang] =      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
+    const [sourcelang, targetLang] =
+      selfUserPreferedLang === 'de' ? ['de', 'en'] : ['en', 'de'];
     const FavoritedResponse = await noteStatusUpdate({
       note_id: id,
       note_text: content,
@@ -115,7 +117,7 @@ export function SidebarNotes() {
       target_language: targetLang,
     });
     if (FavoritedResponse.status === 200) {
-      const noteIndex = initialData?.findIndex(note => note.id === id);
+      const noteIndex = initialData?.findIndex(item => item.id === id);
 
       if (noteIndex !== -1) {
         const updatedNotesData = [...initialData];
@@ -167,7 +169,7 @@ export function SidebarNotes() {
   );
 
   const handleNoteAction = async (id, actionType) => {
-    const noteIndex = initialData.findIndex(note => note.id === id);
+    const noteIndex = initialData.findIndex(item => item.id === id);
     if (noteIndex === -1) return;
 
     const updatedNotesData = [...initialData];
@@ -196,11 +198,12 @@ export function SidebarNotes() {
       }
 
       if (response && response.status === 200) {
-        const updatedField =          actionType === 'remove' ?
-            'is_deleted' :
-            actionType === 'favorite' ?
-            'is_favorite' :
-            'is_archived';
+        const updatedField =
+          actionType === 'remove'
+            ? 'is_deleted'
+            : actionType === 'favorite'
+            ? 'is_favorite'
+            : 'is_archived';
 
         updatedNotesData[noteIndex] = {
           ...updatedNotesData[noteIndex],
@@ -256,17 +259,17 @@ export function SidebarNotes() {
       <NotesCardWrapper>
         {data &&
           data
-            ?.filter(note => !note.is_deleted)
-            ?.map(({ id, note, updated_at, is_favorite }) => (
+            ?.filter(item => !item.is_deleted)
+            ?.map(({ id, note: item, updated_at, is_favorite }) => (
               <NotesCard selected={selectedQuestionId === id} key={id}>
                 {selectedQuestionId !== id && (
                   <CardButton
                     selected={selectedQuestionId === id}
                     onClick={() =>
-                      handleButtonClick(id, note[selfUserPreferedLang])
+                      handleButtonClick(id, item[selfUserPreferedLang])
                     }
                   >
-                    {note[selfUserPreferedLang]}
+                    {item[selfUserPreferedLang]}
                   </CardButton>
                 )}
 
