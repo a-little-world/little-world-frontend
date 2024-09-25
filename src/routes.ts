@@ -3,6 +3,7 @@ export const APP_ROUTE = 'app';
 export const COMMUNITY_EVENTS_ROUTE = 'events';
 export const OUR_WORLD_ROUTE = 'our-world';
 export const SUPPORT_US_ROUTE = 'our-world/support';
+export const DONATE_ROUTE = 'our-world/donate';
 export const CALL_ROUTE = 'call';
 export const CALL_SETUP_ROUTE = 'call-setup/:userId?/';
 export const PARTNERS_ROUTE = 'partners';
@@ -37,9 +38,9 @@ export const getAppSubpageRoute = (parent: string, slug: string) =>
 export const getUserFormRoute = (slug: string) => `/${USER_FORM_ROUTE}/${slug}`;
 
 export const isActiveRoute = (locationPath: string, path: string) =>
-  locationPath === path || path !== getAppRoute('') ?
-    locationPath?.includes(path) :
-    false;
+  locationPath === path || path !== getAppRoute('')
+    ? locationPath?.includes(path)
+    : false;
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {

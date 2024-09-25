@@ -9,6 +9,8 @@
     "call": "Call",
     "chat": "Messages",
     "our-world": "Support us",
+    "support": "Support us",
+    "donate": "Donate",
     "notifications": "Notifications",
     "profile": "My profile",
     "help": "Help",
@@ -47,6 +49,7 @@
   "nbs_admin_panel": "Admin Panel",
   "nbt_about": "About us",
   "nbt_support": "Support us",
+  "nbt_donate": "Donate",
   "nbt_stories": "Stories",
   "nbt_conversation_partners": "Conversation partners",
   "nbt_appointments": "Appointments",
@@ -544,6 +547,10 @@
   "resources.my_story.submit_success": "Images uploaded",
   "resources.my_story.submit_error": "Issue uploading images. Please try again",
   "resources.my_story.upload_button": "Upload Images",
+
+  "donate.title": "Your donation will be quintupled!",
+  "donate.subtitle": "Help us connect 25,000 people to improve there German and create a more integrated society.",
+  "donate.description": "With Little World, we have created a digital platform where German learners and volunteer native speakers can easily connect, support one another and exchange ideas — all for free. Your donation helps keep this possible and enhances our services. This year, thanks to our sponsor, the German TV Lottery, every donation will be quintupled! But we need to hit our target to unlock this support. Every bit counts!",
 
   "support_us.title": "Reaching a better society together",
   "support_us.description": "Our utopia is a society where unexpected friendships happen and where diversity is celebrated. We firmly believe this is achievable. We are leading the way – but as a small team with limited resources as a Non-Profit, we need you to walk this path with us and support us to achieve this vision. Here are all the ways to support us:",

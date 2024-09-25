@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonAppearance,
+  ButtonVariations,
   Link,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
@@ -14,6 +15,8 @@ const Selector = styled.div`
   gap: ${({ theme }) => theme.spacing.xsmall};
   width: 100%;
   background: ${({ theme }) => theme.color.surface.primary};
+  overflow-x: scroll;
+  text-wrap: nowrap;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.small}) {
@@ -31,6 +34,14 @@ const Selector = styled.div`
 
 export const StyledOption = styled(Button)`
   border-color: transparent;
+  transition: none;
+
+  ${({ theme, variation }) =>
+    variation === ButtonVariations.Inline &&
+    css`
+      margin: 0 ${theme.spacing.small};
+      color: ${theme.color.text.link};
+    `};
 
   &:disabled {
     color: ${({ theme }) => theme.color.text.button};
@@ -39,8 +50,13 @@ export const StyledOption = styled(Button)`
   }
 `;
 
+export const StyledLink = styled(Link)`
+  margin: 0 ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.xxxxsmall} 0;
+`;
+
 const nbtTopics = {
-  ourWorld: ['support', 'about', 'stories'],
+  ourWorld: ['support', 'donate', 'about', 'stories'],
   main: ['conversation_partners', 'events'],
   help: ['contact', 'faqs'],
   resources: ['trainings', 'beginners', 'story'],
@@ -52,7 +68,7 @@ const externalLinksTopics = {
 };
 
 type ContentSelectorProps = {
-  selection: string;
+  selection?: string;
   setSelection: (selection: string) => void;
   use: string;
 };
@@ -73,15 +89,20 @@ function ContentSelector({
     <Selector>
       {topics.map((topic: string) =>
         externalLinksTopics[topic] ? (
-          <Link key={topic} href={externalLinksTopics[topic]}>
+          <StyledLink key={topic} href={externalLinksTopics[topic]}>
             {t(`nbt_${topic}`)}
-          </Link>
+          </StyledLink>
         ) : (
           <StyledOption
+            variation={
+              selection === topic
+                ? ButtonVariations.Basic
+                : ButtonVariations.Inline
+            }
             appearance={
-              selection === topic ?
-                ButtonAppearance.Primary :
-                ButtonAppearance.Secondary
+              selection === topic
+                ? ButtonAppearance.Primary
+                : ButtonAppearance.Secondary
             }
             key={topic}
             onClick={() => setSelection(topic)}
