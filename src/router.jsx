@@ -41,6 +41,7 @@ import {
   CHANGE_EMAIL_ROUTE,
   CHAT_ROUTE,
   COMMUNITY_EVENTS_ROUTE,
+  DONATE_ROUTE,
   EDIT_FORM_ROUTE,
   FORGOT_PASSWORD_ROUTE,
   HELP_ROUTE,
@@ -215,6 +216,14 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(SUPPORT_US_ROUTE),
+    element: (
+      <FullAppLayout>
+        <AboutUs />
+      </FullAppLayout>
+    ),
+  },
+  {
+    path: getAppRoute(DONATE_ROUTE),
     element: (
       <FullAppLayout>
         <AboutUs />

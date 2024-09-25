@@ -4,11 +4,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
-  OUR_WORLD_ROUTE, //   getAboutUsRoute,
+  OUR_WORLD_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
 } from '../../../routes.ts';
 import ContentSelector from '../../blocks/ContentSelector.tsx';
+import Donate from './Donate.tsx';
 import SupportUs from './SupportUs.tsx';
 
 const Content = styled.div`
@@ -22,10 +23,11 @@ const Content = styled.div`
     }`};
 `;
 
-type subpages = 'stories' | 'about' | 'support';
+type subpages = 'stories' | 'about' | 'support' | 'donate';
 
-const renderResourceContent = (page: subpages) => {
+const renderResourceContent = (page?: subpages | string) => {
   if (page === 'support') return <SupportUs />;
+  if (page === 'donate') return <Donate />;
   return null;
 };
 
@@ -33,17 +35,14 @@ function OurWorld() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const subpage =    location.pathname === getAppRoute(OUR_WORLD_ROUTE) ?
-      'support' :
-      last(location.pathname.split('/'));
+  const subpage =
+    location.pathname === getAppRoute(OUR_WORLD_ROUTE)
+      ? 'support'
+      : last(location.pathname.split('/'));
 
   const handleSubpageSelect = (page: subpages) => {
     navigate(getAppSubpageRoute(OUR_WORLD_ROUTE, page));
   };
-
-  // useEffect(() => {
-  //   selectSubpage(last(location.pathname.split('/')));
-  // }, [location]);
 
   return (
     <>
