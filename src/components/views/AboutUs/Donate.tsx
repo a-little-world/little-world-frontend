@@ -15,6 +15,10 @@ const ContentCard = styled(Card)`
   flex-direction: column;
   width: 100%;
   padding-bottom: ${({ theme }) => theme.spacing.xlarge};
+
+  > div:first-of-type {
+    max-width: 720px;
+  }
 `;
 
 const Title = styled(Text)`
