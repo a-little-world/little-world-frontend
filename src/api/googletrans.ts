@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
-import { BACKEND_URL } from '../ENVIRONMENT';
-import { formatApiError } from './index';
+import { BACKEND_URL } from '../ENVIRONMENT.js';
+import { formatApiError } from './index.js';
 
 export const LANGUAGES = [
   {
@@ -551,27 +551,38 @@ export const LANGUAGES = [
 ];
 
 export const requestTranslation = async ({
-  sourceLang = null,
-  targetLang = 'de',
-  text = null,
+  sourceLang,
+  targetLang,
+  text,
+  onError,
+  onSuccess,
+}: {
+  sourceLang: string;
+  targetLang: string;
+  text: string;
+  onError: (error: any) => void;
+  onSuccess: (response: any) => void;
 }) => {
-  const body = {
-    target: targetLang,
-    text,
-  };
-  // If source lang is obmitted the API will auto-detect it
-  if (sourceLang) body.source = sourceLang;
-  const response = await fetch(`${BACKEND_URL}/api/googletrans/translate/`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-    method: 'POST',
-  });
+  try {
+    // If source lang is obmitted the API will auto-detect it
+    const response = await fetch(`${BACKEND_URL}/api/googletrans/translate/`, {
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        target: targetLang,
+        source: sourceLang,
+        text,
+      }),
+      method: 'POST',
+    });
 
-  const responseBody = await response?.json();
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+    const responseBody = await response?.json();
+    if (response.ok) onSuccess(responseBody);
+    throw formatApiError(responseBody);
+  } catch (error) {
+    onError(error);
+  }
 };

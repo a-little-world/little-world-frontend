@@ -5,7 +5,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import CustomPagination from '../../CustomPagination.jsx';
-import { updateMatchData } from '../../api/index.js';
+import { updateMatchData } from '../../api/matches.ts';
 import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
 import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../routes.ts';
 import CancelSearchCard from '../blocks/Cards/CancelSearchCard';

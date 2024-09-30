@@ -44,6 +44,7 @@ export const userDataSlice = createSlice({
         MESSAGES_ROUTE,
         action.payload?.matches?.support?.items[0]?.chatId || '',
       );
+      state.matchRejected = false;
     },
     reset: state => {
       state.user = null;
@@ -265,6 +266,9 @@ export const userDataSlice = createSlice({
       const { results, ...rest } = payload;
       state.chats = { results: sortChats(results), ...rest };
     },
+    setMatchRejected: (state, { payload }) => {
+      state.matchRejected = payload;
+    },
   },
 });
 
@@ -282,6 +286,7 @@ export const {
   initialise,
   markChatMessagesRead,
   removeMatch,
+  setMatchRejected,
   stopActiveCall,
   switchQuestionCategory,
   updateChats,

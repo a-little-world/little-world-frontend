@@ -4,10 +4,13 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
+import { setMatchRejected } from '../../../features/userData';
+import { useSelector } from '../../../hooks/index.ts';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
 import ModalCard, { Centred } from './ModalCard';
@@ -26,25 +29,35 @@ const InfoContainer = styled.div`
   `}
 `;
 
+interface ConfirmaMatchCardProps {
+  name: string;
+  onClose: () => void;
+  onConfirm: () => void;
+  onReject: () => void;
+  image: any;
+  imageType: string;
+}
+
 const ConfirmMatchCard = ({
   name,
   onConfirm,
-  onExit,
   onReject,
+  onClose,
   image,
   imageType,
-}) => {
+}: ConfirmaMatchCardProps) => {
   const { t } = useTranslation();
-  const [rejected, setRejected] = useState(false);
+  const dispatch = useDispatch();
+  const matchRejected = useSelector(state => state.userData.matchRejected);
 
   const handleReject = () => {
-    setRejected(true);
     onReject();
+    dispatch(setMatchRejected(true));
   };
 
   return (
     <ModalCard>
-      {rejected ? (
+      {matchRejected ? (
         <>
           <Centred>
             <Text tag="h2" type={TextTypes.Heading4}>
@@ -64,7 +77,7 @@ const ConfirmMatchCard = ({
           <Button
             type="button"
             appearance={ButtonAppearance.Secondary}
-            onClick={onExit}
+            onClick={onClose}
           >
             {t('rejected_match_btn')}
           </Button>
@@ -75,13 +88,14 @@ const ConfirmMatchCard = ({
             <Text tag="h2" type={TextTypes.Heading4}>
               {t('confirm_match_title')}
             </Text>
-
-            <ProfileImage image={image} imageType={imageType} />
+            <div>
+              <ProfileImage image={image} imageType={imageType} />
+            </div>
             <Text type={TextTypes.Body5}>
               {t('confirm_match_description', { name })}
             </Text>
             <Text tag="h3" type={TextTypes.Body5}>
-              {t('confirm_match_instruction')}
+              {t('confirm_match_instruction', { name })}
             </Text>
           </Centred>
 

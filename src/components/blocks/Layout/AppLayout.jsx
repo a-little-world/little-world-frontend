@@ -1,10 +1,15 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { blockIncomingCall, initCallSetup } from '../../../features/userData';
+import {
+  blockIncomingCall,
+  initCallSetup,
+  setMatchRejected,
+} from '../../../features/userData';
+import { useSelector } from '../../../hooks/index.ts';
 import '../../../main.css';
 import CallSetup from '../Calls/CallSetup.tsx';
 import IncomingCall from '../Calls/IncomingCall.tsx';
@@ -73,20 +78,31 @@ export const FullAppLayout = ({ children }) => {
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
   const matches = useSelector(state => state.userData.matches);
+  const matchRejected = useSelector(state => state.userData.matchRejected);
   const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
   const callSetup = useSelector(state => state.userData.callSetup);
   const activeCall = useSelector(state => state.userData.activeCall);
+  const [matchModalOpen, setMatchModalOpen] = useState(false);
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
-  const dashboardVisibleMatches = matches ?
-    [...matches.support.items, ...matches.confirmed.items] :
-    [];
+  const dashboardVisibleMatches = matches
+    ? [...matches.support.items, ...matches.confirmed.items]
+    : [];
 
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
     setShowSidebarMobile(false);
   }, [location]);
+
+  useEffect(() => {
+    if (
+      matches?.proposed?.items?.length ||
+      matches?.unconfirmed?.items?.length ||
+      matchRejected
+    )
+      setMatchModalOpen(true);
+  }, [matches, matchRejected]);
 
   useEffect(() => {
     if (!callSetup && !activeCall) {
@@ -100,6 +116,11 @@ export const FullAppLayout = ({ children }) => {
 
   const onRejectCall = () => {
     dispatch(blockIncomingCall({ userId: activeCallRooms[0]?.partner?.id }));
+  };
+
+  const closeMatchModal = () => {
+    if (matchRejected) dispatch(setMatchRejected(false));
+    setMatchModalOpen(false);
   };
 
   return (
@@ -127,30 +148,23 @@ export const FullAppLayout = ({ children }) => {
         />
       </Modal>
 
-      <Modal
-        open={
-          matches?.proposed?.items?.length ||
-          matches?.unconfirmed?.items?.length
-        }
-        locked={false}
-        onClose={() => {}}
-      >
-        {(matches?.proposed?.items?.length ||
-          matches?.unconfirmed?.items?.length) && (
-          <MatchCardComponent
-            showNewMatch={Boolean(!matches?.proposed?.items?.length)}
-            matchId={
-              matches?.proposed?.items?.length ?
-                matches?.proposed.items[0].id :
-                matches?.unconfirmed.items[0].id
-            }
-            profile={
-              matches?.proposed?.items?.length ?
-                matches?.proposed.items[0].partner :
-                matches?.unconfirmed.items[0].partner
-            }
-          />
-        )}
+      <Modal open={matchModalOpen} onClose={closeMatchModal}>
+        <MatchCardComponent
+          showNewMatch={Boolean(
+            !matches?.proposed?.items?.length && !matchRejected,
+          )}
+          matchId={
+            matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].id
+              : matches?.unconfirmed.items[0]?.id
+          }
+          profile={
+            matches?.proposed?.items?.length
+              ? matches?.proposed.items[0].partner
+              : matches?.unconfirmed.items[0]?.partner
+          }
+          onClose={closeMatchModal}
+        />
       </Modal>
     </Wrapper>
   );

@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { LANGUAGES, requestTranslation } from '../../../api/googletrans.js';
+import { LANGUAGES, requestTranslation } from '../../../api/googletrans.ts';
 import {
   DesiredLanguage,
   OriginalLanguage,
@@ -44,9 +44,9 @@ function TranslationTool({ className }: { className?: string }) {
         sourceLang: fromLang,
         targetLang: toLang,
         text: leftText,
-      })
-        .then(({ translatedText }) => setRightText(translatedText))
-        .catch(onError);
+        onError,
+        onSuccess: ({ translatedText }) => setRightText(translatedText),
+      });
     }, 1000);
 
     return () => clearTimeout(delayDebounceFn);

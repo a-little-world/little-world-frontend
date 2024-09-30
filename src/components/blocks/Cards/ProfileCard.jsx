@@ -198,8 +198,7 @@ function ProfileCard({
         />
       )}
 
-      {/* temp disabled type === "match" */}
-      {false && (
+      {type === 'match' && (
         <Popover
           width={PopoverSizes.Large}
           showCloseButton
@@ -256,9 +255,9 @@ function ProfileCard({
 
         {!onProfile && (
           <Description>
-            {isSupport ?
-              t('profile_card.support_description') :
-              profile.description}
+            {isSupport
+              ? t('profile_card.support_description')
+              : profile.description}
           </Description>
         )}
       </ProfileInfo>
