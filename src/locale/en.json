@@ -551,10 +551,10 @@
   "resources.my_story.submit_error": "Issue uploading images. Please try again",
   "resources.my_story.upload_button": "Upload Images",
 
-  "resources.partners.lern_fair_intro": "Der Lern-Fair e.V. bietet seit 2020 kostenlose, digitale Lernunterstützung für bildungsbenachteiligte Schüler:innen an. Mit privater Lernunterstützung für Schüler:innen mit Lerndeifiziten und weniger Zugang zu Bildung oder Gruppen-Kursen mit unterschiedlichem Fokus wollen wir Schüler:innen in ganz Deutschland einen kostenlosen und unbürokratischen Zugang zu digitalen Bildungsangeboten geben und damit Bildungschancen schaffen. Unser großes Ziel ist es, allen Schüler:innen dieselben Chancen auf Bildung zu ermöglichen.",
-  "resources.partners.lern_fair_link": "<a {\"href\": \"https://app.lern-fair.de/welcome\"}>Link zur Registrierung</a>",
-  "resources.partners.lern_fair_presentation": "Oder kommt direkt zu der <bold>Präsentation von LernFair am Montag, 14. Oktober um 17:00 Uhr.</bold>",
-  "resources.partners.lern_fair_presentation_link": "Lern-Fair Präsentation beitreten",
+  "resources.partners.lern_fair_intro": "Lern-Fair e.V. has been offering free, digital learning support for educationally disadvantaged students since 2020. With private learning support for students with learning deficits and less access to education or offering group courses with a different focus, they aim to give students throughout Germany free and unbureaucratic access to digital educational opportunities and thus create educational opportunities. Their major goal is to give all students the same opportunities for education.",
+  "resources.partners.lern_fair_link": "<a {\"href\": \"https://app.lern-fair.de/welcome\"}>Link to register.</a>",
+  "resources.partners.lern_fair_presentation": "Or come directly to the <bold>LernFair presentation on Monday, 14 October at 17:00.</bold>",
+  "resources.partners.lern_fair_presentation_link": "Join the Lern-Fair presentation",
 
   "donate.title": "Your donation will be quintupled!",
   "donate.subtitle": "Help us connect 25,000 people to improve there German and create a more integrated society.",
