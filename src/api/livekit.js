@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 import { BACKEND_URL } from '../ENVIRONMENT';
-import { formatApiError } from './index';
+import { formatApiError } from './helpers.ts';
 
 // eslint-disable-next-line import/prefer-default-export
 export const requestVideoAccessToken = async ({ partnerId }) => {
@@ -18,5 +18,5 @@ export const requestVideoAccessToken = async ({ partnerId }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };

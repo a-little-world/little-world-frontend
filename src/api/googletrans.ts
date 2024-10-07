@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 import { BACKEND_URL } from '../ENVIRONMENT.js';
-import { formatApiError } from './index.js';
+import { formatApiError } from './helpers.ts';
 
 export const LANGUAGES = [
   {
@@ -581,7 +581,7 @@ export const requestTranslation = async ({
 
     const responseBody = await response?.json();
     if (response.ok) onSuccess(responseBody);
-    throw formatApiError(responseBody);
+    throw formatApiError(responseBody, response);
   } catch (error) {
     onError(error);
   }

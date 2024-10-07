@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
-import { formatApiError } from '.';
 import { BACKEND_URL } from '../ENVIRONMENT';
+import { formatApiError } from './helpers.ts';
 
 export const fetchChatMessages = async ({ id, page }) => {
   const response = await fetch(
@@ -19,7 +19,7 @@ export const fetchChatMessages = async ({ id, page }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const fetchChats = async ({ page }) => {
@@ -35,7 +35,7 @@ export const fetchChats = async ({ page }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const fetchChat = async ({ chatId }) => {
@@ -51,25 +51,27 @@ export const fetchChat = async ({ chatId }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
-}
-
+  throw formatApiError(responseBody, response);
+};
 
 export const markChatMessagesReadApi = async ({ chatId }) => {
-  const response = await fetch(`${BACKEND_URL}/api/messages/${chatId}/chat_read/`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': 'True',
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+  const response = await fetch(
+    `${BACKEND_URL}/api/messages/${chatId}/chat_read/`,
+    {
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-UseTagsOnly': 'True',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({}),
     },
-    method: 'POST',
-    body: JSON.stringify({}),
-  });
+  );
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const sendMessage = async ({ chatId, text }) => {
@@ -86,5 +88,5 @@ export const sendMessage = async ({ chatId, text }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };

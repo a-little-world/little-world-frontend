@@ -52,7 +52,7 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
           cause: API_FIELDS.image,
         });
       const responseBody = await response?.json();
-      const error = formatApiError(responseBody);
+      const error = formatApiError(responseBody, response);
       throw error;
     }
   } catch (error) {
@@ -78,7 +78,7 @@ export const submitHelpForm = async (formData, onSuccess, onFailure) => {
       if (response.status === 413)
         throw new Error('validation.image_upload_required');
       const responseBody = await response?.json();
-      const error = formatApiError(responseBody);
+      const error = formatApiError(responseBody, response);
       throw error;
     }
   } catch (error) {
@@ -99,7 +99,7 @@ export const fetchFormData = async ({ handleError }) => {
 
     const responseBody = await response?.json();
     if (response.ok) return responseBody;
-    throw formatApiError(responseBody);
+    throw formatApiError(responseBody, response);
   } catch (error) {
     throw handleError?.(error);
   }
@@ -116,7 +116,7 @@ export const fetchUserMatch = async ({ userId }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const postUserProfileUpdate = (
@@ -167,7 +167,7 @@ export const login = async ({ email, password }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const signUp = async ({
@@ -202,7 +202,7 @@ export const signUp = async ({
 
   if (response.ok) return response?.json();
   const responseBody = await response?.json();
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const requestPasswordReset = async ({ email }) => {
@@ -222,7 +222,7 @@ export const requestPasswordReset = async ({ email }) => {
   const responseBody = await response?.json();
 
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const resetPassword = async ({ password, token }) => {
@@ -242,7 +242,7 @@ export const resetPassword = async ({ password, token }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const verifyEmail = async ({ verificationCode }) => {
@@ -261,7 +261,7 @@ export const verifyEmail = async ({ verificationCode }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const resendVerificationEmail = async () => {
@@ -277,7 +277,7 @@ export const resendVerificationEmail = async () => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const setNewEmail = async ({ email }) => {
@@ -296,7 +296,7 @@ export const setNewEmail = async ({ email }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const setNewPassword = async data => {
@@ -313,7 +313,7 @@ export const setNewPassword = async data => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const changeSearchStatePost = updatedState =>
