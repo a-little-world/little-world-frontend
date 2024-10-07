@@ -107,6 +107,8 @@ function PartnerProfiles({ setShowCancel }) {
           userPk={match.partner.id}
           profile={match.partner}
           isSelf={false}
+          isMatch={!match.partner.isSupport}
+          matchId={match.id}
           openPartnerModal={setPartnerActionData}
           isOnline={match.partner.isOnline}
           isSupport={match.partner.isSupport}

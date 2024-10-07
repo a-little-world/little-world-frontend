@@ -2,16 +2,7 @@ import Cookies from 'js-cookie';
 
 import { BACKEND_URL } from '../ENVIRONMENT';
 import { API_FIELDS, USER_FIELDS } from '../constants/index.ts';
-
-export const formatApiError = responseBody => {
-  if (typeof responseBody === 'string') return new Error(responseBody);
-  const errorTypeApi = Object.keys(responseBody)?.[0];
-  const errorType = API_FIELDS[errorTypeApi] ?? errorTypeApi;
-  const errorTags = Object.values(responseBody)?.[0];
-  const errorTag = Array.isArray(errorTags) ? errorTags[0] : errorTags;
-
-  return new Error(errorTag, { cause: errorType ?? null });
-};
+import { apiFetch, formatApiError } from './helpers.ts';
 
 export const completeForm = async () => {
   const res = await fetch('/api/profile/completed/', {
@@ -61,7 +52,7 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
           cause: API_FIELDS.image,
         });
       const responseBody = await response?.json();
-      const error = formatApiError(responseBody);
+      const error = formatApiError(responseBody, response);
       throw error;
     }
   } catch (error) {
@@ -81,13 +72,13 @@ export const submitHelpForm = async (formData, onSuccess, onFailure) => {
     });
 
     if (response.ok) {
-      const responseBody = await response?.json();
+      const responseBody = await response.json();
       onSuccess(responseBody);
     } else {
       if (response.status === 413)
         throw new Error('validation.image_upload_required');
       const responseBody = await response?.json();
-      const error = formatApiError(responseBody);
+      const error = formatApiError(responseBody, response);
       throw error;
     }
   } catch (error) {
@@ -108,7 +99,7 @@ export const fetchFormData = async ({ handleError }) => {
 
     const responseBody = await response?.json();
     if (response.ok) return responseBody;
-    throw formatApiError(responseBody);
+    throw formatApiError(responseBody, response);
   } catch (error) {
     throw handleError?.(error);
   }
@@ -125,79 +116,8 @@ export const fetchUserMatch = async ({ userId }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
-
-export const confirmMatch = ({ userHash }) =>
-  /** TODO: for consistency this api should also accept a matchId in the backend rather than userHashes ... */
-  fetch(`${BACKEND_URL}/api/user/confirm_match/`, {
-    /* TODO is incuded in main frontend data now! */
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-UseTagsOnly': true,
-    },
-    body: JSON.stringify({ matches: [userHash] }),
-  });
-
-export const partiallyConfirmMatch = ({ acceptDeny, matchId }) =>
-  fetch(`${BACKEND_URL}/api/user/match/confirm_deny/`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': true,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify({
-      unconfirmed_match_hash: matchId,
-      confirm: acceptDeny,
-    }),
-  });
-
-export const reportMatch = ({ reason, userHash }) => Promise.resolve();
-// fetch(`${BACKEND_URL}/api/user/unmatch_self/`, {
-//   headers: {
-//     "X-CSRFToken": Cookies.get("csrftoken"),
-//     "X-UseTagsOnly": true,
-//     Accept: "application/json",
-//     "Content-Type": "application/json",
-//   },
-//   method: "POST",
-//   body: JSON.stringify({
-//     other_user_hash: userHash,
-//     reason,
-//   }),
-// });
-
-export const unmatch = ({ reason, userHash }) =>
-  fetch(`${BACKEND_URL}/api/user/unmatch_self/`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': true,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify({
-      other_user_hash: userHash,
-      reason,
-    }),
-  });
-
-export const updateMatchData = (page, pageItems) =>
-  fetch(
-    `${BACKEND_URL}/api/matches/confirmed/?page=${page}&itemsPerPage=${pageItems}`,
-    {
-      method: 'GET',
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'Content-Type': 'application/json',
-      },
-    },
-  );
 
 export const postUserProfileUpdate = (
   updateData,
@@ -247,7 +167,7 @@ export const login = async ({ email, password }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const signUp = async ({
@@ -282,7 +202,7 @@ export const signUp = async ({
 
   if (response.ok) return response?.json();
   const responseBody = await response?.json();
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const requestPasswordReset = async ({ email }) => {
@@ -302,7 +222,7 @@ export const requestPasswordReset = async ({ email }) => {
   const responseBody = await response?.json();
 
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const resetPassword = async ({ password, token }) => {
@@ -322,7 +242,7 @@ export const resetPassword = async ({ password, token }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const verifyEmail = async ({ verificationCode }) => {
@@ -341,7 +261,7 @@ export const verifyEmail = async ({ verificationCode }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const resendVerificationEmail = async () => {
@@ -357,7 +277,7 @@ export const resendVerificationEmail = async () => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const setNewEmail = async ({ email }) => {
@@ -376,7 +296,7 @@ export const setNewEmail = async ({ email }) => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const setNewPassword = async data => {
@@ -393,7 +313,7 @@ export const setNewPassword = async data => {
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };
 
 export const changeSearchStatePost = updatedState =>

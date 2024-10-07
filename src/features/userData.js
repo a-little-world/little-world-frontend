@@ -44,6 +44,7 @@ export const userDataSlice = createSlice({
         MESSAGES_ROUTE,
         action.payload?.matches?.support?.items[0]?.chatId || '',
       );
+      state.matchRejected = false;
     },
     reset: state => {
       state.user = null;
@@ -142,9 +143,11 @@ export const userDataSlice = createSlice({
         m => m.id === match.id,
       );
       state.matches[newCategory].items.push(matchToMove);
+      // state.matches[newCategory].totalItems += 1;
       state.matches[category].items = state.matches[category].items.filter(
         m => m.id !== match.id,
       );
+      // state.matches[category].totalItems -= 1;
     },
     blockIncomingCall: (state, action) => {
       const { userId } = action.payload;
@@ -265,6 +268,9 @@ export const userDataSlice = createSlice({
       const { results, ...rest } = payload;
       state.chats = { results: sortChats(results), ...rest };
     },
+    setMatchRejected: (state, { payload }) => {
+      state.matchRejected = payload;
+    },
   },
 });
 
@@ -282,6 +288,7 @@ export const {
   initialise,
   markChatMessagesRead,
   removeMatch,
+  setMatchRejected,
   stopActiveCall,
   switchQuestionCategory,
   updateChats,

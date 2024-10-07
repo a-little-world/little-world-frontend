@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 import { BACKEND_URL } from '../ENVIRONMENT.js';
-import { formatApiError } from './index.js';
+import { formatApiError } from './helpers.ts';
 
 // eslint-disable-next-line import/prefer-default-export
 export const fetchProfile = async ({ userId }: { userId: string }) => {
@@ -17,5 +17,5 @@ export const fetchProfile = async ({ userId }: { userId: string }) => {
   const responseBody = await response?.json();
 
   if (response.ok) return responseBody;
-  throw formatApiError(responseBody);
+  throw formatApiError(responseBody, response);
 };

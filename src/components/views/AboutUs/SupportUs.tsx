@@ -45,8 +45,10 @@ const ACCORDION_CONTENT_CSS = css`
                 & > div:first-child {
                   order: 1;
                 }
+            }
         }
-    `}
+    }
+  `}
 `;
 
 const ContentCard = styled(Card)`
@@ -247,11 +249,11 @@ const SupportUs: FC = () => {
         headerColor={theme.color.text.bold}
         contentCss={ACCORDION_CONTENT_CSS}
         items={SECTIONS.map(section => ({
-            header: t(`support_us.${section.title}.title`),
-            content: section.items.map(label => (
-              <SupportUsSegment key={label} label={label} />
-            )),
-          }))}
+          header: t(`support_us.${section.title}.title`),
+          content: section.items.map(label => (
+            <SupportUsSegment key={label} label={label} />
+          )),
+        }))}
       />
       <PaperPlaneWrapper>
         <PaperPlaneImage />

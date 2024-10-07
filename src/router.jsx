@@ -186,10 +186,6 @@ const ROOT_ROUTES = [
     ),
   },
   {
-    path: getAppRoute(PARTNERS_ROUTE),
-    element: <Main />,
-  },
-  {
     path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
     element: (
       <FullAppLayout>
@@ -256,6 +252,14 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(MY_STORY_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Resources />
+      </FullAppLayout>
+    ),
+  },
+  {
+    path: getAppRoute(PARTNERS_ROUTE),
     element: (
       <FullAppLayout>
         <Resources />

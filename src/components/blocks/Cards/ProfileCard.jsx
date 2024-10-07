@@ -13,13 +13,12 @@ import {
   Text,
   TextTypes,
   VideoIcon,
-  designTokens,
 } from '@a-little-world/little-world-design-system';
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { initCallSetup } from '../../../features/userData';
 import {
@@ -107,14 +106,19 @@ export const MatchMenuToggle = styled(Button)`
   `};
 `;
 
-export const PartnerMenuOption = styled(Button)`
+export const PartnerMenuOption = styled.button`
   font-size: 1rem;
   font-weight: normal;
   justify-content: flex-start;
   padding: ${({ theme }) => theme.spacing.xxsmall};
   padding-left: 0px;
+  text-align: left;
 
-  &:not(:last-of-type) {
+  &:hover {
+    filter: opacity(0.6);
+  }
+
+  &:first-of-type {
     margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   }
 `;
@@ -161,10 +165,12 @@ export const Description = styled(Text)`
 
 function ProfileCard({
   chatId,
+  matchId,
   userPk,
   profile,
   isSelf,
   isOnline,
+  isMatch,
   isSupport,
   onProfile,
   openPartnerModal,
@@ -173,6 +179,7 @@ function ProfileCard({
 }) {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const theme = useTheme();
   const usesAvatar = profile.image_type === 'avatar';
 
   return (
@@ -198,7 +205,6 @@ function ProfileCard({
         />
       )}
 
-      {/* temp disabled type === "match" */}
       {false && (
         <Popover
           width={PopoverSizes.Large}
@@ -209,25 +215,25 @@ function ProfileCard({
                 circular
                 height="16px"
                 width="16px"
-                color={designTokens.color.theme.light.text.tertiary}
+                color={theme.color.border.moderate}
+                borderColor={theme.color.border.moderate}
               />
             </MatchMenuToggle>
           }
         >
           <PartnerMenuOption
-            variation={ButtonVariations.Inline}
             onClick={() =>
               openPartnerModal({
                 type: PARTNER_ACTION_REPORT,
                 userPk,
                 userName: profile.first_name,
+                matchId,
               })
             }
           >
             {t('cp_menu_report')}
           </PartnerMenuOption>
           <PartnerMenuOption
-            variation={ButtonVariations.Inline}
             onClick={() =>
               openPartnerModal({
                 type: PARTNER_ACTION_UNMATCH,
@@ -256,9 +262,9 @@ function ProfileCard({
 
         {!onProfile && (
           <Description>
-            {isSupport ?
-              t('profile_card.support_description') :
-              profile.description}
+            {isSupport
+              ? t('profile_card.support_description')
+              : profile.description}
           </Description>
         )}
       </ProfileInfo>

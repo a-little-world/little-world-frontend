@@ -44,4 +44,12 @@ module.exports = {
     'no-plusplus': 1,
     camelcase: 'warn',
   },
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        'no-undef': 'off',
+      },
+    },
+  ],
 };

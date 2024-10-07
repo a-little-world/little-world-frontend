@@ -12,7 +12,8 @@ import { TFunction, useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { fetchUserMatch, mutateUserData } from '../../api/index.js';
+import { mutateUserData } from '../../api/index.js';
+import { fetchUserMatch } from '../../api/matches.ts';
 import { fetchProfile } from '../../api/profile.ts';
 import { USER_TYPES } from '../../constants/index.ts';
 import {
@@ -223,8 +224,10 @@ function Profile() {
 
   useEffect(() => {
     if (!isSelf && !match) {
-      fetchUserMatch({ userId }).then(res => {
-        dispatch(addMatch(res));
+      fetchUserMatch({
+        userId,
+        onSuccess: res => dispatch(addMatch(res)),
+        onError: error => console.error(error),
       });
     }
   }, [isSelf, match, userId, dispatch]);
