@@ -143,9 +143,11 @@ export const userDataSlice = createSlice({
         m => m.id === match.id,
       );
       state.matches[newCategory].items.push(matchToMove);
+      // state.matches[newCategory].totalItems += 1;
       state.matches[category].items = state.matches[category].items.filter(
         m => m.id !== match.id,
       );
+      // state.matches[category].totalItems -= 1;
     },
     blockIncomingCall: (state, action) => {
       const { userId } = action.payload;

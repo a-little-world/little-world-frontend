@@ -11,6 +11,7 @@ import {
 import ContentSelector from '../../blocks/ContentSelector.tsx';
 import Beginners from './Beginners.tsx';
 import MyStory from './MyStory.tsx';
+import Partners from './Partners.tsx';
 import Trainings from './Trainings.tsx';
 
 const Content = styled.div`
@@ -24,17 +25,13 @@ const Content = styled.div`
     }`};
 `;
 
-const resourcesPages = {
-  trainings: Trainings,
-  beginners: Beginners,
-};
-
-type subpages = 'trainings' | 'beginners' | 'story';
+type subpages = 'trainings' | 'beginners' | 'story' | 'partners';
 
 const renderResourceContent = (page: subpages) => {
   if (page === 'trainings') return <Trainings />;
   if (page === 'beginners') return <Beginners />;
   if (page === 'story') return <MyStory />;
+  if (page === 'partners') return <Partners />;
   return null;
 };
 

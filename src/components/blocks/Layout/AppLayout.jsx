@@ -82,7 +82,13 @@ export const FullAppLayout = ({ children }) => {
   const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
   const callSetup = useSelector(state => state.userData.callSetup);
   const activeCall = useSelector(state => state.userData.activeCall);
-  const [matchModalOpen, setMatchModalOpen] = useState(false);
+  const [matchModalOpen, setMatchModalOpen] = useState(
+    Boolean(
+      matches?.proposed?.items?.length ||
+        matches?.unconfirmed?.items?.length ||
+        matchRejected,
+    ),
+  );
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
@@ -90,18 +96,23 @@ export const FullAppLayout = ({ children }) => {
     ? [...matches.support.items, ...matches.confirmed.items]
     : [];
 
+  const showNewMatch = Boolean(
+    matches?.unconfirmed?.items?.length && !matchRejected,
+  );
+
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
     setShowSidebarMobile(false);
   }, [location]);
 
   useEffect(() => {
-    if (
-      matches?.proposed?.items?.length ||
-      matches?.unconfirmed?.items?.length ||
-      matchRejected
-    )
-      setMatchModalOpen(true);
+    setMatchModalOpen(
+      Boolean(
+        matches?.proposed?.items?.length ||
+          matches?.unconfirmed?.items?.length ||
+          matchRejected,
+      ),
+    );
   }, [matches, matchRejected]);
 
   useEffect(() => {
@@ -148,11 +159,13 @@ export const FullAppLayout = ({ children }) => {
         />
       </Modal>
 
-      <Modal open={matchModalOpen} onClose={closeMatchModal}>
+      <Modal
+        open={matchModalOpen}
+        onClose={closeMatchModal}
+        locked={showNewMatch}
+      >
         <MatchCardComponent
-          showNewMatch={Boolean(
-            !matches?.proposed?.items?.length && !matchRejected,
-          )}
+          showNewMatch={showNewMatch}
           matchId={
             matches?.proposed?.items?.length
               ? matches?.proposed.items[0].id

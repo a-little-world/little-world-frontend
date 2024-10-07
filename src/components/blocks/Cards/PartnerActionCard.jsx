@@ -12,9 +12,11 @@ import {
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { reportMatch, unmatch } from '../../../api/matches.ts';
+import { removeMatch } from '../../../features/userData.js';
 
 export const PARTNER_ACTION_REPORT = 'report';
 export const PARTNER_ACTION_UNMATCH = 'unmatch';
@@ -59,6 +61,7 @@ function PartnerActionCard({ data, onClose }) {
   const { control, handleSubmit, setError, reset } = useForm();
   const [confirmed, setConfirmed] = useState(false);
   const isUnmatch = data.type === PARTNER_ACTION_UNMATCH;
+  const dispatch = useDispatch();
 
   const handleOnClose = () => {
     onClose();
@@ -68,14 +71,25 @@ function PartnerActionCard({ data, onClose }) {
   const handlePartnerAction = formData => {
     const action = isUnmatch ? unmatch : reportMatch;
 
-    action({ userPk: data.userPk, reason: formData.reason })
-      .then(() => setConfirmed(true))
-      .catch(() =>
+    action({
+      reason: formData.reason,
+      ...(isUnmatch ? { userHash: data.userPk } : { matchId: data.matchId }),
+      onSuccess: () => {
+        setConfirmed(true);
+        if (isUnmatch)
+          dispatch(
+            removeMatch({
+              category: 'confirmed',
+              match: { id: data.matchId },
+            }),
+          );
+      },
+      onError: () =>
         setError('root.serverError', {
           type: 'server',
           message: t(`${data.type}_modal_reason_error_server`),
         }),
-      );
+    });
   };
 
   return (
@@ -83,7 +97,7 @@ function PartnerActionCard({ data, onClose }) {
       {confirmed ? (
         <Centred>
           {isUnmatch ? (
-            <UnmatchedImage />
+            <UnmatchedImage height="120px" />
           ) : (
             <ExclamationIcon
               width="64px"

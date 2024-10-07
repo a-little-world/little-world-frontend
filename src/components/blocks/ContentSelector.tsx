@@ -59,7 +59,7 @@ const nbtTopics = {
   ourWorld: ['support', 'donate', 'about', 'stories'],
   main: ['conversation_partners', 'events'],
   help: ['contact', 'faqs'],
-  resources: ['trainings', 'beginners', 'story'],
+  resources: ['trainings', 'beginners', 'story', 'partners'],
 };
 
 const externalLinksTopics = {

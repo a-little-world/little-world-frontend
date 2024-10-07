@@ -17,6 +17,8 @@
     "resources": "Resources",
     "beginners": "Resources",
     "trainings": "Trainings",
+    "story": "My Story",
+    "partners": "Partners",
     "settings": "Settings",
     "picture": "Edit Image"
   },
@@ -59,6 +61,7 @@
   "nbt_workshops": "Workshops",
   "nbt_trainings": "Trainings",
   "nbt_beginners": "Beginners",
+  "nbt_partners": "Partners",
   "nbt_story": "My Story",
   "cp_profile": "Profile",
   "cp_message": "Message",
@@ -547,6 +550,11 @@
   "resources.my_story.submit_success": "Images uploaded",
   "resources.my_story.submit_error": "Issue uploading images. Please try again",
   "resources.my_story.upload_button": "Upload Images",
+
+  "resources.partners.lern_fair_intro": "Der Lern-Fair e.V. bietet seit 2020 kostenlose, digitale Lernunterstützung für bildungsbenachteiligte Schüler:innen an. Mit privater Lernunterstützung für Schüler:innen mit Lerndeifiziten und weniger Zugang zu Bildung oder Gruppen-Kursen mit unterschiedlichem Fokus wollen wir Schüler:innen in ganz Deutschland einen kostenlosen und unbürokratischen Zugang zu digitalen Bildungsangeboten geben und damit Bildungschancen schaffen. Unser großes Ziel ist es, allen Schüler:innen dieselben Chancen auf Bildung zu ermöglichen.",
+  "resources.partners.lern_fair_link": "<a {\"href\": \"https://app.lern-fair.de/welcome\"}>Link zur Registrierung</a>",
+  "resources.partners.lern_fair_presentation": "Oder kommt direkt zu der <bold>Präsentation von LernFair am Montag, 14. Oktober um 17:00 Uhr.</bold>",
+  "resources.partners.lern_fair_presentation_link": "Lern-Fair Präsentation beitreten",
 
   "donate.title": "Your donation will be quintupled!",
   "donate.subtitle": "Help us connect 25,000 people to improve there German and create a more integrated society.",

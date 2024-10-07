@@ -62,8 +62,21 @@ export const unmatch = async ({ reason, userHash, onSuccess, onError }) => {
   }
 };
 
-export const reportMatch = async ({ reason, userHash, onError, onSuccess }) =>
-  Promise.resolve();
+export const reportMatch = async ({ reason, matchId, onError, onSuccess }) => {
+  try {
+    const result = await apiFetch(`/api/matching/report/`, {
+      method: 'POST',
+      body: {
+        match_id: matchId,
+        reason,
+      },
+      useTagsOnly: true,
+    });
+    onSuccess(result);
+  } catch (error) {
+    onError(error);
+  }
+};
 
 export const updateMatchData = async ({
   page,
