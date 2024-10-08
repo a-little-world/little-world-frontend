@@ -97,7 +97,10 @@ export const userDataSlice = createSlice({
     },
     addMatch: (state, action) => {
       const { category, match } = action.payload;
-      state.matches[category].items.push(match);
+      const matchAlreadyExists = state.matches[category].items.find(
+        item => item.id === match.id,
+      );
+      if (!matchAlreadyExists) state.matches[category].items.push(match);
     },
     addIncomingCall: (state, action) => {
       state.activeCallRooms = [
@@ -142,12 +145,15 @@ export const userDataSlice = createSlice({
       const matchToMove = state.matches[category].items.find(
         m => m.id === match.id,
       );
-      state.matches[newCategory].items.push(matchToMove);
-      // state.matches[newCategory].totalItems += 1;
+      const matchAlreadyExists = state.matches[newCategory].items.find(
+        item => item.id === match.id,
+      );
+      if (!matchAlreadyExists)
+        state.matches[newCategory].items.push(matchToMove);
+
       state.matches[category].items = state.matches[category].items.filter(
         m => m.id !== match.id,
       );
-      // state.matches[category].totalItems -= 1;
     },
     blockIncomingCall: (state, action) => {
       const { userId } = action.payload;

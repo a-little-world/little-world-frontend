@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { confirmMatch, partiallyConfirmMatch } from '../../../api/matches.ts';
 import {
+  addMatch,
   changeMatchCategory,
   removeMatch,
 } from '../../../features/userData.js';
@@ -54,14 +55,20 @@ export const MatchCardComponent = ({
         partiallyConfirmMatch({
           acceptDeny: true,
           matchId,
-          onSuccess: () =>
+          onSuccess: response => {
             dispatch(
-              changeMatchCategory({
-                match: { id: matchId },
+              removeMatch({
                 category: 'proposed',
-                newCategory: 'unconfirmed',
+                match: { id: matchId },
               }),
-            ),
+            );
+            dispatch(
+              addMatch({
+                match: response.match,
+                category: 'unconfirmed',
+              }),
+            );
+          },
           onError: error => console.error(error),
         });
       }}
