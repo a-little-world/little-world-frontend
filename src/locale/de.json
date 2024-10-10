@@ -180,6 +180,8 @@
   "chat.no_messages_preview": "Schreibe die erste Nachricht",
   "chat.send_btn": "Senden",
   "chat.text_area_placeholder": "Schreib eine Nachricht",
+  "chat.inactive_match": "Inaktiv",
+  "chat.unmatched_user": "Unmatched",
   "chat_appointment_title": "Termin vorschlagen",
   "chat_appointment_abbort": "Abbrechen",
   "chat_appointment_send": " Termin vorschlagen",

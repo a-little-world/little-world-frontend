@@ -10,6 +10,8 @@ import {
   PencilIcon,
   Popover,
   ProfileIcon,
+  Tag,
+  TagSizes,
   Text,
   TextTypes,
   VideoIcon,
@@ -138,22 +140,8 @@ export const NameContainer = styled.div`
   justify-content: ${({ $isSelf }) => ($isSelf ? 'center' : 'space-between')};
 `;
 
-export const Tag = styled(Text)`
-  width: 104px;
-  height: 34px;
+export const TagText = styled.span`
   font-family: revert;
-  padding: ${({ theme }) => theme.spacing.xxsmall};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background-color: ${({ theme }) => theme.color.surface.primary};
-  border-radius: 30px;
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
-  color: ${({ theme }) => theme.color.text.heading};
-  border: 2px solid ${({ theme }) => theme.color.border.bold};
-  filter: drop-shadow(0px 1px 3px rgb(0 0 0 / 22%));
-  line-height: 1.1;
 `;
 
 export const Description = styled(Text)`
@@ -205,7 +193,7 @@ function ProfileCard({
         />
       )}
 
-      {false && (
+      {isMatch && (
         <Popover
           width={PopoverSizes.Large}
           showCloseButton
@@ -215,8 +203,8 @@ function ProfileCard({
                 circular
                 height="16px"
                 width="16px"
-                color={theme.color.border.moderate}
-                borderColor={theme.color.border.moderate}
+                color="#7c7b7b"
+                borderColor="#7c7b7b"
               />
             </MatchMenuToggle>
           }
@@ -253,8 +241,8 @@ function ProfileCard({
             {profile.first_name}
           </Text>
           {isSupport && (
-            <Tag type={TextTypes.Body6} bold>
-              {t('profile_card.support_user')}
+            <Tag color={theme.color.status.info} bold size={TagSizes.small}>
+              <TagText>{t('profile_card.support_user')}</TagText>
               <Logo height="16" width="16" />
             </Tag>
           )}

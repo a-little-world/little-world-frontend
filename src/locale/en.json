@@ -181,6 +181,8 @@
   "chat.no_messages_preview": "Send the first message",
   "chat.send_btn": "Send",
   "chat.text_area_placeholder": "Write a message...",
+  "chat.inactive_match": "Inactive",
+  "chat.unmatched_user": "Unmatched",
   "chat_appointment_title": "Suggest an appointment",
   "chat_appointment_abbort": "Cancel",
   "chat_appointment_send": " suggest appintment",
