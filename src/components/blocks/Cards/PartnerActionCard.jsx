@@ -79,7 +79,7 @@ function PartnerActionCard({ data, onClose }) {
 
     action({
       reason: formData.reason,
-      ...(isUnmatch ? { userHash: data.userPk } : { matchId: data.matchId }),
+      matchId: data.matchId,
       onSuccess: () => {
         setConfirmed(true);
         dispatch(

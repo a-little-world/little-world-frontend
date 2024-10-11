@@ -46,12 +46,12 @@ export const partiallyConfirmMatch = async ({
   }
 };
 
-export const unmatch = async ({ reason, userHash, onSuccess, onError }) => {
+export const unmatch = async ({ reason, matchId, onSuccess, onError }) => {
   try {
-    const result = await apiFetch(`/api/user/unmatch_self/`, {
+    const result = await apiFetch(`/api/matching/unmatch/`, {
       method: 'POST',
       body: {
-        other_user_hash: userHash,
+        match_id: matchId,
         reason,
       },
       useTagsOnly: true,
