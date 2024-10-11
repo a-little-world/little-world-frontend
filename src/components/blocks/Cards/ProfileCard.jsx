@@ -227,6 +227,7 @@ function ProfileCard({
                 type: PARTNER_ACTION_UNMATCH,
                 userPk,
                 userName: profile.first_name,
+                matchId,
               })
             }
           >

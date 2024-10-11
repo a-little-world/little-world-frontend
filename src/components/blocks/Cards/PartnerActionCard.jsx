@@ -37,7 +37,7 @@ const Centred = styled.div`
   text-align: center;
 
   ${({ theme }) => `
-  gap: ${theme.spacing.large};
+  gap: ${theme.spacing.medium};
   padding: ${theme.spacing.small} 0px;
   `}
 `;
@@ -50,6 +50,10 @@ const ButtonsWrapper = styled.div`
   ${({ theme }) => `
   gap: ${theme.spacing.small};
   `}
+`;
+
+const ConfimrationText = styled(Text)`
+  line-height: 1.5;
 `;
 
 function PartnerActionCard({ data, onClose }) {
@@ -78,13 +82,12 @@ function PartnerActionCard({ data, onClose }) {
       ...(isUnmatch ? { userHash: data.userPk } : { matchId: data.matchId }),
       onSuccess: () => {
         setConfirmed(true);
-        if (isUnmatch)
-          dispatch(
-            removeMatch({
-              category: 'confirmed',
-              match: { id: data.matchId },
-            }),
-          );
+        dispatch(
+          removeMatch({
+            category: 'confirmed',
+            match: { id: data.matchId },
+          }),
+        );
       },
       onError: error => {
         setError('root.serverError', {
@@ -108,9 +111,9 @@ function PartnerActionCard({ data, onClose }) {
               label={t('report_modal_exclamation_label')}
             />
           )}
-          <Text type={TextTypes.Body3} tag="h3" center>
+          <ConfimrationText type={TextTypes.Body5} center>
             {t(`${data?.type}_modal_confirmation`, { name: data.userName })}
-          </Text>
+          </ConfimrationText>
           {isUnmatch && <Text center>{t('unmatch_modal_search_again')}</Text>}
           <Button
             type="button"

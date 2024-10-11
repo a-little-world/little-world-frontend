@@ -1,4 +1,4 @@
-import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice, current } from '@reduxjs/toolkit';
 import { isEmpty, some, uniqBy } from 'lodash';
 
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../routes.ts';
@@ -113,7 +113,8 @@ export const userDataSlice = createSlice({
     removeMatch: (state, action) => {
       const { category, match } = action.payload;
       const { id } = match;
-      state.matches[category] = state.matches[category].items.filter(
+
+      state.matches[category].items = state.matches[category].items.filter(
         m => m.id !== id,
       );
     },
