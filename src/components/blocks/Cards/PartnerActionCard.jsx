@@ -4,6 +4,8 @@ import {
   Card,
   CardSizes,
   ExclamationIcon,
+  MessageTypes,
+  StatusMessage,
   Text,
   TextArea,
   TextTypes,
@@ -24,9 +26,7 @@ export const PARTNER_ACTION_UNMATCH = 'unmatch';
 const PartnerActionForm = styled.form`
   display: flex;
   flex-direction: column;
-  ${({ theme }) => `
-  gap: ${theme.spacing.medium};
-  `};
+  gap: ${({ theme }) => theme.spacing.small};
 `;
 
 const Centred = styled.div`
@@ -42,11 +42,7 @@ const Centred = styled.div`
   `}
 `;
 
-const ReasonWrapper = styled.div`
-  ${({ theme }) => `
-  margin-bottom: ${theme.spacing.xxsmall};
-  `}
-`;
+const ReasonWrapper = styled.div``;
 
 const ButtonsWrapper = styled.div`
   display: flex;
@@ -58,7 +54,13 @@ const ButtonsWrapper = styled.div`
 
 function PartnerActionCard({ data, onClose }) {
   const { t } = useTranslation();
-  const { control, handleSubmit, setError, reset } = useForm();
+  const {
+    control,
+    handleSubmit,
+    setError,
+    reset,
+    formState: { errors },
+  } = useForm();
   const [confirmed, setConfirmed] = useState(false);
   const isUnmatch = data.type === PARTNER_ACTION_UNMATCH;
   const dispatch = useDispatch();
@@ -84,11 +86,12 @@ function PartnerActionCard({ data, onClose }) {
             }),
           );
       },
-      onError: () =>
+      onError: error => {
         setError('root.serverError', {
-          type: 'server',
-          message: t(`${data.type}_modal_reason_error_server`),
-        }),
+          type: error.status,
+          message: `${data.type}_modal_reason_error_server`,
+        });
+      },
     });
   };
 
@@ -156,7 +159,16 @@ function PartnerActionCard({ data, onClose }) {
                 />
               )}
             />
+            {errors?.root?.serverError && (
+              <StatusMessage
+                $visible={errors?.root?.serverError}
+                $type={MessageTypes.Error}
+              >
+                {t(errors?.root?.serverError?.message)}
+              </StatusMessage>
+            )}
           </ReasonWrapper>
+
           <ButtonsWrapper>
             <Button type="submit">
               {t(`${data?.type}_modal_confirm_btn`)}

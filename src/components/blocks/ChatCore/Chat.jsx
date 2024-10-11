@@ -6,6 +6,9 @@ import {
   Gradients,
   GroupChatIcon,
   SendIcon,
+  Tag,
+  TagAppearance,
+  TagSizes,
   Text,
   TextAreaSize,
   TextTypes,
@@ -28,13 +31,14 @@ import {
   sendMessage,
 } from '../../../api/chat';
 import {
+  addMessage,
   getChatByChatId,
   getMessagesByChatId,
   initCallSetup,
   insertChat,
   markChatMessagesRead,
   updateMessages,
- addMessage } from '../../../features/userData';
+} from '../../../features/userData';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
@@ -214,7 +218,7 @@ export const Chat = ({ chatId }) => {
         <SendButton
           size={ButtonSizes.Large}
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || activeChat?.is_unmatched}
           variation={ButtonVariations.Circle}
           backgroundColor={theme.color.gradient.orange10}
         >
@@ -235,6 +239,10 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const activeChat = useSelector(state =>
+    getChatByChatId(state.userData.chats, chatId),
+  );
+  const unmatched = activeChat?.is_unmatched;
 
   const callPartner = () => {
     dispatch(initCallSetup({ userId: partner?.id }));
@@ -257,34 +265,44 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
             />
           </BackButton>
 
-          <ProfileLink to={getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)}>
+          <ProfileLink
+            to={
+              unmatched ? null : getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)
+            }
+          >
             <UserImage
               circle
               image={
-                partner?.image_type === 'avatar' ?
-                  partner?.avatar_config :
-                  partner?.image
+                partner?.image_type === 'avatar'
+                  ? partner?.avatar_config
+                  : partner?.image
               }
               imageType={partner?.image_type}
               size="xsmall"
             />
             <Text bold type={TextTypes.Body4}>
-              {partner?.first_name}
+              {unmatched ? t('chat.unmatched_user') : partner?.first_name}
             </Text>
           </ProfileLink>
         </UserInfo>
-        <Button
-          variation={ButtonVariations.Circle}
-          onClick={callPartner}
-          size={ButtonSizes.Large}
-          backgroundColor={theme.color.gradient.orange10}
-        >
-          <VideoIcon
-            color={theme.color.surface.secondary}
-            width={24}
-            height={24}
-          />
-        </Button>
+        {unmatched ? (
+          <Tag size={TagSizes.small} appearance={TagAppearance.error}>
+            {t('chat.inactive_match')}
+          </Tag>
+        ) : (
+          <Button
+            variation={ButtonVariations.Circle}
+            onClick={callPartner}
+            size={ButtonSizes.Large}
+            backgroundColor={theme.color.gradient.orange10}
+          >
+            <VideoIcon
+              color={theme.color.surface.secondary}
+              width={24}
+              height={24}
+            />
+          </Button>
+        )}
       </TopSection>
       <Chat chatId={chatId} />
     </Panel>
