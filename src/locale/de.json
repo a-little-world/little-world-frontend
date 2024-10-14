@@ -113,7 +113,7 @@
   "unmatch_modal_close_btn": "Zurück zum Start",
   "report_modal_title": "{{ name }} wirklich melden?",
   "report_modal_exclamation_label": "Ausrufezeichen icon",
-  "report_modal_description": "Es tut uns leid, dass du schlechte Erfahrungen mit <highlight>{{ name }}</highlight> gemacht hast. Deine Meldung wird absolut vertraulich behandelt und mit größter Sorgfalt überprüft. Du wirst automatisch nicht mehr mit {{ Name }} gepaart und kannst daher nicht mehr in Kontakt treten. Deine Rückmeldung hilft uns, angemessene Maßnahmen zu ergreifen, um unsere Community noch sicherer zu machen. Vielen Dank!",
+  "report_modal_description": "Es tut uns leid, dass du schlechte Erfahrungen mit <highlight>{{ name }}</highlight> gemacht hast. Deine Meldung wird absolut vertraulich behandelt und mit größter Sorgfalt überprüft. Du wirst automatisch nicht mehr mit {{ name }} gepaart und kannst daher nicht mehr in Kontakt treten. Deine Rückmeldung hilft uns, angemessene Maßnahmen zu ergreifen, um unsere Community noch sicherer zu machen. Vielen Dank!",
   "report_modal_confirmation": "Danke, {{ name }} wurde gemeldet und du wurdest sofort mit ihm/ihr abgemeldet. Wir nehmen alle Formen von Fehlverhalten sehr ernst, denn es ist uns sehr wichtig, dass Little World ein sicherer Ort für alle bleibt. Wir werden uns so schnell wie möglich mit dir in Verbindung setzen.",
   "report_modal_reason_label": "Grund für die Meldung von {{ name }}:",
   "report_modal_reason_placeholder": "Bitte gib uns einen Grund mit mindestens 50 Zeichen an, damit wir deine Meldung entsprechend bearbeiten können.",
