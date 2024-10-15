@@ -129,7 +129,7 @@
   "rejected_match_info_2": "Wir haben deinen Status automatisch auf „nicht suchend“ gestellt.",
   "rejected_match_info_3": "Du willst ein neues Match? Dann klicke auf „Gespräch finden“. Dann machen wir uns wieder auf die Suche für dich.",
   "rejected_match_btn": "Alles klar",
-  "new_match_title": "Ihr seit jetzt gematcht",
+  "new_match_title": "Ihr seid jetzt gematcht",
   "new_match_description": "You can now start chatting with <highlight>{{name}}</highlight>",
   "new_match_instruction": "Das Profil und den Chat findest du unter Start.",
   "new_match_close_btn": "Zurück zu Start",

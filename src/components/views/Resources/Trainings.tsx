@@ -10,8 +10,7 @@ import styled, { useTheme } from 'styled-components';
 
 import useScrollToTop from '../../../hooks/useScrollToTop.tsx';
 import Stepper from '../../atoms/Stepper.tsx';
-
-const YT_EMBED_URL = 'https://www.youtube.com/embed/';
+import Video from '../../atoms/Video.tsx';
 
 const VIDEOS = {
   interculturalCommunication: [
@@ -65,22 +64,6 @@ const Container = styled.div`
       }`};
 `;
 
-const VideoContainer = styled.div`
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
-  overflow: hidden;
-`;
-
-const StyledIframe = styled.iframe`
-  border: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-`;
-
 const CheckInText = styled(Text)`
   margin-top: ${({ theme }) => theme.spacing.xsmall};
   span {
@@ -116,7 +99,7 @@ const Trainings: FC = () => {
   };
   const title = VIDEOS.interculturalCommunication.find(
     item => item.id === videoId,
-  )?.label;
+  )!.label;
 
   const isLastStep = videoId === last(VIDEOS.interculturalCommunication)?.id;
   return (
@@ -125,16 +108,7 @@ const Trainings: FC = () => {
         {title}
       </Text>
       <Container>
-        <VideoContainer>
-          <StyledIframe
-            src={`${YT_EMBED_URL}${videoId}`}
-            frameBorder="0"
-            title={title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-           />
-        </VideoContainer>
+        <Video src={videoId} title={title} />
         <Description>
           <Text>{t('resources.description_communication')}</Text>
           <Text>{t('resources.teacher_communication')}</Text>

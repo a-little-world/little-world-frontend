@@ -1,16 +1,13 @@
-import {
-  ButtonAppearance,
-  ButtonSizes,
-  Card,
-  Link,
-  Text,
-} from '@a-little-world/little-world-design-system';
+import { Card, Text } from '@a-little-world/little-world-design-system';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import LernFairLogo from '../../../images/partners/lern-fair-logo.svg';
 import LernFairImage from '../../../images/partners/lern-fair-studying.jpg';
+import Video from '../../atoms/Video.tsx';
+
+const YT_EMBED_SLUG = 'lA4CIXDXXK8';
 
 const ContentCard = styled(Card)`
   width: 100%;
@@ -59,10 +56,6 @@ const PresentationText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
-const PresentationLink = styled(Link)`
-  align-self: center;
-`;
-
 const Partners: FC = () => {
   const { t } = useTranslation();
 
@@ -74,18 +67,10 @@ const Partners: FC = () => {
       </Images>
       <Text>{t('resources.partners.lern_fair_intro')}</Text>
       <RegisterText>{t('resources.partners.lern_fair_link')}</RegisterText>
-      <PresentationText center>
-        {t('resources.partners.lern_fair_presentation')}
-      </PresentationText>
-
-      <PresentationLink
-        buttonAppearance={ButtonAppearance.Primary}
-        buttonSize={ButtonSizes.Small}
-        href="https://rwth.zoom.us/j/95770913582?pwd=U3g5QWtCZXd3SFpxVC8zVmlWN1RtUT09"
-        target="_blank"
-      >
-        {t('resources.partners.lern_fair_presentation_link')}
-      </PresentationLink>
+      <Video
+        src={YT_EMBED_SLUG}
+        title={t('resources.partners.lern_fair_video_title')}
+      />
     </ContentCard>
   );
 };
