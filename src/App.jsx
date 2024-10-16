@@ -7,6 +7,8 @@ import WebsocketBridge from './WebsocketBridge';
 import store from './app/store.ts';
 import { initialise } from './features/userData';
 import router from './router';
+import { useEffect } from 'react';
+import OneSignal from 'react-onesignal';
 
 export function InitializeDux({ data }) {
   const dispatch = useDispatch();
@@ -23,6 +25,19 @@ function AuthGuard({ children }) {
 function App({ data }) {
   // WebsocketBridge is here so it dones't reconnect on every AppLayout change
   // But that means we need to manually connect it when userData is present
+
+  useEffect(() => {
+    // Ensure this code runs only on the client side
+    if (typeof window !== 'undefined') {
+      OneSignal.init({
+        appId: '306169a8-d6a8-4c19-ae90-6646a98da8df',
+        notifyButton: {
+          enable: true,
+        },
+      });
+    }
+  }, []);
+
   return (
     <Provider store={store}>
       <AuthGuard>
