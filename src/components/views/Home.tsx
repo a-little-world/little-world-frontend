@@ -45,21 +45,17 @@ function Main() {
   const [currentPage, setCurrentPage] = useState(1);
   const [showCancelSearching, setShowCancelSearching] = useState(false);
 
-  const handlePageChange = async page => {
-    // TODO: can be refactored using our redux stor
-    const res = await updateMatchData(page, PAGE_ITEMS);
-    if (res && res.status === 200) {
-      const data = await res.json();
-      if (data) {
+  const handlePageChange = async (page: number) => {
+    updateMatchData({
+      page,
+      pageItems: PAGE_ITEMS,
+      onError: error => console.error(error),
+      onSuccess: data => {
         dispatch(updateConfirmedData(data.data.confirmed_matches));
         setCurrentPage(page);
         window.scrollTo(0, 0);
-      }
-    } else {
-      console.error(
-        `Cancelling match searching failed with error ${res.status}: ${res.statusText}`,
-      );
-    }
+      },
+    });
   };
 
   const matches = useSelector(state => state.userData.matches);
@@ -89,7 +85,7 @@ function Main() {
     navigate(getAppRoute(nextPath));
   };
 
-  const onPageChange = page => {
+  const onPageChange = (page: number) => {
     handlePageChange(page);
   };
 
