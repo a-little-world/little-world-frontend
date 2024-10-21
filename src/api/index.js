@@ -4,6 +4,8 @@ import { BACKEND_URL } from '../ENVIRONMENT';
 import { API_FIELDS, USER_FIELDS } from '../constants/index.ts';
 import { apiFetch, formatApiError } from './helpers.ts';
 
+export const API_PATH_USER_DATA = '/api/user_data_v2/';
+
 export const completeForm = async () => {
   const res = await fetch('/api/profile/completed/', {
     method: 'GET',
