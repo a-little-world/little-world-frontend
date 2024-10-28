@@ -14,8 +14,8 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 
+import Note from '../components/atoms/Note.tsx';
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
-import Note from '../components/blocks/Note/Note';
 import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
 import { formatMultiSelectionOptions } from '../helpers/form.ts';
 
