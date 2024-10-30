@@ -7,6 +7,7 @@ import WebsocketBridge from './WebsocketBridge';
 import store from './app/store.ts';
 import { initialise } from './features/userData';
 import router from './router';
+import { CustomPushDebugger } from './pushNotifications/Push.jsx';
 
 export function InitializeDux({ data }) {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ function App({ data }) {
       </AuthGuard>
       <InitializeDux data={data} />
       <RouterProvider router={router} />
+      <CustomPushDebugger/>
     </Provider>
   );
 }
