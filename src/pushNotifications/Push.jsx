@@ -19,7 +19,7 @@ const PushDebugerContainer = styled.div`
 
 export function CustomPushDebugger() {
     const theme = useTheme();
-
+    
     return <CustomPushDebuggerRoot >
         <PushDebugerContainer>
           <h1>Push Debugger</h1>
@@ -30,17 +30,13 @@ export function CustomPushDebugger() {
               borderColor={theme.color.text.link}
               color={theme.color.text.link}
             >
-              <CalendarAddIcon
-                labelId="addToCalendar"
-                label={t('new_translation')}
-                width="20"
-              />
+                Request Push Permissions
             </Button>
         </PushDebugerContainer>
     </CustomPushDebuggerRoot>
 }
 
-export function CustomPushDebuggerRoot({ children }) {
+function CustomPushDebuggerRoot({ children }) {
 
   return (
       <CustomThemeProvider>
