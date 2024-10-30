@@ -17,12 +17,10 @@ const PushDebugerContainer = styled.div`
   left: 0;
 `;
 
-export function CustomPushDebugger() {
+function InteralPushDebugger(){
+
     const theme = useTheme();
-    
-    return <CustomPushDebuggerRoot >
-        <PushDebugerContainer>
-          <h1>Push Debugger</h1>
+    return <><h1>Push Debugger</h1>
             <Button
               type="button"
               variation={ButtonVariations.Circle}
@@ -32,6 +30,14 @@ export function CustomPushDebugger() {
             >
                 Request Push Permissions
             </Button>
+            </>
+}
+
+export function CustomPushDebugger() {
+    
+    return <CustomPushDebuggerRoot >
+        <PushDebugerContainer>
+            <InteralPushDebugger/>
         </PushDebugerContainer>
     </CustomPushDebuggerRoot>
 }
