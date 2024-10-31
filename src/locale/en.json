@@ -176,6 +176,7 @@
   "email_preferences.submit_btn": "Update preferences",
 
   "mailing_lists.newsletter_subscription_toggle": "Subscribe to newsletter",
+  "mailing_lists.category_toggle": "Category '{{category}}'",
 
   "call.leave_btn": "End call",
   "call.waiting_for_partner": "Waiting for {{name}} to join the call...",
