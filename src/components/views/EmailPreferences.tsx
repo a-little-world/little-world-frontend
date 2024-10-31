@@ -17,39 +17,6 @@ import { StyledCard, StyledForm, Title } from './SignUp.styles.jsx';
 
 const EmailPreferences = () => {
   const { t } = useTranslation();
-  const { token } = useParams();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [requestSuccessful, setRequestSuccessful] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-    setError,
-    setFocus,
-  } = useForm({ shouldUnregister: true });
-
-  useEffect(() => {
-    setFocus('email');
-  }, [setFocus]);
-
-  const onError = e => {
-    setIsSubmitting(false);
-    onFormError({ e, formFields: getValues(), setError });
-  };
-
-  const onFormSubmit = async data => {
-    setIsSubmitting(true);
-
-    updateEmailPreferences({ ...data, token })
-      .then(() => {
-        setRequestSuccessful(true);
-        setIsSubmitting(false);
-      })
-      .catch(onError);
-  };
 
   return (
     <StyledCard>
@@ -57,7 +24,7 @@ const EmailPreferences = () => {
         {t('email_preferences.title')}
       </Title>
       <DynamicPublicMailingListsSettings />
-      <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
+      {/** <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <StatusMessage
           $visible={requestSuccessful || errors?.root?.serverError}
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
@@ -71,7 +38,7 @@ const EmailPreferences = () => {
             {t('email_preferences.submit_btn')}
           </Button>
         </ButtonsContainer>
-      </StyledForm>
+      </StyledForm> **/}
     </StyledCard>
   );
 };
