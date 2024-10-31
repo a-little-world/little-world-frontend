@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom';
 import { updateEmailPreferences } from '../../api/emails.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer.jsx';
-import MailingLists from '../blocks/MailingLists/MailingLists.tsx';
+import { DynamicPublicMailingListsSettings } from '../blocks/MailingLists/MailingLists.tsx';
 import { StyledCard, StyledForm, Title } from './SignUp.styles.jsx';
 
 const EmailPreferences = () => {
@@ -56,7 +56,7 @@ const EmailPreferences = () => {
       <Title tag="h2" type={TextTypes.Heading4}>
         {t('email_preferences.title')}
       </Title>
-      <MailingLists />
+      <DynamicPublicMailingListsSettings />
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
         <StatusMessage
           $visible={requestSuccessful || errors?.root?.serverError}
