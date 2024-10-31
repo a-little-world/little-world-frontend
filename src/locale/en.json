@@ -171,6 +171,10 @@
   "settings.delete_account_modal_title": "Are you sure you want to permanently delete your account?",
   "settings.delete_account_modal_cancel": "Cancel",
 
+  "email_preferences.title": "Email Preferences",
+  "email_preferences.success_message": "Preferences updated successfully",
+  "email_preferences.submit_btn": "Update preferences",
+
   "mailing_lists.newsletter_subscription_toggle": "Subscribe to newsletter",
 
   "call.leave_btn": "End call",

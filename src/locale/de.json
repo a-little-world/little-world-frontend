@@ -170,6 +170,10 @@
   "settings.delete_account_modal_title": "Bist du sicher, dass du dein Konto dauerhaft löschen willst?",
   "settings.delete_account_modal_cancel": "Abbrechen",
 
+  "email_preferences.title": "Email Preferences",
+  "email_preferences.success_message": "Preferences updated successfully",
+  "email_preferences.submit_btn": "Update preferences",
+
   "mailing_lists.newsletter_subscription_toggle": "Newsletter abonnieren",
 
   "call.leave_btn": "Gespräch beenden",

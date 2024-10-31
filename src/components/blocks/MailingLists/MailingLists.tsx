@@ -11,10 +11,19 @@ import { onFormError } from '../../../helpers/form.ts';
 
 const MailingListsWrapper = styled.div``;
 
+export enum EmailCategories {
+  Community = 'community',
+  Marketing = 'marketing',
+  Newsletter = 'newsletter',
+  Partnerships = 'partnerships',
+}
+
 const MailingLists = ({
   inline,
   hideLabel,
+  categoriesToDisplay,
 }: {
+  categoriesToDisplay?: string[];
   inline?: boolean;
   hideLabel?: boolean;
 }) => {
@@ -64,9 +73,9 @@ const MailingLists = ({
               defaultChecked={value}
               error={error?.message}
               label={
-                hideLabel ?
-                  undefined :
-                  t('mailing_lists.newsletter_subscription_toggle')
+                hideLabel
+                  ? undefined
+                  : t('mailing_lists.newsletter_subscription_toggle')
               }
               labelInline={inline}
               required={false}
