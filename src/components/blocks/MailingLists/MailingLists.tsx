@@ -91,38 +91,34 @@ const MailingLists = ({
 
 const fetcher = url => fetch(url).then(r => r.json())
 
-export const DynamicPublicMailingListsSettings = ({
-  inline,
-  hideLabel,
-}: {
-  inline?: boolean;
-  hideLabel?: boolean;
+export const SingleCategoryToggle = ({
+  category,
+  emailSettingsData
 }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const { control, getValues, setError, watch, handleSubmit } = useForm();
-  
-  const { emailSettingsHash } = useParams();
-
-
-  const {
-    data: emailSettingsData,
-    error,
-    isLoading,
-  } = useSWR(`/api/email_settings/${emailSettingsHash}/`, fetcher)
-  
-  console.log("TBS", emailSettingsData)
-
-  const onFormSuccess = data => {
-    dispatch(updateProfile(data));
-  };
 
   const onError = e => {
     onFormError({ e, formFields: getValues(), setError, t });
   };
 
+  const { emailSettingsHash } = useParams();
+
+  const onFormSuccess = data => {
+  };
+
   const onToggle = data => {
-    mutateUserData(data, onFormSuccess, onError);
+    console.log("TBS", data, "onToggle")
+    
+    const chageSubscribe = data[category] ? 'subscribe' : 'unsubscribe';
+    
+    fetch(`/api/email_settings/${emailSettingsHash}/${category}/${chageSubscribe}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    })
   };
 
   useEffect(() => {
@@ -131,13 +127,9 @@ export const DynamicPublicMailingListsSettings = ({
     return () => subscription.unsubscribe();
   }, [handleSubmit, watch]);
 
-  return (
-    <MailingListsWrapper>
-       <form>
-       {isLoading && <div>Loading...</div>}
-       {!isLoading && emailSettingsData && emailSettingsData.categories.map((category) => {
-        return <Controller
-          defaultValue={emailSettingsData.unsubscribed_categories.includes(category)}
+  return <form>
+        <Controller
+          defaultValue={!emailSettingsData.unsubscribed_categories.includes(category)}
           name={category}
           control={control}
           render={({
@@ -153,18 +145,41 @@ export const DynamicPublicMailingListsSettings = ({
               value={value}
               defaultChecked={value}
               error={error?.message}
-              label={
-                hideLabel
-                  ? undefined
-                  : t('mailing_lists.category_toggle', { category })
-              }
-              labelInline={inline}
+              label={t('mailing_lists.category_toggle', { category })}
+              labelInline={true}
               required={false}
             />
           )}
         />
-       })}
       </form>
+}
+
+export const DynamicPublicMailingListsSettings = ({
+  hideLabel,
+}: {
+  hideLabel?: boolean;
+}) => {
+  const { t } = useTranslation();
+  
+  const { emailSettingsHash } = useParams();
+
+
+  const {
+    data: emailSettingsData,
+    error,
+    isLoading,
+  } = useSWR(`/api/email_settings/${emailSettingsHash}/`, fetcher)
+  
+  console.log("TBS", emailSettingsData)
+
+
+
+  return (
+    <MailingListsWrapper>
+       {isLoading && <div>Loading...</div>}
+       {!isLoading && emailSettingsData && emailSettingsData.categories.map((category) => {
+        return <SingleCategoryToggle category={category} emailSettingsData={emailSettingsData}/>
+       })}
     </MailingListsWrapper>
   );
 };
