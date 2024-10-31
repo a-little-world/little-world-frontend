@@ -5,8 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
+import useSWR from 'swr';
 import { mutateUserData } from '../../../api';
 import { updateProfile } from '../../../features/userData';
+import { useParams } from 'react-router-dom';
 import { onFormError } from '../../../helpers/form.ts';
 
 const MailingListsWrapper = styled.div``;
@@ -82,6 +84,86 @@ const MailingLists = ({
             />
           )}
         />
+      </form>
+    </MailingListsWrapper>
+  );
+};
+
+const fetcher = url => fetch(url).then(r => r.json())
+
+export const DynamicPublicMailingListsSettings = ({
+  inline,
+  hideLabel,
+}: {
+  inline?: boolean;
+  hideLabel?: boolean;
+}) => {
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const { control, getValues, setError, watch, handleSubmit } = useForm();
+  
+  const { emailSettingsHash } = useParams();
+
+
+  const {
+    data: emailSettingsData,
+    error,
+    isLoading,
+  } = useSWR(`/api/email_settings/${emailSettingsHash}/`, fetcher)
+  
+  console.log("TBS", emailSettingsData)
+
+  const onFormSuccess = data => {
+    dispatch(updateProfile(data));
+  };
+
+  const onError = e => {
+    onFormError({ e, formFields: getValues(), setError, t });
+  };
+
+  const onToggle = data => {
+    mutateUserData(data, onFormSuccess, onError);
+  };
+
+  useEffect(() => {
+    const subscription = watch(() => handleSubmit(onToggle)());
+
+    return () => subscription.unsubscribe();
+  }, [handleSubmit, watch]);
+
+  return (
+    <MailingListsWrapper>
+       <form>
+       {isLoading && <div>Loading...</div>}
+       {!isLoading && emailSettingsData && emailSettingsData.categories.map((category) => {
+        return <Controller
+          defaultValue={emailSettingsData.unsubscribed_categories.includes(category)}
+          name={category}
+          control={control}
+          render={({
+            field: { onChange, onBlur, value, name, ref },
+            fieldState: { error },
+          }) => (
+            <Switch
+              id={category}
+              name={name}
+              inputRef={ref}
+              onCheckedChange={val => onChange({ target: { value: val } })}
+              onBlur={onBlur}
+              value={value}
+              defaultChecked={value}
+              error={error?.message}
+              label={
+                hideLabel
+                  ? undefined
+                  : t('mailing_lists.category_toggle', { category })
+              }
+              labelInline={inline}
+              required={false}
+            />
+          )}
+        />
+       })}
       </form>
     </MailingListsWrapper>
   );
