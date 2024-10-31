@@ -29,10 +29,62 @@ export const PushDebuggerButton = styled(Button)`
   }
 `;
 
+function PushNotificationsTunnel() {
+  const [inMessages, setInMessages] = useState([]);
+  const [outMessages, setOutMessages] = useState([]);
+  
+  useEffect(() => {
+    // Register the service worker
+    
+    const listener = event => {
+      console.log('Received message from Service Worker:', event.data);
+      setInMessages(prevMessages => [...prevMessages, event.data]);
+    };
+
+    self.addEventListener('message', listener);
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/api/push_notifications/push_notifications_worker.js');
+      console.log('Service Worker registered!');
+    }else{
+      console.log('Service Worker not supported!');
+    }
+    
+    return () => {
+      self.removeEventListener('message', listener);
+    }
+    
+  }, []);
+  
+  const sendNotificationToServiceWorker = async () => {
+    console.log('Sending message to Service Worker...');
+    window.postMessage({
+      type: 'notification',
+      message: 'Hello from the client!',
+    });
+    console.log('Message sent!');
+  }
+
+
+  return <>
+    <PushDebuggerButton
+      type="button"
+      variation={ButtonVariations.Basic}
+      appearance={ButtonAppearance.Primary}
+      onClick={sendNotificationToServiceWorker}
+    >
+      Send Notification to Service Worker
+    </PushDebuggerButton>
+  </>
+}
 
 function InteralPushDebugger(){
 
     const theme = useTheme();
+  
+    useEffect(() => {
+     // listen for service worker messages 
+    }, [])
     
     const requestNotificationPermission = async () => {
         if ('Notification' in window) {
@@ -65,6 +117,7 @@ function InteralPushDebugger(){
 
     return <PushDebugerContainer>
             <h1>Push Debugger</h1>
+            <PushNotificationsTunnel />
             <PushDebuggerButton
               type="button"
               variation={ButtonVariations.Basic}
