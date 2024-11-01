@@ -171,12 +171,12 @@
   "settings.delete_account_modal_title": "Are you sure you want to permanently delete your account?",
   "settings.delete_account_modal_cancel": "Cancel",
 
-  "email_preferences.title": "Email Preferences",
-  "email_preferences.success_message": "Preferences updated successfully",
-  "email_preferences.submit_btn": "Update preferences",
-
+  "mailing_lists.title": "Email Preferences",
   "mailing_lists.newsletter_subscription_toggle": "Subscribe to newsletter",
-  "mailing_lists.category_toggle": "Category '{{category}}'",
+  "mailing_lists.newsletter_label_toggle": "Newsletter",
+  "mailing_lists.community_label_toggle": "Community updates",
+  "mailing_lists.success_message": "Preferences updated successfully",
+  "mailing_lists.submit_btn": "Update preferences",
 
   "call.leave_btn": "End call",
   "call.waiting_for_partner": "Waiting for {{name}} to join the call...",
