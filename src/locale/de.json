@@ -430,6 +430,7 @@
   "partner1.speech_medium": "Unterhalten möchte ich mich per...",
   "partner1.speech_medium_tooltip": "Für die eingebaute Videotelefonie musst du keine Kontaktdaten weitergeben. Wenn du lieber per Telefon sprechen möchtest, müsstest du jedoch deine Telefonnummer im Chat mit der anderen Person austauschen.",
   "partner1.partner_gender": "Welches Geschlecht darf die Person haben?",
+  "partner1.preference_note": "Bitte beachte, dass die Auswahl einer bestimmten Präferenz zu längeren Wartezeiten führen kann, da wir wirklich versuchen, deine Wünsche zu respektieren. Wenn du einen schnelleren Abgleich wünschst, empfehlen wir dir, die allgemeine Option zu wählen.",
   "availability.title": "Generelle zeitliche Verfügbarkeit",
   "availability.description": "Wähle die Zeitfenster aus, die für dich in den meisten Wochen passen (deutsche Zeit). Du bleibst flexibel. Die genauen Termine kannst du direkt mit deinen Gesprächspartnern vereinbaren.",
   "availability.legend_text": "Deine verfügbaren Slots",

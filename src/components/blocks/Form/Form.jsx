@@ -2,7 +2,6 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
-  ProgressBar,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
@@ -26,7 +25,6 @@ import {
 import getFormPage from '../../../userForm/formPages';
 import DropdownWithInput from '../DropdownWithInput/DropdownWithInput';
 import MultiCheckboxWithInput from '../MultiCheckboxWithInput/MultiCheckboxWithInput.tsx';
-import Note from '../Note/Note';
 import ProfilePic from '../Profile/ProfilePic/ProfilePic';
 import RadioGroupWithInput from '../RadioGroupWithInput/RadioGroupWithInput';
 import FormStep from './FormStep';
@@ -34,6 +32,8 @@ import {
   FormButtons,
   StyledCard,
   StyledForm,
+  StyledNote,
+  StyledProgress,
   SubmitError,
   Title,
 } from './styles';
@@ -63,7 +63,8 @@ const Form = () => {
   const slug = paths.slice(-1)[0];
   const isEditPath = paths[2] === EDIT_FORM_ROUTE;
 
-  const { title, note, step, totalSteps, components, nextPage, prevPage } =    getFormPage({
+  const { title, note, step, totalSteps, components, nextPage, prevPage } =
+    getFormPage({
       slug,
       formOptions,
       userData,
@@ -100,8 +101,10 @@ const Form = () => {
         {t(title)}
       </Title>
       <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
-        {step && !isEditPath && <ProgressBar max={totalSteps} value={step} />}
-        {note && <Note>{t(note)}</Note>}
+        {step && !isEditPath && (
+          <StyledProgress max={totalSteps} value={step} />
+        )}
+        {note && <StyledNote>{t(note)}</StyledNote>}
         {components.map(component => {
           // ProfilePic updates multiple data fields
           if (component?.type === ComponentTypes.picture)

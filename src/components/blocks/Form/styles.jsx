@@ -1,10 +1,16 @@
-import { Card, Text } from '@a-little-world/little-world-design-system';
+import {
+  Card,
+  ProgressBar,
+  Text,
+} from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
+
+import Note from '../../atoms/Note.tsx';
 
 export const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.xsmall};
   flex-grow: 1;
 `;
 
@@ -17,6 +23,14 @@ export const StyledCard = styled(Card)`
     `@media (min-width: ${theme.breakpoints.small}) {
       max-width: 760px;
     }`}
+`;
+
+export const StyledNote = styled(Note)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
+`;
+
+export const StyledProgress = styled(ProgressBar)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
 export const FormButtons = styled.div`
@@ -34,12 +48,11 @@ export const FormButtons = styled.div`
   }
 
   ${({ theme }) =>
-  `@media (min-width: ${theme.breakpoints.small}) {
+    `@media (min-width: ${theme.breakpoints.small}) {
     > button {
       flex: unset;
     }
   }`}
-
 `;
 
 export const SubmitError = styled.div`
