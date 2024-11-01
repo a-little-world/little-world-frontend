@@ -19,6 +19,7 @@ import Welcome from './components/blocks/Welcome/Welcome';
 import AboutUs from './components/views/AboutUs/AboutUs.tsx';
 import ChangeEmail from './components/views/ChangeEmail';
 import EditView from './components/views/Edit';
+import EmailPreferences from './components/views/EmailPreferences.tsx';
 import ForgotPassword from './components/views/ForgotPassword';
 import Help from './components/views/Help.tsx';
 import Main from './components/views/Home.tsx';
@@ -43,6 +44,7 @@ import {
   COMMUNITY_EVENTS_ROUTE,
   DONATE_ROUTE,
   EDIT_FORM_ROUTE,
+  EMAIL_PREFERENCES_ROUTE,
   FORGOT_PASSWORD_ROUTE,
   HELP_ROUTE,
   LOGIN_ROUTE,
@@ -102,6 +104,15 @@ const ROOT_ROUTES = [
     element: (
       <FormLayout>
         <ForgotPassword />
+      </FormLayout>
+    ),
+    errorElement: <RouterError Layout={FormLayout} />,
+  },
+  {
+    path: EMAIL_PREFERENCES_ROUTE,
+    element: (
+      <FormLayout>
+        <EmailPreferences />
       </FormLayout>
     ),
     errorElement: <RouterError Layout={FormLayout} />,

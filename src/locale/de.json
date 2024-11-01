@@ -170,7 +170,12 @@
   "settings.delete_account_modal_title": "Bist du sicher, dass du dein Konto dauerhaft löschen willst?",
   "settings.delete_account_modal_cancel": "Abbrechen",
 
+  "mailing_lists.title": "E-Mail-Einstellungen",
   "mailing_lists.newsletter_subscription_toggle": "Newsletter abonnieren",
+  "mailing_lists.newsletter_label_toggle": "Newsletter",
+  "mailing_lists.community_label_toggle": "Community updates",
+  "mailing_lists.success_message": "Einstellungen erfolgreich gespeichert",
+  "mailing_lists.submit_btn": "Einstellungen aktualisieren",
 
   "call.leave_btn": "Gespräch beenden",
   "call.waiting_for_partner": "Warten auf {{name}}...",
