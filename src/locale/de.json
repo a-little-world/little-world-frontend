@@ -174,8 +174,10 @@
   "mailing_lists.newsletter_subscription_toggle": "Newsletter abonnieren",
   "mailing_lists.newsletter_label_toggle": "Newsletter",
   "mailing_lists.community_label_toggle": "Community updates",
+  "mailing_lists.newsletter_description": "Ein monatliches Update mit unseren neuesten Nachrichten, Geschichten und aufregenden Features.",
+  "mailing_lists.community_description": "Bleib auf dem Laufenden über unsere neuesten Gemeindeveranstaltungen, Aufrufe und Aktivitäten.",
   "mailing_lists.success_message": "Einstellungen erfolgreich gespeichert",
-  "mailing_lists.submit_btn": "Einstellungen aktualisieren",
+  "mailing_lists.unsubscribe_all_btn": "Abmeldung von allen",
 
   "call.leave_btn": "Gespräch beenden",
   "call.waiting_for_partner": "Warten auf {{name}}...",

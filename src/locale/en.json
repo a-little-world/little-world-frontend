@@ -175,8 +175,10 @@
   "mailing_lists.newsletter_subscription_toggle": "Subscribe to newsletter",
   "mailing_lists.newsletter_label_toggle": "Newsletter",
   "mailing_lists.community_label_toggle": "Community updates",
+  "mailing_lists.newsletter_description": "A monthly update to share our latest news, stories and exiciting features.",
+  "mailing_lists.community_description": "Stay up to date with our latest community events, calls and activities.",
   "mailing_lists.success_message": "Preferences updated successfully",
-  "mailing_lists.submit_btn": "Update preferences",
+  "mailing_lists.unsubscribe_all_btn": "Unsubscribe from all",
 
   "call.leave_btn": "End call",
   "call.waiting_for_partner": "Waiting for {{name}} to join the call...",

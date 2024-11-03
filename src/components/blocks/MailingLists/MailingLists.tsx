@@ -4,6 +4,7 @@ import {
   MessageTypes,
   StatusMessage,
   Switch,
+  Text,
 } from '@a-little-world/little-world-design-system';
 import { LoadingSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Loading/Loading';
 import React, { useEffect, useState } from 'react';
@@ -32,13 +33,6 @@ const MailingListsWrapper = styled.div`
 const CategoryForm = styled.form`
   display: flex;
   gap: ${({ theme }) => theme.spacing.xxsmall};
-
-  > div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
 `;
 
 const MailingLists = ({
@@ -166,8 +160,10 @@ export const SingleCategoryToggle = ({ category, emailSettingsData }) => {
             value={value}
             defaultChecked={value}
             error={error?.message}
+            description={t(`mailing_lists.${category}_description`)}
             label={t(`mailing_lists.${category}_label_toggle`)}
             labelInline
+            fullWidth
             required={false}
           />
         )}
@@ -207,9 +203,9 @@ export const DynamicPublicMailingListsSettings = () => {
       >
         {saved ? t('mailing_lists.success_message') : error?.message}
       </StatusMessage>
-      <Button disabled={false} loading={false} onClick={() => setSaved(true)}>
-        {t('mailing_lists.submit_btn')}
-      </Button>
+      {/* <Button disabled={false} loading={false} onClick={() => setSaved(true)}>
+        {t('mailing_lists.unsubscribe_all_btn')}
+      </Button> */}
     </MailingListsWrapper>
   );
 };
