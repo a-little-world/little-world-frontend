@@ -15,6 +15,7 @@ import { useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
+import { apiFetch } from '../../../api/helpers.ts';
 import { mutateUserData } from '../../../api/index.js';
 import { updateProfile } from '../../../features/userData.js';
 import { onFormError } from '../../../helpers/form.ts';
@@ -187,7 +188,7 @@ export const DynamicPublicMailingListsSettings = () => {
     data: emailSettingsData,
     error,
     isLoading,
-  } = useSWR(`/api/email_settings/${emailSettingsHash}/`, fetcher);
+  } = useSWR(`/api/email_settings/${emailSettingsHash}/`, apiFetch);
 
   return (
     <MailingListsWrapper $centred>
