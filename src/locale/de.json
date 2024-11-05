@@ -145,6 +145,9 @@
   "community_events.frequency_once": "Einmalig",
   "community_events.frequency_weekly": "Wöchentlich",
   "community_events.frequency_monthly": "Monatlich",
+  "community_events.add_to_calendar": "Termin hinzufügen",
+  "community_events.join_call": "Gespräch beitreten",
+
   "settings.title": "Einstellungen",
   "settings.edit_item": "{{item}} ändern",
   "settings.edit_button": "ändern",

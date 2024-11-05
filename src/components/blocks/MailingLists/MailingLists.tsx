@@ -12,22 +12,27 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { mutateUserData } from '../../../api/index.js';
 import { updateProfile } from '../../../features/userData.js';
 import { onFormError } from '../../../helpers/form.ts';
 
-const MailingListsWrapper = styled.div`
+const MailingListsWrapper = styled.div<{ $centred?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: ${({ theme }) => theme.spacing.xxsmall};
-  margin: ${({ theme }) => theme.spacing.small} auto 0;
   width: 100%;
   max-width: 400px;
   min-height: 232px; // height of content
+
+  ${({ theme, $centred }) =>
+    $centred &&
+    css`
+      margin: ${theme.spacing.small} auto 0;
+    `}
 `;
 
 const CategoryForm = styled.form`
@@ -185,7 +190,7 @@ export const DynamicPublicMailingListsSettings = () => {
   } = useSWR(`/api/email_settings/${emailSettingsHash}/`, fetcher);
 
   return (
-    <MailingListsWrapper>
+    <MailingListsWrapper $centred>
       {isLoading ? (
         <Loading size={LoadingSizes.Medium} />
       ) : (
