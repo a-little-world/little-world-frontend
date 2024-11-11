@@ -11,27 +11,13 @@ import { CardContent } from '@a-little-world/little-world-design-system/dist/esm
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { setMatchRejected } from '../../../features/userData';
 import { useSelector } from '../../../hooks/index.ts';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
 import { TextField } from '../Profile/styles';
-
-const InfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.small};
-
-  ${({ theme }) => `
-  margin-bottom: ${theme.spacing.xxsmall};
-
-  @media (min-width: ${theme.breakpoints.small}) {
-    margin-bottom: ${theme.spacing.small};
-  }
-  `}
-`;
 
 const ProfileInfo = styled.div`
   display: flex;
@@ -63,6 +49,7 @@ const ConfirmMatchCard = ({
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const matchRejected = useSelector(state => state.userData.matchRejected);
+  const theme = useTheme();
 
   const handleReject = () => {
     onReject();
@@ -73,16 +60,17 @@ const ConfirmMatchCard = ({
     <Card width={CardSizes.Medium}>
       {matchRejected ? (
         <>
-          <CardHeader>{t('rejected_match_title')}</CardHeader>
-          <Text bold type={TextTypes.Body5} center>
-            {t('rejected_match_description', { name })}
-          </Text>
-
-          <InfoContainer>
+          <CardHeader textColor={theme.color.text.title}>
+            {t('rejected_match_title')}
+          </CardHeader>
+          <CardContent $align="flex-start">
+            <Text bold type={TextTypes.Body5}>
+              {t('rejected_match_description', { name })}
+            </Text>
             <Text type={TextTypes.Body5}>{t('rejected_match_info_1')}</Text>
             <Text type={TextTypes.Body5}>{t('rejected_match_info_2')}</Text>
             <Text type={TextTypes.Body5}>{t('rejected_match_info_3')}</Text>
-          </InfoContainer>
+          </CardContent>
           <Button
             type="button"
             appearance={ButtonAppearance.Secondary}
@@ -94,11 +82,10 @@ const ConfirmMatchCard = ({
       ) : (
         <>
           <CardHeader>{t('confirm_match_title')}</CardHeader>
-          <CardContent $align="center" $marginBottom="24px">
-            <div>
-              <ProfileImage image={image} imageType={imageType} />
-            </div>
+          <CardContent $align="center" $marginBottom={theme.spacing.large}>
+            <div></div>
             <ProfileInfo>
+              <ProfileImage image={image} imageType={imageType} />
               <Text tag="h3" bold type={TextTypes.Heading5} center>
                 {name}
               </Text>
@@ -107,7 +94,7 @@ const ConfirmMatchCard = ({
             <Text type={TextTypes.Body5}>
               {t('confirm_match_description', { name })}
             </Text>
-            <Text tag="h3" type={TextTypes.Body5}>
+            <Text type={TextTypes.Body5}>
               {t('confirm_match_instruction', { name })}
             </Text>
           </CardContent>
