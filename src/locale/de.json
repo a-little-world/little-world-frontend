@@ -99,6 +99,7 @@
   "confirm_match_instruction": "Bestätige nur, wenn du dich mindestens 10 Mal für jeweils 30 Minuten unterhalten möchtest und du {{name}} direkt die erste Nachricht schreibst.",
   "confirm_match_confirm_btn": "Match bestätigen",
   "confirm_match_reject_btn": "Match ablehnen",
+  "confirm_match_user_bio": "Über sie",
   "unmatch_modal_title": "Kontakt zu {{ name }} wirklich beenden?",
   "unmatch_modal_description": "",
   "unmatch_modal_confirmation": "Dein Kontakt zu {{ name }} wurde beendet.",
