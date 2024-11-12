@@ -88,7 +88,9 @@ function CommunityEvent({
         <Buttons>
           <Button className="appointment disabled">
             <img alt="add appointment" />
-            <span className="text">Termin hinzufügen</span>
+            <span className="text">
+              {t('community_events.add_to_calendar')}
+            </span>
           </Button>
           <Button
             type="button"
@@ -98,7 +100,7 @@ function CommunityEvent({
             }}
           >
             <PhoneIcon color={theme.color.surface.primary} width="20px" />
-            <span className="text">Gespräch beitreten</span>
+            <span className="text">{t('community_events.join_call')}</span>
           </Button>
           <AddToCalendarButton
             calendarEvent={{

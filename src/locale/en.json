@@ -146,6 +146,8 @@
   "community_events.frequency_once": "One-off",
   "community_events.frequency_weekly": "Weekly",
   "community_events.frequency_monthly": "Monthly",
+  "community_events.add_to_calendar": "Add to calendar",
+  "community_events.join_call": "Join call",
   "settings.title": "Settings",
   "settings.edit_item": "Edit {{item}}",
   "settings.edit_button": "Edit",
