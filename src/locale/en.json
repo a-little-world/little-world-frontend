@@ -99,6 +99,7 @@
   "confirm_match_instruction": "Only click \"Accept\" if you're willing to have at least 10, 30-minute conversations. When you hit accept, make sure to send <highlight>{{name}}</highlight> a message.",
   "confirm_match_confirm_btn": "Accept",
   "confirm_match_reject_btn": "Decline",
+  "confirm_match_user_bio": "A bit about them...",
   "unmatch_modal_title": "Do you really want to unmatch from {{ name }}?",
   "unmatch_modal_description": "",
   "unmatch_modal_confirmation": "You have been unmatched with {{ name }}.",

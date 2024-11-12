@@ -51,6 +51,7 @@ export const MatchCardComponent = ({
       name={profile?.first_name}
       imageType={profile?.image_type}
       image={usesAvatar ? profile?.avatar_config : profile?.image}
+      description={profile.description}
       onConfirm={() => {
         partiallyConfirmMatch({
           acceptDeny: true,
