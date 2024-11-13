@@ -22,7 +22,7 @@ const ButtonsContainer = styled.div`
 
     @media (min-width: ${theme.breakpoints.small}) {
       gap: ${theme.spacing.large};
-      flex-wrap: no-wrap;
+      flex-wrap: nowrap;
 
       > button,
       > a {

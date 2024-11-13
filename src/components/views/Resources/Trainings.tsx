@@ -58,7 +58,7 @@ const Container = styled.div`
   ${({ theme }) =>
     `
       gap: ${theme.spacing.small};
-      // flex-wrap: no-wrap;
+
       @media (min-width: ${theme.breakpoints.medium}) {
         gap: ${theme.spacing.medium};
       }`};

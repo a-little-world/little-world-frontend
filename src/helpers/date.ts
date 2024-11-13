@@ -19,13 +19,13 @@ export const formatDate = (
   locale: string,
 ) =>
   format(date, formatStr, {
-    locale: locale === LANGUAGES.de ? de : enGB,
+    locale: locale === LANGUAGES.en ? enGB : de,
   });
 
 export const formatTimeDistance = (from: Date, to: Date, locale: string) =>
   formatDistance(from, to, {
     addSuffix: true,
-    locale: locale === LANGUAGES.de ? de : enGB,
+    locale: locale === LANGUAGES.en ? enGB : de,
   });
 
 export function addMinutesToDate(date: Date, minutes: number) {
