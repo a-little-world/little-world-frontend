@@ -24,6 +24,7 @@ const ProfileInfo = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+  align-items: center;
   text-align: left;
 `;
 
@@ -82,8 +83,11 @@ const ConfirmMatchCard = ({
       ) : (
         <>
           <CardHeader>{t('confirm_match_title')}</CardHeader>
-          <CardContent $align="center" $marginBottom={theme.spacing.large}>
-            <div></div>
+          <CardContent
+            $align="center"
+            $textAlign="center"
+            $marginBottom={theme.spacing.large}
+          >
             <ProfileInfo>
               <ProfileImage image={image} imageType={imageType} />
               <Text tag="h3" bold type={TextTypes.Heading5} center>

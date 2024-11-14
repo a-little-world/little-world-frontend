@@ -5,6 +5,7 @@ import {
   ButtonVariations,
   Gradients,
   GroupChatIcon,
+  Link,
   SendIcon,
   Tag,
   TagAppearance,
@@ -239,6 +240,7 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const isSupport = useSelector(state => state.userData.user?.isSupport);
   const activeChat = useSelector(state =>
     getChatByChatId(state.userData.chats, chatId),
   );
@@ -284,6 +286,14 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
               {unmatched ? t('chat.unmatched_user') : partner?.first_name}
             </Text>
           </ProfileLink>
+          {isSupport && (
+            <Link
+              href={`${window?.origin}/matching/user/${partner.id}`}
+              target="_blank"
+            >
+              Admin Profile
+            </Link>
+          )}
         </UserInfo>
         {unmatched ? (
           <Tag size={TagSizes.small} appearance={TagAppearance.error}>
