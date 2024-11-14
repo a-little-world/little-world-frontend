@@ -54,7 +54,7 @@ const Form = () => {
 
   const [formOptions, userData] = useSelector(state => [
     state.userData.formOptions,
-    state.userData.user.profile,
+    state.userData.user,
   ]);
 
   const navigate = useNavigate();
@@ -67,13 +67,13 @@ const Form = () => {
     getFormPage({
       slug,
       formOptions,
-      userData,
+      userData: userData.profile,
     });
   const isLastStep = step === totalSteps;
 
   const onFormSuccess = response => {
     dispatch(updateProfile(response));
-    if (isLastStep) {
+    if (isLastStep && !userData?.userFormCompleted) {
       completeForm().then(updatedUser => {
         dispatch(updateUser(updatedUser));
       });
