@@ -288,7 +288,7 @@ export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
           </ProfileLink>
           {isSupport && (
             <Link
-              href={`${window?.origin}/matching/user/${partner.id}`}
+              href={`${window?.origin}/matching/user/${partner?.id}`}
               target="_blank"
             >
               Admin Profile
