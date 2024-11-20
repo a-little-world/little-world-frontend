@@ -4,7 +4,7 @@ import {
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 
-import { USER_TYPES } from '../constants/index.ts';
+import { PROFILE_GROUPS, USER_TYPES } from '../constants/index.ts';
 import { ComponentTypes, formatDataField } from './formContent';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
@@ -74,21 +74,21 @@ const formPages = {
             {
               type: ComponentTypes.multiCheckboxWithInput,
               multiCheckbox: {
-                currentValue: userData?.target_groups,
-                dataField: 'target_groups',
-                formData: options?.target_groups,
+                currentValue: userData?.groups,
+                dataField: 'groups',
+                formData: options?.groups,
                 getProps: t => ({
-                  heading: t('self_info.target_group_label'),
+                  heading: t('self_info.group_label'),
                   errorRules: { required: t('validation.required') },
                 }),
-                textInputVal: options?.target_groups[0].value,
+                textInputVal: PROFILE_GROUPS.other,
               },
               textInput: {
-                currentValue: userData?.other_target_group,
-                dataField: 'other_target_group',
+                currentValue: userData?.other_group,
+                dataField: 'other_group',
                 getProps: t => ({
-                  label: t('self_info.other_target_group_label'),
-                  labelTooltip: t('self_info.target_group_tooltip'),
+                  label: t('self_info.other_group_label'),
+                  labelTooltip: t('self_info.group_tooltip'),
                   width: InputWidth.Medium,
                 }),
               },
