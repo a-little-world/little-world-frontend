@@ -104,9 +104,38 @@ const ProfilePic = ({ control, setValue }) => {
   const fileInputRef = useRef(null);
   const theme = useTheme();
 
-  const onImageUpload = e => {
+
+  //Changing the image to a canvas to be able to compress it
+  const compressImage = async (file, { quality = 1}) => {
+    
+    const imageBitmap = await createImageBitmap(file);
+  
+    const canvas = document.createElement('canvas');
+    canvas.width = imageBitmap.width;
+    canvas.height = imageBitmap.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(imageBitmap, 0, 0);
+  
+
+    return await new Promise((resolve) =>
+      canvas.toBlob(resolve, quality),
+      //console.log('promise reached'),    Debugging...
+    );
+  };
+
+
+  //Need sto be async now, to wait for the compression 
+  const onImageUpload = async e => {
+    //Imagefile the user wants to upload
     const file = e.target.files[0];
-    const image = URL.createObjectURL(file);
+  
+
+    const compressedFile = await compressImage(file, {
+      quality: 0.5,
+      
+    })
+
+    const image = URL.createObjectURL(compressedFile);
 
     setUploadedImage(image);
     setValue(USER_FIELDS.image, file);
@@ -120,6 +149,7 @@ const ProfilePic = ({ control, setValue }) => {
     setValue(USER_FIELDS.imageType, imageType);
   };
 
+  //Selection for the type the user is choosing (Own Image/ Avatar)
   const onImageSelection = type => {
     if (type === imageType) return;
     setImageType(type);
