@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 import { BACKEND_URL } from '../ENVIRONMENT.js';
-import { formatApiError } from './helpers.ts';
+import { apiFetch, formatApiError } from './helpers.ts';
 
 // eslint-disable-next-line import/prefer-default-export
 export const fetchProfile = async ({ userId }: { userId: string }) => {
@@ -18,4 +18,20 @@ export const fetchProfile = async ({ userId }: { userId: string }) => {
 
   if (response.ok) return responseBody;
   throw formatApiError(responseBody, response);
+};
+
+export const updateUserSearchState = async ({
+  updatedState,
+  onSuccess,
+  onError,
+}) => {
+  try {
+    const result = await apiFetch(`/api/user/search_state/${updatedState}`, {
+      method: 'POST',
+      useTagsOnly: true,
+    });
+    onSuccess(result);
+  } catch (error) {
+    onError(error);
+  }
 };

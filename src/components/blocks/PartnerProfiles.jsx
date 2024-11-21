@@ -20,6 +20,8 @@ import LanguageLevelCard from './Cards/LanguageLevelCard.tsx';
 import PartnerActionCard from './Cards/PartnerActionCard';
 import ProfileCard, { PROFILE_CARD_HEIGHT } from './Cards/ProfileCard';
 import { SearchingCard } from './Cards/SearchingCard';
+import ConfirmSearchCard from './Cards/UpdateSearchStateCard.tsx';
+import UpdateSearchStateCard from './Cards/UpdateSearchStateCard.tsx';
 
 const FindNewPartner = styled.button`
   text-align: center;
@@ -61,7 +63,7 @@ const Matches = styled.div`
 
 function PartnerProfiles({ setShowCancel }) {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+
   const matchesDisplay = useSelector(selectMatchesDisplay);
   const user = useSelector(state => state.userData.user);
   const germanLevelInvalid = Boolean(
@@ -70,30 +72,7 @@ function PartnerProfiles({ setShowCancel }) {
     ),
   );
   const [partnerActionData, setPartnerActionData] = useState(null);
-
-  function updateUserMatchingState() {
-    const updatedState = 'searching';
-    fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-      },
-    })
-      .then(response => {
-        if (response.status === 200) {
-          return response.json();
-        }
-        console.error('server error', response.status, response.statusText);
-        return false;
-      })
-      .then(response => {
-        if (response) {
-          // If this request works, we can safely update our state to 'searching'
-          dispatch(updateSearchState(updatedState !== 'idle'));
-        }
-      })
-      .catch(error => console.error(error));
-  }
+  const [showSearchConfirmModal, setShowSearchConfirmModal] = useState(false);
 
   const onModalClose = () => {
     setPartnerActionData(null);
@@ -122,14 +101,13 @@ function PartnerProfiles({ setShowCancel }) {
       ) : (
         <FindNewPartner
           type="button"
-          onClick={updateUserMatchingState}
+          onClick={() => setShowSearchConfirmModal(true)}
           $hasMatch={user.hasMatch}
         >
           <img src={PlusImage} alt="change matching status icon" />
           <Text type={TextTypes.Body3}>
             {t('matching_state_not_searching_trans')}
           </Text>
-          {/* matchState === "confirmed" && t("matching_state_found_confirmed_trans") */}
         </FindNewPartner>
       )}
 
@@ -137,6 +115,14 @@ function PartnerProfiles({ setShowCancel }) {
         {!!partnerActionData && (
           <PartnerActionCard data={partnerActionData} onClose={onModalClose} />
         )}
+      </Modal>
+      <Modal
+        open={showSearchConfirmModal}
+        onClose={() => setShowSearchConfirmModal(false)}
+      >
+        <UpdateSearchStateCard
+          onClose={() => setShowSearchConfirmModal(false)}
+        />
       </Modal>
     </Matches>
   );

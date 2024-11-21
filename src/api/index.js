@@ -315,11 +315,3 @@ export const setNewPassword = async data => {
   if (response.ok) return responseBody;
   throw formatApiError(responseBody, response);
 };
-
-export const changeSearchStatePost = updatedState =>
-  fetch(`${BACKEND_URL}/api/user/search_state/${updatedState}`, {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-    },
-  });
