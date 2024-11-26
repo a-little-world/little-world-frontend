@@ -46,6 +46,8 @@ const IMAGE_TYPES = {
   image: 'image',
 };
 
+const MAX_IMAGE_SIZE = 1000000; // bytes
+
 const CircleImage = ({
   className,
   icon,
@@ -104,6 +106,7 @@ const ProfilePic = ({ control, setValue }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef(null);
   const theme = useTheme();
+  const { compressImage } = useImageCompression(0.5);
 
   // // Changing the image to a canvas to be able to compress it
   // const compressImage = async (file, { quality = 1 }) => {
@@ -127,7 +130,6 @@ const ProfilePic = ({ control, setValue }) => {
   const onImageUpload = async e => {
     // Imagefile the user wants to upload
     const file = e.target.files[0];
-    const maxfilesize = 1000000;
     // if (file.size > maxfilesize) {
     //   const compressedFile = await compressImage(file, {
     //     quality: 0.5,
@@ -143,11 +145,9 @@ const ProfilePic = ({ control, setValue }) => {
 
     if (!file) return; // Guard clause for no file selected
 
-    // Use the compressImage function from the hook
-    const { compressImage } = useImageCompression(0.5);
-
     try {
-      if (file.size > maxfilesize) {
+      // compress file if bigger than limit
+      if (file.size > MAX_IMAGE_SIZE) {
         const compressedFile = await compressImage(file);
         const image = URL.createObjectURL(compressedFile);
         setUploadedImage(image);
