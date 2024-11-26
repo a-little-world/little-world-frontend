@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
 import { USER_FIELDS } from '../../../../constants/index.ts';
+import useImageCompression from '../../../../hooks/imageCompression.tsx';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import {
@@ -104,37 +105,62 @@ const ProfilePic = ({ control, setValue }) => {
   const fileInputRef = useRef(null);
   const theme = useTheme();
 
-  // Changing the image to a canvas to be able to compress it
-  const compressImage = async (file, { quality = 1 }) => {
-    const imageBitmap = await createImageBitmap(file);
+  // // Changing the image to a canvas to be able to compress it
+  // const compressImage = async (file, { quality = 1 }) => {
+  //   const imageBitmap = await createImageBitmap(file);
 
-    const canvas = document.createElement('canvas');
-    canvas.width = imageBitmap.width;
-    canvas.height = imageBitmap.height;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(imageBitmap, 0, 0);
+  //   const canvas = document.createElement('canvas');
+  //   canvas.width = imageBitmap.width;
+  //   canvas.height = imageBitmap.height;
+  //   const ctx = canvas.getContext('2d');
+  //   ctx.drawImage(imageBitmap, 0, 0);
 
-    return new Promise(
-      resolve => {
-        canvas.toBlob(resolve, quality);
-      },
-      // console.log('promise reached'),    Debugging...
-    );
-  };
+  //   return new Promise(
+  //     resolve => {
+  //       canvas.toBlob(resolve, quality);
+  //     },
+  //     // console.log('promise reached'),    Debugging...
+  //   );
+  // };
 
   // Needs to be async now, to wait for the compression
   const onImageUpload = async e => {
     // Imagefile the user wants to upload
     const file = e.target.files[0];
+    const maxfilesize = 1000000;
+    // if (file.size > maxfilesize) {
+    //   const compressedFile = await compressImage(file, {
+    //     quality: 0.5,
+    //   });
+    //   const image = URL.createObjectURL(compressedFile);
+    //   setUploadedImage(image);
+    //   setValue(USER_FIELDS.image, file);
+    // } else {
+    //   const image = URL.createObjectURL(file);
+    //   setUploadedImage(image);
+    //   setValue(USER_FIELDS.image, file);
+    // }
 
-    const compressedFile = await compressImage(file, {
-      quality: 0.5,
-    });
+    if (!file) return; // Guard clause for no file selected
 
-    const image = URL.createObjectURL(compressedFile);
+    // Use the compressImage function from the hook
+    const { compressImage } = useImageCompression(0.5);
 
-    setUploadedImage(image);
-    setValue(USER_FIELDS.image, file);
+    try {
+      if (file.size > maxfilesize) {
+        const compressedFile = await compressImage(file);
+        const image = URL.createObjectURL(compressedFile);
+        setUploadedImage(image);
+        setValue(USER_FIELDS.image, compressedFile); // Use compressed file here
+      } else {
+        const image = URL.createObjectURL(file);
+        setUploadedImage(image);
+        setValue(USER_FIELDS.image, file); // Use original file here
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      // Handle error (e.g., show a notification to the user)
+    }
   };
 
   const onImageDelete = e => {
