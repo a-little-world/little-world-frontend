@@ -23,7 +23,7 @@ import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
 import { USER_FIELDS } from '../../../../constants/index.ts';
-import useImageCompression from '../../../../hooks/imageCompression.tsx';
+import useImageCompression from '../../../../hooks/useImageCompression.tsx';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import {
