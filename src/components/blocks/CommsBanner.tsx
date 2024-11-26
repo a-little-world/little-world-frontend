@@ -7,15 +7,16 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
+
+import { useSelector } from '../../hooks/index.ts';
 
 const Banner = styled.div<{ $background: string }>`
   display: flex;
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   background: ${({ $background, theme }) =>
     $background ? `url(${$background})` : '#053c56'};
-  backgorund-position: center;
+  background-position: center;
   background-size: cover;
   padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.medium}`};
   color: ${({ theme }) => theme.color.text.reversed};
@@ -27,6 +28,7 @@ const Banner = styled.div<{ $background: string }>`
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: ${theme.spacing.medium} ${theme.spacing.medium};
       flex-direction: row;
+      min-height: 272px;
     }
   `};
 `;
@@ -71,25 +73,18 @@ const Description = styled(Text)`
 `;
 
 function CommsBanner() {
-  const theme = useTheme();
   const banner = useSelector(state => state.userData.user.banner);
   if (isEmpty(banner)) return null;
 
   return (
     <Banner $background={banner.image}>
       <Content>
-        <Title
-          tag="h3"
-          type={TextTypes.Heading3}
-          color={theme.color.text.reversed}
-        >
+        <Title tag="h3" type={TextTypes.Heading3} color={banner.text_color}>
           {banner.title}
         </Title>
 
         <Section>
-          <Description color={theme.color.text.reversed}>
-            {banner.text}
-          </Description>
+          <Description color={banner.text_color}>{banner.text}</Description>
           <Ctas>
             {banner.cta_2_url && (
               <Cta
