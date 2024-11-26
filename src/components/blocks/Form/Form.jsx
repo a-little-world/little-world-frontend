@@ -113,6 +113,7 @@ const Form = () => {
                 key={ProfilePic.name}
                 control={control}
                 setValue={setValue}
+                setError={setError}
               />
             );
 

@@ -95,7 +95,7 @@ const MobileCircleImage = styled(CircleImage)`
   `}
 `;
 
-const ProfilePic = ({ control, setValue }) => {
+const ProfilePic = ({ control, setValue, setError }) => {
   const [imageType, setImageType] = useState(IMAGE_TYPES.image);
   const [avatarConfig, setAvatarConfig] = useState(genConfig());
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
@@ -128,7 +128,7 @@ const ProfilePic = ({ control, setValue }) => {
         setValue(USER_FIELDS.image, file); // Use original file here
       }
     } catch (error) {
-      console.error('Error uploading image:', error);
+      setError(USER_FIELDS.image);
       // Handle error (e.g., show a notification to the user)
     }
   };
