@@ -513,7 +513,7 @@
   "validation.lang_skill_too_long": "Maximum of 300 characters.",
   "validation.post_code_invalid": "Postcode not valid",
   "validation.name_contains_unallowed_characters": "The name you have entered contains unpermitted characters, e.g. space.",
-  "validation.image_upload_required": "File upload failed, have you selected a file under 0.5MB? If you can't upload a file please use an avatar instead.",
+  "validation.image_upload_required": "File upload failed, have you selected a file under 1MB? If you can't upload a file please use an avatar instead.",
   "validation.generic_try_again": "There was a server issue. Please try again.",
   "validation.required": "*required",
 
