@@ -46,6 +46,7 @@ const Section = styled.div`
   flex-direction: column;
   flex-wrap: wrap;
   width: 100%;
+  height: 100%;
   gap: ${({ theme }) => theme.spacing.large};
 
   ${({ theme }) => css`
@@ -60,6 +61,7 @@ const Ctas = styled.div`
   display: flex;
   align-self: flex-end;
   gap: ${({ theme }) => theme.spacing.small};
+  flex-wrap: wrap;
 `;
 
 const Title = styled(Text)``;
@@ -69,7 +71,13 @@ const Cta = styled(Link)`
 `;
 
 const Description = styled(Text)`
-  max-width: 500px;
+  max-width: 496px;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      max-width: 584px;
+    }
+  `};
 `;
 
 function CommsBanner() {
