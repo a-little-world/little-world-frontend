@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
 import { USER_FIELDS } from '../../../../constants/index.ts';
+import useImageCompression from '../../../../hooks/useImageCompression.tsx';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import {
@@ -44,6 +45,8 @@ const IMAGE_TYPES = {
   avatar: 'avatar',
   image: 'image',
 };
+
+const MAX_IMAGE_SIZE = 1000000; // bytes
 
 const CircleImage = ({
   className,
@@ -92,7 +95,7 @@ const MobileCircleImage = styled(CircleImage)`
   `}
 `;
 
-const ProfilePic = ({ control, setValue }) => {
+const ProfilePic = ({ control, setValue, setError }) => {
   const [imageType, setImageType] = useState(IMAGE_TYPES.image);
   const [avatarConfig, setAvatarConfig] = useState(genConfig());
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
@@ -103,13 +106,31 @@ const ProfilePic = ({ control, setValue }) => {
   const { t } = useTranslation();
   const fileInputRef = useRef(null);
   const theme = useTheme();
+  const { compressImage } = useImageCompression();
 
-  const onImageUpload = e => {
+  // Needs to be async now, to wait for the compression
+  const onImageUpload = async e => {
+    // Imagefile the user wants to upload
     const file = e.target.files[0];
-    const image = URL.createObjectURL(file);
 
-    setUploadedImage(image);
-    setValue(USER_FIELDS.image, file);
+    if (!file) return; // Guard clause for no file selected
+
+    try {
+      // compress file if bigger than limit
+      if (file.size > MAX_IMAGE_SIZE) {
+        const compressedFile = await compressImage(file);
+        const image = URL.createObjectURL(compressedFile);
+        setUploadedImage(image);
+        setValue(USER_FIELDS.image, compressedFile); // Use compressed file here
+      } else {
+        const image = URL.createObjectURL(file);
+        setUploadedImage(image);
+        setValue(USER_FIELDS.image, file); // Use original file here
+      }
+    } catch (error) {
+      setError(USER_FIELDS.image);
+      // Handle error (e.g., show a notification to the user)
+    }
   };
 
   const onImageDelete = e => {
@@ -120,6 +141,7 @@ const ProfilePic = ({ control, setValue }) => {
     setValue(USER_FIELDS.imageType, imageType);
   };
 
+  // Selection for the type the user is choosing (Own Image/ Avatar)
   const onImageSelection = type => {
     if (type === imageType) return;
     setImageType(type);
