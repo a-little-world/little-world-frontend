@@ -38,7 +38,7 @@ const Content = styled.div`
   flex-direction: column;
   width: 100%;
   gap: ${({ theme }) => theme.spacing.xxsmall};
-  max-width: 1000px;
+  max-width: 1200px;
 `;
 
 const Section = styled.div`
