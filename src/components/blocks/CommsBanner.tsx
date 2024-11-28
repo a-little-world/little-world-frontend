@@ -14,19 +14,19 @@ import { useSelector } from '../../hooks/index.ts';
 const Banner = styled.div<{ $background: string }>`
   display: flex;
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  background: ${({ $background, theme }) =>
+  background: ${({ $background }) =>
     $background ? `url(${$background})` : '#053c56'};
   background-position: center;
   background-size: cover;
   padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.medium}`};
   color: ${({ theme }) => theme.color.text.reversed};
-
+  min-height: 520px;
   width: 100%;
   justify-content: center;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.medium} ${theme.spacing.medium};
+      padding: ${theme.spacing.large};
       flex-direction: row;
       min-height: 272px;
     }
@@ -47,12 +47,12 @@ const Section = styled.div`
   flex-wrap: wrap;
   width: 100%;
   height: 100%;
-  gap: ${({ theme }) => theme.spacing.large};
+  gap: ${({ theme }) => theme.spacing.xlarge};
+  justify-content: space-between;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      flex-direction: row;
-      justify-content: space-between;
+      gap: ${theme.spacing.large};
     }
   `};
 `;
@@ -61,7 +61,14 @@ const Ctas = styled.div`
   display: flex;
   align-self: flex-end;
   gap: ${({ theme }) => theme.spacing.small};
-  flex-wrap: wrap;
+  flex-direction: column;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  `};
 `;
 
 const Title = styled(Text)``;
