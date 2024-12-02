@@ -44,6 +44,7 @@ const Content = styled.div`
     @media (min-width: ${theme.breakpoints.large}) {
       flex-direction: row;
       gap: ${theme.spacing.xlarge};
+      justify-content: space-between;
     }
   `};
 `;
@@ -65,12 +66,6 @@ const Container = styled.div`
 const TextContainer = styled(Container)`
   justify-content: flex-start;
   gap: ${({ theme }) => theme.spacing.xxsmall};
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      gap: ${theme.spacing.xsmall};
-    }
-  `};
 `;
 
 const Ctas = styled.div`
@@ -81,9 +76,6 @@ const Ctas = styled.div`
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.small}) {
       align-self: flex-end;
-    }
-
-    @media (min-width: ${theme.breakpoints.medium}) {
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: flex-end;
@@ -91,8 +83,27 @@ const Ctas = styled.div`
   `};
 `;
 
-const BannerImage = styled.img`
+const MobileBannerImage = styled.img`
   width: 100%;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      display: none;
+    }
+  `};
+`;
+
+const DesktopBannerImage = styled.img`
+  display: none;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      display: block;
+      min-width: 296px;
+      margin: auto 0;
+      width: 100%;
+    }
+  `};
 `;
 
 const Title = styled(Text)``;
@@ -124,6 +135,9 @@ function CommsBanner() {
     <Banner $background={banner.background}>
       <Content>
         <TextContainer>
+          {banner.image && (
+            <MobileBannerImage src={banner.image} alt={banner.image_alt} />
+          )}
           <Title tag="h3" type={TextTypes.Heading3} color={banner.text_color}>
             {banner.title}
           </Title>
@@ -132,7 +146,7 @@ function CommsBanner() {
 
         <Container>
           {banner.image && (
-            <BannerImage src={banner.image} alt={banner.image_alt} />
+            <DesktopBannerImage src={banner.image} alt={banner.image_alt} />
           )}
           <Ctas>
             {banner.cta_2_url && (
