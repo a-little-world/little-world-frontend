@@ -15,7 +15,7 @@ const Banner = styled.div<{ $background: string }>`
   display: flex;
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   background: ${({ $background }) =>
-    $background ? `url(${$background})` : '#053c56'};
+    $background ? `${$background}` : '#053c56'};
   background-position: center;
   background-size: cover;
   padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.medium}`};
@@ -37,36 +37,71 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
+  gap: ${({ theme }) => theme.spacing.medium};
   max-width: 1200px;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      flex-direction: row;
+      gap: ${theme.spacing.xlarge};
+      justify-content: space-between;
+    }
+  `};
 `;
 
-const Section = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
-  width: 100%;
   height: 100%;
-  gap: ${({ theme }) => theme.spacing.xlarge};
-  justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.large};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
+      justify-content: flex-end;
       gap: ${theme.spacing.large};
     }
   `};
 `;
 
+const TextContainer = styled(Container)`
+  justify-content: flex-start;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
 const Ctas = styled.div`
   display: flex;
-  align-self: flex-end;
   gap: ${({ theme }) => theme.spacing.small};
   flex-direction: column;
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
+    @media (min-width: ${theme.breakpoints.small}) {
+      align-self: flex-end;
       flex-direction: row;
       flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+  `};
+`;
+
+const MobileBannerImage = styled.img`
+  width: 100%;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      display: none;
+    }
+  `};
+`;
+
+const DesktopBannerImage = styled.img`
+  display: none;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      display: block;
+      min-width: 296px;
+      margin: auto 0;
+      width: 100%;
     }
   `};
 `;
@@ -74,7 +109,11 @@ const Ctas = styled.div`
 const Title = styled(Text)``;
 
 const Cta = styled(Link)`
-  align-self: flex-end;
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.small}) {
+      align-self: flex-end;
+    }
+  `};
 `;
 
 const Description = styled(Text)`
@@ -90,16 +129,25 @@ const Description = styled(Text)`
 function CommsBanner() {
   const banner = useSelector(state => state.userData.user.banner);
   if (isEmpty(banner)) return null;
+  console.log({ banner });
 
   return (
-    <Banner $background={banner.image}>
+    <Banner $background={banner.background}>
       <Content>
-        <Title tag="h3" type={TextTypes.Heading3} color={banner.text_color}>
-          {banner.title}
-        </Title>
-
-        <Section>
+        <TextContainer>
+          {banner.image && (
+            <MobileBannerImage src={banner.image} alt={banner.image_alt} />
+          )}
+          <Title tag="h3" type={TextTypes.Heading3} color={banner.text_color}>
+            {banner.title}
+          </Title>
           <Description color={banner.text_color}>{banner.text}</Description>
+        </TextContainer>
+
+        <Container>
+          {banner.image && (
+            <DesktopBannerImage src={banner.image} alt={banner.image_alt} />
+          )}
           <Ctas>
             {banner.cta_2_url && (
               <Cta
@@ -120,7 +168,7 @@ function CommsBanner() {
               </Cta>
             )}
           </Ctas>
-        </Section>
+        </Container>
       </Content>
     </Banner>
   );
