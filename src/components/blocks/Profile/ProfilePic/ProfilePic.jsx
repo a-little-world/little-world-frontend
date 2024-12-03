@@ -46,7 +46,6 @@ const IMAGE_TYPES = {
   image: 'image',
 };
 
-
 const MAX_IMAGE_SIZE = 1000000; // bytes
 
 const CircleImage = ({
@@ -120,10 +119,7 @@ const ProfilePic = ({ control, setValue, setError }) => {
       // compress file if bigger than limit
       if (file.size > MAX_IMAGE_SIZE) {
         const compressedFile = await compressImage(file);
-        console.log(compressedFile.size);
         const image = URL.createObjectURL(compressedFile);
-        console.log('Bildgröße');
-        console.log(image.size);
         setUploadedImage(image);
         setValue(USER_FIELDS.image, compressedFile); // Use compressed file here
       } else {
@@ -145,6 +141,7 @@ const ProfilePic = ({ control, setValue, setError }) => {
     setValue(USER_FIELDS.imageType, imageType);
   };
 
+  // Selection for the type the user is choosing (Own Image/ Avatar)
   const onImageSelection = type => {
     if (type === imageType) return;
     setImageType(type);
