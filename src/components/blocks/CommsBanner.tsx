@@ -11,6 +11,8 @@ import styled, { css } from 'styled-components';
 
 import { useSelector } from '../../hooks/index.ts';
 
+const BANNER_LARGE_BREAKPOINT = '960px';
+
 const Banner = styled.div<{ $background: string }>`
   display: flex;
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
@@ -37,11 +39,11 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.large};
   max-width: 1200px;
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media (min-width: ${BANNER_LARGE_BREAKPOINT}) {
       flex-direction: row;
       gap: ${theme.spacing.xlarge};
       justify-content: space-between;
@@ -57,7 +59,7 @@ const Container = styled.div`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      justify-content: flex-end;
+      justify-content: center;
       gap: ${theme.spacing.large};
     }
   `};
@@ -65,12 +67,13 @@ const Container = styled.div`
 
 const TextContainer = styled(Container)`
   justify-content: flex-start;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
+  gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 const Ctas = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.small};
+  width: 100%;
   flex-direction: column;
 
   ${({ theme }) => css`
@@ -80,14 +83,18 @@ const Ctas = styled.div`
       flex-wrap: wrap;
       justify-content: flex-end;
     }
+
+    @media (min-width: ${BANNER_LARGE_BREAKPOINT}) {
+      justify-content: center;
+    }
   `};
 `;
 
 const MobileBannerImage = styled.img`
   width: 100%;
 
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+  ${() => css`
+    @media (min-width: ${BANNER_LARGE_BREAKPOINT}) {
       display: none;
     }
   `};
@@ -96,17 +103,18 @@ const MobileBannerImage = styled.img`
 const DesktopBannerImage = styled.img`
   display: none;
 
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+  ${() => css`
+    @media (min-width: ${BANNER_LARGE_BREAKPOINT}) {
       display: block;
-      min-width: 296px;
-      margin: auto 0;
+      min-width: 352px;
       width: 100%;
     }
   `};
 `;
 
-const Title = styled(Text)``;
+const Title = styled(Text)`
+  line-height: 1;
+`;
 
 const Cta = styled(Link)`
   ${({ theme }) => css`
@@ -114,6 +122,10 @@ const Cta = styled(Link)`
       align-self: flex-end;
     }
   `};
+`;
+
+const PrimaryCta = styled(Cta)<{ $hasBorder: boolean }>`
+  ${({ $hasBorder }) => $hasBorder && `border: 2px solid #fff;`}
 `;
 
 const Description = styled(Text)`
@@ -129,7 +141,6 @@ const Description = styled(Text)`
 function CommsBanner() {
   const banner = useSelector(state => state.userData.user.banner);
   if (isEmpty(banner)) return null;
-  console.log({ banner });
 
   return (
     <Banner $background={banner.background}>
@@ -159,13 +170,14 @@ function CommsBanner() {
               </Cta>
             )}
             {banner.cta_1_url && (
-              <Cta
+              <PrimaryCta
                 to={banner.cta_1_url}
                 buttonAppearance={ButtonAppearance.Primary}
                 buttonSize={ButtonSizes.Medium}
+                $hasBorder={banner.name.includes('Learner')}
               >
                 {banner.cta_1_text}
-              </Cta>
+              </PrimaryCta>
             )}
           </Ctas>
         </Container>
