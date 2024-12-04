@@ -4,9 +4,6 @@ const useImageCompression = () => {
   const compressImage = useCallback(async (file: File): Promise<Blob> => {
     try {
       const imageBitmap = await createImageBitmap(file);
-      console.log('Original Image Width:', imageBitmap.width);
-      console.log('Original Image Height:', imageBitmap.height);
-
 
       const canvas = document.createElement('canvas');
       canvas.width = imageBitmap.width;
@@ -32,7 +29,6 @@ const useImageCompression = () => {
         canvas.toBlob(
           blob => {
             if (blob) {
-              console.log('Blob size ', blob.size);
               resolve(blob);
             } else {
               reject(new Error('Compression failed'));
@@ -47,8 +43,6 @@ const useImageCompression = () => {
       throw error;
     }
   }, []);
-
-  
 
   return { compressImage };
 };

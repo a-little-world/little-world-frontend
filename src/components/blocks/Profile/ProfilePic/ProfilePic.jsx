@@ -46,7 +46,6 @@ const IMAGE_TYPES = {
   image: 'image',
 };
 
-
 const MAX_IMAGE_SIZE = 1000000; // bytes
 
 const CircleImage = ({
@@ -159,6 +158,7 @@ const ProfilePic = ({ control, setValue, setError }) => {
     setValue(USER_FIELDS.imageType, imageType);
   };
 
+  // Selection for the type the user is choosing (Own Image/ Avatar)
   const onImageSelection = type => {
     if (type === imageType) return;
     setImageType(type);
