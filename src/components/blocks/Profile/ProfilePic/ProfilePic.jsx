@@ -120,16 +120,30 @@ const ProfilePic = ({ control, setValue, setError }) => {
       // compress file if bigger than limit
       if (file.size > MAX_IMAGE_SIZE) {
         const compressedFile = await compressImage(file);
+
+        const imageFile = new File([compressedFile], "image.jpg",{type: "image/jpeg"});
+
+        console.log('ImageFile');
+        console.log(imageFile.type);
+        console.log('compressedFile');
+        console.log(compressedFile);
+
         console.log(compressedFile.size);
+        
+
+
+
         const image = URL.createObjectURL(compressedFile);
-        console.log('Bildgröße');
-        console.log(image.size);
         setUploadedImage(image);
-        setValue(USER_FIELDS.image, compressedFile); // Use compressed file here
+        setValue(USER_FIELDS.image, imageFile); // Use compressed file here
+
+
+
       } else {
         const image = URL.createObjectURL(file);
         setUploadedImage(image);
         setValue(USER_FIELDS.image, file); // Use original file here
+        console.log('else block reached');
       }
     } catch (error) {
       setError(USER_FIELDS.image);
