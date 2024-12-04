@@ -22,6 +22,7 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
 import {
+  COMMUNITY_EVENTS_ROUTE,
   HELP_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
@@ -98,9 +99,10 @@ function Sidebar({ sidebarMobile }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
+  const optpath = getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ? getAppRoute(COMMUNITY_EVENTS_ROUTE) : getAppRoute();
 
   const buttonData = [
-    { label: 'start', path: getAppRoute(), Icon: DashboardIcon },
+    { label: 'start', path: optpath , Icon: DashboardIcon },
     { label: 'messages', path: getAppRoute(MESSAGES_ROUTE), Icon: MessageIcon },
     {
       label: 'my_profile',
