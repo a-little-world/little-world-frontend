@@ -4,23 +4,17 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import Cookies from 'js-cookie';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
 
-import { BACKEND_URL } from '../../ENVIRONMENT';
-import {
-  selectMatchesDisplay,
-  updateSearchState,
-} from '../../features/userData';
+import { selectMatchesDisplay } from '../../features/userData';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard.tsx';
 import PartnerActionCard from './Cards/PartnerActionCard';
 import ProfileCard, { PROFILE_CARD_HEIGHT } from './Cards/ProfileCard';
 import { SearchingCard } from './Cards/SearchingCard';
-import ConfirmSearchCard from './Cards/UpdateSearchStateCard.tsx';
 import UpdateSearchStateCard from './Cards/UpdateSearchStateCard.tsx';
 
 const FindNewPartner = styled.button`
