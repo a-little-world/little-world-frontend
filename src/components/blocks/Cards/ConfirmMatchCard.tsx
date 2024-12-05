@@ -2,12 +2,12 @@ import {
   Button,
   ButtonAppearance,
   Card,
+  CardContent,
   CardHeader,
   CardSizes,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { CardContent } from '@a-little-world/little-world-design-system/dist/esm/components/Card/Card';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
