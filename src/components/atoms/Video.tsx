@@ -19,19 +19,17 @@ const StyledIframe = styled.iframe`
   left: 0;
 `;
 
-const Video = ({ src, title }: { src: string; title: string }) => {
-  return (
-    <VideoContainer>
-      <StyledIframe
-        src={`${YT_EMBED_URL}${src}`}
-        frameBorder="0"
-        title={title}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      />
-    </VideoContainer>
-  );
-};
+const Video = ({ src, title }: { src: string; title: string }) => (
+  <VideoContainer>
+    <StyledIframe
+      src={`${YT_EMBED_URL}${src}`}
+      frameBorder="0"
+      title={title}
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerPolicy="strict-origin-when-cross-origin"
+      allowFullScreen
+    />
+  </VideoContainer>
+);
 
 export default Video;

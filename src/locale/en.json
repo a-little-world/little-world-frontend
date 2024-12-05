@@ -519,7 +519,7 @@
   "validation.lang_skill_too_long": "Maximum of 300 characters.",
   "validation.post_code_invalid": "Postcode not valid",
   "validation.name_contains_unallowed_characters": "The name you have entered contains unpermitted characters, e.g. space.",
-  "validation.image_upload_required": "File upload failed, have you selected a file under 0.5MB? If you can't upload a file please use an avatar instead.",
+  "validation.image_upload_required": "File upload failed, have you selected a file under 1MB? If you can't upload a file please use an avatar instead.",
   "validation.generic_try_again": "There was a server issue. Please try again.",
   "validation.required": "*required",
 
@@ -575,7 +575,7 @@
   "resources.partners.lern_fair_presentation": "Or come directly to the <bold>LernFair presentation on Monday, 14 October at 17:00.</bold>",
   "resources.partners.lern_fair_presentation_link": "Join the Lern-Fair presentation",
 
-  "donate.title": "Your donation will be quintupled!",
+  "donate.title": "Help us connect 25,000 people to improve there German and create a more integrated society.",
   "donate.subtitle": "Help us connect 25,000 people to improve there German and create a more integrated society.",
   "donate.description": "With Little World, we have created a digital platform where German learners and volunteer native speakers can easily connect, support one another and exchange ideas — all for free. Your donation helps keep this possible and enhances our services. This year, thanks to our sponsor, the German TV Lottery, every donation will be quintupled! But we need to hit our target to unlock this support. Every bit counts!",
 

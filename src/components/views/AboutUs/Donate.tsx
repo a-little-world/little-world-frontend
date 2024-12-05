@@ -18,6 +18,7 @@ const ContentCard = styled(Card)`
   padding-bottom: ${({ theme }) => theme.spacing.xlarge};
   max-width: 900px;
   margin: auto;
+  align-items: center;
 
   > div:first-of-type {
     max-width: 720px;
@@ -25,10 +26,12 @@ const ContentCard = styled(Card)`
 `;
 
 const Title = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.small};
+  max-width: 700px;
 `;
 
 const EmbedContainer = styled.div`
+  width: 100%;
+
   h1 {
     margin-bottom: 0px !important;
   }
@@ -83,27 +86,6 @@ const Donate: FC = () => {
       >
         {t('donate.title')}
       </Title>
-      <TextContent
-        content={[
-          {
-            type: ContentTypes.Image,
-            Image: WomanOnRocketImage,
-            imageMaxWidth: '240px',
-            imageWidth: '80%',
-          },
-          {
-            type: ContentTypes.Subtitle,
-            text: t('donate.subtitle'),
-            style: { marginTop: theme.spacing.small },
-          },
-          {
-            type: ContentTypes.Paragraph,
-            text: t('donate.description'),
-            style: { marginBottom: theme.spacing.medium },
-          },
-        ]}
-      />
-
       <TwingleEmbed />
     </ContentCard>
   );

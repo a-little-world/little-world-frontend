@@ -8,8 +8,8 @@ import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/matches.ts';
 import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
 import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../routes.ts';
-import CancelSearchCard from '../blocks/Cards/CancelSearchCard.tsx';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard.tsx';
+import CommsBanner from '../blocks/CommsBanner.tsx';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.jsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
 import NotificationPanel from '../blocks/NotificationPanel.tsx';
@@ -97,6 +97,7 @@ function Main() {
         setSelection={handleSubpageSelect}
         use="main"
       />
+      <CommsBanner />
       {subpage === 'events' ? (
         <CommunityEvents />
       ) : (
