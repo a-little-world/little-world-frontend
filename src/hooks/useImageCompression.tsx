@@ -26,8 +26,14 @@ const useImageCompression = () => {
       let quality = 0.9; // Standardqualität für kleine Dateien
       if (file.size > 5_000_000) {
         quality = 0.2; // Starke Kompression für große Dateien (> 5 MB)
-      } else if (file.size > 1_000_000) {
-        quality = 0.3; // Moderate Kompression für mittelgroße Dateien (1-5 MB)
+      } else if (file.size > 4_000_000) {
+        quality = 0.3;
+      }else if (file.size > 3_000_000){
+        quality = 0.6;
+      }else if(file.size > 2_000_000){
+        quality = 0.8;
+      }else if(file.size > 1_000_000){
+        quality = 0.9;
       }
 
       return new Promise((resolve, reject) => {
