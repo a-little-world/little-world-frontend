@@ -51,6 +51,8 @@ const NotificationList = styled.ul`
   flex-direction: column;
   width: 100%;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+  max-height: 100vh;
+  overflow-y: auto;
 `;
 
 const Notification = styled.li`
@@ -88,7 +90,18 @@ function NotificationPanel() {
 
   const user = useSelector(state => state.userData.user);
   const usesAvatar = user.profile.image_type === 'avatar';
-  const notifications = useSelector(state => state.userData.notifications);
+  // const notifications = useSelector(state => state.userData.notifications);S
+
+  const notifications = {
+    unread: {
+      items: Array(20).fill(null).map((_, index) => ({
+        hash: `notification_${index + 1}`,
+        type: 'appointment',
+        title: 'Upcoming Appointment Reminder',
+        created_at: new Date(Date.now() - index * 86400000).toISOString() // Stagger timestamps
+      }))
+    }
+  };
 
   return (
     <Panel>
