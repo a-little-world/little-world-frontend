@@ -27,9 +27,9 @@ const useImageCompression = () => {
       if (file.size > 5_000_000) {
         quality = 0.1; // Starke Kompression für große Dateien (> 5 MB)
       } else if (file.size > 4_000_000) {
-        quality = 0.2;
+        quality = 0.1;
       }else if (file.size > 3_000_000){
-        quality = 0.4;
+        quality = 0.2;
       }else if(file.size > 2_000_000){
         quality = 0.8;
       }else if(file.size > 1_000_000){
