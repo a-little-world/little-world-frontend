@@ -7,6 +7,7 @@ import {
   GroupChatIcon,
   Link,
   SendIcon,
+  AttachementIcon,
   Tag,
   TagAppearance,
   TagSizes,
@@ -216,6 +217,7 @@ export const Chat = ({ chatId }) => {
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
         />
+        <AttachementIcon/>
         <SendButton
           size={ButtonSizes.Large}
           type="submit"
