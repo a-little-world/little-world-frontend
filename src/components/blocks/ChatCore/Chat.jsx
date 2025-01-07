@@ -8,7 +8,6 @@ import {
   GroupChatIcon,
   Link,
   SendIcon,
-  AttachementIcon,
   Tag,
   TagAppearance,
   TagSizes,
@@ -221,8 +220,7 @@ export const Chat = ({ chatId }) => {
         />
         <AttachementButton
           size={ButtonSizes.Large}
-          type="submit"
-          disabled={isSubmitting || activeChat?.is_unmatched}
+          type="button"
           variation={ButtonVariations.Circle}
           backgroundColor={theme.color.gradient.orange10}
         >
@@ -236,10 +234,10 @@ export const Chat = ({ chatId }) => {
         </AttachementButton>
         <SendButton
           size={ButtonSizes.Large}
-          type="button"
+          type="submit"
+          disabled={isSubmitting || activeChat?.is_unmatched}
           variation={ButtonVariations.Circle}
           backgroundColor={theme.color.gradient.orange10}
-          htmlfor = "FileInput"
         >
           <SendIcon
             label={t('chat.send_btn')}
