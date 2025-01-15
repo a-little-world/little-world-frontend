@@ -27,11 +27,11 @@ const MailingListsWrapper = styled.div<{ $centred?: boolean }>`
   gap: ${({ theme }) => theme.spacing.xxsmall};
   width: 100%;
   max-width: 400px;
-  min-height: 232px; // height of content
 
   ${({ theme, $centred }) =>
     $centred &&
     css`
+      min-height: 232px; // height of content
       margin: ${theme.spacing.small} auto 0;
     `}
 `;

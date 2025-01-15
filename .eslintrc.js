@@ -43,6 +43,7 @@ module.exports = {
     'no-nested-ternary': 1,
     'no-plusplus': 1,
     camelcase: 'warn',
+    '@typescript-eslint/no-unused-vars': ['error'],
   },
   overrides: [
     {

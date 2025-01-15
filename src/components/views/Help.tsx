@@ -17,7 +17,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { TFunction, useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
@@ -53,7 +53,7 @@ import {
 } from './Help.styles.tsx';
 import './help.css';
 
-const generateFAQItems = t => {
+const generateFAQItems = (t: TFunction, supportUrl: string) => {
   const translationKeys = [
     {
       section: 'before_talk',
@@ -75,7 +75,9 @@ const generateFAQItems = t => {
       header: t(`faq::section_content::${section}::${question}::question`),
       content: (
         <Text>
-          {t(`faq::section_content::${section}::${question}::answer`)}
+          {t(`faq::section_content::${section}::${question}::answer`, {
+            supportUrl,
+          })}
         </Text>
       ),
     })),
@@ -176,10 +178,11 @@ export const FileDropzone = ({
 function Faqs() {
   const { t } = useTranslation();
   const [faqs, setFaqs] = useState([]);
+  const supportUrl = useSelector(state => state.userData.supportUrl);
 
   useEffect(() => {
-    setFaqs(generateFAQItems(t));
-  }, [t]);
+    setFaqs(generateFAQItems(t, supportUrl));
+  }, [t, supportUrl]);
 
   return (
     <FAQContainer>
@@ -266,9 +269,9 @@ function Contact() {
         $visible={requestSuccessful || errors?.root?.serverError}
         $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
       >
-        {requestSuccessful ?
-          t('help.contact_form_submitted') :
-          t(errors?.root?.serverError?.message)}
+        {requestSuccessful
+          ? t('help.contact_form_submitted')
+          : t(errors?.root?.serverError?.message)}
       </StatusMessage>
       <Button
         type="submit"

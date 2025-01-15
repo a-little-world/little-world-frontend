@@ -323,7 +323,7 @@
         },
         "q5": {
           "question": "Camera, microphone or loudspeaker not working?",
-          "answer": "Please remember to grant access to the camera and microphone. Only with these permissions a video call can take place. At the start you will be asked for it, if this does not work, check your settings in the browser. You can find the respective instructions here: Chrome, Firefox, Safari, Edge. If it still doesn't work, write to our support and we will be happy to help: https://home.little-world.com/kontakt"
+          "answer": "Please remember to grant access to the camera and microphone. Only with these permissions a video call can take place. At the start you will be asked for it, if this does not work, check your settings in the browser. You can find the respective instructions here: \n\n<a {\"href\": \"https://support.google.com/chrome/answer/2693767?hl=en&co=GENIE.Platform%3DDesktop\", \"target\": \"_blank\"}>• Chrome</a>\n\n<a {\"href\": \"https://support.mozilla.org/en-US/kb/how-manage-your-camera-and-microphone-permissions\", \"target\": \"_blank\"}>• Firefox</a>\n\n<a {\"href\": \"https://support.apple.com/en-gb/guide/mac-help/mchlf6d108da/mac#:~:text=In%20Safari%2C%20to%20allow%20a,click%20Websites%2C%20then%20select%20Camera.\", \"target\": \"_blank\"}>• Safari</a>\n\n<a {\"href\": \"https://support.microsoft.com/en-us/windows/windows-camera-microphone-and-privacy-a83257bc-e990-d54a-d212-b5e41beba857\", \"target\": \"_blank\"}>• Edge</a>\n\nIf it still doesn't work, write to our support and we will be happy to <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>help</a>."
         },
         "q6": {
           "question": "Is there anything I can do to prepare for the interviews?",
@@ -352,7 +352,7 @@
           "answer": "At least you don't have to. At Little World, everything is anonymous. How much you reveal about yourself in the conversations is entirely up to you!"
         },
         "q3": {
-          "question": "Can I have several/different interlocutors?",
+          "question": "Can I have several conversation partners?",
           "answer": "Volunteers are welcome to help as much as they like. We make it possible for German learners to have two active partners. Because many people are still looking for a match and we would like to provide one for everyone."
         },
         "q4": {
@@ -360,7 +360,7 @@
           "answer": "Suddenly nothing works anymore? If technical problems arise, please contact our support and we will take care of it immediately!"
         },
         "q5": {
-          "question": "Insult/harassment in conversation?",
+          "question": "Insult or harassment during a conversation?",
           "answer": "We don't like that at all! Please contact our support immediately and we will intervene!"
         },
         "q6": {

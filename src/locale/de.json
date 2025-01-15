@@ -326,7 +326,7 @@
         },
         "q5": {
           "question": "Kamera, Mikrofon oder Lautsprecher funktionieren nicht?",
-          "answer": "Bitte denke daran, den Zugriff auf Kamera und Mikrofon zu gewähren. Erst mit dieser Erlaubnis kann ein Videocall stattfinden. Zum Start wirst du danach gefragt, sollte das nicht funktionieren, checke deine Einstellung im Browser. Die jeweiligen Anleitungen findest du hier: \n\nChrome\n\nFirefox\n\nSafari\n\nEdge\n\nSollte es dennoch nicht klappen, schreibe unserem Support und wir helfen gerne:   https://home.little-world.com/kontakt"
+          "answer": "Bitte denke daran, den Zugriff auf Kamera und Mikrofon zu gewähren. Erst mit dieser Erlaubnis kann ein Videocall stattfinden. Zum Start wirst du danach gefragt, sollte das nicht funktionieren, checke deine Einstellung im Browser. Die jeweiligen Anleitungen findest du hier:\n\n<a {\"href\": \"https://support.google.com/chrome/answer/2693767?hl=de&co=GENIE.Platform%3DDesktop\", \"target\": \"_blank\"}>• Chrome</a>\n\n<a {\"href\": \"https://support.mozilla.org/de/kb/kamera-und-mikrofonberechtigungen-verwalten\", \"target\": \"_blank\"}>• Firefox</a>\n\n<a {\"href\": \"https://support.apple.com/de-de/guide/mac-help/mchlf6d108da/mac\", \"target\": \"_blank\"}>• Safari</a>\n\n<a {\"href\": \"https://support.microsoft.com/de-de/windows/windows-kamera-mikrofon-und-datenschutz-a83257bc-e990-d54a-d212-b5e41beba857\", \"target\": \"_blank\"}>• Edge</a>\n\nSollte es dennoch nicht klappen, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>schreibe unserem Support und wir helfen gerne.</a>"
         },
         "q6": {
           "question": "Kann ich mich irgendwie auf die Gespräche vorbereiten?",
@@ -400,7 +400,7 @@
   "error.password_min_length": "Passwort zu kurz",
   "error.passwords_do_not_match": "Passwörter stimmen nicht überein",
   "error.server_issue": "Problem bei der Verbindung zum Server. Bitte versuche es noch einmal.",
-  "error.permissions": "Die Nutzung der Kamera und des Mikrofons erfordert deine Erlaubnis. Bitte erteile die Berechtigung in den Einstellungen deines Browsers. Anleitungen findest du unter https://support.google.com/chrome/answer/2693767 ",
+  "error.permissions": "Die Nutzung der Kamera und des Mikrofons erfordert deine Erlaubnis. Bitte erteile die Berechtigung in den Einstellungen deines Browsers. Anleitungen findest du <a {\"href\": \"/app/help/faqs#technical-support\", \"target\": \"_blank\"}>hier</a>",
 
   "form.btn_next": "Weiter",
   "form.btn_back": "Zurück",
