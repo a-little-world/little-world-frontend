@@ -3,6 +3,7 @@ import {
   Button,
   ButtonSizes,
   ButtonVariations,
+  CallWidget,
   Gradients,
   GroupChatIcon,
   Link,
@@ -16,6 +17,7 @@ import {
   TickDoubleIcon,
   TickIcon,
   VideoIcon,
+  textParser,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
@@ -168,35 +170,53 @@ export const Chat = ({ chatId }) => {
             </NoMessages>
           ) : (
             <>
-              {messagesResult?.map(message => (
-                <Message $isSelf={message.sender === userId} key={message.uuid}>
-                  <MessageText
+              {messagesResult?.map(message => {
+                const customChatElements = [
+                  {
+                    Component: CallWidget,
+                    tag: 'CallWidget',
+                    props: { isOutgoing: message.sender !== userId },
+                  },
+                ];
+                return (
+                  <Message
                     $isSelf={message.sender === userId}
-                    disableParser={!message.parsable}
+                    key={message.uuid}
                   >
-                    {message.text}
-                  </MessageText>
-                  <Time type={TextTypes.Body6}>
-                    {message.read ? (
-                      <TickDoubleIcon
-                        labelId="messageReadIcon"
-                        label="message read icon"
-                        color={theme.color.status.info}
-                        width="16px"
-                        height="16px"
-                      />
-                    ) : (
-                      <TickIcon
-                        labelId="messageUnreadIcon"
-                        label="message unread icon"
-                        width="16px"
-                        height="16px"
-                      />
-                    )}
-                    {formatTimeDistance(message.created, new Date(), language)}
-                  </Time>
-                </Message>
-              ))}
+                    <MessageText
+                      $isSelf={message.sender === userId}
+                      disableParser={!message.parsable}
+                    >
+                      {message.parsable
+                        ? textParser(message.text, customChatElements)
+                        : message.text}
+                    </MessageText>
+                    <Time type={TextTypes.Body6}>
+                      {message.read ? (
+                        <TickDoubleIcon
+                          labelId="messageReadIcon"
+                          label="message read icon"
+                          color={theme.color.status.info}
+                          width="16px"
+                          height="16px"
+                        />
+                      ) : (
+                        <TickIcon
+                          labelId="messageUnreadIcon"
+                          label="message unread icon"
+                          width="16px"
+                          height="16px"
+                        />
+                      )}
+                      {formatTimeDistance(
+                        message.created,
+                        new Date(),
+                        language,
+                      )}
+                    </Time>
+                  </Message>
+                );
+              })}
               <div ref={scrollRef} />
             </>
           ))}
