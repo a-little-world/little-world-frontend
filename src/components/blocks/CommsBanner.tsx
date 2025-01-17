@@ -13,33 +13,48 @@ import { useSelector } from '../../hooks/index.ts';
 
 const BANNER_LARGE_BREAKPOINT = '960px';
 
-const Banner = styled.div<{ $background: string }>`
+export enum BannerTypes {
+  Small = 'Small',
+  Large = 'Large',
+}
+
+const Banner = styled.div<{ $background: string; $type?: BannerTypes }>`
   display: flex;
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   background: ${({ $background }) =>
     $background ? `${$background}` : '#053c56'};
   background-position: center;
   background-size: cover;
-  padding: ${({ theme }) => `${theme.spacing.large} ${theme.spacing.medium}`};
+  padding: ${({ theme }) => theme.spacing.medium};
   color: ${({ theme }) => theme.color.text.reversed};
-  min-height: 520px;
   width: 100%;
   justify-content: center;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.large};
       flex-direction: row;
-      min-height: 272px;
     }
   `};
+
+  ${({ theme, $type }) =>
+    $type === BannerTypes.Large &&
+    css`
+      min-height: 520px;
+      padding: ${theme.spacing.large} ${theme.spacing.medium};
+
+      @media (min-width: ${theme.breakpoints.medium}) {
+        min-height: 272px;
+        padding: ${theme.spacing.large};
+      }
+    `}
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ $type: BannerTypes }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: ${({ theme }) => theme.spacing.large};
+  gap: ${({ theme, $type }) =>
+    $type === BannerTypes.Large ? theme.spacing.large : theme.spacing.medium};
   max-width: 1200px;
 
   ${({ theme }) => css`
@@ -51,15 +66,17 @@ const Content = styled.div`
   `};
 `;
 
-const Container = styled.div`
+const Container = styled.div<{ $hasImage?: boolean }>`
   display: flex;
   flex-direction: column;
   height: 100%;
   gap: ${({ theme }) => theme.spacing.large};
+  justify-content: ${({ $hasImage }) =>
+    $hasImage ? 'flex-start' : 'flex-end'};
 
-  ${({ theme }) => css`
+  ${({ theme, $hasImage }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      justify-content: center;
+      justify-content: ${$hasImage ? 'center' : 'flex-end'};
       gap: ${theme.spacing.large};
     }
   `};
@@ -143,19 +160,27 @@ function CommsBanner() {
   if (isEmpty(banner)) return null;
 
   return (
-    <Banner $background={banner.background}>
-      <Content>
+    <Banner $background={banner.background} $type={banner.type}>
+      <Content $type={banner.type}>
         <TextContainer>
           {banner.image && (
             <MobileBannerImage src={banner.image} alt={banner.image_alt} />
           )}
-          <Title tag="h3" type={TextTypes.Heading3} color={banner.text_color}>
+          <Title
+            tag="h3"
+            type={
+              banner.type === BannerTypes.Large
+                ? TextTypes.Heading3
+                : TextTypes.Heading4
+            }
+            color={banner.text_color}
+          >
             {banner.title}
           </Title>
           <Description color={banner.text_color}>{banner.text}</Description>
         </TextContainer>
 
-        <Container>
+        <Container $hasImage={!!banner.image}>
           {banner.image && (
             <DesktopBannerImage src={banner.image} alt={banner.image_alt} />
           )}
