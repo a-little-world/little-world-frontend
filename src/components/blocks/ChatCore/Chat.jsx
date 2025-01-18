@@ -65,6 +65,33 @@ import {
   WriteSection,
 } from './Chat.styles.tsx';
 
+const getCustomChatElements = (message, userId, activeChat) => {
+  const customChatElements = [
+    {
+      Component: CallWidget,
+      tag: 'MissedCallWidget',
+      props: { 
+        isMissed: true,
+        header: message.sender !== userId ? 'Anruf Verpasst' : 'Nicht beantwortet',
+        description: message.sender !== userId ? 'Zurück Rufen' : 'Erneut anrufen',
+        isOutgoing: message.sender === userId,
+        returnCallLink: `/call-setup/${message.sender === userId ? activeChat?.partner?.id : message.sender}`
+      },
+    },
+    {
+      Component: CallWidget,
+      tag: 'CallWidget',
+      props: { 
+        isMissed: false,
+        header: 'Video Anruf',
+        isOutgoing: message.sender === userId,
+        returnCallLink: `/call-setup/${message.sender === userId ? activeChat?.partner?.id : message.sender}`
+      },
+    }
+  ];
+  return customChatElements;
+}
+
 export const Chat = ({ chatId }) => {
   const {
     t,
@@ -159,6 +186,7 @@ export const Chat = ({ chatId }) => {
       })
       .catch(onSubmitError);
   };
+  console.log("Active chat", activeChat);
 
   return (
     <ChatContainer>
@@ -171,16 +199,7 @@ export const Chat = ({ chatId }) => {
           ) : (
             <>
               {messagesResult?.map(message => {
-                const customChatElements = [
-                  {
-                    Component: CallWidget,
-                    tag: 'CallWidget',
-                    props: { 
-                      isOutgoing: message.sender !== userId,
-                      returnCallLink: `/call-setup/${message.sender === userId ? message.receiver : message.sender}`
-                    },
-                  },
-                ];
+                const customChatElements = message?.parsable ? getCustomChatElements(message, userId, activeChat) : [];
                 return (
                   <Message
                     $isSelf={message.sender === userId}
