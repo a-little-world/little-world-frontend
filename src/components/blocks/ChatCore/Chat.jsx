@@ -175,7 +175,10 @@ export const Chat = ({ chatId }) => {
                   {
                     Component: CallWidget,
                     tag: 'CallWidget',
-                    props: { isOutgoing: message.sender !== userId },
+                    props: { 
+                      isOutgoing: message.sender !== userId,
+                      returnCallLink: `/call-setup/${message.sender === userId ? message.receiver : message.sender}`
+                    },
                   },
                 ];
                 return (
