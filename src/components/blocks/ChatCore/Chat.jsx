@@ -1,6 +1,7 @@
 import {
   ArrowLeftIcon,
   AttachmentIcon,
+  AttachmentWidget,
   Button,
   ButtonSizes,
   ButtonVariations,
@@ -89,6 +90,15 @@ const getCustomChatElements = (message, userId, activeChat) => {
         isOutgoing: message.sender === userId,
         returnCallLink: `/call-setup/${message.sender === userId ? activeChat?.partner?.id : message.sender}`
       },
+    },
+    {
+      Component: AttachmentWidget,
+      tag: 'AttachmentWidget',
+      props: {
+        attachmentTitle: "Hello there",
+        attachmentLink: "https://www.google.com",
+        imageSrc: "https://www.google.com",
+      },
     }
   ];
   return customChatElements;
@@ -114,6 +124,8 @@ export const Chat = ({ chatId }) => {
   );
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef();
 
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
@@ -188,6 +200,24 @@ export const Chat = ({ chatId }) => {
       })
       .catch(onSubmitError);
   };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      reset(); // Clear any existing message text
+    }
+  };
+
+  const handleAttachmentClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const clearSelectedFile = () => {
+    setSelectedFile(null);
+    fileInputRef.current.value = ''; // Reset file input
+  };
+
   console.log("Active chat", activeChat);
 
   return (
@@ -246,17 +276,28 @@ export const Chat = ({ chatId }) => {
           ))}
       </Messages>
       <WriteSection onSubmit={handleSubmit(onSendMessage)}>
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileSelect}
+          style={{ display: 'none' }}
+          accept="image/*,application/pdf"
+        />
         <MessageBox
           {...registerInput({
             register,
             name: 'text',
-            options: { required: 'error.required' },
+            options: { required: !selectedFile },
           })}
           key={`message ${messagesSent}`}
           id="text"
           error={t(errors?.text?.message)}
           expandable
-          placeholder={t('chat.text_area_placeholder')}
+          placeholder={selectedFile 
+            ? `Selected file: ${selectedFile.name} (${(selectedFile.size / 1024).toFixed(1)} KB)`
+            : t('chat.text_area_placeholder')
+          }
+          disabled={!!selectedFile}
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
         />
@@ -264,11 +305,12 @@ export const Chat = ({ chatId }) => {
           size={ButtonSizes.Large}
           type="button"
           variation={ButtonVariations.Circle}
-          backgroundColor={theme.color.gradient.orange10}
+          backgroundColor={selectedFile ? theme.color.status.error : theme.color.gradient.orange10}
+          onClick={selectedFile ? clearSelectedFile : handleAttachmentClick}
         >
           <AttachmentIcon
-            label={t('attachement.upload_btn')}
-            labelId="attachement_icon"
+            label={selectedFile ? t('attachment.remove_btn') : t('attachment.upload_btn')}
+            labelId="attachment_icon"
             color={theme.color.text.reversed}
             width="20"
             height="20"
