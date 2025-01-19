@@ -6,6 +6,7 @@ import {
   ButtonSizes,
   ButtonVariations,
   CallWidget,
+  CloseIcon,
   Gradients,
   GroupChatIcon,
   Link,
@@ -34,6 +35,7 @@ import {
   fetchChatMessages,
   markChatMessagesReadApi,
   sendMessage,
+  sendFileAttachmentMessage
 } from '../../../api/chat';
 import {
   addMessage,
@@ -95,9 +97,7 @@ const getCustomChatElements = (message, userId, activeChat) => {
       Component: AttachmentWidget,
       tag: 'AttachmentWidget',
       props: {
-        attachmentTitle: "Hello there",
-        attachmentLink: "https://www.google.com",
-        imageSrc: "https://www.google.com",
+        header: "Attachment",
       },
     }
   ];
@@ -184,21 +184,41 @@ export const Chat = ({ chatId }) => {
 
   const onSendMessage = ({ text }) => {
     setIsSubmitting(true);
-    sendMessage({ text, chatId })
-      .then(data => {
-        reset();
-        dispatch(
-          addMessage({
-            message: data,
-            chatId,
-            senderIsSelf: true,
-          }),
-        );
-        setIsSubmitting(false);
-        messagesRef.current.scrollTop = 0;
-        setMessagesSent(curr => curr + 1);
-      })
-      .catch(onSubmitError);
+    
+    if (selectedFile) {
+      sendFileAttachmentMessage({ file: selectedFile, chatId })
+        .then(data => {
+          reset();
+          clearSelectedFile();
+          dispatch(
+            addMessage({
+              message: data,
+              chatId,
+              senderIsSelf: true,
+            }),
+          );
+          setIsSubmitting(false);
+          messagesRef.current.scrollTop = 0;
+          setMessagesSent(curr => curr + 1);
+        })
+        .catch(onSubmitError);
+    } else {
+      sendMessage({ text, chatId })
+        .then(data => {
+          reset();
+          dispatch(
+            addMessage({
+              message: data,
+              chatId,
+              senderIsSelf: true,
+            }),
+          );
+          setIsSubmitting(false);
+          messagesRef.current.scrollTop = 0;
+          setMessagesSent(curr => curr + 1);
+        })
+        .catch(onSubmitError);
+    }
   };
 
   const handleFileSelect = (event) => {
@@ -308,13 +328,23 @@ export const Chat = ({ chatId }) => {
           backgroundColor={selectedFile ? theme.color.status.error : theme.color.gradient.orange10}
           onClick={selectedFile ? clearSelectedFile : handleAttachmentClick}
         >
-          <AttachmentIcon
-            label={selectedFile ? t('attachment.remove_btn') : t('attachment.upload_btn')}
-            labelId="attachment_icon"
-            color={theme.color.text.reversed}
-            width="20"
-            height="20"
-          />
+          {selectedFile ? (
+            <CloseIcon
+              label={t('attachment.remove_btn')}
+              labelId="remove_attachment"
+              onClick={clearSelectedFile}
+              width="20"
+              height="20"
+            />
+          ) : (
+            <AttachmentIcon
+              label={t('attachment.upload_btn')}
+              labelId="attachment_icon"
+              color={theme.color.text.reversed}
+              width="20"
+              height="20"
+            />
+          )}
         </Button>
         <SendButton
           size={ButtonSizes.Large}
