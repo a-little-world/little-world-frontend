@@ -74,6 +74,23 @@ export const markChatMessagesReadApi = async ({ chatId }) => {
   throw formatApiError(responseBody, response);
 };
 
+export const sendFileAttachmentMessage = async ({ file, chatId }) => {
+  const data = new FormData();
+  data.append('file', file);
+  const response = await fetch(`${BACKEND_URL}/api/messages/${chatId}/send_attachment/`, {
+    headers: {
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'X-UseTagsOnly': 'True',
+    },
+    method: 'POST',
+    body: data,
+  });
+
+  const responseBody = await response?.json();
+  if (response.ok) return responseBody;
+  throw formatApiError(responseBody, response);
+};
+
 export const sendMessage = async ({ chatId, text }) => {
   const response = await fetch(`${BACKEND_URL}/api/messages/${chatId}/send/`, {
     headers: {
