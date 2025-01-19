@@ -1,5 +1,6 @@
 import {
   ArrowLeftIcon,
+  AttachementIcon,
   Button,
   ButtonSizes,
   ButtonVariations,
@@ -47,6 +48,7 @@ import { onFormError, registerInput } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes.ts';
 import {
+  AttachementButton,
   BackButton,
   ChatContainer,
   Message,
@@ -258,6 +260,20 @@ export const Chat = ({ chatId }) => {
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
         />
+        <AttachementButton
+          size={ButtonSizes.Large}
+          type="button"
+          variation={ButtonVariations.Circle}
+          backgroundColor={theme.color.gradient.orange10}
+        >
+          <AttachementIcon
+            label={t('attachement.upload_btn')}
+            labelId="attachement_icon"
+            color={theme.color.text.reversed}
+            width="20"
+            height="20"
+          />
+        </AttachementButton>
         <SendButton
           size={ButtonSizes.Large}
           type="submit"

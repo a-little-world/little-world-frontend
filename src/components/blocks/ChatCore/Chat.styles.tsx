@@ -209,6 +209,12 @@ export const SendButton = styled(Button)`
   margin-bottom: 17px;
 `;
 
+export const AttachementButton = styled(Button)`
+  flex-shrink: 0;
+  align-self: flex-end;
+  margin-bottom: 17px;
+`;
+
 export const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
