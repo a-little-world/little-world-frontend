@@ -1,25 +1,15 @@
 import {
-  ArrowLeftIcon,
-  AttachmentIcon,
   AttachmentWidget,
-  Button,
   ButtonSizes,
   ButtonVariations,
   CallWidget,
   CloseIcon,
-  Gradients,
-  GroupChatIcon,
-  Link,
+  PlusIcon,
   SendIcon,
-  Tag,
-  TagAppearance,
-  TagSizes,
-  Text,
   TextAreaSize,
   TextTypes,
   TickDoubleIcon,
   TickIcon,
-  VideoIcon,
   textParser,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
@@ -34,14 +24,13 @@ import {
   fetchChat,
   fetchChatMessages,
   markChatMessagesReadApi,
+  sendFileAttachmentMessage,
   sendMessage,
-  sendFileAttachmentMessage
 } from '../../../api/chat';
 import {
   addMessage,
   getChatByChatId,
   getMessagesByChatId,
-  initCallSetup,
   insertChat,
   markChatMessagesRead,
   updateMessages,
@@ -49,24 +38,17 @@ import {
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
-import { MESSAGES_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes.ts';
+import { MESSAGES_ROUTE, getAppRoute } from '../../../routes.ts';
 import {
   AttachmentButton,
-  BackButton,
   ChatContainer,
   Message,
   MessageBox,
   MessageText,
   Messages,
-  NoChatSelected,
   NoMessages,
-  Panel,
-  ProfileLink,
   SendButton,
   Time,
-  TopSection,
-  UserImage,
-  UserInfo,
   WriteSection,
 } from './Chat.styles.tsx';
 
@@ -75,36 +57,39 @@ const getCustomChatElements = (message, userId, activeChat) => {
     {
       Component: CallWidget,
       tag: 'MissedCallWidget',
-      props: { 
+      props: {
         isMissed: true,
-        header: message.sender !== userId ? 'Anruf Verpasst' : 'Nicht beantwortet',
-        description: message.sender !== userId ? 'Zurück Rufen' : 'Erneut anrufen',
+        header:
+          message.sender !== userId ? 'Anruf Verpasst' : 'Nicht beantwortet',
+        description:
+          message.sender !== userId ? 'Zurück Rufen' : 'Erneut anrufen',
         isOutgoing: message.sender === userId,
-        returnCallLink: `/call-setup/${message.sender === userId ? activeChat?.partner?.id : message.sender}`
+        returnCallLink: `/call-setup/${
+          message.sender === userId ? activeChat?.partner?.id : message.sender
+        }`,
       },
     },
     {
       Component: CallWidget,
       tag: 'CallWidget',
-      props: { 
+      props: {
         isMissed: false,
         header: 'Video Anruf',
         isOutgoing: message.sender === userId,
-        returnCallLink: `/call-setup/${message.sender === userId ? activeChat?.partner?.id : message.sender}`
+        returnCallLink: `/call-setup/${
+          message.sender === userId ? activeChat?.partner?.id : message.sender
+        }`,
       },
     },
     {
       Component: AttachmentWidget,
       tag: 'AttachmentWidget',
-      props: {
-        header: "Attachment",
-      },
-    }
+    },
   ];
   return customChatElements;
-}
+};
 
-export const Chat = ({ chatId }) => {
+const Chat = ({ chatId }) => {
   const {
     t,
     i18n: { language },
@@ -182,9 +167,26 @@ export const Chat = ({ chatId }) => {
     setFocus('text');
   }, [setFocus]);
 
+  const handleFileSelect = event => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      reset(); // Clear any existing message text
+    }
+  };
+
+  const handleAttachmentClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const clearSelectedFile = () => {
+    setSelectedFile(null);
+    fileInputRef.current.value = ''; // Reset file input
+  };
+
   const onSendMessage = ({ text }) => {
     setIsSubmitting(true);
-    
+
     if (selectedFile) {
       sendFileAttachmentMessage({ file: selectedFile, chatId })
         .then(data => {
@@ -221,25 +223,6 @@ export const Chat = ({ chatId }) => {
     }
   };
 
-  const handleFileSelect = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      reset(); // Clear any existing message text
-    }
-  };
-
-  const handleAttachmentClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const clearSelectedFile = () => {
-    setSelectedFile(null);
-    fileInputRef.current.value = ''; // Reset file input
-  };
-
-  console.log("Active chat", activeChat);
-
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
@@ -251,7 +234,9 @@ export const Chat = ({ chatId }) => {
           ) : (
             <>
               {messagesResult?.map(message => {
-                const customChatElements = message?.parsable ? getCustomChatElements(message, userId, activeChat) : [];
+                const customChatElements = message?.parsable
+                  ? getCustomChatElements(message, userId, activeChat)
+                  : [];
                 return (
                   <Message
                     $isSelf={message.sender === userId}
@@ -303,6 +288,7 @@ export const Chat = ({ chatId }) => {
           style={{ display: 'none' }}
           accept="image/*,application/pdf"
         />
+
         <MessageBox
           {...registerInput({
             register,
@@ -313,19 +299,30 @@ export const Chat = ({ chatId }) => {
           id="text"
           error={t(errors?.text?.message)}
           expandable
-          placeholder={selectedFile 
-            ? `Selected file: ${selectedFile.name} (${(selectedFile.size / 1024).toFixed(1)} KB)`
-            : t('chat.text_area_placeholder')
+          placeholder={
+            selectedFile
+              ? `Selected file: ${selectedFile.name} (${(
+                  selectedFile.size / 1024
+                ).toFixed(1)} KB)`
+              : t('chat.text_area_placeholder')
           }
           disabled={!!selectedFile}
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
         />
-        <Button
+        <AttachmentButton
           size={ButtonSizes.Large}
           type="button"
           variation={ButtonVariations.Circle}
-          backgroundColor={selectedFile ? theme.color.status.error : theme.color.gradient.orange10}
+          backgroundColor={
+            selectedFile
+              ? theme.color.status.error
+              : theme.color.surface.primary
+          }
+          borderColor={theme.color.text.title}
+          color={
+            selectedFile ? theme.color.text.reversed : theme.color.text.title
+          }
           onClick={selectedFile ? clearSelectedFile : handleAttachmentClick}
         >
           {selectedFile ? (
@@ -337,15 +334,14 @@ export const Chat = ({ chatId }) => {
               height="20"
             />
           ) : (
-            <AttachmentIcon
+            <PlusIcon
               label={t('attachment.upload_btn')}
               labelId="attachment_icon"
-              color={theme.color.text.reversed}
               width="20"
               height="20"
             />
           )}
-        </Button>
+        </AttachmentButton>
         <SendButton
           size={ButtonSizes.Large}
           type="submit"
@@ -366,90 +362,4 @@ export const Chat = ({ chatId }) => {
   );
 };
 
-export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
-  const theme = useTheme();
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const isSupport = useSelector(state => state.userData.user?.isSupport);
-  const activeChat = useSelector(state =>
-    getChatByChatId(state.userData.chats, chatId),
-  );
-  const unmatched = activeChat?.is_unmatched;
-
-  const callPartner = () => {
-    dispatch(initCallSetup({ userId: partner?.id }));
-  };
-
-  return chatId ? (
-    <Panel>
-      <TopSection>
-        <UserInfo>
-          <BackButton
-            variation={ButtonVariations.Icon}
-            onClick={onBackButton}
-            $show={!!onBackButton}
-          >
-            <ArrowLeftIcon
-              labelId="return to profile"
-              label="return to profile"
-              width="16"
-              height="16"
-            />
-          </BackButton>
-
-          <ProfileLink
-            to={
-              unmatched ? null : getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)
-            }
-          >
-            <UserImage
-              circle
-              image={
-                partner?.image_type === 'avatar'
-                  ? partner?.avatar_config
-                  : partner?.image
-              }
-              imageType={partner?.image_type}
-              size="xsmall"
-            />
-            <Text bold type={TextTypes.Body4}>
-              {unmatched ? t('chat.unmatched_user') : partner?.first_name}
-            </Text>
-          </ProfileLink>
-          {isSupport && (
-            <Link
-              href={`${window?.origin}/matching/user/${partner?.id}`}
-              target="_blank"
-            >
-              Admin Profile
-            </Link>
-          )}
-        </UserInfo>
-        {unmatched ? (
-          <Tag size={TagSizes.small} appearance={TagAppearance.error}>
-            {t('chat.inactive_match')}
-          </Tag>
-        ) : (
-          <Button
-            variation={ButtonVariations.Circle}
-            onClick={callPartner}
-            size={ButtonSizes.Large}
-            backgroundColor={theme.color.gradient.orange10}
-          >
-            <VideoIcon
-              color={theme.color.surface.secondary}
-              width={24}
-              height={24}
-            />
-          </Button>
-        )}
-      </TopSection>
-      <Chat chatId={chatId} />
-    </Panel>
-  ) : (
-    <NoChatSelected>
-      <GroupChatIcon gradient={Gradients.Blue} width="144px" height="144px" />
-      <Text type={TextTypes.Body4}>{t('chat.not_selected')}</Text>
-    </NoChatSelected>
-  );
-};
+export default Chat;

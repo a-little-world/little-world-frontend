@@ -8,7 +8,7 @@ import { updateChats } from '../../features/userData';
 import useIniniteScroll from '../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../routes.ts';
 import PageHeader from '../atoms/PageHeader.tsx';
-import { ChatWithUserInfo } from '../blocks/ChatCore/Chat';
+import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo.tsx';
 import { ChatDashboard, ChatsPanel } from './Messages.styles';
 
 const Messages = () => {

@@ -124,14 +124,14 @@ export const MessageText = styled(Text)<{ $isSelf: boolean }>`
     border: 5px solid;
 
     ${({ theme, $isSelf }) =>
-      $isSelf ?
-        css`
+      $isSelf
+        ? css`
             border-color: ${theme.color.border.subtle}
               ${theme.color.border.subtle} transparent transparent;
             left: auto;
             right: 15px;
-          ` :
-        css`
+          `
+        : css`
             border-color: ${theme.color.border.subtle} transparent transparent
               ${theme.color.border.subtle};
             right: auto;
@@ -148,14 +148,14 @@ export const MessageText = styled(Text)<{ $isSelf: boolean }>`
     border: 5px solid;
 
     ${({ theme, $isSelf }) =>
-      $isSelf ?
-        css`
+      $isSelf
+        ? css`
             border-color: ${theme.color.surface.message}
               ${theme.color.surface.message} transparent transparent;
             left: auto;
             right: 16px;
-          ` :
-        css`
+          `
+        : css`
             border-color: ${theme.color.surface.primary} transparent transparent
               ${theme.color.surface.primary};
             right: auto;
@@ -203,16 +203,18 @@ export const BackButton = styled(Button)<{ $show: boolean }>`
   `}
 `;
 
-export const SendButton = styled(Button)`
+const TOOLBAR_BTN_CSS = css`
   flex-shrink: 0;
   align-self: flex-end;
   margin-bottom: 17px;
 `;
 
-export const AttachementButton = styled(Button)`
-  flex-shrink: 0;
-  align-self: flex-end;
-  margin-bottom: 17px;
+export const SendButton = styled(Button)`
+  ${TOOLBAR_BTN_CSS}
+`;
+
+export const AttachmentButton = styled(Button)`
+  ${TOOLBAR_BTN_CSS}
 `;
 
 export const ChatContainer = styled.div`
