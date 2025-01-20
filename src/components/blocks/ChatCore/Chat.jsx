@@ -186,6 +186,12 @@ export const Chat = ({ chatId }) => {
     setIsSubmitting(true);
     
     if (selectedFile) {
+      console.log('Sending file:', {
+        name: selectedFile.name,
+        type: selectedFile.type,
+        size: selectedFile.size
+      });
+      
       sendFileAttachmentMessage({ file: selectedFile, chatId })
         .then(data => {
           reset();
@@ -224,7 +230,16 @@ export const Chat = ({ chatId }) => {
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedFile(file);
+      // Create a new File object with explicit metadata
+      const fileWithMetadata = new File(
+        [file],
+        file.name,
+        {
+          type: file.type,
+          lastModified: file.lastModified,
+        }
+      );
+      setSelectedFile(fileWithMetadata);
       reset(); // Clear any existing message text
     }
   };
