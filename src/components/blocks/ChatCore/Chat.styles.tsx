@@ -101,9 +101,15 @@ export const Message = styled.div<{ $isSelf: boolean }>`
   width: 90%;
 `;
 
-export const MessageText = styled(Text)<{ $isSelf: boolean }>`
+export const MessageText = styled(Text)<{
+  $isSelf: boolean;
+  $isWidget: boolean;
+}>`
   position: relative;
-  padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
+  padding: ${({ theme, $isWidget }) =>
+    $isWidget
+      ? theme.spacing.xxxsmall
+      : `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: 24px;
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};

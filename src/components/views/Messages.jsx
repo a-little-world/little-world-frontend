@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { fetchChats } from '../../api/chat';
+import { fetchChats } from '../../api/chat.ts';
 import { updateChats } from '../../features/userData';
 import useIniniteScroll from '../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../routes.ts';
 import PageHeader from '../atoms/PageHeader.tsx';
 import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo.tsx';
-import { ChatDashboard, ChatsPanel } from './Messages.styles';
+import ChatsPanel from '../blocks/ChatCore/ChatsPanel.tsx';
+import { ChatDashboard } from './Messages.styles';
 
 const Messages = () => {
   const { chatId } = useParams();

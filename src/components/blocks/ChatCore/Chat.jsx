@@ -1,8 +1,6 @@
 import {
-  AttachmentWidget,
   ButtonSizes,
   ButtonVariations,
-  CallWidget,
   CloseIcon,
   PlusIcon,
   SendIcon,
@@ -26,7 +24,7 @@ import {
   markChatMessagesReadApi,
   sendFileAttachmentMessage,
   sendMessage,
-} from '../../../api/chat';
+} from '../../../api/chat.ts';
 import {
   addMessage,
   getChatByChatId,
@@ -35,6 +33,10 @@ import {
   markChatMessagesRead,
   updateMessages,
 } from '../../../features/userData';
+import {
+  getCustomChatElements,
+  messageContainsWidget,
+} from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
@@ -51,43 +53,6 @@ import {
   Time,
   WriteSection,
 } from './Chat.styles.tsx';
-
-const getCustomChatElements = (message, userId, activeChat) => {
-  const customChatElements = [
-    {
-      Component: CallWidget,
-      tag: 'MissedCallWidget',
-      props: {
-        isMissed: true,
-        header:
-          message.sender !== userId ? 'Anruf Verpasst' : 'Nicht beantwortet',
-        description:
-          message.sender !== userId ? 'Zurück Rufen' : 'Erneut anrufen',
-        isOutgoing: message.sender === userId,
-        returnCallLink: `/call-setup/${
-          message.sender === userId ? activeChat?.partner?.id : message.sender
-        }`,
-      },
-    },
-    {
-      Component: CallWidget,
-      tag: 'CallWidget',
-      props: {
-        isMissed: false,
-        header: 'Video Anruf',
-        isOutgoing: message.sender === userId,
-        returnCallLink: `/call-setup/${
-          message.sender === userId ? activeChat?.partner?.id : message.sender
-        }`,
-      },
-    },
-    {
-      Component: AttachmentWidget,
-      tag: 'AttachmentWidget',
-    },
-  ];
-  return customChatElements;
-};
 
 const Chat = ({ chatId }) => {
   const {
@@ -134,6 +99,7 @@ const Chat = ({ chatId }) => {
   } = useForm({ shouldUnregister: true });
 
   const onSubmitError = e => {
+    console.log({ e });
     setIsSubmitting(false);
     onFormError({ e, formFields: getValues(), setError, t });
   };
@@ -199,8 +165,11 @@ const Chat = ({ chatId }) => {
         size: selectedFile.size,
       });
 
-      sendFileAttachmentMessage({ file: selectedFile, chatId })
-        .then(data => {
+      sendFileAttachmentMessage({
+        file: selectedFile,
+        chatId,
+        onError: onSubmitError,
+        onSuccess: data => {
           reset();
           clearSelectedFile();
           dispatch(
@@ -213,12 +182,16 @@ const Chat = ({ chatId }) => {
           setIsSubmitting(false);
           messagesRef.current.scrollTop = 0;
           setMessagesSent(curr => curr + 1);
-        })
-        .catch(onSubmitError);
+        },
+      });
     } else {
-      sendMessage({ text, chatId })
-        .then(data => {
+      sendMessage({
+        text,
+        chatId,
+        onError: onSubmitError,
+        onSuccess: data => {
           reset();
+          clearSelectedFile();
           dispatch(
             addMessage({
               message: data,
@@ -229,8 +202,8 @@ const Chat = ({ chatId }) => {
           setIsSubmitting(false);
           messagesRef.current.scrollTop = 0;
           setMessagesSent(curr => curr + 1);
-        })
-        .catch(onSubmitError);
+        },
+      });
     }
   };
 
@@ -246,7 +219,7 @@ const Chat = ({ chatId }) => {
             <>
               {messagesResult?.map(message => {
                 const customChatElements = message?.parsable
-                  ? getCustomChatElements(message, userId, activeChat)
+                  ? getCustomChatElements({ message, userId, activeChat })
                   : [];
                 return (
                   <Message
@@ -254,8 +227,11 @@ const Chat = ({ chatId }) => {
                     key={message.uuid}
                   >
                     <MessageText
-                      $isSelf={message.sender === userId}
                       disableParser={!message.parsable}
+                      $isSelf={message.sender === userId}
+                      $isWidget={
+                        message.parsable && messageContainsWidget(message.text)
+                      }
                     >
                       {message.parsable
                         ? textParser(message.text, customChatElements)
