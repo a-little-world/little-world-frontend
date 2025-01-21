@@ -73,7 +73,7 @@ export const getCustomChatElements = ({
     {
       Component: AttachmentWidget,
       tag: 'AttachmentWidget',
-      isPreview,
+      props: { isPreview },
     },
   ];
   return customChatElements;
