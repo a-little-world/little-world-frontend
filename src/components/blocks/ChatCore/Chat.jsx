@@ -1,22 +1,13 @@
 import {
-  ArrowLeftIcon,
-  Button,
   ButtonSizes,
   ButtonVariations,
-  CallWidget,
-  Gradients,
-  GroupChatIcon,
-  Link,
+  CloseIcon,
+  PlusIcon,
   SendIcon,
-  Tag,
-  TagAppearance,
-  TagSizes,
-  Text,
   TextAreaSize,
   TextTypes,
   TickDoubleIcon,
   TickIcon,
-  VideoIcon,
   textParser,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
@@ -31,41 +22,39 @@ import {
   fetchChat,
   fetchChatMessages,
   markChatMessagesReadApi,
+  sendFileAttachmentMessage,
   sendMessage,
-} from '../../../api/chat';
+} from '../../../api/chat.ts';
 import {
   addMessage,
   getChatByChatId,
   getMessagesByChatId,
-  initCallSetup,
   insertChat,
   markChatMessagesRead,
   updateMessages,
 } from '../../../features/userData';
+import {
+  getCustomChatElements,
+  messageContainsWidget,
+} from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
-import { MESSAGES_ROUTE, PROFILE_ROUTE, getAppRoute } from '../../../routes.ts';
+import { MESSAGES_ROUTE, getAppRoute } from '../../../routes.ts';
 import {
-  BackButton,
+  AttachmentButton,
   ChatContainer,
   Message,
   MessageBox,
   MessageText,
   Messages,
-  NoChatSelected,
   NoMessages,
-  Panel,
-  ProfileLink,
   SendButton,
   Time,
-  TopSection,
-  UserImage,
-  UserInfo,
   WriteSection,
 } from './Chat.styles.tsx';
 
-export const Chat = ({ chatId }) => {
+const Chat = ({ chatId }) => {
   const {
     t,
     i18n: { language },
@@ -85,6 +74,8 @@ export const Chat = ({ chatId }) => {
   );
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef();
 
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
@@ -108,6 +99,7 @@ export const Chat = ({ chatId }) => {
   } = useForm({ shouldUnregister: true });
 
   const onSubmitError = e => {
+    console.log({ e });
     setIsSubmitting(false);
     onFormError({ e, formFields: getValues(), setError, t });
   };
@@ -141,23 +133,78 @@ export const Chat = ({ chatId }) => {
     setFocus('text');
   }, [setFocus]);
 
+  const handleFileSelect = event => {
+    const file = event.target.files[0];
+    if (file) {
+      // Create a new File object with explicit metadata
+      const fileWithMetadata = new File([file], file.name, {
+        type: file.type,
+        lastModified: file.lastModified,
+      });
+      setSelectedFile(fileWithMetadata);
+      reset(); // Clear any existing message text
+    }
+  };
+
+  const handleAttachmentClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const clearSelectedFile = () => {
+    setSelectedFile(null);
+    fileInputRef.current.value = ''; // Reset file input
+  };
+
   const onSendMessage = ({ text }) => {
     setIsSubmitting(true);
-    sendMessage({ text, chatId })
-      .then(data => {
-        reset();
-        dispatch(
-          addMessage({
-            message: data,
-            chatId,
-            senderIsSelf: true,
-          }),
-        );
-        setIsSubmitting(false);
-        messagesRef.current.scrollTop = 0;
-        setMessagesSent(curr => curr + 1);
-      })
-      .catch(onSubmitError);
+
+    if (selectedFile) {
+      console.log('Sending file:', {
+        name: selectedFile.name,
+        type: selectedFile.type,
+        size: selectedFile.size,
+      });
+
+      sendFileAttachmentMessage({
+        file: selectedFile,
+        chatId,
+        onError: onSubmitError,
+        onSuccess: data => {
+          reset();
+          clearSelectedFile();
+          dispatch(
+            addMessage({
+              message: data,
+              chatId,
+              senderIsSelf: true,
+            }),
+          );
+          setIsSubmitting(false);
+          messagesRef.current.scrollTop = 0;
+          setMessagesSent(curr => curr + 1);
+        },
+      });
+    } else {
+      sendMessage({
+        text,
+        chatId,
+        onError: onSubmitError,
+        onSuccess: data => {
+          reset();
+          clearSelectedFile();
+          dispatch(
+            addMessage({
+              message: data,
+              chatId,
+              senderIsSelf: true,
+            }),
+          );
+          setIsSubmitting(false);
+          messagesRef.current.scrollTop = 0;
+          setMessagesSent(curr => curr + 1);
+        },
+      });
+    }
   };
 
   return (
@@ -171,21 +218,20 @@ export const Chat = ({ chatId }) => {
           ) : (
             <>
               {messagesResult?.map(message => {
-                const customChatElements = [
-                  {
-                    Component: CallWidget,
-                    tag: 'CallWidget',
-                    props: { isOutgoing: message.sender !== userId },
-                  },
-                ];
+                const customChatElements = message?.parsable
+                  ? getCustomChatElements({ message, userId, activeChat })
+                  : [];
                 return (
                   <Message
                     $isSelf={message.sender === userId}
                     key={message.uuid}
                   >
                     <MessageText
-                      $isSelf={message.sender === userId}
                       disableParser={!message.parsable}
+                      $isSelf={message.sender === userId}
+                      $isWidget={
+                        message.parsable && messageContainsWidget(message.text)
+                      }
                     >
                       {message.parsable
                         ? textParser(message.text, customChatElements)
@@ -222,20 +268,67 @@ export const Chat = ({ chatId }) => {
           ))}
       </Messages>
       <WriteSection onSubmit={handleSubmit(onSendMessage)}>
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileSelect}
+          style={{ display: 'none' }}
+          accept="image/*,application/pdf"
+        />
+
         <MessageBox
           {...registerInput({
             register,
             name: 'text',
-            options: { required: 'error.required' },
+            options: { required: !selectedFile },
           })}
           key={`message ${messagesSent}`}
           id="text"
           error={t(errors?.text?.message)}
           expandable
-          placeholder={t('chat.text_area_placeholder')}
+          placeholder={
+            selectedFile
+              ? `Selected file: ${selectedFile.name} (${(
+                  selectedFile.size / 1024
+                ).toFixed(1)} KB)`
+              : t('chat.text_area_placeholder')
+          }
+          disabled={!!selectedFile}
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
         />
+        <AttachmentButton
+          size={ButtonSizes.Large}
+          type="button"
+          variation={ButtonVariations.Circle}
+          backgroundColor={
+            selectedFile
+              ? theme.color.status.error
+              : theme.color.surface.primary
+          }
+          borderColor={theme.color.text.title}
+          color={
+            selectedFile ? theme.color.text.reversed : theme.color.text.title
+          }
+          onClick={selectedFile ? clearSelectedFile : handleAttachmentClick}
+        >
+          {selectedFile ? (
+            <CloseIcon
+              label={t('attachment.remove_btn')}
+              labelId="remove_attachment"
+              onClick={clearSelectedFile}
+              width="20"
+              height="20"
+            />
+          ) : (
+            <PlusIcon
+              label={t('attachment.upload_btn')}
+              labelId="attachment_icon"
+              width="20"
+              height="20"
+            />
+          )}
+        </AttachmentButton>
         <SendButton
           size={ButtonSizes.Large}
           type="submit"
@@ -256,90 +349,4 @@ export const Chat = ({ chatId }) => {
   );
 };
 
-export const ChatWithUserInfo = ({ chatId, onBackButton, partner }) => {
-  const theme = useTheme();
-  const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const isSupport = useSelector(state => state.userData.user?.isSupport);
-  const activeChat = useSelector(state =>
-    getChatByChatId(state.userData.chats, chatId),
-  );
-  const unmatched = activeChat?.is_unmatched;
-
-  const callPartner = () => {
-    dispatch(initCallSetup({ userId: partner?.id }));
-  };
-
-  return chatId ? (
-    <Panel>
-      <TopSection>
-        <UserInfo>
-          <BackButton
-            variation={ButtonVariations.Icon}
-            onClick={onBackButton}
-            $show={!!onBackButton}
-          >
-            <ArrowLeftIcon
-              labelId="return to profile"
-              label="return to profile"
-              width="16"
-              height="16"
-            />
-          </BackButton>
-
-          <ProfileLink
-            to={
-              unmatched ? null : getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)
-            }
-          >
-            <UserImage
-              circle
-              image={
-                partner?.image_type === 'avatar'
-                  ? partner?.avatar_config
-                  : partner?.image
-              }
-              imageType={partner?.image_type}
-              size="xsmall"
-            />
-            <Text bold type={TextTypes.Body4}>
-              {unmatched ? t('chat.unmatched_user') : partner?.first_name}
-            </Text>
-          </ProfileLink>
-          {isSupport && (
-            <Link
-              href={`${window?.origin}/matching/user/${partner?.id}`}
-              target="_blank"
-            >
-              Admin Profile
-            </Link>
-          )}
-        </UserInfo>
-        {unmatched ? (
-          <Tag size={TagSizes.small} appearance={TagAppearance.error}>
-            {t('chat.inactive_match')}
-          </Tag>
-        ) : (
-          <Button
-            variation={ButtonVariations.Circle}
-            onClick={callPartner}
-            size={ButtonSizes.Large}
-            backgroundColor={theme.color.gradient.orange10}
-          >
-            <VideoIcon
-              color={theme.color.surface.secondary}
-              width={24}
-              height={24}
-            />
-          </Button>
-        )}
-      </TopSection>
-      <Chat chatId={chatId} />
-    </Panel>
-  ) : (
-    <NoChatSelected>
-      <GroupChatIcon gradient={Gradients.Blue} width="144px" height="144px" />
-      <Text type={TextTypes.Body4}>{t('chat.not_selected')}</Text>
-    </NoChatSelected>
-  );
-};
+export default Chat;

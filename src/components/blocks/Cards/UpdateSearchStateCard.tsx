@@ -44,7 +44,7 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
         dispatch(updateSearchState(!isSearching));
         onClose();
       },
-      onError: error => setError(error.message),
+      onError: e => setError(e.message),
     });
   }
 
