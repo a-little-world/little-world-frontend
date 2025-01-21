@@ -169,7 +169,7 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
                   {textParser(
                     message.newest_message?.text ||
                       t('chat.no_messages_preview'),
-                    customChatElements,
+                    { customElements: customChatElements },
                   )}
                 </PreviewText>
                 {isSender ? (

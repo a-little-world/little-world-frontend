@@ -100,15 +100,12 @@ const Ctas = styled.div`
       flex-wrap: wrap;
       justify-content: flex-end;
     }
-
-    @media (min-width: ${BANNER_LARGE_BREAKPOINT}) {
-      justify-content: center;
-    }
   `};
 `;
 
 const MobileBannerImage = styled.img`
   width: 100%;
+  border-radius: ${({ theme }) => theme.radius.small};
 
   ${() => css`
     @media (min-width: ${BANNER_LARGE_BREAKPOINT}) {
@@ -119,11 +116,13 @@ const MobileBannerImage = styled.img`
 
 const DesktopBannerImage = styled.img`
   display: none;
+  border-radius: ${({ theme }) => theme.radius.small};
 
   ${() => css`
     @media (min-width: ${BANNER_LARGE_BREAKPOINT}) {
       display: block;
       min-width: 352px;
+      max-height: 480px;
       width: 100%;
     }
   `};

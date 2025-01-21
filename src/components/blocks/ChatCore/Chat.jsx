@@ -234,7 +234,10 @@ const Chat = ({ chatId }) => {
                       }
                     >
                       {message.parsable
-                        ? textParser(message.text, customChatElements)
+                        ? textParser(message.text, {
+                            customElements: customChatElements,
+                            onlyLinks: !message.parsable,
+                          })
                         : message.text}
                     </MessageText>
                     <Time type={TextTypes.Body6}>
