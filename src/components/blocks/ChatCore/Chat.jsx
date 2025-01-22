@@ -99,7 +99,6 @@ const Chat = ({ chatId }) => {
   } = useForm({ shouldUnregister: true });
 
   const onSubmitError = e => {
-    console.log({ e });
     setIsSubmitting(false);
     onFormError({ e, formFields: getValues(), setError, t });
   };
@@ -159,12 +158,6 @@ const Chat = ({ chatId }) => {
     setIsSubmitting(true);
 
     if (selectedFile) {
-      console.log('Sending file:', {
-        name: selectedFile.name,
-        type: selectedFile.type,
-        size: selectedFile.size,
-      });
-
       sendFileAttachmentMessage({
         file: selectedFile,
         chatId,
@@ -221,6 +214,7 @@ const Chat = ({ chatId }) => {
                 const customChatElements = message?.parsable
                   ? getCustomChatElements({ message, userId, activeChat })
                   : [];
+
                 return (
                   <Message
                     $isSelf={message.sender === userId}
@@ -233,12 +227,10 @@ const Chat = ({ chatId }) => {
                         message.parsable && messageContainsWidget(message.text)
                       }
                     >
-                      {message.parsable
-                        ? textParser(message.text, {
-                            customElements: customChatElements,
-                            onlyLinks: !message.parsable,
-                          })
-                        : message.text}
+                      {textParser(message.text, {
+                        customElements: customChatElements,
+                        onlyLinks: !message.parsable,
+                      })}
                     </MessageText>
                     <Time type={TextTypes.Body6}>
                       {message.read ? (
