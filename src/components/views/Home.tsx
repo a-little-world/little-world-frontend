@@ -10,7 +10,7 @@ import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
 import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../routes.ts';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard.tsx';
 import CommsBanner from '../blocks/CommsBanner.tsx';
-import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.jsx';
+import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
 import NotificationPanel from '../blocks/NotificationPanel.tsx';
 import PartnerProfiles from '../blocks/PartnerProfiles.jsx';

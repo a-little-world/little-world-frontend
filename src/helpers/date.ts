@@ -8,7 +8,7 @@ const two = (n: number) => (n < 10 ? `0${n}` : n);
 export const formatTime = (date: Date) =>
   `${two(date.getHours())}:${two(date.getMinutes())}`;
 
-export const formatEventTime = (date1: Date, date2: Date) => {
+export const formatEventTime = (date1: Date, date2?: Date) => {
   if (!date2) return formatTime(date1);
   return `${formatTime(date1)} - ${formatTime(date2)}`;
 };

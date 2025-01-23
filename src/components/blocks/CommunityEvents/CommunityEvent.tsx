@@ -7,10 +7,10 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
 
 import { formatDate, formatEventTime } from '../../../helpers/date.ts';
+import { useSelector } from '../../../hooks/index.ts';
 import placeholderImage from '../../../images/coffee.webp';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
 import {
@@ -24,10 +24,26 @@ import {
   FrequencyTitle,
   ImageContainer,
   Main,
-} from './styles';
+} from './styles.tsx';
+
+interface EventData {
+  id: string;
+  frequency: string;
+  description: string;
+  image?: string;
+  title: string;
+  time: string;
+  end_time?: string;
+  link: string;
+}
+
+interface CommunityEventProps extends EventData {
+  _key: string;
+}
 
 function CommunityEvent({
   _key,
+  id,
   frequency,
   description,
   image,
@@ -35,7 +51,7 @@ function CommunityEvent({
   time,
   end_time,
   link,
-}) {
+}: CommunityEventProps) {
   const {
     t,
     i18n: { language },
@@ -49,14 +65,14 @@ function CommunityEvent({
     : initialWordsDescription.slice(0, 15).join(' ');
   const isShortText = initialWordsDescription.length <= 15;
   const startDate = new Date(time);
-  const endDate = end_time ? new Date(end_time) : null;
+  const endDate = end_time ? new Date(end_time) : undefined;
 
   const toggleText = () => {
     setShowFullText(!showFullText);
   };
 
   return (
-    <Event key={_key}>
+    <Event id={id} key={_key}>
       <ImageContainer>
         <EventImage alt="" src={image || placeholderImage} />
         <FrequencyTitle>
@@ -99,7 +115,12 @@ function CommunityEvent({
               window.open(link, '_blank');
             }}
           >
-            <PhoneIcon color={theme.color.surface.primary} width="20px" />
+            <PhoneIcon
+              label="join call icon"
+              labelId="joinCall"
+              color={theme.color.surface.primary}
+              width="20px"
+            />
             <span className="text">{t('community_events.join_call')}</span>
           </Button>
           <AddToCalendarButton
@@ -120,7 +141,6 @@ function CommunityEvent({
 
 function CommunityEvents() {
   const events = useSelector(state => state.userData.communityEvents);
-
   return (
     <Events>
       {events.items.map(eventData => (
