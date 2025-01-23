@@ -14,6 +14,7 @@ import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.jsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
 import NotificationPanel from '../blocks/NotificationPanel.tsx';
 import PartnerProfiles from '../blocks/PartnerProfiles.jsx';
+import PostCallSurvey from '../blocks/PostCallSurvey/PostCallSurvey.tsx';
 
 const Home = styled.div`
   display: flex;
@@ -128,6 +129,10 @@ function Main() {
           />
         </Modal>
       )}
+
+      <Modal open={false} onClose={() => null}>
+        <PostCallSurvey />
+      </Modal>
     </>
   );
 }

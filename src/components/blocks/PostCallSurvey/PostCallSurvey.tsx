@@ -4,18 +4,28 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardSizes,
+  StarRating,
   Text,
   TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { TFunction, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { registerInput } from '../../../helpers/form.ts';
 
 const StyledCard = styled(Card)``;
+
+const getRatingLabels = (t: TFunction) => [
+  t('post_call_survey.rating_1'),
+  t('post_call_survey.rating_2'),
+  t('post_call_survey.rating_3'),
+  t('post_call_survey.rating_4'),
+  t('post_call_survey.rating_5'),
+];
 
 interface IFormInput {
   rating: number;
@@ -50,28 +60,26 @@ const PostCallSurvey: React.FC = () => {
   };
 
   return (
-    <StyledCard>
+    <StyledCard width={CardSizes.Medium}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardHeader>{t('post_call_survey.title')}</CardHeader>
         <CardContent>
           <Text>{t('post_call_survey.description')}</Text>
           <div>
             <label>Rating:</label>
-            <select
-              {...registerInput({
+
+            {/* {...registerInput({
                 register,
                 name: 'rating',
                 options: { required: true },
-              })}
-            >
-              <option value="">Select...</option>
-              {[1, 2, 3, 4, 5].map(star => (
-                <option key={star} value={star}>
-                  {star}
-                </option>
-              ))}
-            </select>
-            {errors.rating && <span>This field is required</span>}
+              })} */}
+
+            <StarRating
+              id="star-rating"
+              name="rating"
+              onChange={() => null}
+              ratings={getRatingLabels(t)}
+            />
           </div>
           <div>
             <TextArea
@@ -88,7 +96,7 @@ const PostCallSurvey: React.FC = () => {
             />
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter align="center">
           <Button type="submit">{t('post_call_survey.submit_button')}</Button>
         </CardFooter>
       </form>
