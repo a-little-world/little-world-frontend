@@ -8,6 +8,8 @@ import {
   blockIncomingCall,
   initCallSetup,
   setMatchRejected,
+  updatePostCallSurvey,
+  removePostCallSurvey,
 } from '../../../features/userData';
 import { useSelector } from '../../../hooks/index.ts';
 import '../../../main.css';
@@ -149,8 +151,21 @@ export const FullAppLayout = ({ children }) => {
         <CallSetup userPk={callSetup?.userId} />
       </Modal>
       {/* need to still add close / onsubmit logic here */}
-      <Modal open={postCallSurvey} onClose={() => null}>
-        <PostCallSurvey onSubmit={() => null} />
+      <Modal
+        open={postCallSurvey}
+        onClose={() => {
+          dispatch(removePostCallSurvey());
+        }}
+      >
+        <PostCallSurvey
+          onSubmit={data => {
+            dispatch(updatePostCallSurvey({
+              review_id: data?.review_id
+            }))
+          }}
+          reviewId={postCallSurvey?.review_id}
+          liveSessionId={postCallSurvey?.live_session_id}
+        />
       </Modal>
       <Modal
         open={activeCallRooms[0]?.uuid && !callSetup}
