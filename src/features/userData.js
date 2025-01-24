@@ -38,6 +38,7 @@ export const userDataSlice = createSlice({
       state.apiOptions = action.payload?.apiOptions;
       state.formOptions = action.payload?.apiOptions.profile;
       state.activeCallRooms = action.payload?.activeCallRooms || [];
+      state.postCallSurvey = action.payload?.postCallSurvey || null;
       state.callSetup = action.payload?.callSetup || null; // { userId: user.hash } or null
       state.activeCall = action.payload?.activeCall || null; // { userId: user.hash, tracks: {} } or null
       state.supportUrl = getAppSubpageRoute(
@@ -101,6 +102,18 @@ export const userDataSlice = createSlice({
         item => item.id === match.id,
       );
       if (!matchAlreadyExists) state.matches[category].items.push(match);
+    },
+    addPostCallSurvey: (state, action) => {
+      state.postCallSurvey = action.payload;
+    },
+    updatePostCallSurvey: (state, action) => {
+      state.postCallSurvey = {
+        ...state.postCallSurvey,
+        ...action.payload,
+      };
+    },
+    removePostCallSurvey: state => {
+      state.postCallSurvey = null;
     },
     addIncomingCall: (state, action) => {
       state.activeCallRooms = [
@@ -307,6 +320,9 @@ export const {
   updateProfile,
   updateSearchState,
   updateUser,
+  setPostCallSurvey,
+  removePostCallSurvey,
+  updatePostCallSurvey,
 } = userDataSlice.actions;
 
 export const getMatchByPartnerId = (matches, partnerId) => {
