@@ -1,4 +1,7 @@
 import { apiFetch } from './helpers.ts';
+import Cookies from 'js-cookie';
+import { BACKEND_URL } from '../ENVIRONMENT.js';
+
 
 export const requestVideoAccessToken = async ({
   partnerId,
@@ -22,24 +25,44 @@ export const requestVideoAccessToken = async ({
 };
 
 export const submitCallFeedback = async ({
+  liveSessionId,
   rating,
   review,
   onSuccess,
   onError,
 }: {
+  liveSessionId?: string;
   rating: number;
   review?: string;
   onSuccess: (result: any) => void;
   onError: (error: any) => void;
 }) => {
+  const url = `${BACKEND_URL}/api/livekit/review`;
+
+  const data = {
+    live_session_id: liveSessionId || null,
+    rating: rating,
+    review: review || '',
+  };
+
   try {
-    const result = await apiFetch(`api/livekit/review`, {
+    const response = await fetch(url, {
       method: 'POST',
-      useTagsOnly: true,
-      body: { rating, review },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': Cookies.get('csrftoken') || '',
+      },
+      body: JSON.stringify(data),
     });
-    onSuccess(result);
+
+    if (response.ok) {
+      const responseBody = await response.json();
+      onSuccess(responseBody);
+    } else {
+      const errorBody = await response.json();
+      onError(errorBody);
+    }
   } catch (error) {
     onError(error);
   }
-};
+}
