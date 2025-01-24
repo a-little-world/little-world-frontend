@@ -42,9 +42,11 @@ interface IFormInput {
 
 interface PostCallSurveyProps {
   onSubmit: () => void;
+  reviewId?: number;
+  liveSessionId?: string;
 }
 
-const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
+const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit, reviewId, liveSessionId }) => {
   const {
     control,
     register,
@@ -60,6 +62,8 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
     review,
   }) => {
     submitCallFeedback({
+      reviewId,
+      liveSessionId,
       rating,
       review,
       onSuccess: onSubmit,
