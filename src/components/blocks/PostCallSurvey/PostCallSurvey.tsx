@@ -1,23 +1,31 @@
 import {
   Button,
+  ButtonSizes,
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardSizes,
+  MessageTypes,
   StarRating,
+  StatusMessage,
   Text,
   TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { submitCallFeedback } from '../../../api/livekit.ts';
 import { registerInput } from '../../../helpers/form.ts';
 
 const StyledCard = styled(Card)``;
+
+const StyledStarRating = styled(StarRating)`
+  margin: ${({ theme }) => theme.spacing.small} 0;
+`;
 
 const getRatingLabels = (t: TFunction) => [
   t('post_call_survey.rating_1'),
@@ -29,75 +37,77 @@ const getRatingLabels = (t: TFunction) => [
 
 interface IFormInput {
   rating: number;
-  comments: string;
+  review: string;
 }
 
-const PostCallSurvey: React.FC = () => {
+interface PostCallSurveyProps {
+  onSubmit: () => void;
+}
+
+const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>();
+  const [submitError, setSubmitError] = useState(null);
 
   const { t } = useTranslation();
 
-  const onSubmit: SubmitHandler<IFormInput> = async data => {
-    try {
-      const response = await fetch('/api/submit-survey', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      console.log('Survey submitted successfully');
-    } catch (error) {
-      console.error('Error submitting survey:', error);
-    }
+  const handleSubmitFeedback: SubmitHandler<IFormInput> = async ({
+    rating,
+    review,
+  }) => {
+    submitCallFeedback({
+      rating,
+      review,
+      onSuccess: onSubmit,
+      onError: error => setSubmitError(error),
+    });
   };
 
   return (
     <StyledCard width={CardSizes.Medium}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleSubmitFeedback)}>
         <CardHeader>{t('post_call_survey.title')}</CardHeader>
         <CardContent>
-          <Text>{t('post_call_survey.description')}</Text>
-          <div>
-            <label>Rating:</label>
+          <Text tag="label" for="call_rating">
+            {t('post_call_survey.description')}
+          </Text>
 
-            {/* {...registerInput({
-                register,
-                name: 'rating',
-                options: { required: true },
-              })} */}
+          <Controller
+            name="rating"
+            control={control}
+            render={({ field: { onChange, name } }) => (
+              <StyledStarRating
+                id="call_rating"
+                name={name}
+                onChange={onChange}
+                ratings={getRatingLabels(t)}
+              />
+            )}
+          />
 
-            <StarRating
-              id="star-rating"
-              name="rating"
-              onChange={() => null}
-              ratings={getRatingLabels(t)}
-            />
-          </div>
-          <div>
-            <TextArea
-              {...registerInput({
-                register,
-                name: 'comments',
-              })}
-              label={t('help.contact_problem_label')}
-              inputMode="text"
-              // maxLength="300"
-              size={TextAreaSize.Medium}
-              error={t(errors?.message?.message)}
-              placeholder={t('help.contact_problem_placeholder')}
-            />
-          </div>
+          <TextArea
+            {...registerInput({
+              register,
+              name: 'review',
+            })}
+            label={t('post_call_survey.comment_label')}
+            inputMode="text"
+            size={TextAreaSize.Medium}
+            error={t(errors?.review?.message)}
+            placeholder={t('post_call_survey.comment_placeholder')}
+          />
+          <StatusMessage $visible={!!submitError} $type={MessageTypes.Error}>
+            {submitError}
+          </StatusMessage>
         </CardContent>
         <CardFooter align="center">
-          <Button type="submit">{t('post_call_survey.submit_button')}</Button>
+          <Button type="submit" size={ButtonSizes.Large}>
+            {t('post_call_survey.submit_button')}
+          </Button>
         </CardFooter>
       </form>
     </StyledCard>

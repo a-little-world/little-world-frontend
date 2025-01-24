@@ -15,6 +15,7 @@ import CallSetup from '../Calls/CallSetup.tsx';
 import IncomingCall from '../Calls/IncomingCall.tsx';
 import { MatchCardComponent } from '../Cards/MatchCard.tsx';
 import MobileNavBar from '../MobileNavBar';
+import PostCallSurvey from '../PostCallSurvey/PostCallSurvey.tsx';
 import Sidebar from '../Sidebar';
 
 const isViewportHeight = ['chat'];
@@ -81,6 +82,7 @@ export const FullAppLayout = ({ children }) => {
   const matchRejected = useSelector(state => state.userData.matchRejected);
   const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
   const callSetup = useSelector(state => state.userData.callSetup);
+  const postCallSurvey = useSelector(state => state.userData.postCallSurvey);
   const activeCall = useSelector(state => state.userData.activeCall);
   const [matchModalOpen, setMatchModalOpen] = useState(
     Boolean(
@@ -145,6 +147,10 @@ export const FullAppLayout = ({ children }) => {
 
       <Modal open={callSetup} locked>
         <CallSetup userPk={callSetup?.userId} />
+      </Modal>
+      {/* need to still add close / onsubmit logic here */}
+      <Modal open={postCallSurvey} onClose={() => null}>
+        <PostCallSurvey onSubmit={() => null} />
       </Modal>
       <Modal
         open={activeCallRooms[0]?.uuid && !callSetup}

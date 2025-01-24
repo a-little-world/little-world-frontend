@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { requestVideoAccessToken } from '../../../api/livekit';
+import { requestVideoAccessToken } from '../../../api/livekit.ts';
 import {
   cancelCallSetup,
   initActiveCall,
@@ -163,17 +163,17 @@ function CallSetup({ userPk }: CallSetupProps) {
     console.log('Requesting video access token for user:', userPk);
     requestVideoAccessToken({
       partnerId: userPk,
-    })
-      .then(res => {
+      onSuccess: res => {
         dispatch(insertChat(res.chat));
         setAuthData({
           token: res.token,
           livekitServerUrl: res.server_url,
         });
-      })
-      .catch(() => {
+      },
+      onError: () => {
         setError('error.server_issue');
-      });
+      },
+    });
   }, []);
 
   const handleError = () => {

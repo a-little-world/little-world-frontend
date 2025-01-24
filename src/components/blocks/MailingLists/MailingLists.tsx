@@ -209,9 +209,6 @@ export const DynamicPublicMailingListsSettings = () => {
       >
         {saved ? t('mailing_lists.success_message') : error?.message}
       </StatusMessage>
-      {/* <Button disabled={false} loading={false} onClick={() => setSaved(true)}>
-        {t('mailing_lists.unsubscribe_all_btn')}
-      </Button> */}
     </MailingListsWrapper>
   );
 };
