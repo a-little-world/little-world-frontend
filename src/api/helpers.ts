@@ -24,7 +24,6 @@ export const formatApiError = (responseBody: any, response: any) => {
   apiError.status = response.status;
   apiError.statusText = response.statusText;
   apiError.data = responseBody;
-
   if (typeof responseBody === 'string') {
     apiError.message = responseBody;
   } else {
@@ -32,8 +31,10 @@ export const formatApiError = (responseBody: any, response: any) => {
     const errorType = API_FIELDS[errorTypeApi] ?? errorTypeApi;
     const errorTags = Object.values(responseBody)?.[0];
     const errorTag = Array.isArray(errorTags) ? errorTags[0] : errorTags;
+
     apiError.cause = errorType ?? null;
-    apiError.message = errorTag || apiError.statusText;
+    apiError.message =
+      apiError.data?.message || errorTag || apiError.statusText;
   }
 
   return apiError;

@@ -1,5 +1,4 @@
 import { apiFetch } from './helpers.ts';
-import Cookies from 'js-cookie';
 
 export const requestVideoAccessToken = async ({
   partnerId,
@@ -43,7 +42,7 @@ export const submitCallFeedback = async ({
       body: {
         live_session_id: liveSessionId || null,
         review_id: reviewId || null,
-        rating: rating,
+        rating,
         review: review || '',
       },
     });

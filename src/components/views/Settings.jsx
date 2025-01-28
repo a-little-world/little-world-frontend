@@ -119,7 +119,7 @@ function ListItem({ section, label, value, setEditing }) {
         {t(`settings.${section}_${label}`)}
       </FieldTitle>
       <Field>
-        <Text>{value}</Text>
+        <Text disableParser>{value}</Text>
         <Button
           variation={ButtonVariations.Inline}
           color={theme.color.text.link}

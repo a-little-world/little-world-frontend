@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { getAppRoute } from '../../../routes.ts';
 import MessageCard from '../Cards/MessageCard.jsx';
-import AppLayout from '../Layout/AppLayout.jsx';
+import AppLayout from '../Layout/AppLayout.tsx';
 
 const ErrorWrapper = styled.div`
   ${({ theme }) => css`

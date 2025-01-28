@@ -13,7 +13,7 @@ import { IS_CAPACITOR_BUILD } from './ENVIRONMENT';
 import { ModeSwitch } from './components/atoms/ModeSwitch.tsx';
 import RouterError from './components/blocks/ErrorView/ErrorView.tsx';
 import Form from './components/blocks/Form/Form';
-import { FullAppLayout } from './components/blocks/Layout/AppLayout';
+import { FullAppLayout } from './components/blocks/Layout/AppLayout.tsx';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import Welcome from './components/blocks/Welcome/Welcome';
 import AboutUs from './components/views/AboutUs/AboutUs.tsx';

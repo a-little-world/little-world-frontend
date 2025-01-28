@@ -8,23 +8,25 @@ import {
   CardSizes,
   MessageTypes,
   StarRating,
+  StarRatingSizes,
   StatusMessage,
   Text,
   TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import styled, { useTheme } from 'styled-components';
 
-import { submitCallFeedback } from '../../../api/livekit.ts';
+import { updatePostCallSurvey } from '../../../features/userData.js';
 import { registerInput } from '../../../helpers/form.ts';
 
 const StyledCard = styled(Card)``;
 
 const StyledStarRating = styled(StarRating)`
-  margin: ${({ theme }) => theme.spacing.small} 0;
+  margin-top: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 const getRatingLabels = (t: TFunction) => [
@@ -41,44 +43,57 @@ interface IFormInput {
 }
 
 interface PostCallSurveyProps {
-  onSubmit: () => void;
-  reviewId?: number;
-  liveSessionId?: string;
+  onSubmit: (params: {
+    rating?: number;
+    review?: string;
+    onError?: (error: any) => void;
+  }) => void;
 }
 
-const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit, reviewId, liveSessionId }) => {
+const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
+  const dispatch = useDispatch();
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<IFormInput>();
   const [submitError, setSubmitError] = useState(null);
 
   const { t } = useTranslation();
+  const theme = useTheme();
+  const watchedRating = watch('rating');
+
+  useEffect(() => {
+    if (watchedRating)
+      dispatch(
+        updatePostCallSurvey({
+          rating: watchedRating,
+          review: watch('review'),
+        }),
+      );
+  }, [watch, watchedRating, dispatch]);
 
   const handleSubmitFeedback: SubmitHandler<IFormInput> = async ({
     rating,
     review,
   }) => {
-    submitCallFeedback({
-      reviewId,
-      liveSessionId,
+    onSubmit({
       rating,
       review,
-      onSuccess: onSubmit,
-      onError: error => setSubmitError(error),
+      onError: error => setSubmitError(error?.message),
     });
   };
 
   return (
     <StyledCard width={CardSizes.Medium}>
       <form onSubmit={handleSubmit(handleSubmitFeedback)}>
-        <CardHeader>{t('post_call_survey.title')}</CardHeader>
+        <CardHeader textColor={theme.color.text.title}>
+          {t('post_call_survey.title')}
+        </CardHeader>
         <CardContent>
-          <Text tag="label" for="call_rating">
-            {t('post_call_survey.description')}
-          </Text>
+          <Text tag="label">{t('post_call_survey.description')}</Text>
 
           <Controller
             name="rating"
@@ -89,6 +104,8 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit, reviewId, liv
                 name={name}
                 onChange={onChange}
                 ratings={getRatingLabels(t)}
+                displayTextRatings
+                size={StarRatingSizes.Medium}
               />
             )}
           />
@@ -104,12 +121,18 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit, reviewId, liv
             error={t(errors?.review?.message)}
             placeholder={t('post_call_survey.comment_placeholder')}
           />
-          <StatusMessage $visible={!!submitError} $type={MessageTypes.Error}>
-            {submitError}
-          </StatusMessage>
+          {!!submitError && (
+            <StatusMessage $visible $type={MessageTypes.Error}>
+              {submitError}
+            </StatusMessage>
+          )}
         </CardContent>
         <CardFooter align="center">
-          <Button type="submit" size={ButtonSizes.Large}>
+          <Button
+            type="submit"
+            size={ButtonSizes.Stretch}
+            disabled={!watchedRating}
+          >
             {t('post_call_survey.submit_button')}
           </Button>
         </CardFooter>

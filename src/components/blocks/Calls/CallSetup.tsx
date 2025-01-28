@@ -12,7 +12,7 @@ import {
 import { LocalUserChoices, PreJoin } from '@livekit/components-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
@@ -23,6 +23,7 @@ import {
   insertChat,
 } from '../../../features/userData';
 import { clearActiveTracks } from '../../../helpers/video.ts';
+import { useSelector } from '../../../hooks/index.ts';
 import { CALL_ROUTE, getAppRoute } from '../../../routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
@@ -115,10 +116,13 @@ const AudioOutputSelect = () => {
 };
 
 type CallSetupProps = {
+  onClose: () => void;
   userPk: string;
 };
 
-function CallSetup({ userPk }: CallSetupProps) {
+function CallSetup({ onClose, userPk }: CallSetupProps) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [authData, setAuthData] = useState({
     token: null,
@@ -134,9 +138,6 @@ function CallSetup({ userPk }: CallSetupProps) {
   const username = useSelector(
     state => state?.userData?.user?.profile?.first_name,
   );
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleJoin = (values: LocalUserChoices) => {
     dispatch(
@@ -154,6 +155,7 @@ function CallSetup({ userPk }: CallSetupProps) {
       }),
     );
     dispatch(cancelCallSetup());
+    onClose();
     clearActiveTracks();
     navigate(getAppRoute(CALL_ROUTE));
   };
@@ -194,6 +196,7 @@ function CallSetup({ userPk }: CallSetupProps) {
         variation={ButtonVariations.Icon}
         onClick={() => {
           dispatch(cancelCallSetup());
+          onClose();
         }}
       >
         <CloseIcon

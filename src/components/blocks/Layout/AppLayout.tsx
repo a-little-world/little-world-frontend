@@ -1,28 +1,29 @@
 import { Modal } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
+import { submitCallFeedback } from '../../../api/livekit.ts';
 import {
   blockIncomingCall,
   initCallSetup,
-  setMatchRejected,
-  updatePostCallSurvey,
   removePostCallSurvey,
-} from '../../../features/userData';
+  setMatchRejected,
+} from '../../../features/userData.js';
 import { useSelector } from '../../../hooks/index.ts';
+import useModalManager, { ModalType } from '../../../hooks/useModalManager.ts';
 import '../../../main.css';
 import CallSetup from '../Calls/CallSetup.tsx';
 import IncomingCall from '../Calls/IncomingCall.tsx';
 import { MatchCardComponent } from '../Cards/MatchCard.tsx';
-import MobileNavBar from '../MobileNavBar';
+import MobileNavBar from '../MobileNavBar.jsx';
 import PostCallSurvey from '../PostCallSurvey/PostCallSurvey.tsx';
-import Sidebar from '../Sidebar';
+import Sidebar from '../Sidebar.jsx';
 
 const isViewportHeight = ['chat'];
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $isVH: boolean }>`
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -49,7 +50,7 @@ const Wrapper = styled.div`
   `};
 `;
 
-const Content = styled.section`
+const Content = styled.section<{ $isVH: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -75,9 +76,11 @@ const Content = styled.section`
   `};
 `;
 
-export const FullAppLayout = ({ children }) => {
+export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const dispatch = useDispatch();
+  const { openModal, closeModal, isModalOpen } = useModalManager();
+
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
   const matches = useSelector(state => state.userData.matches);
@@ -86,13 +89,6 @@ export const FullAppLayout = ({ children }) => {
   const callSetup = useSelector(state => state.userData.callSetup);
   const postCallSurvey = useSelector(state => state.userData.postCallSurvey);
   const activeCall = useSelector(state => state.userData.activeCall);
-  const [matchModalOpen, setMatchModalOpen] = useState(
-    Boolean(
-      matches?.proposed?.items?.length ||
-        matches?.unconfirmed?.items?.length ||
-        matchRejected,
-    ),
-  );
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
@@ -110,14 +106,34 @@ export const FullAppLayout = ({ children }) => {
   }, [location]);
 
   useEffect(() => {
-    setMatchModalOpen(
-      Boolean(
-        matches?.proposed?.items?.length ||
-          matches?.unconfirmed?.items?.length ||
-          matchRejected,
-      ),
+    if (activeCallRooms[0]?.uuid && !callSetup) {
+      openModal(ModalType.INCOMING_CALL.id);
+    }
+  }, [activeCallRooms, callSetup, openModal]);
+
+  useEffect(() => {
+    if (callSetup) {
+      openModal(ModalType.CALL_SETUP.id);
+    }
+  }, [callSetup, openModal]);
+
+  useEffect(() => {
+    const shouldShowMatchModal = Boolean(
+      matches?.proposed?.items?.length ||
+        matches?.unconfirmed?.items?.length ||
+        matchRejected,
     );
-  }, [matches, matchRejected]);
+    console.log('here');
+    if (shouldShowMatchModal) {
+      openModal(ModalType.MATCH.id);
+    }
+  }, [matches, matchRejected, openModal]);
+
+  useEffect(() => {
+    if (postCallSurvey) {
+      openModal(ModalType.POST_CALL_SURVEY.id);
+    }
+  }, [postCallSurvey, openModal]);
 
   useEffect(() => {
     if (!callSetup && !activeCall) {
@@ -127,15 +143,45 @@ export const FullAppLayout = ({ children }) => {
 
   const onAnswerCall = () => {
     dispatch(initCallSetup({ userId: activeCallRooms[0]?.partner?.id }));
+    closeModal();
   };
 
   const onRejectCall = () => {
     dispatch(blockIncomingCall({ userId: activeCallRooms[0]?.partner?.id }));
+    closeModal();
   };
 
   const closeMatchModal = () => {
     if (matchRejected) dispatch(setMatchRejected(false));
-    setMatchModalOpen(false);
+    closeModal();
+  };
+
+  const closePostCallSurvey = () => {
+    dispatch(removePostCallSurvey());
+    closeModal();
+  };
+
+  // submitted even if user closes modal
+  const submitPostCallSurvey = ({
+    rating,
+    review,
+    onError,
+  }: {
+    rating?: number;
+    review?: string;
+    onError?: () => void;
+  }) => {
+    // Do not submit when user closes modal without giving rating
+    if (rating || postCallSurvey?.rating)
+      submitCallFeedback({
+        reviewId: postCallSurvey?.review_id,
+        liveSessionId: postCallSurvey?.live_session_id,
+        rating: rating || postCallSurvey?.rating,
+        review: review || postCallSurvey?.review,
+        onSuccess: closePostCallSurvey,
+        onError: onError ?? (() => null),
+      });
+    else closePostCallSurvey();
   };
 
   return (
@@ -147,28 +193,18 @@ export const FullAppLayout = ({ children }) => {
 
       <Content $isVH={isVH}>{children || <Outlet />}</Content>
 
-      <Modal open={callSetup} locked>
-        <CallSetup userPk={callSetup?.userId} />
+      <Modal open={isModalOpen(ModalType.CALL_SETUP.id)} locked>
+        <CallSetup onClose={closeModal} userPk={callSetup?.userId} />
       </Modal>
-      {/* need to still add close / onsubmit logic here */}
+
       <Modal
-        open={postCallSurvey}
-        onClose={() => {
-          dispatch(removePostCallSurvey());
-        }}
+        open={isModalOpen(ModalType.POST_CALL_SURVEY.id)}
+        onClose={submitPostCallSurvey}
       >
-        <PostCallSurvey
-          onSubmit={data => {
-            dispatch(updatePostCallSurvey({
-              review_id: data?.review_id
-            }))
-          }}
-          reviewId={postCallSurvey?.review_id}
-          liveSessionId={postCallSurvey?.live_session_id}
-        />
+        <PostCallSurvey onSubmit={submitPostCallSurvey} />
       </Modal>
       <Modal
-        open={activeCallRooms[0]?.uuid && !callSetup}
+        open={isModalOpen(ModalType.INCOMING_CALL.id)}
         onClose={onRejectCall}
       >
         <IncomingCall
@@ -181,7 +217,7 @@ export const FullAppLayout = ({ children }) => {
       </Modal>
 
       <Modal
-        open={matchModalOpen}
+        open={isModalOpen(ModalType.MATCH.id)}
         onClose={closeMatchModal}
         locked={showNewMatch}
       >

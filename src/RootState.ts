@@ -4,6 +4,7 @@ export interface UserData {
   user: any;
   notifications: any;
   matches: any;
+  matchRejected: boolean;
   chats: any;
   messages: any;
   apiOptions: any;
@@ -11,6 +12,7 @@ export interface UserData {
   activeCallRooms: any;
   callSetup: any;
   activeCall: any;
+  postCallSurvey: any;
 }
 
 export interface RootState {
