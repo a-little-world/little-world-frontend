@@ -123,11 +123,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         matches?.unconfirmed?.items?.length ||
         matchRejected,
     );
-    console.log('here');
+
     if (shouldShowMatchModal) {
       openModal(ModalType.MATCH.id);
-    }
-  }, [matches, matchRejected, openModal]);
+    } else if (isModalOpen(ModalType.MATCH.id)) closeModal();
+  }, [matches, matchRejected]); // eslint-disable-line
 
   useEffect(() => {
     if (postCallSurvey) {
