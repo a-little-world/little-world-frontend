@@ -1,5 +1,4 @@
 import Cookie from 'js-cookie';
-import React from 'react';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
 

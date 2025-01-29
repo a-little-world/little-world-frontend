@@ -1,10 +1,8 @@
 import {
-  Button,
   Loading,
   MessageTypes,
   StatusMessage,
   Switch,
-  Text,
 } from '@a-little-world/little-world-design-system';
 import { LoadingSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Loading/Loading';
 import React, { useEffect, useState } from 'react';
@@ -44,9 +42,7 @@ const CategoryForm = styled.form`
 const MailingLists = ({
   inline,
   hideLabel,
-  categoriesToDisplay,
 }: {
-  categoriesToDisplay?: string[];
   inline?: boolean;
   hideLabel?: boolean;
 }) => {
@@ -110,19 +106,17 @@ const MailingLists = ({
   );
 };
 
-const fetcher = url => fetch(url).then(r => r.json());
-
 export const SingleCategoryToggle = ({ category, emailSettingsData }) => {
   const { t } = useTranslation();
-  const { control, getValues, setError, watch, handleSubmit } = useForm();
+  const { control, watch, handleSubmit } = useForm();
 
-  const onError = e => {
-    onFormError({ e, formFields: getValues(), setError, t });
-  };
+  // const onError = e => {
+  //   onFormError({ e, formFields: getValues(), setError, t });
+  // };
 
   const { emailSettingsHash } = useParams();
 
-  const onFormSuccess = data => {};
+  // const onFormSuccess = data => {};
 
   const onToggle = data => {
     const chageSubscribe = data[category] ? 'subscribe' : 'unsubscribe';
@@ -182,7 +176,7 @@ export const DynamicPublicMailingListsSettings = () => {
   const { t } = useTranslation();
 
   const { emailSettingsHash } = useParams();
-  const [saved, setSaved] = useState(false);
+  const [saved] = useState(false);
 
   const {
     data: emailSettingsData,

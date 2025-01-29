@@ -127,7 +127,7 @@ const ProfilePic = ({ control, setValue, setError }) => {
         setUploadedImage(image);
         setValue(USER_FIELDS.image, file); // Use original file here
       }
-    } catch (error) {
+    } catch {
       setError(USER_FIELDS.image);
       // Handle error (e.g., show a notification to the user)
     }

@@ -225,7 +225,7 @@ function Contact() {
     setIsSubmitting(false);
   };
 
-  const onSuccess = response => {
+  const onSuccess = () => {
     setIsSubmitting(false);
     setRequestSuccessful(true);
   };

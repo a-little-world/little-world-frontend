@@ -3,7 +3,6 @@ import {
   Button,
   ButtonVariations,
   CloseIcon,
-  Dropdown,
   MessageTypes,
   StatusMessage,
   Text,
@@ -87,33 +86,33 @@ const CallSetupCard = styled(ModalCard)`
   `}
 `;
 
-const AudioOutputSelect = () => {
-  const { t } = useTranslation();
-  const [audioOutDevices, setAudioOutDevices] = useState<MediaDeviceInfo[]>([]);
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then(deviceList => {
-      const devices = deviceList
-        .filter(deviceInfo => deviceInfo.kind === 'audiooutput')
-        .filter(deviceInfo => deviceInfo.deviceId !== 'default');
-      setAudioOutDevices(devices);
-    });
-  }, []);
+// const AudioOutputSelect = () => {
+//   const { t } = useTranslation();
+//   const [audioOutDevices, setAudioOutDevices] = useState<MediaDeviceInfo[]>([]);
+//   useEffect(() => {
+//     navigator.mediaDevices.enumerateDevices().then(deviceList => {
+//       const devices = deviceList
+//         .filter(deviceInfo => deviceInfo.kind === 'audiooutput')
+//         .filter(deviceInfo => deviceInfo.deviceId !== 'default');
+//       setAudioOutDevices(devices);
+//     });
+//   }, []);
 
-  return (
-    <div className="speaker-select">
-      <Dropdown
-        ariaLabel="speaker-select"
-        maxWidth="100%"
-        label={t('call_setup.audio_output_select')}
-        placeholder={t('call_setup.audio_output_placeholder')}
-        options={audioOutDevices.map(deviceInfo => ({
-          value: deviceInfo.deviceId,
-          label: deviceInfo.label,
-        }))}
-      />
-    </div>
-  );
-};
+//   return (
+//     <div className="speaker-select">
+//       <Dropdown
+//         ariaLabel="speaker-select"
+//         maxWidth="100%"
+//         label={t('call_setup.audio_output_select')}
+//         placeholder={t('call_setup.audio_output_placeholder')}
+//         options={audioOutDevices.map(deviceInfo => ({
+//           value: deviceInfo.deviceId,
+//           label: deviceInfo.label,
+//         }))}
+//       />
+//     </div>
+//   );
+// };
 
 type CallSetupProps = {
   onClose: () => void;
@@ -129,11 +128,6 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     livekitServerUrl: null,
   });
   const [error, setError] = useState('');
-
-  const quality = 'good';
-  const qualityText = t(`pcs_signal_${quality}`);
-  const updateText = t('pcs_signal_update');
-  const signalInfo = { quality, qualityText, updateText };
 
   const username = useSelector(
     state => state?.userData?.user?.profile?.first_name,

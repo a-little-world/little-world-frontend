@@ -52,10 +52,6 @@ const RegisterText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
 
-const PresentationText = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
-`;
-
 const Partners: FC = () => {
   const { t } = useTranslation();
 

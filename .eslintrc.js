@@ -39,11 +39,11 @@ module.exports = {
     'arrow-parens': 'off',
     'operator-linebreak': [1, 'after'],
     'no-confusing-arrow': 0,
-    'no-unused-vars': 1,
+    'no-unused-vars': 0,
     'no-nested-ternary': 1,
     'no-plusplus': 1,
     camelcase: 'warn',
-    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-unused-vars': 'error',
   },
   overrides: [
     {

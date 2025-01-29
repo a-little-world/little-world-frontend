@@ -4,7 +4,7 @@ import {
   SwirlyLinesThinImage,
   TextContent,
 } from '@a-little-world/little-world-design-system';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 

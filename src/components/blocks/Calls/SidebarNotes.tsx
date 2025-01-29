@@ -52,7 +52,7 @@ export function SidebarNotes() {
         if (response.error) setInitialData(null);
         else setInitialData(response);
       })
-      .catch(error => {
+      .catch(() => {
         console.log('error occured while fetching notes');
       });
     setInitialDataFetch(false);

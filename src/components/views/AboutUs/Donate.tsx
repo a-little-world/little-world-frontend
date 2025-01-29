@@ -1,10 +1,7 @@
 import {
   Card,
-  ContentTypes,
   Text,
-  TextContent,
   TextTypes,
-  WomanOnRocketImage,
 } from '@a-little-world/little-world-design-system';
 import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
