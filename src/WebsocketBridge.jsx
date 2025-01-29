@@ -2,13 +2,17 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
+import './App.css';
 import {
-  CORE_WS_PATH, CORE_WS_SHEME, IS_CAPACITOR_BUILD, BACKEND_URL,
+  BACKEND_URL,
+  CORE_WS_PATH,
+  CORE_WS_SHEME,
+  IS_CAPACITOR_BUILD,
 } from './ENVIRONMENT';
 
-import './App.css';
-
-const SOCKET_URL = IS_CAPACITOR_BUILD ? (CORE_WS_SHEME + BACKEND_URL.split('//').pop() + CORE_WS_PATH) : (CORE_WS_SHEME + window.location.host + CORE_WS_PATH);
+const SOCKET_URL = IS_CAPACITOR_BUILD
+  ? CORE_WS_SHEME + BACKEND_URL.split('//').pop() + CORE_WS_PATH
+  : CORE_WS_SHEME + window.location.host + CORE_WS_PATH;
 
 const WebsocketBridge = () => {
   /**
@@ -20,16 +24,16 @@ const WebsocketBridge = () => {
    * } --> this will triger a simple redux dispatch in the frontend
    */
   const dispatch = useDispatch();
-  const [socketUrl, setSocketUrl] = useState(SOCKET_URL);
-  const [messageHistory, setMessageHistory] = useState([]);
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
-    shouldReconnect: (closeEvent) => true,
-    reconnectAttempts: 10
+  const [socketUrl] = useState(SOCKET_URL);
+  const [, setMessageHistory] = useState([]);
+  const { lastMessage, readyState } = useWebSocket(socketUrl, {
+    shouldReconnect: () => true,
+    reconnectAttempts: 10,
   });
 
   useEffect(() => {
     if (lastMessage !== null) {
-      setMessageHistory((prev) => prev.concat(lastMessage));
+      setMessageHistory(prev => prev.concat(lastMessage));
       const message = JSON.parse(lastMessage.data);
       console.log('CORE SOCKET:', message);
       try {

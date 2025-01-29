@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import App, { InitializeDux } from './App';
-import { DEVELOPMENT, IS_CAPACITOR_BUILD } from './ENVIRONMENT';
+import { DEVELOPMENT } from './ENVIRONMENT';
 import store from './app/store.ts';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
@@ -12,7 +12,6 @@ import reportWebVitals from './reportWebVitals';
 import { Root } from './router';
 
 const isDevelopment = DEVELOPMENT;
-const isCapacitor = IS_CAPACITOR_BUILD || false;
 
 let root;
 

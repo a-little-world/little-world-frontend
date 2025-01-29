@@ -6,9 +6,9 @@ import {
 import { isEmpty } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
+import { useSelector } from '../../hooks/index.ts';
 import ProfileImage from '../atoms/ProfileImage';
 
 const ProfileInfo = styled.div`
@@ -110,26 +110,24 @@ function NotificationPanel() {
         {isEmpty(notifications?.unread?.items) ? (
           <Text center>{t('notifications.none')}</Text>
         ) : (
-          notifications?.unread?.items.map(
-            ({ hash, type, title, created_at }) => (
-              <Notification key={hash} className="notification-item">
-                <CalendarIcon
-                  circular
-                  label="appointment notification icon"
-                  labelId={`${hash  }appointment_notification`}
-                  backgroundColor={theme.color.surface.message}
-                  borderColor={theme.color.surface.message}
-                  color={theme.color.text.highlight}
-                  width="24"
-                  height="24"
-                />
-                <Info>
-                  <Text type={TextTypes.Body5}>{title}</Text>
-                  <Time type={TextTypes.Body6}>{created_at}</Time>
-                </Info>
-              </Notification>
-            ),
-          )
+          notifications?.unread?.items.map(({ hash, title, created_at }) => (
+            <Notification key={hash} className="notification-item">
+              <CalendarIcon
+                circular
+                label="appointment notification icon"
+                labelId={`${hash}appointment_notification`}
+                backgroundColor={theme.color.surface.message}
+                borderColor={theme.color.surface.message}
+                color={theme.color.text.highlight}
+                width="24"
+                height="24"
+              />
+              <Info>
+                <Text type={TextTypes.Body5}>{title}</Text>
+                <Time type={TextTypes.Body6}>{created_at}</Time>
+              </Info>
+            </Notification>
+          ))
         )}
       </NotificationList>
       {/* <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>

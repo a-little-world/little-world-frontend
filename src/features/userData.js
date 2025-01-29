@@ -1,4 +1,4 @@
-import { createSelector, createSlice, current } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { isEmpty, some, uniqBy } from 'lodash';
 
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../routes.ts';
@@ -227,7 +227,7 @@ export const userDataSlice = createSlice({
       };
     },
     markChatMessagesRead: (state, action) => {
-      const { chatId, userId, actorIsSelf = false } = action.payload;
+      const { chatId, userId } = action.payload;
 
       if (chatId in state.messages) {
         state.messages[chatId].results = state.messages[chatId]?.results.map(
@@ -358,10 +358,7 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 export const postArchieveQuestion =
   (card, archive = true) =>
   async dispatch => {
-    const result = await questionsDuringCall.archieveQuestion(
-      card?.uuid,
-      archive,
-    );
+    await questionsDuringCall.archieveQuestion(card?.uuid, archive);
     dispatch(
       switchQuestionCategory({
         card,
