@@ -1,53 +1,106 @@
 import { useCallback, useState } from 'react';
 
-type ModalTypes = {
-  NONE: { id: 'NONE'; priority: 0 };
-  INCOMING_CALL: { id: 'INCOMING_CALL'; priority: 4 };
-  CALL_SETUP: { id: 'CALL_SETUP'; priority: 3 };
-  MATCH: { id: 'MATCH'; priority: 2 };
-  POST_CALL_SURVEY: { id: 'POST_CALL_SURVEY'; priority: 1 };
-};
+type ModalTypeKey =
+  | 'NONE'
+  | 'INCOMING_CALL'
+  | 'CALL_SETUP'
+  | 'MATCH'
+  | 'POST_CALL_SURVEY';
 
-export const ModalType: ModalTypes = {
-  NONE: { id: 'NONE', priority: 0 },
-  INCOMING_CALL: { id: 'INCOMING_CALL', priority: 4 },
-  CALL_SETUP: { id: 'CALL_SETUP', priority: 3 },
-  MATCH: { id: 'MATCH', priority: 2 },
-  POST_CALL_SURVEY: { id: 'POST_CALL_SURVEY', priority: 1 },
+interface ModalConfig {
+  id: ModalTypeKey;
+  priority: number;
+  closeOnOpen?: ModalTypeKey[]; // modal types that should be closed when modal opens
+}
+
+export const ModalTypes: Record<ModalTypeKey, ModalConfig> = {
+  NONE: {
+    id: 'NONE',
+    priority: 0,
+  },
+  INCOMING_CALL: {
+    id: 'INCOMING_CALL',
+    priority: 4,
+    closeOnOpen: ['CALL_SETUP'],
+  },
+  CALL_SETUP: {
+    id: 'CALL_SETUP',
+    priority: 3,
+  },
+  MATCH: {
+    id: 'MATCH',
+    priority: 2,
+  },
+  POST_CALL_SURVEY: {
+    id: 'POST_CALL_SURVEY',
+    priority: 1,
+  },
 } as const;
 
-type ModalId = (typeof ModalType)[keyof typeof ModalType]['id'];
+interface UseModalManagerReturn {
+  openModal: (modalType: ModalTypeKey) => void;
+  closeModal: () => void;
+  isModalOpen: (modalType: ModalTypeKey) => boolean;
+  removeModals: (modalTypes: ModalTypeKey[]) => void;
+}
 
-const useModalManager = () => {
-  const [activeModal, setActiveModal] = useState<ModalId>(ModalType.NONE.id);
-  const [modalQueue, setModalQueue] = useState<ModalId[]>([]);
+const useModalManager = (): UseModalManagerReturn => {
+  const [activeModal, setActiveModal] = useState<ModalTypeKey>(
+    ModalTypes.NONE.id,
+  );
+  const [modalQueue, setModalQueue] = useState<ModalTypeKey[]>([]);
 
-  const getModalPriority = (modalType: ModalId): number => {
-    const modal = Object.values(ModalType).find(m => m.id === modalType);
-    return modal?.priority || 0;
-  };
+  const getModalPriority = (modalType: ModalTypeKey): number =>
+    ModalTypes[modalType]?.priority ?? 0;
+
+  // Remove specific modals from queue
+  const removeModals = useCallback(
+    (modalTypes: ModalTypeKey[]) => {
+      setModalQueue(prev => prev.filter(modal => !modalTypes.includes(modal)));
+
+      // If active modal needs to be closed, process the queue
+      if (modalTypes.includes(activeModal)) {
+        if (modalQueue.length > 0) {
+          const filteredQueue = modalQueue.filter(
+            modal => !modalTypes.includes(modal),
+          );
+          const sortedQueue = [...filteredQueue].sort(
+            (a, b) => getModalPriority(b) - getModalPriority(a),
+          );
+          setActiveModal(sortedQueue[0]);
+          setModalQueue(sortedQueue.slice(1));
+        } else {
+          setActiveModal(ModalTypes.NONE.id);
+        }
+      }
+    },
+    [activeModal, modalQueue],
+  );
 
   const openModal = useCallback(
-    (modalType: ModalId) => {
+    (modalType: ModalTypeKey) => {
+      // First handle any modals that need to be closed
+      const modalsToClose = ModalTypes[modalType].closeOnOpen ?? [];
+      if (modalsToClose.length > 0) {
+        removeModals(modalsToClose);
+      }
+
       const newModalPriority = getModalPriority(modalType);
       const currentModalPriority = getModalPriority(activeModal);
-
+      // If new modal has higher priority, add current to queue and show new
       if (newModalPriority > currentModalPriority) {
-        // If new modal has higher priority, add current to queue and show new
-        if (activeModal !== ModalType.NONE.id) {
+        if (activeModal !== ModalTypes.NONE.id) {
           setModalQueue(prev => [...prev, activeModal]);
         }
         setActiveModal(modalType);
-      } else if (newModalPriority < currentModalPriority) {
         // If new modal has lower priority, add to queue
+      } else if (newModalPriority < currentModalPriority) {
         setModalQueue(prev => [...prev, modalType]);
-      }
-      // If same priority, new modal replaces current one
-      else {
+      } else {
         setActiveModal(modalType);
       }
     },
-    [activeModal],
+    [activeModal, removeModals],
   );
 
   const closeModal = useCallback(() => {
@@ -59,16 +112,15 @@ const useModalManager = () => {
       setActiveModal(sortedQueue[0]);
       setModalQueue(sortedQueue.slice(1));
     } else {
-      setActiveModal(ModalType.NONE.id);
+      setActiveModal(ModalTypes.NONE.id);
     }
   }, [modalQueue]);
 
   const isModalOpen = useCallback(
-    (modalType: ModalId) => activeModal === modalType,
+    (modalType: ModalTypeKey): boolean => activeModal === modalType,
     [activeModal],
   );
 
-  return { openModal, closeModal, isModalOpen };
+  return { openModal, closeModal, isModalOpen, removeModals };
 };
-
 export default useModalManager;

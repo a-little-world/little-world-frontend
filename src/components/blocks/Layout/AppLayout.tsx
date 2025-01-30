@@ -12,7 +12,7 @@ import {
   setMatchRejected,
 } from '../../../features/userData.js';
 import { useSelector } from '../../../hooks/index.ts';
-import useModalManager, { ModalType } from '../../../hooks/useModalManager.ts';
+import useModalManager, { ModalTypes } from '../../../hooks/useModalManager.ts';
 import '../../../main.css';
 import CallSetup from '../Calls/CallSetup.tsx';
 import IncomingCall from '../Calls/IncomingCall.tsx';
@@ -20,7 +20,6 @@ import { MatchCardComponent } from '../Cards/MatchCard.tsx';
 import MobileNavBar from '../MobileNavBar.jsx';
 import PostCallSurvey from '../PostCallSurvey/PostCallSurvey.tsx';
 import Sidebar from '../Sidebar.jsx';
-import TranslationTool from '../TranslationTool/TranslationTool.tsx';
 
 const isViewportHeight = ['chat'];
 
@@ -109,16 +108,14 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (activeCallRoom?.uuid) {
-      // close callSetup modal if open
-      if (isModalOpen(ModalType.CALL_SETUP.id)) closeModal();
-      openModal(ModalType.INCOMING_CALL.id);
-    } else if (isModalOpen(ModalType.INCOMING_CALL.id)) closeModal();
+      openModal(ModalTypes.INCOMING_CALL.id);
+    } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
   }, [activeCallRoom?.uuid, openModal, closeModal, isModalOpen]);
 
   useEffect(() => {
     if (callSetup) {
-      openModal(ModalType.CALL_SETUP.id);
-    } else if (isModalOpen(ModalType.CALL_SETUP.id)) closeModal();
+      openModal(ModalTypes.CALL_SETUP.id);
+    } else if (isModalOpen(ModalTypes.CALL_SETUP.id)) closeModal();
   }, [callSetup, openModal, isModalOpen, closeModal]);
 
   useEffect(() => {
@@ -129,14 +126,14 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     );
 
     if (shouldShowMatchModal) {
-      openModal(ModalType.MATCH.id);
-    } else if (isModalOpen(ModalType.MATCH.id)) closeModal();
+      openModal(ModalTypes.MATCH.id);
+    } else if (isModalOpen(ModalTypes.MATCH.id)) closeModal();
   }, [matches, matchRejected]); // eslint-disable-line
 
   useEffect(() => {
     if (postCallSurvey) {
-      openModal(ModalType.POST_CALL_SURVEY.id);
-    } else if (isModalOpen(ModalType.POST_CALL_SURVEY.id)) closeModal();
+      openModal(ModalTypes.POST_CALL_SURVEY.id);
+    } else if (isModalOpen(ModalTypes.POST_CALL_SURVEY.id)) closeModal();
   }, [postCallSurvey, openModal, isModalOpen, closeModal]);
 
   useEffect(() => {
@@ -197,18 +194,18 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
       <Content $isVH={isVH}>{children || <Outlet />}</Content>
 
-      <Modal open={isModalOpen(ModalType.CALL_SETUP.id)} locked>
+      <Modal open={isModalOpen(ModalTypes.CALL_SETUP.id)} locked>
         <CallSetup onClose={closeModal} userPk={callSetup?.userId} />
       </Modal>
 
       <Modal
-        open={isModalOpen(ModalType.POST_CALL_SURVEY.id)}
+        open={isModalOpen(ModalTypes.POST_CALL_SURVEY.id)}
         onClose={submitPostCallSurvey}
       >
         <PostCallSurvey onSubmit={submitPostCallSurvey} />
       </Modal>
       <Modal
-        open={isModalOpen(ModalType.INCOMING_CALL.id)}
+        open={isModalOpen(ModalTypes.INCOMING_CALL.id)}
         onClose={onRejectCall}
       >
         <IncomingCall
@@ -221,7 +218,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       </Modal>
 
       <Modal
-        open={isModalOpen(ModalType.MATCH.id)}
+        open={isModalOpen(ModalTypes.MATCH.id)}
         onClose={closeMatchModal}
         locked={showNewMatch}
       >
