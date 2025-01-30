@@ -110,13 +110,13 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     if (activeCallRoom?.uuid) {
       openModal(ModalTypes.INCOMING_CALL.id);
     } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
-  }, [activeCallRoom?.uuid, openModal, closeModal, isModalOpen]);
+  }, [activeCallRoom?.uuid]);
 
   useEffect(() => {
     if (callSetup) {
       openModal(ModalTypes.CALL_SETUP.id);
     } else if (isModalOpen(ModalTypes.CALL_SETUP.id)) closeModal();
-  }, [callSetup, openModal, isModalOpen, closeModal]);
+  }, [callSetup]);
 
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
@@ -134,7 +134,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     if (postCallSurvey) {
       openModal(ModalTypes.POST_CALL_SURVEY.id);
     } else if (isModalOpen(ModalTypes.POST_CALL_SURVEY.id)) closeModal();
-  }, [postCallSurvey, openModal, isModalOpen, closeModal]);
+  }, [postCallSurvey]);
 
   useEffect(() => {
     if (!callSetup && !activeCall) {
