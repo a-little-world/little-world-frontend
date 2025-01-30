@@ -86,6 +86,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const matches = useSelector(state => state.userData.matches);
   const matchRejected = useSelector(state => state.userData.matchRejected);
   const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
+  const activeCall = activeCallRooms[0];
   const callSetup = useSelector(state => state.userData.callSetup);
   const postCallSurvey = useSelector(state => state.userData.postCallSurvey);
   const activeCall = useSelector(state => state.userData.activeCall);
@@ -106,16 +107,17 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [location]);
 
   useEffect(() => {
-    if (activeCallRooms[0]?.uuid) {
+    console.log('useEffect active call id', activeCall?.uuid)
+    if (activeCall?.uuid) {
       openModal(ModalType.INCOMING_CALL.id);
     } else if (isModalOpen(ModalType.INCOMING_CALL.id)) closeModal();
-  }, [activeCallRooms, openModal, closeModal]);
+  }, [activeCall?.uuid, openModal, closeModal, isModalOpen]);
 
   useEffect(() => {
     if (callSetup) {
       openModal(ModalType.CALL_SETUP.id);
-    }
-  }, [callSetup, openModal]);
+    } else if (isModalOpen(ModalType.CALL_SETUP.id)) closeModal();
+  }, [callSetup, openModal, isModalOpen, closeModal]);
 
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
@@ -133,7 +135,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     if (postCallSurvey) {
       openModal(ModalType.POST_CALL_SURVEY.id);
     } else if (isModalOpen(ModalType.POST_CALL_SURVEY.id)) closeModal();
-  }, [postCallSurvey, openModal]);
+  }, [postCallSurvey, openModal, isModalOpen, closeModal]);
 
   useEffect(() => {
     if (!callSetup && !activeCall) {
@@ -209,8 +211,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       >
         <IncomingCall
           matchesInfo={dashboardVisibleMatches}
-          userPk={activeCallRooms[0]?.partner.id}
-          userProfile={activeCallRooms[0]?.partner}
+          userPk={activeCall?.partner.id}
+          userProfile={activeCall?.partner}
           onAnswerCall={onAnswerCall}
           onRejectCall={onRejectCall}
         />
