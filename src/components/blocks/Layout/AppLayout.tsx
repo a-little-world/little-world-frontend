@@ -20,6 +20,7 @@ import { MatchCardComponent } from '../Cards/MatchCard.tsx';
 import MobileNavBar from '../MobileNavBar.jsx';
 import PostCallSurvey from '../PostCallSurvey/PostCallSurvey.tsx';
 import Sidebar from '../Sidebar.jsx';
+import TranslationTool from '../TranslationTool/TranslationTool.tsx';
 
 const isViewportHeight = ['chat'];
 
@@ -107,7 +108,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [location]);
 
   useEffect(() => {
-    console.log('useEffect active call id', activeCallRoom?.uuid);
     if (activeCallRoom?.uuid) {
       openModal(ModalType.INCOMING_CALL.id);
     } else if (isModalOpen(ModalType.INCOMING_CALL.id)) closeModal();

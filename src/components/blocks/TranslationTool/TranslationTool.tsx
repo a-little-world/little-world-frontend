@@ -31,6 +31,7 @@ function TranslationTool({ className }: { className?: string }) {
   };
 
   const onError = e => {
+    console.log({ e });
     setError(e.message ? t(e.message) : t('validation.generic_try_again'));
   };
 
