@@ -112,7 +112,7 @@ function VideoCall() {
   const chat = useSelector(state =>
     getChatByPartnerId(state.userData.chats, userId),
   );
-
+  console.log({ userId, chat });
   const onChatToggle = () => {
     if (isFullScreen) {
       setShowChat(true);

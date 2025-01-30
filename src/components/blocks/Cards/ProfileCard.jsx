@@ -169,7 +169,7 @@ function ProfileCard({
   const dispatch = useDispatch();
   const theme = useTheme();
   const usesAvatar = profile.image_type === 'avatar';
-
+  console.log({ chatId });
   return (
     <StyledCard
       width={CardSizes.Small}

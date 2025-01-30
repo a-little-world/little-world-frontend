@@ -106,10 +106,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [location]);
 
   useEffect(() => {
-    if (activeCallRooms[0]?.uuid && !callSetup) {
+    if (activeCallRooms[0]?.uuid) {
       openModal(ModalType.INCOMING_CALL.id);
-    }
-  }, [activeCallRooms, callSetup, openModal]);
+    } else if (isModalOpen(ModalType.INCOMING_CALL.id)) closeModal();
+  }, [activeCallRooms, openModal, closeModal]);
 
   useEffect(() => {
     if (callSetup) {
@@ -132,7 +132,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (postCallSurvey) {
       openModal(ModalType.POST_CALL_SURVEY.id);
-    }
+    } else if (isModalOpen(ModalType.POST_CALL_SURVEY.id)) closeModal();
   }, [postCallSurvey, openModal]);
 
   useEffect(() => {
