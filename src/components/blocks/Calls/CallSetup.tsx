@@ -160,7 +160,6 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     requestVideoAccessToken({
       partnerId: userPk,
       onSuccess: res => {
-        console.log('inserting chat', { res });
         dispatch(insertChat(res.chat));
         setAuthData({
           token: res.token,
