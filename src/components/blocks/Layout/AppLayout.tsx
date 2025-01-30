@@ -86,10 +86,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const matches = useSelector(state => state.userData.matches);
   const matchRejected = useSelector(state => state.userData.matchRejected);
   const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
-  const activeCall = activeCallRooms[0];
+  const activeCallRoom = activeCallRooms[0];
   const callSetup = useSelector(state => state.userData.callSetup);
   const postCallSurvey = useSelector(state => state.userData.postCallSurvey);
-  const activeCall = useSelector(state => state.userData.activeCall);
+  const activeCall = useSelector(state => state.userData.activeCall); // do we need this?
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
@@ -107,11 +107,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [location]);
 
   useEffect(() => {
-    console.log('useEffect active call id', activeCall?.uuid)
-    if (activeCall?.uuid) {
+    console.log('useEffect active call id', activeCallRoom?.uuid);
+    if (activeCallRoom?.uuid) {
       openModal(ModalType.INCOMING_CALL.id);
     } else if (isModalOpen(ModalType.INCOMING_CALL.id)) closeModal();
-  }, [activeCall?.uuid, openModal, closeModal, isModalOpen]);
+  }, [activeCallRoom?.uuid, openModal, closeModal, isModalOpen]);
 
   useEffect(() => {
     if (callSetup) {
@@ -144,12 +144,12 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [callSetup, activeCall]);
 
   const onAnswerCall = () => {
-    dispatch(initCallSetup({ userId: activeCallRooms[0]?.partner?.id }));
+    dispatch(initCallSetup({ userId: activeCallRoom?.partner?.id }));
     closeModal();
   };
 
   const onRejectCall = () => {
-    dispatch(blockIncomingCall({ userId: activeCallRooms[0]?.partner?.id }));
+    dispatch(blockIncomingCall({ userId: activeCallRoom?.partner?.id }));
     closeModal();
   };
 
@@ -211,8 +211,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       >
         <IncomingCall
           matchesInfo={dashboardVisibleMatches}
-          userPk={activeCall?.partner.id}
-          userProfile={activeCall?.partner}
+          userPk={activeCallRoom?.partner.id}
+          userProfile={activeCallRoom?.partner}
           onAnswerCall={onAnswerCall}
           onRejectCall={onRejectCall}
         />
