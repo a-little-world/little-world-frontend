@@ -1,7 +1,4 @@
-import Cookies from 'js-cookie';
-
-import { BACKEND_URL } from '../ENVIRONMENT.js';
-import { formatApiError } from './helpers.ts';
+import { apiFetch } from './helpers.ts';
 
 export const LANGUAGES = [
   {
@@ -564,24 +561,16 @@ export const requestTranslation = async ({
   onSuccess: (response: any) => void;
 }) => {
   try {
-    // If source lang is obmitted the API will auto-detect it
-    const response = await fetch(`${BACKEND_URL}/api/googletrans/translate/`, {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const result = await apiFetch(`/api/googletrans/translate/`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: {
         target: targetLang,
         source: sourceLang,
         text,
-      }),
-      method: 'POST',
+      },
     });
-
-    const responseBody = await response?.json();
-    if (response.ok) onSuccess(responseBody);
-    throw formatApiError(responseBody, response);
+    onSuccess(result);
   } catch (error) {
     onError(error);
   }

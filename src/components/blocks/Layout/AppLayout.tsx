@@ -20,6 +20,7 @@ import { MatchCardComponent } from '../Cards/MatchCard.tsx';
 import MobileNavBar from '../MobileNavBar.jsx';
 import PostCallSurvey from '../PostCallSurvey/PostCallSurvey.tsx';
 import Sidebar from '../Sidebar.jsx';
+import TranslationTool from '../TranslationTool/TranslationTool.tsx';
 
 const isViewportHeight = ['chat'];
 
@@ -86,9 +87,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const matches = useSelector(state => state.userData.matches);
   const matchRejected = useSelector(state => state.userData.matchRejected);
   const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
+  const activeCallRoom = activeCallRooms[0];
   const callSetup = useSelector(state => state.userData.callSetup);
   const postCallSurvey = useSelector(state => state.userData.postCallSurvey);
-  const activeCall = useSelector(state => state.userData.activeCall);
+  const activeCall = useSelector(state => state.userData.activeCall); // do we need this?
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
@@ -106,16 +108,16 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [location]);
 
   useEffect(() => {
-    if (activeCallRooms[0]?.uuid && !callSetup) {
+    if (activeCallRoom?.uuid) {
       openModal(ModalType.INCOMING_CALL.id);
-    }
-  }, [activeCallRooms, callSetup, openModal]);
+    } else if (isModalOpen(ModalType.INCOMING_CALL.id)) closeModal();
+  }, [activeCallRoom?.uuid, openModal, closeModal, isModalOpen]);
 
   useEffect(() => {
     if (callSetup) {
       openModal(ModalType.CALL_SETUP.id);
-    }
-  }, [callSetup, openModal]);
+    } else if (isModalOpen(ModalType.CALL_SETUP.id)) closeModal();
+  }, [callSetup, openModal, isModalOpen, closeModal]);
 
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
@@ -132,8 +134,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (postCallSurvey) {
       openModal(ModalType.POST_CALL_SURVEY.id);
-    }
-  }, [postCallSurvey, openModal]);
+    } else if (isModalOpen(ModalType.POST_CALL_SURVEY.id)) closeModal();
+  }, [postCallSurvey, openModal, isModalOpen, closeModal]);
 
   useEffect(() => {
     if (!callSetup && !activeCall) {
@@ -142,12 +144,12 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [callSetup, activeCall]);
 
   const onAnswerCall = () => {
-    dispatch(initCallSetup({ userId: activeCallRooms[0]?.partner?.id }));
+    dispatch(initCallSetup({ userId: activeCallRoom?.partner?.id }));
     closeModal();
   };
 
   const onRejectCall = () => {
-    dispatch(blockIncomingCall({ userId: activeCallRooms[0]?.partner?.id }));
+    dispatch(blockIncomingCall({ userId: activeCallRoom?.partner?.id }));
     closeModal();
   };
 
@@ -209,8 +211,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       >
         <IncomingCall
           matchesInfo={dashboardVisibleMatches}
-          userPk={activeCallRooms[0]?.partner.id}
-          userProfile={activeCallRooms[0]?.partner}
+          userPk={activeCallRoom?.partner.id}
+          userProfile={activeCallRoom?.partner}
           onAnswerCall={onAnswerCall}
           onRejectCall={onRejectCall}
         />
