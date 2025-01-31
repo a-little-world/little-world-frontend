@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 type ModalTypeKey =
   | 'NONE'
@@ -53,25 +53,29 @@ const useModalManager = (): UseModalManagerReturn => {
     ModalTypes[modalType]?.priority ?? 0;
 
   const openModal = (modalType: ModalTypeKey) => {
-    // First handle any modals that need to be closed
-    const modalsToClose = ModalTypes[modalType].closeOnOpen ?? [];
-    if (modalsToClose.length > 0) {
-      setModalQueue(prev =>
-        prev.filter(modal => !modalsToClose.includes(modal)),
-      );
-    }
-
     const newModalPriority = getModalPriority(modalType);
     const currentModalPriority = getModalPriority(activeModal);
+    const modalsToClose = ModalTypes[modalType].closeOnOpen ?? [];
+
     // If new modal has higher priority, add current to queue and show new
     if (newModalPriority > currentModalPriority) {
       if (activeModal !== ModalTypes.NONE.id) {
-        setModalQueue(prev => [...prev, activeModal]);
+        setModalQueue(prev => {
+          const newQueue = [...prev, activeModal];
+          return modalsToClose.length
+            ? newQueue.filter(modal => !modalsToClose.includes(modal))
+            : newQueue;
+        });
       }
       setActiveModal(modalType);
       // If new modal has lower priority, add to queue
     } else if (newModalPriority < currentModalPriority) {
-      setModalQueue(prev => [...prev, modalType]);
+      setModalQueue(prev => [
+        ...(modalsToClose.length
+          ? prev.filter(modal => !modalsToClose.includes(modal))
+          : prev),
+        modalType,
+      ]);
     } else {
       setActiveModal(modalType);
     }
