@@ -27,7 +27,7 @@
   "btn_save": "Speichern",
   "call.leave_btn": "Gespräch beenden",
   "call.waiting_for_partner": "Warten auf {{name}}...",
-  "call.partner.disconnected": "{{name}} hat den Anruf verlassen",
+  "call.partner_disconnected": "{{name}} hat den Anruf verlassen",
   "change_email.back_btn": "Abbrechen",
   "change_email.description": "Bitte gib deine neue E-Mail Adresse ein.",
   "change_email.input_label": "E-mail",

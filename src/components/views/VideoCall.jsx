@@ -9,7 +9,7 @@ import {
 import '@livekit/components-styles';
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -95,7 +95,7 @@ function MyVideoConference({
           <Text>
             {t(
               otherUserDisconnected
-                ? 'call.partner.disconnected'
+                ? 'call.partner_disconnected'
                 : 'call.waiting_for_partner',
               { name: partnerName },
             )}
