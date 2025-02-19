@@ -1,15 +1,15 @@
-import {
-  CalendarIcon,
-  Text,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
+import { CalendarIcon, Text, TextTypes } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
+
+
+import { formatTimeDistance } from '../../helpers/date.ts';
 import { useSelector } from '../../hooks/index.ts';
 import ProfileImage from '../atoms/ProfileImage';
+
 
 const ProfileInfo = styled.div`
   display: flex;
@@ -83,7 +83,7 @@ const Time = styled(Text)`
 `;
 
 function NotificationPanel() {
-  const { t } = useTranslation();
+  const { t, i18n: {language} } = useTranslation();
   const theme = useTheme();
 
   const user = useSelector(state => state.userData.user);
@@ -124,7 +124,7 @@ function NotificationPanel() {
               />
               <Info>
                 <Text type={TextTypes.Body5}>{title}</Text>
-                <Time type={TextTypes.Body6}>{created_at}</Time>
+                <Time type={TextTypes.Body6}>{formatTimeDistance(new Date(created_at), new Date(), language)}</Time>
               </Info>
             </Notification>
           ))
