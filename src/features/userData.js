@@ -106,6 +106,23 @@ export const userDataSlice = createSlice({
     addPostCallSurvey: (state, action) => {
       state.postCallSurvey = action.payload;
     },
+    addNotification: (state, action) => {
+      const notificationState = action.payload.state;
+      const notifications = state.notifications[notificationState];
+      notifications.items.unshift(action.payload);
+      notifications.items.sort((a, b) => new Date(b.created) - new Date(a.created));
+
+      const pageOverflow =
+        notifications.items.length - notifications.itemsPerPage;
+      if (pageOverflow > 0) {
+        notifications.items.splice(
+          notifications.itemsPerPage - 1,
+          pageOverflow,
+        );
+      }
+
+      notifications.totalItems += 1;
+    },
     updatePostCallSurvey: (state, action) => {
       state.postCallSurvey = {
         ...state.postCallSurvey,
