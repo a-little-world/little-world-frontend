@@ -1,5 +1,6 @@
 import {
   CalendarIcon,
+  Link,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -11,6 +12,7 @@ import styled, { css, useTheme } from 'styled-components';
 import { formatTimeDistance } from '../../helpers/date.ts';
 import { useSelector } from '../../hooks/index.ts';
 import ProfileImage from '../atoms/ProfileImage';
+import { getAppRoute, NOTIFICATIONS_ROUTE } from '../../routes.ts';
 
 const ProfileInfo = styled.div`
   display: flex;
@@ -114,9 +116,9 @@ function NotificationPanel() {
         </Text>
       </ProfileInfo>
       <Divider />
-      <Text tag="h3" type={TextTypes.Body4}>
+      <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
         {t('notifications.title')}
-      </Text>
+      </Link>
       <NotificationList>
         {isEmpty(notifications?.unread?.items) ? (
           <Text center>{t('notifications.none')}</Text>
@@ -149,9 +151,6 @@ function NotificationPanel() {
           ))
         )}
       </NotificationList>
-      {/* <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
-        {t('notifications.display_all')}
-      </Link> */}
     </Panel>
   );
 }
