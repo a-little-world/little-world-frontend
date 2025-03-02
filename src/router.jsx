@@ -310,14 +310,6 @@ const ROOT_ROUTES = [
     ),
   },
   {
-    path: getAppRoute(NOTIFICATIONS_ROUTE),
-    element: (
-      <FullAppLayout>
-        <Notifications />
-      </FullAppLayout>
-    ),
-  },
-  {
     path: getAppRoute(SETTINGS_ROUTE),
     element: (
       <FullAppLayout>
