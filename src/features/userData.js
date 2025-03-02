@@ -110,7 +110,9 @@ export const userDataSlice = createSlice({
       const notificationState = action.payload.state;
       const notifications = state.notifications[notificationState];
       notifications.items.unshift(action.payload);
-      notifications.items.sort((a, b) => new Date(b.created) - new Date(a.created));
+      notifications.items.sort(
+        (a, b) => new Date(b.created) - new Date(a.created),
+      );
 
       const pageOverflow =
         notifications.items.length - notifications.itemsPerPage;
@@ -122,6 +124,40 @@ export const userDataSlice = createSlice({
       }
 
       notifications.totalItems += 1;
+    },
+    updateNotificationUserData: (state, action) => {
+      const notification = action.payload;
+      let notificationExists = false;
+      Object.keys(state.notifications).forEach(notificationState => {
+        const notifications = state.notifications[notificationState].items;
+        const notificationCount = notifications.length;
+        state.notifications[notificationState].items = notifications.filter(
+          ({ id }) => id !== notification.id,
+        );
+        notificationExists ||=
+          notificationCount > state.notifications[notificationState].items.length;
+      });
+
+      // TODO: addNotification(state, action);
+      const notificationState = action.payload.state;
+      const notifications = state.notifications[notificationState];
+      notifications.items.unshift(action.payload);
+      notifications.items.sort(
+        (a, b) => new Date(b.created) - new Date(a.created),
+      );
+
+      const pageOverflow =
+        notifications.items.length - notifications.itemsPerPage;
+      if (pageOverflow > 0) {
+        notifications.items.splice(
+          notifications.itemsPerPage - 1,
+          pageOverflow,
+        );
+      }
+
+      if (!notificationExists) {
+        notifications.totalItems += 1;
+      }
     },
     updatePostCallSurvey: (state, action) => {
       state.postCallSurvey = {
@@ -314,6 +350,7 @@ export const userDataSlice = createSlice({
 export const {
   addMatch,
   addMessage,
+  addNotification,
   insertChat,
   blockIncomingCall,
   cancelCallSetup,
@@ -334,6 +371,7 @@ export const {
   updateMatch,
   updateMatchProfile,
   updateMessages,
+  updateNotificationUserData,
   updateProfile,
   updateSearchState,
   updateUser,

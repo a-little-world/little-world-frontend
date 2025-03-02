@@ -24,6 +24,22 @@ export async function updateNotification(
   }
 }
 
+export async function deleteNotification(
+  id: number,
+  onSuccess: (result: any) => void,
+  onError: (result: any) => void,
+) {
+  try {
+    const result = await apiFetch(`/api/notifications/${id}/delete`, {
+      method: 'DELETE',
+      useTagsOnly: true,
+    });
+    onSuccess(result);
+  } catch (error) {
+    onError(error);
+  }
+}
+
 export async function retrieveNotifications(
   state: NotificationState | 'all',
   page: number,
