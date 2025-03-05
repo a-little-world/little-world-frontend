@@ -7,22 +7,26 @@ import {
   ClockDashedIcon,
   ClockIcon,
   Loading,
+  MessageTypes,
+  StatusMessage,
   Text,
   TextTypes,
   TrashIcon,
 } from '@a-little-world/little-world-design-system';
 import { LoadingSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Loading/Loading';
 import { formatDistance } from 'date-fns';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
+import { createSearchParams, useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import CustomPagination from '../../CustomPagination.jsx';
 import {
   NotificationState,
+  NotificationStateFilter,
   deleteNotification,
-  retrieveNotifications,
+  fetchNotifications,
   updateNotification,
 } from '../../api/notification.ts';
 import { updateNotificationUserData } from '../../features/userData';
@@ -39,43 +43,34 @@ import {
   UnreadIndicator,
 } from './Notifications.styles.tsx';
 
+const PAGE_SIZE = 5;
+
 /* eslint-disable */
 function Notifications() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const [filter, setFilter] = useState<NotificationState | 'all'>(
-    NotificationState.UNREAD,
-  );
-  const [notifications, setNotifications] = useState([]);
-  const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
+  let [searchParams, setSearchParams] = useSearchParams();
+  const onPageChange = (newPage: number) => {
+    searchParams.set('page', String(newPage));
+    setSearchParams(searchParams);
+  };
+  const currentPage = isFinite(Number(searchParams.get('page')))
+    ? Number(searchParams.get('page'))
+    : 1;
+  const filter: NotificationStateFilter =
+    (searchParams.get('filter') as NotificationStateFilter) ?? 'all';
 
   const { data, error, isLoading, mutate } = useSWR(
-    currentPage <= totalPages
-      ? `/api/notifications?page=${currentPage}&includeUnread=${
-          filter === 'unread' || filter === 'all'
-        }&includeRead=${
-          filter === 'read' || filter === 'all'
-        }&includeArchived=${filter === 'archived' || filter === 'all'}`
-      : null,
-    fetcher =>
-      retrieveNotifications(
-        filter,
-        currentPage,
-        result => {
-          setNotifications(result.results);
-          setTotalPages(result.last_page);
-          return result;
-        },
-        onError,
-      ),
+    `/api/notifications?page_size=${PAGE_SIZE}&${createSearchParams(
+      searchParams,
+    )}`,
+    fetchNotifications,
     { revalidateOnFocus: false, keepPreviousData: true },
   );
 
-  const onPageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  const totalPages = data?.last_page ?? 1;
+  const notifications = data?.results ?? [];
 
   async function onArchive(id: number) {
     mutate(
@@ -104,9 +99,10 @@ function Notifications() {
     console.log(error);
   };
 
-  const changeFilter = (state: NotificationState | 'all') => {
-    setFilter(state);
-    setCurrentPage(1);
+  const changeFilter = (state: NotificationStateFilter) => {
+    searchParams.set('filter', state);
+    searchParams.set('page', String(1));
+    setSearchParams(searchParams);
   };
 
   return (
@@ -117,7 +113,7 @@ function Notifications() {
           onClick={() => changeFilter(NotificationState.UNREAD)}
           appearance={ButtonAppearance.Secondary}
           variation={ButtonVariations.Icon}
-          $isActive={filter === 'unread'}
+          $isActive={filter === NotificationState.UNREAD}
         >
           <ClockIcon
             labelId="clock_icon"
@@ -131,7 +127,7 @@ function Notifications() {
           onClick={() => changeFilter(NotificationState.READ)}
           appearance={ButtonAppearance.Secondary}
           variation={ButtonVariations.Icon}
-          $isActive={filter === 'read'}
+          $isActive={filter === NotificationState.READ}
         >
           <ClockDashedIcon
             labelId="clock_icon"
@@ -144,7 +140,7 @@ function Notifications() {
         <ToolbarButton
           onClick={() => changeFilter(NotificationState.ARCHIVED)}
           variation={ButtonVariations.Icon}
-          $isActive={filter === 'archived'}
+          $isActive={filter === NotificationState.ARCHIVED}
         >
           <ArchiveIcon
             labelId="archive_icon"
@@ -173,9 +169,8 @@ function Notifications() {
         <Loading size={LoadingSizes.Medium} />
       ) : (
         <Items>
-          {notifications
-            ?.filter(({ state }) => filter === 'all' || filter === state)
-            ?.map(({ id, state, title, description, created_at }, index) => {
+          {notifications?.map(
+            ({ id, state, title, description, created_at }, index) => {
               return (
                 <Notification key={id} $state={state} $highlight={!index}>
                   <Info>
@@ -223,7 +218,8 @@ function Notifications() {
                   </BottomContainer>
                 </Notification>
               );
-            })}
+            },
+          )}
         </Items>
       )}
       {!isLoading && totalPages > 1 && (
@@ -232,6 +228,11 @@ function Notifications() {
           totalPages={totalPages}
           onPageChange={onPageChange}
         ></CustomPagination>
+      )}
+      {error && (
+        <StatusMessage $type={MessageTypes.Error} $visible>
+          {JSON.stringify(error)}
+        </StatusMessage>
       )}
     </>
   );
