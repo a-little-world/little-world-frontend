@@ -14,6 +14,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import Logo from '../atoms/Logo.tsx';
+import NotificationBell from '../atoms/NotificationBell.tsx';
 import UnreadDot from '../atoms/UnreadDot.tsx';
 
 const LogoContainer = styled.div`
@@ -47,6 +48,10 @@ const MobileHeader = styled.div`
   `};
 `;
 
+const StyledNotificationBell = styled(NotificationBell)`
+  margin-left: auto;
+`;
+
 const specialPaths = ['chat', 'profile'];
 
 function MobileNavBar({ setShowSidebarMobile }) {
@@ -55,7 +60,8 @@ function MobileNavBar({ setShowSidebarMobile }) {
   const { userId } = useParams();
   const paths = location.pathname.split('/');
   // routes use different parts of the path to determine the header
-  let key =    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) || 'home';
+  let key =
+    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) || 'home';
 
   const isHome = key === 'home';
   if (key === 'profile' && userId) {
@@ -80,6 +86,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
           </Title>
         )}
       </LogoContainer>
+      <StyledNotificationBell />
       <Button
         type="button"
         variation={ButtonVariations.Icon}

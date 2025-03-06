@@ -28,6 +28,7 @@ import {
   deleteNotification,
   fetchNotifications,
   updateNotification,
+  updateUnreadNotificationCount,
 } from '../../api/notification.ts';
 import { updateNotificationUserData } from '../../features/userData';
 import PageHeader from '../atoms/PageHeader.tsx';
@@ -93,6 +94,7 @@ function Notifications() {
 
   const onNotificationUpdated = (notification: any) => {
     dispatch(updateNotificationUserData(notification));
+    updateUnreadNotificationCount();
   };
 
   const onError = (error: any) => {
