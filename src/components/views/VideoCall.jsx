@@ -9,7 +9,7 @@ import {
 import '@livekit/components-styles';
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -50,6 +50,14 @@ function MyVideoConference({
     [{ source: Track.Source.Camera, withPlaceholder: true }],
     { onlySubscribed: true },
   );
+  const [currentParticipants, setCurrentParticipants] = useState(1);
+  const [otherUserDisconnected, setOtherUserDisconnected] = useState(false);
+
+  useEffect(() => {
+    if (tracks.length === 1 && currentParticipants > 1)
+      setOtherUserDisconnected(true);
+    setCurrentParticipants(tracks.length);
+  }, [tracks.length]);
 
   const { t } = useTranslation();
   const placeholders = {};
@@ -84,7 +92,14 @@ function MyVideoConference({
             imageType={partnerImageType}
             size="medium"
           />
-          <Text>{t('call.waiting_for_partner', { name: partnerName })}</Text>
+          <Text>
+            {t(
+              otherUserDisconnected
+                ? 'call.partner_disconnected'
+                : 'call.waiting_for_partner',
+              { name: partnerName },
+            )}
+          </Text>
         </WaitingTile>
       )}
     </Videos>
