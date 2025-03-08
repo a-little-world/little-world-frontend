@@ -184,7 +184,14 @@ function Notifications() {
                     transition={{ type: 'spring', bounce: 0.2 }}
                     key={id}
                   >
-                    <Notification key={id} $state={state} $highlight={!index}>
+                    <Notification
+                      key={id}
+                      $state={state}
+                      $highlight={
+                        filter !== NotificationState.UNREAD &&
+                        state === NotificationState.UNREAD
+                      }
+                    >
                       <Info>
                         <Text type={TextTypes.Heading6}>{title}</Text>
                         <Text>{description}</Text>
