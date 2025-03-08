@@ -15,6 +15,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { LoadingSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Loading/Loading';
 import { formatDistance } from 'date-fns';
+import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
@@ -51,7 +52,8 @@ function Notifications() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const onPageChange = (newPage: number) => {
     searchParams.set('page', String(newPage));
     setSearchParams(searchParams);
@@ -167,64 +169,74 @@ function Notifications() {
         </ToolbarButton>
       </Toolbar>
 
-      {isLoading ? (
+      {isLoading && (notifications?.length ?? 0) == 0 ? (
         <Loading size={LoadingSizes.Medium} />
       ) : (
         <Items>
-          {notifications?.map(
-            ({ id, state, title, description, created_at }, index) => {
-              return (
-                <Notification key={id} $state={state} $highlight={!index}>
-                  <Info>
-                    <Text type={TextTypes.Heading6}>{title}</Text>
-                    <Text>{description}</Text>
-                  </Info>
-                  <BottomContainer>
-                    <Options>
-                      {state === 'unread' && <UnreadIndicator />}
-                      {state !== 'archived' && (
-                        <Button
-                          variation={ButtonVariations.Icon}
-                          onClick={() => onArchive(id)}
-                        >
-                          <ArchiveIcon
-                            labelId="archive_icon"
-                            label="archive icon"
-                            width="16"
-                            height="16"
-                          />
-                        </Button>
-                      )}
-                      {state === 'archived' && (
-                        <Button
-                          variation={ButtonVariations.Icon}
-                          onClick={() => onDeleteNotification(id)}
-                        >
-                          <TrashIcon
-                            labelId="delete_icon"
-                            label="delete icon"
-                            width="16"
-                            height="16"
-                          />
-                        </Button>
-                      )}
-                    </Options>
+          <AnimatePresence mode="popLayout">
+            {notifications?.map(
+              ({ id, state, title, description, created_at }, index) => {
+                return (
+                  <motion.li
+                    layout
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ type: 'spring', bounce: 0.2 }}
+                    key={id}
+                  >
+                    <Notification key={id} $state={state} $highlight={!index}>
+                      <Info>
+                        <Text type={TextTypes.Heading6}>{title}</Text>
+                        <Text>{description}</Text>
+                      </Info>
+                      <BottomContainer>
+                        <Options>
+                          {state === 'unread' && <UnreadIndicator />}
+                          {state !== 'archived' && (
+                            <Button
+                              variation={ButtonVariations.Icon}
+                              onClick={() => onArchive(id)}
+                            >
+                              <ArchiveIcon
+                                labelId="archive_icon"
+                                label="archive icon"
+                                width="16"
+                                height="16"
+                              />
+                            </Button>
+                          )}
+                          {state === 'archived' && (
+                            <Button
+                              variation={ButtonVariations.Icon}
+                              onClick={() => onDeleteNotification(id)}
+                            >
+                              <TrashIcon
+                                labelId="delete_icon"
+                                label="delete icon"
+                                width="16"
+                                height="16"
+                              />
+                            </Button>
+                          )}
+                        </Options>
 
-                    <CreatedAt $highlight={!index}>
-                      <Text>
-                        {formatDistance(created_at, new Date(), {
-                          addSuffix: true,
-                        })}
-                      </Text>
-                    </CreatedAt>
-                  </BottomContainer>
-                </Notification>
-              );
-            },
-          )}
+                        <CreatedAt $highlight={!index}>
+                          <Text>
+                            {formatDistance(created_at, new Date(), {
+                              addSuffix: true,
+                            })}
+                          </Text>
+                        </CreatedAt>
+                      </BottomContainer>
+                    </Notification>
+                  </motion.li>
+                );
+              },
+            )}
+          </AnimatePresence>
         </Items>
       )}
-      {!isLoading && totalPages > 1 && (
+      {totalPages > 1 && (
         <CustomPagination
           currentPage={currentPage}
           totalPages={totalPages}

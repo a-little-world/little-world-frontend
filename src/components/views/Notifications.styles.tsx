@@ -1,4 +1,5 @@
 import { Button } from '@a-little-world/little-world-design-system';
+import { motion } from 'motion/react';
 import styled, { css } from 'styled-components';
 
 export const Toolbar = styled.div`
@@ -36,7 +37,7 @@ export const ToolbarButton = styled(Button)<{ $isActive: boolean }>`
   `}
 `;
 
-export const Notification = styled.div<{
+export const Notification = styled(motion.div)<{
   $state: string;
   $highlight?: boolean;
 }>`
@@ -62,7 +63,7 @@ export const Options = styled.div`
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
-export const Items = styled.div`
+export const Items = styled.ul`
   display: flex;
   width: 100%;
   flex-direction: column;
