@@ -16,7 +16,8 @@ import { NOTIFICATIONS_ROUTE } from '../../routes.ts';
 import UnreadDot from './UnreadDot.tsx';
 
 const StyledNotificationBell = styled(Button)`
-  border: 2px solid ${({ theme }) => theme.color.surface.secondary};
+  outline: 2px solid ${({ theme }) => theme.color.surface.secondary};
+  outline-offset: 4px;
   border-radius: 50%;
 `;
 
