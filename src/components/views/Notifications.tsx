@@ -34,12 +34,14 @@ import {
 import { updateNotificationUserData } from '../../features/userData';
 import PageHeader from '../atoms/PageHeader.tsx';
 import {
+  BottomAlignedPagination,
   BottomContainer,
   CreatedAt,
   Info,
   Items,
   Notification,
   Options,
+  RelativeDiv,
   Toolbar,
   ToolbarButton,
   UnreadIndicator,
@@ -243,18 +245,20 @@ function Notifications() {
           </AnimatePresence>
         </Items>
       )}
-      {totalPages > 1 && (
-        <CustomPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-        ></CustomPagination>
-      )}
-      {error && (
-        <StatusMessage $type={MessageTypes.Error} $visible>
-          {JSON.stringify(error)}
-        </StatusMessage>
-      )}
+      <RelativeDiv>
+        {totalPages > 1 && (
+          <BottomAlignedPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+          ></BottomAlignedPagination>
+        )}
+        {error && (
+          <StatusMessage $type={MessageTypes.Error} $visible>
+            {JSON.stringify(error)}
+          </StatusMessage>
+        )}
+      </RelativeDiv>
     </>
   );
 }

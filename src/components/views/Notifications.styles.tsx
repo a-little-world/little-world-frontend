@@ -2,6 +2,8 @@ import { Button } from '@a-little-world/little-world-design-system';
 import { motion } from 'motion/react';
 import styled, { css } from 'styled-components';
 
+import CustomPagination from '../../CustomPagination.jsx';
+
 export const Toolbar = styled.div`
   display: flex;
   align-items: center;
@@ -95,4 +97,17 @@ export const BottomContainer = styled.div`
 export const CreatedAt = styled.div<{ $highlight?: boolean }>`
   color: ${({ theme, $highlight }) =>
     $highlight ? theme.color.text.reversed : theme.color.status.info};
+`;
+
+export const RelativeDiv = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+`;
+
+export const BottomAlignedPagination = styled(CustomPagination)`
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
 `;

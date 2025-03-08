@@ -72,7 +72,7 @@ const PaginationButton = styled.button`
   }
 `;
 
-const CustomPagination = ({ totalPages, currentPage, onPageChange }) => {
+const CustomPagination = ({ totalPages, currentPage, onPageChange, className }) => {
   const generatePageNumbers = () => {
     const pageNumbers = Array.from(
       { length: totalPages },
@@ -108,7 +108,7 @@ const CustomPagination = ({ totalPages, currentPage, onPageChange }) => {
   };
 
   return (
-    <Pagination>
+    <Pagination className={className}>
       <PaginationList>
         <PaginationItem
           className="btn prev"
