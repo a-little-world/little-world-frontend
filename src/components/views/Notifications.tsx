@@ -59,11 +59,11 @@ function Notifications() {
     searchParams.set('page', String(newPage));
     setSearchParams(searchParams);
   };
-  const currentPage = isFinite(Number(searchParams.get('page')))
-    ? Number(searchParams.get('page'))
-    : 1;
+  const currentPage =
+    Number(searchParams.get('page')) > 0 ? Number(searchParams.get('page')) : 1;
+
   const filter: NotificationStateFilter =
-    (searchParams.get('filter') as NotificationStateFilter) ??
+    (searchParams.get('filter') as NotificationStateFilter) ||
     NotificationState.UNREAD;
 
   const { data, error, isLoading, mutate } = useSWR(
