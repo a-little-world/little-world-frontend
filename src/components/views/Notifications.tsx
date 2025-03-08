@@ -184,7 +184,7 @@ function Notifications() {
         <Items>
           <AnimatePresence mode="popLayout">
             {notifications?.map(
-              ({ id, state, title, description, created_at }, index) => {
+              ({ id, state, title, description, created_at }) => {
                 return (
                   <motion.li
                     layout
@@ -194,7 +194,6 @@ function Notifications() {
                     key={id}
                   >
                     <Notification
-                      key={id}
                       $state={state}
                       $highlight={
                         !isLoading &&
