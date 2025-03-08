@@ -114,6 +114,19 @@ function Notifications() {
       <PageHeader text={t('notifications.title')} />
       <Toolbar>
         <ToolbarButton
+          onClick={() => changeFilter('all')}
+          variation={ButtonVariations.Icon}
+          $isActive={filter === 'all'}
+        >
+          <BellIcon
+            labelId="bell_icon"
+            label=" all notifications"
+            width="16px"
+            height="16px"
+          />
+          {t('notifications.filter_all')}
+        </ToolbarButton>
+        <ToolbarButton
           onClick={() => changeFilter(NotificationState.UNREAD)}
           appearance={ButtonAppearance.Secondary}
           variation={ButtonVariations.Icon}
@@ -153,19 +166,6 @@ function Notifications() {
             height="16px"
           />
           {t('notifications.archived')}
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => changeFilter('all')}
-          variation={ButtonVariations.Icon}
-          $isActive={filter === 'all'}
-        >
-          <BellIcon
-            labelId="bell_icon"
-            label=" all notifications"
-            width="16px"
-            height="16px"
-          />
-          {t('notifications.filter_all')}
         </ToolbarButton>
       </Toolbar>
 
