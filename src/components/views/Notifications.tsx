@@ -11,6 +11,7 @@ import {
   StatusMessage,
   Text,
   TextTypes,
+  TickIcon,
   TrashIcon,
 } from '@a-little-world/little-world-design-system';
 import { LoadingSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Loading/Loading';
@@ -22,7 +23,6 @@ import { useDispatch } from 'react-redux';
 import { createSearchParams, useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
-import CustomPagination from '../../CustomPagination.jsx';
 import {
   NotificationState,
   NotificationStateFilter,
@@ -64,7 +64,8 @@ function Notifications() {
     ? Number(searchParams.get('page'))
     : 1;
   const filter: NotificationStateFilter =
-    (searchParams.get('filter') as NotificationStateFilter) ?? 'all';
+    (searchParams.get('filter') as NotificationStateFilter) ??
+    NotificationState.UNREAD;
 
   const { data, error, isLoading, mutate } = useSWR(
     `/api/notifications?page_size=${PAGE_SIZE}&${createSearchParams(
@@ -92,8 +93,15 @@ function Notifications() {
     mutate(deleteNotification(id, () => {}, onError));
   }
 
-  const markRead = id => {
-    // TODO
+  const onMarkRead = (id: number) => {
+    mutate(
+      updateNotification(
+        id,
+        NotificationState.READ,
+        onNotificationUpdated,
+        onError,
+      ),
+    );
   };
 
   const onNotificationUpdated = (notification: any) => {
@@ -190,6 +198,7 @@ function Notifications() {
                       key={id}
                       $state={state}
                       $highlight={
+                        !isLoading &&
                         filter !== NotificationState.UNREAD &&
                         state === NotificationState.UNREAD
                       }
@@ -200,8 +209,23 @@ function Notifications() {
                       </Info>
                       <BottomContainer>
                         <Options>
-                          {state === 'unread' && <UnreadIndicator />}
-                          {state !== 'archived' && (
+                          {state === NotificationState.UNREAD && (
+                            <Button
+                              variation={ButtonVariations.Icon}
+                              onClick={() => onMarkRead(id)}
+                            >
+                              <TickIcon
+                                labelId="tick_icon"
+                                label="tick icon"
+                                width="16"
+                                height="16"
+                              />
+                            </Button>
+                          )}
+                          {state === NotificationState.UNREAD && (
+                            <UnreadIndicator />
+                          )}
+                          {state !== NotificationState.ARCHIVED && (
                             <Button
                               variation={ButtonVariations.Icon}
                               onClick={() => onArchive(id)}
@@ -214,7 +238,7 @@ function Notifications() {
                               />
                             </Button>
                           )}
-                          {state === 'archived' && (
+                          {state === NotificationState.ARCHIVED && (
                             <Button
                               variation={ButtonVariations.Icon}
                               onClick={() => onDeleteNotification(id)}
