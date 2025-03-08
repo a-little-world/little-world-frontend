@@ -249,7 +249,13 @@ function Notifications() {
                           )}
                         </Options>
 
-                        <CreatedAt $highlight={!index}>
+                        <CreatedAt
+                          $highlight={
+                            !isLoading &&
+                            filter !== NotificationState.UNREAD &&
+                            state === NotificationState.UNREAD
+                          }
+                        >
                           <Text>
                             {formatDistance(created_at, new Date(), {
                               addSuffix: true,
