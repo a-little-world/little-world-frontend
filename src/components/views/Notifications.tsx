@@ -44,7 +44,6 @@ import {
   RelativeDiv,
   Toolbar,
   ToolbarButton,
-  UnreadIndicator,
 } from './Notifications.styles.tsx';
 
 const PAGE_SIZE = 5;
@@ -221,9 +220,6 @@ function Notifications() {
                                 height="16"
                               />
                             </Button>
-                          )}
-                          {state === NotificationState.UNREAD && (
-                            <UnreadIndicator />
                           )}
                           {state !== NotificationState.ARCHIVED && (
                             <Button

@@ -81,12 +81,6 @@ export const Items = styled.ul`
 
 export const Info = styled.div``;
 
-export const UnreadIndicator = styled.div`
-  position: absolute;
-  top: ${({ theme }) => theme.spacing.small};
-  right: ${({ theme }) => theme.spacing.small};
-`;
-
 export const BottomContainer = styled.div`
   display: flex;
   align-items: center;
