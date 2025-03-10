@@ -107,27 +107,27 @@
   "error.server_issue": "Issue connecting to the server. Please try again.",
   "faq": {
     "section_title": {
-      "before_talk": "Before the conversation",
-      "during_talk": "During the conversation",
-      "after_talk": "After the conversation"
+      "before_talk": "Before a conversation",
+      "during_talk": "During a conversation",
+      "after_talk": "After a conversation"
     },
     "section_content": {
       "before_talk": {
         "q1": {
           "question": "Can I choose the people I want to talk to?",
-          "answer": "Little World matches you based on common interests. If it doesn't work out, please let us know and we connect you with the next person. You can dissolve your match at any time - and in the user form you can set everything, for example which topics you are interested in or which language level your conversation partner should have."
+          "answer": "No, to protect the privacy of all users, nobody can see all members. But don't worry - you can still influence who you meet!\n\nAfter you register, you will be required to fill out a short form. This allows you to indicate which topics interest you, your availability and any other preferences you might have. Our algorithm uses this information to then suggest suitable conversation partners to us and then we review these options and select the best for one for you."
         },
         "q2": {
           "question": "I don't have a match yet. Who can I contact?",
-          "answer": "First of all sorry! We are working hard to get everyone matched as soon as possible. Sometimes it can take a while. If it's been too long for you, contact our support and we'll take care of it right away!"
+          "answer": "First of all, sorry! We are working hard to get everyone matched as quickly as possible. Sometimes it can take a while. If it has been too long for you, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please contact our support team</a> and we will try to prioritse you immediately!\nIn the meantime, please join our group meetings. They happen every Wednesday at 5.30 pm."
         },
         "q3": {
           "question": "I can't think of anything to talk about. What can I do?",
-          "answer": "Then there's always the topic of weather. Or penguins. Or pizza. And if you can get through that too, we've prepared questions on the platform to help you with the conversation - try it out now!"
+          "answer": "Then there's always the weather. Or penguins. Or pizza. And when you're done with that too, we've prepared some tools on the platform to help you during your conversations.\n\nIf you are in a video call with your partner on our platform, you will find the Questions button at the top of the chat area. Under the button you will find a series of questions that you can ask during the conversation. Try it out!"
         },
         "q4": {
           "question": "Technical issues on Little World?",
-          "answer": "Whoops! If you have any technical problems, please contact our support and we'll take care of it right away!"
+          "answer": "Whoops! If you have any technical problems, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please contact our support</a> and we'll take care of it right away!"
         },
         "q5": {
           "question": "Camera, microphone or loudspeaker not working?",
@@ -135,17 +135,25 @@
         },
         "q6": {
           "question": "Is there anything I can do to prepare for the interviews?",
-          "answer": "Just think about what interests you. Is it the other culture, everyday life, hobbies - the topics of conversation are as diverse as you and your conversation partner."
+          "answer": "Before your conversation, just think about what interests you. Whether it's other cultures, everyday life, hobbies - the topics of conversation are as varied as you and your conversation partner.\n\nJust try to find a quiet place with a stable internet connection to have your conversation. It's completely normal for the first conversation to not go perfectly. It can sometimes be a little bumpy at first - after all, you're just getting to know each other. Conversations with new people often take a little time to get into the flow.\n\nAnd remember: learning means leaving your comfort zone. It may feel unfamiliar or challenging at first, but that's exactly what will take you further! Keep at it - it gets easier and more natural with every conversation."
         },
         "q7": {
           "question": "What if I don't like the match?",
-          "answer": "This is what can happen. We match you based on common interests, but sometimes it just doesn't fit. Then we will find new friendly conversation partners for you!"
+          "answer": "Sometimes the first conversation doesn't go perfectly - that's completely normal. That's why we recommend having at least three conversations before deciding whether it's a good fit or not.\n\nBut that's just a recommendation. If you feel that it's just not right, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>let us know via the support chat</a>. Sometimes it isn't and that's completely okay!\n\nWe'll take care of it and find a new dialogue partner for you."
         },
         "q8": {
-          "question": "My match doesn't answer me?",
-          "answer": "Please contact our support. For privacy reasons, we do not provide further contact information. But maybe we can reach your match in other ways. Otherwise, we will be happy to find new conversation partners for you!"
+          "question": "My match isn't replying?",
+          "answer": "Sometimes it can take a few days before you receive a reply. If you do not receive an answer, please contact our support team. We can then try to contact your conversation partner for you."
         },
         "q9": {
+          "question": "How do I start a video call on Little World?",
+          "answer": "Starting a video call on Little World is very easy! Under the profile of the person you are talking to, you will find the orange ‘Call’ button with the camera symbol. Click on it to start a video call.\n\nTo ensure that the call actually takes place, it is best to make an appointment in the chat beforehand so that your conversation partner can prepare and accept the call.\n\nMake sure that your browser has access to the microphone and camera so that you can see and hear each other. You can test this beforehand in the call preview to make sure that everything works."
+        },
+        "q10": {
+          "question": "How long does it take to find a conversation partner?",
+          "answer": "For German learners, it can take about three weeks, as we have a lot of learners registering. As soon as we have found a suitable person, you will receive an e-mail with a suggestion. Please keep an eye on your e-mail inbox and spam folder during this time so that you don't miss your proposal!\n\nFor volunteers, it is usually quicker, so expect a proposal from us within a week.\n\nIf it takes longer, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please get in touch with us</a> - we'll take care of it!\n\nIn the meantime, we recommend our introductory meetings every Wednesday at 5.30 pm. There you can become part of the community and get to know other users."
+        },
+        "q11": {
           "question": "First-name basis? Sie or du?",
           "answer": "At Little World we are all on a first-name basis and when speaking German we use the informal \"du\" rather than \"Sie\". If the person you are talking to would prefer to be addressed using \"Sie\", it is of course polite to honour that. 😊"
         }
@@ -157,45 +165,45 @@
         },
         "q2": {
           "question": "Does it make sense to exchange private information?",
-          "answer": "At least you don't have to. At Little World, everything is anonymous. How much you reveal about yourself in the conversations is entirely up to you!"
+          "answer": "It's entirely up to you! At Little World, everything remains anonymous and you don't have to share any personal data.\n\nThe platform offers a safe space in which you can communicate using your first names and on a first-name basis. Chat and video calls are integrated.\n\nReal friendships often develop here, and many users then exchange their private data. But that's entirely your choice!"
         },
         "q3": {
           "question": "Can I have several conversation partners?",
-          "answer": "Volunteers are welcome to help as much as they like. We make it possible for German learners to have two active partners. Because many people are still looking for a match and we would like to provide one for everyone."
+          "answer": "Volunteer native speakers can have as many conversation partners as they like. Every additional person you support helps us to ensure that German learners don't have to wait too long.\n\nYou can easily do this by clicking on ‘Start’ under ‘Conversation partners’ and then clicking on ‘Find a new partner’.\n\nFor German learners, we usually allow two active partners, as many are still waiting for a match and we would like to provide those without one first."
         },
         "q4": {
           "question": "Technical fault?",
-          "answer": "Suddenly nothing works anymore? If technical problems arise, please contact our support and we will take care of it immediately!"
+          "answer": "Suddenly nothing works anymore? If technical problems arise, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please contact our support</a> and we will take care of it immediately!"
         },
         "q5": {
           "question": "Insult or harassment during a conversation?",
-          "answer": "We don't like that at all! Please contact our support immediately and we will intervene!"
+          "answer": "This is absolutely not tolerated by us. <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Please contact our support</a> immediately and we will act accordingly. You can also report a user and remove the match at any time."
         },
         "q6": {
           "question": "What if traumas break out or suicidal thoughts are expressed?",
-          "answer": "Please do not solve it yourself. In such situations, contact our support and we will find professionals in the field."
+          "answer": "Please do not solve it yourself. In such situations, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please contact our support</a> and we will find professionals in the field to provide support."
         }
       },
       "after_talk": {
         "q1": {
           "question": "Can I also meet people in private?",
-          "answer": "If your counterpart also feels like it, gladly! After all, Little World wants to promote integration and friendship."
+          "answer": "If your counterpart is up for it too, you're more than welcome! After all, Little World wants to promote multicultural friendships that extend beyond our platform."
         },
         "q2": {
           "question": "Are there also Little World Community meetings?",
-          "answer": "There are! We meet online every week to exchange ideas and get to know each other. Access and dates can be found in the section 'Home' and then 'Community Calls'. You can easily join the conversations on the WebApp. We look forward to hearing from you!"
+          "answer": "There are! We meet online every Wednesday at 5.30 pm for a relaxed chat, usually around a them, in order to get to know each other.\n\nThere is also a forum once a month where users and the Little World team meet. Here you can get the latest updates and propose suggestions for the further development of the platform directly with the team.\n\nYou can find access and dates in the ‘Start’ section and then under ‘Community Calls’. We look forward to seeing you there!"
         },
         "q3": {
           "question": "Can I give feedback on the platform?",
-          "answer": "Feedback is always welcome! Feel free to write us a message in the support chat or use our contact form: https://home.little-world.com/kontakt."
+          "answer": "Feedback is always welcome! <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Feel free to write us a message in the support chat</a> or use our contact form: https://home.little-world.com/kontakt."
         },
         "q4": {
           "question": "How can I delete my account?",
-          "answer": "At the moment it still works manually. Please contact our support and we will take care of it! "
+          "answer": "Yes, you can. Log in to the platform and go to the settings page. There you will find the ‘Delete account’ button.\n\nOf course, we hope that you will stay with us. <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Do reach out to us with your feedback or concerns</a>, and hopefully we can find a way to help you and improve your experience at Little World."
         },
         "q5": {
           "question": "How can I help Little World?",
-          "answer": "Join in! We are always looking for support. For programming, promotion, public relations and much more. We can use all the help we can get - donations help too. Just write to us in the chat or at oliver@little-world.com"
+          "answer": "We are always looking for support. For programming, promotion, public relations and much more. We can use all the help we can get - donations help too. We have listed some of the best ways to support under <a {\"href\": \"/app/our-world\", \"target\": \"_blank\"}>Support Us.</a>"
         }
       }
     }
@@ -661,11 +669,11 @@
   "user_form_notifications.title": "Last step...",
   "user_type.info_text": "These details are only accessible to you and the Little World team.",
   "user_type.learner_description": "I want to practice speaking German.",
-  "user_type.learner_label": "German Learner",
+  "user_type.learner_label": "I am a\nGerman learner",
   "user_type.learner_note": "min. B1 German level",
   "user_type.title": "How would you like to participate?",
   "user_type.volunteer_description": "I would like to help others learn German.",
-  "user_type.volunteer_label": "Volunteer",
+  "user_type.volunteer_label": "I am a\nVolunteer",
   "user_type.volunteer_note": "min. C1 German Level",
   "validation.birth_year_empty": "Please enter your year of birth",
   "validation.email_wrong_format": "This is not a valid email.",

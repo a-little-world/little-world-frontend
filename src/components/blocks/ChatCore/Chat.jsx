@@ -36,6 +36,7 @@ import {
 import {
   getCustomChatElements,
   messageContainsWidget,
+  processFileName,
 } from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput } from '../../../helpers/form.ts';
@@ -100,6 +101,7 @@ const Chat = ({ chatId }) => {
 
   const onSubmitError = e => {
     setIsSubmitting(false);
+    console.log('onSubmitError', e);
     onFormError({ e, formFields: getValues(), setError, t });
   };
 
@@ -136,7 +138,7 @@ const Chat = ({ chatId }) => {
     const file = event.target.files[0];
     if (file) {
       // Create a new File object with explicit metadata
-      const fileWithMetadata = new File([file], file.name, {
+      const fileWithMetadata = new File([file], processFileName(file.name), {
         type: file.type,
         lastModified: file.lastModified,
       });
@@ -199,7 +201,7 @@ const Chat = ({ chatId }) => {
       });
     }
   };
-
+  console.log({errors})
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
@@ -212,7 +214,7 @@ const Chat = ({ chatId }) => {
             <>
               {messagesResult?.map(message => {
                 const customChatElements = message?.parsable
-                  ? getCustomChatElements({ message, userId, activeChat })
+                  ? getCustomChatElements({ dispatch, message, userId, activeChat })
                   : [];
 
                 return (
@@ -268,7 +270,9 @@ const Chat = ({ chatId }) => {
           ref={fileInputRef}
           onChange={handleFileSelect}
           style={{ display: 'none' }}
-          accept="image/*,application/pdf"
+          accept="application/pdf, .pdf,.doc,.docx,.txt,.rtf,.odt,
+                    .jpg,.jpeg,.png,.gif,.bmp,.webp,.tiff,
+                    .ppt,.pptx,.xls,.xlsx,.csv, image/*"
         />
 
         <MessageBox

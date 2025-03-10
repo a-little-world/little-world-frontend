@@ -117,19 +117,19 @@
       "before_talk": {
         "q1": {
           "question": "Kann ich mir die Gesprächspartner:innen selbst aussuchen?",
-          "answer": "Little World matcht euch aufgrund gemeinsamer Interessen. Sollte es mal nicht funken, gibst du uns Bescheid und wir verbinden dich mit dem oder der nächsten. Du kannst dein Match jederzeit auflösen – und im User Form kannst du alles einstellen, zum Beispiel welche Themen dich interessieren oder welches Sprachniveau dein:e Gesprächspartner:in haben soll."
+          "answer": "Nein, um die Privatsphäre aller Nutzer:innen zu schützen, kann niemand alle Mitglieder sehen. Aber keine Sorge – du hast trotzdem Einfluss darauf, wen du triffst!\n\nDirekt nach deiner Anmeldung füllst du ein kurzes Formular aus. Dort gibst du an, welche Themen dich interessieren, wann du Zeit für Gespräche hast und welche weiteren Vorlieben du hast. Unser Algorithmus nutzt diese Angaben, um dir passende Gesprächspartner:innen vorzuschlagen."
         },
         "q2": {
           "question": "Ich habe noch kein Match. An wen kann ich mich wenden?",
-          "answer": "Erstmal sorry! Wir arbeiten mit Hochdruck daran, dass alle so schnell wie möglich gematcht werden. Manchmal kann es etwas dauern. Sollte es bei dir schon zu lange der Fall sein, dann melde dich bei unserem Support und wir kümmern uns sofort darum!"
+          "answer": "Erstmal sorry! Wir arbeiten mit Hochdruck daran, dass alle so schnell wie möglich gematcht werden. Manchmal kann es etwas dauern. Sollte es bei dir schon zu lange der Fall sein, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>dann melde dich bei unserem Support</a> und wir kümmern uns sofort darum!\nKomm aber in der Zwischenzeit gerne zum Gruppengespräch, jeden Mittwoch um 17.30 Uhr!"
         },
         "q3": {
           "question": "Mir fallen keine Gesprächsthemen ein. Was kann ich tun?",
-          "answer": "Dann gibt es immer noch das Thema Wetter. Oder Pinguine. Oder Pizza. Und wenn ihr auch damit durch seid, haben wir auf der Plattform einige Hilfsmittel vorbereitet, die euch beim Gespräch unterstützen – probiere es gleich mal aus!"
+          "answer": "Dann gibt es immer noch das Thema Wetter. Oder Pinguine. Oder Pizza. Und wenn ihr auch damit durch seid, haben wir auf der Plattform einige Hilfsmittel vorbereitet, die euch beim Gespräch unterstützen.\n\nwenn du auf unsere Plattform in einem Videocall mit deinem Partner bist, findest in den Chat Bereich oben den Button Fragen. Unter dem Button findest du eine Reihe von Fragen, die du während des Gesprächs stellen könntest.  – probiere es gleich mal aus!"
         },
         "q4": {
           "question": "Technische Störungen auf Little World?",
-          "answer": "Hoppla! Solltest du technische Probleme haben, wende dich bitte an unseren Support und wir kümmern uns umgehend darum!"
+          "answer": "Hoppla! Solltest du technische Probleme haben, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>wende dich bitte an unseren Support</a> und wir kümmern uns umgehend darum!"
         },
         "q5": {
           "question": "Kamera, Mikrofon oder Lautsprecher funktionieren nicht?",
@@ -137,17 +137,25 @@
         },
         "q6": {
           "question": "Kann ich mich irgendwie auf die Gespräche vorbereiten?",
-          "answer": "Überleg dir doch einfach, was dich interessiert. Ist es die andere Kultur, der Alltag, die Hobbies – die Gesprächsthemen sind so vielfältig wie Du und dein:e Gesprächspartner:in."
+          "answer": "Bevor dein Gespräch, überleg dir doch einfach, was dich interessiert. Ist es die andere Kultur, der Alltag, die Hobbies – die Gesprächsthemen sind so vielfältig wie Du und dein:e Gesprächspartner:in.\n\nVersuche dann einfach, einen ruhigen Ort mit einer stabilen Internetverbindung zu finden, um dein Gespräch zu führen. Es ist völlig normal, dass das erste Gespräch nicht perfekt läuft. Am Anfang kann es manchmal ein bisschen holprig sein – schließlich lernt ihr euch gerade erst kennen. Gespräche mit neuen Menschen brauchen oft ein wenig Zeit, um in den Flow zu kommen.\n\nUnd denk daran: Lernen bedeutet, die eigene Komfortzone zu verlassen. Es kann sich anfangs ungewohnt oder herausfordernd anfühlen, aber genau das bringt dich weiter! Bleib dran – mit jedem Gespräch wird es leichter und natürlicher."
         },
         "q7": {
           "question": "Mein Match gefällt mir nicht. Und jetzt?",
-          "answer": "Das kann passieren. Wir matchen euch anhand gemeinsamer Interessen, aber manchmal passt es eben nicht. Dann finden wir neue nette Gesprächspartner:innen für dich!"
+          "answer": "Manchmal läuft das erste Gespräch nicht perfekt – das ist völlig normal. Deshalb empfehlen wir, mindestens drei Gespräche zu führen, bevor du entscheidest, ob es passt.\n\nAber das ist nur eine Empfehlung. Wenn du merkst, dass es einfach nicht stimmig ist, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>gib uns über den Support Bescheid.</a> Manchmal passt es einfach nicht – und das ist völlig okay!\n\nWir kümmern uns dann darum und finden eine:n neue:n Gesprächspartner:in für dich."
         },
         "q8": {
           "question": "Mein Match antwortet mir nicht?",
-          "answer": "Bitte kontaktiere unseren Support. Aus Datenschutz-Gründen, geben wir weitere Kontaktdaten nicht weiter. Aber vielleicht erreichen wir dein Match noch auf anderen Wegen. Ansonsten finden wir gerne neue Gesprächspartner:innen für dich!"
+          "answer": "Manchmal kann es ein paar Tage dauern, bis du einen Antwort enthälst. Solltest du keine Antwort erhalten, wende dich bitte an unseren Support. Wir können dann versuchen, deinen Gesprächspartner für dich zu erreichen."
         },
         "q9": {
+          "question": "Wie mache ich einen Video Gespräch auf Little World?",
+          "answer": "Ein Videogespräch auf Little World zu starten ist ganz einfach! Unter dem Profil deines Gesprächspartners oder deiner Gesprächspartnerin findest du den orangenen \"Anruf\"-Button mit dem Kamera-Symbol. Wenn du darauf klickst, startet der Videocall.\n\nDamit das Gespräch auch wirklich zustande kommt, vereinbart am besten vorher einen Termin im Chat – so kann dein:e Gesprächspartner:in sich vorbereiten und den Anruf annehmen.\n\nAchte darauf, dass dein Browser Zugriff auf Mikrofon und Kamera hat, damit ihr euch sehen und hören könnt. Du kannst das vorher testen, um sicherzugehen, dass alles funktioniert."
+        },
+        "q10": {
+          "question": "Wie lange dauert es, eine/n Gesprächspartner:in zu finden?",
+          "answer": "Für Deutschlernende kann es etwa drei Wochen dauern, da sich sehr viele anmelden. Sobald wir eine passende Person gefunden haben, bekommst du eine E-Mail mit einem Vorschlag. Bitte behalte in dieser Zeit dein E-Mail-Postfach und den Spam-Ordner im Blick, damit du deinen Vorschlag nicht verpasst!\n\nFür Ehrenamtliche geht es in der Regel schneller, meist innerhalb von einer Woche, da hier ein hoher Bedarf besteht.\n\nFalls es länger dauert, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>melde dich gerne bei uns</a> – wir kümmern uns darum!\n\nIn der Zwischenzeit empfehlen wir dir unsere Kennenlerngespräche jeden Mittwoch um 17:30 Uhr. Dort kannst du Teil der Community werden und andere Nutzer:innen kennenlernen."
+        },
+        "q11": {
           "question": "Duzzen oder Siezen wir uns?",
           "answer": "Bei Little World sind wir alle per Du – wir duzen uns also gerne. Falls dein Gesprächspartner lieber gesiezt werden möchte, ist es natürlich höflich, diesem Wunsch zu nachzukommen. 😊"
         }
@@ -155,37 +163,37 @@
       "during_talk": {
         "q1": {
           "question": "Kann man auch Gruppengespräche führen?",
-          "answer": "Das bieten wir bald an! Themenspezifisch oder ganz frei. Darauf freuen wir uns schon!\nAußerdem finden wöchentlich unsere Community Treffen statt: Zum Kennenlernen und Austauschen. Zugang und Termine findest du im Bereich \"Start\" und dann \"Gruppengespräche\"."
+          "answer": "Das bieten wir bald an! Themenspezifisch oder ganz frei. Darauf freuen wir uns schon.\n. Wenn du Ideen hast, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>kannst du uns gerne schreiben!</a> Außerdem finden wöchentlich unsere Community Treffen Mittwochs um 17.30 Uhr statt: Zum Kennenlernen und Austauschen. Zugang und Termine findest du im Bereich \"Start\" und dann \"Gruppengespräche\"."
         },
         "q2": {
           "question": "Ist es sinnvoll, Privates auszutauschen?",
-          "answer": "Zumindest musst du es nicht. Bei Little World ist alles anonym. Wie viel du in den Gesprächen von dir preisgibst, entscheidest allein du!"
+          "answer": "Das bleibt ganz dir überlassen! Bei Little World bleibt alles anonym, und du musst keine persönlichen Daten teilen.\n\nDie Plattform bietet einen sicheren Raum, in dem ihr euch mit Vornamen und per Du austauscht. Chat- und Video-Calls sind dafür integriert.\n\nOft entstehen bei uns echte Freundschaften, und viele Nutzer tauschen dann ihre privaten Daten. Aber das ist ganz deine Wahl!"
         },
         "q3": {
           "question": "Kann ich mehrere/unterschiedliche Gesprächspartner:innen haben?",
-          "answer": "Ehrenamtliche Muttersprachler:innen dürfen gerne so viel helfen, wie sie mögen.\nDeutschlernenden ermöglichen wir zwei aktive Partner:innen. Denn hier sind noch viele auf der Suche nach einem Match und wir wollen gerne alle versorgen."
+          "answer": "Ehrenamtliche Muttersprachler:innen können so viele Gesprächspartner:innen haben, wie sie möchten. Jede zusätzliche Person, die du unterstützt, hilft uns, dass Deutschlernende nicht zu lange warten müssen.\n\nDu kannst das ganz einfach unter „Start“ bei „Gesprächspartner“ tun, indem du auf „Gespräch finden“ klickst.\n\nFür Deutschlernende ermöglichen wir in der Regel zwei aktive Partner:innen, da viele noch auf ein Match warten und wir alle gerne schnell versorgen möchten."
         },
         "q4": {
           "question": "Technische Störung?",
-          "answer": "Plötzlich geht nichts mehr? Wenn technische Probleme aufkommen, wende dich bitte an unseren Support und wir kümmern uns umgehend darum!"
+          "answer": "Plötzlich geht nichts mehr? Wenn technische Probleme aufkommen, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>wende dich bitte an unseren Support</a> und wir kümmern uns umgehend darum!"
         },
         "q5": {
           "question": "Beleidigung/Belästigung im Gespräch?",
-          "answer": "Das mögen wir gar nicht! Bitte wende dich umgehend an unseren Support und wir schreiten ein!"
+          "answer": "Das wird bei uns absolut nicht toleriert! <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Bitte wende dich sofort an unseren Support</a>, und wir werden entsprechend handeln. Du kannst auch jederzeit einen Nutzer melden und das Match entfernen."
         },
         "q6": {
           "question": "Was ist wenn Traumata aufbrechen oder Suizidgedanken geäußert werden?",
-          "answer": "Bitte nicht selbst lösen. Bei solchen Situationen wende dich an unseren Support und wir helfen, professionelle Ansprechpartner zu finden."
+          "answer": "Bitte nicht selbst lösen. Bei solchen Situationen <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>wende dich an unseren Support</a> und wir helfen, professionelle Ansprechpartner zu finden."
         }
       },
       "after_talk": {
         "q1": {
           "question": "Kann ich Gesprächspartner:innen auch privat treffen?",
-          "answer": "Wenn dein Gegenüber auch Lust hat, gerne! Immerhin will Little World ja Integration und Freundschaft fördern."
+          "answer": "Wenn dein Gegenüber auch Lust dazu hat, gerne! Immerhin will Little World ja multikulturelle Freundschaften fördern."
         },
         "q2": {
           "question": "Gibt es auch Little World Community Treffen?",
-          "answer": "Gibt es! Wir treffen uns jede Woche online zum Austausch und Kennenlernen. Zugang und Termine findest du im Bereich \"Start\" und dann \"Gruppengespräche\". Wir freuen uns auf dich!"
+          "answer": "Gibt es! Wir treffen uns jeden Mittwoch 17.30 Uhr online zum entspannten Austausch und Kennenlernen.\n\nAußerdem gibt es einmal im Monat das Forum, in dem sich Nutzer:innen und das Team von Little World treffen. Hier bekommst du die neuesten Updates und kannst direkt mit dem Team über Vorschläge zur Weiterentwicklung der Plattform diskutieren.\n\nZugang und Termine findest du im Bereich „Start“ und dann „Gruppengespräche“. Wir freuen uns auf dich!"
         },
         "q3": {
           "question": "Kann ich Feedback zur Plattform geben?",
@@ -193,11 +201,11 @@
         },
         "q4": {
           "question": "Wie kann ich meinen Account löschen?",
-          "answer": "Momentan funktioniert das noch händisch. Wende dich bitte an unseren Support und wir kümmern uns darum!"
+          "answer": "Ja, das kannst du! Melde dich auf der Plattform an und gehe zu den Einstellungen. Dort findest du den Button „Account löschen“.\n\nWir hoffen, dass du bei uns bleibst. Falls du möchtest, kannst du uns dein <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Feedback im Support mitteilen</a>. Vielleicht finden wir einen Weg, dir zu helfen und deine Erfahrung bei Little World zu verbessern."
         },
         "q5": {
           "question": "Wie kann ich Little World helfen?",
-          "answer": "Mach mit! Wir suchen immer Unterstützung. Für Programmierung, Promotion, Öffentlichkeitsarbeit und vieles mehr. Wir können jede Hilfe gebrauchen – auch Spenden helfen. Schreib uns einfach im Chat oder unter oliver@little-world.com"
+          "answer": "Wir suchen immer Unterstützung. Für Programmierung, Promotion, Öffentlichkeitsarbeit und vieles mehr. Wir können jede Hilfe gebrauchen – auch Spenden helfen. <a {\"href\": \"/app/our-world\", \"target\": \"_blank\"}>Wir haben einige der besten Möglichkeiten unter 'Mach mit' aufgelistet.</a>"
         }
       }
     }
@@ -662,11 +670,11 @@
   "user_form_notifications.title": "Und als letzten Schritt...",
   "user_type.info_text": "Diese Angaben sind nur für dich und das Team von Little World sichtbar.",
   "user_type.learner_description": "Ich möchte selbst Deutsch sprechen üben.",
-  "user_type.learner_label": "Deutschlernende",
+  "user_type.learner_label": "Ich bin ein\nDeutschlerner",
   "user_type.learner_note": "mind. B1 Deutschniveau",
   "user_type.title": "Wähle eine Kategorie",
   "user_type.volunteer_description": "Ich möchte anderen dabei helfen Deutsch zu lernen.",
-  "user_type.volunteer_label": "Sprachpaten",
+  "user_type.volunteer_label": "Ich bin ein\nSprachpate",
   "user_type.volunteer_note": "mind. C1 Deutschniveau",
   "validation.birth_year_empty": "Bitte gib dein Geburtsjahr an",
   "validation.email_wrong_format": "Dies ist keine valide E_Mail.",

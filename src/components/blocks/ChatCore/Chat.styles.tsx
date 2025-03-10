@@ -98,7 +98,7 @@ export const Message = styled.div<{ $isSelf: boolean }>`
   align-items: ${({ $isSelf }) => ($isSelf ? 'flex-end' : 'flex-start')};
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 100%;
 `;
 
 export const MessageText = styled(Text)<{

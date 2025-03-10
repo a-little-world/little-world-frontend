@@ -1,7 +1,11 @@
+
 import {
   AttachmentWidget,
   CallWidget,
 } from '@a-little-world/little-world-design-system';
+import { initCallSetup } from '../features/userData.js';
+import { AppDispatch } from '../app/store.js';
+
 
 interface Message {
   sender: string;
@@ -20,6 +24,7 @@ interface CustomChatElement {
 }
 
 interface GetCustomChatElementsParams {
+  dispatch?: AppDispatch;
   isPreview?: boolean;
   message: Message;
   userId: string;
@@ -27,6 +32,7 @@ interface GetCustomChatElementsParams {
 }
 
 export const getCustomChatElements = ({
+  dispatch,
   isPreview,
   message,
   userId,
@@ -44,13 +50,11 @@ export const getCustomChatElements = ({
         description:
           message.sender !== userId ? 'Zurück Rufen' : 'Erneut anrufen',
         isOutgoing: message.sender === userId,
-        returnCallLink: isPreview
+        onReturnCall: isPreview
           ? undefined
-          : `/call-setup/${
-              message.sender === userId
-                ? activeChat?.partner?.id
-                : message.sender
-            }`,
+          : () => dispatch?.(initCallSetup({ userId: message.sender === userId
+            ? activeChat?.partner?.id
+            : message.sender })),
       },
     },
     {
@@ -61,13 +65,11 @@ export const getCustomChatElements = ({
         isPreview,
         header: 'Video Anruf',
         isOutgoing: message.sender === userId,
-        returnCallLink: isPreview
+        onReturnCall: isPreview
           ? undefined
-          : `/call-setup/${
-              message.sender === userId
-                ? activeChat?.partner?.id
-                : message.sender
-            }`,
+          : () => dispatch?.(initCallSetup({ userId: message.sender === userId
+            ? activeChat?.partner?.id
+            : message.sender })),
       },
     },
     {
@@ -78,6 +80,9 @@ export const getCustomChatElements = ({
   ];
   return customChatElements;
 };
+
+const MAX_FILE_NAME_LENGTH = 15;
+export const processFileName = (fileName: string): string => fileName.length > MAX_FILE_NAME_LENGTH ? `${fileName.slice(0, MAX_FILE_NAME_LENGTH).trim()}...` : fileName;
 
 export const messageContainsWidget = (message: string): boolean =>
   /AttachmentWidget|CallWidget/.test(message);

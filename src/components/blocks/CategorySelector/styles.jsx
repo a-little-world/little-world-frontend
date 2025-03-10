@@ -4,11 +4,11 @@ import styled from 'styled-components';
 export const CategorySelectorWrapper = styled.div`
   display: flex;
   align-items: stretch;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.medium};
   flex-wrap: wrap;
 
   ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.small}) {
+    `@media (min-width: ${theme.breakpoints.medium}) {
       flex-wrap: nowrap;
       gap: ${theme.spacing.xlarge};
     }`}
@@ -16,13 +16,13 @@ export const CategorySelectorWrapper = styled.div`
 
 export const SelectionPanel = styled.button`
   border: 2.5px solid;
-  border-color: ${({ $selected }) => ($selected ? '#f39325' : '#E6E8EC')};
+  border-color: ${({ $selected, theme }) => ($selected ? theme.color.border.selected : theme.color.border.subtle)};
   border-radius: 20px;
   cursor: pointer;
   display: flex;
-  align-items: center;
   flex: 1;
   gap: ${({ theme }) => theme.spacing.small};
+  align-items: center;
   padding: ${({ theme }) => theme.spacing.small};
   box-shadow: 2px 2px 7px 0px #0000001f;
   width: 100%;
@@ -41,7 +41,7 @@ export const SelectionPanel = styled.button`
   }
 
   ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.small}) {
+    `@media (min-width: ${theme.breakpoints.medium}) {
       padding: ${theme.spacing.large};
       width: unset;
       flex-basis: 50%;
@@ -58,11 +58,19 @@ export const SelectionPanel = styled.button`
 export const TextSection = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  text-align: left;
   flex: 1;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.medium}) {
+      gap: ${theme.spacing.small};
+      align-items: center;
+      text-align: center;
+  }`}
 `;
 
 export const CategoryNote = styled(Text)`
   margin-top: auto;
+  color: ${({ theme }) => theme.color.text.error};
 `;
