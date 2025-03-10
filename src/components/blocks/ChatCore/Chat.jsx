@@ -39,7 +39,7 @@ import {
   processFileName,
 } from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
-import { onFormError, registerInput } from '../../../helpers/form.ts';
+import { onFormError, registerInput, ROOT_SERVER_ERROR } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../routes.ts';
 import {
@@ -283,7 +283,7 @@ const Chat = ({ chatId }) => {
           })}
           key={`message ${messagesSent}`}
           id="text"
-          error={t(errors?.text?.message)}
+          error={t(errors?.[ROOT_SERVER_ERROR]?.message)}
           expandable
           placeholder={
             selectedFile

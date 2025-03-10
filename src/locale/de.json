@@ -679,6 +679,7 @@
   "validation.birth_year_empty": "Bitte gib dein Geburtsjahr an",
   "validation.email_wrong_format": "Dies ist keine valide E_Mail.",
   "validation.generic_try_again": "Es gab ein Serverproblem. Bitte versuche es erneut.",
+  "validation.file_too_large": "Die Datei, die Sie hochgeladen haben, ist zu groß. Bitte versuchen Sie es erneut mit einer kleineren Datei.",
   "validation.image_upload_required": "Das Profilbild konnte nicht hochgeladen werden. Bitte wähle ein kleineres Bild, bis zu 1 MB, oder erstelle einen Avatar.",
   "validation.lang_skill_too_long": "darf maximal 300 Zeichen haben.",
   "validation.length_not_in_constraint": "Text zu lang",

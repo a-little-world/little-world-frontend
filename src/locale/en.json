@@ -678,6 +678,7 @@
   "validation.birth_year_empty": "Please enter your year of birth",
   "validation.email_wrong_format": "This is not a valid email.",
   "validation.generic_try_again": "There was a server issue. Please try again.",
+  "validation.file_too_large": "The file you have selected is too large. Please try again with a smaller file.",
   "validation.image_upload_required": "File upload failed, have you selected a file under 1MB? If you can't upload a file please use an avatar instead.",
   "validation.lang_skill_too_long": "Maximum of 300 characters.",
   "validation.length_not_in_constraint": "Text too long",
