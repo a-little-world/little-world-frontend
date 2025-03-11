@@ -152,6 +152,7 @@ const Chat = ({ chatId }) => {
 
   const clearSelectedFile = () => {
     setSelectedFile(null);
+    reset();
     fileInputRef.current.value = ''; // Reset file input
   };
 
