@@ -4,7 +4,7 @@ import {
   CallWidget,
 } from '@a-little-world/little-world-design-system';
 import { initCallSetup } from '../features/userData.js';
-import { AppDispatch } from '../app/store.js';
+import { AppDispatch } from '../app/store.ts';
 
 
 interface Message {
