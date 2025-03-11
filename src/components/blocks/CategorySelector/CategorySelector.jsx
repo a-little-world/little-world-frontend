@@ -46,7 +46,7 @@ const CategorySelector = ({ categories, onUpdate }) => {
               {category.label}
             </Text>
             <Text type={TextTypes.Body5}>{category.description}</Text>
-            <CategoryNote type={TextTypes.Body6} tag="h4" color="#A6A6A6">
+            <CategoryNote type={TextTypes.Body6} tag="h4">
               {category.note}
             </CategoryNote>
           </TextSection>

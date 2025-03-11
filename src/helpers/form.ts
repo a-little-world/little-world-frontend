@@ -5,13 +5,15 @@ import {
 } from 'react-hook-form';
 import { TFunction } from 'react-i18next';
 
-const ROOT_SERVER_ERROR = 'root.serverError';
+export const ROOT_SERVER_ERROR = 'root.serverError';
 const TRY_AGAIN_ERROR = 'validation.generic_try_again';
+const FILE_TOO_LARGE_ERROR = 'validation.file_too_large';
 
 interface FormErrorParams {
   e: {
     cause: string;
     message?: string;
+    status?: number;
   };
   formFields: Record<string, any>;
   setError: (
@@ -35,7 +37,7 @@ export const onFormError = ({ e, formFields, setError }: FormErrorParams) => {
   } else {
     setError(cause, {
       type: 'custom',
-      message: e.message || TRY_AGAIN_ERROR,
+      message: e?.status === 413 ? FILE_TOO_LARGE_ERROR : TRY_AGAIN_ERROR,
     });
   }
 };
