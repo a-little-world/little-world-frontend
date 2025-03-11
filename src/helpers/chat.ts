@@ -82,7 +82,28 @@ export const getCustomChatElements = ({
 };
 
 const MAX_FILE_NAME_LENGTH = 15;
-export const processFileName = (fileName: string): string => fileName.length > MAX_FILE_NAME_LENGTH ? `${fileName.slice(0, MAX_FILE_NAME_LENGTH).trim()}...` : fileName;
+
+export const formatFileName = (fileName: string): string => {
+  // Extract file extension (if any)
+  const lastDotIndex = fileName.lastIndexOf('.');
+  const hasExtension = lastDotIndex !== -1;
+  
+  const name = hasExtension ? fileName.substring(0, lastDotIndex) : fileName;
+  const extension = hasExtension ? fileName.substring(lastDotIndex) : '';
+  
+  if (name.length <= MAX_FILE_NAME_LENGTH) {
+    return fileName;
+  }
+  
+  // Calculate how many characters to keep on each side
+  const endChars = Math.floor((MAX_FILE_NAME_LENGTH - 3) / 2); // 3 for the ellipsis
+  const beginningChars = Math.ceil((MAX_FILE_NAME_LENGTH - 3) / 2); // Give an extra char to the start if needed
+  
+  const shortenedName = 
+    `${name.substring(0, beginningChars)}...${name.substring(name.length - endChars)}`;
+  
+  return shortenedName + extension;
+}
 
 export const messageContainsWidget = (message: string): boolean =>
   /AttachmentWidget|CallWidget/.test(message);

@@ -13,6 +13,7 @@ interface FormErrorParams {
   e: {
     cause: string;
     message?: string;
+    status?: number;
   };
   formFields: Record<string, any>;
   setError: (
@@ -26,7 +27,7 @@ export const onFormError = ({ e, formFields, setError }: FormErrorParams) => {
   const cause = Object.keys(formFields).includes(e.cause)
     ? e.cause
     : ROOT_SERVER_ERROR;
-  console.log({e})
+
   if (e.message) {
     setError(
       cause,

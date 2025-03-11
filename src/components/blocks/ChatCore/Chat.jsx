@@ -10,7 +10,7 @@ import {
   TickIcon,
   textParser,
 } from '@a-little-world/little-world-design-system';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,7 @@ import {
 import {
   getCustomChatElements,
   messageContainsWidget,
-  processFileName,
+  formatFileName,
 } from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput, ROOT_SERVER_ERROR } from '../../../helpers/form.ts';
@@ -101,7 +101,6 @@ const Chat = ({ chatId }) => {
 
   const onSubmitError = e => {
     setIsSubmitting(false);
-    console.log('onSubmitError', e);
     onFormError({ e, formFields: getValues(), setError, t });
   };
 
@@ -138,7 +137,7 @@ const Chat = ({ chatId }) => {
     const file = event.target.files[0];
     if (file) {
       // Create a new File object with explicit metadata
-      const fileWithMetadata = new File([file], processFileName(file.name), {
+      const fileWithMetadata = new File([file], formatFileName(file.name), {
         type: file.type,
         lastModified: file.lastModified,
       });
@@ -201,7 +200,7 @@ const Chat = ({ chatId }) => {
       });
     }
   };
-  console.log({errors})
+  
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
@@ -283,7 +282,7 @@ const Chat = ({ chatId }) => {
           })}
           key={`message ${messagesSent}`}
           id="text"
-          error={t(errors?.[ROOT_SERVER_ERROR]?.message)}
+          error={t(get(errors, `${ROOT_SERVER_ERROR}.message`))}
           expandable
           placeholder={
             selectedFile
