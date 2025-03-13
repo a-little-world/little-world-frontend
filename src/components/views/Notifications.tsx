@@ -33,6 +33,8 @@ import {
 } from '../../api/notification.ts';
 import { updateNotificationUserData } from '../../features/userData';
 import PageHeader from '../atoms/PageHeader.tsx';
+import { TopSection } from '../blocks/ChatCore/Chat.styles.tsx';
+import { UnreadIndicator } from '../blocks/ChatCore/ChatsPanel.tsx';
 import {
   BottomAlignedPagination,
   BottomContainer,
@@ -118,6 +120,11 @@ function Notifications() {
     setSearchParams(searchParams);
   };
 
+  const shouldHighlight = (notificationState: NotificationState) =>
+    notificationState === NotificationState.UNREAD &&
+    filter !== NotificationState.UNREAD &&
+    !isLoading;
+
   return (
     <>
       <PageHeader text={t('notifications.title')} />
@@ -195,14 +202,14 @@ function Notifications() {
                   >
                     <Notification
                       $state={state}
-                      $highlight={
-                        !isLoading &&
-                        filter !== NotificationState.UNREAD &&
-                        state === NotificationState.UNREAD
-                      }
+                      $highlight={shouldHighlight(state)}
                     >
                       <Info>
+                        <TopSection>
                         <Text type={TextTypes.Heading6}>{title}</Text>
+                          {shouldHighlight(state) && <UnreadIndicator />}
+                        </TopSection>
+
                         <Text>{description}</Text>
                       </Info>
                       <BottomContainer>
@@ -248,13 +255,7 @@ function Notifications() {
                           )}
                         </Options>
 
-                        <CreatedAt
-                          $highlight={
-                            !isLoading &&
-                            filter !== NotificationState.UNREAD &&
-                            state === NotificationState.UNREAD
-                          }
-                        >
+                        <CreatedAt $highlight={shouldHighlight(state)}>
                           <Text>
                             {formatDistance(created_at, new Date(), {
                               addSuffix: true,

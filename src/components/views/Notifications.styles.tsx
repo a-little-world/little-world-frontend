@@ -56,7 +56,6 @@ export const Notification = styled(motion.div)<{
     $highlight &&
     css`
       border-color: ${theme.color.border.selected};
-      background: ${theme.color.gradient.orange10};
     `}
 `;
 
