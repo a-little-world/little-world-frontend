@@ -10,7 +10,7 @@ import {
   TickIcon,
   textParser,
 } from '@a-little-world/little-world-design-system';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -36,9 +36,10 @@ import {
 import {
   getCustomChatElements,
   messageContainsWidget,
+  formatFileName,
 } from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
-import { onFormError, registerInput } from '../../../helpers/form.ts';
+import { onFormError, registerInput, ROOT_SERVER_ERROR } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../routes.ts';
 import {
@@ -136,7 +137,7 @@ const Chat = ({ chatId }) => {
     const file = event.target.files[0];
     if (file) {
       // Create a new File object with explicit metadata
-      const fileWithMetadata = new File([file], file.name, {
+      const fileWithMetadata = new File([file], formatFileName(file.name), {
         type: file.type,
         lastModified: file.lastModified,
       });
@@ -151,6 +152,7 @@ const Chat = ({ chatId }) => {
 
   const clearSelectedFile = () => {
     setSelectedFile(null);
+    reset();
     fileInputRef.current.value = ''; // Reset file input
   };
 
@@ -199,7 +201,7 @@ const Chat = ({ chatId }) => {
       });
     }
   };
-
+  
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
@@ -212,7 +214,7 @@ const Chat = ({ chatId }) => {
             <>
               {messagesResult?.map(message => {
                 const customChatElements = message?.parsable
-                  ? getCustomChatElements({ message, userId, activeChat })
+                  ? getCustomChatElements({ dispatch, message, userId, activeChat })
                   : [];
 
                 return (
@@ -268,7 +270,9 @@ const Chat = ({ chatId }) => {
           ref={fileInputRef}
           onChange={handleFileSelect}
           style={{ display: 'none' }}
-          accept="image/*,application/pdf"
+          accept="application/pdf, .pdf,.doc,.docx,.txt,.rtf,.odt,
+                    .jpg,.jpeg,.png,.gif,.bmp,.webp,.tiff,
+                    .ppt,.pptx,.xls,.xlsx,.csv, image/*"
         />
 
         <MessageBox
@@ -279,7 +283,7 @@ const Chat = ({ chatId }) => {
           })}
           key={`message ${messagesSent}`}
           id="text"
-          error={t(errors?.text?.message)}
+          error={t(get(errors, `${ROOT_SERVER_ERROR}.message`))}
           expandable
           placeholder={
             selectedFile
