@@ -80,7 +80,7 @@ function Notifications() {
   const notifications = data?.results ?? [];
 
   async function onArchive(id: number) {
-    mutate(
+    const update = await mutate(
       updateNotification(
         id,
         NotificationState.ARCHIVED,
@@ -88,6 +88,7 @@ function Notifications() {
         onError,
       ),
     );
+    console.log(update);
   }
 
   async function onDeleteNotification(id: number) {
@@ -193,20 +194,14 @@ function Notifications() {
             {notifications?.map(
               ({ id, state, title, description, created_at }) => {
                 return (
-                  <motion.li
-                    layout
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    transition={{ type: 'spring', bounce: 0.2 }}
-                    key={id}
-                  >
+                  <motion.li layout key={`${id}-${filter}`}>
                     <Notification
                       $state={state}
                       $highlight={shouldHighlight(state)}
                     >
                       <Info>
                         <TopSection>
-                        <Text type={TextTypes.Heading6}>{title}</Text>
+                          <Text type={TextTypes.Heading6}>{title}</Text>
                           {shouldHighlight(state) && <UnreadIndicator />}
                         </TopSection>
 
