@@ -1,6 +1,8 @@
-import useSWR, { mutate } from 'swr';
+import { mutate } from 'swr';
 
 import { apiFetch } from './helpers.ts';
+
+export const UNREAD_NOTIFICATIONS_URL = '/api/notifications/unread';
 
 export enum NotificationState {
   UNREAD = 'unread',
@@ -50,8 +52,6 @@ export async function fetchNotifications(url: string) {
     useTagsOnly: true,
   });
 }
-
-export const UNREAD_NOTIFICATIONS_URL = `/api/notifications?filter=${NotificationState.UNREAD}`;
 
 export function updateUnreadNotificationCount() {
   mutate(UNREAD_NOTIFICATIONS_URL);

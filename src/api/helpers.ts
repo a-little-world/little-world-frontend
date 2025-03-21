@@ -1,4 +1,3 @@
-import { log } from 'console';
 import Cookies from 'js-cookie';
 
 import { BACKEND_URL } from '../ENVIRONMENT.js';
