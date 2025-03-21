@@ -57,7 +57,7 @@ const StepNumber = styled.div<{ isActive: boolean }>`
 `;
 
 const StepLabel = styled.div<{ isActive: boolean }>`
-  font-size: 18px;
+  font-size: 16px;
   color: ${props =>
     props.isActive ?
       props.theme.color.surface.bold :
