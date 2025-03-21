@@ -9,11 +9,11 @@ import {
   getAppSubpageRoute,
 } from '../../../routes.ts';
 import ContentSelector from '../../blocks/ContentSelector.tsx';
-import Training from '../../blocks/Training/Training.tsx';
 import Beginners from './Beginners.tsx';
 import MyStory from './MyStory.tsx';
 import Partners from './Partners.tsx';
-import Trainings from './Trainings.tsx';
+import Training from './Trainings/Training.tsx';
+import Trainings from './Trainings/Trainings.tsx';
 
 const Content = styled.div`
   ${({ theme }) =>

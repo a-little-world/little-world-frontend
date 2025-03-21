@@ -9,17 +9,17 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
-import useScrollToTop from '../../../hooks/useScrollToTop.tsx';
-import { TRAININGS_ROUTE, getAppRoute } from '../../../routes.ts';
-import Stepper from '../../atoms/Stepper.tsx';
-import Video from '../../atoms/Video.tsx';
+import useScrollToTop from '../../../../hooks/useScrollToTop.tsx';
+import { TRAININGS_ROUTE, getAppRoute } from '../../../../routes.ts';
+import Stepper from '../../../atoms/Stepper.tsx';
+import Video from '../../../atoms/Video.tsx';
+import { SLUG_TO_ID, TRAININGS_DATA, TRAINING_IDS } from '../constants.ts';
 import {
   CheckInText,
   Container,
   ContentCard,
   Description,
-} from './Training.styles.tsx';
-import { SLUG_TO_ID, TRAININGS_DATA } from './constants.ts';
+} from './Trainings.styles.tsx';
 
 function getTrainingDataBySlug(slug?: string) {
   if (!slug) return null;
@@ -69,20 +69,18 @@ const Training: FC = () => {
         <Video src={videoId} title={title} />
         <Description>
           <Text>{t(`resources.trainings.${training.id}.description`)}</Text>
-          <Text>{t(`resources.trainings.${training.id}.teacher`)}</Text>
-
-          {training.hasHandout ? (
+          {training.hasHandout && (
             <Text>{t(`resources.trainings.${training.id}.handout`)}</Text>
-          ) : (
-            <Text>{t(`resources.trainings.${training.id}.glossary`)}</Text>
           )}
+          <Text>{t(`resources.trainings.${training.id}.glossary`)}</Text>
+          <Text>{t(`resources.trainings.${training.id}.teacher`)}</Text>
         </Description>
         <Stepper
           steps={training.video}
           activeStep={videoId}
           onSelectStep={handleVideoSelect}
         />
-        {isLastStep && (
+        {isLastStep && training.id === TRAINING_IDS.intercultural && (
           <CheckInText center>{t('resources.self_check_in')}</CheckInText>
         )}
       </Container>

@@ -43,3 +43,7 @@ ${({ theme }) =>
  padding-top: ${theme.spacing.medium};
 }`};
 `;
+
+export const Method = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+`
