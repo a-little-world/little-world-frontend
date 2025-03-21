@@ -1,3 +1,4 @@
+import { log } from 'console';
 import Cookies from 'js-cookie';
 
 import { BACKEND_URL } from '../ENVIRONMENT.js';
@@ -87,9 +88,8 @@ export async function apiFetch<T = any>(
     }
 
     if (response.headers.get('content-type') === 'application/json') {
-
+      // If the response body is empty or does not contain json data this would throw an error
       return (await response.json()) as T;
-
     }
 
     return null as T;
