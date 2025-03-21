@@ -1,6 +1,6 @@
 import { last } from 'lodash';
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
@@ -9,6 +9,7 @@ import {
   getAppSubpageRoute,
 } from '../../../routes.ts';
 import ContentSelector from '../../blocks/ContentSelector.tsx';
+import Training from '../../blocks/Training/Training.tsx';
 import Beginners from './Beginners.tsx';
 import MyStory from './MyStory.tsx';
 import Partners from './Partners.tsx';
@@ -25,9 +26,12 @@ const Content = styled.div`
     }`};
 `;
 
-type subpages = 'trainings' | 'beginners' | 'story' | 'partners';
+type subpages = 'trainings' | 'training' | 'beginners' | 'story' | 'partners';
 
-const renderResourceContent = (page: subpages) => {
+const ROOT_PATH = 'trainings';
+
+const renderResourceContent = (page?: subpages) => {
+  if (page === 'training') return <Training />;
   if (page === 'trainings') return <Trainings />;
   if (page === 'beginners') return <Beginners />;
   if (page === 'story') return <MyStory />;
@@ -36,13 +40,15 @@ const renderResourceContent = (page: subpages) => {
 };
 
 function Resources() {
+  const { trainingSlug } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const subpage =
-    location.pathname === getAppRoute(RESOURCES_ROUTE)
-      ? 'trainings'
-      : last(location.pathname.split('/'));
+  const subpage = trainingSlug
+    ? 'training'
+    : location.pathname === getAppRoute(RESOURCES_ROUTE)
+    ? ROOT_PATH
+    : last(location.pathname.split('/').filter(Boolean)); // filter out empty strings if trailing slash
 
   const handleSubpageSelect = (page: subpages) => {
     navigate(getAppSubpageRoute(RESOURCES_ROUTE, page));
@@ -51,7 +57,7 @@ function Resources() {
   return (
     <>
       <ContentSelector
-        selection={subpage}
+        selection={subpage === 'training' ? ROOT_PATH : subpage}
         setSelection={handleSubpageSelect}
         use="resources"
       />
