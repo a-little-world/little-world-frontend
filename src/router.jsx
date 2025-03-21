@@ -59,6 +59,7 @@ import {
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
   TRAININGS_ROUTE,
+  TRAINING_ROUTE,
   USER_FORM_ROUTE,
   USER_PROFILE_ROUTE,
   VERIFY_EMAIL_ROUTE,
@@ -247,6 +248,14 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(TRAININGS_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Resources />
+      </FullAppLayout>
+    ),
+  },
+  {
+    path: getAppRoute(TRAINING_ROUTE),
     element: (
       <FullAppLayout>
         <Resources />

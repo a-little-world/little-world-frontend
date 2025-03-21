@@ -66,7 +66,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
   const isHome = key === 'home';
   if (key === 'profile' && userId) {
     key = 'user';
-  }
+  } else if (paths.includes('trainings')) key = 'trainings';
 
   const chats = useSelector(state => state.userData.chats);
 
