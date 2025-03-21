@@ -51,16 +51,7 @@ export async function fetchNotifications(url: string) {
   });
 }
 
-const UNREAD_NOTIFICATIONS_URL = `/api/notifications?filter=${NotificationState.UNREAD}`;
-
-export function useUnreadNotificationCount() {
-  const response = useSWR(UNREAD_NOTIFICATIONS_URL, fetchNotifications, {
-    revalidateOnFocus: false,
-    keepPreviousData: true,
-  });
-
-  return response;
-}
+export const UNREAD_NOTIFICATIONS_URL = `/api/notifications?filter=${NotificationState.UNREAD}`;
 
 export function updateUnreadNotificationCount() {
   mutate(UNREAD_NOTIFICATIONS_URL);
