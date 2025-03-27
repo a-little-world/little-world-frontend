@@ -15,7 +15,7 @@ import { useParams } from 'react-router-dom';
 
 import { resetPassword } from '../../api';
 import { onFormError, registerInput } from '../../helpers/form.ts';
-import { LOGIN_ROUTE } from '../../routes.ts';
+import { LOGIN_ROUTE } from '../../router/routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';
 

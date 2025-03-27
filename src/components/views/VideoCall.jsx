@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { blockIncomingCall, getChatByPartnerId } from '../../features/userData';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
-import { getAppRoute } from '../../routes.ts';
+import { getAppRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage';
 import CallSidebar, {

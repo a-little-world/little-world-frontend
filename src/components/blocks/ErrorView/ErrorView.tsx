@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { getAppRoute } from '../../../routes.ts';
+import { getAppRoute } from '../../../router/routes.ts';
 import MessageCard from '../Cards/MessageCard.jsx';
 import AppLayout from '../Layout/AppLayout.tsx';
 

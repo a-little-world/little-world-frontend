@@ -54,11 +54,7 @@ export const ImageContainer = styled.div`
 export const EventImage = styled.img`
   height: 100%;
   width: 100%;
-  object-fit: center;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.small}) {
-    object-fit: cover;
-  }
+  object-fit: cover;
 `;
 
 export const FrequencyTitle = styled(Text)`

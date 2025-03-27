@@ -1,4 +1,54 @@
-import { getAppSubpageRoute, TRAININGS_ROUTE } from "../../../routes.ts";
+import LernFairLogo from '../../../images/partners/lern-fair-logo.svg';
+import LernFairImage from '../../../images/partners/lern-fair-studying.jpg';
+import {
+  PARTNERS_ROUTE,
+  TRAININGS_ROUTE,
+  getAppSubpageRoute,
+} from '../../../router/routes.ts';
+
+const LERN_FAIR_YT_ID = 'lA4CIXDXXK8';
+
+export enum PARTNERS_DATA_IDS {
+  lewagon = 'lewagon',
+  lernfair = 'lernfair',
+  patenmatch = 'patenmatch',
+}
+
+export const PARTNERS_DATA = {
+  leWagon: {
+    id: PARTNERS_DATA_IDS.lewagon,
+    title: 'Le Wagon',
+    description: 'resources.partners.lewagon.description',
+    slug: 'le-wagon',
+    link: getAppSubpageRoute(PARTNERS_ROUTE, 'le-wagon'),
+    linkText: 'resources.partners.partner_cta',
+    image:
+      'https://home.little-world.com/wp-content/uploads/2025/03/Logo_RedBlack.svg',
+  },
+  // To be included when we do a more comprehensive intergation of Patenmatch
+  // patenmatch: {
+  //   id: PARTNERS_DATA_IDS.patenmatch,
+  //   title: 'Patenmatch',
+  //   description: 'resources.partners.patenmatch.description',
+  //   slug: 'patenmatch',
+  //   link: getAppSubpageRoute(PARTNERS_ROUTE, 'patenmatch'),
+  //   linkText: 'resources.partners.partner_cta',
+  //   image:
+  //     'https://home.little-world.com/wp-content/uploads/2025/03/Patenmatch-logo.svg',
+  // },
+  lernFair: {
+    id: PARTNERS_DATA_IDS.lernfair,
+    title: 'Lern Fair',
+    description: 'resources.partners.lernfair.description',
+    slug: 'lern-fair',
+    link: getAppSubpageRoute(PARTNERS_ROUTE, 'lern-fair'),
+    linkText: 'resources.partners.partner_cta',
+    image: LernFairLogo,
+    additionalImage: LernFairImage,
+    additionalAltImage: 'Girl studying',
+    videoId: LERN_FAIR_YT_ID,
+  },
+};
 
 export enum TRAINING_IDS {
   intercultural = 'intercultural',
@@ -14,7 +64,8 @@ export const TRAININGS_DATA = {
     slug: 'kulturelle-missverstaendnisse',
     link: getAppSubpageRoute(TRAININGS_ROUTE, 'kulturelle-missverstaendnisse'),
     linkText: 'resources.trainings.training_cta',
-    image: 'https://home.little-world.com/wp-content/uploads/2025/03/Kulturelle-Missverstandnisse-Thumbnail.jpg',
+    image:
+      'https://home.little-world.com/wp-content/uploads/2025/03/Kulturelle-Missverstandnisse-Thumbnail.jpg',
     altImage: 'Kulturelle Missverständnisse Training',
     hasHandout: true,
     video: [
@@ -24,7 +75,8 @@ export const TRAININGS_DATA = {
       },
       {
         id: 'p2zls4SjnPQ',
-        label: 'Kulturelle Missverständnisse & Vorurteile - Was sind Vorurteile?',
+        label:
+          'Kulturelle Missverständnisse & Vorurteile - Was sind Vorurteile?',
       },
       {
         id: 't0QnPD9HpHo',
@@ -32,7 +84,8 @@ export const TRAININGS_DATA = {
       },
       {
         id: 'lI7JhoYyb4c',
-        label: 'Kulturelle Missverständnisse & Vorurteile - Folgen von Vorurteilen',
+        label:
+          'Kulturelle Missverständnisse & Vorurteile - Folgen von Vorurteilen',
       },
     ],
   },
@@ -44,7 +97,8 @@ export const TRAININGS_DATA = {
     bio: 'resources.trainings.intercultural.teacher',
     link: getAppSubpageRoute(TRAININGS_ROUTE, 'interkulturelle-kommunikation'),
     linkText: 'resources.trainings.training_cta',
-    image: 'https://home.little-world.com/wp-content/uploads/2025/03/Interkulturelle-Kommunikation-Thumbnail.jpg',
+    image:
+      'https://home.little-world.com/wp-content/uploads/2025/03/Interkulturelle-Kommunikation-Thumbnail.jpg',
     altImage: 'Interkulturelle Kommunikation Training',
     hasHandout: false,
     video: [
@@ -74,13 +128,22 @@ export const TRAININGS_DATA = {
         label: 'Interkulturelle Kommunikation - Sensibilisierung',
       },
     ],
-  }
+  },
 };
 
-// Reverse mapping from slugs to IDs (O(1) lookup)
-export const SLUG_TO_ID: Record<string, TRAINING_IDS> = Object.entries(
-  TRAININGS_DATA,
-).reduce((acc, [id, data]) => {
-  acc[data.slug] = id as TRAINING_IDS;
-  return acc;
-}, {} as Record<string, TRAINING_IDS>);
+type DataWithSlug = { slug: string } & Record<string, any>;
+
+export function getDataBySlug<TIds extends string, TData extends DataWithSlug>(
+  data: Record<TIds, TData>,
+  slug?: string,
+): TData | null {
+  if (!slug) return null;
+
+  const slugToIdMap = Object.entries(data).reduce((acc, [id, itemData]) => {
+    acc[(itemData as DataWithSlug).slug] = id as TIds;
+    return acc;
+  }, {} as Record<string, TIds>);
+
+  const id = slugToIdMap[slug];
+  return id ? data[id] : null;
+}

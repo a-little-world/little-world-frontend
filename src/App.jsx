@@ -6,7 +6,7 @@ import './App.css';
 import WebsocketBridge from './WebsocketBridge';
 import store from './app/store.ts';
 import { initialise } from './features/userData';
-import router from './router';
+import router from './router/router';
 
 export function InitializeDux({ data }) {
   const dispatch = useDispatch();
