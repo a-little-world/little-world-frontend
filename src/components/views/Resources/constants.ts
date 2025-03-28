@@ -1,5 +1,6 @@
 import LernFairLogo from '../../../images/partners/lern-fair-logo.svg';
 import LernFairImage from '../../../images/partners/lern-fair-studying.jpg';
+import { LE_WAGON_REDIRECT } from '../../../router/redirects.ts';
 import {
   PARTNERS_ROUTE,
   TRAININGS_ROUTE,
@@ -22,6 +23,8 @@ export const PARTNERS_DATA = {
     slug: 'le-wagon',
     link: getAppSubpageRoute(PARTNERS_ROUTE, 'le-wagon'),
     linkText: 'resources.partners.partner_cta',
+    ctaLink: LE_WAGON_REDIRECT,
+    displayEnglish: true,
     image:
       'https://home.little-world.com/wp-content/uploads/2025/03/Logo_RedBlack.svg',
   },
@@ -43,6 +46,7 @@ export const PARTNERS_DATA = {
     slug: 'lern-fair',
     link: getAppSubpageRoute(PARTNERS_ROUTE, 'lern-fair'),
     linkText: 'resources.partners.partner_cta',
+    ctaLink: 'https://app.lern-fair.de/welcome',
     image: LernFairLogo,
     additionalImage: LernFairImage,
     additionalAltImage: 'Girl studying',

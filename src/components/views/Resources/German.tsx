@@ -42,10 +42,6 @@ const German: FC = () => {
             color: theme.color.text.title,
           },
           {
-            type: ContentTypes.Emphasize,
-            text: t('resources.german.intro'),
-          },
-          {
             type: ContentTypes.Paragraph,
             text: t('resources.german.description'),
           },
@@ -54,15 +50,12 @@ const German: FC = () => {
             text: t('resources.german.websites_heading'),
           },
           {
-            type: ContentTypes.Paragraph,
-            text: t('resources.german.websites_intro'),
-          },
-          {
             type: ContentTypes.List,
             listItems: [
               t('resources.german.websites_1'),
               t('resources.german.websites_2'),
               t('resources.german.websites_3'),
+              t('resources.german.websites_4'),
             ],
           },
           {
@@ -70,19 +63,12 @@ const German: FC = () => {
             text: t('resources.german.apps_heading'),
           },
           {
-            type: ContentTypes.Paragraph,
-            text: t('resources.german.apps_intro'),
-          },
-          {
             type: ContentTypes.List,
             listItems: [
-              t('resources.german.apps_1'),
-              t('resources.german.apps_2'),
+              t('resources.german.podcasts_1'),
+              t('resources.german.podcasts_2'),
+              t('resources.german.podcasts_3'),
             ],
-          },
-          {
-            type: ContentTypes.Emphasize,
-            text: t('resources.german.disclaimer'),
           },
           {
             type: ContentTypes.Image,

@@ -14,7 +14,13 @@ import { PARTNERS_ROUTE, getAppRoute } from '../../../../router/routes.ts';
 import Video from '../../../atoms/Video.tsx';
 import { PARTNERS_DATA, getDataBySlug } from '../constants.ts';
 import { Container, ContentCard, NotFoundCard } from '../shared.styles.tsx';
-import { AdditionalImage, Cta, Description, Header, Image } from './Partners.styles.tsx';
+import {
+  AdditionalImage,
+  Cta,
+  Description,
+  Header,
+  Image,
+} from './Partners.styles.tsx';
 
 const Partner: FC = () => {
   const { partnerSlug } = useParams();
@@ -60,12 +66,30 @@ const Partner: FC = () => {
         </Description>
 
         <Cta
-          href={partner.link}
+          href={partner.ctaLink}
           buttonAppearance={ButtonAppearance.Primary}
           buttonSize={ButtonSizes.Large}
         >
           {t(`resources.partners.${partner.id}.cta`)}
         </Cta>
+        {/* {partner.displayEnglish && (
+          <>
+            <Divider />
+            <Description>
+              <Text>
+                {t(`resources.partners.${partner.id}.text_content_secondary`)}
+              </Text>
+            </Description>
+
+            <Cta
+              href={partner.ctaLink}
+              buttonAppearance={ButtonAppearance.Primary}
+              buttonSize={ButtonSizes.Large}
+            >
+              {t(`resources.partners.${partner.id}.cta`)}
+            </Cta>
+          </>
+        )} */}
         {partner.videoId && (
           <Video src={partner.videoId} title={partner.videoTitle} />
         )}
