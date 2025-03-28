@@ -22,10 +22,6 @@ const ContentCard = styled(Card)`
   h4:first-of-type {
     margin-top: ${({ theme }) => theme.spacing.medium};
   }
-
-  p:last-of-type {
-    margin-bottom: ${({ theme }) => theme.spacing.medium};
-  }
 `;
 
 const Beginners: FC = () => {
@@ -83,6 +79,7 @@ const Beginners: FC = () => {
           {
             type: ContentTypes.Emphasize,
             text: t('resources.beginners.disclaimer'),
+            style: { marginBottom: "32px" },
           },
           {
             type: ContentTypes.Image,

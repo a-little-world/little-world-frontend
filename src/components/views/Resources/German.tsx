@@ -22,10 +22,6 @@ const ContentCard = styled(Card)`
   h4:first-of-type {
     margin-top: ${({ theme }) => theme.spacing.medium};
   }
-
-  p:last-of-type {
-    margin-bottom: ${({ theme }) => theme.spacing.medium};
-  }
 `;
 
 const German: FC = () => {
