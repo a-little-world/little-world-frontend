@@ -31,7 +31,7 @@ import {
   SETTINGS_ROUTE,
   getAppRoute,
   isActiveRoute,
-} from '../../routes.ts';
+} from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink.tsx';
 import UnreadDot from '../atoms/UnreadDot.tsx';

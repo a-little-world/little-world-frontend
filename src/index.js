@@ -9,7 +9,7 @@ import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
-import { Root } from './router';
+import { Root } from './router/router';
 
 const isDevelopment = DEVELOPMENT;
 

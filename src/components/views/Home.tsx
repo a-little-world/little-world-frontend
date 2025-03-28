@@ -7,7 +7,7 @@ import styled, { css } from 'styled-components';
 import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/matches.ts';
 import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
-import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../routes.ts';
+import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard.tsx';
 import CommsBanner from '../blocks/CommsBanner.tsx';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.tsx';

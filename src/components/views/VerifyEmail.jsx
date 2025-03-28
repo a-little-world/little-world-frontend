@@ -22,7 +22,7 @@ import {
   CHANGE_EMAIL_ROUTE,
   USER_FORM_ROUTE,
   getAppRoute,
-} from '../../routes.ts';
+} from '../../router/routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import {
   FormDescription,

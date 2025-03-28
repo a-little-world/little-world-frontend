@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import { ResourcesListCard } from './shared.styles.tsx';
 
-const Beginners: FC = () => {
+const German: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -18,53 +18,38 @@ const Beginners: FC = () => {
         content={[
           {
             type: ContentTypes.Title,
-            text: t('resources.beginners.title'),
+            text: t('resources.german.title'),
             color: theme.color.text.title,
           },
           {
-            type: ContentTypes.Emphasize,
-            text: t('resources.beginners.intro'),
+            type: ContentTypes.Paragraph,
+            text: t('resources.german.description'),
           },
           {
-            type: ContentTypes.Paragraph,
-            text: t('resources.beginners.description'),
+            type: ContentTypes.Subtitle,
+            text: t('resources.german.websites_heading'),
             style: { marginBottom: theme.spacing.small },
           },
           {
-            type: ContentTypes.Subtitle,
-            text: t('resources.beginners.websites_heading'),
-          },
-          {
-            type: ContentTypes.Paragraph,
-            text: t('resources.beginners.websites_intro'),
-          },
-          {
             type: ContentTypes.List,
             listItems: [
-              t('resources.beginners.websites_1'),
-              t('resources.beginners.websites_2'),
-              t('resources.beginners.websites_3'),
+              t('resources.german.websites_1'),
+              t('resources.german.websites_2'),
+              t('resources.german.websites_3'),
+              t('resources.german.websites_4'),
             ],
           },
           {
             type: ContentTypes.Subtitle,
-            text: t('resources.beginners.apps_heading'),
-          },
-          {
-            type: ContentTypes.Paragraph,
-            text: t('resources.beginners.apps_intro'),
+            text: t('resources.german.podcasts_heading'),
           },
           {
             type: ContentTypes.List,
             listItems: [
-              t('resources.beginners.apps_1'),
-              t('resources.beginners.apps_2'),
+              t('resources.german.podcasts_1'),
+              t('resources.german.podcasts_2'),
+              t('resources.german.podcasts_3'),
             ],
-          },
-          {
-            type: ContentTypes.Emphasize,
-            text: t('resources.beginners.disclaimer'),
-            style: { marginBottom: theme.spacing.large },
           },
           {
             type: ContentTypes.Image,
@@ -77,4 +62,4 @@ const Beginners: FC = () => {
   );
 };
 
-export default Beginners;
+export default German;

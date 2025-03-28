@@ -20,7 +20,7 @@ import { useTheme } from 'styled-components';
 
 import { getChatByChatId, initCallSetup } from '../../../features/userData';
 import { useSelector } from '../../../hooks/index.ts';
-import { PROFILE_ROUTE, getAppRoute } from '../../../routes.ts';
+import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import Chat from './Chat.jsx';
 import {
   BackButton,

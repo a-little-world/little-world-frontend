@@ -9,7 +9,7 @@ import {
   WP_HOME_ROUTE,
   getAppRoute,
   getHomeRoute,
-} from '../../routes.ts';
+} from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import LanguageSelector from './LanguageSelector/LanguageSelector';
 

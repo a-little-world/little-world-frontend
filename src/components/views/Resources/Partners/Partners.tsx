@@ -3,25 +3,24 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
-import ContentList from '../../../blocks/ContentList/ContentList.tsx';
-import { TRAININGS_DATA } from '../constants.ts';
-import { Method } from './Trainings.styles.tsx';
+import ContentList, { ContentListLayouts } from '../../../blocks/ContentList/ContentList.tsx';
+import { PARTNERS_DATA } from '../constants.ts';
+import { Description } from './Partners.styles.tsx';
 import { ContentCard } from '../shared.styles.tsx';
 
-const Trainings: FC = () => {
+const Partners: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
 
   return (
     <ContentCard>
       <Text color={theme.color.text.title} type={TextTypes.Body2} bold tag="h2">
-        {t('resources.trainings.title')}
+        {t('resources.partners.title')}
       </Text>
-      <Text bold>{t('resources.trainings.description')}</Text>
-      <Method>{t('resources.trainings.method')}</Method>
-      <ContentList content={TRAININGS_DATA} />
+      <Description>{t('resources.partners.description')}</Description>
+      <ContentList content={PARTNERS_DATA} itemLayout={ContentListLayouts.Stacked} />
     </ContentCard>
   );
 };
 
-export default Trainings;
+export default Partners;
