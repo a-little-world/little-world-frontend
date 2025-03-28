@@ -1,35 +1,19 @@
 import {
-  Card,
   ContentTypes,
   SwirlyLinesThinImage,
   TextContent,
 } from '@a-little-world/little-world-design-system';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled, { useTheme } from 'styled-components';
-
-const ContentCard = styled(Card)`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: ${({ theme }) => theme.spacing.small};
-  padding-bottom: ${({ theme }) => theme.spacing.xlarge};
-
-  ul {
-    margin-bottom: ${({ theme }) => theme.spacing.medium};
-  }
-
-  h4:first-of-type {
-    margin-top: ${({ theme }) => theme.spacing.medium};
-  }
-`;
+import { useTheme } from 'styled-components';
+import { ResourcesListCard } from './shared.styles.tsx';
 
 const German: FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
 
   return (
-    <ContentCard>
+    <ResourcesListCard>
       <TextContent
         content={[
           {
@@ -44,6 +28,7 @@ const German: FC = () => {
           {
             type: ContentTypes.Subtitle,
             text: t('resources.german.websites_heading'),
+            style: { marginBottom: theme.spacing.small },
           },
           {
             type: ContentTypes.List,
@@ -56,7 +41,7 @@ const German: FC = () => {
           },
           {
             type: ContentTypes.Subtitle,
-            text: t('resources.german.apps_heading'),
+            text: t('resources.german.podcasts_heading'),
           },
           {
             type: ContentTypes.List,
@@ -73,7 +58,7 @@ const German: FC = () => {
           },
         ]}
       />
-    </ContentCard>
+    </ResourcesListCard>
   );
 };
 

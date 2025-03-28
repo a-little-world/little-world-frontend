@@ -10,10 +10,11 @@ export const Header = styled.div`
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.small};
   flex-wrap: wrap;
+  margin-bottom: ${({ theme }) => theme.spacing.small};
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.large}) {
-       margin-bottom: ${theme.spacing.xxsmall};
+       margin-bottom: ${theme.spacing.small};
   }`}
 `;
 
