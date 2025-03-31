@@ -99,7 +99,7 @@ function Sidebar({ sidebarMobile }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
-  const optpath = getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ? getAppRoute(COMMUNITY_EVENTS_ROUTE) : getAppRoute();
+  const startPath = getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ? getAppRoute(COMMUNITY_EVENTS_ROUTE) : getAppRoute();
 
   const buttonData = [
     { label: 'start', path: optpath , Icon: DashboardIcon },
