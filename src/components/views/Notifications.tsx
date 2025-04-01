@@ -186,7 +186,7 @@ function Notifications() {
         </ToolbarButton>
       </Toolbar>
 
-      {isLoading && (notifications?.length ?? 0) == 0 ? (
+      {isLoading && !notifications?.length ? (
         <Loading size={LoadingSizes.Medium} />
       ) : (
         <Items>
