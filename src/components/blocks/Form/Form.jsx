@@ -17,7 +17,7 @@ import {
   EDIT_FORM_ROUTE,
   PROFILE_ROUTE,
   getAppRoute,
-} from '../../../routes.ts';
+} from '../../../router/routes.ts';
 import {
   ComponentTypes,
   getFormComponent,

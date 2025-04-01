@@ -22,7 +22,7 @@ import {
   updateProfile,
 } from '../../features/userData';
 import { onFormError } from '../../helpers/form.ts';
-import { EDIT_FORM_ROUTE, getAppRoute } from '../../routes.ts';
+import { EDIT_FORM_ROUTE, getAppRoute } from '../../router/routes.ts';
 import {
   ComponentTypes,
   formatDataField,

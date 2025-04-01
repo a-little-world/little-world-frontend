@@ -28,7 +28,7 @@ import {
   PROFILE_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
-} from '../../../routes.ts';
+} from '../../../router/routes.ts';
 import MenuLink from '../../atoms/MenuLink.tsx';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';

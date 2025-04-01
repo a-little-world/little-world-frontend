@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import LogoImageSvg from '../../images/logo-image.svg';
 import LogoTextSvg from '../../images/logo-text.svg';
-import { getAppRoute } from '../../routes.ts';
+import { getAppRoute } from '../../router/routes.ts';
 
 enum LogoSizes {
   Small = 'Small',

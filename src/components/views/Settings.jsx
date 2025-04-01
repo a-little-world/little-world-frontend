@@ -26,7 +26,7 @@ import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
 import { updateProfile } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form.ts';
-import { FORGOT_PASSWORD_ROUTE } from '../../routes.ts';
+import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import PageHeader from '../atoms/PageHeader.tsx';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';

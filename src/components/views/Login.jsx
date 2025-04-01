@@ -23,7 +23,7 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
   passAuthenticationBoundary,
-} from '../../routes.ts';
+} from '../../router/routes.ts';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 const Login = () => {

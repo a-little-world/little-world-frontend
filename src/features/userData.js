@@ -1,7 +1,7 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { isEmpty, some, uniqBy } from 'lodash';
 
-import { MESSAGES_ROUTE, getAppSubpageRoute } from '../routes.ts';
+import { MESSAGES_ROUTE, getAppSubpageRoute } from '../router/routes.ts';
 import { questionsDuringCall } from '../services/questionsDuringCall';
 
 export const sortChats = chats => {
