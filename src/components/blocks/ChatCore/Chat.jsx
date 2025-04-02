@@ -255,6 +255,7 @@ const Chat = ({ chatId }) => {
                         message.created,
                         new Date(),
                         language,
+                        true
                       )}
                     </Time>
                   </Message>
