@@ -8,11 +8,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import {
-  NotificationState,
-  useUnreadNotificationCount,
-} from '../../api/notification.ts';
-import { NOTIFICATIONS_ROUTE } from '../../routes.ts';
+import { NotificationState } from '../../api/notification.ts';
+import useUnreadNotificationCount from '../../hooks/useUnreadNotificationCount.ts';
+import { NOTIFICATIONS_ROUTE } from '../../router/routes.ts';
 import UnreadDot from './UnreadDot.tsx';
 
 const StyledNotificationBell = styled(Button)`
