@@ -5,7 +5,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
@@ -13,6 +13,7 @@ import { formatDate, formatEventTime } from '../../../helpers/date.ts';
 import { useSelector } from '../../../hooks/index.ts';
 import placeholderImage from '../../../images/coffee.webp';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
+import ShowMoreText from '../../atoms/ShowMoreText.tsx';
 import {
   Buttons,
   DateTime,
@@ -58,18 +59,8 @@ function CommunityEvent({
   } = useTranslation();
   const theme = useTheme();
 
-  const [showFullText, setShowFullText] = useState(false);
-  const initialWordsDescription = description.split(' ');
-  const wordsToShow = showFullText
-    ? initialWordsDescription.join(' ')
-    : initialWordsDescription.slice(0, 15).join(' ');
-  const isShortText = initialWordsDescription.length <= 15;
   const startDate = new Date(time);
   const endDate = end_time ? new Date(end_time) : undefined;
-
-  const toggleText = () => {
-    setShowFullText(!showFullText);
-  };
 
   return (
     <Event id={id} key={_key}>
@@ -82,16 +73,7 @@ function CommunityEvent({
       <Main>
         <EventInfo>
           <EventTitle type={TextTypes.Heading4}>{title}</EventTitle>
-          <Text>{wordsToShow}</Text>
-          {!isShortText && (
-            <Button
-              color={theme.color.text.link}
-              variation={ButtonVariations.Inline}
-              onClick={toggleText}
-            >
-              {t(`community_events.show_${showFullText ? 'less' : 'more'}`)}
-            </Button>
-          )}
+          <ShowMoreText text={description} />
         </EventInfo>
         <DateTime>
           <Text type={TextTypes.Body3} bold tag="span">

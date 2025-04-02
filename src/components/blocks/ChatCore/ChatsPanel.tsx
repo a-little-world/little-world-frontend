@@ -160,6 +160,7 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
                       message.newest_message.created,
                       new Date(),
                       language,
+                      true
                     )}
                   </Time>
                 )}

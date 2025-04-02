@@ -22,11 +22,29 @@ export const formatDate = (
     locale: locale === LANGUAGES.en ? enGB : de,
   });
 
-export const formatTimeDistance = (from: Date, to: Date, locale: string) =>
-  formatDistance(from, to, {
+export const formatTimeDistance = (
+  from: Date | string | number,
+  to: Date | string | number,
+  locale: string,
+  isPast?: boolean,
+) => {
+  let safeFrom = from;
+  let safeTo = to;
+
+  if (isPast) {
+    // Convert inputs to Date objects if they aren't already
+    const fromDate = from instanceof Date ? from : new Date(from);
+    const toDate = to instanceof Date ? to : new Date(to);
+    // Prevent clock synchronisation issues between server and client
+    safeFrom = new Date(Math.min(fromDate.getTime(), toDate.getTime()));
+    safeTo = new Date(Math.max(fromDate.getTime(), toDate.getTime()));
+  }
+
+  return formatDistance(safeFrom, safeTo, {
     addSuffix: true,
     locale: locale === LANGUAGES.en ? enGB : de,
   });
+};
 
 export function addMinutesToDate(date: Date, minutes: number) {
   const MINUTE_IN_MS = 60 * 1000;

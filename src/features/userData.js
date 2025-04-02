@@ -202,17 +202,23 @@ export const userDataSlice = createSlice({
         throw new Error(
           'No meta data for chat but chatId is not present in state.messages! The server should have deliverd the meta data for the chat.',
         );
-        // this chat has never been loaded we can ignore inserting the actual messages, we only care about inserting the chat as messages will fetch one the chat is clicked!
+        // this chat has never been loaded we can ignore inserting the actual messages, we only care about inserting the chat as messages will fetch once the chat is clicked!
       }
+      
       state.chats.results = some(
         state.chats.results,
         chat => chat.uuid === chatId,
       )
         ? state.chats.results?.map(chat => {
             if (chat.uuid === chatId) {
+              console.log({
+                ...chat,
+                newest: { ...chat.newest_message },
+                message,
+              });
               return {
                 ...chat,
-                unread_count: senderIsSelf
+                unread_count: senderIsSelf || message.read
                   ? chat.unread_count
                   : chat.unread_count + 1,
                 newest_message: message,

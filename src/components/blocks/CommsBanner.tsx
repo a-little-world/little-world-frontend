@@ -121,7 +121,7 @@ const DesktopBannerImage = styled.img<{ $isLarge: boolean }>`
         ? theme.breakpoints.large
         : theme.breakpoints.medium}) {
       display: block;
-      width: 100%;
+      width: auto;
       height: auto;
       max-height: ${$isLarge ? '480px' : '180px'};
       object-fit: contain;
