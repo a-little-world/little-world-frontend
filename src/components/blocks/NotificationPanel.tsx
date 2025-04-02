@@ -11,8 +11,10 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { formatTimeDistance } from '../../helpers/date.ts';
 import { useSelector } from '../../hooks/index.ts';
+import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import ProfileImage from '../atoms/ProfileImage';
-import { getAppRoute, NOTIFICATIONS_ROUTE } from '../../routes.ts';
+
+const NOTIFICATION_ROUTE_ENABLED = false;
 
 const ProfileInfo = styled.div`
   display: flex;
@@ -116,9 +118,15 @@ function NotificationPanel() {
         </Text>
       </ProfileInfo>
       <Divider />
-      <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
-        {t('notifications.title')}
-      </Link>
+      {NOTIFICATION_ROUTE_ENABLED ? (
+        <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
+          {t('notifications.title')}
+        </Link>
+      ) : (
+        <Text tag="h3" type={TextTypes.Body4}>
+          {t('notifications.title')}
+        </Text>
+      )}
       <NotificationList>
         {isEmpty(notifications?.unread?.items) ? (
           <Text center>{t('notifications.none')}</Text>

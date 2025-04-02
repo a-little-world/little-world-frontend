@@ -11,6 +11,8 @@ import styled, { css } from 'styled-components';
 import HideOnMobile from '../atoms/HideOnMobile.tsx';
 import NotificationBell from '../atoms/NotificationBell.tsx';
 
+const NOTIFICATION_BELL_VISIBLE = false;
+
 const Selector = styled.div`
   display: flex;
   align-items: center;
@@ -128,9 +130,11 @@ function ContentSelector({
           </StyledOption>
         ),
       )}
-      <StyledHideOnMobile>
-        <NotificationBell />
-      </StyledHideOnMobile>
+      {NOTIFICATION_BELL_VISIBLE && (
+        <StyledHideOnMobile>
+          <NotificationBell />
+        </StyledHideOnMobile>
+      )}
     </Selector>
   );
 }
