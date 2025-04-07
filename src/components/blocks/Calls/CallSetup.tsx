@@ -61,15 +61,9 @@ const CallSetupCard = styled(ModalCard)`
       .lk-form-control {
         display: none;
       }
-
-      @media (max-width: ${theme.breakpoints.medium}) {
-        .lk-button-group-container {
-          flex-wrap: wrap;
-
-          .lk-button-group {
-            width: 100%;
-          }
-        }
+      
+      .lk-button-menu {
+        height: 100%;
       }
     }
 
