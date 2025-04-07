@@ -215,6 +215,7 @@ export const userDataSlice = createSlice({
                 ...chat,
                 newest: { ...chat.newest_message },
                 message,
+                senderIsSelf
               });
               return {
                 ...chat,
