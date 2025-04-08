@@ -117,10 +117,7 @@ export const userDataSlice = createSlice({
       const pageOverflow =
         notifications.items.length - notifications.itemsPerPage;
       if (pageOverflow > 0) {
-        notifications.items.splice(
-          notifications.itemsPerPage - 1,
-          pageOverflow,
-        );
+        notifications.items.pop();
       }
 
       notifications.totalItems += 1;
@@ -135,7 +132,8 @@ export const userDataSlice = createSlice({
           ({ id }) => id !== notification.id,
         );
         notificationExists ||=
-          notificationCount > state.notifications[notificationState].items.length;
+          notificationCount >
+          state.notifications[notificationState].items.length;
       });
 
       // TODO: addNotification(state, action);
@@ -149,10 +147,7 @@ export const userDataSlice = createSlice({
       const pageOverflow =
         notifications.items.length - notifications.itemsPerPage;
       if (pageOverflow > 0) {
-        notifications.items.splice(
-          notifications.itemsPerPage - 1,
-          pageOverflow,
-        );
+        notifications.items.pop();
       }
 
       if (!notificationExists) {
