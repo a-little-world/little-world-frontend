@@ -275,8 +275,11 @@ function Notifications() {
           ></BottomAlignedPagination>
         )}
         {error && (
-          <StatusMessage $type={MessageTypes.Error} $visible>
-            {JSON.stringify(error)}
+          <StatusMessage
+            $type={MessageTypes.Error}
+            $visible={!isLoading && error?.message}
+          >
+            {error?.message}
           </StatusMessage>
         )}
       </RelativeDiv>
