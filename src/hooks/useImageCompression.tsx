@@ -1,10 +1,16 @@
 import { useCallback } from 'react';
 
+export const MAX_IMAGE_SIZE = 1_000_000; // bytes = 1MB
+
 const useImageCompression = () => {
   const compressImage = useCallback(async (file: File): Promise<Blob> => {
     try {
-      const imageBitmap = await createImageBitmap(file);
+      // If file is already small, return original
+      if (file.size <= 1_000_000) {
+        return file;
+      }
 
+      const imageBitmap = await createImageBitmap(file);
       const canvas = document.createElement('canvas');
       canvas.width = imageBitmap.width;
       canvas.height = imageBitmap.height;
@@ -14,26 +20,38 @@ const useImageCompression = () => {
         throw new Error('Unable to get canvas 2D context');
       }
 
-      ctx.drawImage(imageBitmap, 0, 0);
+      ctx.drawImage(imageBitmap, 0, 0, canvas.width, canvas.height);
 
       // Qualität basierend auf der Dateigröße bestimmen
       let quality = 0.9; // Standardqualität für kleine Dateien
       if (file.size > 5_000_000) {
-        quality = 0.5; // Starke Kompression für große Dateien (> 5 MB)
-      } else if (file.size > 1_000_000) {
-        quality = 0.7; // Moderate Kompression für mittelgroße Dateien (1-5 MB)
+        quality = 0.1; // Starke Kompression für große Dateien (> 5 MB)
+      } else if (file.size > 4_000_000) {
+        quality = 0.1;
+      }else if (file.size > 3_000_000){
+        quality = 0.2;
+      }else if(file.size > 2_000_000){
+        quality = 0.8;
+      }else if(file.size > 1_000_000){
+        quality = 0.9;
       }
 
       return new Promise((resolve, reject) => {
         canvas.toBlob(
           blob => {
             if (blob) {
-              resolve(blob);
+              // Create a new File object preserving original metadata
+              const compressedFile = new File([blob], file.name, {
+                type: blob.type,
+                lastModified: file.lastModified,
+              });
+
+              resolve(compressedFile);
             } else {
               reject(new Error('Compression failed'));
             }
           },
-          file.type,
+          'image/jpeg',
           quality,
         );
       });

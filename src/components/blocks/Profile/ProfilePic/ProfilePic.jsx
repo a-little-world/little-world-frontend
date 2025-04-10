@@ -23,7 +23,9 @@ import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
 import { USER_FIELDS } from '../../../../constants/index.ts';
-import useImageCompression from '../../../../hooks/useImageCompression.tsx';
+import useImageCompression, {
+  MAX_IMAGE_SIZE,
+} from '../../../../hooks/useImageCompression.tsx';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import {
@@ -45,8 +47,6 @@ const IMAGE_TYPES = {
   avatar: 'avatar',
   image: 'image',
 };
-
-const MAX_IMAGE_SIZE = 1000000; // bytes
 
 const CircleImage = ({
   className,
@@ -108,18 +108,17 @@ const ProfilePic = ({ control, setValue, setError }) => {
   const theme = useTheme();
   const { compressImage } = useImageCompression();
 
-  // Needs to be async now, to wait for the compression
   const onImageUpload = async e => {
-    // Imagefile the user wants to upload
     const file = e.target.files[0];
 
-    if (!file) return; // Guard clause for no file selected
+    if (!file) return;
 
     try {
       // compress file if bigger than limit
       if (file.size > MAX_IMAGE_SIZE) {
         const compressedFile = await compressImage(file);
         const image = URL.createObjectURL(compressedFile);
+
         setUploadedImage(image);
         setValue(USER_FIELDS.image, compressedFile); // Use compressed file here
       } else {
