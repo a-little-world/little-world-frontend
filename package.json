@@ -60,7 +60,7 @@
     "react-hook-form": "^7.47.0",
     "react-i18next": "^11.15.4",
     "react-modern-drawer": "^1.2.2",
-    "react-nice-avatar": "^1.2.4",
+    "react-nice-avatar": "1.5.0",
     "react-redux": "^7.2.8",
     "react-router-dom": "^6.2.2",
     "react-use-websocket": "^4.5.0",

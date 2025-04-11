@@ -67,10 +67,6 @@ const CallSetupCard = styled(ModalCard)`
       }
     }
 
-    .lk-device-menu li[data-lk-active='false']:hover {
-      background: ${theme.color.surface.secondary};
-    }
-
     .lk-join-button {
       font-weight: 700;
       border-radius: 90px;
