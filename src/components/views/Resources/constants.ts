@@ -8,6 +8,7 @@ import {
 } from '../../../router/routes.ts';
 
 const LERN_FAIR_YT_ID = 'lA4CIXDXXK8';
+const LEWAGON_YT_ID = 'xAyKddvDTcs';
 
 export enum PARTNERS_DATA_IDS {
   lewagon = 'lewagon',
@@ -27,6 +28,7 @@ export const PARTNERS_DATA = {
     displayEnglish: true,
     image:
       'https://home.little-world.com/wp-content/uploads/2025/03/Logo_RedBlack.svg',
+    videoId: LEWAGON_YT_ID,
   },
   // To be included when we do a more comprehensive intergation of Patenmatch
   // patenmatch: {

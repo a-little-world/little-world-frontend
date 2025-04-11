@@ -19,7 +19,7 @@ const BorderSizes = {
 };
 
 const StyledAvatar = styled(Avatar)`
-  width: ${({ $size }) => ($size === 'flex' ? 'auto' : ImageSizes[$size])};
+  width: auto;
   height: ${({ $size }) => ImageSizes[$size]};
   max-height: ${ImageSizes.large};
   max-width: ${ImageSizes.large};
