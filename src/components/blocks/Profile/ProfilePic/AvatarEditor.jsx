@@ -75,8 +75,8 @@ const options = {
   ],
   hairStyle: [
     'normal',
-    'buzz',
-    'bald',
+    // 'buzz',
+    // 'bald',
     'womanLong',
     'womanShort',
     'thick',
