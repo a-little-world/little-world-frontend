@@ -95,7 +95,7 @@ const options = {
     '#E5C990',
     '#B88665',
   ],
-  hatStyle: ['beanie', 'turban', 'hijab', 'none'],
+  hatStyle: ['beanie', 'turban', 'none'],
   eyeStyle: ['circle', 'oval', 'smile'],
   glassesStyle: ['round', 'square', 'none'],
   noseStyle: ['short', 'long', 'round'],
