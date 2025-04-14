@@ -176,10 +176,11 @@ export const AvatarContainer = styled.div`
 
 export const Controls = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 24px 10px;
   padding: 10px 20px;
   border-radius: 20px;
   background: #1a1a1a;
+  justify-content: center;
 
   flex-wrap: wrap;
 
