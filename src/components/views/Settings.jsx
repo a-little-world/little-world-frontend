@@ -32,6 +32,7 @@ import PageHeader from '../atoms/PageHeader.tsx';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
 import MailingLists from '../blocks/MailingLists/MailingLists.tsx';
+import PushNotifications from '../blocks/PushNotifications/PushNotifications.tsx';
 
 const types = {
   first_name: 'text',
@@ -367,6 +368,7 @@ function Settings() {
               />
             ))}
             <MailingLists />
+            <PushNotifications />
             <SettingsItem>
               <Button
                 appearance={ButtonAppearance.Secondary}

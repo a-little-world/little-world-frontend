@@ -86,7 +86,11 @@ export async function apiFetch<T = any>(
       throw formatApiError(errorData, response);
     }
 
-    return (await response.json()) as T;
+    try {
+      return (await response.json()) as T;
+    } catch (e) {
+      return null as T;
+    }
   } catch (error) {
     console.error(`API Fetch Error (${endpoint}):`, error);
     throw error;

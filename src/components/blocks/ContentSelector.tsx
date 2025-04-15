@@ -8,6 +8,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
+import {
+  registerFirebaseDeviceToken,
+  sendDelayedFirebaseTestNotification,
+  sendFirebaseTestNotification,
+  unregisterFirebaseDeviceToken,
+} from '../../firebase.ts';
+
 const Selector = styled.div`
   display: flex;
   align-items: center;
@@ -112,6 +119,16 @@ function ContentSelector({
           </StyledOption>
         ),
       )}
+      <Button onClick={() => registerFirebaseDeviceToken()}>Register</Button>
+      <Button onClick={() => unregisterFirebaseDeviceToken()}>
+        Unregister
+      </Button>
+      <Button onClick={() => sendFirebaseTestNotification()}>
+        Send test notification
+      </Button>
+      <Button onClick={() => sendDelayedFirebaseTestNotification()}>
+        Send delayed test notification
+      </Button>
     </Selector>
   );
 }
