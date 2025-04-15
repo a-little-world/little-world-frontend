@@ -230,6 +230,14 @@ export const MEDIA_DEVICE_MENU_CSS = css`
     li[data-lk-active='true'] {
       background: ${({ theme }) => theme.color.surface.bold};
       color: ${({ theme }) => theme.color.text.reversed};
+
+      .lk-button:not(:disabled):hover  {
+        background-color: unset;
+      }
+    }
+
+    .lk-device-menu li[data-lk-active='false']:hover {
+      background: ${({ theme }) => theme.color.surface.secondary};
     }
   }
 `;

@@ -24,11 +24,11 @@ const German: FC = () => {
           {
             type: ContentTypes.Paragraph,
             text: t('resources.german.description'),
+            style: { marginBottom: theme.spacing.small },
           },
           {
             type: ContentTypes.Subtitle,
             text: t('resources.german.websites_heading'),
-            style: { marginBottom: theme.spacing.small },
           },
           {
             type: ContentTypes.List,

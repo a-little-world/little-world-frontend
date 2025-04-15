@@ -1,4 +1,4 @@
-import { Button, Text } from '@a-little-world/little-world-design-system';
+import { Button } from '@a-little-world/little-world-design-system';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
@@ -48,8 +48,6 @@ export const ListItem = styled(Link)<{ $layout: ContentListLayouts }>`
         }
       `}
   }}
-
-
 `;
 
 export const ImageWrapper = styled.div<{ $layout: ContentListLayouts }>`
@@ -63,7 +61,9 @@ export const ImageWrapper = styled.div<{ $layout: ContentListLayouts }>`
   max-width: min(80%, 280px);
 
   ${({ theme, $layout }) =>
-    $layout === ContentListLayouts.Stacked && css`
+    $layout === ContentListLayouts.Stacked &&
+    css`
+      width: 100%;
       @media (min-width: ${theme.breakpoints.small}) {
         height: 120px;
       }
@@ -81,7 +81,7 @@ export const ImageWrapper = styled.div<{ $layout: ContentListLayouts }>`
 `;
 
 export const ItemImage = styled.img`
-  height: auto;
+  height: 100%;
   max-height: 100%;
   width: 100%;
   object-fit: contain;
@@ -94,7 +94,7 @@ export const Info = styled.div`
   flex: 1;
 
   > p:last-of-type {
-   margin-bottom: ${({ theme }) => theme.spacing.small};
+    margin-bottom: ${({ theme }) => theme.spacing.small};
   }
 `;
 
