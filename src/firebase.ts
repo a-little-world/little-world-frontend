@@ -7,6 +7,7 @@ import {
   getApps,
   initializeApp,
 } from 'firebase/app';
+import { useSelector } from 'react-redux';
 import {
   Messaging,
   deleteToken,
@@ -25,6 +26,10 @@ const firebaseConfig: FirebaseOptions = {
   appId: '1:728125212622:web:f8f85bd492db7331aa8d9f',
   measurementId: 'G-Z4TJ6GLH47',
 };
+
+export function useArePushNotificationsEnabled() {
+  return useSelector(state => state?.userData?.developmentFeaturesEnabled);
+}
 
 const firebaseAppSettings: FirebaseAppSettings = {
   automaticDataCollectionEnabled: false,

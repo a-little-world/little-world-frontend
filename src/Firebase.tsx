@@ -1,4 +1,5 @@
 import { getApps } from 'firebase/app';
+import React from 'react';
 import {
   MessagePayload,
   Unsubscribe,
@@ -17,7 +18,9 @@ import {
   registerFirebaseDeviceToken,
   setFirebaseDeviceTokenRegistered,
   unregisterFirebaseDeviceToken,
+  useArePushNotificationsEnabled,
 } from './firebase.ts';
+
 
 function handleMessage(payload: MessagePayload): void {
   console.log('focused tab message', payload);
@@ -72,6 +75,7 @@ async function unregister() {
   await disableFirebase();
 }
 
+
 function FireBase() {
   const push_notifications_enabled = useSelector(
     state =>
@@ -101,6 +105,17 @@ function FireBase() {
 
     return () => unsubscribeRef.current?.();
   }, [push_notifications_enabled]);
+  
+  return null;
 }
 
-export default FireBase;
+function FireBaseBehindDevelopmentFlag() {
+  const arePushNotificationsEnabled = useArePushNotificationsEnabled();
+  if (!arePushNotificationsEnabled) {
+    return null;
+  }
+
+  return <FireBase />;
+}
+
+export default FireBaseBehindDevelopmentFlag;
