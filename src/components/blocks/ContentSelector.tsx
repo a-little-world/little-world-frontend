@@ -24,6 +24,7 @@ const Selector = styled.div`
   background: ${({ theme }) => theme.color.surface.primary};
   overflow-x: scroll;
   text-wrap: nowrap;
+  border-bottom: 1px solid ${({ theme }) => theme.color.border.subtle};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.small}) {
@@ -39,7 +40,7 @@ const Selector = styled.div`
   `}
 `;
 
-export const StyledOption = styled(Button)`
+export const StyledOption = styled(Button)<{ $selected?: boolean }>`
   border-color: transparent;
   transition: none;
 
@@ -50,11 +51,16 @@ export const StyledOption = styled(Button)`
       color: ${theme.color.text.link};
     `};
 
-  &:disabled {
-    color: ${({ theme }) => theme.color.text.button};
-    border: none;
-    background: ${({ theme }) => theme.color.gradient.blue10};
-  }
+  ${({ theme, $selected }) =>
+    $selected &&
+    css`
+      background: ${theme.color.gradient.blue10};
+      &:disabled {
+        color: ${theme.color.text.button};
+        border: none;
+        background: ${theme.color.gradient.blue10};
+      }
+    `}
 `;
 
 export const StyledLink = styled(Link)`
@@ -66,7 +72,7 @@ const nbtTopics = {
   ourWorld: ['support', 'donate', 'about', 'stories'],
   main: ['conversation_partners', 'events'],
   help: ['contact', 'faqs'],
-  resources: ['trainings', 'beginners', 'story', 'partners'],
+  resources: ['trainings', 'german', 'beginners', 'story', 'partners'],
 };
 
 const externalLinksTopics = {
@@ -75,12 +81,14 @@ const externalLinksTopics = {
 };
 
 type ContentSelectorProps = {
+  disableIfSelected?: boolean;
   selection?: string;
   setSelection: (selection: string) => void;
   use: string;
 };
 
 function ContentSelector({
+  disableIfSelected = true,
   selection,
   setSelection,
   use,
@@ -113,7 +121,8 @@ function ContentSelector({
             }
             key={topic}
             onClick={() => setSelection(topic)}
-            disabled={selection === topic}
+            disabled={selection === topic && disableIfSelected}
+            $selected={selection === topic}
           >
             {t(`nbt_${topic}`)}
           </StyledOption>

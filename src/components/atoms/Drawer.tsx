@@ -23,10 +23,16 @@ const StyledDrawer = styled(ReactDrawer)`
   gap: ${({ theme }) => theme.spacing.small};
   height: 80% !important;
   padding: ${({ theme }) => theme.spacing.small};
+  padding-top: 0;
   border-radius: ${({ theme }) =>
     `${theme.radius.small} ${theme.radius.small} 0 0`};
   overflow: scroll;
 `;
+
+const CloseButton = styled(Button)`
+  width: 100%;
+  padding-top: ${({ theme }) => theme.spacing.small};
+`
 
 type DrawerProps = {
   children: any;
@@ -43,14 +49,14 @@ const Drawer = ({
 }: DrawerProps) => (
   <DrawerContainer>
     <StyledDrawer open={open} onClose={onClose} direction={direction}>
-      <Button variation={ButtonVariations.Icon} onClick={onClose}>
+      <CloseButton variation={ButtonVariations.Icon} onClick={onClose}>
         <ChevronDownIcon
           label="close drawer"
           labelId="closeDrawer"
           width="16"
           height="16"
         />
-      </Button>
+      </CloseButton>
       {children}
     </StyledDrawer>
   </DrawerContainer>

@@ -17,7 +17,7 @@ import styled, { css } from 'styled-components';
 import { formatDate, formatTime } from '../../../helpers/date.ts';
 import SearchingSvg from '../../../images/match-searching.svg';
 import AppointmentSvg from '../../../images/new-appointment.svg';
-import { USER_FORM_ROUTE, getAppRoute } from '../../../routes.ts';
+import { USER_FORM_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
 const StyledCard = styled(Card)`

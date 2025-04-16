@@ -23,7 +23,7 @@ import {
 } from '../../../features/userData';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { useSelector } from '../../../hooks/index.ts';
-import { CALL_ROUTE, getAppRoute } from '../../../routes.ts';
+import { CALL_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
 
@@ -61,15 +61,9 @@ const CallSetupCard = styled(ModalCard)`
       .lk-form-control {
         display: none;
       }
-
-      @media (max-width: ${theme.breakpoints.medium}) {
-        .lk-button-group-container {
-          flex-wrap: wrap;
-
-          .lk-button-group {
-            width: 100%;
-          }
-        }
+      
+      .lk-button-menu {
+        height: 100%;
       }
     }
 

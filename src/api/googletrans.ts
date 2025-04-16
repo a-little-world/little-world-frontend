@@ -6,6 +6,22 @@ export const LANGUAGES = [
     name: 'Auto Detect',
   },
   {
+    language: 'de',
+    name: 'German',
+  },
+  {
+    language: 'en',
+    name: 'English',
+  },
+  {
+    language: 'es',
+    name: 'Spanish',
+  },
+  {
+    language: 'fr',
+    name: 'French',
+  },
+  {
     language: 'af',
     name: 'Afrikaans',
   },
@@ -114,10 +130,6 @@ export const LANGUAGES = [
     name: 'Dutch',
   },
   {
-    language: 'en',
-    name: 'English',
-  },
-  {
     language: 'eo',
     name: 'Esperanto',
   },
@@ -138,10 +150,6 @@ export const LANGUAGES = [
     name: 'Finnish',
   },
   {
-    language: 'fr',
-    name: 'French',
-  },
-  {
     language: 'fy',
     name: 'Frisian',
   },
@@ -156,10 +164,6 @@ export const LANGUAGES = [
   {
     language: 'ka',
     name: 'Georgian',
-  },
-  {
-    language: 'de',
-    name: 'German',
   },
   {
     language: 'el',
@@ -440,10 +444,6 @@ export const LANGUAGES = [
   {
     language: 'so',
     name: 'Somali',
-  },
-  {
-    language: 'es',
-    name: 'Spanish',
   },
   {
     language: 'su',

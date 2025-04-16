@@ -22,7 +22,7 @@ import {
   CHANGE_EMAIL_ROUTE,
   USER_FORM_ROUTE,
   getAppRoute,
-} from '../../routes.ts';
+} from '../../router/routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import {
   FormDescription,
@@ -34,6 +34,10 @@ import {
 const HelpText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
+
+const ResendButton = styled(Button)`
+ margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+`
 
 const VerifyEmail = () => {
   const { t } = useTranslation();
@@ -121,13 +125,13 @@ const VerifyEmail = () => {
           placeholder={t('verify_email.code_placeholder')}
           type="number"
         />
-        <Button
+        <ResendButton
           variation={ButtonVariations.Inline}
           color={theme.color.text.link}
           onClick={onResendCode}
         >
           {t('verify_email.resend_code')}
-        </Button>
+        </ResendButton>
         <HelpText>{t('verify_email.help_text')}</HelpText>
         <StatusMessage
           $visible={requestSuccessful || errors?.root?.serverError}

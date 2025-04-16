@@ -7,7 +7,7 @@ import {
   OUR_WORLD_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
-} from '../../../routes.ts';
+} from '../../../router/routes.ts';
 import ContentSelector from '../../blocks/ContentSelector.tsx';
 import Donate from './Donate.tsx';
 import SupportUs from './SupportUs.tsx';

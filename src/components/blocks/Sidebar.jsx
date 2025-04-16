@@ -22,6 +22,7 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
 import {
+  COMMUNITY_EVENTS_ROUTE,
   HELP_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
@@ -31,7 +32,7 @@ import {
   SETTINGS_ROUTE,
   getAppRoute,
   isActiveRoute,
-} from '../../routes.ts';
+} from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink.tsx';
 import UnreadDot from '../atoms/UnreadDot.tsx';
@@ -98,9 +99,10 @@ function Sidebar({ sidebarMobile }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
+  const startPath = getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ? getAppRoute(COMMUNITY_EVENTS_ROUTE) : getAppRoute();
 
   const buttonData = [
-    { label: 'start', path: getAppRoute(), Icon: DashboardIcon },
+    { label: 'start', path: startPath , Icon: DashboardIcon },
     { label: 'messages', path: getAppRoute(MESSAGES_ROUTE), Icon: MessageIcon },
     {
       label: 'my_profile',

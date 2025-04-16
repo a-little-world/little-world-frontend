@@ -166,12 +166,12 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const submitPostCallSurvey = ({
     rating,
     review,
-    onError,
+    onError
   }: {
     rating?: number;
     review?: string;
     onError?: () => void;
-  }) => {
+  } = {}) => {
     // Do not submit when user closes modal without giving rating
     if (rating || postCallSurvey?.rating)
       submitCallFeedback({

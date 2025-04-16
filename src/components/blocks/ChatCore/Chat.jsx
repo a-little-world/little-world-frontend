@@ -41,7 +41,7 @@ import {
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { onFormError, registerInput, ROOT_SERVER_ERROR } from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
-import { MESSAGES_ROUTE, getAppRoute } from '../../../routes.ts';
+import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import {
   AttachmentButton,
   ChatContainer,
@@ -255,6 +255,7 @@ const Chat = ({ chatId }) => {
                         message.created,
                         new Date(),
                         language,
+                        true
                       )}
                     </Time>
                   </Message>

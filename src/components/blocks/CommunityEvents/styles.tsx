@@ -28,7 +28,7 @@ export const Event = styled.div`
     padding: ${theme.spacing.small};
     gap: ${theme.spacing.small};
 
-    @media (min-width: ${theme.breakpoints.small}) {
+    @media (min-width: ${theme.breakpoints.large}) {
        flex-direction: row;
     }
   `}
@@ -45,7 +45,7 @@ export const ImageContainer = styled.div`
   overflow: hidden;
   position: relative;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.small}) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
     width: 40%;
     max-height: unset;
   }
@@ -54,11 +54,7 @@ export const ImageContainer = styled.div`
 export const EventImage = styled.img`
   height: 100%;
   width: 100%;
-  object-fit: center;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.small}) {
-    object-fit: cover;
-  }
+  object-fit: cover;
 `;
 
 export const FrequencyTitle = styled(Text)`

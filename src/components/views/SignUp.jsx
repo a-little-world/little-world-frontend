@@ -26,7 +26,7 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
   passAuthenticationBoundary,
-} from '../../routes.ts';
+} from '../../router/routes.ts';
 import {
   NameContainer,
   NameInputs,

@@ -85,7 +85,7 @@ export const ArchiveButton = styled.div`
 
 export const Categories = styled.div`
   display: flex;
-  overflow-x: hidden;
+  overflow-x: scroll;
   padding: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
