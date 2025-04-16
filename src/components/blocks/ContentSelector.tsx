@@ -128,16 +128,6 @@ function ContentSelector({
           </StyledOption>
         ),
       )}
-      <Button onClick={() => registerFirebaseDeviceToken()}>Register</Button>
-      <Button onClick={() => unregisterFirebaseDeviceToken()}>
-        Unregister
-      </Button>
-      <Button onClick={() => sendFirebaseTestNotification()}>
-        Send test notification
-      </Button>
-      <Button onClick={() => sendDelayedFirebaseTestNotification()}>
-        Send delayed test notification
-      </Button>
     </Selector>
   );
 }
