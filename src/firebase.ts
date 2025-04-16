@@ -53,8 +53,8 @@ export async function getFirebaseToken(): Promise<string | undefined> {
   return token;
 }
 
-export function enableFirebase() {
-  initializeApp(firebaseConfig, firebaseAppSettings);
+export function enableFirebase(firebaseClientConfig: any) {
+  initializeApp(firebaseClientConfig, firebaseAppSettings);
 }
 
 export async function disableFirebase() {

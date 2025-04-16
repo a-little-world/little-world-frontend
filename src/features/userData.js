@@ -28,6 +28,7 @@ export const userDataSlice = createSlice({
       console.log('PAYLOAD', action.payload, { state, action });
 
       state.developmentFeaturesEnabled = false;
+      state.firebaseClientConfig = action.payload?.firebaseClientConfig;
 
       state.communityEvents = action.payload?.communityEvents;
       state.user = {

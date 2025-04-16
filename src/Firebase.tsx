@@ -26,7 +26,7 @@ function handleMessage(payload: MessagePayload): void {
   console.log('focused tab message', payload);
 }
 
-async function register() {
+async function register(firebaseClientConfig: any) {
   const permission = await Notification.requestPermission();
   if (permission !== 'granted') {
     const supported = await isSupported();
@@ -37,7 +37,7 @@ async function register() {
     return;
   }
 
-  enableFirebase();
+  enableFirebase(firebaseClientConfig);
   const token = await getFirebaseToken();
   console.log(token);
   if (!token) {
@@ -82,6 +82,9 @@ function FireBase() {
       state?.userData?.user?.profile?.push_notifications_enabled ?? false,
   );
   const unsubscribeRef = useRef<Unsubscribe>();
+  const firebaseClientConfig = useSelector(
+    state => state?.userData?.firebaseClientConfig,
+  );
 
   useEffect(() => {
     console.log(
@@ -90,7 +93,7 @@ function FireBase() {
     );
 
     if (push_notifications_enabled) {
-      register().then(() => {
+      register(firebaseClientConfig).then(() => {
         const messaging = getFirebaseMessaging();
         if (messaging) {
           unsubscribeRef.current = onMessage(messaging, handleMessage);
