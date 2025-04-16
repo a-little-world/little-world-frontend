@@ -26,7 +26,7 @@ function handleMessage(payload: MessagePayload): void {
   console.log('focused tab message', payload);
 }
 
-async function register(firebaseClientConfig: any) {
+async function register(firebaseClientConfig: any, firebasePublicVapidKey: string) {
   const permission = await Notification.requestPermission();
   if (permission !== 'granted') {
     const supported = await isSupported();
@@ -38,7 +38,7 @@ async function register(firebaseClientConfig: any) {
   }
 
   enableFirebase(firebaseClientConfig);
-  const token = await getFirebaseToken();
+  const token = await getFirebaseToken(firebasePublicVapidKey);
   console.log(token);
   if (!token) {
     // TODO: token sollte immer gesetzt sein
@@ -50,7 +50,7 @@ async function register(firebaseClientConfig: any) {
     return;
   }
 
-  registerFirebaseDeviceToken()
+  registerFirebaseDeviceToken(firebasePublicVapidKey)
     .then(() => {
       setFirebaseDeviceTokenRegistered(token, true);
     })
@@ -59,24 +59,24 @@ async function register(firebaseClientConfig: any) {
     });
 }
 
-async function unregister() {
+async function unregister(firebasePublicVapidKey: string) {
   if (getApps().length === 0) {
     return;
   }
 
-  const token = await getFirebaseToken();
+  const token = await getFirebaseToken(firebasePublicVapidKey);
   // TODO: token sollte immer gesetzt sein
   if (!token) {
     return;
   }
 
-  await unregisterFirebaseDeviceToken();
+  await unregisterFirebaseDeviceToken(firebasePublicVapidKey);
   setFirebaseDeviceTokenRegistered(token!, true);
   await disableFirebase();
 }
 
 
-function FireBase() {
+function FireBase({ firebasePublicVapidKey }: { firebasePublicVapidKey: string }) {
   const push_notifications_enabled = useSelector(
     state =>
       state?.userData?.user?.profile?.push_notifications_enabled ?? false,
@@ -93,7 +93,7 @@ function FireBase() {
     );
 
     if (push_notifications_enabled) {
-      register(firebaseClientConfig).then(() => {
+      register(firebaseClientConfig, firebasePublicVapidKey).then(() => {
         const messaging = getFirebaseMessaging();
         if (messaging) {
           unsubscribeRef.current = onMessage(messaging, handleMessage);
@@ -103,7 +103,7 @@ function FireBase() {
       unsubscribeRef.current?.();
       unsubscribeRef.current = undefined;
 
-      unregister();
+      unregister(firebasePublicVapidKey);
     }
 
     return () => unsubscribeRef.current?.();
@@ -117,8 +117,12 @@ function FireBaseBehindDevelopmentFlag() {
   if (!arePushNotificationsEnabled) {
     return null;
   }
+  
+  const firebasePublicVapidKey = useSelector(
+    state => state?.userData?.firebasePublicVapidKey,
+  );
 
-  return <FireBase />;
+  return <FireBase firebasePublicVapidKey={firebasePublicVapidKey} />;
 }
 
 export default FireBaseBehindDevelopmentFlag;

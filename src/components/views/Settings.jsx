@@ -323,6 +323,9 @@ function Settings() {
     ...state.userData.user.profile,
   }));
 
+  const firebasePublicVapidKey = useSelector(
+    state => state?.userData?.firebasePublicVapidKey,
+  );
   const arePushNotificationsEnabled = useArePushNotificationsEnabled();
 
   const [editing, setEditing] = useState(null);
@@ -392,14 +395,14 @@ function Settings() {
             </SettingsItem>
             {arePushNotificationsEnabled && <>
               <PushNotifications />
-              <Button onClick={() => registerFirebaseDeviceToken()}>Register</Button>
-              <Button onClick={() => unregisterFirebaseDeviceToken()}>
+              <Button onClick={() => registerFirebaseDeviceToken(firebasePublicVapidKey)}>Register</Button>
+              <Button onClick={() => unregisterFirebaseDeviceToken(firebasePublicVapidKey)}>
                 Unregister
               </Button>
-              <Button onClick={() => sendFirebaseTestNotification()}>
+              <Button onClick={() => sendFirebaseTestNotification(firebasePublicVapidKey)}>
                 Send test notification
               </Button>
-              <Button onClick={() => sendDelayedFirebaseTestNotification()}>
+              <Button onClick={() => sendDelayedFirebaseTestNotification(firebasePublicVapidKey)}>
                 Send delayed test notification
               </Button>
             </>}

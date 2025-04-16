@@ -17,16 +17,6 @@ import {
 
 import { apiFetch } from './api/helpers.ts';
 
-const firebaseConfig: FirebaseOptions = {
-  apiKey: 'AIzaSyAn8iTK0Bgyy5s7_XBwiGNsxKEBRdTb3uM',
-  authDomain: 'little-world-5f895.firebaseapp.com',
-  projectId: 'little-world-5f895',
-  storageBucket: 'little-world-5f895.firebasestorage.app',
-  messagingSenderId: '728125212622',
-  appId: '1:728125212622:web:f8f85bd492db7331aa8d9f',
-  measurementId: 'G-Z4TJ6GLH47',
-};
-
 export function useArePushNotificationsEnabled() {
   return useSelector(state => state?.userData?.developmentFeaturesEnabled);
 }
@@ -34,9 +24,6 @@ export function useArePushNotificationsEnabled() {
 const firebaseAppSettings: FirebaseAppSettings = {
   automaticDataCollectionEnabled: false,
 };
-
-const vapidKey =
-  'BIyKSRNovx_7E0ZwAyAPs1GoZVJ2aAvcevD9Un2Ii6bTG3y12MFwI5Hk4DmaMYUlav_bxm8PLED--iCsPr98OHI';
 
 export function getFirebaseApp(): FirebaseApp {
   return getApp();
@@ -47,9 +34,9 @@ export function getFirebaseMessaging(): Messaging {
   return getMessaging(app);
 }
 
-export async function getFirebaseToken(): Promise<string | undefined> {
+export async function getFirebaseToken(firebasePublicVapidKey: string): Promise<string | undefined> {
   const messaging = getMessaging();
-  const token = await getToken(messaging, { vapidKey });
+  const token = await getToken(messaging, { vapidKey: firebasePublicVapidKey });
   return token;
 }
 
@@ -129,8 +116,8 @@ export function setFirebaseDeviceTokenRegistered(
   }
 }
 
-export async function registerFirebaseDeviceToken(): Promise<void> {
-  const token = await getFirebaseToken();
+export async function registerFirebaseDeviceToken(firebasePublicVapidKey: string): Promise<void> {
+  const token = await getFirebaseToken(firebasePublicVapidKey);
 
   return apiFetch('/api/push_notifications/register', {
     method: 'POST',
@@ -140,8 +127,8 @@ export async function registerFirebaseDeviceToken(): Promise<void> {
   });
 }
 
-export async function unregisterFirebaseDeviceToken(): Promise<void> {
-  const token = await getFirebaseToken();
+export async function unregisterFirebaseDeviceToken(firebasePublicVapidKey: string): Promise<void> {
+  const token = await getFirebaseToken(firebasePublicVapidKey);
 
   return apiFetch('/api/push_notifications/unregister', {
     method: 'POST',
@@ -151,8 +138,8 @@ export async function unregisterFirebaseDeviceToken(): Promise<void> {
   });
 }
 
-export async function sendFirebaseTestNotification(): Promise<void> {
-  const token = await getFirebaseToken();
+export async function sendFirebaseTestNotification(firebasePublicVapidKey: string): Promise<void> {
+  const token = await getFirebaseToken(firebasePublicVapidKey);
 
   return apiFetch('/api/push_notifications/send', {
     method: 'POST',
@@ -162,8 +149,8 @@ export async function sendFirebaseTestNotification(): Promise<void> {
   });
 }
 
-export async function sendDelayedFirebaseTestNotification(): Promise<void> {
-  const token = await getFirebaseToken();
+export async function sendDelayedFirebaseTestNotification(firebasePublicVapidKey: string): Promise<void> {
+  const token = await getFirebaseToken(firebasePublicVapidKey);
 
   setTimeout(
     () =>

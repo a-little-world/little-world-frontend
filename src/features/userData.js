@@ -29,6 +29,7 @@ export const userDataSlice = createSlice({
 
       state.developmentFeaturesEnabled = false;
       state.firebaseClientConfig = action.payload?.firebaseClientConfig;
+      state.firebasePublicVapidKey = action.payload?.firebasePublicVapidKey;
 
       state.communityEvents = action.payload?.communityEvents;
       state.user = {
