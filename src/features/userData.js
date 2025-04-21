@@ -3,7 +3,7 @@ import { isEmpty, some, uniqBy } from 'lodash';
 
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../router/routes.ts';
 import { questionsDuringCall } from '../services/questionsDuringCall';
-import store from '../app/store';
+import store from '../app/store.ts';
 
 export const sortChats = chats => {
   const sorted = chats.sort((a, b) => {

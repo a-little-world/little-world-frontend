@@ -1,12 +1,11 @@
 import { getApps } from 'firebase/app';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   MessagePayload,
   Unsubscribe,
   isSupported,
   onMessage,
 } from 'firebase/messaging';
-import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
