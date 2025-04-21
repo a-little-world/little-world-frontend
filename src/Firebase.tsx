@@ -113,13 +113,14 @@ function FireBase({ firebasePublicVapidKey }: { firebasePublicVapidKey: string }
 
 function FireBaseBehindDevelopmentFlag() {
   const arePushNotificationsEnabled = useArePushNotificationsEnabled();
-  if (!arePushNotificationsEnabled) {
-    return null;
-  }
   
   const firebasePublicVapidKey = useSelector(
     state => state?.userData?.firebasePublicVapidKey,
   );
+
+  if (!arePushNotificationsEnabled) {
+    return null;
+  }
 
   return <FireBase firebasePublicVapidKey={firebasePublicVapidKey} />;
 }
