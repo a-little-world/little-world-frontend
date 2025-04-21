@@ -3,6 +3,7 @@ import { isEmpty, some, uniqBy } from 'lodash';
 
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../router/routes.ts';
 import { questionsDuringCall } from '../services/questionsDuringCall';
+import store from '../app/store.ts';
 
 export const sortChats = chats => {
   const sorted = chats.sort((a, b) => {
@@ -25,6 +26,10 @@ export const userDataSlice = createSlice({
     initialise: (state, action) => {
       // TODO: this should NEVER be called twice will overwrite the full state
       console.log('PAYLOAD', action.payload, { state, action });
+
+      state.developmentFeaturesEnabled = false;
+      state.firebaseClientConfig = action.payload?.firebaseClientConfig;
+      state.firebasePublicVapidKey = action.payload?.firebasePublicVapidKey;
 
       state.communityEvents = action.payload?.communityEvents;
       state.user = {
@@ -298,6 +303,9 @@ export const userDataSlice = createSlice({
     setMatchRejected: (state, { payload }) => {
       state.matchRejected = payload;
     },
+    setDevelopmentFeaturesEnabled: (state, { payload }) => {
+      state.developmentFeaturesEnabled = payload;
+    },
   },
 });
 
@@ -318,6 +326,7 @@ export const {
   setMatchRejected,
   stopActiveCall,
   switchQuestionCategory,
+  setDevelopmentFeaturesEnabled,
   updateChats,
   updateConfirmedData,
   updateEmail,
@@ -373,5 +382,45 @@ export const postArchieveQuestion =
       }),
     );
   };
+
+// Development-mode toggles:
+
+export const enableDevelopmentFeatures = () => dispatch => {
+  dispatch(setDevelopmentFeaturesEnabled(true));
+};
+
+export const disableDevelopmentFeatures = () => dispatch => {
+  dispatch(setDevelopmentFeaturesEnabled(false));
+};
+
+export const toggleDevelopmentFeatures = () => (dispatch, getState) => {
+  const currentState = getState().userData.developmentFeaturesEnabled;
+  dispatch(setDevelopmentFeaturesEnabled(!currentState));
+  return !currentState;
+};
+
+// Add this at the end of the file, before the export default
+// Attach functions to window to manage development features from console
+if (typeof window !== 'undefined') {
+  window.enableDevFeatures = () => {
+    store.dispatch(setDevelopmentFeaturesEnabled(true));
+    console.log('Development features enabled!');
+    return 'Development features enabled!';
+  };
+  
+  window.disableDevFeatures = () => {
+    store.dispatch(setDevelopmentFeaturesEnabled(false));
+    console.log('Development features disabled!');
+    return 'Development features disabled!';
+  };
+  
+  window.toggleDevFeatures = () => {
+    const state = store.getState();
+    const currentValue = state.userData.developmentFeaturesEnabled;
+    store.dispatch(setDevelopmentFeaturesEnabled(!currentValue));
+    console.log(`Development features ${!currentValue ? 'enabled' : 'disabled'}!`);
+    return `Development features ${!currentValue ? 'enabled' : 'disabled'}!`;
+  };
+}
 
 export default userDataSlice.reducer;

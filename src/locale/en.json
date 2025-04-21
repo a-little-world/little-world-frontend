@@ -433,6 +433,8 @@
   "profile.match_profile_title": "{{userName}}'s Profile",
   "profile.save_btn": "Save",
   "profile.self_profile_title": "My Profile",
+  "push_notifications": "Notifications",
+  "push_notifications.enable_error": "Notifications could not be enabled. Please check the notification permission for this page and then reload it.",
   "rejected_match_btn": "Alles klar",
   "rejected_match_description": "You have decided to decline your match.",
   "rejected_match_info_1": "Want to tell us why? Just drop us a message in the chat so we can match you better next time!",

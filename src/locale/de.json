@@ -435,6 +435,8 @@
   "profile.match_profile_title": "{{userName}}'s Profil",
   "profile.save_btn": "Speichern",
   "profile.self_profile_title": "Mein Profil",
+  "push_notifications": "Benachrichtigungen",
+  "push_notifications.enable_error": "Benachrichtigungen konnten nicht aktiviert werden. Bitte überprüfe die Berechtigungen der Seite und lade sie anschließend neu.",
   "rejected_match_btn": "Alles klar",
   "rejected_match_description": "Du hast dich entschieden, dein Match abzulehnen.",
   "rejected_match_info_1": "Möchtest du uns den Grund nennen? Schreib uns einfach eine Nachricht im Chat, dann können wir es für dein nächstes Match besser machen!",
