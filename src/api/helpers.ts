@@ -88,7 +88,7 @@ export async function apiFetch<T = any>(
 
     try {
       return (await response.json()) as T;
-    } catch (e) {
+    } catch (_e) {
       return null as T;
     }
   } catch (error) {
