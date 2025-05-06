@@ -1,9 +1,9 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { isEmpty, some, uniqBy } from 'lodash';
 
+import store from '../app/store.ts';
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../router/routes.ts';
 import { questionsDuringCall } from '../services/questionsDuringCall';
-import store from '../app/store.ts';
 
 export const sortChats = chats => {
   const sorted = chats.sort((a, b) => {
@@ -120,6 +120,9 @@ export const userDataSlice = createSlice({
     removePostCallSurvey: state => {
       state.postCallSurvey = null;
     },
+    setSearchState: (state, action) => {
+      state.user.isSearching = action.payload;
+    },
     addIncomingCall: (state, action) => {
       state.activeCallRooms = [
         ...state.activeCallRooms.filter(
@@ -209,29 +212,29 @@ export const userDataSlice = createSlice({
         );
         // this chat has never been loaded we can ignore inserting the actual messages, we only care about inserting the chat as messages will fetch once the chat is clicked!
       }
-      
+
       state.chats.results = some(
         state.chats.results,
         chat => chat.uuid === chatId,
       )
         ? state.chats.results?.map(chat => {
-            if (chat.uuid === chatId) {
-              console.log({
-                ...chat,
-                newest: { ...chat.newest_message },
-                message,
-                senderIsSelf
-              });
-              return {
-                ...chat,
-                unread_count: senderIsSelf || message.read
-                  ? chat.unread_count
-                  : chat.unread_count + 1,
-                newest_message: message,
-              };
-            }
-            return chat;
-          })
+          if (chat.uuid === chatId) {
+            console.log({
+              ...chat,
+              newest: { ...chat.newest_message },
+              message,
+              senderIsSelf
+            });
+            return {
+              ...chat,
+              unread_count: senderIsSelf || message.read
+                ? chat.unread_count
+                : chat.unread_count + 1,
+              newest_message: message,
+            };
+          }
+          return chat;
+        })
         : [metaChatObj, ...state.chats.results];
       state.chats = {
         ...state.chats,
@@ -373,15 +376,15 @@ export const FetchQuestionsDataAsync = () => async dispatch => {
 
 export const postArchieveQuestion =
   (card, archive = true) =>
-  async dispatch => {
-    await questionsDuringCall.archieveQuestion(card?.uuid, archive);
-    dispatch(
-      switchQuestionCategory({
-        card,
-        archived: archive,
-      }),
-    );
-  };
+    async dispatch => {
+      await questionsDuringCall.archieveQuestion(card?.uuid, archive);
+      dispatch(
+        switchQuestionCategory({
+          card,
+          archived: archive,
+        }),
+      );
+    };
 
 // Development-mode toggles:
 
@@ -407,13 +410,13 @@ if (typeof window !== 'undefined') {
     console.log('Development features enabled!');
     return 'Development features enabled!';
   };
-  
+
   window.disableDevFeatures = () => {
     store.dispatch(setDevelopmentFeaturesEnabled(false));
     console.log('Development features disabled!');
     return 'Development features disabled!';
   };
-  
+
   window.toggleDevFeatures = () => {
     const state = store.getState();
     const currentValue = state.userData.developmentFeaturesEnabled;
