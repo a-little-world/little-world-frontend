@@ -21,12 +21,13 @@ import {
 import {
   ComponentTypes,
   getFormComponent,
-} from '../../../userForm/formContent';
+} from '../../../userForm/formContent.ts';
 import getFormPage from '../../../userForm/formPages';
-import DropdownWithInput from '../DropdownWithInput/DropdownWithInput';
-import MultiCheckboxWithInput from '../MultiCheckboxWithInput/MultiCheckboxWithInput.tsx';
+import CheckboxWithInput from '../WithInput/CheckboxWithInput/CheckboxWithInput.tsx';
+import DropdownWithInput from '../WithInput/DropdownWithInput/DropdownWithInput.jsx';
+import MultiCheckboxWithInput from '../WithInput/MultiCheckboxWithInput/MultiCheckboxWithInput.tsx';
 import ProfilePic from '../Profile/ProfilePic/ProfilePic';
-import RadioGroupWithInput from '../RadioGroupWithInput/RadioGroupWithInput';
+import RadioGroupWithInput from '../WithInput/RadioGroupWithInput/RadioGroupWithInput.jsx';
 import FormStep from './FormStep';
 import {
   FormButtons,
@@ -130,6 +131,15 @@ const Form = () => {
             return (
               <DropdownWithInput
                 key={DropdownWithInput.name}
+                control={control}
+                {...component}
+              />
+            );
+
+          if (component?.type === ComponentTypes.checkboxWithInput)
+            return (
+              <CheckboxWithInput
+                key={CheckboxWithInput.name}
                 control={control}
                 {...component}
               />

@@ -5,7 +5,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 
 import { USER_TYPES } from '../constants/index.ts';
-import { ComponentTypes, formatDataField } from './formContent';
+import { ComponentTypes, formatDataField } from './formContent.ts';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
 export const restrictedLangLevels = ['level-3', 'level-4'];
@@ -277,6 +277,40 @@ const formPages = {
           infoText: 'user_form_notifications.info',
         },
       },
+      ...(userData?.user_type === USER_TYPES.volunteer
+        ? []
+        : [
+            {
+              // type: ComponentTypes.checkbox,
+              // currentValue: userData?.job_search,
+              // dataField: 'job_search',
+              // getProps: t => ({
+              //   id: 'job search checkbox',
+              //   label: t('job_search.checkbox_label'),
+              //   labelTooltip: t('job_search.checkbox_label_tooltip'),
+              // }),
+
+              type: ComponentTypes.checkboxWithInput,
+              checkbox: {
+                currentValue: userData?.job_search,
+                dataField: 'job_search',
+                getProps: t => ({
+                  heading: t('job_search.heading'),
+                  id: 'job search checkbox',
+                  label: t('job_search.checkbox_label'),
+                  labelTooltip: t('job_search.checkbox_label_tooltip'),
+                }),
+              },
+              textInput: {
+                currentValue: userData?.job_skill_description,
+                dataField: 'job_skill_description',
+                getProps: t => ({
+                  label: t('job_search.skills_label'),
+                  placeholder: t('job_search.skills_placeholder'),
+                }),
+              },
+            },
+          ]),
     ],
   }),
   conditions: ({ userData }) => ({

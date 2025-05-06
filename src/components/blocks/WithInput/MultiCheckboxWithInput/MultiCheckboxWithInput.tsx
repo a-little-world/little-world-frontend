@@ -1,22 +1,32 @@
 import {
-  Dropdown,
+  MultiCheckbox,
   TextInput,
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { formatDataField } from '../../../userForm/formContent';
-import FormStep from '../Form/FormStep';
-import { Container } from './styles';
+import { formatDataField } from '../../../../userForm/formContent.ts';
+import FormStep from '../../Form/FormStep.jsx';
+import { Container } from './styles.tsx';
 
-const DropdownWithInput = ({ control, dropdown, textInput }) => {
-  const { currentValue, dataField, formData, textInputVal, getProps } =    dropdown;
+interface MultiCheckboxWithInputProps {
+  control: any;
+  multiCheckbox: any;
+  textInput: any;
+}
+
+const MultiCheckboxWithInput = ({
+  control,
+  multiCheckbox,
+  textInput,
+}: MultiCheckboxWithInputProps) => {
+  const { currentValue, dataField, formData, textInputVal, getProps } =    multiCheckbox;
   const [displayTextInput, setDisplayTextInput] = useState(
-    textInputVal === currentValue,
+    currentValue.includes(textInputVal),
   );
   const { t } = useTranslation();
-  const dropdownProps = getProps?.(t);
+  const MultiCheckboxProps = getProps?.(t);
   return (
     <Container>
       <Controller
@@ -24,24 +34,24 @@ const DropdownWithInput = ({ control, dropdown, textInput }) => {
           field: { onChange, onBlur, value, name, ref },
           fieldState: { error },
         }) => (
-          <Dropdown
+          <MultiCheckbox
             name={name}
-            value={value}
+            preSelected={value}
             onBlur={onBlur}
             inputRef={ref}
             error={error?.message}
-            onValueChange={val => {
-              setDisplayTextInput(val === textInputVal);
+            onSelection={val => {
+              setDisplayTextInput(val?.includes(textInputVal));
               onChange(val);
             }}
             options={formatDataField(formData, t)}
-            {...dropdownProps}
+            {...MultiCheckboxProps}
           />
         )}
         defaultValue={currentValue}
         name={dataField}
         control={control}
-        rules={dropdownProps?.errorRules}
+        rules={MultiCheckboxProps?.errorRules}
       />
       {displayTextInput && (
         <FormStep
@@ -59,4 +69,4 @@ const DropdownWithInput = ({ control, dropdown, textInput }) => {
   );
 };
 
-export default DropdownWithInput;
+export default MultiCheckboxWithInput;
