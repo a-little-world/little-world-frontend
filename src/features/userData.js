@@ -139,6 +139,12 @@ export const userDataSlice = createSlice({
         m => m.id !== id,
       );
     },
+    matchRemoved: (state, action) => {
+      const { matchId, matchUuid } = action.payload;
+      state.matches.confirmed.items = state.matches.confirmed.items.filter(
+        m => m.id !== matchId,
+      );
+    },
     updateMatch: (state, action) => {
       const { category, match } = action.payload;
       const { id, ...rest } = match;
