@@ -262,7 +262,10 @@ const formPages = {
     components: [
       {
         type: ComponentTypes.text,
-        getProps: t => ({ children: t('user_form_notifications.description') }),
+        getProps: t => ({
+          children: t('user_form_notifications.description'),
+          bold: true,
+        }),
       },
       {
         type: ComponentTypes.radioWithInput,
