@@ -15,8 +15,6 @@ import { useTranslation } from 'react-i18next';
 import FormStep from '../../Form/FormStep.jsx';
 import { Container, TextInputContainer } from './styles.ts';
 
-
-
 interface CheckboxProps {
   heading?: string;
   currentValue: boolean;

@@ -23,10 +23,10 @@ import {
   getFormComponent,
 } from '../../../userForm/formContent.ts';
 import getFormPage from '../../../userForm/formPages';
+import ProfilePic from '../Profile/ProfilePic/ProfilePic';
 import CheckboxWithInput from '../WithInput/CheckboxWithInput/CheckboxWithInput.tsx';
 import DropdownWithInput from '../WithInput/DropdownWithInput/DropdownWithInput.jsx';
 import MultiCheckboxWithInput from '../WithInput/MultiCheckboxWithInput/MultiCheckboxWithInput.tsx';
-import ProfilePic from '../Profile/ProfilePic/ProfilePic';
 import RadioGroupWithInput from '../WithInput/RadioGroupWithInput/RadioGroupWithInput.jsx';
 import FormStep from './FormStep';
 import {
@@ -121,7 +121,7 @@ const Form = () => {
           if (component?.type === ComponentTypes.radioWithInput)
             return (
               <RadioGroupWithInput
-                key={RadioGroupWithInput.name}
+                key={`${RadioGroupWithInput.name} ${component?.id}`}
                 control={control}
                 {...component}
               />
