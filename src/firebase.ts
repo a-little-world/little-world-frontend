@@ -6,13 +6,13 @@ import {
   getApps,
   initializeApp,
 } from 'firebase/app';
-import { useSelector } from 'react-redux';
 import {
   Messaging,
   deleteToken,
   getMessaging,
   getToken,
 } from 'firebase/messaging';
+import { useSelector } from 'react-redux';
 
 import { apiFetch } from './api/helpers.ts';
 
@@ -33,7 +33,9 @@ export function getFirebaseMessaging(): Messaging {
   return getMessaging(app);
 }
 
-export async function getFirebaseToken(firebasePublicVapidKey: string): Promise<string | undefined> {
+export async function getFirebaseToken(
+  firebasePublicVapidKey: string,
+): Promise<string | undefined> {
   const messaging = getMessaging();
   const token = await getToken(messaging, { vapidKey: firebasePublicVapidKey });
   return token;
@@ -115,7 +117,9 @@ export function setFirebaseDeviceTokenRegistered(
   }
 }
 
-export async function registerFirebaseDeviceToken(firebasePublicVapidKey: string): Promise<void> {
+export async function registerFirebaseDeviceToken(
+  firebasePublicVapidKey: string,
+): Promise<void> {
   const token = await getFirebaseToken(firebasePublicVapidKey);
 
   return apiFetch('/api/push_notifications/register', {
@@ -126,7 +130,9 @@ export async function registerFirebaseDeviceToken(firebasePublicVapidKey: string
   });
 }
 
-export async function unregisterFirebaseDeviceToken(firebasePublicVapidKey: string): Promise<void> {
+export async function unregisterFirebaseDeviceToken(
+  firebasePublicVapidKey: string,
+): Promise<void> {
   const token = await getFirebaseToken(firebasePublicVapidKey);
 
   return apiFetch('/api/push_notifications/unregister', {
@@ -137,7 +143,9 @@ export async function unregisterFirebaseDeviceToken(firebasePublicVapidKey: stri
   });
 }
 
-export async function sendFirebaseTestNotification(firebasePublicVapidKey: string): Promise<void> {
+export async function sendFirebaseTestNotification(
+  firebasePublicVapidKey: string,
+): Promise<void> {
   const token = await getFirebaseToken(firebasePublicVapidKey);
 
   return apiFetch('/api/push_notifications/send', {
@@ -148,7 +156,9 @@ export async function sendFirebaseTestNotification(firebasePublicVapidKey: strin
   });
 }
 
-export async function sendDelayedFirebaseTestNotification(firebasePublicVapidKey: string): Promise<void> {
+export async function sendDelayedFirebaseTestNotification(
+  firebasePublicVapidKey: string,
+): Promise<void> {
   const token = await getFirebaseToken(firebasePublicVapidKey);
 
   setTimeout(

@@ -7,7 +7,6 @@ import FireBase from './Firebase.tsx';
 import WebsocketBridge from './WebsocketBridge.jsx';
 import store from './app/store.ts';
 import { initialise } from './features/userData.js';
-import { useArePushNotificationsEnabled } from './firebase.ts';
 import router from './router/router.jsx';
 
 export function InitializeDux({ data }) {

@@ -364,6 +364,7 @@
   "notifications.archived": "Archived",
   "notifications.filter_all": "All",
   "notifications.filter_unread": "Unread",
+  "notifications.filter_read": "Read",
   "notifications.none": "No new notications",
   "notifications.show_all": "Show all",
   "notifications.title": "Notifications",
