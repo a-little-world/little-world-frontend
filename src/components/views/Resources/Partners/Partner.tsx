@@ -72,24 +72,6 @@ const Partner: FC = () => {
         >
           {t(`resources.partners.${partner.id}.cta`)}
         </Cta>
-        {/* {partner.displayEnglish && (
-          <>
-            <Divider />
-            <Description>
-              <Text>
-                {t(`resources.partners.${partner.id}.text_content_secondary`)}
-              </Text>
-            </Description>
-
-            <Cta
-              href={partner.ctaLink}
-              buttonAppearance={ButtonAppearance.Primary}
-              buttonSize={ButtonSizes.Large}
-            >
-              {t(`resources.partners.${partner.id}.cta`)}
-            </Cta>
-          </>
-        )} */}
         {partner.videoId && (
           <Video src={partner.videoId} title={partner.videoTitle} />
         )}

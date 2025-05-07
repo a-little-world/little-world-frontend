@@ -1,7 +1,6 @@
 import {
   FirebaseApp,
   FirebaseAppSettings,
-  FirebaseOptions,
   deleteApp,
   getApp,
   getApps,

@@ -17,19 +17,19 @@ export enum PARTNERS_DATA_IDS {
 }
 
 export const PARTNERS_DATA = {
-  leWagon: {
-    id: PARTNERS_DATA_IDS.lewagon,
-    title: 'Le Wagon',
-    description: 'resources.partners.lewagon.description',
-    slug: 'le-wagon',
-    link: getAppSubpageRoute(PARTNERS_ROUTE, 'le-wagon'),
-    linkText: 'resources.partners.partner_cta',
-    ctaLink: LE_WAGON_REDIRECT,
-    displayEnglish: true,
-    image:
-      'https://home.little-world.com/wp-content/uploads/2025/03/Logo_RedBlack.svg',
-    videoId: LEWAGON_YT_ID,
-  },
+  // leWagon: {
+  //   id: PARTNERS_DATA_IDS.lewagon,
+  //   title: 'Le Wagon',
+  //   description: 'resources.partners.lewagon.description',
+  //   slug: 'le-wagon',
+  //   link: getAppSubpageRoute(PARTNERS_ROUTE, 'le-wagon'),
+  //   linkText: 'resources.partners.partner_cta',
+  //   ctaLink: LE_WAGON_REDIRECT,
+  //   displayEnglish: true,
+  //   image:
+  //     'https://home.little-world.com/wp-content/uploads/2025/03/Logo_RedBlack.svg',
+  //   videoId: LEWAGON_YT_ID,
+  // },
   // To be included when we do a more comprehensive intergation of Patenmatch
   // patenmatch: {
   //   id: PARTNERS_DATA_IDS.patenmatch,
