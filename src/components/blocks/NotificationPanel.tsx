@@ -1,5 +1,6 @@
 import {
   CalendarIcon,
+  Link,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -8,8 +9,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
+import { formatTimeDistance } from '../../helpers/date.ts';
 import { useSelector } from '../../hooks/index.ts';
+import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import ProfileImage from '../atoms/ProfileImage';
+
+const NOTIFICATION_ROUTE_ENABLED = false;
 
 const ProfileInfo = styled.div`
   display: flex;
@@ -72,6 +77,13 @@ const Notification = styled.li`
   }
 `;
 
+const NotificationTitle = styled(Text)`
+  max-width: 200px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const Info = styled.div`
   display: flex;
   flex-direction: column;
@@ -83,7 +95,10 @@ const Time = styled(Text)`
 `;
 
 function NotificationPanel() {
-  const { t } = useTranslation();
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
   const theme = useTheme();
 
   const user = useSelector(state => state.userData.user);
@@ -103,9 +118,15 @@ function NotificationPanel() {
         </Text>
       </ProfileInfo>
       <Divider />
-      <Text tag="h3" type={TextTypes.Body4}>
-        {t('notifications.title')}
-      </Text>
+      {NOTIFICATION_ROUTE_ENABLED ? (
+        <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
+          {t('notifications.title')}
+        </Link>
+      ) : (
+        <Text tag="h3" type={TextTypes.Body4}>
+          {t('notifications.title')}
+        </Text>
+      )}
       <NotificationList>
         {isEmpty(notifications?.unread?.items) ? (
           <Text center>{t('notifications.none')}</Text>
@@ -123,16 +144,21 @@ function NotificationPanel() {
                 height="24"
               />
               <Info>
-                <Text type={TextTypes.Body5}>{title}</Text>
-                <Time type={TextTypes.Body6}>{created_at}</Time>
+                <NotificationTitle type={TextTypes.Body5}>
+                  {title}
+                </NotificationTitle>
+                <Time type={TextTypes.Body6}>
+                  {formatTimeDistance(
+                    new Date(created_at),
+                    new Date(),
+                    language,
+                  )}
+                </Time>
               </Info>
             </Notification>
           ))
         )}
       </NotificationList>
-      {/* <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
-        {t('notifications.display_all')}
-      </Link> */}
     </Panel>
   );
 }
