@@ -6,8 +6,8 @@ import React, { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import Note from '../../atoms/Note.tsx';
-import FormStep from '../Form/FormStep';
+import Note from '../../../atoms/Note.tsx';
+import FormStep from '../../Form/FormStep';
 
 const RadioGroupWithInput = ({ control, radioGroup, textInput }) => {
   const {
@@ -16,12 +16,13 @@ const RadioGroupWithInput = ({ control, radioGroup, textInput }) => {
     errorRules,
     formData,
     textInputVal,
-    ...radioGroupProps
+    getProps,
   } = radioGroup;
   const [displayTextInput, setDisplayTextInput] = useState(
     textInputVal === currentValue,
   );
   const { t } = useTranslation();
+  const radioGroupProps = getProps?.(t);
 
   return (
     <div>
@@ -57,7 +58,7 @@ const RadioGroupWithInput = ({ control, radioGroup, textInput }) => {
         <div>
           <FormStep
             content={{
-              Component: TextInput,
+              Component: textInput.Component ?? TextInput,
               dataField: textInput.dataField,
               currentValue: textInput.currentValue || '',
               updater: 'onChange',
@@ -65,7 +66,9 @@ const RadioGroupWithInput = ({ control, radioGroup, textInput }) => {
             }}
             control={control}
           />
-          <Note center={false}>{t(textInput.infoText)}</Note>
+          {textInput.infoText && (
+            <Note center={false}>{t(textInput.infoText)}</Note>
+          )}
         </div>
       )}
     </div>

@@ -1,11 +1,12 @@
 import {
   ContentTypes,
   InputWidth,
+  TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 
 import { USER_TYPES } from '../constants/index.ts';
-import { ComponentTypes, formatDataField } from './formContent';
+import { ComponentTypes, formatDataField } from './formContent.ts';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
 export const restrictedLangLevels = ['level-3', 'level-4'];
@@ -21,6 +22,13 @@ export const constructCheckboxes = (options, t) =>
     options[key].map(({ value, tag }) => ({ name: t(tag), value, key })),
   );
 
+const jobSearchOptions = [
+  {
+    tag: 'job_search.searching_label',
+    value: true,
+  },
+  { tag: 'job_search.not_searching_label', value: false },
+];
 // Object containing valid form pages, where key = route
 const formPages = {
   'user-type': ({ options, userData }) => ({
@@ -254,10 +262,14 @@ const formPages = {
     components: [
       {
         type: ComponentTypes.text,
-        getProps: t => ({ children: t('user_form_notifications.description') }),
+        getProps: t => ({
+          children: t('user_form_notifications.description'),
+          bold: true,
+        }),
       },
       {
         type: ComponentTypes.radioWithInput,
+        id: 'notify_channel',
         radioGroup: {
           currentValue: userData?.notify_channel,
           dataField: 'notify_channel',
@@ -277,6 +289,35 @@ const formPages = {
           infoText: 'user_form_notifications.info',
         },
       },
+      ...(userData?.user_type === USER_TYPES.volunteer
+        ? []
+        : [
+            {
+              type: ComponentTypes.radioWithInput,
+              id: 'job_search',
+              radioGroup: {
+                currentValue: userData?.job_search,
+                dataField: 'job_search',
+                formData: jobSearchOptions,
+                textInputVal: jobSearchOptions[0].value,
+                getProps: t => ({
+                  id: 'job search radio group',
+                  label: t('job_search.label'),
+                  labelTooltip: t('job_search.label_tooltip'),
+                }),
+              },
+              textInput: {
+                Component: TextArea,
+                currentValue: userData?.job_skill_description,
+                dataField: 'job_skill_description',
+                getProps: t => ({
+                  label: t('job_search.skills_label'),
+                  placeholder: t('job_search.skills_placeholder'),
+                  size: TextAreaSize.Medium,
+                }),
+              },
+            },
+          ]),
     ],
   }),
   conditions: ({ userData }) => ({
