@@ -32,6 +32,14 @@ import PageHeader from '../atoms/PageHeader.tsx';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
 import MailingLists from '../blocks/MailingLists/MailingLists.tsx';
+import PushNotifications from '../blocks/PushNotifications/PushNotifications.tsx';
+import {
+  registerFirebaseDeviceToken,
+  sendDelayedFirebaseTestNotification,
+  sendFirebaseTestNotification,
+  unregisterFirebaseDeviceToken,
+  useArePushNotificationsEnabled,
+} from '../../firebase.ts';
 
 const types = {
   first_name: 'text',
@@ -315,6 +323,11 @@ function Settings() {
     ...state.userData.user.profile,
   }));
 
+  const firebasePublicVapidKey = useSelector(
+    state => state?.userData?.firebasePublicVapidKey,
+  );
+  const arePushNotificationsEnabled = useArePushNotificationsEnabled();
+
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -380,6 +393,19 @@ function Settings() {
                 {t('settings.personal_delete_account_button')}
               </Button>
             </SettingsItem>
+            {arePushNotificationsEnabled && <>
+              <PushNotifications />
+              <Button onClick={() => registerFirebaseDeviceToken(firebasePublicVapidKey)}>Register</Button>
+              <Button onClick={() => unregisterFirebaseDeviceToken(firebasePublicVapidKey)}>
+                Unregister
+              </Button>
+              <Button onClick={() => sendFirebaseTestNotification(firebasePublicVapidKey)}>
+                Send test notification
+              </Button>
+              <Button onClick={() => sendDelayedFirebaseTestNotification(firebasePublicVapidKey)}>
+                Send delayed test notification
+              </Button>
+            </>}
           </Items>
         </ContentPanel>
       </SettingsWrapper>

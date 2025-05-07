@@ -3,10 +3,12 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 
 import './App.css';
-import WebsocketBridge from './WebsocketBridge';
+import FireBase from './Firebase.tsx';
+import WebsocketBridge from './WebsocketBridge.jsx';
 import store from './app/store.ts';
-import { initialise } from './features/userData';
-import router from './router/router';
+import { initialise } from './features/userData.js';
+import { useArePushNotificationsEnabled } from './firebase.ts';
+import router from './router/router.jsx';
 
 export function InitializeDux({ data }) {
   const dispatch = useDispatch();
@@ -23,10 +25,12 @@ function AuthGuard({ children }) {
 function App({ data }) {
   // WebsocketBridge is here so it dones't reconnect on every AppLayout change
   // But that means we need to manually connect it when userData is present
+
   return (
     <Provider store={store}>
       <AuthGuard>
         <WebsocketBridge />
+        <FireBase />
       </AuthGuard>
       <InitializeDux data={data} />
       <RouterProvider router={router} />

@@ -86,12 +86,11 @@ export async function apiFetch<T = any>(
       throw formatApiError(errorData, response);
     }
 
-    if (response.headers.get('content-type') === 'application/json') {
-      // If the response body is empty or does not contain json data this would throw an error
+    try {
       return (await response.json()) as T;
+    } catch (e) {
+      return null as T;
     }
-
-    return null as T;
   } catch (error) {
     console.error(`API Fetch Error (${endpoint}):`, error);
     throw error;
