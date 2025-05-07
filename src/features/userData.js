@@ -3,7 +3,6 @@ import { isEmpty, some, uniqBy } from 'lodash';
 
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../router/routes.ts';
 import { questionsDuringCall } from '../services/questionsDuringCall';
-import store from '../app/store.ts';
 
 export const sortChats = chats => {
   const sorted = chats.sort((a, b) => {
@@ -257,7 +256,7 @@ export const userDataSlice = createSlice({
         );
         // this chat has never been loaded we can ignore inserting the actual messages, we only care about inserting the chat as messages will fetch once the chat is clicked!
       }
-      
+
       state.chats.results = some(
         state.chats.results,
         chat => chat.uuid === chatId,
@@ -268,13 +267,14 @@ export const userDataSlice = createSlice({
                 ...chat,
                 newest: { ...chat.newest_message },
                 message,
-                senderIsSelf
+                senderIsSelf,
               });
               return {
                 ...chat,
-                unread_count: senderIsSelf || message.read
-                  ? chat.unread_count
-                  : chat.unread_count + 1,
+                unread_count:
+                  senderIsSelf || message.read
+                    ? chat.unread_count
+                    : chat.unread_count + 1,
                 newest_message: message,
               };
             }
@@ -432,45 +432,5 @@ export const postArchieveQuestion =
       }),
     );
   };
-
-// Development-mode toggles:
-
-export const enableDevelopmentFeatures = () => dispatch => {
-  dispatch(setDevelopmentFeaturesEnabled(true));
-};
-
-export const disableDevelopmentFeatures = () => dispatch => {
-  dispatch(setDevelopmentFeaturesEnabled(false));
-};
-
-export const toggleDevelopmentFeatures = () => (dispatch, getState) => {
-  const currentState = getState().userData.developmentFeaturesEnabled;
-  dispatch(setDevelopmentFeaturesEnabled(!currentState));
-  return !currentState;
-};
-
-// Add this at the end of the file, before the export default
-// Attach functions to window to manage development features from console
-if (typeof window !== 'undefined') {
-  window.enableDevFeatures = () => {
-    store.dispatch(setDevelopmentFeaturesEnabled(true));
-    console.log('Development features enabled!');
-    return 'Development features enabled!';
-  };
-  
-  window.disableDevFeatures = () => {
-    store.dispatch(setDevelopmentFeaturesEnabled(false));
-    console.log('Development features disabled!');
-    return 'Development features disabled!';
-  };
-  
-  window.toggleDevFeatures = () => {
-    const state = store.getState();
-    const currentValue = state.userData.developmentFeaturesEnabled;
-    store.dispatch(setDevelopmentFeaturesEnabled(!currentValue));
-    console.log(`Development features ${!currentValue ? 'enabled' : 'disabled'}!`);
-    return `Development features ${!currentValue ? 'enabled' : 'disabled'}!`;
-  };
-}
 
 export default userDataSlice.reducer;
