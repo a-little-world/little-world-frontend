@@ -10,14 +10,8 @@ import Note from '../../../atoms/Note.tsx';
 import FormStep from '../../Form/FormStep';
 
 const RadioGroupWithInput = ({ control, radioGroup, textInput }) => {
-  const {
-    currentValue,
-    dataField,
-    errorRules,
-    formData,
-    textInputVal,
-    getProps,
-  } = radioGroup;
+  const { currentValue, dataField, formData, textInputVal, getProps } =
+    radioGroup;
   const [displayTextInput, setDisplayTextInput] = useState(
     textInputVal === currentValue,
   );
@@ -46,13 +40,14 @@ const RadioGroupWithInput = ({ control, radioGroup, textInput }) => {
               label: t(tag),
               value: val,
             }))}
-            {...radioGroupProps}
+            label={radioGroupProps?.label}
+            labelTooltip={radioGroupProps?.labelTooltip}
           />
         )}
         defaultValue={currentValue}
         name={dataField}
         control={control}
-        rules={errorRules}
+        rules={radioGroupProps?.errorRules}
       />
       {displayTextInput && (
         <div>

@@ -4,6 +4,7 @@ import {
   TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
+import { isBoolean } from 'lodash';
 
 import { USER_TYPES } from '../constants/index.ts';
 import { ComponentTypes, formatDataField } from './formContent.ts';
@@ -25,9 +26,9 @@ export const constructCheckboxes = (options, t) =>
 const jobSearchOptions = [
   {
     tag: 'job_search.searching_label',
-    value: true,
+    value: 'true',
   },
-  { tag: 'job_search.not_searching_label', value: false },
+  { tag: 'job_search.not_searching_label', value: 'false' },
 ];
 // Object containing valid form pages, where key = route
 const formPages = {
@@ -296,14 +297,16 @@ const formPages = {
               type: ComponentTypes.radioWithInput,
               id: 'job_search',
               radioGroup: {
-                currentValue: userData?.job_search,
+                currentValue: isBoolean(userData?.job_search) // radioGroup doesn't work with boolean values
+                  ? userData?.job_search.toString()
+                  : userData?.job_search,
                 dataField: 'job_search',
                 formData: jobSearchOptions,
                 textInputVal: jobSearchOptions[0].value,
                 getProps: t => ({
-                  id: 'job search radio group',
                   label: t('job_search.label'),
                   labelTooltip: t('job_search.label_tooltip'),
+                  errorRules: { required: t('validation.required') },
                 }),
               },
               textInput: {
