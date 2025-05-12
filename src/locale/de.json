@@ -206,6 +206,10 @@
         "q5": {
           "question": "Wie kann ich Little World helfen?",
           "answer": "Wir suchen immer Unterstützung. Für Programmierung, Promotion, Öffentlichkeitsarbeit und vieles mehr. Wir können jede Hilfe gebrauchen – auch Spenden helfen. <a {\"href\": \"/app/our-world\", \"target\": \"_blank\"}>Wir haben einige der besten Möglichkeiten unter 'Mach mit' aufgelistet.</a>"
+        },
+        "q6": {
+          "question": "Was passiert nach den 10 Wochen mit meinem/r Gesprächspartner:in?",
+          "answer": "Nach den zehn Wochen mit deinem/r Gesprächspartner:in liegt die Entscheidung bei dir! Wir ermutigen dich, weiterhin zusammen auf Little World zu sprechen, solange ihr beide Spaß daran habt.\n\nDu kannst dich aber auch auf die Suche nach einem neuen Gesprächspartner machen."
         }
       }
     }
