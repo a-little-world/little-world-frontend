@@ -33,18 +33,23 @@ export function ToastProvider({ children }: ToastProviderProps) {
     }, 1000);
   };
 
-  const showToast = (props: ToastProps) => {
-    const newToastProps: ToastPropsWithId = {
-      ...props,
-      id: String(id),
-      onClose: () => onClose(String(id), props.onClose), // pass original onClose method to call later
-    };
-    setToasts(prevToastProps => [...prevToastProps, newToastProps]);
-    setId(prevId => prevId + 1);
-  };
+  const toastContext = React.useMemo<ToastContextType>(
+    () => ({
+      showToast: (props: ToastProps) => {
+        const newToastProps: ToastPropsWithId = {
+          ...props,
+          id: String(id),
+          onClose: () => onClose(String(id), props.onClose), // pass original onClose method to call later
+        };
+        setToasts(prevToastProps => [...prevToastProps, newToastProps]);
+        setId(prevId => prevId + 1);
+      },
+    }),
+    [],
+  );
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext.Provider value={toastContext}>
       <SimpleToastProvider swipeDirection="right">
         <ToastViewport />
         {toasts.map(props => (
