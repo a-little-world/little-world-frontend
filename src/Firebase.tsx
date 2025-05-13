@@ -1,13 +1,14 @@
 import { getApps } from 'firebase/app';
-import React, { useEffect, useRef } from 'react';
 import {
   MessagePayload,
   Unsubscribe,
   isSupported,
   onMessage,
 } from 'firebase/messaging';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
+import { ToastContextType } from './components/blocks/Toast.tsx';
 import {
   disableFirebase,
   enableFirebase,
@@ -19,13 +20,21 @@ import {
   unregisterFirebaseDeviceToken,
   useArePushNotificationsEnabled,
 } from './firebase.ts';
+import useToast from './hooks/useToast.ts';
 
-
-function handleMessage(payload: MessagePayload): void {
-  console.log('focused tab message', payload);
+function handleMessage(payload: MessagePayload, toast: ToastContextType): void {
+  toast.showToast({
+    headline: 'New message',
+    title: payload.data?.title ?? '',
+    description: payload.data?.body ?? '',
+    timestamp: new Date().toLocaleTimeString(),
+  });
 }
 
-async function register(firebaseClientConfig: any, firebasePublicVapidKey: string) {
+async function register(
+  firebaseClientConfig: any,
+  firebasePublicVapidKey: string,
+) {
   const permission = await Notification.requestPermission();
   if (permission !== 'granted') {
     const supported = await isSupported();
@@ -74,8 +83,11 @@ async function unregister(firebasePublicVapidKey: string) {
   await disableFirebase();
 }
 
-
-function FireBase({ firebasePublicVapidKey }: { firebasePublicVapidKey: string }) {
+function FireBase({
+  firebasePublicVapidKey,
+}: {
+  firebasePublicVapidKey: string;
+}) {
   const push_notifications_enabled = useSelector(
     state =>
       state?.userData?.user?.profile?.push_notifications_enabled ?? false,
@@ -84,6 +96,7 @@ function FireBase({ firebasePublicVapidKey }: { firebasePublicVapidKey: string }
   const firebaseClientConfig = useSelector(
     state => state?.userData?.firebaseClientConfig,
   );
+  const toast = useToast();
 
   useEffect(() => {
     console.log(
@@ -91,11 +104,20 @@ function FireBase({ firebasePublicVapidKey }: { firebasePublicVapidKey: string }
       push_notifications_enabled,
     );
 
+    const unsubscribe = () => {
+      unsubscribeRef.current?.();
+    };
+
     if (push_notifications_enabled) {
+      if (firebaseClientConfig === undefined) {
+        return unsubscribe;
+      }
       register(firebaseClientConfig, firebasePublicVapidKey).then(() => {
         const messaging = getFirebaseMessaging();
         if (messaging) {
-          unsubscribeRef.current = onMessage(messaging, handleMessage);
+          unsubscribeRef.current = onMessage(messaging, payload =>
+            handleMessage(payload, toast),
+          );
         }
       });
     } else {
@@ -105,15 +127,15 @@ function FireBase({ firebasePublicVapidKey }: { firebasePublicVapidKey: string }
       unregister(firebasePublicVapidKey);
     }
 
-    return () => unsubscribeRef.current?.();
-  }, [push_notifications_enabled]);
-  
+    return unsubscribe;
+  }, [push_notifications_enabled, firebaseClientConfig]);
+
   return null;
 }
 
 function FireBaseBehindDevelopmentFlag() {
   const arePushNotificationsEnabled = useArePushNotificationsEnabled();
-  
+
   const firebasePublicVapidKey = useSelector(
     state => state?.userData?.firebasePublicVapidKey,
   );
