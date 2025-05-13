@@ -9,7 +9,7 @@ import {
   CORE_WS_SHEME,
   IS_CAPACITOR_BUILD,
 } from './ENVIRONMENT';
-import useToast from './hooks/useToast';
+import useToast from './hooks/useToast.ts';
 
 const SOCKET_URL = IS_CAPACITOR_BUILD
   ? CORE_WS_SHEME + BACKEND_URL.split('//').pop() + CORE_WS_PATH

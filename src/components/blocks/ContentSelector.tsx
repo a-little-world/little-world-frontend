@@ -95,13 +95,12 @@ function ContentSelector({
   use,
 }: ContentSelectorProps) {
   const { t } = useTranslation();
+  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
   if (!['ourWorld', 'main', 'help', 'resources'].includes(use)) {
     return null;
   }
 
   const topics = nbtTopics[use];
-
-  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
 
   return (
     <Selector>
