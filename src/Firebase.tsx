@@ -90,7 +90,7 @@ async function unregister(firebasePublicVapidKey: string) {
   await disableFirebase();
 }
 
-function FireBase({}: {}) {
+function FireBase() {
   const push_notifications_enabled = useSelector(
     state =>
       state?.userData?.user?.profile?.push_notifications_enabled ?? false,
