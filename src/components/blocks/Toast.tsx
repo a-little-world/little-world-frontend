@@ -22,7 +22,6 @@ interface ToastProviderProps {
 
 export function ToastProvider({ children }: ToastProviderProps) {
   const [toasts, setToasts] = React.useState<ToastPropsWithId[]>([]);
-  const [id, setId] = React.useState(1);
 
   const onClose = (toastId: string, callBack?: () => void): void => {
     // call the original onClose method
@@ -36,16 +35,16 @@ export function ToastProvider({ children }: ToastProviderProps) {
   const toastContext = React.useMemo<ToastContextType>(
     () => ({
       showToast: (props: ToastProps) => {
+        const id = crypto.randomUUID();
         const newToastProps: ToastPropsWithId = {
           ...props,
-          id: String(id),
+          id: crypto.randomUUID(),
           onClose: () => onClose(String(id), props.onClose), // pass original onClose method to call later
         };
         setToasts(prevToastProps => [...prevToastProps, newToastProps]);
-        setId(prevId => prevId + 1);
       },
     }),
-    [],
+    [setToasts],
   );
 
   return (
