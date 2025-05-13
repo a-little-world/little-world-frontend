@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 
 import { apiFetch } from './api/helpers.ts';
 
-export function useArePushNotificationsEnabled() {
+export function useAreDevFeaturesEnabled() {
   return useSelector(state => state?.userData?.developmentFeaturesEnabled);
 }
 

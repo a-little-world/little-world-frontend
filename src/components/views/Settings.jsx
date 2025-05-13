@@ -25,6 +25,13 @@ import styled, { css, useTheme } from 'styled-components';
 import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
 import { updateProfile } from '../../features/userData';
+import {
+  registerFirebaseDeviceToken,
+  sendDelayedFirebaseTestNotification,
+  sendFirebaseTestNotification,
+  unregisterFirebaseDeviceToken,
+  useAreDevFeaturesEnabled,
+} from '../../firebase.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
@@ -33,13 +40,6 @@ import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
 import MailingLists from '../blocks/MailingLists/MailingLists.tsx';
 import PushNotifications from '../blocks/PushNotifications/PushNotifications.tsx';
-import {
-  registerFirebaseDeviceToken,
-  sendDelayedFirebaseTestNotification,
-  sendFirebaseTestNotification,
-  unregisterFirebaseDeviceToken,
-  useArePushNotificationsEnabled,
-} from '../../firebase.ts';
 
 const types = {
   first_name: 'text',
@@ -326,7 +326,7 @@ function Settings() {
   const firebasePublicVapidKey = useSelector(
     state => state?.userData?.firebasePublicVapidKey,
   );
-  const arePushNotificationsEnabled = useArePushNotificationsEnabled();
+  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
 
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -393,19 +393,39 @@ function Settings() {
                 {t('settings.personal_delete_account_button')}
               </Button>
             </SettingsItem>
-            {arePushNotificationsEnabled && <>
-              <PushNotifications />
-              <Button onClick={() => registerFirebaseDeviceToken(firebasePublicVapidKey)}>Register</Button>
-              <Button onClick={() => unregisterFirebaseDeviceToken(firebasePublicVapidKey)}>
-                Unregister
-              </Button>
-              <Button onClick={() => sendFirebaseTestNotification(firebasePublicVapidKey)}>
-                Send test notification
-              </Button>
-              <Button onClick={() => sendDelayedFirebaseTestNotification(firebasePublicVapidKey)}>
-                Send delayed test notification
-              </Button>
-            </>}
+            <PushNotifications />
+            {areDevFeaturesEnabled && (
+              <>
+                <Button
+                  onClick={() =>
+                    registerFirebaseDeviceToken(firebasePublicVapidKey)
+                  }
+                >
+                  Register
+                </Button>
+                <Button
+                  onClick={() =>
+                    unregisterFirebaseDeviceToken(firebasePublicVapidKey)
+                  }
+                >
+                  Unregister
+                </Button>
+                <Button
+                  onClick={() =>
+                    sendFirebaseTestNotification(firebasePublicVapidKey)
+                  }
+                >
+                  Send test notification
+                </Button>
+                <Button
+                  onClick={() =>
+                    sendDelayedFirebaseTestNotification(firebasePublicVapidKey)
+                  }
+                >
+                  Send delayed test notification
+                </Button>
+              </>
+            )}
           </Items>
         </ContentPanel>
       </SettingsWrapper>

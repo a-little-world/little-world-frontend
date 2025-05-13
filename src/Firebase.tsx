@@ -5,7 +5,7 @@ import {
   isSupported,
   onMessage,
 } from 'firebase/messaging';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ToastContextType } from './components/blocks/Toast.tsx';
@@ -18,7 +18,6 @@ import {
   registerFirebaseDeviceToken,
   setFirebaseDeviceTokenRegistered,
   unregisterFirebaseDeviceToken,
-  useArePushNotificationsEnabled,
 } from './firebase.ts';
 import useToast from './hooks/useToast.ts';
 
@@ -83,11 +82,7 @@ async function unregister(firebasePublicVapidKey: string) {
   await disableFirebase();
 }
 
-function FireBase({
-  firebasePublicVapidKey,
-}: {
-  firebasePublicVapidKey: string;
-}) {
+function FireBase({}: {}) {
   const push_notifications_enabled = useSelector(
     state =>
       state?.userData?.user?.profile?.push_notifications_enabled ?? false,
@@ -95,6 +90,9 @@ function FireBase({
   const unsubscribeRef = useRef<Unsubscribe>();
   const firebaseClientConfig = useSelector(
     state => state?.userData?.firebaseClientConfig,
+  );
+  const firebasePublicVapidKey = useSelector(
+    state => state?.userData?.firebasePublicVapidKey,
   );
   const toast = useToast();
 
@@ -109,7 +107,10 @@ function FireBase({
     };
 
     if (push_notifications_enabled) {
-      if (firebaseClientConfig === undefined) {
+      if (
+        firebaseClientConfig === undefined ||
+        firebasePublicVapidKey === undefined
+      ) {
         return unsubscribe;
       }
       register(firebaseClientConfig, firebasePublicVapidKey).then(() => {
@@ -128,23 +129,13 @@ function FireBase({
     }
 
     return unsubscribe;
-  }, [push_notifications_enabled, firebaseClientConfig]);
+  }, [
+    push_notifications_enabled,
+    firebaseClientConfig,
+    firebasePublicVapidKey,
+  ]);
 
   return null;
 }
 
-function FireBaseBehindDevelopmentFlag() {
-  const arePushNotificationsEnabled = useArePushNotificationsEnabled();
-
-  const firebasePublicVapidKey = useSelector(
-    state => state?.userData?.firebasePublicVapidKey,
-  );
-
-  if (!arePushNotificationsEnabled) {
-    return null;
-  }
-
-  return <FireBase firebasePublicVapidKey={firebasePublicVapidKey} />;
-}
-
-export default FireBaseBehindDevelopmentFlag;
+export default FireBase;
