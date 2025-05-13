@@ -1,4 +1,4 @@
-import { Button, Switch } from '@a-little-world/little-world-design-system';
+import { Switch } from '@a-little-world/little-world-design-system';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -89,7 +89,6 @@ const PushNotifications = ({
           />
         )}
       />
-      <Button>Test</Button>
     </NotificationForm>
   );
 };
