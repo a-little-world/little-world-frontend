@@ -35,6 +35,7 @@ import Settings from '../components/views/Settings.jsx';
 import SignUp from '../components/views/SignUp.jsx';
 import VerifyEmail from '../components/views/VerifyEmail.jsx';
 import VideoCall from '../components/views/VideoCall.jsx';
+import AuthGuard from '../guards/AuthGuard.tsx';
 import {
   APP_ROUTE,
   BASE_ROUTE,
@@ -79,7 +80,9 @@ export const Root = ({
 }) => (
   <CustomThemeProvider>
     <ToastProvider>
-      <FireBase />
+      <AuthGuard>
+        <FireBase />
+      </AuthGuard>
       {restoreScroll && <ScrollRestoration />}
       <GlobalStyles />
       {children || <Outlet />}
