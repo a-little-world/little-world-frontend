@@ -21,12 +21,20 @@ import {
 } from './firebase.ts';
 import useToast from './hooks/useToast.ts';
 
+interface FirebasePushNotificationData {
+  headline: string;
+  title: string;
+  description: string;
+  timestamp: string;
+}
+
 function handleMessage(payload: MessagePayload, toast: ToastContextType): void {
+  const data = payload.data as unknown as FirebasePushNotificationData;
   toast.showToast({
-    headline: 'New message',
-    title: payload.data?.title ?? '',
-    description: payload.data?.body ?? '',
-    timestamp: new Date().toLocaleTimeString(),
+    headline: data.headline,
+    title: data.title,
+    description: data.description,
+    timestamp: new Date(data.timestamp).toLocaleTimeString(),
   });
 }
 
