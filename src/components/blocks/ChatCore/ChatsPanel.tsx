@@ -100,7 +100,7 @@ const PreviewText = styled(Text)`
   }
 `;
 
-const UnreadIndicator = styled.span`
+export const UnreadIndicator = styled.span`
   border-radius: 50%;
   height: 10px;
   width: 10px;

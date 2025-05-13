@@ -204,6 +204,10 @@
         "q5": {
           "question": "How can I help Little World?",
           "answer": "We are always looking for support. For programming, promotion, public relations and much more. We can use all the help we can get - donations help too. We have listed some of the best ways to support under <a {\"href\": \"/app/our-world\", \"target\": \"_blank\"}>Support Us.</a>"
+        },
+        "q6": {
+          "question": "What happens at the end of the 10 weeks with my conversation partner?",
+          "answer": "At the end of 10 weeks with your partner, it's your decision what you would like to do! We encourage you to continue speaking on Little World as long as you are both having fun.\n\nOr you can start the search for someone new to speak to!"
         }
       }
     }
@@ -267,6 +271,12 @@
   "interests.selection_label": "What topics would you like to discuss?",
   "interests.selection_tooltip": "Topics help us find for you conversation partners with similar interests.",
   "interests.title": "Interests",
+  "job_search.label": "Are you searching for a job? In the near future we would like to support those of you who are.",
+  "job_search.label_tooltip": "We are working together with committed companies to provide you with free support soon - with CV checks, interview practice and job placements. Just tick the box and we'll let you know as soon as it starts.",
+  "job_search.searching_label": "Yes, I'm looking for a job or will be in the near future.",
+  "job_search.not_searching_label": "No, I'm not currently looking for a new job.",
+  "job_search.skills_label": "What skills do you have? Which jobs are you interested in?",
+  "job_search.skills_placeholder": "Optional - Enter your skills or job field to help us support you more precisely.",
   "lang-bg": "Bulgarian",
   "lang-ca": "Cantonese",
   "lang-de": "German",
@@ -286,7 +296,7 @@
   "lang-uk": "Ukrainian",
   "lang-vn": "Vietnamese",
   "language_level_card.cta": "Learning Resources",
-  "language_level_card.description": "To be able to be matched with a conversation partner, you need to have a German level of at least B1. We have resources and apps to help you get there.",
+  "language_level_card.description": "To be matched with a conversation partner, you need to have a German level of at least B1. We have resources and apps to help you get there.",
   "language_level_card.title": "Boost your German",
   "login.change_location_cta": "Create New Account",
   "login.email_label": "Email",
@@ -359,6 +369,7 @@
   "notifications.archived": "Archived",
   "notifications.filter_all": "All",
   "notifications.filter_unread": "Unread",
+  "notifications.filter_read": "Read",
   "notifications.none": "No new notications",
   "notifications.show_all": "Show all",
   "notifications.title": "Notifications",

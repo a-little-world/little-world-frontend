@@ -1,4 +1,5 @@
 import {
+  AttachmentIcon,
   ButtonSizes,
   ButtonVariations,
   CloseIcon,
@@ -34,15 +35,21 @@ import {
   updateMessages,
 } from '../../../features/userData';
 import {
+  formatFileName,
   getCustomChatElements,
   messageContainsWidget,
-  formatFileName,
 } from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
-import { onFormError, registerInput, ROOT_SERVER_ERROR } from '../../../helpers/form.ts';
+import {
+  ROOT_SERVER_ERROR,
+  onFormError,
+  registerInput,
+} from '../../../helpers/form.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes.ts';
+import UnreadDot from '../../atoms/UnreadDot.tsx';
 import {
+  Attachment,
   AttachmentButton,
   ChatContainer,
   Message,
@@ -201,7 +208,7 @@ const Chat = ({ chatId }) => {
       });
     }
   };
-  
+
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
@@ -214,7 +221,12 @@ const Chat = ({ chatId }) => {
             <>
               {messagesResult?.map(message => {
                 const customChatElements = message?.parsable
-                  ? getCustomChatElements({ dispatch, message, userId, activeChat })
+                  ? getCustomChatElements({
+                      dispatch,
+                      message,
+                      userId,
+                      activeChat,
+                    })
                   : [];
 
                 return (
@@ -255,7 +267,7 @@ const Chat = ({ chatId }) => {
                         message.created,
                         new Date(),
                         language,
-                        true
+                        true,
                       )}
                     </Time>
                   </Message>
@@ -297,6 +309,16 @@ const Chat = ({ chatId }) => {
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
         />
+        {!!selectedFile && (
+          <Attachment>
+            <AttachmentIcon
+              label={`Selected file: ${selectedFile.name}`}
+              height={40}
+              width={40}
+            />
+            <UnreadDot count={1} height="18px" top="0px" right="22px" />
+          </Attachment>
+        )}
         <AttachmentButton
           size={ButtonSizes.Large}
           type="button"

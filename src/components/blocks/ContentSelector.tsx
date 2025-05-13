@@ -8,6 +8,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
+import HideOnMobile from '../atoms/HideOnMobile.tsx';
+import NotificationBell from '../atoms/NotificationBell.tsx';
+
+const NOTIFICATION_BELL_VISIBLE = false;
+
 const Selector = styled.div`
   display: flex;
   align-items: center;
@@ -59,6 +64,10 @@ export const StyledOption = styled(Button)<{ $selected?: boolean }>`
 export const StyledLink = styled(Link)`
   margin: 0 ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.xxxxsmall} 0;
+`;
+
+const StyledHideOnMobile = styled(HideOnMobile)`
+  margin-left: auto;
 `;
 
 const nbtTopics = {
@@ -120,6 +129,11 @@ function ContentSelector({
             {t(`nbt_${topic}`)}
           </StyledOption>
         ),
+      )}
+      {NOTIFICATION_BELL_VISIBLE && (
+        <StyledHideOnMobile>
+          <NotificationBell />
+        </StyledHideOnMobile>
       )}
     </Selector>
   );

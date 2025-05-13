@@ -211,8 +211,16 @@ export const BackButton = styled(Button)<{ $show: boolean }>`
 
 const TOOLBAR_BTN_CSS = css`
   flex-shrink: 0;
-  align-self: flex-end;
-  margin-bottom: 17px;
+`;
+
+export const Attachment = styled.div`
+  ${TOOLBAR_BTN_CSS}
+  position: relative;
+  display: flex;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.color.text.tertiary};
 `;
 
 export const SendButton = styled(Button)`

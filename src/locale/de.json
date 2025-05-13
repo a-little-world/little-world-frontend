@@ -206,6 +206,10 @@
         "q5": {
           "question": "Wie kann ich Little World helfen?",
           "answer": "Wir suchen immer Unterstützung. Für Programmierung, Promotion, Öffentlichkeitsarbeit und vieles mehr. Wir können jede Hilfe gebrauchen – auch Spenden helfen. <a {\"href\": \"/app/our-world\", \"target\": \"_blank\"}>Wir haben einige der besten Möglichkeiten unter 'Mach mit' aufgelistet.</a>"
+        },
+        "q6": {
+          "question": "Was passiert nach den 10 Wochen mit meinem/r Gesprächspartner:in?",
+          "answer": "Nach den zehn Wochen mit deinem/r Gesprächspartner:in liegt die Entscheidung bei dir! Wir ermutigen dich, weiterhin zusammen auf Little World zu sprechen, solange ihr beide Spaß daran habt.\n\nDu kannst dich aber auch auf die Suche nach einem neuen Gesprächspartner machen."
         }
       }
     }
@@ -269,6 +273,12 @@
   "interests.selection_label": "Über welche Themen würdest du gerne sprechen?",
   "interests.selection_tooltip": "Die Themen helfen uns Gesprächspartner mit ähnlichen Interessen für dich zu finden.",
   "interests.title": "Interessen",
+  "job_search.label": "Wir möchten in Zukunft einige unterstützende Maßnahmen für Arbeitssuchende entwickeln. Bist du aktuell auf Jobsuche?",
+  "job_search.label_tooltip": "Wir arbeiten daran, dich bald gemeinsam mit engagierten Unternehmen kostenlos zu unterstützen – mit Lebenslauf-Checks, Bewerbungsgespräche üben und Jobvermittlungen. Setze einfach den Haken, und wir benachrichtigen dich, sobald es losgeht.",
+  "job_search.searching_label": "Ja, ich suche gerade Arbeit oder werde in den nächsten Monaten eine Arbeit suchen.",
+  "job_search.not_searching_label": "Nein, ich bin momentan nicht auf der Suche nach einer neuen Arbeitsstelle.",
+  "job_search.skills_label": "Welche Fähigkeiten hast du? Welche Jobs interessieren dich?",
+  "job_search.skills_placeholder": "Hinweis (optional): Wenn du möchtest, kannst du hier schon deine Fähigkeiten und dein gewünschtes Berufsfeld eintragen. So können wir dich so schnell wie möglich unterstützen, sobald unser Angebot startet.",
   "lang-bg": "Bulgarisch",
   "lang-ca": "Cantonese",
   "lang-de": "Deutsch",
@@ -361,9 +371,10 @@
   "notifications.archived": "Archiviert",
   "notifications.filter_all": "Alle",
   "notifications.filter_unread": "Ungelesen",
+  "notifications.filter_read": "Gelesen",
   "notifications.none": "Keine neuen Benachrichtigungen",
   "notifications.show_all": "Alle ansehen",
-  "notifications.title": "Notifications",
+  "notifications.title": "Benachrichtigungen",
   "outlook_calendar": "Outlook Kalender",
   "partner1.info_text": "Diese Angaben sind nur für dich und das Team von Little World sichtbar.",
   "partner1.language_level_tooltip": "Sprachniveau Globalskala:\nA1: Versteht und verwendet alltägliche Ausdrücke und einfache Sätze.\nA2: Versteht häufig gebrauchte Ausdrücke zu persönlichen und alltäglichen Themen.\nB1: Versteht Hauptpunkte bei klarer Standardsprache über vertraute Themen.\nB2: Versteht komplexe Texte und kann sich spontan und fließend zu verschiedenen Themen äußern.\nC1: Versteht anspruchsvolle Texte und kann sich spontan und fließend ausdrücken.\nC2: Versteht mühelos alles Gelesene oder Gehörte und kann Informationen präzise und flüssig wiedergeben.",

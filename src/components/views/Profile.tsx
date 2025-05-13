@@ -27,7 +27,7 @@ import {
   ComponentTypes,
   formatDataField,
   getFormComponent,
-} from '../../userForm/formContent';
+} from '../../userForm/formContent.ts';
 import {
   constructCheckboxes,
   restrictedLangLevels,

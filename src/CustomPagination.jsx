@@ -72,7 +72,7 @@ const PaginationButton = styled.button`
   }
 `;
 
-const CustomPagination = ({ totalPages, currentPage, onPageChange }) => {
+const CustomPagination = ({ totalPages, currentPage, onPageChange, className }) => {
   const generatePageNumbers = () => {
     const pageNumbers = Array.from(
       { length: totalPages },
@@ -108,7 +108,7 @@ const CustomPagination = ({ totalPages, currentPage, onPageChange }) => {
   };
 
   return (
-    <Pagination>
+    <Pagination className={className}>
       <PaginationList>
         <PaginationItem
           className="btn prev"
@@ -119,8 +119,9 @@ const CustomPagination = ({ totalPages, currentPage, onPageChange }) => {
           </PaginationButton>
         </PaginationItem>
 
-        {generatePageNumbers().map(page => (
-          <React.Fragment key={`page ${page}`}>
+        {generatePageNumbers().map((page, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <React.Fragment key={`page=${page};index=${index}`}>
             {page === '...' ? (
               <PaginationDots>
                 <span>...</span>
