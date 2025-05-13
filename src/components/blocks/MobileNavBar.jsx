@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
+import { useAreDevFeaturesEnabled } from '../../firebase.ts';
 import Logo from '../atoms/Logo.tsx';
 import NotificationBell from '../atoms/NotificationBell.tsx';
 import UnreadDot from '../atoms/UnreadDot.tsx';
@@ -77,6 +78,8 @@ function MobileNavBar({ setShowSidebarMobile }) {
     0,
   );
 
+  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
+
   return (
     <MobileHeader className="mobile-header">
       <LogoContainer>
@@ -87,7 +90,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
           </Title>
         )}
       </LogoContainer>
-      <StyledNotificationBell />
+      {areDevFeaturesEnabled && <StyledNotificationBell />}
       <Button
         type="button"
         variation={ButtonVariations.Icon}

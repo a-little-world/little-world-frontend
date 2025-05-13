@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 
 import { apiFetch } from './api/helpers.ts';
 
-export function useAreDevFeaturesEnabled() {
+export function useAreDevFeaturesEnabled(): boolean {
   return useSelector(state => state?.userData?.developmentFeaturesEnabled);
 }
 

@@ -9,12 +9,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
+import { useAreDevFeaturesEnabled } from '../../firebase.ts';
 import { formatTimeDistance } from '../../helpers/date.ts';
 import { useSelector } from '../../hooks/index.ts';
 import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import ProfileImage from '../atoms/ProfileImage';
-
-const NOTIFICATION_ROUTE_ENABLED = false;
 
 const ProfileInfo = styled.div`
   display: flex;
@@ -104,6 +103,7 @@ function NotificationPanel() {
   const user = useSelector(state => state.userData.user);
   const usesAvatar = user.profile.image_type === 'avatar';
   const notifications = useSelector(state => state.userData.notifications);
+  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
 
   return (
     <Panel>
@@ -118,7 +118,7 @@ function NotificationPanel() {
         </Text>
       </ProfileInfo>
       <Divider />
-      {NOTIFICATION_ROUTE_ENABLED ? (
+      {areDevFeaturesEnabled ? (
         <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
           {t('notifications.title')}
         </Link>
