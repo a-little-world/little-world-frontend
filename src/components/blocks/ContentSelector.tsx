@@ -8,10 +8,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
+import { useAreDevFeaturesEnabled } from '../../firebase.ts';
 import HideOnMobile from '../atoms/HideOnMobile.tsx';
 import NotificationBell from '../atoms/NotificationBell.tsx';
-
-const NOTIFICATION_BELL_VISIBLE = false;
 
 const Selector = styled.div`
   display: flex;
@@ -96,6 +95,7 @@ function ContentSelector({
   use,
 }: ContentSelectorProps) {
   const { t } = useTranslation();
+  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
   if (!['ourWorld', 'main', 'help', 'resources'].includes(use)) {
     return null;
   }
@@ -130,7 +130,7 @@ function ContentSelector({
           </StyledOption>
         ),
       )}
-      {NOTIFICATION_BELL_VISIBLE && (
+      {areDevFeaturesEnabled && (
         <StyledHideOnMobile>
           <NotificationBell />
         </StyledHideOnMobile>
