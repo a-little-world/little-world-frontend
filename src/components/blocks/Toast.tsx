@@ -21,15 +21,15 @@ interface ToastProviderProps {
 }
 
 export function ToastProvider({ children }: ToastProviderProps) {
-  const [toastProps, setToastProps] = React.useState<ToastPropsWithId[]>([]);
+  const [toasts, setToasts] = React.useState<ToastPropsWithId[]>([]);
   const [id, setId] = React.useState(1);
 
-  const onClose = (id: string, callBack?: () => void): void => {
+  const onClose = (toastId: string, callBack?: () => void): void => {
     // call the original onClose method
     callBack?.();
     setTimeout(() => {
       // cleanup memory with a delay to allow for close animations to finish
-      setToastProps(toastProps => toastProps.filter(prop => prop.id !== id));
+      setToasts(toastProps => toastProps.filter(prop => prop.id !== toastId));
     }, 1000);
   };
 
@@ -39,16 +39,16 @@ export function ToastProvider({ children }: ToastProviderProps) {
       id: String(id),
       onClose: () => onClose(String(id), props.onClose), // pass original onClose method to call later
     };
-    setToastProps(prevToastProps => [...prevToastProps, newToastProps]);
+    setToasts(prevToastProps => [...prevToastProps, newToastProps]);
     setId(prevId => prevId + 1);
   };
 
   return (
-    <ToastContext.Provider value={{ showToast: showToast }}>
+    <ToastContext.Provider value={{ showToast }}>
       <SimpleToastProvider swipeDirection="right">
         <ToastViewport />
-        {toastProps.map(props => (
-          <Toast {...props} key={props.id}></Toast>
+        {toasts.map(props => (
+          <Toast {...props} key={props.id} />
         ))}
       </SimpleToastProvider>
       {children}

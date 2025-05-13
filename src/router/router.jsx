@@ -10,12 +10,12 @@ import {
 } from 'react-router-dom';
 
 import { IS_CAPACITOR_BUILD } from '../ENVIRONMENT.js';
-import { ToastProvider } from '../Toast.tsx';
 import { ModeSwitch } from '../components/atoms/ModeSwitch.tsx';
 import RouterError from '../components/blocks/ErrorView/ErrorView.tsx';
 import Form from '../components/blocks/Form/Form.jsx';
 import { FullAppLayout } from '../components/blocks/Layout/AppLayout.tsx';
 import FormLayout from '../components/blocks/Layout/FormLayout.jsx';
+import { ToastProvider } from '../components/blocks/Toast.tsx';
 import Welcome from '../components/blocks/Welcome/Welcome.jsx';
 import AboutUs from '../components/views/AboutUs/AboutUs.tsx';
 import ChangeEmail from '../components/views/ChangeEmail.jsx';
