@@ -3,7 +3,6 @@ import { Provider, useDispatch, useSelector } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 
 import './App.css';
-import FireBase from './Firebase.tsx';
 import WebsocketBridge from './WebsocketBridge.jsx';
 import store from './app/store.ts';
 import { initialise } from './features/userData.js';
@@ -29,7 +28,6 @@ function App({ data }) {
     <Provider store={store}>
       <AuthGuard>
         <WebsocketBridge />
-        <FireBase />
       </AuthGuard>
       <InitializeDux data={data} />
       <RouterProvider router={router} />

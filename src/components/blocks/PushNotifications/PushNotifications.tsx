@@ -7,6 +7,13 @@ import styled from 'styled-components';
 
 import { mutateUserData } from '../../../api/index.js';
 import { updateProfile } from '../../../features/userData.js';
+import {
+  registerFirebaseDeviceToken,
+  sendDelayedFirebaseTestNotification,
+  sendFirebaseTestNotification,
+  unregisterFirebaseDeviceToken,
+  useAreDevFeaturesEnabled,
+} from '../../../firebase.ts';
 import { onFormError } from '../../../helpers/form.ts';
 
 const NotificationForm = styled.form`
@@ -64,33 +71,67 @@ const PushNotifications = ({
     }
   }, [enabled, setError, t]);
 
+  const firebasePublicVapidKey = useSelector(
+    state => state?.userData?.firebasePublicVapidKey,
+  );
+  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
+
   return (
-    <NotificationForm>
-      <Controller
-        defaultValue={enabled}
-        name="push_notifications_enabled"
-        control={control}
-        render={({
-          field: { onChange, onBlur, value, name, ref },
-          fieldState: { error },
-        }) => (
-          <Switch
-            id="push_notifications_enabled"
-            name={name}
-            inputRef={ref}
-            onCheckedChange={val => onChange({ target: { value: val } })}
-            onBlur={onBlur}
-            value={value}
-            defaultChecked={value}
-            error={error?.message}
-            label={hideLabel ? undefined : t('push_notifications')}
-            labelInline={inline}
-            required={false}
-          />
-        )}
-      />
-      <Button>Test</Button>
-    </NotificationForm>
+    <>
+      <NotificationForm>
+        <Controller
+          defaultValue={enabled}
+          name="push_notifications_enabled"
+          control={control}
+          render={({
+            field: { onChange, onBlur, value, name, ref },
+            fieldState: { error },
+          }) => (
+            <Switch
+              id="push_notifications_enabled"
+              name={name}
+              inputRef={ref}
+              onCheckedChange={val => onChange({ target: { value: val } })}
+              onBlur={onBlur}
+              value={value}
+              defaultChecked={value}
+              error={error?.message}
+              label={hideLabel ? undefined : t('push_notifications')}
+              labelInline={inline}
+              required={false}
+            />
+          )}
+        />
+      </NotificationForm>
+      {areDevFeaturesEnabled && (
+        <>
+          <Button
+            onClick={() => registerFirebaseDeviceToken(firebasePublicVapidKey)}
+          >
+            Register
+          </Button>
+          <Button
+            onClick={() =>
+              unregisterFirebaseDeviceToken(firebasePublicVapidKey)
+            }
+          >
+            Unregister
+          </Button>
+          <Button
+            onClick={() => sendFirebaseTestNotification(firebasePublicVapidKey)}
+          >
+            Send test notification
+          </Button>
+          <Button
+            onClick={() =>
+              sendDelayedFirebaseTestNotification(firebasePublicVapidKey)
+            }
+          >
+            Send delayed test notification
+          </Button>
+        </>
+      )}
+    </>
   );
 };
 
