@@ -149,7 +149,6 @@ const Chat = ({ chatId }) => {
         lastModified: file.lastModified,
       });
       setSelectedFile(fileWithMetadata);
-      reset(); // Clear any existing message text
     }
   };
 
@@ -169,6 +168,7 @@ const Chat = ({ chatId }) => {
     if (selectedFile) {
       sendFileAttachmentMessage({
         file: selectedFile,
+        text,
         chatId,
         onError: onSubmitError,
         onSuccess: data => {
@@ -235,6 +235,11 @@ const Chat = ({ chatId }) => {
                     key={message.uuid}
                   >
                     <MessageText
+                      as={
+                        message.parsable && messageContainsWidget(message.text)
+                          ? 'div'
+                          : 'p'
+                      }
                       disableParser={!message.parsable}
                       $isSelf={message.sender === userId}
                       $isWidget={
@@ -298,14 +303,7 @@ const Chat = ({ chatId }) => {
           id="text"
           error={t(get(errors, `${ROOT_SERVER_ERROR}.message`))}
           expandable
-          placeholder={
-            selectedFile
-              ? `Selected file: ${selectedFile.name} (${(
-                  selectedFile.size / 1024
-                ).toFixed(1)} KB)`
-              : t('chat.text_area_placeholder')
-          }
-          disabled={!!selectedFile}
+          placeholder={t('chat.text_area_placeholder')}
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
         />

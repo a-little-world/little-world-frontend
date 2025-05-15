@@ -111,7 +111,7 @@ export const MessageText = styled(Text)<{
       ? theme.spacing.xxxsmall
       : `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  border-radius: 24px;
+  border-radius: ${({ theme }) => theme.radius.medium};
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   max-width: 100%;
   overflow-wrap: break-word;

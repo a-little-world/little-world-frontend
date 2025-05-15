@@ -263,12 +263,6 @@ export const userDataSlice = createSlice({
       )
         ? state.chats.results?.map(chat => {
             if (chat.uuid === chatId) {
-              console.log({
-                ...chat,
-                newest: { ...chat.newest_message },
-                message,
-                senderIsSelf,
-              });
               return {
                 ...chat,
                 unread_count:
