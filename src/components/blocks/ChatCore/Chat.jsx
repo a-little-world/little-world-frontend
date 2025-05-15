@@ -235,11 +235,8 @@ const Chat = ({ chatId }) => {
                     key={message.uuid}
                   >
                     <MessageText
-                      as={
-                        message.parsable && messageContainsWidget(message.text)
-                          ? 'div'
-                          : 'p'
-                      }
+                      {...(message.parsable &&
+                        messageContainsWidget(message.text) && { as: 'div' })}
                       disableParser={!message.parsable}
                       $isSelf={message.sender === userId}
                       $isWidget={

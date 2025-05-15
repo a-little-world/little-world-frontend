@@ -115,6 +115,7 @@ export const MessageText = styled(Text)<{
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   max-width: 100%;
   overflow-wrap: break-word;
+  white-space: pre-wrap;
   hyphens: auto;
 
   ${({ $isSelf, theme }) =>
