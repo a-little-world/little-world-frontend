@@ -76,12 +76,14 @@ export const markChatMessagesReadApi = async ({ chatId }) => {
 
 export const sendFileAttachmentMessage = async ({
   file,
+  text,
   chatId,
   onSuccess,
   onError,
 }) => {
   const data = new FormData();
   data.append('file', file);
+  data.append('text', text);
   try {
     const result = await apiFetch(`/api/messages/${chatId}/send_attachment/`, {
       method: 'POST',
