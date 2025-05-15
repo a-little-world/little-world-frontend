@@ -9,6 +9,7 @@ import {
   CORE_WS_SHEME,
   IS_CAPACITOR_BUILD,
 } from './ENVIRONMENT';
+import useToast from './hooks/useToast.ts';
 
 const SOCKET_URL = IS_CAPACITOR_BUILD
   ? CORE_WS_SHEME + BACKEND_URL.split('//').pop() + CORE_WS_PATH
@@ -31,11 +32,24 @@ const WebsocketBridge = () => {
     reconnectAttempts: 10,
   });
 
+  const toast = useToast();
+
   useEffect(() => {
     if (lastMessage !== null) {
       setMessageHistory(prev => prev.concat(lastMessage));
       const message = JSON.parse(lastMessage.data);
       console.log('CORE SOCKET:', message);
+
+      if (message.action === 'addNotification' && message.payload?.showToast) {
+        const { headline, title, description, created_at } = message.payload;
+        toast.showToast({
+          headline,
+          title,
+          description,
+          timestamp: new Date(created_at).toLocaleTimeString(),
+        });
+      }
+
       try {
         dispatch({
           type: `userData/${message.action}`,

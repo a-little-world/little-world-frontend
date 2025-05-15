@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 
 import { apiFetch } from './api/helpers.ts';
 
-export function useArePushNotificationsEnabled() {
+export function useAreDevFeaturesEnabled(): boolean {
   return useSelector(state => state?.userData?.developmentFeaturesEnabled);
 }
 
@@ -148,7 +148,7 @@ export async function sendFirebaseTestNotification(
 ): Promise<void> {
   const token = await getFirebaseToken(firebasePublicVapidKey);
 
-  return apiFetch('/api/push_notifications/send', {
+  return apiFetch('/api/push_notifications/send_test', {
     method: 'POST',
     body: {
       token,
@@ -163,7 +163,7 @@ export async function sendDelayedFirebaseTestNotification(
 
   setTimeout(
     () =>
-      apiFetch('/api/push_notifications/send', {
+      apiFetch('/api/push_notifications/send_test', {
         method: 'POST',
         body: {
           token,

@@ -114,6 +114,8 @@ export const MessageText = styled(Text)<{
   border-radius: ${({ theme }) => theme.radius.medium};
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   max-width: 100%;
+  overflow-wrap: break-word;
+  hyphens: auto;
 
   ${({ $isSelf, theme }) =>
     $isSelf &&
