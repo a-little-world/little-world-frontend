@@ -188,6 +188,8 @@ function Notifications() {
 
       {isLoading && !notifications?.length ? (
         <Loading size={LoadingSizes.Medium} />
+      ) : notifications.length === 0 ? (
+        <span>{t(`notifications.no_${filter}_text`)}</span>
       ) : (
         <Items>
           <AnimatePresence mode="popLayout">
