@@ -3,21 +3,15 @@ import {
   Button,
   ButtonSizes,
   ButtonVariations,
+  Gradients,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { NotificationState } from '../../api/notification.ts';
 import useUnreadNotificationCount from '../../hooks/useUnreadNotificationCount.ts';
 import { NOTIFICATIONS_ROUTE } from '../../router/routes.ts';
 import UnreadDot from './UnreadDot.tsx';
-
-const StyledNotificationBell = styled(Button)`
-  outline: 2px solid ${({ theme }) => theme.color.surface.secondary};
-  outline-offset: 4px;
-  border-radius: 50%;
-`;
 
 const UNREAD_NOTIFICATIONS_LINK = `/app/${NOTIFICATIONS_ROUTE}?filter=${NotificationState.UNREAD}`;
 
@@ -31,7 +25,7 @@ function NotificationBell({ className }: { className?: string }) {
   };
 
   return (
-    <StyledNotificationBell
+    <Button
       variation={ButtonVariations.Icon}
       size={ButtonSizes.Medium}
       className={className}
@@ -43,8 +37,9 @@ function NotificationBell({ className }: { className?: string }) {
         label=" all notifications"
         width="16px"
         height="16px"
+        gradient={Gradients.Blue}
       />
-    </StyledNotificationBell>
+    </Button>
   );
 }
 
