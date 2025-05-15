@@ -84,7 +84,7 @@ function Notifications() {
   const notifications = data?.results ?? [];
 
   async function onArchive(id: number) {
-    const update = await mutate(
+    mutate(
       updateNotification(
         id,
         NotificationState.ARCHIVED,
@@ -92,7 +92,6 @@ function Notifications() {
         onError,
       ),
     );
-    console.log(update);
   }
 
   async function onDeleteNotification(id: number) {

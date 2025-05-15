@@ -1,6 +1,7 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { isEmpty, some, uniqBy } from 'lodash';
 
+import { updateUnreadNotificationCount } from '../api/notification.ts';
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../router/routes.ts';
 import { questionsDuringCall } from '../services/questionsDuringCall';
 
@@ -125,6 +126,8 @@ export const userDataSlice = createSlice({
       }
 
       notifications.totalItems += 1;
+
+      updateUnreadNotificationCount();
     },
     updateNotificationUserData: (state, action) => {
       const notification = action.payload;
@@ -157,6 +160,8 @@ export const userDataSlice = createSlice({
       if (!notificationExists) {
         notifications.totalItems += 1;
       }
+
+      updateUnreadNotificationCount();
     },
     updatePostCallSurvey: (state, action) => {
       state.postCallSurvey = {

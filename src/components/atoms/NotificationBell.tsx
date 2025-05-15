@@ -9,14 +9,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { NotificationState } from '../../api/notification.ts';
-import useUnreadNotificationCount from '../../hooks/useUnreadNotificationCount.ts';
+import useUnreadNotifications from '../../hooks/useUnreadNotifications.ts';
 import { NOTIFICATIONS_ROUTE } from '../../router/routes.ts';
 import UnreadDot from './UnreadDot.tsx';
 
 const UNREAD_NOTIFICATIONS_LINK = `/app/${NOTIFICATIONS_ROUTE}?filter=${NotificationState.UNREAD}`;
 
 function NotificationBell({ className }: { className?: string }) {
-  const notifications = useUnreadNotificationCount();
+  const notifications = useUnreadNotifications();
   const count = notifications.data?.count ?? 0;
   const navigate = useNavigate();
 
