@@ -64,7 +64,7 @@ const PushNotifications = ({
       Notification.requestPermission().then(permission => {
         if (permission !== 'granted') {
           setError('push_notifications_enabled', {
-            message: t('push_notifications.enable_error'),
+            message: t('settings.push_notifications.enable_error'),
           });
         }
       });
@@ -96,7 +96,9 @@ const PushNotifications = ({
               value={value}
               defaultChecked={value}
               error={error?.message}
-              label={hideLabel ? undefined : t('push_notifications')}
+              label={
+                hideLabel ? undefined : t('settings.push_notifications.toggle')
+              }
               labelInline={inline}
               required={false}
             />
