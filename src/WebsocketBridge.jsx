@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 import './App.css';
@@ -10,6 +11,7 @@ import {
   IS_CAPACITOR_BUILD,
 } from './ENVIRONMENT';
 import useToast from './hooks/useToast.ts';
+import { NOTIFICATIONS_ROUTE, getAppRoute } from './router/routes.ts';
 
 const SOCKET_URL = IS_CAPACITOR_BUILD
   ? CORE_WS_SHEME + BACKEND_URL.split('//').pop() + CORE_WS_PATH
@@ -31,6 +33,7 @@ const WebsocketBridge = () => {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
   });
+  const navigate = useNavigate();
 
   const toast = useToast();
 
@@ -47,6 +50,7 @@ const WebsocketBridge = () => {
           title,
           description,
           timestamp: new Date(created_at).toLocaleTimeString(),
+          onClick: () => navigate(getAppRoute(NOTIFICATIONS_ROUTE)),
         });
       }
 
