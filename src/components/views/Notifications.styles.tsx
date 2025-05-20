@@ -112,7 +112,7 @@ export const RelativeDiv = styled.div`
   height: 100%;
   display: flex;
   flex: 1;
-  min-height: 64px;
+  min-height: 80px;
 `;
 
 export const BottomAlignedPagination = styled(CustomPagination)`

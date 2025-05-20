@@ -34,7 +34,7 @@ function NotificationBell({ className }: { className?: string }) {
       {count > 0 && <UnreadDot count={count} onIcon />}
       <BellIcon
         labelId="bell_icon"
-        label=" all notifications"
+        label="all notifications"
         width="16px"
         height="16px"
         gradient={Gradients.Blue}
