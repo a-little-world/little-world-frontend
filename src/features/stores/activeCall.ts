@@ -1,0 +1,22 @@
+import { create } from 'zustand';
+
+interface ActiveCallData {
+  userId: string;
+  tracks?: any;
+  token?: string;
+  audioOptions?: boolean | { deviceId: string };
+  videoOptions?: boolean | { deviceId: string };
+  livekitServerUrl?: string;
+}
+
+interface ActiveCallState {
+  activeCall: ActiveCallData | null;
+  initActiveCall: (data: ActiveCallData) => void;
+  stopActiveCall: () => void;
+}
+
+export const useActiveCallStore = create<ActiveCallState>((set) => ({
+  activeCall: null,
+  initActiveCall: (data) => set({ activeCall: data }),
+  stopActiveCall: () => set({ activeCall: null }),
+})); 
