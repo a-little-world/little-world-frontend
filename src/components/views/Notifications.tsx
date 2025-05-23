@@ -83,6 +83,15 @@ function Notifications() {
   const totalPages = data?.last_page ?? 1;
   const notifications = data?.results ?? [];
 
+  function onNotificationUpdated(notification: any): void {
+    dispatch(updateNotificationUserData(notification));
+    updateUnreadNotificationCount();
+  }
+
+  function onError(e: any): void {
+    console.log(e);
+  }
+
   async function onArchive(id: number) {
     mutate(
       updateNotification(
@@ -98,7 +107,7 @@ function Notifications() {
     mutate(deleteNotification(id, () => {}, onError));
   }
 
-  const onMarkRead = (id: number) => {
+  function onMarkRead(id: number): void {
     mutate(
       updateNotification(
         id,
@@ -107,31 +116,25 @@ function Notifications() {
         onError,
       ),
     );
-  };
+  }
 
-  const onNotificationUpdated = (notification: any) => {
-    dispatch(updateNotificationUserData(notification));
-    updateUnreadNotificationCount();
-  };
-
-  const onError = (error: any) => {
-    console.log(error);
-  };
-
-  const changeFilter = (
+  function changeFilter(
     state: NotificationStateFilter,
     e?: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
+  ): void {
     searchParams.set('filter', state);
     searchParams.set('page', String(1));
     setSearchParams(searchParams);
     e?.currentTarget.scrollIntoView();
-  };
+  }
 
-  const shouldHighlight = (notificationState: NotificationState) =>
-    notificationState === NotificationState.UNREAD &&
-    filter !== NotificationState.UNREAD &&
-    !isLoading;
+  function shouldHighlight(notificationState: NotificationState): boolean {
+    return (
+      notificationState === NotificationState.UNREAD &&
+      filter !== NotificationState.UNREAD &&
+      !isLoading
+    );
+  }
 
   return (
     <>
@@ -205,76 +208,74 @@ function Notifications() {
             <Items>
               <AnimatePresence mode="popLayout">
                 {notifications?.map(
-                  ({ id, state, title, description, created_at }) => {
-                    return (
-                      <motion.li layout key={`${id}-${filter}`}>
-                        <Notification
-                          $state={state}
-                          $highlight={shouldHighlight(state)}
-                        >
-                          <Info>
-                            <TopSection>
-                              <Text type={TextTypes.Heading6}>{title}</Text>
-                              {shouldHighlight(state) && <UnreadIndicator />}
-                            </TopSection>
+                  ({ id, state, title, description, created_at }) => (
+                    <motion.li layout key={`${id}-${filter}`}>
+                      <Notification
+                        $state={state}
+                        $highlight={shouldHighlight(state)}
+                      >
+                        <Info>
+                          <TopSection>
+                            <Text type={TextTypes.Heading6}>{title}</Text>
+                            {shouldHighlight(state) && <UnreadIndicator />}
+                          </TopSection>
 
-                            <Text>{description}</Text>
-                          </Info>
-                          <BottomContainer>
-                            <Options>
-                              {state === NotificationState.UNREAD && (
-                                <Button
-                                  variation={ButtonVariations.Icon}
-                                  onClick={() => onMarkRead(id)}
-                                >
-                                  <TickIcon
-                                    labelId="tick_icon"
-                                    label="tick icon"
-                                    width="16"
-                                    height="16"
-                                  />
-                                </Button>
-                              )}
-                              {state !== NotificationState.ARCHIVED && (
-                                <Button
-                                  variation={ButtonVariations.Icon}
-                                  onClick={() => onArchive(id)}
-                                >
-                                  <ArchiveIcon
-                                    labelId="archive_icon"
-                                    label="archive icon"
-                                    width="16"
-                                    height="16"
-                                  />
-                                </Button>
-                              )}
-                              {state === NotificationState.ARCHIVED && (
-                                <Button
-                                  variation={ButtonVariations.Icon}
-                                  onClick={() => onDeleteNotification(id)}
-                                >
-                                  <TrashIcon
-                                    labelId="delete_icon"
-                                    label="delete icon"
-                                    width="16"
-                                    height="16"
-                                  />
-                                </Button>
-                              )}
-                            </Options>
+                          <Text>{description}</Text>
+                        </Info>
+                        <BottomContainer>
+                          <Options>
+                            {state === NotificationState.UNREAD && (
+                              <Button
+                                variation={ButtonVariations.Icon}
+                                onClick={() => onMarkRead(id)}
+                              >
+                                <TickIcon
+                                  labelId="tick_icon"
+                                  label="tick icon"
+                                  width="16"
+                                  height="16"
+                                />
+                              </Button>
+                            )}
+                            {state !== NotificationState.ARCHIVED && (
+                              <Button
+                                variation={ButtonVariations.Icon}
+                                onClick={() => onArchive(id)}
+                              >
+                                <ArchiveIcon
+                                  labelId="archive_icon"
+                                  label="archive icon"
+                                  width="16"
+                                  height="16"
+                                />
+                              </Button>
+                            )}
+                            {state === NotificationState.ARCHIVED && (
+                              <Button
+                                variation={ButtonVariations.Icon}
+                                onClick={() => onDeleteNotification(id)}
+                              >
+                                <TrashIcon
+                                  labelId="delete_icon"
+                                  label="delete icon"
+                                  width="16"
+                                  height="16"
+                                />
+                              </Button>
+                            )}
+                          </Options>
 
-                            <CreatedAt $highlight={shouldHighlight(state)}>
-                              <Text>
-                                {formatDistance(created_at, new Date(), {
-                                  addSuffix: true,
-                                })}
-                              </Text>
-                            </CreatedAt>
-                          </BottomContainer>
-                        </Notification>
-                      </motion.li>
-                    );
-                  },
+                          <CreatedAt $highlight={shouldHighlight(state)}>
+                            <Text>
+                              {formatDistance(created_at, new Date(), {
+                                addSuffix: true,
+                              })}
+                            </Text>
+                          </CreatedAt>
+                        </BottomContainer>
+                      </Notification>
+                    </motion.li>
+                  ),
                 )}
               </AnimatePresence>
             </Items>
@@ -285,7 +286,7 @@ function Notifications() {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={onPageChange}
-              ></BottomAlignedPagination>
+              />
             )}
             {error && (
               <StatusMessage
