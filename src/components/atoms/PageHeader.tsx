@@ -10,6 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { getAppRoute } from '../../router/routes.ts';
+import NotificationBell from './NotificationBell.tsx';
 
 const HeaderContainer = styled.div`
   display: none;
@@ -31,6 +32,10 @@ const HeaderContainer = styled.div`
 
 const BackButton = styled(Button)`
   color: ${({ theme }) => theme.color.text.link};
+`;
+
+const StyledNotificationBell = styled(NotificationBell)`
+  margin-left: auto;
 `;
 
 function PageHeader({
@@ -63,6 +68,7 @@ function PageHeader({
       <Text tag="h2" bold type={TextTypes.Body2}>
         {text}
       </Text>
+      <StyledNotificationBell />
     </HeaderContainer>
   );
 }

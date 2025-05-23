@@ -51,6 +51,7 @@ const MobileHeader = styled.div`
 
 const StyledNotificationBell = styled(NotificationBell)`
   margin-left: auto;
+  margin-right: 8px;
 `;
 
 const specialPaths = ['chat', 'profile'];

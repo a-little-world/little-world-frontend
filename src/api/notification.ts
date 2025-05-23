@@ -2,7 +2,7 @@ import { mutate } from 'swr';
 
 import { apiFetch } from './helpers.ts';
 
-export const UNREAD_NOTIFICATIONS_URL = '/api/notifications/unread';
+export const UNREAD_NOTIFICATIONS_URL = '/api/notifications?filter=unread';
 
 export enum NotificationState {
   UNREAD = 'unread',

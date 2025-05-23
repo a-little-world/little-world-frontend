@@ -1,4 +1,4 @@
-import { Button } from '@a-little-world/little-world-design-system';
+import { Button, Card } from '@a-little-world/little-world-design-system';
 import { motion } from 'motion/react';
 import styled, { css } from 'styled-components';
 
@@ -11,6 +11,7 @@ export const Toolbar = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.small}`};
   width: 100%;
+  overflow-x: auto;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
@@ -37,6 +38,19 @@ export const ToolbarButton = styled(Button)<{ $isActive: boolean }>`
       padding: ${theme.spacing.xxxsmall} 0;
     }
   `}
+`;
+
+export const NotificationWrapper = styled.div`
+  padding: ${({ theme }) => theme.spacing.xxsmall};
+  width: 100%;
+  height: 100%;
+`;
+
+export const NotificationCard = styled(Card)`
+  padding: ${({ theme }) => `${theme.spacing.small}`};
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
 `;
 
 export const Notification = styled(motion.div)<{
@@ -98,7 +112,7 @@ export const RelativeDiv = styled.div`
   height: 100%;
   display: flex;
   flex: 1;
-  min-height: 64px;
+  min-height: 80px;
 `;
 
 export const BottomAlignedPagination = styled(CustomPagination)`

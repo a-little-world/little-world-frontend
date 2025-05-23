@@ -5,7 +5,7 @@ import {
   fetchNotifications,
 } from '../api/notification.ts';
 
-function useUnreadNotificationCount() {
+function useUnreadNotifications() {
   const response = useSWR(UNREAD_NOTIFICATIONS_URL, fetchNotifications, {
     revalidateOnFocus: false,
     keepPreviousData: true,
@@ -14,4 +14,4 @@ function useUnreadNotificationCount() {
   return response;
 }
 
-export default useUnreadNotificationCount;
+export default useUnreadNotifications;
