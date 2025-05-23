@@ -71,7 +71,8 @@
     "swr": "^2.2.5",
     "util": "^0.12.4",
     "web-vitals": "^2.1.4",
-    "webpack": "^5.75.0"
+    "webpack": "^5.75.0",
+    "zustand": "^5.0.4"
   },
   "devDependencies": {
     "@a-little-world/little-world-prettier-config": "^1.2.0",
