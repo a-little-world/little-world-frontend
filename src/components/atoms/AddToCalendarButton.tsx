@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonAppearance,
+  ButtonSizes,
   ButtonVariations,
   CalendarAddIcon,
   Popover,
@@ -106,8 +107,10 @@ function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
 
 export default function AddToCalendarButton({
   calendarEvent,
+  size = ButtonSizes.Large,
 }: {
   calendarEvent: CalendarEvent;
+  size?: ButtonSizes;
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -129,12 +132,14 @@ export default function AddToCalendarButton({
           variation={ButtonVariations.Circle}
           appearance={ButtonAppearance.Primary}
           borderColor={theme.color.text.link}
+          size={size}
           color={theme.color.text.link}
         >
           <CalendarAddIcon
             labelId="addToCalendar"
             label={t('new_translation')}
-            width="20"
+            width={size === ButtonSizes.Large ? '20' : '16'}
+            height={size === ButtonSizes.Large ? '20' : '16'}
           />
         </Button>
       }

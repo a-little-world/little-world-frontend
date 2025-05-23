@@ -16,7 +16,7 @@ export const Events = styled.div`
   `}
 `;
 
-export const Event = styled.div`
+export const EventContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
   background: ${({ theme }) => theme.color.surface.primary};
@@ -86,14 +86,19 @@ export const EventTitle = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
-export const DateTime = styled.div`
+export const DateTimeEvent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  > p {
-    color: ${({ theme }) => theme.color.text.heading};
-  }
+`;
+
+export const SessionFlex = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+  justify-self: flex-end;
 `;
 
 export const Buttons = styled.div`
@@ -108,4 +113,23 @@ export const Buttons = styled.div`
       gap: ${theme.spacing.xxsmall};
     }
   `}
+`;
+
+export const Sessions = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
+    max-width: 360px;
+  }
+`;
+
+export const Session = styled.div`
+  display: grid;
+  grid-template-columns: 104px auto auto;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  align-items: center;
+  width: 100%;
 `;
