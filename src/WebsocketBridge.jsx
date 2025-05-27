@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 import './App.css';
@@ -24,7 +24,6 @@ const WebsocketBridge = () => {
    * payload: {...}
    * } --> this will triger a simple redux dispatch in the frontend
    */
-  const dispatch = useDispatch();
   const [socketUrl] = useState(SOCKET_URL);
   const [, setMessageHistory] = useState([]);
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
@@ -51,15 +50,16 @@ const WebsocketBridge = () => {
       }
 
       try {
+        /** TODO
         dispatch({
           type: `userData/${message.action}`,
           payload: message.payload,
-        });
+        }); **/
       } catch (e) {
         console.warn('CORE SOCKET ERROR:', e);
       }
     }
-  }, [dispatch, lastMessage, setMessageHistory]);
+  }, [lastMessage, setMessageHistory]);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',

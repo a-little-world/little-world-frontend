@@ -10,11 +10,9 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import styled, { useTheme } from 'styled-components';
 
-import { setMatchRejected } from '../../../features/userData';
-import { useSelector } from '../../../hooks/index.ts';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
 import { TextField } from '../Profile/styles';
@@ -48,13 +46,12 @@ const ConfirmMatchCard = ({
   imageType,
 }: ConfirmaMatchCardProps) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const matchRejected = useSelector(state => state.userData.matchRejected);
+  const matchRejected = null; // TODO useSelector(state => state.userData.matchRejected);
   const theme = useTheme();
 
   const handleReject = () => {
     onReject();
-    dispatch(setMatchRejected(true));
+    // dispatch(setMatchRejected(true)); TODO
   };
 
   return (

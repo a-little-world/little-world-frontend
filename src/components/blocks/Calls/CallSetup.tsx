@@ -11,7 +11,7 @@ import {
 import { LocalUserChoices, PreJoin } from '@livekit/components-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
@@ -125,7 +125,6 @@ type CallSetupProps = {
 
 function CallSetup({ onClose, userPk }: CallSetupProps) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [authData, setAuthData] = useState({
     token: null,
@@ -138,6 +137,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   );
 
   const handleJoin = (values: LocalUserChoices) => {
+	  /** TODO
     dispatch(
       initActiveCall({
         userId: userPk,
@@ -152,7 +152,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
         livekitServerUrl: authData.livekitServerUrl,
       }),
     );
-    dispatch(cancelCallSetup());
+    dispatch(cancelCallSetup()); **/ 
     onClose();
     clearActiveTracks();
     navigate(getAppRoute(CALL_ROUTE));
@@ -164,7 +164,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     requestVideoAccessToken({
       partnerId: userPk,
       onSuccess: res => {
-        dispatch(insertChat(res.chat));
+        // dispatch(insertChat(res.chat)); TODO
         setAuthData({
           token: res.token,
           livekitServerUrl: res.server_url,
@@ -193,7 +193,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       <CloseButton
         variation={ButtonVariations.Icon}
         onClick={() => {
-          dispatch(cancelCallSetup());
+          // dispatch(cancelCallSetup()); TODO
           onClose();
         }}
       >
