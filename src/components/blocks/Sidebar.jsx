@@ -134,6 +134,7 @@ function Sidebar({ sidebarMobile }) {
         })
           .then(response => {
             if (response.status === 200) {
+              // TODO: check if useSWR in Authguard is properly revalidated
               dispatch({ type: 'userData/reset', payload: {} }); // clears all existing user data
               navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
             } else {
