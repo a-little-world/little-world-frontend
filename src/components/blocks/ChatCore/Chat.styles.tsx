@@ -75,13 +75,17 @@ export const TopSection = styled.div`
 `;
 
 export const WriteSection = styled.form`
+  position: relative;
+  z-index: 1; // prevents overlap issues with messages
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+
 `;
 
 export const Messages = styled.div`
+  position: relative;
   height: 100%;
   border: 2px solid ${({ theme }) => theme.color.border.minimal};
   border-radius: 20px;
@@ -90,7 +94,9 @@ export const Messages = styled.div`
   flex-direction: column-reverse;
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.small};
-  overflow-y: scroll;
+  overflow-y: auto;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
 `;
 
 export const Message = styled.div<{ $isSelf: boolean }>`
@@ -236,11 +242,13 @@ export const AttachmentButton = styled(Button)`
 
 export const ChatContainer = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   flex: 1;
   gap: ${({ theme }) => theme.spacing.small};
-  overflow-y: hidden;
+  overflow: hidden;
   width: 100%;
+  height: 100%;
 `;
 
 export const ProfileLink = styled(Link)`
