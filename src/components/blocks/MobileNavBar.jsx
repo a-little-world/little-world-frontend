@@ -63,8 +63,8 @@ function MobileNavBar({ setShowSidebarMobile }) {
   // routes use different parts of the path to determine the header
   let key =
     (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) || 'home';
-
-  const isHome = key === 'home';
+  console.log({ booL: paths.slice(-1) });
+  const isHome = key === 'home' || key === 'app';
   if (key === 'profile' && userId) {
     key = 'user';
   } else if (paths.includes('trainings')) key = 'trainings';
