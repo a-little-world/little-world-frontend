@@ -23,7 +23,7 @@ import CallSidebar, {
   SidebarSelectionProvider,
 } from '../blocks/Calls/CallSidebar.tsx';
 import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar.tsx';
-import Chat from '../blocks/ChatCore/Chat';
+import Chat from '../blocks/ChatCore/Chat.tsx';
 import QuestionCards from '../blocks/QuestionCards/QuestionCards.tsx';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
 import {

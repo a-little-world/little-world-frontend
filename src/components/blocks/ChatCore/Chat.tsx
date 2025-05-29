@@ -5,17 +5,19 @@ import {
   CloseIcon,
   PlusIcon,
   SendIcon,
+  Text,
   TextAreaSize,
   TextTypes,
   TickDoubleIcon,
   TickIcon,
   textParser,
 } from '@a-little-world/little-world-design-system';
+import { isSameDay } from 'date-fns';
 import { get, isEmpty } from 'lodash';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
@@ -33,18 +35,19 @@ import {
   insertChat,
   markChatMessagesRead,
   updateMessages,
-} from '../../../features/userData';
+} from '../../../features/userData.js';
 import {
   formatFileName,
   getCustomChatElements,
   messageContainsWidget,
 } from '../../../helpers/chat.ts';
-import { formatTimeDistance } from '../../../helpers/date.ts';
+import { formatMessageDate, formatTime } from '../../../helpers/date.ts';
 import {
   ROOT_SERVER_ERROR,
   onFormError,
   registerInput,
 } from '../../../helpers/form.ts';
+import { useSelector } from '../../../hooks/index.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import UnreadDot from '../../atoms/UnreadDot.tsx';
@@ -54,10 +57,12 @@ import {
   ChatContainer,
   Message,
   MessageBox,
+  MessageGroup,
   MessageText,
   Messages,
   NoMessages,
   SendButton,
+  StickyDateHeader,
   Time,
   WriteSection,
 } from './Chat.styles.tsx';
@@ -209,6 +214,31 @@ const Chat = ({ chatId }) => {
     }
   };
 
+  const groupMessagesByDate = messages => {
+    if (!messages) return [];
+
+    return messages.reduce((groups, message) => {
+      const messageDate = new Date(message.created);
+      const prevGroup = groups[groups.length - 1];
+
+      // If this is the first message or the date is different from the last group
+      if (!prevGroup || !isSameDay(messageDate, prevGroup.date)) {
+        groups.push({
+          date: messageDate,
+          formattedDate: formatMessageDate(messageDate, language, t),
+          messages: [message],
+        });
+      } else {
+        // Add message to existing group
+        prevGroup.messages.push(message);
+      }
+
+      return groups;
+    }, []);
+  };
+
+  const messageGroups = groupMessagesByDate(messagesResult);
+
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
@@ -219,62 +249,69 @@ const Chat = ({ chatId }) => {
             </NoMessages>
           ) : (
             <>
-              {messagesResult?.map(message => {
-                const customChatElements = message?.parsable
-                  ? getCustomChatElements({
-                      dispatch,
-                      message,
-                      userId,
-                      activeChat,
-                    })
-                  : [];
-
-                return (
-                  <Message
-                    $isSelf={message.sender === userId}
-                    key={message.uuid}
+              {messageGroups.map((group, groupIndex) => (
+                <MessageGroup key={group.date.toISOString()}>
+                  <StickyDateHeader
+                    $isSticky={groupIndex !== messageGroups.length - 1}
                   >
-                    <MessageText
-                      {...(message.parsable &&
-                        messageContainsWidget(message.text) && { as: 'div' })}
-                      disableParser={!message.parsable}
-                      $isSelf={message.sender === userId}
-                      $isWidget={
-                        message.parsable && messageContainsWidget(message.text)
-                      }
-                    >
-                      {textParser(message.text, {
-                        customElements: customChatElements,
-                        onlyLinks: !message.parsable,
-                      })}
-                    </MessageText>
-                    <Time type={TextTypes.Body6}>
-                      {message.read ? (
-                        <TickDoubleIcon
-                          labelId="messageReadIcon"
-                          label="message read icon"
-                          color={theme.color.status.info}
-                          width="16px"
-                          height="16px"
-                        />
-                      ) : (
-                        <TickIcon
-                          labelId="messageUnreadIcon"
-                          label="message unread icon"
-                          width="16px"
-                          height="16px"
-                        />
-                      )}
-                      {formatTimeDistance(
-                        message.created,
-                        new Date(),
-                        language,
-                        true,
-                      )}
-                    </Time>
-                  </Message>
-                );
-              })}
+                    <Text type={TextTypes.Body6}>{group.formattedDate}</Text>
+                  </StickyDateHeader>
+                  {group.messages.map(message => {
+                    const customChatElements = message?.parsable
+                      ? getCustomChatElements({
+                          dispatch,
+                          message,
+                          userId,
+                          activeChat,
+                        })
+                      : [];
+
+                    return (
+                      <Message
+                        $isSelf={message.sender === userId}
+                        key={message.uuid}
+                      >
+                        <MessageText
+                          {...(message.parsable &&
+                            messageContainsWidget(message.text) && {
+                              as: 'div',
+                            })}
+                          disableParser={!message.parsable}
+                          $isSelf={message.sender === userId}
+                          $isWidget={
+                            message.parsable &&
+                            messageContainsWidget(message.text)
+                          }
+                        >
+                          {textParser(message.text, {
+                            customElements: customChatElements,
+                            onlyLinks: !message.parsable,
+                          })}
+                        </MessageText>
+                        <Time type={TextTypes.Body6}>
+                          {message.read ? (
+                            <TickDoubleIcon
+                              labelId="messageReadIcon"
+                              label="message read icon"
+                              color={theme.color.status.info}
+                              width="16px"
+                              height="16px"
+                            />
+                          ) : (
+                            <TickIcon
+                              labelId="messageUnreadIcon"
+                              label="message unread icon"
+                              width="16px"
+                              height="16px"
+                            />
+                          )}
+                          {formatTime(new Date(message.created))}
+                        </Time>
+                      </Message>
+                    );
+                  })}
+                </MessageGroup>
+              ))}
               <div ref={scrollRef} />
             </>
           ))}

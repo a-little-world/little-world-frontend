@@ -22,6 +22,32 @@ export const formatDate = (
     locale: locale === LANGUAGES.en ? enGB : de,
   });
 
+export const formatMessageDate = (
+  date: Date,
+  locale: string,
+  t: any,
+): string => {
+  const now = new Date();
+  const diffInDays = Math.floor(
+    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
+  );
+  const isCurrentYear = date.getFullYear() === now.getFullYear();
+
+  if (diffInDays === 0) {
+    return t('chat.today');
+  }
+  if (diffInDays === 1) {
+    return t('chat.yesterday');
+  }
+  if (diffInDays < 7) {
+    return formatDate(date, 'EEEE', locale); // weekday: 'short'
+  }
+  if (isCurrentYear) {
+    return formatDate(date, 'EEE d MMM', locale); // "Thurs 10 May"
+  }
+  return formatDate(date, 'd MMM yyyy', locale); // "26 Nov 2024"
+};
+
 export const formatTimeDistance = (
   from: Date | string | number,
   to: Date | string | number,
