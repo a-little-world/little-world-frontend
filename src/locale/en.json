@@ -65,6 +65,8 @@
   "chat.send_btn": "Send",
   "chat.text_area_placeholder": "Write here...",
   "chat.unmatched_user": "Unmatched",
+  "chat.today": "Today",
+  "chat.yesterday": "Yesterday",
   "community_events.add_to_calendar": "Add to calendar",
   "community_events.frequency_monthly": "Monthly",
   "community_events.frequency_once": "One-off",
