@@ -203,10 +203,10 @@ const Chat = ({ chatId }) => {
     }
   };
 
-  const groupMessagesByDate = messages => {
-    if (!messages) return [];
+  const groupMessagesByDate = ungroupedMessages => {
+    if (!ungroupedMessages) return [];
 
-    return messages.reduce((groups, message) => {
+    return ungroupedMessages.reduce((groups, message) => {
       const messageDate = new Date(message.created);
       const prevGroup = groups[groups.length - 1];
 
