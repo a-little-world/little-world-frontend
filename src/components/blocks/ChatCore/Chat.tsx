@@ -167,6 +167,21 @@ const Chat = ({ chatId }) => {
     fileInputRef.current.value = ''; // Reset file input
   };
 
+  const onMessageSent = data => {
+    reset();
+    clearSelectedFile();
+    dispatch(
+      addMessage({
+        message: data,
+        chatId,
+        senderIsSelf: true,
+      }),
+    );
+    setIsSubmitting(false);
+    messagesRef.current.scrollTop = 0;
+    setMessagesSent(curr => curr + 1);
+  };
+
   const onSendMessage = ({ text }) => {
     setIsSubmitting(true);
 
@@ -176,40 +191,14 @@ const Chat = ({ chatId }) => {
         text,
         chatId,
         onError: onSubmitError,
-        onSuccess: data => {
-          reset();
-          clearSelectedFile();
-          dispatch(
-            addMessage({
-              message: data,
-              chatId,
-              senderIsSelf: true,
-            }),
-          );
-          setIsSubmitting(false);
-          messagesRef.current.scrollTop = 0;
-          setMessagesSent(curr => curr + 1);
-        },
+        onSuccess: onMessageSent,
       });
     } else {
       sendMessage({
         text,
         chatId,
         onError: onSubmitError,
-        onSuccess: data => {
-          reset();
-          clearSelectedFile();
-          dispatch(
-            addMessage({
-              message: data,
-              chatId,
-              senderIsSelf: true,
-            }),
-          );
-          setIsSubmitting(false);
-          messagesRef.current.scrollTop = 0;
-          setMessagesSent(curr => curr + 1);
-        },
+        onSuccess: onMessageSent,
       });
     }
   };
@@ -230,7 +219,7 @@ const Chat = ({ chatId }) => {
         });
       } else {
         // Add message to existing group
-        prevGroup.messages.push(message);
+        prevGroup.messages.unshift(message);
       }
 
       return groups;

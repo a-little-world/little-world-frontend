@@ -1,4 +1,4 @@
-import { format, formatDistance } from 'date-fns';
+import { format, formatDistance, startOfDay } from 'date-fns';
 import { de, enGB } from 'date-fns/locale';
 
 import { LANGUAGES } from '../constants/index.ts';
@@ -27,9 +27,10 @@ export const formatMessageDate = (
   locale: string,
   t: any,
 ): string => {
-  const now = new Date();
+  const now = startOfDay(new Date());
+  const messageDate = startOfDay(date);
   const diffInDays = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
+    (now.getTime() - messageDate.getTime()) / (1000 * 60 * 60 * 24),
   );
   const isCurrentYear = date.getFullYear() === now.getFullYear();
 
