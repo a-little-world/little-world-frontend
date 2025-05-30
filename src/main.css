@@ -3,15 +3,6 @@
     border: none;
     background: none;
   }
-
-  .mobile-header .notification.disabled {
-    display: unset !important;
-    visibility: hidden;
-  }
-
-  .mobile-header .notification img {
-    content: url('./images/button-bell.svg');
-  }
 }
 
 body.hide-mobile-header .mobile-header {

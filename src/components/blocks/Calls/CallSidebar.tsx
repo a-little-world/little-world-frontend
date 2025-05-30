@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import '../../../App.css';
 import '../../../call.css';
-import Chat from '../ChatCore/Chat';
+import Chat from '../ChatCore/Chat.tsx';
 import { StyledOption } from '../ContentSelector.tsx';
 import QuestionCards from '../QuestionCards/QuestionCards.tsx';
 import {

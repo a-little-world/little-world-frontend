@@ -14,6 +14,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { useAreDevFeaturesEnabled } from '../../firebase.ts';
+import { APP_ROUTE } from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import NotificationBell from '../atoms/NotificationBell.tsx';
 import UnreadDot from '../atoms/UnreadDot.tsx';
@@ -62,9 +63,10 @@ function MobileNavBar({ setShowSidebarMobile }) {
   const paths = location.pathname.split('/');
   // routes use different parts of the path to determine the header
   let key =
-    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) || 'home';
+    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) ||
+    APP_ROUTE;
 
-  const isHome = key === 'home';
+  const isHome = key === APP_ROUTE;
   if (key === 'profile' && userId) {
     key = 'user';
   } else if (paths.includes('trainings')) key = 'trainings';
