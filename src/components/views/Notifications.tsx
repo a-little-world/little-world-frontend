@@ -19,7 +19,7 @@ import { formatDistance } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import { createSearchParams, useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
@@ -92,7 +92,7 @@ function Notifications() {
   }
 
   async function onDeleteNotification(id: number) {
-    mutate(deleteNotification(id, () => {}, onError));
+    mutate(deleteNotification(id, () => { }, onError));
   }
 
   const onMarkRead = (id: number) => {

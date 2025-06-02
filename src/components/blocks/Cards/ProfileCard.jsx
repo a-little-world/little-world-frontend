@@ -19,7 +19,7 @@ import {
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import styled, { css, useTheme } from 'styled-components';
 
 import { initCallSetup } from '../../../features/userData';

@@ -15,11 +15,10 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { signUp } from '../../api';
-import { initialise } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   LOGIN_ROUTE,
@@ -37,7 +36,6 @@ import {
 } from './SignUp.styles';
 
 const SignUp = () => {
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -81,7 +79,7 @@ const SignUp = () => {
     signUp(data)
       .then(signUpData => {
         passAuthenticationBoundary();
-        dispatch(initialise(signUpData));
+        // dispatch(initialise(signUpData)); TODO
         setIsSubmitting(false);
         const nextRoute = signUpData.user?.emailVerified ?
           getAppRoute() :

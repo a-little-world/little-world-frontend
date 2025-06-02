@@ -11,7 +11,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import { useNavigate } from 'react-router-dom';
 
 import { setNewEmail } from '../../api';

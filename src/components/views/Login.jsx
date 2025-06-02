@@ -10,11 +10,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { login } from '../../api';
-import { initialise } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   FORGOT_PASSWORD_ROUTE,
@@ -27,7 +25,6 @@ import {
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 const Login = () => {
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
 
@@ -58,7 +55,7 @@ const Login = () => {
 
     login(data)
       .then(loginData => {
-        dispatch(initialise(loginData));
+        // TODO dispatch(initialise(loginData));
         setIsSubmitting(false);
 
         passAuthenticationBoundary();

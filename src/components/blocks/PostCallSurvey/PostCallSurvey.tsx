@@ -17,7 +17,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import styled, { useTheme } from 'styled-components';
 
 import { updatePostCallSurvey } from '../../../features/userData.js';

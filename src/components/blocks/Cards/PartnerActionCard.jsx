@@ -14,7 +14,7 @@ import {
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { reportMatch, unmatch } from '../../../api/matches.ts';

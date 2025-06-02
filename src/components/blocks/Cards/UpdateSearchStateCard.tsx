@@ -12,7 +12,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 
 import { updateUserSearchState } from '../../../api/profile.ts';
 import { SEARCHING_STATES } from '../../../constants/index.ts';

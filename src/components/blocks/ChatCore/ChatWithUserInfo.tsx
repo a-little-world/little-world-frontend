@@ -15,7 +15,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import { useTheme } from 'styled-components';
 
 import { getChatByChatId, initCallSetup } from '../../../features/userData';

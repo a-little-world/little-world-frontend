@@ -1,6 +1,5 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
@@ -78,7 +77,9 @@ const Content = styled.section<{ $isVH: boolean }>`
 
 export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = (props: any) => {
+    console.log('TODO don\'t use me');
+  };
   const { openModal, closeModal, isModalOpen } = useModalManager();
 
   const page = location.pathname.split('/')[2] || 'main';
@@ -121,8 +122,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.items?.length ||
-        matches?.unconfirmed?.items?.length ||
-        matchRejected,
+      matches?.unconfirmed?.items?.length ||
+      matchRejected,
     );
 
     if (shouldShowMatchModal) {
