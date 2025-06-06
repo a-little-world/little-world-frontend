@@ -84,12 +84,6 @@ function CommunityEvent({
           </Text>
         </DateTime>
         <Buttons>
-          <Button className="appointment disabled">
-            <img alt="add appointment" />
-            <span className="text">
-              {t('community_events.add_to_calendar')}
-            </span>
-          </Button>
           <Button
             type="button"
             variation={ButtonVariations.Basic}

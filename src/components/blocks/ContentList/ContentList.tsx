@@ -42,7 +42,7 @@ const ContentListItem = ({ item, layout }: ContentListItemProps) => {
   return (
     <ListItem to={item.link} $layout={layout}>
       <ImageWrapper $layout={layout}>
-        <ItemImage src={item.image} alt={item.altImage} />
+        <ItemImage src={item.image} alt={item.altImage} $layout={layout} />
       </ImageWrapper>
       <Info>
         <Text tag="h3" type={TextTypes.Heading5}>
