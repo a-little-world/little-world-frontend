@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonAppearance,
+  ButtonSizes,
   ButtonVariations,
   CalendarAddIcon,
   Popover,
@@ -14,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
 import { formatDateForCalendarUrl, getEndTime } from '../../helpers/date.ts';
+import { CalendarEvent } from '../../helpers/events.ts';
 
 export const AddToCalendarOption = styled(Button)`
   font-size: 1rem;
@@ -27,15 +29,6 @@ export const AddToCalendarOption = styled(Button)`
   }
 `;
 
-interface CalendarEvent {
-  title: string;
-  description: string;
-  startDate: Date;
-  endDate?: Date;
-  durationInMinutes: number;
-  link: string;
-}
-
 function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
   const formattedStartDate = formatDateForCalendarUrl(calendarEvent.startDate);
   const endDate = getEndTime(
@@ -47,67 +40,119 @@ function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
   return { formattedStartDate, formattedEndDate };
 }
 
-function generateGoogleCalendarUrl(calendarEvent: CalendarEvent) {
-  const { formattedStartDate, formattedEndDate } =
-    getFormattedCalendarDates(calendarEvent);
-  const encodedUrl = encodeURI(
-    [
-      'https://www.google.com/calendar/render',
-      '?action=TEMPLATE',
-      `&text=${calendarEvent.title || ''}`,
-      `&dates=${formattedStartDate || ''}`,
-      `/${formattedEndDate || ''}`,
-      `&details=${
-        calendarEvent.description
-          ? `${calendarEvent.description}\nhttps://little-world.com`
-          : 'https://little-world.com'
-      }`,
-      `&location=${calendarEvent.link || ''}`,
-      '&ctz=Europe%2FBerlin',
-      '&sprop=&sprop=name:',
-    ].join(''),
-  );
+const DAY_NAMES = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'] as const;
 
-  // open encodeUrl in new target blank
-  return encodedUrl;
+function generateRecurrenceRule(calendarEvent: CalendarEvent): string {
+  const { frequency } = calendarEvent;
+
+  if (!frequency || frequency === 'once') {
+    return '';
+  }
+
+  if (frequency === 'weekly') {
+    return 'FREQ=WEEKLY';
+  }
+
+  if (frequency === 'monthly') {
+    const startDate = new Date(calendarEvent.startDate);
+    const dayOfWeek = startDate.getDay();
+    const weekOfMonth = Math.ceil(startDate.getDate() / 7);
+    const dayName = DAY_NAMES[dayOfWeek];
+
+    // Check if this is the last occurrence of this weekday in the month
+    const lastDayOfMonth = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth() + 1,
+      0,
+    ).getDate();
+    const isLastWeek = startDate.getDate() + 7 > lastDayOfMonth;
+
+    return isLastWeek
+      ? `FREQ=MONTHLY;BYDAY=-1${dayName}`
+      : `FREQ=MONTHLY;BYDAY=${weekOfMonth}${dayName}`;
+  }
+
+  return '';
 }
 
-// Generates ICS for Apple and Outlook calendars
-function generateIcsCalendarFile(calendarEvent: CalendarEvent) {
+function formatDateTimeForIcs(dateString: string): string {
+  return dateString.replace(/[-:]/g, '').replace('.000Z', 'Z');
+}
+
+function generateGoogleCalendarUrl(calendarEvent: CalendarEvent): string {
   const { formattedStartDate, formattedEndDate } =
     getFormattedCalendarDates(calendarEvent);
+  const recurrenceRule = generateRecurrenceRule(calendarEvent);
+  const recurrenceParam = recurrenceRule
+    ? `&recur=RRULE:${recurrenceRule}`
+    : '';
 
-  const formattedStartDateTime = formattedStartDate
-    .replace(/[-:]/g, '')
-    .replace('.000Z', 'Z');
-  const formattedEndDateTime = formattedEndDate
-    .replace(/[-:]/g, '')
-    .replace('.000Z', 'Z');
+  const baseUrl = 'https://www.google.com/calendar/render?action=TEMPLATE';
+  const params = [
+    `text=${calendarEvent.title || ''}`,
+    `dates=${formattedStartDate || ''}/${formattedEndDate || ''}`,
+    `details=${
+      calendarEvent.description
+        ? `${calendarEvent.description}\nhttps://little-world.com`
+        : 'https://little-world.com'
+    }`,
+    `location=${calendarEvent.link || ''}`,
+    'ctz=Europe%2FBerlin',
+    'sprop=&sprop=name:',
+  ].join('&');
 
-  const icsContent = [
+  return encodeURI(`${baseUrl}&${params}${recurrenceParam}`);
+}
+
+function generateIcsCalendarFile(calendarEvent: CalendarEvent): string {
+  const { formattedStartDate, formattedEndDate } =
+    getFormattedCalendarDates(calendarEvent);
+  const formattedStartDateTime = formatDateTimeForIcs(formattedStartDate);
+  const formattedEndDateTime = formatDateTimeForIcs(formattedEndDate);
+  const recurrenceRule = generateRecurrenceRule(calendarEvent);
+
+  const icsLines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//Your Company//NONSGML v1.0//EN',
     'BEGIN:VEVENT',
-    `UID:${new Date().getTime()}`,
+    `UID:${Date.now()}`,
     `URL:${document.URL}`,
     `DTSTART:${formattedStartDateTime}`,
     `DTEND:${formattedEndDateTime}`,
     `SUMMARY:${calendarEvent.title || ''}`,
     `DESCRIPTION:${calendarEvent.description || ''}`,
     `LOCATION:${calendarEvent.link || ''}`,
+    ...(recurrenceRule ? [`RRULE:${recurrenceRule}`] : []),
     'END:VEVENT',
     'END:VCALENDAR',
-  ].join('\n');
+  ];
 
-  const encodedUrl = encodeURI(`data:text/calendar;charset=utf8,${icsContent}`);
-  return encodedUrl;
+  return icsLines.join('\n');
+}
+
+function downloadIcsFile(calendarEvent: CalendarEvent): void {
+  const icsContent = generateIcsCalendarFile(calendarEvent);
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${calendarEvent.title || 'event'}.ics`;
+  link.style.display = 'none';
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 export default function AddToCalendarButton({
   calendarEvent,
+  size = ButtonSizes.Large,
 }: {
   calendarEvent: CalendarEvent;
+  size?: ButtonSizes;
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -117,6 +162,10 @@ export default function AddToCalendarButton({
   ) => {
     const url = generateCalendar(calendarEvent);
     window.open(url, '_blank');
+  };
+
+  const onIcsDownload = () => {
+    downloadIcsFile(calendarEvent);
   };
 
   return (
@@ -129,12 +178,14 @@ export default function AddToCalendarButton({
           variation={ButtonVariations.Circle}
           appearance={ButtonAppearance.Primary}
           borderColor={theme.color.text.link}
+          size={size}
           color={theme.color.text.link}
         >
           <CalendarAddIcon
             labelId="addToCalendar"
             label={t('new_translation')}
-            width="20"
+            width={size === ButtonSizes.Large ? '20' : '16'}
+            height={size === ButtonSizes.Large ? '20' : '16'}
           />
         </Button>
       }
@@ -159,14 +210,14 @@ export default function AddToCalendarButton({
 
       <AddToCalendarOption
         variation={ButtonVariations.Inline}
-        onClick={() => onCalendarOptionClick(generateIcsCalendarFile)}
+        onClick={onIcsDownload}
       >
         {t('apple_calendar')}
       </AddToCalendarOption>
 
       <AddToCalendarOption
         variation={ButtonVariations.Inline}
-        onClick={() => onCalendarOptionClick(generateIcsCalendarFile)}
+        onClick={onIcsDownload}
       >
         {t('outlook_calendar')}
       </AddToCalendarOption>
