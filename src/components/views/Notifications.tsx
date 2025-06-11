@@ -1,11 +1,7 @@
 import {
   ArchiveIcon,
-  BellIcon,
   Button,
-  ButtonAppearance,
   ButtonVariations,
-  ClockDashedIcon,
-  ClockIcon,
   Loading,
   MessageTypes,
   StatusMessage,
@@ -33,8 +29,9 @@ import {
 } from '../../api/notification.ts';
 import { updateNotificationUserData } from '../../features/userData';
 import PageHeader from '../atoms/PageHeader.tsx';
+import Toolbar from '../atoms/Toolbar.tsx';
+import UnreadIndicator from '../atoms/UnreadIndicator.tsx';
 import { TopSection } from '../blocks/ChatCore/Chat.styles.tsx';
-import { UnreadIndicator } from '../blocks/ChatCore/ChatsPanel.tsx';
 import {
   BottomAlignedPagination,
   BottomContainer,
@@ -44,8 +41,6 @@ import {
   Notification,
   Options,
   RelativeDiv,
-  Toolbar,
-  ToolbarButton,
 } from './Notifications.styles.tsx';
 
 const PAGE_SIZE = 5;
@@ -88,7 +83,6 @@ function Notifications() {
         onError,
       ),
     );
-    console.log(update);
   }
 
   async function onDeleteNotification(id: number) {
@@ -129,62 +123,7 @@ function Notifications() {
   return (
     <>
       <PageHeader text={t('notifications.title')} />
-      <Toolbar>
-        <ToolbarButton
-          onClick={() => changeFilter('all')}
-          variation={ButtonVariations.Icon}
-          $isActive={filter === 'all'}
-        >
-          <BellIcon
-            labelId="bell_icon"
-            label=" all notifications"
-            width="16px"
-            height="16px"
-          />
-          {t('notifications.filter_all')}
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => changeFilter(NotificationState.UNREAD)}
-          appearance={ButtonAppearance.Secondary}
-          variation={ButtonVariations.Icon}
-          $isActive={filter === NotificationState.UNREAD}
-        >
-          <ClockIcon
-            labelId="clock_icon"
-            label="unread icon"
-            width="16px"
-            height="16px"
-          />
-          {t('notifications.filter_unread')}
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => changeFilter(NotificationState.READ)}
-          appearance={ButtonAppearance.Secondary}
-          variation={ButtonVariations.Icon}
-          $isActive={filter === NotificationState.READ}
-        >
-          <ClockDashedIcon
-            labelId="clock_icon"
-            label="read icon"
-            width="16px"
-            height="16px"
-          />
-          {t('notifications.filter_read')}
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => changeFilter(NotificationState.ARCHIVED)}
-          variation={ButtonVariations.Icon}
-          $isActive={filter === NotificationState.ARCHIVED}
-        >
-          <ArchiveIcon
-            labelId="archive_icon"
-            label="archive icon"
-            width="16px"
-            height="16px"
-          />
-          {t('notifications.archived')}
-        </ToolbarButton>
-      </Toolbar>
+      <Toolbar filter={filter} onChangeFilter={changeFilter} />
 
       {isLoading && !notifications?.length ? (
         <Loading size={LoadingSizes.Medium} />

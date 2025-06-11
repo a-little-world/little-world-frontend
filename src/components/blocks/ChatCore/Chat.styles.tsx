@@ -16,6 +16,7 @@ export const Panel = styled(Card)`
   min-width: 0;
   min-height: 0;
   padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
+  padding-bottom: ${({ theme }) => theme.spacing.xxxxsmall};
   gap: ${({ theme }) => theme.spacing.small};
   box-shadow: none;
 
@@ -26,6 +27,7 @@ export const Panel = styled(Card)`
 
     @media (min-width: ${theme.breakpoints.large}) {
       padding: ${theme.spacing.medium};
+      padding-bottom: ${theme.spacing.xxxsmall};
     }
   `}
 `;
@@ -74,14 +76,30 @@ export const TopSection = styled.div`
   width: 100%;
 `;
 
+export const ChatContainer = styled.div`
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  flex: 1;
+  gap: ${({ theme }) => theme.spacing.small};
+  overflow: visible;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+`;
+
 export const WriteSection = styled.form`
+  position: relative;
+  z-index: 1; // prevents overlap issues with messages
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
+  gap: ${({ theme }) => theme.spacing.xsmall};
+  overflow: visible;
 `;
 
 export const Messages = styled.div`
+  position: relative;
   height: 100%;
   border: 2px solid ${({ theme }) => theme.color.border.minimal};
   border-radius: 20px;
@@ -90,7 +108,31 @@ export const Messages = styled.div`
   flex-direction: column-reverse;
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.small};
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+`;
+
+export const MessageGroup = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+export const StickyDateHeader = styled.div<{ $isSticky: boolean }>`
+  position: ${({ $isSticky }) => ($isSticky ? 'sticky' : 'relative')};
+  top: ${({ $isSticky }) => ($isSticky ? '0' : 'auto')};
+  z-index: 2;
+  background: ${({ theme }) => theme.color.surface.primary};
+  padding: ${({ theme }) => theme.spacing.xxsmall}
+    ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.radius.medium};
+  margin: ${({ theme }) => theme.spacing.xxsmall} 0;
+  align-self: center;
+  box-shadow: ${({ $isSticky, theme }) =>
+    $isSticky ? `0 2px 4px ${theme.color.border.subtle}` : 'none'};
 `;
 
 export const Message = styled.div<{ $isSelf: boolean }>`
@@ -232,15 +274,6 @@ export const SendButton = styled(Button)`
 
 export const AttachmentButton = styled(Button)`
   ${TOOLBAR_BTN_CSS}
-`;
-
-export const ChatContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: ${({ theme }) => theme.spacing.small};
-  overflow-y: hidden;
-  width: 100%;
 `;
 
 export const ProfileLink = styled(Link)`

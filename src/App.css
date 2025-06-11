@@ -3,8 +3,13 @@
   display: none;
 }
 
+#root {
+  background-color: #ffffff;
+}
+
 html {
   height: 100%;
+  background-color: #ffffff;
 }
 
 body {
@@ -13,7 +18,7 @@ body {
   background: url('./images/background.svg');
   background-repeat: no-repeat;
   background-size: 100% auto;
-  background-color: #f2dabc;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
 }
@@ -49,19 +54,6 @@ button {
   scrollbar-color: #f39325 rgba(230, 232, 236, 0.6);
 }
 
-/* all items that live on top of the main background */
-.panel,
-.chat-list-box,
-.profile-detail > div,
-.call-and-text {
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
-  background: white;
-  border-radius: 30px;
-  box-sizing: border-box;
-  padding: 20px;
-}
-
 input[type='radio'],
 input[type='checkbox'] {
   display: none;
@@ -93,15 +85,10 @@ button img {
   display: block;
 }
 
-/* handle disabled buttons */
-.disabled {
-  display: none !important;
-}
-
 @media (width < 1024px) {
   body {
     background-image: none;
-    background-color: #fff0e0;
+    background-color: #ffffff;
   }
 }
 

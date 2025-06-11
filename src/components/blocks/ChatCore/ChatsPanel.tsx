@@ -14,6 +14,7 @@ import { getCustomChatElements } from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { useSelector } from '../../../hooks/index.ts';
 import ProfileImage from '../../atoms/ProfileImage.jsx';
+import UnreadIndicator from '../../atoms/UnreadIndicator.tsx';
 
 const Panel = styled(Card)<{ $selectedChat?: any }>`
   padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
@@ -100,13 +101,6 @@ const PreviewText = styled(Text)`
   }
 `;
 
-export const UnreadIndicator = styled.span`
-  border-radius: 50%;
-  height: 10px;
-  width: 10px;
-  background: ${({ theme }) => theme.color.gradient.orange10};
-`;
-
 interface ChatsPanelProps {
   chats: any[];
   selectChat: (uuid: string) => void;
@@ -124,6 +118,7 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
     t,
     i18n: { language },
   } = useTranslation();
+
   const userId = useSelector(state => state.userData.user?.id);
   const theme = useTheme();
 
@@ -160,7 +155,7 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
                       message.newest_message.created,
                       new Date(),
                       language,
-                      true
+                      true,
                     )}
                   </Time>
                 )}

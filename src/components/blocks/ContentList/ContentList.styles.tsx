@@ -29,12 +29,15 @@ export const ListItem = styled(Link)<{ $layout: ContentListLayouts }>`
   cursor: pointer;
   text-decoration: none;
   overflow: hidden;
-  max-width: 440px;
+  width: 100%;
 
    ${({ theme }) =>
      css`
-       @media (min-width: ${theme.breakpoints.small}) {
+       @media (min-width: ${theme.breakpoints.medium}) {
          padding: ${theme.spacing.medium};
+         flex: 1;
+         min-width: 320px;
+         max-width: 440px;
        }
      `}
 
@@ -56,34 +59,32 @@ export const ImageWrapper = styled.div<{ $layout: ContentListLayouts }>`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 96px;
   max-width: min(80%, 280px);
 
-  ${({ theme, $layout }) =>
+  ${({ $layout }) =>
     $layout === ContentListLayouts.Stacked &&
     css`
       width: 100%;
-      @media (min-width: ${theme.breakpoints.small}) {
-        height: 120px;
-      }
+      height: 56px;
     `}
 
   ${({ theme, $layout }) =>
     $layout === ContentListLayouts.SideBySide &&
     css`
       height: auto;
-      flex-grow: 0;
       max-width: min(40%, 280px);
+      flex-grow: 0;
+      justify-content: center;
       border: 1px solid ${theme.color.border.minimal};
       border-radius: ${theme.radius.small};
     `}
 `;
 
-export const ItemImage = styled.img`
+export const ItemImage = styled.img<{ $layout: ContentListLayouts }>`
   height: 100%;
   max-height: 100%;
-  width: 100%;
+  width: ${({ $layout }) =>
+    $layout === ContentListLayouts.Stacked ? 'auto' : '100%'};
   object-fit: contain;
 `;
 
