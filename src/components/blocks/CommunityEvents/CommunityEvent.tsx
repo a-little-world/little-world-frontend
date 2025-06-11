@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
 import { formatDate, formatEventTime } from '../../../helpers/date.ts';
+import { Event } from '../../../helpers/events.ts';
 import { useSelector } from '../../../hooks/index.ts';
 import placeholderImage from '../../../images/coffee.webp';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
@@ -32,17 +33,6 @@ import {
   Sessions,
 } from './styles.tsx';
 
-interface Event {
-  id: string;
-  frequency: string;
-  description: string;
-  image?: string;
-  group_id?: string;
-  title: string;
-  time: string;
-  end_time?: string;
-  link: string;
-}
 interface GroupedEvent extends Event {
   sessions?: Array<{
     startDate: Date;
@@ -91,6 +81,7 @@ function collateEvents(events: Event[]): GroupedEvent[] {
 
 const EventCtas = ({
   title,
+  frequency,
   description,
   link,
   startDate,
@@ -102,6 +93,7 @@ const EventCtas = ({
   link: string;
   startDate: Date;
   endDate?: Date;
+  frequency: string;
   sessions?: Array<{
     startDate: Date;
     endDate?: Date;
@@ -146,6 +138,7 @@ const EventCtas = ({
                 calendarEvent={{
                   title,
                   description,
+                  frequency,
                   startDate: session.startDate,
                   endDate: session.endDate,
                   durationInMinutes: 60,
@@ -186,6 +179,7 @@ const EventCtas = ({
         <AddToCalendarButton
           calendarEvent={{
             title,
+            frequency,
             description,
             startDate,
             endDate,
@@ -234,6 +228,7 @@ function CommunityEvent({
           link={link}
           startDate={startDate}
           endDate={endDate}
+          frequency={frequency}
           sessions={sessions}
         />
       </Main>
