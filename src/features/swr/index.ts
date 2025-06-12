@@ -17,6 +17,12 @@ export const useDispatch = () => {
   console.log("TODO don't use me");
 };
 
-export function fetcher<T>(url: string): Promise<T> {
-  return fetch(url).then(res => res.json());
+export async function fetcher<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const body = await res.json();
+    throw new Error(body ? JSON.stringify(body) : res.statusText);
+  }
+  return res.json();
 }
