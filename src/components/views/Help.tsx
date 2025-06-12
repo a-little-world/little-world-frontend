@@ -18,11 +18,13 @@ import {
 import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useTheme } from 'styled-components';
+import useSWR from 'swr';
 
 import { submitHelpForm } from '../../api/index.js';
+import { MATCHES_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
+import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink.tsx';
 import Socials from '../atoms/Socials.tsx';
@@ -178,7 +180,13 @@ export const FileDropzone = ({
 function Faqs() {
   const { t } = useTranslation();
   const [faqs, setFaqs] = useState([]);
-  const supportUrl = useSelector(state => state.userData.supportUrl);
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+
+  const adminUser = matches?.support.items[0];
+  const supportUrl = getAppSubpageRoute(
+    MESSAGES_ROUTE,
+    adminUser?.chatId ?? '',
+  );
 
   useEffect(() => {
     setFaqs(generateFAQItems(t, supportUrl));
@@ -287,10 +295,13 @@ function Contact() {
 function Help() {
   const { t } = useTranslation();
   const [subpage, selectSubpage] = useState('contact');
-  const adminUser = useSelector(
-    state => state.userData.matches.support.items[0],
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+
+  const adminUser = matches?.support.items[0];
+  const supportUrl = getAppSubpageRoute(
+    MESSAGES_ROUTE,
+    adminUser?.chatId ?? '',
   );
-  const supportUrl = useSelector(state => state.userData.supportUrl);
 
   return (
     <>
