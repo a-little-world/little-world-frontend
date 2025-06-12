@@ -9,7 +9,6 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
@@ -21,8 +20,8 @@ import {
   API_OPTIONS_ENDPOINT,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
+  fetcher,
 } from '../../features/swr/index.ts';
-import { getMatchByPartnerId } from '../../features/userData';
 import { onFormError } from '../../helpers/form.ts';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../router/routes.ts';
 import {
@@ -148,21 +147,26 @@ function Profile() {
   const navigate = useNavigate();
   const { control, getValues, handleSubmit, setError, watch } = useForm();
 
-  const formOptions = useSWR(API_OPTIONS_ENDPOINT).data?.profile;
+  const formOptions = useSWR(API_OPTIONS_ENDPOINT, fetcher).data?.profile;
+
   const [editingField, setEditingField] = useState(null);
 
-  const match = useSelector(state =>
-    getMatchByPartnerId(state.userData.matches, userId),
-  );
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher); // TODO: this logic seems weird, look at previous implementation in userData.js
+  const match = !matches
+    ? undefined
+    : [...matches.support.items, ...matches.confirmed.items].find(
+        m => m.partner.id === userId,
+      );
 
-  const user = useSelector(state => state.userData.user);
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const isSelf = user?.id === userId || !userId;
 
   const [profile, setProfile] = useState(
     isSelf ? user?.profile : match?.partner,
   );
+
   const [profileFields, setProfileFields] = useState(
-    profile
+    profile && formOptions
       ? getProfileFields({
           profile,
           formOptions,
@@ -206,7 +210,7 @@ function Profile() {
   }, [isSelf, user]);
 
   useEffect(() => {
-    if (profile)
+    if (profile && formOptions)
       setProfileFields(
         getProfileFields({
           profile,
