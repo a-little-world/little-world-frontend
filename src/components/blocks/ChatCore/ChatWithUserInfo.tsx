@@ -18,10 +18,9 @@ import { useTranslation } from 'react-i18next';
 
 import { useTheme } from 'styled-components';
 
-import { getChatByChatId, initCallSetup } from '../../../features/userData';
+import { getChatByChatId, initCallSetup } from '../../../features/userData.js';
 import { useSelector } from '../../../hooks/index.ts';
 import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes.ts';
-import Chat from './Chat.jsx';
 import {
   BackButton,
   NoChatSelected,
@@ -31,6 +30,7 @@ import {
   UserImage,
   UserInfo,
 } from './Chat.styles.tsx';
+import Chat from './Chat.tsx';
 
 interface Partner {
   id: string;

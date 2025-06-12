@@ -18,9 +18,10 @@ export const Header = styled.div`
   }`}
 `;
 
-export const Image = styled.img`
+export const Image = styled.img<{ $withAdditionalImage?: boolean }>`
   max-width: 272px;
-  max-height: 200px;
+  max-height: ${({ $withAdditionalImage }) =>
+    $withAdditionalImage ? '200px' : '56px'};
   margin: auto;
 
   ${({ theme }) =>

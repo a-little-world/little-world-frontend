@@ -19,8 +19,8 @@ export enum BannerTypes {
 const Banner = styled.div<{ $background: string; $isLarge: boolean }>`
   display: flex;
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  background: ${({ $background }) =>
-    $background ? `${$background}` : '#053c56'};
+  background: ${({ $background, theme }) =>
+    $background ? `${$background}` : theme.color.surface.accent};
   background-position: center;
   background-size: cover;
   padding: ${({ theme }) => theme.spacing.medium};

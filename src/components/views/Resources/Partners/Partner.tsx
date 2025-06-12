@@ -52,11 +52,16 @@ const Partner: FC = () => {
   return (
     <ContentCard>
       <Header>
-        <Image src={partner.image} alt={`${partner.title} logo`} />
+        <Image
+          src={partner.image}
+          alt={`${partner.title} logo`}
+          $withAdditionalImage={!!partner.additionalImage}
+        />
         {partner.additionalImage && (
           <AdditionalImage
             src={partner.additionalImage}
             alt={partner.additionalAltImage}
+            $withAdditionalImage
           />
         )}
       </Header>
@@ -69,6 +74,7 @@ const Partner: FC = () => {
           href={partner.ctaLink}
           buttonAppearance={ButtonAppearance.Primary}
           buttonSize={ButtonSizes.Large}
+          target="_blank"
         >
           {t(`resources.partners.${partner.id}.cta`)}
         </Cta>

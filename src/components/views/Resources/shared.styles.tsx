@@ -15,7 +15,8 @@ export const ResourcesListCard = styled(ContentCard)`
 
     @media (min-width: ${theme.breakpoints.medium}) {
       padding-bottom: ${theme.spacing.xlarge};
-    }`};
+    }
+  `};
 
   ul {
     margin-bottom: ${({ theme }) => theme.spacing.medium};
@@ -42,7 +43,8 @@ export const Container = styled.div`
 
     @media (min-width: ${theme.breakpoints.medium}) {
       gap: ${theme.spacing.medium};
-    }`};
+    }
+  `};
 `;
 
 export const VideoDescription = styled.div`

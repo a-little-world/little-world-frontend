@@ -63,6 +63,7 @@ const Content = styled.section<{ $isVH: boolean }>`
     ${$isVH &&
     css`
       overflow: hidden;
+      padding-bottom: ${theme.spacing.xxsmall};
     `}
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: 0;

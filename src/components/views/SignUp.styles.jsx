@@ -1,5 +1,5 @@
 import { Button, Card, Text } from '@a-little-world/little-world-design-system';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const StyledCard = styled(Card)`
   position: relative;
@@ -9,7 +9,7 @@ export const StyledCard = styled(Card)`
 
   ${({ theme }) =>
     `@media (max-width: ${theme.breakpoints.small}) {
-      padding-top: ${theme.spacing.medium};
+      padding-top: ${theme.spacing.xsmall};
       padding-bottom: ${theme.spacing.medium};
     }`}
 `;
@@ -30,7 +30,13 @@ export const Title = styled(Text)`
   text-align: center;
   color: ${({ theme }) => theme.color.text.highlight};
   width: 100%;
-  margin-bottom: ${({ theme }) => theme.spacing.medium};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      margin-bottom: ${theme.spacing.medium};
+    }
+  `}
 `;
 
 export const NameContainer = styled.div`

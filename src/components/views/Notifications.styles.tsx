@@ -1,43 +1,7 @@
-import { Button } from '@a-little-world/little-world-design-system';
 import { motion } from 'motion/react';
 import styled, { css } from 'styled-components';
 
 import CustomPagination from '../../CustomPagination.jsx';
-
-export const Toolbar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.small}`};
-  width: 100%;
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      width: unset;
-      padding: 0 ${theme.spacing.xxsmall};
-    }
-  `}
-`;
-
-export const ToolbarButton = styled(Button)<{ $isActive: boolean }>`
-  border-bottom: 2px solid
-    ${({ theme, $isActive }) =>
-      $isActive ? theme.color.border.highlight : theme.color.border.reversed};
-  color: ${({ theme, $isActive }) =>
-    $isActive ? theme.color.text.highlight : theme.color.text.primary};
-  font-weight: bold;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-  padding: ${({ theme }) => `${theme.spacing.xxsmall} 0`};
-  flex: 1;
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      gap: ${theme.spacing.xxxsmall};
-      padding: ${theme.spacing.xxxsmall} 0;
-    }
-  `}
-`;
 
 export const Notification = styled(motion.div)<{
   $state: string;
