@@ -103,13 +103,13 @@ function PartnerProfiles({ setShowCancel }) {
       ))}
       {germanLevelInvalid ? (
         <LanguageLevelCard />
-      ) : user.isSearching ? (
+      ) : user?.isSearching ? (
         <SearchingCard setShowCancel={setShowCancel} />
       ) : (
         <FindNewPartner
           type="button"
           onClick={() => setShowSearchConfirmModal(true)}
-          $hasMatch={user.hasMatch}
+          $hasMatch={user?.hasMatch}
         >
           <img src={PlusImage} alt="change matching status icon" />
           <Text type={TextTypes.Body3}>

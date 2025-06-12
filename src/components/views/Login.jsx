@@ -11,8 +11,10 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { mutate } from 'swr';
 
 import { login } from '../../api';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   FORGOT_PASSWORD_ROUTE,
@@ -56,6 +58,7 @@ const Login = () => {
     login(data)
       .then(loginData => {
         // TODO dispatch(initialise(loginData));
+        mutate(USER_ENDPOINT, loginData.user);
         setIsSubmitting(false);
 
         passAuthenticationBoundary();
@@ -69,9 +72,9 @@ const Login = () => {
           // consider this route after the requried for entry forms verify-email / user-form
           // we add missing front `/` otherwise 'app' would incorrectly navigate to /login/app
           navigate(
-            searchParams.get('next').startsWith('/') ?
-              searchParams.get('next') :
-              `/${searchParams.get('next')}`,
+            searchParams.get('next').startsWith('/')
+              ? searchParams.get('next')
+              : `/${searchParams.get('next')}`,
           );
         } else {
           // per default route to /app on successful login

@@ -184,7 +184,7 @@ const Description = styled(Text)`
 `;
 
 function CommsBanner() {
-  const banner = useSWR(USER_ENDPOINT, fetcher)?.data.banner;
+  const banner = useSWR(USER_ENDPOINT, fetcher).data?.banner;
   if (isEmpty(banner)) return null;
   const isLarge = banner.type === BannerTypes.Large;
   // depending on the type and image, we want to show the ctas on LHS
