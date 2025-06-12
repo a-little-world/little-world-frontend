@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { useAreDevFeaturesEnabled } from '../../firebase.ts';
+import { useDevelopmentFeaturesStore } from '../../features/stores/developmentFeatures.ts';
 import { APP_ROUTE } from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import NotificationBell from '../atoms/NotificationBell.tsx';
@@ -80,7 +80,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
     0,
   );
 
-  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
+  const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
   return (
     <MobileHeader className="mobile-header">

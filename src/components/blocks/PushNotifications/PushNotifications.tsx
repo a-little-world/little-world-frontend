@@ -6,13 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { mutateUserData } from '../../../api/index.js';
+import { useDevelopmentFeaturesStore } from '../../../features/stores/developmentFeatures.ts';
 import { updateProfile } from '../../../features/userData.js';
 import {
   registerFirebaseDeviceToken,
   sendDelayedFirebaseTestNotification,
   sendFirebaseTestNotification,
   unregisterFirebaseDeviceToken,
-  useAreDevFeaturesEnabled,
 } from '../../../firebase.ts';
 import { onFormError } from '../../../helpers/form.ts';
 
@@ -74,7 +74,7 @@ const PushNotifications = ({
   const firebasePublicVapidKey = useSelector(
     state => state?.userData?.firebasePublicVapidKey,
   );
-  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
+  const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
   return (
     <>

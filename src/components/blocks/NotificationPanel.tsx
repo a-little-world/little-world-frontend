@@ -9,7 +9,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
-import { useAreDevFeaturesEnabled } from '../../firebase.ts';
+import { useDevelopmentFeaturesStore } from '../../features/stores/developmentFeatures.ts';
 import { formatTimeDistance } from '../../helpers/date.ts';
 import { useSelector } from '../../hooks/index.ts';
 import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes.ts';
@@ -103,7 +103,7 @@ function NotificationPanel() {
   const user = useSelector(state => state.userData.user);
   const usesAvatar = user.profile.image_type === 'avatar';
   const notifications = useSelector(state => state.userData.notifications);
-  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
+  const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
   return (
     <Panel>

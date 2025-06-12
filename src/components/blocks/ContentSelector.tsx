@@ -8,7 +8,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { useAreDevFeaturesEnabled } from '../../firebase.ts';
+import { useDevelopmentFeaturesStore } from '../../features/stores/developmentFeatures.ts';
 import HideOnMobile from '../atoms/HideOnMobile.tsx';
 import NotificationBell from '../atoms/NotificationBell.tsx';
 
@@ -95,7 +95,7 @@ function ContentSelector({
   use,
 }: ContentSelectorProps) {
   const { t } = useTranslation();
-  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
+  const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
   if (!['ourWorld', 'main', 'help', 'resources'].includes(use)) {
     return null;
   }
