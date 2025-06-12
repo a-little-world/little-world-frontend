@@ -9,10 +9,11 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
+import useSWR from 'swr';
 
+import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { getCustomChatElements } from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
-import { useSelector } from '../../../hooks/index.ts';
 import ProfileImage from '../../atoms/ProfileImage.jsx';
 import UnreadIndicator from '../../atoms/UnreadIndicator.tsx';
 
@@ -119,7 +120,7 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
     i18n: { language },
   } = useTranslation();
 
-  const userId = useSelector(state => state.userData.user?.id);
+  const userId = useSWR(USER_ENDPOINT, fetcher).data?.id;
   const theme = useTheme();
 
   return (
