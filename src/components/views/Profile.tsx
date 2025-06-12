@@ -9,18 +9,20 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import useSWR, { mutate } from 'swr';
 
 import { mutateUserData } from '../../api/index.js';
 import { fetchUserMatch } from '../../api/matches.ts';
 import { fetchProfile } from '../../api/profile.ts';
 import { USER_TYPES } from '../../constants/index.ts';
 import {
-  addMatch,
-  getMatchByPartnerId,
-  updateProfile,
-} from '../../features/userData';
+  API_OPTIONS_ENDPOINT,
+  MATCHES_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../features/swr/index.ts';
+import { getMatchByPartnerId } from '../../features/userData';
 import { onFormError } from '../../helpers/form.ts';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../router/routes.ts';
 import {
@@ -144,10 +146,9 @@ function Profile() {
   const { t } = useTranslation();
   const { userId } = useParams();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { control, getValues, handleSubmit, setError, watch } = useForm();
 
-  const formOptions = useSelector(state => state.userData.formOptions);
+  const formOptions = useSWR(API_OPTIONS_ENDPOINT).data?.profile;
   const [editingField, setEditingField] = useState(null);
 
   const match = useSelector(state =>
@@ -192,8 +193,8 @@ function Profile() {
     onFormError({ e, formFields: getValues(), setError });
   };
 
-  const onFormSuccess = response => {
-    dispatch(updateProfile(response));
+  const onFormSuccess = () => {
+    mutate(USER_ENDPOINT);
   };
 
   const onFormSubmit = data => {
@@ -226,11 +227,11 @@ function Profile() {
     if (!isSelf && !match) {
       fetchUserMatch({
         userId,
-        onSuccess: res => dispatch(addMatch(res)),
+        onSuccess: () => mutate(MATCHES_ENDPOINT),
         onError: error => console.error(error),
       });
     }
-  }, [isSelf, match, userId, dispatch]);
+  }, [isSelf, match, userId]);
 
   if (isEmpty(profile) || isEmpty(profileFields)) return null;
 
