@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { mutate } from 'swr';
 
 import './App.css';
 import {
@@ -9,6 +9,10 @@ import {
   CORE_WS_SHEME,
   IS_CAPACITOR_BUILD,
 } from './ENVIRONMENT';
+import {
+  NOTIFICATIONS_ENDPOINT,
+  UNREAD_NOTIFICATIONS_ENDPOINT,
+} from './features/swr/index.ts';
 import useToast from './hooks/useToast.ts';
 
 const SOCKET_URL = IS_CAPACITOR_BUILD
@@ -47,6 +51,10 @@ const WebsocketBridge = () => {
           description,
           timestamp: new Date(created_at).toLocaleTimeString(),
         });
+
+        // TODO: only if message is also persisted
+        mutate(UNREAD_NOTIFICATIONS_ENDPOINT);
+        mutate(NOTIFICATIONS_ENDPOINT);
       }
 
       try {

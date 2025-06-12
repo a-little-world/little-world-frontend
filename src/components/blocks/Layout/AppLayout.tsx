@@ -2,15 +2,24 @@ import { Modal } from '@a-little-world/little-world-design-system';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit.ts';
+import { useActiveCallStore } from '../../../features/stores/activeCall.ts';
+import { useCallSetupStore } from '../../../features/stores/callSetup.ts';
+import { useMatchRejectedStore } from '../../../features/stores/matchRejected.ts';
+import { usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
+import {
+  ACTIVE_CALL_ROOMS_ENDPOINT,
+  MATCHES_ENDPOINT,
+  fetcher,
+} from '../../../features/swr/index.ts';
 import {
   blockIncomingCall,
   initCallSetup,
   removePostCallSurvey,
   setMatchRejected,
 } from '../../../features/userData.js';
-import { useSelector } from '../../../hooks/index.ts';
 import useModalManager, { ModalTypes } from '../../../hooks/useModalManager.ts';
 import '../../../main.css';
 import CallSetup from '../Calls/CallSetup.tsx';
@@ -79,19 +88,19 @@ const Content = styled.section<{ $isVH: boolean }>`
 export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const dispatch = (props: any) => {
-    console.log('TODO don\'t use me');
+    console.log("TODO don't use me");
   };
   const { openModal, closeModal, isModalOpen } = useModalManager();
 
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
-  const matches = useSelector(state => state.userData.matches);
-  const matchRejected = useSelector(state => state.userData.matchRejected);
-  const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
-  const activeCallRoom = activeCallRooms[0];
-  const callSetup = useSelector(state => state.userData.callSetup);
-  const postCallSurvey = useSelector(state => state.userData.postCallSurvey);
-  const activeCall = useSelector(state => state.userData.activeCall); // do we need this?
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const matchRejected = useMatchRejectedStore().rejected;
+  const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
+  const activeCallRoom = activeCallRooms?.[0];
+  const callSetup = useCallSetupStore().callSetup;
+  const postCallSurvey = usePostCallSurveyStore().postCallSurvey;
+  const activeCall = useActiveCallStore().activeCall;
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
@@ -123,8 +132,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.items?.length ||
-      matches?.unconfirmed?.items?.length ||
-      matchRejected,
+        matches?.unconfirmed?.items?.length ||
+        matchRejected,
     );
 
     if (shouldShowMatchModal) {
@@ -168,7 +177,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const submitPostCallSurvey = ({
     rating,
     review,
-    onError
+    onError,
   }: {
     rating?: number;
     review?: string;

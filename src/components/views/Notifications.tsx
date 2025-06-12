@@ -15,7 +15,6 @@ import { formatDistance } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { createSearchParams, useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
@@ -25,9 +24,11 @@ import {
   deleteNotification,
   fetchNotifications,
   updateNotification,
-  updateUnreadNotificationCount,
 } from '../../api/notification.ts';
-import { updateNotificationUserData } from '../../features/userData';
+import {
+  NOTIFICATIONS_ENDPOINT,
+  UNREAD_NOTIFICATIONS_ENDPOINT,
+} from '../../features/swr/index.ts';
 import PageHeader from '../atoms/PageHeader.tsx';
 import Toolbar from '../atoms/Toolbar.tsx';
 import UnreadIndicator from '../atoms/UnreadIndicator.tsx';
@@ -48,8 +49,6 @@ const PAGE_SIZE = 5;
 /* eslint-disable */
 function Notifications() {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   const onPageChange = (newPage: number) => {
@@ -86,7 +85,7 @@ function Notifications() {
   }
 
   async function onDeleteNotification(id: number) {
-    mutate(deleteNotification(id, () => { }, onError));
+    mutate(deleteNotification(id, () => {}, onError));
   }
 
   const onMarkRead = (id: number) => {
@@ -101,8 +100,8 @@ function Notifications() {
   };
 
   const onNotificationUpdated = (notification: any) => {
-    dispatch(updateNotificationUserData(notification));
-    updateUnreadNotificationCount();
+    mutate(NOTIFICATIONS_ENDPOINT);
+    mutate(UNREAD_NOTIFICATIONS_ENDPOINT);
   };
 
   const onError = (error: any) => {

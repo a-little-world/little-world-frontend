@@ -1,4 +1,4 @@
-import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { isEmpty, some, uniqBy } from 'lodash';
 
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../router/routes.ts';
@@ -109,54 +109,6 @@ export const userDataSlice = createSlice({
     },
     addPostCallSurvey: (state, action) => {
       state.postCallSurvey = action.payload;
-    },
-    addNotification: (state, action) => {
-      const notificationState = action.payload.state;
-      const notifications = state.notifications[notificationState];
-      notifications.items.unshift(action.payload);
-      notifications.items.sort(
-        (a, b) => new Date(b.created) - new Date(a.created),
-      );
-
-      const pageOverflow =
-        notifications.items.length - notifications.itemsPerPage;
-      if (pageOverflow > 0) {
-        notifications.items.pop();
-      }
-
-      notifications.totalItems += 1;
-    },
-    updateNotificationUserData: (state, action) => {
-      const notification = action.payload;
-      let notificationExists = false;
-      Object.keys(state.notifications).forEach(notificationState => {
-        const notifications = state.notifications[notificationState].items;
-        const notificationCount = notifications.length;
-        state.notifications[notificationState].items = notifications.filter(
-          ({ id }) => id !== notification.id,
-        );
-        notificationExists ||=
-          notificationCount >
-          state.notifications[notificationState].items.length;
-      });
-
-      // TODO: addNotification(state, action);
-      const notificationState = action.payload.state;
-      const notifications = state.notifications[notificationState];
-      notifications.items.unshift(action.payload);
-      notifications.items.sort(
-        (a, b) => new Date(b.created) - new Date(a.created),
-      );
-
-      const pageOverflow =
-        notifications.items.length - notifications.itemsPerPage;
-      if (pageOverflow > 0) {
-        notifications.items.pop();
-      }
-
-      if (!notificationExists) {
-        notifications.totalItems += 1;
-      }
     },
     updatePostCallSurvey: (state, action) => {
       state.postCallSurvey = {
@@ -354,7 +306,6 @@ export const userDataSlice = createSlice({
 export const {
   addMatch,
   addMessage,
-  addNotification,
   insertChat,
   blockIncomingCall,
   cancelCallSetup,
@@ -376,7 +327,6 @@ export const {
   updateMatch,
   updateMatchProfile,
   updateMessages,
-  updateNotificationUserData,
   updateProfile,
   updateSearchState,
   updateUser,
@@ -401,14 +351,6 @@ export const getMessagesByChatId = (messages, chatId) =>
 
 export const getChatByChatId = (chats, chatId) =>
   chats.results?.find(chat => chat.uuid === chatId);
-
-export const selectMatchesDisplay = createSelector(
-  [state => state.userData.matches],
-  ({ confirmed, support }) =>
-    confirmed.currentPage === 1
-      ? [...support.items, ...confirmed.items]
-      : [...confirmed.items],
-);
 
 export const FetchQuestionsDataAsync = () => async dispatch => {
   const result = await questionsDuringCall.getQuestions();

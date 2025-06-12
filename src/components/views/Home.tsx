@@ -1,12 +1,13 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import useSWR, { mutate } from 'swr';
 
 import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/matches.ts';
-import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
+import { useCallSetupStore } from '../../features/stores/callSetup.ts';
+import { MATCHES_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard.tsx';
 import CommsBanner from '../blocks/CommsBanner.tsx';
@@ -38,9 +39,9 @@ const PAGE_ITEMS = 10;
 function Main() {
   // for the case /call-setup/:userId?/
   const { userId } = useParams();
-  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const callSetup = useCallSetupStore();
 
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,14 +53,14 @@ function Main() {
       pageItems: PAGE_ITEMS,
       onError: error => console.error(error),
       onSuccess: data => {
-        dispatch(updateConfirmedData(data.data.confirmed_matches));
+        mutate(MATCHES_ENDPOINT); // TODO: is this correct? previously: dispatch(updateConfirmedData(data.data.confirmed_matches));
         setCurrentPage(page);
         window.scrollTo(0, 0);
       },
     });
   };
 
-  const matches = useSelector(state => state.userData.matches);
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
 
   useEffect(() => {
     const totalItems =
@@ -72,7 +73,7 @@ function Main() {
 
   useEffect(() => {
     if (userId) {
-      dispatch(initCallSetup({ userId }));
+      callSetup.initCallSetup({ userId });
     }
   }, [userId]);
 
