@@ -8,10 +8,10 @@ import {
 } from '@livekit/components-react';
 import '@livekit/components-styles';
 import { LocalParticipant, Track } from 'livekit-client';
+import { useActiveCallStore } from '../../features/stores/activeCall.ts';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { blockIncomingCall, getChatByPartnerId } from '../../features/userData';
@@ -35,6 +35,8 @@ import {
   Videos,
   WaitingTile,
 } from './VideoCall.styles.tsx';
+import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
+import useSWR from 'swr';
 
 function MyVideoConference({
   isFullScreen,
@@ -112,21 +114,19 @@ function VideoCall() {
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
-  const dispatch = useDispatch();
 
   useKeyboardShortcut({
     condition: isFullScreen,
     key: 'Escape',
     onKeyPressed: () => setIsFullScreen(false),
   });
-
-  const { userId, token, livekitServerUrl, audioOptions, videoOptions } =
-    useSelector(state => state.userData.activeCall);
-
-  const profile = useSelector(state => state.userData.user.profile);
-  const chat = useSelector(state =>
-    getChatByPartnerId(state.userData.chats, userId),
-  );
+  
+  const { userId, token, livekitServerUrl, audioOptions, videoOptions } = useActiveCallStore()
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const profile = user?.profile
+  
+  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
+  const chat = chats?.results?.find(chat => chat?.partner?.id === userId)
 
   const onChatToggle = () => {
     if (isFullScreen) {
@@ -173,11 +173,12 @@ function VideoCall() {
               token={token}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
-                dispatch(
+                /** TODO
+                 * dispatch(
                   blockIncomingCall({
                     userId,
                   }),
-                );
+                ); */
                 navigate(getAppRoute(), { state: { callEnded: true } });
               }}
             >

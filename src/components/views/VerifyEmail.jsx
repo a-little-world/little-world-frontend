@@ -12,7 +12,6 @@ import {
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
@@ -44,10 +43,9 @@ const VerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
-  const email = useSelector(state => state.userData.user.email);
-  const userFormCompleted = useSelector(
-    state => state.userData.user.userFormCompleted,
-  );
+  const { data: userData } = useSWR(USER_ENDPOINT, fetcher)
+  const email = userData?.email
+  const userFormCompleted = userData?.userFormCompleted
 
   const [searchParams] = useSearchParams();
 
