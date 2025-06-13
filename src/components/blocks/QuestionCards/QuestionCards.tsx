@@ -6,12 +6,6 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import {
-  FetchQuestionsDataAsync,
-  postArchieveQuestion,
-} from '../../../features/userData';
 import {
   ArchiveButton,
   Categories,
@@ -23,16 +17,12 @@ import {
   SidebarCard,
   TopicButton,
 } from './QuestionCards.styles.tsx';
+import useSWR from 'swr';
+import { getQuestionsEndpoint, fetcher } from '../../../features/swr/index.ts';
 
 function QuestionCards() {
-  const dispatch = useDispatch();
-  const cardsByCategory = useSelector(
-    state => state.userData?.questions?.cards,
-  );
-
-  const cardCategories = useSelector(
-    state => state.userData?.questions?.categories,
-  );
+  const { data: cards } = useSWR(getQuestionsEndpoint(false), fetcher)
+  const cardsByCategory = cards?.cards
 
   const categoriesRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +44,7 @@ function QuestionCards() {
 
   useEffect(() => {
     if (isEmpty(cardCategories)) {
-      dispatch(FetchQuestionsDataAsync());
+      // TODOdispatch(FetchQuestionsDataAsync());
     } else {
       setTopic(cardCategories?.[0]?.uuid);
     }
@@ -122,7 +112,7 @@ function QuestionCards() {
                       type="button"
                       className="yes"
                       onClick={() => {
-                        dispatch(postArchieveQuestion(card, true));
+                        // TODO dispatch(postArchieveQuestion(card, true));
                       }}
                     >
                       <img
@@ -139,7 +129,7 @@ function QuestionCards() {
                       type="button"
                       className="unarchive"
                       onClick={() => {
-                        dispatch(postArchieveQuestion(card, false));
+                        // TODO dispatch(postArchieveQuestion(card, false));
                       }}
                     >
                       <img

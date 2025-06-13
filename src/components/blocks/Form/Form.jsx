@@ -7,7 +7,7 @@ import {
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { completeForm, mutateUserData } from '../../../api';
@@ -38,10 +38,11 @@ import {
   SubmitError,
   Title,
 } from './styles';
+import useSWR from 'swr';
+import { FORM_OPTIONS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 
 const Form = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
 
   const {
     control,
@@ -52,11 +53,9 @@ const Form = () => {
     setValue,
     setError,
   } = useForm({ shouldUnregister: true });
-
-  const [formOptions, userData] = useSelector(state => [
-    state.userData.formOptions,
-    state.userData.user,
-  ]);
+  
+  const { data: userData, mutate: mutateUserData } = useSWR(USER_ENDPOINT, fetcher)
+  const { data: formOptions } = useSWR(FORM_OPTIONS_ENDPOINT, fetcher)
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,10 +72,12 @@ const Form = () => {
   const isLastStep = step === totalSteps;
 
   const onFormSuccess = response => {
-    dispatch(updateProfile(response));
+    // TODO dispatch(updateProfile(response));
+    mutateUserData(response)
     if (isLastStep && !userData?.userFormCompleted) {
       completeForm().then(updatedUser => {
-        dispatch(updateUser(updatedUser));
+        // TODO dispatch(updateUser(updatedUser));
+        mutateUserData(updatedUser)
       });
     }
     navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));

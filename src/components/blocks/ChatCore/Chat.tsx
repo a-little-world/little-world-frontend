@@ -28,7 +28,7 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat.ts';
-import { USER_ENDPOINT, fetcher, getChatEndpoint } from '../../../features/swr/index.ts';
+import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher, getChatEndpoint } from '../../../features/swr/index.ts';
 import {
   getChatByChatId
 } from '../../../features/userData.js';
@@ -43,7 +43,6 @@ import {
   onFormError,
   registerInput,
 } from '../../../helpers/form.ts';
-import { useSelector } from '../../../hooks/index.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import UnreadDot from '../../atoms/UnreadDot.tsx';
@@ -80,10 +79,9 @@ const Chat = ({ chatId }) => {
   ); */
 
   const { data: chat } = useSWR(getChatEndpoint(chatId), fetcher)
-  //const messagesResult = chat?.results;
-  const activeChat = useSelector(state =>
-    getChatByChatId(state.userData.chats, chatId),
-  );
+  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
+  const activeChat = chats?.results?.find(chat => chat?.uuid === chatId)
+  const messagesResult = activeChat?.messages
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
   const [selectedFile, setSelectedFile] = useState(null);
