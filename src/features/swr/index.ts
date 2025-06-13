@@ -11,6 +11,7 @@ export const CHATS_ENDPOINT = '/api/chats';
 export const API_TRANSLATIONS_ENDPOINT = '/api/api_translations';
 
 export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
+export const getQuestionsEndpoint = (archived: boolean) => `/api/user/question_cards/?archived=${archived}&category=all`;
 
 export const useDispatch = () => {
   console.log("TODO don't use me");
