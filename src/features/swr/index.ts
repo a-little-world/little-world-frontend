@@ -1,4 +1,5 @@
 export const USER_ENDPOINT = '/api/user';
+export const COMMUNITY_EVENTS_ENDPOINT = "/api/community"
 export const apiOptions = '#api_options';
 export const API_OPTIONS_ENDPOINT = '/api/api_options';
 export const FIREBASE_ENDPOINT = '/api/firebase';
@@ -7,11 +8,9 @@ export const ACTIVE_CALL_ROOMS_ENDPOINT = '/api/call_rooms';
 export const NOTIFICATIONS_ENDPOINT = '/api/notifications';
 export const UNREAD_NOTIFICATIONS_ENDPOINT = '/api/notifications?filter=unread';
 export const CHATS_ENDPOINT = '/api/chats';
+export const API_TRANSLATIONS_ENDPOINT = '/api/api_translations';
 
-export const defaultPreFetchedOptions = {
-  revalidateOnMount: false,
-  revalidateOnFocus: true,
-};
+export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
 
 export const useDispatch = () => {
   console.log("TODO don't use me");

@@ -6,7 +6,7 @@ import useSWR, { mutate } from 'swr';
 import './App.css';
 import store from './app/store.ts';
 import { useDevelopmentFeaturesStore } from './features/stores/developmentFeatures.ts';
-import { USER_ENDPOINT, fetcher } from './features/swr/index.ts';
+import { API_OPTIONS_ENDPOINT, API_TRANSLATIONS_ENDPOINT, USER_ENDPOINT, fetcher } from './features/swr/index.ts';
 import { initialise } from './features/userData.js';
 import router from './router/router.jsx';
 
@@ -39,9 +39,19 @@ function TestUserData() {
 }
 
 function Preloader({ user, apiTranslations, apiOptions, children }) {
-  const { error } = useSWR(USER_ENDPOINT, fetcher, {
+  const { error: errorUser } = useSWR(USER_ENDPOINT, fetcher, {
     revalidateOnMount: false,
     revalidateOnFocus: true,
+  });
+
+  const { error: errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false, // No need to ever revalidate this
+  });
+
+  const { error: errorApiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false, // No need to ever revalidate this
   });
 
   return <>{children}</>;
@@ -49,6 +59,8 @@ function Preloader({ user, apiTranslations, apiOptions, children }) {
 
 export function AppV2({ user, apiTranslations, apiOptions }) {
   mutate(USER_ENDPOINT, user, false);
+  mutate(API_OPTIONS_ENDPOINT, apiOptions, false);
+  mutate(API_TRANSLATIONS_ENDPOINT, apiTranslations, false);
 
   // Add this at the end of the file, before the export default
   // Attach functions to window to manage development features from console
