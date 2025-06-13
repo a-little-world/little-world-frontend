@@ -17,6 +17,10 @@ const Messages = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedChat, setSelectedChat] = useState(chatId);
+  const selectChat = (chatId) => {
+    setSelectedChat(chatId);
+    navigate(getAppRoute(`chat/${chatId}`));
+  };
   const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher);
   const items = chats?.results;
   const { scrollRef } = useIniniteScroll({
@@ -38,7 +42,7 @@ const Messages = () => {
       <ChatDashboard>
         <ChatsPanel
           chats={items}
-          selectChat={setSelectedChat}
+          selectChat={selectChat}
           selectedChat={selectedChat}
           scrollRef={scrollRef}
         />
