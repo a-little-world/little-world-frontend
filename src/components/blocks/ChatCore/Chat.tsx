@@ -28,10 +28,7 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat.ts';
-import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher, getChatEndpoint } from '../../../features/swr/index.ts';
-import {
-  getChatByChatId
-} from '../../../features/userData.js';
+import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher, getChatEndpoint, getChatMessagesEndpoint } from '../../../features/swr/index.ts';
 import {
   formatFileName,
   getCustomChatElements,
@@ -73,15 +70,22 @@ const Chat = ({ chatId }) => {
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  /*
-  const messages = useSelector(state =>
-    getMessagesByChatId(state.userData.messages, chatId, state),
-  ); */
+  const { data: chat, mutate: mutateChat } = useSWR(getChatEndpoint(chatId), fetcher, {
+    revalidateOnMount: true,
+    revalidateOnFocus: true,
+  })
 
-  const { data: chat } = useSWR(getChatEndpoint(chatId), fetcher)
-  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
+  const { data: chats, mutate: mutateChats } = useSWR(CHATS_ENDPOINT, fetcher)
+  const { data: chatMessages, mutate: mutateMessages } = useSWR(getChatMessagesEndpoint(chatId, 1), fetcher, {
+    revalidateOnMount: true,
+    revalidateOnFocus: true,
+  })
   const activeChat = chats?.results?.find(chat => chat?.uuid === chatId)
-  const messagesResult = activeChat?.messages
+  const messages = chatMessages?.results || []
+  const messagesResult = messages
+
+  console.log('chatMessages', chatMessages, messages)
+
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
   const [selectedFile, setSelectedFile] = useState(null);
@@ -91,12 +95,16 @@ const Chat = ({ chatId }) => {
     fetchItems: fetchChatMessages,
     fetchArgs: { id: chatId },
     fetchCondition: !!chatId,
-    items: messagesResult,
-    currentPage: messages?.page,
-    totalPages: messages?.pages_total,
+    items: messages,
+    currentPage: chatMessages?.page,
+    totalPages: chatMessages?.pages_total,
     setItems: items => {
-      console.log('items', items)
-      //dispatch(updateMessages({ chatId, items }))
+      mutateMessages(prev => ({
+        ...prev,
+        results: [...prev.results, ...items],
+      }), {
+        revalidate: false,
+      })
     },
     onError,
   });
@@ -232,7 +240,7 @@ const Chat = ({ chatId }) => {
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
-        {messages.page &&
+        {chatMessages?.page &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
               {t('chat.no_messages')}
