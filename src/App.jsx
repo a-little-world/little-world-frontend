@@ -29,15 +29,6 @@ function App({ data }) {
   );
 }
 
-function TestUserData() {
-  const { data, error } = useSWR(USER_ENDPOINT, fetcher, {
-    revalidateOnMount: false,
-    revalidateOnFocus: true,
-  });
-
-  return <>SECOND: {JSON.stringify(data)}</>;
-}
-
 function Preloader({ user, apiTranslations, apiOptions, children }) {
   const { error: errorUser } = useSWR(USER_ENDPOINT, fetcher, {
     revalidateOnMount: false,
