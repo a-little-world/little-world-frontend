@@ -13,6 +13,8 @@ import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
+import useSWR from 'swr';
+import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { formatDate, formatTime } from '../../../helpers/date.ts';
 import SearchingSvg from '../../../images/match-searching.svg';
 import AppointmentSvg from '../../../images/new-appointment.svg';
