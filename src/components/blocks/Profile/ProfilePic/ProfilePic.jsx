@@ -19,13 +19,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Avatar, { genConfig } from 'react-nice-avatar';
-import { useSelector } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
 import { USER_FIELDS } from '../../../../constants/index.ts';
 import useImageCompression from '../../../../hooks/useImageCompression.tsx';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
+import { fetcher, USER_ENDPOINT } from '../../../../features/swr/index.ts';
+import useSWR from 'swr';
 import {
   AvatarEditorButton,
   AvatarSelection,
@@ -102,7 +103,9 @@ const ProfilePic = ({ control, setValue, setError }) => {
   const [avatarIndex, setAvatarIndex] = useState(0);
   const [avatarList, setAvatarList] = useState([]);
   const [uploadedImage, setUploadedImage] = useState('');
-  const userData = useSelector(state => state.userData.user.profile);
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const userData = user?.profile;
+
   const { t } = useTranslation();
   const fileInputRef = useRef(null);
   const theme = useTheme();

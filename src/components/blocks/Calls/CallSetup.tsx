@@ -22,10 +22,11 @@ import {
   insertChat,
 } from '../../../features/userData';
 import { clearActiveTracks } from '../../../helpers/video.ts';
-import { useSelector } from '../../../hooks/index.ts';
 import { CALL_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
+import useSWR from 'swr';
+import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 const CloseButton = styled(Button)`
   position: absolute;
@@ -132,9 +133,8 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   });
   const [error, setError] = useState('');
 
-  const username = useSelector(
-    state => state?.userData?.user?.profile?.first_name,
-  );
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const username = user?.profile?.first_name;
 
   const handleJoin = (values: LocalUserChoices) => {
 	  /** TODO

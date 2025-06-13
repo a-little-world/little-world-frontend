@@ -17,10 +17,10 @@ import { get, isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
+import useSWR from 'swr';
 import {
   fetchChat,
   fetchChatMessages,
@@ -28,13 +28,9 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat.ts';
+import { USER_ENDPOINT, fetcher, getChatEndpoint } from '../../../features/swr/index.ts';
 import {
-  addMessage,
-  getChatByChatId,
-  getMessagesByChatId,
-  insertChat,
-  markChatMessagesRead,
-  updateMessages,
+  getChatByChatId
 } from '../../../features/userData.js';
 import {
   formatFileName,
@@ -74,14 +70,17 @@ const Chat = ({ chatId }) => {
   } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const messagesRef = useRef();
-  const userId = useSelector(state => state.userData.user?.id);
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  /*
   const messages = useSelector(state =>
     getMessagesByChatId(state.userData.messages, chatId, state),
-  );
-  const messagesResult = messages?.results;
+  ); */
+
+  const { data: chat } = useSWR(getChatEndpoint(chatId), fetcher)
+  //const messagesResult = chat?.results;
   const activeChat = useSelector(state =>
     getChatByChatId(state.userData.chats, chatId),
   );
@@ -97,7 +96,10 @@ const Chat = ({ chatId }) => {
     items: messagesResult,
     currentPage: messages?.page,
     totalPages: messages?.pages_total,
-    setItems: items => dispatch(updateMessages({ chatId, items })),
+    setItems: items => {
+      console.log('items', items)
+      //dispatch(updateMessages({ chatId, items }))
+    },
     onError,
   });
 
@@ -118,13 +120,13 @@ const Chat = ({ chatId }) => {
 
   const onMarkMessagesRead = () => {
     markChatMessagesReadApi({ chatId }).then(() => {
-      dispatch(
+      /*dispatch(
         markChatMessagesRead({
           chatId,
           userId,
           actorIsSelf: true,
         }),
-      );
+      );*/
     });
   };
 
@@ -132,7 +134,7 @@ const Chat = ({ chatId }) => {
     // if activeChat === undefined we know the specific chat isn't loaded yet
     if (!activeChat && chatId) {
       fetchChat({ chatId }).then(data => {
-        dispatch(insertChat(data));
+        //dispatch(insertChat(data));
       });
     }
     // 'unread_messages_count' also updates when new message are added
@@ -170,7 +172,7 @@ const Chat = ({ chatId }) => {
   const onMessageSent = data => {
     reset();
     clearSelectedFile();
-    dispatch(
+    /*dispatch(
       addMessage({
         message: data,
         chatId,
@@ -180,6 +182,7 @@ const Chat = ({ chatId }) => {
     setIsSubmitting(false);
     messagesRef.current.scrollTop = 0;
     setMessagesSent(curr => curr + 1);
+    */
   };
 
   const onSendMessage = ({ text }) => {
@@ -248,11 +251,13 @@ const Chat = ({ chatId }) => {
                   {group.messages.map(message => {
                     const customChatElements = message?.parsable
                       ? getCustomChatElements({
-                          dispatch,
-                          message,
-                          userId,
-                          activeChat,
-                        })
+                        //dispatch: (action) => {
+                        //  console.log('action', action)
+                        //},
+                        message,
+                        userId,
+                        activeChat,
+                      })
                       : [];
 
                     return (
@@ -263,8 +268,8 @@ const Chat = ({ chatId }) => {
                         <MessageText
                           {...(message.parsable &&
                             messageContainsWidget(message.text) && {
-                              as: 'div',
-                            })}
+                            as: 'div',
+                          })}
                           disableParser={!message.parsable}
                           $isSelf={message.sender === userId}
                           $isWidget={

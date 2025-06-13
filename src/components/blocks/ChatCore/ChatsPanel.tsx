@@ -17,7 +17,7 @@ import { formatTimeDistance } from '../../../helpers/date.ts';
 import ProfileImage from '../../atoms/ProfileImage.jsx';
 import UnreadIndicator from '../../atoms/UnreadIndicator.tsx';
 
-const Panel = styled(Card)<{ $selectedChat?: any }>`
+const Panel = styled(Card) <{ $selectedChat?: any }>`
   padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
   gap: ${({ theme }) => theme.spacing.xxsmall};
   overflow-y: scroll;
@@ -120,7 +120,8 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
     i18n: { language },
   } = useTranslation();
 
-  const userId = useSWR(USER_ENDPOINT, fetcher).data?.id;
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const userId = user?.id;
   const theme = useTheme();
 
   return (
@@ -165,7 +166,7 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
                 <PreviewText disableParser>
                   {textParser(
                     message.newest_message?.text ||
-                      t('chat.no_messages_preview'),
+                    t('chat.no_messages_preview'),
                     { customElements: customChatElements },
                   )}
                 </PreviewText>
