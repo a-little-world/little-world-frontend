@@ -25,10 +25,17 @@ const Messages = () => {
   const items = chats?.results;
   const { scrollRef } = useIniniteScroll({
     fetchItems: fetchChats,
-    setItems: newItems => mutate(CHATS_ENDPOINT), // TODO: can this be directly updated?
+    setItems: newItems => {
+      mutate(CHATS_ENDPOINT, {
+        ...chats,
+        results: [...(chats?.results || []), ...newItems.results],
+        page: newItems.page,
+        pages_total: newItems.pages_total
+      }, false);
+    },
     currentPage: chats?.page,
     totalPages: chats?.pages_total,
-    items,
+    items: chats?.results || [],
   });
 
   const handleOnChatBackBtn = () => {
