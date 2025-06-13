@@ -126,13 +126,21 @@ const Chat = ({ chatId }) => {
 
   const onMarkMessagesRead = () => {
     markChatMessagesReadApi({ chatId }).then(() => {
-      /*dispatch(
-        markChatMessagesRead({
-          chatId,
-          userId,
-          actorIsSelf: true,
-        }),
-      );*/
+      mutateChat(prev => ({
+        ...prev,
+        unread_count: 0,
+      }), {
+        revalidate: false,
+      })
+
+      mutateMessages(prev => ({
+        ...prev,
+        results: prev.results.map(message => ({
+          ...message,
+          read: true,
+        })),
+      }))
+
     });
   };
 
@@ -140,7 +148,12 @@ const Chat = ({ chatId }) => {
     // if activeChat === undefined we know the specific chat isn't loaded yet
     if (!activeChat && chatId) {
       fetchChat({ chatId }).then(data => {
-        //dispatch(insertChat(data));
+        mutateChats(prev => ({
+          ...prev,
+          results: [...prev.results, data],
+        }), {
+          revalidate: false,
+        })
       });
     }
     // 'unread_messages_count' also updates when new message are added
@@ -178,17 +191,15 @@ const Chat = ({ chatId }) => {
   const onMessageSent = data => {
     reset();
     clearSelectedFile();
-    /*dispatch(
-      addMessage({
-        message: data,
-        chatId,
-        senderIsSelf: true,
-      }),
-    );
+    mutateMessages(prev => ({
+      ...prev,
+      results: [data, ...prev.results],
+    }), {
+      revalidate: true,
+    })
     setIsSubmitting(false);
     messagesRef.current.scrollTop = 0;
     setMessagesSent(curr => curr + 1);
-    */
   };
 
   const onSendMessage = ({ text }) => {
