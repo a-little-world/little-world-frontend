@@ -239,7 +239,7 @@ function CommunityEvent({
 
 function CommunityEvents() {
   const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT, fetcher)
-  const groupedEvents = collateEvents(events.items);
+  const groupedEvents = collateEvents(events?.items || []);
   return (
     <Events>
       {groupedEvents.map(eventData => (
