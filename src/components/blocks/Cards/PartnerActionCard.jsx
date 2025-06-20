@@ -67,7 +67,6 @@ function PartnerActionCard({ data, onClose }) {
   } = useForm();
   const [confirmed, setConfirmed] = useState(false);
   const isUnmatch = data.type === PARTNER_ACTION_UNMATCH;
-  const dispatch = useDispatch();
 
   const handleOnClose = () => {
     onClose();
@@ -82,12 +81,12 @@ function PartnerActionCard({ data, onClose }) {
       matchId: data.matchId,
       onSuccess: () => {
         setConfirmed(true);
-        dispatch(
+        /** TODO dispatch(
           removeMatch({
             category: 'confirmed',
             match: { id: data.matchId },
           }),
-        );
+        ); **/ 
       },
       onError: error => {
         setError('root.serverError', {

@@ -14,10 +14,6 @@ export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
 export const getChatMessagesEndpoint = (chatId: string, page: number) => `/api/messages/${chatId}/?page=${page}&page_size=20`;
 export const getQuestionsEndpoint = (archived: boolean) => `/api/user/question_cards/?archived=${archived}&category=all`;
 
-export const useDispatch = () => {
-  console.log("TODO don't use me");
-};
-
 export async function fetcher<T>(url: string): Promise<T> {
   const res = await fetch(url);
 
