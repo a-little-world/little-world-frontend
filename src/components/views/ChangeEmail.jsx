@@ -29,7 +29,6 @@ import {
 const ChangeEmail = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const dispatch = useDispatch();
 
   const {
     register,
@@ -57,7 +56,7 @@ const ChangeEmail = () => {
     setNewEmail({ email })
       .then(() => {
         setIsSubmitting(false);
-        dispatch(updateEmail(email));
+        // TODO:  dispatch(updateEmail(email));
         navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
       })
       .catch(onError);

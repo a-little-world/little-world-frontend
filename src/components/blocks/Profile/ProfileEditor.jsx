@@ -29,7 +29,6 @@ const EditorTitle = styled(ModalTitle)`
 
 const ProfileEditor = ({ content, field, onClose }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const {
     control,
     getValues,
@@ -40,7 +39,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
   const isImage = field === 'image';
 
   const onFormSuccess = data => {
-    dispatch(updateProfile(data));
+    // TODO dispatch(updateProfile(data));
     onClose();
   };
 

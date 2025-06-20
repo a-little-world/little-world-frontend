@@ -1,10 +1,8 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
 
-import App, { AppV2, InitializeDux } from './App';
+import App, { InitializeDux } from './App';
 import { DEVELOPMENT } from './ENVIRONMENT';
-import store from './app/store.ts';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import { updateTranslationResources } from './i18n';
@@ -16,20 +14,7 @@ const isDevelopment = DEVELOPMENT;
 
 let root;
 
-window.renderApp = ({ initData, apiTranslations }) => {
-  updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
-  // If not in development just render ...
-  const container = document.getElementById('root');
-
-  if (!root) {
-    root = createRoot(container);
-  }
-  root.render(<App data={initData} />);
-
-  reportWebVitals();
-};
-
-window.renderAppV2 = ({ user, apiTranslations, apiOptions }) => {
+window.renderApp = ({ user, apiTranslations, apiOptions }) => {
   updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
   // If not in development just render ...
   const container = document.getElementById('root');
@@ -38,7 +23,7 @@ window.renderAppV2 = ({ user, apiTranslations, apiOptions }) => {
     root = createRoot(container);
   }
   console.log("RENDERING APP V2", { user, apiTranslations, apiOptions })
-  root.render(<AppV2 user={user} apiTranslations={apiTranslations} apiOptions={apiOptions} />);
+  root.render(<App user={user} apiTranslations={apiTranslations} apiOptions={apiOptions} />);
 
   reportWebVitals();
 }
@@ -64,7 +49,6 @@ window.renderMessageView = (
   }
   root.render(
     <React.StrictMode>
-      <Provider store={store}>
         <Root restoreScroll={false} includeModeSwitch={false}>
           <FormLayout>
             <MessageCard
@@ -84,7 +68,6 @@ window.renderMessageView = (
             apiOptions,
           }}
         />
-      </Provider>
     </React.StrictMode>,
   );
 };

@@ -51,7 +51,6 @@ interface PostCallSurveyProps {
 }
 
 const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
-  const dispatch = useDispatch();
   const {
     control,
     register,
@@ -66,13 +65,16 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
   const watchedRating = watch('rating');
 
   useEffect(() => {
-    if (watchedRating)
+    if (watchedRating){
+      /** TODO
       dispatch(
         updatePostCallSurvey({
           rating: watchedRating,
         }),
-      );
-  }, [watchedRating, dispatch]);
+      ); **/
+      console.log('watchedRating', watchedRating)
+    }
+  }, [watchedRating]);
 
   const handleSubmitFeedback: SubmitHandler<IFormInput> = async ({
     rating,
@@ -119,9 +121,10 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
             size={TextAreaSize.Medium}
             error={t(errors?.review?.message)}
             placeholder={t('post_call_survey.comment_placeholder')}
-            onBlur={e =>
-              dispatch(updatePostCallSurvey({ review: e?.target.value }))
-            }
+            onBlur={e => {
+              /** TODO dispatch(updatePostCallSurvey({ review: e?.target.value })) **/
+              console.log('review', e?.target.value)
+            }}
           />
           {!!submitError && (
             <StatusMessage $visible $type={MessageTypes.Error}>
