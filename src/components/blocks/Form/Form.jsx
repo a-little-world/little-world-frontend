@@ -7,11 +7,11 @@ import {
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { completeForm, mutateUserData } from '../../../api';
-import { updateProfile, updateUser } from '../../../features/userData';
+import useSWR from 'swr';
+import { completeForm } from '../../../api';
+import { API_OPTIONS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { onFormError } from '../../../helpers/form.ts';
 import {
   EDIT_FORM_ROUTE,
@@ -38,8 +38,6 @@ import {
   SubmitError,
   Title,
 } from './styles';
-import useSWR from 'swr';
-import { FORM_OPTIONS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 
 const Form = () => {
   const { t } = useTranslation();
@@ -53,9 +51,12 @@ const Form = () => {
     setValue,
     setError,
   } = useForm({ shouldUnregister: true });
-  
+
   const { data: userData, mutate: mutateUserData } = useSWR(USER_ENDPOINT, fetcher)
-  const { data: formOptions } = useSWR(FORM_OPTIONS_ENDPOINT, fetcher)
+  const { data: apiOptions } = useSWR(API_OPTIONS_ENDPOINT, fetcher)
+  const formOptions = apiOptions?.profile
+
+  console.log("OPTIONS", formOptions)
 
   const navigate = useNavigate();
   const location = useLocation();
