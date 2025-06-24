@@ -180,7 +180,9 @@ export const FileDropzone = ({
 function Faqs() {
   const { t } = useTranslation();
   const [faqs, setFaqs] = useState([]);
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+  });
 
   const adminUser = matches?.support.items[0];
   const supportUrl = getAppSubpageRoute(
@@ -295,7 +297,9 @@ function Contact() {
 function Help() {
   const { t } = useTranslation();
   const [subpage, selectSubpage] = useState('contact');
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+  });
 
   const adminUser = matches?.support.items[0];
   const supportUrl = getAppSubpageRoute(
