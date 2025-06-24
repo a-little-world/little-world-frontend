@@ -25,6 +25,7 @@ import {
   StyledForm,
   Title,
 } from './SignUp.styles';
+import { mutate } from 'swr';
 
 const ChangeEmail = () => {
   const { t } = useTranslation();
@@ -56,7 +57,7 @@ const ChangeEmail = () => {
     setNewEmail({ email })
       .then(() => {
         setIsSubmitting(false);
-        // TODO:  dispatch(updateEmail(email));
+        mutate(USER_ENDPOINT);
         navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
       })
       .catch(onError);
