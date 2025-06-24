@@ -5,7 +5,6 @@ interface MatchesData {
     [category: string]: any[];
 }
 
-// Helper function to sort chats by newest message
 const sortChats = (chats: any[]) => {
     const sorted = chats.sort((a, b) => {
         if (!a.newest_message?.created) return 1;
@@ -13,7 +12,6 @@ const sortChats = (chats: any[]) => {
         return new Date(b.newest_message.created).getTime() - new Date(a.newest_message.created).getTime();
     });
 
-    // Remove duplicates by uuid
     return sorted.filter((chat, index, self) =>
         index === self.findIndex(c => c.uuid === chat.uuid)
     );

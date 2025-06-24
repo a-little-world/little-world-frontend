@@ -4,6 +4,8 @@ import React from 'react';
 import { confirmMatch, partiallyConfirmMatch } from '../../../api/matches.ts';
 import ConfirmMatchCard from './ConfirmMatchCard.tsx';
 import NewMatchCard from './NewMatchCard.jsx';
+import { MATCHES_ENDPOINT } from '../../../features/swr/index.ts';
+import { mutate } from 'swr';
 
 type MatchCardProps = {
   showNewMatch: boolean;
@@ -29,15 +31,7 @@ export const MatchCardComponent = ({
         confirmMatch({
           userHash: profile.id,
           onSuccess: () => {
-            /**
-             * TODO
-            dispatch(
-              changeMatchCategory({
-          match: { id: matchId },
-          category: 'unconfirmed',
-          newCategory: 'confirmed',
-              }),
-            ) **/
+            mutate(MATCHES_ENDPOINT);
           },
           onError: error => console.error(error),
         });
@@ -54,20 +48,7 @@ export const MatchCardComponent = ({
           acceptDeny: true,
           matchId,
           onSuccess: response => {
-            /**
-             * TODO
-                  dispatch(
-                    removeMatch({
-                      category: 'proposed',
-                      match: { id: matchId },
-                    }),
-                  );
-                  dispatch(
-                    addMatch({
-                      match: response.match,
-                      category: 'unconfirmed',
-                    }),
-                  ); **/
+            mutate(MATCHES_ENDPOINT);
           },
           onError: error => console.error(error),
         });
@@ -77,13 +58,7 @@ export const MatchCardComponent = ({
           acceptDeny: false,
           matchId,
           onSuccess: () => {
-            /** TODO
-              dispatch(
-                removeMatch({
-            category: 'proposed',
-            match: { id: matchId },
-                }),
-              ), **/
+            mutate(MATCHES_ENDPOINT);
           },
           onError: error => console.error(error),
         });

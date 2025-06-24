@@ -19,7 +19,7 @@ import { SEARCHING_STATES } from '../../../constants/index.ts';
 import { updateSearchState } from '../../../features/userData.js';
 import ButtonsContainer from '../../atoms/ButtonsContainer.jsx';
 import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 interface UpdateSearchStateCardProps {
   onClose: () => void;
@@ -42,7 +42,7 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
     updateUserSearchState({
       updatedState,
       onSuccess: () => {
-        // TODO dispatch(updateSearchState(!isSearching));
+        mutate(USER_ENDPOINT);
         onClose();
       },
       onError: e => setError(e.message),
