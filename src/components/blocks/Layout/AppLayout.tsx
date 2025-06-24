@@ -94,7 +94,9 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+  });
   const matchRejected = useMatchRejectedStore().rejected;
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
   const activeCallRoom = activeCallRooms?.[0];
@@ -132,8 +134,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.items?.length ||
-        matches?.unconfirmed?.items?.length ||
-        matchRejected,
+      matches?.unconfirmed?.items?.length ||
+      matchRejected,
     );
 
     if (shouldShowMatchModal) {

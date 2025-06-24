@@ -60,7 +60,9 @@ function Main() {
     });
   };
 
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+  });
 
   useEffect(() => {
     const totalItems =
