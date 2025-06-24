@@ -20,7 +20,6 @@ import { TFunction, useTranslation } from 'react-i18next';
 
 import styled, { useTheme } from 'styled-components';
 
-import { updatePostCallSurvey } from '../../../features/userData.js';
 import { registerInput } from '../../../helpers/form.ts';
 
 const StyledCard = styled(Card)``;

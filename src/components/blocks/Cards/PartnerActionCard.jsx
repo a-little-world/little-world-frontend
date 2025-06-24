@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { reportMatch, unmatch } from '../../../api/matches.ts';
-import { removeMatch } from '../../../features/userData.js';
 
 export const PARTNER_ACTION_REPORT = 'report';
 export const PARTNER_ACTION_UNMATCH = 'unmatch';

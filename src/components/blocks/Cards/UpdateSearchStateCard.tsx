@@ -16,7 +16,6 @@ import { useTranslation } from 'react-i18next';
 
 import { updateUserSearchState } from '../../../api/profile.ts';
 import { SEARCHING_STATES } from '../../../constants/index.ts';
-import { updateSearchState } from '../../../features/userData.js';
 import ButtonsContainer from '../../atoms/ButtonsContainer.jsx';
 import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 import useSWR, { mutate } from 'swr';
