@@ -60,7 +60,6 @@ const WebsocketBridge = () => {
       }
 
       try {
-        // TODO: ensure all new apis are working.
         runWsBridgeMutation(message.action, message.payload);
       } catch (e) {
         console.warn('CORE SOCKET ERROR:', e);
