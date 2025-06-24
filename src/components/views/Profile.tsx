@@ -151,12 +151,14 @@ function Profile() {
 
   const [editingField, setEditingField] = useState(null);
 
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher); // TODO: this logic seems weird, look at previous implementation in userData.js
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+  }); // TODO: this logic seems weird, look at previous implementation in userData.js
   const match = !matches
     ? undefined
     : [...matches.support.items, ...matches.confirmed.items].find(
-        m => m.partner.id === userId,
-      );
+      m => m.partner.id === userId,
+    );
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const isSelf = user?.id === userId || !userId;
@@ -168,12 +170,12 @@ function Profile() {
   const [profileFields, setProfileFields] = useState(
     profile && formOptions
       ? getProfileFields({
-          profile,
-          formOptions,
-          t,
-          isSelf,
-          selfAvailability: user?.profile?.availability,
-        })
+        profile,
+        formOptions,
+        t,
+        isSelf,
+        selfAvailability: user?.profile?.availability,
+      })
       : {},
   );
 
