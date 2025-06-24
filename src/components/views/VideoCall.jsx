@@ -14,7 +14,6 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { getChatByPartnerId } from '../../features/userData';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';

@@ -3,7 +3,6 @@ import { RouterProvider } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
 import './App.css';
-import store from './app/store.ts';
 import { useDevelopmentFeaturesStore } from './features/stores/developmentFeatures.ts';
 import { API_OPTIONS_ENDPOINT, API_TRANSLATIONS_ENDPOINT, USER_ENDPOINT, fetcher } from './features/swr/index.ts';
 import router from './router/router.jsx';
@@ -48,7 +47,7 @@ function App({ user, apiTranslations, apiOptions }) {
     };
 
     window.toggleDevFeatures = () => {
-      const currentState = store.getState().userData.developmentFeaturesEnabled;
+      const currentState = developmentFeatures.enabled;
       developmentFeatures.toggle();
       console.log(
         `Development features ${!currentState ? 'enabled' : 'disabled'}!`,
