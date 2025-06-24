@@ -17,7 +17,7 @@ import {
   SidebarCard,
   TopicButton,
 } from './QuestionCards.styles.tsx';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { getQuestionsEndpoint, fetcher } from '../../../features/swr/index.ts';
 
 function QuestionCards() {
@@ -30,7 +30,7 @@ function QuestionCards() {
   const selfUserPreferedLang = 'de';
   const [selectedQuestionId, setQuestionId] = useState(null);
 
-  const [selectedTopic, setTopic] = useState(cardCategories?.[0]?.uuid || null);
+  const [selectedTopic, setTopic] = useState(cardsByCategory?.[0]?.uuid || null);
 
   const changeScroll = (direction: 'left' | 'right') => {
     const scrollVelocity = {
@@ -43,12 +43,12 @@ function QuestionCards() {
   };
 
   useEffect(() => {
-    if (isEmpty(cardCategories)) {
-      // TODOdispatch(FetchQuestionsDataAsync());
+    if (isEmpty(cardsByCategory)) {
+      mutate(getQuestionsEndpoint(false));
     } else {
-      setTopic(cardCategories?.[0]?.uuid);
+      setTopic(cardsByCategory?.[0]?.uuid);
     }
-  }, [cardCategories]);
+  }, [cardsByCategory]);
 
   return (
     <SidebarCard>
@@ -66,7 +66,7 @@ function QuestionCards() {
           />
         </CategoryControl>
         <Categories ref={categoriesRef}>
-          {cardCategories?.map(topic => (
+          {cardsByCategory?.map(topic => (
             <TopicButton
               key={topic?.uuid}
               type="button"
@@ -112,7 +112,7 @@ function QuestionCards() {
                       type="button"
                       className="yes"
                       onClick={() => {
-                        // TODO dispatch(postArchieveQuestion(card, true));
+                        mutate(getQuestionsEndpoint(false));
                       }}
                     >
                       <img
@@ -129,7 +129,7 @@ function QuestionCards() {
                       type="button"
                       className="unarchive"
                       onClick={() => {
-                        // TODO dispatch(postArchieveQuestion(card, false));
+                        mutate(getQuestionsEndpoint(false));
                       }}
                     >
                       <img
