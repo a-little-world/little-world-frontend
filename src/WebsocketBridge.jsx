@@ -13,6 +13,7 @@ import {
   NOTIFICATIONS_ENDPOINT,
   UNREAD_NOTIFICATIONS_ENDPOINT,
 } from './features/swr/index.ts';
+import { runWsBridgeMutation } from './features/swr/wsBridgeMutations.ts';
 import useToast from './hooks/useToast.ts';
 
 const SOCKET_URL = IS_CAPACITOR_BUILD
@@ -53,16 +54,14 @@ const WebsocketBridge = () => {
         });
 
         // TODO: only if message is also persisted
+        // TODO: don't mutate the api via fetch rather just update the store
         mutate(UNREAD_NOTIFICATIONS_ENDPOINT);
         mutate(NOTIFICATIONS_ENDPOINT);
       }
 
       try {
-        /** TODO
-        dispatch({
-          type: `userData/${message.action}`,
-          payload: message.payload,
-        }); **/
+        // TODO: ensure all new apis are working.
+        runWsBridgeMutation(message.action, message.payload);
       } catch (e) {
         console.warn('CORE SOCKET ERROR:', e);
       }
