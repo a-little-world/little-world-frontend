@@ -14,12 +14,7 @@ import {
   MATCHES_ENDPOINT,
   fetcher,
 } from '../../../features/swr/index.ts';
-import {
-  blockIncomingCall,
-  initCallSetup,
-  removePostCallSurvey,
-  setMatchRejected,
-} from '../../../features/userData.js';
+import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations.ts';
 import useModalManager, { ModalTypes } from '../../../hooks/useModalManager.ts';
 import '../../../main.css';
 import CallSetup from '../Calls/CallSetup.tsx';
@@ -87,9 +82,6 @@ const Content = styled.section<{ $isVH: boolean }>`
 
 export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
-  const dispatch = (props: any) => {
-    console.log("TODO don't use me");
-  };
   const { openModal, closeModal, isModalOpen } = useModalManager();
 
   const page = location.pathname.split('/')[2] || 'main';
@@ -103,6 +95,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const callSetup = useCallSetupStore().callSetup;
   const postCallSurvey = usePostCallSurveyStore().postCallSurvey;
   const activeCall = useActiveCallStore().activeCall;
+
+  // Zustand store hooks
+  const { initCallSetup } = useCallSetupStore();
+  const { setMatchRejected } = useMatchRejectedStore();
+  const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
@@ -156,22 +153,24 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [callSetup, activeCall]);
 
   const onAnswerCall = () => {
-    dispatch(initCallSetup({ userId: activeCallRoom?.partner?.id }));
+    initCallSetup({ userId: activeCallRoom?.partner?.id });
     closeModal();
   };
 
   const onRejectCall = () => {
-    dispatch(blockIncomingCall({ userId: activeCallRoom?.partner?.id }));
+    if (activeCallRoom?.partner?.id) {
+      blockIncomingCall(activeCallRoom.partner.id);
+    }
     closeModal();
   };
 
   const closeMatchModal = () => {
-    if (matchRejected) dispatch(setMatchRejected(false));
+    if (matchRejected) setMatchRejected(false);
     closeModal();
   };
 
   const closePostCallSurvey = () => {
-    dispatch(removePostCallSurvey());
+    removePostCallSurvey();
     closeModal();
   };
 

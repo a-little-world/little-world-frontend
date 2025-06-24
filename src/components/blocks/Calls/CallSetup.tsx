@@ -16,17 +16,14 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { requestVideoAccessToken } from '../../../api/livekit.ts';
-import {
-  cancelCallSetup,
-  initActiveCall,
-  insertChat,
-} from '../../../features/userData';
+import { useActiveCallStore } from '../../../features/stores/activeCall';
+import { useCallSetupStore } from '../../../features/stores/callSetup';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { CALL_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
-import useSWR from 'swr';
-import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
+import useSWR, { mutate } from 'swr';
+import { CHATS_ENDPOINT, fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 const CloseButton = styled(Button)`
   position: absolute;
@@ -136,23 +133,24 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const username = user?.profile?.first_name;
 
+  // Zustand store hooks
+  const { initActiveCall } = useActiveCallStore();
+  const { cancelCallSetup } = useCallSetupStore();
+
   const handleJoin = (values: LocalUserChoices) => {
-	  /** TODO
-    dispatch(
-      initActiveCall({
-        userId: userPk,
-        tracks: values,
-        token: authData.token,
-        audioOptions: values.audioEnabled
-          ? { deviceId: values.audioDeviceId }
-          : false,
-        videoOptions: values.videoEnabled
-          ? { deviceId: values.videoDeviceId }
-          : false,
-        livekitServerUrl: authData.livekitServerUrl,
-      }),
-    );
-    dispatch(cancelCallSetup()); **/ 
+    initActiveCall({
+      userId: userPk,
+      tracks: values,
+      token: authData.token || undefined,
+      audioOptions: values.audioEnabled
+        ? { deviceId: values.audioDeviceId }
+        : false,
+      videoOptions: values.videoEnabled
+        ? { deviceId: values.videoDeviceId }
+        : false,
+      livekitServerUrl: authData.livekitServerUrl || undefined,
+    });
+    cancelCallSetup();
     onClose();
     clearActiveTracks();
     navigate(getAppRoute(CALL_ROUTE));
@@ -164,7 +162,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     requestVideoAccessToken({
       partnerId: userPk,
       onSuccess: res => {
-        // dispatch(insertChat(res.chat)); TODO
+        mutate(CHATS_ENDPOINT, res.chat);
         setAuthData({
           token: res.token,
           livekitServerUrl: res.server_url,
@@ -193,7 +191,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       <CloseButton
         variation={ButtonVariations.Icon}
         onClick={() => {
-          // dispatch(cancelCallSetup()); TODO
+          cancelCallSetup();
           onClose();
         }}
       >

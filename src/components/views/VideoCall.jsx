@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { blockIncomingCall, getChatByPartnerId } from '../../features/userData';
+import { getChatByPartnerId } from '../../features/userData';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
@@ -121,7 +121,7 @@ function VideoCall() {
     onKeyPressed: () => setIsFullScreen(false),
   });
   
-  const { userId, token, livekitServerUrl, audioOptions, videoOptions } = useActiveCallStore()
+  const { userId, token, livekitServerUrl, audioOptions, videoOptions, stopActiveCall } = useActiveCallStore()
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const profile = user?.profile
   
@@ -173,12 +173,7 @@ function VideoCall() {
               token={token}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
-                /** TODO
-                 * dispatch(
-                  blockIncomingCall({
-                    userId,
-                  }),
-                ); */
+                stopActiveCall();
                 navigate(getAppRoute(), { state: { callEnded: true } });
               }}
             >
