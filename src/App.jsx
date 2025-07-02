@@ -23,7 +23,7 @@ function Preloader({ children }) {
     revalidateOnFocus: false, // No need to ever revalidate this
   });
 
-  return <>{children}</>;
+  return children;
 }
 
 function App({ user, apiTranslations, apiOptions }) {
