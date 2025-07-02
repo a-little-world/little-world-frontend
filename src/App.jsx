@@ -7,7 +7,7 @@ import { useDevelopmentFeaturesStore } from './features/stores/developmentFeatur
 import { API_OPTIONS_ENDPOINT, API_TRANSLATIONS_ENDPOINT, USER_ENDPOINT, fetcher } from './features/swr/index.ts';
 import router from './router/router.jsx';
 
-function Preloader({ user, apiTranslations, apiOptions, children }) {
+function Preloader({ children }) {
   const { error: errorUser } = useSWR(USER_ENDPOINT, fetcher, {
     revalidateOnMount: false,
     revalidateOnFocus: true,
@@ -56,11 +56,7 @@ function App({ user, apiTranslations, apiOptions }) {
   }
 
   return (
-    <Preloader
-      user={user}
-      apiTranslations={apiTranslations}
-      apiOptions={apiOptions}
-    >
+    <Preloader>
       <RouterProvider router={router} />
     </Preloader>
   );
