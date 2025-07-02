@@ -79,7 +79,6 @@ const SignUp = () => {
     signUp(data)
       .then(signUpData => {
         passAuthenticationBoundary();
-        // dispatch(initialise(signUpData)); TODO
         setIsSubmitting(false);
         const nextRoute = signUpData.user?.emailVerified ?
           getAppRoute() :
