@@ -10,7 +10,6 @@ import reportWebVitals from './reportWebVitals';
 import { Root } from './router/router';
 
 const isDevelopment = DEVELOPMENT;
-// Hello
 
 let root;
 
@@ -49,25 +48,25 @@ window.renderMessageView = (
   }
   root.render(
     <React.StrictMode>
-        <Root restoreScroll={false} includeModeSwitch={false}>
-          <FormLayout>
-            <MessageCard
-              title={title}
-              content={content}
-              confirmText={confirmText}
-              rejectText={rejectText}
-              onConfirm={onConfirm}
-              onReject={onReject}
-              linkText={linkText}
-              linkTo={linkTo}
-            />
-          </FormLayout>
-        </Root>
-        <InitializeDux
-          data={{
-            apiOptions,
-          }}
-        />
+      <Root restoreScroll={false} includeModeSwitch={false}>
+        <FormLayout>
+          <MessageCard
+            title={title}
+            content={content}
+            confirmText={confirmText}
+            rejectText={rejectText}
+            onConfirm={onConfirm}
+            onReject={onReject}
+            linkText={linkText}
+            linkTo={linkTo}
+          />
+        </FormLayout>
+      </Root>
+      <InitializeDux
+        data={{
+          apiOptions,
+        }}
+      />
     </React.StrictMode>,
   );
 };
