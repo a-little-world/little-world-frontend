@@ -151,9 +151,7 @@ function Profile() {
 
   const [editingField, setEditingField] = useState(null);
 
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
-    revalidateOnMount: false,
-  }); // TODO: this logic seems weird, look at previous implementation in userData.js
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
   const match = !matches
     ? undefined
     : [...matches.support.items, ...matches.confirmed.items].find(
