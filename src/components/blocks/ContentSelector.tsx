@@ -8,7 +8,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { useDevelopmentFeaturesStore } from '../../features/stores/developmentFeatures.ts';
+import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
 import HideOnMobile from '../atoms/HideOnMobile.tsx';
 import NotificationBell from '../atoms/NotificationBell.tsx';
 

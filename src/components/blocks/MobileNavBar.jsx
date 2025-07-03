@@ -13,7 +13,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { useDevelopmentFeaturesStore } from '../../features/stores/developmentFeatures.ts';
+import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
 import { CHATS_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import { APP_ROUTE } from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';

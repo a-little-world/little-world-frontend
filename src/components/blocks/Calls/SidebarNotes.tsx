@@ -2,6 +2,7 @@ import { TextTypes } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import useSWR from 'swr';
 import {
   addUserNote,
   deleteUserNote,
@@ -29,7 +30,6 @@ import {
   WrapperContainer,
 } from './CallSidebar.styles.tsx';
 import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
-import useSWR from 'swr';
 
 export function SidebarNotes() {
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);

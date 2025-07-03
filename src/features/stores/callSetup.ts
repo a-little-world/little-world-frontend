@@ -10,8 +10,10 @@ interface CallSetupState {
   cancelCallSetup: () => void;
 }
 
-export const useCallSetupStore = create<CallSetupState>((set) => ({
+const useCallSetupStore = create<CallSetupState>((set) => ({
   callSetup: null,
   initCallSetup: (data) => set({ callSetup: data }),
   cancelCallSetup: () => set({ callSetup: null }),
-})); 
+}));
+
+export default useCallSetupStore; 

@@ -52,7 +52,7 @@ const SignUp = () => {
       // Once the query param is stored in the cookie, we can remove it from the URL
       setSearchParams(new URLSearchParams());
     }
-  }, [searchParams]);
+  }, [searchParams, setSearchParams]);
 
   const {
     control,
@@ -79,7 +79,6 @@ const SignUp = () => {
     signUp(data)
       .then(signUpData => {
         passAuthenticationBoundary();
-        // dispatch(initialise(signUpData)); TODO
         setIsSubmitting(false);
         const nextRoute = signUpData.user?.emailVerified ?
           getAppRoute() :

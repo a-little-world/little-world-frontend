@@ -24,9 +24,9 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
+import useSWR from 'swr';
 import Socials, { SOCIALS_LIST } from '../../atoms/Socials.tsx';
 import MailingLists from '../../blocks/MailingLists/MailingLists.tsx';
-import useSWR from 'swr';
 import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 
 const ACCORDION_CONTENT_CSS = css`

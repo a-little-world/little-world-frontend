@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { useDevelopmentFeaturesStore } from '../../features/stores/developmentFeatures.ts';
+import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
 import {
   UNREAD_NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,

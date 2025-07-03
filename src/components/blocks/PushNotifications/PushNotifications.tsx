@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
 import { mutateUserData } from '../../../api/index.js';
-import { useDevelopmentFeaturesStore } from '../../../features/stores/developmentFeatures.ts';
+import { useDevelopmentFeaturesStore } from '../../../features/stores/index.ts';
 import {
   FIREBASE_ENDPOINT,
   USER_ENDPOINT,
@@ -43,7 +43,7 @@ const PushNotifications = ({
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const enabled = user?.profile.push_notifications_enabled;
 
-  const onFormSuccess = (data: Data) => {
+  const onFormSuccess = (_data: Data) => {
     mutate(USER_ENDPOINT);
   };
 

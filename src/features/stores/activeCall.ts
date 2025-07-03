@@ -15,8 +15,10 @@ interface ActiveCallState {
   stopActiveCall: () => void;
 }
 
-export const useActiveCallStore = create<ActiveCallState>((set) => ({
+const useActiveCallStore = create<ActiveCallState>((set) => ({
   activeCall: null,
   initActiveCall: (data) => set({ activeCall: data }),
   stopActiveCall: () => set({ activeCall: null }),
-})); 
+}));
+
+export default useActiveCallStore; 

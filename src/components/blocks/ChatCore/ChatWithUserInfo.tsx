@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { useCallSetupStore } from '../../../features/stores/callSetup.ts';
+import { useCallSetupStore } from '../../../features/stores/index.ts';
 import {
   CHATS_ENDPOINT,
   USER_ENDPOINT,

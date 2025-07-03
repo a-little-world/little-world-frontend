@@ -57,7 +57,6 @@ const Login = () => {
 
     login(data)
       .then(loginData => {
-        // TODO dispatch(initialise(loginData));
         mutate(USER_ENDPOINT, loginData.user);
         setIsSubmitting(false);
 

@@ -93,18 +93,18 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
     revalidateOnMount: false,
   });
-  const matchRejected = useMatchRejectedStore().rejected;
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
   const activeCallRoom = activeCallRooms?.[0];
-  const callSetup = useCallSetupStore().callSetup;
-  const postCallSurvey = usePostCallSurveyStore().postCallSurvey;
-  const activeCall = useActiveCallStore().activeCall;
-  const randomCallSetup = useRandomCallSetupStore().randomCallSetup;
-  const randomCallLobby = useRandomCallLobbyStore().randomCallLobby;
+  const { callSetup } = useCallSetupStore();
+  const { postCallSurvey } = usePostCallSurveyStore();
+  const { activeCall } = useActiveCallStore();
+  const { randomCallSetup } = useRandomCallSetupStore();
+  const { randomCallLobby } = useRandomCallLobbyStore();
+
 
   // Zustand store hooks
   const { initCallSetup } = useCallSetupStore();
-  const { setMatchRejected } = useMatchRejectedStore();
+  const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
   const { removePostCallSurvey } = usePostCallSurveyStore();
   const { initRandomCallSetup } = useRandomCallSetupStore();
 
