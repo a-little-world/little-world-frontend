@@ -9,11 +9,12 @@ import {
 import { reduce } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import useSWR from 'swr';
 
-import { useAreDevFeaturesEnabled } from '../../firebase.ts';
+import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
+import { CHATS_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import { APP_ROUTE } from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import NotificationBell from '../atoms/NotificationBell.tsx';
@@ -72,15 +73,15 @@ function MobileNavBar({ setShowSidebarMobile }) {
   } else if (paths.includes('trainings')) key = 'trainings';
   else if (paths.includes('partners')) key = 'partners';
 
-  const chats = useSelector(state => state.userData.chats);
+  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher);
 
   const unreadCount = reduce(
-    chats.results,
+    chats?.results,
     (sum, chat) => sum + chat.unread_count,
     0,
   );
 
-  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
+  const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
   return (
     <MobileHeader className="mobile-header">

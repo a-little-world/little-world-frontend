@@ -7,14 +7,13 @@ import {
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
+import { LocalParticipant, Track } from 'livekit-client';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { blockIncomingCall, getChatByPartnerId } from '../../features/userData';
+import useSWR from 'swr';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
@@ -35,6 +34,8 @@ import {
   Videos,
   WaitingTile,
 } from './VideoCall.styles.tsx';
+import { useActiveCallStore } from '../../features/stores/index.ts';
+import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 
 function MyVideoConference({
   isFullScreen,
@@ -112,21 +113,19 @@ function VideoCall() {
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
   const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
-  const dispatch = useDispatch();
 
   useKeyboardShortcut({
     condition: isFullScreen,
     key: 'Escape',
     onKeyPressed: () => setIsFullScreen(false),
   });
-
-  const { userId, token, livekitServerUrl, audioOptions, videoOptions } =
-    useSelector(state => state.userData.activeCall);
-
-  const profile = useSelector(state => state.userData.user.profile);
-  const chat = useSelector(state =>
-    getChatByPartnerId(state.userData.chats, userId),
-  );
+  
+  const { userId, token, livekitServerUrl, audioOptions, videoOptions, stopActiveCall } = useActiveCallStore()
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const profile = user?.profile
+  
+  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
+  const chatData = chats?.results?.find(chat => chat?.partner?.id === userId)
 
   const onChatToggle = () => {
     if (isFullScreen) {
@@ -173,23 +172,19 @@ function VideoCall() {
               token={token}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
-                dispatch(
-                  blockIncomingCall({
-                    userId,
-                  }),
-                );
+                stopActiveCall();
                 navigate(getAppRoute(), { state: { callEnded: true } });
               }}
             >
               <MyVideoConference
                 isFullScreen={isFullScreen}
-                partnerName={chat?.partner?.first_name}
+                partnerName={chatData?.partner?.first_name}
                 partnerImage={
-                  chat?.partner?.image_type === 'avatar'
-                    ? chat?.partner.avatar_config
-                    : chat?.partner?.image
+                  chatData?.partner?.image_type === 'avatar'
+                    ? chatData?.partner.avatar_config
+                    : chatData?.partner?.image
                 }
-                partnerImageType={chat?.partner?.image_type}
+                partnerImageType={chatData?.partner?.image_type}
                 selfImage={
                   profile.image_type === 'avatar'
                     ? profile.avatar_config
@@ -225,7 +220,7 @@ function VideoCall() {
             open={selectedDrawerOption === 'chat'}
             onClose={() => setSelectedDrawerOption(null)}
           >
-            <Chat chatId={chat?.uuid} />
+            <Chat chatId={chatData?.uuid} />
           </Drawer>
           <Drawer
             title="Questions"
@@ -234,7 +229,7 @@ function VideoCall() {
           >
             <QuestionCards />
           </Drawer>
-          <CallSidebar isDisplayed={showChat} chatId={chat?.uuid} />
+          <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
         </CallLayout>
       </LayoutContextProvider>
     </SidebarSelectionProvider>

@@ -4,19 +4,21 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
+import useSWR from 'swr';
 import {
   CategoryNote,
   CategorySelectorWrapper,
   SelectionPanel,
   TextSection,
 } from './styles';
+import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 const CategorySelector = ({ categories, onUpdate }) => {
   const [panelSelected, setPanelSelected] = useState(null);
 
-  const userData = useSelector(state => state.userData.user.profile);
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const userData = user?.profile;
 
   useEffect(() => {
     setPanelSelected(userData?.user_type);

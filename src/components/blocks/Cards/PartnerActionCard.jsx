@@ -11,14 +11,15 @@ import {
   TextTypes,
   UnmatchedImage,
 } from '@a-little-world/little-world-design-system';
+import { mutate } from 'swr';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
 import { reportMatch, unmatch } from '../../../api/matches.ts';
-import { removeMatch } from '../../../features/userData.js';
+import { MATCHES_ENDPOINT } from '../../../features/swr/index.ts';
 
 export const PARTNER_ACTION_REPORT = 'report';
 export const PARTNER_ACTION_UNMATCH = 'unmatch';
@@ -67,7 +68,6 @@ function PartnerActionCard({ data, onClose }) {
   } = useForm();
   const [confirmed, setConfirmed] = useState(false);
   const isUnmatch = data.type === PARTNER_ACTION_UNMATCH;
-  const dispatch = useDispatch();
 
   const handleOnClose = () => {
     onClose();
@@ -82,12 +82,7 @@ function PartnerActionCard({ data, onClose }) {
       matchId: data.matchId,
       onSuccess: () => {
         setConfirmed(true);
-        dispatch(
-          removeMatch({
-            category: 'confirmed',
-            match: { id: data.matchId },
-          }),
-        );
+        mutate(MATCHES_ENDPOINT);
       },
       onError: error => {
         setError('root.serverError', {

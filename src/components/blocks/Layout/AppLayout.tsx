@@ -1,17 +1,17 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit.ts';
+import { useActiveCallStore, useCallSetupStore, useMatchRejectedStore, usePostCallSurveyStore } from '../../../features/stores/index.ts';
 import {
-  blockIncomingCall,
-  initCallSetup,
-  removePostCallSurvey,
-  setMatchRejected,
-} from '../../../features/userData.js';
-import { useSelector } from '../../../hooks/index.ts';
+  ACTIVE_CALL_ROOMS_ENDPOINT,
+  MATCHES_ENDPOINT,
+  fetcher,
+} from '../../../features/swr/index.ts';
+import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations.ts';
 import useModalManager, { ModalTypes } from '../../../hooks/useModalManager.ts';
 import '../../../main.css';
 import CallSetup from '../Calls/CallSetup.tsx';
@@ -79,18 +79,23 @@ const Content = styled.section<{ $isVH: boolean }>`
 
 export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
-  const dispatch = useDispatch();
   const { openModal, closeModal, isModalOpen } = useModalManager();
 
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
-  const matches = useSelector(state => state.userData.matches);
-  const matchRejected = useSelector(state => state.userData.matchRejected);
-  const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
-  const activeCallRoom = activeCallRooms[0];
-  const callSetup = useSelector(state => state.userData.callSetup);
-  const postCallSurvey = useSelector(state => state.userData.postCallSurvey);
-  const activeCall = useSelector(state => state.userData.activeCall); // do we need this?
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+  });
+  const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
+  const activeCallRoom = activeCallRooms?.[0];
+  const { callSetup } = useCallSetupStore();
+  const { postCallSurvey } = usePostCallSurveyStore();
+  const { activeCall } = useActiveCallStore();
+
+  // Zustand store hooks
+  const { initCallSetup } = useCallSetupStore();
+  const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
+  const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
@@ -122,8 +127,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.items?.length ||
-        matches?.unconfirmed?.items?.length ||
-        matchRejected,
+      matches?.unconfirmed?.items?.length ||
+      matchRejected,
     );
 
     if (shouldShowMatchModal) {
@@ -144,22 +149,24 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [callSetup, activeCall]);
 
   const onAnswerCall = () => {
-    dispatch(initCallSetup({ userId: activeCallRoom?.partner?.id }));
+    initCallSetup({ userId: activeCallRoom?.partner?.id });
     closeModal();
   };
 
   const onRejectCall = () => {
-    dispatch(blockIncomingCall({ userId: activeCallRoom?.partner?.id }));
+    if (activeCallRoom?.partner?.id) {
+      blockIncomingCall(activeCallRoom.partner.id);
+    }
     closeModal();
   };
 
   const closeMatchModal = () => {
-    if (matchRejected) dispatch(setMatchRejected(false));
+    if (matchRejected) setMatchRejected(false);
     closeModal();
   };
 
   const closePostCallSurvey = () => {
-    dispatch(removePostCallSurvey());
+    removePostCallSurvey();
     closeModal();
   };
 
@@ -167,7 +174,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const submitPostCallSurvey = ({
     rating,
     review,
-    onError
+    onError,
   }: {
     rating?: number;
     review?: string;

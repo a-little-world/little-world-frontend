@@ -11,9 +11,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
+import useSWR from 'swr';
 import { formatDate, formatEventTime } from '../../../helpers/date.ts';
 import { Event } from '../../../helpers/events.ts';
-import { useSelector } from '../../../hooks/index.ts';
 import placeholderImage from '../../../images/coffee.webp';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
 import ShowMoreText from '../../atoms/ShowMoreText.tsx';
@@ -32,6 +32,7 @@ import {
   SessionFlex,
   Sessions,
 } from './styles.tsx';
+import { COMMUNITY_EVENTS_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 
 interface GroupedEvent extends Event {
   sessions?: Array<{
@@ -237,8 +238,8 @@ function CommunityEvent({
 }
 
 function CommunityEvents() {
-  const events = useSelector(state => state.userData.communityEvents);
-  const groupedEvents = collateEvents(events.items);
+  const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT, fetcher)
+  const groupedEvents = collateEvents(events?.items || []);
   return (
     <Events>
       {groupedEvents.map(eventData => (

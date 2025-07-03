@@ -6,12 +6,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-import {
-  FetchQuestionsDataAsync,
-  postArchieveQuestion,
-} from '../../../features/userData';
+import useSWR, { mutate } from 'swr';
 import {
   ArchiveButton,
   Categories,
@@ -23,24 +18,18 @@ import {
   SidebarCard,
   TopicButton,
 } from './QuestionCards.styles.tsx';
+import { getQuestionsEndpoint, fetcher } from '../../../features/swr/index.ts';
 
 function QuestionCards() {
-  const dispatch = useDispatch();
-  const cardsByCategory = useSelector(
-    state => state.userData?.questions?.cards,
-  );
-
-  const cardCategories = useSelector(
-    state => state.userData?.questions?.categories,
-  );
+  const { data: cards } = useSWR(getQuestionsEndpoint(false), fetcher)
+  const cardsByCategory = cards?.cards
 
   const categoriesRef = useRef<HTMLDivElement>(null);
 
-  // TODO: locked to only german untill we have a translation button, then use: i18n.language;
   const selfUserPreferedLang = 'de';
   const [selectedQuestionId, setQuestionId] = useState(null);
 
-  const [selectedTopic, setTopic] = useState(cardCategories?.[0]?.uuid || null);
+  const [selectedTopic, setTopic] = useState(cardsByCategory?.[0]?.uuid || null);
 
   const changeScroll = (direction: 'left' | 'right') => {
     const scrollVelocity = {
@@ -53,12 +42,12 @@ function QuestionCards() {
   };
 
   useEffect(() => {
-    if (isEmpty(cardCategories)) {
-      dispatch(FetchQuestionsDataAsync());
+    if (isEmpty(cardsByCategory)) {
+      mutate(getQuestionsEndpoint(false));
     } else {
-      setTopic(cardCategories?.[0]?.uuid);
+      setTopic(cardsByCategory?.[0]?.uuid);
     }
-  }, [cardCategories]);
+  }, [cardsByCategory]);
 
   return (
     <SidebarCard>
@@ -76,7 +65,7 @@ function QuestionCards() {
           />
         </CategoryControl>
         <Categories ref={categoriesRef}>
-          {cardCategories?.map(topic => (
+          {cardsByCategory?.map(topic => (
             <TopicButton
               key={topic?.uuid}
               type="button"
@@ -122,7 +111,7 @@ function QuestionCards() {
                       type="button"
                       className="yes"
                       onClick={() => {
-                        dispatch(postArchieveQuestion(card, true));
+                        mutate(getQuestionsEndpoint(false));
                       }}
                     >
                       <img
@@ -139,7 +128,7 @@ function QuestionCards() {
                       type="button"
                       className="unarchive"
                       onClick={() => {
-                        dispatch(postArchieveQuestion(card, false));
+                        mutate(getQuestionsEndpoint(false));
                       }}
                     >
                       <img

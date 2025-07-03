@@ -1,21 +1,21 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
 
-import App, { InitializeDux } from './App';
+import { mutate } from 'swr';
+import App from './App';
 import { DEVELOPMENT } from './ENVIRONMENT';
-import store from './app/store.ts';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
 import { Root } from './router/router';
+import { API_OPTIONS_ENDPOINT } from './features/swr/index.ts';
 
 const isDevelopment = DEVELOPMENT;
 
 let root;
 
-window.renderApp = ({ initData, apiTranslations }) => {
+window.renderApp = ({ user, apiTranslations, apiOptions }) => {
   updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
   // If not in development just render ...
   const container = document.getElementById('root');
@@ -23,10 +23,11 @@ window.renderApp = ({ initData, apiTranslations }) => {
   if (!root) {
     root = createRoot(container);
   }
-  root.render(<App data={initData} />);
+  console.log("RENDERING APP V2", { user, apiTranslations, apiOptions })
+  root.render(<App user={user} apiTranslations={apiTranslations} apiOptions={apiOptions} />);
 
   reportWebVitals();
-};
+}
 
 window.renderMessageView = (
   {
@@ -42,6 +43,7 @@ window.renderMessageView = (
   { apiOptions, apiTranslations },
 ) => {
   updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
+  mutate(API_OPTIONS_ENDPOINT, apiOptions, false);
 
   const container = document.getElementById('root');
   if (!root) {
@@ -49,27 +51,21 @@ window.renderMessageView = (
   }
   root.render(
     <React.StrictMode>
-      <Provider store={store}>
-        <Root restoreScroll={false} includeModeSwitch={false}>
-          <FormLayout>
-            <MessageCard
-              title={title}
-              content={content}
-              confirmText={confirmText}
-              rejectText={rejectText}
-              onConfirm={onConfirm}
-              onReject={onReject}
-              linkText={linkText}
-              linkTo={linkTo}
-            />
-          </FormLayout>
-        </Root>
-        <InitializeDux
-          data={{
-            apiOptions,
-          }}
-        />
-      </Provider>
+      <Root restoreScroll={false} includeModeSwitch={false}>
+        <FormLayout>
+          <MessageCard
+            title={title}
+            content={content}
+            confirmText={confirmText}
+            rejectText={rejectText}
+            onConfirm={onConfirm}
+            onReject={onReject}
+            linkText={linkText}
+            linkTo={linkTo}
+          />
+        </FormLayout>
+      </Root>
+      {/* InitializeDux removed */}
     </React.StrictMode>,
   );
 };

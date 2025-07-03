@@ -7,11 +7,11 @@ import {
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import useSWR from 'swr';
 import { completeForm, mutateUserData } from '../../../api';
-import { updateProfile, updateUser } from '../../../features/userData';
+import { API_OPTIONS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { onFormError } from '../../../helpers/form.ts';
 import {
   EDIT_FORM_ROUTE,
@@ -41,7 +41,6 @@ import {
 
 const Form = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
 
   const {
     control,
@@ -53,10 +52,15 @@ const Form = () => {
     setError,
   } = useForm({ shouldUnregister: true });
 
-  const [formOptions, userData] = useSelector(state => [
-    state.userData.formOptions,
-    state.userData.user,
-  ]);
+  const { data: userData, mutate: mutateUserDataApi } = useSWR(USER_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false
+  })
+  const { data: apiOptions } = useSWR(API_OPTIONS_ENDPOINT, fetcher, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false
+  })
+  const formOptions = apiOptions?.profile
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,10 +77,10 @@ const Form = () => {
   const isLastStep = step === totalSteps;
 
   const onFormSuccess = response => {
-    dispatch(updateProfile(response));
+    mutateUserDataApi({ ...userData, profile: { ...userData.profile, ...response } });
     if (isLastStep && !userData?.userFormCompleted) {
       completeForm().then(updatedUser => {
-        dispatch(updateUser(updatedUser));
+        mutateUserDataApi({ ...userData, profile: { ...userData.profile, ...updatedUser } });
       });
     }
     navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));

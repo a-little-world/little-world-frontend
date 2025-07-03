@@ -7,15 +7,16 @@ import {
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import styled from 'styled-components';
 
+import { mutate } from 'swr';
 import { mutateUserData } from '../../../api';
-import { updateProfile } from '../../../features/userData';
 import { onFormError } from '../../../helpers/form.ts';
 import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';
 import { FormButtons, SubmitError } from '../Form/styles';
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 const EditorForm = styled.form`
   display: flex;
@@ -29,7 +30,6 @@ const EditorTitle = styled(ModalTitle)`
 
 const ProfileEditor = ({ content, field, onClose }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const {
     control,
     getValues,
@@ -39,8 +39,8 @@ const ProfileEditor = ({ content, field, onClose }) => {
   } = useForm();
   const isImage = field === 'image';
 
-  const onFormSuccess = data => {
-    dispatch(updateProfile(data));
+  const onFormSuccess = (_data) => {
+    mutate(USER_ENDPOINT);
     onClose();
   };
 

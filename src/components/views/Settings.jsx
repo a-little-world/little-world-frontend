@@ -18,13 +18,13 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
+import useSWR, { mutate } from 'swr';
 
 import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
-import { updateProfile } from '../../features/userData';
+import { USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
@@ -136,7 +136,6 @@ function ListItem({ section, label, value, setEditing }) {
 
 function EditFieldCard({ label, valueIn, setEditing }) {
   const { t, i18n } = useTranslation();
-  const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const type = types[label];
@@ -152,8 +151,8 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     setFocus,
   } = useForm();
 
-  const onResponseSuccess = data => {
-    dispatch(updateProfile(data));
+  const onResponseSuccess = (_data) => {
+    mutate(USER_ENDPOINT);
     setEditing(false);
     if (needsRelogin) window.location.reload();
   };
@@ -311,10 +310,13 @@ function EditFieldCard({ label, valueIn, setEditing }) {
 function Settings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const profile = useSelector(state => ({
-    email: state.userData.user.email,
-    ...state.userData.user.profile,
-  }));
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const profile = user
+    ? {
+        email: user.email,
+        ...user.profile,
+      }
+    : undefined;
 
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);

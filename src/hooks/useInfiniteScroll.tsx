@@ -1,6 +1,17 @@
 import { isEmpty } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+interface UseInfiniteScrollProps {
+  fetchItems: (args: { page: number;[key: string]: any }) => Promise<any>;
+  fetchArgs?: { [key: string]: any };
+  fetchCondition?: boolean;
+  items?: any[];
+  currentPage?: number;
+  totalPages?: number;
+  setItems: (items: any) => void;
+  onError?: () => void;
+}
+
 const useInfiniteScroll = ({
   fetchItems,
   fetchArgs = {},
@@ -10,7 +21,7 @@ const useInfiniteScroll = ({
   totalPages = 0,
   setItems,
   onError,
-}) => {
+}: UseInfiniteScrollProps) => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
   const dependencyList: string = JSON.stringify(fetchArgs);
@@ -65,7 +76,7 @@ const useInfiniteScroll = ({
         observer.unobserve(scrollRef.current);
       }
     };
-  }, [fetchData]);
+  }, [fetchData, items, currentPage, totalPages]);
 
   return {
     scrollRef,

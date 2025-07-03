@@ -6,10 +6,14 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
+import useSWR from 'swr';
 
-import { selectMatchesDisplay } from '../../features/userData';
+import {
+  MATCHES_ENDPOINT,
+  USER_ENDPOINT,
+  fetcher,
+} from '../../features/swr/index.ts';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard.tsx';
 import PartnerActionCard from './Cards/PartnerActionCard';
@@ -58,8 +62,17 @@ const Matches = styled.div`
 function PartnerProfiles({ setShowCancel }) {
   const { t } = useTranslation();
 
-  const matchesDisplay = useSelector(selectMatchesDisplay);
-  const user = useSelector(state => state.userData.user);
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const confirmed = matches?.confirmed;
+  const support = matches?.support;
+  const matchesDisplay =
+    !confirmed || !support
+      ? []
+      : confirmed.currentPage === 1
+      ? [...support.items, ...confirmed.items]
+      : [...confirmed.items];
+
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const germanLevelInvalid = Boolean(
     user?.profile?.lang_skill?.find(
       skill => skill.lang === 'german' && skill.level === 'level-0',
@@ -74,7 +87,7 @@ function PartnerProfiles({ setShowCancel }) {
 
   return (
     <Matches>
-      {matchesDisplay.map(match => (
+      {matchesDisplay?.map(match => (
         <ProfileCard
           key={match.partner.id}
           userPk={match.partner.id}
@@ -90,13 +103,13 @@ function PartnerProfiles({ setShowCancel }) {
       ))}
       {germanLevelInvalid ? (
         <LanguageLevelCard />
-      ) : user.isSearching ? (
+      ) : user?.isSearching ? (
         <SearchingCard setShowCancel={setShowCancel} />
       ) : (
         <FindNewPartner
           type="button"
           onClick={() => setShowSearchConfirmModal(true)}
-          $hasMatch={user.hasMatch}
+          $hasMatch={user?.hasMatch}
         >
           <img src={PlusImage} alt="change matching status icon" />
           <Text type={TextTypes.Body3}>

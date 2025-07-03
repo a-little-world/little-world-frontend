@@ -17,10 +17,10 @@ import { get, isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
+import useSWR from 'swr';
 import {
   fetchChat,
   fetchChatMessages,
@@ -28,14 +28,7 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat.ts';
-import {
-  addMessage,
-  getChatByChatId,
-  getMessagesByChatId,
-  insertChat,
-  markChatMessagesRead,
-  updateMessages,
-} from '../../../features/userData.js';
+import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher, getChatEndpoint, getChatMessagesEndpoint } from '../../../features/swr/index.ts';
 import {
   formatFileName,
   getCustomChatElements,
@@ -47,7 +40,6 @@ import {
   onFormError,
   registerInput,
 } from '../../../helpers/form.ts';
-import { useSelector } from '../../../hooks/index.ts';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import UnreadDot from '../../atoms/UnreadDot.tsx';
@@ -66,6 +58,7 @@ import {
   Time,
   WriteSection,
 } from './Chat.styles.tsx';
+import { useCallSetupStore } from '../../../features/stores/index.ts';
 
 const Chat = ({ chatId }) => {
   const {
@@ -74,30 +67,48 @@ const Chat = ({ chatId }) => {
   } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const messagesRef = useRef();
-  const userId = useSelector(state => state.userData.user?.id);
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const messages = useSelector(state =>
-    getMessagesByChatId(state.userData.messages, chatId, state),
-  );
-  const messagesResult = messages?.results;
-  const activeChat = useSelector(state =>
-    getChatByChatId(state.userData.chats, chatId),
-  );
+  const { mutate: mutateChat } = useSWR(getChatEndpoint(chatId), fetcher, {
+    revalidateOnMount: true,
+    revalidateOnFocus: true,
+  })
+
+  const { data: chats, mutate: mutateChats } = useSWR(CHATS_ENDPOINT, fetcher)
+  const { data: chatMessages, mutate: mutateMessages } = useSWR(getChatMessagesEndpoint(chatId, 1), fetcher, {
+    revalidateOnMount: true,
+    revalidateOnFocus: true,
+  })
+  const activeChat = chats?.results?.find(chat => chat?.uuid === chatId)
+  const messages = chatMessages?.results || []
+  const messagesResult = messages
+
+  console.log('chatMessages', chatMessages, messages)
+
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef();
+  
+  const { initCallSetup } = useCallSetupStore();
 
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
     fetchArgs: { id: chatId },
     fetchCondition: !!chatId,
-    items: messagesResult,
-    currentPage: messages?.page,
-    totalPages: messages?.pages_total,
-    setItems: items => dispatch(updateMessages({ chatId, items })),
+    items: messages,
+    currentPage: chatMessages?.page,
+    totalPages: chatMessages?.pages_total,
+    setItems: items => {
+      mutateMessages(prev => ({
+        ...prev,
+        results: [...prev.results, ...items],
+      }), {
+        revalidate: false,
+      })
+    },
     onError,
   });
 
@@ -118,13 +129,21 @@ const Chat = ({ chatId }) => {
 
   const onMarkMessagesRead = () => {
     markChatMessagesReadApi({ chatId }).then(() => {
-      dispatch(
-        markChatMessagesRead({
-          chatId,
-          userId,
-          actorIsSelf: true,
-        }),
-      );
+      mutateChat(prev => ({
+        ...prev,
+        unread_count: 0,
+      }), {
+        revalidate: false,
+      })
+
+      mutateMessages(prev => ({
+        ...prev,
+        results: prev.results.map(message => ({
+          ...message,
+          read: true,
+        })),
+      }))
+
     });
   };
 
@@ -132,7 +151,12 @@ const Chat = ({ chatId }) => {
     // if activeChat === undefined we know the specific chat isn't loaded yet
     if (!activeChat && chatId) {
       fetchChat({ chatId }).then(data => {
-        dispatch(insertChat(data));
+        mutateChats(prev => ({
+          ...prev,
+          results: [...prev.results, data],
+        }), {
+          revalidate: false,
+        })
       });
     }
     // 'unread_messages_count' also updates when new message are added
@@ -170,13 +194,12 @@ const Chat = ({ chatId }) => {
   const onMessageSent = data => {
     reset();
     clearSelectedFile();
-    dispatch(
-      addMessage({
-        message: data,
-        chatId,
-        senderIsSelf: true,
-      }),
-    );
+    mutateMessages(prev => ({
+      ...prev,
+      results: [data, ...prev.results],
+    }), {
+      revalidate: true,
+    })
     setIsSubmitting(false);
     messagesRef.current.scrollTop = 0;
     setMessagesSent(curr => curr + 1);
@@ -231,7 +254,7 @@ const Chat = ({ chatId }) => {
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
-        {messages.page &&
+        {chatMessages?.page &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
               {t('chat.no_messages')}
@@ -248,11 +271,11 @@ const Chat = ({ chatId }) => {
                   {group.messages.map(message => {
                     const customChatElements = message?.parsable
                       ? getCustomChatElements({
-                          dispatch,
-                          message,
-                          userId,
-                          activeChat,
-                        })
+                        initCallSetup,
+                        message,
+                        userId,
+                        activeChat,
+                      })
                       : [];
 
                     return (
@@ -263,8 +286,8 @@ const Chat = ({ chatId }) => {
                         <MessageText
                           {...(message.parsable &&
                             messageContainsWidget(message.text) && {
-                              as: 'div',
-                            })}
+                            as: 'div',
+                          })}
                           disableParser={!message.parsable}
                           $isSelf={message.sender === userId}
                           $isWidget={

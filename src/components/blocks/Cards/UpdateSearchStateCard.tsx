@@ -12,13 +12,13 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 
+
+import useSWR, { mutate } from 'swr';
 import { updateUserSearchState } from '../../../api/profile.ts';
 import { SEARCHING_STATES } from '../../../constants/index.ts';
-import { updateSearchState } from '../../../features/userData.js';
-import { useSelector } from '../../../hooks/index.ts';
 import ButtonsContainer from '../../atoms/ButtonsContainer.jsx';
+import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 interface UpdateSearchStateCardProps {
   onClose: () => void;
@@ -26,8 +26,8 @@ interface UpdateSearchStateCardProps {
 
 function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const isSearching = useSelector(state => state.userData.user.isSearching);
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const isSearching = user?.isSearching;
   const currentState = isSearching
     ? SEARCHING_STATES.searching
     : SEARCHING_STATES.idle;
@@ -41,7 +41,7 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
     updateUserSearchState({
       updatedState,
       onSuccess: () => {
-        dispatch(updateSearchState(!isSearching));
+        mutate(USER_ENDPOINT);
         onClose();
       },
       onError: e => setError(e.message),

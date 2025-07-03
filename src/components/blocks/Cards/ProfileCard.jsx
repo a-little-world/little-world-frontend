@@ -19,10 +19,9 @@ import {
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
-import { initCallSetup } from '../../../features/userData';
+import { useCallSetupStore } from '../../../features/stores/index.ts';
 import {
   MESSAGES_ROUTE,
   PROFILE_ROUTE,
@@ -166,9 +165,9 @@ function ProfileCard({
   type,
 }) {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const theme = useTheme();
   const usesAvatar = profile.image_type === 'avatar';
+  const callSetup = useCallSetupStore();
 
   return (
     <StyledCard
@@ -283,7 +282,7 @@ function ProfileCard({
           <Button
             type="button"
             variation={ButtonVariations.Option}
-            onClick={() => dispatch(initCallSetup({ userId: userPk }))}
+            onClick={() => callSetup.initCallSetup({ userId: userPk })}
           >
             <VideoIcon
               gradient={Gradients.Orange}
