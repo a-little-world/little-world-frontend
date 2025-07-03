@@ -75,7 +75,9 @@ export function addMessage(message: any, chatId: string, metaChatObj: any, sende
                 ...chatsData,
                 results: sortChats(updatedResults)
             };
-        } else if (metaChatObj) {
+        }
+        
+        if (metaChatObj) {
             // Add new chat with metadata
             const newChat = {
                 ...metaChatObj,
