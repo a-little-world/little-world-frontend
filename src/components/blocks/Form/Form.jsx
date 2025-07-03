@@ -9,9 +9,9 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import useSWR, { mutate } from 'swr';
 import { completeForm, mutateUserData } from '../../../api';
 import { API_OPTIONS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
+import useSWR, { mutate } from 'swr';
 import { onFormError } from '../../../helpers/form.ts';
 import {
   EDIT_FORM_ROUTE,

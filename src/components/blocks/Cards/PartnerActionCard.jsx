@@ -82,7 +82,7 @@ function PartnerActionCard({ data, onClose }) {
       matchId: data.matchId,
       onSuccess: () => {
         setConfirmed(true);
-        mutate(MATCHES_ENDPOINT)
+        mutate(MATCHES_ENDPOINT);
       },
       onError: error => {
         setError('root.serverError', {

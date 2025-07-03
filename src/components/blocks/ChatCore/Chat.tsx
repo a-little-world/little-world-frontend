@@ -71,7 +71,7 @@ const Chat = ({ chatId }) => {
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: chat, mutate: mutateChat } = useSWR(getChatEndpoint(chatId), fetcher, {
+  const { data: chatData, mutate: mutateChat } = useSWR(getChatEndpoint(chatId), fetcher, {
     revalidateOnMount: true,
     revalidateOnFocus: true,
   })
@@ -92,7 +92,7 @@ const Chat = ({ chatId }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef();
   
-  const { initCallSetup, callSetup } = useCallSetupStore();
+  const { initCallSetup } = useCallSetupStore();
 
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,

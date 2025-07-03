@@ -31,8 +31,8 @@ import {
   SessionFlex,
   Sessions,
 } from './styles.tsx';
-import { COMMUNITY_EVENTS_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import useSWR from 'swr';
+import { COMMUNITY_EVENTS_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 
 interface GroupedEvent extends Event {
   sessions?: Array<{

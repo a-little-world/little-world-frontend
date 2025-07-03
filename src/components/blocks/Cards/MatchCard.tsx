@@ -1,11 +1,10 @@
 import React from 'react';
 
-
+import { mutate } from 'swr';
 import { confirmMatch, partiallyConfirmMatch } from '../../../api/matches.ts';
 import ConfirmMatchCard from './ConfirmMatchCard.tsx';
 import NewMatchCard from './NewMatchCard.jsx';
 import { MATCHES_ENDPOINT } from '../../../features/swr/index.ts';
-import { mutate } from 'swr';
 
 type MatchCardProps = {
   showNewMatch: boolean;
@@ -33,7 +32,7 @@ export const MatchCardComponent = ({
           onSuccess: () => {
             mutate(MATCHES_ENDPOINT);
           },
-          onError: error => console.error(error),
+          onError: (_error) => console.error(_error),
         });
       }}
     />
@@ -47,10 +46,10 @@ export const MatchCardComponent = ({
         partiallyConfirmMatch({
           acceptDeny: true,
           matchId,
-          onSuccess: response => {
+          onSuccess: (_response) => {
             mutate(MATCHES_ENDPOINT);
           },
-          onError: error => console.error(error),
+          onError: (_error) => console.error(_error),
         });
       }}
       onReject={() => {
@@ -60,7 +59,7 @@ export const MatchCardComponent = ({
           onSuccess: () => {
             mutate(MATCHES_ENDPOINT);
           },
-          onError: error => console.error(error),
+          onError: (_error) => console.error(_error),
         });
       }}
       onClose={onClose}

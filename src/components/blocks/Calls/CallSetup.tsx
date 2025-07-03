@@ -15,10 +15,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import useSWR, { mutate } from 'swr';
 import { requestVideoAccessToken } from '../../../api/livekit.ts';
 import { useActiveCallStore } from '../../../features/stores/activeCall';
 import { useCallSetupStore } from '../../../features/stores/callSetup';
+import useSWR, { mutate } from 'swr';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { CALL_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
