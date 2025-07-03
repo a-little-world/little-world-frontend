@@ -60,7 +60,7 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const isSupport = user?.isSupport;
-  const { data: activeChat } = useSWR(getChatEndpoint(chatId), fetcher)
+  const { data: activeChat } = useSWR(chatId ? getChatEndpoint(chatId) : null, fetcher)
 
   const unmatched = activeChat?.is_unmatched;
 
