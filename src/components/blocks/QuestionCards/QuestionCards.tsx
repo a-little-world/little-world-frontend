@@ -26,7 +26,6 @@ function QuestionCards() {
 
   const categoriesRef = useRef<HTMLDivElement>(null);
 
-  // TODO: locked to only german untill we have a translation button, then use: i18n.language;
   const selfUserPreferedLang = 'de';
   const [selectedQuestionId, setQuestionId] = useState(null);
 

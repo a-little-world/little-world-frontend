@@ -53,7 +53,7 @@ function Main() {
       pageItems: PAGE_ITEMS,
       onError: error => console.error(error),
       onSuccess: data => {
-        mutate(MATCHES_ENDPOINT); // TODO: is this correct? previously: dispatch(updateConfirmedData(data.data.confirmed_matches));
+        mutate(MATCHES_ENDPOINT);
         setCurrentPage(page);
         window.scrollTo(0, 0);
       },

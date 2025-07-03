@@ -165,7 +165,6 @@ export function preMatchingAppointmentBooked(appointment: any): void {
 }
 
 export function addPostCallSurvey(postCallSurvey: any): void {
-    // TODO: Needs further testing
     mutate(USER_ENDPOINT, (userData: any) => {
         if (!userData) return userData;
         return {
