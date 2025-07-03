@@ -7,16 +7,18 @@ import {
   CardSizes,
   Text,
   TextArea,
+  TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
+import { useMatchRejectedStore } from '../../../features/stores/index.ts';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
 import { TextField } from '../Profile/styles';
-import { useMatchRejectedStore } from '../../../features/stores/index.ts';
 
 const ProfileInfo = styled.div`
   display: flex;
@@ -27,14 +29,23 @@ const ProfileInfo = styled.div`
   text-align: left;
 `;
 
+const RejectReasonContainer = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.small};
+  width: 100%;
+`;
+
 interface ConfirmaMatchCardProps {
   description: string;
   name: string;
   onClose: () => void;
   onConfirm: () => void;
-  onReject: () => void;
+  onReject: (reason?: string) => void;
   image: any;
   imageType: string;
+}
+
+interface RejectFormData {
+  rejectReason: string;
 }
 
 const ConfirmMatchCard = ({
@@ -49,10 +60,21 @@ const ConfirmMatchCard = ({
   const { t } = useTranslation();
   const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
   const theme = useTheme();
+  const [showRejectReason, setShowRejectReason] = useState(false);
 
-  const handleReject = () => {
-    onReject();
-    setMatchRejected(true)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RejectFormData>();
+
+  const handleReject = (data: RejectFormData) => {
+    if (!showRejectReason) {
+      setShowRejectReason(true);
+    } else {
+      onReject(data.rejectReason);
+      setMatchRejected(true);
+    }
   };
 
   return (
@@ -99,14 +121,30 @@ const ConfirmMatchCard = ({
             <Text type={TextTypes.Body5}>
               {t('confirm_match_instruction', { name })}
             </Text>
-            <TextArea />
+
+            {showRejectReason && (
+              <RejectReasonContainer>
+                <form onSubmit={handleSubmit(handleReject)}>
+                  <TextArea
+                    {...register('rejectReason', {
+                      required: t('error.required'),
+                    })}
+                    label={t('confirm_match_reject_reason_label')}
+                    placeholder={t('confirm_match_reject_reason_placeholder')}
+                    size={TextAreaSize.Medium}
+                    error={errors?.rejectReason?.message}
+                    maxLength={500}
+                  />
+                </form>
+              </RejectReasonContainer>
+            )}
           </CardContent>
 
           <ButtonsContainer>
             <Button
               type="button"
               appearance={ButtonAppearance.Secondary}
-              onClick={handleReject}
+              onClick={handleSubmit(handleReject)}
             >
               {t('confirm_match_reject_btn')}
             </Button>
