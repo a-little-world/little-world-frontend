@@ -89,7 +89,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
     revalidateOnMount: false,
   });
-  const matchRejected = useMatchRejectedStore().rejected;
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
   const activeCallRoom = activeCallRooms?.[0];
   const callSetup = useCallSetupStore().callSetup;
@@ -98,7 +97,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   // Zustand store hooks
   const { initCallSetup } = useCallSetupStore();
-  const { setMatchRejected } = useMatchRejectedStore();
+  const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
   const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
