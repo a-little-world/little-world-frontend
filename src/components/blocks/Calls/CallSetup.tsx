@@ -18,11 +18,11 @@ import styled, { css } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 import { requestVideoAccessToken } from '../../../api/livekit.ts';
 import { useActiveCallStore, useCallSetupStore } from '../../../features/stores/index.ts';
+import { CHATS_ENDPOINT, fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { clearActiveTracks } from '../../../helpers/video.ts';
-import { CALL_ROUTE, getAppRoute } from '../../../router/routes.ts';
+import { getCallRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
-import { CHATS_ENDPOINT, fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 const CloseButton = styled(Button)`
   position: absolute;
@@ -137,6 +137,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const { cancelCallSetup } = useCallSetupStore();
 
   const handleJoin = (values: LocalUserChoices) => {
+    console.log('TBS handleJoin', userPk)
     initActiveCall({
       userId: userPk,
       tracks: values,
@@ -152,7 +153,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     cancelCallSetup();
     onClose();
     clearActiveTracks();
-    navigate(getAppRoute(CALL_ROUTE));
+    navigate(getCallRoute(userPk));
   };
 
   useEffect(() => {

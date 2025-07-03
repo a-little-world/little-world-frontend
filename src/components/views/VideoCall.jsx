@@ -7,13 +7,15 @@ import {
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { isEmpty } from 'lodash';
 import { LocalParticipant, Track } from 'livekit-client';
+import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import useSWR from 'swr';
+import { useActiveCallStore } from '../../features/stores/index.ts';
+import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
@@ -34,8 +36,6 @@ import {
   Videos,
   WaitingTile,
 } from './VideoCall.styles.tsx';
-import { useActiveCallStore } from '../../features/stores/index.ts';
-import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 
 function MyVideoConference({
   isFullScreen,
@@ -119,12 +119,13 @@ function VideoCall() {
     key: 'Escape',
     onKeyPressed: () => setIsFullScreen(false),
   });
-  
+
   const { userId, token, livekitServerUrl, audioOptions, videoOptions, stopActiveCall } = useActiveCallStore()
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const profile = user?.profile
-  
+
   const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
+  console.log('TBS userId', userId)
   const chatData = chats?.results?.find(chat => chat?.partner?.id === userId)
 
   const onChatToggle = () => {
