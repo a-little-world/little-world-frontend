@@ -243,7 +243,7 @@ function Contact() {
   const onSubmit = formData => {
     setIsSubmitting(true);
     const data = new FormData();
-    for (let i = 0; i < fileRef.current.files.length; ++i) {
+    for (let i = 0; i < fileRef.current.files.length; i += 1) {
       const file = fileRef.current.files.item(i);
       const { name } = file;
 

@@ -151,7 +151,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     setFocus,
   } = useForm();
 
-  const onResponseSuccess = data => {
+  const onResponseSuccess = (_data) => {
     mutate(USER_ENDPOINT);
     setEditing(false);
     if (needsRelogin) window.location.reload();

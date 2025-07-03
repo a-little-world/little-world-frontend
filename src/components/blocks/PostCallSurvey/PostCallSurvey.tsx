@@ -21,7 +21,7 @@ import { TFunction, useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
 import { registerInput } from '../../../helpers/form.ts';
-import { usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
+import { usePostCallSurveyStore } from '../../../features/stores/index.ts';
 
 const StyledCard = styled(Card)``;
 

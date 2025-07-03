@@ -7,9 +7,8 @@ import {
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { LocalParticipant, Track } from 'livekit-client';
-import { useActiveCallStore } from '../../features/stores/activeCall.ts';
 import { isEmpty } from 'lodash';
+import { LocalParticipant, Track } from 'livekit-client';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -34,8 +33,9 @@ import {
   Videos,
   WaitingTile,
 } from './VideoCall.styles.tsx';
-import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import useSWR from 'swr';
+import { useActiveCallStore } from '../../features/stores/index.ts';
+import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 
 function MyVideoConference({
   isFullScreen,
@@ -125,7 +125,7 @@ function VideoCall() {
   const profile = user?.profile
   
   const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
-  const chat = chats?.results?.find(chat => chat?.partner?.id === userId)
+  const chatData = chats?.results?.find(chat => chat?.partner?.id === userId)
 
   const onChatToggle = () => {
     if (isFullScreen) {
@@ -178,13 +178,13 @@ function VideoCall() {
             >
               <MyVideoConference
                 isFullScreen={isFullScreen}
-                partnerName={chat?.partner?.first_name}
+                partnerName={chatData?.partner?.first_name}
                 partnerImage={
-                  chat?.partner?.image_type === 'avatar'
-                    ? chat?.partner.avatar_config
-                    : chat?.partner?.image
+                  chatData?.partner?.image_type === 'avatar'
+                    ? chatData?.partner.avatar_config
+                    : chatData?.partner?.image
                 }
-                partnerImageType={chat?.partner?.image_type}
+                partnerImageType={chatData?.partner?.image_type}
                 selfImage={
                   profile.image_type === 'avatar'
                     ? profile.avatar_config

@@ -5,10 +5,7 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit.ts';
-import { useActiveCallStore } from '../../../features/stores/activeCall.ts';
-import { useCallSetupStore } from '../../../features/stores/callSetup.ts';
-import { useMatchRejectedStore } from '../../../features/stores/matchRejected.ts';
-import { usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
+import { useActiveCallStore, useCallSetupStore, useMatchRejectedStore, usePostCallSurveyStore } from '../../../features/stores/index.ts';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,

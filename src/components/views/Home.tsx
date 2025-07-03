@@ -6,7 +6,7 @@ import useSWR, { mutate } from 'swr';
 
 import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/matches.ts';
-import { useCallSetupStore } from '../../features/stores/callSetup.ts';
+import { useCallSetupStore } from '../../features/stores/index.ts';
 import { MATCHES_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard.tsx';
@@ -52,7 +52,7 @@ function Main() {
       page,
       pageItems: PAGE_ITEMS,
       onError: error => console.error(error),
-      onSuccess: data => {
+      onSuccess: (_data) => {
         mutate(MATCHES_ENDPOINT);
         setCurrentPage(page);
         window.scrollTo(0, 0);

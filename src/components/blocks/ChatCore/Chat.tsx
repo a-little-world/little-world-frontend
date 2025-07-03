@@ -58,7 +58,7 @@ import {
   Time,
   WriteSection,
 } from './Chat.styles.tsx';
-import { useCallSetupStore } from '../../../features/stores/callSetup.ts';
+import { useCallSetupStore } from '../../../features/stores/index.ts';
 
 const Chat = ({ chatId }) => {
   const {
