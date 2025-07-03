@@ -4,7 +4,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
@@ -20,6 +20,7 @@ import PartnerActionCard from './Cards/PartnerActionCard';
 import ProfileCard, { PROFILE_CARD_HEIGHT } from './Cards/ProfileCard';
 import { SearchingCard } from './Cards/SearchingCard';
 import UpdateSearchStateCard from './Cards/UpdateSearchStateCard.tsx';
+import { Start } from './RandomCall/Start.jsx';
 
 const FindNewPartner = styled.button`
   text-align: center;
@@ -69,8 +70,8 @@ function PartnerProfiles({ setShowCancel }) {
     !confirmed || !support
       ? []
       : confirmed.currentPage === 1
-      ? [...support.items, ...confirmed.items]
-      : [...confirmed.items];
+        ? [...support.items, ...confirmed.items]
+        : [...confirmed.items];
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const germanLevelInvalid = Boolean(
@@ -117,6 +118,9 @@ function PartnerProfiles({ setShowCancel }) {
           </Text>
         </FindNewPartner>
       )}
+      <Start
+        userPk={user?.id}
+      ></Start>
 
       <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
         {!!partnerActionData && (

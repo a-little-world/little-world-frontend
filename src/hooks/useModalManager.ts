@@ -5,7 +5,9 @@ type ModalTypeKey =
   | 'INCOMING_CALL'
   | 'CALL_SETUP'
   | 'MATCH'
-  | 'POST_CALL_SURVEY';
+  | 'POST_CALL_SURVEY'
+  | 'RANDOM_CALL_LOBBY'
+  | 'RANDOMCALL_SETUP';
 
 interface ModalConfig {
   id: ModalTypeKey;
@@ -26,6 +28,14 @@ export const ModalTypes: Record<ModalTypeKey, ModalConfig> = {
   CALL_SETUP: {
     id: 'CALL_SETUP',
     priority: 3,
+  },
+  RANDOMCALL_SETUP: {
+    id: 'RANDOMCALL_SETUP',
+    priority: 3,
+  },
+  RANDOM_CALL_LOBBY: {
+    id: 'RANDOM_CALL_LOBBY',
+    priority: 2,
   },
   MATCH: {
     id: 'MATCH',

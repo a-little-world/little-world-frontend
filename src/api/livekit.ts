@@ -21,6 +21,70 @@ export const requestVideoAccessToken = async ({
   }
 };
 
+export const requestRandomToken = async ({
+  userId,
+  onSuccess,
+  onError,
+}: {
+  userId: string;
+  onSuccess: (result: any) => void;
+  onError: (error: any) => void;
+}) => {
+  try {
+    const result = await apiFetch(`/api/random_calls/get_token_random_call`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: { userId: userId },
+    });
+    onSuccess(result);
+  } catch (error) {
+    onError(error);
+  }
+};
+
+export const joinLobby = async ({
+  userId,
+  onSuccess,
+  onError,
+}: {
+  userId: string;
+  onSuccess: (result: any) => void;
+  onError: (error: any) => void;
+}) => {
+  try {
+    const result = await apiFetch(`/api/random_calls/join_lobby`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: { userId: userId },
+    });
+    onSuccess(result);
+  } catch (error) {
+    onError(error);
+  }
+}
+
+export const exitLobby = async ({
+  userId,
+  onSuccess,
+  onError,
+}: {
+  userId: string;
+  onSuccess: (result: any) => void;
+  onError: (error: any) => void;
+}) => {
+  try {
+    console.log("ARRIVED IN EXIT FUNCTION")
+    const result = await apiFetch(`/api/random_calls/exit_lobby`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: { userId: userId },
+    });
+    onSuccess(result);
+  } catch (error) {
+    onError(error);
+  }
+}
+
 export const submitCallFeedback = async ({
   liveSessionId,
   rating,
