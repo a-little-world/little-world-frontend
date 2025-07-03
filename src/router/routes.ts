@@ -5,7 +5,7 @@ export const OUR_WORLD_ROUTE = 'our-world';
 export const SUPPORT_US_ROUTE = 'our-world/support';
 export const DONATE_ROUTE = 'our-world/donate';
 export const CALL_ROUTE = 'call/:userId?/';
-export const CALL_SETUP_ROUTE = 'call-setup/:userId?/';
+export const CALL_SETUP_ROUTE = 'call-setup/:userId?';
 export const CHAT_ROUTE = 'chat/:chatId/';
 export const MESSAGES_ROUTE = 'chat';
 export const NOTIFICATIONS_ROUTE = 'notifications';
@@ -41,6 +41,7 @@ export const getAppSubpageRoute = (parent: string, slug: string) =>
   getAppRoute(`${parent}/${slug}`);
 export const getUserFormRoute = (slug: string) => `/${USER_FORM_ROUTE}/${slug}`;
 export const getCallRoute = (userId: string) => `/${APP_ROUTE}/call/${userId}`;
+export const getCallSetupRoute = (userId: string) => `/${APP_ROUTE}/call-setup/${userId}`;
 
 export const isActiveRoute = (locationPath: string, path: string) =>
   locationPath === path || path !== getAppRoute('')
