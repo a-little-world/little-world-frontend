@@ -38,7 +38,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
   const isImage = field === 'image';
 
   const onFormSuccess = data => {
-    // TODO dispatch(updateProfile(data));
+    mutate(USER_DATA_ENDPOINT)
     onClose();
   };
 
