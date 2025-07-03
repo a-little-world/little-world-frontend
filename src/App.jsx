@@ -3,7 +3,7 @@ import { RouterProvider } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
 import './App.css';
-import { useDevelopmentFeaturesStore } from './features/stores/developmentFeatures.ts';
+import { useDevelopmentFeaturesStore } from './features/stores/index.ts';
 import { API_OPTIONS_ENDPOINT, API_TRANSLATIONS_ENDPOINT, USER_ENDPOINT, fetcher } from './features/swr/index.ts';
 import router from './router/router.jsx';
 
