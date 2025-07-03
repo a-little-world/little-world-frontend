@@ -5,7 +5,9 @@ interface MatchRejectedState {
   setMatchRejected: (value: boolean) => void;
 }
 
-export const useMatchRejectedStore = create<MatchRejectedState>((set) => ({
+const useMatchRejectedStore = create<MatchRejectedState>((set) => ({
   rejected: false,
   setMatchRejected: (value) => set({ rejected: value }),
-})); 
+}));
+
+export default useMatchRejectedStore; 
