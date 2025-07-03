@@ -1,7 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import App, { InitializeDux } from './App';
+import App from './App';
 import { DEVELOPMENT } from './ENVIRONMENT';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
@@ -62,11 +62,7 @@ window.renderMessageView = (
           />
         </FormLayout>
       </Root>
-      <InitializeDux
-        data={{
-          apiOptions,
-        }}
-      />
+      {/* InitializeDux removed */}
     </React.StrictMode>,
   );
 };
