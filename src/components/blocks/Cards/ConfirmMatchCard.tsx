@@ -6,11 +6,11 @@ import {
   CardHeader,
   CardSizes,
   Text,
+  TextArea,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
 import styled, { useTheme } from 'styled-components';
 
 import ButtonsContainer from '../../atoms/ButtonsContainer';
@@ -98,6 +98,7 @@ const ConfirmMatchCard = ({
             <Text type={TextTypes.Body5}>
               {t('confirm_match_instruction', { name })}
             </Text>
+            <TextArea />
           </CardContent>
 
           <ButtonsContainer>

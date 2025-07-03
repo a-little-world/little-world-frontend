@@ -18,7 +18,7 @@ import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { formatDate, formatTime } from '../../../helpers/date.ts';
 import SearchingSvg from '../../../images/match-searching.svg';
 import AppointmentSvg from '../../../images/new-appointment.svg';
-import { USER_FORM_ROUTE, getAppRoute } from '../../../router/routes.ts';
+import { USER_FORM_ROUTES, getAppRoute } from '../../../router/routes.ts';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
 const StyledCard = styled(Card)`
@@ -149,7 +149,7 @@ export function SearchingCard({ setShowCancel }) {
           <Link
             buttonAppearance={ButtonAppearance.Primary}
             buttonSize={ButtonSizes.Stretch}
-            to={getAppRoute(USER_FORM_ROUTE)}
+            to={getAppRoute(USER_FORM_ROUTES.SELF_INFO_1)}
           >
             {t('cp_modify_search')}
           </Link>

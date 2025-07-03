@@ -7,6 +7,7 @@ import {
 import { isBoolean } from 'lodash';
 
 import { USER_TYPES } from '../constants/index.ts';
+import { USER_FORM_ROUTES } from '../router/routes.ts';
 import { ComponentTypes, formatDataField } from './formContent.ts';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
@@ -37,7 +38,7 @@ const formPages = {
     note: 'user_type.info_text',
     step: 1,
     totalSteps: getSteps(userData?.user_type),
-    nextPage: 'user-form/self-info-1',
+    nextPage: USER_FORM_ROUTES.SELF_INFO_1,
     components: [
       {
         type: ComponentTypes.panelSelector,
@@ -51,8 +52,8 @@ const formPages = {
     title: 'self_info.title',
     step: 2,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: 'user-form/user-type',
-    nextPage: 'user-form/interests',
+    prevPage: USER_FORM_ROUTES.USER_TYPE,
+    nextPage: USER_FORM_ROUTES.INTERESTS,
     components: [
       {
         type: ComponentTypes.dropdown,
@@ -142,8 +143,8 @@ const formPages = {
     note: 'interests.info_text',
     step: 3,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: 'user-form/self-info-1',
-    nextPage: 'user-form/picture',
+    prevPage: USER_FORM_ROUTES.SELF_INFO_1,
+    nextPage: USER_FORM_ROUTES.PICTURE,
     components: [
       {
         type: ComponentTypes.multiSelection,
@@ -176,8 +177,8 @@ const formPages = {
     title: 'profile_pic.title',
     step: 4,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: 'user-form/interests',
-    nextPage: 'user-form/partner-1',
+    prevPage: USER_FORM_ROUTES.INTERESTS,
+    nextPage: USER_FORM_ROUTES.PARTNER_1,
     components: [{ type: ComponentTypes.picture }],
   }),
   'partner-1': ({ options, userData }) => ({
@@ -185,8 +186,8 @@ const formPages = {
     note: 'partner1.info_text',
     step: 5,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: 'user-form/picture',
-    nextPage: 'user-form/availability',
+    prevPage: USER_FORM_ROUTES.PICTURE,
+    nextPage: USER_FORM_ROUTES.AVAILABILITY,
     components: [
       ...(userData?.user_type === USER_TYPES.volunteer
         ? [
@@ -226,8 +227,8 @@ const formPages = {
     title: 'availability.title',
     step: 6,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: 'user-form/partner-1',
-    nextPage: 'user-form/notifications',
+    prevPage: USER_FORM_ROUTES.PARTNER_1,
+    nextPage: USER_FORM_ROUTES.NOTIFICATIONS,
     components: [
       {
         type: ComponentTypes.text,
@@ -258,8 +259,8 @@ const formPages = {
     title: 'user_form_notifications.title',
     step: 7,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: 'user-form/availability',
-    nextPage: 'user-form/conditions',
+    prevPage: USER_FORM_ROUTES.AVAILABILITY,
+    nextPage: USER_FORM_ROUTES.CONDITIONS,
     components: [
       {
         type: ComponentTypes.text,
@@ -328,7 +329,7 @@ const formPages = {
     note: 'conditions.info_text',
     step: 8,
     totalSteps: getSteps(userData?.user_type),
-    prevPage: 'user-form/notifications',
+    prevPage: USER_FORM_ROUTES.NOTIFICATIONS,
     nextPage: '',
     components: [
       {
