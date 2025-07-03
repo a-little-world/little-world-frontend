@@ -10,11 +10,13 @@ import { useTranslation } from 'react-i18next';
 
 import styled from 'styled-components';
 
+import { mutate } from 'swr';
 import { mutateUserData } from '../../../api';
 import { onFormError } from '../../../helpers/form.ts';
 import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';
 import { FormButtons, SubmitError } from '../Form/styles';
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 const EditorForm = styled.form`
   display: flex;
@@ -38,7 +40,7 @@ const ProfileEditor = ({ content, field, onClose }) => {
   const isImage = field === 'image';
 
   const onFormSuccess = (_data) => {
-    mutate(USER_DATA_ENDPOINT);
+    mutate(USER_ENDPOINT);
     onClose();
   };
 
