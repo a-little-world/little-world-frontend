@@ -38,7 +38,7 @@ const getRatingLabels = (t: TFunction) => [
 ];
 
 interface IFormInput {
-  raaing: number;
+  rating: number;
   review: string;
 }
 
