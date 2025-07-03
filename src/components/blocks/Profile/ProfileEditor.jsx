@@ -37,8 +37,8 @@ const ProfileEditor = ({ content, field, onClose }) => {
   } = useForm();
   const isImage = field === 'image';
 
-  const onFormSuccess = data => {
-    mutate(USER_DATA_ENDPOINT)
+  const onFormSuccess = (_data) => {
+    mutate(USER_DATA_ENDPOINT);
     onClose();
   };
 

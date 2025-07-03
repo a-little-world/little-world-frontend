@@ -6,6 +6,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
+import useSWR, { mutate } from 'swr';
 import {
   ArchiveButton,
   Categories,
@@ -17,7 +18,6 @@ import {
   SidebarCard,
   TopicButton,
 } from './QuestionCards.styles.tsx';
-import useSWR, { mutate } from 'swr';
 import { getQuestionsEndpoint, fetcher } from '../../../features/swr/index.ts';
 
 function QuestionCards() {

@@ -43,7 +43,7 @@ const PushNotifications = ({
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const enabled = user?.profile.push_notifications_enabled;
 
-  const onFormSuccess = (data: Data) => {
+  const onFormSuccess = (_data: Data) => {
     mutate(USER_ENDPOINT);
   };
 

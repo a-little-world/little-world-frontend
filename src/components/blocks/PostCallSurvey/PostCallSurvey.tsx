@@ -63,7 +63,7 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const watchedRating = watch('rating');
-  const { updatePostCallSurvey, postCallSurvey } = usePostCallSurveyStore();
+  const { updatePostCallSurvey } = usePostCallSurveyStore();
 
   useEffect(() => {
     if (watchedRating && typeof watchedRating === 'number'){
