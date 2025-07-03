@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
 
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import { mutate } from 'swr';
 import { setNewEmail } from '../../api';
 import { onFormError, registerInput } from '../../helpers/form.ts';

@@ -13,6 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
+import useSWR from 'swr';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
@@ -33,7 +34,6 @@ import {
   Videos,
   WaitingTile,
 } from './VideoCall.styles.tsx';
-import useSWR from 'swr';
 import { useActiveCallStore } from '../../features/stores/index.ts';
 import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 
@@ -220,7 +220,7 @@ function VideoCall() {
             open={selectedDrawerOption === 'chat'}
             onClose={() => setSelectedDrawerOption(null)}
           >
-            <Chat chatId={chat?.uuid} />
+            <Chat chatId={chatData?.uuid} />
           </Drawer>
           <Drawer
             title="Questions"
@@ -229,7 +229,7 @@ function VideoCall() {
           >
             <QuestionCards />
           </Drawer>
-          <CallSidebar isDisplayed={showChat} chatId={chat?.uuid} />
+          <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
         </CallLayout>
       </LayoutContextProvider>
     </SidebarSelectionProvider>
