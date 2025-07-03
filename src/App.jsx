@@ -8,17 +8,17 @@ import { API_OPTIONS_ENDPOINT, API_TRANSLATIONS_ENDPOINT, USER_ENDPOINT, fetcher
 import router from './router/router.jsx';
 
 function Preloader({ children }) {
-  const { error: errorUser } = useSWR(USER_ENDPOINT, fetcher, {
+  const { error: _errorUser } = useSWR(USER_ENDPOINT, fetcher, {
     revalidateOnMount: false,
     revalidateOnFocus: true,
   });
 
-  const { error: errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT, fetcher, {
+  const { error: _errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT, fetcher, {
     revalidateOnMount: false,
     revalidateOnFocus: false, // No need to ever revalidate this
   });
 
-  const { error: errorApiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT, fetcher, {
+  const { error: _errorApiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT, fetcher, {
     revalidateOnMount: false,
     revalidateOnFocus: false, // No need to ever revalidate this
   });
