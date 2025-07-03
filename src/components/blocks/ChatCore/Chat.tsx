@@ -71,7 +71,7 @@ const Chat = ({ chatId }) => {
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: chatData, mutate: mutateChat } = useSWR(getChatEndpoint(chatId), fetcher, {
+  const { mutate: mutateChat } = useSWR(getChatEndpoint(chatId), fetcher, {
     revalidateOnMount: true,
     revalidateOnFocus: true,
   })

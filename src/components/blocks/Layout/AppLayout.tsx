@@ -88,9 +88,9 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   });
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
   const activeCallRoom = activeCallRooms?.[0];
-  const callSetup = useCallSetupStore().callSetup;
-  const postCallSurvey = usePostCallSurveyStore().postCallSurvey;
-  const activeCall = useActiveCallStore().activeCall;
+  const { callSetup } = useCallSetupStore();
+  const { postCallSurvey } = usePostCallSurveyStore();
+  const { activeCall } = useActiveCallStore();
 
   // Zustand store hooks
   const { initCallSetup } = useCallSetupStore();
