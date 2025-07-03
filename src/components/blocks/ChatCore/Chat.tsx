@@ -58,6 +58,7 @@ import {
   Time,
   WriteSection,
 } from './Chat.styles.tsx';
+import { useCallSetupStore } from '../../../features/stores/callSetup.ts';
 
 const Chat = ({ chatId }) => {
   const {
@@ -90,6 +91,8 @@ const Chat = ({ chatId }) => {
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef();
+  
+  const { initCallSetup, callSetup } = useCallSetupStore();
 
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
@@ -268,9 +271,7 @@ const Chat = ({ chatId }) => {
                   {group.messages.map(message => {
                     const customChatElements = message?.parsable
                       ? getCustomChatElements({
-                        //dispatch: (action) => {
-                        //  console.log('action', action)
-                        //},
+                        initCallSetup,
                         message,
                         userId,
                         activeChat,
