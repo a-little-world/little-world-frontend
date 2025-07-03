@@ -21,6 +21,7 @@ import { TFunction, useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
 import { registerInput } from '../../../helpers/form.ts';
+import { usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
 
 const StyledCard = styled(Card)``;
 
@@ -37,7 +38,7 @@ const getRatingLabels = (t: TFunction) => [
 ];
 
 interface IFormInput {
-  rating: number;
+  raaing: number;
   review: string;
 }
 
@@ -62,16 +63,13 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const watchedRating = watch('rating');
+  const { updatePostCallSurvey, postCallSurvey } = usePostCallSurveyStore();
 
   useEffect(() => {
-    if (watchedRating){
-      /** TODO
-      dispatch(
-        updatePostCallSurvey({
-          rating: watchedRating,
-        }),
-      ); **/
-      console.log('watchedRating', watchedRating)
+    if (watchedRating && typeof watchedRating === 'number'){
+      updatePostCallSurvey({
+        rating: watchedRating,
+      })
     }
   }, [watchedRating]);
 
@@ -121,7 +119,7 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
             error={t(errors?.review?.message)}
             placeholder={t('post_call_survey.comment_placeholder')}
             onBlur={e => {
-              /** TODO dispatch(updatePostCallSurvey({ review: e?.target.value })) **/
+              updatePostCallSurvey({ review: e?.target.value })
               console.log('review', e?.target.value)
             }}
           />
