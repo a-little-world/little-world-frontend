@@ -16,6 +16,7 @@ import styled, { useTheme } from 'styled-components';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
 import { TextField } from '../Profile/styles';
+import { useMatchRejectedStore } from '../../../features/stores/index.ts';
 
 const ProfileInfo = styled.div`
   display: flex;
@@ -46,12 +47,12 @@ const ConfirmMatchCard = ({
   imageType,
 }: ConfirmaMatchCardProps) => {
   const { t } = useTranslation();
-  const matchRejected = null; // TODO useSelector(state => state.userData.matchRejected);
+  const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
   const theme = useTheme();
 
   const handleReject = () => {
     onReject();
-    // dispatch(setMatchRejected(true)); TODO
+    setMatchRejected(true)
   };
 
   return (

@@ -21,12 +21,12 @@ import { useTranslation } from 'react-i18next';
 import Avatar, { genConfig } from 'react-nice-avatar';
 import styled, { css, useTheme } from 'styled-components';
 
+import useSWR from 'swr';
 import { USER_FIELDS } from '../../../../constants/index.ts';
 import useImageCompression from '../../../../hooks/useImageCompression.tsx';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import { fetcher, USER_ENDPOINT } from '../../../../features/swr/index.ts';
-import useSWR from 'swr';
 import {
   AvatarEditorButton,
   AvatarSelection,

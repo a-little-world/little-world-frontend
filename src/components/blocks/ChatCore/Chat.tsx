@@ -58,6 +58,7 @@ import {
   Time,
   WriteSection,
 } from './Chat.styles.tsx';
+import { useCallSetupStore } from '../../../features/stores/index.ts';
 
 const Chat = ({ chatId }) => {
   const {
@@ -70,7 +71,7 @@ const Chat = ({ chatId }) => {
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data: chat, mutate: mutateChat } = useSWR(getChatEndpoint(chatId), fetcher, {
+  const { mutate: mutateChat } = useSWR(getChatEndpoint(chatId), fetcher, {
     revalidateOnMount: true,
     revalidateOnFocus: true,
   })
@@ -90,6 +91,8 @@ const Chat = ({ chatId }) => {
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef();
+  
+  const { initCallSetup } = useCallSetupStore();
 
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
@@ -268,9 +271,7 @@ const Chat = ({ chatId }) => {
                   {group.messages.map(message => {
                     const customChatElements = message?.parsable
                       ? getCustomChatElements({
-                        //dispatch: (action) => {
-                        //  console.log('action', action)
-                        //},
+                        initCallSetup,
                         message,
                         userId,
                         activeChat,

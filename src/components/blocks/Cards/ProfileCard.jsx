@@ -21,7 +21,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
-import { useCallSetupStore } from '../../../features/stores/callSetup.ts';
+import { useCallSetupStore } from '../../../features/stores/index.ts';
 import {
   MESSAGES_ROUTE,
   PROFILE_ROUTE,

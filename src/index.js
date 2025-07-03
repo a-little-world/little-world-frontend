@@ -1,13 +1,15 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import App, { InitializeDux } from './App';
+import { mutate } from 'swr';
+import App from './App';
 import { DEVELOPMENT } from './ENVIRONMENT';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
 import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
 import { Root } from './router/router';
+import { API_OPTIONS_ENDPOINT } from './features/swr/index.ts';
 
 const isDevelopment = DEVELOPMENT;
 
@@ -41,6 +43,7 @@ window.renderMessageView = (
   { apiOptions, apiTranslations },
 ) => {
   updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
+  mutate(API_OPTIONS_ENDPOINT, apiOptions, false);
 
   const container = document.getElementById('root');
   if (!root) {
@@ -62,11 +65,7 @@ window.renderMessageView = (
           />
         </FormLayout>
       </Root>
-      <InitializeDux
-        data={{
-          apiOptions,
-        }}
-      />
+      {/* InitializeDux removed */}
     </React.StrictMode>,
   );
 };

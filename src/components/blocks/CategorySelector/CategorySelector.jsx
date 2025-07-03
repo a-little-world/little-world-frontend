@@ -5,6 +5,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
 
+import useSWR from 'swr';
 import {
   CategoryNote,
   CategorySelectorWrapper,
@@ -12,7 +13,6 @@ import {
   TextSection,
 } from './styles';
 import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
-import useSWR from 'swr';
 
 const CategorySelector = ({ categories, onUpdate }) => {
   const [panelSelected, setPanelSelected] = useState(null);

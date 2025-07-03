@@ -14,6 +14,8 @@ import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
 
+import { mutate } from 'swr';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import { setNewEmail } from '../../api';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../router/routes.ts';
@@ -24,7 +26,6 @@ import {
   StyledForm,
   Title,
 } from './SignUp.styles';
-import { mutate } from 'swr';
 
 const ChangeEmail = () => {
   const { t } = useTranslation();

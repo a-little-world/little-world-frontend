@@ -17,9 +17,9 @@ const Messages = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedChat, setSelectedChat] = useState(chatId);
-  const selectChat = (chatId) => {
-    setSelectedChat(chatId);
-    navigate(getAppRoute(`chat/${chatId}`));
+  const selectChat = (selectedChatId) => {
+    setSelectedChat(selectedChatId);
+    navigate(getAppRoute(`chat/${selectedChatId}`));
   };
   const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher);
   const items = chats?.results;

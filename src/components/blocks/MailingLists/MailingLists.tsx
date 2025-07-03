@@ -51,7 +51,7 @@ const MailingLists = ({
 
   const subscribed = user?.profile.newsletter_subscribed;
 
-  const onFormSuccess = data => {
+  const onFormSuccess = (_data) => {
     mutate(USER_ENDPOINT);
   };
 

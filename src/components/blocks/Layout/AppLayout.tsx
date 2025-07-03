@@ -5,10 +5,7 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit.ts';
-import { useActiveCallStore } from '../../../features/stores/activeCall.ts';
-import { useCallSetupStore } from '../../../features/stores/callSetup.ts';
-import { useMatchRejectedStore } from '../../../features/stores/matchRejected.ts';
-import { usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
+import { useActiveCallStore, useCallSetupStore, useMatchRejectedStore, usePostCallSurveyStore } from '../../../features/stores/index.ts';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
@@ -89,16 +86,15 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
     revalidateOnMount: false,
   });
-  const matchRejected = useMatchRejectedStore().rejected;
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
   const activeCallRoom = activeCallRooms?.[0];
-  const callSetup = useCallSetupStore().callSetup;
-  const postCallSurvey = usePostCallSurveyStore().postCallSurvey;
-  const activeCall = useActiveCallStore().activeCall;
+  const { callSetup } = useCallSetupStore();
+  const { postCallSurvey } = usePostCallSurveyStore();
+  const { activeCall } = useActiveCallStore();
 
   // Zustand store hooks
   const { initCallSetup } = useCallSetupStore();
-  const { setMatchRejected } = useMatchRejectedStore();
+  const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
   const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);

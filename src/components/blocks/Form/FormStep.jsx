@@ -8,7 +8,7 @@ const ERROR_DE_MISSING = 'profile.lang-de-missing';
 const firstDuplicate = arr => {
   const elementSet = new Set();
 
-  for (let i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i += 1) {
     if (elementSet.has(arr[i])) return i;
     elementSet.add(arr[i]);
   }

@@ -1,5 +1,5 @@
 import { mutate } from "swr";
-import { ACTIVE_CALL_ROOMS_ENDPOINT, CHATS_ENDPOINT, MATCHES_ENDPOINT, USER_ENDPOINT } from ".";
+import { ACTIVE_CALL_ROOMS_ENDPOINT, CHATS_ENDPOINT, MATCHES_ENDPOINT, USER_ENDPOINT } from "./index.ts";
 
 interface MatchesData {
     [category: string]: any[];
@@ -38,7 +38,7 @@ export function updateMatchProfile(partnerId: string, profile: any): void {
             ...userData,
             matches: userData.matches.map((m: any) => m.id === partnerId ? { ...m, profile } : m)
         };
-    }, false)
+    }, false);
 }
 
 export function addMessage(message: any, chatId: string, metaChatObj: any, senderIsSelf: boolean = false): void {
@@ -75,7 +75,9 @@ export function addMessage(message: any, chatId: string, metaChatObj: any, sende
                 ...chatsData,
                 results: sortChats(updatedResults)
             };
-        } else if (metaChatObj) {
+        }
+        
+        if (metaChatObj) {
             // Add new chat with metadata
             const newChat = {
                 ...metaChatObj,
@@ -165,49 +167,58 @@ export function preMatchingAppointmentBooked(appointment: any): void {
 }
 
 export function addPostCallSurvey(postCallSurvey: any): void {
-    // TODO: Needs further testing
     mutate(USER_ENDPOINT, (userData: any) => {
         if (!userData) return userData;
         return {
             ...userData,
-            postCallSurvey: postCallSurvey
+            postCallSurvey
         };
     }, false);
 }
 
 export function runWsBridgeMutation(action: string, payload: any): void {
     switch (action) {
-        case 'addMatch':
+        case 'addMatch': {
             const [category, match] = payload as [string, any];
             addMatch(category, match);
             break;
-        case 'updateMatchProfile':
+        }
+        case 'updateMatchProfile': {
             const [partnerId, profile] = payload as [string, any];
             updateMatchProfile(partnerId, profile);
             break;
-        case 'addMessage':
+        }
+        case 'addMessage': {
             const [message, chatId, metaChatObj, senderIsSelf] = payload as [any, string, any, boolean];
             addMessage(message, chatId, metaChatObj, senderIsSelf);
             break;
-        case 'addActiveCallRoom':
+        }
+        case 'addActiveCallRoom': {
             const [callRoom] = payload as [any];
             addActiveCallRoom(callRoom);
             break;
-        case 'blockIncomingCall':
+        }
+        case 'blockIncomingCall': {
             const [blockUserId] = payload as [string];
             blockIncomingCall(blockUserId);
             break;
-        case 'markChatMessagesRead':
+        }
+        case 'markChatMessagesRead': {
             const [readChatId, readUserId] = payload as [string, string];
             markChatMessagesRead(readChatId, readUserId);
             break;
-        case 'preMatchingAppointmentBooked':
+        }
+        case 'preMatchingAppointmentBooked': {
             const [appointment] = payload as [any];
             preMatchingAppointmentBooked(appointment);
             break;
-        case 'addPostCallSurvey':
+        }
+        case 'addPostCallSurvey': {
             const [postCallSurvey] = payload as [any];
             addPostCallSurvey(postCallSurvey);
+            break;
+        }
+        default:
             break;
     }
 }

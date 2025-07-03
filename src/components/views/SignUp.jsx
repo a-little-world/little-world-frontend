@@ -52,7 +52,7 @@ const SignUp = () => {
       // Once the query param is stored in the cookie, we can remove it from the URL
       setSearchParams(new URLSearchParams());
     }
-  }, [searchParams]);
+  }, [searchParams, setSearchParams]);
 
   const {
     control,
