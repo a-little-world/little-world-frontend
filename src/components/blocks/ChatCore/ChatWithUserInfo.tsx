@@ -20,9 +20,9 @@ import useSWR from 'swr';
 
 import { useCallSetupStore } from '../../../features/stores/index.ts';
 import {
-  CHATS_ENDPOINT,
   USER_ENDPOINT,
   fetcher,
+  getChatEndpoint
 } from '../../../features/swr/index.ts';
 import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import {
@@ -60,9 +60,8 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const isSupport = user?.isSupport;
-  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher);
+  const { data: activeChat } = useSWR(chatId ? getChatEndpoint(chatId) : null, fetcher)
 
-  const activeChat = chats?.results.find(chat => chat.uuid === chatId);
   const unmatched = activeChat?.is_unmatched;
 
   const callSetup = useCallSetupStore();
