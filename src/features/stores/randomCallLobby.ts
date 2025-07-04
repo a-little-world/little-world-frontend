@@ -10,8 +10,10 @@ interface RandomCallLobbyState {
     cancelRandomCallLobby: (data: RandomCallLobbyData) => void;
 }
 
-export const useRandomCallLobbyStore = create<RandomCallLobbyState>((set) => ({
+const useRandomCallLobbyStore = create<RandomCallLobbyState>((set) => ({
     randomCallLobby: null,
     initRandomCallLobby: (data) => set({ randomCallLobby: data }),
     cancelRandomCallLobby: (data) => set({ randomCallLobby: data }),
-})); 
+}));
+
+export default useRandomCallLobbyStore;

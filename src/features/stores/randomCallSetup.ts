@@ -10,8 +10,10 @@ interface RandomCallSetupState {
   cancelRandomCallSetup: () => void;
 }
 
-export const useRandomCallSetupStore = create<RandomCallSetupState>((set) => ({
+const useRandomCallSetupStore = create<RandomCallSetupState>((set) => ({
   randomCallSetup: null,
   initRandomCallSetup: (data) => set({ randomCallSetup: data }),
   cancelRandomCallSetup: () => set({ randomCallSetup: null }),
-})); 
+}));
+
+export default useRandomCallSetupStore;
