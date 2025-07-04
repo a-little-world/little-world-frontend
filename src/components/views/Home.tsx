@@ -7,7 +7,7 @@ import useSWR, { mutate } from 'swr';
 import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/matches.ts';
 import { useCallSetupStore } from '../../features/stores/index.ts';
-import { MATCHES_ENDPOINT, fetcher } from '../../features/swr/index.ts';
+import { fetcher, getMatchEndpoint } from '../../features/swr/index.ts';
 import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard.tsx';
 import CommsBanner from '../blocks/CommsBanner.tsx';
@@ -53,14 +53,14 @@ function Main() {
       pageItems: PAGE_ITEMS,
       onError: error => console.error(error),
       onSuccess: (_data) => {
-        mutate(MATCHES_ENDPOINT);
+        mutate(getMatchEndpoint(page));
         setCurrentPage(page);
         window.scrollTo(0, 0);
       },
     });
   };
 
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const { data: matches } = useSWR(getMatchEndpoint(currentPage), fetcher);
 
   useEffect(() => {
     const totalItems =

@@ -28,6 +28,7 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat.ts';
+import { useCallSetupStore } from '../../../features/stores/index.ts';
 import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher, getChatEndpoint, getChatMessagesEndpoint } from '../../../features/swr/index.ts';
 import {
   formatFileName,
@@ -58,7 +59,6 @@ import {
   Time,
   WriteSection,
 } from './Chat.styles.tsx';
-import { useCallSetupStore } from '../../../features/stores/index.ts';
 
 const Chat = ({ chatId }) => {
   const {
@@ -71,7 +71,7 @@ const Chat = ({ chatId }) => {
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { mutate: mutateChat } = useSWR(getChatEndpoint(chatId), fetcher, {
+  const { mutate: mutateChat, data: activeChat } = useSWR(getChatEndpoint(chatId), fetcher, {
     revalidateOnMount: true,
     revalidateOnFocus: true,
   })
@@ -81,7 +81,6 @@ const Chat = ({ chatId }) => {
     revalidateOnMount: true,
     revalidateOnFocus: true,
   })
-  const activeChat = chats?.results?.find(chat => chat?.uuid === chatId)
   const messages = chatMessages?.results || []
   const messagesResult = messages
 
@@ -91,7 +90,7 @@ const Chat = ({ chatId }) => {
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef();
-  
+
   const { initCallSetup } = useCallSetupStore();
 
   const { scrollRef } = useInfiniteScroll({

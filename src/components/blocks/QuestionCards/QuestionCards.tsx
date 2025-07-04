@@ -7,6 +7,7 @@ import {
 import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
+import { fetcher, getQuestionsEndpoint } from '../../../features/swr/index.ts';
 import {
   ArchiveButton,
   Categories,
@@ -18,10 +19,10 @@ import {
   SidebarCard,
   TopicButton,
 } from './QuestionCards.styles.tsx';
-import { getQuestionsEndpoint, fetcher } from '../../../features/swr/index.ts';
 
 function QuestionCards() {
   const { data: cards } = useSWR(getQuestionsEndpoint(false), fetcher)
+  console.log('cards', cards)
   const cardsByCategory = cards?.cards
 
   const categoriesRef = useRef<HTMLDivElement>(null);
@@ -65,7 +66,7 @@ function QuestionCards() {
           />
         </CategoryControl>
         <Categories ref={categoriesRef}>
-          {cardsByCategory?.map(topic => (
+          {cards?.categories?.map(topic => (
             <TopicButton
               key={topic?.uuid}
               type="button"

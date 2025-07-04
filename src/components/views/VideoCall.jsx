@@ -7,15 +7,17 @@ import {
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { isEmpty } from 'lodash';
 import { LocalParticipant, Track } from 'livekit-client';
+import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import useSWR from 'swr';
+import { useActiveCallStore } from '../../features/stores/index.ts';
+import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
-import { getAppRoute } from '../../router/routes.ts';
+import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage';
 import CallSidebar, {
@@ -34,8 +36,6 @@ import {
   Videos,
   WaitingTile,
 } from './VideoCall.styles.tsx';
-import { useActiveCallStore } from '../../features/stores/index.ts';
-import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 
 function MyVideoConference({
   isFullScreen,
@@ -109,6 +109,7 @@ function MyVideoConference({
 
 function VideoCall() {
   const navigate = useNavigate();
+  const { userId: urlUserId } = useParams();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
@@ -119,13 +120,22 @@ function VideoCall() {
     key: 'Escape',
     onKeyPressed: () => setIsFullScreen(false),
   });
-  
-  const { userId, token, livekitServerUrl, audioOptions, videoOptions, stopActiveCall } = useActiveCallStore()
+
+  const { activeCall, stopActiveCall } = useActiveCallStore()
+  const { userId, token, livekitServerUrl, audioOptions, videoOptions } = activeCall || {}
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const profile = user?.profile
-  
+
   const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
   const chatData = chats?.results?.find(chat => chat?.partner?.id === userId)
+  console.log('chatData', chatData)
+
+  // Check if userId is provided in URL but token is not available
+  useEffect(() => {
+    if (urlUserId && !token) {
+      navigate(getCallSetupRoute(urlUserId));
+    }
+  }, [urlUserId, token, navigate]);
 
   const onChatToggle = () => {
     if (isFullScreen) {
