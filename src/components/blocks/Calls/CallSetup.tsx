@@ -15,10 +15,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { requestVideoAccessToken } from '../../../api/livekit.ts';
 import { useActiveCallStore, useCallSetupStore } from '../../../features/stores/index.ts';
-import { CHATS_ENDPOINT, fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
+import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { getCallRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
@@ -162,7 +162,6 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     requestVideoAccessToken({
       partnerId: userPk,
       onSuccess: res => {
-        mutate(CHATS_ENDPOINT, res.chat);
         setAuthData({
           chatId: res.chat.uuid,
           token: res.token,

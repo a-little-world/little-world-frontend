@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 
 import { fetchChats } from '../../api/chat.ts';
-import { CHATS_ENDPOINT, fetcher } from '../../features/swr/index.ts';
+import { CHATS_ENDPOINT_SEPERATE, fetcher } from '../../features/swr/index.ts';
 import useIniniteScroll from '../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../router/routes.ts';
 import PageHeader from '../atoms/PageHeader.tsx';
@@ -21,20 +21,25 @@ const Messages = () => {
     setSelectedChat(selectedChatId);
     navigate(getAppRoute(`chat/${selectedChatId}`));
   };
-  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher);
-  const items = chats?.results;
+
+  const { data: chats } = useSWR(CHATS_ENDPOINT_SEPERATE, fetcher, {
+    revalidateOnMount: true,
+    revalidateOnFocus: false,
+  });
+
   const { scrollRef } = useIniniteScroll({
     fetchItems: fetchChats,
     setItems: newItems => {
-      mutate(CHATS_ENDPOINT, {
+      console.log('newItems', newItems);
+      mutate(CHATS_ENDPOINT_SEPERATE, {
         ...chats,
         results: [...(chats?.results || []), ...newItems.results],
         page: newItems.page,
-        pages_total: newItems.pages_total
+        pages_total: newItems.pages_total || 0
       }, false);
     },
-    currentPage: chats?.page,
-    totalPages: chats?.pages_total,
+    currentPage: chats?.page || 1,
+    totalPages: chats?.pages_total || 0,
     items: chats?.results || [],
   });
 
@@ -48,7 +53,7 @@ const Messages = () => {
       <PageHeader text={t('chat_header')} />
       <ChatDashboard>
         <ChatsPanel
-          chats={items}
+          chats={chats?.results || []}
           selectChat={selectChat}
           selectedChat={selectedChat}
           scrollRef={scrollRef}
@@ -56,7 +61,7 @@ const Messages = () => {
         <ChatWithUserInfo
           chatId={selectedChat}
           onBackButton={handleOnChatBackBtn}
-          partner={items?.find(item => item?.uuid === selectedChat)?.partner}
+          partner={chats?.results?.find(item => item?.uuid === selectedChat)?.partner}
         />
       </ChatDashboard>
     </>
