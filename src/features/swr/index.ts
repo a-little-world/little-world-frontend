@@ -7,7 +7,7 @@ export const MATCHES_ENDPOINT = '/api/matches';
 export const ACTIVE_CALL_ROOMS_ENDPOINT = '/api/call_rooms';
 export const NOTIFICATIONS_ENDPOINT = '/api/notifications';
 export const UNREAD_NOTIFICATIONS_ENDPOINT = '/api/notifications?filter=unread';
-export const CHATS_ENDPOINT = '/api/chats';
+export const CHATS_ENDPOINT = '/api/chats/';
 export const API_TRANSLATIONS_ENDPOINT = '/api/api_translations';
 
 export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
