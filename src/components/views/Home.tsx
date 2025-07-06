@@ -53,8 +53,8 @@ function Main() {
       pageItems: PAGE_ITEMS,
       onError: error => console.error(error),
       onSuccess: (_data) => {
-        mutate(getMatchEndpoint(page));
         setCurrentPage(page);
+        mutate(getMatchEndpoint(page));
         window.scrollTo(0, 0);
       },
     });
@@ -64,8 +64,8 @@ function Main() {
 
   useEffect(() => {
     const totalItems =
-      (matches?.confirmed?.totalItems ?? 1) +
-      (matches?.support?.totalItems ?? 1);
+      (matches?.confirmed?.total_results ?? 1) +
+      (matches?.support?.total_results ?? 1);
     const totalPage = totalItems / PAGE_ITEMS;
 
     setTotalPages(Math.ceil(totalPage) || 1);
@@ -105,6 +105,7 @@ function Main() {
         <>
           <Home>
             <PartnerProfiles
+              currentPage={currentPage}
               setShowCancel={setShowCancelSearching}
               totalPaginations={totalPages}
             />
