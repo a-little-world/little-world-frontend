@@ -154,7 +154,7 @@ function Profile() {
   const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
   const match = !matches
     ? undefined
-    : [...matches.support.items, ...matches.confirmed.items].find(
+    : [...matches.support.results, ...matches.confirmed.results].find(
       m => m.partner.id === userId,
     );
 
