@@ -29,28 +29,6 @@ const Messages = () => {
 
   const { scrollRef } = useIniniteScroll({
     fetchItems: fetchChats,
-    fetchCondition: (() => {
-      console.log('Full chats object:', chats);
-      // Allow fetching if we have initial chats data and either:
-      // 1. We're not on the last page, OR
-      // 2. We're on the last page but haven't loaded all results yet
-      const hasInitialData = !!chats && chats.results?.length > 0;
-      const notOnLastPage = chats?.page < chats?.pages_total;
-      const onLastPageButIncomplete = chats?.page >= chats?.pages_total && chats?.results?.length < chats?.results_total;
-      const condition = hasInitialData && (notOnLastPage || onLastPageButIncomplete);
-
-      console.log('Fetch condition:', condition, {
-        chats: !!chats,
-        page: chats?.page,
-        pages_total: chats?.pages_total,
-        results_length: chats?.results?.length,
-        results_total: chats?.results_total,
-        hasInitialData,
-        notOnLastPage,
-        onLastPageButIncomplete
-      });
-      return true;
-    })(),
     setItems: newItems => {
       console.log('newItems', newItems);
       mutateChats(prev => {
