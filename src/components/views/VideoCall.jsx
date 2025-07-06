@@ -122,16 +122,15 @@ function VideoCall() {
   });
 
   const { activeCall, stopActiveCall } = useActiveCallStore()
-  const { userId, token, livekitServerUrl, audioOptions, videoOptions, chatId } = activeCall || {}
+  const { token, livekitServerUrl, audioOptions, videoOptions, chatId } = activeCall || {}
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const profile = user?.profile
 
   const { data: chatData } = useSWR(getChatEndpoint(chatId), fetcher)
-  console.log('chatData', chatData)
 
-  // Check if userId is provided in URL but token is not available
   useEffect(() => {
     if (urlUserId && !token) {
+      // If userId is in url but no token available, redirect to call-setup so we can re-join the call
       navigate(getCallSetupRoute(urlUserId));
     }
   }, [urlUserId, token, navigate]);
