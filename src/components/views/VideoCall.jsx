@@ -15,7 +15,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import useSWR from 'swr';
 import { useActiveCallStore } from '../../features/stores/index.ts';
-import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
+import { USER_ENDPOINT, fetcher, getChatEndpoint } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
@@ -122,12 +122,11 @@ function VideoCall() {
   });
 
   const { activeCall, stopActiveCall } = useActiveCallStore()
-  const { userId, token, livekitServerUrl, audioOptions, videoOptions } = activeCall || {}
+  const { userId, token, livekitServerUrl, audioOptions, videoOptions, chatId } = activeCall || {}
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const profile = user?.profile
 
-  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
-  const chatData = chats?.results?.find(chat => chat?.partner?.id === userId)
+  const { data: chatData } = useSWR(getChatEndpoint(chatId), fetcher)
   console.log('chatData', chatData)
 
   // Check if userId is provided in URL but token is not available

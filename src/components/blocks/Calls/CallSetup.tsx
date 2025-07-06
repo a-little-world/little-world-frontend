@@ -124,6 +124,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [authData, setAuthData] = useState({
+    chatId: null,
     token: null,
     livekitServerUrl: null,
   });
@@ -137,9 +138,9 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const { cancelCallSetup } = useCallSetupStore();
 
   const handleJoin = (values: LocalUserChoices) => {
-    console.log('TBS handleJoin', userPk)
     initActiveCall({
       userId: userPk,
+      chatId: authData.chatId || '',
       tracks: values,
       token: authData.token || undefined,
       audioOptions: values.audioEnabled
@@ -158,12 +159,12 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
 
   useEffect(() => {
     // Request the video room access token
-    console.log('Requesting video access token for user:', userPk);
     requestVideoAccessToken({
       partnerId: userPk,
       onSuccess: res => {
         mutate(CHATS_ENDPOINT, res.chat);
         setAuthData({
+          chatId: res.chat.uuid,
           token: res.token,
           livekitServerUrl: res.server_url,
         });
