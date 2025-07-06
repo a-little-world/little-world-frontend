@@ -26,23 +26,11 @@ const useInfiniteScroll = ({
   const dependencyList: string = JSON.stringify(fetchArgs);
 
   const fetchData = useCallback(async () => {
-    console.log('fetchData called:', {
-      fetchCondition,
-      loading,
-      currentPage,
-      totalPages,
-      shouldFetch: fetchCondition && !loading && currentPage < totalPages
-    });
-
-    // do not fetch if loading or on the last page
     if (
       !fetchCondition ||
       loading ||
       currentPage >= totalPages
     ) {
-      console.log('fetchData blocked:', {
-        reason: !fetchCondition ? 'fetchCondition false' : loading ? 'loading' : 'currentPage >= totalPages'
-      });
       return;
     }
 
