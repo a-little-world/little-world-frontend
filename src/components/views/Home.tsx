@@ -64,8 +64,8 @@ function Main() {
 
   useEffect(() => {
     const totalItems =
-      (matches?.confirmed?.total_results ?? 1) +
-      (matches?.support?.total_results ?? 1);
+      (matches?.confirmed?.results_total ?? 1) +
+      (matches?.support?.results_total ?? 1);
     const totalPage = totalItems / PAGE_ITEMS;
 
     setTotalPages(Math.ceil(totalPage) || 1);
