@@ -17,6 +17,7 @@ import styled, { useTheme } from 'styled-components';
 
 import useSWR from 'swr';
 import { resendVerificationEmail, verifyEmail } from '../../api';
+import { USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   CHANGE_EMAIL_ROUTE,
@@ -30,7 +31,6 @@ import {
   StyledForm,
   Title,
 } from './SignUp.styles';
-import { USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
 
 const HelpText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.medium};
