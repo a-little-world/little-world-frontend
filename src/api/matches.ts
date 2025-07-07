@@ -86,7 +86,7 @@ export const updateMatchData = async ({
 }) => {
   try {
     const result = await apiFetch(
-      `/api/matches/confirmed/?page=${page}&itemsPerPage=${pageItems}`,
+      `/api/matches/?page=${page}&page_size=${pageItems}`,
       {
         method: 'GET',
       },

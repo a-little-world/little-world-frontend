@@ -166,7 +166,7 @@ function Sidebar({ sidebarMobile }) {
   const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher);
 
   const unread = {
-    notifications: notifications?.unread?.items.filter(
+    notifications: notifications?.unread?.results.filter(
       ({ status }) => status === 'unread',
     ),
     messages: reduce(chats?.results, (sum, chat) => sum + chat.unread_count, 0),
