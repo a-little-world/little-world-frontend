@@ -12,14 +12,14 @@ import {
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
-
 import useSWR from 'swr';
+
 import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { formatDate, formatTime } from '../../../helpers/date.ts';
 import SearchingSvg from '../../../images/match-searching.svg';
 import AppointmentSvg from '../../../images/new-appointment.svg';
 import { USER_FORM_ROUTES, getAppRoute } from '../../../router/routes.ts';
-import { PROFILE_CARD_HEIGHT } from './ProfileCard';
+import { PROFILE_CARD_HEIGHT } from './ProfileCard.tsx';
 
 const StyledCard = styled(Card)`
   align-items: center;
@@ -77,7 +77,7 @@ export function SearchingCard({ setShowCancel }) {
   } = useTranslation();
   const appointmentBtn = useRef();
 
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const hasMatch = user?.hasMatch;
   const hadPreMatchingCall = user?.hadPreMatchingCall;
   const preMatchingAppointment = user?.preMatchingAppointment;

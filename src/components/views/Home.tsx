@@ -14,7 +14,7 @@ import CommsBanner from '../blocks/CommsBanner.tsx';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
 import NotificationPanel from '../blocks/NotificationPanel.tsx';
-import PartnerProfiles from '../blocks/PartnerProfiles.jsx';
+import PartnerProfiles from '../blocks/PartnerProfiles.tsx';
 
 const Home = styled.div`
   display: flex;
@@ -52,7 +52,7 @@ function Main() {
       page,
       pageItems: PAGE_ITEMS,
       onError: error => console.error(error),
-      onSuccess: (_data) => {
+      onSuccess: _data => {
         setCurrentPage(page);
         mutate(getMatchEndpoint(page));
         window.scrollTo(0, 0);

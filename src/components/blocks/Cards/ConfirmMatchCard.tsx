@@ -15,7 +15,6 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-import { useMatchRejectedStore } from '../../../features/stores/index.ts';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
 import { TextField } from '../Profile/styles';
@@ -48,6 +47,181 @@ interface RejectFormData {
   rejectReason: string;
 }
 
+type ViewState = 'confirm' | 'reject-form' | 'reject-confirmation';
+
+interface ConfirmMatchProps {
+  name: string;
+  description: string;
+  image: any;
+  imageType: string;
+  onConfirm: () => void;
+  onRejectClick: () => void;
+}
+
+interface RejectMatchProps {
+  name: string;
+  image: any;
+  imageType: string;
+  onCancel: () => void;
+  onSubmit: (data: RejectFormData) => void;
+  errors: any;
+  register: any;
+  handleSubmit: any;
+}
+
+interface RejectConfirmationProps {
+  name: string;
+  onClose: () => void;
+}
+
+const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
+  name,
+  description,
+  image,
+  imageType,
+  onConfirm,
+  onRejectClick,
+}) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+
+  return (
+    <>
+      <CardHeader>{t('confirm_match.title')}</CardHeader>
+      <CardContent
+        $align="center"
+        $textAlign="center"
+        $marginBottom={theme.spacing.large}
+      >
+        <ProfileInfo>
+          <ProfileImage image={image} imageType={imageType} />
+          <Text tag="h3" bold type={TextTypes.Heading5} center>
+            {name}
+          </Text>
+          <TextField>{description}</TextField>
+        </ProfileInfo>
+        <Text type={TextTypes.Body5}>
+          {t('confirm_match.description', { name })}
+        </Text>
+        <Text type={TextTypes.Body5}>
+          {t('confirm_match.instruction', { name })}
+        </Text>
+      </CardContent>
+
+      <ButtonsContainer>
+        <Button
+          type="button"
+          appearance={ButtonAppearance.Secondary}
+          onClick={onRejectClick}
+        >
+          {t('confirm_match.reject_button')}
+        </Button>
+        <Button type="button" onClick={onConfirm}>
+          {t('confirm_match.confirm_button')}
+        </Button>
+      </ButtonsContainer>
+    </>
+  );
+};
+
+const RejectMatch: React.FC<RejectMatchProps> = ({
+  name,
+  image,
+  imageType,
+  onCancel,
+  onSubmit,
+  errors,
+  register,
+  handleSubmit,
+}) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+
+  return (
+    <>
+      <CardHeader>{t('confirm_match.title')}</CardHeader>
+      <CardContent
+        $align="center"
+        $textAlign="center"
+        $marginBottom={theme.spacing.large}
+      >
+        <ProfileInfo>
+          <ProfileImage image={image} imageType={imageType} />
+          <Text tag="h3" bold type={TextTypes.Heading5} center>
+            {name}
+          </Text>
+        </ProfileInfo>
+        <Text type={TextTypes.Body5}>
+          {t('confirm_match.rejected.description', { name })}
+        </Text>
+
+        <RejectReasonContainer>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <TextArea
+              {...register('rejectReason', {
+                required: t('error.required'),
+              })}
+              label={t('confirm_match.reject_reason.label')}
+              placeholder={t('confirm_match.reject_reason.placeholder')}
+              size={TextAreaSize.Medium}
+              error={errors?.rejectReason?.message}
+              maxLength={500}
+            />
+          </form>
+        </RejectReasonContainer>
+      </CardContent>
+
+      <ButtonsContainer>
+        <Button
+          type="button"
+          appearance={ButtonAppearance.Secondary}
+          onClick={onCancel}
+        >
+          {t('btn_cancel')}
+        </Button>
+        <Button
+          type="button"
+          appearance={ButtonAppearance.Primary}
+          onClick={handleSubmit(onSubmit)}
+        >
+          {t('confirm_match.reject_button')}
+        </Button>
+      </ButtonsContainer>
+    </>
+  );
+};
+
+const RejectConfirmation: React.FC<RejectConfirmationProps> = ({
+  name,
+  onClose,
+}) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+
+  return (
+    <>
+      <CardHeader textColor={theme.color.text.title}>
+        {t('confirm_match.rejected.title')}
+      </CardHeader>
+      <CardContent $align="flex-start">
+        <Text bold type={TextTypes.Body5}>
+          {t('confirm_match.rejected.description', { name })}
+        </Text>
+        <Text type={TextTypes.Body5}>{t('confirm_match.rejected.info_1')}</Text>
+        <Text type={TextTypes.Body5}>{t('confirm_match.rejected.info_2')}</Text>
+        <Text type={TextTypes.Body5}>{t('confirm_match.rejected.info_3')}</Text>
+      </CardContent>
+      <Button
+        type="button"
+        appearance={ButtonAppearance.Secondary}
+        onClick={onClose}
+      >
+        {t('confirm_match.rejected.button')}
+      </Button>
+    </>
+  );
+};
+
 const ConfirmMatchCard = ({
   description,
   name,
@@ -57,102 +231,60 @@ const ConfirmMatchCard = ({
   image,
   imageType,
 }: ConfirmaMatchCardProps) => {
-  const { t } = useTranslation();
-  const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
-  const theme = useTheme();
-  const [showRejectReason, setShowRejectReason] = useState(false);
+  const [viewState, setViewState] = useState<ViewState>('confirm');
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<RejectFormData>();
 
-  const handleReject = (data: RejectFormData) => {
-    if (!showRejectReason) {
-      setShowRejectReason(true);
-    } else {
-      onReject(data.rejectReason);
-      setMatchRejected(true);
+  const handleRejectClick = () => {
+    setViewState('reject-form');
+  };
+
+  const handleCancelReject = () => {
+    setViewState('confirm');
+    reset();
+  };
+
+  const handleRejectSubmit = async (data: RejectFormData) => {
+    try {
+      await onReject(data.rejectReason);
+      setViewState('reject-confirmation');
+    } catch (error) {
+      // Handle error if needed
+      console.error('Reject failed:', error);
     }
   };
 
   return (
     <Card width={CardSizes.Medium}>
-      {matchRejected ? (
-        <>
-          <CardHeader textColor={theme.color.text.title}>
-            {t('rejected_match_title')}
-          </CardHeader>
-          <CardContent $align="flex-start">
-            <Text bold type={TextTypes.Body5}>
-              {t('rejected_match_description', { name })}
-            </Text>
-            <Text type={TextTypes.Body5}>{t('rejected_match_info_1')}</Text>
-            <Text type={TextTypes.Body5}>{t('rejected_match_info_2')}</Text>
-            <Text type={TextTypes.Body5}>{t('rejected_match_info_3')}</Text>
-          </CardContent>
-          <Button
-            type="button"
-            appearance={ButtonAppearance.Secondary}
-            onClick={onClose}
-          >
-            {t('rejected_match_btn')}
-          </Button>
-        </>
-      ) : (
-        <>
-          <CardHeader>{t('confirm_match_title')}</CardHeader>
-          <CardContent
-            $align="center"
-            $textAlign="center"
-            $marginBottom={theme.spacing.large}
-          >
-            <ProfileInfo>
-              <ProfileImage image={image} imageType={imageType} />
-              <Text tag="h3" bold type={TextTypes.Heading5} center>
-                {name}
-              </Text>
-              <TextField>{description}</TextField>
-            </ProfileInfo>
-            <Text type={TextTypes.Body5}>
-              {t('confirm_match_description', { name })}
-            </Text>
-            <Text type={TextTypes.Body5}>
-              {t('confirm_match_instruction', { name })}
-            </Text>
-
-            {showRejectReason && (
-              <RejectReasonContainer>
-                <form onSubmit={handleSubmit(handleReject)}>
-                  <TextArea
-                    {...register('rejectReason', {
-                      required: t('error.required'),
-                    })}
-                    label={t('confirm_match_reject_reason_label')}
-                    placeholder={t('confirm_match_reject_reason_placeholder')}
-                    size={TextAreaSize.Medium}
-                    error={errors?.rejectReason?.message}
-                    maxLength={500}
-                  />
-                </form>
-              </RejectReasonContainer>
-            )}
-          </CardContent>
-
-          <ButtonsContainer>
-            <Button
-              type="button"
-              appearance={ButtonAppearance.Secondary}
-              onClick={handleSubmit(handleReject)}
-            >
-              {t('confirm_match_reject_btn')}
-            </Button>
-            <Button type="button" onClick={onConfirm}>
-              {t('confirm_match_confirm_btn')}
-            </Button>
-          </ButtonsContainer>
-        </>
+      {viewState === 'confirm' && (
+        <ConfirmMatch
+          name={name}
+          description={description}
+          image={image}
+          imageType={imageType}
+          onConfirm={onConfirm}
+          onRejectClick={handleRejectClick}
+        />
+      )}
+      {viewState === 'reject-form' && (
+        <RejectMatch
+          name={name}
+          image={image}
+          imageType={imageType}
+          onCancel={handleCancelReject}
+          onSubmit={handleRejectSubmit}
+          errors={errors}
+          register={register}
+          handleSubmit={handleSubmit}
+        />
+      )}
+      {viewState === 'reject-confirmation' && (
+        <RejectConfirmation name={name} onClose={onClose} />
       )}
     </Card>
   );

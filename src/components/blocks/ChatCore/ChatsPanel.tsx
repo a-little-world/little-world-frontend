@@ -6,6 +6,7 @@ import {
   TickIcon,
   textParser,
 } from '@a-little-world/little-world-design-system';
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
@@ -14,10 +15,11 @@ import useSWR from 'swr';
 import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { getCustomChatElements } from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
-import ProfileImage from '../../atoms/ProfileImage.jsx';
+import { LoadingLine, shimmerStyles } from '../../atoms/Loading.tsx';
+import ProfileImage, { CircleImageLoading } from '../../atoms/ProfileImage.jsx';
 import UnreadIndicator from '../../atoms/UnreadIndicator.tsx';
 
-const Panel = styled(Card) <{ $selectedChat?: any }>`
+const Panel = styled(Card)<{ $selectedChat?: any }>`
   padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
   gap: ${({ theme }) => theme.spacing.xxsmall};
   overflow-y: scroll;
@@ -41,7 +43,7 @@ const Message = styled.button<{ $selected?: boolean }>`
   position: relative;
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.xxsmall};
-  border-radius: 20px;
+  border-radius: ${({ theme }) => theme.radius.medium};
   border: 2px solid ${({ theme }) => theme.color.border.reversed};
   align-items: center;
 
@@ -54,6 +56,19 @@ const Message = styled.button<{ $selected?: boolean }>`
     }
       
   `}
+`;
+
+const LoadingMessage = styled(Message)`
+  height: 92px;
+  ${shimmerStyles}
+  background: ${({ theme }) => theme.color.surface.primary};
+`;
+
+const LoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 const Details = styled.div`
@@ -126,75 +141,85 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
 
   return (
     <Panel $selectedChat={selectedChat}>
-      {chats?.map((message, index) => {
-        const isSender = message.newest_message?.sender === userId;
-        const customChatElements = message.newest_message?.parsable
-          ? getCustomChatElements({ message, userId, isPreview: true })
-          : [];
+      {isEmpty(chats) ? (
+        <LoadingMessage $selected={!!selectedChat}>
+          <CircleImageLoading $size="xsmall" />
+          <LoadingContent>
+            <LoadingLine $width="60%" />
+            <LoadingLine $width="80%" />
+          </LoadingContent>
+        </LoadingMessage>
+      ) : (
+        chats.map((message, index) => {
+          const isSender = message.newest_message?.sender === userId;
+          const customChatElements = message.newest_message?.parsable
+            ? getCustomChatElements({ message, userId, isPreview: true })
+            : [];
 
-        return (
-          <Message
-            key={`chat_${message.uuid + index}`}
-            $selected={message.uuid === selectedChat}
-            onClick={() => selectChat(message.uuid)}
-          >
-            <UserImage
-              circle
-              image={
-                message.partner.image_type === 'avatar'
-                  ? message.partner.avatar_config
-                  : message.partner.image
-              }
-              imageType={message.partner.image_type}
-              size="xsmall"
-            />
-            <Details>
-              <Top>
-                <Text bold>{message.partner.first_name}</Text>
-                {!!message?.newest_message?.created && (
-                  <Time type={TextTypes.Body6}>
-                    {formatTimeDistance(
-                      message.newest_message.created,
-                      new Date(),
-                      language,
-                      true,
-                    )}
-                  </Time>
-                )}
-              </Top>
-              <Preview>
-                <PreviewText disableParser>
-                  {textParser(
-                    message.newest_message?.text ||
-                    t('chat.no_messages_preview'),
-                    { customElements: customChatElements },
+          return (
+            <Message
+              key={`chat_${message.uuid + index}`}
+              $selected={message.uuid === selectedChat}
+              onClick={() => selectChat(message.uuid)}
+            >
+              <UserImage
+                circle
+                image={
+                  message.partner.image_type === 'avatar'
+                    ? message.partner.avatar_config
+                    : message.partner.image
+                }
+                imageType={message.partner.image_type}
+                size="xsmall"
+              />
+              <Details>
+                <Top>
+                  <Text bold>{message.partner.first_name}</Text>
+                  {!!message?.newest_message?.created && (
+                    <Time type={TextTypes.Body6}>
+                      {formatTimeDistance(
+                        message.newest_message.created,
+                        new Date(),
+                        language,
+                        true,
+                      )}
+                    </Time>
                   )}
-                </PreviewText>
-                {isSender ? (
-                  message.newest_message?.read ? (
-                    <TickDoubleIcon
-                      color={theme.color.status?.info || '#000'}
-                      width="16px"
-                      height="16px"
-                      label="Read"
-                      labelId="tick-double-icon"
-                    />
-                  ) : (
-                    <TickIcon
-                      width="16px"
-                      height="16px"
-                      label="Sent"
-                      labelId="tick-icon"
-                    />
-                  )
-                ) : message.unread_count ? (
-                  <UnreadIndicator />
-                ) : null}
-              </Preview>
-            </Details>
-          </Message>
-        );
-      })}
+                </Top>
+                <Preview>
+                  <PreviewText disableParser>
+                    {textParser(
+                      message.newest_message?.text ||
+                        t('chat.no_messages_preview'),
+                      { customElements: customChatElements },
+                    )}
+                  </PreviewText>
+                  {isSender ? (
+                    message.newest_message?.read ? (
+                      <TickDoubleIcon
+                        color={theme.color.status?.info || '#000'}
+                        width="16px"
+                        height="16px"
+                        label="Read"
+                        labelId="tick-double-icon"
+                      />
+                    ) : (
+                      <TickIcon
+                        width="16px"
+                        height="16px"
+                        label="Sent"
+                        labelId="tick-icon"
+                      />
+                    )
+                  ) : message.unread_count ? (
+                    <UnreadIndicator />
+                  ) : null}
+                </Preview>
+              </Details>
+            </Message>
+          );
+        })
+      )}
       <div ref={scrollRef} />
     </Panel>
   );

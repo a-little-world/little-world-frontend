@@ -5,7 +5,11 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit.ts';
-import { useActiveCallStore, useCallSetupStore, useMatchRejectedStore, usePostCallSurveyStore } from '../../../features/stores/index.ts';
+import {
+  useActiveCallStore,
+  useCallSetupStore,
+  usePostCallSurveyStore,
+} from '../../../features/stores/index.ts';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
@@ -94,7 +98,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   // Zustand store hooks
   const { initCallSetup } = useCallSetupStore();
-  const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
   const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
@@ -103,9 +106,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     ? [...matches.support.results, ...matches.confirmed.results]
     : [];
 
-  const showNewMatch = Boolean(
-    matches?.unconfirmed?.results?.length && !matchRejected,
-  );
+  const showNewMatch = Boolean(matches?.unconfirmed?.results?.length);
 
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
@@ -127,14 +128,13 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.results?.length ||
-      matches?.unconfirmed?.results?.length ||
-      matchRejected,
+        matches?.unconfirmed?.results?.length,
     );
 
     if (shouldShowMatchModal) {
       openModal(ModalTypes.MATCH.id);
     } else if (isModalOpen(ModalTypes.MATCH.id)) closeModal();
-  }, [matches, matchRejected]); // eslint-disable-line
+  }, [matches]); // eslint-disable-line
 
   useEffect(() => {
     if (postCallSurvey) {
@@ -161,7 +161,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   };
 
   const closeMatchModal = () => {
-    if (matchRejected) setMatchRejected(false);
     closeModal();
   };
 

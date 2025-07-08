@@ -34,7 +34,7 @@ import {
   restrictedLangLevels,
 } from '../../userForm/formPages';
 import PageHeader from '../atoms/PageHeader.tsx';
-import ProfileCard from '../blocks/Cards/ProfileCard';
+import ProfileCard from '../blocks/Cards/ProfileCard.tsx';
 import FormStep from '../blocks/Form/FormStep.jsx';
 import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
@@ -155,8 +155,8 @@ function Profile() {
   const match = !matches
     ? undefined
     : [...matches.support.results, ...matches.confirmed.results].find(
-      m => m.partner.id === userId,
-    );
+        m => m.partner.id === userId,
+      );
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const isSelf = user?.id === userId || !userId;
@@ -168,12 +168,12 @@ function Profile() {
   const [profileFields, setProfileFields] = useState(
     profile && formOptions
       ? getProfileFields({
-        profile,
-        formOptions,
-        t,
-        isSelf,
-        selfAvailability: user?.profile?.availability,
-      })
+          profile,
+          formOptions,
+          t,
+          isSelf,
+          selfAvailability: user?.profile?.availability,
+        })
       : {},
   );
 
