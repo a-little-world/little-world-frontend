@@ -69,15 +69,9 @@ function PartnerProfiles({ setShowCancel, currentPage }) {
   const matchesDisplay =
     !confirmed || !support
       ? []
-<<<<<<< HEAD
-      : confirmed.currentPage === 1
-        ? [...support.items, ...confirmed.items]
-        : [...confirmed.items];
-=======
       : confirmed.page === 1
         ? [...support.results, ...confirmed.results]
         : [...confirmed.results];
->>>>>>> aa1862bf912345ff523a7867b4d823cbfa445318
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const germanLevelInvalid = Boolean(
