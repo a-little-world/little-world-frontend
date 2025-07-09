@@ -16,12 +16,12 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import useSWR, { mutate } from 'swr';
-import { exitLobby, requestRandomToken } from '../../../api/livekit.ts';
-import { useActiveCallStore } from '../../../features/stores/activeCall';
-import { useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
+import { requestRandomToken } from '../../../api/livekit.ts';
+import { default as useActiveCallStore } from '../../../features/stores/activeCall';
+import { default as useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
 import { CHATS_ENDPOINT, fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { clearActiveTracks } from '../../../helpers/video.ts';
-import { CALL_ROUTE, getAppRoute } from '../../../router/routes.ts';
+import { getCallRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
 
@@ -153,7 +153,7 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
     cancelRandomCallSetup();
     onClose();
     clearActiveTracks();
-    navigate(getAppRoute(CALL_ROUTE));
+    navigate(getCallRoute(userPk));
   };
 
   useEffect(() => {
@@ -162,19 +162,11 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
     requestRandomToken({
       userId: userPk,
       onSuccess: res => {
-        mutate(CHATS_ENDPOINT, res.chat);
+        mutate(CHATS_ENDPOINT);
         setAuthData({
           token: res.token,
           livekitServerUrl: res.server_url,
         });
-      },
-      onError: () => {
-        setError('error.server_issue');
-      },
-    });
-    exitLobby({
-      userId: userPk,
-      onSuccess: res => {
       },
       onError: () => {
         setError('error.server_issue');

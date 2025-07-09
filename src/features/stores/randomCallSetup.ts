@@ -7,13 +7,13 @@ interface RandomCallSetupData {
 interface RandomCallSetupState {
   randomCallSetup: RandomCallSetupData | null;
   initRandomCallSetup: (data: RandomCallSetupData) => void;
-  cancelRandomCallSetup: () => void;
+  cancelRandomCallSetup: (data: RandomCallSetupData) => void;
 }
 
 const useRandomCallSetupStore = create<RandomCallSetupState>((set) => ({
   randomCallSetup: null,
   initRandomCallSetup: (data) => set({ randomCallSetup: data }),
-  cancelRandomCallSetup: () => set({ randomCallSetup: null }),
+  cancelRandomCallSetup: (data) => set({ randomCallSetup: data }),
 }));
 
 export default useRandomCallSetupStore;

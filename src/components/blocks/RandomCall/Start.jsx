@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
 import useSWR from 'swr';
-import { useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
+import { default as useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
 import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { PROFILE_CARD_HEIGHT } from '../Cards/ProfileCard';
 

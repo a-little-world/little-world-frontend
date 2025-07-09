@@ -10,8 +10,8 @@ import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
 import { exitLobby, joinLobby } from '../../../api/livekit.ts';
-import { useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
-import { useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
+import { default as useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
+import { default as useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
 
@@ -99,7 +99,7 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
   const randomCallSetup = useRandomCallSetupStore();
 
   useEffect(() => {
-    console.log(randomCallLobby.randomCallLobby?.userId)
+    console.log(randomCallLobby.randomCallLobby)
     if (randomCallLobby.randomCallLobby?.userId === "") {
       exitLobby({
         userId: userPk,
@@ -127,6 +127,14 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
         variation={ButtonVariations.Icon}
         onClick={() => {
           randomCallLobby.cancelRandomCallLobby({ userId: "" })
+          exitLobby({
+            userId: userPk,
+            onSuccess: res => {
+            },
+            onError: () => {
+              setError('error.server_issue');
+            },
+          });
           onClose();
         }}
       >

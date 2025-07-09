@@ -9,7 +9,7 @@ import {
 import '@livekit/components-styles';
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -127,7 +127,7 @@ function VideoCall() {
   const profile = user?.profile
 
   const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
-  const chatData = chats?.results?.find(chat => chat?.partner?.id === userId)
+  const chatData = chats?.results?.find(chat => chat?.partner?.id === userId) || chats?.results?.find(chat => chat?.user?.id === userId);
   console.log('chatData', chatData)
 
   // Check if userId is provided in URL but token is not available

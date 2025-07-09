@@ -5,12 +5,12 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit.ts';
-import { useActiveCallStore } from '../../../features/stores/activeCall.ts';
-import { useCallSetupStore } from '../../../features/stores/callSetup.ts';
-import { useMatchRejectedStore } from '../../../features/stores/matchRejected.ts';
-import { usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
-import { useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
-import { useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
+import { default as useActiveCallStore } from '../../../features/stores/activeCall.ts';
+import { default as useCallSetupStore } from '../../../features/stores/callSetup.ts';
+import { default as useMatchRejectedStore } from '../../../features/stores/matchRejected.ts';
+import { default as usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
+import { default as useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
+import { default as useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
@@ -106,7 +106,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { initCallSetup } = useCallSetupStore();
   const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
   const { removePostCallSurvey } = usePostCallSurveyStore();
-  const { initRandomCallSetup } = useRandomCallSetupStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
