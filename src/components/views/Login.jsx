@@ -57,14 +57,14 @@ const Login = () => {
 
     login(data)
       .then(loginData => {
-        mutate(USER_ENDPOINT, loginData.user);
+        mutate(USER_ENDPOINT, loginData);
         setIsSubmitting(false);
 
         passAuthenticationBoundary();
 
-        if (!loginData.user.emailVerified) {
+        if (!loginData.emailVerified) {
           navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
-        } else if (!loginData.user.userFormCompleted) {
+        } else if (!loginData.userFormCompleted) {
           navigate(getAppRoute(USER_FORM_ROUTE));
         } else if (searchParams.get('next')) {
           // users can be redirected from /login?next=<url>

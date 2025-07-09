@@ -23,7 +23,7 @@ export const fetchChatMessages = async ({ id, page }) => {
 };
 
 export const fetchChats = async ({ page }) => {
-  const response = await fetch(`${BACKEND_URL}/api/chats/?page=${page}`, {
+  const response = await fetch(`${BACKEND_URL}/api/chats/?page=${page}&page_size=20`, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),
       'X-UseTagsOnly': 'True',

@@ -110,11 +110,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
   const dashboardVisibleMatches = matches
-    ? [...matches.support.items, ...matches.confirmed.items]
+    ? [...matches.support.results, ...matches.confirmed.results]
     : [];
 
   const showNewMatch = Boolean(
-    matches?.unconfirmed?.items?.length && !matchRejected,
+    matches?.unconfirmed?.results?.length && !matchRejected,
   );
 
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
@@ -148,8 +148,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
-      matches?.proposed?.items?.length ||
-      matches?.unconfirmed?.items?.length ||
+      matches?.proposed?.results?.length ||
+      matches?.unconfirmed?.results?.length ||
       matchRejected,
     );
 
@@ -263,14 +263,14 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         <MatchCardComponent
           showNewMatch={showNewMatch}
           matchId={
-            matches?.proposed?.items?.length
-              ? matches?.proposed.items[0].id
-              : matches?.unconfirmed.items[0]?.id
+            matches?.proposed?.results?.length
+              ? matches?.proposed.results[0].id
+              : matches?.unconfirmed.results[0]?.id
           }
           profile={
-            matches?.proposed?.items?.length
-              ? matches?.proposed.items[0].partner
-              : matches?.unconfirmed.items[0]?.partner
+            matches?.proposed?.results?.length
+              ? matches?.proposed.results[0].partner
+              : matches?.unconfirmed.results[0]?.partner
           }
           onClose={closeMatchModal}
         />

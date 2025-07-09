@@ -20,8 +20,8 @@ import { TFunction, useTranslation } from 'react-i18next';
 
 import styled, { useTheme } from 'styled-components';
 
-import { registerInput } from '../../../helpers/form.ts';
 import { usePostCallSurveyStore } from '../../../features/stores/index.ts';
+import { registerInput } from '../../../helpers/form.ts';
 
 const StyledCard = styled(Card)``;
 
@@ -66,7 +66,7 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
   const { updatePostCallSurvey } = usePostCallSurveyStore();
 
   useEffect(() => {
-    if (watchedRating && typeof watchedRating === 'number'){
+    if (watchedRating && typeof watchedRating === 'number') {
       updatePostCallSurvey({
         rating: watchedRating,
       })
@@ -120,7 +120,6 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
             placeholder={t('post_call_survey.comment_placeholder')}
             onBlur={e => {
               updatePostCallSurvey({ review: e?.target.value })
-              console.log('review', e?.target.value)
             }}
           />
           {!!submitError && (

@@ -184,7 +184,7 @@ function Faqs() {
     revalidateOnMount: false,
   });
 
-  const adminUser = matches?.support.items[0];
+  const adminUser = matches?.support.results[0];
   const supportUrl = getAppSubpageRoute(
     MESSAGES_ROUTE,
     adminUser?.chatId ?? '',
@@ -301,7 +301,7 @@ function Help() {
     revalidateOnMount: false,
   });
 
-  const adminUser = matches?.support.items[0];
+  const adminUser = matches?.support.results[0];
   const supportUrl = getAppSubpageRoute(
     MESSAGES_ROUTE,
     adminUser?.chatId ?? '',

@@ -15,8 +15,9 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { mutate } from 'swr';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 
 import { signUp } from '../../api';
 import { onFormError, registerInput } from '../../helpers/form.ts';
@@ -80,7 +81,8 @@ const SignUp = () => {
       .then(signUpData => {
         passAuthenticationBoundary();
         setIsSubmitting(false);
-        const nextRoute = signUpData.user?.emailVerified ?
+        mutate(USER_ENDPOINT, signUpData);
+        const nextRoute = signUpData?.emailVerified ?
           getAppRoute() :
           getAppRoute(VERIFY_EMAIL_ROUTE);
         navigate(nextRoute);

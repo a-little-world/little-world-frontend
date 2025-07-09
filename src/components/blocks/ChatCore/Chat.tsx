@@ -29,7 +29,7 @@ import {
   sendMessage,
 } from '../../../api/chat.ts';
 import { useCallSetupStore } from '../../../features/stores/index.ts';
-import { CHATS_ENDPOINT, USER_ENDPOINT, fetcher, getChatEndpoint, getChatMessagesEndpoint } from '../../../features/swr/index.ts';
+import { CHATS_ENDPOINT_SEPERATE, USER_ENDPOINT, fetcher, getChatEndpoint, getChatMessagesEndpoint } from '../../../features/swr/index.ts';
 import {
   formatFileName,
   getCustomChatElements,
@@ -76,7 +76,10 @@ const Chat = ({ chatId }) => {
     revalidateOnFocus: true,
   })
 
-  const { data: chats, mutate: mutateChats } = useSWR(CHATS_ENDPOINT, fetcher)
+  const { mutate: mutateChats } = useSWR(CHATS_ENDPOINT_SEPERATE, fetcher, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false,
+  })
   const { data: chatMessages, mutate: mutateMessages } = useSWR(getChatMessagesEndpoint(chatId, 1), fetcher, {
     revalidateOnMount: true,
     revalidateOnFocus: true,
@@ -101,12 +104,15 @@ const Chat = ({ chatId }) => {
     currentPage: chatMessages?.page,
     totalPages: chatMessages?.pages_total,
     setItems: items => {
-      mutateMessages(prev => ({
-        ...prev,
-        results: [...prev.results, ...items],
-      }), {
-        revalidate: false,
-      })
+      if (chatMessages) {
+        mutateMessages(prev => ({
+          ...prev,
+          ...items,
+          results: [...prev.results, ...(items.results || [])],
+        }), {
+          revalidate: false,
+        })
+      }
     },
     onError,
   });
@@ -150,10 +156,17 @@ const Chat = ({ chatId }) => {
     // if activeChat === undefined we know the specific chat isn't loaded yet
     if (!activeChat && chatId) {
       fetchChat({ chatId }).then(data => {
-        mutateChats(prev => ({
-          ...prev,
-          results: [...prev.results, data],
-        }), {
+        mutateChats(prev => {
+          const chatExists = prev?.results?.some(chat => chat.uuid === data.uuid);
+          if (chatExists) {
+            return prev;
+          }
+
+          return {
+            ...prev,
+            results: [...(prev?.results || []), data],
+          };
+        }, {
           revalidate: false,
         })
       });

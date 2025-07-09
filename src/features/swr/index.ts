@@ -7,12 +7,13 @@ export const MATCHES_ENDPOINT = '/api/matches';
 export const ACTIVE_CALL_ROOMS_ENDPOINT = '/api/call_rooms';
 export const NOTIFICATIONS_ENDPOINT = '/api/notifications';
 export const UNREAD_NOTIFICATIONS_ENDPOINT = '/api/notifications?filter=unread';
-export const CHATS_ENDPOINT = '/api/chats';
+export const CHATS_ENDPOINT = '/api/chats/?page_size=20';
+export const CHATS_ENDPOINT_SEPERATE = '/api/chats/?page_size=20&pagination=true';
 export const API_TRANSLATIONS_ENDPOINT = '/api/api_translations';
 
 export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
 export const getChatMessagesEndpoint = (chatId: string, page: number) => `/api/messages/${chatId}/?page=${page}&page_size=20`;
-export const getMatchEndpoint = (page: number) => `/api/matches?page=${page}&itemsPerPage=10`;
+export const getMatchEndpoint = (page: number) => `/api/matches?page=${page}&page_size=10`;
 export const getQuestionsEndpoint = (archived: boolean) => `/api/user/question_cards/?archived=${archived}&category=all`;
 
 export async function fetcher<T>(url: string): Promise<T> {

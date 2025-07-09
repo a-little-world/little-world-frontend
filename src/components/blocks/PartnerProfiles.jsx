@@ -10,9 +10,9 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import {
-  MATCHES_ENDPOINT,
   USER_ENDPOINT,
   fetcher,
+  getMatchEndpoint,
 } from '../../features/swr/index.ts';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard.tsx';
@@ -60,18 +60,24 @@ const Matches = styled.div`
   `};
 `;
 
-function PartnerProfiles({ setShowCancel }) {
+function PartnerProfiles({ setShowCancel, currentPage }) {
   const { t } = useTranslation();
 
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const { data: matches } = useSWR(getMatchEndpoint(currentPage), fetcher);
   const confirmed = matches?.confirmed;
   const support = matches?.support;
   const matchesDisplay =
     !confirmed || !support
       ? []
+<<<<<<< HEAD
       : confirmed.currentPage === 1
         ? [...support.items, ...confirmed.items]
         : [...confirmed.items];
+=======
+      : confirmed.page === 1
+        ? [...support.results, ...confirmed.results]
+        : [...confirmed.results];
+>>>>>>> aa1862bf912345ff523a7867b4d823cbfa445318
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const germanLevelInvalid = Boolean(

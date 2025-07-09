@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 interface ActiveCallData {
   userId: string;
+  chatId: string;
   tracks?: any;
   token?: string;
   audioOptions?: boolean | { deviceId: string };
