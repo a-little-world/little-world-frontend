@@ -79,8 +79,8 @@ const Chat = ({ chatId }) => {
   const { mutate: mutateChat, data: activeChat } = useSWR(
     getChatEndpoint(chatId),
     {
-      revalidateOnMount: false,
-      revalidateOnFocus: false,
+      revalidateOnMount: true,
+      revalidateOnFocus: true,
     },
   );
 
@@ -91,14 +91,12 @@ const Chat = ({ chatId }) => {
   const { data: chatMessages, mutate: mutateMessages } = useSWR(
     getChatMessagesEndpoint(chatId, 1),
     {
-      revalidateOnMount: false,
-      revalidateOnFocus: false,
+      revalidateOnMount: true,
+      revalidateOnFocus: true,
     },
   );
   const messages = chatMessages?.results || [];
   const messagesResult = messages;
-
-  console.log('chatMessages', chatMessages, messages);
 
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));

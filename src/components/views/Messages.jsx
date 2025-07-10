@@ -23,7 +23,7 @@ const Messages = () => {
   };
 
   const { data: chats, mutate: mutateChats } = useSWR(CHATS_ENDPOINT_SEPERATE, {
-    revalidateOnMount: false,
+    revalidateOnMount: true,
     revalidateOnFocus: false,
   });
 

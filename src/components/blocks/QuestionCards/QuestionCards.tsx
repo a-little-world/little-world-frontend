@@ -23,7 +23,6 @@ import {
 
 function QuestionCards() {
   const { data: cards } = useSWR(getQuestionsEndpoint(false));
-  console.log('cards', cards);
   const cardsByCategory = cards?.cards;
 
   const categoriesRef = useRef<HTMLDivElement>(null);
