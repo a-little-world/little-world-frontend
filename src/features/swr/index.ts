@@ -1,3 +1,4 @@
+import type { SWRConfiguration } from 'swr';
 import { mutate } from 'swr';
 
 export const USER_ENDPOINT = '/api/user';
@@ -34,4 +35,8 @@ export async function fetcher<T>(url: string): Promise<T> {
 
 export const revalidateMatches = () => {
   mutate(key => typeof key === 'string' && key.startsWith(MATCHES_ENDPOINT));
+};
+
+export const swrConfig: SWRConfiguration = {
+  fetcher,
 };

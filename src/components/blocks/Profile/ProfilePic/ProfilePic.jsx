@@ -20,13 +20,13 @@ import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Avatar, { genConfig } from 'react-nice-avatar';
 import styled, { css, useTheme } from 'styled-components';
-
 import useSWR from 'swr';
+
 import { USER_FIELDS } from '../../../../constants/index.ts';
+import { USER_ENDPOINT } from '../../../../features/swr/index.ts';
 import useImageCompression from '../../../../hooks/useImageCompression.tsx';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
-import { fetcher, USER_ENDPOINT } from '../../../../features/swr/index.ts';
 import {
   AvatarEditorButton,
   AvatarSelection,
@@ -103,7 +103,7 @@ const ProfilePic = ({ control, setValue, setError }) => {
   const [avatarIndex, setAvatarIndex] = useState(0);
   const [avatarList, setAvatarList] = useState([]);
   const [uploadedImage, setUploadedImage] = useState('');
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const { data: user } = useSWR(USER_ENDPOINT);
   const userData = user?.profile;
 
   const { t } = useTranslation();

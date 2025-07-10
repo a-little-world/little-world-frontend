@@ -20,7 +20,6 @@ import {
   API_OPTIONS_ENDPOINT,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
-  fetcher,
   revalidateMatches,
 } from '../../features/swr/index.ts';
 import { onFormError } from '../../helpers/form.ts';
@@ -148,18 +147,18 @@ function Profile() {
   const navigate = useNavigate();
   const { control, getValues, handleSubmit, setError, watch } = useForm();
 
-  const formOptions = useSWR(API_OPTIONS_ENDPOINT, fetcher).data?.profile;
+  const formOptions = useSWR(API_OPTIONS_ENDPOINT).data?.profile;
 
   const [editingField, setEditingField] = useState(null);
 
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const { data: matches } = useSWR(MATCHES_ENDPOINT);
   const match = !matches
     ? undefined
     : [...matches.support.results, ...matches.confirmed.results].find(
         m => m.partner.id === userId,
       );
 
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const isSelf = user?.id === userId || !userId;
 
   const [profile, setProfile] = useState(

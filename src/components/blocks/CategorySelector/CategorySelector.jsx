@@ -4,20 +4,20 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
-
 import useSWR from 'swr';
+
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 import {
   CategoryNote,
   CategorySelectorWrapper,
   SelectionPanel,
   TextSection,
 } from './styles';
-import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 const CategorySelector = ({ categories, onUpdate }) => {
   const [panelSelected, setPanelSelected] = useState(null);
 
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const { data: user } = useSWR(USER_ENDPOINT);
   const userData = user?.profile;
 
   useEffect(() => {

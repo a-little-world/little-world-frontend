@@ -7,7 +7,7 @@ import useSWR, { mutate } from 'swr';
 import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/matches.ts';
 import { useCallSetupStore } from '../../features/stores/index.ts';
-import { fetcher, getMatchEndpoint } from '../../features/swr/index.ts';
+import { getMatchEndpoint } from '../../features/swr/index.ts';
 import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard.tsx';
 import CommsBanner from '../blocks/CommsBanner.tsx';
@@ -60,7 +60,7 @@ function Main() {
     });
   };
 
-  const { data: matches } = useSWR(getMatchEndpoint(currentPage), fetcher);
+  const { data: matches } = useSWR(getMatchEndpoint(currentPage));
 
   useEffect(() => {
     const totalItems =

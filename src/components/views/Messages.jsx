@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { fetchChats } from '../../api/chat.ts';
-import { CHATS_ENDPOINT_SEPERATE, fetcher } from '../../features/swr/index.ts';
+import { CHATS_ENDPOINT_SEPERATE } from '../../features/swr/index.ts';
 import useIniniteScroll from '../../hooks/useInfiniteScroll.tsx';
 import { MESSAGES_ROUTE, getAppRoute } from '../../router/routes.ts';
 import PageHeader from '../atoms/PageHeader.tsx';
@@ -17,13 +17,13 @@ const Messages = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedChat, setSelectedChat] = useState(chatId);
-  const selectChat = (selectedChatId) => {
+  const selectChat = selectedChatId => {
     setSelectedChat(selectedChatId);
     navigate(getAppRoute(`chat/${selectedChatId}`));
   };
 
-  const { data: chats, mutate: mutateChats } = useSWR(CHATS_ENDPOINT_SEPERATE, fetcher, {
-    revalidateOnMount: true,
+  const { data: chats, mutate: mutateChats } = useSWR(CHATS_ENDPOINT_SEPERATE, {
+    revalidateOnMount: false,
     revalidateOnFocus: false,
   });
 
@@ -31,20 +31,27 @@ const Messages = () => {
     fetchItems: fetchChats,
     setItems: newItems => {
       console.log('newItems', newItems);
-      mutateChats(prev => {
-        // Filter out duplicates by UUID
-        const existingUuids = new Set(prev?.results?.map(chat => chat.uuid) || []);
-        const newResults = newItems.results.filter(chat => !existingUuids.has(chat.uuid));
+      mutateChats(
+        prev => {
+          // Filter out duplicates by UUID
+          const existingUuids = new Set(
+            prev?.results?.map(chat => chat.uuid) || [],
+          );
+          const newResults = newItems.results.filter(
+            chat => !existingUuids.has(chat.uuid),
+          );
 
-        return {
-          ...prev,
-          results: [...(prev?.results || []), ...newResults],
-          page: newItems.page,
-          pages_total: newItems.pages_total || 1
-        };
-      }, {
-        revalidate: false,
-      });
+          return {
+            ...prev,
+            results: [...(prev?.results || []), ...newResults],
+            page: newItems.page,
+            pages_total: newItems.pages_total || 1,
+          };
+        },
+        {
+          revalidate: false,
+        },
+      );
     },
     currentPage: chats?.page ? chats.page : 0,
     totalPages: chats?.pages_total || 1,
@@ -69,7 +76,9 @@ const Messages = () => {
         <ChatWithUserInfo
           chatId={selectedChat}
           onBackButton={handleOnChatBackBtn}
-          partner={chats?.results?.find(item => item?.uuid === selectedChat)?.partner}
+          partner={
+            chats?.results?.find(item => item?.uuid === selectedChat)?.partner
+          }
         />
       </ChatDashboard>
     </>

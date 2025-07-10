@@ -19,11 +19,7 @@ import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { useCallSetupStore } from '../../../features/stores/index.ts';
-import {
-  USER_ENDPOINT,
-  fetcher,
-  getChatEndpoint
-} from '../../../features/swr/index.ts';
+import { USER_ENDPOINT, getChatEndpoint } from '../../../features/swr/index.ts';
 import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import {
   BackButton,
@@ -58,9 +54,9 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const isSupport = user?.isSupport;
-  const { data: activeChat } = useSWR(chatId ? getChatEndpoint(chatId) : null, fetcher)
+  const { data: activeChat } = useSWR(chatId ? getChatEndpoint(chatId) : null);
 
   const unmatched = activeChat?.is_unmatched;
 

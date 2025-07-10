@@ -14,7 +14,6 @@ import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
 import {
   UNREAD_NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
-  fetcher,
 } from '../../features/swr/index.ts';
 import { formatTimeDistance } from '../../helpers/date.ts';
 import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes.ts';
@@ -105,12 +104,9 @@ function NotificationPanel() {
   } = useTranslation();
   const theme = useTheme();
 
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const usesAvatar = (user as any)?.profile.image_type === 'avatar';
-  const { data: notifications } = useSWR(
-    UNREAD_NOTIFICATIONS_ENDPOINT,
-    fetcher,
-  );
+  const { data: unreadNotifications } = useSWR(UNREAD_NOTIFICATIONS_ENDPOINT);
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
   return (
@@ -136,10 +132,10 @@ function NotificationPanel() {
         </Text>
       )}
       <NotificationList>
-        {isEmpty(notifications?.results) ? (
+        {isEmpty(unreadNotifications?.results) ? (
           <Text center>{t('notifications.none')}</Text>
         ) : (
-          notifications?.results.map(({ hash, title, created_at }) => (
+          unreadNotifications?.results.map(({ hash, title, created_at }) => (
             <Notification key={hash} className="notification-item">
               <CalendarIcon
                 circular

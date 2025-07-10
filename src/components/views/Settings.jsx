@@ -24,7 +24,7 @@ import useSWR, { mutate } from 'swr';
 
 import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
-import { USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
@@ -151,7 +151,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     setFocus,
   } = useForm();
 
-  const onResponseSuccess = (_data) => {
+  const onResponseSuccess = _data => {
     mutate(USER_ENDPOINT);
     setEditing(false);
     if (needsRelogin) window.location.reload();
@@ -310,7 +310,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
 function Settings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user
     ? {
         email: user.email,

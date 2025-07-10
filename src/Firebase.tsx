@@ -1,15 +1,15 @@
 import { getApps } from 'firebase/app';
 import {
-  isSupported,
   MessagePayload,
-  onMessage,
   Unsubscribe,
+  isSupported,
+  onMessage,
 } from 'firebase/messaging';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
-import { fetcher, FIREBASE_ENDPOINT, USER_ENDPOINT } from './features/swr/index.ts';
 
 import { ToastContextType } from './components/blocks/Toast.tsx';
+import { FIREBASE_ENDPOINT, USER_ENDPOINT } from './features/swr/index.ts';
 import {
   disableFirebase,
   enableFirebase,
@@ -92,19 +92,20 @@ async function unregister(firebasePublicVapidKey: string) {
 }
 
 function FireBase() {
-  const { data: firebaseConfig } = useSWR(FIREBASE_ENDPOINT, fetcher, {
+  const { data: firebaseConfig } = useSWR(FIREBASE_ENDPOINT, {
     revalidateOnMount: false,
-    revalidateOnFocus: true,
+    revalidateOnFocus: false,
   });
 
-  const { data: userData } = useSWR(USER_ENDPOINT, fetcher, {
+  const { data: userData } = useSWR(USER_ENDPOINT, {
     revalidateOnMount: false,
-    revalidateOnFocus: true,
+    revalidateOnFocus: false,
   });
 
   // TODO: double check if this is correct ( frontend store refactored )
   const unsubscribeRef = useRef<Unsubscribe>();
-  const push_notifications_enabled = userData?.profile?.push_notifications_enabled;
+  const push_notifications_enabled =
+    userData?.profile?.push_notifications_enabled;
 
   const firebaseClientConfig = firebaseConfig?.firebaseClientConfig;
   const firebasePublicVapidKey = firebaseConfig?.firebasePublicVapidKey;

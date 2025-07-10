@@ -13,7 +13,6 @@ import {
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
-  fetcher,
 } from '../../../features/swr/index.ts';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations.ts';
 import useModalManager, { ModalTypes } from '../../../hooks/useModalManager.ts';
@@ -87,10 +86,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
-  const { data: matches, error } = useSWR(MATCHES_ENDPOINT, fetcher, {
+  const { data: matches, error } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: true,
   });
-  const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
+  const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT);
   const activeCallRoom = activeCallRooms?.[0];
   const { callSetup } = useCallSetupStore();
   const { postCallSurvey } = usePostCallSurveyStore();

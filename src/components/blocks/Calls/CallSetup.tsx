@@ -11,14 +11,16 @@ import {
 import { LocalUserChoices, PreJoin } from '@livekit/components-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-
 import useSWR from 'swr';
+
 import { requestVideoAccessToken } from '../../../api/livekit.ts';
-import { useActiveCallStore, useCallSetupStore } from '../../../features/stores/index.ts';
-import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
+import {
+  useActiveCallStore,
+  useCallSetupStore,
+} from '../../../features/stores/index.ts';
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { getCallRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
@@ -58,7 +60,7 @@ const CallSetupCard = styled(ModalCard)`
       .lk-form-control {
         display: none;
       }
-      
+
       .lk-button-menu {
         height: 100%;
       }
@@ -130,7 +132,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   });
   const [error, setError] = useState('');
 
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
 
   // Zustand store hooks

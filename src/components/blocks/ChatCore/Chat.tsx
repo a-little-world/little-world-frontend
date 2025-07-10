@@ -19,8 +19,8 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
-
 import useSWR from 'swr';
+
 import {
   fetchChat,
   fetchChatMessages,
@@ -29,7 +29,12 @@ import {
   sendMessage,
 } from '../../../api/chat.ts';
 import { useCallSetupStore } from '../../../features/stores/index.ts';
-import { CHATS_ENDPOINT_SEPERATE, USER_ENDPOINT, fetcher, getChatEndpoint, getChatMessagesEndpoint } from '../../../features/swr/index.ts';
+import {
+  CHATS_ENDPOINT_SEPERATE,
+  USER_ENDPOINT,
+  getChatEndpoint,
+  getChatMessagesEndpoint,
+} from '../../../features/swr/index.ts';
 import {
   formatFileName,
   getCustomChatElements,
@@ -68,26 +73,32 @@ const Chat = ({ chatId }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const messagesRef = useRef();
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const { data: user } = useSWR(USER_ENDPOINT);
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { mutate: mutateChat, data: activeChat } = useSWR(getChatEndpoint(chatId), fetcher, {
-    revalidateOnMount: true,
-    revalidateOnFocus: true,
-  })
+  const { mutate: mutateChat, data: activeChat } = useSWR(
+    getChatEndpoint(chatId),
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    },
+  );
 
-  const { mutate: mutateChats } = useSWR(CHATS_ENDPOINT_SEPERATE, fetcher, {
+  const { mutate: mutateChats } = useSWR(CHATS_ENDPOINT_SEPERATE, {
     revalidateOnMount: false,
     revalidateOnFocus: false,
-  })
-  const { data: chatMessages, mutate: mutateMessages } = useSWR(getChatMessagesEndpoint(chatId, 1), fetcher, {
-    revalidateOnMount: true,
-    revalidateOnFocus: true,
-  })
-  const messages = chatMessages?.results || []
-  const messagesResult = messages
+  });
+  const { data: chatMessages, mutate: mutateMessages } = useSWR(
+    getChatMessagesEndpoint(chatId, 1),
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    },
+  );
+  const messages = chatMessages?.results || [];
+  const messagesResult = messages;
 
-  console.log('chatMessages', chatMessages, messages)
+  console.log('chatMessages', chatMessages, messages);
 
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
@@ -105,13 +116,16 @@ const Chat = ({ chatId }) => {
     totalPages: chatMessages?.pages_total,
     setItems: items => {
       if (chatMessages) {
-        mutateMessages(prev => ({
-          ...prev,
-          ...items,
-          results: [...prev.results, ...(items.results || [])],
-        }), {
-          revalidate: false,
-        })
+        mutateMessages(
+          prev => ({
+            ...prev,
+            ...items,
+            results: [...prev.results, ...(items.results || [])],
+          }),
+          {
+            revalidate: false,
+          },
+        );
       }
     },
     onError,
@@ -134,12 +148,15 @@ const Chat = ({ chatId }) => {
 
   const onMarkMessagesRead = () => {
     markChatMessagesReadApi({ chatId }).then(() => {
-      mutateChat(prev => ({
-        ...prev,
-        unread_count: 0,
-      }), {
-        revalidate: false,
-      })
+      mutateChat(
+        prev => ({
+          ...prev,
+          unread_count: 0,
+        }),
+        {
+          revalidate: false,
+        },
+      );
 
       mutateMessages(prev => ({
         ...prev,
@@ -147,8 +164,7 @@ const Chat = ({ chatId }) => {
           ...message,
           read: true,
         })),
-      }))
-
+      }));
     });
   };
 
@@ -156,19 +172,24 @@ const Chat = ({ chatId }) => {
     // if activeChat === undefined we know the specific chat isn't loaded yet
     if (!activeChat && chatId) {
       fetchChat({ chatId }).then(data => {
-        mutateChats(prev => {
-          const chatExists = prev?.results?.some(chat => chat.uuid === data.uuid);
-          if (chatExists) {
-            return prev;
-          }
+        mutateChats(
+          prev => {
+            const chatExists = prev?.results?.some(
+              chat => chat.uuid === data.uuid,
+            );
+            if (chatExists) {
+              return prev;
+            }
 
-          return {
-            ...prev,
-            results: [...(prev?.results || []), data],
-          };
-        }, {
-          revalidate: false,
-        })
+            return {
+              ...prev,
+              results: [...(prev?.results || []), data],
+            };
+          },
+          {
+            revalidate: false,
+          },
+        );
       });
     }
     // 'unread_messages_count' also updates when new message are added
@@ -206,12 +227,15 @@ const Chat = ({ chatId }) => {
   const onMessageSent = data => {
     reset();
     clearSelectedFile();
-    mutateMessages(prev => ({
-      ...prev,
-      results: [data, ...prev.results],
-    }), {
-      revalidate: true,
-    })
+    mutateMessages(
+      prev => ({
+        ...prev,
+        results: [data, ...prev.results],
+      }),
+      {
+        revalidate: true,
+      },
+    );
     setIsSubmitting(false);
     messagesRef.current.scrollTop = 0;
     setMessagesSent(curr => curr + 1);
@@ -283,11 +307,11 @@ const Chat = ({ chatId }) => {
                   {group.messages.map(message => {
                     const customChatElements = message?.parsable
                       ? getCustomChatElements({
-                        initCallSetup,
-                        message,
-                        userId,
-                        activeChat,
-                      })
+                          initCallSetup,
+                          message,
+                          userId,
+                          activeChat,
+                        })
                       : [];
 
                     return (
@@ -298,8 +322,8 @@ const Chat = ({ chatId }) => {
                         <MessageText
                           {...(message.parsable &&
                             messageContainsWidget(message.text) && {
-                            as: 'div',
-                          })}
+                              as: 'div',
+                            })}
                           disableParser={!message.parsable}
                           $isSelf={message.sender === userId}
                           $isWidget={
