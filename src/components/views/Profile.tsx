@@ -21,6 +21,7 @@ import {
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
   fetcher,
+  revalidateMatches,
 } from '../../features/swr/index.ts';
 import { onFormError } from '../../helpers/form.ts';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../router/routes.ts';
@@ -231,7 +232,7 @@ function Profile() {
     if (!isSelf && !match) {
       fetchUserMatch({
         userId,
-        onSuccess: () => mutate(MATCHES_ENDPOINT),
+        onSuccess: revalidateMatches,
         onError: error => console.error(error),
       });
     }

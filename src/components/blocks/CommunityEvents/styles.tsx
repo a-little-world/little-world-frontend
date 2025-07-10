@@ -62,7 +62,6 @@ export const FrequencyTitle = styled(Text)`
   border-radius: 100px;
   position: absolute;
   bottom: 0;
-  text-transform: capitalize;
 
   ${({ theme }) => `
     border-radius: ${theme.spacing.xxxlarge};

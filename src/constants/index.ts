@@ -47,3 +47,10 @@ export const API_FIELDS = {
   confirm: 'acceptDeny', // partiallyConfirmMatch
   unconfirmed_match_hash: 'matchId', // partiallyConfirmMatch
 };
+
+export const COMMUNITY_EVENT_FREQUENCIES = {
+  weekly: 'weekly',
+  fortnightly: 'fortnightly',
+  monthly: 'monthly',
+  once: 'once',
+};

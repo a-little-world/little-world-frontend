@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
+import { registerInput } from '../../../helpers/form';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
 import { TextField } from '../Profile/styles';
@@ -28,9 +29,12 @@ const ProfileInfo = styled.div`
   text-align: left;
 `;
 
-const RejectReasonContainer = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.small};
+const RejectReasonContainer = styled.form`
   width: 100%;
+`;
+
+const RejectNote = styled(Text)`
+  text-align: justify;
 `;
 
 interface ConfirmaMatchCardProps {
@@ -38,7 +42,7 @@ interface ConfirmaMatchCardProps {
   name: string;
   onClose: () => void;
   onConfirm: () => void;
-  onReject: (reason?: string) => void;
+  onReject: (reason: string) => void;
   image: any;
   imageType: string;
 }
@@ -47,7 +51,7 @@ interface RejectFormData {
   rejectReason: string;
 }
 
-type ViewState = 'confirm' | 'reject-form' | 'reject-confirmation';
+type ViewState = 'confirm' | 'reject-form';
 
 interface ConfirmMatchProps {
   name: string;
@@ -67,11 +71,6 @@ interface RejectMatchProps {
   errors: any;
   register: any;
   handleSubmit: any;
-}
-
-interface RejectConfirmationProps {
-  name: string;
-  onClose: () => void;
 }
 
 const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
@@ -151,23 +150,28 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
             {name}
           </Text>
         </ProfileInfo>
-        <Text type={TextTypes.Body5}>
-          {t('confirm_match.rejected.description', { name })}
-        </Text>
-
-        <RejectReasonContainer>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <TextArea
-              {...register('rejectReason', {
-                required: t('error.required'),
-              })}
-              label={t('confirm_match.reject_reason.label')}
-              placeholder={t('confirm_match.reject_reason.placeholder')}
-              size={TextAreaSize.Medium}
-              error={errors?.rejectReason?.message}
-              maxLength={500}
-            />
-          </form>
+        <RejectNote type={TextTypes.Body5}>
+          {t('confirm_match.reject_info')}
+        </RejectNote>
+        <RejectReasonContainer onSubmit={handleSubmit(onSubmit)}>
+          <TextArea
+            {...registerInput({
+              register,
+              name: 'rejectReason',
+              options: {
+                required: 'error.required',
+                minLength: {
+                  value: 20,
+                  message: 'error.reject_reason_min_length',
+                },
+              },
+            })}
+            label={t('confirm_match.reject_reason_label')}
+            placeholder={t('confirm_match.reject_reason_placeholder')}
+            size={TextAreaSize.Medium}
+            error={t(errors?.rejectReason?.message)}
+            maxLength={500}
+          />
         </RejectReasonContainer>
       </CardContent>
 
@@ -191,37 +195,6 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
   );
 };
 
-const RejectConfirmation: React.FC<RejectConfirmationProps> = ({
-  name,
-  onClose,
-}) => {
-  const { t } = useTranslation();
-  const theme = useTheme();
-
-  return (
-    <>
-      <CardHeader textColor={theme.color.text.title}>
-        {t('confirm_match.rejected.title')}
-      </CardHeader>
-      <CardContent $align="flex-start">
-        <Text bold type={TextTypes.Body5}>
-          {t('confirm_match.rejected.description', { name })}
-        </Text>
-        <Text type={TextTypes.Body5}>{t('confirm_match.rejected.info_1')}</Text>
-        <Text type={TextTypes.Body5}>{t('confirm_match.rejected.info_2')}</Text>
-        <Text type={TextTypes.Body5}>{t('confirm_match.rejected.info_3')}</Text>
-      </CardContent>
-      <Button
-        type="button"
-        appearance={ButtonAppearance.Secondary}
-        onClick={onClose}
-      >
-        {t('confirm_match.rejected.button')}
-      </Button>
-    </>
-  );
-};
-
 const ConfirmMatchCard = ({
   description,
   name,
@@ -237,6 +210,7 @@ const ConfirmMatchCard = ({
     register,
     handleSubmit,
     formState: { errors },
+    setError,
     reset,
   } = useForm<RejectFormData>();
 
@@ -252,10 +226,12 @@ const ConfirmMatchCard = ({
   const handleRejectSubmit = async (data: RejectFormData) => {
     try {
       await onReject(data.rejectReason);
-      setViewState('reject-confirmation');
+      onClose();
     } catch (error) {
-      // Handle error if needed
-      console.error('Reject failed:', error);
+      setError('root.serverError', {
+        type: error?.status,
+        message: error?.message || 'error.server_issue',
+      });
     }
   };
 
@@ -282,9 +258,6 @@ const ConfirmMatchCard = ({
           register={register}
           handleSubmit={handleSubmit}
         />
-      )}
-      {viewState === 'reject-confirmation' && (
-        <RejectConfirmation name={name} onClose={onClose} />
       )}
     </Card>
   );
