@@ -15,11 +15,11 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { mutate } from 'swr';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 
 import { signUp } from '../../api';
-import { initialise } from '../../features/userData';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   LOGIN_ROUTE,
@@ -37,7 +37,6 @@ import {
 } from './SignUp.styles';
 
 const SignUp = () => {
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -54,7 +53,7 @@ const SignUp = () => {
       // Once the query param is stored in the cookie, we can remove it from the URL
       setSearchParams(new URLSearchParams());
     }
-  }, [searchParams]);
+  }, [searchParams, setSearchParams]);
 
   const {
     control,
@@ -81,9 +80,9 @@ const SignUp = () => {
     signUp(data)
       .then(signUpData => {
         passAuthenticationBoundary();
-        dispatch(initialise(signUpData));
         setIsSubmitting(false);
-        const nextRoute = signUpData.user?.emailVerified ?
+        mutate(USER_ENDPOINT, signUpData);
+        const nextRoute = signUpData?.emailVerified ?
           getAppRoute() :
           getAppRoute(VERIFY_EMAIL_ROUTE);
         navigate(nextRoute);

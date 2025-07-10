@@ -11,11 +11,12 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import { useNavigate } from 'react-router-dom';
 
+import { mutate } from 'swr';
 import { setNewEmail } from '../../api';
-import { updateEmail } from '../../features/userData';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../router/routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer';
@@ -29,7 +30,6 @@ import {
 const ChangeEmail = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const dispatch = useDispatch();
 
   const {
     register,
@@ -57,7 +57,7 @@ const ChangeEmail = () => {
     setNewEmail({ email })
       .then(() => {
         setIsSubmitting(false);
-        dispatch(updateEmail(email));
+        mutate(USER_ENDPOINT);
         navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
       })
       .catch(onError);

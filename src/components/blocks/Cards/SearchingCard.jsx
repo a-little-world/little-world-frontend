@@ -11,14 +11,15 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
+import useSWR from 'swr';
 
+import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { formatDate, formatTime } from '../../../helpers/date.ts';
 import SearchingSvg from '../../../images/match-searching.svg';
 import AppointmentSvg from '../../../images/new-appointment.svg';
-import { USER_FORM_ROUTE, getAppRoute } from '../../../router/routes.ts';
-import { PROFILE_CARD_HEIGHT } from './ProfileCard';
+import { USER_FORM_ROUTES, getAppRoute } from '../../../router/routes.ts';
+import { PROFILE_CARD_HEIGHT } from './ProfileCard.tsx';
 
 const StyledCard = styled(Card)`
   align-items: center;
@@ -76,19 +77,12 @@ export function SearchingCard({ setShowCancel }) {
   } = useTranslation();
   const appointmentBtn = useRef();
 
-  const hasMatch = useSelector(state => state.userData.user.hasMatch);
-  const hadPreMatchingCall = useSelector(
-    state => state.userData.user.hadPreMatchingCall,
-  );
-  const preMatchingAppointment = useSelector(
-    state => state.userData.user.preMatchingAppointment,
-  );
-  const calComAppointmentLink = useSelector(
-    state => state.userData.user.calComAppointmentLink,
-  );
-  const preMatchingCallJoinLink = useSelector(
-    state => state.userData.user.preMatchingCallJoinLink,
-  );
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const hasMatch = user?.hasMatch;
+  const hadPreMatchingCall = user?.hadPreMatchingCall;
+  const preMatchingAppointment = user?.preMatchingAppointment;
+  const calComAppointmentLink = user?.calComAppointmentLink;
+  const preMatchingCallJoinLink = user?.preMatchingCallJoinLink;
 
   const cardState = getCardState({
     hasMatch,
@@ -155,7 +149,7 @@ export function SearchingCard({ setShowCancel }) {
           <Link
             buttonAppearance={ButtonAppearance.Primary}
             buttonSize={ButtonSizes.Stretch}
-            to={getAppRoute(USER_FORM_ROUTE)}
+            to={getAppRoute(USER_FORM_ROUTES.SELF_INFO_1)}
           >
             {t('cp_modify_search')}
           </Link>

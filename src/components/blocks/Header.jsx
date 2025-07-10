@@ -1,7 +1,12 @@
 import { Link, TextTypes } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
+import useSWR from 'swr';
+import {
+  USER_ENDPOINT,
+  defaultPreFetchedOptions,
+  fetcher,
+} from '../../features/swr/index.ts';
 
 import {
   PRIVACY_ROUTE,
@@ -72,7 +77,8 @@ const Header = () => {
     i18n: { language },
     t,
   } = useTranslation();
-  const userId = useSelector(state => state.userData?.user?.id);
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher, defaultPreFetchedOptions);
+  const userId = user?.id;
 
   return (
     <StyledHeader>

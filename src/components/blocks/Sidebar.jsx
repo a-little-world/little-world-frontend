@@ -16,11 +16,17 @@ import Cookies from 'js-cookie';
 import { reduce } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
+import useSWR, { mutate } from 'swr';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
+import {
+  CHATS_ENDPOINT,
+  NOTIFICATIONS_ENDPOINT,
+  USER_ENDPOINT,
+  fetcher,
+} from '../../features/swr/index.ts';
 import {
   COMMUNITY_EVENTS_ROUTE,
   HELP_ROUTE,
@@ -95,14 +101,16 @@ const MobileOverlay = styled.div`
 
 function Sidebar({ sidebarMobile }) {
   const location = useLocation();
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
-  const startPath = getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ? getAppRoute(COMMUNITY_EVENTS_ROUTE) : getAppRoute();
+  const startPath =
+    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
+      ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
+      : getAppRoute();
 
   const buttonData = [
-    { label: 'start', path: startPath , Icon: DashboardIcon },
+    { label: 'start', path: startPath, Icon: DashboardIcon },
     { label: 'messages', path: getAppRoute(MESSAGES_ROUTE), Icon: MessageIcon },
     {
       label: 'my_profile',
@@ -134,7 +142,7 @@ function Sidebar({ sidebarMobile }) {
         })
           .then(response => {
             if (response.status === 200) {
-              dispatch({ type: 'userData/reset', payload: {} }); // clears all existing user data
+              mutate(USER_ENDPOINT, undefined);
               navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
             } else {
               console.error(
@@ -154,14 +162,14 @@ function Sidebar({ sidebarMobile }) {
     sidebarMobile?.set,
   ];
 
-  const notifications = useSelector(state => state.userData.notifications);
-  const chats = useSelector(state => state.userData.chats);
+  const { data: notifications } = useSWR(NOTIFICATIONS_ENDPOINT, fetcher);
+  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher);
 
   const unread = {
-    notifications: notifications?.unread?.items.filter(
+    notifications: notifications?.unread?.results.filter(
       ({ status }) => status === 'unread',
     ),
-    messages: reduce(chats.results, (sum, chat) => sum + chat.unread_count, 0),
+    messages: reduce(chats?.results, (sum, chat) => sum + chat.unread_count, 0),
   };
 
   return (
@@ -184,9 +192,9 @@ function Sidebar({ sidebarMobile }) {
               <Icon
                 label={label}
                 labelId={label}
-                {...(isActive ?
-                  { color: theme.color.surface.primary } :
-                  { gradient: Gradients.Blue })}
+                {...(isActive
+                  ? { color: theme.color.surface.primary }
+                  : { gradient: Gradients.Blue })}
                 {...iconProps}
               />
               {t(`nbs_${label}`)}

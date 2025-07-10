@@ -11,19 +11,16 @@ import {
 import { LocalUserChoices, PreJoin } from '@livekit/components-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
+import useSWR from 'swr';
 import { requestVideoAccessToken } from '../../../api/livekit.ts';
-import {
-  cancelCallSetup,
-  initActiveCall,
-  insertChat,
-} from '../../../features/userData';
+import { useActiveCallStore, useCallSetupStore } from '../../../features/stores/index.ts';
+import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { clearActiveTracks } from '../../../helpers/video.ts';
-import { useSelector } from '../../../hooks/index.ts';
-import { CALL_ROUTE, getAppRoute } from '../../../router/routes.ts';
+import { getCallRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
 
@@ -125,47 +122,48 @@ type CallSetupProps = {
 
 function CallSetup({ onClose, userPk }: CallSetupProps) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [authData, setAuthData] = useState({
+    chatId: null,
     token: null,
     livekitServerUrl: null,
   });
   const [error, setError] = useState('');
 
-  const username = useSelector(
-    state => state?.userData?.user?.profile?.first_name,
-  );
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const username = user?.profile?.first_name;
+
+  // Zustand store hooks
+  const { initActiveCall } = useActiveCallStore();
+  const { cancelCallSetup } = useCallSetupStore();
 
   const handleJoin = (values: LocalUserChoices) => {
-    dispatch(
-      initActiveCall({
-        userId: userPk,
-        tracks: values,
-        token: authData.token,
-        audioOptions: values.audioEnabled
-          ? { deviceId: values.audioDeviceId }
-          : false,
-        videoOptions: values.videoEnabled
-          ? { deviceId: values.videoDeviceId }
-          : false,
-        livekitServerUrl: authData.livekitServerUrl,
-      }),
-    );
-    dispatch(cancelCallSetup());
+    initActiveCall({
+      userId: userPk,
+      chatId: authData.chatId || '',
+      tracks: values,
+      token: authData.token || undefined,
+      audioOptions: values.audioEnabled
+        ? { deviceId: values.audioDeviceId }
+        : false,
+      videoOptions: values.videoEnabled
+        ? { deviceId: values.videoDeviceId }
+        : false,
+      livekitServerUrl: authData.livekitServerUrl || undefined,
+    });
+    cancelCallSetup();
     onClose();
     clearActiveTracks();
-    navigate(getAppRoute(CALL_ROUTE));
+    navigate(getCallRoute(userPk));
   };
 
   useEffect(() => {
     // Request the video room access token
-    console.log('Requesting video access token for user:', userPk);
     requestVideoAccessToken({
       partnerId: userPk,
       onSuccess: res => {
-        dispatch(insertChat(res.chat));
         setAuthData({
+          chatId: res.chat.uuid,
           token: res.token,
           livekitServerUrl: res.server_url,
         });
@@ -193,7 +191,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       <CloseButton
         variation={ButtonVariations.Icon}
         onClick={() => {
-          dispatch(cancelCallSetup());
+          cancelCallSetup();
           onClose();
         }}
       >

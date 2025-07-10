@@ -1,19 +1,20 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import useSWR, { mutate } from 'swr';
 
 import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/matches.ts';
-import { initCallSetup, updateConfirmedData } from '../../features/userData.js';
+import { useCallSetupStore } from '../../features/stores/index.ts';
+import { fetcher, getMatchEndpoint } from '../../features/swr/index.ts';
 import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard.tsx';
 import CommsBanner from '../blocks/CommsBanner.tsx';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
 import NotificationPanel from '../blocks/NotificationPanel.tsx';
-import PartnerProfiles from '../blocks/PartnerProfiles.jsx';
+import PartnerProfiles from '../blocks/PartnerProfiles.tsx';
 
 const Home = styled.div`
   display: flex;
@@ -38,9 +39,9 @@ const PAGE_ITEMS = 10;
 function Main() {
   // for the case /call-setup/:userId?/
   const { userId } = useParams();
-  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const callSetup = useCallSetupStore();
 
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,20 +52,20 @@ function Main() {
       page,
       pageItems: PAGE_ITEMS,
       onError: error => console.error(error),
-      onSuccess: data => {
-        dispatch(updateConfirmedData(data.data.confirmed_matches));
+      onSuccess: _data => {
         setCurrentPage(page);
+        mutate(getMatchEndpoint(page));
         window.scrollTo(0, 0);
       },
     });
   };
 
-  const matches = useSelector(state => state.userData.matches);
+  const { data: matches } = useSWR(getMatchEndpoint(currentPage), fetcher);
 
   useEffect(() => {
     const totalItems =
-      (matches?.confirmed?.totalItems ?? 1) +
-      (matches?.support?.totalItems ?? 1);
+      (matches?.confirmed?.results_total ?? 1) +
+      (matches?.support?.results_total ?? 1);
     const totalPage = totalItems / PAGE_ITEMS;
 
     setTotalPages(Math.ceil(totalPage) || 1);
@@ -72,7 +73,7 @@ function Main() {
 
   useEffect(() => {
     if (userId) {
-      dispatch(initCallSetup({ userId }));
+      callSetup.initCallSetup({ userId });
     }
   }, [userId]);
 
@@ -104,6 +105,7 @@ function Main() {
         <>
           <Home>
             <PartnerProfiles
+              currentPage={currentPage}
               setShowCancel={setShowCancelSearching}
               totalPaginations={totalPages}
             />

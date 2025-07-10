@@ -19,16 +19,16 @@ import {
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import styled, { css, useTheme } from 'styled-components';
 
-import { initCallSetup } from '../../../features/userData';
+import { useCallSetupStore } from '../../../features/stores/index.ts';
 import {
   MESSAGES_ROUTE,
   PROFILE_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
 } from '../../../router/routes.ts';
+import { shimmerStyles } from '../../atoms/Loading.tsx';
 import MenuLink from '../../atoms/MenuLink.tsx';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
@@ -39,7 +39,41 @@ import {
 
 export const PROFILE_CARD_HEIGHT = '408px';
 
-export const StyledCard = styled(Card)`
+interface Profile {
+  first_name: string;
+  description: string;
+  image: string;
+  image_type: string;
+  avatar_config?: any;
+}
+
+interface ProfileCardProps {
+  chatId: string;
+  matchId?: string;
+  userPk: string;
+  profile: Profile;
+  isSelf: boolean;
+  isOnline: boolean;
+  isMatch: boolean;
+  isSupport: boolean;
+  onProfile: boolean;
+  openPartnerModal?: (params: {
+    type: string;
+    userPk: string;
+    userName: string;
+    matchId?: string;
+  }) => void;
+  openEditImage?: () => void;
+  type?: string;
+  loading?: boolean;
+}
+
+export const StyledProfileCard = styled(Card)<{
+  $isSelf?: boolean;
+  $onProfile?: boolean;
+  $unconfirmedMatch?: boolean;
+  $loading?: boolean;
+}>`
   align-items: center;
   border-color: ${({ theme }) => theme.color.border.subtle};
   align-items: center;
@@ -66,6 +100,12 @@ export const StyledCard = styled(Card)`
       height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
     }
   `};
+
+  ${({ $loading }) =>
+    $loading &&
+    css`
+      ${shimmerStyles}
+    `};
 `;
 
 export const ProfileImageButton = styled.button`
@@ -125,7 +165,7 @@ export const PartnerMenuOption = styled.button`
   }
 `;
 
-export const Actions = styled.div`
+export const Actions = styled.div<{ $onProfile: boolean }>`
   display: grid;
   grid-template-columns: ${({ $onProfile }) =>
     $onProfile ? '1fr 1fr' : '1fr 1fr 1fr'};
@@ -134,7 +174,7 @@ export const Actions = styled.div`
   max-width: 498px;
 `;
 
-export const NameContainer = styled.div`
+export const NameContainer = styled.div<{ $isSelf: boolean }>`
   display: flex;
   align-items: center;
   justify-content: ${({ $isSelf }) => ($isSelf ? 'center' : 'space-between')};
@@ -151,7 +191,7 @@ export const Description = styled(Text)`
   text-overflow: ellipsis;
 `;
 
-function ProfileCard({
+const ProfileCard: React.FC<ProfileCardProps> = ({
   chatId,
   matchId,
   userPk,
@@ -164,18 +204,20 @@ function ProfileCard({
   openPartnerModal,
   openEditImage,
   type,
-}) {
+  loading = false,
+}) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const theme = useTheme();
   const usesAvatar = profile.image_type === 'avatar';
+  const callSetup = useCallSetupStore();
 
   return (
-    <StyledCard
+    <StyledProfileCard
       width={CardSizes.Small}
       $isSelf={isSelf}
       $onProfile={onProfile}
       $unconfirmedMatch={type === 'unconfirmed'}
+      $loading={loading}
     >
       {isSelf && openEditImage ? (
         <ProfileImageButton onClick={openEditImage} type="button">
@@ -184,7 +226,13 @@ function ProfileCard({
             image={usesAvatar ? profile.avatar_config : profile.image}
             imageType={profile.image_type}
           />
-          <EditIcon circular height="16px" width="16px" />
+          <EditIcon
+            circular
+            height="16px"
+            width="16px"
+            label="edit profile image"
+            labelId="edit_profile_image"
+          />
         </ProfileImageButton>
       ) : (
         <ProfileImage
@@ -205,13 +253,15 @@ function ProfileCard({
                 width="16px"
                 color="#7c7b7b"
                 borderColor="#7c7b7b"
+                label="menu options"
+                labelId="menu_options"
               />
             </MatchMenuToggle>
           }
         >
           <PartnerMenuOption
             onClick={() =>
-              openPartnerModal({
+              openPartnerModal?.({
                 type: PARTNER_ACTION_REPORT,
                 userPk,
                 userName: profile.first_name,
@@ -223,7 +273,7 @@ function ProfileCard({
           </PartnerMenuOption>
           <PartnerMenuOption
             onClick={() =>
-              openPartnerModal({
+              openPartnerModal?.({
                 type: PARTNER_ACTION_UNMATCH,
                 userPk,
                 userName: profile.first_name,
@@ -242,9 +292,18 @@ function ProfileCard({
             {profile.first_name}
           </Text>
           {isSupport && (
-            <Tag color={theme.color.status.info} bold size={TagSizes.small}>
+            <Tag
+              color={(theme as any).color.status.info}
+              bold
+              size={TagSizes.small}
+            >
               <TagText>{t('profile_card.support_user')}</TagText>
-              <Logo height="16" width="16" />
+              <Logo
+                height="16"
+                width="16"
+                label="support logo"
+                labelId="support_logo"
+              />
             </Tag>
           )}
         </NameContainer>
@@ -283,7 +342,7 @@ function ProfileCard({
           <Button
             type="button"
             variation={ButtonVariations.Option}
-            onClick={() => dispatch(initCallSetup({ userId: userPk }))}
+            onClick={() => callSetup.initCallSetup({ userId: userPk })}
           >
             <VideoIcon
               gradient={Gradients.Orange}
@@ -295,8 +354,8 @@ function ProfileCard({
           </Button>
         </Actions>
       )}
-    </StyledCard>
+    </StyledProfileCard>
   );
-}
+};
 
 export default ProfileCard;

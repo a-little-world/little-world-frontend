@@ -15,11 +15,15 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { useTheme } from 'styled-components';
+import useSWR from 'swr';
 
-import { getChatByChatId, initCallSetup } from '../../../features/userData.js';
-import { useSelector } from '../../../hooks/index.ts';
+import { useCallSetupStore } from '../../../features/stores/index.ts';
+import {
+  USER_ENDPOINT,
+  fetcher,
+  getChatEndpoint
+} from '../../../features/swr/index.ts';
 import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import {
   BackButton,
@@ -53,15 +57,17 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const isSupport = useSelector((state: any) => state.userData.user?.isSupport);
-  const activeChat = useSelector((state: any) =>
-    getChatByChatId(state.userData.chats, chatId),
-  );
+
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const isSupport = user?.isSupport;
+  const { data: activeChat } = useSWR(chatId ? getChatEndpoint(chatId) : null, fetcher)
+
   const unmatched = activeChat?.is_unmatched;
 
+  const callSetup = useCallSetupStore();
+
   const callPartner = () => {
-    dispatch(initCallSetup({ userId: partner?.id }));
+    callSetup.initCallSetup({ userId: partner?.id });
   };
 
   return chatId ? (

@@ -2,17 +2,21 @@ import { Button, Switch } from '@a-little-world/little-world-design-system';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import useSWR, { mutate } from 'swr';
 
 import { mutateUserData } from '../../../api/index.js';
-import { updateProfile } from '../../../features/userData.js';
+import { useDevelopmentFeaturesStore } from '../../../features/stores/index.ts';
+import {
+  FIREBASE_ENDPOINT,
+  USER_ENDPOINT,
+  fetcher,
+} from '../../../features/swr/index.ts';
 import {
   registerFirebaseDeviceToken,
   sendDelayedFirebaseTestNotification,
   sendFirebaseTestNotification,
   unregisterFirebaseDeviceToken,
-  useAreDevFeaturesEnabled,
 } from '../../../firebase.ts';
 import { onFormError } from '../../../helpers/form.ts';
 
@@ -35,14 +39,12 @@ const PushNotifications = ({
   hideLabel?: boolean;
 }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const { control, getValues, setError, watch, handleSubmit } = useForm<Data>();
-  const enabled = useSelector(
-    state => state.userData.user.profile.push_notifications_enabled,
-  );
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const enabled = user?.profile.push_notifications_enabled;
 
-  const onFormSuccess = (data: Data) => {
-    dispatch(updateProfile(data));
+  const onFormSuccess = (_data: Data) => {
+    mutate(USER_ENDPOINT);
   };
 
   const onError = e => {
@@ -71,10 +73,9 @@ const PushNotifications = ({
     }
   }, [enabled, setError, t]);
 
-  const firebasePublicVapidKey = useSelector(
-    state => state?.userData?.firebasePublicVapidKey,
-  );
-  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
+  const firebaseConfig = useSWR(FIREBASE_ENDPOINT, fetcher);
+  const firebasePublicVapidKey = firebaseConfig?.firebasePublicVapidKey;
+  const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
   return (
     <>

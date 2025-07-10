@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { mutate } from 'swr';
 
 import './App.css';
 import {
@@ -9,6 +9,11 @@ import {
   CORE_WS_SHEME,
   IS_CAPACITOR_BUILD,
 } from './ENVIRONMENT';
+import {
+  NOTIFICATIONS_ENDPOINT,
+  UNREAD_NOTIFICATIONS_ENDPOINT,
+} from './features/swr/index.ts';
+import { runWsBridgeMutation } from './features/swr/wsBridgeMutations.ts';
 import useToast from './hooks/useToast.ts';
 
 const SOCKET_URL = IS_CAPACITOR_BUILD
@@ -24,7 +29,6 @@ const WebsocketBridge = () => {
    * payload: {...}
    * } --> this will triger a simple redux dispatch in the frontend
    */
-  const dispatch = useDispatch();
   const [socketUrl] = useState(SOCKET_URL);
   const [, setMessageHistory] = useState([]);
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
@@ -48,18 +52,20 @@ const WebsocketBridge = () => {
           description,
           timestamp: new Date(created_at).toLocaleTimeString(),
         });
+
+        // TODO: only if message is also persisted
+        // TODO: don't mutate the api via fetch rather just update the store
+        mutate(UNREAD_NOTIFICATIONS_ENDPOINT);
+        mutate(NOTIFICATIONS_ENDPOINT);
       }
 
       try {
-        dispatch({
-          type: `userData/${message.action}`,
-          payload: message.payload,
-        });
+        runWsBridgeMutation(message.action, message.payload);
       } catch (e) {
         console.warn('CORE SOCKET ERROR:', e);
       }
     }
-  }, [dispatch, lastMessage, setMessageHistory]);
+  }, [lastMessage, setMessageHistory]);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',

@@ -1,5 +1,15 @@
-import { isEmpty } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+interface UseInfiniteScrollProps {
+  fetchItems: (args: { page: number;[key: string]: any }) => Promise<any>;
+  fetchArgs?: { [key: string]: any };
+  fetchCondition?: boolean;
+  items?: any[];
+  currentPage?: number;
+  totalPages?: number;
+  setItems: (items: any) => void;
+  onError?: () => void;
+}
 
 const useInfiniteScroll = ({
   fetchItems,
@@ -10,19 +20,19 @@ const useInfiniteScroll = ({
   totalPages = 0,
   setItems,
   onError,
-}) => {
+}: UseInfiniteScrollProps) => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef(null);
   const dependencyList: string = JSON.stringify(fetchArgs);
 
   const fetchData = useCallback(async () => {
-    // do not fetch if loading or on the last page
     if (
       !fetchCondition ||
       loading ||
-      (!isEmpty(items) && currentPage >= totalPages)
-    )
+      currentPage >= totalPages
+    ) {
       return;
+    }
 
     setLoading(true);
 
@@ -51,7 +61,14 @@ const useInfiniteScroll = ({
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       const target = entries[0];
-      if (target.isIntersecting && !isEmpty(items)) {
+      console.log('Intersection observer:', {
+        isIntersecting: target.isIntersecting,
+        fetchCondition,
+        loading,
+        currentPage,
+        totalPages
+      });
+      if (target.isIntersecting) {
         fetchData();
       }
     });
@@ -65,7 +82,7 @@ const useInfiniteScroll = ({
         observer.unobserve(scrollRef.current);
       }
     };
-  }, [fetchData]);
+  }, [fetchData, items, currentPage, totalPages]);
 
   return {
     scrollRef,

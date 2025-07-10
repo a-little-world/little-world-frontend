@@ -24,9 +24,10 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
-import { useSelector } from '../../../hooks/index.ts';
+import useSWR from 'swr';
 import Socials, { SOCIALS_LIST } from '../../atoms/Socials.tsx';
 import MailingLists from '../../blocks/MailingLists/MailingLists.tsx';
+import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 
 const ACCORDION_CONTENT_CSS = css`
   background: white;
@@ -175,7 +176,8 @@ const SECTIONS = [
 
 const SegmentCta = ({ label }: { label: string }) => {
   const { t } = useTranslation();
-  const supportUrl = useSelector(state => state.userData.supportUrl);
+  const { data: userData } = useSWR(USER_ENDPOINT, fetcher)
+  const supportUrl = userData?.supportUrl
   if (label === 'subscribe_to_newsletter') return <MailingLists hideLabel />;
 
   return SOCIALS_LIST[label] ? (

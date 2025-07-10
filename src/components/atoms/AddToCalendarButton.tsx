@@ -14,6 +14,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../constants/index.ts';
 import { formatDateForCalendarUrl, getEndTime } from '../../helpers/date.ts';
 import { CalendarEvent } from '../../helpers/events.ts';
 
@@ -29,31 +30,41 @@ export const AddToCalendarOption = styled(Button)`
   }
 `;
 
+const DAY_NAMES = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'] as const;
+
 function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
-  const formattedStartDate = formatDateForCalendarUrl(calendarEvent.startDate);
-  const endDate = getEndTime(
-    calendarEvent.startDate,
-    calendarEvent.durationInMinutes,
-    calendarEvent.endDate,
+  const formattedStartDate = formatDateForCalendarUrl(
+    new Date(calendarEvent.startDate),
   );
+
+  // Use the endDate that's passed to us, or calculate based on duration if not provided
+  const endDate = calendarEvent.endDate
+    ? new Date(calendarEvent.endDate)
+    : getEndTime(
+        new Date(calendarEvent.startDate),
+        calendarEvent.durationInMinutes,
+        undefined,
+      );
   const formattedEndDate = formatDateForCalendarUrl(endDate);
   return { formattedStartDate, formattedEndDate };
 }
 
-const DAY_NAMES = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'] as const;
-
 function generateRecurrenceRule(calendarEvent: CalendarEvent): string {
   const { frequency } = calendarEvent;
 
-  if (!frequency || frequency === 'once') {
+  if (!frequency || frequency === COMMUNITY_EVENT_FREQUENCIES.once) {
     return '';
   }
 
-  if (frequency === 'weekly') {
+  if (frequency === COMMUNITY_EVENT_FREQUENCIES.weekly) {
     return 'FREQ=WEEKLY';
   }
 
-  if (frequency === 'monthly') {
+  if (frequency === COMMUNITY_EVENT_FREQUENCIES.fortnightly) {
+    return 'FREQ=WEEKLY;INTERVAL=2';
+  }
+
+  if (frequency === COMMUNITY_EVENT_FREQUENCIES.monthly) {
     const startDate = new Date(calendarEvent.startDate);
     const dayOfWeek = startDate.getDay();
     const weekOfMonth = Math.ceil(startDate.getDate() / 7);
@@ -199,7 +210,10 @@ export default function AddToCalendarButton({
       >
         {t('add_to_calendar')}
       </Text>
-      <Separator spacing={theme.spacing.xsmall} />
+      <Separator
+        background={theme.color.surface.secondary}
+        spacing={theme.spacing.xsmall}
+      />
 
       <AddToCalendarOption
         variation={ButtonVariations.Inline}

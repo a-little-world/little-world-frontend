@@ -8,10 +8,15 @@ import { isEmpty } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
+import useSWR from 'swr';
 
-import { useAreDevFeaturesEnabled } from '../../firebase.ts';
+import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
+import {
+  UNREAD_NOTIFICATIONS_ENDPOINT,
+  USER_ENDPOINT,
+  fetcher,
+} from '../../features/swr/index.ts';
 import { formatTimeDistance } from '../../helpers/date.ts';
-import { useSelector } from '../../hooks/index.ts';
 import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes.ts';
 import ProfileImage from '../atoms/ProfileImage';
 
@@ -100,21 +105,24 @@ function NotificationPanel() {
   } = useTranslation();
   const theme = useTheme();
 
-  const user = useSelector(state => state.userData.user);
-  const usesAvatar = user.profile.image_type === 'avatar';
-  const notifications = useSelector(state => state.userData.notifications);
-  const areDevFeaturesEnabled = useAreDevFeaturesEnabled();
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const usesAvatar = (user as any)?.profile.image_type === 'avatar';
+  const { data: notifications } = useSWR(
+    UNREAD_NOTIFICATIONS_ENDPOINT,
+    fetcher,
+  );
+  const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
   return (
     <Panel>
       <ProfileInfo>
         <ProfileImage
           circle
-          image={usesAvatar ? user.profile.avatar_config : user.profile.image}
+          image={usesAvatar ? user?.profile.avatar_config : user?.profile.image}
           imageType={user?.profile.image_type}
         />
         <Text tag="h3" type={TextTypes.Body3} bold>
-          {`${user.profile.first_name} ${user.profile.second_name}`}
+          {`${user?.profile.first_name} ${user?.profile.second_name}`}
         </Text>
       </ProfileInfo>
       <Divider />
@@ -128,10 +136,10 @@ function NotificationPanel() {
         </Text>
       )}
       <NotificationList>
-        {isEmpty(notifications?.unread?.items) ? (
+        {isEmpty(notifications?.results) ? (
           <Text center>{t('notifications.none')}</Text>
         ) : (
-          notifications?.unread?.items.map(({ hash, title, created_at }) => (
+          notifications?.results.map(({ hash, title, created_at }) => (
             <Notification key={hash} className="notification-item">
               <CalendarIcon
                 circular

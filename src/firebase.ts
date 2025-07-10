@@ -12,13 +12,8 @@ import {
   getMessaging,
   getToken,
 } from 'firebase/messaging';
-import { useSelector } from 'react-redux';
 
 import { apiFetch } from './api/helpers.ts';
-
-export function useAreDevFeaturesEnabled(): boolean {
-  return useSelector(state => state?.userData?.developmentFeaturesEnabled);
-}
 
 const firebaseAppSettings: FirebaseAppSettings = {
   automaticDataCollectionEnabled: false,

@@ -17,10 +17,10 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+
 import styled, { useTheme } from 'styled-components';
 
-import { updatePostCallSurvey } from '../../../features/userData.js';
+import { usePostCallSurveyStore } from '../../../features/stores/index.ts';
 import { registerInput } from '../../../helpers/form.ts';
 
 const StyledCard = styled(Card)``;
@@ -51,7 +51,6 @@ interface PostCallSurveyProps {
 }
 
 const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
-  const dispatch = useDispatch();
   const {
     control,
     register,
@@ -64,15 +63,15 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const watchedRating = watch('rating');
+  const { updatePostCallSurvey } = usePostCallSurveyStore();
 
   useEffect(() => {
-    if (watchedRating)
-      dispatch(
-        updatePostCallSurvey({
-          rating: watchedRating,
-        }),
-      );
-  }, [watchedRating, dispatch]);
+    if (watchedRating && typeof watchedRating === 'number') {
+      updatePostCallSurvey({
+        rating: watchedRating,
+      })
+    }
+  }, [watchedRating]);
 
   const handleSubmitFeedback: SubmitHandler<IFormInput> = async ({
     rating,
@@ -119,9 +118,9 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
             size={TextAreaSize.Medium}
             error={t(errors?.review?.message)}
             placeholder={t('post_call_survey.comment_placeholder')}
-            onBlur={e =>
-              dispatch(updatePostCallSurvey({ review: e?.target.value }))
-            }
+            onBlur={e => {
+              updatePostCallSurvey({ review: e?.target.value })
+            }}
           />
           {!!submitError && (
             <StatusMessage $visible $type={MessageTypes.Error}>

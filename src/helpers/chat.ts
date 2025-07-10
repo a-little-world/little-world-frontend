@@ -1,11 +1,7 @@
-
 import {
   AttachmentWidget,
   CallWidget,
 } from '@a-little-world/little-world-design-system';
-import { initCallSetup } from '../features/userData.js';
-import { AppDispatch } from '../app/store.ts';
-
 
 interface Message {
   sender: string;
@@ -24,7 +20,7 @@ interface CustomChatElement {
 }
 
 interface GetCustomChatElementsParams {
-  dispatch?: AppDispatch;
+  initCallSetup?: (data: { userId: string }) => void;
   isPreview?: boolean;
   message: Message;
   userId: string;
@@ -32,7 +28,7 @@ interface GetCustomChatElementsParams {
 }
 
 export const getCustomChatElements = ({
-  dispatch,
+  initCallSetup,
   isPreview,
   message,
   userId,
@@ -52,9 +48,14 @@ export const getCustomChatElements = ({
         isOutgoing: message.sender === userId,
         onReturnCall: isPreview
           ? undefined
-          : () => dispatch?.(initCallSetup({ userId: message.sender === userId
-            ? activeChat?.partner?.id
-            : message.sender })),
+          : () => {
+              const targetUserId = message.sender === userId
+                ? activeChat?.partner?.id
+                : message.sender;
+              if (targetUserId) {
+                initCallSetup?.({ userId: targetUserId });
+              }
+            },
       },
     },
     {
@@ -67,9 +68,14 @@ export const getCustomChatElements = ({
         isOutgoing: message.sender === userId,
         onReturnCall: isPreview
           ? undefined
-          : () => dispatch?.(initCallSetup({ userId: message.sender === userId
-            ? activeChat?.partner?.id
-            : message.sender })),
+          : () => {
+              const targetUserId = message.sender === userId
+                ? activeChat?.partner?.id
+                : message.sender;
+              if (targetUserId) {
+                initCallSetup?.({ userId: targetUserId });
+              }
+            },
       },
     },
     {

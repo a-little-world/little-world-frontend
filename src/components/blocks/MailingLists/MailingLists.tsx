@@ -8,14 +8,13 @@ import { LoadingSizes } from '@a-little-world/little-world-design-system/dist/es
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 import { apiFetch } from '../../../api/helpers.ts';
 import { mutateUserData } from '../../../api/index.js';
-import { updateProfile } from '../../../features/userData.js';
+import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
 import { onFormError } from '../../../helpers/form.ts';
 
 const MailingListsWrapper = styled.div<{ $centred?: boolean }>`
@@ -47,14 +46,13 @@ const MailingLists = ({
   hideLabel?: boolean;
 }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const { control, getValues, setError, watch, handleSubmit } = useForm();
-  const subscribed = useSelector(
-    state => state.userData.user.profile.newsletter_subscribed,
-  );
+  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
 
-  const onFormSuccess = data => {
-    dispatch(updateProfile(data));
+  const subscribed = user?.profile.newsletter_subscribed;
+
+  const onFormSuccess = (_data) => {
+    mutate(USER_ENDPOINT);
   };
 
   const onError = e => {

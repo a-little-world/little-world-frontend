@@ -1,12 +1,7 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 
 import { confirmMatch, partiallyConfirmMatch } from '../../../api/matches.ts';
-import {
-  addMatch,
-  changeMatchCategory,
-  removeMatch,
-} from '../../../features/userData.js';
+import { revalidateMatches } from '../../../features/swr/index.ts';
 import ConfirmMatchCard from './ConfirmMatchCard.tsx';
 import NewMatchCard from './NewMatchCard.jsx';
 
@@ -24,7 +19,6 @@ export const MatchCardComponent = ({
   onClose,
 }: MatchCardProps) => {
   const usesAvatar = profile?.image_type === 'avatar';
-  const dispatch = useDispatch();
 
   return showNewMatch ? (
     <NewMatchCard
@@ -34,15 +28,10 @@ export const MatchCardComponent = ({
       onExit={() => {
         confirmMatch({
           userHash: profile.id,
-          onSuccess: () =>
-            dispatch(
-              changeMatchCategory({
-                match: { id: matchId },
-                category: 'unconfirmed',
-                newCategory: 'confirmed',
-              }),
-            ),
-          onError: error => console.error(error),
+          onSuccess: () => {
+            revalidateMatches();
+          },
+          onError: _error => console.error(_error),
         });
       }}
     />
@@ -56,35 +45,21 @@ export const MatchCardComponent = ({
         partiallyConfirmMatch({
           acceptDeny: true,
           matchId,
-          onSuccess: response => {
-            dispatch(
-              removeMatch({
-                category: 'proposed',
-                match: { id: matchId },
-              }),
-            );
-            dispatch(
-              addMatch({
-                match: response.match,
-                category: 'unconfirmed',
-              }),
-            );
+          onSuccess: _response => {
+            revalidateMatches();
           },
-          onError: error => console.error(error),
+          onError: _error => console.error(_error),
         });
       }}
-      onReject={() => {
+      onReject={(denyReason: string) => {
         partiallyConfirmMatch({
           acceptDeny: false,
           matchId,
-          onSuccess: () =>
-            dispatch(
-              removeMatch({
-                category: 'proposed',
-                match: { id: matchId },
-              }),
-            ),
-          onError: error => console.error(error),
+          denyReason,
+          onSuccess: () => {
+            revalidateMatches();
+          },
+          onError: _error => console.error(_error),
         });
       }}
       onClose={onClose}

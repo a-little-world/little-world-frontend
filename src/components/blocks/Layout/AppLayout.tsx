@@ -1,17 +1,21 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
+import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit.ts';
 import {
-  blockIncomingCall,
-  initCallSetup,
-  removePostCallSurvey,
-  setMatchRejected,
-} from '../../../features/userData.js';
-import { useSelector } from '../../../hooks/index.ts';
+  useActiveCallStore,
+  useCallSetupStore,
+  usePostCallSurveyStore,
+} from '../../../features/stores/index.ts';
+import {
+  ACTIVE_CALL_ROOMS_ENDPOINT,
+  MATCHES_ENDPOINT,
+  fetcher,
+} from '../../../features/swr/index.ts';
+import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations.ts';
 import useModalManager, { ModalTypes } from '../../../hooks/useModalManager.ts';
 import '../../../main.css';
 import CallSetup from '../Calls/CallSetup.tsx';
@@ -79,29 +83,27 @@ const Content = styled.section<{ $isVH: boolean }>`
 
 export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
-  const dispatch = useDispatch();
   const { openModal, closeModal, isModalOpen } = useModalManager();
 
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
-  const matches = useSelector(state => state.userData.matches);
-  const matchRejected = useSelector(state => state.userData.matchRejected);
-  const activeCallRooms = useSelector(state => state.userData.activeCallRooms);
-  const activeCallRoom = activeCallRooms[0];
-  const callSetup = useSelector(state => state.userData.callSetup);
-  const postCallSurvey = useSelector(state => state.userData.postCallSurvey);
-  const activeCall = useSelector(state => state.userData.activeCall); // do we need this?
+  const { data: matches, error } = useSWR(MATCHES_ENDPOINT, fetcher, {
+    revalidateOnMount: true,
+  });
+  const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
+  const activeCallRoom = activeCallRooms?.[0];
+  const { callSetup } = useCallSetupStore();
+  const { postCallSurvey } = usePostCallSurveyStore();
+  const { activeCall } = useActiveCallStore();
+
+  // Zustand store hooks
+  const { initCallSetup } = useCallSetupStore();
+  const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
-  const dashboardVisibleMatches = matches
-    ? [...matches.support.items, ...matches.confirmed.items]
-    : [];
-
-  const showNewMatch = Boolean(
-    matches?.unconfirmed?.items?.length && !matchRejected,
-  );
-
+  const showNewMatch = Boolean(matches?.unconfirmed?.results?.length);
+  console.log({ showNewMatch, matches, error });
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
     setShowSidebarMobile(false);
@@ -121,15 +123,14 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
-      matches?.proposed?.items?.length ||
-        matches?.unconfirmed?.items?.length ||
-        matchRejected,
+      matches?.proposed?.results?.length ||
+        matches?.unconfirmed?.results?.length,
     );
 
     if (shouldShowMatchModal) {
       openModal(ModalTypes.MATCH.id);
     } else if (isModalOpen(ModalTypes.MATCH.id)) closeModal();
-  }, [matches, matchRejected]); // eslint-disable-line
+  }, [matches]); // eslint-disable-line
 
   useEffect(() => {
     if (postCallSurvey) {
@@ -144,22 +145,19 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [callSetup, activeCall]);
 
   const onAnswerCall = () => {
-    dispatch(initCallSetup({ userId: activeCallRoom?.partner?.id }));
+    initCallSetup({ userId: activeCallRoom?.partner?.id });
     closeModal();
   };
 
   const onRejectCall = () => {
-    dispatch(blockIncomingCall({ userId: activeCallRoom?.partner?.id }));
-    closeModal();
-  };
-
-  const closeMatchModal = () => {
-    if (matchRejected) dispatch(setMatchRejected(false));
+    if (activeCallRoom?.partner?.id) {
+      blockIncomingCall(activeCallRoom.partner.id);
+    }
     closeModal();
   };
 
   const closePostCallSurvey = () => {
-    dispatch(removePostCallSurvey());
+    removePostCallSurvey();
     closeModal();
   };
 
@@ -167,7 +165,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const submitPostCallSurvey = ({
     rating,
     review,
-    onError
+    onError,
   }: {
     rating?: number;
     review?: string;
@@ -210,7 +208,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         onClose={onRejectCall}
       >
         <IncomingCall
-          matchesInfo={dashboardVisibleMatches}
           userPk={activeCallRoom?.partner.id}
           userProfile={activeCallRoom?.partner}
           onAnswerCall={onAnswerCall}
@@ -220,22 +217,22 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
       <Modal
         open={isModalOpen(ModalTypes.MATCH.id)}
-        onClose={closeMatchModal}
+        onClose={closeModal}
         locked={showNewMatch}
       >
         <MatchCardComponent
           showNewMatch={showNewMatch}
           matchId={
-            matches?.proposed?.items?.length
-              ? matches?.proposed.items[0].id
-              : matches?.unconfirmed.items[0]?.id
+            matches?.proposed?.results?.length
+              ? matches?.proposed.results[0].id
+              : matches?.unconfirmed.results[0]?.id
           }
           profile={
-            matches?.proposed?.items?.length
-              ? matches?.proposed.items[0].partner
-              : matches?.unconfirmed.items[0]?.partner
+            matches?.proposed?.results?.length
+              ? matches?.proposed.results[0].partner
+              : matches?.unconfirmed.results[0]?.partner
           }
-          onClose={closeMatchModal}
+          onClose={closeModal}
         />
       </Modal>
     </Wrapper>

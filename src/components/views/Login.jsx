@@ -10,11 +10,11 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { mutate } from 'swr';
 
 import { login } from '../../api';
-import { initialise } from '../../features/userData';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   FORGOT_PASSWORD_ROUTE,
@@ -27,7 +27,6 @@ import {
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 const Login = () => {
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
 
@@ -58,23 +57,23 @@ const Login = () => {
 
     login(data)
       .then(loginData => {
-        dispatch(initialise(loginData));
+        mutate(USER_ENDPOINT, loginData);
         setIsSubmitting(false);
 
         passAuthenticationBoundary();
 
-        if (!loginData.user.emailVerified) {
+        if (!loginData.emailVerified) {
           navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
-        } else if (!loginData.user.userFormCompleted) {
+        } else if (!loginData.userFormCompleted) {
           navigate(getAppRoute(USER_FORM_ROUTE));
         } else if (searchParams.get('next')) {
           // users can be redirected from /login?next=<url>
           // consider this route after the requried for entry forms verify-email / user-form
           // we add missing front `/` otherwise 'app' would incorrectly navigate to /login/app
           navigate(
-            searchParams.get('next').startsWith('/') ?
-              searchParams.get('next') :
-              `/${searchParams.get('next')}`,
+            searchParams.get('next').startsWith('/')
+              ? searchParams.get('next')
+              : `/${searchParams.get('next')}`,
           );
         } else {
           // per default route to /app on successful login

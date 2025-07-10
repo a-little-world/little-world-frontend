@@ -4,8 +4,8 @@ export const COMMUNITY_EVENTS_ROUTE = 'events';
 export const OUR_WORLD_ROUTE = 'our-world';
 export const SUPPORT_US_ROUTE = 'our-world/support';
 export const DONATE_ROUTE = 'our-world/donate';
-export const CALL_ROUTE = 'call';
-export const CALL_SETUP_ROUTE = 'call-setup/:userId?/';
+export const CALL_ROUTE = 'call/:userId?/';
+export const CALL_SETUP_ROUTE = 'call-setup/:userId?';
 export const CHAT_ROUTE = 'chat/:chatId/';
 export const MESSAGES_ROUTE = 'chat';
 export const NOTIFICATIONS_ROUTE = 'notifications';
@@ -34,12 +34,37 @@ export const TERMS_ROUTE = 'nutzungsbedingungen';
 export const PRIVACY_ROUTE = 'datenschutz';
 export const EMAIL_PREFERENCES_ROUTE = 'email-preferences/:emailSettingsHash';
 
+// User form specific route slugs
+export const USER_FORM_USER_TYPE = 'user-type';
+export const USER_FORM_SELF_INFO_1 = 'self-info-1';
+export const USER_FORM_INTERESTS = 'interests';
+export const USER_FORM_PICTURE = 'picture';
+export const USER_FORM_PARTNER_1 = 'partner-1';
+export const USER_FORM_AVAILABILITY = 'availability';
+export const USER_FORM_NOTIFICATIONS = 'notifications';
+export const USER_FORM_CONDITIONS = 'conditions';
+
+// Helper function to generate routes
+const getUserFormRoute = (slug: string) => `${USER_FORM_ROUTE}/${slug}`;
 export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
 export const getAppRoute = (slug?: string) => `/${APP_ROUTE}/${slug ?? ''}`;
 export const getAppSubpageRoute = (parent: string, slug: string) =>
   getAppRoute(`${parent}/${slug}`);
-export const getUserFormRoute = (slug: string) => `/${USER_FORM_ROUTE}/${slug}`;
+export const getCallRoute = (userId: string) => `/${APP_ROUTE}/call/${userId}`;
+export const getCallSetupRoute = (userId: string) =>
+  `/${APP_ROUTE}/call-setup/${userId}`;
+
+export const USER_FORM_ROUTES = {
+  USER_TYPE: getUserFormRoute(USER_FORM_USER_TYPE),
+  SELF_INFO_1: getUserFormRoute(USER_FORM_SELF_INFO_1),
+  INTERESTS: getUserFormRoute(USER_FORM_INTERESTS),
+  PICTURE: getUserFormRoute(USER_FORM_PICTURE),
+  PARTNER_1: getUserFormRoute(USER_FORM_PARTNER_1),
+  AVAILABILITY: getUserFormRoute(USER_FORM_AVAILABILITY),
+  NOTIFICATIONS: getUserFormRoute(USER_FORM_NOTIFICATIONS),
+  CONDITIONS: getUserFormRoute(USER_FORM_CONDITIONS),
+};
 
 export const isActiveRoute = (locationPath: string, path: string) =>
   locationPath === path || path !== getAppRoute('')

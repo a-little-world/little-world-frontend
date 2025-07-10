@@ -63,7 +63,6 @@
     "react-i18next": "^11.15.4",
     "react-modern-drawer": "^1.2.2",
     "react-nice-avatar": "file:prebuild/react-nice-avatar-1.6.1.tgz",
-    "react-redux": "^7.2.8",
     "react-router-dom": "^6.2.2",
     "react-use-websocket": "^4.5.0",
     "style-loader": "^3.3.1",
@@ -71,7 +70,8 @@
     "swr": "^2.2.5",
     "util": "^0.12.4",
     "web-vitals": "^2.1.4",
-    "webpack": "^5.75.0"
+    "webpack": "^5.75.0",
+    "zustand": "^5.0.4"
   },
   "devDependencies": {
     "@a-little-world/little-world-prettier-config": "^1.2.0",
