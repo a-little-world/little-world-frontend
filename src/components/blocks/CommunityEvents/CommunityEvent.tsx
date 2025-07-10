@@ -10,11 +10,15 @@ import { groupBy } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
-
 import useSWR from 'swr';
-import { COMMUNITY_EVENTS_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
+
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index.ts';
+import {
+  COMMUNITY_EVENTS_ENDPOINT,
+  fetcher,
+} from '../../../features/swr/index.ts';
 import { formatDate, formatEventTime } from '../../../helpers/date.ts';
-import { Event } from '../../../helpers/events.ts';
+import { Event, calculateNextOccurrence } from '../../../helpers/events.ts';
 import placeholderImage from '../../../images/coffee.webp';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
 import ShowMoreText from '../../atoms/ShowMoreText.tsx';
@@ -58,11 +62,25 @@ function collateEvents(events: Event[]): GroupedEvent[] {
       const [first] = group;
 
       const sessions = group
-        .map(event => ({
-          startDate: new Date(event.time),
-          endDate: event.end_time ? new Date(event.end_time) : undefined,
-          link: event.link,
-        }))
+        .map(event => {
+          const nextOccurrence = calculateNextOccurrence(
+            event.time,
+            event.frequency,
+          );
+          // Calculate the correct end date by preserving the original duration
+          let endDate: Date | undefined;
+          if (event.end_time) {
+            const originalStart = new Date(event.time);
+            const originalEnd = new Date(event.end_time);
+            const durationMs = originalEnd.getTime() - originalStart.getTime();
+            endDate = new Date(nextOccurrence.getTime() + durationMs);
+          }
+          return {
+            startDate: nextOccurrence,
+            endDate,
+            link: event.link,
+          };
+        })
         .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 
       const groupedEvent: GroupedEvent = {
@@ -73,7 +91,25 @@ function collateEvents(events: Event[]): GroupedEvent[] {
       result.push(groupedEvent);
     } else {
       // Single event without group_id
-      result.push(group[0]);
+      const event = group[0];
+      const nextOccurrence = calculateNextOccurrence(
+        event.time,
+        event.frequency,
+      );
+      // Calculate the correct end time by preserving the original duration
+      let endTime: string | undefined;
+      if (event.end_time) {
+        const originalStart = new Date(event.time);
+        const originalEnd = new Date(event.end_time);
+        const durationMs = originalEnd.getTime() - originalStart.getTime();
+        const newEndTime = new Date(nextOccurrence.getTime() + durationMs);
+        endTime = newEndTime.toISOString();
+      }
+      result.push({
+        ...event,
+        time: nextOccurrence.toISOString(),
+        end_time: endTime,
+      });
     }
   });
 
@@ -157,7 +193,11 @@ const EventCtas = ({
     <>
       <DateTimeEvent>
         <Text type={TextTypes.Body3} bold tag="span">
-          {formatDate(startDate, 'cccc, LLLL do', language)}
+          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly
+            ? t('community_events.every_week', {
+                day: formatDate(startDate, 'EEEE', language),
+              })
+            : formatDate(startDate, 'cccc, LLLL do', language)}
         </Text>
         <Text type={TextTypes.Body3} bold color={theme.color.text.heading}>
           {formatEventTime(startDate, endDate)}
@@ -238,7 +278,7 @@ function CommunityEvent({
 }
 
 function CommunityEvents() {
-  const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT, fetcher)
+  const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT, fetcher);
   const groupedEvents = collateEvents(events?.results || []);
   return (
     <Events>

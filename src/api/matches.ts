@@ -28,8 +28,15 @@ export const confirmMatch = async ({ userHash, onError, onSuccess }) => {
 export const partiallyConfirmMatch = async ({
   matchId,
   acceptDeny,
+  denyReason,
   onError,
   onSuccess,
+}: {
+  matchId: string;
+  acceptDeny: boolean;
+  denyReason?: string;
+  onError: (error: any) => void;
+  onSuccess: (result: any) => void;
 }) => {
   try {
     const result = await apiFetch(`/api/user/match/confirm_deny/`, {
@@ -37,6 +44,7 @@ export const partiallyConfirmMatch = async ({
       body: {
         unconfirmed_match_hash: matchId,
         confirm: acceptDeny,
+        deny_reason: denyReason,
       },
       useTagsOnly: true,
     });

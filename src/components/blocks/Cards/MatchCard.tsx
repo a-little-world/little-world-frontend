@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { mutate } from 'swr';
 import { confirmMatch, partiallyConfirmMatch } from '../../../api/matches.ts';
+import { revalidateMatches } from '../../../features/swr/index.ts';
 import ConfirmMatchCard from './ConfirmMatchCard.tsx';
 import NewMatchCard from './NewMatchCard.jsx';
-import { MATCHES_ENDPOINT } from '../../../features/swr/index.ts';
 
 type MatchCardProps = {
   showNewMatch: boolean;
@@ -30,9 +29,9 @@ export const MatchCardComponent = ({
         confirmMatch({
           userHash: profile.id,
           onSuccess: () => {
-            mutate(MATCHES_ENDPOINT);
+            revalidateMatches();
           },
-          onError: (_error) => console.error(_error),
+          onError: _error => console.error(_error),
         });
       }}
     />
@@ -46,20 +45,21 @@ export const MatchCardComponent = ({
         partiallyConfirmMatch({
           acceptDeny: true,
           matchId,
-          onSuccess: (_response) => {
-            mutate(MATCHES_ENDPOINT);
+          onSuccess: _response => {
+            revalidateMatches();
           },
-          onError: (_error) => console.error(_error),
+          onError: _error => console.error(_error),
         });
       }}
-      onReject={() => {
+      onReject={(denyReason: string) => {
         partiallyConfirmMatch({
           acceptDeny: false,
           matchId,
+          denyReason,
           onSuccess: () => {
-            mutate(MATCHES_ENDPOINT);
+            revalidateMatches();
           },
-          onError: (_error) => console.error(_error),
+          onError: _error => console.error(_error),
         });
       }}
       onClose={onClose}

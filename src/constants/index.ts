@@ -12,6 +12,16 @@ export const USER_TYPES = {
 export const LANGUAGES = {
   de: 'de',
   en: 'en',
+  german: 'german',
+  english: 'english',
+};
+
+export const LANGUAGE_LEVELS = {
+  level0: 'level-0',
+  level1: 'level-1',
+  level2: 'level-2',
+  level3: 'level-3',
+  level4: 'level-4',
 };
 
 export const SEARCHING_STATES = {
@@ -36,4 +46,11 @@ export const API_FIELDS = {
   other_user_hash: 'otherUserHash', // reportMatch
   confirm: 'acceptDeny', // partiallyConfirmMatch
   unconfirmed_match_hash: 'matchId', // partiallyConfirmMatch
+};
+
+export const COMMUNITY_EVENT_FREQUENCIES = {
+  weekly: 'weekly',
+  fortnightly: 'fortnightly',
+  monthly: 'monthly',
+  once: 'once',
 };
