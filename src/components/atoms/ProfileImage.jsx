@@ -2,6 +2,8 @@ import React from 'react';
 import Avatar from 'react-nice-avatar';
 import styled from 'styled-components';
 
+import { shimmer, shimmerGradient } from './Loading.tsx';
+
 export const ImageSizes = {
   xsmall: '72px',
   small: '128px',
@@ -51,6 +53,13 @@ export const CircleImage = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
   position: relative;
   aspect-ratio: 1;
+`;
+
+export const CircleImageLoading = styled(CircleImage)`
+  background: ${shimmerGradient};
+  background-size: 200% 100%;
+  animation: ${shimmer} 1.5s infinite reverse;
+  flex-shrink: 0;
 `;
 
 export const Image = styled.img`

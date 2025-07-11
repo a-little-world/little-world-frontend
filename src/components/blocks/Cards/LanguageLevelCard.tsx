@@ -13,7 +13,7 @@ import styled from 'styled-components';
 
 import SearchingSvg from '../../../images/match-searching.svg';
 import { BEGINNERS_ROUTE, getAppRoute } from '../../../router/routes.ts';
-import { PROFILE_CARD_HEIGHT } from './ProfileCard.jsx';
+import { PROFILE_CARD_HEIGHT } from './ProfileCard.tsx';
 
 const StyledCard = styled(Card)`
   align-items: center;

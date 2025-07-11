@@ -7,7 +7,6 @@ import useSWR from 'swr';
 import { submitCallFeedback } from '../../../api/livekit.ts';
 import { default as useActiveCallStore } from '../../../features/stores/activeCall.ts';
 import { default as useCallSetupStore } from '../../../features/stores/callSetup.ts';
-import { default as useMatchRejectedStore } from '../../../features/stores/matchRejected.ts';
 import { default as usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
 import { default as useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
 import { default as useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
@@ -90,8 +89,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
-    revalidateOnMount: false,
+  const { data: matches, error } = useSWR(MATCHES_ENDPOINT, fetcher, {
+    revalidateOnMount: true,
   });
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT, fetcher);
   const activeCallRoom = activeCallRooms?.[0];
@@ -104,19 +103,12 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   // Zustand store hooks
   const { initCallSetup } = useCallSetupStore();
-  const { setMatchRejected, rejected: matchRejected } = useMatchRejectedStore();
   const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
-  const dashboardVisibleMatches = matches
-    ? [...matches.support.results, ...matches.confirmed.results]
-    : [];
-
-  const showNewMatch = Boolean(
-    matches?.unconfirmed?.results?.length && !matchRejected,
-  );
-
+  const showNewMatch = Boolean(matches?.unconfirmed?.results?.length);
+  console.log({ showNewMatch, matches, error });
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
     setShowSidebarMobile(false);
@@ -149,14 +141,13 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.results?.length ||
-      matches?.unconfirmed?.results?.length ||
-      matchRejected,
+      matches?.unconfirmed?.results?.length,
     );
 
     if (shouldShowMatchModal) {
       openModal(ModalTypes.MATCH.id);
     } else if (isModalOpen(ModalTypes.MATCH.id)) closeModal();
-  }, [matches, matchRejected]); // eslint-disable-line
+  }, [matches]); // eslint-disable-line
 
   useEffect(() => {
     if (postCallSurvey) {
@@ -179,11 +170,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     if (activeCallRoom?.partner?.id) {
       blockIncomingCall(activeCallRoom.partner.id);
     }
-    closeModal();
-  };
-
-  const closeMatchModal = () => {
-    if (matchRejected) setMatchRejected(false);
     closeModal();
   };
 
@@ -247,7 +233,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         onClose={onRejectCall}
       >
         <IncomingCall
-          matchesInfo={dashboardVisibleMatches}
           userPk={activeCallRoom?.partner.id}
           userProfile={activeCallRoom?.partner}
           onAnswerCall={onAnswerCall}
@@ -257,7 +242,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
       <Modal
         open={isModalOpen(ModalTypes.MATCH.id)}
-        onClose={closeMatchModal}
+        onClose={closeModal}
         locked={showNewMatch}
       >
         <MatchCardComponent
@@ -272,7 +257,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
               ? matches?.proposed.results[0].partner
               : matches?.unconfirmed.results[0]?.partner
           }
-          onClose={closeMatchModal}
+          onClose={closeModal}
         />
       </Modal>
     </Wrapper>

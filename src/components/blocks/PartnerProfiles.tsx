@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
+import { LANGUAGES, LANGUAGE_LEVELS } from '../../constants/index.ts';
 import {
   USER_ENDPOINT,
   fetcher,
@@ -16,13 +17,16 @@ import {
 } from '../../features/swr/index.ts';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard.tsx';
-import PartnerActionCard from './Cards/PartnerActionCard';
-import ProfileCard, { PROFILE_CARD_HEIGHT } from './Cards/ProfileCard';
-import { SearchingCard } from './Cards/SearchingCard';
+import PartnerActionCard from './Cards/PartnerActionCard.jsx';
+import ProfileCard, {
+  PROFILE_CARD_HEIGHT,
+  StyledProfileCard,
+} from './Cards/ProfileCard.tsx';
+import { SearchingCard } from './Cards/SearchingCard.jsx';
 import UpdateSearchStateCard from './Cards/UpdateSearchStateCard.tsx';
 import { Start } from './RandomCall/Start.jsx';
 
-const FindNewPartner = styled.button`
+const FindNewPartner = styled.button<{ $hasMatch: boolean }>`
   text-align: center;
   border: 2px dashed ${({ theme }) => theme.color.border.selected};
   border-radius: 40px;
@@ -60,23 +64,42 @@ const Matches = styled.div`
   `};
 `;
 
-function PartnerProfiles({ setShowCancel, currentPage }) {
+function PartnerProfiles({
+  setShowCancel,
+  currentPage,
+}: {
+  setShowCancel: (show: boolean) => void;
+  currentPage: number;
+}) {
   const { t } = useTranslation();
 
-  const { data: matches } = useSWR(getMatchEndpoint(currentPage), fetcher);
+  const { data: matches, isLoading: matchesLoading } = useSWR(
+    getMatchEndpoint(currentPage),
+    fetcher,
+  );
   const confirmed = matches?.confirmed;
   const support = matches?.support;
-  const matchesDisplay =
-    !confirmed || !support
-      ? []
-      : confirmed.page === 1
-        ? [...support.results, ...confirmed.results]
-        : [...confirmed.results];
+
+  const getMatchesDisplay = () => {
+    if (!confirmed || !support) {
+      return [];
+    }
+
+    if (confirmed.page === 1) {
+      return [...support.results, ...confirmed.results];
+    }
+
+    return [...confirmed.results];
+  };
+
+  const matchesDisplay = getMatchesDisplay();
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher);
   const germanLevelInvalid = Boolean(
     user?.profile?.lang_skill?.find(
-      skill => skill.lang === 'german' && skill.level === 'level-0',
+      (skill: any) =>
+        skill.lang === LANGUAGES.german &&
+        skill.level === LANGUAGE_LEVELS.level0,
     ),
   );
   const [partnerActionData, setPartnerActionData] = useState(null);
@@ -86,41 +109,55 @@ function PartnerProfiles({ setShowCancel, currentPage }) {
     setPartnerActionData(null);
   };
 
+  const renderStatusCard = () => {
+    if (germanLevelInvalid) {
+      return <LanguageLevelCard />;
+    }
+
+    if (user?.isSearching) {
+      return <SearchingCard setShowCancel={setShowCancel} />;
+    }
+
+    return (
+      <FindNewPartner
+        type="button"
+        onClick={() => setShowSearchConfirmModal(true)}
+        $hasMatch={user?.hasMatch}
+      >
+        <img src={PlusImage} alt="change matching status icon" />
+        <Text type={TextTypes.Body3}>
+          {t('matching_state_not_searching_trans')}
+        </Text>
+      </FindNewPartner>
+    );
+  };
+
+  if (!user) return null;
+
   return (
     <Matches>
-      {matchesDisplay?.map(match => (
-        <ProfileCard
-          key={match.partner.id}
-          userPk={match.partner.id}
-          profile={match.partner}
-          isSelf={false}
-          isMatch={!match.partner.isSupport}
-          matchId={match.id}
-          openPartnerModal={setPartnerActionData}
-          isOnline={match.partner.isOnline}
-          isSupport={match.partner.isSupport}
-          chatId={match.chatId}
-        />
-      ))}
-      {germanLevelInvalid ? (
-        <LanguageLevelCard />
-      ) : user?.isSearching ? (
-        <SearchingCard setShowCancel={setShowCancel} />
+      {matchesLoading ? (
+        <StyledProfileCard width={CardSizes.Small} $loading />
       ) : (
-        <FindNewPartner
-          type="button"
-          onClick={() => setShowSearchConfirmModal(true)}
-          $hasMatch={user?.hasMatch}
-        >
-          <img src={PlusImage} alt="change matching status icon" />
-          <Text type={TextTypes.Body3}>
-            {t('matching_state_not_searching_trans')}
-          </Text>
-        </FindNewPartner>
+        matchesDisplay?.map(match => (
+          <ProfileCard
+            key={match.partner.id}
+            userPk={match.partner.id}
+            profile={match.partner}
+            isSelf={false}
+            isMatch={!match.partner.isSupport}
+            matchId={match.id}
+            openPartnerModal={setPartnerActionData}
+            isOnline={match.partner.isOnline}
+            isSupport={match.partner.isSupport}
+            chatId={match.chatId}
+          />
+        ))
       )}
       <Start
         userPk={user?.id}
       ></Start>
+      {renderStatusCard()}
 
       <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
         {!!partnerActionData && (
