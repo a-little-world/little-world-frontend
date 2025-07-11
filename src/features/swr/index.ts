@@ -1,8 +1,7 @@
 import { mutate } from 'swr';
-
+import { apiFetch } from '../../../src/api/helpers.ts';
 export const USER_ENDPOINT = '/api/user';
 export const COMMUNITY_EVENTS_ENDPOINT = "/api/community";
-export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
 export const apiOptions = '#api_options';
 export const API_OPTIONS_ENDPOINT = '/api/api_options';
 export const FIREBASE_ENDPOINT = '/api/firebase';
@@ -32,6 +31,36 @@ export async function fetcher<T>(url: string): Promise<T> {
     throw new Error(body ? JSON.stringify(body) : res.statusText);
   }
   return res.json();
+}
+
+type PostResponse = {
+  updatedAt: number;
+  res: {
+    token: string;
+    server_url: string;
+    chat: JSON;
+    room: string;
+  };
+};
+
+export async function postFetcher(userId: string): Promise<PostResponse> {
+  const res = await apiFetch(`/api/random_calls/get_token_random_call`, {
+    method: 'POST',
+    useTagsOnly: true,
+    body: { userId },
+  });
+
+  const resJson = await res.json();
+  console.log(resJson)
+
+  if (!res.ok) {
+    throw new Error(resJson ? JSON.stringify(resJson) : res.statusText);
+  }
+
+  return {
+    updatedAt: Date.now(),
+    res: resJson,
+  };
 }
 
 export const revalidateMatches = () => {

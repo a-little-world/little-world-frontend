@@ -73,7 +73,6 @@ export const exitLobby = async ({
   onError: (error: any) => void;
 }) => {
   try {
-    console.log("ARRIVED IN EXIT FUNCTION")
     const result = await apiFetch(`/api/random_calls/exit_lobby`, {
       method: 'POST',
       useTagsOnly: true,

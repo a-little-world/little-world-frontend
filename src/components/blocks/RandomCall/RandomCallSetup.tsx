@@ -123,11 +123,7 @@ type RandomCallSetupProps = {
 function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [authData, setAuthData] = useState({
-    chatId: null,
-    token: null,
-    livekitServerUrl: null,
-  });
+
   const [error, setError] = useState('');
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
@@ -135,23 +131,22 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
 
   // Zustand store hooks
   const { initActiveCall } = useActiveCallStore();
-  const { cancelRandomCallSetup } = useRandomCallSetupStore();
+  const randomCallSetup = useRandomCallSetupStore();
 
   const handleJoin = (values: LocalUserChoices) => {
     initActiveCall({
       userId: userPk,
-      chatId: authData.chatId || '',
+      chatId: randomCallSetup.randomCallSetup?.authData.chatId || '',
       tracks: values,
-      token: authData.token || undefined,
+      token: randomCallSetup.randomCallSetup?.authData.token || undefined,
       audioOptions: values.audioEnabled
         ? { deviceId: values.audioDeviceId }
         : false,
       videoOptions: values.videoEnabled
         ? { deviceId: values.videoDeviceId }
         : false,
-      livekitServerUrl: authData.livekitServerUrl || undefined,
+      livekitServerUrl: randomCallSetup.randomCallSetup?.authData.livekitServerUrl || undefined,
     });
-    cancelRandomCallSetup();
     onClose();
     clearActiveTracks();
     navigate(getCallRoute(userPk));
@@ -163,7 +158,7 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
 
   const handleValidate = (values: LocalUserChoices) => {
     const isValid = Boolean(
-      (values.audioDeviceId || values.videoDeviceId) && authData.token,
+      (values.audioDeviceId || values.videoDeviceId) && randomCallSetup.randomCallSetup?.authData.token,
     );
     if (isValid) setError('');
     return isValid;
@@ -174,7 +169,7 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
       <CloseButton
         variation={ButtonVariations.Icon}
         onClick={() => {
-          cancelRandomCallSetup();
+          randomCallSetup.cancelRandomCallSetup();
           onClose();
         }}
       >

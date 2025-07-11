@@ -108,7 +108,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
   const showNewMatch = Boolean(matches?.unconfirmed?.results?.length);
-  console.log({ showNewMatch, matches, error });
+  //console.log({ showNewMatch, matches, error });
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
     setShowSidebarMobile(false);

@@ -4,14 +4,15 @@ import {
   ButtonVariations,
   CloseIcon,
 } from '@a-little-world/little-world-design-system';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import useSWR, { mutate } from 'swr';
+import { mutate } from 'swr';
 import { exitLobby, joinLobby, requestRandomToken } from '../../../api/livekit.ts';
 import { default as useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
-import { CHATS_ENDPOINT, fetcher, RANDOM_CALL_LOBBY_ENDPOINT } from '../../../features/swr/index.ts';
+import useRandomCallSetupStore from '../../../features/stores/randomCallSetup.ts';
+import { CHATS_ENDPOINT } from '../../../features/swr/index.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
 
@@ -87,7 +88,13 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
 
   // Zustand store hooks
   const randomCallLobby = useRandomCallLobbyStore();
-  const { data: users, error } = useSWR(RANDOM_CALL_LOBBY_ENDPOINT, fetcher, { refreshInterval: 1000 });
+  const randomCallSetup = useRandomCallSetupStore();
+  const [authData, setAuthData] = useState({
+    chatId: null,
+    token: null,
+    livekitServerUrl: null,
+  });
+  const [error, setError] = useState('');
 
   useEffect(() => {
     joinLobby({
@@ -98,6 +105,16 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
         setError('error.server_issue');
       },
     })
+  }, []);
+
+  const [tick, setTick] = useState(0); // trigger to re-run useEffect
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick((prev) => prev + 1); // update state to force effect
+    }, 5000);
+
+    return () => clearInterval(interval); // clean up on unmount
   }, []);
 
   useEffect(() => {
@@ -117,7 +134,10 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
         setError('error.server_issue');
       },
     });
-  }, [users]);
+    if (authData.token) {
+      randomCallSetup.initRandomCallSetup({ userId: userPk, authData: authData });
+    }
+  }, [tick]);
 
   return (
     <RandomCallLobbyCard>
@@ -149,11 +169,4 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
 }
 
 export default Lobby;
-function setError(arg0: string) {
-  throw new Error('Function not implemented.');
-}
-
-function setAuthData(arg0: { chatId: any; token: any; livekitServerUrl: any; }) {
-  throw new Error('Function not implemented.');
-}
 
