@@ -126,9 +126,6 @@ function VideoCall() {
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
   const profile = user?.profile
 
-  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher)
-  const chatData = chats?.results?.find(chat => chat?.partner?.id === userId) || chats?.results?.find(chat => chat?.user?.id === userId);
-  console.log('chatData', chatData)
   const { data: chatData } = useSWR(getChatEndpoint(chatId), fetcher)
 
   useEffect(() => {

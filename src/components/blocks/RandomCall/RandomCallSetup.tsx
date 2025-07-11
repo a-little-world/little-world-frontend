@@ -9,17 +9,16 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { LocalUserChoices, PreJoin } from '@livekit/components-react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import useSWR, { mutate } from 'swr';
-import { requestRandomToken } from '../../../api/livekit.ts';
+import useSWR from 'swr';
 import { default as useActiveCallStore } from '../../../features/stores/activeCall';
 import { default as useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
-import { CHATS_ENDPOINT, fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
+import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { getCallRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
@@ -125,6 +124,7 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [authData, setAuthData] = useState({
+    chatId: null,
     token: null,
     livekitServerUrl: null,
   });
@@ -140,6 +140,7 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
   const handleJoin = (values: LocalUserChoices) => {
     initActiveCall({
       userId: userPk,
+      chatId: authData.chatId || '',
       tracks: values,
       token: authData.token || undefined,
       audioOptions: values.audioEnabled
@@ -155,24 +156,6 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
     clearActiveTracks();
     navigate(getCallRoute(userPk));
   };
-
-  useEffect(() => {
-    // Request the video room access token
-    console.log('Requesting video access token for user:', userPk);
-    requestRandomToken({
-      userId: userPk,
-      onSuccess: res => {
-        mutate(CHATS_ENDPOINT);
-        setAuthData({
-          token: res.token,
-          livekitServerUrl: res.server_url,
-        });
-      },
-      onError: () => {
-        setError('error.server_issue');
-      },
-    });
-  }, []);
 
   const handleError = () => {
     setError('error.permissions');

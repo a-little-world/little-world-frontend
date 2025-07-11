@@ -44,7 +44,7 @@ export function Start({
     const { data: user } = useSWR(USER_ENDPOINT, fetcher)
     const hasMatch = user?.hasMatch;
 
-    const { initRandomCallLobby } = useRandomCallLobbyStore();
+    const randomCallLobby = useRandomCallLobbyStore();
 
     return (
         <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
@@ -53,11 +53,13 @@ export function Start({
             </WelcomeTitle>
             <Text center>{t(`start_random_call.intro`)}</Text>
             <JoinLobbyButton
-                onClick={() => initRandomCallLobby({ userId: userPk })}
+                onClick={() => {
+                    randomCallLobby.initRandomCallLobby({ userId: userPk })
+                }}
             >
                 {t(`start_random_call.lobby_btn`)}
             </JoinLobbyButton>
-        </StyledCard>
+        </StyledCard >
     );
 }
 

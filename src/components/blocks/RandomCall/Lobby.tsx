@@ -5,13 +5,13 @@ import {
   CloseIcon,
 } from '@a-little-world/little-world-design-system';
 import React, { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import styled, { css } from 'styled-components';
 
-import { exitLobby, joinLobby } from '../../../api/livekit.ts';
+import useSWR, { mutate } from 'swr';
+import { exitLobby, joinLobby, requestRandomToken } from '../../../api/livekit.ts';
 import { default as useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
-import { default as useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
+import { CHATS_ENDPOINT, fetcher, RANDOM_CALL_LOBBY_ENDPOINT } from '../../../features/swr/index.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
 
@@ -83,43 +83,41 @@ type CallLobbyProps = {
   userPk: string;
 };
 
-const JoinLobbyButton = styled(Button)`
-  ${({ theme, $isLink }) =>
-    $isLink &&
-    css`
-      color: ${theme.color.text.link};
-    `}
-`;
-
 function Lobby({ onClose, userPk }: CallLobbyProps) {
-  const { t } = useTranslation();
 
   // Zustand store hooks
   const randomCallLobby = useRandomCallLobbyStore();
-  const randomCallSetup = useRandomCallSetupStore();
+  const { data: users, error } = useSWR(RANDOM_CALL_LOBBY_ENDPOINT, fetcher, { refreshInterval: 1000 });
 
   useEffect(() => {
-    console.log(randomCallLobby.randomCallLobby)
-    if (randomCallLobby.randomCallLobby?.userId === "") {
-      exitLobby({
-        userId: userPk,
-        onSuccess: res => {
-        },
-        onError: () => {
-          setError('error.server_issue');
-        },
-      });
-    } else {
-      joinLobby({
-        userId: userPk,
-        onSuccess: res => {
-        },
-        onError: () => {
-          setError('error.server_issue');
-        },
-      });
-    }
-  }, [randomCallLobby]);
+    joinLobby({
+      userId: userPk,
+      onSuccess: res => {
+      },
+      onError: () => {
+        setError('error.server_issue');
+      },
+    })
+  }, []);
+
+  useEffect(() => {
+    // Request the video room access token
+    console.log('Requesting video access token for user:', userPk);
+    requestRandomToken({
+      userId: userPk,
+      onSuccess: res => {
+        mutate(CHATS_ENDPOINT);
+        setAuthData({
+          chatId: res.chat.uuid,
+          token: res.token,
+          livekitServerUrl: res.server_url,
+        });
+      },
+      onError: () => {
+        setError('error.server_issue');
+      },
+    });
+  }, [users]);
 
   return (
     <RandomCallLobbyCard>
@@ -145,17 +143,17 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
           height="24"
         />
       </CloseButton>
-      <JoinLobbyButton
-        onClick={() => randomCallSetup.initRandomCallSetup({ userId: userPk })}
-      >
-        {t(`start_random_call.lobby_btn`)}
-      </JoinLobbyButton>
+      GIF
     </RandomCallLobbyCard>
   );
 }
 
 export default Lobby;
 function setError(arg0: string) {
+  throw new Error('Function not implemented.');
+}
+
+function setAuthData(arg0: { chatId: any; token: any; livekitServerUrl: any; }) {
   throw new Error('Function not implemented.');
 }
 
