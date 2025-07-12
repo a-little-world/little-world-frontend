@@ -86,7 +86,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = isViewportHeight.includes(page);
-  const { data: matches, error } = useSWR(MATCHES_ENDPOINT, {
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: true,
   });
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT);
@@ -102,7 +102,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
   const showNewMatch = Boolean(matches?.unconfirmed?.results?.length);
-  console.log({ showNewMatch, matches, error });
+
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
     setShowSidebarMobile(false);

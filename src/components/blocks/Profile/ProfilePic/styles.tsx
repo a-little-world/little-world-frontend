@@ -1,7 +1,4 @@
-import {
-  Button,
-  ImageSearchIcon,
-} from '@a-little-world/little-world-design-system';
+import { Button } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
 import ProfileImage, { ImageSizes } from '../../../atoms/ProfileImage';
@@ -10,15 +7,18 @@ export const ProfilePicWrapper = styled.div`
   position: relative;
 `;
 
-export const SelectionPanel = styled.div`
+export const SelectionPanel = styled.div<{
+  $selected?: boolean;
+  $error?: boolean;
+}>`
   position: relative;
   border: 2.5px solid;
   border-color: ${({ $selected, theme, $error }) =>
-    $selected ?
-      $error ?
-        theme.color.border.error :
-        theme.color.border.selected :
-      theme.color.border.subtle};
+    $selected
+      ? $error
+        ? theme.color.border.error
+        : theme.color.border.selected
+      : theme.color.border.subtle};
   border-radius: 20px;
   cursor: pointer;
   display: flex;
@@ -61,6 +61,7 @@ export const INTERACTIVE_AREA_CSS = css`
   flex-grow: 1;
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
+
 export const InteractiveArea = styled.div`
   ${INTERACTIVE_AREA_CSS}
 
@@ -72,7 +73,10 @@ export const InteractiveArea = styled.div`
   }`}
 `;
 
-export const UploadArea = styled.label`
+export const UploadArea = styled.label<{
+  $dragging?: boolean;
+  $padding?: string;
+}>`
   ${INTERACTIVE_AREA_CSS}
   cursor: pointer;
   gap: ${({ theme }) => theme.spacing.xxxsmall};
@@ -198,82 +202,89 @@ export const Controls = styled.div`
     position: absolute;
     padding: 2px;
     background: ${({ theme }) => theme.color.surface.primary};
-    font-size: 14px;
-    color: #111;
-    border-radius: 10px;
-    opacity: 0;
-    transition: 0.2s ease-in-out;
-  }
-
-  div:hover span.color {
-    top: -60%;
-    opacity: 1;
+    border-radius: 4px;
   }
 `;
 
-export const ControlColumn = styled.div`
+export const ControlGroup = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
+  flex-direction: column;
+  gap: 8px;
   align-items: center;
-
-  &:not(last-of-type) {
-    padding-right: ${({ theme }) => theme.spacing.xxsmall};
-    border-right: 1px solid #3c3c3c;
-  }
-
-  ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.small}) {
-        flex-direction: column;
-    }`}
 `;
 
-export const OptionToggle = styled.button`
-  display: flex;
-  align-items:
-  height: 35px;
-  border-radius: 15px;
-  color: #bbb;
-  background: #3c3c3c;
-  padding: ${({ theme }) => theme.spacing.xxsmall};
+export const ControlLabel = styled.div`
+  font-size: 12px;
+  color: #ccc;
+  text-align: center;
+`;
+
+export const ColorPicker = styled.input`
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  position: relative;
+  background: none;
+`;
+
+export const Slider = styled.input`
+  width: 100px;
+  height: 6px;
+  border-radius: 3px;
+  background: #333;
+  outline: none;
+  -webkit-appearance: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    border: none;
+  }
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+export const SaveButton = styled(Button)`
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
 
   &:hover {
-    color: #fff;
+    background: #45a049;
   }
 `;
 
-export const ColorPicker = styled.button`
-  background: ${({ background }) => background};
-  height: 32px;
-  width: 32px;
-  border: 1px solid white;
-  border-radius: 50%;
-`;
+export const CancelButton = styled(Button)`
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
 
-export const Buttons = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-`;
-
-export const AvatarEditorButton = styled(Button)`
-  padding: 0 ${({ theme }) => theme.spacing.xxxsmall};
-  border-radius: 5px;
-`;
-
-export const StyledFileIcon = styled(ImageSearchIcon)`
-  display: none;
-
-  ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.medium}) {
-      display: block;
-      color: ${theme.color.surface.bold};
-      margin-bottom: ${theme.spacing.xxsmall};
-  }`}
+  &:hover {
+    background: #da190b;
+  }
 `;

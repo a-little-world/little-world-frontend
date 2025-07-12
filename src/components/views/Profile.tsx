@@ -36,9 +36,9 @@ import {
 import PageHeader from '../atoms/PageHeader.tsx';
 import ProfileCard from '../blocks/Cards/ProfileCard.tsx';
 import FormStep from '../blocks/Form/FormStep.jsx';
-import ProfileDetail from '../blocks/Profile/ProfileDetail';
-import ProfileEditor from '../blocks/Profile/ProfileEditor';
-import { Details, PageContent, TextField } from '../blocks/Profile/styles';
+import ProfileDetail from '../blocks/Profile/ProfileDetail.tsx';
+import ProfileEditor from '../blocks/Profile/ProfileEditor.tsx';
+import { Details, PageContent, TextField } from '../blocks/Profile/styles.tsx';
 
 const getProfileFields = ({
   profile,
@@ -256,6 +256,7 @@ function Profile() {
             <TextField>{profile.description}</TextField>
           </ProfileDetail>
           <ProfileDetail
+            description={t('profile.availability_instructions')}
             editable={false}
             content={profileFields.availability}
             setEditingField={setEditingField}

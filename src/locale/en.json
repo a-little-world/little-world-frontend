@@ -438,6 +438,7 @@
   "profile_pic.title": "Your Profile Picture",
   "profile_pic.upload_image": "Please upload a profile picture of yourself that shows your face.",
   "profile.availability_title": "Availability",
+  "profile.availability_instructions": "You can update your availability be selecting / deselecting the checkboxes below. Any changes will be automatically saved.",
   "profile.cancel_btn": "Cancel",
   "profile.description_title": "About",
   "profile.editor_title_description": "Update your \"About Me\"",

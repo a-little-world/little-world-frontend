@@ -31,7 +31,7 @@ const optionsKeys = {
   shirtColor: 'shirtColor',
   eyeBrowStyle: 'eyeBrowStyle',
   bgColor: 'bgColor',
-};
+} as const;
 
 const translations = {
   faceColor: 'skin_tone',
@@ -48,9 +48,9 @@ const translations = {
   shirtColor: 'shirt_color',
   eyeBrowStyle: 'eyebrows',
   bgColor: 'background',
-};
+} as const;
 
-const options = {
+const options: Record<string, any[]> = {
   faceColor: [
     '#F9C9B6',
     '#AC6651',
@@ -119,7 +119,7 @@ const options = {
   isGradient: [false],
 };
 
-const controls = [
+const controls: Array<[string | null, string?]> = [
   [null, optionsKeys.faceColor],
   [optionsKeys.earSize],
   [optionsKeys.hairStyle, optionsKeys.hairColor],
@@ -133,11 +133,21 @@ const controls = [
   [null, optionsKeys.bgColor],
 ];
 
-const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
+interface AvatarEditorProps {
+  config: any;
+  onUpdate: (config: any) => void;
+  closeEditor: () => void;
+}
+
+const AvatarEditor: React.FC<AvatarEditorProps> = ({
+  config,
+  onUpdate,
+  closeEditor,
+}) => {
   const [editorConfig, setEditorConfig] = useState(config);
   const { t } = useTranslation();
 
-  const updateAvatar = key => {
+  const updateAvatar = (key: string) => {
     const maxVal = options[key].length - 1;
     const currentIndex = options[key].indexOf(editorConfig[key]);
 
@@ -169,13 +179,17 @@ const AvatarEditor = ({ config, onUpdate, closeEditor }) => {
                   updateAvatar(optionKey);
                 }}
               >
-                {t(`profile_pic.avatar_${translations[optionKey]}`)}
+                {t(
+                  `profile_pic.avatar_${
+                    translations[optionKey as keyof typeof translations]
+                  }`,
+                )}
               </OptionToggle>
             )}
             {colorKey && (
               <ColorPicker
                 background={editorConfig[colorKey]}
-                ariaLabel={translations[colorKey]}
+                ariaLabel={translations[colorKey as keyof typeof translations]}
                 key={colorKey}
                 onClick={() => {
                   updateAvatar(colorKey);

@@ -29,7 +29,7 @@ import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink.tsx';
 import Socials from '../atoms/Socials.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
-import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles.jsx';
+import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles.tsx';
 import {
   BusinessName,
   ContactButtons,

@@ -440,6 +440,7 @@
   "profile_pic.title": "Dein Profilbild",
   "profile_pic.upload_image": "Bitte lade ein Profilfoto von dir hoch, auf dem dein Gesicht zu erkennen ist.",
   "profile.availability_title": "Generelle zeitliche Verfügbarkeit",
+  "profile.availability_instructions": "Du kannst deine Verfügbarkeit aktualisieren, indem du die Checkboxen unten an- oder abwählst. Alle Änderungen werden automatisch gespeichert.",
   "profile.cancel_btn": "Zurück",
   "profile.description_title": "Über",
   "profile.editor_title_description": "Über",

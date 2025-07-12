@@ -26,7 +26,7 @@ import {
   getFormComponent,
 } from '../../../userForm/formContent.ts';
 import getFormPage from '../../../userForm/formPages';
-import ProfilePic from '../Profile/ProfilePic/ProfilePic';
+import ProfilePic from '../Profile/ProfilePic/ProfilePic.tsx';
 import CheckboxWithInput from '../WithInput/CheckboxWithInput/CheckboxWithInput.tsx';
 import DropdownWithInput from '../WithInput/DropdownWithInput/DropdownWithInput.jsx';
 import MultiCheckboxWithInput from '../WithInput/MultiCheckboxWithInput/MultiCheckboxWithInput.tsx';

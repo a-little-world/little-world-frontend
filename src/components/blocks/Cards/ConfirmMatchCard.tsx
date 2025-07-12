@@ -18,7 +18,7 @@ import styled, { useTheme } from 'styled-components';
 import { registerInput } from '../../../helpers/form.ts';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
-import { TextField } from '../Profile/styles';
+import { TextField } from '../Profile/styles.tsx';
 
 const ProfileInfo = styled.div`
   display: flex;
