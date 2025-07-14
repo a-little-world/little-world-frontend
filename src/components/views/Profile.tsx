@@ -20,7 +20,6 @@ import {
   API_OPTIONS_ENDPOINT,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
-  fetcher,
   revalidateMatches,
 } from '../../features/swr/index.ts';
 import { onFormError } from '../../helpers/form.ts';
@@ -37,9 +36,9 @@ import {
 import PageHeader from '../atoms/PageHeader.tsx';
 import ProfileCard from '../blocks/Cards/ProfileCard.tsx';
 import FormStep from '../blocks/Form/FormStep.jsx';
-import ProfileDetail from '../blocks/Profile/ProfileDetail';
-import ProfileEditor from '../blocks/Profile/ProfileEditor';
-import { Details, PageContent, TextField } from '../blocks/Profile/styles';
+import ProfileDetail from '../blocks/Profile/ProfileDetail.tsx';
+import ProfileEditor from '../blocks/Profile/ProfileEditor.tsx';
+import { Details, PageContent, TextField } from '../blocks/Profile/styles.tsx';
 
 const getProfileFields = ({
   profile,
@@ -148,18 +147,18 @@ function Profile() {
   const navigate = useNavigate();
   const { control, getValues, handleSubmit, setError, watch } = useForm();
 
-  const formOptions = useSWR(API_OPTIONS_ENDPOINT, fetcher).data?.profile;
+  const formOptions = useSWR(API_OPTIONS_ENDPOINT).data?.profile;
 
   const [editingField, setEditingField] = useState(null);
 
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher);
+  const { data: matches } = useSWR(MATCHES_ENDPOINT);
   const match = !matches
     ? undefined
     : [...matches.support.results, ...matches.confirmed.results].find(
         m => m.partner.id === userId,
       );
 
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const isSelf = user?.id === userId || !userId;
 
   const [profile, setProfile] = useState(
@@ -257,6 +256,7 @@ function Profile() {
             <TextField>{profile.description}</TextField>
           </ProfileDetail>
           <ProfileDetail
+            description={t('profile.availability_instructions')}
             editable={false}
             content={profileFields.availability}
             setEditingField={setEditingField}

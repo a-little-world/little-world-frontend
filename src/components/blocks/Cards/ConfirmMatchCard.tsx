@@ -15,10 +15,12 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
+import { partiallyConfirmMatch } from '../../../api/matches.ts';
+import { revalidateMatches } from '../../../features/swr/index.ts';
 import { registerInput } from '../../../helpers/form.ts';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
-import { TextField } from '../Profile/styles';
+import { TextField } from '../Profile/styles.tsx';
 
 const ProfileInfo = styled.div`
   display: flex;
@@ -41,8 +43,7 @@ interface ConfirmaMatchCardProps {
   description: string;
   name: string;
   onClose: () => void;
-  onConfirm: () => void;
-  onReject: (reason: string) => void;
+  matchId: string;
   image: any;
   imageType: string;
 }
@@ -60,6 +61,7 @@ interface ConfirmMatchProps {
   imageType: string;
   onConfirm: () => void;
   onRejectClick: () => void;
+  isLoading: boolean;
 }
 
 interface RejectMatchProps {
@@ -71,6 +73,7 @@ interface RejectMatchProps {
   errors: any;
   register: any;
   handleSubmit: any;
+  isLoading: boolean;
 }
 
 const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
@@ -80,6 +83,7 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
   imageType,
   onConfirm,
   onRejectClick,
+  isLoading,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -112,10 +116,16 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
           type="button"
           appearance={ButtonAppearance.Secondary}
           onClick={onRejectClick}
+          disabled={isLoading}
         >
           {t('confirm_match.reject_button')}
         </Button>
-        <Button type="button" onClick={onConfirm}>
+        <Button
+          type="button"
+          onClick={onConfirm}
+          loading={isLoading}
+          disabled={isLoading}
+        >
           {t('confirm_match.confirm_button')}
         </Button>
       </ButtonsContainer>
@@ -132,6 +142,7 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
   errors,
   register,
   handleSubmit,
+  isLoading,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -171,6 +182,7 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
             size={TextAreaSize.Medium}
             error={t(errors?.rejectReason?.message)}
             maxLength={500}
+            disabled={isLoading}
           />
         </RejectReasonContainer>
       </CardContent>
@@ -180,6 +192,7 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
           type="button"
           appearance={ButtonAppearance.Secondary}
           onClick={onCancel}
+          disabled={isLoading}
         >
           {t('btn_cancel')}
         </Button>
@@ -187,6 +200,8 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
           type="button"
           appearance={ButtonAppearance.Primary}
           onClick={handleSubmit(onSubmit)}
+          loading={isLoading}
+          disabled={isLoading}
         >
           {t('confirm_match.reject_button')}
         </Button>
@@ -198,13 +213,13 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
 const ConfirmMatchCard = ({
   description,
   name,
-  onConfirm,
-  onReject,
+  matchId,
   onClose,
   image,
   imageType,
 }: ConfirmaMatchCardProps) => {
   const [viewState, setViewState] = useState<ViewState>('confirm');
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
@@ -213,6 +228,35 @@ const ConfirmMatchCard = ({
     setError,
     reset,
   } = useForm<RejectFormData>();
+
+  const handleConfirm = async () => {
+    setIsLoading(true);
+
+    try {
+      await new Promise<void>((resolve, reject) => {
+        partiallyConfirmMatch({
+          acceptDeny: true,
+          matchId,
+          onSuccess: () => {
+            revalidateMatches();
+            resolve();
+          },
+          onError: apiError => {
+            reject(apiError);
+          },
+        });
+      });
+
+      onClose();
+    } catch (apiError: any) {
+      setError('root.serverError', {
+        type: apiError?.status,
+        message: apiError?.message || 'error.server_issue',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleRejectClick = () => {
     setViewState('reject-form');
@@ -224,14 +268,32 @@ const ConfirmMatchCard = ({
   };
 
   const handleRejectSubmit = async (data: RejectFormData) => {
+    setIsLoading(true);
+
     try {
-      await onReject(data.rejectReason);
-      onClose();
-    } catch (error) {
-      setError('root.serverError', {
-        type: error?.status,
-        message: error?.message || 'error.server_issue',
+      await new Promise<void>((resolve, reject) => {
+        partiallyConfirmMatch({
+          acceptDeny: false,
+          matchId,
+          denyReason: data.rejectReason,
+          onSuccess: () => {
+            revalidateMatches();
+            resolve();
+          },
+          onError: apiError => {
+            reject(apiError);
+          },
+        });
       });
+
+      onClose();
+    } catch (apiError: any) {
+      setError('root.serverError', {
+        type: apiError?.status,
+        message: apiError?.message || 'error.server_issue',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -243,8 +305,9 @@ const ConfirmMatchCard = ({
           description={description}
           image={image}
           imageType={imageType}
-          onConfirm={onConfirm}
+          onConfirm={handleConfirm}
           onRejectClick={handleRejectClick}
+          isLoading={isLoading}
         />
       )}
       {viewState === 'reject-form' && (
@@ -257,6 +320,7 @@ const ConfirmMatchCard = ({
           errors={errors}
           register={register}
           handleSubmit={handleSubmit}
+          isLoading={isLoading}
         />
       )}
     </Card>

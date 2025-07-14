@@ -12,13 +12,12 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-
 import useSWR, { mutate } from 'swr';
+
 import { updateUserSearchState } from '../../../api/profile.ts';
 import { SEARCHING_STATES } from '../../../constants/index.ts';
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 import ButtonsContainer from '../../atoms/ButtonsContainer.jsx';
-import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 interface UpdateSearchStateCardProps {
   onClose: () => void;
@@ -26,7 +25,7 @@ interface UpdateSearchStateCardProps {
 
 function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
   const { t } = useTranslation();
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const { data: user } = useSWR(USER_ENDPOINT);
   const isSearching = user?.isSearching;
   const currentState = isSearching
     ? SEARCHING_STATES.searching

@@ -1,4 +1,5 @@
 import {
+  ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
   ChevronLeftIcon,
@@ -7,7 +8,8 @@ import {
 import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { fetcher, getQuestionsEndpoint } from '../../../features/swr/index.ts';
+
+import { getQuestionsEndpoint } from '../../../features/swr/index.ts';
 import {
   ArchiveButton,
   Categories,
@@ -21,16 +23,17 @@ import {
 } from './QuestionCards.styles.tsx';
 
 function QuestionCards() {
-  const { data: cards } = useSWR(getQuestionsEndpoint(false), fetcher)
-  console.log('cards', cards)
-  const cardsByCategory = cards?.cards
+  const { data: cards } = useSWR(getQuestionsEndpoint(false));
+  const cardsByCategory = cards?.cards;
 
   const categoriesRef = useRef<HTMLDivElement>(null);
 
   const selfUserPreferedLang = 'de';
   const [selectedQuestionId, setQuestionId] = useState(null);
 
-  const [selectedTopic, setTopic] = useState(cardsByCategory?.[0]?.uuid || null);
+  const [selectedTopic, setTopic] = useState(
+    cards?.categories?.[0]?.uuid || null,
+  );
 
   const changeScroll = (direction: 'left' | 'right') => {
     const scrollVelocity = {
@@ -43,12 +46,12 @@ function QuestionCards() {
   };
 
   useEffect(() => {
-    if (isEmpty(cardsByCategory)) {
+    if (isEmpty(cards)) {
       mutate(getQuestionsEndpoint(false));
     } else {
-      setTopic(cardsByCategory?.[0]?.uuid);
+      setTopic(cards?.categories?.[0]?.uuid);
     }
-  }, [cardsByCategory]);
+  }, [cards]);
 
   return (
     <SidebarCard>
@@ -70,7 +73,11 @@ function QuestionCards() {
             <TopicButton
               key={topic?.uuid}
               type="button"
-              $selected={selectedTopic === topic?.uuid}
+              appearance={
+                selectedTopic === topic?.uuid
+                  ? ButtonAppearance.Primary
+                  : ButtonAppearance.Secondary
+              }
               value={topic?.uuid}
               onClick={() => setTopic(topic?.uuid)}
             >

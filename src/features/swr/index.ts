@@ -1,3 +1,4 @@
+import type { SWRConfiguration } from 'swr';
 import { mutate } from 'swr';
 import { apiFetch } from '../../../src/api/helpers.ts';
 export const USER_ENDPOINT = '/api/user';
@@ -65,4 +66,8 @@ export async function postFetcher(userId: string): Promise<PostResponse> {
 
 export const revalidateMatches = () => {
   mutate(key => typeof key === 'string' && key.startsWith(MATCHES_ENDPOINT));
+};
+
+export const swrConfig: SWRConfiguration = {
+  fetcher,
 };

@@ -3,15 +3,32 @@ import {
   PencilIcon,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
-import { EditButton, Field, FieldTitle, ProfileSection } from './styles';
+import {
+  Description,
+  EditButton,
+  Field,
+  FieldTitle,
+  ProfileSection,
+} from './styles.tsx';
 
-const ProfileDetail = ({
+interface ProfileDetailProps {
+  content: {
+    dataField: string;
+  };
+  children?: ReactNode;
+  description?: string;
+  editable?: boolean;
+  setEditingField: (field: string) => void;
+}
+
+const ProfileDetail: React.FC<ProfileDetailProps> = ({
   content,
   children,
+  description,
   editable = true,
   setEditingField,
 }) => {
@@ -40,6 +57,7 @@ const ProfileDetail = ({
             />
           </EditButton>
         )}
+        {description && <Description>{description}</Description>}
         {children}
       </Field>
     </ProfileSection>

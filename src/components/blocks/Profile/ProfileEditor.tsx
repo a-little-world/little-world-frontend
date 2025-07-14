@@ -7,16 +7,15 @@ import {
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-
 import styled from 'styled-components';
-
 import { mutate } from 'swr';
+
 import { mutateUserData } from '../../../api';
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { onFormError } from '../../../helpers/form.ts';
 import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';
 import { FormButtons, SubmitError } from '../Form/styles';
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 const EditorForm = styled.form`
   display: flex;
@@ -28,7 +27,19 @@ const EditorTitle = styled(ModalTitle)`
   margin-bottom: ${({ theme }) => theme.spacing.small};
 `;
 
-const ProfileEditor = ({ content, field, onClose }) => {
+interface ProfileEditorProps {
+  content: {
+    dataField: string;
+  };
+  field: string;
+  onClose: () => void;
+}
+
+const ProfileEditor: React.FC<ProfileEditorProps> = ({
+  content,
+  field,
+  onClose,
+}) => {
   const { t } = useTranslation();
   const {
     control,
@@ -39,16 +50,16 @@ const ProfileEditor = ({ content, field, onClose }) => {
   } = useForm();
   const isImage = field === 'image';
 
-  const onFormSuccess = (_data) => {
+  const onFormSuccess = (_data: any) => {
     mutate(USER_ENDPOINT);
     onClose();
   };
 
-  const onError = e => {
+  const onError = (e: any) => {
     onFormError({ e, formFields: getValues(), setError });
   };
 
-  const onSave = data => {
+  const onSave = (data: any) => {
     mutateUserData(data, onFormSuccess, onError);
   };
 

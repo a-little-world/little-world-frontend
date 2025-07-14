@@ -14,10 +14,10 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
-
 import useSWR from 'swr';
+
 import { resendVerificationEmail, verifyEmail } from '../../api';
-import { USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   CHANGE_EMAIL_ROUTE,
@@ -37,17 +37,17 @@ const HelpText = styled(Text)`
 `;
 
 const ResendButton = styled(Button)`
- margin-bottom: ${({ theme }) => theme.spacing.xsmall};
-`
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+`;
 
 const VerifyEmail = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
-  const { data: userData } = useSWR(USER_ENDPOINT, fetcher)
-  const email = userData?.email
-  const userFormCompleted = userData?.userFormCompleted
+  const { data: userData } = useSWR(USER_ENDPOINT);
+  const email = userData?.email;
+  const userFormCompleted = userData?.userFormCompleted;
 
   const [searchParams] = useSearchParams();
 
@@ -137,9 +137,9 @@ const VerifyEmail = () => {
           $visible={requestSuccessful || errors?.root?.serverError}
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
-          {requestSuccessful ?
-            t('verify_email.success_message') :
-            t(errors?.root?.serverError?.message)}
+          {requestSuccessful
+            ? t('verify_email.success_message')
+            : t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Button

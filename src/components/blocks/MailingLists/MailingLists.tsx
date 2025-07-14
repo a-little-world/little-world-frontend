@@ -14,7 +14,7 @@ import useSWR, { mutate } from 'swr';
 
 import { apiFetch } from '../../../api/helpers.ts';
 import { mutateUserData } from '../../../api/index.js';
-import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { onFormError } from '../../../helpers/form.ts';
 
 const MailingListsWrapper = styled.div<{ $centred?: boolean }>`
@@ -47,11 +47,11 @@ const MailingLists = ({
 }) => {
   const { t } = useTranslation();
   const { control, getValues, setError, watch, handleSubmit } = useForm();
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const { data: user } = useSWR(USER_ENDPOINT);
 
   const subscribed = user?.profile.newsletter_subscribed;
 
-  const onFormSuccess = (_data) => {
+  const onFormSuccess = _data => {
     mutate(USER_ENDPOINT);
   };
 

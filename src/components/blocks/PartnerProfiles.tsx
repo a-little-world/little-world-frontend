@@ -10,11 +10,7 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { LANGUAGES, LANGUAGE_LEVELS } from '../../constants/index.ts';
-import {
-  USER_ENDPOINT,
-  fetcher,
-  getMatchEndpoint,
-} from '../../features/swr/index.ts';
+import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr/index.ts';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard.tsx';
 import PartnerActionCard from './Cards/PartnerActionCard.jsx';
@@ -75,7 +71,6 @@ function PartnerProfiles({
 
   const { data: matches, isLoading: matchesLoading } = useSWR(
     getMatchEndpoint(currentPage),
-    fetcher,
   );
   const confirmed = matches?.confirmed;
   const support = matches?.support;
@@ -94,7 +89,7 @@ function PartnerProfiles({
 
   const matchesDisplay = getMatchesDisplay();
 
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const germanLevelInvalid = Boolean(
     user?.profile?.lang_skill?.find(
       (skill: any) =>

@@ -14,7 +14,7 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
-import { CHATS_ENDPOINT, fetcher } from '../../features/swr/index.ts';
+import { CHATS_ENDPOINT } from '../../features/swr/index.ts';
 import { APP_ROUTE } from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import NotificationBell from '../atoms/NotificationBell.tsx';
@@ -73,7 +73,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
   } else if (paths.includes('trainings')) key = 'trainings';
   else if (paths.includes('partners')) key = 'partners';
 
-  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher);
+  const { data: chats } = useSWR(CHATS_ENDPOINT);
 
   const unreadCount = reduce(
     chats?.results,

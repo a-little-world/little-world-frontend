@@ -10,15 +10,18 @@ export const ProfilePicWrapper = styled.div`
   position: relative;
 `;
 
-export const SelectionPanel = styled.div`
+export const SelectionPanel = styled.div<{
+  $selected?: boolean;
+  $error?: boolean;
+}>`
   position: relative;
   border: 2.5px solid;
   border-color: ${({ $selected, theme, $error }) =>
-    $selected ?
-      $error ?
-        theme.color.border.error :
-        theme.color.border.selected :
-      theme.color.border.subtle};
+    $selected
+      ? $error
+        ? theme.color.border.error
+        : theme.color.border.selected
+      : theme.color.border.subtle};
   border-radius: 20px;
   cursor: pointer;
   display: flex;
@@ -33,10 +36,10 @@ export const SelectionPanel = styled.div`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-      flex-wrap: nowrap;
-      padding: ${theme.spacing.medium};
-      margin-bottom: ${theme.spacing.small};
-    }`}
+        flex-wrap: nowrap;
+        padding: ${theme.spacing.medium};
+        margin-bottom: ${theme.spacing.small};
+      }`}
 `;
 
 export const ImageContainer = styled.div`
@@ -44,9 +47,9 @@ export const ImageContainer = styled.div`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-      display: flex;
-      align-items: center;
-    }`}
+        display: flex;
+        align-items: center;
+      }`}
 `;
 
 export const INTERACTIVE_AREA_CSS = css`
@@ -68,11 +71,14 @@ export const InteractiveArea = styled.div`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-    padding: ${theme.spacing.medium};
-  }`}
+      padding: ${theme.spacing.medium};
+    }`}
 `;
 
-export const UploadArea = styled.label`
+export const UploadArea = styled.label<{
+  $dragging?: boolean;
+  $padding?: string;
+}>`
   ${INTERACTIVE_AREA_CSS}
   cursor: pointer;
   gap: ${({ theme }) => theme.spacing.xxxsmall};
@@ -85,8 +91,8 @@ export const UploadArea = styled.label`
 
   ${({ theme, $padding }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${$padding || theme.spacing.medium};
-  }`}
+        padding: ${$padding || theme.spacing.medium};
+    }`}
 
   ${({ $dragging }) =>
     $dragging &&
@@ -106,9 +112,9 @@ export const StyledProfileImage = styled(ProfileImage)`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-    width: ${ImageSizes.medium};
-    height: ${ImageSizes.medium};
-  }`}
+      width: ${ImageSizes.medium};
+      height: ${ImageSizes.medium};
+    }`}
 `;
 
 export const CircleButton = styled(Button)`
@@ -121,9 +127,9 @@ export const CircleButton = styled(Button)`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-    width: ${ImageSizes.medium};
-    height: ${ImageSizes.medium};
-  }`}
+      width: ${ImageSizes.medium};
+      height: ${ImageSizes.medium};
+    }`}
 `;
 
 export const TrashButton = styled(Button)`
@@ -223,29 +229,29 @@ export const ControlColumn = styled.div`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.small}) {
-        flex-direction: column;
-    }`}
+          flex-direction: column;
+      }`}
 `;
 
 export const OptionToggle = styled.button`
-  display: flex;
-  align-items:
-  height: 35px;
-  border-radius: 15px;
-  color: #bbb;
-  background: #3c3c3c;
-  padding: ${({ theme }) => theme.spacing.xxsmall};
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  position: relative;
-
-  &:hover {
-    color: #fff;
-  }
-`;
+    display: flex;
+    align-items:
+    height: 35px;
+    border-radius: 15px;
+    color: #bbb;
+    background: #3c3c3c;
+    padding: ${({ theme }) => theme.spacing.xxsmall};
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: relative;
+  
+    &:hover {
+      color: #fff;
+    }
+  `;
 
 export const ColorPicker = styled.button`
   background: ${({ background }) => background};
@@ -272,8 +278,8 @@ export const StyledFileIcon = styled(ImageSearchIcon)`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-      display: block;
-      color: ${theme.color.surface.bold};
-      margin-bottom: ${theme.spacing.xxsmall};
-  }`}
+        display: block;
+        color: ${theme.color.surface.bold};
+        margin-bottom: ${theme.spacing.xxsmall};
+    }`}
 `;

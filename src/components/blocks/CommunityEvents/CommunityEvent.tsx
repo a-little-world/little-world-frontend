@@ -13,10 +13,7 @@ import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index.ts';
-import {
-  COMMUNITY_EVENTS_ENDPOINT,
-  fetcher,
-} from '../../../features/swr/index.ts';
+import { COMMUNITY_EVENTS_ENDPOINT } from '../../../features/swr/index.ts';
 import { formatDate, formatEventTime } from '../../../helpers/date.ts';
 import { Event, calculateNextOccurrence } from '../../../helpers/events.ts';
 import placeholderImage from '../../../images/coffee.webp';
@@ -278,7 +275,7 @@ function CommunityEvent({
 }
 
 function CommunityEvents() {
-  const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT, fetcher);
+  const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT);
   const groupedEvents = collateEvents(events?.results || []);
   return (
     <Events>
