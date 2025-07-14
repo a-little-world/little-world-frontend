@@ -16,17 +16,22 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
-import { Controller } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  UseFormSetError,
+  UseFormSetValue,
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Avatar, { genConfig } from 'react-nice-avatar';
 import styled, { css, useTheme } from 'styled-components';
-
 import useSWR from 'swr';
+
 import { USER_FIELDS } from '../../../../constants/index.ts';
+import { USER_ENDPOINT } from '../../../../features/swr/index.ts';
 import useImageCompression from '../../../../hooks/useImageCompression.tsx';
 import { ImageSizes } from '../../../atoms/ProfileImage';
-import AvatarEditor from './AvatarEditor';
-import { fetcher, USER_ENDPOINT } from '../../../../features/swr/index.ts';
+import AvatarEditor from './AvatarEditor.tsx';
 import {
   AvatarEditorButton,
   AvatarSelection,
@@ -40,16 +45,24 @@ import {
   StyledProfileImage,
   TrashButton,
   UploadArea,
-} from './styles';
+} from './styles.tsx';
 
 const IMAGE_TYPES = {
   avatar: 'avatar',
   image: 'image',
-};
+} as const;
 
 const MAX_IMAGE_SIZE = 1000000; // bytes
 
-const CircleImage = ({
+interface CircleImageProps {
+  className?: string;
+  icon: React.ReactNode;
+  fileInputRef: React.RefObject<HTMLInputElement>;
+  uploadedImage: string | null;
+  onImageDelete: (e: React.MouseEvent) => void;
+}
+
+const CircleImage: React.FC<CircleImageProps> = ({
   className,
   icon,
   fileInputRef,
@@ -96,25 +109,37 @@ const MobileCircleImage = styled(CircleImage)`
   `}
 `;
 
-const ProfilePic = ({ control, setValue, setError }) => {
-  const [imageType, setImageType] = useState(IMAGE_TYPES.image);
+interface ProfilePicProps {
+  control: Control<any>;
+  setValue: UseFormSetValue<any>;
+  setError: UseFormSetError<any>;
+}
+
+const ProfilePic: React.FC<ProfilePicProps> = ({
+  control,
+  setValue,
+  setError,
+}) => {
+  const [imageType, setImageType] = useState<keyof typeof IMAGE_TYPES>(
+    IMAGE_TYPES.image,
+  );
   const [avatarConfig, setAvatarConfig] = useState(genConfig());
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
   const [avatarIndex, setAvatarIndex] = useState(0);
-  const [avatarList, setAvatarList] = useState([]);
-  const [uploadedImage, setUploadedImage] = useState('');
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const [avatarList, setAvatarList] = useState<any[]>([]);
+  const [uploadedImage, setUploadedImage] = useState<string | null>('');
+  const { data: user } = useSWR(USER_ENDPOINT);
   const userData = user?.profile;
 
   const { t } = useTranslation();
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const theme = useTheme();
   const { compressImage } = useImageCompression();
 
   // Needs to be async now, to wait for the compression
-  const onImageUpload = async e => {
+  const onImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // Imagefile the user wants to upload
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
     if (!file) return; // Guard clause for no file selected
 
@@ -136,16 +161,18 @@ const ProfilePic = ({ control, setValue, setError }) => {
     }
   };
 
-  const onImageDelete = e => {
+  const onImageDelete = (e: React.MouseEvent) => {
     e.preventDefault();
     setUploadedImage(null);
-    fileInputRef.current.value = '';
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
     setValue(USER_FIELDS.image, null);
     setValue(USER_FIELDS.imageType, imageType);
   };
 
   // Selection for the type the user is choosing (Own Image/ Avatar)
-  const onImageSelection = type => {
+  const onImageSelection = (type: keyof typeof IMAGE_TYPES) => {
     if (type === imageType) return;
     setImageType(type);
     setValue(USER_FIELDS.imageType, type);
@@ -172,25 +199,27 @@ const ProfilePic = ({ control, setValue, setError }) => {
       setValue(USER_FIELDS.avatar, avatarConfig);
       setAvatarList([avatarConfig]);
     }
-  }, [userData?.avatar_config]);
+  }, [userData?.avatar_config]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (userData?.image) setUploadedImage(userData.image);
   }, [userData?.image]);
 
-  const handleDrop = event => {
+  const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     const files = event?.dataTransfer?.files;
     const isValidFile = ['image/x-png', 'image/png', 'image/jpeg'].includes(
-      files?.[0].type,
+      files?.[0]?.type || '',
     );
-    if (isValidFile) {
+    if (isValidFile && files) {
       onImageSelection(IMAGE_TYPES.image);
-      onImageUpload({ target: { files } });
+      onImageUpload({
+        target: { files },
+      } as React.ChangeEvent<HTMLInputElement>);
     }
   };
 
-  const updateAvatar = config => {
+  const updateAvatar = (config: any) => {
     setAvatarConfig(config);
     setValue(USER_FIELDS.avatar, config);
     setValue(USER_FIELDS.imageType, imageType);

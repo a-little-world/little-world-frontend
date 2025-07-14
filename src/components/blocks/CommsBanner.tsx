@@ -10,7 +10,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT, fetcher } from '../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 
 export enum BannerTypes {
   Small = 'small',
@@ -184,7 +184,7 @@ const Description = styled(Text)`
 `;
 
 function CommsBanner() {
-  const banner = useSWR(USER_ENDPOINT, fetcher).data?.banner;
+  const banner = useSWR(USER_ENDPOINT).data?.banner;
   if (isEmpty(banner)) return null;
   const isLarge = banner.type === BannerTypes.Large;
   // depending on the type and image, we want to show the ctas on LHS

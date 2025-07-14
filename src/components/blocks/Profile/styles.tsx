@@ -48,7 +48,7 @@ export const ProfileSection = styled(Card)`
 `;
 
 export const FieldTitle = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.small};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 export const Field = styled.div``;
@@ -58,4 +58,13 @@ export const EditButton = styled(Button)`
   top: ${({ theme }) => theme.spacing.small};
   right: ${({ theme }) => theme.spacing.small};
   color: ${({ theme }) => theme.color.surface.bold};
+`;
+
+export const Description = styled(Text)`
+  ${({ theme }) => css`
+    margin-bottom: ${theme.spacing.small};
+    @media (min-width: ${theme.breakpoints.xlarge}) {
+      margin-bottom: ${theme.spacing.medium};
+    }
+  `};
 `;

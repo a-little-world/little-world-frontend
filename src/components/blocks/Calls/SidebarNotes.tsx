@@ -1,8 +1,9 @@
 import { TextTypes } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import useSWR from 'swr';
+
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 import {
   addUserNote,
   deleteUserNote,
@@ -29,7 +30,6 @@ import {
   UpdatedAtLabel,
   WrapperContainer,
 } from './CallSidebar.styles.tsx';
-import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 
 export function SidebarNotes() {
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
@@ -43,7 +43,7 @@ export function SidebarNotes() {
   const [textareaContent, setTextareaContent] = useState('');
   const [isContentChanged, setIsContentChanged] = useState(false);
   const [initialDataFetch, setInitialDataFetch] = useState(true);
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
+  const { data: user } = useSWR(USER_ENDPOINT);
   const selfUserPreferedLang = user?.profile?.display_language;
 
   if (initialDataFetch) {

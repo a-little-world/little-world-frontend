@@ -22,14 +22,14 @@ import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { submitHelpForm } from '../../api/index.js';
-import { MATCHES_ENDPOINT, fetcher } from '../../features/swr/index.ts';
+import { MATCHES_ENDPOINT } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
 import MenuLink from '../atoms/MenuLink.tsx';
 import Socials from '../atoms/Socials.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
-import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles.jsx';
+import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles.tsx';
 import {
   BusinessName,
   ContactButtons,
@@ -180,11 +180,11 @@ export const FileDropzone = ({
 function Faqs() {
   const { t } = useTranslation();
   const [faqs, setFaqs] = useState([]);
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: false,
   });
 
-  const adminUser = matches?.support.results[0];
+  const adminUser = matches?.support?.results?.[0];
   const supportUrl = getAppSubpageRoute(
     MESSAGES_ROUTE,
     adminUser?.chatId ?? '',
@@ -221,7 +221,7 @@ function Contact() {
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fileRef = useRef<HTMLInputElement>();
+  const fileRef = useRef<HTMLInputElement>(null);
   const {
     register,
     getValues,
@@ -230,7 +230,7 @@ function Contact() {
     setError,
   } = useForm();
 
-  const onError = e => {
+  const onError = (e: any) => {
     onFormError({ e, formFields: getValues(), setError });
     setIsSubmitting(false);
   };
@@ -268,7 +268,6 @@ function Contact() {
         })}
         label={t('help.contact_problem_label')}
         inputMode="text"
-        maxLength="300"
         size={TextAreaSize.Medium}
         error={t(errors?.message?.message)}
         placeholder={t('help.contact_problem_placeholder')}
@@ -276,7 +275,7 @@ function Contact() {
       <FileDropzone fileRef={fileRef} label={t('help.contact_picture_label')} />
 
       <StatusMessage
-        $visible={requestSuccessful || errors?.root?.serverError}
+        $visible={Boolean(requestSuccessful || errors?.root?.serverError)}
         $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
       >
         {requestSuccessful
@@ -297,11 +296,11 @@ function Contact() {
 function Help() {
   const { t } = useTranslation();
   const [subpage, selectSubpage] = useState('contact');
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, fetcher, {
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: false,
   });
 
-  const adminUser = matches?.support.results[0];
+  const adminUser = matches?.support?.results?.[0];
   const supportUrl = getAppSubpageRoute(
     MESSAGES_ROUTE,
     adminUser?.chatId ?? '',

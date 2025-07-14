@@ -16,7 +16,7 @@ import {
 
 import Note from '../components/atoms/Note.tsx';
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector.jsx';
-import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic.jsx';
+import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic.tsx';
 import { formatMultiSelectionOptions } from '../helpers/form.ts';
 
 export const ComponentTypes = {

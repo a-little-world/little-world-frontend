@@ -25,7 +25,6 @@ import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
-  fetcher,
 } from '../../features/swr/index.ts';
 import {
   COMMUNITY_EVENTS_ROUTE,
@@ -162,8 +161,8 @@ function Sidebar({ sidebarMobile }) {
     sidebarMobile?.set,
   ];
 
-  const { data: notifications } = useSWR(NOTIFICATIONS_ENDPOINT, fetcher);
-  const { data: chats } = useSWR(CHATS_ENDPOINT, fetcher);
+  const { data: notifications } = useSWR(NOTIFICATIONS_ENDPOINT);
+  const { data: chats } = useSWR(CHATS_ENDPOINT);
 
   const unread = {
     notifications: notifications?.unread?.results.filter(

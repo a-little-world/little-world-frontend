@@ -10,7 +10,6 @@ import { useDevelopmentFeaturesStore } from '../../../features/stores/index.ts';
 import {
   FIREBASE_ENDPOINT,
   USER_ENDPOINT,
-  fetcher,
 } from '../../../features/swr/index.ts';
 import {
   registerFirebaseDeviceToken,
@@ -40,7 +39,7 @@ const PushNotifications = ({
 }) => {
   const { t } = useTranslation();
   const { control, getValues, setError, watch, handleSubmit } = useForm<Data>();
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const enabled = user?.profile.push_notifications_enabled;
 
   const onFormSuccess = (_data: Data) => {
@@ -73,7 +72,7 @@ const PushNotifications = ({
     }
   }, [enabled, setError, t]);
 
-  const firebaseConfig = useSWR(FIREBASE_ENDPOINT, fetcher);
+  const firebaseConfig = useSWR(FIREBASE_ENDPOINT);
   const firebasePublicVapidKey = firebaseConfig?.firebasePublicVapidKey;
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 

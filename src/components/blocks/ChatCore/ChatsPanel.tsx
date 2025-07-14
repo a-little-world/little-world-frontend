@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT, fetcher } from '../../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { getCustomChatElements } from '../../../helpers/chat.ts';
 import { formatTimeDistance } from '../../../helpers/date.ts';
 import { LoadingLine, shimmerStyles } from '../../atoms/Loading.tsx';
@@ -135,7 +135,7 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
     i18n: { language },
   } = useTranslation();
 
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const userId = user?.id;
   const theme = useTheme();
 

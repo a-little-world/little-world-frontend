@@ -12,10 +12,10 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-
 import useSWR from 'swr';
+
 import { useActiveCallStore } from '../../features/stores/index.ts';
-import { USER_ENDPOINT, fetcher, getChatEndpoint } from '../../features/swr/index.ts';
+import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
@@ -121,12 +121,13 @@ function VideoCall() {
     onKeyPressed: () => setIsFullScreen(false),
   });
 
-  const { activeCall, stopActiveCall } = useActiveCallStore()
-  const { token, livekitServerUrl, audioOptions, videoOptions, chatId } = activeCall || {}
-  const { data: user } = useSWR(USER_ENDPOINT, fetcher)
-  const profile = user?.profile
+  const { activeCall, stopActiveCall } = useActiveCallStore();
+  const { token, livekitServerUrl, audioOptions, videoOptions, chatId } =
+    activeCall || {};
+  const { data: user } = useSWR(USER_ENDPOINT);
+  const profile = user?.profile;
 
-  const { data: chatData } = useSWR(getChatEndpoint(chatId), fetcher)
+  const { data: chatData } = useSWR(getChatEndpoint(chatId));
 
   useEffect(() => {
     if (urlUserId && !token) {
