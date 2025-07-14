@@ -35,6 +35,7 @@ import {
   getChatEndpoint,
   getChatMessagesEndpoint,
 } from '../../../features/swr/index.ts';
+import { addMessage } from '../../../features/swr/wsBridgeMutations.ts';
 import {
   formatFileName,
   getCustomChatElements,
@@ -97,6 +98,7 @@ const Chat = ({ chatId }) => {
   );
   const messages = chatMessages?.results || [];
   const messagesResult = messages;
+  const isUnmatched = activeChat?.is_unmatched;
 
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
@@ -225,15 +227,7 @@ const Chat = ({ chatId }) => {
   const onMessageSent = data => {
     reset();
     clearSelectedFile();
-    mutateMessages(
-      prev => ({
-        ...prev,
-        results: [data, ...prev.results],
-      }),
-      {
-        revalidate: true,
-      },
-    );
+    addMessage(data, chatId, null, true);
     setIsSubmitting(false);
     messagesRef.current.scrollTop = 0;
     setMessagesSent(curr => curr + 1);
@@ -291,7 +285,9 @@ const Chat = ({ chatId }) => {
         {chatMessages?.page &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
-              {t('chat.no_messages')}
+              {isUnmatched
+                ? t('chat.unmatched_no_messages')
+                : t('chat.no_messages')}
             </NoMessages>
           ) : (
             <>
@@ -383,9 +379,14 @@ const Chat = ({ chatId }) => {
           id="text"
           error={t(get(errors, `${ROOT_SERVER_ERROR}.message`))}
           expandable
-          placeholder={t('chat.text_area_placeholder')}
+          placeholder={
+            isUnmatched
+              ? t('chat.unmatched_text_area_placeholder')
+              : t('chat.text_area_placeholder')
+          }
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
+          disabled={isUnmatched}
         />
         {!!selectedFile && (
           <Attachment>
@@ -411,6 +412,7 @@ const Chat = ({ chatId }) => {
             selectedFile ? theme.color.text.reversed : theme.color.text.title
           }
           onClick={selectedFile ? clearSelectedFile : handleAttachmentClick}
+          disabled={isUnmatched}
         >
           {selectedFile ? (
             <CloseIcon
@@ -432,7 +434,7 @@ const Chat = ({ chatId }) => {
         <SendButton
           size={ButtonSizes.Large}
           type="submit"
-          disabled={isSubmitting || activeChat?.is_unmatched}
+          disabled={isSubmitting || isUnmatched}
           variation={ButtonVariations.Circle}
           backgroundColor={theme.color.gradient.orange10}
         >

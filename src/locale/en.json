@@ -61,6 +61,8 @@
   "chat.inactive_match": "Inactive",
   "chat.no_messages_preview": "Send the first message",
   "chat.no_messages": "You have no messages yet. Be the first to send a message!",
+  "chat.unmatched_no_messages": "This match is no longer active",
+  "chat.unmatched_text_area_placeholder": "Chat feature unavailable for inactive matches",
   "chat.not_selected": "Open a specific chat by clicking on it in the left-hand side panel",
   "chat.send_btn": "Send",
   "chat.text_area_placeholder": "Write here...",

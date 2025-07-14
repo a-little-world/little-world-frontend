@@ -30,7 +30,6 @@ const Messages = () => {
   const { scrollRef } = useIniniteScroll({
     fetchItems: fetchChats,
     setItems: newItems => {
-      console.log('newItems', newItems);
       mutateChats(
         prev => {
           // Filter out duplicates by UUID

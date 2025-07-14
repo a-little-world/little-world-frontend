@@ -61,6 +61,8 @@
   "chat.inactive_match": "Inaktiv",
   "chat.no_messages_preview": "Schreibe die erste Nachricht",
   "chat.no_messages": "Du hast noch keine Nachrichten. Sende jetzt eine Nachricht!",
+  "chat.unmatched_no_messages": "Dieses Match ist nicht mehr aktiv",
+  "chat.unmatched_text_area_placeholder": "Chat-Funktion nicht verfügbar für inaktive Matches",
   "chat.not_selected": "Öffne einen bestimmten Chat, indem du ihn in der linken Seitenleiste anklickst",
   "chat.send_btn": "Senden",
   "chat.text_area_placeholder": "Schreib eine Nachricht",

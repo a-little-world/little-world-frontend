@@ -1,4 +1,5 @@
 import {
+  ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
   ChevronLeftIcon,
@@ -31,7 +32,7 @@ function QuestionCards() {
   const [selectedQuestionId, setQuestionId] = useState(null);
 
   const [selectedTopic, setTopic] = useState(
-    cardsByCategory?.[0]?.uuid || null,
+    cards?.categories?.[0]?.uuid || null,
   );
 
   const changeScroll = (direction: 'left' | 'right') => {
@@ -45,12 +46,12 @@ function QuestionCards() {
   };
 
   useEffect(() => {
-    if (isEmpty(cardsByCategory)) {
+    if (isEmpty(cards)) {
       mutate(getQuestionsEndpoint(false));
     } else {
-      setTopic(cardsByCategory?.[0]?.uuid);
+      setTopic(cards?.categories?.[0]?.uuid);
     }
-  }, [cardsByCategory]);
+  }, [cards]);
 
   return (
     <SidebarCard>
@@ -72,7 +73,11 @@ function QuestionCards() {
             <TopicButton
               key={topic?.uuid}
               type="button"
-              $selected={selectedTopic === topic?.uuid}
+              appearance={
+                selectedTopic === topic?.uuid
+                  ? ButtonAppearance.Primary
+                  : ButtonAppearance.Secondary
+              }
               value={topic?.uuid}
               onClick={() => setTopic(topic?.uuid)}
             >

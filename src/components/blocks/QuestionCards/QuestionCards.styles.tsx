@@ -13,26 +13,11 @@ export const SidebarCard = styled(Card)`
   padding: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
-export const TopicButton = styled.button<{ $selected: boolean }>`
-  font-size: 1rem;
-  font-weight: normal;
-  min-width: fit-content;
-  padding: ${({ theme }) => theme.spacing.xsmall};
-  border-radius: 23px;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
+export const TopicButton = styled(Button)`
   white-space: nowrap;
-  border: 2px solid #ef8a21;
   margin: 0px ${({ theme }) => theme.spacing.xxxsmall};
-  box-sizing: border-box;
-
-  ${({ $selected }) =>
-    $selected &&
-    `
-    background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
-    color: white;
-  `}
+  min-width: unset; // fallback
+  min-width: fit-content;
 `;
 
 export const QuestionCard = styled.div<{ $selected: boolean }>`
@@ -87,11 +72,16 @@ export const Categories = styled.div`
   display: flex;
   overflow-x: scroll;
   padding: ${({ theme }) => theme.spacing.xxxsmall};
+  flex: 1;
+  height: calc(
+    49px + ${({ theme }) => theme.spacing.xxsmall}
+  ); // height of button + padding
 `;
 
 export const QuestionCategories = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
 `;
 
 export const CategoryControl = styled(Button)`

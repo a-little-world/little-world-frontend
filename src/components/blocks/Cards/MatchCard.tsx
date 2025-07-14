@@ -1,9 +1,7 @@
 import React from 'react';
 
-import { confirmMatch, partiallyConfirmMatch } from '../../../api/matches.ts';
-import { revalidateMatches } from '../../../features/swr/index.ts';
 import ConfirmMatchCard from './ConfirmMatchCard.tsx';
-import NewMatchCard from './NewMatchCard.jsx';
+import NewMatchCard from './NewMatchCard.tsx';
 
 type MatchCardProps = {
   showNewMatch: boolean;
@@ -25,15 +23,7 @@ export const MatchCardComponent = ({
       name={profile.first_name}
       imageType={profile.image_type}
       image={usesAvatar ? profile.avatar_config : profile.image}
-      onExit={() => {
-        confirmMatch({
-          userHash: profile.id,
-          onSuccess: () => {
-            revalidateMatches();
-          },
-          onError: _error => console.error(_error),
-        });
-      }}
+      userHash={profile.id}
     />
   ) : (
     <ConfirmMatchCard
@@ -41,27 +31,7 @@ export const MatchCardComponent = ({
       imageType={profile?.image_type}
       image={usesAvatar ? profile?.avatar_config : profile?.image}
       description={profile?.description}
-      onConfirm={() => {
-        partiallyConfirmMatch({
-          acceptDeny: true,
-          matchId,
-          onSuccess: _response => {
-            revalidateMatches();
-          },
-          onError: _error => console.error(_error),
-        });
-      }}
-      onReject={(denyReason: string) => {
-        partiallyConfirmMatch({
-          acceptDeny: false,
-          matchId,
-          denyReason,
-          onSuccess: () => {
-            revalidateMatches();
-          },
-          onError: _error => console.error(_error),
-        });
-      }}
+      matchId={matchId}
       onClose={onClose}
     />
   );
