@@ -1,4 +1,7 @@
-import { Button } from '@a-little-world/little-world-design-system';
+import {
+  Button,
+  ImageSearchIcon,
+} from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
 import ProfileImage, { ImageSizes } from '../../../atoms/ProfileImage';
@@ -33,10 +36,10 @@ export const SelectionPanel = styled.div<{
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-      flex-wrap: nowrap;
-      padding: ${theme.spacing.medium};
-      margin-bottom: ${theme.spacing.small};
-    }`}
+        flex-wrap: nowrap;
+        padding: ${theme.spacing.medium};
+        margin-bottom: ${theme.spacing.small};
+      }`}
 `;
 
 export const ImageContainer = styled.div`
@@ -44,9 +47,9 @@ export const ImageContainer = styled.div`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-      display: flex;
-      align-items: center;
-    }`}
+        display: flex;
+        align-items: center;
+      }`}
 `;
 
 export const INTERACTIVE_AREA_CSS = css`
@@ -61,7 +64,6 @@ export const INTERACTIVE_AREA_CSS = css`
   flex-grow: 1;
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
-
 export const InteractiveArea = styled.div`
   ${INTERACTIVE_AREA_CSS}
 
@@ -69,8 +71,8 @@ export const InteractiveArea = styled.div`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-    padding: ${theme.spacing.medium};
-  }`}
+      padding: ${theme.spacing.medium};
+    }`}
 `;
 
 export const UploadArea = styled.label<{
@@ -89,8 +91,8 @@ export const UploadArea = styled.label<{
 
   ${({ theme, $padding }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${$padding || theme.spacing.medium};
-  }`}
+        padding: ${$padding || theme.spacing.medium};
+    }`}
 
   ${({ $dragging }) =>
     $dragging &&
@@ -110,9 +112,9 @@ export const StyledProfileImage = styled(ProfileImage)`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-    width: ${ImageSizes.medium};
-    height: ${ImageSizes.medium};
-  }`}
+      width: ${ImageSizes.medium};
+      height: ${ImageSizes.medium};
+    }`}
 `;
 
 export const CircleButton = styled(Button)`
@@ -125,9 +127,9 @@ export const CircleButton = styled(Button)`
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
-    width: ${ImageSizes.medium};
-    height: ${ImageSizes.medium};
-  }`}
+      width: ${ImageSizes.medium};
+      height: ${ImageSizes.medium};
+    }`}
 `;
 
 export const TrashButton = styled(Button)`
@@ -202,89 +204,82 @@ export const Controls = styled.div`
     position: absolute;
     padding: 2px;
     background: ${({ theme }) => theme.color.surface.primary};
-    border-radius: 4px;
+    font-size: 14px;
+    color: #111;
+    border-radius: 10px;
+    opacity: 0;
+    transition: 0.2s ease-in-out;
+  }
+
+  div:hover span.color {
+    top: -60%;
+    opacity: 1;
   }
 `;
 
-export const ControlGroup = styled.div`
+export const ControlColumn = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
   align-items: center;
-`;
 
-export const ControlLabel = styled.div`
-  font-size: 12px;
-  color: #ccc;
-  text-align: center;
-`;
-
-export const ColorPicker = styled.input`
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: none;
-`;
-
-export const Slider = styled.input`
-  width: 100px;
-  height: 6px;
-  border-radius: 3px;
-  background: #333;
-  outline: none;
-  -webkit-appearance: none;
-
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #fff;
-    cursor: pointer;
+  &:not(last-of-type) {
+    padding-right: ${({ theme }) => theme.spacing.xxsmall};
+    border-right: 1px solid #3c3c3c;
   }
 
-  &::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #fff;
-    cursor: pointer;
-    border: none;
-  }
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.small}) {
+          flex-direction: column;
+      }`}
 `;
 
-export const ButtonGroup = styled.div`
+export const OptionToggle = styled.button`
+    display: flex;
+    align-items:
+    height: 35px;
+    border-radius: 15px;
+    color: #bbb;
+    background: #3c3c3c;
+    padding: ${({ theme }) => theme.spacing.xxsmall};
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: relative;
+  
+    &:hover {
+      color: #fff;
+    }
+  `;
+
+export const ColorPicker = styled.button`
+  background: ${({ background }) => background};
+  height: 32px;
+  width: 32px;
+  border: 1px solid white;
+  border-radius: 50%;
+`;
+
+export const Buttons = styled.div`
   display: flex;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 `;
 
-export const SaveButton = styled(Button)`
-  background: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-
-  &:hover {
-    background: #45a049;
-  }
+export const AvatarEditorButton = styled(Button)`
+  padding: 0 ${({ theme }) => theme.spacing.xxxsmall};
+  border-radius: 5px;
 `;
 
-export const CancelButton = styled(Button)`
-  background: #f44336;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
+export const StyledFileIcon = styled(ImageSearchIcon)`
+  display: none;
 
-  &:hover {
-    background: #da190b;
-  }
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.medium}) {
+        display: block;
+        color: ${theme.color.surface.bold};
+        margin-bottom: ${theme.spacing.xxsmall};
+    }`}
 `;

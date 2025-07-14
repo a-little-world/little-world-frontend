@@ -31,7 +31,7 @@ import { USER_FIELDS } from '../../../../constants/index.ts';
 import { USER_ENDPOINT } from '../../../../features/swr/index.ts';
 import useImageCompression from '../../../../hooks/useImageCompression.tsx';
 import { ImageSizes } from '../../../atoms/ProfileImage';
-import AvatarEditor from './AvatarEditor';
+import AvatarEditor from './AvatarEditor.tsx';
 import {
   AvatarEditorButton,
   AvatarSelection,
@@ -45,7 +45,7 @@ import {
   StyledProfileImage,
   TrashButton,
   UploadArea,
-} from './styles';
+} from './styles.tsx';
 
 const IMAGE_TYPES = {
   avatar: 'avatar',
@@ -199,7 +199,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
       setValue(USER_FIELDS.avatar, avatarConfig);
       setAvatarList([avatarConfig]);
     }
-  }, [userData?.avatar_config, avatarConfig, setValue]);
+  }, [userData?.avatar_config]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (userData?.image) setUploadedImage(userData.image);
@@ -309,9 +309,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                   value={undefined}
                   ref={e => {
                     ref(e);
-                    if (fileInputRef.current !== e) {
-                      fileInputRef.current = e;
-                    }
+                    fileInputRef.current = e;
                   }}
                   type="file"
                   name={name}
