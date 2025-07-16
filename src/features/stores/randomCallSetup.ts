@@ -6,6 +6,7 @@ interface RandomCallSetupData {
     chatId: string | null,
     token: string | null,
     livekitServerUrl: string | null,
+    randomCallMatchId: string | null,
   };
 }
 

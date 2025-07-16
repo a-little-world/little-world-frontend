@@ -93,6 +93,7 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
     chatId: null,
     token: null,
     livekitServerUrl: null,
+    randomCallMatchId: null,
   });
   const [error, setError] = useState('');
 
@@ -128,6 +129,7 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
           chatId: res.chat.uuid,
           token: res.token,
           livekitServerUrl: res.server_url,
+          randomCallMatchId: res.random_call_match_id,
         });
       },
       onError: () => {

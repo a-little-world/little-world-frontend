@@ -23,6 +23,8 @@ export const getMatchEndpoint = (page: number) =>
   `/api/matches?page=${page}&page_size=10`;
 export const getQuestionsEndpoint = (archived: boolean) =>
   `/api/user/question_cards/?archived=${archived}&category=all`;
+  
+export const getRandomCallStatusEndpoint = (matchId: string) => `/api/random_calls/status/${matchId}`;
 
 export async function fetcher<T>(url: string): Promise<T> {
   const res = await fetch(url);

@@ -8,6 +8,7 @@ interface ActiveCallData {
   audioOptions?: boolean | { deviceId: string };
   videoOptions?: boolean | { deviceId: string };
   livekitServerUrl?: string;
+  randomCallMatchId?: string;
 }
 
 interface ActiveCallState {

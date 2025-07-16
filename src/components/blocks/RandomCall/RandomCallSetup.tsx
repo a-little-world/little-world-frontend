@@ -146,6 +146,7 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
         ? { deviceId: values.videoDeviceId }
         : false,
       livekitServerUrl: randomCallSetup.randomCallSetup?.authData.livekitServerUrl || undefined,
+      randomCallMatchId: randomCallSetup.randomCallSetup?.authData.randomCallMatchId || undefined,
     });
     onClose();
     clearActiveTracks();
