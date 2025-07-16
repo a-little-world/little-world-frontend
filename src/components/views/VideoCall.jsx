@@ -15,7 +15,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { useActiveCallStore } from '../../features/stores/index.ts';
-import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index.ts';
+import { USER_ENDPOINT, getChatEndpoint, getRandomCallStatusEndpoint } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
@@ -122,16 +122,25 @@ function VideoCall() {
   });
 
   const { activeCall, stopActiveCall } = useActiveCallStore();
-  const { token, livekitServerUrl, audioOptions, videoOptions, chatId } =
+  const { token, livekitServerUrl, audioOptions, videoOptions, chatId, randomCallMatchId } =
     activeCall || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
 
   const { data: chatData } = useSWR(getChatEndpoint(chatId));
+  
+  const { data: randomCallStatus } = useSWR(
+    randomCallMatchId ? getRandomCallStatusEndpoint(randomCallMatchId) : null
+  );
+  
+  useEffect(() => {
+    if (randomCallStatus) {
+      console.log('Random call status:', randomCallStatus);
+    }
+  }, [randomCallStatus]);
 
   useEffect(() => {
     if (urlUserId && !token) {
-      // If userId is in url but no token available, redirect to call-setup so we can re-join the call
       navigate(getCallSetupRoute(urlUserId));
     }
   }, [urlUserId, token, navigate]);
