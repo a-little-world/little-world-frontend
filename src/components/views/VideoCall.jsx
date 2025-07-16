@@ -128,11 +128,13 @@ function VideoCall() {
   const profile = user?.profile;
 
   const { data: chatData } = useSWR(getChatEndpoint(chatId));
-  
+
   const { data: randomCallStatus } = useSWR(
-    randomCallMatchId ? getRandomCallStatusEndpoint(randomCallMatchId) : null
+    randomCallMatchId ? getRandomCallStatusEndpoint(randomCallMatchId) : null,
+    { refreshInterval: 2000 },
   );
-  
+  console.log(randomCallMatchId)
+
   useEffect(() => {
     if (randomCallStatus) {
       console.log('Random call status:', randomCallStatus);
