@@ -54,7 +54,7 @@ export function Start({
             <Text center>{t(`start_random_call.intro`)}</Text>
             <JoinLobbyButton
                 onClick={() => {
-                    randomCallLobby.initRandomCallLobby({ userId: userPk })
+                    randomCallLobby.initRandomCallLobby({ userId: userPk, prevMatchId: "" })
                 }}
             >
                 {t(`start_random_call.lobby_btn`)}

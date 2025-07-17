@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import useSWR, { mutate } from 'swr';
-import { requestRandomToken } from '../../../api/livekit.ts';
+import { requestRandomToken, resetMatch } from '../../../api/livekit.ts';
 import { default as useActiveCallStore } from '../../../features/stores/activeCall';
 import useRandomCallPairStore from '../../../features/stores/randomCallPair.ts';
 import { default as useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
@@ -172,6 +172,14 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
       <CloseButton
         variation={ButtonVariations.Icon}
         onClick={() => {
+          resetMatch({
+            matchId: randomCallSetup.randomCallSetup?.authData.randomCallMatchId,
+            onSuccess: res => {
+            },
+            onError: () => {
+              setError('error.server_issue');
+            },
+          });
           randomCallSetup.cancelRandomCallSetup();
           onClose();
         }}

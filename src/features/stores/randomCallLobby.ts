@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 interface RandomCallLobbyData {
     userId: string;
+    prevMatchId: string;
 }
 
 interface RandomCallLobbyState {

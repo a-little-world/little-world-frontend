@@ -10,6 +10,7 @@ import { default as useCallSetupStore } from '../../../features/stores/callSetup
 import { default as usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
 import { default as useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
 import useRandomCallPairStore from '../../../features/stores/randomCallPair.ts';
+import useRandomCallSetupStore from '../../../features/stores/randomCallSetup.ts';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
@@ -98,6 +99,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { activeCall } = useActiveCallStore();
   const { randomCallLobby } = useRandomCallLobbyStore();
   const { randomCallPair } = useRandomCallPairStore();
+  const { randomCallSetup } = useRandomCallSetupStore();
 
 
   // Zustand store hooks
@@ -135,6 +137,13 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       openModal(ModalTypes.RANDOMCALL_SETUP.id);
     } else if (isModalOpen(ModalTypes.RANDOMCALL_SETUP.id)) closeModal();
   }, [randomCallPair]);
+
+  useEffect(() => {
+    if (randomCallSetup?.prevRandomMatchId) {
+      console.log("PREVMATCHID", randomCallSetup?.prevRandomMatchId)
+      openModal(ModalTypes.RANDOM_CALL_LOBBY.id);
+    } else if (isModalOpen(ModalTypes.RANDOM_CALL_LOBBY.id)) closeModal();
+  }, [randomCallSetup])
 
   useEffect(() => {
     const shouldShowMatchModal = Boolean(

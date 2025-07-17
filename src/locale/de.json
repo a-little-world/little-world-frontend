@@ -777,5 +777,6 @@
   "start_random_call.title": "Starte einen Random Call",
   "start_random_call.intro": "Komm in die Lobby und werde zufällig mit anderen Nutzern gematched!",
   "start_random_call.lobby_btn": "Join Lobby",
-  "random_call_setup.title": "Random Call Set Up"
+  "random_call_setup.title": "Random Call Set Up",
+  "random_call_lobby.intro": "Let's get you matched with another user in the lobby! Please note that you will be matched with a random user in the lobby, this means your buddy might be a learner just like you! Please have respect for each other and be nice :)"
 }

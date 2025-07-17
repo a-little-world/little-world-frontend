@@ -105,6 +105,27 @@ export const exitLobby = async ({
   }
 }
 
+export const resetMatch = async ({
+  matchId,
+  onSuccess,
+  onError,
+}: {
+  matchId: string;
+  onSuccess: (result: any) => void;
+  onError: (error: any) => void;
+}) => {
+  try {
+    const result = await apiFetch(`/api/random_calls/reset_match`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: { matchId: matchId },
+    });
+    onSuccess(result);
+  } catch (error) {
+    onError(error);
+  }
+}
+
 export const submitCallFeedback = async ({
   liveSessionId,
   rating,

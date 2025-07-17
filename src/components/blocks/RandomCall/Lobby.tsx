@@ -5,7 +5,7 @@ import {
   CloseIcon,
 } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
 import { exitLobby, joinLobby, randomMatchPairing } from '../../../api/livekit.ts';
@@ -90,6 +90,8 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
 
   const [error, setError] = useState('');
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     joinLobby({
       userId: userPk,
@@ -148,7 +150,7 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
           height="24"
         />
       </CloseButton>
-      GIF
+      {t('random_call_lobby.intro')}
     </RandomCallLobbyCard>
   );
 }
