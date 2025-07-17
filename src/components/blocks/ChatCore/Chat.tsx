@@ -117,11 +117,20 @@ const Chat = ({ chatId }) => {
     setItems: items => {
       if (chatMessages) {
         mutateMessages(
-          prev => ({
-            ...prev,
-            ...items,
-            results: [...prev.results, ...(items.results || [])],
-          }),
+          (prev: any) => {
+            const existingUuids = new Set(
+              prev?.results?.map((message: any) => message.uuid) || [],
+            );
+            const newResults = items.results.filter(
+              (message: any) => !existingUuids.has(message.uuid),
+            );
+
+            return {
+              ...prev,
+              ...items,
+              results: [...prev.results, ...newResults],
+            };
+          },
           {
             revalidate: false,
           },
