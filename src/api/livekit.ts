@@ -21,12 +21,33 @@ export const requestVideoAccessToken = async ({
   }
 };
 
-export const requestRandomToken = async ({
+export const randomMatchPairing = async ({
   userId,
   onSuccess,
   onError,
 }: {
-  userId: string;
+  userId: string,
+  onSuccess: (result: any) => void;
+  onError: (error: any) => void;
+}) => {
+  try {
+    const result = await apiFetch(`/api/random_calls/match_random_pair`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: { userId: userId },
+    });
+    onSuccess(result);
+  } catch (error) {
+    onError(error);
+  }
+};
+
+export const requestRandomToken = async ({
+  matchId,
+  onSuccess,
+  onError,
+}: {
+  matchId: string | any;
   onSuccess: (result: any) => void;
   onError: (error: any) => void;
 }) => {
@@ -34,7 +55,7 @@ export const requestRandomToken = async ({
     const result = await apiFetch(`/api/random_calls/get_token_random_call`, {
       method: 'POST',
       useTagsOnly: true,
-      body: { userId: userId },
+      body: { matchId: matchId },
     });
     onSuccess(result);
   } catch (error) {

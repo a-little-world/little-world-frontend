@@ -9,7 +9,7 @@ import { default as useActiveCallStore } from '../../../features/stores/activeCa
 import { default as useCallSetupStore } from '../../../features/stores/callSetup.ts';
 import { default as usePostCallSurveyStore } from '../../../features/stores/postCallSurvey.ts';
 import { default as useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
-import { default as useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
+import useRandomCallPairStore from '../../../features/stores/randomCallPair.ts';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
@@ -96,8 +96,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { callSetup } = useCallSetupStore();
   const { postCallSurvey } = usePostCallSurveyStore();
   const { activeCall } = useActiveCallStore();
-  const { randomCallSetup } = useRandomCallSetupStore();
   const { randomCallLobby } = useRandomCallLobbyStore();
+  const { randomCallPair } = useRandomCallPairStore();
 
 
   // Zustand store hooks
@@ -131,10 +131,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [randomCallLobby]);
 
   useEffect(() => {
-    if (randomCallSetup) {
+    if (randomCallPair?.matchId) {
       openModal(ModalTypes.RANDOMCALL_SETUP.id);
     } else if (isModalOpen(ModalTypes.RANDOMCALL_SETUP.id)) closeModal();
-  }, [randomCallSetup]);
+  }, [randomCallPair]);
 
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
@@ -217,7 +217,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       </Modal>
 
       <Modal open={isModalOpen(ModalTypes.RANDOMCALL_SETUP.id)} locked>
-        <RandomCallSetup onClose={closeModal} userPk={randomCallSetup?.userId} />
+        <RandomCallSetup onClose={closeModal} userPk={randomCallLobby?.userId} />
       </Modal>
 
       <Modal

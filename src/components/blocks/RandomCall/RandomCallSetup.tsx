@@ -9,16 +9,18 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { LocalUserChoices, PreJoin } from '@livekit/components-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
+import { requestRandomToken } from '../../../api/livekit.ts';
 import { default as useActiveCallStore } from '../../../features/stores/activeCall';
+import useRandomCallPairStore from '../../../features/stores/randomCallPair.ts';
 import { default as useRandomCallSetupStore } from '../../../features/stores/randomCallSetup.ts';
-import { fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
+import { CHATS_ENDPOINT, fetcher, USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { clearActiveTracks } from '../../../helpers/video.ts';
 import { getCallRoute } from '../../../router/routes.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
@@ -87,34 +89,6 @@ const RandomCallSetupCard = styled(ModalCard)`
   `}
 `;
 
-// const AudioOutputSelect = () => {
-//   const { t } = useTranslation();
-//   const [audioOutDevices, setAudioOutDevices] = useState<MediaDeviceInfo[]>([]);
-//   useEffect(() => {
-//     navigator.mediaDevices.enumerateDevices().then(deviceList => {
-//       const devices = deviceList
-//         .filter(deviceInfo => deviceInfo.kind === 'audiooutput')
-//         .filter(deviceInfo => deviceInfo.deviceId !== 'default');
-//       setAudioOutDevices(devices);
-//     });
-//   }, []);
-
-//   return (
-//     <div className="speaker-select">
-//       <Dropdown
-//         ariaLabel="speaker-select"
-//         maxWidth="100%"
-//         label={t('call_setup.audio_output_select')}
-//         placeholder={t('call_setup.audio_output_placeholder')}
-//         options={audioOutDevices.map(deviceInfo => ({
-//           value: deviceInfo.deviceId,
-//           label: deviceInfo.label,
-//         }))}
-//       />
-//     </div>
-//   );
-// };
-
 type RandomCallSetupProps = {
   onClose: () => void;
   userPk: string;
@@ -127,11 +101,39 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
   const [error, setError] = useState('');
 
   const { data: user } = useSWR(USER_ENDPOINT, fetcher)
-  const username = user?.profile?.first_name;
+  const username = user?.id;
 
   // Zustand store hooks
   const { initActiveCall } = useActiveCallStore();
   const randomCallSetup = useRandomCallSetupStore();
+  const randomCallPair = useRandomCallPairStore();
+
+  const [authData, setAuthData] = useState({
+    chatId: null,
+    token: null,
+    livekitServerUrl: null,
+    randomCallMatchId: null,
+  });
+
+  useEffect(() => {
+    requestRandomToken({
+      matchId: randomCallPair.randomCallPair?.matchId,
+      onSuccess: res => {
+        mutate(CHATS_ENDPOINT);
+        const authDataTmp = {
+          chatId: res.chat.uuid,
+          token: res.token,
+          livekitServerUrl: res.server_url,
+          randomCallMatchId: res.random_match_id,
+        };
+        setAuthData(authDataTmp)
+        randomCallSetup.initRandomCallSetup({ userId: userPk, authData: authDataTmp });
+      },
+      onError: () => {
+        setError('error.server_issue');
+      },
+    });
+  }, []);
 
   const handleJoin = (values: LocalUserChoices) => {
     initActiveCall({
@@ -159,7 +161,7 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
 
   const handleValidate = (values: LocalUserChoices) => {
     const isValid = Boolean(
-      (values.audioDeviceId || values.videoDeviceId) && randomCallSetup.randomCallSetup?.authData.token,
+      (values.audioDeviceId || values.videoDeviceId) && authData.token,
     );
     if (isValid) setError('');
     return isValid;
@@ -183,7 +185,7 @@ function RandomCallSetup({ onClose, userPk }: RandomCallSetupProps) {
       </CloseButton>
       <div>
         <Text center type={TextTypes.Heading4}>
-          {t('pcs_main_heading')}
+          {t('random_call_setup.title')}
         </Text>
         <Text center type={TextTypes.Body4}>
           {t('pcs_sub_heading')}

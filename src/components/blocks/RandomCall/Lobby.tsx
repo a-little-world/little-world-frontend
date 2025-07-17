@@ -8,11 +8,9 @@ import React, { useEffect, useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { mutate } from 'swr';
-import { exitLobby, joinLobby, requestRandomToken } from '../../../api/livekit.ts';
+import { exitLobby, joinLobby, randomMatchPairing } from '../../../api/livekit.ts';
 import { default as useRandomCallLobbyStore } from '../../../features/stores/randomCallLobby.ts';
-import useRandomCallSetupStore from '../../../features/stores/randomCallSetup.ts';
-import { CHATS_ENDPOINT } from '../../../features/swr/index.ts';
+import useRandomCallPairStore from '../../../features/stores/randomCallPair.ts';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
 import ModalCard from '../Cards/ModalCard';
 
@@ -88,13 +86,8 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
 
   // Zustand store hooks
   const randomCallLobby = useRandomCallLobbyStore();
-  const randomCallSetup = useRandomCallSetupStore();
-  const [authData, setAuthData] = useState({
-    chatId: null,
-    token: null,
-    livekitServerUrl: null,
-    randomCallMatchId: null,
-  });
+  const randomCallPair = useRandomCallPairStore();
+
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -119,26 +112,16 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
   }, []);
 
   useEffect(() => {
-    // Request the video room access token
-    console.log('Requesting video access token for user:', userPk);
-    requestRandomToken({
+    //try to find partner, redo every 5 seconds
+    randomMatchPairing({
       userId: userPk,
       onSuccess: res => {
-        mutate(CHATS_ENDPOINT);
-        setAuthData({
-          chatId: res.chat.uuid,
-          token: res.token,
-          livekitServerUrl: res.server_url,
-          randomCallMatchId: res.random_call_match_id,
-        });
+        randomCallPair.initRandomCallPair({ matchId: res.new_match });
       },
       onError: () => {
         setError('error.server_issue');
       },
     });
-    if (authData.token) {
-      randomCallSetup.initRandomCallSetup({ userId: userPk, authData: authData });
-    }
   }, [tick]);
 
   return (

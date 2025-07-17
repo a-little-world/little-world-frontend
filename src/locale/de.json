@@ -776,5 +776,6 @@
   "welcome.title": "Hallo!",
   "start_random_call.title": "Starte einen Random Call",
   "start_random_call.intro": "Komm in die Lobby und werde zufällig mit anderen Nutzern gematched!",
-  "start_random_call.lobby_btn": "Join Lobby"
+  "start_random_call.lobby_btn": "Join Lobby",
+  "random_call_setup.title": "Random Call Set Up"
 }

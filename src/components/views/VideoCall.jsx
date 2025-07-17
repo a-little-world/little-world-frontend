@@ -15,6 +15,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { useActiveCallStore } from '../../features/stores/index.ts';
+import { default as useRandomCallSetupStore } from '../../features/stores/randomCallSetup.ts';
 import { USER_ENDPOINT, getChatEndpoint, getRandomCallStatusEndpoint } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
@@ -129,11 +130,12 @@ function VideoCall() {
 
   const { data: chatData } = useSWR(getChatEndpoint(chatId));
 
+  const randomCallSetup = useRandomCallSetupStore();
+
   const { data: randomCallStatus } = useSWR(
-    randomCallMatchId ? getRandomCallStatusEndpoint(randomCallMatchId) : null,
+    randomCallSetup.randomCallSetup.authData.randomCallMatchId ? getRandomCallStatusEndpoint(randomCallSetup.randomCallSetup.authData.randomCallMatchId) : null,
     { refreshInterval: 2000 },
   );
-  console.log(randomCallMatchId)
 
   useEffect(() => {
     if (randomCallStatus) {

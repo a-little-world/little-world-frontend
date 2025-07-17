@@ -3,5 +3,6 @@ export { default as useCallSetupStore } from './callSetup.ts';
 export { default as useDevelopmentFeaturesStore } from './developmentFeatures.ts';
 export { default as usePostCallSurveyStore } from './postCallSurvey.ts';
 export { default as useRandomCallLobbyStore } from './randomCallLobby';
+export { default as useRandomCallPairStore } from './randomCallPair.ts';
 export { default as useRandomCallSetupStore } from './randomCallSetup';
 
