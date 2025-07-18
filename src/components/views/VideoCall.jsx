@@ -15,7 +15,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { resetMatch } from '../../../src/api/livekit.ts';
-import { useActiveCallStore, useRandomCallLobbyStore } from '../../features/stores/index.ts';
+import { useActiveCallStore, useCallSetupStore, useRandomCallLobbyStore, useRandomCallPairStore } from '../../features/stores/index.ts';
 import { default as useRandomCallSetupStore } from '../../features/stores/randomCallSetup.ts';
 import { USER_ENDPOINT, getChatEndpoint, getRandomCallStatusEndpoint } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
@@ -133,6 +133,8 @@ function VideoCall() {
 
   const randomCallSetup = useRandomCallSetupStore();
   const randomCallLobby = useRandomCallLobbyStore();
+  const randomCallPair = useRandomCallPairStore();
+  const callSetup = useCallSetupStore();
 
   const { data: randomCallStatus } = useSWR(
     randomCallSetup.randomCallSetup?.authData.randomCallMatchId ? getRandomCallStatusEndpoint(randomCallSetup.randomCallSetup?.authData.randomCallMatchId) : null,
@@ -141,9 +143,21 @@ function VideoCall() {
 
   useEffect(() => {
     if (randomCallStatus?.completed) {
+      resetMatch({
+        matchId: randomCallSetup.randomCallSetup?.authData.randomCallMatchId,
+        onSuccess: res => {
+        },
+        onError: () => {
+          setError('error.server_issue');
+        },
+      });
+
       stopActiveCall()
-      randomCallLobby.initRandomCallLobby({ userId: "", prevMatchId: randomCallSetup.randomCallSetup?.authData.randomCallMatchId })
-      navigate(getAppRoute(), { state: { callEnded: true } })//no idea why this behaves different to line 218
+      callSetup.cancelCallSetup();
+      randomCallSetup.cancelRandomCallSetup();
+      randomCallPair.cancelRandomCallPair();
+      navigate(getAppRoute())
+      randomCallLobby.initRandomCallLobby({ userId: urlUserId, prevMatchId: randomCallSetup.randomCallSetup?.authData.randomCallMatchId })
     }
   }, [randomCallStatus])
 
@@ -154,7 +168,7 @@ function VideoCall() {
   }, [randomCallStatus]);
 
   useEffect(() => {
-    if (urlUserId && !token) {
+    if (urlUserId && !token && randomCallStatus?.completed) { //TODO: find correct condition
       navigate(getCallSetupRoute(urlUserId));
     }
   }, [urlUserId, token, navigate]);

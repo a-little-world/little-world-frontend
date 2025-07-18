@@ -100,7 +100,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { randomCallLobby } = useRandomCallLobbyStore();
   const { randomCallPair } = useRandomCallPairStore();
   const { randomCallSetup } = useRandomCallSetupStore();
-
+  console.log(randomCallLobby, callSetup, randomCallSetup)
 
   // Zustand store hooks
   const { initCallSetup } = useCallSetupStore();
@@ -140,7 +140,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (randomCallSetup?.prevRandomMatchId) {
-      console.log("PREVMATCHID", randomCallSetup?.prevRandomMatchId)
       openModal(ModalTypes.RANDOM_CALL_LOBBY.id);
     } else if (isModalOpen(ModalTypes.RANDOM_CALL_LOBBY.id)) closeModal();
   }, [randomCallSetup])

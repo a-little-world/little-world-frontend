@@ -131,7 +131,7 @@ function Lobby({ onClose, userPk }: CallLobbyProps) {
       <CloseButton
         variation={ButtonVariations.Icon}
         onClick={() => {
-          randomCallLobby.cancelRandomCallLobby({ userId: "" })
+          randomCallLobby.cancelRandomCallLobby({ userId: "", prevMatchId: "" })
           exitLobby({
             userId: userPk,
             onSuccess: res => {
