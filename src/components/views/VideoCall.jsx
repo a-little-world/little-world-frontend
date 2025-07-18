@@ -124,12 +124,13 @@ function VideoCall() {
   });
 
   const { activeCall, stopActiveCall } = useActiveCallStore();
-  const { token, livekitServerUrl, audioOptions, videoOptions, chatId, randomCallMatchId } =
+  const { token, livekitServerUrl, audioOptions, videoOptions, chatId } =
     activeCall || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
 
   const { data: chatData } = useSWR(getChatEndpoint(chatId));
+  console.log("CHATDATA:", chatData) //no idea why this loads a correct chat but is not able to load into CallSideBar
 
   const randomCallSetup = useRandomCallSetupStore();
   const randomCallLobby = useRandomCallLobbyStore();
