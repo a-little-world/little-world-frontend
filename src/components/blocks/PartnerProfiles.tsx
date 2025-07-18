@@ -26,13 +26,12 @@ const FindNewPartner = styled.button<{ $hasMatch: boolean }>`
   border: 2px dashed ${({ theme }) => theme.color.border.selected};
   border-radius: 40px;
   border-width: 2px;
-  width: ${CardSizes.Small};
+  width: 100%;
   padding: ${({ theme }) => `${theme.spacing.xxlarge} ${theme.spacing.large}`};
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: ${PROFILE_CARD_HEIGHT};
   position: relative;
   order: ${({ $hasMatch }) => ($hasMatch ? 1 : 0)};
 
@@ -42,6 +41,15 @@ const FindNewPartner = styled.button<{ $hasMatch: boolean }>`
     height: 115px;
     cursor: pointer;
   }
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.small}) {
+      width: ${CardSizes.Small};
+    }
+    @media (min-width: ${theme.breakpoints.large}) {
+      height: ${PROFILE_CARD_HEIGHT};
+    }
+  `};
 `;
 
 const Matches = styled.div`

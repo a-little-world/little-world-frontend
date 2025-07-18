@@ -81,6 +81,10 @@ a {
   height: fit-content;
 }
 
+dialog {
+  color: unset;
+}
+
 button img {
   display: block;
 }
