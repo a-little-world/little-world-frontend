@@ -64,6 +64,12 @@ const CallSetupCard = styled(ModalCard)`
       .lk-button-menu {
         height: 100%;
       }
+
+      /* Safari fix for button groups */
+      .lk-button-group-pre-join,
+      .lk-button-group-menu-pre-join {
+        height: auto;
+      }
     }
 
     .lk-join-button {
