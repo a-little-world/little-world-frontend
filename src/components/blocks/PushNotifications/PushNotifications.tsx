@@ -16,7 +16,7 @@ import {
   sendDelayedFirebaseTestNotification,
   sendFirebaseTestNotification,
   unregisterFirebaseDeviceToken,
-} from '../../../firebase.ts';
+} from '../../../firebase-util.ts';
 import { onFormError } from '../../../helpers/form.ts';
 
 const NotificationForm = styled.form`

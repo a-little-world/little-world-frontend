@@ -5,7 +5,7 @@ import {
   TextArea,
 } from '@a-little-world/little-world-design-system';
 import { Link } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled, { StyledComponent, css } from 'styled-components';
 
 import ProfileImage from '../../atoms/ProfileImage.jsx';
 
@@ -217,7 +217,7 @@ export const MessageText = styled(Text)<{
 
 export const MessageBox = styled(TextArea)`
   background: ${({ theme }) => theme.color.surface.secondary};
-`;
+` as StyledComponent<any, any>;
 
 export const UserInfo = styled.div`
   display: flex;

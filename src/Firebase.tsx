@@ -19,7 +19,7 @@ import {
   registerFirebaseDeviceToken,
   setFirebaseDeviceTokenRegistered,
   unregisterFirebaseDeviceToken,
-} from './firebase.ts';
+} from './firebase-util.ts';
 import useToast from './hooks/useToast.ts';
 
 interface FirebasePushNotificationData {

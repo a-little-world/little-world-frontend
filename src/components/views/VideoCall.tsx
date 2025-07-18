@@ -19,7 +19,7 @@ import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
 import Drawer from '../atoms/Drawer.tsx';
-import ProfileImage from '../atoms/ProfileImage';
+import ProfileImage from '../atoms/ProfileImage.jsx';
 import CallSidebar, {
   SidebarSelectionProvider,
 } from '../blocks/Calls/CallSidebar.tsx';

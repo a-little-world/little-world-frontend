@@ -5,8 +5,15 @@
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "npm run lint -- --fix",
-    "dev": "npx webpack serve --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development"
+    "dev": "npx webpack serve --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development",
+    "clean": "rm -rf dist/*",
+    "build": "mkdir -p dist && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc --project tsconfig.json --noCheck --outDir dist/esm",
+    "build:cjs": "tsc --project tsconfig.json --noCheck --module commonjs --outDir dist/cjs"
   },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -98,7 +105,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.5.1",
-    "typescript": "^5.3.3",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.0",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-bundle-tracker": "^1.8.0",

@@ -13,7 +13,7 @@ import {
   getToken,
 } from 'firebase/messaging';
 
-import { apiFetch } from './api/helpers.ts';
+import { apiFetch } from './api/helpers.js';
 
 const firebaseAppSettings: FirebaseAppSettings = {
   automaticDataCollectionEnabled: false,
