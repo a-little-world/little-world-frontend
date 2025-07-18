@@ -31,26 +31,27 @@ export const ListItem = styled(Link)<{ $layout: ContentListLayouts }>`
   overflow: hidden;
   width: 100%;
 
-   ${({ theme }) =>
-     css`
-       @media (min-width: ${theme.breakpoints.medium}) {
-         padding: ${theme.spacing.medium};
-         flex: 1;
-         min-width: 320px;
-         max-width: 440px;
-       }
-     `}
+  ${({ theme, $layout }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.medium};
+      flex: 1;
+      min-width: 320px;
+      max-width: ${
+        $layout === ContentListLayouts.SideBySide ? '100%' : '440px'
+      };
+    }
 
-    ${({ theme, $layout }) =>
+    ${
       $layout === ContentListLayouts.SideBySide &&
       css`
         max-width: 100%;
         justify-content: flex-start;
+
         @media (min-width: ${theme.breakpoints.small}) {
           flex-direction: row;
         }
-      `}
-  }}
+      `
+    }}}`}}
 `;
 
 export const ImageWrapper = styled.div<{ $layout: ContentListLayouts }>`
