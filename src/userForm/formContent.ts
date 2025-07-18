@@ -14,10 +14,10 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 
-import Note from '../components/atoms/Note.tsx';
-import CategorySelector from '../components/blocks/CategorySelector/CategorySelector.jsx';
-import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic.tsx';
-import { formatMultiSelectionOptions } from '../helpers/form.ts';
+import Note from '../components/atoms/Note';
+import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
+import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
+import { formatMultiSelectionOptions } from '../helpers/form';
 
 export const ComponentTypes = {
   infoText: 'infoText',

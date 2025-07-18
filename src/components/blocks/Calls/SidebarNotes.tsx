@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../../features/swr/index';
 import {
   addUserNote,
   deleteUserNote,
@@ -29,7 +29,7 @@ import {
   TextArea,
   UpdatedAtLabel,
   WrapperContainer,
-} from './CallSidebar.styles.tsx';
+} from './CallSidebar.styles';
 
 export function SidebarNotes() {
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);

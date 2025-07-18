@@ -7,7 +7,7 @@ import {
 import { Link } from 'react-router-dom';
 import styled, { StyledComponent, css } from 'styled-components';
 
-import ProfileImage from '../../atoms/ProfileImage.jsx';
+import ProfileImage from '../../atoms/ProfileImage';
 
 export const Panel = styled(Card)`
   display: flex;

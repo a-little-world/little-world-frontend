@@ -4,25 +4,25 @@ import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { submitCallFeedback } from '../../../api/livekit.ts';
+import { submitCallFeedback } from '../../../api/livekit';
 import {
   useActiveCallStore,
   useCallSetupStore,
   usePostCallSurveyStore,
-} from '../../../features/stores/index.ts';
+} from '../../../features/stores/index';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
-} from '../../../features/swr/index.ts';
-import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations.ts';
-import useModalManager, { ModalTypes } from '../../../hooks/useModalManager.ts';
+} from '../../../features/swr/index';
+import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
+import useModalManager, { ModalTypes } from '../../../hooks/useModalManager';
 import '../../../main.css';
-import CallSetup from '../Calls/CallSetup.tsx';
-import IncomingCall from '../Calls/IncomingCall.tsx';
-import { MatchCardComponent } from '../Cards/MatchCard.tsx';
-import MobileNavBar from '../MobileNavBar.jsx';
-import PostCallSurvey from '../PostCallSurvey/PostCallSurvey.tsx';
-import Sidebar from '../Sidebar.jsx';
+import CallSetup from '../Calls/CallSetup';
+import IncomingCall from '../Calls/IncomingCall';
+import { MatchCardComponent } from '../Cards/MatchCard';
+import MobileNavBar from '../MobileNavBar';
+import PostCallSurvey from '../PostCallSurvey/PostCallSurvey';
+import Sidebar from '../Sidebar';
 
 const isViewportHeight = ['chat'];
 

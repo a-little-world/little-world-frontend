@@ -12,9 +12,9 @@ import {
 import {
   NOTIFICATIONS_ENDPOINT,
   UNREAD_NOTIFICATIONS_ENDPOINT,
-} from './features/swr/index.ts';
-import { runWsBridgeMutation } from './features/swr/wsBridgeMutations.ts';
-import useToast from './hooks/useToast.ts';
+} from './features/swr/index';
+import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
+import useToast from './hooks/useToast';
 
 const SOCKET_URL = IS_CAPACITOR_BUILD
   ? CORE_WS_SHEME + BACKEND_URL.split('//').pop() + CORE_WS_PATH

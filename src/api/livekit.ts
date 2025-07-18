@@ -1,4 +1,4 @@
-import { apiFetch } from './helpers.ts';
+import { apiFetch } from './helpers';
 
 export const requestVideoAccessToken = async ({
   partnerId,

@@ -5,19 +5,16 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
-import { mutateUserData } from '../../../api/index.js';
-import { useDevelopmentFeaturesStore } from '../../../features/stores/index.ts';
-import {
-  FIREBASE_ENDPOINT,
-  USER_ENDPOINT,
-} from '../../../features/swr/index.ts';
+import { mutateUserData } from '../../../api/index';
+import { useDevelopmentFeaturesStore } from '../../../features/stores/index';
+import { FIREBASE_ENDPOINT, USER_ENDPOINT } from '../../../features/swr/index';
 import {
   registerFirebaseDeviceToken,
   sendDelayedFirebaseTestNotification,
   sendFirebaseTestNotification,
   unregisterFirebaseDeviceToken,
-} from '../../../firebase-util.ts';
-import { onFormError } from '../../../helpers/form.ts';
+} from '../../../firebase-util';
+import { onFormError } from '../../../helpers/form';
 
 const NotificationForm = styled.form`
   display: flex;

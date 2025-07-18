@@ -14,7 +14,7 @@ import {
   Controls,
   Editor,
   OptionToggle,
-} from './styles.tsx';
+} from './styles';
 
 const optionsKeys = {
   faceColor: 'faceColor',

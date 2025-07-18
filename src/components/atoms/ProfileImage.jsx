@@ -2,7 +2,7 @@ import React from 'react';
 import Avatar from 'react-nice-avatar';
 import styled from 'styled-components';
 
-import { shimmer, shimmerGradient } from './Loading.tsx';
+import { shimmer, shimmerGradient } from './Loading';
 
 export const ImageSizes = {
   xsmall: '72px',

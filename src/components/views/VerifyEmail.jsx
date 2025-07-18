@@ -17,13 +17,13 @@ import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { resendVerificationEmail, verifyEmail } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
+import { USER_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
 import {
   CHANGE_EMAIL_ROUTE,
   USER_FORM_ROUTE,
   getAppRoute,
-} from '../../router/routes.ts';
+} from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import {
   FormDescription,

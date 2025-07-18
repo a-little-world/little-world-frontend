@@ -11,14 +11,13 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-
 import { useNavigate } from 'react-router-dom';
-
 import { mutate } from 'swr';
+
 import { setNewEmail } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
-import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../router/routes.ts';
+import { USER_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
+import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import {
   FormDescription,

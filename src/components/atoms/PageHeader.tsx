@@ -9,7 +9,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { getAppRoute } from '../../router/routes.ts';
+import { getAppRoute } from '../../router/routes';
 
 const HeaderContainer = styled.div`
   display: none;

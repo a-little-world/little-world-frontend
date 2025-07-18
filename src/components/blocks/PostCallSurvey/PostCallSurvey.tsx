@@ -17,11 +17,10 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
-
 import styled, { useTheme } from 'styled-components';
 
-import { usePostCallSurveyStore } from '../../../features/stores/index.ts';
-import { registerInput } from '../../../helpers/form.ts';
+import { usePostCallSurveyStore } from '../../../features/stores/index';
+import { registerInput } from '../../../helpers/form';
 
 const StyledCard = styled(Card)``;
 
@@ -69,7 +68,7 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
     if (watchedRating && typeof watchedRating === 'number') {
       updatePostCallSurvey({
         rating: watchedRating,
-      })
+      });
     }
   }, [watchedRating]);
 
@@ -119,7 +118,7 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
             error={t(errors?.review?.message)}
             placeholder={t('post_call_survey.comment_placeholder')}
             onBlur={e => {
-              updatePostCallSurvey({ review: e?.target.value })
+              updatePostCallSurvey({ review: e?.target.value });
             }}
           />
           {!!submitError && (

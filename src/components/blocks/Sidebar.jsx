@@ -25,7 +25,7 @@ import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr/index.ts';
+} from '../../features/swr/index';
 import {
   COMMUNITY_EVENTS_ROUTE,
   HELP_ROUTE,
@@ -37,10 +37,10 @@ import {
   SETTINGS_ROUTE,
   getAppRoute,
   isActiveRoute,
-} from '../../router/routes.ts';
-import Logo from '../atoms/Logo.tsx';
-import MenuLink from '../atoms/MenuLink.tsx';
-import UnreadDot from '../atoms/UnreadDot.tsx';
+} from '../../router/routes';
+import Logo from '../atoms/Logo';
+import MenuLink from '../atoms/MenuLink';
+import UnreadDot from '../atoms/UnreadDot';
 
 const SidebarContainer = styled.nav`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};

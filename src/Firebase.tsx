@@ -8,8 +8,8 @@ import {
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
 
-import { ToastContextType } from './components/blocks/Toast.tsx';
-import { FIREBASE_ENDPOINT, USER_ENDPOINT } from './features/swr/index.ts';
+import { ToastContextType } from './components/blocks/Toast';
+import { FIREBASE_ENDPOINT, USER_ENDPOINT } from './features/swr/index';
 import {
   disableFirebase,
   enableFirebase,
@@ -19,8 +19,8 @@ import {
   registerFirebaseDeviceToken,
   setFirebaseDeviceTokenRegistered,
   unregisterFirebaseDeviceToken,
-} from './firebase-util.ts';
-import useToast from './hooks/useToast.ts';
+} from './firebase-util';
+import useToast from './hooks/useToast';
 
 interface FirebasePushNotificationData {
   headline: string;

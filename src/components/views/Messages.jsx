@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
-import { fetchChats } from '../../api/chat.ts';
-import { CHATS_ENDPOINT_SEPERATE } from '../../features/swr/index.ts';
-import useIniniteScroll from '../../hooks/useInfiniteScroll.tsx';
-import { MESSAGES_ROUTE, getAppRoute } from '../../router/routes.ts';
-import PageHeader from '../atoms/PageHeader.tsx';
-import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo.tsx';
-import ChatsPanel from '../blocks/ChatCore/ChatsPanel.tsx';
+import { fetchChats } from '../../api/chat';
+import { CHATS_ENDPOINT_SEPERATE } from '../../features/swr/index';
+import useIniniteScroll from '../../hooks/useInfiniteScroll';
+import { MESSAGES_ROUTE, getAppRoute } from '../../router/routes';
+import PageHeader from '../atoms/PageHeader';
+import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo';
+import ChatsPanel from '../blocks/ChatCore/ChatsPanel';
 import { ChatDashboard } from './Messages.styles';
 
 const Messages = () => {

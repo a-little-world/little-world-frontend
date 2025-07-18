@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
-import { BACKEND_URL } from '../ENVIRONMENT.js';
-import { API_FIELDS } from '../constants/index.ts';
+import { BACKEND_URL } from '../ENVIRONMENT';
+import { API_FIELDS } from '../constants/index';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 

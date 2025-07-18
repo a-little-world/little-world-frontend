@@ -15,12 +15,12 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-import { partiallyConfirmMatch } from '../../../api/matches.ts';
-import { revalidateMatches } from '../../../features/swr/index.ts';
-import { registerInput } from '../../../helpers/form.ts';
+import { partiallyConfirmMatch } from '../../../api/matches';
+import { revalidateMatches } from '../../../features/swr/index';
+import { registerInput } from '../../../helpers/form';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
-import { TextField } from '../Profile/styles.tsx';
+import { TextField } from '../Profile/styles';
 
 const ProfileInfo = styled.div`
   display: flex;

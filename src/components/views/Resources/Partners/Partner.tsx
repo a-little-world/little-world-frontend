@@ -10,17 +10,17 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
-import { PARTNERS_ROUTE, getAppRoute } from '../../../../router/routes.ts';
-import Video from '../../../atoms/Video.tsx';
-import { PARTNERS_DATA, getDataBySlug } from '../constants.ts';
-import { Container, ContentCard, NotFoundCard } from '../shared.styles.tsx';
+import { PARTNERS_ROUTE, getAppRoute } from '../../../../router/routes';
+import Video from '../../../atoms/Video';
+import { PARTNERS_DATA, getDataBySlug } from '../constants';
+import { Container, ContentCard, NotFoundCard } from '../shared.styles';
 import {
   AdditionalImage,
   Cta,
   Description,
   Header,
   Image,
-} from './Partners.styles.tsx';
+} from './Partners.styles';
 
 const Partner: FC = () => {
   const { partnerSlug } = useParams();

@@ -14,8 +14,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { mutate } from 'swr';
 
 import { login } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
+import { USER_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
 import {
   FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
@@ -23,7 +23,7 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
   passAuthenticationBoundary,
-} from '../../router/routes.ts';
+} from '../../router/routes';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 const Login = () => {

@@ -1,12 +1,12 @@
 import BabbelLogo from '../../../images/partners/babbel-logo.png';
 import LernFairLogo from '../../../images/partners/lern-fair-logo.svg';
 import LernFairImage from '../../../images/partners/lern-fair-studying.jpg';
-import { BABBEL_REDIRECT } from '../../../router/redirects.ts';
+import { BABBEL_REDIRECT } from '../../../router/redirects';
 import {
   PARTNERS_ROUTE,
   TRAININGS_ROUTE,
   getAppSubpageRoute,
-} from '../../../router/routes.ts';
+} from '../../../router/routes';
 
 const LERN_FAIR_YT_ID = 'lA4CIXDXXK8';
 

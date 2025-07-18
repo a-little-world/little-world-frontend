@@ -24,15 +24,15 @@ import useSWR, { mutate } from 'swr';
 
 import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
-import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
+import { USER_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
+import { FORGOT_PASSWORD_ROUTE } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
-import PageHeader from '../atoms/PageHeader.tsx';
+import PageHeader from '../atoms/PageHeader';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
-import MailingLists from '../blocks/MailingLists/MailingLists.tsx';
-import PushNotifications from '../blocks/PushNotifications/PushNotifications.tsx';
+import MailingLists from '../blocks/MailingLists/MailingLists';
+import PushNotifications from '../blocks/PushNotifications/PushNotifications';
 
 const types = {
   first_name: 'text',

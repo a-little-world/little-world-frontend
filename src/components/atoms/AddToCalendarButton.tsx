@@ -14,9 +14,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-import { COMMUNITY_EVENT_FREQUENCIES } from '../../constants/index.ts';
-import { formatDateForCalendarUrl, getEndTime } from '../../helpers/date.ts';
-import { CalendarEvent } from '../../helpers/events.ts';
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../constants/index';
+import { formatDateForCalendarUrl, getEndTime } from '../../helpers/date';
+import { CalendarEvent } from '../../helpers/events';
 
 export const AddToCalendarOption = styled(Button)`
   font-size: 1rem;

@@ -6,7 +6,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../../features/swr/index';
 import {
   CategoryNote,
   CategorySelectorWrapper,

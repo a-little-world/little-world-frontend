@@ -14,10 +14,10 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR, { mutate } from 'swr';
 
-import { updateUserSearchState } from '../../../api/profile.ts';
-import { SEARCHING_STATES } from '../../../constants/index.ts';
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
-import ButtonsContainer from '../../atoms/ButtonsContainer.jsx';
+import { updateUserSearchState } from '../../../api/profile';
+import { SEARCHING_STATES } from '../../../constants/index';
+import { USER_ENDPOINT } from '../../../features/swr/index';
+import ButtonsContainer from '../../atoms/ButtonsContainer';
 
 interface UpdateSearchStateCardProps {
   onClose: () => void;

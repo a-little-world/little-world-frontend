@@ -5,7 +5,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
-import Note from '../../atoms/Note.tsx';
+import Note from '../../atoms/Note';
 
 export const StyledForm = styled.form`
   display: flex;

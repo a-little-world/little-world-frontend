@@ -6,7 +6,7 @@ import {
   CHATS_ENDPOINT_SEPERATE,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
-} from './index.ts';
+} from './index';
 
 interface MatchesData {
   [category: string]: any[];

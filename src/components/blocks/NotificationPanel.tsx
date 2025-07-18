@@ -10,13 +10,13 @@ import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
+import { useDevelopmentFeaturesStore } from '../../features/stores/index';
 import {
   UNREAD_NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr/index.ts';
-import { formatTimeDistance } from '../../helpers/date.ts';
-import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes.ts';
+} from '../../features/swr/index';
+import { formatTimeDistance } from '../../helpers/date';
+import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes';
 import ProfileImage from '../atoms/ProfileImage';
 
 const ProfileInfo = styled.div`

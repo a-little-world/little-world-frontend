@@ -11,7 +11,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { NotificationState } from '../../api/notification.ts';
+import { NotificationState } from '../../api/notification';
 
 export const ToolbarContainer = styled.div`
   display: flex;

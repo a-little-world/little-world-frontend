@@ -3,7 +3,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import Cookies from 'js-cookie';
 import { initReactI18next } from 'react-i18next';
 
-import { LANGUAGES } from './constants/index.ts';
+import { LANGUAGES } from './constants/index';
 import translationDE from './locale/de.json';
 import translationEN from './locale/en.json';
 

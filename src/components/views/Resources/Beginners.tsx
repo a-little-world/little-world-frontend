@@ -6,7 +6,8 @@ import {
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
-import { ResourcesListCard } from './shared.styles.tsx';
+
+import { ResourcesListCard } from './shared.styles';
 
 const Beginners: FC = () => {
   const { t } = useTranslation();

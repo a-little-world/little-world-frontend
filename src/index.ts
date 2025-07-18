@@ -1,47 +1,47 @@
-// @ts-ignore
-export { default as Settings } from './components/views/Settings.jsx';
-// @ts-ignore
-export { default as SignUp } from './components/views/SignUp.jsx';
-// @ts-ignore
-export { default as VerifyEmail } from './components/views/VerifyEmail.jsx';
-// @ts-ignore
-export { default as Profile } from './components/views/Profile.tsx';
-export * from './components/views/VideoCall.styles.tsx';
-export { default as VideoCall } from './components/views/VideoCall.tsx';
-// @ts-ignore
-export { default as ResetPassword } from './components/views/ResetPassword.jsx';
-// @ts-ignore
-export { default as ChangeEmail } from './components/views/ChangeEmail.jsx';
-// @ts-ignore
-export { default as Edit } from './components/views/Edit.jsx';
-export { default as EmailPreferences } from './components/views/EmailPreferences.tsx';
-// @ts-ignore
-export { default as ForgotPassword } from './components/views/ForgotPassword.jsx';
-export * from './components/views/Help.styles.tsx';
-export { default as Help } from './components/views/Help.tsx';
-export { default as Home } from './components/views/Home.tsx';
-// @ts-ignore
-export { default as Login } from './components/views/Login.jsx';
-// @ts-ignore
-export { default as Messages } from './components/views/Messages.jsx';
-// @ts-ignore
-export * from './components/views/AboutUs/AboutUs.tsx';
-export * from './components/views/AboutUs/Donate.tsx';
-export * from './components/views/AboutUs/SupportUs.tsx';
-export * from './components/views/Messages.styles.jsx';
-export * from './components/views/Notifications.styles.tsx';
-export * from './components/views/Notifications.tsx';
-export * from './components/views/Resources/Beginners.tsx';
-export * from './components/views/Resources/constants.ts';
-export * from './components/views/Resources/German.tsx';
-export * from './components/views/Resources/MyStory.tsx';
-export * from './components/views/Resources/Partners/Partner.tsx';
-export * from './components/views/Resources/Partners/Partners.styles.tsx';
-export * from './components/views/Resources/Partners/Partners.tsx';
-export * from './components/views/Resources/Resources.tsx';
-export * from './components/views/Resources/shared.styles.tsx';
-export * from './components/views/Resources/Trainings/Training.tsx';
-export * from './components/views/Resources/Trainings/Trainings.styles.tsx';
-export * from './components/views/Resources/Trainings/Trainings.tsx';
-// @ts-ignore
-export * from './components/views/SignUp.styles.jsx';
+// // @ts-ignore
+// export { default as Settings } from './components/views/Settings';
+// // @ts-ignore
+export { default as SignUp } from './components/views/SignUp';
+// // @ts-ignore
+// export { default as VerifyEmail } from './components/views/VerifyEmail';
+// // @ts-ignore
+// export { default as Profile } from './components/views/Profile';
+// export { default as VideoCall } from './components/views/VideoCall';
+// export * from './components/views/VideoCall.styles';
+// // @ts-ignore
+// export { default as ResetPassword } from './components/views/ResetPassword';
+// // @ts-ignore
+// export { default as ChangeEmail } from './components/views/ChangeEmail';
+// // @ts-ignore
+// export { default as Edit } from './components/views/Edit';
+// export { default as EmailPreferences } from './components/views/EmailPreferences';
+// // @ts-ignore
+// export { default as ForgotPassword } from './components/views/ForgotPassword';
+// export { default as Help } from './components/views/Help';
+// export * from './components/views/Help.styles';
+// export { default as Home } from './components/views/Home';
+// // @ts-ignore
+// export { default as Login } from './components/views/Login';
+// // @ts-ignore
+// export { default as Messages } from './components/views/Messages';
+// // @ts-ignore
+// export * from './components/views/AboutUs/AboutUs';
+// export * from './components/views/AboutUs/Donate';
+// export * from './components/views/AboutUs/SupportUs';
+// export * from './components/views/Messages.styles';
+// export * from './components/views/Notifications';
+// export * from './components/views/Notifications.styles';
+// export * from './components/views/Resources/Beginners';
+// export * from './components/views/Resources/constants';
+// export * from './components/views/Resources/German';
+// export * from './components/views/Resources/MyStory';
+// export * from './components/views/Resources/Partners/Partner';
+// export * from './components/views/Resources/Partners/Partners';
+// export * from './components/views/Resources/Partners/Partners.styles';
+// export * from './components/views/Resources/Resources';
+// export * from './components/views/Resources/shared.styles';
+// export * from './components/views/Resources/Trainings/Training';
+// export * from './components/views/Resources/Trainings/Trainings';
+// export * from './components/views/Resources/Trainings/Trainings.styles';
+// // @ts-ignore
+// export * from './components/views/SignUp.styles';

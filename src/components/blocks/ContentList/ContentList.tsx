@@ -14,7 +14,7 @@ import {
   ItemImage,
   ListItem,
   ListItemCta,
-} from './ContentList.styles.tsx';
+} from './ContentList.styles';
 
 export enum ContentListLayouts {
   Stacked = 'Stacked',

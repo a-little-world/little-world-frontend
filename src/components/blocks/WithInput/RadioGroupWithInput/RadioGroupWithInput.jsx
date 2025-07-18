@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import Note from '../../../atoms/Note.tsx';
+import Note from '../../../atoms/Note';
 import FormStep from '../../Form/FormStep';
 
 const RadioGroupWithInput = ({ control, radioGroup, textInput }) => {

@@ -1,8 +1,8 @@
 import { GridLayout } from '@livekit/components-react';
 import styled, { css } from 'styled-components';
 
-import ProfileImage from '../atoms/ProfileImage.jsx';
-import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
+import ProfileImage from '../atoms/ProfileImage';
+import TranslationTool from '../blocks/TranslationTool/TranslationTool';
 
 export const CallLayout = styled.div`
   --lk-border-radius: 0;
@@ -231,7 +231,7 @@ export const MEDIA_DEVICE_MENU_CSS = css`
       background: ${({ theme }) => theme.color.surface.bold};
       color: ${({ theme }) => theme.color.text.reversed};
 
-      .lk-button:not(:disabled):hover  {
+      .lk-button:not(:disabled):hover {
         background-color: unset;
       }
     }

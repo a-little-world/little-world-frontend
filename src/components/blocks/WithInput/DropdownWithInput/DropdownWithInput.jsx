@@ -6,12 +6,13 @@ import React, { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { formatDataField } from '../../../../userForm/formContent.ts';
-import FormStep from '../../Form/FormStep.jsx';
-import { Container } from './styles.jsx';
+import { formatDataField } from '../../../../userForm/formContent';
+import FormStep from '../../Form/FormStep';
+import { Container } from './styles';
 
 const DropdownWithInput = ({ control, dropdown, textInput }) => {
-  const { currentValue, dataField, formData, textInputVal, getProps } =    dropdown;
+  const { currentValue, dataField, formData, textInputVal, getProps } =
+    dropdown;
   const [displayTextInput, setDisplayTextInput] = useState(
     textInputVal === currentValue,
   );

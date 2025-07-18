@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie';
 
 import { BACKEND_URL } from '../ENVIRONMENT';
-import { API_FIELDS, USER_FIELDS } from '../constants/index.ts';
-import { formatApiError } from './helpers.ts';
+import { API_FIELDS, USER_FIELDS } from '../constants/index';
+import { formatApiError } from './helpers';
 
 export const completeForm = async () => {
   const res = await fetch('/api/profile/completed/', {

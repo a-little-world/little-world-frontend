@@ -11,8 +11,8 @@ import styled from 'styled-components';
 import { mutate } from 'swr';
 
 import { mutateUserData } from '../../../api';
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
-import { onFormError } from '../../../helpers/form.ts';
+import { USER_ENDPOINT } from '../../../features/swr/index';
+import { onFormError } from '../../../helpers/form';
 import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';
 import { FormButtons, SubmitError } from '../Form/styles';

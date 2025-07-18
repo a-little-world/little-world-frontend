@@ -12,8 +12,8 @@ import {
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import FormStep from '../../Form/FormStep.jsx';
-import { Container, TextInputContainer } from './styles.ts';
+import FormStep from '../../Form/FormStep';
+import { Container, TextInputContainer } from './styles';
 
 interface CheckboxProps {
   heading?: string;

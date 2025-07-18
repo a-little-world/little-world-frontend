@@ -27,29 +27,29 @@ import {
   markChatMessagesReadApi,
   sendFileAttachmentMessage,
   sendMessage,
-} from '../../../api/chat.ts';
-import { useCallSetupStore } from '../../../features/stores/index.ts';
+} from '../../../api/chat';
+import { useCallSetupStore } from '../../../features/stores/index';
 import {
   CHATS_ENDPOINT_SEPERATE,
   USER_ENDPOINT,
   getChatEndpoint,
   getChatMessagesEndpoint,
-} from '../../../features/swr/index.ts';
-import { addMessage } from '../../../features/swr/wsBridgeMutations.ts';
+} from '../../../features/swr/index';
+import { addMessage } from '../../../features/swr/wsBridgeMutations';
 import {
   formatFileName,
   getCustomChatElements,
   messageContainsWidget,
-} from '../../../helpers/chat.ts';
-import { formatMessageDate, formatTime } from '../../../helpers/date.ts';
+} from '../../../helpers/chat';
+import { formatMessageDate, formatTime } from '../../../helpers/date';
 import {
   ROOT_SERVER_ERROR,
   onFormError,
   registerInput,
-} from '../../../helpers/form.ts';
-import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
-import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes.ts';
-import UnreadDot from '../../atoms/UnreadDot.tsx';
+} from '../../../helpers/form';
+import useInfiniteScroll from '../../../hooks/useInfiniteScroll';
+import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes';
+import UnreadDot from '../../atoms/UnreadDot';
 import {
   Attachment,
   AttachmentButton,
@@ -64,7 +64,7 @@ import {
   StickyDateHeader,
   Time,
   WriteSection,
-} from './Chat.styles.tsx';
+} from './Chat.styles';
 
 const Chat = ({ chatId }) => {
   const {

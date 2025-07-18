@@ -6,15 +6,15 @@ import useSWR from 'swr';
 import {
   USER_ENDPOINT,
   defaultPreFetchedOptions,
-} from '../../features/swr/index.ts';
+} from '../../features/swr/index';
 import {
   PRIVACY_ROUTE,
   TERMS_ROUTE,
   WP_HOME_ROUTE,
   getAppRoute,
   getHomeRoute,
-} from '../../router/routes.ts';
-import Logo from '../atoms/Logo.tsx';
+} from '../../router/routes';
+import Logo from '../atoms/Logo';
 import LanguageSelector from './LanguageSelector/LanguageSelector';
 
 const StyledHeader = styled.header`

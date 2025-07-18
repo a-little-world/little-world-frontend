@@ -19,9 +19,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import Timer from '../../atoms/Timer.tsx';
-import UnreadDot from '../../atoms/UnreadDot.tsx';
-import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
+import Timer from '../../atoms/Timer';
+import UnreadDot from '../../atoms/UnreadDot';
+import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 
 const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
   width: 100%;

@@ -7,10 +7,10 @@ import {
   OUR_WORLD_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
-} from '../../../router/routes.ts';
-import ContentSelector from '../../blocks/ContentSelector.tsx';
-import Donate from './Donate.tsx';
-import SupportUs from './SupportUs.tsx';
+} from '../../../router/routes';
+import ContentSelector from '../../blocks/ContentSelector';
+import Donate from './Donate';
+import SupportUs from './SupportUs';
 
 const Content = styled.div`
   ${({ theme }) =>

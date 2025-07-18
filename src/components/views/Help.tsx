@@ -21,15 +21,15 @@ import { TFunction, useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { submitHelpForm } from '../../api/index.js';
-import { MATCHES_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
-import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes.ts';
-import Logo from '../atoms/Logo.tsx';
-import MenuLink from '../atoms/MenuLink.tsx';
-import Socials from '../atoms/Socials.tsx';
-import ContentSelector from '../blocks/ContentSelector.tsx';
-import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles.tsx';
+import { submitHelpForm } from '../../api/index';
+import { MATCHES_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
+import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes';
+import Logo from '../atoms/Logo';
+import MenuLink from '../atoms/MenuLink';
+import Socials from '../atoms/Socials';
+import ContentSelector from '../blocks/ContentSelector';
+import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles';
 import {
   BusinessName,
   ContactButtons,
@@ -52,7 +52,7 @@ import {
   StyledIntro,
   SupportTeam,
   Topper,
-} from './Help.styles.tsx';
+} from './Help.styles';
 import './help.css';
 
 const generateFAQItems = (t: TFunction, supportUrl: string) => {

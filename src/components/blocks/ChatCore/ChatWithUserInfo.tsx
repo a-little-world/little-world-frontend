@@ -18,9 +18,10 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { useCallSetupStore } from '../../../features/stores/index.ts';
-import { USER_ENDPOINT, getChatEndpoint } from '../../../features/swr/index.ts';
-import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes.ts';
+import { useCallSetupStore } from '../../../features/stores/index';
+import { USER_ENDPOINT, getChatEndpoint } from '../../../features/swr/index';
+import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes';
+import Chat from './Chat';
 import {
   BackButton,
   NoChatSelected,
@@ -29,8 +30,7 @@ import {
   TopSection,
   UserImage,
   UserInfo,
-} from './Chat.styles.tsx';
-import Chat from './Chat.tsx';
+} from './Chat.styles';
 
 interface Partner {
   id: string;

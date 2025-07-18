@@ -10,15 +10,18 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
-import useScrollToTop from '../../../../hooks/useScrollToTop.tsx';
-import { TRAININGS_ROUTE, getAppRoute } from '../../../../router/routes.ts';
-import Stepper from '../../../atoms/Stepper.tsx';
-import Video from '../../../atoms/Video.tsx';
-import { TRAININGS_DATA, TRAINING_IDS, getDataBySlug } from '../constants.ts';
+import useScrollToTop from '../../../../hooks/useScrollToTop';
+import { TRAININGS_ROUTE, getAppRoute } from '../../../../router/routes';
+import Stepper from '../../../atoms/Stepper';
+import Video from '../../../atoms/Video';
+import { TRAININGS_DATA, TRAINING_IDS, getDataBySlug } from '../constants';
 import {
-  CheckInText,
-} from './Trainings.styles.tsx';
-import { Container, ContentCard, NotFoundCard, VideoDescription } from '../shared.styles.tsx';
+  Container,
+  ContentCard,
+  NotFoundCard,
+  VideoDescription,
+} from '../shared.styles';
+import { CheckInText } from './Trainings.styles';
 
 const Training: FC = () => {
   const { trainingSlug } = useParams();
@@ -40,7 +43,10 @@ const Training: FC = () => {
         >
           {t('resources.trainings.not_found')}
         </Text>
-        <Link to={getAppRoute(TRAININGS_ROUTE)} buttonAppearance={ButtonAppearance.Primary}>
+        <Link
+          to={getAppRoute(TRAININGS_ROUTE)}
+          buttonAppearance={ButtonAppearance.Primary}
+        >
           {t('resources.trainings.return')}
         </Link>
       </NotFoundCard>

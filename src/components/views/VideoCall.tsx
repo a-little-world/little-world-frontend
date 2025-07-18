@@ -14,19 +14,19 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
-import { useActiveCallStore } from '../../features/stores/index.ts';
-import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index.ts';
-import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
-import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
-import Drawer from '../atoms/Drawer.tsx';
-import ProfileImage from '../atoms/ProfileImage.jsx';
+import { useActiveCallStore } from '../../features/stores/index';
+import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index';
+import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
+import { getAppRoute, getCallSetupRoute } from '../../router/routes';
+import Drawer from '../atoms/Drawer';
+import ProfileImage from '../atoms/ProfileImage';
 import CallSidebar, {
   SidebarSelectionProvider,
-} from '../blocks/Calls/CallSidebar.tsx';
-import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar.tsx';
-import Chat from '../blocks/ChatCore/Chat.tsx';
-import QuestionCards from '../blocks/QuestionCards/QuestionCards.tsx';
-import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
+} from '../blocks/Calls/CallSidebar';
+import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar';
+import Chat from '../blocks/ChatCore/Chat';
+import QuestionCards from '../blocks/QuestionCards/QuestionCards';
+import TranslationTool from '../blocks/TranslationTool/TranslationTool';
 import {
   CallLayout,
   DesktopTranslationTool,
@@ -35,7 +35,7 @@ import {
   VideoPlaceholder,
   Videos,
   WaitingTile,
-} from './VideoCall.styles.tsx';
+} from './VideoCall.styles';
 
 function MyVideoConference({
   isFullScreen,

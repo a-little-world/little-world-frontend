@@ -3,10 +3,10 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
-import ContentList from '../../../blocks/ContentList/ContentList.tsx';
-import { TRAININGS_DATA } from '../constants.ts';
-import { Method } from './Trainings.styles.tsx';
-import { ContentCard } from '../shared.styles.tsx';
+import ContentList from '../../../blocks/ContentList/ContentList';
+import { TRAININGS_DATA } from '../constants';
+import { ContentCard } from '../shared.styles';
+import { Method } from './Trainings.styles';
 
 const Trainings: FC = () => {
   const { t } = useTranslation();

@@ -21,15 +21,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
-import { useCallSetupStore } from '../../../features/stores/index.ts';
+import { useCallSetupStore } from '../../../features/stores/index';
 import {
   MESSAGES_ROUTE,
   PROFILE_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
-} from '../../../router/routes.ts';
-import { shimmerStyles } from '../../atoms/Loading.tsx';
-import MenuLink from '../../atoms/MenuLink.tsx';
+} from '../../../router/routes';
+import { shimmerStyles } from '../../atoms/Loading';
+import MenuLink from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
 import {

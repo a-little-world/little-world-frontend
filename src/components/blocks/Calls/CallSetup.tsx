@@ -15,15 +15,15 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { requestVideoAccessToken } from '../../../api/livekit.ts';
+import { requestVideoAccessToken } from '../../../api/livekit';
 import {
   useActiveCallStore,
   useCallSetupStore,
-} from '../../../features/stores/index.ts';
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
-import { clearActiveTracks } from '../../../helpers/video.ts';
-import { getCallRoute } from '../../../router/routes.ts';
-import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles.tsx';
+} from '../../../features/stores/index';
+import { USER_ENDPOINT } from '../../../features/swr/index';
+import { clearActiveTracks } from '../../../helpers/video';
+import { getCallRoute } from '../../../router/routes';
+import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
 
 const CloseButton = styled(Button)`

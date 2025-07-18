@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
-import { BACKEND_URL } from '../ENVIRONMENT.js';
-import { apiFetch, formatApiError } from './helpers.ts';
+import { BACKEND_URL } from '../ENVIRONMENT';
+import { apiFetch, formatApiError } from './helpers';
 
 export const fetchChatMessages = async ({ id, page }) => {
   const response = await fetch(
@@ -23,15 +23,18 @@ export const fetchChatMessages = async ({ id, page }) => {
 };
 
 export const fetchChats = async ({ page }) => {
-  const response = await fetch(`${BACKEND_URL}/api/chats/?page=${page}&page_size=20`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': 'True',
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+  const response = await fetch(
+    `${BACKEND_URL}/api/chats/?page=${page}&page_size=20`,
+    {
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-UseTagsOnly': 'True',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
     },
-    method: 'GET',
-  });
+  );
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;

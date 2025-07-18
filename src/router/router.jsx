@@ -8,35 +8,35 @@ import {
   ScrollRestoration,
   createBrowserRouter,
 } from 'react-router-dom';
-import FireBase from '../Firebase.tsx';
 
-import { IS_CAPACITOR_BUILD } from '../ENVIRONMENT.js';
-import WebsocketBridge from '../WebsocketBridge.jsx';
-import { ModeSwitch } from '../components/atoms/ModeSwitch.tsx';
-import RouterError from '../components/blocks/ErrorView/ErrorView.tsx';
-import Form from '../components/blocks/Form/Form.jsx';
-import { FullAppLayout } from '../components/blocks/Layout/AppLayout.tsx';
-import FormLayout from '../components/blocks/Layout/FormLayout.jsx';
-import { ToastProvider } from '../components/blocks/Toast.tsx';
-import Welcome from '../components/blocks/Welcome/Welcome.jsx';
-import AboutUs from '../components/views/AboutUs/AboutUs.tsx';
-import ChangeEmail from '../components/views/ChangeEmail.jsx';
-import EditView from '../components/views/Edit.jsx';
-import EmailPreferences from '../components/views/EmailPreferences.tsx';
-import ForgotPassword from '../components/views/ForgotPassword.jsx';
-import Help from '../components/views/Help.tsx';
-import Main from '../components/views/Home.tsx';
-import Login from '../components/views/Login.jsx';
-import Messages from '../components/views/Messages.jsx';
-import Notifications from '../components/views/Notifications.tsx';
-import Profile from '../components/views/Profile.tsx';
-import ResetPassword from '../components/views/ResetPassword.jsx';
-import Resources from '../components/views/Resources/Resources.tsx';
-import Settings from '../components/views/Settings.jsx';
-import SignUp from '../components/views/SignUp.jsx';
-import VerifyEmail from '../components/views/VerifyEmail.jsx';
-import VideoCall from '../components/views/VideoCall.jsx';
-import AuthGuard from '../guards/AuthGuard.tsx';
+import { IS_CAPACITOR_BUILD } from '../ENVIRONMENT';
+import FireBase from '../Firebase';
+import WebsocketBridge from '../WebsocketBridge';
+import { ModeSwitch } from '../components/atoms/ModeSwitch';
+import RouterError from '../components/blocks/ErrorView/ErrorView';
+import Form from '../components/blocks/Form/Form';
+import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
+import FormLayout from '../components/blocks/Layout/FormLayout';
+import { ToastProvider } from '../components/blocks/Toast';
+import Welcome from '../components/blocks/Welcome/Welcome';
+import AboutUs from '../components/views/AboutUs/AboutUs';
+import ChangeEmail from '../components/views/ChangeEmail';
+import EditView from '../components/views/Edit';
+import EmailPreferences from '../components/views/EmailPreferences';
+import ForgotPassword from '../components/views/ForgotPassword';
+import Help from '../components/views/Help';
+import Main from '../components/views/Home';
+import Login from '../components/views/Login';
+import Messages from '../components/views/Messages';
+import Notifications from '../components/views/Notifications';
+import Profile from '../components/views/Profile';
+import ResetPassword from '../components/views/ResetPassword';
+import Resources from '../components/views/Resources/Resources';
+import Settings from '../components/views/Settings';
+import SignUp from '../components/views/SignUp';
+import VerifyEmail from '../components/views/VerifyEmail';
+import VideoCall from '../components/views/VideoCall';
+import AuthGuard from '../guards/AuthGuard';
 import {
   APP_ROUTE,
   BASE_ROUTE,
@@ -70,7 +70,7 @@ import {
   USER_PROFILE_ROUTE,
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
-} from './routes.ts';
+} from './routes';
 
 const isCapacitor = IS_CAPACITOR_BUILD || false;
 

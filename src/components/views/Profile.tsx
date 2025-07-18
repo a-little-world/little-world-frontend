@@ -12,33 +12,33 @@ import { TFunction, useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
-import { mutateUserData } from '../../api/index.js';
-import { fetchUserMatch } from '../../api/matches.ts';
-import { fetchProfile } from '../../api/profile.ts';
-import { USER_TYPES } from '../../constants/index.ts';
+import { mutateUserData } from '../../api/index';
+import { fetchUserMatch } from '../../api/matches';
+import { fetchProfile } from '../../api/profile';
+import { USER_TYPES } from '../../constants/index';
 import {
   API_OPTIONS_ENDPOINT,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
   revalidateMatches,
-} from '../../features/swr/index.ts';
-import { onFormError } from '../../helpers/form.ts';
-import { EDIT_FORM_ROUTE, getAppRoute } from '../../router/routes.ts';
+} from '../../features/swr/index';
+import { onFormError } from '../../helpers/form';
+import { EDIT_FORM_ROUTE, getAppRoute } from '../../router/routes';
 import {
   ComponentTypes,
   formatDataField,
   getFormComponent,
-} from '../../userForm/formContent.ts';
+} from '../../userForm/formContent';
 import {
   constructCheckboxes,
   restrictedLangLevels,
 } from '../../userForm/formPages';
-import PageHeader from '../atoms/PageHeader.tsx';
-import ProfileCard from '../blocks/Cards/ProfileCard.tsx';
-import FormStep from '../blocks/Form/FormStep.jsx';
-import ProfileDetail from '../blocks/Profile/ProfileDetail.tsx';
-import ProfileEditor from '../blocks/Profile/ProfileEditor.tsx';
-import { Details, PageContent, TextField } from '../blocks/Profile/styles.tsx';
+import PageHeader from '../atoms/PageHeader';
+import ProfileCard from '../blocks/Cards/ProfileCard';
+import FormStep from '../blocks/Form/FormStep';
+import ProfileDetail from '../blocks/Profile/ProfileDetail';
+import ProfileEditor from '../blocks/Profile/ProfileEditor';
+import { Details, PageContent, TextField } from '../blocks/Profile/styles';
 
 const getProfileFields = ({
   profile,

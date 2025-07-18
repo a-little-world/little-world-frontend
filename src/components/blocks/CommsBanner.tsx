@@ -10,7 +10,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../features/swr/index';
 
 export enum BannerTypes {
   Small = 'small',

@@ -14,23 +14,23 @@ import { completeForm, mutateUserData } from '../../../api';
 import {
   API_OPTIONS_ENDPOINT,
   USER_ENDPOINT,
-} from '../../../features/swr/index.ts';
-import { onFormError } from '../../../helpers/form.ts';
+} from '../../../features/swr/index';
+import { onFormError } from '../../../helpers/form';
 import {
   EDIT_FORM_ROUTE,
   PROFILE_ROUTE,
   getAppRoute,
-} from '../../../router/routes.ts';
+} from '../../../router/routes';
 import {
   ComponentTypes,
   getFormComponent,
-} from '../../../userForm/formContent.ts';
+} from '../../../userForm/formContent';
 import getFormPage from '../../../userForm/formPages';
-import ProfilePic from '../Profile/ProfilePic/ProfilePic.tsx';
-import CheckboxWithInput from '../WithInput/CheckboxWithInput/CheckboxWithInput.tsx';
-import DropdownWithInput from '../WithInput/DropdownWithInput/DropdownWithInput.jsx';
-import MultiCheckboxWithInput from '../WithInput/MultiCheckboxWithInput/MultiCheckboxWithInput.tsx';
-import RadioGroupWithInput from '../WithInput/RadioGroupWithInput/RadioGroupWithInput.jsx';
+import ProfilePic from '../Profile/ProfilePic/ProfilePic';
+import CheckboxWithInput from '../WithInput/CheckboxWithInput/CheckboxWithInput';
+import DropdownWithInput from '../WithInput/DropdownWithInput/DropdownWithInput';
+import MultiCheckboxWithInput from '../WithInput/MultiCheckboxWithInput/MultiCheckboxWithInput';
+import RadioGroupWithInput from '../WithInput/RadioGroupWithInput/RadioGroupWithInput';
 import FormStep from './FormStep';
 import {
   FormButtons,

@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
-import { BACKEND_URL } from '../ENVIRONMENT.js';
-import { apiFetch, formatApiError } from './helpers.ts';
+import { BACKEND_URL } from '../ENVIRONMENT';
+import { apiFetch, formatApiError } from './helpers';
 
 // eslint-disable-next-line import/prefer-default-export
 export const fetchProfile = async ({ userId }: { userId: string }) => {

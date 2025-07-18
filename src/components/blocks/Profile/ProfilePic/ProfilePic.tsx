@@ -27,11 +27,11 @@ import Avatar, { genConfig } from 'react-nice-avatar';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_FIELDS } from '../../../../constants/index.ts';
-import { USER_ENDPOINT } from '../../../../features/swr/index.ts';
-import useImageCompression from '../../../../hooks/useImageCompression.tsx';
+import { USER_FIELDS } from '../../../../constants/index';
+import { USER_ENDPOINT } from '../../../../features/swr/index';
+import useImageCompression from '../../../../hooks/useImageCompression';
 import { ImageSizes } from '../../../atoms/ProfileImage';
-import AvatarEditor from './AvatarEditor.tsx';
+import AvatarEditor from './AvatarEditor';
 import {
   AvatarEditorButton,
   AvatarSelection,
@@ -45,7 +45,7 @@ import {
   StyledProfileImage,
   TrashButton,
   UploadArea,
-} from './styles.tsx';
+} from './styles';
 
 const IMAGE_TYPES = {
   avatar: 'avatar',

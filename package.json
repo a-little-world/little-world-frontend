@@ -1,19 +1,24 @@
 {
   "name": "littleplanet",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "npm run lint -- --fix",
-    "dev": "npx webpack serve --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development",
-    "clean": "rm -rf dist/*",
-    "build": "mkdir -p dist && npm run build:esm && npm run build:cjs",
+    "dev": "npx webpack serveviews/index.js --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development",
+    "clean": "rimraf dist",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run copy-files:esm && npm run copy-files:cjs",
     "build:esm": "tsc --project tsconfig.json --noCheck --outDir dist/esm",
-    "build:cjs": "tsc --project tsconfig.json --noCheck --module commonjs --outDir dist/cjs"
+    "build:cjs": "tsc --project tsconfig.json --noCheck --module commonjs --outDir dist/cjs",
+    "copy-files:esm": "cpx \"src/**/*.css\" dist/esm && cpx \"src/**/*.png\" dist/esm && cpx \"src/**/*.svg\" dist/esm",
+    "copy-files:cjs": "cpx \"src/**/*.css\" dist/cjs && cpx \"src/**/*.png\" dist/cjs && cpx \"src/**/*.svg\" dist/cjs"
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -92,6 +97,7 @@
     "@typescript-eslint/parser": "^8.4.0",
     "compression-webpack-plugin": "^10.0.0",
     "copy-webpack-plugin": "^11.0.0",
+    "cpx": "^1.5.0",
     "css-loader": "^6.7.3",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",

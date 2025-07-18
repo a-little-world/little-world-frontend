@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
-import { getQuestionsEndpoint } from '../../../features/swr/index.ts';
+import { getQuestionsEndpoint } from '../../../features/swr/index';
 import {
   ArchiveButton,
   Categories,
@@ -20,7 +20,7 @@ import {
   QuestionContentCard,
   SidebarCard,
   TopicButton,
-} from './QuestionCards.styles.tsx';
+} from './QuestionCards.styles';
 
 function QuestionCards() {
   const { data: cards } = useSWR(getQuestionsEndpoint(false));

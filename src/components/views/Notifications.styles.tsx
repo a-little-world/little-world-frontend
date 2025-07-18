@@ -1,7 +1,7 @@
 import { motion } from 'motion/react';
 import styled, { css } from 'styled-components';
 
-import CustomPagination from '../../CustomPagination.jsx';
+import CustomPagination from '../../CustomPagination';
 
 export const Notification = styled(motion.div)<{
   $state: string;

@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../features/swr/index.ts';
+import { USER_ENDPOINT } from '../features/swr/index';
 
 function AuthGuard({ children }) {
   const { data, isLoading, error } = useSWR(USER_ENDPOINT);
