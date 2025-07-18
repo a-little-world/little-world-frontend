@@ -96,6 +96,8 @@ export const StyledProfileCard = styled(Card)<{
     `};
 
   ${({ theme, $isSelf }) => css`
+    min-height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
+
     @media (min-width: ${theme.breakpoints.medium}) {
       height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
     }
