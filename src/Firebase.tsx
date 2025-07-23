@@ -43,7 +43,7 @@ async function register(
   firebaseClientConfig: any,
   firebasePublicVapidKey: string,
 ) {
-  const permission = await Notification.requestPermission();
+  const permission = await Notification?.requestPermission();
   if (permission !== 'granted') {
     const supported = await isSupported();
     if (!supported) {
