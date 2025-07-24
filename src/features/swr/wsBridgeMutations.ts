@@ -54,7 +54,7 @@ export function updateMatchProfile(partnerId: string, profile: any): void {
       if (!userData) return userData;
       return {
         ...userData,
-        matches: userData.matches.map((m: any) =>
+        matches: userData.matches?.map((m: any) =>
           m.id === partnerId ? { ...m, profile } : m,
         ),
       };
@@ -142,7 +142,7 @@ export function addActiveCallRoom(callRoom: any): void {
         ...activeCallRoomsData,
         results: [
           ...(activeCallRoomsData.results || []).filter(
-            (room: any) => room.uuid !== callRoom.uuid,
+            (room: any) => room?.uuid !== callRoom?.uuid, // TODO SENTRY ERROR why is room undefined in some cases?
           ),
           callRoom,
         ],
@@ -160,7 +160,7 @@ export function blockIncomingCall(userId: string): void {
       return {
         ...activeCallRoomsData,
         results: (activeCallRoomsData.results || []).filter(
-          (room: any) => room.partner.id !== userId,
+          (room: any) => room?.partner.id !== userId, // TODO SENTRY ERROR room undefined in some cases
         ),
       };
     },

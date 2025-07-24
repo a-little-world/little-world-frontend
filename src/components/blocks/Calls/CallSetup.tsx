@@ -171,7 +171,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       partnerId: userPk,
       onSuccess: res => {
         setAuthData({
-          chatId: res.chat.uuid,
+          chatId: res.chat?.uuid,
           token: res.token,
           livekitServerUrl: res.server_url,
         });
