@@ -32,7 +32,7 @@
 // export * from './components/views/AboutUs/SupportUs';
 // export { WebApp } from './WebApp';
 export { default as Toolbar } from './components/atoms/Toolbar';
-export { Contact, Faqs } from './components/views/Help';
+export { Contact, Faqs, FaqsNativeWeb } from './components/views/Help';
 // export * from './components/views/Messages.styles';
 // export * from './components/views/Notifications';
 // export * from './components/views/Notifications.styles';

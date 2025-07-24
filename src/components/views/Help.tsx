@@ -15,11 +15,14 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { swrConfig } from '../../features/swr/index';
+import i18n from '../../i18n';
+import { I18nextProvider } from 'react-i18next';
 import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
-import useSWR from 'swr';
+import useSWR, { SWRConfig, mutate } from 'swr';
 
 import { submitHelpForm } from '../../api/index';
 import { MATCHES_ENDPOINT } from '../../features/swr/index';
@@ -177,12 +180,28 @@ export const FileDropzone = ({
   );
 };
 
+export const NativeWebWrapper = ({ children }: { children: React.ReactNode }) => {
+  return <SWRConfig value={swrConfig}>{children}</SWRConfig>
+}
+
+export function FaqsNativeWeb() {
+  return <I18nextProvider i18n={i18n}>
+    <NativeWebWrapper>
+      <Faqs />
+    </NativeWebWrapper>
+  </I18nextProvider>
+}
+
 export function Faqs() {
   const { t } = useTranslation();
   const [faqs, setFaqs] = useState([]);
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
-    revalidateOnMount: false,
+  const { data: matches, error } = useSWR(MATCHES_ENDPOINT, {
+    revalidateOnMount: true,
   });
+
+  console.log('Message route', MESSAGES_ROUTE);
+  console.log('Matches', matches, error);
+  console.log("FAQ", t('nbt_faqs'))
 
   const adminUser = matches?.support?.results?.[0];
   const supportUrl = getAppSubpageRoute(
@@ -191,7 +210,9 @@ export function Faqs() {
   );
 
   useEffect(() => {
-    setFaqs(generateFAQItems(t, supportUrl));
+    if(!faqs.length) {
+      setFaqs(generateFAQItems(t, supportUrl));
+    }
   }, [t, supportUrl]);
 
   return (
