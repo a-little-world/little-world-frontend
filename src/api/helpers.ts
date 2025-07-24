@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
-import { BACKEND_URL } from '../ENVIRONMENT';
 import { API_FIELDS } from '../constants/index';
+import { environment } from '../environment';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -79,7 +79,10 @@ export async function apiFetch<T = any>(
   }
 
   try {
-    const response = await fetch(`${BACKEND_URL}${endpoint}`, fetchOptions);
+    const response = await fetch(
+      `${environment.backendUrl}${endpoint}`,
+      fetchOptions,
+    );
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));

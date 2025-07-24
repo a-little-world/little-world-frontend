@@ -9,7 +9,6 @@ import {
   createBrowserRouter,
 } from 'react-router-dom';
 
-import { IS_CAPACITOR_BUILD } from '../ENVIRONMENT';
 import FireBase from '../Firebase';
 import WebsocketBridge from '../WebsocketBridge';
 import { ModeSwitch } from '../components/atoms/ModeSwitch';
@@ -36,6 +35,7 @@ import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
 import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
+import { environment } from '../environment';
 import AuthGuard from '../guards/AuthGuard';
 import {
   APP_ROUTE,
@@ -72,7 +72,7 @@ import {
   getAppRoute,
 } from './routes';
 
-const isCapacitor = IS_CAPACITOR_BUILD || false;
+const isCapacitor = environment.isCapacitorBuild || false;
 
 export const Root = ({
   children,

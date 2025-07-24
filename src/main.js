@@ -5,16 +5,17 @@ import { mutate } from 'swr';
 import App from './App';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
+import { environment } from './environment';
 import { API_OPTIONS_ENDPOINT } from './features/swr/index';
 import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
 import { Root } from './router/router';
 
-const isDevelopment = environ;
+const isDevelopment = environment.development;
 
 let root;
 
-window.renderApp = ({ user, apiTranslations, apiOptions }) => {
+function renderApp({ user, apiTranslations, apiOptions }) {
   updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
   // If not in development just render ...
   const container = document.getElementById('root');
@@ -32,9 +33,9 @@ window.renderApp = ({ user, apiTranslations, apiOptions }) => {
   );
 
   reportWebVitals();
-};
+}
 
-window.renderMessageView = (
+function renderMessageView(
   {
     title,
     content,
@@ -46,7 +47,7 @@ window.renderMessageView = (
     linkTo,
   },
   { apiOptions, apiTranslations },
-) => {
+) {
   updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
   mutate(API_OPTIONS_ENDPOINT, apiOptions, false);
 
@@ -73,21 +74,23 @@ window.renderMessageView = (
       {/* InitializeDux removed */}
     </React.StrictMode>,
   );
-};
+}
 
-/**
- * 1. Frontend only development: trigger login simulator to auto login in remote server
- * 2. Frontend in Backend Development, just export `renderApp` will be called from within django view
- * 3. Capaitor build, call the `renderApp` directly as its used in full static export
- */
+export function renderWebApp() {
+  /**
+   * 1. Frontend only development: trigger login simulator to auto login in remote server
+   * 2. Frontend in Backend Development, just export `renderApp` will be called from within django view
+   * 3. Capaitor build, call the `renderApp` directly as its used in full static export
+   */
+  console.log('isDevelopment', isDevelopment);
+  if (isDevelopment) {
+    import('./loginSimulator').then(simulator => {
+      simulator.simulatedAutoLogin().then(data => {
+        const initData = data?.data;
+        const apiTranslations = data?.api_translations;
 
-if (isDevelopment) {
-  import('./loginSimulator').then(simulator => {
-    simulator.simulatedAutoLogin().then(data => {
-      const initData = data?.data;
-      const apiTranslations = data?.api_translations;
-
-      window.renderApp({ initData, apiTranslations });
+        renderApp({ initData, apiTranslations });
+      });
     });
-  });
+  }
 }

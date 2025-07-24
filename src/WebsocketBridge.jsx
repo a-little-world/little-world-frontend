@@ -3,12 +3,7 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { mutate } from 'swr';
 
 import './App.css';
-import {
-  BACKEND_URL,
-  CORE_WS_PATH,
-  CORE_WS_SHEME,
-  IS_CAPACITOR_BUILD,
-} from './ENVIRONMENT';
+import { environment } from './environment';
 import {
   NOTIFICATIONS_ENDPOINT,
   UNREAD_NOTIFICATIONS_ENDPOINT,
@@ -16,9 +11,13 @@ import {
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import useToast from './hooks/useToast';
 
-const SOCKET_URL = IS_CAPACITOR_BUILD
-  ? CORE_WS_SHEME + BACKEND_URL.split('//').pop() + CORE_WS_PATH
-  : CORE_WS_SHEME + window.location.host + CORE_WS_PATH;
+const window = undefined;
+
+const SOCKET_URL = environment.isCapacitorBuild
+  ? environment.coreWsScheme +
+    environment.backendUrl.split('//').pop() +
+    environment.coreWsPath
+  : environment.coreWsScheme + window?.location.host + environment.coreWsPath;
 
 const WebsocketBridge = () => {
   /**

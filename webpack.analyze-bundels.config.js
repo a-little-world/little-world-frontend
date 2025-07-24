@@ -1,21 +1,22 @@
-const path = require("path");
-const webpack = require("webpack");
-const BundleTracker = require("webpack-bundle-tracker");
-const CompressionPlugin = require("compression-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
+const path = require('path');
+const webpack = require('webpack');
+const BundleTracker = require('webpack-bundle-tracker');
+const CompressionPlugin = require('compression-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const config = function (env) {
-  let publicPath = "/";
-  const devTool = env.DEV_TOOL === "none" ? false : env.DEV_TOOL;
-  if (env.PUBLIC_PATH && env.PUBLIC_PATH !== "") publicPath = env.PUBLIC_PATH + publicPath;
+  let publicPath = '/';
+  const devTool = env.DEV_TOOL === 'none' ? false : env.DEV_TOOL;
+  if (env.PUBLIC_PATH && env.PUBLIC_PATH !== '')
+    publicPath = env.PUBLIC_PATH + publicPath;
   // It is always assumed that the backend is mounted at /back
-  const outputPath = "./dist";
-  const entry = "./src";
-  const entryPoint = `${entry}/index.js`;
-  const debug = env.DEBUG === "1";
+  const outputPath = './dist';
+  const entry = './src';
+  const entryPoint = `${entry}/main.js`;
+  const debug = env.DEBUG === '1';
 
   return {
     context: __dirname,
@@ -24,13 +25,13 @@ const config = function (env) {
     },
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, ".src/"),
+        '@': path.resolve(__dirname, '.src/'),
         // '@django': path.resolve(__dirname, '../back/static/'),
       },
     },
     output: {
       path: path.join(__dirname, outputPath),
-      filename: "[name]-[hash].js",
+      filename: '[name]-[hash].js',
       publicPath,
     },
     devServer: {
@@ -40,16 +41,16 @@ const config = function (env) {
 
     plugins: [
       new BundleTracker({
-        filename: path.join(__dirname, "./webpack-stats.json"),
+        filename: path.join(__dirname, './webpack-stats.json'),
       }),
       new CompressionPlugin(),
       new CopyPlugin({
         patterns: [
           {
-            from: path.resolve(__dirname, "./public"),
+            from: path.resolve(__dirname, './public'),
             to: path.join(__dirname, outputPath),
             globOptions: {
-              ignore: ["**/index.html"],
+              ignore: ['**/index.html'],
             },
           },
         ],
@@ -57,12 +58,12 @@ const config = function (env) {
       // ['styled-components', { ssr: false }],
       new HtmlWebpackPlugin({
         inject: true,
-        template: path.resolve("public/index.html"),
+        template: path.resolve('public/index.html'),
       }),
       new webpack.DefinePlugin({
         process: { env: {} },
       }),
-      new BundleAnalyzerPlugin()
+      new BundleAnalyzerPlugin(),
     ],
     devtool: devTool,
     module: {
@@ -70,27 +71,27 @@ const config = function (env) {
         {
           test: /\.(js|jsx|tsx|ts)$/,
           exclude: /node_modules/,
-          use: ["babel-loader"],
+          use: ['babel-loader'],
           resolve: {
-            extensions: [".js", ".jsx"],
+            extensions: ['.js', '.jsx'],
           },
-          include: [path.resolve(__dirname, "./src")],
+          include: [path.resolve(__dirname, './src')],
         },
         {
           test: /\.css$/,
-          use: ["style-loader", "css-loader"],
+          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.svg$/,
           use: [
             {
-              loader: "@svgr/webpack",
+              loader: '@svgr/webpack',
             },
             {
-              loader: "file-loader",
+              loader: 'file-loader',
             },
           ],
-          type: "javascript/auto",
+          type: 'javascript/auto',
           issuer: {
             and: [/\.(ts|tsx|js|jsx|md|mdx)$/],
           },
@@ -98,9 +99,9 @@ const config = function (env) {
         {
           test: /\.(png|jpg|gif|ttf)$/,
           use: {
-            loader: "file-loader",
+            loader: 'file-loader',
             options: {
-              name: "[name].[hash:8].[ext]",
+              name: '[name].[hash:8].[ext]',
             },
           },
         },

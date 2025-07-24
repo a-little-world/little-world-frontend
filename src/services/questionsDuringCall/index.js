@@ -1,12 +1,12 @@
 import Cookie from 'js-cookie';
 
-import { BACKEND_URL } from '../../ENVIRONMENT';
+import { environment } from '../../environment';
 
 /* eslint-disable */
 class QuestionsDuringCall {
   async getQuestions(archived = true) {
     const response = await fetch(
-      `${BACKEND_URL}/api/user/question_cards/?archived=${archived}&category=all`,
+      `${environment.backendUrl}/api/user/question_cards/?archived=${archived}&category=all`,
       {
         method: 'GET',
         headers: {
@@ -22,16 +22,19 @@ class QuestionsDuringCall {
   }
 
   async archieveQuestion(uuid, archive = true) {
-    const response = await fetch(`${BACKEND_URL}/api/user/archive_card/`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': Cookie.get('csrftoken'),
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-UseTagsOnly': true,
+    const response = await fetch(
+      `${environment.backendUrl}/api/user/archive_card/`,
+      {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': Cookie.get('csrftoken'),
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-UseTagsOnly': true,
+        },
+        body: JSON.stringify({ uuid, archive }),
       },
-      body: JSON.stringify({ uuid, archive }),
-    });
+    );
     const data = await response.json();
     return data;
   }

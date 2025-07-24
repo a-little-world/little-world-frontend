@@ -1,11 +1,11 @@
 import Cookies from 'js-cookie';
 
-import { BACKEND_URL } from '../ENVIRONMENT';
+import { environment } from '../environment';
 import { apiFetch, formatApiError } from './helpers';
 
 export const fetchChatMessages = async ({ id, page }) => {
   const response = await fetch(
-    `${BACKEND_URL}/api/messages/${id}/?page=${page}&page_size=20`,
+    `${environment.backendUrl}/api/messages/${id}/?page=${page}&page_size=20`,
     {
       headers: {
         'X-CSRFToken': Cookies.get('csrftoken'),
@@ -24,7 +24,7 @@ export const fetchChatMessages = async ({ id, page }) => {
 
 export const fetchChats = async ({ page }) => {
   const response = await fetch(
-    `${BACKEND_URL}/api/chats/?page=${page}&page_size=20`,
+    `${environment.backendUrl}/api/chats/?page=${page}&page_size=20`,
     {
       headers: {
         'X-CSRFToken': Cookies.get('csrftoken'),
@@ -42,15 +42,18 @@ export const fetchChats = async ({ page }) => {
 };
 
 export const fetchChat = async ({ chatId }) => {
-  const response = await fetch(`${BACKEND_URL}/api/chats/${chatId}/`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': 'True',
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+  const response = await fetch(
+    `${environment.backendUrl}/api/chats/${chatId}/`,
+    {
+      headers: {
+        'X-CSRFToken': Cookies.get('csrftoken'),
+        'X-UseTagsOnly': 'True',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
     },
-    method: 'GET',
-  });
+  );
 
   const responseBody = await response?.json();
   if (response.ok) return responseBody;
@@ -59,7 +62,7 @@ export const fetchChat = async ({ chatId }) => {
 
 export const markChatMessagesReadApi = async ({ chatId }) => {
   const response = await fetch(
-    `${BACKEND_URL}/api/messages/${chatId}/chat_read/`,
+    `${environment.backendUrl}/api/messages/${chatId}/chat_read/`,
     {
       headers: {
         'X-CSRFToken': Cookies.get('csrftoken'),
@@ -88,11 +91,14 @@ export const sendFileAttachmentMessage = async ({
   data.append('file', file);
   data.append('text', text);
   try {
-    const result = await apiFetch(`/api/messages/${chatId}/send_attachment/`, {
-      method: 'POST',
-      useTagsOnly: true,
-      body: data,
-    });
+    const result = await apiFetch(
+      `${environment.backendUrl}/api/messages/${chatId}/send_attachment/`,
+      {
+        method: 'POST',
+        useTagsOnly: true,
+        body: data,
+      },
+    );
     onSuccess(result);
   } catch (error) {
     onError(error);
@@ -101,11 +107,14 @@ export const sendFileAttachmentMessage = async ({
 
 export const sendMessage = async ({ chatId, text, onSuccess, onError }) => {
   try {
-    const result = await apiFetch(`/api/messages/${chatId}/send/`, {
-      method: 'POST',
-      useTagsOnly: true,
-      body: { text },
-    });
+    const result = await apiFetch(
+      `${environment.backendUrl}/api/messages/${chatId}/send/`,
+      {
+        method: 'POST',
+        useTagsOnly: true,
+        body: { text },
+      },
+    );
     onSuccess(result);
   } catch (error) {
     onError(error);

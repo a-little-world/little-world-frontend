@@ -1,7 +1,9 @@
 // // @ts-ignore
 // export { default as Settings } from './components/views/Settings';
 // // @ts-ignore
-export { default as SignUp } from './components/views/SignUp';
+// export { default as App } from './App';
+// export { default as SignUp } from './components/views/SignUp';
+// export { renderWebApp } from './main';
 // // @ts-ignore
 // export { default as VerifyEmail } from './components/views/VerifyEmail';
 // // @ts-ignore
@@ -28,6 +30,9 @@ export { default as SignUp } from './components/views/SignUp';
 // export * from './components/views/AboutUs/AboutUs';
 // export * from './components/views/AboutUs/Donate';
 // export * from './components/views/AboutUs/SupportUs';
+// export { WebApp } from './WebApp';
+export { default as Toolbar } from './components/atoms/Toolbar';
+export { Contact, Faqs } from './components/views/Help';
 // export * from './components/views/Messages.styles';
 // export * from './components/views/Notifications';
 // export * from './components/views/Notifications.styles';

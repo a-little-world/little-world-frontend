@@ -22,8 +22,8 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
-import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
+import { environment } from '../../environment';
 import { USER_ENDPOINT } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes';
@@ -168,7 +168,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
       setNewPassword(data).then(onResponseSuccess).catch(onError);
     } else if (type === 'email') {
       // DISABLE; DANGEROUS
-      if (!DEVELOPMENT)
+      if (!environment.development)
         setNewEmail(data).then(onResponseSuccess).catch(onError);
     } else if (label === 'display_language') {
       Cookies.set('frontendLang', data.display_language);

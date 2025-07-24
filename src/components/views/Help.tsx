@@ -177,7 +177,7 @@ export const FileDropzone = ({
   );
 };
 
-function Faqs() {
+export function Faqs() {
   const { t } = useTranslation();
   const [faqs, setFaqs] = useState([]);
   const { data: matches } = useSWR(MATCHES_ENDPOINT, {
@@ -215,7 +215,7 @@ function Faqs() {
   );
 }
 
-function Contact() {
+export function Contact() {
   const { t } = useTranslation();
 
   const [requestSuccessful, setRequestSuccessful] = useState(false);

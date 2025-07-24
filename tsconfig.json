@@ -22,7 +22,7 @@
     "**/*.test.tsx",
     "**/*.spec.ts",
     "**/*.spec.tsx",
-    "src/index.js"
+    "src/main.js"
   ],
   "types": ["@testing-library/jest-dom"],
   "typeRoots": ["./node_modules/@types"]

@@ -1,17 +1,17 @@
 {
   "name": "littleplanet",
-  "version": "0.1.5",
+  "version": "0.1.17",
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "npm run lint -- --fix",
     "dev": "npx webpack serveviews/index.js --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development",
-    "clean": "rimraf dist",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run copy-files:esm && npm run copy-files:cjs",
+    "clean": "npx rimraf dist",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run copy-files:esm && npm run copy-files:cjs && npm pack",
     "build:esm": "tsc --project tsconfig.json --noCheck --outDir dist/esm",
     "build:cjs": "tsc --project tsconfig.json --noCheck --module commonjs --outDir dist/cjs",
-    "copy-files:esm": "cpx \"src/**/*.css\" dist/esm && cpx \"src/**/*.png\" dist/esm && cpx \"src/**/*.svg\" dist/esm",
-    "copy-files:cjs": "cpx \"src/**/*.css\" dist/cjs && cpx \"src/**/*.png\" dist/cjs && cpx \"src/**/*.svg\" dist/cjs"
+    "copy-files:esm": "cpx \"src/**/*.css\" dist/esm && cpx \"src/images/**\" dist/esm/images && cpx \"src/locale/**\" dist/esm/locale",
+    "copy-files:cjs": "cpx \"src/**/*.css\" dist/cjs && cpx \"src/images/**\" dist/cjs/images && cpx \"src/locale/**\" dist/cjs/locale"
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -111,6 +111,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.5.1",
+    "rimraf": "^6.0.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.0",
     "webpack-bundle-analyzer": "^4.10.1",

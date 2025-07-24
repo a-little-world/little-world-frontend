@@ -8,7 +8,7 @@ import Cookies from 'js-cookie';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BACKEND_URL } from '../../../ENVIRONMENT';
+import { environment } from '../../../environment';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ModalCard, { Centred } from './ModalCard';
 
@@ -34,7 +34,7 @@ function DeleteAccountCard({ setShowModal }) {
           onClick={() => {
             // call deletion api ...
             // then reload page ...
-            fetch(`${BACKEND_URL}/api/user/delete_account/`, {
+            fetch(`${environment.backendUrl}/api/user/delete_account/`, {
               method: 'POST',
               headers: {
                 'X-CSRFToken': Cookies.get('csrftoken'),

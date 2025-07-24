@@ -20,7 +20,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
-import { BACKEND_URL } from '../../ENVIRONMENT';
+import { environment } from '../../environment';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
@@ -135,7 +135,7 @@ function Sidebar({ sidebarMobile }) {
     {
       label: 'log_out',
       clickEvent: () => {
-        fetch(`${BACKEND_URL}/api/user/logout/`, {
+        fetch(`${environment.backendUrl}/api/user/logout/`, {
           method: 'GET',
           headers: { 'X-CSRFToken': Cookies.get('csrftoken') },
         })
