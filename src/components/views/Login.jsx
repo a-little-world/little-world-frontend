@@ -7,11 +7,20 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { getWebRouter } from '../../router/router';
+import FormLayout from '../blocks/Layout/FormLayout';
+import {
+  Outlet,
+  createBrowserRouter,
+} from 'react-router-dom';
+import i18n from '../../i18n';
+import { swrConfig } from '../../features/swr/index';
+import useSWR, { SWRConfig, mutate } from 'swr';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { mutate } from 'swr';
+import { RouterProvider, useNavigate, useSearchParams, useRouteError } from 'react-router-dom';
+import { I18nextProvider } from 'react-i18next';
 
 import { login } from '../../api';
 import { USER_ENDPOINT } from '../../features/swr/index';
@@ -26,9 +35,49 @@ import {
 } from '../../router/routes';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
+// Error component that displays actual error information
+const ErrorElement = () => {
+  const error = useRouteError();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  console.error('Route error:', error);
+
+  return (
+    <StyledCard>
+      <Title tag="h2" type={TextTypes.Heading4}>
+        {t('error_view.title')}
+      </Title>
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <p>Something went wrong while loading this page.</p>
+        {error && (
+          <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+            <strong>Error details:</strong>
+            <pre style={{ 
+              background: '#f5f5f5', 
+              padding: '10px', 
+              borderRadius: '4px',
+              overflow: 'auto',
+              maxHeight: '200px',
+              fontSize: '12px'
+            }}>
+              {error.message || error.toString()}
+            </pre>
+          </div>
+        )}
+      </div>
+      <StyledCta
+        onClick={() => navigate('/')}
+        size={ButtonSizes.Stretch}
+      >
+        {t('error_view.button')}
+      </StyledCta>
+    </StyledCard>
+  );
+};
+
 const Login = () => {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -66,15 +115,6 @@ const Login = () => {
           navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
         } else if (!loginData.userFormCompleted) {
           navigate(getAppRoute(USER_FORM_ROUTE));
-        } else if (searchParams.get('next')) {
-          // users can be redirected from /login?next=<url>
-          // consider this route after the requried for entry forms verify-email / user-form
-          // we add missing front `/` otherwise 'app' would incorrectly navigate to /login/app
-          navigate(
-            searchParams.get('next').startsWith('/')
-              ? searchParams.get('next')
-              : `/${searchParams.get('next')}`,
-          );
         } else {
           // per default route to /app on successful login
           navigate(getAppRoute());
@@ -142,5 +182,49 @@ const Login = () => {
     </StyledCard>
   );
 };
+
+export const NativeWebWrapperL = ({ children }) => {
+  return <SWRConfig value={swrConfig}>{children}</SWRConfig>
+}
+
+export function LoginNativeWeb() {
+  const router = getWebRouter();
+  const router2 = createBrowserRouter(
+    [
+      {
+        path: '/',
+        element: <FormLayout>
+          <Login />
+        </FormLayout>,
+        errorElement: <FormLayout><ErrorElement /></FormLayout>,
+      },
+      {
+        path: '/login',
+        element: <FormLayout>
+          <Login />
+        </FormLayout>,
+        errorElement: <FormLayout><ErrorElement /></FormLayout>,
+      },
+      {
+        path: '',
+        element: <FormLayout>
+          <Login />
+        </FormLayout>,
+        errorElement: <FormLayout><ErrorElement /></FormLayout>,
+      },
+    ],
+    {
+      basename: '/',
+    }
+  );
+
+  return (
+    <I18nextProvider i18n={i18n}>
+      <NativeWebWrapperL>
+        <RouterProvider router={router} />
+      </NativeWebWrapperL>
+    </I18nextProvider>
+  );
+}
 
 export default Login;
