@@ -87,9 +87,11 @@ const NewMatchCard: React.FC<NewMatchCardProps> = ({
           {t('new_match_instruction')}
         </Text>
       </Centred>
-      <StatusMessage $visible={!!error} $type={MessageTypes.Error}>
-        {error}
-      </StatusMessage>
+      {!!error && (
+        <StatusMessage $visible={!!error} $type={MessageTypes.Error}>
+          {error}
+        </StatusMessage>
+      )}
       <Button onClick={handleExit} loading={isLoading} disabled={isLoading}>
         {t('new_match_close_btn')}
       </Button>

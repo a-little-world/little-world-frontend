@@ -22,13 +22,14 @@ export const TopicButton = styled(Button)`
 
 export const QuestionCard = styled.div<{ $selected: boolean }>`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  box-sizing: border-box;
-  border-radius: 18px;
+  border-radius: ${({ theme }) => theme.radius.medium};
   background: ${({ theme }) => theme.color.surface.primary};
+  padding: ${({ theme }) => theme.spacing.xxsmall};
   width: 100%;
   display: block;
   display: flex;
   flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
   align-items: center;
 
   ${({ $selected, theme }) =>
@@ -48,8 +49,8 @@ export const QuestionContentCard = styled.div`
   overflow: scroll;
   gap: ${({ theme }) => theme.spacing.xsmall};
 
-  @media (min-width: 500px) {
-    padding: 0px 0px ${({ theme }) => theme.spacing.small};
+  @media (min-width: ${({ theme }) => theme.breakpoints.small}) {
+    padding-bottom: ${({ theme }) => theme.spacing.small};
   }
 `;
 
@@ -57,15 +58,9 @@ export const QuestionButton = styled(Button)`
   padding: 0px;
   background: transparent;
   color: black;
-  padding: ${({ theme }) => theme.spacing.xsmall};
+  padding: ${({ theme }) => theme.spacing.xxsmall};
   height: fit-content;
-  font-size: 16px;
   font-weight: normal;
-`;
-
-export const ArchiveButton = styled.div`
-  margin-top: ${({ theme }) => theme.spacing.xxxsmall};
-  padding: 0px ${({ theme }) => theme.spacing.xsmall};
 `;
 
 export const Categories = styled.div`
