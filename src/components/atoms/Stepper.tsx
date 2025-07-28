@@ -38,20 +38,20 @@ const StepNumber = styled.div<{ isActive: boolean }>`
   border-radius: 50%;
   border: 1px solid
     ${props =>
-      props.isActive ?
-        props.theme.color.surface.bold :
-        props.theme.color.border.subtle};
+      props.isActive
+        ? props.theme.color.surface.bold
+        : props.theme.color.border.subtle};
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: ${props =>
-    props.isActive ?
-      props.theme.color.surface.bold :
-      props.theme.color.surface.primary};
+    props.isActive
+      ? props.theme.color.surface.bold
+      : props.theme.color.surface.primary};
   color: ${props =>
-    props.isActive ?
-      props.theme.color.text.reversed :
-      props.theme.color.text.primary};
+    props.isActive
+      ? props.theme.color.text.reversed
+      : props.theme.color.text.primary};
   font-weight: bold;
   cursor: pointer;
 `;
@@ -59,9 +59,9 @@ const StepNumber = styled.div<{ isActive: boolean }>`
 const StepLabel = styled.div<{ isActive: boolean }>`
   font-size: 16px;
   color: ${props =>
-    props.isActive ?
-      props.theme.color.surface.bold :
-      props.theme.color.text.primary};
+    props.isActive
+      ? props.theme.color.surface.bold
+      : props.theme.color.text.primary};
   height: 30px;
   display: flex;
   align-items: center;

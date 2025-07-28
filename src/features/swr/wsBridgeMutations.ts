@@ -99,9 +99,9 @@ export function addMessage(
             return {
               ...chat,
               unread_count:
-                senderIsSelf || message.read ?
-                  chat.unread_count :
-                  (chat.unread_count || 0) + 1,
+                senderIsSelf || message.read
+                  ? chat.unread_count
+                  : (chat.unread_count || 0) + 1,
               newest_message: message,
             };
           }

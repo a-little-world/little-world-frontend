@@ -115,9 +115,9 @@ const getProfileFields = ({
         labelTooltip: trans('self_info.language_skills_tooltip'),
         maxSegments: 8,
         restrictions:
-          profile?.user_type === USER_TYPES.volunteer ?
-            { german: restrictedLangLevels } :
-            {},
+          profile?.user_type === USER_TYPES.volunteer
+            ? { german: restrictedLangLevels }
+            : {},
         firstDropdown: {
           dataField: 'lang',
           ariaLabel: trans('self_info.language_selector_label'),
@@ -152,9 +152,9 @@ function Profile() {
   const [editingField, setEditingField] = useState(null);
 
   const { data: matches } = useSWR(MATCHES_ENDPOINT);
-  const match = !matches ?
-    undefined :
-    [...matches.support.results, ...matches.confirmed.results].find(
+  const match = !matches
+    ? undefined
+    : [...matches.support.results, ...matches.confirmed.results].find(
         m => m.partner.id === userId,
       );
 
@@ -166,15 +166,15 @@ function Profile() {
   );
 
   const [profileFields, setProfileFields] = useState(
-    profile && formOptions ?
-      getProfileFields({
+    profile && formOptions
+      ? getProfileFields({
           profile,
           formOptions,
           t,
           isSelf,
           selfAvailability: user?.profile?.availability,
-        }) :
-      {},
+        })
+      : {},
   );
 
   useEffect(() => {
@@ -189,9 +189,9 @@ function Profile() {
     }
   }, []);
 
-  const profileTitle = isSelf ?
-    t('profile.self_profile_title') :
-    t('profile.match_profile_title', { userName: profile?.first_name });
+  const profileTitle = isSelf
+    ? t('profile.self_profile_title')
+    : t('profile.match_profile_title', { userName: profile?.first_name });
 
   const onError = e => {
     onFormError({ e, formFields: getValues(), setError });

@@ -36,9 +36,9 @@ function OurWorld() {
   const navigate = useNavigate();
 
   const subpage =
-    location.pathname === getAppRoute(OUR_WORLD_ROUTE) ?
-      'support' :
-      last(location.pathname.split('/'));
+    location.pathname === getAppRoute(OUR_WORLD_ROUTE)
+      ? 'support'
+      : last(location.pathname.split('/'));
 
   const handleSubpageSelect = (page: subpages) => {
     navigate(getAppSubpageRoute(OUR_WORLD_ROUTE, page));

@@ -95,9 +95,9 @@ function MyVideoConference({
           />
           <Text>
             {t(
-              otherUserDisconnected ?
-                'call.partner_disconnected' :
-                'call.waiting_for_partner',
+              otherUserDisconnected
+                ? 'call.partner_disconnected'
+                : 'call.waiting_for_partner',
               { name: partnerName },
             )}
           </Text>
@@ -189,15 +189,15 @@ function VideoCall() {
                 isFullScreen={isFullScreen}
                 partnerName={chatData?.partner?.first_name}
                 partnerImage={
-                  chatData?.partner?.image_type === 'avatar' ?
-                    chatData?.partner.avatar_config :
-                    chatData?.partner?.image
+                  chatData?.partner?.image_type === 'avatar'
+                    ? chatData?.partner.avatar_config
+                    : chatData?.partner?.image
                 }
                 partnerImageType={chatData?.partner?.image_type}
                 selfImage={
-                  profile.image_type === 'avatar' ?
-                    profile.avatar_config :
-                    profile?.image
+                  profile.image_type === 'avatar'
+                    ? profile.avatar_config
+                    : profile?.image
                 }
                 selfImageType={profile.image_type}
               />

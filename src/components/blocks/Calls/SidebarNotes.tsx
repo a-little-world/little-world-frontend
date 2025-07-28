@@ -199,11 +199,11 @@ export function SidebarNotes() {
 
       if (response && response.status === 200) {
         const updatedField =
-          actionType === 'remove' ?
-            'is_deleted' :
-            actionType === 'favorite' ?
-            'is_favorite' :
-            'is_archived';
+          actionType === 'remove'
+            ? 'is_deleted'
+            : actionType === 'favorite'
+            ? 'is_favorite'
+            : 'is_archived';
 
         updatedNotesData[noteIndex] = {
           ...updatedNotesData[noteIndex],

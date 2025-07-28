@@ -17,11 +17,11 @@ export const SelectionPanel = styled.div<{
   position: relative;
   border: 2.5px solid;
   border-color: ${({ $selected, theme, $error }) =>
-    $selected ?
-      $error ?
-        theme.color.border.error :
-        theme.color.border.selected :
-      theme.color.border.subtle};
+    $selected
+      ? $error
+        ? theme.color.border.error
+        : theme.color.border.selected
+      : theme.color.border.subtle};
   border-radius: 20px;
   cursor: pointer;
   display: flex;

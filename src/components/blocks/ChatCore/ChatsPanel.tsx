@@ -152,9 +152,9 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
       ) : (
         chats.map((message, index) => {
           const isSender = message.newest_message?.sender === userId;
-          const customChatElements = message.newest_message?.parsable ?
-            getCustomChatElements({ message, userId, isPreview: true }) :
-            [];
+          const customChatElements = message.newest_message?.parsable
+            ? getCustomChatElements({ message, userId, isPreview: true })
+            : [];
 
           return (
             <Message
@@ -165,9 +165,9 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
               <UserImage
                 circle
                 image={
-                  message.partner.image_type === 'avatar' ?
-                    message.partner.avatar_config :
-                    message.partner.image
+                  message.partner.image_type === 'avatar'
+                    ? message.partner.avatar_config
+                    : message.partner.image
                 }
                 imageType={message.partner.image_type}
                 size="xsmall"

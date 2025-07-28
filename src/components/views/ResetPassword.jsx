@@ -96,9 +96,9 @@ const ResetPassword = () => {
           $visible={requestSuccessful || errors?.root?.serverError}
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
-          {requestSuccessful ?
-            t('reset_password.success_message') :
-            t(errors?.root?.serverError?.message)}
+          {requestSuccessful
+            ? t('reset_password.success_message')
+            : t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Link

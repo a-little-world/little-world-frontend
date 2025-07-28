@@ -56,9 +56,9 @@ const Content = styled.div<{ $isLarge: boolean }>`
   max-width: 1200px;
 
   ${({ theme, $isLarge }) => css`
-    @media (min-width: ${$isLarge ?
-        theme.breakpoints.large :
-        theme.breakpoints.medium}) {
+    @media (min-width: ${$isLarge
+        ? theme.breakpoints.large
+        : theme.breakpoints.medium}) {
       flex-direction: row;
       gap: ${$isLarge ? theme.spacing.xlarge : theme.spacing.large};
       justify-content: ${$isLarge ? 'space-between' : 'center'};
@@ -105,9 +105,9 @@ const MobileBannerImage = styled.img<{ $isLarge: boolean }>`
   ${({ theme, $isLarge }) => css`
     display: ${$isLarge ? 'flex' : 'none'};
     max-height: ${$isLarge ? '240px' : '120px'};
-    @media (min-width: ${$isLarge ?
-        theme.breakpoints.large :
-        theme.breakpoints.medium}) {
+    @media (min-width: ${$isLarge
+        ? theme.breakpoints.large
+        : theme.breakpoints.medium}) {
       display: none;
     }
   `};
@@ -118,9 +118,9 @@ const DesktopBannerImage = styled.img<{ $isLarge: boolean }>`
   border-radius: ${({ theme }) => theme.radius.small};
 
   ${({ theme, $isLarge }) => css`
-    @media (min-width: ${$isLarge ?
-        theme.breakpoints.large :
-        theme.breakpoints.medium}) {
+    @media (min-width: ${$isLarge
+        ? theme.breakpoints.large
+        : theme.breakpoints.medium}) {
       display: block;
       width: auto;
       height: auto;

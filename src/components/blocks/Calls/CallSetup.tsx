@@ -151,12 +151,12 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       chatId: authData.chatId || '',
       tracks: values,
       token: authData.token || undefined,
-      audioOptions: values.audioEnabled ?
-        { deviceId: values.audioDeviceId } :
-        false,
-      videoOptions: values.videoEnabled ?
-        { deviceId: values.videoDeviceId } :
-        false,
+      audioOptions: values.audioEnabled
+        ? { deviceId: values.audioDeviceId }
+        : false,
+      videoOptions: values.videoEnabled
+        ? { deviceId: values.videoDeviceId }
+        : false,
       livekitServerUrl: authData.livekitServerUrl || undefined,
     });
     cancelCallSetup();

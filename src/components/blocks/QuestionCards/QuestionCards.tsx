@@ -74,9 +74,9 @@ function QuestionCards() {
               key={topic?.uuid}
               type="button"
               appearance={
-                selectedTopic === topic?.uuid ?
-                  ButtonAppearance.Primary :
-                  ButtonAppearance.Secondary
+                selectedTopic === topic?.uuid
+                  ? ButtonAppearance.Primary
+                  : ButtonAppearance.Secondary
               }
               value={topic?.uuid}
               onClick={() => setTopic(topic?.uuid)}
