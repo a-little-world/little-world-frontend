@@ -66,9 +66,9 @@ function getFirebaseDeviceTokenRegistrationInfo(): FirebaseRegistrationInfo {
   const savedInfo = window.localStorage.getItem(
     FIREBASE_DEIVCE_TOKEN_REGISTERED_KEY,
   );
-  return savedInfo
-    ? JSON.parse(savedInfo)
-    : {
+  return savedInfo ?
+    JSON.parse(savedInfo) :
+    {
         registeredTokens: [],
         timestamp: new Date(),
       };

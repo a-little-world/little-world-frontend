@@ -67,9 +67,9 @@ export const USER_FORM_ROUTES = {
 };
 
 export const isActiveRoute = (locationPath: string, path: string) =>
-  locationPath === path || path !== getAppRoute('')
-    ? locationPath?.includes(path)
-    : false;
+  locationPath === path || path !== getAppRoute('') ?
+    locationPath?.includes(path) :
+    false;
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {

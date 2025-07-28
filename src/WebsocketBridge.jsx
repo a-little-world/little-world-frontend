@@ -13,11 +13,11 @@ import useToast from './hooks/useToast';
 
 const window = undefined;
 
-const SOCKET_URL = environment.isCapacitorBuild
-  ? environment.coreWsScheme +
+const SOCKET_URL = environment.isCapacitorBuild ?
+  environment.coreWsScheme +
     environment.backendUrl.split('//').pop() +
-    environment.coreWsPath
-  : environment.coreWsScheme + window?.location.host + environment.coreWsPath;
+    environment.coreWsPath :
+  environment.coreWsScheme + (window?.location.host || '') + environment.coreWsPath;
 
 const WebsocketBridge = () => {
   /**

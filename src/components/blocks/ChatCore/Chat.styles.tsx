@@ -149,9 +149,9 @@ export const MessageText = styled(Text)<{
 }>`
   position: relative;
   padding: ${({ theme, $isWidget }) =>
-    $isWidget
-      ? theme.spacing.xxxsmall
-      : `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
+    $isWidget ?
+      theme.spacing.xxxsmall :
+      `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: ${({ theme }) => theme.radius.medium};
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
@@ -175,14 +175,14 @@ export const MessageText = styled(Text)<{
     border: 5px solid;
 
     ${({ theme, $isSelf }) =>
-      $isSelf
-        ? css`
+      $isSelf ?
+        css`
             border-color: ${theme.color.border.subtle}
               ${theme.color.border.subtle} transparent transparent;
             left: auto;
             right: 15px;
-          `
-        : css`
+          ` :
+        css`
             border-color: ${theme.color.border.subtle} transparent transparent
               ${theme.color.border.subtle};
             right: auto;
@@ -199,14 +199,14 @@ export const MessageText = styled(Text)<{
     border: 5px solid;
 
     ${({ theme, $isSelf }) =>
-      $isSelf
-        ? css`
+      $isSelf ?
+        css`
             border-color: ${theme.color.surface.message}
               ${theme.color.surface.message} transparent transparent;
             left: auto;
             right: 16px;
-          `
-        : css`
+          ` :
+        css`
             border-color: ${theme.color.surface.primary} transparent transparent
               ${theme.color.surface.primary};
             right: auto;

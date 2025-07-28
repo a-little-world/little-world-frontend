@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 
 let root: any;
 
-export function WebApp() {
+export default function WebApp() {
   const apiTranslations = undefined;
   const user = undefined;
   const apiOptions = undefined;
@@ -18,7 +18,7 @@ export function WebApp() {
   if (!root) {
     root = createRoot(container);
   }
-  console.log('RENDERING APP V2', { user, apiTranslations, apiOptions });
+  // console.log('RENDERING APP V2', { user, apiTranslations, apiOptions });
   root.render(
     <App
       user={user}
@@ -28,5 +28,5 @@ export function WebApp() {
   );
 
   reportWebVitals();
-  return <></>;
+  return null;
 }

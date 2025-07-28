@@ -184,15 +184,6 @@ export const NativeWebWrapper = ({
   children: React.ReactNode;
 }) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
 
-export function FaqsNativeWeb() {
-  return (
-    <I18nextProvider i18n={i18n}>
-      <NativeWebWrapper>
-        <Faqs />
-      </NativeWebWrapper>
-    </I18nextProvider>
-  );
-}
 
 export function Faqs() {
   const { t } = useTranslation();
@@ -301,9 +292,9 @@ export function Contact() {
         $visible={Boolean(requestSuccessful || errors?.root?.serverError)}
         $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
       >
-        {requestSuccessful
-          ? t('help.contact_form_submitted')
-          : t(errors?.root?.serverError?.message)}
+        {requestSuccessful ?
+          t('help.contact_form_submitted') :
+          t(errors?.root?.serverError?.message)}
       </StatusMessage>
       <Button
         type="submit"
@@ -395,6 +386,16 @@ function Help() {
         </HelpSupport>
       </HelpContainer>
     </>
+  );
+}
+
+export function FaqsNativeWeb() {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <NativeWebWrapper>
+        <Faqs />
+      </NativeWebWrapper>
+    </I18nextProvider>
   );
 }
 

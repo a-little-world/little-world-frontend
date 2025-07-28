@@ -294,9 +294,9 @@ const Chat = ({ chatId }) => {
         {chatMessages?.page &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
-              {isUnmatched
-                ? t('chat.unmatched_no_messages')
-                : t('chat.no_messages')}
+              {isUnmatched ?
+                t('chat.unmatched_no_messages') :
+                t('chat.no_messages')}
             </NoMessages>
           ) : (
             <>
@@ -308,14 +308,14 @@ const Chat = ({ chatId }) => {
                     <Text type={TextTypes.Body6}>{group.formattedDate}</Text>
                   </StickyDateHeader>
                   {group.messages.map(message => {
-                    const customChatElements = message?.parsable
-                      ? getCustomChatElements({
+                    const customChatElements = message?.parsable ?
+                      getCustomChatElements({
                           initCallSetup,
                           message,
                           userId,
                           activeChat,
-                        })
-                      : [];
+                        }) :
+                      [];
 
                     return (
                       <Message
@@ -389,9 +389,9 @@ const Chat = ({ chatId }) => {
           error={t(get(errors, `${ROOT_SERVER_ERROR}.message`))}
           expandable
           placeholder={
-            isUnmatched
-              ? t('chat.unmatched_text_area_placeholder')
-              : t('chat.text_area_placeholder')
+            isUnmatched ?
+              t('chat.unmatched_text_area_placeholder') :
+              t('chat.text_area_placeholder')
           }
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
@@ -412,9 +412,9 @@ const Chat = ({ chatId }) => {
           type="button"
           variation={ButtonVariations.Circle}
           backgroundColor={
-            selectedFile
-              ? theme.color.status.error
-              : theme.color.surface.primary
+            selectedFile ?
+              theme.color.status.error :
+              theme.color.surface.primary
           }
           borderColor={theme.color.text.title}
           color={

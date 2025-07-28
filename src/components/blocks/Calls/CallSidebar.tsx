@@ -30,9 +30,9 @@ function CallSidebar({ isDisplayed, chatId }) {
         {sidebarTopics.map(topic => (
           <StyledOption
             appearance={
-              sideSelection === topic
-                ? ButtonAppearance.Primary
-                : ButtonAppearance.Secondary
+              sideSelection === topic ?
+                ButtonAppearance.Primary :
+                ButtonAppearance.Secondary
             }
             key={topic}
             onClick={() => setSideSelection(topic)}
