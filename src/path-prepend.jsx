@@ -1,5 +1,5 @@
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
 function Link(props) {
   // TODO: depricated can prob get rid of this

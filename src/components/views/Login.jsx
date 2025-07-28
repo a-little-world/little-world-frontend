@@ -10,7 +10,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  useNavigate,
+} from 'react-router-dom';
 import { mutate } from 'swr';
 
 import { login } from '../../api';
@@ -26,9 +28,10 @@ import {
 } from '../../router/routes';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
+
+
 const Login = () => {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -66,15 +69,6 @@ const Login = () => {
           navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
         } else if (!loginData.userFormCompleted) {
           navigate(getAppRoute(USER_FORM_ROUTE));
-        } else if (searchParams.get('next')) {
-          // users can be redirected from /login?next=<url>
-          // consider this route after the requried for entry forms verify-email / user-form
-          // we add missing front `/` otherwise 'app' would incorrectly navigate to /login/app
-          navigate(
-            searchParams.get('next').startsWith('/')
-              ? searchParams.get('next')
-              : `/${searchParams.get('next')}`,
-          );
         } else {
           // per default route to /app on successful login
           navigate(getAppRoute());
@@ -142,5 +136,7 @@ const Login = () => {
     </StyledCard>
   );
 };
+
+
 
 export default Login;

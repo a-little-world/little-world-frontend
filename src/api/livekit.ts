@@ -6,8 +6,8 @@ export const requestVideoAccessToken = async ({
   onError,
 }: {
   partnerId: string;
-  onSuccess: (result: any) => void;
-  onError: (error: any) => void;
+  onSuccess: (_result: any) => void;
+  onError: (_error: any) => void;
 }) => {
   try {
     const result = await apiFetch(`/api/livekit/authenticate`, {
@@ -33,8 +33,8 @@ export const submitCallFeedback = async ({
   rating: number;
   review?: string;
   reviewId?: number;
-  onSuccess: (result: any) => void;
-  onError: (error: any) => void;
+  onSuccess: (_result: any) => void;
+  onError: (_error: any) => void;
 }) => {
   try {
     const response = await apiFetch(`/api/livekit/review`, {

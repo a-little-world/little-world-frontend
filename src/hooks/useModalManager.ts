@@ -38,8 +38,10 @@ export const ModalTypes: Record<ModalTypeKey, ModalConfig> = {
 } as const;
 
 interface UseModalManagerReturn {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   openModal: (modalType: ModalTypeKey) => void;
   closeModal: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   isModalOpen: (modalType: ModalTypeKey) => boolean;
 }
 
@@ -62,18 +64,18 @@ const useModalManager = (): UseModalManagerReturn => {
       if (activeModal !== ModalTypes.NONE.id) {
         setModalQueue(prev => {
           const newQueue = [...prev, activeModal];
-          return modalsToClose.length
-            ? newQueue.filter(modal => !modalsToClose.includes(modal))
-            : newQueue;
+          return modalsToClose.length ?
+            newQueue.filter(modal => !modalsToClose.includes(modal)) :
+            newQueue;
         });
       }
       setActiveModal(modalType);
       // If new modal has lower priority, add to queue
     } else if (newModalPriority < currentModalPriority) {
       setModalQueue(prev => [
-        ...(modalsToClose.length
-          ? prev.filter(modal => !modalsToClose.includes(modal))
-          : prev),
+        ...(modalsToClose.length ?
+          prev.filter(modal => !modalsToClose.includes(modal)) :
+          prev),
         modalType,
       ]);
     } else {

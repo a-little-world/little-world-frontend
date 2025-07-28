@@ -63,7 +63,7 @@ function App({ user, apiTranslations, apiOptions }) {
   return (
     <SWRConfig value={swrConfig}>
       <Preloader>
-        <RouterProvider router={router} />
+        <RouterProvider router={router()} />
       </Preloader>
     </SWRConfig>
   );

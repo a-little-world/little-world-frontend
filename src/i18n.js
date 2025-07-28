@@ -28,6 +28,8 @@ i18next
     fallbackLng: LANGUAGES.de,
   });
 
+export default i18next;
+
 export const COOKIE_LANG = 'frontendLang';
 const cookie = Cookies.get(COOKIE_LANG);
 if (cookie !== undefined) {

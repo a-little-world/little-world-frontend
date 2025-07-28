@@ -154,9 +154,9 @@ const AvatarEditor: React.FC<AvatarEditorProps> = ({
     setEditorConfig(state => ({
       ...state,
       [key]:
-        currentIndex >= maxVal
-          ? options[key][0]
-          : options[key][currentIndex + 1],
+        currentIndex >= maxVal ?
+          options[key][0] :
+          options[key][currentIndex + 1],
     }));
   };
 

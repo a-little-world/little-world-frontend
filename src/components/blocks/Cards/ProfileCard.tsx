@@ -312,9 +312,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
         {!onProfile && (
           <Description>
-            {isSupport
-              ? t('profile_card.support_description')
-              : profile.description}
+            {isSupport ?
+              t('profile_card.support_description') :
+              profile.description}
           </Description>
         )}
       </ProfileInfo>

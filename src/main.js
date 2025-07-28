@@ -11,11 +11,10 @@ import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
 import { Root } from './router/router';
 
-const isDevelopment = environment.development;
-
 let root;
 
-function renderApp({ user, apiTranslations, apiOptions }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function renderApp({ user, apiTranslations, apiOptions }) {
   updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
   // If not in development just render ...
   const container = document.getElementById('root');
@@ -23,7 +22,6 @@ function renderApp({ user, apiTranslations, apiOptions }) {
   if (!root) {
     root = createRoot(container);
   }
-  console.log('RENDERING APP V2', { user, apiTranslations, apiOptions });
   root.render(
     <App
       user={user}
@@ -35,7 +33,8 @@ function renderApp({ user, apiTranslations, apiOptions }) {
   reportWebVitals();
 }
 
-function renderMessageView(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function renderMessageView(
   {
     title,
     content,
@@ -74,23 +73,4 @@ function renderMessageView(
       {/* InitializeDux removed */}
     </React.StrictMode>,
   );
-}
-
-export function renderWebApp() {
-  /**
-   * 1. Frontend only development: trigger login simulator to auto login in remote server
-   * 2. Frontend in Backend Development, just export `renderApp` will be called from within django view
-   * 3. Capaitor build, call the `renderApp` directly as its used in full static export
-   */
-  console.log('isDevelopment', isDevelopment);
-  if (isDevelopment) {
-    import('./loginSimulator').then(simulator => {
-      simulator.simulatedAutoLogin().then(data => {
-        const initData = data?.data;
-        const apiTranslations = data?.api_translations;
-
-        renderApp({ initData, apiTranslations });
-      });
-    });
-  }
 }

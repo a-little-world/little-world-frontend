@@ -78,9 +78,9 @@ const formPages = {
           width: InputWidth.Small,
         }),
       },
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? []
-        : [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [] :
+        [
             {
               type: ComponentTypes.multiCheckboxWithInput,
               multiCheckbox: {
@@ -114,9 +114,9 @@ const formPages = {
           labelTooltip: t('self_info.language_skills_tooltip'),
           maxSegments: 8,
           restrictions:
-            userData?.user_type === USER_TYPES.volunteer
-              ? { german: restrictedLangLevels }
-              : {},
+            userData?.user_type === USER_TYPES.volunteer ?
+              { german: restrictedLangLevels } :
+              {},
           firstDropdown: {
             dataField: 'lang',
             ariaLabel: t('self_info.language_selector_label'),
@@ -189,8 +189,8 @@ const formPages = {
     prevPage: USER_FORM_ROUTES.PICTURE,
     nextPage: USER_FORM_ROUTES.AVAILABILITY,
     components: [
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [
             {
               type: ComponentTypes.radio,
               currentValue: userData?.target_group,
@@ -201,8 +201,8 @@ const formPages = {
                 errorRules: { required: t('validation.required') },
               }),
             },
-          ]
-        : []),
+          ] :
+        []),
       {
         type: ComponentTypes.radio,
         currentValue: userData?.partner_gender,
@@ -291,16 +291,16 @@ const formPages = {
           infoText: 'user_form_notifications.info',
         },
       },
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? []
-        : [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [] :
+        [
             {
               type: ComponentTypes.radioWithInput,
               id: 'job_search',
               radioGroup: {
-                currentValue: isBoolean(userData?.job_search) // radioGroup doesn't work with boolean values
-                  ? userData?.job_search.toString()
-                  : userData?.job_search,
+                currentValue: isBoolean(userData?.job_search) ? // radioGroup doesn't work with boolean values
+                  userData?.job_search.toString() :
+                  userData?.job_search,
                 dataField: 'job_search',
                 formData: jobSearchOptions,
                 textInputVal: jobSearchOptions[0].value,

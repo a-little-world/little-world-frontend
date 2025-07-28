@@ -19,7 +19,8 @@ const firstDuplicate = arr => {
 const addErrorToLangSkill = ({ dropdownProps, error, values }) => {
   const numberOfValues = values.length;
   const errors = Array(numberOfValues).fill(undefined);
-  const errorIndex =    error.message === ERROR_DE_MISSING ?
+  const errorIndex =
+    error.message === ERROR_DE_MISSING ?
       numberOfValues - 1 :
       firstDuplicate(values);
 

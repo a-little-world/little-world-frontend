@@ -1,4 +1,5 @@
 import { Button, Card, Text } from '@a-little-world/little-world-design-system';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 export const StyledCard = styled(Card)`

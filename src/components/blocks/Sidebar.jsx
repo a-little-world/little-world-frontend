@@ -104,9 +104,9 @@ function Sidebar({ sidebarMobile }) {
   const navigate = useNavigate();
   const theme = useTheme();
   const startPath =
-    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
-      ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
-      : getAppRoute();
+    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ?
+      getAppRoute(COMMUNITY_EVENTS_ROUTE) :
+      getAppRoute();
 
   const buttonData = [
     { label: 'start', path: startPath, Icon: DashboardIcon },
@@ -191,9 +191,9 @@ function Sidebar({ sidebarMobile }) {
               <Icon
                 label={label}
                 labelId={label}
-                {...(isActive
-                  ? { color: theme.color.surface.primary }
-                  : { gradient: Gradients.Blue })}
+                {...(isActive ?
+                  { color: theme.color.surface.primary } :
+                  { gradient: Gradients.Blue })}
                 {...iconProps}
               />
               {t(`nbs_${label}`)}

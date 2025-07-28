@@ -17,13 +17,14 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { TFunction, useTranslation } from 'react-i18next';
+import { I18nextProvider, TFunction, useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
-import useSWR from 'swr';
+import useSWR, { SWRConfig } from 'swr';
 
 import { submitHelpForm } from '../../api/index';
-import { MATCHES_ENDPOINT } from '../../features/swr/index';
+import { MATCHES_ENDPOINT, swrConfig } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
+import i18n from '../../i18n';
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink from '../atoms/MenuLink';
@@ -177,12 +178,23 @@ export const FileDropzone = ({
   );
 };
 
+export const NativeWebWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
+
+
 export function Faqs() {
   const { t } = useTranslation();
   const [faqs, setFaqs] = useState([]);
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
-    revalidateOnMount: false,
+  const { data: matches, error } = useSWR(MATCHES_ENDPOINT, {
+    revalidateOnMount: true,
   });
+
+  console.log('Message route', MESSAGES_ROUTE);
+  console.log('Matches', matches, error);
+  console.log('FAQ', t('nbt_faqs'));
 
   const adminUser = matches?.support?.results?.[0];
   const supportUrl = getAppSubpageRoute(
@@ -191,7 +203,9 @@ export function Faqs() {
   );
 
   useEffect(() => {
-    setFaqs(generateFAQItems(t, supportUrl));
+    if (!faqs.length) {
+      setFaqs(generateFAQItems(t, supportUrl));
+    }
   }, [t, supportUrl]);
 
   return (
@@ -278,9 +292,9 @@ export function Contact() {
         $visible={Boolean(requestSuccessful || errors?.root?.serverError)}
         $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
       >
-        {requestSuccessful
-          ? t('help.contact_form_submitted')
-          : t(errors?.root?.serverError?.message)}
+        {requestSuccessful ?
+          t('help.contact_form_submitted') :
+          t(errors?.root?.serverError?.message)}
       </StatusMessage>
       <Button
         type="submit"
@@ -372,6 +386,16 @@ function Help() {
         </HelpSupport>
       </HelpContainer>
     </>
+  );
+}
+
+export function FaqsNativeWeb() {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <NativeWebWrapper>
+        <Faqs />
+      </NativeWebWrapper>
+    </I18nextProvider>
   );
 }
 
