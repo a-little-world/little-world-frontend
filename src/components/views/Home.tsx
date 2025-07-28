@@ -78,9 +78,9 @@ function Main() {
   }, [userId]);
 
   const subpage =
-    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)
-      ? 'events'
-      : 'conversation_partners';
+    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE) ?
+      'events' :
+      'conversation_partners';
 
   const handleSubpageSelect = (page: subpages) => {
     const nextPath = page !== 'conversation_partners' ? page : '';

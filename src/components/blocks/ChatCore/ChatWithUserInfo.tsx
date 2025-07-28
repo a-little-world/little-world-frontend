@@ -91,9 +91,9 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
             <UserImage
               circle
               image={
-                partner?.image_type === 'avatar'
-                  ? partner?.avatar_config
-                  : partner?.image
+                partner?.image_type === 'avatar' ?
+                  partner?.avatar_config :
+                  partner?.image
               }
               imageType={partner?.image_type}
               size="xsmall"

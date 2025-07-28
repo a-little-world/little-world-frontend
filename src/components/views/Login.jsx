@@ -7,24 +7,22 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { getWebRouter } from '../../router/router';
-import FormLayout from '../blocks/Layout/FormLayout';
-import {
-  Outlet,
-  createBrowserRouter,
-} from 'react-router-dom';
-import i18n from '../../i18n';
-import { swrConfig } from '../../features/swr/index';
-import useSWR, { SWRConfig, mutate } from 'swr';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { RouterProvider, useNavigate, useSearchParams, useRouteError } from 'react-router-dom';
-import { I18nextProvider } from 'react-i18next';
+import { I18nextProvider, useTranslation } from 'react-i18next';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  useNavigate,
+  useRouteError,
+} from 'react-router-dom';
+import { SWRConfig, mutate } from 'swr';
 
 import { login } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index';
+import { USER_ENDPOINT, swrConfig } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
+import i18n from '../../i18n';
+import { getWebRouter } from '../../router/router';
 import {
   FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
@@ -33,6 +31,7 @@ import {
   getAppRoute,
   passAuthenticationBoundary,
 } from '../../router/routes';
+import FormLayout from '../blocks/Layout/FormLayout';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 // Error component that displays actual error information
@@ -53,23 +52,22 @@ const ErrorElement = () => {
         {error && (
           <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
             <strong>Error details:</strong>
-            <pre style={{ 
-              background: '#f5f5f5', 
-              padding: '10px', 
-              borderRadius: '4px',
-              overflow: 'auto',
-              maxHeight: '200px',
-              fontSize: '12px'
-            }}>
+            <pre
+              style={{
+                background: '#f5f5f5',
+                padding: '10px',
+                borderRadius: '4px',
+                overflow: 'auto',
+                maxHeight: '200px',
+                fontSize: '12px',
+              }}
+            >
               {error.message || error.toString()}
             </pre>
           </div>
         )}
       </div>
-      <StyledCta
-        onClick={() => navigate('/')}
-        size={ButtonSizes.Stretch}
-      >
+      <StyledCta onClick={() => navigate('/')} size={ButtonSizes.Stretch}>
         {t('error_view.button')}
       </StyledCta>
     </StyledCard>
@@ -183,9 +181,9 @@ const Login = () => {
   );
 };
 
-export const NativeWebWrapperL = ({ children }) => {
-  return <SWRConfig value={swrConfig}>{children}</SWRConfig>
-}
+export const NativeWebWrapperL = ({ children }) => (
+  <SWRConfig value={swrConfig}>{children}</SWRConfig>
+);
 
 export function LoginNativeWeb() {
   const router = getWebRouter();
@@ -193,29 +191,47 @@ export function LoginNativeWeb() {
     [
       {
         path: '/',
-        element: <FormLayout>
-          <Login />
-        </FormLayout>,
-        errorElement: <FormLayout><ErrorElement /></FormLayout>,
+        element: (
+          <FormLayout>
+            <Login />
+          </FormLayout>
+        ),
+        errorElement: (
+          <FormLayout>
+            <ErrorElement />
+          </FormLayout>
+        ),
       },
       {
         path: '/login',
-        element: <FormLayout>
-          <Login />
-        </FormLayout>,
-        errorElement: <FormLayout><ErrorElement /></FormLayout>,
+        element: (
+          <FormLayout>
+            <Login />
+          </FormLayout>
+        ),
+        errorElement: (
+          <FormLayout>
+            <ErrorElement />
+          </FormLayout>
+        ),
       },
       {
         path: '',
-        element: <FormLayout>
-          <Login />
-        </FormLayout>,
-        errorElement: <FormLayout><ErrorElement /></FormLayout>,
+        element: (
+          <FormLayout>
+            <Login />
+          </FormLayout>
+        ),
+        errorElement: (
+          <FormLayout>
+            <ErrorElement />
+          </FormLayout>
+        ),
       },
     ],
     {
       basename: '/',
-    }
+    },
   );
 
   return (

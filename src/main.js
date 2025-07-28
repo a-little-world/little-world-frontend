@@ -35,6 +35,7 @@ function renderApp({ user, apiTranslations, apiOptions }) {
   reportWebVitals();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function renderMessageView(
   {
     title,

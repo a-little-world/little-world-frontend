@@ -15,18 +15,16 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { swrConfig } from '../../features/swr/index';
-import i18n from '../../i18n';
-import { I18nextProvider } from 'react-i18next';
 import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { TFunction, useTranslation } from 'react-i18next';
+import { I18nextProvider, TFunction, useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
-import useSWR, { SWRConfig, mutate } from 'swr';
+import useSWR, { SWRConfig } from 'swr';
 
 import { submitHelpForm } from '../../api/index';
-import { MATCHES_ENDPOINT } from '../../features/swr/index';
+import { MATCHES_ENDPOINT, swrConfig } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
+import i18n from '../../i18n';
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink from '../atoms/MenuLink';
@@ -180,16 +178,20 @@ export const FileDropzone = ({
   );
 };
 
-export const NativeWebWrapper = ({ children }: { children: React.ReactNode }) => {
-  return <SWRConfig value={swrConfig}>{children}</SWRConfig>
-}
+export const NativeWebWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
 
 export function FaqsNativeWeb() {
-  return <I18nextProvider i18n={i18n}>
-    <NativeWebWrapper>
-      <Faqs />
-    </NativeWebWrapper>
-  </I18nextProvider>
+  return (
+    <I18nextProvider i18n={i18n}>
+      <NativeWebWrapper>
+        <Faqs />
+      </NativeWebWrapper>
+    </I18nextProvider>
+  );
 }
 
 export function Faqs() {
@@ -201,7 +203,7 @@ export function Faqs() {
 
   console.log('Message route', MESSAGES_ROUTE);
   console.log('Matches', matches, error);
-  console.log("FAQ", t('nbt_faqs'))
+  console.log('FAQ', t('nbt_faqs'));
 
   const adminUser = matches?.support?.results?.[0];
   const supportUrl = getAppSubpageRoute(
@@ -210,7 +212,7 @@ export function Faqs() {
   );
 
   useEffect(() => {
-    if(!faqs.length) {
+    if (!faqs.length) {
       setFaqs(generateFAQItems(t, supportUrl));
     }
   }, [t, supportUrl]);
@@ -299,9 +301,9 @@ export function Contact() {
         $visible={Boolean(requestSuccessful || errors?.root?.serverError)}
         $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
       >
-        {requestSuccessful
-          ? t('help.contact_form_submitted')
-          : t(errors?.root?.serverError?.message)}
+        {requestSuccessful ?
+          t('help.contact_form_submitted') :
+          t(errors?.root?.serverError?.message)}
       </StatusMessage>
       <Button
         type="submit"

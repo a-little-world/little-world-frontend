@@ -27,16 +27,16 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
   const { t } = useTranslation();
   const { data: user } = useSWR(USER_ENDPOINT);
   const isSearching = user?.isSearching;
-  const currentState = isSearching
-    ? SEARCHING_STATES.searching
-    : SEARCHING_STATES.idle;
+  const currentState = isSearching ?
+    SEARCHING_STATES.searching :
+    SEARCHING_STATES.idle;
   const [error, setError] = useState(null);
 
   function activateSearching() {
     setError(null);
-    const updatedState = isSearching
-      ? SEARCHING_STATES.idle
-      : SEARCHING_STATES.searching;
+    const updatedState = isSearching ?
+      SEARCHING_STATES.idle :
+      SEARCHING_STATES.searching;
     updateUserSearchState({
       updatedState,
       onSuccess: () => {

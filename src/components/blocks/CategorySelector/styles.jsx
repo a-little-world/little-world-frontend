@@ -16,7 +16,8 @@ export const CategorySelectorWrapper = styled.div`
 
 export const SelectionPanel = styled.button`
   border: 2.5px solid;
-  border-color: ${({ $selected, theme }) => ($selected ? theme.color.border.selected : theme.color.border.subtle)};
+  border-color: ${({ $selected, theme }) =>
+    $selected ? theme.color.border.selected : theme.color.border.subtle};
   border-radius: 20px;
   cursor: pointer;
   display: flex;

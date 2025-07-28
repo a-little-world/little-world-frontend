@@ -32,7 +32,7 @@ const StyledDrawer = styled(ReactDrawer)`
 const CloseButton = styled(Button)`
   width: 100%;
   padding-top: ${({ theme }) => theme.spacing.small};
-`
+`;
 
 type DrawerProps = {
   children: any;

@@ -137,9 +137,9 @@ const VerifyEmail = () => {
           $visible={requestSuccessful || errors?.root?.serverError}
           $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
         >
-          {requestSuccessful
-            ? t('verify_email.success_message')
-            : t(errors?.root?.serverError?.message)}
+          {requestSuccessful ?
+            t('verify_email.success_message') :
+            t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Button

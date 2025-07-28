@@ -72,8 +72,6 @@ import {
   getAppRoute,
 } from './routes';
 
-const isCapacitor = environment.isCapacitorBuild || false;
-
 export const Root = ({
   children,
   restoreScroll = true,
@@ -93,9 +91,7 @@ export const Root = ({
   </CustomThemeProvider>
 );
 
-
-export function getWebRouter(){
-
+export function getWebRouter() {
   const ROOT_ROUTES = [
     {
       path: LOGIN_ROUTE,

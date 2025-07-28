@@ -190,11 +190,11 @@ const EventCtas = ({
     <>
       <DateTimeEvent>
         <Text type={TextTypes.Body3} bold tag="span">
-          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly
-            ? t('community_events.every_week', {
+          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly ?
+            t('community_events.every_week', {
                 day: formatDate(startDate, 'EEEE', language),
-              })
-            : formatDate(startDate, 'cccc, LLLL do', language)}
+              }) :
+            formatDate(startDate, 'cccc, LLLL do', language)}
         </Text>
         <Text type={TextTypes.Body3} bold color={theme.color.text.heading}>
           {formatEventTime(startDate, endDate)}
