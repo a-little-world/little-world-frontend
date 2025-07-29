@@ -4,6 +4,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import {
+  Navigate,
   Outlet,
   ScrollRestoration,
   createBrowserRouter,
