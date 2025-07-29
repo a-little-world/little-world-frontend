@@ -3,8 +3,8 @@ import {
   Button,
   ButtonVariations,
   Loading,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextTypes,
   TickIcon,
@@ -214,7 +214,7 @@ function Notifications() {
         )}
         {error && (
           <StatusMessage
-            $type={MessageTypes.Error}
+            $type={StatusTypes.Error}
             $visible={!isLoading && error?.message}
           >
             {error?.message}

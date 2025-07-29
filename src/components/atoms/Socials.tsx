@@ -2,9 +2,8 @@ import {
   FacebookIcon,
   InstagramIcon,
   Link,
-  Linkedin,
-  Telegram,
-  Whatsapp,
+  TelegramIcon,
+  WhatsappIcon,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import styled from 'styled-components';
@@ -29,7 +28,7 @@ export const SOCIALS_LIST = {
       labelId: 'fbIcon',
     },
     {
-      Icon: Linkedin,
+      Icon: LinkedinIcon,
       url: 'https://www.linkedin.com/company/little-world/',
       label: 'linkedin',
       labelId: 'linkedinIcon',
@@ -37,13 +36,13 @@ export const SOCIALS_LIST = {
   ],
   join_groups: [
     {
-      Icon: Whatsapp,
+      Icon: WhatsappIcon,
       url: 'https://chat.whatsapp.com/DDoLv0AFtHh6CEtXlKz91k',
       label: 'whatsapp',
       labelId: 'whatsappIcon',
     },
     {
-      Icon: Telegram,
+      Icon: TelegramIcon,
       url: 'https://t.me/+nhDqI57icllkMmYy',
       label: 'telegram',
       labelId: 'telegramIcon',

@@ -2,8 +2,8 @@ import {
   Button,
   Card,
   CardSizes,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -87,7 +87,7 @@ const NewMatchCard: React.FC<NewMatchCardProps> = ({
           {t('new_match_instruction')}
         </Text>
       </Centred>
-      <StatusMessage $visible={!!error} $type={MessageTypes.Error}>
+      <StatusMessage $visible={!!error} $type={StatusTypes.Error}>
         {error}
       </StatusMessage>
       <Button onClick={handleExit} loading={isLoading} disabled={isLoading}>

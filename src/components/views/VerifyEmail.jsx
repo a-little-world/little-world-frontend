@@ -3,8 +3,8 @@ import {
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextInput,
   TextTypes,
@@ -135,7 +135,7 @@ const VerifyEmail = () => {
         <HelpText>{t('verify_email.help_text')}</HelpText>
         <StatusMessage
           $visible={requestSuccessful || errors?.root?.serverError}
-          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+          $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
           {requestSuccessful
             ? t('verify_email.success_message')

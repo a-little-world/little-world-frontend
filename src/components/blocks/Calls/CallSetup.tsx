@@ -3,8 +3,8 @@ import {
   Button,
   ButtonVariations,
   CloseIcon,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -229,7 +229,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
         persistUserChoices={false}
       />
       {error && (
-        <StatusMessage $type={MessageTypes.Error} $visible>
+        <StatusMessage $type={StatusTypes.Error} $visible>
           {t(error)}
         </StatusMessage>
       )}
