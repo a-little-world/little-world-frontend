@@ -26,12 +26,12 @@ const LogoContainer = styled.div<{ $stacked?: boolean }>`
   `}
 `;
 
-const LogoImage = styled.img<{ $size: SizesType }>`
+const LogoImage = styled(LogoImageSvg)<{ $size: SizesType }>`
   max-width: 100%;
   width: ${({ $size }) => ($size === LogoSizes.Small ? '30px' : '70px')};
 `;
 
-export const LogoText = styled.img<{ $size: SizesType }>`
+export const LogoText = styled(LogoTextSvg)<{ $size: SizesType }>`
   max-width: 100%;
   width: ${({ $size }) => ($size === LogoSizes.Small ? '30px' : '80px')};
 `;
@@ -63,12 +63,8 @@ const Logo = ({
 }: LogoProps) => (
   <Wrapper asLink={asLink}>
     <LogoContainer className={className} $stacked={stacked}>
-      {displayImage && (
-        <LogoImage src={LogoImageSvg} alt="Little World Logo" $size={size} />
-      )}
-      {displayText && (
-        <LogoText src={LogoTextSvg} alt="Little World" $size={size} />
-      )}
+      {displayImage && <LogoImage $size={size} />}
+      {displayText && <LogoText $size={size} />}
     </LogoContainer>
   </Wrapper>
 );
