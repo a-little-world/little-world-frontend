@@ -66,7 +66,7 @@ import {
   WriteSection,
 } from './Chat.styles.tsx';
 
-const Chat = ({ chatId }) => {
+const Chat = ({ chatId, inCall = false }) => {
   const {
     t,
     i18n: { language },
@@ -314,6 +314,7 @@ const Chat = ({ chatId }) => {
                           message,
                           userId,
                           activeChat,
+                          inCall,
                         })
                       : [];
 

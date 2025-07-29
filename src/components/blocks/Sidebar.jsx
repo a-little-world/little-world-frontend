@@ -18,13 +18,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 
 import { BACKEND_URL } from '../../ENVIRONMENT';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
-  USER_ENDPOINT,
+  resetUserQueries,
 } from '../../features/swr/index.ts';
 import {
   COMMUNITY_EVENTS_ROUTE,
@@ -141,7 +141,7 @@ function Sidebar({ sidebarMobile }) {
         })
           .then(response => {
             if (response.status === 200) {
-              mutate(USER_ENDPOINT, undefined);
+              resetUserQueries();
               navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
             } else {
               console.error(

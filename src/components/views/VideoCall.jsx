@@ -229,7 +229,7 @@ function VideoCall() {
             open={selectedDrawerOption === 'chat'}
             onClose={() => setSelectedDrawerOption(null)}
           >
-            <Chat chatId={chatData?.uuid} />
+            <Chat chatId={chatData?.uuid} inCall />
           </Drawer>
           <Drawer
             title="Questions"

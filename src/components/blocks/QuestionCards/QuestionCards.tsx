@@ -1,17 +1,20 @@
 import {
+  Button,
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
   ChevronLeftIcon,
   ChevronRightIcon,
+  CloseIcon,
+  DownloadIcon,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
+import { archieveQuestion } from '../../../api/questions.ts';
 import { getQuestionsEndpoint } from '../../../features/swr/index.ts';
 import {
-  ArchiveButton,
   Categories,
   CategoryControl,
   QuestionButton,
@@ -113,39 +116,43 @@ function QuestionCards() {
                 {card?.content[selfUserPreferedLang]}
               </QuestionButton>
               {selectedQuestionId === card?.uuid &&
-                selectedTopic !== 'archived' && (
-                  <ArchiveButton>
-                    <button
-                      type="button"
-                      className="yes"
-                      onClick={() => {
-                        mutate(getQuestionsEndpoint(false));
-                      }}
-                    >
-                      <img
-                        className="accept-question-icon"
-                        alt="accept question"
-                      />
-                    </button>
-                  </ArchiveButton>
-                )}
-              {selectedQuestionId === card?.uuid &&
-                selectedTopic === 'archived' && (
-                  <ArchiveButton>
-                    <button
-                      type="button"
-                      className="unarchive"
-                      onClick={() => {
-                        mutate(getQuestionsEndpoint(false));
-                      }}
-                    >
-                      <img
-                        className="unarchive-question-icon"
-                        alt="accept question"
-                      />
-                    </button>
-                  </ArchiveButton>
-                )}
+              selectedTopic === 'archived' ? (
+                <Button
+                  variation={ButtonVariations.Icon}
+                  onClick={() => {
+                    archieveQuestion({
+                      uuid: card.uuid,
+                      archive: false,
+                      onSuccess: () => mutate(getQuestionsEndpoint(false)),
+                      onError: () => null,
+                    });
+                  }}
+                >
+                  <CloseIcon
+                    label="unarchive question"
+                    width={16}
+                    height={16}
+                  />
+                </Button>
+              ) : (
+                <Button
+                  variation={ButtonVariations.Icon}
+                  onClick={() => {
+                    archieveQuestion({
+                      uuid: card.uuid,
+                      archive: true,
+                      onSuccess: () => mutate(getQuestionsEndpoint(false)),
+                      onError: () => null,
+                    });
+                  }}
+                >
+                  <DownloadIcon
+                    label="archive question"
+                    width={16}
+                    height={16}
+                  />
+                </Button>
+              )}
             </QuestionCard>
           ))}
       </QuestionContentCard>
