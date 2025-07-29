@@ -5,7 +5,6 @@ import { mutate } from 'swr';
 import App from './App';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
-import { environment } from './environment';
 import { API_OPTIONS_ENDPOINT } from './features/swr/index';
 import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
@@ -73,4 +72,9 @@ export function renderMessageView(
       {/* InitializeDux removed */}
     </React.StrictMode>,
   );
+}
+
+if (typeof window !== 'undefined') {
+  window.renderApp = renderApp;
+  window.renderMessageView = renderMessageView;
 }
