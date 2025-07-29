@@ -4,15 +4,6 @@
   display: flex;
   flex-direction: column;
 }
-.accept-question-icon {
-  content: url('./images/check.svg');
-}
-
-.unarchive-question-icon {
-  content: url('./images/unarchive_question.svg');
-  width: 28px;
-  height: 28px;
-}
 
 .add-fovorite .favorite-icon {
   width: 22px;

@@ -43,7 +43,7 @@ function CallSidebar({ isDisplayed, chatId }) {
         ))}
       </SidebarSelector>
       <SidebarContent>
-        {sideSelection === 'chat' && <Chat chatId={chatId} />}
+        {sideSelection === 'chat' && <Chat chatId={chatId} inCall />}
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </SidebarContent>
