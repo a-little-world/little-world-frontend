@@ -388,4 +388,67 @@ export function getWebRouter() {
   return router;
 }
 
+export function getNativeRouter() {
+  const ROOT_ROUTES = [
+    {
+      path: LOGIN_ROUTE,
+      element: (
+        <FormLayout>
+          <Login />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: '',
+      element: (
+        <FormLayout>
+          <Login />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: '/',
+      element: (
+        <FormLayout>
+          <Login />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: SIGN_UP_ROUTE,
+      element: (
+        <FormLayout>
+          <SignUp />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: '*',
+      element: <Navigate to="/" replace />,
+    },
+  ];
+
+  const router = createBrowserRouter(
+    [
+      {
+        path: '',
+        element: <Root />,
+        children: ROOT_ROUTES,
+        errorElement: (
+          <Root>
+            <RouterError />
+          </Root>
+        ),
+      },
+    ],
+    { basename: '' },
+  );
+  return router;
+}
+
+
 export default getWebRouter;
