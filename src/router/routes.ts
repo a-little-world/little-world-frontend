@@ -44,11 +44,15 @@ export const USER_FORM_AVAILABILITY = 'availability';
 export const USER_FORM_NOTIFICATIONS = 'notifications';
 export const USER_FORM_CONDITIONS = 'conditions';
 
+import { environment } from '../environment';
+
 // Helper function to generate routes
 const getUserFormRoute = (slug: string) => `${USER_FORM_ROUTE}/${slug}`;
 export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
-export const getAppRoute = (slug?: string) => `/${APP_ROUTE}/${slug ?? ''}`;
+export const getAppRoute = (slug?: string) => {
+  return !environment?.isNative ? `/${APP_ROUTE}/${slug}` : `/${slug}`;
+};
 export const getAppSubpageRoute = (parent: string, slug: string) =>
   getAppRoute(`${parent}/${slug}`);
 export const getCallRoute = (userId: string) => `/${APP_ROUTE}/call/${userId}`;

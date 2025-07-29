@@ -7,7 +7,7 @@ export interface Environment {
   backendPath: string;
   coreWsScheme: string;
   coreWsPath: string;
-  isCapacitorBuild: boolean;
+  isNative: boolean;
 }
 
 export const environment: Environment = {
@@ -19,5 +19,5 @@ export const environment: Environment = {
   backendPath: '',
   coreWsScheme: 'ws://',
   coreWsPath: '/api/core/ws',
-  isCapacitorBuild: false,
+  isNative: false,
 };

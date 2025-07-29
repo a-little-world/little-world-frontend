@@ -5,14 +5,14 @@ import { SWRConfig } from 'swr';
 
 import { swrConfig } from '../../features/swr/index';
 import i18n from '../../i18n';
-import { getWebRouter } from '../../router/router';
+import { getNativeRouter } from '../../router/router';
 
 export const NativeWebWrapperL = ({ children }) => (
   <SWRConfig value={swrConfig}>{children}</SWRConfig>
 );
 
 export function LoginNativeWeb() {
-  const router = getWebRouter();
+  const router = getNativeRouter();
 
   return (
     <I18nextProvider i18n={i18n}>
