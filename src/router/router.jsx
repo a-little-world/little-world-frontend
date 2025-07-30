@@ -455,6 +455,39 @@ export function getNativeRouter() {
       errorElement: <RouterError Layout={FormLayout} />,
     },
     {
+      path: APP_ROUTE,
+      element: (
+        <FullAppLayout>
+          <Main />
+        </FullAppLayout>
+      ),
+      errorElement: <RouterError />,
+    },
+    {
+      path: getAppRoute(VERIFY_EMAIL_ROUTE),
+      element: (
+        <FormLayout>
+          <VerifyEmail />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: getAppRoute(USER_FORM_ROUTE),
+      element: <FormLayout />,
+      errorElement: <RouterError Layout={FormLayout} />,
+      children: [
+        {
+          path: '',
+          element: <Welcome />,
+        },
+        {
+          path: ':slug',
+          element: <Form />,
+        },
+      ],
+    },
+    {
       path: '*',
       element: <Navigate to="/" replace />,
     },
