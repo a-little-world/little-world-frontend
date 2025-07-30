@@ -50,9 +50,7 @@ import { environment } from '../environment';
 const getUserFormRoute = (slug: string) => `${USER_FORM_ROUTE}/${slug}`;
 export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
-export const getAppRoute = (slug?: string) => {
-  return !environment?.isNative ? `/${APP_ROUTE}/${slug}` : `/${slug}`;
-};
+export const getAppRoute = (slug?: string) => `/${APP_ROUTE}/${slug}`;
 export const getAppSubpageRoute = (parent: string, slug: string) =>
   getAppRoute(`${parent}/${slug}`);
 export const getCallRoute = (userId: string) => `/${APP_ROUTE}/call/${userId}`;

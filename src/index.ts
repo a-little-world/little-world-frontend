@@ -33,7 +33,7 @@
 // export { WebApp } from './WebApp';
 export { default as Toolbar } from './components/atoms/Toolbar';
 export { Contact, Faqs, FaqsNativeWeb } from './components/views/Help';
-export { LoginNativeWeb } from './components/views/LoginNativeWeb';
+export { LittleWorldWebNative } from './components/views/LittleWorldWebNative';
 // export * from './components/views/Messages.styles';
 // export * from './components/views/Notifications';
 // export * from './components/views/Notifications.styles';

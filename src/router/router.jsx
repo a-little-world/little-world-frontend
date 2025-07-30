@@ -428,6 +428,33 @@ export function getNativeRouter() {
       errorElement: <RouterError Layout={FormLayout} />,
     },
     {
+      path: FORGOT_PASSWORD_ROUTE,
+      element: (
+        <FormLayout>
+          <ForgotPassword />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: EMAIL_PREFERENCES_ROUTE,
+      element: (
+        <FormLayout>
+          <EmailPreferences />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: RESET_PASSWORD_ROUTE,
+      element: (
+        <FormLayout>
+          <ResetPassword />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
       path: '*',
       element: <Navigate to="/" replace />,
     },

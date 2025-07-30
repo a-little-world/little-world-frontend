@@ -7,18 +7,14 @@ import { swrConfig } from '../../features/swr/index';
 import i18n from '../../i18n';
 import { getNativeRouter } from '../../router/router';
 
-export const NativeWebWrapperL = ({ children }) => (
-  <SWRConfig value={swrConfig}>{children}</SWRConfig>
-);
-
-export function LoginNativeWeb() {
+export function LittleWorldWebNative() {
   const router = getNativeRouter();
 
   return (
     <I18nextProvider i18n={i18n}>
-      <NativeWebWrapperL>
+      <SWRConfig value={swrConfig}>
         <RouterProvider router={router} />
-      </NativeWebWrapperL>
+      </SWRConfig>
     </I18nextProvider>
   );
 } 
