@@ -1,5 +1,5 @@
 import { Button } from '@a-little-world/little-world-design-system';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import styled, { css } from 'styled-components';
 
 import { ContentListLayouts } from './ContentList.tsx';

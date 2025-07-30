@@ -6,7 +6,7 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import styled, { css } from 'styled-components';
 
 import { getAppRoute } from '../../router/routes.ts';

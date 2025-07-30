@@ -3,6 +3,7 @@ import {
   Button,
   ButtonVariations,
   Loading,
+  LoadingSizes,
   StatusMessage,
   StatusTypes,
   Text,
@@ -10,12 +11,11 @@ import {
   TickIcon,
   TrashIcon,
 } from '@a-little-world/little-world-design-system';
-import { LoadingSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Loading/Loading';
 import { formatDistance } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { createSearchParams, useSearchParams } from 'react-router-dom';
+import { createSearchParams, useSearchParams } from 'react-router';
 import useSWR from 'swr';
 
 import {

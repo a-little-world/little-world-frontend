@@ -1,6 +1,6 @@
 import { last } from 'lodash';
 import React, { useCallback, useMemo } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import styled from 'styled-components';
 
 import {

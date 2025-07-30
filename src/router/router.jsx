@@ -3,14 +3,10 @@ import {
   GlobalStyles,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
-import {
-  Outlet,
-  ScrollRestoration,
-  createBrowserRouter,
-} from 'react-router-dom';
-import FireBase from '../Firebase.tsx';
+import { Outlet, ScrollRestoration, createBrowserRouter } from 'react-router';
 
 import { IS_CAPACITOR_BUILD } from '../ENVIRONMENT.js';
+import FireBase from '../Firebase.tsx';
 import WebsocketBridge from '../WebsocketBridge.jsx';
 import { ModeSwitch } from '../components/atoms/ModeSwitch.tsx';
 import RouterError from '../components/blocks/ErrorView/ErrorView.tsx';

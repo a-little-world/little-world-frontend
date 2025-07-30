@@ -7,7 +7,7 @@ import {
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router';
 import useSWR from 'swr';
 
 import { completeForm, mutateUserData } from '../../../api';

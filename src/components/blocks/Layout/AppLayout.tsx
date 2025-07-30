@@ -1,6 +1,6 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import React, { ReactNode, useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 

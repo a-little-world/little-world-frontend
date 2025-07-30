@@ -9,7 +9,7 @@ import {
 import { reduce } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 

@@ -1,14 +1,14 @@
 import {
   Loading,
+  LoadingSizes,
   StatusMessage,
   StatusTypes,
   Switch,
 } from '@a-little-world/little-world-design-system';
-import { LoadingSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Loading/Loading';
 import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import styled, { css } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 

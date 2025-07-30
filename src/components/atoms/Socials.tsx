@@ -2,6 +2,7 @@ import {
   FacebookIcon,
   InstagramIcon,
   Link,
+  LinkedinIcon,
   TelegramIcon,
   WhatsappIcon,
 } from '@a-little-world/little-world-design-system';

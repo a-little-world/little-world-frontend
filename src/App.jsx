@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider } from 'react-router/dom';
 import useSWR, { SWRConfig, mutate } from 'swr';
 
 import './App.css';

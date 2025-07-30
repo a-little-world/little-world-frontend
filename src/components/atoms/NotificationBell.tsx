@@ -5,7 +5,7 @@ import {
   ButtonVariations,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 
 import { NotificationState } from '../../api/notification.ts';
