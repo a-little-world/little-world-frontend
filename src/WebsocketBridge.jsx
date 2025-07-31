@@ -17,7 +17,7 @@ const SOCKET_URL = environment.isCapacitorBuild ?
   environment.coreWsScheme +
     environment.backendUrl.split('//').pop() +
     environment.coreWsPath :
-  environment.coreWsScheme + (window?.location.host || '') + environment.coreWsPath;
+  environment.coreWsScheme + (environment.isNative ? environment.websocketHost : window?.location.host || '') + environment.coreWsPath;
 
 const WebsocketBridge = () => {
   /**
