@@ -66,12 +66,16 @@ const Login = () => {
         passAuthenticationBoundary();
 
         if (!loginData.emailVerified) {
+          console.log('email not verified');
           navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
+          console.log('navigate to verify email');
         } else if (!loginData.userFormCompleted) {
+          console.log('user form not completed');
           navigate(getAppRoute(USER_FORM_ROUTE));
         } else {
+          console.log('navigate to app');
           // per default route to /app on successful login
-          navigate(getAppRoute());
+          navigate(getAppRoute(''));
         }
       })
       .catch(onError);
