@@ -473,6 +473,159 @@ export function getNativeRouter() {
       errorElement: <RouterError Layout={FormLayout} />,
     },
     {
+      path: getAppRoute(USER_PROFILE_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Profile />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Main />
+        </FullAppLayout>
+      ),
+      errorElement: <RouterError />,
+    },
+    {
+      path: getAppRoute(CHAT_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Messages />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(OUR_WORLD_ROUTE),
+      element: (
+        <FullAppLayout>
+          <AboutUs />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(SUPPORT_US_ROUTE),
+      element: (
+        <FullAppLayout>
+          <AboutUs />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(DONATE_ROUTE),
+      element: (
+        <FullAppLayout>
+          <AboutUs />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(RESOURCES_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Resources />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(TRAININGS_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Resources />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(TRAINING_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Resources />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(BEGINNERS_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Resources />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(LANGUAGE_RESOURCES_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Resources />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(MY_STORY_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Resources />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(PARTNERS_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Resources />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(PARTNER_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Resources />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(MESSAGES_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Messages />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(NOTIFICATIONS_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Notifications />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(USER_PROFILE_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Profile />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(HELP_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Help />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(SETTINGS_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Settings />
+        </FullAppLayout>
+      ),
+    },
+    {
       path: getAppRoute(USER_FORM_ROUTE),
       element: <FormLayout />,
       errorElement: <RouterError Layout={FormLayout} />,
