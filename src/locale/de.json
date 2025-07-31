@@ -66,6 +66,7 @@
   "chat.not_selected": "Öffne einen bestimmten Chat, indem du ihn in der linken Seitenleiste anklickst",
   "chat.send_btn": "Senden",
   "chat.text_area_placeholder": "Schreib eine Nachricht",
+  "chat.attachment_parse_error": "Dieser Anhang konnte aufgrund eines Formatierungsfehlers nicht angezeigt werden.",
   "chat.unmatched_user": "Unmatched",
   "chat.today": "Heute",
   "chat.yesterday": "Gestern",
