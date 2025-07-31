@@ -7,6 +7,7 @@ export interface Environment {
   backendPath: string;
   coreWsScheme: string;
   coreWsPath: string;
+  websocketHost: string;
   isNative: boolean;
 }
 
@@ -19,5 +20,6 @@ export const environment: Environment = {
   backendPath: '',
   coreWsScheme: 'ws://',
   coreWsPath: '/api/core/ws',
-  isNative: false,
+  websocketHost: 'localhost:9000',
+  isNative: true,
 };
