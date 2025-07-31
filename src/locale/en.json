@@ -66,7 +66,7 @@
   "chat.not_selected": "Open a specific chat by clicking on it in the left-hand side panel",
   "chat.send_btn": "Send",
   "chat.text_area_placeholder": "Write here...",
-  "chat.attachment_parse_error": "This attachment could not be displayed due to a formatting error.",
+  "chat.attachment_parse_error": "This attachment could not be displayed due to a processing issue.",
   "chat.unmatched_user": "Unmatched",
   "chat.today": "Today",
   "chat.yesterday": "Yesterday",
