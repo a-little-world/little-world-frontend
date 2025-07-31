@@ -76,7 +76,7 @@ export const isActiveRoute = (locationPath: string, path: string) =>
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {
   try {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && window?.unloadCookieBanner) {
       window?.unloadCookieBanner();
     }
   } catch (e) {
