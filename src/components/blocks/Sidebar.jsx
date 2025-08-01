@@ -106,7 +106,7 @@ function Sidebar({ sidebarMobile }) {
   const startPath =
     getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ?
       getAppRoute(COMMUNITY_EVENTS_ROUTE) :
-      getAppRoute();
+      getAppRoute('');
 
   const buttonData = [
     { label: 'start', path: startPath, Icon: DashboardIcon },
