@@ -1,7 +1,5 @@
-import {
-  CustomThemeProvider,
-  GlobalStyles,
-} from '@a-little-world/little-world-design-system';
+import { GlobalStyles } from '@a-little-world/little-world-design-system';
+import { CustomThemeProvider } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import {
   Navigate,
@@ -82,7 +80,7 @@ export const Root = ({
     <ToastProvider>
       <AuthGuard>
         <WebsocketBridge />
-        <FireBase />
+        {!environment.isNative && <FireBase />}
       </AuthGuard>
       {restoreScroll && <ScrollRestoration />}
       <GlobalStyles />
@@ -663,6 +661,5 @@ export function getNativeRouter() {
   );
   return router;
 }
-
 
 export default getWebRouter;

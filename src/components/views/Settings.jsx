@@ -370,7 +370,7 @@ function Settings() {
               />
             ))}
             <MailingLists />
-            <PushNotifications />
+            {!environment.isNative && <PushNotifications />}
             <SettingsItem>
               <Button
                 appearance={ButtonAppearance.Secondary}
