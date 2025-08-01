@@ -62,6 +62,7 @@ const Content = styled.section<{ $isVH: boolean }>`
   width: 100%;
   min-width: 0;
   flex: 1;
+  background-color: ${({ theme }) => theme.color.surface.background};
 
   ${({ theme, $isVH }) => css`
     ${$isVH &&

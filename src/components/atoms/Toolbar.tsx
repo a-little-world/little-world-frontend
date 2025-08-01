@@ -3,7 +3,8 @@ import {
   BellIcon,
   Button,
   ButtonAppearance,
-  ButtonVariations, // ClockDashedIcon,
+  ButtonVariations, 
+  ClockDashedIcon,
   ClockIcon,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
@@ -79,7 +80,7 @@ const Toolbar = ({
         <ClockIcon label="unread icon" width="16px" height="16px" />
         {t('notifications.filter_unread')}
       </ToolbarButton>
-      {/* <ToolbarButton
+      <ToolbarButton
         onClick={() => onChangeFilter(NotificationState.READ)}
         appearance={ButtonAppearance.Secondary}
         variation={ButtonVariations.Icon}
@@ -92,7 +93,7 @@ const Toolbar = ({
           height="16px"
         />
         {t('notifications.filter_read')}
-      </ToolbarButton> */}
+      </ToolbarButton>
       {showArchived && (
         <ToolbarButton
           onClick={() => onChangeFilter(NotificationState.ARCHIVED)}

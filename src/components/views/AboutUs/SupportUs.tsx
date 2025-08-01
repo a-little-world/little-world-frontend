@@ -30,7 +30,7 @@ import Socials, { SOCIALS_LIST } from '../../atoms/Socials.tsx';
 import MailingLists from '../../blocks/MailingLists/MailingLists.tsx';
 
 const ACCORDION_CONTENT_CSS = css`
-  background: white;
+  background: ${({ theme }) => theme.color.surface.primary};
   gap: ${({ theme }) => theme.spacing.medium};
   display: flex;
   flex-direction: column;
