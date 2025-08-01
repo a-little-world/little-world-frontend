@@ -62,14 +62,6 @@ module.exports = {
         caughtErrorsIgnorePattern: '^_',
       },
     ],
-    'no-unused-vars': [
-      'error',
-      {
-        argsIgnorePattern: '^_|^[a-z]+$', // Allow single lowercase letters (common in interfaces)
-        varsIgnorePattern: '^_|^[A-Z_]+$|^[a-z]+$', // Allow UPPER_CASE (enums, constants) and lowercase (enum values)
-        caughtErrorsIgnorePattern: '^_',
-      },
-    ],
   },
   overrides: [
     {
