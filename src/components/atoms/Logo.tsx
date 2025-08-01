@@ -66,49 +66,41 @@ const Logo = ({
   const renderLogoImage = () => {
     if (!displayImage) return null;
 
-    if (environment.isNative) {
-      // For native builds, use SVG as React component
-      return (
-        <LogoImageStyled $size={size}>
+    return (
+      <LogoImageStyled $size={size}>
+        {environment.isNative ? (
+          // For native builds, use SVG as React component
           <LogoImageSvg />
-        </LogoImageStyled>
-      );
-    } else {
-      // For web builds, use SVG as src URL (webpack will handle the bundling)
-      return (
-        <LogoImageStyled $size={size}>
+        ) : (
+          // For web builds, use SVG as src URL (webpack will handle the bundling)
           <img
             src={LogoImageSvg}
             alt="Little World Logo"
             style={{ width: '100%', height: '100%' }}
           />
-        </LogoImageStyled>
-      );
-    }
+        )}
+      </LogoImageStyled>
+    );
   };
 
   const renderLogoText = () => {
     if (!displayText) return null;
 
-    if (environment.isNative) {
-      // For native builds, use SVG as React component
-      return (
-        <LogoTextStyled $size={size}>
+    return (
+      <LogoTextStyled $size={size}>
+        {environment.isNative ? (
+          // For native builds, use SVG as React component
           <LogoTextSvg />
-        </LogoTextStyled>
-      );
-    } else {
-      // For web builds, use SVG as src URL (webpack will handle the bundling)
-      return (
-        <LogoTextStyled $size={size}>
+        ) : (
+          // For web builds, use SVG as src URL (webpack will handle the bundling)
           <img
             src={LogoTextSvg}
             alt="Little World"
             style={{ width: '100%', height: '100%' }}
           />
-        </LogoTextStyled>
-      );
-    }
+        )}
+      </LogoTextStyled>
+    );
   };
 
   return (
