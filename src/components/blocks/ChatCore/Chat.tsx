@@ -40,6 +40,7 @@ import {
   formatFileName,
   getCustomChatElements,
   messageContainsWidget,
+  processAttachmentWidgets,
 } from '../../../helpers/chat.ts';
 import { formatMessageDate, formatTime } from '../../../helpers/date.ts';
 import {
@@ -308,10 +309,16 @@ const Chat = ({ chatId, inCall = false }) => {
                     <Text type={TextTypes.Body6}>{group.formattedDate}</Text>
                   </StickyDateHeader>
                   {group.messages.map(message => {
-                    const customChatElements = message?.parsable
+                    // Process attachment widgets for malformed JSON
+                    const processedMessageText = processAttachmentWidgets(
+                      message,
+                      t,
+                    );
+
+                    const customChatElements = message.parsable
                       ? getCustomChatElements({
                           initCallSetup,
-                          message,
+                          message: { ...message, text: processedMessageText },
                           userId,
                           activeChat,
                           inCall,
@@ -325,17 +332,17 @@ const Chat = ({ chatId, inCall = false }) => {
                       >
                         <MessageText
                           {...(message.parsable &&
-                            messageContainsWidget(message.text) && {
+                            messageContainsWidget(processedMessageText) && {
                               as: 'div',
                             })}
                           disableParser={!message.parsable}
                           $isSelf={message.sender === userId}
                           $isWidget={
                             message.parsable &&
-                            messageContainsWidget(message.text)
+                            messageContainsWidget(processedMessageText)
                           }
                         >
-                          {textParser(message.text, {
+                          {textParser(processedMessageText, {
                             customElements: customChatElements,
                             onlyLinks: !message.parsable,
                           })}
