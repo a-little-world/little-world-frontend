@@ -3,7 +3,7 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Link,
-  MessageTypes,
+  StatusTypes,
   StatusMessage,
   TextInput,
   TextTypes,
@@ -94,7 +94,7 @@ const ResetPassword = () => {
         />
         <StatusMessage
           $visible={requestSuccessful || errors?.root?.serverError}
-          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+          $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
           {requestSuccessful ?
             t('reset_password.success_message') :

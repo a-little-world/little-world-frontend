@@ -3,7 +3,7 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Link,
-  MessageTypes,
+  StatusTypes,
   StatusMessage,
   TextInput,
   TextTypes,
@@ -83,7 +83,7 @@ const ChangeEmail = () => {
         />
         <StatusMessage
           $visible={errors?.root?.serverError}
-          $type={MessageTypes.Error}
+          $type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StatusMessage>

@@ -5,7 +5,7 @@ import {
   InputWidth,
   Label,
   Link,
-  MessageTypes,
+  StatusTypes,
   StatusMessage,
   Text,
   TextInput,
@@ -257,7 +257,7 @@ const SignUp = () => {
         <Text>{t('sign_up.privacy_policy')}</Text>
         <StatusMessage
           $visible={errors?.root?.serverError}
-          $type={MessageTypes.Error}
+          $type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StatusMessage>

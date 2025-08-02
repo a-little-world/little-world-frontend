@@ -6,7 +6,7 @@ import {
   Card,
   Dropdown,
   Link,
-  MessageTypes,
+  StatusTypes,
   Modal,
   PencilIcon,
   StatusMessage,
@@ -286,7 +286,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
         )}
         <StyledFormMessage
           $visible={errors?.root?.serverError}
-          $type={MessageTypes.Error}
+          $type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StyledFormMessage>

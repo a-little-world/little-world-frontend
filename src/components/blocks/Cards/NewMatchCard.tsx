@@ -2,7 +2,7 @@ import {
   Button,
   Card,
   CardSizes,
-  MessageTypes,
+  StatusTypes,
   StatusMessage,
   Text,
   TextTypes,
@@ -87,7 +87,7 @@ const NewMatchCard: React.FC<NewMatchCardProps> = ({
           {t('new_match_instruction')}
         </Text>
       </Centred>
-      <StatusMessage $visible={!!error} $type={MessageTypes.Error}>
+      <StatusMessage $visible={!!error} $type={StatusTypes.Error}>
         {error}
       </StatusMessage>
       <Button onClick={handleExit} loading={isLoading} disabled={isLoading}>

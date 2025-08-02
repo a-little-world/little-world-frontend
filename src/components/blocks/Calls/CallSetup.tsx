@@ -3,7 +3,7 @@ import {
   Button,
   ButtonVariations,
   CloseIcon,
-  MessageTypes,
+  StatusTypes,
   StatusMessage,
   Text,
   TextTypes,
@@ -229,7 +229,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
         persistUserChoices={false}
       />
       {error && (
-        <StatusMessage $type={MessageTypes.Error} $visible>
+        <StatusMessage $type={StatusTypes.Error} $visible>
           {t(error)}
         </StatusMessage>
       )}

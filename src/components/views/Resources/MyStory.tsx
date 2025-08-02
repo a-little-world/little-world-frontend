@@ -3,7 +3,7 @@ import {
   ButtonSizes,
   Card,
   ContentTypes,
-  MessageTypes,
+  StatusTypes,
   StatusMessage,
   TextContent,
 } from '@a-little-world/little-world-design-system';
@@ -136,7 +136,7 @@ const MyStory: FC = () => {
         </UploadButton>
         <StatusMessage
           $visible={requestSuccessful || !!error}
-          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+          $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
           {requestSuccessful ? t('resources.my_story.submit_success') : error}
         </StatusMessage>

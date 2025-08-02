@@ -2,7 +2,7 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Link,
-  MessageTypes,
+  StatusTypes,
   StatusMessage,
   TextInput,
   TextTypes,
@@ -117,7 +117,7 @@ const Login = () => {
         </Link>
         <StatusMessage
           $visible={errors?.root?.serverError}
-          $type={MessageTypes.Error}
+          $type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StatusMessage>

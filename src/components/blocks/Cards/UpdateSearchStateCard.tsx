@@ -6,7 +6,7 @@ import {
   CardFooter,
   CardHeader,
   CardSizes,
-  MessageTypes,
+  StatusTypes,
   StatusMessage,
   Text,
 } from '@a-little-world/little-world-design-system';
@@ -53,7 +53,7 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
       <CardContent>
         <Text>{t(`update_search_modal.${currentState}.description`)}</Text>
         {error && (
-          <StatusMessage $visible={!!error} $type={MessageTypes.Error}>
+          <StatusMessage $visible={!!error} $type={StatusTypes.Error}>
             {error}
           </StatusMessage>
         )}

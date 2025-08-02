@@ -1,6 +1,6 @@
 import {
   Loading,
-  MessageTypes,
+  StatusTypes,
   StatusMessage,
   Switch,
 } from '@a-little-world/little-world-design-system';
@@ -197,7 +197,7 @@ export const DynamicPublicMailingListsSettings = () => {
       )}
       <StatusMessage
         $visible={saved || error?.message}
-        $type={saved ? MessageTypes.Success : MessageTypes.Error}
+        $type={saved ? StatusTypes.Success : StatusTypes.Error}
       >
         {saved ? t('mailing_lists.success_message') : error?.message}
       </StatusMessage>
