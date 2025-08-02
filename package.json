@@ -1,6 +1,6 @@
 {
   "name": "littleplanet",
-  "version": "0.1.55",
+  "version": "0.1.97",
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
@@ -8,8 +8,8 @@
     "dev": "npx webpack serveviews/index.js --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development",
     "clean": "npx rimraf dist",
     "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run copy-files:esm && npm run copy-files:cjs && npm pack",
-    "build:esm": "tsc --project tsconfig.json --noCheck --outDir dist/esm",
-    "build:cjs": "tsc --project tsconfig.json --noCheck --module commonjs --outDir dist/cjs",
+    "build:esm": "babel src --out-dir dist/esm --extensions \".js,.jsx,.ts,.tsx\" --source-maps --env-name esm",
+    "build:cjs": "babel src --out-dir dist/cjs --extensions \".js,.jsx,.ts,.tsx\" --source-maps --env-name cjs",
     "copy-files:esm": "cpx \"src/**/*.css\" dist/esm && cpx \"src/images/**\" dist/esm/images && cpx \"src/locale/**\" dist/esm/locale",
     "copy-files:cjs": "cpx \"src/**/*.css\" dist/cjs && cpx \"src/images/**\" dist/cjs/images && cpx \"src/locale/**\" dist/cjs/locale"
   },
@@ -39,7 +39,7 @@
   },
   "prettier": "@a-little-world/little-world-prettier-config",
   "dependencies": {
-    "@a-little-world/little-world-design-system": "^1.23.1",
+    "@a-little-world/little-world-design-system": "file:../little-world-design-system/packages/web/a-little-world-little-world-design-system-2.2.4.tgz",
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
@@ -55,8 +55,9 @@
     "@types/node": "^18.11.18",
     "@types/react": "^18.0.26",
     "babel-loader": "^9.1.2",
-    "babel-plugin-styled-components": "^2.0.7",
+    "babel-plugin-styled-components": "^2.1.4",
     "babel-preset-es2015": "^6.24.1",
+    "babel-preset-expo": "^13.2.3",
     "classnames": "^2.3.1",
     "date-fns": "^3.3.1",
     "firebase": "^11.4.0",
@@ -78,7 +79,6 @@
     "react-router-dom": "^6.2.2",
     "react-use-websocket": "^4.5.0",
     "style-loader": "^3.3.1",
-    "styled-components": "^5.3.11",
     "swr": "^2.2.5",
     "util": "^0.12.4",
     "web-vitals": "^2.1.4",
@@ -87,6 +87,7 @@
   },
   "devDependencies": {
     "@a-little-world/little-world-prettier-config": "^1.2.0",
+    "@babel/cli": "^7.28.0",
     "@capacitor/cli": "^5.6.0",
     "@svgr/webpack": "^6.5.1",
     "@testing-library/user-event": "^13.5.0",
@@ -95,6 +96,7 @@
     "@types/styled-components": "^5.1.34",
     "@typescript-eslint/eslint-plugin": "^8.4.0",
     "@typescript-eslint/parser": "^8.4.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "compression-webpack-plugin": "^10.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "cpx": "^1.5.0",
@@ -113,12 +115,16 @@
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.5.1",
     "rimraf": "^6.0.1",
+    "styled-components": "^6.1.19",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.0",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-bundle-tracker": "^1.8.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.0.4"
+  },
+  "peerDependencies": {
+    "styled-components": "^6.1.19"
   },
   "overrides": {
     "react-scripts": {

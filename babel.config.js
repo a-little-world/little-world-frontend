@@ -5,5 +5,10 @@ module.exports = {
     ['@babel/preset-react', { runtime: 'automatic' }],
     '@babel/preset-typescript',
   ],
-  plugins: ['babel-plugin-styled-components'],
+  plugins: [['babel-plugin-styled-components', {
+    "ssr": false,
+    "fileName": false,
+    "displayName": true,
+    "pure": true,
+  }]],
 };
