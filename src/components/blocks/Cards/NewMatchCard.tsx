@@ -2,8 +2,8 @@ import {
   Button,
   Card,
   CardSizes,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -88,7 +88,7 @@ const NewMatchCard: React.FC<NewMatchCardProps> = ({
         </Text>
       </Centred>
       {!!error && (
-        <StatusMessage $visible={!!error} $type={MessageTypes.Error}>
+        <StatusMessage $visible={!!error} $type={StatusTypes.Error}>
           {error}
         </StatusMessage>
       )}

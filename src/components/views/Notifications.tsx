@@ -3,14 +3,14 @@ import {
   Button,
   ButtonVariations,
   Loading,
-  MessageTypes,
+  LoadingSizes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextTypes,
   TickIcon,
   TrashIcon,
 } from '@a-little-world/little-world-design-system';
-import { LoadingSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Loading/Loading';
 import { formatDistance } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
 import React from 'react';
@@ -214,7 +214,7 @@ function Notifications() {
         )}
         {error && (
           <StatusMessage
-            $type={MessageTypes.Error}
+            $type={StatusTypes.Error}
             $visible={!isLoading && error?.message}
           >
             {error?.message}

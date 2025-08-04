@@ -335,7 +335,7 @@ const Chat = ({ chatId, inCall = false }) => {
                             messageContainsWidget(processedMessageText) && {
                               as: 'div',
                             })}
-                          disableParser={!message.parsable}
+                          disableParser
                           $isSelf={message.sender === userId}
                           $isWidget={
                             message.parsable &&

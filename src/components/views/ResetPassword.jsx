@@ -3,8 +3,8 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Link,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -94,11 +94,11 @@ const ResetPassword = () => {
         />
         <StatusMessage
           $visible={requestSuccessful || errors?.root?.serverError}
-          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+          $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
-          {requestSuccessful ?
-            t('reset_password.success_message') :
-            t(errors?.root?.serverError?.message)}
+          {requestSuccessful
+            ? t('reset_password.success_message')
+            : t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Link

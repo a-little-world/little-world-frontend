@@ -1,12 +1,10 @@
 import { Link, TextTypes } from '@a-little-world/little-world-design-system';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import {
-  USER_ENDPOINT,
-  defaultPreFetchedOptions,
-} from '../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import {
   PRIVACY_ROUTE,
   TERMS_ROUTE,
@@ -15,7 +13,7 @@ import {
   getHomeRoute,
 } from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
-import LanguageSelector from './LanguageSelector/LanguageSelector';
+import LanguageSelector from './LanguageSelector/LanguageSelector.jsx';
 
 const StyledHeader = styled.header`
   display: flex;
@@ -76,7 +74,7 @@ const Header = () => {
     i18n: { language },
     t,
   } = useTranslation();
-  const { data: user } = useSWR(USER_ENDPOINT, defaultPreFetchedOptions);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const userId = user?.id;
 
   return (

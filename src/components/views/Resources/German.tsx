@@ -1,11 +1,12 @@
 import {
   ContentTypes,
-  SwirlyLinesThinImage,
   TextContent,
+  WavyLinesImage,
 } from '@a-little-world/little-world-design-system';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
+
 import { ResourcesListCard } from './shared.styles.tsx';
 
 const German: FC = () => {
@@ -53,8 +54,8 @@ const German: FC = () => {
           },
           {
             type: ContentTypes.Image,
-            text: 'SwirlyLines',
-            Image: SwirlyLinesThinImage,
+            text: 'WavyLines',
+            Image: WavyLinesImage,
           },
         ]}
       />

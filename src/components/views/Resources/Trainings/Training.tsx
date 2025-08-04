@@ -16,9 +16,12 @@ import Stepper from '../../../atoms/Stepper.tsx';
 import Video from '../../../atoms/Video.tsx';
 import { TRAININGS_DATA, TRAINING_IDS, getDataBySlug } from '../constants.ts';
 import {
-  CheckInText,
-} from './Trainings.styles.tsx';
-import { Container, ContentCard, NotFoundCard, VideoDescription } from '../shared.styles.tsx';
+  Container,
+  ContentCard,
+  NotFoundCard,
+  VideoDescription,
+} from '../shared.styles.tsx';
+import { CheckInText } from './Trainings.styles.tsx';
 
 const Training: FC = () => {
   const { trainingSlug } = useParams();
@@ -40,7 +43,10 @@ const Training: FC = () => {
         >
           {t('resources.trainings.not_found')}
         </Text>
-        <Link to={getAppRoute(TRAININGS_ROUTE)} buttonAppearance={ButtonAppearance.Primary}>
+        <Link
+          to={getAppRoute(TRAININGS_ROUTE)}
+          buttonAppearance={ButtonAppearance.Primary}
+        >
           {t('resources.trainings.return')}
         </Link>
       </NotFoundCard>

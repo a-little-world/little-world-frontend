@@ -2,7 +2,10 @@ import { Button } from '@a-little-world/little-world-design-system';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { ContentListLayouts } from './ContentList.tsx';
+export enum ContentListLayouts {
+  Stacked = 'Stacked',
+  SideBySide = 'SideBySide',
+}
 
 export const ContentListContainer = styled.ul<{ $layout: ContentListLayouts }>`
   display: flex;

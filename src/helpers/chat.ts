@@ -1,3 +1,4 @@
+import { ComponentType } from 'react';
 import {
   AttachmentWidget,
   CallWidget,
@@ -14,7 +15,7 @@ interface ActiveChat {
 }
 
 interface CustomChatElement {
-  Component: React.ComponentType<any>;
+  Component: ComponentType<any>;
   tag: string;
   props?: Record<string, any>;
 }

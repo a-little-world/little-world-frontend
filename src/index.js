@@ -79,10 +79,11 @@ window.renderMessageView = (
 if (isDevelopment) {
   import('./loginSimulator.js').then(simulator => {
     simulator.simulatedAutoLogin().then(data => {
-      const initData = data?.data;
+      const user = data?.data;
       const apiTranslations = data?.api_translations;
+      const apiOptions = data?.api_options || {};
 
-      window.renderApp({ initData, apiTranslations });
+      window.renderApp({ user, apiTranslations, apiOptions });
     });
   });
 }

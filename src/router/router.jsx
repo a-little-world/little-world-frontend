@@ -8,9 +8,9 @@ import {
   ScrollRestoration,
   createBrowserRouter,
 } from 'react-router-dom';
-import FireBase from '../Firebase.tsx';
 
 import { IS_CAPACITOR_BUILD } from '../ENVIRONMENT.js';
+import FireBase from '../Firebase.tsx';
 import WebsocketBridge from '../WebsocketBridge.jsx';
 import { ModeSwitch } from '../components/atoms/ModeSwitch.tsx';
 import RouterError from '../components/blocks/ErrorView/ErrorView.tsx';
@@ -77,7 +77,7 @@ const isCapacitor = IS_CAPACITOR_BUILD || false;
 export const Root = ({
   children,
   restoreScroll = true,
-  includeModeSwitch = true,
+  includeModeSwitch = false,
 }) => (
   <CustomThemeProvider>
     <ToastProvider>

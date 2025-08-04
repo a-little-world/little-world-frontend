@@ -1,8 +1,8 @@
 import {
   Button,
   ButtonAppearance,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextInput,
   TextTypes,
@@ -83,11 +83,11 @@ const ForgotPassword = () => {
         />
         <StatusMessage
           $visible={requestSuccessful || errors?.root?.serverError}
-          $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+          $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
-          {requestSuccessful ?
-            t('forgot_password.success_message') :
-            t(errors?.root?.serverError?.message)}
+          {requestSuccessful
+            ? t('forgot_password.success_message')
+            : t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Button

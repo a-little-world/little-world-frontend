@@ -3,10 +3,11 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
-import ContentList, { ContentListLayouts } from '../../../blocks/ContentList/ContentList.tsx';
+import ContentList from '../../../blocks/ContentList/ContentList.tsx';
 import { PARTNERS_DATA } from '../constants.ts';
 import { Description } from './Partners.styles.tsx';
 import { ContentCard } from '../shared.styles.tsx';
+import { ContentListLayouts } from '../../../blocks/ContentList/ContentList.styles.tsx';
 
 const Partners: FC = () => {
   const { t } = useTranslation();

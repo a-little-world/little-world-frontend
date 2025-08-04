@@ -3,7 +3,7 @@ import {
   BellIcon,
   Button,
   ButtonAppearance,
-  ButtonVariations,
+  ButtonVariations, 
   ClockDashedIcon,
   ClockIcon,
 } from '@a-little-world/little-world-design-system';
@@ -68,12 +68,7 @@ const Toolbar = ({
         variation={ButtonVariations.Icon}
         $isActive={filter === 'all'}
       >
-        <BellIcon
-          labelId="bell_icon"
-          label=" all notifications"
-          width="16px"
-          height="16px"
-        />
+        <BellIcon label=" all notifications" width="16px" height="16px" />
         {t('notifications.filter_all')}
       </ToolbarButton>
       <ToolbarButton
@@ -82,12 +77,7 @@ const Toolbar = ({
         variation={ButtonVariations.Icon}
         $isActive={filter === NotificationState.UNREAD}
       >
-        <ClockIcon
-          labelId="clock_icon"
-          label="unread icon"
-          width="16px"
-          height="16px"
-        />
+        <ClockIcon label="unread icon" width="16px" height="16px" />
         {t('notifications.filter_unread')}
       </ToolbarButton>
       <ToolbarButton
@@ -110,12 +100,7 @@ const Toolbar = ({
           variation={ButtonVariations.Icon}
           $isActive={filter === NotificationState.ARCHIVED}
         >
-          <ArchiveIcon
-            labelId="archive_icon"
-            label="archive icon"
-            width="16px"
-            height="16px"
-          />
+          <ArchiveIcon label="archive icon" width="16px" height="16px" />
           {t('notifications.archived')}
         </ToolbarButton>
       )}

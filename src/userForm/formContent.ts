@@ -13,6 +13,7 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { ElementType } from 'react';
 
 import Note from '../components/atoms/Note.tsx';
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector.jsx';
@@ -51,7 +52,7 @@ export interface FormComponentConfig {
 }
 
 interface ComponentReturn {
-  Component: React.ElementType;
+  Component: ElementType;
   [key: string]: any;
 }
 
