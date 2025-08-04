@@ -71,6 +71,7 @@ const Beginners: FC = () => {
             type: ContentTypes.Image,
             text: 'WavyLines',
             Image: WavyLinesImage,
+            color: theme.color.text.accent,
           },
         ]}
       />

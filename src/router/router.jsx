@@ -3,7 +3,11 @@ import {
   GlobalStyles,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
-import { Outlet, ScrollRestoration, createBrowserRouter } from 'react-router-dom';
+import {
+  Outlet,
+  ScrollRestoration,
+  createBrowserRouter,
+} from 'react-router-dom';
 
 import { IS_CAPACITOR_BUILD } from '../ENVIRONMENT.js';
 import FireBase from '../Firebase.tsx';
@@ -73,7 +77,7 @@ const isCapacitor = IS_CAPACITOR_BUILD || false;
 export const Root = ({
   children,
   restoreScroll = true,
-  includeModeSwitch = true,
+  includeModeSwitch = false,
 }) => (
   <CustomThemeProvider>
     <ToastProvider>
