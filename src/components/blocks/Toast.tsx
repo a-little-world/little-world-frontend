@@ -1,16 +1,16 @@
 import {
   ToastProvider as SimpleToastProvider,
   Toast,
-  ToastProps,
+  ToastBaseProps,
   ToastViewport,
 } from '@a-little-world/little-world-design-system';
 import * as React from 'react';
 
 export interface ToastContextType {
-  showToast: (props: ToastProps) => void;
+  showToast: (props: ToastBaseProps) => void;
 }
 
-interface ToastPropsWithId extends ToastProps {
+interface ToastPropsWithId extends ToastBaseProps {
   id: string;
 }
 
@@ -34,7 +34,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
 
   const toastContext = React.useMemo<ToastContextType>(
     () => ({
-      showToast: (props: ToastProps) => {
+      showToast: (props: ToastBaseProps) => {
         const id = crypto.randomUUID();
         const newToastProps: ToastPropsWithId = {
           ...props,

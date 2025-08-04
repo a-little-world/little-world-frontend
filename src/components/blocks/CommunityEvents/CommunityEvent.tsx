@@ -110,7 +110,30 @@ function collateEvents(events: Event[]): GroupedEvent[] {
     }
   });
 
-  return result;
+  // Sort by next occurrence date, with grouped events pinned to last
+  return result.sort((a, b) => {
+    // If one has sessions and the other doesn't, sessions go last
+    if (a.sessions && !b.sessions) return 1;
+    if (!a.sessions && b.sessions) return -1;
+
+    // If both are the same type, sort by next occurrence date
+    let aNextDate: Date;
+    let bNextDate: Date;
+
+    if (a.sessions) {
+      aNextDate = a.sessions[0].startDate; // Already sorted by date
+    } else {
+      aNextDate = new Date(a.time); // Already calculated next occurrence
+    }
+
+    if (b.sessions) {
+      bNextDate = b.sessions[0].startDate;
+    } else {
+      bNextDate = new Date(b.time);
+    }
+
+    return aNextDate.getTime() - bNextDate.getTime();
+  });
 }
 
 const EventCtas = ({
@@ -154,7 +177,7 @@ const EventCtas = ({
             <SessionFlex>
               <Button
                 onClick={() => {
-                  window.open(link, '_blank');
+                  window.open(session.link, '_blank');
                 }}
                 variation={ButtonVariations.Circle}
                 size={ButtonSizes.Small}

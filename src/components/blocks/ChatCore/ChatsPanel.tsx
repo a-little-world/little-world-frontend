@@ -12,12 +12,15 @@ import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index';
-import { getCustomChatElements } from '../../../helpers/chat';
-import { formatTimeDistance } from '../../../helpers/date';
-import { LoadingLine, shimmerStyles } from '../../atoms/Loading';
-import ProfileImage, { CircleImageLoading } from '../../atoms/ProfileImage';
-import UnreadIndicator from '../../atoms/UnreadIndicator';
+import { USER_ENDPOINT } from '../../../features/swr/index.ts';
+import {
+  getCustomChatElements,
+  processAttachmentWidgets,
+} from '../../../helpers/chat.ts';
+import { formatTimeDistance } from '../../../helpers/date.ts';
+import { LoadingLine, shimmerStyles } from '../../atoms/Loading.tsx';
+import ProfileImage, { CircleImageLoading } from '../../atoms/ProfileImage.jsx';
+import UnreadIndicator from '../../atoms/UnreadIndicator.tsx';
 
 const Panel = styled(Card)<{ $selectedChat?: any }>`
   padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
@@ -130,12 +133,11 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
   selectedChat,
   scrollRef,
 }) => {
+  const { data: user } = useSWR(USER_ENDPOINT);
   const {
     t,
     i18n: { language },
   } = useTranslation();
-
-  const { data: user } = useSWR(USER_ENDPOINT);
   const userId = user?.id;
   const theme = useTheme();
 
@@ -152,9 +154,22 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
       ) : (
         chats.map((message, index) => {
           const isSender = message.newest_message?.sender === userId;
-          const customChatElements = message.newest_message?.parsable ?
-            getCustomChatElements({ message, userId, isPreview: true }) :
-            [];
+
+          // Process attachment widgets for malformed JSON if there's a newest message
+          const processedMessageText = message.newest_message
+            ? processAttachmentWidgets(message.newest_message, t)
+            : message.newest_message?.text;
+
+          const customChatElements = message.newest_message?.parsable
+            ? getCustomChatElements({
+                message: {
+                  ...message.newest_message,
+                  text: processedMessageText,
+                },
+                userId,
+                isPreview: true,
+              })
+            : [];
 
           return (
             <Message
@@ -189,8 +204,7 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
                 <Preview>
                   <PreviewText disableParser>
                     {textParser(
-                      message.newest_message?.text ||
-                        t('chat.no_messages_preview'),
+                      processedMessageText || t('chat.no_messages_preview'),
                       { customElements: customChatElements },
                     )}
                   </PreviewText>

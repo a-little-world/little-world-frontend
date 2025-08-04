@@ -1,9 +1,9 @@
 import {
+  AppointmentIcon,
   Button,
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
-  CalendarAddIcon,
   Popover,
   Separator,
   Text,
@@ -192,8 +192,7 @@ export default function AddToCalendarButton({
           size={size}
           color={theme.color.text.link}
         >
-          <CalendarAddIcon
-            labelId="addToCalendar"
+          <AppointmentIcon
             label={t('new_translation')}
             width={size === ButtonSizes.Large ? '20' : '16'}
             height={size === ButtonSizes.Large ? '20' : '16'}

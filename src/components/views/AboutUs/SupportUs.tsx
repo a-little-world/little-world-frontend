@@ -4,6 +4,7 @@ import {
   Card,
   ContentTypes,
   FriendshipImage,
+  Gradients,
   GroupHandsImage,
   LaptopWithPhoneImage,
   Link,
@@ -19,7 +20,6 @@ import {
   TimeFlexibleImage,
   WomanOnRocketImage,
 } from '@a-little-world/little-world-design-system';
-import { Gradients } from '@a-little-world/little-world-design-system/dist/esm/components/Icon/IconGradient';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
@@ -30,7 +30,7 @@ import Socials, { SOCIALS_LIST } from '../../atoms/Socials';
 import MailingLists from '../../blocks/MailingLists/MailingLists';
 
 const ACCORDION_CONTENT_CSS = css`
-  background: white;
+  background: ${({ theme }) => theme.color.surface.primary};
   gap: ${({ theme }) => theme.spacing.medium};
   display: flex;
   flex-direction: column;

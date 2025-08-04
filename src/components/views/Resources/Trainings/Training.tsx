@@ -20,8 +20,8 @@ import {
   ContentCard,
   NotFoundCard,
   VideoDescription,
-} from '../shared.styles';
-import { CheckInText } from './Trainings.styles';
+} from '../shared.styles.tsx';
+import { CheckInText } from './Trainings.styles.tsx';
 
 const Training: FC = () => {
   const { trainingSlug } = useParams();

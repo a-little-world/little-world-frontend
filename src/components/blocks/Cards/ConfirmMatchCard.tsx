@@ -29,6 +29,7 @@ const ProfileInfo = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   align-items: center;
   text-align: left;
+  width: 100%;
 `;
 
 const RejectReasonContainer = styled.form`

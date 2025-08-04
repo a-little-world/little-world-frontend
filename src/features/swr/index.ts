@@ -37,6 +37,17 @@ export const revalidateMatches = () => {
   mutate(key => typeof key === 'string' && key.startsWith(MATCHES_ENDPOINT));
 };
 
+export const resetUserQueries = () => {
+  mutate(
+    key =>
+      typeof key === 'string' &&
+      (key.includes(USER_ENDPOINT) ||
+        key.includes(MATCHES_ENDPOINT) ||
+        key.includes(NOTIFICATIONS_ENDPOINT)),
+    undefined,
+  );
+};
+
 export const swrConfig: SWRConfiguration = {
   fetcher,
 };

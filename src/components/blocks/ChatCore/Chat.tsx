@@ -40,8 +40,9 @@ import {
   formatFileName,
   getCustomChatElements,
   messageContainsWidget,
-} from '../../../helpers/chat';
-import { formatMessageDate, formatTime } from '../../../helpers/date';
+  processAttachmentWidgets,
+} from '../../../helpers/chat.ts';
+import { formatMessageDate, formatTime } from '../../../helpers/date.ts';
 import {
   ROOT_SERVER_ERROR,
   onFormError,
@@ -66,7 +67,7 @@ import {
   WriteSection,
 } from './Chat.styles';
 
-const Chat = ({ chatId }) => {
+const Chat = ({ chatId, inCall = false }) => {
   const {
     t,
     i18n: { language },
@@ -308,14 +309,21 @@ const Chat = ({ chatId }) => {
                     <Text type={TextTypes.Body6}>{group.formattedDate}</Text>
                   </StickyDateHeader>
                   {group.messages.map(message => {
-                    const customChatElements = message?.parsable ?
-                      getCustomChatElements({
+                    // Process attachment widgets for malformed JSON
+                    const processedMessageText = processAttachmentWidgets(
+                      message,
+                      t,
+                    );
+
+                    const customChatElements = message.parsable
+                      ? getCustomChatElements({
                           initCallSetup,
-                          message,
+                          message: { ...message, text: processedMessageText },
                           userId,
                           activeChat,
-                        }) :
-                      [];
+                          inCall,
+                        })
+                      : [];
 
                     return (
                       <Message
@@ -324,17 +332,17 @@ const Chat = ({ chatId }) => {
                       >
                         <MessageText
                           {...(message.parsable &&
-                            messageContainsWidget(message.text) && {
+                            messageContainsWidget(processedMessageText) && {
                               as: 'div',
                             })}
-                          disableParser={!message.parsable}
+                          disableParser
                           $isSelf={message.sender === userId}
                           $isWidget={
                             message.parsable &&
-                            messageContainsWidget(message.text)
+                            messageContainsWidget(processedMessageText)
                           }
                         >
-                          {textParser(message.text, {
+                          {textParser(processedMessageText, {
                             customElements: customChatElements,
                             onlyLinks: !message.parsable,
                           })}

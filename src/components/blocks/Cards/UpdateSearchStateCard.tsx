@@ -6,8 +6,8 @@ import {
   CardFooter,
   CardHeader,
   CardSizes,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   Text,
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
@@ -53,7 +53,7 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
       <CardContent>
         <Text>{t(`update_search_modal.${currentState}.description`)}</Text>
         {error && (
-          <StatusMessage $visible={!!error} $type={MessageTypes.Error}>
+          <StatusMessage $visible={!!error} $type={StatusTypes.Error}>
             {error}
           </StatusMessage>
         )}

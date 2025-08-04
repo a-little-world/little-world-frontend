@@ -2,8 +2,8 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Link,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -117,7 +117,7 @@ const Login = () => {
         </Link>
         <StatusMessage
           $visible={errors?.root?.serverError}
-          $type={MessageTypes.Error}
+          $type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StatusMessage>

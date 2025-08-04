@@ -5,8 +5,8 @@ import {
   InputWidth,
   Label,
   Link,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextInput,
   TextTypes,
@@ -19,8 +19,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { mutate } from 'swr';
 
 import { signUp } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index';
-import { onFormError, registerInput } from '../../helpers/form';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
+import { onFormError, registerInput } from '../../helpers/form.ts';
 import {
   LOGIN_ROUTE,
   VERIFY_EMAIL_ROUTE,
@@ -82,9 +82,9 @@ const SignUp = () => {
         passAuthenticationBoundary();
         setIsSubmitting(false);
         mutate(USER_ENDPOINT, signUpData);
-        const nextRoute = signUpData?.emailVerified ?
-          getAppRoute() :
-          getAppRoute(VERIFY_EMAIL_ROUTE);
+        const nextRoute = signUpData?.emailVerified
+          ? getAppRoute()
+          : getAppRoute(VERIFY_EMAIL_ROUTE);
         navigate(nextRoute);
       })
       .catch(onError);
@@ -257,7 +257,7 @@ const SignUp = () => {
         <Text>{t('sign_up.privacy_policy')}</Text>
         <StatusMessage
           $visible={errors?.root?.serverError}
-          $type={MessageTypes.Error}
+          $type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StatusMessage>

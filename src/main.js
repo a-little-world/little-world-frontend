@@ -72,7 +72,7 @@ export function renderMessageView(
       {/* InitializeDux removed */}
     </React.StrictMode>,
   );
-}
+};
 
 if (typeof window !== 'undefined') {
   window.renderApp = renderApp;

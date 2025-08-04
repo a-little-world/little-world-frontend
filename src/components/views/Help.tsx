@@ -6,9 +6,9 @@ import {
   ImageSearchIcon,
   Label,
   MessageIcon,
-  MessageTypes,
   PhoneIcon,
   StatusMessage,
+  StatusTypes,
   TeacherImage,
   Text,
   TextArea,
@@ -290,7 +290,7 @@ export function Contact() {
 
       <StatusMessage
         $visible={Boolean(requestSuccessful || errors?.root?.serverError)}
-        $type={requestSuccessful ? MessageTypes.Success : MessageTypes.Error}
+        $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
       >
         {requestSuccessful ?
           t('help.contact_form_submitted') :

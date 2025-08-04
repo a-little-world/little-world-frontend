@@ -3,6 +3,15 @@ import Cookies from 'js-cookie';
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 
+// Add DOM types for fetch API
+type RequestCredentials = 'omit' | 'same-origin' | 'include';
+type RequestInit = {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string | FormData;
+  credentials?: RequestCredentials;
+};
+
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 interface ApiFetchOptions {

@@ -6,10 +6,10 @@ import {
   Card,
   Dropdown,
   Link,
-  MessageTypes,
   Modal,
   PencilIcon,
   StatusMessage,
+  StatusTypes,
   Text,
   TextInput,
   TextTypes,
@@ -89,25 +89,18 @@ const SettingsWrapper = styled.div`
 const ContentPanel = styled(Card)`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   width: 100%;
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.small}) {
-      padding: ${theme.spacing.small};
-    }
-    @media (min-width: ${theme.breakpoints.large}) {
-      padding: ${theme.spacing.medium};
-    }
-  `}
-`;
-
-const Items = styled.div`
-  border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  background: ${({ theme }) => theme.color.surface.secondary};
-  padding: ${({ theme }) => theme.spacing.small};
-  border-radius: 20px;
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.small}) {
+      padding: ${theme.spacing.medium};
+    }
+    @media (min-width: ${theme.breakpoints.large}) {
+      padding: ${theme.spacing.large};
+    }
+  `}
 `;
 
 function ListItem({ section, label, value, setEditing }) {
@@ -286,7 +279,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
         )}
         <StyledFormMessage
           $visible={errors?.root?.serverError}
-          $type={MessageTypes.Error}
+          $type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StyledFormMessage>
@@ -347,44 +340,42 @@ function Settings() {
       <PageHeader text={t('settings.title')} />
       <SettingsWrapper>
         <ContentPanel>
-          <Items>
-            {items.map(label => (
-              <ListItem
-                key={label}
-                section="personal"
-                label={label}
-                value={
-                  label === 'display_language' ?
-                    t(`settings.display_language_${data[label]}`) :
-                    data[label]
-                }
-                setEditing={
-                  label !== 'profilePicture' ?
-                    setEditing :
-                    () => {
-                        /* For profile picture we just open the userform frontend for now */
-                        navigate('/formpage?pages=6');
-                        navigate(0); /* Reload page */
-                      }
-                }
-              />
-            ))}
-            <MailingLists />
-            {!environment.isNative && <PushNotifications />}
-            <SettingsItem>
-              <Button
-                appearance={ButtonAppearance.Secondary}
-                color="red"
-                backgroundColor="red"
-                size={ButtonSizes.Large}
-                onClick={() => {
-                  setShowConfirm(true);
-                }}
-              >
-                {t('settings.personal_delete_account_button')}
-              </Button>
-            </SettingsItem>
-          </Items>
+          {items.map(label => (
+            <ListItem
+              key={label}
+              section="personal"
+              label={label}
+              value={
+                label === 'display_language'
+                  ? t(`settings.display_language_${data[label]}`)
+                  : data[label]
+              }
+              setEditing={
+                label !== 'profilePicture'
+                  ? setEditing
+                  : () => {
+                      /* For profile picture we just open the userform frontend for now */
+                      navigate('/formpage?pages=6');
+                      navigate(0); /* Reload page */
+                    }
+              }
+            />
+          ))}
+          <MailingLists />
+          {!environment.isNative && <PushNotifications />}
+          <SettingsItem>
+            <Button
+              appearance={ButtonAppearance.Secondary}
+              color="red"
+              backgroundColor="red"
+              size={ButtonSizes.Large}
+              onClick={() => {
+                setShowConfirm(true);
+              }}
+            >
+              {t('settings.personal_delete_account_button')}
+            </Button>
+          </SettingsItem>
         </ContentPanel>
       </SettingsWrapper>
       <Modal open={editing} onClose={() => setEditing(false)}>

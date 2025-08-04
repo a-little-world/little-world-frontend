@@ -4,8 +4,8 @@ import {
   Card,
   CardSizes,
   ExclamationIcon,
-  MessageTypes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextArea,
   TextTypes,
@@ -158,7 +158,7 @@ function PartnerActionCard({ data, onClose }) {
             {errors?.root?.serverError && (
               <StatusMessage
                 $visible={errors?.root?.serverError}
-                $type={MessageTypes.Error}
+                $type={StatusTypes.Error}
               >
                 {t(errors?.root?.serverError?.message)}
               </StatusMessage>

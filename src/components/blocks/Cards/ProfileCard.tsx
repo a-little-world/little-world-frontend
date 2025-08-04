@@ -2,12 +2,14 @@ import {
   Button,
   ButtonVariations,
   Card,
+  CardDimensions,
   CardSizes,
   DotsIcon,
   Gradients,
   Logo,
   MessageIcon,
   PencilIcon,
+  pixelate,
   Popover,
   ProfileIcon,
   Tag,
@@ -91,7 +93,7 @@ export const StyledProfileCard = styled(Card)<{
   ${({ $onProfile }) =>
     $onProfile &&
     css`
-      max-width: ${CardSizes.Small};
+      max-width: ${pixelate(CardDimensions[CardSizes.Small])};
       width: unset;
     `};
 

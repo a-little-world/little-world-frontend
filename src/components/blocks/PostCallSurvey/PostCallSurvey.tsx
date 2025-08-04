@@ -6,10 +6,10 @@ import {
   CardFooter,
   CardHeader,
   CardSizes,
-  MessageTypes,
   StarRating,
   StarRatingSizes,
   StatusMessage,
+  StatusTypes,
   Text,
   TextArea,
   TextAreaSize,
@@ -122,7 +122,7 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
             }}
           />
           {!!submitError && (
-            <StatusMessage $visible $type={MessageTypes.Error}>
+            <StatusMessage $visible $type={StatusTypes.Error}>
               {submitError}
             </StatusMessage>
           )}
