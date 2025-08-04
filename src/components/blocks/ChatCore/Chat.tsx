@@ -17,7 +17,7 @@ import { get, isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
