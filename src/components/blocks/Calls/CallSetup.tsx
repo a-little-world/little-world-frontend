@@ -11,7 +11,7 @@ import {
 import { LocalUserChoices, PreJoin } from '@livekit/components-react';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 

@@ -4,7 +4,7 @@ import {
   Text,
   TextArea,
 } from '@a-little-world/little-world-design-system';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import ProfileImage from '../../atoms/ProfileImage.jsx';

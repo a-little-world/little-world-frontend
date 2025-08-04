@@ -1,6 +1,8 @@
 import {
   CardSizes,
+  CardDimensions,
   Modal,
+  pixelate,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -44,7 +46,7 @@ const FindNewPartner = styled.button<{ $hasMatch: boolean }>`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.small}) {
-      width: ${CardSizes.Small};
+      width: ${pixelate(CardDimensions[CardSizes.Small])};
     }
     @media (min-width: ${theme.breakpoints.large}) {
       height: ${PROFILE_CARD_HEIGHT};

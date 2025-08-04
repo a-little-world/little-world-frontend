@@ -11,7 +11,7 @@ import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { useActiveCallStore } from '../../features/stores/index.ts';

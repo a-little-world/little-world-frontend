@@ -74,7 +74,7 @@ const Header = () => {
     i18n: { language },
     t,
   } = useTranslation();
-  const { data: user } = useSWR(USER_ENDPOINT, defaultPreFetchedOptions);
+  const { data: user } = useSWR(USER_ENDPOINT);
   const userId = user?.id;
 
   return (

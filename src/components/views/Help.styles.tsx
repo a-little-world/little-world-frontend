@@ -1,6 +1,8 @@
 import {
   Card,
+  CardDimensions,
   CardSizes,
+  pixelate,
   Text,
 } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
@@ -26,7 +28,7 @@ export const HelpContainer = styled.div`
 export const HelpPanel = styled(Card)`
   ${({ theme }) => `
   @media (min-width: ${theme.breakpoints.medium}) {
-    max-width: ${CardSizes.Large};
+    max-width: ${pixelate(CardDimensions[CardSizes.Large])};
   }`}
 `;
 
@@ -36,7 +38,7 @@ export const HelpSupport = styled(Card)`
   align-items: center;
   height: fit-content;
   width: 100%;
-  max-width: ${CardSizes.Medium};
+  max-width: ${pixelate(CardDimensions[CardSizes.Medium])};
 
   ${({ theme }) => `
     padding: ${theme.spacing.medium} ${theme.spacing.small};
@@ -152,7 +154,7 @@ export const FAQImageWrapper = styled.div`
 export const FAQItems = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: ${({ theme }) => `${theme.spacing.medium} `};
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
 
 export const FAQSectionTitle = styled(Text)`

@@ -9,17 +9,13 @@ import { useTranslation } from 'react-i18next';
 
 import {
   ContentListContainer,
+  ContentListLayouts,
   ImageWrapper,
   Info,
   ItemImage,
   ListItem,
   ListItemCta,
 } from './ContentList.styles.tsx';
-
-export enum ContentListLayouts {
-  Stacked = 'Stacked',
-  SideBySide = 'SideBySide',
-}
 
 type ItemType = {
   title: string;

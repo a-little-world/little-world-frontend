@@ -3,7 +3,7 @@ import {
   GlobalStyles,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
-import { Outlet, ScrollRestoration, createBrowserRouter } from 'react-router';
+import { Outlet, ScrollRestoration, createBrowserRouter } from 'react-router-dom';
 
 import { IS_CAPACITOR_BUILD } from '../ENVIRONMENT.js';
 import FireBase from '../Firebase.tsx';

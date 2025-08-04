@@ -2,7 +2,7 @@ import { Button, TextTypes } from '@a-little-world/little-world-design-system';
 import { ButtonSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Button/Button';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { Title } from '../Form/styles';
 import {

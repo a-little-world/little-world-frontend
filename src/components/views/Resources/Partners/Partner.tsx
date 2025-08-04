@@ -7,7 +7,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
 import { PARTNERS_ROUTE, getAppRoute } from '../../../../router/routes.ts';

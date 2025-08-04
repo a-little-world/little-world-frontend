@@ -7,7 +7,7 @@ import {
 import { last } from 'lodash';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
 import useScrollToTop from '../../../../hooks/useScrollToTop.tsx';
