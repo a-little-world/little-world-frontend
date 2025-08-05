@@ -12,8 +12,8 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
-import { archieveQuestion } from '../../../api/questions.ts';
-import { getQuestionsEndpoint } from '../../../features/swr/index.ts';
+import { archieveQuestion } from '../../../api/questions';
+import { getQuestionsEndpoint } from '../../../features/swr/index';
 import {
   Categories,
   CategoryControl,

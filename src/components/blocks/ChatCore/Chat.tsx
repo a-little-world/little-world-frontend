@@ -41,8 +41,8 @@ import {
   getCustomChatElements,
   messageContainsWidget,
   processAttachmentWidgets,
-} from '../../../helpers/chat.ts';
-import { formatMessageDate, formatTime } from '../../../helpers/date.ts';
+} from '../../../helpers/chat';
+import { formatMessageDate, formatTime } from '../../../helpers/date';
 import {
   ROOT_SERVER_ERROR,
   onFormError,

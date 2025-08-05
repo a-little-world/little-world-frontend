@@ -4,16 +4,16 @@ import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../features/swr/index';
 import {
   PRIVACY_ROUTE,
   TERMS_ROUTE,
   WP_HOME_ROUTE,
   getAppRoute,
   getHomeRoute,
-} from '../../router/routes.ts';
-import Logo from '../atoms/Logo.tsx';
-import LanguageSelector from './LanguageSelector/LanguageSelector.jsx';
+} from '../../router/routes';
+import Logo from '../atoms/Logo';
+import LanguageSelector from './LanguageSelector/LanguageSelector';
 
 const StyledHeader = styled.header`
   display: flex;

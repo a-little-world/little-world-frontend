@@ -1,8 +1,7 @@
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
-import useSWR from 'swr';
-import { SWRConfig } from 'swr';
+import useSWR, { SWRConfig } from 'swr';
 
 import { API_OPTIONS_ENDPOINT, API_TRANSLATIONS_ENDPOINT, USER_ENDPOINT, swrConfig } from '../../features/swr/index';
 import i18n from '../../i18n';

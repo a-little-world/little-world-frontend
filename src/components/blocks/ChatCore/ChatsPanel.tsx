@@ -12,15 +12,15 @@ import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../../features/swr/index';
 import {
   getCustomChatElements,
   processAttachmentWidgets,
-} from '../../../helpers/chat.ts';
-import { formatTimeDistance } from '../../../helpers/date.ts';
-import { LoadingLine, shimmerStyles } from '../../atoms/Loading.tsx';
-import ProfileImage, { CircleImageLoading } from '../../atoms/ProfileImage.jsx';
-import UnreadIndicator from '../../atoms/UnreadIndicator.tsx';
+} from '../../../helpers/chat';
+import { formatTimeDistance } from '../../../helpers/date';
+import { LoadingLine, shimmerStyles } from '../../atoms/Loading';
+import ProfileImage, { CircleImageLoading } from '../../atoms/ProfileImage';
+import UnreadIndicator from '../../atoms/UnreadIndicator';
 
 const Panel = styled(Card)<{ $selectedChat?: any }>`
   padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};

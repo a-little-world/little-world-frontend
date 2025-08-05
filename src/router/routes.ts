@@ -44,8 +44,6 @@ export const USER_FORM_AVAILABILITY = 'availability';
 export const USER_FORM_NOTIFICATIONS = 'notifications';
 export const USER_FORM_CONDITIONS = 'conditions';
 
-import { environment } from '../environment';
-
 // Helper function to generate routes
 const getUserFormRoute = (slug: string) => `${USER_FORM_ROUTE}/${slug}`;
 export const getHomeRoute = (locale: string, slug: string) =>

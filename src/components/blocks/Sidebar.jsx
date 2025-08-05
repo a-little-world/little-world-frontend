@@ -25,7 +25,7 @@ import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   resetUserQueries,
-} from '../../features/swr/index.ts';
+} from '../../features/swr/index';
 import {
   COMMUNITY_EVENTS_ROUTE,
   HELP_ROUTE,
