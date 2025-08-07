@@ -6,6 +6,7 @@ import {
   CalendarAddIcon,
   Card,
   CardSizes,
+  Gradients,
   Link,
   MatchSearchingImage,
   Text,
@@ -48,8 +49,10 @@ const SearchingImage = styled(MatchSearchingImage)<{ $hasMatch?: boolean }>`
 `;
 
 const MatchingCallImage = styled(CalendarAddIcon)`
-  height: 80px;
+  height: 60px;
+  width: 60px;
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
+  flex-shrink: 0;
 `;
 
 const Note = styled(Text)`
@@ -88,6 +91,7 @@ export function SearchingCard({
     t,
     i18n: { language },
   } = useTranslation();
+
   const appointmentBtn = useRef();
 
   const { data: user } = useSWR(USER_ENDPOINT);
@@ -132,7 +136,10 @@ export function SearchingCard({
               $hasMatch={hasMatch}
             />
           ) : (
-            <MatchingCallImage label="matching call image" />
+            <MatchingCallImage
+              label="matching call image"
+              gradient={Gradients.Orange}
+            />
           )}
           <Text center>{t(`searching_card.${cardState}_info_1`)}</Text>
           {isBookedState ? (
