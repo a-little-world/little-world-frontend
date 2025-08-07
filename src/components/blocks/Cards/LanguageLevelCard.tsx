@@ -4,6 +4,7 @@ import {
   Card,
   CardSizes,
   Link,
+  MatchSearchingImage,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -11,7 +12,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import SearchingSvg from '../../../images/match-searching.svg';
 import { BEGINNERS_ROUTE, getAppRoute } from '../../../router/routes.ts';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard.tsx';
 
@@ -29,10 +29,11 @@ const WelcomeTitle = styled(Text)`
   max-width: 270px; // ensures it wraps correctly
 `;
 
-const SearchingImage = styled.img<{ $hasMatch?: boolean }>`
-  height: 80px;
+const SearchingImage = styled(MatchSearchingImage)<{ $hasMatch?: boolean }>`
+  height: 72px;
   margin-bottom: ${({ theme, $hasMatch }) =>
     $hasMatch ? '0' : theme.spacing.xxxsmall};
+  flex-shrink: 0;
 `;
 
 export function LanguageLevelCard() {
@@ -43,7 +44,7 @@ export function LanguageLevelCard() {
       <WelcomeTitle tag="h3" type={TextTypes.Body1} bold center>
         {t('language_level_card.title')}
       </WelcomeTitle>
-      <SearchingImage alt="searching image" src={SearchingSvg} />
+      <SearchingImage label="searching for match image" />
       <Text center>{t('language_level_card.description')}</Text>
 
       <Link

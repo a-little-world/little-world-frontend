@@ -75,12 +75,7 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
             onClick={onBackButton}
             $show={!!onBackButton}
           >
-            <ArrowLeftIcon
-              labelId="return to profile"
-              label="return to profile"
-              width="16"
-              height="16"
-            />
+            <ArrowLeftIcon label="return to profile" width="16" height="16" />
           </BackButton>
 
           <ProfileLink
@@ -124,7 +119,6 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
           >
             <VideoIcon
               label="Video Call Icon"
-              labelId="VideoCallIcon"
               color={theme.color.surface.secondary}
               width={24}
               height={24}
@@ -138,7 +132,6 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
     <NoChatSelected>
       <GroupChatIcon
         label="Chat Icon"
-        labelId="ChatIcon"
         gradient={Gradients.Blue}
         width="144px"
         height="144px"

@@ -48,7 +48,6 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
           >
             <PencilIcon
               label="edit interests button"
-              labelId="edit-interests-btn"
               width="16"
               height="16"
               circular

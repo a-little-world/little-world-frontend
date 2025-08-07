@@ -52,12 +52,7 @@ function PageHeader({
             navigate(location.key === 'default' ? getAppRoute() : -1)
           }
         >
-          <ArrowLeftIcon
-            labelId="return to profile"
-            label="return to profile"
-            width="24"
-            height="24"
-          />
+          <ArrowLeftIcon label="return to profile" width="24" height="24" />
         </BackButton>
       )}
       <Text tag="h2" bold type={TextTypes.Body2}>

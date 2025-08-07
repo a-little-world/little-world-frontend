@@ -190,7 +190,6 @@ function Sidebar({ sidebarMobile }) {
               {!!unreadCount && <UnreadDot count={unreadCount} />}
               <Icon
                 label={label}
-                labelId={label}
                 {...(isActive
                   ? { color: theme.color.surface.primary }
                   : { gradient: Gradients.Blue })}
@@ -208,7 +207,7 @@ function Sidebar({ sidebarMobile }) {
               }
               onClick={clickEvent}
             >
-              <LogoutIcon color="#5f5f5f" label={label} labelId={label} />
+              <LogoutIcon color="#5f5f5f" label={label} />
               {t(`nbs_${label}`)}
             </Button>
           );

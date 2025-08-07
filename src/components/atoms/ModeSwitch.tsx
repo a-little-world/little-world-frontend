@@ -9,6 +9,8 @@ import {
 import React, { useContext } from 'react';
 import styled, { useTheme } from 'styled-components';
 
+import useQueryParam from '../../hooks/useQueryParam';
+
 const Switch = styled(Button)`
   position: fixed;
   bottom: ${({ theme }) => theme.spacing.large};
@@ -20,33 +22,29 @@ export const ModeSwitch = () => {
   const { currentMode, toggleMode } = useContext(themeContext);
   const isDarkMode = currentMode === ThemeVariants.dark;
 
-  return (
+  const modeSwitch = useQueryParam('modeSwitch');
+  const shouldShowModeSwitch = modeSwitch === 'true';
+  console.log({ modeSwitch });
+
+  return shouldShowModeSwitch ? (
     <Switch
       backgroundColor={theme.color.surface.secondary}
       borderColor={theme.color.border.selected}
       variation={ButtonVariations.Circle}
-      onClick={() =>
-        toggleMode(isDarkMode ? ThemeVariants.light : ThemeVariants.dark)
-      }
+      onClick={() => toggleMode()}
     >
       {isDarkMode ? (
-        <SunIcon
-          width="24"
-          height="24"
-          label="turn dark mode on"
-          labelId="dark_mode_on_switch"
-        />
+        <SunIcon width="24" height="24" label="turn dark mode on" />
       ) : (
         <MoonIcon
           width="24"
           height="24"
           label="turn light mode on"
-          labelId="light_mode_on_switch"
           color={theme.color.text.highlight}
         />
       )}
     </Switch>
-  );
+  ) : null;
 };
 
 export default ModeSwitch;

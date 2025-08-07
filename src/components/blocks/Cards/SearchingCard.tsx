@@ -3,9 +3,11 @@ import {
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
+  CalendarAddIcon,
   Card,
   CardSizes,
   Link,
+  MatchSearchingImage,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -16,12 +18,10 @@ import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { formatDate, formatTime } from '../../../helpers/date.ts';
-import SearchingSvg from '../../../images/match-searching.svg';
-import AppointmentSvg from '../../../images/new-appointment.svg';
 import { USER_FORM_ROUTES, getAppRoute } from '../../../router/routes.ts';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard.tsx';
 
-const StyledCard = styled(Card)`
+const StyledCard = styled(Card)<{ $hasMatch?: boolean }>`
   align-items: center;
   border-color: ${({ theme }) => theme.color.border.subtle};
   gap: ${({ theme, $hasMatch }) =>
@@ -40,13 +40,14 @@ const CancelSearchButton = styled(Button)`
   color: ${({ theme }) => theme.color.text.link};
 `;
 
-const SearchingImage = styled.img`
-  height: ${({ $hasMatch }) => ($hasMatch ? '140px' : '80px')};
+const SearchingImage = styled(MatchSearchingImage)<{ $hasMatch?: boolean }>`
+  height: ${({ $hasMatch }) => ($hasMatch ? '140px' : '72px')};
   margin-bottom: ${({ theme, $hasMatch }) =>
     $hasMatch ? '0' : theme.spacing.xxxsmall};
+  flex-shrink: 0;
 `;
 
-const MatchingCallImage = styled.img`
+const MatchingCallImage = styled(CalendarAddIcon)`
   height: 80px;
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
@@ -55,7 +56,7 @@ const Note = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
-const AppointmentButton = styled(Button)`
+const AppointmentButton = styled(Button)<{ $isLink?: boolean }>`
   ${({ theme, $isLink }) =>
     $isLink &&
     css`
@@ -63,14 +64,26 @@ const AppointmentButton = styled(Button)`
     `}
 `;
 
-const getCardState = ({ hasMatch, hadPreMatchingCall, hasAppointment }) => {
+const getCardState = ({
+  hasMatch,
+  hadPreMatchingCall,
+  hasAppointment,
+}: {
+  hasMatch: boolean;
+  hadPreMatchingCall: boolean;
+  hasAppointment: boolean;
+}) => {
   if (hasMatch) return 'matched';
   if (hadPreMatchingCall) return 'pre_match_call_completed';
   if (hasAppointment) return 'pre_match_call_booked';
   return 'pre_match_call_not_booked';
 };
 
-export function SearchingCard({ setShowCancel }) {
+export function SearchingCard({
+  setShowCancel,
+}: {
+  setShowCancel: (showCancel: boolean) => void;
+}) {
   const {
     t,
     i18n: { language },
@@ -103,8 +116,7 @@ export function SearchingCard({ setShowCancel }) {
       {hasMatch ? (
         <>
           <SearchingImage
-            alt="searching image"
-            src={SearchingSvg}
+            label="searching for match image"
             $hasMatch={hasMatch}
           />
           <Text center>{t('matching_state_searching_trans')}</Text>
@@ -116,12 +128,11 @@ export function SearchingCard({ setShowCancel }) {
           </WelcomeTitle>
           {hadPreMatchingCall ? (
             <SearchingImage
-              alt="searching image"
-              src={SearchingSvg}
+              label="searching for match image"
               $hasMatch={hasMatch}
             />
           ) : (
-            <MatchingCallImage alt="matching call image" src={AppointmentSvg} />
+            <MatchingCallImage label="matching call image" />
           )}
           <Text center>{t(`searching_card.${cardState}_info_1`)}</Text>
           {isBookedState ? (

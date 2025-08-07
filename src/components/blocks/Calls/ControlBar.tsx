@@ -171,7 +171,6 @@ export const TopControlBar = ({
       <ToggleBtn onClick={onChatToggle} variation={ButtonVariations.Circle}>
         <MessageIcon
           label={t('call.chat_label')}
-          labelId="chat_toggle"
           gradient={activeOption === 'chat' ? Gradients.Orange : undefined}
         />
       </ToggleBtn>
@@ -181,7 +180,6 @@ export const TopControlBar = ({
       >
         <TranslatorIcon
           label={t('call.chat_label')}
-          labelId="chat_toggle"
           gradient={
             activeOption === 'translator' ? Gradients.Orange : undefined
           }
@@ -193,7 +191,6 @@ export const TopControlBar = ({
       >
         <MessageWithQuestionIcon
           label="question cards"
-          labelId="questionCards"
           gradient={activeOption === 'questions' ? Gradients.Orange : undefined}
         />
       </ToggleBtn>
@@ -228,15 +225,9 @@ function ControlBar({
           variation={ButtonVariations.Circle}
         >
           {isFullScreen ? (
-            <FullScreenExitIcon
-              label="exit fullscreen"
-              labelId="exitFullScreen"
-            />
+            <FullScreenExitIcon label="exit fullscreen" />
           ) : (
-            <FullScreenIcon
-              label="fullscreen video toggle"
-              labelId="fullscreen"
-            />
+            <FullScreenIcon label="fullscreen video toggle" />
           )}
         </ToggleBtn>
         <ToggleBtn
@@ -245,14 +236,14 @@ function ControlBar({
           variation={ButtonVariations.Circle}
         >
           {hasUnreadMessage && <UnreadDot count={1} />}
-          <MessageIcon label={t('call.chat_label')} labelId="chat_toggle" />
+          <MessageIcon label={t('call.chat_label')} />
         </ToggleBtn>
         <ToggleBtn
           $desktopOnly
           onClick={onTranslatorToggle}
           variation={ButtonVariations.Circle}
         >
-          <TranslatorIcon label={t('call.chat_label')} labelId="chat_toggle" />
+          <TranslatorIcon label={t('call.chat_label')} />
         </ToggleBtn>
       </Section>
       <Section>

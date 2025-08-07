@@ -153,7 +153,6 @@ function Notifications() {
                               onClick={() => onMarkRead(id)}
                             >
                               <TickIcon
-                                labelId="tick_icon"
                                 label="tick icon"
                                 width="16"
                                 height="16"
@@ -166,7 +165,6 @@ function Notifications() {
                               onClick={() => onArchive(id)}
                             >
                               <ArchiveIcon
-                                labelId="archive_icon"
                                 label="archive icon"
                                 width="16"
                                 height="16"
@@ -179,7 +177,6 @@ function Notifications() {
                               onClick={() => onDeleteNotification(id)}
                             >
                               <TrashIcon
-                                labelId="delete_icon"
                                 label="delete icon"
                                 width="16"
                                 height="16"

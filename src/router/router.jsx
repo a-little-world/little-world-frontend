@@ -387,10 +387,10 @@ const router = createBrowserRouter(
   [
     {
       path: BASE_ROUTE,
-      element: <Root />,
+      element: <Root includeModeSwitch />,
       children: ROOT_ROUTES,
       errorElement: (
-        <Root>
+        <Root includeModeSwitch>
           <RouterError />
         </Root>
       ),

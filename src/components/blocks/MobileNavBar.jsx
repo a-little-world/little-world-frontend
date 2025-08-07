@@ -101,7 +101,6 @@ function MobileNavBar({ setShowSidebarMobile }) {
       >
         <MenuIcon
           label="open menu"
-          labelId="open-menu"
           width={24}
           height={24}
           gradient={Gradients.Blue}

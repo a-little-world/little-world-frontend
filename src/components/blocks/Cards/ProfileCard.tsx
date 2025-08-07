@@ -9,7 +9,6 @@ import {
   Logo,
   MessageIcon,
   PencilIcon,
-  pixelate,
   Popover,
   ProfileIcon,
   Tag,
@@ -17,6 +16,7 @@ import {
   Text,
   TextTypes,
   VideoIcon,
+  pixelate,
 } from '@a-little-world/little-world-design-system';
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
 import React from 'react';
@@ -235,7 +235,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             height="16px"
             width="16px"
             label="edit profile image"
-            labelId="edit_profile_image"
           />
         </ProfileImageButton>
       ) : (
@@ -258,7 +257,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 color="#7c7b7b"
                 borderColor="#7c7b7b"
                 label="menu options"
-                labelId="menu_options"
               />
             </MatchMenuToggle>
           }
@@ -296,18 +294,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             {profile.first_name}
           </Text>
           {isSupport && (
-            <Tag
-              color={(theme as any).color.status.info}
-              bold
-              size={TagSizes.small}
-            >
+            <Tag color={theme.color.status.info} bold size={TagSizes.small}>
               <TagText>{t('profile_card.support_user')}</TagText>
-              <Logo
-                height="16"
-                width="16"
-                label="support logo"
-                labelId="support_logo"
-              />
+              <Logo height="16" width="16" label="support logo" />
             </Tag>
           )}
         </NameContainer>
@@ -324,11 +313,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <Actions $onProfile={onProfile}>
           {!onProfile && (
             <MenuLink to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}>
-              <ProfileIcon
-                gradient={Gradients.Orange}
-                label="visit profile"
-                labelId="visit_profile"
-              />
+              <ProfileIcon gradient={Gradients.Orange} label="visit profile" />
               {t('cp_profile')}
             </MenuLink>
           )}
@@ -336,11 +321,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
             state={{ userPk }}
           >
-            <MessageIcon
-              gradient={Gradients.Orange}
-              label="chat icon"
-              labelId="chat_icon"
-            />
+            <MessageIcon gradient={Gradients.Orange} label="chat icon" />
             {t('cp_message')}
           </MenuLink>
           <Button
@@ -351,7 +332,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             <VideoIcon
               gradient={Gradients.Orange}
               label="call icon"
-              labelId="call_icon"
               width={38}
             />
             {t('cp_call')}
