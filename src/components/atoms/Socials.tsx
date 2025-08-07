@@ -20,19 +20,16 @@ export const SOCIALS_LIST = {
       Icon: InstagramIcon,
       url: 'https://www.instagram.com/littleworld_de/',
       label: 'instagram',
-      labelId: 'instaIcon',
     },
     {
       Icon: FacebookIcon,
       url: 'https://www.facebook.com/LittleWorld.NonProfit/',
       label: 'facebook',
-      labelId: 'fbIcon',
     },
     {
       Icon: LinkedinIcon,
       url: 'https://www.linkedin.com/company/little-world/',
       label: 'linkedin',
-      labelId: 'linkedinIcon',
     },
   ],
   join_groups: [
@@ -40,13 +37,11 @@ export const SOCIALS_LIST = {
       Icon: WhatsappIcon,
       url: 'https://chat.whatsapp.com/DDoLv0AFtHh6CEtXlKz91k',
       label: 'whatsapp',
-      labelId: 'whatsappIcon',
     },
     {
       Icon: TelegramIcon,
       url: 'https://t.me/+nhDqI57icllkMmYy',
       label: 'telegram',
-      labelId: 'telegramIcon',
     },
   ],
 };
@@ -59,9 +54,9 @@ const Socials = ({
   type: 'social_media' | 'join_groups';
 }) => (
   <SocialLinks>
-    {SOCIALS_LIST[type].map(({ Icon, url, labelId, label }: any) => (
+    {SOCIALS_LIST[type].map(({ Icon, url, label }: any) => (
       <Link key={label} href={url} textDecoration={false}>
-        <Icon labelId={labelId} label={label} gradient={gradient} />
+        <Icon label={label} gradient={gradient} />
       </Link>
     ))}
   </SocialLinks>

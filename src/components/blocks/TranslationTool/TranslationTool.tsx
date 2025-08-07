@@ -89,7 +89,6 @@ function TranslationTool({ className }: { className?: string }) {
       <SwapBtn onClick={swapLang} variation={ButtonVariations.Icon}>
         <SwapIcon
           label={t('translator.swap_languages')}
-          labelId="swap_translations"
           width="16"
           height="16"
         />

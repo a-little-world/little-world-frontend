@@ -70,14 +70,6 @@ const Notification = styled.li`
   box-sizing: border-box;
   border-radius: ${({ theme }) => theme.radius.small};
   gap: ${({ theme }) => theme.spacing.small};
-
-  img.new-friend {
-    content: url('../../images/notifications/new-friend.svg');
-  }
-
-  .img.missed-call {
-    content: url('../../images/notifications/missed-call.svg');
-  }
 `;
 
 const NotificationTitle = styled(Text)`
@@ -140,7 +132,6 @@ function NotificationPanel() {
               <CalendarIcon
                 circular
                 label="appointment notification icon"
-                labelId={`${hash}appointment_notification`}
                 backgroundColor={theme.color.surface.message}
                 borderColor={theme.color.surface.message}
                 color={theme.color.text.highlight}

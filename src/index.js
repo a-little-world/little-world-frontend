@@ -1,15 +1,15 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-
 import { mutate } from 'swr';
+
 import App from './App';
 import { DEVELOPMENT } from './ENVIRONMENT';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
+import { API_OPTIONS_ENDPOINT } from './features/swr/index.ts';
 import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
 import { Root } from './router/router';
-import { API_OPTIONS_ENDPOINT } from './features/swr/index.ts';
 
 const isDevelopment = DEVELOPMENT;
 
@@ -23,11 +23,17 @@ window.renderApp = ({ user, apiTranslations, apiOptions }) => {
   if (!root) {
     root = createRoot(container);
   }
-  console.log("RENDERING APP V2", { user, apiTranslations, apiOptions })
-  root.render(<App user={user} apiTranslations={apiTranslations} apiOptions={apiOptions} />);
+  console.log('RENDERING APP V2', { user, apiTranslations, apiOptions });
+  root.render(
+    <App
+      user={user}
+      apiTranslations={apiTranslations}
+      apiOptions={apiOptions}
+    />,
+  );
 
   reportWebVitals();
-}
+};
 
 window.renderMessageView = (
   {

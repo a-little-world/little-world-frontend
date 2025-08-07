@@ -350,7 +350,6 @@ const Chat = ({ chatId, inCall = false }) => {
                         <Time type={TextTypes.Body6}>
                           {message.read ? (
                             <TickDoubleIcon
-                              labelId="messageReadIcon"
                               label="message read icon"
                               color={theme.color.status.info}
                               width="16px"
@@ -358,7 +357,6 @@ const Chat = ({ chatId, inCall = false }) => {
                             />
                           ) : (
                             <TickIcon
-                              labelId="messageUnreadIcon"
                               label="message unread icon"
                               width="16px"
                               height="16px"
@@ -434,7 +432,6 @@ const Chat = ({ chatId, inCall = false }) => {
           {selectedFile ? (
             <CloseIcon
               label={t('attachment.remove_btn')}
-              labelId="remove_attachment"
               onClick={clearSelectedFile}
               width="20"
               height="20"
@@ -442,7 +439,6 @@ const Chat = ({ chatId, inCall = false }) => {
           ) : (
             <PlusIcon
               label={t('attachment.upload_btn')}
-              labelId="attachment_icon"
               width="20"
               height="20"
             />
@@ -457,7 +453,6 @@ const Chat = ({ chatId, inCall = false }) => {
         >
           <SendIcon
             label={t('chat.send_btn')}
-            labelId="send_icon"
             color={theme.color.text.reversed}
             width="20"
             height="20"

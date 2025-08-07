@@ -1,10 +1,10 @@
 import {
-  CardSizes,
   CardDimensions,
+  CardSizes,
   Modal,
-  pixelate,
   Text,
   TextTypes,
+  pixelate,
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ import ProfileCard, {
   PROFILE_CARD_HEIGHT,
   StyledProfileCard,
 } from './Cards/ProfileCard.tsx';
-import { SearchingCard } from './Cards/SearchingCard.jsx';
+import { SearchingCard } from './Cards/SearchingCard';
 import UpdateSearchStateCard from './Cards/UpdateSearchStateCard.tsx';
 
 const FindNewPartner = styled.button<{ $hasMatch: boolean }>`

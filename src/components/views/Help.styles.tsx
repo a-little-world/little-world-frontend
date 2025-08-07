@@ -2,8 +2,8 @@ import {
   Card,
   CardDimensions,
   CardSizes,
-  pixelate,
   Text,
+  pixelate,
 } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
@@ -100,7 +100,7 @@ export const ContactInfo = styled.div`
   ${({ theme }) =>
     `
     padding: ${theme.spacing.medium};
-    gap: ${theme.spacing.small};
+    gap: ${theme.spacing.xsmall};
 
     @media (min-width: ${theme.breakpoints.small}) {
       padding: ${theme.spacing.medium};
@@ -114,9 +114,7 @@ export const Contacts = styled.div`
   white-space: nowrap;
 `;
 
-export const BusinessName = styled(Text)`
-  color: ${({ theme }) => theme.color.text.heading};
-`;
+export const BusinessName = styled(Text)``;
 
 export const ContentWrapper = styled.div``;
 export const DropZoneContainer = styled.div``;
@@ -124,7 +122,8 @@ export const DropZoneContainer = styled.div``;
 export const ContactLink = styled.a`
   display: flex;
   text-align: center;
-  gap: 0.3rem;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  align-items: center;
 `;
 
 export const FileName = styled.div`
