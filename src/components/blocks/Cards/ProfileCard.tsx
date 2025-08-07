@@ -126,7 +126,7 @@ export const EditIcon = styled(PencilIcon)`
   bottom: ${({ theme }) => theme.spacing.xxsmall};
   right: ${({ theme }) => theme.spacing.xxsmall};
   width: fit-content;
-  color: ${({ theme }) => theme.color.surface.bold};
+  color: ${({ theme }) => theme.color.text.accent};
   border: 2px solid ${({ theme }) => theme.color.text.accent};
 `;
 
