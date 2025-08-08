@@ -50,12 +50,7 @@ const Drawer = ({
   <DrawerContainer>
     <StyledDrawer open={open} onClose={onClose} direction={direction}>
       <CloseButton variation={ButtonVariations.Icon} onClick={onClose}>
-        <ChevronDownIcon
-          label="close drawer"
-          labelId="closeDrawer"
-          width="16"
-          height="16"
-        />
+        <ChevronDownIcon label="close drawer" width="16" height="16" />
       </CloseButton>
       {children}
     </StyledDrawer>

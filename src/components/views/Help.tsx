@@ -5,7 +5,9 @@ import {
   ImageIcon,
   ImageSearchIcon,
   Label,
+  MailIcon,
   MessageIcon,
+  MobileIcon,
   PhoneIcon,
   StatusMessage,
   StatusTypes,
@@ -54,7 +56,6 @@ import {
   SupportTeam,
   Topper,
 } from './Help.styles';
-import './help.css';
 
 const generateFAQItems = (t: TFunction, supportUrl: string) => {
   const translationKeys = [
@@ -146,7 +147,6 @@ export const FileDropzone = ({
           <>
             <ImageSearchIcon
               label="file input icon"
-              labelId="fileInputIcon"
               width={32}
               height={32}
               color={theme.color.text.accent}
@@ -157,12 +157,7 @@ export const FileDropzone = ({
           <>
             {filenames.map(name => (
               <FileName key={name}>
-                <ImageIcon
-                  label="uploaded file"
-                  labelId="uploadedFileIcon"
-                  width="24"
-                  height="24"
-                />
+                <ImageIcon label="uploaded file" width="24" height="24" />
                 {name}
               </FileName>
             ))}
@@ -183,7 +178,6 @@ export const NativeWebWrapper = ({
 }: {
   children: React.ReactNode;
 }) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
-
 
 export function Faqs() {
   const { t } = useTranslation();
@@ -292,9 +286,9 @@ export function Contact() {
         $visible={Boolean(requestSuccessful || errors?.root?.serverError)}
         $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
       >
-        {requestSuccessful ?
-          t('help.contact_form_submitted') :
-          t(errors?.root?.serverError?.message)}
+        {requestSuccessful
+          ? t('help.contact_form_submitted')
+          : t(errors?.root?.serverError?.message)}
       </StatusMessage>
       <Button
         type="submit"
@@ -313,6 +307,7 @@ function Help() {
   const { data: matches } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: false,
   });
+  const theme = useTheme();
 
   const adminUser = matches?.support?.results?.[0];
   const supportUrl = getAppSubpageRoute(
@@ -348,7 +343,6 @@ function Help() {
                 <MessageIcon
                   gradient={Gradients.Orange}
                   label="message support"
-                  labelId="message_support"
                 />
                 <Text tag="span" center>
                   {t('help.support_message_btn')}
@@ -356,11 +350,7 @@ function Help() {
               </MenuLink>
             )}
             <MenuLink to="tel:+4915234777471">
-              <PhoneIcon
-                gradient={Gradients.Orange}
-                label="call support"
-                labelId="call_support"
-              />
+              <PhoneIcon gradient={Gradients.Orange} label="call support" />
               <Text tag="span" center>
                 {t('help.support_call_btn')}
               </Text>
@@ -369,15 +359,33 @@ function Help() {
 
           <ContactInfo>
             <ContentWrapper>
-              <BusinessName bold>A Little World gUG</BusinessName>
+              <BusinessName center bold>
+                A Little World gUG
+              </BusinessName>
             </ContentWrapper>
             <Contacts>
               <ContactLink href="mailto:support@little-world.com">
-                <img className="email-icon" alt="e-mail" />
+                <MailIcon
+                  circular
+                  label="e-mail"
+                  backgroundColor={theme.color.surface.quaternary}
+                  borderColor={theme.color.border.subtle}
+                  color={theme.color.text.reversed}
+                  width={16}
+                  height={16}
+                />
                 support@little-world.com
               </ContactLink>
               <ContactLink href="tel:+4915234777471">
-                <img className="mobile-icon" alt="mobile" />
+                <MobileIcon
+                  circular
+                  label="e-mail"
+                  backgroundColor={theme.color.surface.quaternary}
+                  borderColor={theme.color.border.subtle}
+                  color={theme.color.text.reversed}
+                  width={16}
+                  height={16}
+                />
                 +49 152 34 777 471
               </ContactLink>
             </Contacts>

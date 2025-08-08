@@ -3,7 +3,7 @@ import {
   BellIcon,
   Button,
   ButtonAppearance,
-  ButtonVariations, 
+  ButtonVariations,
   ClockDashedIcon,
   ClockIcon,
 } from '@a-little-world/little-world-design-system';
@@ -86,12 +86,7 @@ const Toolbar = ({
         variation={ButtonVariations.Icon}
         $isActive={filter === NotificationState.READ}
       >
-        <ClockDashedIcon
-          labelId="clock_icon"
-          label="read icon"
-          width="16px"
-          height="16px"
-        />
+        <ClockDashedIcon label="read icon" width="16px" height="16px" />
         {t('notifications.filter_read')}
       </ToolbarButton>
       {showArchived && (

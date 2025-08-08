@@ -203,12 +203,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
           onClose();
         }}
       >
-        <CloseIcon
-          label="close modal"
-          labelId="close_icon"
-          width="24"
-          height="24"
-        />
+        <CloseIcon label="close modal" width="24" height="24" />
       </CloseButton>
       <div>
         <Text center type={TextTypes.Heading4}>

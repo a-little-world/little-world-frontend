@@ -56,6 +56,7 @@ const German: FC = () => {
             type: ContentTypes.Image,
             text: 'WavyLines',
             Image: WavyLinesImage,
+            color: theme.color.surface.bold,
           },
         ]}
       />

@@ -40,7 +40,6 @@ const CategorySelector = ({ categories, onUpdate }) => {
         >
           <ProfileChatIcon
             label={category.value}
-            labelId={category.tag}
             gradient={category.gradient}
           />
           <TextSection>

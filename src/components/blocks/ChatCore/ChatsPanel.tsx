@@ -215,15 +215,9 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
                         width="16px"
                         height="16px"
                         label="Read"
-                        labelId="tick-double-icon"
                       />
                     ) : (
-                      <TickIcon
-                        width="16px"
-                        height="16px"
-                        label="Sent"
-                        labelId="tick-icon"
-                      />
+                      <TickIcon width="16px" height="16px" label="Sent" />
                     )
                   ) : message.unread_count ? (
                     <UnreadIndicator />

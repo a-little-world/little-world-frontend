@@ -1,5 +1,6 @@
 import {
   Accordion,
+  AccordionContent,
   ButtonAppearance,
   Card,
   ContentTypes,
@@ -19,25 +20,20 @@ import {
   TextTypes,
   TimeFlexibleImage,
   WomanOnRocketImage,
+  tokens,
 } from '@a-little-world/little-world-design-system';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../features/swr/index';
 import Socials, { SOCIALS_LIST } from '../../atoms/Socials';
 import MailingLists from '../../blocks/MailingLists/MailingLists';
 
-const ACCORDION_CONTENT_CSS = css`
+const SupportUsAccordionContent = styled(AccordionContent)`
   background: ${({ theme }) => theme.color.surface.primary};
   gap: ${({ theme }) => theme.spacing.medium};
-  display: flex;
-  flex-direction: column;
-
-  &[hidden] {
-    display: none;
-  }
 
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
@@ -130,19 +126,29 @@ const Ctas = styled.div`
 
 const SECTIONS_WITH_TWO_CTAS = ['volunteer'];
 const SECTION_IMAGES = {
-  subscribe_to_newsletter: <WomanOnRocketImage />,
-  share_improvements: <LaptopWithPhoneImage />,
-  thank_your_partner: <FriendshipImage />,
-  share_with_friends: <TeacherImage />,
-  join_events: <PeopleTogetherImage />,
-  organize_an_event: <GroupHandsImage />,
-  write_a_review: <LivingRoomImage />,
-  become_a_volunteer: <FriendshipImage />,
-  donate: <RaisingMoneyImage />,
-  get_interviewed: <LaptopWithPhoneImage />,
-  distribute: <ManOnRocketImage />,
-  corporate_involvement: <PeopleTogetherImage />,
-  volunteer: <TimeFlexibleImage />,
+  subscribe_to_newsletter: <WomanOnRocketImage label="woman on rocket" />,
+  share_improvements: (
+    <LaptopWithPhoneImage
+      label="laptop with phone"
+      color={tokens.color.theme.light.text.heading}
+    />
+  ),
+  thank_your_partner: <FriendshipImage label="friendship" />,
+  share_with_friends: <TeacherImage label="teacher" />,
+  join_events: <PeopleTogetherImage label="people together" />,
+  organize_an_event: <GroupHandsImage label="group hands" />,
+  write_a_review: <LivingRoomImage label="living room" />,
+  become_a_volunteer: <FriendshipImage label="friendship" />,
+  donate: <RaisingMoneyImage label="raising money" />,
+  get_interviewed: (
+    <LaptopWithPhoneImage
+      label="laptop with phone"
+      color={tokens.color.theme.light.text.heading}
+    />
+  ),
+  distribute: <ManOnRocketImage label="man on rocket" />,
+  corporate_involvement: <PeopleTogetherImage label="people together" />,
+  volunteer: <TimeFlexibleImage label="time flexible" />,
 };
 
 const SECTIONS = [
@@ -249,7 +255,7 @@ const SupportUs: FC = () => {
       />
       <SupportUsAccordion
         headerColor={theme.color.text.bold}
-        contentCss={ACCORDION_CONTENT_CSS}
+        ContentWrapper={SupportUsAccordionContent}
         items={SECTIONS.map(section => ({
           header: t(`support_us.${section.title}.title`),
           content: section.items.map(label => (
@@ -258,7 +264,7 @@ const SupportUs: FC = () => {
         }))}
       />
       <PaperPlaneWrapper>
-        <PaperPlaneImage />
+        <PaperPlaneImage label="paper plane" />
       </PaperPlaneWrapper>
       <Text center>{t('support_us.thank_you.message')}</Text>
     </ContentCard>

@@ -1,4 +1,7 @@
-import { GlobalStyles, CustomThemeProvider } from '@a-little-world/little-world-design-system';
+import {
+  CustomThemeProvider,
+  GlobalStyles,
+} from '@a-little-world/little-world-design-system';
 import React from 'react';
 import {
   Navigate,
@@ -7,7 +10,6 @@ import {
   createBrowserRouter,
 } from 'react-router-dom';
 
-import { environment } from '../environment';
 import FireBase from '../Firebase';
 import WebsocketBridge from '../WebsocketBridge';
 import { ModeSwitch } from '../components/atoms/ModeSwitch';
@@ -34,6 +36,7 @@ import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
 import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
+import { environment } from '../environment';
 import AuthGuard from '../guards/AuthGuard';
 import {
   APP_ROUTE,
@@ -372,10 +375,10 @@ export function getWebRouter() {
     [
       {
         path: BASE_ROUTE,
-        element: <Root />,
+        element: <Root includeModeSwitch />,
         children: ROOT_ROUTES,
         errorElement: (
-          <Root>
+          <Root includeModeSwitch>
             <RouterError />
           </Root>
         ),

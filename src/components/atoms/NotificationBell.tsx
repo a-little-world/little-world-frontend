@@ -38,12 +38,7 @@ function NotificationBell({ className }: { className?: string }) {
       onClick={onClick}
     >
       {count > 0 && <UnreadDot count={count} onIcon />}
-      <BellIcon
-        labelId="bell_icon"
-        label=" all notifications"
-        width="16px"
-        height="16px"
-      />
+      <BellIcon label=" all notifications" width="16px" height="16px" />
     </StyledNotificationBell>
   );
 }

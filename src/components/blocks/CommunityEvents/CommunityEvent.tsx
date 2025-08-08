@@ -185,7 +185,6 @@ const EventCtas = ({
               >
                 <PhoneIcon
                   label="join call"
-                  labelId="joinCall"
                   color={theme.color.surface.primary}
                   width={14}
                   height={14}
@@ -231,7 +230,6 @@ const EventCtas = ({
         >
           <PhoneIcon
             label="join call icon"
-            labelId="joinCall"
             color={theme.color.surface.primary}
             width="20px"
           />

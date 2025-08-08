@@ -7,25 +7,20 @@
 
 .add-fovorite .favorite-icon {
   width: 22px;
-  content: url('./images/favorite.svg');
 }
 
 .add-fovorite .unfavorite-icon {
   width: 22px;
-  content: url('./images/star.svg');
 }
 
 .add-archives img {
   width: 22px;
-  content: url('./images/archive_icon.svg');
 }
 
 .remove-note img {
   width: 22px;
-  content: url('./images/delete_icon.svg');
 }
 
 .restore-note img {
   width: 22px;
-  content: url('./images/restore_icon.svg');
 }

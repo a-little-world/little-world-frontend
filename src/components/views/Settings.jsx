@@ -119,7 +119,7 @@ function ListItem({ section, label, value, setEditing }) {
           color={theme.color.text.link}
           onClick={() => setEditing(label)}
         >
-          <PencilIcon height="12px" width="16px" />
+          <PencilIcon height="12px" width="16px" label="edit icon" />
           {t('settings.edit_button')}
         </Button>
       </Field>

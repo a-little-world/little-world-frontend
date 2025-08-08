@@ -66,7 +66,6 @@ function QuestionCards() {
         >
           <ChevronLeftIcon
             label="prev conversation topics"
-            labelId="topics left control"
             width={6}
             height={10}
           />
@@ -93,12 +92,7 @@ function QuestionCards() {
           variation={ButtonVariations.Circle}
           onClick={() => changeScroll('right')}
         >
-          <ChevronRightIcon
-            label="next topics"
-            labelId="topics right control"
-            width={6}
-            height={10}
-          />
+          <ChevronRightIcon label="next topics" width={6} height={10} />
         </CategoryControl>
       </QuestionCategories>
       <QuestionContentCard>

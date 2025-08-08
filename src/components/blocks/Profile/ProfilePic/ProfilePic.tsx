@@ -265,6 +265,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                 <CircleImage
                   icon={
                     <PlusIcon
+                      label="add image"
                       color={theme.color.text.accent}
                       width={48}
                       height={48}
@@ -283,6 +284,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                 <MobileCircleImage
                   icon={
                     <ImageSearchIcon
+                      label="uploaded image"
                       color={theme.color.text.accent}
                       width={56}
                       height={56}
@@ -292,7 +294,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                   fileInputRef={fileInputRef}
                   uploadedImage={uploadedImage}
                 />
-                <StyledFileIcon width={56} height={56} />
+                <StyledFileIcon label="upload image" width={56} height={56} />
                 <Text
                   color={theme.color.text.accent}
                   bold
@@ -338,7 +340,11 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                     onClick={onPrevAvatar}
                     type="button"
                   >
-                    <ChevronLeftIcon width={6} height={10} />
+                    <ChevronLeftIcon
+                      label="previous avatar"
+                      width={6}
+                      height={10}
+                    />
                   </Button>
                   <div>
                     <Avatar
@@ -357,7 +363,11 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                     size={ButtonSizes.Medium}
                     type="button"
                   >
-                    <ChevronRightIcon width={6} height={10} />
+                    <ChevronRightIcon
+                      label="next avatar"
+                      width={6}
+                      height={10}
+                    />
                   </Button>
                 </AvatarSelection>
                 <Label
@@ -377,7 +387,11 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                   type="button"
                   color={theme.color.text.accent}
                 >
-                  <PencilIcon color={theme.color.text.accent} width={12} />
+                  <PencilIcon
+                    label="edit avatar"
+                    color={theme.color.text.accent}
+                    width={12}
+                  />
                   <Text
                     type={TextTypes.Body5}
                     bold

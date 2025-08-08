@@ -64,6 +64,7 @@ export const INTERACTIVE_AREA_CSS = css`
   flex-grow: 1;
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
+
 export const InteractiveArea = styled.div`
   ${INTERACTIVE_AREA_CSS}
 

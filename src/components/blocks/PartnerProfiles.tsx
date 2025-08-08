@@ -1,10 +1,10 @@
 import {
-  CardSizes,
   CardDimensions,
+  CardSizes,
   Modal,
-  pixelate,
   Text,
   TextTypes,
+  pixelate,
 } from '@a-little-world/little-world-design-system';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
