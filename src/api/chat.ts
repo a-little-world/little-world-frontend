@@ -91,14 +91,11 @@ export const sendFileAttachmentMessage = async ({
   data.append('file', file);
   data.append('text', text);
   try {
-    const result = await apiFetch(
-      `${environment.backendUrl}/api/messages/${chatId}/send_attachment/`,
-      {
-        method: 'POST',
-        useTagsOnly: true,
-        body: data,
-      },
-    );
+    const result = await apiFetch(`/api/messages/${chatId}/send_attachment/`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: data,
+    });
     onSuccess(result);
   } catch (error) {
     onError(error);
@@ -107,14 +104,11 @@ export const sendFileAttachmentMessage = async ({
 
 export const sendMessage = async ({ chatId, text, onSuccess, onError }) => {
   try {
-    const result = await apiFetch(
-      `${environment.backendUrl}/api/messages/${chatId}/send/`,
-      {
-        method: 'POST',
-        useTagsOnly: true,
-        body: { text },
-      },
-    );
+    const result = await apiFetch(`/api/messages/${chatId}/send/`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: { text },
+    });
     onSuccess(result);
   } catch (error) {
     onError(error);
