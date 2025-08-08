@@ -32,6 +32,7 @@ const Wrapper = styled.div<{ $isVH: boolean }>`
   flex-direction: column;
   min-height: 100vh;
   box-sizing: border-box;
+  width: 100%;
 
   ${({ $isVH }) =>
     $isVH &&
@@ -223,14 +224,14 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         <MatchCardComponent
           showNewMatch={showNewMatch}
           matchId={
-            matches?.proposed?.results?.length ?
-              matches?.proposed.results[0].id :
-              matches?.unconfirmed.results[0]?.id
+            matches?.proposed?.results?.length
+              ? matches?.proposed.results[0].id
+              : matches?.unconfirmed.results[0]?.id
           }
           profile={
-            matches?.proposed?.results?.length ?
-              matches?.proposed.results[0].partner :
-              matches?.unconfirmed.results[0]?.partner
+            matches?.proposed?.results?.length
+              ? matches?.proposed.results[0].partner
+              : matches?.unconfirmed.results[0]?.partner
           }
           onClose={closeModal}
         />

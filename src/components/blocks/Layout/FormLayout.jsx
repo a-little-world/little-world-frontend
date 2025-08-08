@@ -7,6 +7,7 @@ import Header from '../Header';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   min-height: 100vh;
   box-sizing: border-box;
 `;

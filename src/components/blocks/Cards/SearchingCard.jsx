@@ -1,4 +1,5 @@
 import {
+  AppointmentIcon,
   Button,
   ButtonAppearance,
   ButtonSizes,
@@ -46,7 +47,7 @@ const SearchingImage = styled.img`
     $hasMatch ? '0' : theme.spacing.xxxsmall};
 `;
 
-const MatchingCallImage = styled.img`
+const MatchingCallImage = styled(AppointmentIcon)`
   height: 80px;
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
