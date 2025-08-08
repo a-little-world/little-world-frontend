@@ -18,7 +18,6 @@ export default function WebApp() {
   if (!root) {
     root = createRoot(container);
   }
-  // console.log('RENDERING APP V2', { user, apiTranslations, apiOptions });
   root.render(
     <App
       user={user}
