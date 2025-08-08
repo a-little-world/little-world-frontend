@@ -70,7 +70,9 @@ const Logo = ({
       <LogoImageStyled $size={size}>
         {environment.isNative ? (
           // For native builds, use SVG as React component
-          <LogoImageSvg />
+          <LogoImageSvg role="img">
+            <title>Little World Logo</title>
+          </LogoImageSvg>
         ) : (
           // For web builds, use SVG as src URL (webpack will handle the bundling)
           <img
@@ -85,12 +87,13 @@ const Logo = ({
 
   const renderLogoText = () => {
     if (!displayText) return null;
-
     return (
       <LogoTextStyled $size={size}>
         {environment.isNative ? (
           // For native builds, use SVG as React component
-          <LogoTextSvg />
+          <LogoTextSvg role="img">
+            <title>Little World Logo</title>
+          </LogoTextSvg>
         ) : (
           // For web builds, use SVG as src URL (webpack will handle the bundling)
           <img
