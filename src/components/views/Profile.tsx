@@ -1,8 +1,5 @@
 import {
   Modal,
-  MultiDropdown,
-  Tags,
-  Text,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
@@ -35,10 +32,8 @@ import {
 } from '../../userForm/formPages';
 import PageHeader from '../atoms/PageHeader';
 import ProfileCard from '../blocks/Cards/ProfileCard';
-import FormStep from '../blocks/Form/FormStep';
-import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
-import { Details, PageContent, TextField } from '../blocks/Profile/styles';
+import { PageContent } from '../blocks/Profile/styles';
 
 const getProfileFields = ({
   profile,
@@ -115,9 +110,9 @@ const getProfileFields = ({
         labelTooltip: trans('self_info.language_skills_tooltip'),
         maxSegments: 8,
         restrictions:
-          profile?.user_type === USER_TYPES.volunteer ?
-            { german: restrictedLangLevels } :
-            {},
+          profile?.user_type === USER_TYPES.volunteer
+            ? { german: restrictedLangLevels }
+            : {},
         firstDropdown: {
           dataField: 'lang',
           ariaLabel: trans('self_info.language_selector_label'),
@@ -152,9 +147,9 @@ function Profile() {
   const [editingField, setEditingField] = useState(null);
 
   const { data: matches } = useSWR(MATCHES_ENDPOINT);
-  const match = !matches ?
-    undefined :
-    [...matches.support.results, ...matches.confirmed.results].find(
+  const match = !matches
+    ? undefined
+    : [...matches.support.results, ...matches.confirmed.results].find(
         m => m.partner.id === userId,
       );
 
@@ -166,15 +161,15 @@ function Profile() {
   );
 
   const [profileFields, setProfileFields] = useState(
-    profile && formOptions ?
-      getProfileFields({
+    profile && formOptions
+      ? getProfileFields({
           profile,
           formOptions,
           t,
           isSelf,
           selfAvailability: user?.profile?.availability,
-        }) :
-      {},
+        })
+      : {},
   );
 
   useEffect(() => {
@@ -189,9 +184,9 @@ function Profile() {
     }
   }, []);
 
-  const profileTitle = isSelf ?
-    t('profile.self_profile_title') :
-    t('profile.match_profile_title', { userName: profile?.first_name });
+  const profileTitle = isSelf
+    ? t('profile.self_profile_title')
+    : t('profile.match_profile_title', { userName: profile?.first_name });
 
   const onError = e => {
     onFormError({ e, formFields: getValues(), setError });
@@ -247,7 +242,8 @@ function Profile() {
     <>
       <PageHeader canGoBack={!isSelf} text={profileTitle} />
       <PageContent>
-        <Details>
+        {/* <Details>     // TODO: rendering hook errors
+
           <ProfileDetail
             editable={isSelf}
             content={profileFields.description}
@@ -287,7 +283,7 @@ function Profile() {
               </Text>
             )}
           </ProfileDetail>
-        </Details>
+        </Details> */}
         <ProfileCard
           chatId={match?.chatId}
           userPk={userId}

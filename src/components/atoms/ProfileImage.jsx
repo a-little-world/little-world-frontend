@@ -40,13 +40,13 @@ const StyledAvatar = styled(Avatar)`
 export const CircleImage = styled.div`
   border-radius: 50%;
   border: ${({ $size }) => BorderSizes[$size]} solid #e6e8ec;
-  background: ${({ $image }) => `url(${$image})`};
+  background: ${({ $image }) => `url(http://localhost:8000${$image})`};
   background-size: cover;
   background-position: center;
   width: ${({ $size }) => ($size === 'flex' ? 'auto' : ImageSizes[$size])};
   height: ${({ $size }) => ImageSizes[$size]};
   max-height: ${ImageSizes.large};
-  max-width: ${ImageSizes.large};
+  max-width: ${ImageSizes.large}l
   display: flex;
   align-items: end;
   justify-content: center;
