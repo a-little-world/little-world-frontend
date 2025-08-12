@@ -17,8 +17,8 @@ import useSWR from 'swr';
 
 import { requestVideoAccessToken } from '../../../api/livekit.ts';
 import {
-  useActiveCallStore,
   useCallSetupStore,
+  useConnectedCallStore,
 } from '../../../features/stores/index.ts';
 import { USER_ENDPOINT } from '../../../features/swr/index.ts';
 import { clearActiveTracks } from '../../../helpers/video.ts';
@@ -95,34 +95,6 @@ const CallSetupCard = styled(ModalCard)`
   `}
 `;
 
-// const AudioOutputSelect = () => {
-//   const { t } = useTranslation();
-//   const [audioOutDevices, setAudioOutDevices] = useState<MediaDeviceInfo[]>([]);
-//   useEffect(() => {
-//     navigator.mediaDevices.enumerateDevices().then(deviceList => {
-//       const devices = deviceList
-//         .filter(deviceInfo => deviceInfo.kind === 'audiooutput')
-//         .filter(deviceInfo => deviceInfo.deviceId !== 'default');
-//       setAudioOutDevices(devices);
-//     });
-//   }, []);
-
-//   return (
-//     <div className="speaker-select">
-//       <Dropdown
-//         ariaLabel="speaker-select"
-//         maxWidth="100%"
-//         label={t('call_setup.audio_output_select')}
-//         placeholder={t('call_setup.audio_output_placeholder')}
-//         options={audioOutDevices.map(deviceInfo => ({
-//           value: deviceInfo.deviceId,
-//           label: deviceInfo.label,
-//         }))}
-//       />
-//     </div>
-//   );
-// };
-
 type CallSetupProps = {
   onClose: () => void;
   userPk: string;
@@ -132,6 +104,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [authData, setAuthData] = useState({
+    uuid: null,
     chatId: null,
     token: null,
     livekitServerUrl: null,
@@ -142,11 +115,13 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const username = user?.profile?.first_name;
 
   // Zustand store hooks
-  const { initActiveCall } = useActiveCallStore();
+  const { connectToCall } = useConnectedCallStore();
   const { cancelCallSetup } = useCallSetupStore();
 
   const handleJoin = (values: LocalUserChoices) => {
-    initActiveCall({
+    console.log('authData', authData);
+    connectToCall({
+      uuid: authData.uuid || '',
       userId: userPk,
       chatId: authData.chatId || '',
       tracks: values,
@@ -170,7 +145,9 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     requestVideoAccessToken({
       partnerId: userPk,
       onSuccess: res => {
+        console.log('res', res);
         setAuthData({
+          uuid: res.uuid,
           chatId: res.chat?.uuid,
           token: res.token,
           livekitServerUrl: res.server_url,

@@ -97,14 +97,10 @@ export const ContactInfo = styled.div`
   width: 100%;
   justify-content: space-between;
 
-  ${({ theme }) =>
-    `
-    padding: ${theme.spacing.medium};
+  ${({ theme }) => `
+    padding: ${theme.spacing.small};
     gap: ${theme.spacing.xsmall};
-
-    @media (min-width: ${theme.breakpoints.small}) {
-      padding: ${theme.spacing.medium};
-    }`}
+  `}
 `;
 export const Contacts = styled.div`
   display: flex;

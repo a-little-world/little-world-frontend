@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
-import { useActiveCallStore } from '../../features/stores/index.ts';
+import { useConnectedCallStore } from '../../features/stores/index.ts';
 import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
@@ -121,9 +121,16 @@ function VideoCall() {
     onKeyPressed: () => setIsFullScreen(false),
   });
 
-  const { activeCall, stopActiveCall } = useActiveCallStore();
-  const { token, livekitServerUrl, audioOptions, videoOptions, chatId } =
-    activeCall || {};
+  const { callData, disconnectFromCall } = useConnectedCallStore();
+  const {
+    uuid,
+    token,
+    livekitServerUrl,
+    audioOptions,
+    videoOptions,
+    chatId,
+    userPk,
+  } = callData || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
 
@@ -181,8 +188,8 @@ function VideoCall() {
               token={token}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
-                stopActiveCall();
-                navigate(getAppRoute(), { state: { callEnded: true } });
+                disconnectFromCall(uuid);
+                navigate(getAppRoute());
               }}
             >
               <MyVideoConference
