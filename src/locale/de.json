@@ -268,7 +268,7 @@
   "help.contact_picture_drag": "oder Bild ziehen und hier ablegen",
   "help.contact_picture_label": "Füge Bilder hinzu um das Problem zu erklären (optional)",
   "help.contact_problem_label": "Beschreibe das Problem oder Anliegen",
-  "help.contact_problem_placeholder": "Ausführliche Beschreibung (max. 300 Zeichen)",
+  "help.contact_problem_placeholder": "Ausführliche Beschreibung (max. 2000 Zeichen)",
   "help.contact_submit": "Absenden",
   "help.faqs_intro": "Hier findest du bereits häufig gestellte Fragen. Vielleicht ist auch hier eine Antwort auf deine Frage dabei!",
   "help.support_call_btn": "Jetzt anrufen",

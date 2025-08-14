@@ -131,6 +131,10 @@ const SidebarContent = styled.div`
     `}
 `;
 
+const LogoutButton = styled(Button)`
+  flex-shrink: 0;
+`;
+
 const MobileOverlay = styled.div`
   opacity: ${({ $visibleOnMobile }) => ($visibleOnMobile ? 1 : 0)};
   pointer-events: none;
@@ -248,6 +252,8 @@ function Sidebar({ isVH, sidebarMobile }) {
                 {!!unreadCount && <UnreadDot count={unreadCount} />}
                 <Icon
                   label={label}
+                  width={32}
+                  height={32}
                   {...(isActive
                     ? { color: theme.color.surface.primary }
                     : { gradient: Gradients.Blue })}
@@ -256,7 +262,7 @@ function Sidebar({ isVH, sidebarMobile }) {
                 {t(`nbs_${label}`)}
               </MenuLink>
             ) : (
-              <Button
+              <LogoutButton
                 key={label}
                 type="button"
                 variation={ButtonVariations.Option}
@@ -267,9 +273,14 @@ function Sidebar({ isVH, sidebarMobile }) {
                 }
                 onClick={clickEvent}
               >
-                <LogoutIcon color={theme.color.text.tertiary} label={label} />
+                <LogoutIcon
+                  color={theme.color.text.tertiary}
+                  label={label}
+                  width={32}
+                  height={32}
+                />
                 {t(`nbs_${label}`)}
-              </Button>
+              </LogoutButton>
             );
           })}
         </SidebarContent>

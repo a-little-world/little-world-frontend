@@ -4,6 +4,7 @@ import {
   LiveKitRoom,
   ParticipantTile,
   RoomAudioRenderer,
+  useRoomInfo,
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
@@ -53,6 +54,12 @@ function MyVideoConference({
   );
   const [currentParticipants, setCurrentParticipants] = useState(1);
   const [otherUserDisconnected, setOtherUserDisconnected] = useState(false);
+  const { name } = useRoomInfo();
+  const { initializeCallID } = useConnectedCallStore();
+
+  useEffect(() => {
+    if (name) initializeCallID(name);
+  }, [name, initializeCallID]);
 
   useEffect(() => {
     if (tracks.length === 1 && currentParticipants > 1)
@@ -122,15 +129,8 @@ function VideoCall() {
   });
 
   const { callData, disconnectFromCall } = useConnectedCallStore();
-  const {
-    uuid,
-    token,
-    livekitServerUrl,
-    audioOptions,
-    videoOptions,
-    chatId,
-    userPk,
-  } = callData || {};
+  const { uuid, token, livekitServerUrl, audioOptions, videoOptions, chatId } =
+    callData || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
 

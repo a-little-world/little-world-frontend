@@ -266,7 +266,7 @@
   "help.contact_picture_drag": "or drag and drop image here",
   "help.contact_picture_label": "Add pictures to explain the problem (optional)",
   "help.contact_problem_label": "Describe the problem or concern",
-  "help.contact_problem_placeholder": "Detailed description (max. 300 characters)",
+  "help.contact_problem_placeholder": "Detailed description (max. 2000 characters)",
   "help.contact_submit": "Submit",
   "help.faqs_intro": "Here you will find frequently asked questions. Maybe there is an answer to your question here too!",
   "help.support_call_btn": "Call now",

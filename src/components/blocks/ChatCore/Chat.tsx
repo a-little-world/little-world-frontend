@@ -67,7 +67,14 @@ import {
   WriteSection,
 } from './Chat.styles.tsx';
 
-const Chat = ({ chatId, inCall = false }) => {
+const Chat = ({
+  chatId,
+  inCall = false,
+}: {
+  chatId: string;
+  inCall: boolean;
+}) => {
+  console.log({ chatId });
   const {
     t,
     i18n: { language },

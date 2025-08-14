@@ -104,7 +104,6 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [authData, setAuthData] = useState({
-    uuid: null,
     chatId: null,
     token: null,
     livekitServerUrl: null,
@@ -119,9 +118,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const { cancelCallSetup } = useCallSetupStore();
 
   const handleJoin = (values: LocalUserChoices) => {
-    console.log('authData', authData);
     connectToCall({
-      uuid: authData.uuid || '',
       userId: userPk,
       chatId: authData.chatId || '',
       tracks: values,
@@ -145,9 +142,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     requestVideoAccessToken({
       partnerId: userPk,
       onSuccess: res => {
-        console.log('res', res);
         setAuthData({
-          uuid: res.uuid,
           chatId: res.chat?.uuid,
           token: res.token,
           livekitServerUrl: res.server_url,
