@@ -24,7 +24,6 @@ export const ModeSwitch = () => {
 
   const modeSwitch = useQueryParam('modeSwitch');
   const shouldShowModeSwitch = modeSwitch === 'true';
-  console.log({ modeSwitch });
 
   return shouldShowModeSwitch ? (
     <Switch
