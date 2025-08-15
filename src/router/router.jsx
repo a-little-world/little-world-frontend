@@ -437,6 +437,7 @@ export function getNativeRouter() {
       errorElement: <RouterError Layout={FormLayout} />,
     },
     {
+      // TODO: no compiler error; TEST
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
         <FormLayout>
@@ -458,20 +459,21 @@ export function getNativeRouter() {
       path: APP_ROUTE,
       element: (
         <FullAppLayout>
-          <Main />
+          <h1>Hello</h1>
+          {/* <Main /> */}
         </FullAppLayout>
       ),
       errorElement: <RouterError />,
     },
-    {
-      path: getAppRoute(VERIFY_EMAIL_ROUTE),
-      element: (
-        <FormLayout>
-          <VerifyEmail />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
+    // {
+    //   path: getAppRoute(VERIFY_EMAIL_ROUTE),
+    //   element: (
+    //     <FormLayout>
+    //       <VerifyEmail />
+    //     </FormLayout>
+    //   ),
+    //   errorElement: <RouterError Layout={FormLayout} />,
+    // },
     {
       path: getAppRoute(USER_PROFILE_ROUTE),
       element: (
@@ -480,135 +482,137 @@ export function getNativeRouter() {
         </FullAppLayout>
       ),
     },
-    {
-      path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Main />
-        </FullAppLayout>
-      ),
-      errorElement: <RouterError />,
-    },
-    {
-      path: getAppRoute(CHAT_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Messages />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(OUR_WORLD_ROUTE),
-      element: (
-        <FullAppLayout>
-          <AboutUs />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(SUPPORT_US_ROUTE),
-      element: (
-        <FullAppLayout>
-          <AboutUs />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(DONATE_ROUTE),
-      element: (
-        <FullAppLayout>
-          <AboutUs />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(RESOURCES_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAININGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAINING_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(BEGINNERS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(LANGUAGE_RESOURCES_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(MY_STORY_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(PARTNERS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(PARTNER_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(MESSAGES_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Messages />
-        </FullAppLayout>
-      ),
-    },
+    // {
+    //   path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
+    //   element: (
+    //     <FullAppLayout>
+    //       <Main />
+    //     </FullAppLayout>
+    //   ),
+    //   errorElement: <RouterError />,
+    // },
+    // {
+    //   path: getAppRoute(CHAT_ROUTE),
+    //   element: (
+    //     <FullAppLayout>
+    //       <Messages />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(OUR_WORLD_ROUTE),
+    //   element: ( // open in in-App webview?
+    //     <FullAppLayout>
+    //       <AboutUs />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(SUPPORT_US_ROUTE),
+    //   element: ( // open in in-App webview?
+    //     <FullAppLayout>
+    //       <AboutUs />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(DONATE_ROUTE),
+    //   element: ( // broken
+    //     <FullAppLayout>
+    //       <AboutUs />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(RESOURCES_ROUTE),
+    //   element: (
+    //     <FullAppLayout>
+    //       <Resources />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(TRAININGS_ROUTE),
+    //   element: (
+    //     <FullAppLayout>
+    //       <Resources />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(TRAINING_ROUTE),
+    //   element: (
+    //     <FullAppLayout>
+    //       <Resources />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(BEGINNERS_ROUTE),
+    //   element: (
+    //     <FullAppLayout>
+    //       <Resources />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(LANGUAGE_RESOURCES_ROUTE),
+    //   element: (
+    //     <FullAppLayout>
+    //       <Resources />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(MY_STORY_ROUTE),
+    //   element: (
+    //     <FullAppLayout>
+    //       <Resources />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(PARTNERS_ROUTE),
+    //   element: ( // link broken?
+    //     <FullAppLayout>
+    //       <Resources />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(PARTNER_ROUTE),
+    //   element: ( // link broken?
+    //     <FullAppLayout>
+    //       <Resources />
+    //     </FullAppLayout>
+    //   ),
+    // },
+    // {
+    //   path: getAppRoute(MESSAGES_ROUTE),
+    //   // Messages causes errors
+    //   element: (
+    //     <FullAppLayout>
+    //       <Messages />
+    //     </FullAppLayout>
+    //   ),
+    // },
     {
       path: getAppRoute(NOTIFICATIONS_ROUTE),
+      // Needs testing
       element: (
         <FullAppLayout>
           <Notifications />
         </FullAppLayout>
       ),
     },
-    {
-      path: getAppRoute(USER_PROFILE_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Profile />
-        </FullAppLayout>
-      ),
-    },
+    // {
+    //   path: getAppRoute(USER_PROFILE_ROUTE),
+    //   element: ( // Profile causes errors
+    //     <FullAppLayout>
+    //       <Profile />
+    //     </FullAppLayout>
+    //   ),
+    // },
     {
       path: getAppRoute(HELP_ROUTE),
       element: (
