@@ -110,7 +110,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     console.log({ activeCallRoom, disconnectedFrom });
-    if (activeCallRoom?.uuid && activeCallRoom.uuid !== disconnectedFrom) {
+    if (
+      activeCallRoom?.room_uuid &&
+      activeCallRoom.room_uuid !== disconnectedFrom
+    ) {
       openModal(ModalTypes.INCOMING_CALL.id);
     } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
   }, [activeCallRoom?.uuid]);
