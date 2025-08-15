@@ -34,6 +34,7 @@ import {
   USER_ENDPOINT,
   getChatEndpoint,
   getChatMessagesEndpoint,
+  revalidateChats,
 } from '../../../features/swr/index.ts';
 import { addMessage } from '../../../features/swr/wsBridgeMutations.ts';
 import {
@@ -67,7 +68,13 @@ import {
   WriteSection,
 } from './Chat.styles.tsx';
 
-const Chat = ({ chatId, inCall = false }) => {
+const Chat = ({
+  chatId,
+  inCall = false,
+}: {
+  chatId: string;
+  inCall: boolean;
+}) => {
   const {
     t,
     i18n: { language },
@@ -79,7 +86,7 @@ const Chat = ({ chatId, inCall = false }) => {
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mutate: mutateChat, data: activeChat } = useSWR(
-    getChatEndpoint(chatId),
+    chatId ? getChatEndpoint(chatId) : null,
     {
       revalidateOnMount: true,
       revalidateOnFocus: true,
@@ -91,7 +98,7 @@ const Chat = ({ chatId, inCall = false }) => {
     revalidateOnFocus: false,
   });
   const { data: chatMessages, mutate: mutateMessages } = useSWR(
-    getChatMessagesEndpoint(chatId, 1),
+    chatId ? getChatMessagesEndpoint(chatId, 1) : null,
     {
       revalidateOnMount: true,
       revalidateOnFocus: true,
@@ -167,6 +174,8 @@ const Chat = ({ chatId, inCall = false }) => {
           revalidate: false,
         },
       );
+
+      revalidateChats();
 
       mutateMessages(prev => ({
         ...prev,

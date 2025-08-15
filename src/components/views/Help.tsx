@@ -264,6 +264,7 @@ function Contact() {
         label={t('help.contact_problem_label')}
         inputMode="text"
         size={TextAreaSize.Medium}
+        maxLength={2000}
         error={t(errors?.message?.message)}
         placeholder={t('help.contact_problem_placeholder')}
       />

@@ -17,6 +17,7 @@ const Messages = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [selectedChat, setSelectedChat] = useState(chatId);
+
   const selectChat = selectedChatId => {
     setSelectedChat(selectedChatId);
     navigate(getAppRoute(`chat/${selectedChatId}`));

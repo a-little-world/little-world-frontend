@@ -73,6 +73,7 @@ export const Image = styled.img`
   height: ${({ $size }) => ImageSizes[$size]};
   border-radius: 30px;
   object-fit: cover;
+  min-height: 0;
 
   ${({ theme, $size }) =>
     `@media (min-width: ${theme.breakpoints.small}) {
@@ -90,6 +91,7 @@ function ProfileImage({
 }) {
   if (imageType === 'avatar')
     return <StyledAvatar className={className} {...image} $size={size} />;
+
   return circle ? (
     <CircleImage
       className={className}
