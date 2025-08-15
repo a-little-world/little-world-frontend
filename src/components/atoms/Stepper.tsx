@@ -32,36 +32,28 @@ const Step = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
 `;
 
-const StepNumber = styled.div<{ isActive: boolean }>`
+const StepNumber = styled.div<{ $isActive: boolean }>`
   width: 30px;
   height: 30px;
   border-radius: 50%;
   border: 1px solid
-    ${props =>
-      props.isActive ?
-        props.theme.color.surface.bold :
-        props.theme.color.border.subtle};
+    ${({ $isActive, theme }) =>
+      $isActive ? theme.color.surface.bold : theme.color.border.subtle};
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${props =>
-    props.isActive ?
-      props.theme.color.surface.bold :
-      props.theme.color.surface.primary};
-  color: ${props =>
-    props.isActive ?
-      props.theme.color.text.reversed :
-      props.theme.color.text.primary};
+  background-color: ${({ $isActive, theme }) =>
+    $isActive ? theme.color.surface.bold : theme.color.surface.primary};
+  color: ${({ $isActive, theme }) =>
+    $isActive ? theme.color.text.reversed : theme.color.text.primary};
   font-weight: bold;
   cursor: pointer;
 `;
 
-const StepLabel = styled.div<{ isActive: boolean }>`
+const StepLabel = styled.div<{ $isActive: boolean }>`
   font-size: 16px;
-  color: ${props =>
-    props.isActive ?
-      props.theme.color.surface.bold :
-      props.theme.color.text.primary};
+  color: ${({ $isActive, theme }) =>
+    $isActive ? theme.color.surface.bold : theme.color.text.primary};
   height: 30px;
   display: flex;
   align-items: center;
@@ -89,7 +81,9 @@ const Stepper: React.FC<StepperProps> = ({
     {steps.map((step, index) => (
       <Step key={step.id} onClick={() => onSelectStep(step.id)}>
         <NumberContainer>
-          <StepNumber isActive={step.id === activeStep}>{index + 1}</StepNumber>
+          <StepNumber $isActive={step.id === activeStep}>
+            {index + 1}
+          </StepNumber>
           {steps.length - 1 !== index && (
             <StyledSeparator>
               <Separator
@@ -100,7 +94,7 @@ const Stepper: React.FC<StepperProps> = ({
             </StyledSeparator>
           )}
         </NumberContainer>
-        <StepLabel isActive={step.id === activeStep}>{step.label}</StepLabel>
+        <StepLabel $isActive={step.id === activeStep}>{step.label}</StepLabel>
       </Step>
     ))}
   </StepperContainer>
