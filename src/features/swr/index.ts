@@ -37,6 +37,10 @@ export const revalidateMatches = () => {
   mutate(key => typeof key === 'string' && key.startsWith(MATCHES_ENDPOINT));
 };
 
+export const revalidateChats = () => {
+  mutate(key => typeof key === 'string' && key.startsWith(CHATS_ENDPOINT));
+};
+
 export const resetUserQueries = () => {
   mutate(
     key =>

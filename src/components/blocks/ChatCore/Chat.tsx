@@ -34,6 +34,7 @@ import {
   USER_ENDPOINT,
   getChatEndpoint,
   getChatMessagesEndpoint,
+  revalidateChats,
 } from '../../../features/swr/index.ts';
 import { addMessage } from '../../../features/swr/wsBridgeMutations.ts';
 import {
@@ -173,6 +174,8 @@ const Chat = ({
           revalidate: false,
         },
       );
+
+      revalidateChats();
 
       mutateMessages(prev => ({
         ...prev,
