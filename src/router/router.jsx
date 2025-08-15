@@ -72,6 +72,8 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
 } from './routes';
+import { Button } from '@a-little-world/little-world-design-system';
+import { useTranslation } from 'react-i18next';
 
 export const Root = ({
   children,
@@ -86,6 +88,7 @@ export const Root = ({
       </AuthGuard>
       {restoreScroll && <ScrollRestoration />}
       <GlobalStyles />
+      <Button>HI</Button>
       {children || <Outlet />}
       {includeModeSwitch && <ModeSwitch />}
     </ToastProvider>
@@ -392,261 +395,27 @@ export function getWebRouter() {
 export function getNativeRouter() {
   const ROOT_ROUTES = [
     {
-      path: LOGIN_ROUTE,
+      path: getAppRoute(LOGIN_ROUTE),
       element: (
         <FormLayout>
-          <Login />
+          <Button>Login</Button>
+          <Button>Sign Up</Button>
         </FormLayout>
       ),
       errorElement: <RouterError Layout={FormLayout} />,
     },
     {
-      path: '',
+      path: getAppRoute(''),
       element: (
         <FormLayout>
-          <Login />
+          <Button>Home</Button>
         </FormLayout>
       ),
       errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: '/',
-      element: (
-        <FormLayout>
-          <Login />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: SIGN_UP_ROUTE,
-      element: (
-        <FormLayout>
-          <SignUp />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: FORGOT_PASSWORD_ROUTE,
-      element: (
-        <FormLayout>
-          <ForgotPassword />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      // TODO: no compiler error; TEST
-      path: EMAIL_PREFERENCES_ROUTE,
-      element: (
-        <FormLayout>
-          <EmailPreferences />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: RESET_PASSWORD_ROUTE,
-      element: (
-        <FormLayout>
-          <ResetPassword />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: APP_ROUTE,
-      element: (
-        <FullAppLayout>
-          <h1>Hello</h1>
-          {/* <Main /> */}
-        </FullAppLayout>
-      ),
-      errorElement: <RouterError />,
-    },
-    // {
-    //   path: getAppRoute(VERIFY_EMAIL_ROUTE),
-    //   element: (
-    //     <FormLayout>
-    //       <VerifyEmail />
-    //     </FormLayout>
-    //   ),
-    //   errorElement: <RouterError Layout={FormLayout} />,
-    // },
-    {
-      path: getAppRoute(USER_PROFILE_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Profile />
-        </FullAppLayout>
-      ),
-    },
-    // {
-    //   path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
-    //   element: (
-    //     <FullAppLayout>
-    //       <Main />
-    //     </FullAppLayout>
-    //   ),
-    //   errorElement: <RouterError />,
-    // },
-    // {
-    //   path: getAppRoute(CHAT_ROUTE),
-    //   element: (
-    //     <FullAppLayout>
-    //       <Messages />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(OUR_WORLD_ROUTE),
-    //   element: ( // open in in-App webview?
-    //     <FullAppLayout>
-    //       <AboutUs />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(SUPPORT_US_ROUTE),
-    //   element: ( // open in in-App webview?
-    //     <FullAppLayout>
-    //       <AboutUs />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(DONATE_ROUTE),
-    //   element: ( // broken
-    //     <FullAppLayout>
-    //       <AboutUs />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(RESOURCES_ROUTE),
-    //   element: (
-    //     <FullAppLayout>
-    //       <Resources />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(TRAININGS_ROUTE),
-    //   element: (
-    //     <FullAppLayout>
-    //       <Resources />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(TRAINING_ROUTE),
-    //   element: (
-    //     <FullAppLayout>
-    //       <Resources />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(BEGINNERS_ROUTE),
-    //   element: (
-    //     <FullAppLayout>
-    //       <Resources />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(LANGUAGE_RESOURCES_ROUTE),
-    //   element: (
-    //     <FullAppLayout>
-    //       <Resources />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(MY_STORY_ROUTE),
-    //   element: (
-    //     <FullAppLayout>
-    //       <Resources />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(PARTNERS_ROUTE),
-    //   element: ( // link broken?
-    //     <FullAppLayout>
-    //       <Resources />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(PARTNER_ROUTE),
-    //   element: ( // link broken?
-    //     <FullAppLayout>
-    //       <Resources />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    // {
-    //   path: getAppRoute(MESSAGES_ROUTE),
-    //   // Messages causes errors
-    //   element: (
-    //     <FullAppLayout>
-    //       <Messages />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    {
-      path: getAppRoute(NOTIFICATIONS_ROUTE),
-      // Needs testing
-      element: (
-        <FullAppLayout>
-          <Notifications />
-        </FullAppLayout>
-      ),
-    },
-    // {
-    //   path: getAppRoute(USER_PROFILE_ROUTE),
-    //   element: ( // Profile causes errors
-    //     <FullAppLayout>
-    //       <Profile />
-    //     </FullAppLayout>
-    //   ),
-    // },
-    {
-      path: getAppRoute(HELP_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Help />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(SETTINGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Settings />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(USER_FORM_ROUTE),
-      element: <FormLayout />,
-      errorElement: <RouterError Layout={FormLayout} />,
-      children: [
-        {
-          path: '',
-          element: <Welcome />,
-        },
-        {
-          path: ':slug',
-          element: <Form />,
-        },
-      ],
     },
     {
       path: '*',
-      element: <Navigate to="/" replace />,
+      element: <Navigate to="/app/login" replace />,
     },
   ];
 
