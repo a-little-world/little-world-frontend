@@ -74,7 +74,6 @@ const Chat = ({
   chatId: string;
   inCall: boolean;
 }) => {
-  console.log({ chatId });
   const {
     t,
     i18n: { language },
@@ -86,7 +85,7 @@ const Chat = ({
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mutate: mutateChat, data: activeChat } = useSWR(
-    getChatEndpoint(chatId),
+    chatId ? getChatEndpoint(chatId) : null,
     {
       revalidateOnMount: true,
       revalidateOnFocus: true,
@@ -98,7 +97,7 @@ const Chat = ({
     revalidateOnFocus: false,
   });
   const { data: chatMessages, mutate: mutateMessages } = useSWR(
-    getChatMessagesEndpoint(chatId, 1),
+    chatId ? getChatMessagesEndpoint(chatId, 1) : null,
     {
       revalidateOnMount: true,
       revalidateOnFocus: true,
