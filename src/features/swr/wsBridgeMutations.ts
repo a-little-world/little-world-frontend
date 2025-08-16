@@ -1,5 +1,6 @@
 import { mutate } from 'swr';
 
+import useConnectedCallStore from '../stores/connectedCall.ts';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   CHATS_ENDPOINT,
@@ -134,6 +135,7 @@ export function addMessage(
 }
 
 export function addActiveCallRoom(callRoom: any): void {
+  useConnectedCallStore.getState().resetDisconnectedFrom();
   mutate(
     ACTIVE_CALL_ROOMS_ENDPOINT,
     (activeCallRoomsData: any) => {
