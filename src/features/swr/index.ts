@@ -13,7 +13,7 @@ export const UNREAD_NOTIFICATIONS_ENDPOINT = '/api/notifications?filter=unread';
 export const CHATS_ENDPOINT = '/api/chats/?page_size=20';
 export const CHATS_ENDPOINT_SEPERATE =
   '/api/chats/?page_size=20&pagination=true';
-export const API_TRANSLATIONS_ENDPOINT = '/api/api_translations';
+export const API_TRANSLATIONS_ENDPOINT = '/api/translations';
 
 export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
 export const getChatMessagesEndpoint = (chatId: string, page: number) =>

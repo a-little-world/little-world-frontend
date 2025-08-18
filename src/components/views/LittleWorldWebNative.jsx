@@ -9,14 +9,24 @@ import {
   USER_ENDPOINT,
   swrConfig,
 } from '../../features/swr/index';
-import i18n from '../../i18n';
+import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
 import useSWR from 'swr';
+
+/**
+ * TODO:
+ * - apiTranslation, and also current apiOptions should be packaged with the native app!
+ * - cleaner way to manage user authorization states and auto redirects from the frontend client.
+ */
 
 export function NativePreloader() {
   const { error: _errorUser } = useSWR(USER_ENDPOINT);
   const { error: _errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT);
   const { error: _errorApiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT);
+
+  if (_errorApiTranslations) {
+    updateTranslationResources({ apiTranslations: _errorApiTranslations });
+  }
 
   return null;
 }
