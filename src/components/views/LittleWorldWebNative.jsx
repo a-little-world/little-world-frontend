@@ -7,6 +7,8 @@ import { swrConfig } from '../../features/swr/index';
 import i18n from '../../i18n';
 import { getNativeRouter } from '../../router/router';
 
+import { CustomThemeProvider } from '@a-little-world/little-world-design-system';
+
 export function NativePreloader() {
   // const { error: _errorUser } = useSWR(USER_ENDPOINT);
   // const { error: _errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT);
@@ -19,10 +21,9 @@ export function LittleWorldWebNative() {
   const router = getNativeRouter();
 
   return (
-    <I18nextProvider i18n={i18n}>
-      <SWRConfig value={swrConfig}>
-        <NativePreloader />
-        <>HI</>
+  <I18nextProvider i18n={i18n}>
+    <SWRConfig value={swrConfig}>
+      <NativePreloader />
         <RouterProvider router={router} />
       </SWRConfig>
     </I18nextProvider>
