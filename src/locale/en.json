@@ -67,7 +67,7 @@
   "chat.send_btn": "Send",
   "chat.text_area_placeholder": "Write here...",
   "chat.attachment_parse_error": "This attachment could not be displayed due to a processing issue.",
-  "chat.unmatched_user": "Unmatched",
+  "chat.unmatched_user": "Inactive Match",
   "chat.today": "Today",
   "chat.yesterday": "Yesterday",
   "community_events.frequency_monthly": "Monthly",

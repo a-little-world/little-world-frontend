@@ -2,6 +2,7 @@ import React from 'react';
 import Avatar from 'react-nice-avatar';
 import styled from 'styled-components';
 
+import { DEFAULT_PROFILE_IMAGE } from '../../images/index.ts';
 import { shimmer, shimmerGradient } from './Loading.tsx';
 
 export const ImageSizes = {
@@ -38,21 +39,28 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 export const CircleImage = styled.div`
-  border-radius: 50%;
+  border-radius: ${({ theme }) => theme.radius.half};
   border: ${({ $size }) => BorderSizes[$size]} solid #e6e8ec;
-  background: ${({ $image }) => `url(${$image})`};
-  background-size: cover;
-  background-position: center;
   width: ${({ $size }) => ($size === 'flex' ? 'auto' : ImageSizes[$size])};
+  background: ${({ theme }) => theme.color.surface.primary};
   height: ${({ $size }) => ImageSizes[$size]};
   max-height: ${ImageSizes.large};
   max-width: ${ImageSizes.large};
   display: flex;
   align-items: end;
   justify-content: center;
-  padding: ${({ theme }) => theme.spacing.small};
   position: relative;
   aspect-ratio: 1;
+  overflow: hidden;
+`;
+
+const CircleImageContent = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: ${({ theme }) => theme.radius.half};
+  display: block;
 `;
 
 export const CircleImageLoading = styled(CircleImage)`
@@ -93,12 +101,11 @@ function ProfileImage({
     return <StyledAvatar className={className} {...image} $size={size} />;
 
   return circle ? (
-    <CircleImage
-      className={className}
-      alt="user image"
-      $image={image}
-      $size={size}
-    >
+    <CircleImage className={className} $size={size}>
+      <CircleImageContent
+        src={image || DEFAULT_PROFILE_IMAGE}
+        alt="profile image"
+      />
       {children}
     </CircleImage>
   ) : (
