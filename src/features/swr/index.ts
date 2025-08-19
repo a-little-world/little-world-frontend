@@ -35,12 +35,16 @@ export async function fetcher<T>(url: string): Promise<T> {
 }
 
 export async function nativeFetcher<T>(url: string): Promise<T> {
-  console.log('nativeFetcher', url);
+  
   if (!url.startsWith(environment.backendUrl)) {
     return fetcher(`${environment.backendUrl}${url}`);
   }
 
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    headers: {
+      'X-CSRF-Bypass-Token': environment.csrfBypassToken,
+    },
+  });
 
   if (!res.ok) {
     const body = await res.json();

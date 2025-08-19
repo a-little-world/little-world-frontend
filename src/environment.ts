@@ -9,6 +9,7 @@ export interface Environment {
   coreWsPath: string;
   websocketHost: string;
   isNative: boolean;
+  csrfBypassToken: string;
 }
 
 export const environment: Environment = {
@@ -21,5 +22,6 @@ export const environment: Environment = {
   coreWsScheme: 'ws://',
   coreWsPath: '/api/core/ws',
   websocketHost: 'localhost:9000',
-  isNative: true,
+  isNative: false,
+  csrfBypassToken: 'abc',
 };
