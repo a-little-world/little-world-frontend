@@ -1,5 +1,6 @@
 import type { SWRConfiguration } from 'swr';
 import { mutate } from 'swr';
+import { environment } from '../../environment';
 
 export const USER_ENDPOINT = '/api/user';
 export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
@@ -33,6 +34,21 @@ export async function fetcher<T>(url: string): Promise<T> {
   return res.json();
 }
 
+export async function nativeFetcher<T>(url: string): Promise<T> {
+  console.log('nativeFetcher', url);
+  if (!url.startsWith(environment.backendUrl)) {
+    return fetcher(`${environment.backendUrl}${url}`);
+  }
+
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    const body = await res.json();
+    throw new Error(body ? JSON.stringify(body) : res.statusText);
+  }
+  return res.json();
+}
+
 export const revalidateMatches = () => {
   mutate(key => typeof key === 'string' && key.startsWith(MATCHES_ENDPOINT));
 };
@@ -46,6 +62,10 @@ export const resetUserQueries = () => {
         key.includes(NOTIFICATIONS_ENDPOINT)),
     undefined,
   );
+};
+
+export const nativeSwrConfig: SWRConfiguration = {
+  fetcher: nativeFetcher,
 };
 
 export const swrConfig: SWRConfiguration = {

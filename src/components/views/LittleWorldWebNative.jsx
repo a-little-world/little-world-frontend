@@ -7,7 +7,7 @@ import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
   USER_ENDPOINT,
-  swrConfig,
+  nativeSwrConfig,
 } from '../../features/swr/index';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
@@ -36,7 +36,7 @@ export function LittleWorldWebNative() {
 
   return (
     <I18nextProvider i18n={i18n}>
-      <SWRConfig value={swrConfig}>
+      <SWRConfig value={nativeSwrConfig}>
         <NativePreloader />
         <RouterProvider router={router} />
       </SWRConfig>
