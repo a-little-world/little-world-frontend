@@ -189,7 +189,11 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
               />
               <Details>
                 <Top>
-                  <Text bold>{message.partner.first_name}</Text>
+                  <Text bold>
+                    {message.is_unmatched
+                      ? t('chat.inactive_match')
+                      : message.partner.first_name}
+                  </Text>
                   {!!message?.newest_message?.created && (
                     <Time type={TextTypes.Body6}>
                       {formatTimeDistance(

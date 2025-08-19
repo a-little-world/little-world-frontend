@@ -109,7 +109,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [location]);
 
   useEffect(() => {
-    console.log({ activeCallRoom, disconnectedFrom });
     if (
       activeCallRoom?.room_uuid &&
       activeCallRoom.room_uuid !== disconnectedFrom
