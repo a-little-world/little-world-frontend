@@ -25,8 +25,8 @@ function DeleteAccountCard({ setShowModal }) {
       onSuccess: () => {
         window.location.reload();
       },
-      onError: error => {
-        setError(error?.message || t('error.server_issue'));
+      onError: e => {
+        setError(e?.message || t('error.server_issue'));
       },
     });
   };
