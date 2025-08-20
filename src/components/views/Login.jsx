@@ -29,7 +29,7 @@ import {
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 import { environment } from '../../environment';
 import Cookies from 'js-cookie';
-
+import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
 
 
 const Login = () => {
@@ -64,6 +64,7 @@ const Login = () => {
       .then(loginData => {
         if(environment.isNative) {
           Cookies.set('auth_token', (loginData.token || 'no-token-returned'));
+          useMobileAuthTokenStore.getState().setToken(loginData.token);
         }
         mutate(USER_ENDPOINT, loginData);
         setIsSubmitting(false);
