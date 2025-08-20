@@ -15,6 +15,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
@@ -79,9 +80,8 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
           </BackButton>
 
           <ProfileLink
-            to={
-              unmatched ? null : getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)
-            }
+            as={unmatched ? 'div' : RouterLink}
+            to={getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)}
           >
             <UserImage
               circle

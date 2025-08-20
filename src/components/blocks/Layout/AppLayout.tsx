@@ -5,9 +5,10 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit';
+import { pagesWithViewportHeight } from '../../../constants/index';
 import {
-  useActiveCallStore,
   useCallSetupStore,
+  useConnectedCallStore,
   usePostCallSurveyStore,
 } from '../../../features/stores/index';
 import {
@@ -16,15 +17,12 @@ import {
 } from '../../../features/swr/index';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
 import useModalManager, { ModalTypes } from '../../../hooks/useModalManager';
-import '../../../main.css';
 import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
 import { MatchCardComponent } from '../Cards/MatchCard';
 import MobileNavBar from '../MobileNavBar';
 import PostCallSurvey from '../PostCallSurvey/PostCallSurvey';
 import Sidebar from '../Sidebar';
-
-const isViewportHeight = ['chat'];
 
 const Wrapper = styled.div<{ $isVH: boolean }>`
   overflow-x: hidden;
@@ -37,6 +35,7 @@ const Wrapper = styled.div<{ $isVH: boolean }>`
   ${({ $isVH }) =>
     $isVH &&
     css`
+      height: 100vh;
       max-height: 100vh;
     `}
 
@@ -87,7 +86,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { openModal, closeModal, isModalOpen } = useModalManager();
 
   const page = location.pathname.split('/')[2] || 'main';
-  const isVH = isViewportHeight.includes(page);
+  const isVH = pagesWithViewportHeight.includes(page);
   const { data: matches } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: true,
   });
@@ -95,7 +94,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const activeCallRoom = activeCallRooms?.[0];
   const { callSetup } = useCallSetupStore();
   const { postCallSurvey } = usePostCallSurveyStore();
-  const { activeCall } = useActiveCallStore();
+  const { disconnectedFrom } = useConnectedCallStore();
 
   // Zustand store hooks
   const { initCallSetup } = useCallSetupStore();
@@ -111,7 +110,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [location]);
 
   useEffect(() => {
-    if (activeCallRoom?.uuid) {
+    if (
+      activeCallRoom?.room_uuid &&
+      activeCallRoom.room_uuid !== disconnectedFrom
+    ) {
       openModal(ModalTypes.INCOMING_CALL.id);
     } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
   }, [activeCallRoom?.uuid]);
@@ -138,12 +140,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       openModal(ModalTypes.POST_CALL_SURVEY.id);
     } else if (isModalOpen(ModalTypes.POST_CALL_SURVEY.id)) closeModal();
   }, [postCallSurvey]);
-
-  useEffect(() => {
-    if (!callSetup && !activeCall) {
-      document.body.classList.remove('hide-mobile-header');
-    }
-  }, [callSetup, activeCall]);
 
   const onAnswerCall = () => {
     initCallSetup({ userId: activeCallRoom?.partner?.id });
@@ -189,6 +185,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     <Wrapper $isVH={isVH}>
       <Sidebar
         sidebarMobile={{ get: showSidebarMobile, set: setShowSidebarMobile }}
+        isVH={isVH}
       />
       <MobileNavBar setShowSidebarMobile={setShowSidebarMobile} />
 

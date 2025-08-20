@@ -82,7 +82,7 @@ const CircleImage: React.FC<CircleImageProps> = ({
         variation={ButtonVariations.Icon}
         type="button"
       >
-        <TrashIcon color={theme.color.surface.disabled} />
+        <TrashIcon label="delete image" color={theme.color.surface.disabled} />
       </TrashButton>
     </StyledProfileImage>
   ) : (
@@ -90,7 +90,6 @@ const CircleImage: React.FC<CircleImageProps> = ({
       className={className}
       htmlFor="fileInput"
       onClick={() => fileInputRef.current?.click()}
-      variation="Secondary"
       type="button"
     >
       {icon}

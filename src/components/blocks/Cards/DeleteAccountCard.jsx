@@ -1,27 +1,46 @@
 import {
   Button,
   ButtonAppearance,
-  Text,
-  TextTypes,
+  Card,
+  CardContent,
+  CardHeader,
+  CardSizes,
+  StatusMessage,
+  StatusTypes,
 } from '@a-little-world/little-world-design-system';
-import Cookies from 'js-cookie';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components';
 
-import { environment } from '../../../environment';
+import { deleteAccount } from '../../../api/profile';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
-import ModalCard, { Centred } from './ModalCard';
 
 function DeleteAccountCard({ setShowModal }) {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const [error, setError] = useState(null);
+
+  const onDeleteAccount = () => {
+    deleteAccount({
+      onSuccess: () => {
+        window.location.reload();
+      },
+      onError: e => {
+        setError(e?.message || t('error.server_issue'));
+      },
+    });
+  };
 
   return (
-    <ModalCard>
-      <Centred>
-        <Text tag="h2" type={TextTypes.Heading4}>
-          {t('settings.delete_account_modal_title')}
-        </Text>
-      </Centred>
+    <Card width={CardSizes.Medium}>
+      <CardHeader>{t('settings.delete_account_modal_title')}</CardHeader>
+      {error && (
+        <CardContent>
+          <StatusMessage $type={StatusTypes.Error} $visible>
+            {error}
+          </StatusMessage>
+        </CardContent>
+      )}
       <ButtonsContainer>
         <Button
           appearance={ButtonAppearance.Secondary}
@@ -30,29 +49,13 @@ function DeleteAccountCard({ setShowModal }) {
           {t('settings.delete_account_modal_cancel')}
         </Button>
         <Button
-          backgroundColor="red"
-          onClick={() => {
-            // call deletion api ...
-            // then reload page ...
-            fetch(`${environment.backendUrl}/api/user/delete_account/`, {
-              method: 'POST',
-              headers: {
-                'X-CSRFToken': Cookies.get('csrftoken'),
-                'Content-Type': 'application/json',
-              },
-            }).then(res => {
-              if (res.ok) {
-                window.location.reload();
-              } else {
-                console.error(`Error ${res.status}: ${res.statusText}`);
-              }
-            });
-          }}
+          backgroundColor={theme.color.status.error}
+          onClick={onDeleteAccount}
         >
           {t('settings.delete_account_confirm_button')}
         </Button>
       </ButtonsContainer>
-    </ModalCard>
+    </Card>
   );
 }
 

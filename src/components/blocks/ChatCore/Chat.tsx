@@ -34,6 +34,7 @@ import {
   USER_ENDPOINT,
   getChatEndpoint,
   getChatMessagesEndpoint,
+  revalidateChats,
 } from '../../../features/swr/index';
 import { addMessage } from '../../../features/swr/wsBridgeMutations';
 import {
@@ -67,7 +68,13 @@ import {
   WriteSection,
 } from './Chat.styles';
 
-const Chat = ({ chatId, inCall = false }) => {
+const Chat = ({
+  chatId,
+  inCall = false,
+}: {
+  chatId: string;
+  inCall: boolean;
+}) => {
   const {
     t,
     i18n: { language },
@@ -79,7 +86,7 @@ const Chat = ({ chatId, inCall = false }) => {
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mutate: mutateChat, data: activeChat } = useSWR(
-    getChatEndpoint(chatId),
+    chatId ? getChatEndpoint(chatId) : null,
     {
       revalidateOnMount: true,
       revalidateOnFocus: true,
@@ -91,7 +98,7 @@ const Chat = ({ chatId, inCall = false }) => {
     revalidateOnFocus: false,
   });
   const { data: chatMessages, mutate: mutateMessages } = useSWR(
-    getChatMessagesEndpoint(chatId, 1),
+    chatId ? getChatMessagesEndpoint(chatId, 1) : null,
     {
       revalidateOnMount: true,
       revalidateOnFocus: true,
@@ -167,6 +174,8 @@ const Chat = ({ chatId, inCall = false }) => {
           revalidate: false,
         },
       );
+
+      revalidateChats();
 
       mutateMessages(prev => ({
         ...prev,
@@ -295,9 +304,9 @@ const Chat = ({ chatId, inCall = false }) => {
         {chatMessages?.page &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
-              {isUnmatched ?
-                t('chat.unmatched_no_messages') :
-                t('chat.no_messages')}
+              {isUnmatched
+                ? t('chat.unmatched_no_messages')
+                : t('chat.no_messages')}
             </NoMessages>
           ) : (
             <>
@@ -395,9 +404,9 @@ const Chat = ({ chatId, inCall = false }) => {
           error={t(get(errors, `${ROOT_SERVER_ERROR}.message`))}
           expandable
           placeholder={
-            isUnmatched ?
-              t('chat.unmatched_text_area_placeholder') :
-              t('chat.text_area_placeholder')
+            isUnmatched
+              ? t('chat.unmatched_text_area_placeholder')
+              : t('chat.text_area_placeholder')
           }
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
@@ -418,9 +427,9 @@ const Chat = ({ chatId, inCall = false }) => {
           type="button"
           variation={ButtonVariations.Circle}
           backgroundColor={
-            selectedFile ?
-              theme.color.status.error :
-              theme.color.surface.primary
+            selectedFile
+              ? theme.color.status.error
+              : theme.color.surface.primary
           }
           borderColor={theme.color.text.title}
           color={

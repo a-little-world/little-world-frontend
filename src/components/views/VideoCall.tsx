@@ -4,6 +4,7 @@ import {
   LiveKitRoom,
   ParticipantTile,
   RoomAudioRenderer,
+  useRoomInfo,
   useTracks,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
@@ -14,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
-import { useActiveCallStore } from '../../features/stores/index';
+import { useConnectedCallStore } from '../../features/stores/index';
 import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes';
@@ -53,6 +54,12 @@ function MyVideoConference({
   );
   const [currentParticipants, setCurrentParticipants] = useState(1);
   const [otherUserDisconnected, setOtherUserDisconnected] = useState(false);
+  const { name } = useRoomInfo();
+  const { initializeCallID } = useConnectedCallStore();
+
+  useEffect(() => {
+    if (name) initializeCallID(name);
+  }, [name, initializeCallID]);
 
   useEffect(() => {
     if (tracks.length === 1 && currentParticipants > 1)
@@ -95,9 +102,9 @@ function MyVideoConference({
           />
           <Text>
             {t(
-              otherUserDisconnected ?
-                'call.partner_disconnected' :
-                'call.waiting_for_partner',
+              otherUserDisconnected
+                ? 'call.partner_disconnected'
+                : 'call.waiting_for_partner',
               { name: partnerName },
             )}
           </Text>
@@ -121,9 +128,9 @@ function VideoCall() {
     onKeyPressed: () => setIsFullScreen(false),
   });
 
-  const { activeCall, stopActiveCall } = useActiveCallStore();
-  const { token, livekitServerUrl, audioOptions, videoOptions, chatId } =
-    activeCall || {};
+  const { callData, disconnectFromCall } = useConnectedCallStore();
+  const { uuid, token, livekitServerUrl, audioOptions, videoOptions, chatId } =
+    callData || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
 
@@ -181,23 +188,23 @@ function VideoCall() {
               token={token}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
-                stopActiveCall();
-                navigate(getAppRoute(), { state: { callEnded: true } });
+                disconnectFromCall(uuid);
+                navigate(getAppRoute());
               }}
             >
               <MyVideoConference
                 isFullScreen={isFullScreen}
                 partnerName={chatData?.partner?.first_name}
                 partnerImage={
-                  chatData?.partner?.image_type === 'avatar' ?
-                    chatData?.partner.avatar_config :
-                    chatData?.partner?.image
+                  chatData?.partner?.image_type === 'avatar'
+                    ? chatData?.partner.avatar_config
+                    : chatData?.partner?.image
                 }
                 partnerImageType={chatData?.partner?.image_type}
                 selfImage={
-                  profile.image_type === 'avatar' ?
-                    profile.avatar_config :
-                    profile?.image
+                  profile.image_type === 'avatar'
+                    ? profile.avatar_config
+                    : profile?.image
                 }
                 selfImageType={profile.image_type}
               />

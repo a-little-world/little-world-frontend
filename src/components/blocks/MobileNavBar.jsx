@@ -84,7 +84,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
   return (
-    <MobileHeader className="mobile-header">
+    <MobileHeader>
       <LogoContainer>
         <Logo stacked={false} displayText={isHome} asLink />
         {!isHome && (

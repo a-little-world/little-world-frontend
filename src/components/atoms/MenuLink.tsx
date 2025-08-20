@@ -6,6 +6,7 @@ import Link from '../../path-prepend';
 const MenuLink = styled(Link)`
   ${OPTION_BUTTON_CSS}
   position: relative;
+  flex-shrink: 0;
 
   transition: background-color 0.5s ease, filter 0.5s ease,
     border-color 0.5s ease, color 0.5s ease, 0.4s;

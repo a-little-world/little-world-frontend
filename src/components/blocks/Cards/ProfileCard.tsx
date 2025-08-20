@@ -172,7 +172,7 @@ export const PartnerMenuOption = styled.button`
 export const Actions = styled.div<{ $onProfile: boolean }>`
   display: grid;
   grid-template-columns: ${({ $onProfile }) =>
-    $onProfile ? '1fr 1fr' : '1fr 1fr 1fr'};
+    $onProfile ? '1fr 1fr' : 'repeat(3, minmax(0, 1fr))'};
   column-gap: ${({ theme }) => theme.spacing.small};
   width: 100%;
   max-width: 498px;
@@ -313,7 +313,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <Actions $onProfile={onProfile}>
           {!onProfile && (
             <MenuLink to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}>
-              <ProfileIcon gradient={Gradients.Orange} label="visit profile" />
+              <ProfileIcon
+                gradient={Gradients.Orange}
+                label="visit profile"
+                width={32}
+                height={32}
+              />
               {t('cp_profile')}
             </MenuLink>
           )}
@@ -321,7 +326,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
             state={{ userPk }}
           >
-            <MessageIcon gradient={Gradients.Orange} label="chat icon" />
+            <MessageIcon
+              gradient={Gradients.Orange}
+              label="chat icon"
+              width={32}
+              height={32}
+            />
             {t('cp_message')}
           </MenuLink>
           <Button
@@ -333,6 +343,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               gradient={Gradients.Orange}
               label="call icon"
               width={38}
+              height={32}
             />
             {t('cp_call')}
           </Button>

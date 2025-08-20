@@ -36,6 +36,33 @@ npm run dev
 ./schrodingers-nginx.sh
 ```
 
+### Testing Video Calls Locally
+
+To test our in-app video calls locally you need to:
+1) Add environment variables to `little-world-backend/envs/dev.env`:
+```
+DJ_LIVEKIT_API_KEY=REQUEST FROM TEAM
+DJ_LIVEKIT_API_SECRET=REQUEST FROM TEAM
+DJ_LIVEKIT_WEBHOOK_SECRET="secret"
+DJ_LIVEKIT_URL="https://littleworld-development-4tq43oit.livekit.cloud"
+```
+
+2) Start the Backend server & Ngrok server
+
+You will need to install ngrok and also create an account at https://ngrok.com/
+When you have an ngrok account you can [create your own static domain](https://dashboard.ngrok.com/get-started/setup/macos). 
+```
+brew install ngrok // if you don't have it already
+ngrok http --url=YOUR_STATIC_DOMAIN 80
+```
+
+3) Go to livekit development dashboard and enter the callback url:
+https://YOUR_STATIC_DOMAIN.ngrok-free.app/api/livekit/webhook?secret=secret
+
+Now when you run the video calls locally they should work!
+
+// More Info needed on how to handle webhooks
+
 ## Branching Strategy
 
 Use the following branching strategy to manage your work:

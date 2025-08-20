@@ -38,3 +38,14 @@ export const updateUserSearchState = async ({
     onError(error);
   }
 };
+
+export const deleteAccount = async ({ onSuccess, onError }) => {
+  try {
+    const result = await apiFetch(`/api/user/delete_account/`, {
+      method: 'POST',
+    });
+    onSuccess(result);
+  } catch (error) {
+    onError(error);
+  }
+};

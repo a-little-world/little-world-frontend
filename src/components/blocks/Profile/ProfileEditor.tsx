@@ -35,6 +35,8 @@ interface ProfileEditorProps {
   onClose: () => void;
 }
 
+const largeCards = ['description', 'image'];
+
 const ProfileEditor: React.FC<ProfileEditorProps> = ({
   content,
   field,
@@ -48,7 +50,6 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({
     formState: { errors },
     setError,
   } = useForm();
-  const isImage = field === 'image';
 
   const onFormSuccess = (_data: any) => {
     mutate(USER_ENDPOINT);
@@ -68,7 +69,9 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({
   };
 
   return (
-    <ModalCard size={isImage ? CardSizes.Large : CardSizes.Medium}>
+    <ModalCard
+      size={largeCards.includes(field) ? CardSizes.Large : CardSizes.Medium}
+    >
       <EditorForm onSubmit={handleSubmit(onSave)}>
         <EditorTitle>
           {t(`profile.editor_title_${content.dataField}`)}

@@ -54,3 +54,6 @@ export const COMMUNITY_EVENT_FREQUENCIES = {
   monthly: 'monthly',
   once: 'once',
 };
+
+// Pages with height equal to the full height of the viewport
+export const pagesWithViewportHeight = ['chat'];

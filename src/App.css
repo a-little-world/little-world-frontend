@@ -9,9 +9,6 @@ html {
 
 body {
   height: 100%;
-  margin: 0 auto;
-  background-repeat: no-repeat;
-  background-size: 100% auto;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -81,12 +78,6 @@ dialog {
 
 button img {
   display: block;
-}
-
-@media (width < 1024px) {
-  body {
-    background-image: none;
-  }
 }
 
 .waiting {

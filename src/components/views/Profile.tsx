@@ -55,7 +55,7 @@ const getProfileFields = ({
       currentValue: profile.description,
       getProps: (trans: TFunction) => ({
         errorRules: { required: trans('validation.required') },
-        size: TextAreaSize.Medium,
+        size: TextAreaSize.Large,
       }),
     },
     t,

@@ -17,8 +17,8 @@ import useSWR from 'swr';
 
 import { requestVideoAccessToken } from '../../../api/livekit';
 import {
-  useActiveCallStore,
   useCallSetupStore,
+  useConnectedCallStore,
 } from '../../../features/stores/index';
 import { USER_ENDPOINT } from '../../../features/swr/index';
 import { clearActiveTracks } from '../../../helpers/video';
@@ -95,34 +95,6 @@ const CallSetupCard = styled(ModalCard)`
   `}
 `;
 
-// const AudioOutputSelect = () => {
-//   const { t } = useTranslation();
-//   const [audioOutDevices, setAudioOutDevices] = useState<MediaDeviceInfo[]>([]);
-//   useEffect(() => {
-//     navigator.mediaDevices.enumerateDevices().then(deviceList => {
-//       const devices = deviceList
-//         .filter(deviceInfo => deviceInfo.kind === 'audiooutput')
-//         .filter(deviceInfo => deviceInfo.deviceId !== 'default');
-//       setAudioOutDevices(devices);
-//     });
-//   }, []);
-
-//   return (
-//     <div className="speaker-select">
-//       <Dropdown
-//         ariaLabel="speaker-select"
-//         maxWidth="100%"
-//         label={t('call_setup.audio_output_select')}
-//         placeholder={t('call_setup.audio_output_placeholder')}
-//         options={audioOutDevices.map(deviceInfo => ({
-//           value: deviceInfo.deviceId,
-//           label: deviceInfo.label,
-//         }))}
-//       />
-//     </div>
-//   );
-// };
-
 type CallSetupProps = {
   onClose: () => void;
   userPk: string;
@@ -142,21 +114,21 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const username = user?.profile?.first_name;
 
   // Zustand store hooks
-  const { initActiveCall } = useActiveCallStore();
+  const { connectToCall } = useConnectedCallStore();
   const { cancelCallSetup } = useCallSetupStore();
 
   const handleJoin = (values: LocalUserChoices) => {
-    initActiveCall({
+    connectToCall({
       userId: userPk,
       chatId: authData.chatId || '',
       tracks: values,
       token: authData.token || undefined,
-      audioOptions: values.audioEnabled ?
-        { deviceId: values.audioDeviceId } :
-        false,
-      videoOptions: values.videoEnabled ?
-        { deviceId: values.videoDeviceId } :
-        false,
+      audioOptions: values.audioEnabled
+        ? { deviceId: values.audioDeviceId }
+        : false,
+      videoOptions: values.videoEnabled
+        ? { deviceId: values.videoDeviceId }
+        : false,
       livekitServerUrl: authData.livekitServerUrl || undefined,
     });
     cancelCallSetup();
