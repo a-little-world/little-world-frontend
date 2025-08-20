@@ -1,6 +1,8 @@
 import type { SWRConfiguration } from 'swr';
 import { mutate } from 'swr';
 import { environment } from '../../environment';
+import Cookies from 'js-cookie';
+import useMobileAuthTokenStore from '../stores/mobileAuthToken';
 
 export const USER_ENDPOINT = '/api/user';
 export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
@@ -15,7 +17,6 @@ export const CHATS_ENDPOINT = '/api/chats/?page_size=20';
 export const CHATS_ENDPOINT_SEPERATE =
   '/api/chats/?page_size=20&pagination=true';
 export const API_TRANSLATIONS_ENDPOINT = '/api/translations';
-import Cookies from 'js-cookie';
 
 export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
 export const getChatMessagesEndpoint = (chatId: string, page: number) =>
@@ -43,14 +44,16 @@ export async function nativeFetcher<T>(url: string): Promise<T> {
     return nativeFetcher(`${environment.backendUrl}${url}`);
   }
   
-  const auth_token = Cookies.get('auth_token');
-  console.log('auth_token', auth_token);
+  const storeToken = useMobileAuthTokenStore.getState().token;
+  const cookieToken = Cookies.get('auth_token');
+  const effectiveToken = storeToken || cookieToken || null;
+
   let headers = {
     'X-CSRF-Bypass-Token': environment.csrfBypassToken,
-  };
+  } as Record<string, string>;
 
-  if (auth_token) {
-    (headers as Record<string, string>)['Authorization'] = `Token ${auth_token}`;
+  if (effectiveToken) {
+    headers['Authorization'] = `Token ${effectiveToken}`;
   }
   
   console.log('headers', headers);
