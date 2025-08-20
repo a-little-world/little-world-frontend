@@ -160,7 +160,8 @@ export const postUserProfileUpdate = (
 };
 
 export const login = async ({ email, password }) => {
-  const response = await fetch(`${environment.backendUrl}/api/user/login/`, {
+  const url = environment.isNative ? `${environment.backendUrl}/api/user/login/?token_auth=true` : `${environment.backendUrl}/api/user/login/`;
+  const response = await fetch(url, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),
       'X-UseTagsOnly': 'True',

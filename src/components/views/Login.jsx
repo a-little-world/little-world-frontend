@@ -27,6 +27,8 @@ import {
   passAuthenticationBoundary,
 } from '../../router/routes';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
+import { environment } from '../../environment';
+import Cookies from 'js-cookie';
 
 
 
@@ -60,6 +62,9 @@ const Login = () => {
 
     login(data)
       .then(loginData => {
+        if(environment.isNative) {
+          Cookies.set('auth_token', (loginData.token || 'no-token-returned'));
+        }
         mutate(USER_ENDPOINT, loginData);
         setIsSubmitting(false);
 

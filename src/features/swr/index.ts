@@ -15,6 +15,7 @@ export const CHATS_ENDPOINT = '/api/chats/?page_size=20';
 export const CHATS_ENDPOINT_SEPERATE =
   '/api/chats/?page_size=20&pagination=true';
 export const API_TRANSLATIONS_ENDPOINT = '/api/translations';
+import Cookies from 'js-cookie';
 
 export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
 export const getChatMessagesEndpoint = (chatId: string, page: number) =>
@@ -36,15 +37,29 @@ export async function fetcher<T>(url: string): Promise<T> {
 
 export async function nativeFetcher<T>(url: string): Promise<T> {
   
+  console.log('url', url);
+  
   if (!url.startsWith(environment.backendUrl)) {
-    return fetcher(`${environment.backendUrl}${url}`);
+    return nativeFetcher(`${environment.backendUrl}${url}`);
   }
+  
+  const auth_token = Cookies.get('auth_token');
+  console.log('auth_token', auth_token);
+  let headers = {
+    'X-CSRF-Bypass-Token': environment.csrfBypassToken,
+  };
 
+  if (auth_token) {
+    (headers as Record<string, string>)['Authorization'] = `Token ${auth_token}`;
+  }
+  
+  console.log('headers', headers);
+  
   const res = await fetch(url, {
-    headers: {
-      'X-CSRF-Bypass-Token': environment.csrfBypassToken,
-    },
+    headers,
+    credentials: 'include',
   });
+  
 
   if (!res.ok) {
     const body = await res.json();
