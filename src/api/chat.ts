@@ -2,17 +2,32 @@ import Cookies from 'js-cookie';
 
 import { environment } from '../environment';
 import { apiFetch, formatApiError } from './helpers';
+import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 
 export const fetchChatMessages = async ({ id, page }) => {
+
+  const defaultHeaders: Record<string, string> = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': Cookies.get('csrftoken') || '',
+  };
+  
+  if(environment.isNative) {
+    const auth_token = useMobileAuthTokenStore.getState().token;
+    if(auth_token) {
+      defaultHeaders['Authorization'] = `Token ${auth_token}`;
+    } else {
+      const cookie_token = Cookies.get('auth_token');
+      if(cookie_token) {
+        defaultHeaders['Authorization'] = `Token ${cookie_token}`;
+      }
+    }
+  }
+
   const response = await fetch(
     `${environment.backendUrl}/api/messages/${id}/?page=${page}&page_size=20`,
     {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'True',
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: defaultHeaders,
       method: 'GET',
     },
   );
@@ -23,15 +38,29 @@ export const fetchChatMessages = async ({ id, page }) => {
 };
 
 export const fetchChats = async ({ page }) => {
+
+  const defaultHeaders: Record<string, string> = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': Cookies.get('csrftoken') || '',
+  };
+  
+  if(environment.isNative) {
+    const auth_token = useMobileAuthTokenStore.getState().token;
+    if(auth_token) {
+      defaultHeaders['Authorization'] = `Token ${auth_token}`;
+    } else {
+      const cookie_token = Cookies.get('auth_token');
+      if(cookie_token) {
+        defaultHeaders['Authorization'] = `Token ${cookie_token}`;
+      }
+    }
+  }
+
   const response = await fetch(
     `${environment.backendUrl}/api/chats/?page=${page}&page_size=20`,
     {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'True',
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: defaultHeaders,
       method: 'GET',
     },
   );
@@ -42,15 +71,28 @@ export const fetchChats = async ({ page }) => {
 };
 
 export const fetchChat = async ({ chatId }) => {
+
+  const defaultHeaders: Record<string, string> = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': Cookies.get('csrftoken') || '',
+  };
+  
+  if(environment.isNative) {
+    const auth_token = useMobileAuthTokenStore.getState().token;
+    if(auth_token) {
+      defaultHeaders['Authorization'] = `Token ${auth_token}`;
+    } else {
+      const cookie_token = Cookies.get('auth_token');
+      if(cookie_token) {
+        defaultHeaders['Authorization'] = `Token ${cookie_token}`;
+      }
+    }
+  }
   const response = await fetch(
     `${environment.backendUrl}/api/chats/${chatId}/`,
     {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'True',
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: defaultHeaders,
       method: 'GET',
     },
   );
@@ -61,15 +103,29 @@ export const fetchChat = async ({ chatId }) => {
 };
 
 export const markChatMessagesReadApi = async ({ chatId }) => {
+
+  const defaultHeaders: Record<string, string> = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-CSRFToken': Cookies.get('csrftoken') || '',
+  };
+  
+  if(environment.isNative) {
+    const auth_token = useMobileAuthTokenStore.getState().token;
+    if(auth_token) {
+      defaultHeaders['Authorization'] = `Token ${auth_token}`;
+    } else {
+      const cookie_token = Cookies.get('auth_token');
+      if(cookie_token) {
+        defaultHeaders['Authorization'] = `Token ${cookie_token}`;
+      }
+    }
+  }
+
   const response = await fetch(
     `${environment.backendUrl}/api/messages/${chatId}/chat_read/`,
     {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'True',
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: defaultHeaders,
       method: 'POST',
       body: JSON.stringify({}),
     },
@@ -87,6 +143,7 @@ export const sendFileAttachmentMessage = async ({
   onSuccess,
   onError,
 }) => {
+
   const data = new FormData();
   data.append('file', file);
   data.append('text', text);

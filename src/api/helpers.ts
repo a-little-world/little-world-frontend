@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
+import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 
 // Add DOM types for fetch API
 type RequestCredentials = 'omit' | 'same-origin' | 'include';
@@ -66,6 +67,18 @@ export async function apiFetch<T = any>(
     'Content-Type': 'application/json',
     'X-CSRFToken': Cookies.get('csrftoken') || '',
   };
+  
+  if(environment.isNative) {
+    const auth_token = useMobileAuthTokenStore.getState().token;
+    if(auth_token) {
+      defaultHeaders['Authorization'] = `Token ${auth_token}`;
+    } else {
+      const cookie_token = Cookies.get('auth_token');
+      if(cookie_token) {
+        defaultHeaders['Authorization'] = `Token ${cookie_token}`;
+      }
+    }
+  }
 
   if (useTagsOnly) {
     defaultHeaders['X-UseTagsOnly'] = 'true';
