@@ -19,7 +19,7 @@ import { requestVideoAccessToken } from '../../../api/livekit';
 import {
   useCallSetupStore,
   useConnectedCallStore,
-} from '../../../features/stores/index';
+} from '../../../features/stores';
 import { USER_ENDPOINT } from '../../../features/swr/index';
 import { clearActiveTracks } from '../../../helpers/video';
 import { getCallRoute } from '../../../router/routes';

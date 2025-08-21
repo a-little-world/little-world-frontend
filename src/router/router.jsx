@@ -73,13 +73,15 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
 } from './routes';
+import { NativeMessageHandler } from '../components/views/LittleWorldWebNative';
 
 export const Root = ({
   children,
   restoreScroll = true,
   includeModeSwitch = false,
-}) => (
-  <CustomThemeProvider>
+}) => {
+
+  return <CustomThemeProvider>
     <ToastProvider>
       <AuthGuard>
         <WebsocketBridge />
@@ -89,9 +91,10 @@ export const Root = ({
       <GlobalStyles />
       {children || <Outlet />}
       {includeModeSwitch && <ModeSwitch />}
+      {environment.isNative && <NativeMessageHandler />}
     </ToastProvider>
   </CustomThemeProvider>
-);
+};
 
 export function getWebRouter() {
   const ROOT_ROUTES = [

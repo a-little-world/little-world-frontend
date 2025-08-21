@@ -10,7 +10,7 @@ import {
   useCallSetupStore,
   useConnectedCallStore,
   usePostCallSurveyStore,
-} from '../../../features/stores/index';
+} from '../../../features/stores';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,

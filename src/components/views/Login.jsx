@@ -1,4 +1,5 @@
 import {
+  Button,
   ButtonAppearance,
   ButtonSizes,
   Link,

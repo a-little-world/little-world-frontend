@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
-import { useConnectedCallStore } from '../../features/stores/index';
+import { useConnectedCallStore } from '../../features/stores';
 import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes';
