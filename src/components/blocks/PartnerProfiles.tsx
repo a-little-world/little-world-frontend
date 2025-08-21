@@ -20,7 +20,7 @@ import ProfileCard, {
   PROFILE_CARD_HEIGHT,
   StyledProfileCard,
 } from './Cards/ProfileCard.tsx';
-import { SearchingCard } from './Cards/SearchingCard';
+import { SearchingCard } from './Cards/SearchingCard.tsx';
 import UpdateSearchStateCard from './Cards/UpdateSearchStateCard.tsx';
 
 const FindNewPartner = styled.button<{ $hasMatch: boolean }>`
