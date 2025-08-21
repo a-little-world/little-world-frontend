@@ -1,6 +1,6 @@
 import { mutate } from 'swr';
 
-import useConnectedCallStore from '../stores/connectedCall.ts';
+import useConnectedCallStore from '../stores/connectedCall';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   CHATS_ENDPOINT,
