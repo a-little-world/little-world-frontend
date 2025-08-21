@@ -10,6 +10,7 @@ import {
 } from './features/swr/index';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import useToast from './hooks/useToast';
+import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
 
 const window = undefined;
 
@@ -28,11 +29,14 @@ const WebsocketBridge = () => {
    * payload: {...}
    * } --> this will triger a simple redux dispatch in the frontend
    */
-  const [socketUrl] = useState(SOCKET_URL);
+  const mobileToken = useMobileAuthTokenStore(state => state.token);
+  const socketUrl = SOCKET_URL;
   const [, setMessageHistory] = useState([]);
+  console.log('mobileToken', mobileToken, environment.isNative);
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
+    protocols: environment.isNative && mobileToken ? [`token.${mobileToken}`] : undefined,
   });
 
   const toast = useToast();
