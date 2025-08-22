@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { RouterProvider } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { SWRConfig } from 'swr';
-import useSWR from 'swr';
+import { RouterProvider, useNavigate } from 'react-router-dom';
+import useSWR, { SWRConfig } from 'swr';
 
 import { useReceiveHandlerStore } from '../../features/stores';
 import {
@@ -53,6 +51,18 @@ export function NativeMessageHandler() {
   }, [navigate]);
 
   useEffect(() => {
+    const handler = event => {
+      console.log('WebNative received auth token event', event);
+    };
+
+    window.addEventListener('set-auth-token', handler);
+
+    return () => {
+      window.removeEventListener('set-auth-token', handler);
+    };
+  }, []);
+
+  useEffect(() => {
     console.log('Establishing handler');
     const handler = async (action, payload) => {
       console.log('action', action, 'TBS');
@@ -78,6 +88,14 @@ export function NativeMessageHandler() {
           );
           console.log('Navigation event dispatched for:', payload?.path);
           return { ok: true, data: 'Navigation event dispatched' };
+        case 'setAuthToken':
+          console.log('Frontend received token', payload);
+          window.dispatchEvent(
+            new CustomEvent('set-auth-token', {
+              detail: { token: payload?.token },
+            }),
+          );
+          return { ok: true, data: 'Token stored in frontend' };
         default:
           return { ok: false, error: 'Unhandled in package' };
       }

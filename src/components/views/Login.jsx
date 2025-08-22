@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonAppearance,
   ButtonSizes,
   Link,
@@ -8,15 +7,17 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate,
-} from 'react-router-dom';
-import { mutate } from 'swr';
+import { useNavigate } from 'react-router-dom';
+import useSWR, { mutate } from 'swr';
 
 import { login } from '../../api';
+import { environment } from '../../environment';
+import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
+import useReceiveHandlerStore from '../../features/stores/receiveHandler';
 import { USER_ENDPOINT } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
 import {
@@ -28,18 +29,12 @@ import {
   passAuthenticationBoundary,
 } from '../../router/routes';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
-import { environment } from '../../environment';
-import Cookies from 'js-cookie';
-import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
-import useReceiveHandlerStore from '../../features/stores/receiveHandler';
-
 
 const Login = () => {
   const { t } = useTranslation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { sendMessageToReactNative } = useReceiveHandlerStore();
-
 
   const {
     register,
@@ -61,39 +56,68 @@ const Login = () => {
     onFormError({ e, formFields: getValues(), setError });
   };
 
+  const setAuthToken = token => {
+    Cookies.set('auth_token', token || 'no-token-returned');
+    useMobileAuthTokenStore.getState().setToken(token);
+  };
+
+  const { data: userData } = useSWR(USER_ENDPOINT);
+
+  useEffect(() => {
+    console.log('userData changed', userData);
+    if (!userData) {
+      return;
+    }
+
+    passAuthenticationBoundary();
+    if (!userData.emailVerified) {
+      console.log('email not verified');
+      navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
+      console.log('navigate to verify email');
+    } else if (!userData.userFormCompleted) {
+      console.log('user form not completed');
+      navigate(getAppRoute(USER_FORM_ROUTE));
+    } else {
+      console.log('navigate to app');
+      // per default route to /app on successful login
+      navigate(getAppRoute(''));
+    }
+  }, [userData, navigate]);
+
   const onFormSubmit = async data => {
     setIsSubmitting(true);
 
     login(data)
       .then(loginData => {
-        if(environment.isNative) {
-          Cookies.set('auth_token', (loginData.token || 'no-token-returned'));
-          useMobileAuthTokenStore.getState().setToken(loginData.token);
+        if (environment.isNative) {
+          setAuthToken(loginData.token);
           sendMessageToReactNative('setTokenFromDom', {
             token: loginData.token,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
         }
+
         mutate(USER_ENDPOINT, loginData);
         setIsSubmitting(false);
-
-        passAuthenticationBoundary();
-
-        if (!loginData.emailVerified) {
-          console.log('email not verified');
-          navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
-          console.log('navigate to verify email');
-        } else if (!loginData.userFormCompleted) {
-          console.log('user form not completed');
-          navigate(getAppRoute(USER_FORM_ROUTE));
-        } else {
-          console.log('navigate to app');
-          // per default route to /app on successful login
-          navigate(getAppRoute(''));
-        }
       })
       .catch(onError);
   };
+
+  useEffect(() => {
+    console.log('login ready for set-auth-token event');
+    const loginWithToken = event => {
+      console.log('login set-auth-token event', event);
+      console.log('login set-auth-token token', event?.detail?.token);
+      setAuthToken(event?.detail?.token);
+      mutate(USER_ENDPOINT);
+    };
+
+    window.addEventListener('set-auth-token', event => loginWithToken(event));
+
+    return () => {
+      window.removeEventListener('set-auth-token', loginWithToken);
+    };
+  });
 
   return (
     <StyledCard>
@@ -154,7 +178,5 @@ const Login = () => {
     </StyledCard>
   );
 };
-
-
 
 export default Login;
