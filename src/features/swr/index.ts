@@ -1,8 +1,7 @@
 import type { SWRConfiguration } from 'swr';
 import { mutate } from 'swr';
-import { environment } from '../../environment';
-import Cookies from 'js-cookie';
-import useMobileAuthTokenStore from '../stores/mobileAuthToken';
+
+import { apiFetch } from '../../api/helpers';
 
 export const USER_ENDPOINT = '/api/user';
 export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
@@ -26,51 +25,6 @@ export const getMatchEndpoint = (page: number) =>
 export const getQuestionsEndpoint = (archived: boolean) =>
   `/api/user/question_cards/?archived=${archived}&category=all`;
 
-export async function fetcher<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body ? JSON.stringify(body) : res.statusText);
-  }
-  return res.json();
-}
-
-export async function nativeFetcher<T>(url: string): Promise<T> {
-  
-  console.log('url', url);
-  
-  if (!url.startsWith(environment.backendUrl)) {
-    return nativeFetcher(`${environment.backendUrl}${url}`);
-  }
-  
-  const storeToken = useMobileAuthTokenStore.getState().token;
-  const cookieToken = Cookies.get('auth_token');
-  const effectiveToken = storeToken || cookieToken || null;
-
-  let headers = {
-    'X-CSRF-Bypass-Token': environment.csrfBypassToken,
-  } as Record<string, string>;
-
-  if (effectiveToken) {
-    headers['Authorization'] = `Token ${effectiveToken}`;
-  }
-  
-  console.log('headers', headers);
-  
-  const res = await fetch(url, {
-    headers,
-    credentials: 'include',
-  });
-  
-
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body ? JSON.stringify(body) : res.statusText);
-  }
-  return res.json();
-}
-
 export const revalidateMatches = () => {
   mutate(key => typeof key === 'string' && key.startsWith(MATCHES_ENDPOINT));
 };
@@ -90,10 +44,6 @@ export const resetUserQueries = () => {
   );
 };
 
-export const nativeSwrConfig: SWRConfiguration = {
-  fetcher: nativeFetcher,
-};
-
 export const swrConfig: SWRConfiguration = {
-  fetcher,
+  fetcher: apiFetch,
 };

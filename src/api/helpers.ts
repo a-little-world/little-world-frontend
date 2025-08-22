@@ -50,6 +50,22 @@ export const formatApiError = (responseBody: any, response: any) => {
   return apiError;
 };
 
+function getNativeHeaders(): Record<string, string> {
+  const storeToken = useMobileAuthTokenStore.getState().token;
+  const cookieToken = Cookies.get('auth_token');
+  const effectiveToken = storeToken || cookieToken || null;
+
+  const headers = {
+    'X-CSRF-Bypass-Token': environment.csrfBypassToken,
+  } as Record<string, string>;
+
+  if (effectiveToken) {
+    headers['Authorization'] = `Token ${effectiveToken}`;
+  }
+
+  return headers;
+}
+
 export async function apiFetch<T = any>(
   endpoint: string,
   options: ApiFetchOptions = {},
@@ -66,27 +82,18 @@ export async function apiFetch<T = any>(
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-CSRFToken': Cookies.get('csrftoken') || '',
+    'ngrok-skip-browser-warning': '69420', // TODO: remove
   };
-  
-  if(environment.isNative) {
-    const auth_token = useMobileAuthTokenStore.getState().token;
-    if(auth_token) {
-      defaultHeaders['Authorization'] = `Token ${auth_token}`;
-    } else {
-      const cookie_token = Cookies.get('auth_token');
-      if(cookie_token) {
-        defaultHeaders['Authorization'] = `Token ${cookie_token}`;
-      }
-    }
-  }
 
   if (useTagsOnly) {
     defaultHeaders['X-UseTagsOnly'] = 'true';
   }
 
+  const nativeHeaders = environment.isNative ? getNativeHeaders() : {};
+
   const fetchOptions: RequestInit = {
     method,
-    headers: { ...defaultHeaders, ...headers },
+    headers: { ...defaultHeaders, ...headers, ...nativeHeaders },
     credentials,
   };
 
