@@ -31,12 +31,15 @@ import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 import { environment } from '../../environment';
 import Cookies from 'js-cookie';
 import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
+import useReceiveHandlerStore from '../../features/stores/receiveHandler';
 
 
 const Login = () => {
   const { t } = useTranslation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { sendMessageToReactNative } = useReceiveHandlerStore();
+
 
   const {
     register,
@@ -66,6 +69,10 @@ const Login = () => {
         if(environment.isNative) {
           Cookies.set('auth_token', (loginData.token || 'no-token-returned'));
           useMobileAuthTokenStore.getState().setToken(loginData.token);
+          sendMessageToReactNative('setTokenFromDom', {
+            token: loginData.token,
+            timestamp: new Date().toISOString()
+          });
         }
         mutate(USER_ENDPOINT, loginData);
         setIsSubmitting(false);
