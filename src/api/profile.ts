@@ -1,27 +1,8 @@
-import Cookies from 'js-cookie';
-
-import { environment } from '../environment';
-import { apiFetch, formatApiError } from './helpers';
+import { apiFetch } from './helpers';
 
 // eslint-disable-next-line import/prefer-default-export
-export const fetchProfile = async ({ userId }: { userId: string }) => {
-  const response = await fetch(
-    `${environment.backendUrl}/api/profile/${userId}/match`,
-    {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'True',
-        'Content-Type': 'application/json',
-      },
-      method: 'GET',
-    },
-  );
-
-  const responseBody = await response?.json();
-
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody, response);
-};
+export const fetchProfile = async ({ userId }: { userId: string }) =>
+  apiFetch(`/api/profile/${userId}/match`);
 
 export const updateUserSearchState = async ({
   updatedState,

@@ -2,21 +2,9 @@ import Cookies from 'js-cookie';
 
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
-import { formatApiError } from './helpers';
+import { apiFetch, formatApiError } from './helpers';
 
-export const completeForm = async () => {
-  const res = await fetch(`${environment.backendUrl}/api/profile/completed/`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': 'true',
-    },
-  });
-
-  const updatedUser = await res?.json();
-  return updatedUser;
-};
+export const completeForm = async () => apiFetch(`/api/profile/completed/`);
 
 export const mutateUserData = async (formData, onSuccess, onFailure) => {
   try {
@@ -33,27 +21,25 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
       data = JSON.stringify(formData);
     }
 
-    const response = await fetch(`${environment.backendUrl}/api/profile/`, {
-      method: 'POST',
-      headers: {
-        ...(image ? {} : { 'Content-Type': 'application/json' }),
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'true',
-      },
-      body: data,
-    });
-
-    if (response.ok) {
-      const responseBody = await response?.json();
-      onSuccess(responseBody);
-    } else {
-      if (response.status === 413)
+    try {
+      const response = await apiFetch(`/api/profile/`, {
+        method: 'POST',
+        headers: {
+          ...(image ? {} : { 'Content-Type': 'application/json' }),
+          'X-UseTagsOnly': 'true',
+        },
+        body: data,
+      });
+      onSuccess(response);
+    } catch (error) {
+      // TODO: check this
+      if (error?.status === 413)
         throw new Error('validation.image_upload_required', {
           cause: API_FIELDS.image,
         });
-      const responseBody = await response?.json();
-      const error = formatApiError(responseBody, response);
-      throw error;
+      else {
+        throw error;
+      }
     }
   } catch (error) {
     onFailure(error);
@@ -62,27 +48,24 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
 
 export const submitHelpForm = async (formData, onSuccess, onFailure) => {
   try {
-    const response = await fetch(
-      `${environment.backendUrl}/api/help_message/`,
-      {
+    try {
+      const response = await apiFetch(`/api/help_message/`, {
         headers: {
           'X-CSRFToken': Cookies.get('csrftoken'),
           'X-UseTagsOnly': true,
         },
         method: 'POST',
         body: formData,
-      },
-    );
+      });
 
-    if (response.ok) {
-      const responseBody = await response.json();
-      onSuccess(responseBody);
-    } else {
-      if (response.status === 413)
+      onSuccess(response);
+    } catch (error) {
+      // TODO: check this
+      if (error?.status === 413)
         throw new Error('validation.image_upload_required');
-      const responseBody = await response?.json();
-      const error = formatApiError(responseBody, response);
-      throw error;
+      else {
+        throw error;
+      }
     }
   } catch (error) {
     onFailure(error);
@@ -91,42 +74,14 @@ export const submitHelpForm = async (formData, onSuccess, onFailure) => {
 
 export const fetchFormData = async ({ handleError }) => {
   try {
-    const response = await fetch(
-      `${environment.backendUrl}/api/profile/?options=true`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': Cookies.get('csrftoken'),
-          'X-UseTagsOnly': 'true',
-        },
-      },
-    );
-
-    const responseBody = await response?.json();
-    if (response.ok) return responseBody;
-    throw formatApiError(responseBody, response);
+    return apiFetch(`$/api/profile/?options=true`);
   } catch (error) {
     throw handleError?.(error);
   }
 };
 
-export const fetchUserMatch = async ({ userId }) => {
-  const response = await fetch(
-    `${environment.backendUrl}/api/profile/${userId}/match`,
-    {
-      method: 'GET',
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'Content-Type': 'application/json',
-      },
-    },
-  );
-
-  const responseBody = await response?.json();
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody, response);
-};
+export const fetchUserMatch = async ({ userId }) =>
+  apiFetch(`/api/profile/${userId}/match`);
 
 export const postUserProfileUpdate = (
   updateData,
@@ -134,33 +89,26 @@ export const postUserProfileUpdate = (
   onSuccess,
   formTag,
 ) => {
-  fetch(`${environment.backendUrl}/api/profile/`, {
+  apiFetch(`/api/profile/`, {
     method: 'POST',
     headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       'X-UseTagsOnly': true, // This automaticly requests error tags instead of direct translations!
     },
     body: JSON.stringify(updateData),
-  }).then(response => {
-    const { status, statusText } = response;
-    if (![200, 400].includes(status)) {
-      console.error('server error', status, statusText);
-    } else {
-      response.json().then(report => {
-        if (response.status === 200) {
-          return onSuccess();
-        }
-        const errorTags = report[formTag];
-        return onFailure(errorTags);
-      });
-    }
-  });
+  })
+    // TODO: check this
+    .then(response => onSuccess())
+    .catch(error => {
+      // TODO: check this; error.errorTags[formTag] ?
+      const errorTags = error[formTag];
+      return onFailure(errorTags);
+    });
 };
 
 export const login = async ({ email, password }) => {
-  const url = environment.isNative ? `${environment.backendUrl}/api/user/login/?token_auth=true` : `${environment.backendUrl}/api/user/login/`;
+  const url = environment.isNative
+    ? `${environment.backendUrl}/api/user/login/?token_auth=true`
+    : `${environment.backendUrl}/api/user/login/`;
   const response = await fetch(url, {
     headers: {
       'X-CSRFToken': Cookies.get('csrftoken'),

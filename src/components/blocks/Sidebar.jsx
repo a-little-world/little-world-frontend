@@ -12,7 +12,6 @@ import {
   SettingsIcon,
   StackIcon,
 } from '@a-little-world/little-world-design-system';
-import Cookies from 'js-cookie';
 import { reduce } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +19,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { environment } from '../../environment';
+import { apiFetch } from '../../api/helpers';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
@@ -191,9 +190,8 @@ function Sidebar({ isVH, sidebarMobile }) {
     {
       label: 'log_out',
       clickEvent: () => {
-        fetch(`${environment.backendUrl}/api/user/logout/`, {
+        apiFetch(`/api/user/logout/`, {
           method: 'GET',
-          headers: { 'X-CSRFToken': Cookies.get('csrftoken') },
         })
           .then(response => {
             if (response.status === 200) {

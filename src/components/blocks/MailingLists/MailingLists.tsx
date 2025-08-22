@@ -90,9 +90,9 @@ const MailingLists = ({
               defaultChecked={value}
               error={error?.message}
               label={
-                hideLabel ?
-                  undefined :
-                  t('mailing_lists.newsletter_subscription_toggle')
+                hideLabel
+                  ? undefined
+                  : t('mailing_lists.newsletter_subscription_toggle')
               }
               labelInline={inline}
               required={false}
@@ -119,14 +119,11 @@ export const SingleCategoryToggle = ({ category, emailSettingsData }) => {
   const onToggle = data => {
     const chageSubscribe = data[category] ? 'subscribe' : 'unsubscribe';
 
-    fetch(
+    apiFetch(
       `/api/email_settings/${emailSettingsHash}/${category}/${chageSubscribe}`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),
+        body: {},
       },
     );
   };
