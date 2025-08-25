@@ -54,6 +54,8 @@ const formPages = {
     totalSteps: getSteps(userData?.user_type),
     prevPage: USER_FORM_ROUTES.USER_TYPE,
     nextPage: USER_FORM_ROUTES.INTERESTS,
+    note: 'self_info.country_of_residence_tooltip',
+    warningData: { field: 'country_of_residence', value: 'DE', index: 2 },
     components: [
       {
         type: ComponentTypes.dropdown,
@@ -67,10 +69,23 @@ const formPages = {
         }),
       },
       {
+        type: ComponentTypes.dropdown,
+        currentValue: userData?.country_of_residence,
+        dataField: 'country_of_residence',
+        formData: options?.country_of_residence,
+        grouped: true,
+        getProps: t => ({
+          label: t('self_info.country_of_residence_label'),
+          labelTooltip: t('self_info.country_of_residence_tooltip'),
+          errorRules: { required: t('validation.required') },
+        }),
+      },
+      {
         type: ComponentTypes.textInput,
         currentValue: userData?.postal_code,
         dataField: 'postal_code',
         formData: options?.postal_code,
+        grouped: true,
         getProps: t => ({
           label: t('self_info.post_code_label'),
           labelTooltip: t('self_info.post_code_tooltip'),
