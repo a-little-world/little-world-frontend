@@ -9,7 +9,7 @@ import {
 import React, { useContext } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-import useQueryParam from '../../hooks/useQueryParam';
+import useQueryParam from '../../hooks/useQueryParam.ts';
 
 const Switch = styled(Button)`
   position: fixed;
