@@ -82,8 +82,8 @@ const ForgotPassword = () => {
           type="email"
         />
         <StatusMessage
-          $visible={requestSuccessful || errors?.root?.serverError}
-          $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
+          visible={requestSuccessful || errors?.root?.serverError}
+          type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
           {requestSuccessful
             ? t('forgot_password.success_message')

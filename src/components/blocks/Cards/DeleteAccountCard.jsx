@@ -36,7 +36,7 @@ function DeleteAccountCard({ setShowModal }) {
       <CardHeader>{t('settings.delete_account_modal_title')}</CardHeader>
       {error && (
         <CardContent>
-          <StatusMessage $type={StatusTypes.Error} $visible>
+          <StatusMessage type={StatusTypes.Error} visible>
             {error}
           </StatusMessage>
         </CardContent>

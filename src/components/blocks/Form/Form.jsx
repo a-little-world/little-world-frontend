@@ -2,8 +2,6 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
-  StatusMessage,
-  StatusTypes,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
@@ -75,20 +73,12 @@ const Form = () => {
   const slug = paths.slice(-1)[0];
   const isEditPath = paths[2] === EDIT_FORM_ROUTE;
 
-  const {
-    title,
-    warningData,
-    note,
-    step,
-    totalSteps,
-    components,
-    nextPage,
-    prevPage,
-  } = getFormPage({
-    slug,
-    formOptions,
-    userData: userData.profile,
-  });
+  const { title, note, step, totalSteps, components, nextPage, prevPage } =
+    getFormPage({
+      slug,
+      formOptions,
+      userData: userData.profile,
+    });
   const isLastStep = step === totalSteps;
 
   const onFormSuccess = response => {
@@ -169,7 +159,13 @@ const Form = () => {
         />
       );
 
-    return (
+    const displayWarning =
+      component.type === ComponentTypes.warning &&
+      watch(component.dataField) &&
+      watch(component.dataField) !== component.value;
+
+    return component.type === ComponentTypes.warning &&
+      !displayWarning ? null : (
       <FormStep
         key={`FormStep Component ${component?.dataField}`}
         control={control}
@@ -183,30 +179,6 @@ const Form = () => {
     let groupBuffer = [];
 
     components.forEach((component, index) => {
-      // Check if we should inject a warning at this position
-      if (warningData?.index === index) {
-        // Flush any pending grouped components first
-        if (groupBuffer.length > 0) {
-          result.push(
-            <GroupedRow key={`group-flush-${warningData.field || 'warning'}`}>
-              {groupBuffer}
-            </GroupedRow>,
-          );
-          groupBuffer = [];
-        }
-
-        // Inject the warning at this position
-        result.push(
-          <StatusMessage
-            key={`warning-${warningData.field || index}`}
-            type={StatusTypes.Warning}
-            $visible
-          >
-            {t(warningData.message || note)}
-          </StatusMessage>,
-        );
-      }
-
       if (component.grouped) {
         groupBuffer.push(renderComponent(component));
       } else {
@@ -217,8 +189,10 @@ const Form = () => {
               {groupBuffer}
             </GroupedRow>,
           );
+
           groupBuffer = [];
         }
+
         // Render current ungrouped component
         result.push(renderComponent(component));
       }
@@ -232,17 +206,6 @@ const Form = () => {
     return result;
   };
 
-  const displayWarning =
-    warningData?.field &&
-    watch(warningData?.field) &&
-    watch(warningData?.field) !== warningData?.value;
-
-  console.log({
-    displayWarning,
-    warningData,
-    watchedValue: watch(warningData?.field),
-    allWatchedValues: watch(),
-  });
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading4}>

@@ -55,7 +55,6 @@ const formPages = {
     prevPage: USER_FORM_ROUTES.USER_TYPE,
     nextPage: USER_FORM_ROUTES.INTERESTS,
     note: 'self_info.country_of_residence_tooltip',
-    warningData: { field: 'country_of_residence', value: 'DE', index: 2 },
     components: [
       {
         type: ComponentTypes.dropdown,
@@ -91,6 +90,14 @@ const formPages = {
           labelTooltip: t('self_info.post_code_tooltip'),
           errorRules: { required: t('validation.required') },
           width: InputWidth.Small,
+        }),
+      },
+      {
+        type: ComponentTypes.warning,
+        dataField: 'country_of_residence',
+        value: 'DE',
+        getProps: t => ({
+          children: t('self_info.country_of_residence_warning'),
         }),
       },
       ...(userData?.user_type === USER_TYPES.volunteer

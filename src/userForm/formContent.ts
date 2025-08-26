@@ -7,6 +7,8 @@ import {
   MultiDropdown,
   MultiSelection,
   RadioGroup,
+  StatusMessage,
+  StatusTypes,
   Text,
   TextArea,
   TextContent,
@@ -14,11 +16,16 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { ElementType } from 'react';
+import styled from 'styled-components';
 
 import Note from '../components/atoms/Note.tsx';
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector.jsx';
 import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic.tsx';
 import { formatMultiSelectionOptions } from '../helpers/form.ts';
+
+const Warning = styled(StatusMessage)`
+  margin-top: -${({ theme }) => theme.spacing.xxsmall};
+`;
 
 export const ComponentTypes = {
   infoText: 'infoText',
@@ -39,6 +46,7 @@ export const ComponentTypes = {
   checkboxWithInput: 'checkboxWithInput',
   checkboxGrid: 'checkboxGrid',
   picture: 'picture',
+  warning: 'warning',
 } as const;
 
 export type ComponentType = keyof typeof ComponentTypes;
@@ -74,6 +82,15 @@ export const getFormComponent = (
 
     case ComponentTypes.infoText:
       return { Component: Note, ...props };
+
+    case ComponentTypes.warning:
+      return {
+        Component: Warning,
+        type: StatusTypes.Warning,
+        visible: true,
+        withBorder: true,
+        ...props,
+      };
 
     case ComponentTypes.textArea:
       return {
