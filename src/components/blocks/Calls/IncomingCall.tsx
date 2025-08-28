@@ -4,10 +4,9 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import ButtonsContainer from '../../atoms/ButtonsContainer.jsx';
+import ButtonsContainer from '../../atoms/ButtonsContainer.tsx';
 import ProfileImage from '../../atoms/ProfileImage.jsx';
 import ModalCard, { Centred } from '../Cards/ModalCard.jsx';
 

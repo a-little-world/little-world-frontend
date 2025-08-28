@@ -24,7 +24,7 @@ import {
   USER_FORM_ROUTE,
   getAppRoute,
 } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer';
+import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
 import {
   FormDescription,
   StyledCard,

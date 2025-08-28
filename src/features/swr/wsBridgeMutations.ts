@@ -170,6 +170,10 @@ export function blockIncomingCall(userId: string): void {
   );
 }
 
+export function outgoingCallRejected(): void {
+  useConnectedCallStore.getState().setCallRejected(true);
+}
+
 export function markChatMessagesRead(chatId: string, userId: string): void {
   // Update messages for the specific chat
   const messagesEndpoint = `/api/messages/${chatId}/?page=1&page_size=20`;
@@ -262,8 +266,12 @@ export function runWsBridgeMutation(
       break;
     }
     case 'blockIncomingCall': {
-      const { blockUserId } = payload;
-      blockIncomingCall(blockUserId);
+      const { userId } = payload;
+      blockIncomingCall(userId);
+      break;
+    }
+    case 'outgoingCallRejected': {
+      outgoingCallRejected();
       break;
     }
     case 'markChatMessagesRead': {

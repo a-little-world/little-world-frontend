@@ -1,9 +1,14 @@
-import { Text } from '@a-little-world/little-world-design-system';
+import {
+  Button,
+  ButtonAppearance,
+  Text,
+} from '@a-little-world/little-world-design-system';
 import {
   LayoutContextProvider,
   LiveKitRoom,
   ParticipantTile,
   RoomAudioRenderer,
+  useDisconnectButton,
   useRoomInfo,
   useTracks,
 } from '@livekit/components-react';
@@ -19,6 +24,7 @@ import { useConnectedCallStore } from '../../features/stores/index.ts';
 import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
+import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
 import Drawer from '../atoms/Drawer.tsx';
 import ProfileImage from '../atoms/ProfileImage';
 import CallSidebar, {
@@ -40,11 +46,13 @@ import {
 
 function MyVideoConference({
   isFullScreen,
+  partnerId,
   partnerImage,
   partnerImageType,
   partnerName,
   selfImage,
   selfImageType,
+  sessionId,
 }) {
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
@@ -55,7 +63,9 @@ function MyVideoConference({
   const [currentParticipants, setCurrentParticipants] = useState(1);
   const [otherUserDisconnected, setOtherUserDisconnected] = useState(false);
   const { name } = useRoomInfo();
-  const { initializeCallID } = useConnectedCallStore();
+  const { initializeCallID, setCallRejected, callRejected } =
+    useConnectedCallStore();
+  const { buttonProps: disconnectProps } = useDisconnectButton({});
 
   useEffect(() => {
     if (name) initializeCallID(name);
@@ -84,6 +94,17 @@ function MyVideoConference({
     }
   });
 
+  const handleCallAgain = () => {
+    callAgain({
+      partnerId,
+      sessionId,
+      onSuccess: () => {
+        setCallRejected(false);
+      },
+      onError: () => {},
+    });
+  };
+
   if (isEmpty(tracks)) return null;
 
   return (
@@ -100,14 +121,31 @@ function MyVideoConference({
             imageType={partnerImageType}
             size="medium"
           />
-          <Text>
-            {t(
-              otherUserDisconnected
-                ? 'call.partner_disconnected'
-                : 'call.waiting_for_partner',
-              { name: partnerName },
-            )}
-          </Text>
+          {callRejected ? (
+            <>
+              <Text>{t('call.partner_rejected', { name: partnerName })}</Text>
+              <ButtonsContainer>
+                <Button
+                  appearance={ButtonAppearance.Secondary}
+                  {...disconnectProps}
+                >
+                  {t('call.exit')}
+                </Button>
+                <Button onClick={handleCallAgain}>
+                  {t('call.call_again')}
+                </Button>
+              </ButtonsContainer>
+            </>
+          ) : (
+            <Text>
+              {t(
+                otherUserDisconnected
+                  ? 'call.partner_disconnected'
+                  : 'call.waiting_for_partner',
+                { name: partnerName },
+              )}
+            </Text>
+          )}
         </WaitingTile>
       )}
     </Videos>
@@ -194,6 +232,8 @@ function VideoCall() {
             >
               <MyVideoConference
                 isFullScreen={isFullScreen}
+                sessionId={uuid}
+                partnerId={chatData?.partner?.hash}
                 partnerName={chatData?.partner?.first_name}
                 partnerImage={
                   chatData?.partner?.image_type === 'avatar'

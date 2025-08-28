@@ -5,6 +5,7 @@ const ButtonsContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  max-width: 500px;
 
   ${({ theme }) => `
     gap: ${theme.spacing.small};

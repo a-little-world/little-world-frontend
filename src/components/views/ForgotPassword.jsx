@@ -16,7 +16,7 @@ import styled, { useTheme } from 'styled-components';
 import { requestPasswordReset } from '../../api';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import { LOGIN_ROUTE } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer';
+import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 export const ForgotPasswordDescription = styled(Text)`

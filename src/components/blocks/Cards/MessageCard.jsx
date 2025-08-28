@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import ButtonsContainer from '../../atoms/ButtonsContainer';
+import ButtonsContainer from '../../atoms/ButtonsContainer.tsx';
 import { ModalTitle } from './ModalCard';
 
 const StyledCard = styled(Card)`

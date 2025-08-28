@@ -15,14 +15,17 @@ interface CallData {
 interface ConnectedCallState {
   callData: CallData | null;
   disconnectedFrom: string | null; // UUID of the session user disconnected from
+  callRejected: boolean;
   connectToCall: (data: CallData) => void;
   disconnectFromCall: (sessionUuid: string) => void;
   resetDisconnectedFrom: () => void;
+  setCallRejected: (callRejected: boolean) => void;
 }
 
 const useConnectedCallStore = create<ConnectedCallState>(set => ({
   callData: null,
   disconnectedFrom: null,
+  callRejected: true,
   connectToCall: data => set({ callData: data, disconnectedFrom: null }),
   initializeCallID: (uuid: string) =>
     set(({ callData }) => ({
@@ -31,6 +34,7 @@ const useConnectedCallStore = create<ConnectedCallState>(set => ({
   disconnectFromCall: sessionUuid =>
     set({ callData: null, disconnectedFrom: sessionUuid }),
   resetDisconnectedFrom: () => set({ disconnectedFrom: null }),
+  setCallRejected: (callRejected: boolean) => set({ callRejected }),
 }));
 
 export default useConnectedCallStore;
