@@ -54,7 +54,6 @@ const formPages = {
     totalSteps: getSteps(userData?.user_type),
     prevPage: USER_FORM_ROUTES.USER_TYPE,
     nextPage: USER_FORM_ROUTES.INTERESTS,
-    note: 'self_info.country_of_residence_tooltip',
     components: [
       {
         type: ComponentTypes.dropdown,
@@ -75,8 +74,12 @@ const formPages = {
         grouped: true,
         getProps: t => ({
           label: t('self_info.country_of_residence_label'),
-          labelTooltip: t('self_info.country_of_residence_tooltip'),
+          labelTooltip:
+            userData?.user_type === USER_TYPES.volunteer
+              ? null
+              : t('self_info.country_of_residence_tooltip'),
           errorRules: { required: t('validation.required') },
+          maxWidth: '400px',
         }),
       },
       {
