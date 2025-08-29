@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
-import { apiFetch, formatApiError } from './helpers';
+import { apiFetch } from './helpers';
 
 export const completeForm = async () => apiFetch(`/api/profile/completed/`);
 
@@ -18,7 +18,7 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
         if (key !== USER_FIELDS.avatar) data.append(key, formData[key]);
       }
     } else {
-      data = JSON.stringify(formData);
+      data = formData;
     }
 
     try {
@@ -26,8 +26,8 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
         method: 'POST',
         headers: {
           ...(image ? {} : { 'Content-Type': 'application/json' }),
-          'X-UseTagsOnly': 'true',
         },
+        useTagsOnly: true,
         body: data,
       });
       onSuccess(response);
@@ -109,23 +109,14 @@ export const login = async ({ email, password }) => {
   const url = environment.isNative
     ? `${environment.backendUrl}/api/user/login/?token_auth=true`
     : `${environment.backendUrl}/api/user/login/`;
-  const response = await fetch(url, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': 'True',
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+  return apiFetch(url, {
     method: 'POST',
-    body: JSON.stringify({
+    useTagsOnly: true,
+    body: {
       email,
       password,
-    }),
+    },
   });
-
-  const responseBody = await response?.json();
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody, response);
 };
 
 export const signUp = async ({
@@ -137,16 +128,11 @@ export const signUp = async ({
   lastName,
   mailingList,
   company = null,
-}) => {
-  const response = await fetch(`${environment.backendUrl}/api/register/`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': 'True',
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+}) =>
+  apiFetch(`/api/register/`, {
     method: 'POST',
-    body: JSON.stringify({
+    useTagsOnly: true,
+    body: {
       email,
       password1: password,
       password2: confirmPassword,
@@ -155,130 +141,50 @@ export const signUp = async ({
       birth_year: birthYear,
       newsletter_subscribed: mailingList,
       company,
-    }),
+    },
   });
 
-  if (response.ok) return response?.json();
-  const responseBody = await response?.json();
-  throw formatApiError(responseBody, response);
-};
-
-export const requestPasswordReset = async ({ email }) => {
-  const response = await fetch(`${environment.backendUrl}/api/user/resetpw/`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': 'True',
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+export const requestPasswordReset = async ({ email }) =>
+  apiFetch(`/api/user/resetpw/`, {
     method: 'POST',
-    body: JSON.stringify({
+    useTagsOnly: true,
+    body: {
       email,
-    }),
+    },
   });
 
-  const responseBody = await response?.json();
-
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody, response);
-};
-
-export const resetPassword = async ({ password, token }) => {
-  const response = await fetch(
-    `${environment.backendUrl}/api/user/resetpw/confirm/`,
-    {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'True',
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        password,
-        token,
-      }),
-    },
-  );
-
-  const responseBody = await response?.json();
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody, response);
-};
-
-export const verifyEmail = async ({ verificationCode }) => {
-  const response = await fetch(
-    `${environment.backendUrl}/api/user/verify/email/${verificationCode}`,
-    {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'True',
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    },
-  );
-
-  const responseBody = await response?.json();
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody, response);
-};
-
-export const resendVerificationEmail = async () => {
-  const response = await fetch(
-    `${environment.backendUrl}/api/user/verify/email_resend/`,
-    {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'True',
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    },
-  );
-
-  const responseBody = await response?.json();
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody, response);
-};
-
-export const setNewEmail = async ({ email }) => {
-  const response = await fetch(
-    `${environment.backendUrl}/api/user/change_email/`,
-    {
-      headers: {
-        'X-CSRFToken': Cookies.get('csrftoken'),
-        'X-UseTagsOnly': 'True',
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        email,
-      }),
-    },
-  );
-
-  const responseBody = await response?.json();
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody, response);
-};
-
-export const setNewPassword = async data => {
-  const response = await fetch(`${environment.backendUrl}/api/user/changepw/`, {
-    headers: {
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'X-UseTagsOnly': 'True',
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+export const resetPassword = async ({ password, token }) =>
+  apiFetch(`/api/user/resetpw/confirm/`, {
     method: 'POST',
-    body: JSON.stringify(data),
+    useTagsOnly: true,
+    body: {
+      password,
+      token,
+    },
   });
 
-  const responseBody = await response?.json();
-  if (response.ok) return responseBody;
-  throw formatApiError(responseBody, response);
-};
+export const verifyEmail = async ({ verificationCode }) =>
+  apiFetch(`/api/user/verify/email/${verificationCode}`, {
+    method: 'POST',
+    useTagsOnly: true,
+  });
+
+export const resendVerificationEmail = async () =>
+  apiFetch(`/api/user/verify/email_resend/`, {
+    method: 'POST',
+    useTagsOnly: true,
+  });
+
+export const setNewEmail = async ({ email }) =>
+  apiFetch(`/api/user/change_email/`, {
+    useTagsOnly: true,
+    method: 'POST',
+    body: { email },
+  });
+
+export const setNewPassword = async data =>
+  apiFetch(`/api/user/changepw/`, {
+    useTagsOnly: true,
+    method: 'POST',
+    body: data,
+  });
