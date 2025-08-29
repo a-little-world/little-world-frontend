@@ -393,7 +393,7 @@ export function getWebRouter() {
 }
 
 export function getNativeRouter() {
-const ROOT_ROUTES = [
+  const ROOT_ROUTES = [
     {
       path: LOGIN_ROUTE,
       element: (
