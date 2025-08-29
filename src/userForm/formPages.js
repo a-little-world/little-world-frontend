@@ -91,7 +91,6 @@ const formPages = {
         getProps: t => ({
           label: t('self_info.post_code_label'),
           labelTooltip: t('self_info.post_code_tooltip'),
-          errorRules: { required: t('validation.required') },
           width: InputWidth.Small,
         }),
       },

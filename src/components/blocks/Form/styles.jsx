@@ -79,7 +79,7 @@ export const GroupedRow = styled.div`
   display: flex;
   flex-direction: row;
   gap: ${({ theme }) => theme.spacing.xsmall};
-  align-items: flex-end;
+  align-items: flex-start;
   flex-wrap: wrap;
 
   ${({ theme }) =>
