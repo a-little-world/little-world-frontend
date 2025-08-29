@@ -79,7 +79,6 @@ const formPages = {
               ? null
               : t('self_info.country_of_residence_tooltip'),
           errorRules: { required: t('validation.required') },
-          maxWidth: '400px',
         }),
       },
       {
