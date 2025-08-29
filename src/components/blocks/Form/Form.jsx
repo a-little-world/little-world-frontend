@@ -162,7 +162,7 @@ const Form = () => {
     const displayWarning =
       component.type === ComponentTypes.warning &&
       watch(component.dataField) &&
-      watch(component.dataField) !== component.value;
+      !component.allowedValues?.includes(watch(component.dataField));
 
     return component.type === ComponentTypes.warning &&
       !displayWarning ? null : (

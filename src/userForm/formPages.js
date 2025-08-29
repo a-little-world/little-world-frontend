@@ -6,7 +6,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isBoolean } from 'lodash';
 
-import { USER_TYPES } from '../constants/index.ts';
+import { DACH_COUNTRIES, USER_TYPES } from '../constants/index.ts';
 import { USER_FORM_ROUTES } from '../router/routes.ts';
 import { ComponentTypes, formatDataField } from './formContent.ts';
 
@@ -98,7 +98,7 @@ const formPages = {
       {
         type: ComponentTypes.warning,
         dataField: 'country_of_residence',
-        value: 'DE',
+        allowedValues: DACH_COUNTRIES,
         getProps: t => ({
           children: t('self_info.country_of_residence_warning'),
         }),

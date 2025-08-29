@@ -67,8 +67,18 @@ interface ComponentReturn {
 export const formatDataField = (
   data: Array<{ tag: string; value: string }> | undefined,
   t: (key: string) => string,
-): Array<{ label: string; value: string }> =>
-  data?.map(({ tag, value }) => ({ label: t(tag), value })) || [];
+  alphabetize: boolean = false,
+): Array<{ label: string; value: string }> => {
+  if (!data) return [];
+
+  if (alphabetize) {
+    return data
+      .map(({ tag, value }) => ({ label: t(tag), value }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }
+
+  return data.map(({ tag, value }) => ({ label: t(tag), value }));
+};
 
 export const getFormComponent = (
   { type, currentValue, dataField, formData, getProps }: FormComponentConfig,
@@ -175,7 +185,7 @@ export const getFormComponent = (
         Component: Dropdown,
         dataField,
         updater: 'onValueChange',
-        options: formatDataField(formData, t),
+        options: formatDataField(formData, t, true),
         currentValue: currentValue || '',
         ...props,
       };
