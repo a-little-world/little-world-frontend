@@ -18,11 +18,7 @@ export const LANGUAGES = {
 
 export const COUNTRIES = {
   DE: 'DE',
-  AT: 'AT',
-  CH: 'CH',
 };
-
-export const DACH_COUNTRIES = [COUNTRIES.DE, COUNTRIES.AT, COUNTRIES.CH];
 
 export const LANGUAGE_LEVELS = {
   level0: 'level-0',

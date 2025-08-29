@@ -6,7 +6,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isBoolean } from 'lodash';
 
-import { DACH_COUNTRIES, USER_TYPES } from '../constants/index.ts';
+import { COUNTRIES, USER_TYPES } from '../constants/index.ts';
 import { USER_FORM_ROUTES } from '../router/routes.ts';
 import { ComponentTypes, formatDataField } from './formContent.ts';
 
@@ -95,17 +95,17 @@ const formPages = {
           width: InputWidth.Small,
         }),
       },
-      {
-        type: ComponentTypes.warning,
-        dataField: 'country_of_residence',
-        allowedValues: DACH_COUNTRIES,
-        getProps: t => ({
-          children: t('self_info.country_of_residence_warning'),
-        }),
-      },
       ...(userData?.user_type === USER_TYPES.volunteer
         ? []
         : [
+            {
+              type: ComponentTypes.warning,
+              dataField: 'country_of_residence',
+              allowedValues: [COUNTRIES.DE],
+              getProps: t => ({
+                children: t('self_info.country_of_residence_warning'),
+              }),
+            },
             {
               type: ComponentTypes.multiCheckboxWithInput,
               multiCheckbox: {
