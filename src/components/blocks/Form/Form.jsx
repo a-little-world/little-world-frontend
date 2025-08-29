@@ -163,9 +163,10 @@ const Form = () => {
       component.type === ComponentTypes.warning &&
       watch(component.dataField) &&
       !component.allowedValues?.includes(watch(component.dataField));
+    const warningTypeButHidden =
+      component.type === ComponentTypes.warning && !displayWarning;
 
-    return component.type === ComponentTypes.warning &&
-      !displayWarning ? null : (
+    return warningTypeButHidden ? null : (
       <FormStep
         key={`FormStep Component ${component?.dataField}`}
         control={control}
