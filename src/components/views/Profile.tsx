@@ -1,5 +1,8 @@
 import {
   Modal,
+  MultiDropdown,
+  Tags,
+  Text,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
@@ -32,8 +35,10 @@ import {
 } from '../../userForm/formPages';
 import PageHeader from '../atoms/PageHeader';
 import ProfileCard from '../blocks/Cards/ProfileCard';
+import FormStep from '../blocks/Form/FormStep';
+import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
-import { PageContent } from '../blocks/Profile/styles';
+import { Details, PageContent, TextField } from '../blocks/Profile/styles';
 
 const getProfileFields = ({
   profile,
@@ -242,8 +247,7 @@ function Profile() {
     <>
       <PageHeader canGoBack={!isSelf} text={profileTitle} />
       <PageContent>
-        {/* <Details>     // TODO: rendering hook errors
-
+        <Details>
           <ProfileDetail
             editable={isSelf}
             content={profileFields.description}
@@ -283,7 +287,7 @@ function Profile() {
               </Text>
             )}
           </ProfileDetail>
-        </Details> */}
+        </Details>
         <ProfileCard
           chatId={match?.chatId}
           userPk={userId}
