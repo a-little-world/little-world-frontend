@@ -29,6 +29,7 @@ import Help from '../components/views/Help';
 import Main from '../components/views/Home';
 import Login from '../components/views/Login';
 import Messages from '../components/views/Messages';
+import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
@@ -73,7 +74,6 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
 } from './routes';
-import { NativeMessageHandler } from '../components/views/LittleWorldWebNative';
 
 export const Root = ({
   children,
