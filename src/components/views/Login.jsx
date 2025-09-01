@@ -118,8 +118,8 @@ const Login = () => {
           {t('login.forgot_password')}
         </Link>
         <StatusMessage
-          $visible={errors?.root?.serverError}
-          $type={StatusTypes.Error}
+          visible={errors?.root?.serverError}
+          type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StatusMessage>

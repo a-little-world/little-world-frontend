@@ -302,7 +302,10 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                 >
                   {t('profile_pic.click_to_upload')}
                 </Text>
-                <Text color="#A6A6A6" type={TextTypes.Body5}>
+                <Text
+                  color={theme.color.text.quaternary}
+                  type={TextTypes.Body5}
+                >
                   {t('profile_pic.drop_image')}
                 </Text>
 

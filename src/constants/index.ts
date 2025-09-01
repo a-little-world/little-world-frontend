@@ -16,6 +16,10 @@ export const LANGUAGES = {
   english: 'english',
 };
 
+export const COUNTRIES = {
+  DE: 'DE',
+};
+
 export const LANGUAGE_LEVELS = {
   level0: 'level-0',
   level1: 'level-1',

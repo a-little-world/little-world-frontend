@@ -88,7 +88,7 @@ const NewMatchCard: React.FC<NewMatchCardProps> = ({
         </Text>
       </Centred>
       {!!error && (
-        <StatusMessage $visible={!!error} $type={StatusTypes.Error}>
+        <StatusMessage visible={!!error} type={StatusTypes.Error}>
           {error}
         </StatusMessage>
       )}

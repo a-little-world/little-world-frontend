@@ -93,8 +93,8 @@ const ResetPassword = () => {
           type="password"
         />
         <StatusMessage
-          $visible={requestSuccessful || errors?.root?.serverError}
-          $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
+          visible={requestSuccessful || errors?.root?.serverError}
+          type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
           {requestSuccessful
             ? t('reset_password.success_message')
