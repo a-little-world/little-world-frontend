@@ -34,6 +34,7 @@ import RadioGroupWithInput from '../WithInput/RadioGroupWithInput/RadioGroupWith
 import FormStep from './FormStep';
 import {
   FormButtons,
+  GroupedRow,
   StyledCard,
   StyledForm,
   StyledNote,
@@ -53,6 +54,7 @@ const Form = () => {
     reset,
     setValue,
     setError,
+    watch,
   } = useForm({ shouldUnregister: true });
 
   const { data: userData, mutate: mutateUserDataApi } = useSWR(USER_ENDPOINT, {
@@ -109,6 +111,102 @@ const Form = () => {
     mutateUserData(data, onFormSuccess, onError);
   };
 
+  const renderComponent = component => {
+    // ProfilePic updates multiple data fields
+    if (component?.type === ComponentTypes.picture)
+      return (
+        <ProfilePic
+          key={ProfilePic.name}
+          control={control}
+          setValue={setValue}
+          setError={setError}
+        />
+      );
+
+    if (component?.type === ComponentTypes.radioWithInput)
+      return (
+        <RadioGroupWithInput
+          key={`${RadioGroupWithInput.name} ${component?.id}`}
+          control={control}
+          {...component}
+        />
+      );
+
+    if (component?.type === ComponentTypes.dropdownWithInput)
+      return (
+        <DropdownWithInput
+          key={DropdownWithInput.name}
+          control={control}
+          {...component}
+        />
+      );
+
+    if (component?.type === ComponentTypes.checkboxWithInput)
+      return (
+        <CheckboxWithInput
+          key={CheckboxWithInput.name}
+          control={control}
+          {...component}
+        />
+      );
+
+    if (component?.type === ComponentTypes.multiCheckboxWithInput)
+      return (
+        <MultiCheckboxWithInput
+          key={MultiCheckboxWithInput.name}
+          control={control}
+          {...component}
+        />
+      );
+
+    const displayWarning =
+      component.type === ComponentTypes.warning &&
+      watch(component.dataField) &&
+      !component.allowedValues?.includes(watch(component.dataField));
+    const warningTypeButHidden =
+      component.type === ComponentTypes.warning && !displayWarning;
+
+    return warningTypeButHidden ? null : (
+      <FormStep
+        key={`FormStep Component ${component?.dataField}`}
+        control={control}
+        content={getFormComponent(component, t)}
+      />
+    );
+  };
+
+  const renderComponents = () => {
+    const result = [];
+    let groupBuffer = [];
+
+    components.forEach((component, index) => {
+      if (component.grouped) {
+        groupBuffer.push(renderComponent(component));
+      } else {
+        // If we have grouped components in buffer, render them first
+        if (groupBuffer.length > 0) {
+          result.push(
+            <GroupedRow key={`group-${component.dataField || index}`}>
+              {groupBuffer}
+            </GroupedRow>,
+          );
+
+          groupBuffer = [];
+        }
+
+        // Render current ungrouped component
+        result.push(renderComponent(component));
+      }
+    });
+
+    // Don't forget any remaining grouped components
+    if (groupBuffer.length > 0) {
+      result.push(<GroupedRow key="group-final">{groupBuffer}</GroupedRow>);
+    }
+
+    return result;
+  };
+
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading4}>
@@ -119,62 +217,7 @@ const Form = () => {
           <StyledProgress max={totalSteps} value={step} />
         )}
         {note && <StyledNote>{t(note)}</StyledNote>}
-        {components.map(component => {
-          // ProfilePic updates multiple data fields
-          if (component?.type === ComponentTypes.picture)
-            return (
-              <ProfilePic
-                key={ProfilePic.name}
-                control={control}
-                setValue={setValue}
-                setError={setError}
-              />
-            );
-
-          if (component?.type === ComponentTypes.radioWithInput)
-            return (
-              <RadioGroupWithInput
-                key={`${RadioGroupWithInput.name} ${component?.id}`}
-                control={control}
-                {...component}
-              />
-            );
-
-          if (component?.type === ComponentTypes.dropdownWithInput)
-            return (
-              <DropdownWithInput
-                key={DropdownWithInput.name}
-                control={control}
-                {...component}
-              />
-            );
-
-          if (component?.type === ComponentTypes.checkboxWithInput)
-            return (
-              <CheckboxWithInput
-                key={CheckboxWithInput.name}
-                control={control}
-                {...component}
-              />
-            );
-
-          if (component?.type === ComponentTypes.multiCheckboxWithInput)
-            return (
-              <MultiCheckboxWithInput
-                key={MultiCheckboxWithInput.name}
-                control={control}
-                {...component}
-              />
-            );
-
-          return (
-            <FormStep
-              key={`FormStep Component ${component?.dataField}`}
-              control={control}
-              content={getFormComponent(component, t)}
-            />
-          );
-        })}
+        {renderComponents()}
         <SubmitError $visible={errors?.root?.serverError}>
           {t(errors?.root?.serverError?.message)}
         </SubmitError>

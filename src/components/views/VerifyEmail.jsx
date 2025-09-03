@@ -134,8 +134,8 @@ const VerifyEmail = () => {
         </ResendButton>
         <HelpText>{t('verify_email.help_text')}</HelpText>
         <StatusMessage
-          $visible={requestSuccessful || errors?.root?.serverError}
-          $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
+          visible={requestSuccessful || errors?.root?.serverError}
+          type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
           {requestSuccessful
             ? t('verify_email.success_message')

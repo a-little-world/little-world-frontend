@@ -6,7 +6,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isBoolean } from 'lodash';
 
-import { USER_TYPES } from '../constants/index.ts';
+import { COUNTRIES, USER_TYPES } from '../constants/index.ts';
 import { USER_FORM_ROUTES } from '../router/routes.ts';
 import { ComponentTypes, formatDataField } from './formContent.ts';
 
@@ -67,20 +67,43 @@ const formPages = {
         }),
       },
       {
+        type: ComponentTypes.dropdown,
+        currentValue: userData?.country_of_residence,
+        dataField: 'country_of_residence',
+        formData: options?.country_of_residence,
+        grouped: true,
+        getProps: t => ({
+          label: t('self_info.country_of_residence_label'),
+          labelTooltip:
+            userData?.user_type === USER_TYPES.volunteer
+              ? null
+              : t('self_info.country_of_residence_tooltip'),
+          errorRules: { required: t('validation.required') },
+        }),
+      },
+      {
         type: ComponentTypes.textInput,
         currentValue: userData?.postal_code,
         dataField: 'postal_code',
         formData: options?.postal_code,
+        grouped: true,
         getProps: t => ({
           label: t('self_info.post_code_label'),
           labelTooltip: t('self_info.post_code_tooltip'),
-          errorRules: { required: t('validation.required') },
           width: InputWidth.Small,
         }),
       },
       ...(userData?.user_type === USER_TYPES.volunteer
         ? []
         : [
+            {
+              type: ComponentTypes.warning,
+              dataField: 'country_of_residence',
+              allowedValues: [COUNTRIES.DE],
+              getProps: t => ({
+                children: t('self_info.country_of_residence_warning'),
+              }),
+            },
             {
               type: ComponentTypes.multiCheckboxWithInput,
               multiCheckbox: {

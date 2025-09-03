@@ -211,8 +211,8 @@ function Notifications() {
         )}
         {error && (
           <StatusMessage
-            $type={StatusTypes.Error}
-            $visible={!isLoading && error?.message}
+            type={StatusTypes.Error}
+            visible={!isLoading && error?.message}
           >
             {error?.message}
           </StatusMessage>

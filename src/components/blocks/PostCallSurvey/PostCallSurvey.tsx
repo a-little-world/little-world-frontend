@@ -122,7 +122,7 @@ const PostCallSurvey: React.FC<PostCallSurveyProps> = ({ onSubmit }) => {
             }}
           />
           {!!submitError && (
-            <StatusMessage $visible $type={StatusTypes.Error}>
+            <StatusMessage visible type={StatusTypes.Error}>
               {submitError}
             </StatusMessage>
           )}

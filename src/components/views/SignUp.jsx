@@ -256,8 +256,8 @@ const SignUp = () => {
         />
         <Text>{t('sign_up.privacy_policy')}</Text>
         <StatusMessage
-          $visible={errors?.root?.serverError}
-          $type={StatusTypes.Error}
+          visible={errors?.root?.serverError}
+          type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StatusMessage>

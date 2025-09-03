@@ -74,3 +74,16 @@ export const Title = styled(Text)`
   color: ${({ theme }) => theme.color.text.highlight};
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
+
+export const GroupedRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.medium}) {
+      gap: ${theme.spacing.small};
+    }`}
+`;

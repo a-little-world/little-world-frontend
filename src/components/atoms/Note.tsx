@@ -3,7 +3,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 
 const StyledNote = styled.div<{ $center: boolean }>`
@@ -15,8 +15,12 @@ const StyledNote = styled.div<{ $center: boolean }>`
 `;
 
 const StyledInfoIcon = styled(InfoIcon)`
-  color: ${({ theme }) => theme.color.status.info};
+  color: ${({ theme }) => theme.color.surface.bold};
   flex-shrink: 0;
+`;
+
+const NoteText = styled(Text)`
+  color: ${({ theme }) => theme.color.text.tertiary};
 `;
 
 const Note = ({
@@ -33,9 +37,7 @@ const Note = ({
     {withIcon && (
       <StyledInfoIcon height="16px" width="16px" label="info icon" />
     )}
-    <Text type={TextTypes.Body6} color="#A6A6A6">
-      {children}
-    </Text>
+    <NoteText type={TextTypes.Body6}>{children}</NoteText>
   </StyledNote>
 );
 

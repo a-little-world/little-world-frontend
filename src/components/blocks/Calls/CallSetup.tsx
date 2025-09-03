@@ -9,7 +9,7 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { LocalUserChoices, PreJoin } from '@livekit/components-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -196,7 +196,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
         persistUserChoices={false}
       />
       {error && (
-        <StatusMessage $type={StatusTypes.Error} $visible>
+        <StatusMessage type={StatusTypes.Error} visible>
           {t(error)}
         </StatusMessage>
       )}
