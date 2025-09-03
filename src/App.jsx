@@ -1,4 +1,3 @@
-import React from 'react';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { SWRConfig, mutate } from 'swr';
 
@@ -32,7 +31,10 @@ function Preloader({ children }) {
 }
 
 function App({ user, apiTranslations, apiOptions }) {
-  mutate(USER_ENDPOINT, user, false);
+  if (user) {
+    mutate(USER_ENDPOINT, user, false);
+  }
+
   mutate(API_OPTIONS_ENDPOINT, apiOptions, false);
   mutate(API_TRANSLATIONS_ENDPOINT, apiTranslations, false);
 

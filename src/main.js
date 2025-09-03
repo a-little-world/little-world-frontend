@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { mutate } from 'swr';
 
+import { isEmpty } from 'lodash';
 import App from './App';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
@@ -23,7 +24,7 @@ export function renderApp({ user, apiTranslations, apiOptions }) {
   }
   root.render(
     <App
-      user={user}
+      user={user && !isEmpty(user) ? user : undefined}
       apiTranslations={apiTranslations}
       apiOptions={apiOptions}
     />,

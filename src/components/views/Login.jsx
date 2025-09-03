@@ -7,7 +7,7 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
