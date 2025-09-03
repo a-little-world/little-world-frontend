@@ -1,5 +1,4 @@
 import { apiFetch } from '../../api/helpers';
-import { environment } from '../../environment';
 
 export const getUserNotes = async () => apiFetch(`/api/user-notes/`);
 
@@ -20,6 +19,6 @@ export const noteStatusUpdate = async bodyData =>
   });
 
 export const deleteUserNote = async id =>
-  apiFetch(`${environment.backendUrl}/api/user-notes/?note_id=${id}`, {
+  apiFetch(`/api/user-notes/?note_id=${id}`, {
     method: 'DELETE',
   });

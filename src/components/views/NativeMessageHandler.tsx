@@ -35,7 +35,7 @@ function NativeMessageHandler() {
 
   useEffect(() => {
     console.log('Establishing handler');
-    const handler = async (action, payload) => {
+    const handler = async (action: string, payload: Record<string, any>) => {
       console.log('action', action, 'TBS');
       console.log('payload', payload);
 
@@ -63,7 +63,11 @@ function NativeMessageHandler() {
           console.log('Frontend received token', payload);
           window.dispatchEvent(
             new CustomEvent('set-auth-token', {
-              detail: { token: payload?.token },
+              detail: {
+                token: payload?.token, // legacy single token
+                accessToken: payload?.accessToken ?? payload?.token_access ?? payload?.token,
+                refreshToken: payload?.refreshToken ?? payload?.token_refresh ?? null,
+              },
             }),
           );
           return { ok: true, data: 'Token stored in frontend' };

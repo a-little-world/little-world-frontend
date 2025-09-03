@@ -7,7 +7,6 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -56,9 +55,10 @@ const Login = () => {
     onFormError({ e, formFields: getValues(), setError });
   };
 
-  const setAuthToken = token => {
-    Cookies.set('auth_token', token || 'no-token-returned');
-    useMobileAuthTokenStore.getState().setToken(token);
+  const setAuthTokens = (accessToken, refreshToken) => {
+    useMobileAuthTokenStore
+      .getState()
+      .setTokens(accessToken || null, refreshToken || null);
   };
 
   const { data: userData } = useSWR(USER_ENDPOINT);
@@ -90,9 +90,12 @@ const Login = () => {
     login(data)
       .then(loginData => {
         if (environment.isNative) {
-          setAuthToken(loginData.token);
+          setAuthTokens(loginData.token_access, loginData.token_refresh);
           sendMessageToReactNative('setTokenFromDom', {
-            token: loginData.token,
+            // keep legacy for backward-compat
+            token: loginData.token_access,
+            accessToken: loginData.token_access,
+            refreshToken: loginData.token_refresh,
             timestamp: new Date().toISOString(),
           });
         }
@@ -107,8 +110,10 @@ const Login = () => {
     console.log('login ready for set-auth-token event');
     const loginWithToken = event => {
       console.log('login set-auth-token event', event);
-      console.log('login set-auth-token token', event?.detail?.token);
-      setAuthToken(event?.detail?.token);
+      const accessToken = event?.detail?.accessToken ?? event?.detail?.token;
+      const refreshToken = event?.detail?.refreshToken ?? null;
+      console.log('login set-auth-token tokens', { accessToken, refreshToken });
+      setAuthTokens(accessToken, refreshToken);
       mutate(USER_ENDPOINT);
     };
 

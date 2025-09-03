@@ -1,19 +1,18 @@
-import { environment } from '../environment';
 import { apiFetch } from './helpers';
 
 export const fetchChatMessages = async ({ id, page }) =>
   apiFetch(
-    `${environment.backendUrl}/api/messages/${id}/?page=${page}&page_size=20`,
+    `/api/messages/${id}/?page=${page}&page_size=20`,
   );
 
 export const fetchChats = async ({ page }) =>
-  apiFetch(`${environment.backendUrl}/api/chats/?page=${page}&page_size=20`);
+  apiFetch(`/api/chats/?page=${page}&page_size=20`);
 
 export const fetchChat = async ({ chatId }) =>
-  apiFetch(`${environment.backendUrl}/api/chats/${chatId}/`);
+  apiFetch(`/api/chats/${chatId}/`);
 
 export const markChatMessagesReadApi = async ({ chatId }) =>
-  apiFetch(`${environment.backendUrl}/api/messages/${chatId}/chat_read/`, {
+  apiFetch(`/api/messages/${chatId}/chat_read/`, {
     method: 'POST',
     body: {},
   });

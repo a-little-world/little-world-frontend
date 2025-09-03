@@ -37,9 +37,10 @@ export const formatApiError = (responseBody: any, response: any) => {
   if (typeof responseBody === 'string') {
     apiError.message = responseBody;
   } else {
-    const errorTypeApi = Object.keys(responseBody)?.[0];
-    const errorType = API_FIELDS[errorTypeApi] ?? errorTypeApi;
-    const errorTags = Object.values(responseBody)?.[0];
+    const responseObj: Record<string, any> = responseBody || {};
+    const errorTypeApi = Object.keys(responseObj)?.[0];
+    const errorType = API_FIELDS[errorTypeApi as keyof typeof API_FIELDS] ?? errorTypeApi;
+    const errorTags = Object.values(responseObj)?.[0] as any;
     const errorTag = Array.isArray(errorTags) ? errorTags[0] : errorTags;
 
     apiError.cause = errorType ?? null;
@@ -51,16 +52,14 @@ export const formatApiError = (responseBody: any, response: any) => {
 };
 
 function getNativeHeaders(): Record<string, string> {
-  const storeToken = useMobileAuthTokenStore.getState().token;
-  const cookieToken = Cookies.get('auth_token');
-  const effectiveToken = storeToken || cookieToken || null;
+  const { accessToken } = useMobileAuthTokenStore.getState();
 
   const headers = {
     'X-CSRF-Bypass-Token': environment.csrfBypassToken,
   } as Record<string, string>;
 
-  if (effectiveToken) {
-    headers['Authorization'] = `Token ${effectiveToken}`;
+  if (accessToken) {
+    headers['Authorization'] = `Bearer ${accessToken}`;
   }
 
   return headers;

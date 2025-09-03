@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { mutate } from 'swr';
 
 import './App.css';
 import { environment } from './environment';
-import {
-  NOTIFICATIONS_ENDPOINT,
-  UNREAD_NOTIFICATIONS_ENDPOINT,
-} from './features/swr/index';
+import { mutate } from 'swr';
+import { NOTIFICATIONS_ENDPOINT, UNREAD_NOTIFICATIONS_ENDPOINT } from './features/swr';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import useToast from './hooks/useToast';
 import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
@@ -29,14 +26,14 @@ const WebsocketBridge = () => {
    * payload: {...}
    * } --> this will triger a simple redux dispatch in the frontend
    */
-  const mobileToken = useMobileAuthTokenStore(state => state.token);
+  const accessToken = useMobileAuthTokenStore(state => state.accessToken);
   const socketUrl = SOCKET_URL;
   const [, setMessageHistory] = useState([]);
-  console.log('mobileToken', mobileToken, environment.isNative);
+  console.log('mobileToken', accessToken, environment.isNative);
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
-    protocols: environment.isNative && mobileToken ? [`token.${mobileToken}`] : undefined,
+    protocols: environment.isNative && accessToken ? [`token.${accessToken}`] : undefined,
   });
 
   const toast = useToast();
