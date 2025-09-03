@@ -13,15 +13,15 @@ export interface Environment {
 }
 
 export const environment: Environment = {
-  development: true,
-  production: false,
+  development: false,
+  production: true,
   defaultLoginName: 'benjamin.tim@gmx.de',
   defaultLoginPassword: 'Test123',
-  backendUrl: 'https://9db174fbff5f.ngrok-free.app',
+  backendUrl: '',
   backendPath: '',
   coreWsScheme: 'wss://',
   coreWsPath: '/api/core/ws',
-  websocketHost: '9db174fbff5f.ngrok-free.app',
-  isNative: true,
+  websocketHost: '',
+  isNative: false,
   csrfBypassToken: 'abc',
 };
