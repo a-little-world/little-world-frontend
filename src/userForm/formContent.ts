@@ -7,6 +7,8 @@ import {
   MultiDropdown,
   MultiSelection,
   RadioGroup,
+  StatusMessage,
+  StatusTypes,
   Text,
   TextArea,
   TextContent,
@@ -14,11 +16,16 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { ElementType } from 'react';
+import styled from 'styled-components';
 
 import Note from '../components/atoms/Note';
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
 import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
 import { formatMultiSelectionOptions } from '../helpers/form';
+
+const Warning = styled(StatusMessage)`
+  margin-top: -${({ theme }) => theme.spacing.xxsmall};
+`;
 
 export const ComponentTypes = {
   infoText: 'infoText',
@@ -39,6 +46,7 @@ export const ComponentTypes = {
   checkboxWithInput: 'checkboxWithInput',
   checkboxGrid: 'checkboxGrid',
   picture: 'picture',
+  warning: 'warning',
 } as const;
 
 export type ComponentType = keyof typeof ComponentTypes;
@@ -59,8 +67,18 @@ interface ComponentReturn {
 export const formatDataField = (
   data: Array<{ tag: string; value: string }> | undefined,
   t: (key: string) => string,
-): Array<{ label: string; value: string }> =>
-  data?.map(({ tag, value }) => ({ label: t(tag), value })) || [];
+  alphabetize: boolean = false,
+): Array<{ label: string; value: string }> => {
+  if (!data) return [];
+
+  if (alphabetize) {
+    return data
+      .map(({ tag, value }) => ({ label: t(tag), value }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }
+
+  return data.map(({ tag, value }) => ({ label: t(tag), value }));
+};
 
 export const getFormComponent = (
   { type, currentValue, dataField, formData, getProps }: FormComponentConfig,
@@ -74,6 +92,15 @@ export const getFormComponent = (
 
     case ComponentTypes.infoText:
       return { Component: Note, ...props };
+
+    case ComponentTypes.warning:
+      return {
+        Component: Warning,
+        type: StatusTypes.Warning,
+        visible: true,
+        withBorder: true,
+        ...props,
+      };
 
     case ComponentTypes.textArea:
       return {
@@ -158,7 +185,7 @@ export const getFormComponent = (
         Component: Dropdown,
         dataField,
         updater: 'onValueChange',
-        options: formatDataField(formData, t),
+        options: formatDataField(formData, t, true),
         currentValue: currentValue || '',
         ...props,
       };

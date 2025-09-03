@@ -1,7 +1,5 @@
-import BabbelLogo from '../../../images/partners/babbel-logo.png';
 import LernFairLogo from '../../../images/partners/lern-fair-logo.svg';
 import LernFairImage from '../../../images/partners/lern-fair-studying.jpg';
-import { BABBEL_REDIRECT } from '../../../router/redirects';
 import {
   PARTNERS_ROUTE,
   TRAININGS_ROUTE,
@@ -29,16 +27,16 @@ export const PARTNERS_DATA = {
   //   image:
   //     'https://home.little-world.com/wp-content/uploads/2025/03/Patenmatch-logo.svg',
   // },
-  babbel: {
-    id: PARTNERS_DATA_IDS.babbel,
-    title: 'Babbel',
-    description: 'resources.partners.babbel.description',
-    slug: 'babbel',
-    link: getAppSubpageRoute(PARTNERS_ROUTE, 'babbel'),
-    linkText: 'resources.partners.partner_cta',
-    ctaLink: BABBEL_REDIRECT,
-    image: BabbelLogo,
-  },
+  // babbel: {
+  //   id: PARTNERS_DATA_IDS.babbel,
+  //   title: 'Babbel',
+  //   description: 'resources.partners.babbel.description',
+  //   slug: 'babbel',
+  //   link: getAppSubpageRoute(PARTNERS_ROUTE, 'babbel'),
+  //   linkText: 'resources.partners.partner_cta',
+  //   ctaLink: BABBEL_REDIRECT,
+  //   image: BabbelLogo,
+  // },
   lernFair: {
     id: PARTNERS_DATA_IDS.lernfair,
     title: 'Lern Fair',

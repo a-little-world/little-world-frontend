@@ -284,8 +284,8 @@ export function Contact() {
       <FileDropzone fileRef={fileRef} label={t('help.contact_picture_label')} />
 
       <StatusMessage
-        $visible={Boolean(requestSuccessful || errors?.root?.serverError)}
-        $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
+        visible={Boolean(requestSuccessful || errors?.root?.serverError)}
+        type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
       >
         {requestSuccessful
           ? t('help.contact_form_submitted')

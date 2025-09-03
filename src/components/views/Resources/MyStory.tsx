@@ -135,8 +135,8 @@ const MyStory: FC = () => {
           {t('resources.my_story.upload_button')}
         </UploadButton>
         <StatusMessage
-          $visible={requestSuccessful || !!error}
-          $type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
+          visible={requestSuccessful || !!error}
+          type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
           {requestSuccessful ? t('resources.my_story.submit_success') : error}
         </StatusMessage>

@@ -82,8 +82,8 @@ const ChangeEmail = () => {
           type="email"
         />
         <StatusMessage
-          $visible={errors?.root?.serverError}
-          $type={StatusTypes.Error}
+          visible={errors?.root?.serverError}
+          type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
         </StatusMessage>

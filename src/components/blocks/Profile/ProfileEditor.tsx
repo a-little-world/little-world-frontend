@@ -77,7 +77,7 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({
           {t(`profile.editor_title_${content.dataField}`)}
         </EditorTitle>
         <FormStep control={control} content={content} />
-        <SubmitError $visible={errors?.root?.serverError}>
+        <SubmitError visible={errors?.root?.serverError}>
           {t(errors?.root?.serverError?.message)}
         </SubmitError>
         <FormButtons>

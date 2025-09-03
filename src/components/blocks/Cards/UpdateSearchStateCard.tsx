@@ -53,7 +53,7 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
       <CardContent>
         <Text>{t(`update_search_modal.${currentState}.description`)}</Text>
         {error && (
-          <StatusMessage $visible={!!error} $type={StatusTypes.Error}>
+          <StatusMessage visible={!!error} type={StatusTypes.Error}>
             {error}
           </StatusMessage>
         )}
