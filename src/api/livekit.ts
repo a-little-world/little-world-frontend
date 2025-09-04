@@ -74,3 +74,26 @@ export const callAgain = async ({
     onError(error);
   }
 };
+
+export const rejectCall = async ({
+  partnerId,
+  sessionId,
+  onSuccess,
+  onError,
+}: {
+  partnerId: string;
+  sessionId: string;
+  onSuccess: (result: any) => void;
+  onError: (error: any) => void;
+}) => {
+  try {
+    const response = await apiFetch('/api/call_rejected', {
+      method: 'POST',
+      useTagsOnly: true,
+      body: { partner_id: partnerId, session_id: sessionId },
+    });
+    onSuccess(response);
+  } catch (error) {
+    onError(error);
+  }
+};

@@ -25,7 +25,7 @@ interface ConnectedCallState {
 const useConnectedCallStore = create<ConnectedCallState>(set => ({
   callData: null,
   disconnectedFrom: null,
-  callRejected: true,
+  callRejected: false,
   connectToCall: data => set({ callData: data, disconnectedFrom: null }),
   initializeCallID: (uuid: string) =>
     set(({ callData }) => ({

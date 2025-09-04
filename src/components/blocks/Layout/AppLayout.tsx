@@ -147,7 +147,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const onRejectCall = () => {
     if (activeCallRoom?.partner?.id) {
-      blockIncomingCall(activeCallRoom.partner.id);
+      blockIncomingCall(activeCallRoom.partner.id, activeCallRoom.room_uuid);
     }
     closeModal();
   };

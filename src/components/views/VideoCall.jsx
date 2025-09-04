@@ -1,7 +1,11 @@
 import {
   Button,
   ButtonAppearance,
+  ButtonSizes,
+  StatusMessage,
+  StatusTypes,
   Text,
+  TextTypes,
 } from '@a-little-world/little-world-design-system';
 import {
   LayoutContextProvider,
@@ -20,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
+import { callAgain } from '../../api/livekit.ts';
 import { useConnectedCallStore } from '../../features/stores/index.ts';
 import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index.ts';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
@@ -36,6 +41,7 @@ import QuestionCards from '../blocks/QuestionCards/QuestionCards.tsx';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
 import {
   CallLayout,
+  CallRejectedTextContainer,
   DesktopTranslationTool,
   StyledGridLayout,
   VideoContainer,
@@ -53,6 +59,9 @@ function MyVideoConference({
   selfImage,
   selfImageType,
   sessionId,
+  initializeCallID,
+  setCallRejected,
+  callRejected,
 }) {
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
@@ -62,9 +71,8 @@ function MyVideoConference({
   );
   const [currentParticipants, setCurrentParticipants] = useState(1);
   const [otherUserDisconnected, setOtherUserDisconnected] = useState(false);
+  const [callAgainError, setCallAgainError] = useState('');
   const { name } = useRoomInfo();
-  const { initializeCallID, setCallRejected, callRejected } =
-    useConnectedCallStore();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
 
   useEffect(() => {
@@ -95,13 +103,17 @@ function MyVideoConference({
   });
 
   const handleCallAgain = () => {
+    setCallAgainError('');
     callAgain({
       partnerId,
       sessionId,
       onSuccess: () => {
         setCallRejected(false);
       },
-      onError: () => {},
+      onError: error => {
+        console.error('Call again error:', error);
+        setCallAgainError('error.server_issue');
+      },
     });
   };
 
@@ -109,9 +121,11 @@ function MyVideoConference({
 
   return (
     <Videos>
-      <StyledGridLayout tracks={tracks}>
-        <ParticipantTile placeholders={placeholders} />
-      </StyledGridLayout>
+      {!callRejected && (
+        <StyledGridLayout tracks={tracks}>
+          <ParticipantTile placeholders={placeholders} />
+        </StyledGridLayout>
+      )}
 
       {tracks.length === 1 && (
         <WaitingTile $isFullScreen={isFullScreen}>
@@ -123,15 +137,29 @@ function MyVideoConference({
           />
           {callRejected ? (
             <>
-              <Text>{t('call.partner_rejected', { name: partnerName })}</Text>
-              <ButtonsContainer>
+              <CallRejectedTextContainer>
+                <Text type={TextTypes.Body4} bold center>
+                  {partnerName || ''}
+                </Text>
+                <Text type={TextTypes.Body4} center>
+                  {t('call.partner_rejected')}
+                </Text>
+              </CallRejectedTextContainer>
+              {callAgainError && (
+                <StatusMessage visible type={StatusTypes.Error}>
+                  {t(callAgainError)}
+                </StatusMessage>
+              )}
+              <ButtonsContainer $maxWidth="440px" $marginTop="auto">
                 <Button
                   appearance={ButtonAppearance.Secondary}
+                  backgroundColor="transparent"
+                  size={ButtonSizes.Small}
                   {...disconnectProps}
                 >
                   {t('call.exit')}
                 </Button>
-                <Button onClick={handleCallAgain}>
+                <Button onClick={handleCallAgain} size={ButtonSizes.Small}>
                   {t('call.call_again')}
                 </Button>
               </ButtonsContainer>
@@ -166,7 +194,13 @@ function VideoCall() {
     onKeyPressed: () => setIsFullScreen(false),
   });
 
-  const { callData, disconnectFromCall } = useConnectedCallStore();
+  const {
+    callData,
+    disconnectFromCall,
+    initializeCallID,
+    setCallRejected,
+    callRejected,
+  } = useConnectedCallStore();
   const { uuid, token, livekitServerUrl, audioOptions, videoOptions, chatId } =
     callData || {};
   const { data: user } = useSWR(USER_ENDPOINT);
@@ -233,7 +267,7 @@ function VideoCall() {
               <MyVideoConference
                 isFullScreen={isFullScreen}
                 sessionId={uuid}
-                partnerId={chatData?.partner?.hash}
+                partnerId={chatData?.partner?.id}
                 partnerName={chatData?.partner?.first_name}
                 partnerImage={
                   chatData?.partner?.image_type === 'avatar'
@@ -247,20 +281,27 @@ function VideoCall() {
                     : profile?.image
                 }
                 selfImageType={profile.image_type}
+                initializeCallID={initializeCallID}
+                setCallRejected={setCallRejected}
+                callRejected={callRejected}
               />
               <RoomAudioRenderer />
-              <TopControlBar
-                activeOption={selectedDrawerOption}
-                onChatToggle={onMobileChatToggle}
-                onTranslatorToggle={onMobileTranslatorToggle}
-                onQuestionCardsToggle={onMobileQuestionsToggle}
-              />
-              <ControlBar
-                isFullScreen={isFullScreen}
-                onChatToggle={onChatToggle}
-                onFullScreenToggle={onFullScreenToggle}
-                onTranslatorToggle={onTranslatorToggle}
-              />
+              {!callRejected && (
+                <>
+                  <TopControlBar
+                    activeOption={selectedDrawerOption}
+                    onChatToggle={onMobileChatToggle}
+                    onTranslatorToggle={onMobileTranslatorToggle}
+                    onQuestionCardsToggle={onMobileQuestionsToggle}
+                  />
+                  <ControlBar
+                    isFullScreen={isFullScreen}
+                    onChatToggle={onChatToggle}
+                    onFullScreenToggle={onFullScreenToggle}
+                    onTranslatorToggle={onTranslatorToggle}
+                  />
+                </>
+              )}
             </LiveKitRoom>
             {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>

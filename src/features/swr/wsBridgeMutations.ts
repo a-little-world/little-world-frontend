@@ -1,5 +1,6 @@
 import { mutate } from 'swr';
 
+import { rejectCall } from '../../api/livekit.ts';
 import useConnectedCallStore from '../stores/connectedCall.ts';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
@@ -139,35 +140,34 @@ export function addActiveCallRoom(callRoom: any): void {
   mutate(
     ACTIVE_CALL_ROOMS_ENDPOINT,
     (activeCallRoomsData: any) => {
-      if (!activeCallRoomsData) return activeCallRoomsData;
-      return {
-        ...activeCallRoomsData,
-        results: [
-          ...(activeCallRoomsData.results || []).filter(
-            (room: any) => room?.uuid !== callRoom?.uuid, // TODO SENTRY ERROR why is room undefined in some cases?
-          ),
-          callRoom,
-        ],
-      };
+      if (!activeCallRoomsData) return [callRoom];
+      const filteredCallRooms = activeCallRoomsData.filter(
+        (room: any) => room?.uuid !== callRoom?.uuid,
+      );
+      return [...filteredCallRooms, callRoom];
     },
     false,
   );
 }
 
-export function blockIncomingCall(userId: string): void {
+export function blockIncomingCall(userId: string, sessionId?: string): void {
   mutate(
     ACTIVE_CALL_ROOMS_ENDPOINT,
     (activeCallRoomsData: any) => {
-      if (!activeCallRoomsData) return activeCallRoomsData;
-      return {
-        ...activeCallRoomsData,
-        results: (activeCallRoomsData.results || []).filter(
-          (room: any) => room?.partner.id !== userId, // TODO SENTRY ERROR room undefined in some cases
-        ),
-      };
+      if (!activeCallRoomsData) return [];
+      return activeCallRoomsData.filter(
+        (callRoom: any) => callRoom?.partner.id !== userId, // TODO SENTRY ERROR room undefined in some cases
+      );
     },
     false,
   );
+  if (sessionId)
+    rejectCall({
+      partnerId: userId,
+      sessionId,
+      onSuccess: () => {},
+      onError: () => console.error('Error rejecting call'),
+    });
 }
 
 export function outgoingCallRejected(): void {

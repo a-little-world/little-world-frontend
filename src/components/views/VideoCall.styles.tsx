@@ -188,10 +188,21 @@ export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
   justify-content: center;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => `${theme.spacing.xxlarge} ${theme.spacing.xlarge}`};
 
   ${({ theme, $isFullScreen }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.medium} ${theme.spacing.xlarge};
+    }
+
     @media (min-width: ${theme.breakpoints.large}) {
       border-radius: ${$isFullScreen ? 0 : theme.radius.small};
+      padding: ${theme.spacing.xxlarge} ${theme.spacing.xlarge};
+    }
+
+    @media (min-width: ${theme.breakpoints.xlarge}) {
+      border-radius: ${$isFullScreen ? 0 : theme.radius.small};
+      padding: ${theme.spacing.massive} ${theme.spacing.xlarge};
     }
   `}
 `;
@@ -231,7 +242,7 @@ export const MEDIA_DEVICE_MENU_CSS = css`
       background: ${({ theme }) => theme.color.surface.bold};
       color: ${({ theme }) => theme.color.text.reversed};
 
-      .lk-button:not(:disabled):hover  {
+      .lk-button:not(:disabled):hover {
         background-color: unset;
       }
     }
@@ -253,3 +264,5 @@ export const VideoPlaceholder = styled(ProfileImage)`
     }
   `}
 `;
+
+export const CallRejectedTextContainer = styled.div``;
