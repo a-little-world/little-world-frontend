@@ -81,7 +81,7 @@ export async function apiFetch<T = any>(
     Accept: 'application/json',
     'Content-Type': 'application/json',
     'X-CSRFToken': Cookies.get('csrftoken') || '',
-    'ngrok-skip-browser-warning': '69420',
+    // 'ngrok-skip-browser-warning': '69420', use for development only!
   };
 
   if (useTagsOnly) {
