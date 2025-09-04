@@ -79,9 +79,8 @@ export const Root = ({
   children,
   restoreScroll = true,
   includeModeSwitch = false,
-}) => {
-
-  return <CustomThemeProvider>
+}) => (
+  <CustomThemeProvider>
     <ToastProvider>
       <AuthGuard>
         <WebsocketBridge />
@@ -94,7 +93,7 @@ export const Root = ({
       {environment.isNative && <NativeMessageHandler />}
     </ToastProvider>
   </CustomThemeProvider>
-};
+);
 
 export function getWebRouter() {
   const ROOT_ROUTES = [

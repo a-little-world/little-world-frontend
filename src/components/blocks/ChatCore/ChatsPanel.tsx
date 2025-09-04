@@ -156,20 +156,20 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
           const isSender = message.newest_message?.sender === userId;
 
           // Process attachment widgets for malformed JSON if there's a newest message
-          const processedMessageText = message.newest_message
-            ? processAttachmentWidgets(message.newest_message, t)
-            : message.newest_message?.text;
+          const processedMessageText = message.newest_message ?
+            processAttachmentWidgets(message.newest_message, t) :
+            message.newest_message?.text;
 
-          const customChatElements = message.newest_message?.parsable
-            ? getCustomChatElements({
+          const customChatElements = message.newest_message?.parsable ?
+            getCustomChatElements({
                 message: {
                   ...message.newest_message,
                   text: processedMessageText,
                 },
                 userId,
                 isPreview: true,
-              })
-            : [];
+              }) :
+            [];
 
           return (
             <Message
@@ -190,9 +190,9 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
               <Details>
                 <Top>
                   <Text bold>
-                    {message.is_unmatched
-                      ? t('chat.inactive_match')
-                      : message.partner.first_name}
+                    {message.is_unmatched ?
+                      t('chat.inactive_match') :
+                      message.partner.first_name}
                   </Text>
                   {!!message?.newest_message?.created && (
                     <Time type={TextTypes.Body6}>

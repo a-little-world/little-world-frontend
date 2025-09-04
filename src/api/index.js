@@ -106,9 +106,9 @@ export const postUserProfileUpdate = (
 };
 
 export const login = async ({ email, password }) => {
-  const endpoint = environment.isNative
-    ? `/api/user/login/?token_auth=true`
-    : `/api/user/login/`;
+  const endpoint = environment.isNative ?
+    `/api/user/login/?token_auth=true` :
+    `/api/user/login/`;
   return apiFetch(endpoint, {
     method: 'POST',
     useTagsOnly: true,

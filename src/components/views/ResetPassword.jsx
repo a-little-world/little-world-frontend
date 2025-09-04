@@ -96,9 +96,9 @@ const ResetPassword = () => {
           visible={requestSuccessful || errors?.root?.serverError}
           type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
-          {requestSuccessful
-            ? t('reset_password.success_message')
-            : t(errors?.root?.serverError?.message)}
+          {requestSuccessful ?
+            t('reset_password.success_message') :
+            t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Link

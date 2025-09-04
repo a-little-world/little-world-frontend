@@ -75,9 +75,9 @@ const formPages = {
         getProps: t => ({
           label: t('self_info.country_of_residence_label'),
           labelTooltip:
-            userData?.user_type === USER_TYPES.volunteer
-              ? null
-              : t('self_info.country_of_residence_tooltip'),
+            userData?.user_type === USER_TYPES.volunteer ?
+              null :
+              t('self_info.country_of_residence_tooltip'),
           errorRules: { required: t('validation.required') },
         }),
       },

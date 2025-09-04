@@ -59,7 +59,7 @@ function getNativeHeaders(): Record<string, string> {
   } as Record<string, string>;
 
   if (accessToken) {
-    headers['Authorization'] = `Bearer ${accessToken}`;
+    headers.Authorization = `Bearer ${accessToken}`;
   }
 
   return headers;

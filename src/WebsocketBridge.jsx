@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { mutate } from 'swr';
 
 import './App.css';
 import { environment } from './environment';
-import { mutate } from 'swr';
 import { NOTIFICATIONS_ENDPOINT, UNREAD_NOTIFICATIONS_ENDPOINT } from './features/swr';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import useToast from './hooks/useToast';

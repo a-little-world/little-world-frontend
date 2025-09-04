@@ -82,9 +82,9 @@ const SignUp = () => {
         passAuthenticationBoundary();
         setIsSubmitting(false);
         mutate(USER_ENDPOINT, signUpData);
-        const nextRoute = signUpData?.emailVerified
-          ? getAppRoute()
-          : getAppRoute(VERIFY_EMAIL_ROUTE);
+        const nextRoute = signUpData?.emailVerified ?
+          getAppRoute() :
+          getAppRoute(VERIFY_EMAIL_ROUTE);
         navigate(nextRoute);
       })
       .catch(onError);

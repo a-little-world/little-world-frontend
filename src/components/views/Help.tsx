@@ -287,9 +287,9 @@ export function Contact() {
         visible={Boolean(requestSuccessful || errors?.root?.serverError)}
         type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
       >
-        {requestSuccessful
-          ? t('help.contact_form_submitted')
-          : t(errors?.root?.serverError?.message)}
+        {requestSuccessful ?
+          t('help.contact_form_submitted') :
+          t(errors?.root?.serverError?.message)}
       </StatusMessage>
       <Button
         type="submit"

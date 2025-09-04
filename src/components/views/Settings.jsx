@@ -346,14 +346,14 @@ function Settings() {
               section="personal"
               label={label}
               value={
-                label === 'display_language'
-                  ? t(`settings.display_language_${data[label]}`)
-                  : data[label]
+                label === 'display_language' ?
+                  t(`settings.display_language_${data[label]}`) :
+                  data[label]
               }
               setEditing={
-                label !== 'profilePicture'
-                  ? setEditing
-                  : () => {
+                label !== 'profilePicture' ?
+                  setEditing :
+                  () => {
                       /* For profile picture we just open the userform frontend for now */
                       navigate('/formpage?pages=6');
                       navigate(0); /* Reload page */

@@ -159,9 +159,9 @@ function Sidebar({ isVH, sidebarMobile }) {
   const navigate = useNavigate();
   const theme = useTheme();
   const startPath =
-    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
-      ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
-      : getAppRoute('');
+    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ?
+      getAppRoute(COMMUNITY_EVENTS_ROUTE) :
+      getAppRoute('');
 
   const buttonData = [
     { label: 'start', path: startPath, Icon: DashboardIcon },
@@ -242,9 +242,9 @@ function Sidebar({ isVH, sidebarMobile }) {
                 to={path}
                 key={label}
                 $appearance={
-                  isActive
-                    ? ButtonAppearance.Secondary
-                    : ButtonAppearance.Primary
+                  isActive ?
+                    ButtonAppearance.Secondary :
+                    ButtonAppearance.Primary
                 }
               >
                 {!!unreadCount && <UnreadDot count={unreadCount} />}
@@ -252,9 +252,9 @@ function Sidebar({ isVH, sidebarMobile }) {
                   label={label}
                   width={32}
                   height={32}
-                  {...(isActive
-                    ? { color: theme.color.surface.primary }
-                    : { gradient: Gradients.Blue })}
+                  {...(isActive ?
+                    { color: theme.color.surface.primary } :
+                    { gradient: Gradients.Blue })}
                   {...iconProps}
                 />
                 {t(`nbs_${label}`)}
@@ -265,9 +265,9 @@ function Sidebar({ isVH, sidebarMobile }) {
                 type="button"
                 variation={ButtonVariations.Option}
                 appearance={
-                  isActive
-                    ? ButtonAppearance.Secondary
-                    : ButtonAppearance.Primary
+                  isActive ?
+                    ButtonAppearance.Secondary :
+                    ButtonAppearance.Primary
                 }
                 onClick={clickEvent}
               >

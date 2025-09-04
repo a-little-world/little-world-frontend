@@ -304,9 +304,9 @@ const Chat = ({
         {chatMessages?.page &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
-              {isUnmatched
-                ? t('chat.unmatched_no_messages')
-                : t('chat.no_messages')}
+              {isUnmatched ?
+                t('chat.unmatched_no_messages') :
+                t('chat.no_messages')}
             </NoMessages>
           ) : (
             <>
@@ -324,15 +324,15 @@ const Chat = ({
                       t,
                     );
 
-                    const customChatElements = message.parsable
-                      ? getCustomChatElements({
+                    const customChatElements = message.parsable ?
+                      getCustomChatElements({
                           initCallSetup,
                           message: { ...message, text: processedMessageText },
                           userId,
                           activeChat,
                           inCall,
-                        })
-                      : [];
+                        }) :
+                      [];
 
                     return (
                       <Message
@@ -404,9 +404,9 @@ const Chat = ({
           error={t(get(errors, `${ROOT_SERVER_ERROR}.message`))}
           expandable
           placeholder={
-            isUnmatched
-              ? t('chat.unmatched_text_area_placeholder')
-              : t('chat.text_area_placeholder')
+            isUnmatched ?
+              t('chat.unmatched_text_area_placeholder') :
+              t('chat.text_area_placeholder')
           }
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
@@ -427,9 +427,9 @@ const Chat = ({
           type="button"
           variation={ButtonVariations.Circle}
           backgroundColor={
-            selectedFile
-              ? theme.color.status.error
-              : theme.color.surface.primary
+            selectedFile ?
+              theme.color.status.error :
+              theme.color.surface.primary
           }
           borderColor={theme.color.text.title}
           color={
