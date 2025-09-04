@@ -19,17 +19,6 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  settings: {
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
-      typescript: {
-        alwaysTryTypes: true,
-        project: './tsconfig.json',
-      },
-    },
-  },
   rules: {
     'react-hooks/exhaustive-deps': 'warn',
     'react-hooks/rules-of-hooks': 'error',
@@ -62,39 +51,21 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
-        argsIgnorePattern: '^_|^[a-z]+$', // Allow single lowercase letters (common in interfaces)
-        varsIgnorePattern: '^_|^[A-Z_]+$|^[a-z]+$', // Allow UPPER_CASE (enums, constants) and lowercase (enum values)
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
         caughtErrorsIgnorePattern: '^_',
       },
     ],
   },
-  overrides: [
-    {
-      files: ['*.ts', '*.tsx'],
-      rules: {
-        'no-undef': 'off',
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json',
       },
     },
-    {
-      files: ['*.jsx', '*.tsx'],
-      rules: {
-        '@typescript-eslint/no-unused-vars': [
-          'error',
-          {
-            argsIgnorePattern: '^_|^[a-z]+$', // Allow single lowercase letters (common in interfaces)
-            varsIgnorePattern: '^_|^React$|^[A-Z_]+$|^[a-z]+$', // Allow UPPER_CASE (enums, constants) and lowercase (enum values)
-            caughtErrorsIgnorePattern: '^_',
-          },
-        ],
-        'no-unused-vars': [
-          'error',
-          {
-            argsIgnorePattern: '^_|^[a-z]+$', // Allow single lowercase letters (common in interfaces)
-            varsIgnorePattern: '^_|^React$|^[A-Z_]+$|^[a-z]+$', // Allow UPPER_CASE (enums, constants) and lowercase (enum values)
-            caughtErrorsIgnorePattern: '^_',
-          },
-        ],
-      },
-    },
-  ],
+  },
 };

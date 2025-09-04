@@ -1,35 +1,73 @@
-import { useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useReceiveHandlerStore } from '../../features/stores';
+
+type EventHandlerState = {
+  navigationHandler: ((event: Event) => void) | null;
+  authTokenHandler: ((event: Event) => void) | null;
+  messageHandler: ((action: string, payload: Record<string, any>) => Promise<any>) | null;
+};
+
+type EventHandlerAction = 
+  | { type: 'SET_NAVIGATION_HANDLER'; payload: ((event: Event) => void) | null }
+  | { type: 'SET_AUTH_TOKEN_HANDLER'; payload: ((event: Event) => void) | null }
+  | { type: 'SET_MESSAGE_HANDLER'; payload: ((action: string, payload: Record<string, any>) => Promise<any>) | null }
+  | { type: 'CLEANUP' };
+
+const initialState: EventHandlerState = {
+  navigationHandler: null,
+  authTokenHandler: null,
+  messageHandler: null,
+};
+
+function eventHandlerReducer(state: EventHandlerState, action: EventHandlerAction): EventHandlerState {
+  switch (action.type) {
+    case 'SET_NAVIGATION_HANDLER':
+      return { ...state, navigationHandler: action.payload };
+    case 'SET_AUTH_TOKEN_HANDLER':
+      return { ...state, authTokenHandler: action.payload };
+    case 'SET_MESSAGE_HANDLER':
+      return { ...state, messageHandler: action.payload };
+    case 'CLEANUP':
+      return initialState;
+    default:
+      return state;
+  }
+}
 
 function NativeMessageHandler() {
   const { setHandler } = useReceiveHandlerStore();
   const navigate = useNavigate();
+  const [state, dispatch] = useReducer(eventHandlerReducer, initialState);
 
-  // Listen for navigation events from the handler
   useEffect(() => {
-    const handleNavigation = event => {
-      const { path } = event.detail;
+    const handleNavigation = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { path } = customEvent.detail;
       console.log('Navigation event received, navigating to:', path);
       navigate(path);
     };
 
+    dispatch({ type: 'SET_NAVIGATION_HANDLER', payload: handleNavigation });
     window.addEventListener('native-navigate', handleNavigation);
 
     return () => {
       window.removeEventListener('native-navigate', handleNavigation);
+      dispatch({ type: 'SET_NAVIGATION_HANDLER', payload: null });
     };
   }, [navigate]);
 
   useEffect(() => {
-    const handler = event => {
+    const handler = (event: Event) => {
       console.log('WebNative received auth token event', event);
     };
 
+    dispatch({ type: 'SET_AUTH_TOKEN_HANDLER', payload: handler });
     window.addEventListener('set-auth-token', handler);
 
     return () => {
       window.removeEventListener('set-auth-token', handler);
+      dispatch({ type: 'SET_AUTH_TOKEN_HANDLER', payload: null });
     };
   }, []);
 
@@ -76,8 +114,13 @@ function NativeMessageHandler() {
       }
     };
 
+    dispatch({ type: 'SET_MESSAGE_HANDLER', payload: handler });
     // Set the handler; the store will auto-register with the native bridge if available
     setHandler(handler);
+
+    return () => {
+      dispatch({ type: 'SET_MESSAGE_HANDLER', payload: null });
+    };
   }, [setHandler]);
 
   return null;

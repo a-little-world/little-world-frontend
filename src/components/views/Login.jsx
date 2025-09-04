@@ -64,21 +64,16 @@ const Login = () => {
   const { data: userData } = useSWR(USER_ENDPOINT);
 
   useEffect(() => {
-    console.log('userData changed', userData);
     if (!userData) {
       return;
     }
 
     passAuthenticationBoundary();
     if (!userData.emailVerified) {
-      console.log('email not verified');
       navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
-      console.log('navigate to verify email');
     } else if (!userData.userFormCompleted) {
-      console.log('user form not completed');
       navigate(getAppRoute(USER_FORM_ROUTE));
     } else {
-      console.log('navigate to app');
       // per default route to /app on successful login
       navigate(getAppRoute(''));
     }
@@ -107,12 +102,9 @@ const Login = () => {
   };
 
   useEffect(() => {
-    console.log('login ready for set-auth-token event');
     const loginWithToken = event => {
-      console.log('login set-auth-token event', event);
       const accessToken = event?.detail?.accessToken ?? event?.detail?.token;
       const refreshToken = event?.detail?.refreshToken ?? null;
-      console.log('login set-auth-token tokens', { accessToken, refreshToken });
       setAuthTokens(accessToken, refreshToken);
       mutate(USER_ENDPOINT);
     };

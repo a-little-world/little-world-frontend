@@ -186,9 +186,6 @@ export function Faqs() {
     revalidateOnMount: true,
   });
 
-  console.log('Message route', MESSAGES_ROUTE);
-  console.log('Matches', matches, error);
-  console.log('FAQ', t('nbt_faqs'));
 
   const adminUser = matches?.support?.results?.[0];
   const supportUrl = getAppSubpageRoute(

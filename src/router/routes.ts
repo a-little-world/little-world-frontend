@@ -48,7 +48,7 @@ export const USER_FORM_CONDITIONS = 'conditions';
 const getUserFormRoute = (slug: string) => `${USER_FORM_ROUTE}/${slug}`;
 export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
-export const getAppRoute = (slug?: string) => `/${APP_ROUTE}/${slug}`;
+export const getAppRoute = (slug?: string) => `/${APP_ROUTE}${slug ? `/${slug}` : ''}`;
 export const getAppSubpageRoute = (parent: string, slug: string) =>
   getAppRoute(`${parent}/${slug}`);
 export const getCallRoute = (userId: string) => `/${APP_ROUTE}/call/${userId}`;
@@ -74,8 +74,8 @@ export const isActiveRoute = (locationPath: string, path: string) =>
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {
   try {
-    if (typeof window !== 'undefined' && window?.unloadCookieBanner) {
-      window?.unloadCookieBanner();
+    if (typeof window !== 'undefined' && (window as any)?.unloadCookieBanner) {
+      (window as any)?.unloadCookieBanner();
     }
   } catch (e) {
     // eslint-disable-next-line no-console

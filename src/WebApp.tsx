@@ -1,4 +1,5 @@
 import React from 'react';
+// @ts-ignore - react-dom/client types may not be available
 import { createRoot } from 'react-dom/client';
 
 import App from './App';
@@ -8,10 +9,6 @@ import reportWebVitals from './reportWebVitals';
 let root: any;
 
 export default function WebApp() {
-  const apiTranslations = undefined;
-  const user = undefined;
-  const apiOptions = undefined;
-  updateTranslationResources({ apiTranslations }); // Adds all form translations from the backend!
   // If not in development just render ...
   const container = document.getElementById('root');
 
@@ -20,12 +17,11 @@ export default function WebApp() {
   }
   root.render(
     <App
-      user={user}
-      apiTranslations={apiTranslations}
-      apiOptions={apiOptions}
+      user={undefined}
+      apiTranslations={undefined}
+      apiOptions={undefined}
     />,
   );
 
   reportWebVitals();
-  return null;
 }

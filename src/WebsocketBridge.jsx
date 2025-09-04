@@ -9,13 +9,11 @@ import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import useToast from './hooks/useToast';
 import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
 
-const window = undefined;
-
 const SOCKET_URL = environment.isCapacitorBuild ?
   environment.coreWsScheme +
     environment.backendUrl.split('//').pop() +
     environment.coreWsPath :
-  environment.coreWsScheme + (environment.isNative ? environment.websocketHost : window?.location.host || '') + environment.coreWsPath;
+  environment.coreWsScheme + (environment.isNative ? environment.websocketHost : (typeof window !== 'undefined' ? window.location.host : '')) + environment.coreWsPath;
 
 const WebsocketBridge = () => {
   /**
@@ -29,7 +27,6 @@ const WebsocketBridge = () => {
   const accessToken = useMobileAuthTokenStore(state => state.accessToken);
   const socketUrl = SOCKET_URL;
   const [, setMessageHistory] = useState([]);
-  console.log('mobileToken', accessToken, environment.isNative);
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
