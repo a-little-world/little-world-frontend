@@ -115,7 +115,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     ) {
       openModal(ModalTypes.INCOMING_CALL.id);
     } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
-  }, [activeCallRoom?.uuid]);
+  }, [activeCallRoom?.uuid, disconnectedFrom]);
 
   useEffect(() => {
     if (callSetup) {
