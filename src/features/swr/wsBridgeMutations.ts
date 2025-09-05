@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { mutate } from 'swr';
 
 import { rejectCall } from '../../api/livekit.ts';
@@ -140,11 +141,16 @@ export function addActiveCallRoom(callRoom: any): void {
   mutate(
     ACTIVE_CALL_ROOMS_ENDPOINT,
     (activeCallRoomsData: any) => {
-      if (!activeCallRoomsData) return [callRoom];
+      console.log({ activeCallRoomsData, callRoom });
+      if (!callRoom) return activeCallRoomsData;
+      if (isEmpty(activeCallRoomsData)) return [callRoom];
       const filteredCallRooms = activeCallRoomsData.filter(
         (room: any) => room?.uuid !== callRoom?.uuid,
       );
-      return [...filteredCallRooms, callRoom];
+
+      return isEmpty(filteredCallRooms)
+        ? [callRoom]
+        : [...filteredCallRooms, callRoom];
     },
     false,
   );
@@ -154,7 +160,7 @@ export function blockIncomingCall(userId: string, sessionId?: string): void {
   mutate(
     ACTIVE_CALL_ROOMS_ENDPOINT,
     (activeCallRoomsData: any) => {
-      if (!activeCallRoomsData) return [];
+      if (isEmpty(activeCallRoomsData)) return [];
       return activeCallRoomsData.filter(
         (callRoom: any) => callRoom?.partner.id !== userId, // TODO SENTRY ERROR room undefined in some cases
       );
@@ -261,8 +267,7 @@ export function runWsBridgeMutation(
       break;
     }
     case 'addActiveCallRoom': {
-      const { callRoom } = payload;
-      addActiveCallRoom(callRoom);
+      addActiveCallRoom(payload);
       break;
     }
     case 'blockIncomingCall': {
