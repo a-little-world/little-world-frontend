@@ -716,7 +716,7 @@
   "update_search_modal.searching.confirm_btn": "Stop searching",
   "update_search_modal.searching.description": "By clicking confirm, we will stop searching for a new match for you and therefore won't receive any new match proposals from us. This will not affect any existing matches that you currently have",
   "update_search_modal.searching.title": "Cancel search",
-  "user_form_notifications.description": "As soon as we have found a match for you, we will notify you. I would like...",
+  "user_form_notifications.description": "As soon as we have news for you, we will notify you. I would like...",
   "user_form_notifications.info": "Your phone number is stored securely and never shared.",
   "user_form_notifications.phone_number_label": "Your telephone number",
   "user_form_notifications.phone_number_tooltip": "Your phone number will only be visible to the Little World team. Your number will never be passed on to third parties and you will not receive any promotional calls.",
