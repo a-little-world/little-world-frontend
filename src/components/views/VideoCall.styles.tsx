@@ -34,7 +34,7 @@ export const VideoContainer = styled.div<{
 
   ${({ theme, $showChat }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
-      width: ${$showChat ? '75%' : '100%'};
+      width: ${$showChat ? '66.666%' : '100%'};
       border: 2px solid ${theme.color.border.subtle};
       border-radius: ${theme.radius.medium};
       padding: ${theme.spacing.small};
@@ -191,10 +191,6 @@ export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
   padding: ${({ theme }) => `${theme.spacing.xxlarge} ${theme.spacing.xlarge}`};
 
   ${({ theme, $isFullScreen }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.medium} ${theme.spacing.xlarge};
-    }
-
     @media (min-width: ${theme.breakpoints.large}) {
       border-radius: ${$isFullScreen ? 0 : theme.radius.small};
       padding: ${theme.spacing.xxlarge} ${theme.spacing.xlarge};

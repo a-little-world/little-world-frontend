@@ -138,10 +138,16 @@ export function addMessage(
 
 export function addActiveCallRoom(callRoom: any): void {
   useConnectedCallStore.getState().resetDisconnectedFrom();
+
+  // Only reset callRejected if the current call matches the incoming call
+  const currentCallData = useConnectedCallStore.getState().callData;
+  if (currentCallData?.uuid === callRoom?.room_uuid) {
+    useConnectedCallStore.getState().setCallRejected(false);
+  }
+
   mutate(
     ACTIVE_CALL_ROOMS_ENDPOINT,
     (activeCallRoomsData: any) => {
-      console.log({ activeCallRoomsData, callRoom });
       if (!callRoom) return activeCallRoomsData;
       if (isEmpty(activeCallRoomsData)) return [callRoom];
       const filteredCallRooms = activeCallRoomsData.filter(

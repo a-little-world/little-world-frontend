@@ -22,6 +22,7 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { callAgain } from '../../api/livekit.ts';
@@ -74,6 +75,7 @@ function MyVideoConference({
   const [callAgainError, setCallAgainError] = useState('');
   const { name } = useRoomInfo();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const theme = useTheme();
 
   useEffect(() => {
     if (name) initializeCallID(name);
@@ -153,7 +155,7 @@ function MyVideoConference({
               <ButtonsContainer $maxWidth="440px" $marginTop="auto">
                 <Button
                   appearance={ButtonAppearance.Secondary}
-                  backgroundColor="transparent"
+                  color={theme.color.text.reversed}
                   size={ButtonSizes.Small}
                   {...disconnectProps}
                 >
@@ -165,7 +167,7 @@ function MyVideoConference({
               </ButtonsContainer>
             </>
           ) : (
-            <Text>
+            <Text type={TextTypes.Body4}>
               {t(
                 otherUserDisconnected
                   ? 'call.partner_disconnected'

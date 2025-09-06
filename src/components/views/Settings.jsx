@@ -304,6 +304,7 @@ function Settings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: user } = useSWR(USER_ENDPOINT);
+  const theme = useTheme();
   const profile = user
     ? {
         email: user.email,
@@ -366,8 +367,7 @@ function Settings() {
           <SettingsItem>
             <Button
               appearance={ButtonAppearance.Secondary}
-              color="red"
-              backgroundColor="red"
+              color={theme.color.status.error}
               size={ButtonSizes.Large}
               onClick={() => {
                 setShowConfirm(true);

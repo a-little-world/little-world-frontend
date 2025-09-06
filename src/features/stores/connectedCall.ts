@@ -32,7 +32,7 @@ const useConnectedCallStore = create<ConnectedCallState>(set => ({
       callData: callData ? { ...callData, uuid } : null,
     })),
   disconnectFromCall: sessionUuid =>
-    set({ callData: null, disconnectedFrom: sessionUuid }),
+    set({ callData: null, disconnectedFrom: sessionUuid, callRejected: false }),
   resetDisconnectedFrom: () => set({ disconnectedFrom: null }),
   setCallRejected: (callRejected: boolean) => set({ callRejected }),
 }));
