@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
 import { deleteAccount } from '../../../api/profile.ts';
-import ButtonsContainer from '../../atoms/ButtonsContainer';
+import ButtonsContainer from '../../atoms/ButtonsContainer.tsx';
 
 function DeleteAccountCard({ setShowModal }) {
   const { t } = useTranslation();

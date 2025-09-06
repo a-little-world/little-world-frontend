@@ -27,7 +27,7 @@ import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
 import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer';
+import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
 import PageHeader from '../atoms/PageHeader.tsx';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
@@ -304,6 +304,7 @@ function Settings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: user } = useSWR(USER_ENDPOINT);
+  const theme = useTheme();
   const profile = user
     ? {
         email: user.email,
@@ -366,8 +367,7 @@ function Settings() {
           <SettingsItem>
             <Button
               appearance={ButtonAppearance.Secondary}
-              color="red"
-              backgroundColor="red"
+              color={theme.color.status.error}
               size={ButtonSizes.Large}
               onClick={() => {
                 setShowConfirm(true);

@@ -10,14 +10,14 @@ import {
   StatusTypes,
   Text,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR, { mutate } from 'swr';
 
 import { updateUserSearchState } from '../../../api/profile.ts';
 import { SEARCHING_STATES } from '../../../constants/index.ts';
 import { USER_ENDPOINT } from '../../../features/swr/index.ts';
-import ButtonsContainer from '../../atoms/ButtonsContainer.jsx';
+import ButtonsContainer from '../../atoms/ButtonsContainer.tsx';
 
 interface UpdateSearchStateCardProps {
   onClose: () => void;

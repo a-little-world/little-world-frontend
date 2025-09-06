@@ -10,7 +10,7 @@ const PaginationList = styled.ul`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  background: #fff;
+  background: ${({ theme }) => theme.color.surface.primary};
   padding: ${({ theme }) => `${theme.spacing.xxsmall}`};
   border-radius: ${({ theme }) => `${theme.spacing.large}`};
   box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
@@ -23,7 +23,7 @@ const sharedItemStyles = css`
   cursor: pointer;
   user-select: none;
   transition: all 0.3s ease;
-  color: #db590b;
+  color: ${({ theme }) => theme.color.text.title};
   font-size: 18px;
   font-weight: 600;
   line-height: ${({ theme }) => `${theme.spacing.large}`};
@@ -51,7 +51,7 @@ const PaginationNumber = styled.button`
 
   &.active {
     background: linear-gradient(43.07deg, #db590b -3.02%, #f39325 93.96%);
-    color: #fff;
+    color: ${({ theme }) => theme.color.text.reversed};
   }
 `;
 
@@ -68,11 +68,16 @@ const PaginationButton = styled.button`
   border-radius: ${({ theme }) => `${theme.spacing.xlarge}`};
 
   &.disableButton {
-    color: #888;
+    color: ${({ theme }) => theme.color.text.disabled};
   }
 `;
 
-const CustomPagination = ({ totalPages, currentPage, onPageChange, className }) => {
+const CustomPagination = ({
+  totalPages,
+  currentPage,
+  onPageChange,
+  className,
+}) => {
   const generatePageNumbers = () => {
     const pageNumbers = Array.from(
       { length: totalPages },
@@ -138,13 +143,12 @@ const CustomPagination = ({ totalPages, currentPage, onPageChange, className }) 
         ))}
 
         <PaginationItem
-          className="btn next"
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         >
           <PaginationButton
             className={totalPages === currentPage && 'disableButton'}
           >
-            Next <i className="fas fa-angle-right" />
+            Next <i />
           </PaginationButton>
         </PaginationItem>
       </PaginationList>

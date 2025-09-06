@@ -18,7 +18,7 @@ import { setNewEmail } from '../../api';
 import { USER_ENDPOINT } from '../../features/swr/index.ts';
 import { onFormError, registerInput } from '../../helpers/form.ts';
 import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer';
+import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
 import {
   FormDescription,
   StyledCard,

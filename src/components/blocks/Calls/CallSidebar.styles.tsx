@@ -166,7 +166,8 @@ export const SidebarSelector = styled.div`
 `;
 
 export const SidebarWrapper = styled.aside<{ $isDisplayed: boolean }>`
-  width: 25%;
+  width: 33.33%; // fallback for browsers that don't support calc
+  width: calc(100% / 3);
   display: none;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
