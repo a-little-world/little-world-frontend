@@ -31,7 +31,7 @@ import {
   getAppSubpageRoute,
 } from '../../../router/routes.ts';
 import { shimmerStyles } from '../../atoms/Loading.tsx';
-import MenuLink from '../../atoms/MenuLink.tsx';
+import MenuLink, { DisabledMenuLink } from '../../atoms/MenuLink.tsx';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
 import {
@@ -55,6 +55,7 @@ interface ProfileCardProps {
   userPk: string;
   profile: Profile;
   isSelf: boolean;
+  isDeleted?: boolean;
   isOnline: boolean;
   isMatch: boolean;
   isSupport: boolean;
@@ -200,6 +201,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   matchId,
   userPk,
   profile,
+  isDeleted,
   isSelf,
   isOnline,
   isMatch,
@@ -244,7 +246,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         />
       )}
 
-      {isMatch && (
+      {isMatch && !isDeleted && (
         <Popover
           width={PopoverSizes.Large}
           showCloseButton
@@ -291,7 +293,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       <ProfileInfo>
         <NameContainer $isSelf={isSelf}>
           <Text type={TextTypes.Body3} bold>
-            {profile.first_name}
+            {isDeleted ? t('profile.deleted_name') : profile.first_name}
           </Text>
           {isSupport && (
             <Tag color={theme.color.status.info} bold size={TagSizes.small}>
@@ -305,42 +307,69 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <Description>
             {isSupport
               ? t('profile_card.support_description')
+              : isDeleted
+              ? t('profile.deleted_description')
               : profile.description}
           </Description>
         )}
       </ProfileInfo>
       {!isSelf && (
         <Actions $onProfile={onProfile}>
-          {!onProfile && (
-            <MenuLink to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}>
-              <ProfileIcon
-                gradient={Gradients.Orange}
-                label="visit profile"
+          {!onProfile &&
+            (isDeleted ? (
+              <DisabledMenuLink>
+                <ProfileIcon
+                  color={theme.color.text.disabled}
+                  label="visit profile"
+                  width={32}
+                  height={32}
+                />
+                {t('cp_profile')}
+              </DisabledMenuLink>
+            ) : (
+              <MenuLink to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}>
+                <ProfileIcon
+                  gradient={Gradients.Orange}
+                  label="visit profile"
+                  width={32}
+                  height={32}
+                />
+                {t('cp_profile')}
+              </MenuLink>
+            ))}
+          {isDeleted ? (
+            <DisabledMenuLink>
+              <MessageIcon
+                color={theme.color.text.disabled}
+                label="chat icon"
                 width={32}
                 height={32}
               />
-              {t('cp_profile')}
+              {t('cp_message')}
+            </DisabledMenuLink>
+          ) : (
+            <MenuLink
+              to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
+              state={{ userPk }}
+            >
+              <MessageIcon
+                gradient={Gradients.Orange}
+                label="chat icon"
+                width={32}
+                height={32}
+              />
+              {t('cp_message')}
             </MenuLink>
           )}
-          <MenuLink
-            to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
-            state={{ userPk }}
-          >
-            <MessageIcon
-              gradient={Gradients.Orange}
-              label="chat icon"
-              width={32}
-              height={32}
-            />
-            {t('cp_message')}
-          </MenuLink>
           <Button
             type="button"
             variation={ButtonVariations.Option}
             onClick={() => callSetup.initCallSetup({ userId: userPk })}
+            disabled={isDeleted}
           >
             <VideoIcon
-              gradient={Gradients.Orange}
+              gradient={isDeleted ? undefined : Gradients.Orange}
+              color={isDeleted ? theme.color.text.disabled : undefined}
               label="call icon"
               width={38}
               height={32}

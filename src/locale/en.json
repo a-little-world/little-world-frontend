@@ -458,6 +458,8 @@
   "profile.match_profile_title": "{{userName}}'s Profile",
   "profile.save_btn": "Save",
   "profile.self_profile_title": "My Profile",
+  "profile.deleted_name": "Deleted User",
+  "profile.deleted_description": "This account has been deleted",
   "push_notifications": "Notifications",
   "push_notifications.enable_error": "Notifications could not be enabled. Please check the notification permission for this page and then reload it.",
   "report_modal_cancel_btn": "Cancel",

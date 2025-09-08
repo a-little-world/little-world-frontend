@@ -1,9 +1,9 @@
 import { OPTION_BUTTON_CSS } from '@a-little-world/little-world-design-system';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import Link from '../../path-prepend.jsx';
 
-const MenuLink = styled(Link)`
+const MENU_LINK_CSS = css`
   ${OPTION_BUTTON_CSS}
   position: relative;
   flex-shrink: 0;
@@ -16,6 +16,25 @@ const MenuLink = styled(Link)`
     cursor: pointer;
     box-shadow: 0 0 10px 1px rgb(0 0 0 / 11%),
       0 0 8px 3px rgb(255 255 255 / 15%);
+  }
+`;
+
+const MenuLink = styled(Link)`
+  ${MENU_LINK_CSS}
+`;
+
+export const DisabledMenuLink = styled.div`
+  ${MENU_LINK_CSS}
+
+  background-color: ${({ theme }) => theme.color.surface.disabled};
+  color: ${({ theme }) => theme.color.text.disabled};
+  cursor: not-allowed;
+
+  &:hover,
+  &:not(:disabled):hover {
+    filter: none;
+    cursor: not-allowed;
+    box-shadow: none;
   }
 `;
 

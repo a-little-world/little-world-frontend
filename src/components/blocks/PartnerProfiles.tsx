@@ -6,7 +6,7 @@ import {
   TextTypes,
   pixelate,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
@@ -148,6 +148,7 @@ function PartnerProfiles({
             key={match.partner.id}
             userPk={match.partner.id}
             profile={match.partner}
+            isDeleted={match.partner.isDeleted}
             isSelf={false}
             isMatch={!match.partner.isSupport}
             matchId={match.id}

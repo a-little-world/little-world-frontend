@@ -198,7 +198,8 @@ export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
 
     @media (min-width: ${theme.breakpoints.xlarge}) {
       border-radius: ${$isFullScreen ? 0 : theme.radius.small};
-      padding: ${theme.spacing.massive} ${theme.spacing.xlarge};
+      padding: ${$isFullScreen ? theme.spacing.massive : theme.spacing.xxlarge}
+        ${theme.spacing.xlarge};
     }
   `}
 `;

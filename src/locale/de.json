@@ -460,6 +460,8 @@
   "profile.match_profile_title": "{{userName}}'s Profil",
   "profile.save_btn": "Speichern",
   "profile.self_profile_title": "Mein Profil",
+  "profile.deleted_name": "Gelöschter Benutzer",
+  "profile.deleted_description": "Dieses Konto wurde gelöscht.",
   "push_notifications": "Benachrichtigungen",
   "push_notifications.enable_error": "Benachrichtigungen konnten nicht aktiviert werden. Bitte überprüfe die Berechtigungen der Seite und lade sie anschließend neu.",
   "report_modal_cancel_btn": "Abbrechen",

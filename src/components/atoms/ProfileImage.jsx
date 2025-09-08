@@ -100,7 +100,7 @@ function ProfileImage({
   if (imageType === 'avatar')
     return <StyledAvatar className={className} {...image} $size={size} />;
 
-  return circle ? (
+  return circle || !image ? (
     <CircleImage className={className} $size={size}>
       <CircleImageContent
         src={image || DEFAULT_PROFILE_IMAGE}
