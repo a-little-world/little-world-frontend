@@ -6,7 +6,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isBoolean } from 'lodash';
 
-import { COUNTRIES, USER_TYPES } from '../constants/index.ts';
+import { COUNTRIES, LANGUAGES, USER_TYPES } from '../constants/index.ts';
 import { USER_FORM_ROUTES } from '../router/routes.ts';
 import { ComponentTypes, formatDataField } from './formContent.ts';
 
@@ -308,6 +308,7 @@ const formPages = {
             label: t('user_form_notifications.phone_number_label'),
             labelTooltip: t('user_form_notifications.phone_number_tooltip'),
             type: 'tel',
+            onlyCountries: [LANGUAGES.DE],
             width: InputWidth.Medium,
           }),
           infoText: 'user_form_notifications.info',
