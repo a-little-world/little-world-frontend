@@ -304,7 +304,6 @@ const formPages = {
         textInput: {
           currentValue: userData?.phone_mobile,
           dataField: 'phone_mobile',
-          formData: options?.phone_mobile,
           getProps: t => ({
             label: t('user_form_notifications.phone_number_label'),
             labelTooltip: t('user_form_notifications.phone_number_tooltip'),
