@@ -726,7 +726,7 @@
   "user_form_notifications.description": "Sobald wir Neuigkeiten für dich haben, benachrichtigen wir dich. Ich möchte...",
   "user_form_notifications.info": "Deine Telefonnummer wird sicher gespeichert und nie weitergegeben.",
   "user_form_notifications.phone_number_label": "Deine Telefonnummer",
-  "user_form_notifications.phone_number_tooltip": "Deine Telefonnummer ist ausschließlich für das Team von Little World sichtbar. Deine Nummer wird nie an Dritte weitergegeben und du erhälst keinerlei Werbeanrufe.",
+  "user_form_notifications.phone_number_tooltip": "Deine Telefonnummer ist ausschließlich für das Team von Little World sichtbar. Deine Nummer wird nie an Dritte weitergegeben und du erhälst keinerlei Werbeanrufe. SMS-Benachrichtigungen sind nur für deutsche Handynummern verfügbar.",
   "user_form_notifications.title": "Und als letzten Schritt...",
   "user_type.info_text": "Diese Angaben sind nur für dich und das Team von Little World sichtbar.",
   "user_type.learner_description": "Ich möchte selbst Deutsch sprechen üben.",
