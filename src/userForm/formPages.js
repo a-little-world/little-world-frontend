@@ -308,7 +308,7 @@ const formPages = {
             label: t('user_form_notifications.phone_number_label'),
             labelTooltip: t('user_form_notifications.phone_number_tooltip'),
             type: 'tel',
-            onlyCountries: [LANGUAGES.DE],
+            onlyCountries: [LANGUAGES.de],
             width: InputWidth.Medium,
           }),
           infoText: 'user_form_notifications.info',
