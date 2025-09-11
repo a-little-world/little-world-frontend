@@ -61,3 +61,7 @@ export const COMMUNITY_EVENT_FREQUENCIES = {
 
 // Pages with height equal to the full height of the viewport
 export const pagesWithViewportHeight = ['chat'];
+
+export const STORAGE_KEYS = {
+  themePreference: 'theme-preference',
+};

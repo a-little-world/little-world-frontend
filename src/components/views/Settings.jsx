@@ -29,6 +29,7 @@ import { onFormError, registerInput } from '../../helpers/form.ts';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
 import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
 import PageHeader from '../atoms/PageHeader.tsx';
+import ThemeSwitch from '../atoms/ThemeSwitch.tsx';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
 import MailingLists from '../blocks/MailingLists/MailingLists.tsx';
@@ -58,7 +59,8 @@ const StyledFormMessage = styled(StatusMessage)`
 const SettingsItem = styled.div`
   max-width: 360px;
   &:last-of-type {
-    margin-top: ${({ theme }) => theme.spacing.small};
+    margin-top: ${({ theme }) => theme.spacing.xxxlarge};
+    margin-bottom: ${({ theme }) => theme.spacing.xsmall};
   }
 `;
 
@@ -101,6 +103,14 @@ const ContentPanel = styled(Card)`
       padding: ${theme.spacing.large};
     }
   `}
+`;
+
+const NotificationsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.xxxlarge}`};
+  align-items: flex-start;
+  margin-top: ${({ theme }) => theme.spacing.medium};
 `;
 
 function ListItem({ section, label, value, setEditing }) {
@@ -362,8 +372,11 @@ function Settings() {
               }
             />
           ))}
-          <MailingLists />
-          <PushNotifications />
+          <NotificationsContainer>
+            <MailingLists width="auto" />
+            <PushNotifications />
+          </NotificationsContainer>
+          <ThemeSwitch withLabel />
           <SettingsItem>
             <Button
               appearance={ButtonAppearance.Secondary}

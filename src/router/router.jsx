@@ -1,6 +1,7 @@
 import {
   CustomThemeProvider,
   GlobalStyles,
+  ThemeVariants,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import {
@@ -12,7 +13,6 @@ import {
 import { IS_CAPACITOR_BUILD } from '../ENVIRONMENT.js';
 import FireBase from '../Firebase.tsx';
 import WebsocketBridge from '../WebsocketBridge.jsx';
-import { ModeSwitch } from '../components/atoms/ModeSwitch.tsx';
 import RouterError from '../components/blocks/ErrorView/ErrorView.tsx';
 import Form from '../components/blocks/Form/Form.jsx';
 import { FullAppLayout } from '../components/blocks/Layout/AppLayout.tsx';
@@ -36,7 +36,9 @@ import Settings from '../components/views/Settings.jsx';
 import SignUp from '../components/views/SignUp.jsx';
 import VerifyEmail from '../components/views/VerifyEmail.jsx';
 import VideoCall from '../components/views/VideoCall.jsx';
+import { STORAGE_KEYS } from '../constants/index.ts';
 import AuthGuard from '../guards/AuthGuard.tsx';
+import { getLocalStorageItem } from '../helpers/localStorage.ts';
 import {
   APP_ROUTE,
   BASE_ROUTE,
@@ -74,12 +76,19 @@ import {
 
 const isCapacitor = IS_CAPACITOR_BUILD || false;
 
-export const Root = ({
-  children,
-  restoreScroll = true,
-  includeModeSwitch = false,
-}) => (
-  <CustomThemeProvider>
+const getInitialTheme = () => {
+  const storedTheme = getLocalStorageItem(STORAGE_KEYS.themePreference);
+  if (
+    storedTheme === ThemeVariants.dark ||
+    storedTheme === ThemeVariants.light
+  ) {
+    return storedTheme;
+  }
+  return undefined; // Let CustomThemeProvider use its default
+};
+
+export const Root = ({ children, restoreScroll = true }) => (
+  <CustomThemeProvider defaultMode={getInitialTheme()}>
     <ToastProvider>
       <AuthGuard>
         <WebsocketBridge />
@@ -88,7 +97,6 @@ export const Root = ({
       {restoreScroll && <ScrollRestoration />}
       <GlobalStyles />
       {children || <Outlet />}
-      {includeModeSwitch && <ModeSwitch />}
     </ToastProvider>
   </CustomThemeProvider>
 );
@@ -387,10 +395,10 @@ const router = createBrowserRouter(
   [
     {
       path: BASE_ROUTE,
-      element: <Root includeModeSwitch />,
+      element: <Root />,
       children: ROOT_ROUTES,
       errorElement: (
-        <Root includeModeSwitch>
+        <Root>
           <RouterError />
         </Root>
       ),

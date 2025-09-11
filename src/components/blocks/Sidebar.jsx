@@ -3,7 +3,6 @@ import {
   ButtonAppearance,
   ButtonVariations,
   DashboardIcon,
-  Gradients,
   HeartIcon,
   LogoutIcon,
   MessageIcon,
@@ -39,8 +38,7 @@ import {
   isActiveRoute,
 } from '../../router/routes.ts';
 import Logo from '../atoms/Logo.tsx';
-import MenuLink from '../atoms/MenuLink.tsx';
-import UnreadDot from '../atoms/UnreadDot.tsx';
+import MenuLink, { MenuLinkText } from '../atoms/MenuLink.tsx';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';
@@ -235,7 +233,7 @@ function Sidebar({ isVH, sidebarMobile }) {
       >
         <StyledLogo asLink />
         <SidebarContent $isScrollable={isVH}>
-          {buttonData.map(({ label, path, clickEvent, Icon, iconProps }) => {
+          {buttonData.map(({ label, path, clickEvent, Icon }) => {
             const isActive = isActiveRoute(location.pathname, path);
             const unreadCount = unread[label] ?? 0;
 
@@ -243,24 +241,12 @@ function Sidebar({ isVH, sidebarMobile }) {
               <MenuLink
                 to={path}
                 key={label}
-                $appearance={
-                  isActive
-                    ? ButtonAppearance.Secondary
-                    : ButtonAppearance.Primary
-                }
-              >
-                {!!unreadCount && <UnreadDot count={unreadCount} />}
-                <Icon
-                  label={label}
-                  width={32}
-                  height={32}
-                  {...(isActive
-                    ? { color: theme.color.surface.primary }
-                    : { gradient: Gradients.Blue })}
-                  {...iconProps}
-                />
-                {t(`nbs_${label}`)}
-              </MenuLink>
+                active={isActive}
+                Icon={Icon}
+                iconLabel={label}
+                text={t(`nbs_${label}`)}
+                unreadCount={unreadCount}
+              />
             ) : (
               <LogoutButton
                 key={label}
@@ -279,7 +265,7 @@ function Sidebar({ isVH, sidebarMobile }) {
                   width={32}
                   height={32}
                 />
-                {t(`nbs_${label}`)}
+                <MenuLinkText>{t(`nbs_${label}`)}</MenuLinkText>
               </LogoutButton>
             );
           })}

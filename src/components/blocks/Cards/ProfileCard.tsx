@@ -31,7 +31,7 @@ import {
   getAppSubpageRoute,
 } from '../../../router/routes.ts';
 import { shimmerStyles } from '../../atoms/Loading.tsx';
-import MenuLink, { DisabledMenuLink } from '../../atoms/MenuLink.tsx';
+import MenuLink, { MenuLinkText } from '../../atoms/MenuLink.tsx';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
 import {
@@ -273,7 +273,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               })
             }
           >
-            {t('cp_menu_report')}
+            {t('partner_profile.report')}
           </PartnerMenuOption>
           <PartnerMenuOption
             onClick={() =>
@@ -285,7 +285,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               })
             }
           >
-            {t('cp_menu_unmatch')}
+            {t('partner_profile.unmatch')}
           </PartnerMenuOption>
         </Popover>
       )}
@@ -315,52 +315,29 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       </ProfileInfo>
       {!isSelf && (
         <Actions $onProfile={onProfile}>
-          {!onProfile &&
-            (isDeleted ? (
-              <DisabledMenuLink>
-                <ProfileIcon
-                  color={theme.color.text.disabled}
-                  label="visit profile"
-                  width={32}
-                  height={32}
-                />
-                {t('cp_profile')}
-              </DisabledMenuLink>
-            ) : (
-              <MenuLink to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}>
-                <ProfileIcon
-                  gradient={Gradients.Orange}
-                  label="visit profile"
-                  width={32}
-                  height={32}
-                />
-                {t('cp_profile')}
-              </MenuLink>
-            ))}
-          {isDeleted ? (
-            <DisabledMenuLink>
-              <MessageIcon
-                color={theme.color.text.disabled}
-                label="chat icon"
-                width={32}
-                height={32}
-              />
-              {t('cp_message')}
-            </DisabledMenuLink>
-          ) : (
+          {!onProfile && (
             <MenuLink
-              to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
-              state={{ userPk }}
-            >
-              <MessageIcon
-                gradient={Gradients.Orange}
-                label="chat icon"
-                width={32}
-                height={32}
-              />
-              {t('cp_message')}
-            </MenuLink>
+              to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
+              disabled={isDeleted}
+              Icon={ProfileIcon}
+              iconGradient={Gradients.Orange}
+              iconLabel="visit profile"
+              text={t('partner_profile.profile')}
+            />
           )}
+          <MenuLink
+            to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
+            state={{ userPk }}
+            Icon={MessageIcon}
+            iconGradient={Gradients.Orange}
+            iconLabel="chat icon"
+            text={t(
+              isDeleted
+                ? 'partner_profile.messages'
+                : 'partner_profile.message',
+            )}
+            order={isDeleted ? -1 : undefined}
+          />
           <Button
             type="button"
             variation={ButtonVariations.Option}
@@ -374,7 +351,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               width={38}
               height={32}
             />
-            {t('cp_call')}
+            <MenuLinkText>{t('partner_profile.call')}</MenuLinkText>
           </Button>
         </Actions>
       )}
