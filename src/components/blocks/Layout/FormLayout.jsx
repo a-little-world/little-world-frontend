@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
+import ThemeSwitch from '../../atoms/ThemeSwitch.tsx';
 import Header from '../Header.tsx';
 
 const Wrapper = styled.div`
@@ -30,6 +31,7 @@ const FormLayout = ({ children }) => (
   <Wrapper>
     <Header />
     <Content>{children || <Outlet />}</Content>
+    <ThemeSwitch />
   </Wrapper>
 );
 

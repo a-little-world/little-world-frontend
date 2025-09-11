@@ -12,7 +12,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
@@ -169,13 +169,13 @@ export function SearchingCard({
             buttonSize={ButtonSizes.Stretch}
             to={getAppRoute(USER_FORM_ROUTES.SELF_INFO_1)}
           >
-            {t('cp_modify_search')}
+            {t('searching_card.modify_search')}
           </Link>
           <CancelSearchButton
             variation={ButtonVariations.Inline}
             onClick={() => setShowCancel(true)}
           >
-            {t('cp_cancel_search')}
+            {t('searching_card.cancel_search')}
           </CancelSearchButton>
         </>
       ) : (
