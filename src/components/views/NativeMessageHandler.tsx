@@ -8,7 +8,7 @@ type EventHandlerState = {
   messageHandler: ((action: string, payload: Record<string, any>) => Promise<any>) | null;
 };
 
-type EventHandlerAction = 
+type EventHandlerAction =
   | { type: 'SET_NAVIGATION_HANDLER'; payload: ((event: Event) => void) | null }
   | { type: 'SET_AUTH_TOKEN_HANDLER'; payload: ((event: Event) => void) | null }
   | { type: 'SET_MESSAGE_HANDLER'; payload: ((action: string, payload: Record<string, any>) => Promise<any>) | null }
@@ -109,6 +109,19 @@ function NativeMessageHandler() {
             }),
           );
           return { ok: true, data: 'Token stored in frontend' };
+        case 'nativeChallengeProof':
+          // Native returns the computed HMAC proof for the given challenge
+          window.dispatchEvent(
+            new CustomEvent('native-challenge-proof', {
+              detail: {
+                proof: payload?.proof ?? null,
+                challenge: payload?.challenge ?? null,
+                timestamp: payload?.timestamp ?? null,
+                email: payload?.email ?? null,
+              },
+            }),
+          );
+          return { ok: true, data: 'Challenge proof forwarded to frontend' };
         default:
           return { ok: false, error: 'Unhandled in package' };
       }

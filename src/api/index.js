@@ -2,6 +2,8 @@ import Cookies from 'js-cookie';
 
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
+import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
+import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { apiFetch } from './helpers';
 
 export const completeForm = async () => apiFetch(`/api/profile/completed/`);
@@ -106,17 +108,63 @@ export const postUserProfileUpdate = (
 };
 
 export const login = async ({ email, password }) => {
-  const endpoint = environment.isNative ?
-    `/api/user/login/?token_auth=true` :
-    `/api/user/login/`;
-  return apiFetch(endpoint, {
+  if (!environment.isNative) {
+    return apiFetch(`/api/user/login/`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: { email, password },
+    });
+  }
+
+  // Native flow: 1) get challenge 2) ask native to compute proof 3) call native-login
+  const challengeResp = await apiFetch(`/api/user/challenge/`, {
     method: 'POST',
     useTagsOnly: true,
-    body: {
-      email,
-      password,
-    },
   });
+
+  const { challenge, timestamp } = challengeResp || {};
+
+  const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+  if (!sendMessageToReactNative) {
+    throw new Error('Native bridge not available');
+  }
+
+  // Wait for proof from native layer
+  const proof = await new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      window.removeEventListener('native-challenge-proof', handler);
+      reject(new Error('Timeout waiting for native challenge proof'));
+    }, 15000);
+
+    const handler = (event) => {
+      const detail = event?.detail || {};
+      if (detail?.challenge === challenge && detail?.proof) {
+        clearTimeout(timeout);
+        window.removeEventListener('native-challenge-proof', handler);
+        resolve(detail.proof);
+      }
+    };
+
+    window.addEventListener('native-challenge-proof', handler);
+    sendMessageToReactNative('computeNativeChallengeProof', {
+      challenge,
+      timestamp,
+      email: (email || '').toLowerCase(),
+    });
+  });
+
+  const loginData = await apiFetch(`/api/user/native-login/`, {
+    method: 'POST',
+    useTagsOnly: true,
+    body: { email, password, challenge, proof },
+  });
+
+  // Store tokens locally for subsequent Authorization headers
+  useMobileAuthTokenStore
+    .getState()
+    .setTokens(loginData?.token_access || null, loginData?.token_refresh || null);
+
+  return loginData;
 };
 
 export const signUp = async ({

@@ -106,7 +106,7 @@ export async function apiFetch<T = any>(
     }
   }
 
-  try {
+  const doFetch = async (): Promise<T> => {
     const response = await fetch(
       `${environment.backendUrl}${endpoint}`,
       fetchOptions,
@@ -122,8 +122,60 @@ export async function apiFetch<T = any>(
     } catch (_e) {
       return null as T;
     }
-  } catch (error) {
+  };
+
+  try {
+    return await doFetch();
+  } catch (error: any) {
+    // If 401 on native, try to refresh and retry once
+    const status = error?.status;
+    if (environment.isNative && status === 401) {
+      const refreshed = await nativeRefreshAccessToken();
+      if (refreshed) {
+        // update Authorization header with new access token
+        const { accessToken } = useMobileAuthTokenStore.getState();
+        const headers = (fetchOptions.headers as Record<string, string>) || {};
+        if (accessToken) {
+          headers.Authorization = `Bearer ${accessToken}`;
+        } else {
+          delete headers.Authorization;
+        }
+        fetchOptions.headers = headers;
+        return await doFetch();
+      }
+    }
     console.error(`API Fetch Error (${endpoint}):`, error);
     throw error;
+  }
+}
+
+export async function nativeRefreshAccessToken(): Promise<boolean> {
+  if (!environment.isNative) return false;
+  const { refreshToken, setAccessToken } = useMobileAuthTokenStore.getState();
+  if (!refreshToken) return false;
+
+  try {
+    const response = await fetch(`${environment.backendUrl}/api/token/refresh`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refresh: refreshToken }),
+      credentials: 'same-origin',
+    } as RequestInit);
+
+    if (!response.ok) {
+      return false;
+    }
+    const data = await response.json().catch(() => null);
+    const newAccess = data?.access ?? data?.token_access ?? null;
+    if (newAccess) {
+      setAccessToken(newAccess);
+      return true;
+    }
+    return false;
+  } catch (_e) {
+    return false;
   }
 }
