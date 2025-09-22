@@ -3,7 +3,6 @@ import {
   GlobalStyles,
   ThemeVariants,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import {
   Navigate,
   Outlet,
@@ -12,7 +11,7 @@ import {
   createHashRouter,
 } from 'react-router-dom';
 
-import FireBase from '../Firebase.tsx';
+import FireBase from '../Firebase';
 import WebsocketBridge from '../WebsocketBridge.jsx';
 import RouterError from '../components/blocks/ErrorView/ErrorView.tsx';
 import Form from '../components/blocks/Form/Form.jsx';
