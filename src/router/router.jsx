@@ -103,7 +103,6 @@ export const Root = ({ children, restoreScroll = true }) => (
 export function getWebRouter() {
   const ROOT_ROUTES = [
     {
-<<<<<<< HEAD
       path: LOGIN_ROUTE,
       element: (
         <FormLayout>
@@ -216,15 +215,6 @@ export function getWebRouter() {
         <FullAppLayout>
           <Main />
         </FullAppLayout>
-=======
-      path: BASE_ROUTE,
-      element: <Root />,
-      children: ROOT_ROUTES,
-      errorElement: (
-        <Root>
-          <RouterError />
-        </Root>
->>>>>>> ea23777266c05d73faa12c6b73844cf3fed56e2d
       ),
     },
     {
