@@ -36,7 +36,7 @@ import Resources from '../components/views/Resources/Resources.tsx';
 import Settings from '../components/views/Settings.jsx';
 import SignUp from '../components/views/SignUp.jsx';
 import VerifyEmail from '../components/views/VerifyEmail.jsx';
-import VideoCall from '../components/views/VideoCall.jsx';
+import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants/index.ts';
 import AuthGuard from '../guards/AuthGuard.tsx';
 import { getLocalStorageItem } from '../helpers/localStorage.ts';
