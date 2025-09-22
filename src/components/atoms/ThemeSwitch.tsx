@@ -11,9 +11,9 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-import { STORAGE_KEYS } from '../../constants/index.ts';
-import { setLocalStorageItem } from '../../helpers/localStorage.ts';
-import useQueryParam from '../../hooks/useQueryParam.ts';
+import { STORAGE_KEYS } from '../../constants';
+import { setLocalStorageItem } from '../../helpers/localStorage';
+import useQueryParam from '../../hooks/useQueryParam';
 
 const SwitchContainer = styled.div`
   display: flex;

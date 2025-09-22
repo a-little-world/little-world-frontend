@@ -29,9 +29,9 @@ import {
   PROFILE_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
-} from '../../../router/routes.ts';
-import { shimmerStyles } from '../../atoms/Loading.tsx';
-import MenuLink, { MenuLinkText } from '../../atoms/MenuLink.tsx';
+} from '../../../router/routes';
+import { shimmerStyles } from '../../atoms/Loading';
+import MenuLink, { MenuLinkText } from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
 import {

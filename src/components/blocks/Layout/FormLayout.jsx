@@ -2,8 +2,8 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
-import ThemeSwitch from '../../atoms/ThemeSwitch.tsx';
-import Header from '../Header.tsx';
+import ThemeSwitch from '../../atoms/ThemeSwitch';
+import Header from '../Header';
 
 const Wrapper = styled.div`
   display: flex;

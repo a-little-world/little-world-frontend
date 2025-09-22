@@ -23,12 +23,12 @@ import styled, { css, useTheme } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
-import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
-import PageHeader from '../atoms/PageHeader.tsx';
-import ThemeSwitch from '../atoms/ThemeSwitch.tsx';
+import { USER_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
+import { FORGOT_PASSWORD_ROUTE } from '../../router/routes';
+import ButtonsContainer from '../atoms/ButtonsContainer';
+import PageHeader from '../atoms/PageHeader';
+import ThemeSwitch from '../atoms/ThemeSwitch';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
 import MailingLists from '../blocks/MailingLists/MailingLists';

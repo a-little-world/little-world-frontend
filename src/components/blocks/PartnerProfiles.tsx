@@ -16,8 +16,8 @@ import {
   LANGUAGES,
   LANGUAGE_LEVELS,
   USER_TYPES,
-} from '../../constants/index.ts';
-import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr/index.ts';
+} from '../../constants';
+import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard';
 import PartnerActionCard from './Cards/PartnerActionCard';

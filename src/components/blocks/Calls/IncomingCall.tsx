@@ -6,9 +6,9 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 
-import ButtonsContainer from '../../atoms/ButtonsContainer.tsx';
-import ProfileImage from '../../atoms/ProfileImage.jsx';
-import ModalCard, { Centred } from '../Cards/ModalCard.jsx';
+import ButtonsContainer from '../../atoms/ButtonsContainer';
+import ProfileImage from '../../atoms/ProfileImage';
+import ModalCard, { Centred } from '../Cards/ModalCard';
 
 type IncomingCallProps = {
   userProfile: any;

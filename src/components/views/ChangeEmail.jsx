@@ -15,10 +15,10 @@ import { useNavigate } from 'react-router-dom';
 import { mutate } from 'swr';
 
 import { setNewEmail } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
-import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
+import { USER_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
+import { VERIFY_EMAIL_ROUTE, getAppRoute } from '../../router/routes';
+import ButtonsContainer from '../atoms/ButtonsContainer';
 import {
   FormDescription,
   StyledCard,

@@ -6,9 +6,9 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isBoolean } from 'lodash';
 
-import { COUNTRIES, LANGUAGES, USER_TYPES } from '../constants/index.ts';
-import { USER_FORM_ROUTES } from '../router/routes.ts';
-import { ComponentTypes, formatDataField } from './formContent.ts';
+import { COUNTRIES, LANGUAGES, USER_TYPES } from '../constants';
+import { USER_FORM_ROUTES } from '../router/routes';
+import { ComponentTypes, formatDataField } from './formContent';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
 export const restrictedLangLevels = ['level-3', 'level-4'];

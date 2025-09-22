@@ -25,13 +25,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { callAgain } from '../../api/livekit.ts';
-import { useConnectedCallStore } from '../../features/stores/index.ts';
-import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr/index.ts';
-import useKeyboardShortcut from '../../hooks/useKeyboardShortcut.tsx';
-import { getAppRoute, getCallSetupRoute } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
-import Drawer from '../atoms/Drawer.tsx';
+import { callAgain } from '../../api/livekit';
+import { useConnectedCallStore } from '../../features/stores';
+import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr';
+import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
+import { getAppRoute, getCallSetupRoute } from '../../router/routes';
+import ButtonsContainer from '../atoms/ButtonsContainer';
+import Drawer from '../atoms/Drawer';
 import ProfileImage from '../atoms/ProfileImage';
 import CallSidebar, {
   SidebarSelectionProvider,

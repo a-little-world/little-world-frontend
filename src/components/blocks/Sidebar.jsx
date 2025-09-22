@@ -35,9 +35,9 @@ import {
   SETTINGS_ROUTE,
   getAppRoute,
   isActiveRoute,
-} from '../../router/routes.ts';
-import Logo from '../atoms/Logo.tsx';
-import MenuLink, { MenuLinkText } from '../atoms/MenuLink.tsx';
+} from '../../router/routes';
+import Logo from '../atoms/Logo';
+import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';
