@@ -34,7 +34,7 @@ export const VideoContainer = styled.div<{
 
   ${({ theme, $showChat }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
-      width: ${$showChat ? '75%' : '100%'};
+      width: ${$showChat ? '66.666%' : '100%'};
       border: 2px solid ${theme.color.border.subtle};
       border-radius: ${theme.radius.medium};
       padding: ${theme.spacing.small};
@@ -188,10 +188,18 @@ export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
   justify-content: center;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => `${theme.spacing.xxlarge} ${theme.spacing.xlarge}`};
 
   ${({ theme, $isFullScreen }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
       border-radius: ${$isFullScreen ? 0 : theme.radius.small};
+      padding: ${theme.spacing.xxlarge} ${theme.spacing.xlarge};
+    }
+
+    @media (min-width: ${theme.breakpoints.xlarge}) {
+      border-radius: ${$isFullScreen ? 0 : theme.radius.small};
+      padding: ${$isFullScreen ? theme.spacing.massive : theme.spacing.xxlarge}
+        ${theme.spacing.xlarge};
     }
   `}
 `;
@@ -253,3 +261,5 @@ export const VideoPlaceholder = styled(ProfileImage)`
     }
   `}
 `;
+
+export const CallRejectedTextContainer = styled.div``;

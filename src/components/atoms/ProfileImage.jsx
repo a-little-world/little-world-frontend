@@ -41,7 +41,7 @@ const StyledAvatar = styled(Avatar)`
 export const CircleImage = styled.div`
   border-radius: ${({ theme }) => theme.radius.half};
   border: ${({ $size }) => BorderSizes[$size]} solid #e6e8ec;
-  width: ${({ $size }) => ($size === 'flex' ? 'auto' : ImageSizes[$size])};
+  width: auto;
   background: ${({ theme }) => theme.color.surface.primary};
   height: ${({ $size }) => ImageSizes[$size]};
   max-height: ${ImageSizes.large};
@@ -100,7 +100,7 @@ function ProfileImage({
   if (imageType === 'avatar')
     return <StyledAvatar className={className} {...image} $size={size} />;
 
-  return circle ? (
+  return circle || !image ? (
     <CircleImage className={className} $size={size}>
       <CircleImageContent
         src={image || DEFAULT_PROFILE_IMAGE}

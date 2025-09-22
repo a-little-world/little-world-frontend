@@ -1,6 +1,8 @@
+import { isEmpty } from 'lodash';
 import { mutate } from 'swr';
 
-import { useConnectedCallStore } from '../stores';
+import { rejectCall } from '../../api/livekit.ts';
+import useConnectedCallStore from '../stores/connectedCall.ts';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   CHATS_ENDPOINT,
@@ -136,38 +138,52 @@ export function addMessage(
 
 export function addActiveCallRoom(callRoom: any): void {
   useConnectedCallStore.getState().resetDisconnectedFrom();
+
+  // Only reset callRejected if the current call matches the incoming call
+  const currentCallData = useConnectedCallStore.getState().callData;
+  if (currentCallData?.uuid === callRoom?.room_uuid) {
+    useConnectedCallStore.getState().setCallRejected(false);
+  }
+
   mutate(
     ACTIVE_CALL_ROOMS_ENDPOINT,
     (activeCallRoomsData: any) => {
-      if (!activeCallRoomsData) return activeCallRoomsData;
-      return {
-        ...activeCallRoomsData,
-        results: [
-          ...(activeCallRoomsData.results || []).filter(
-            (room: any) => room?.uuid !== callRoom?.uuid, // TODO SENTRY ERROR why is room undefined in some cases?
-          ),
-          callRoom,
-        ],
-      };
+      if (!callRoom) return activeCallRoomsData;
+      if (isEmpty(activeCallRoomsData)) return [callRoom];
+      const filteredCallRooms = activeCallRoomsData.filter(
+        (room: any) => room?.uuid !== callRoom?.uuid,
+      );
+
+      return isEmpty(filteredCallRooms)
+        ? [callRoom]
+        : [...filteredCallRooms, callRoom];
     },
     false,
   );
 }
 
-export function blockIncomingCall(userId: string): void {
+export function blockIncomingCall(userId: string, sessionId?: string): void {
   mutate(
     ACTIVE_CALL_ROOMS_ENDPOINT,
     (activeCallRoomsData: any) => {
-      if (!activeCallRoomsData) return activeCallRoomsData;
-      return {
-        ...activeCallRoomsData,
-        results: (activeCallRoomsData.results || []).filter(
-          (room: any) => room?.partner.id !== userId, // TODO SENTRY ERROR room undefined in some cases
-        ),
-      };
+      if (isEmpty(activeCallRoomsData)) return [];
+      return activeCallRoomsData.filter(
+        (callRoom: any) => callRoom?.partner.id !== userId, // TODO SENTRY ERROR room undefined in some cases
+      );
     },
     false,
   );
+  if (sessionId)
+    rejectCall({
+      partnerId: userId,
+      sessionId,
+      onSuccess: () => {},
+      onError: () => console.error('Error rejecting call'),
+    });
+}
+
+export function outgoingCallRejected(): void {
+  useConnectedCallStore.getState().setCallRejected(true);
 }
 
 export function markChatMessagesRead(chatId: string, userId: string): void {
@@ -257,13 +273,16 @@ export function runWsBridgeMutation(
       break;
     }
     case 'addActiveCallRoom': {
-      const { callRoom } = payload;
-      addActiveCallRoom(callRoom);
+      addActiveCallRoom(payload);
       break;
     }
     case 'blockIncomingCall': {
-      const { blockUserId } = payload;
-      blockIncomingCall(blockUserId);
+      const { userId } = payload;
+      blockIncomingCall(userId);
+      break;
+    }
+    case 'outgoingCallRejected': {
+      outgoingCallRejected();
       break;
     }
     case 'markChatMessagesRead': {

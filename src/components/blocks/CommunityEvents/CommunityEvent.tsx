@@ -7,7 +7,6 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { groupBy } from 'lodash';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
@@ -230,7 +229,7 @@ const EventCtas = ({
         >
           <PhoneIcon
             label="join call icon"
-            color={theme.color.surface.primary}
+            color={theme.color.text.button}
             width="20px"
           />
           <span className="text">{t('community_events.join_call')}</span>

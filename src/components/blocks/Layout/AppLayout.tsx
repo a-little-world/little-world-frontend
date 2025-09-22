@@ -1,5 +1,5 @@
 import { Modal } from '@a-little-world/little-world-design-system';
-import React, { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
@@ -94,7 +94,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const activeCallRoom = activeCallRooms?.[0];
   const { callSetup } = useCallSetupStore();
   const { postCallSurvey } = usePostCallSurveyStore();
-  const { disconnectedFrom } = useConnectedCallStore();
+  const { disconnectedFrom, disconnectFromCall } = useConnectedCallStore();
 
   // Zustand store hooks
   const { initCallSetup } = useCallSetupStore();
@@ -116,7 +116,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     ) {
       openModal(ModalTypes.INCOMING_CALL.id);
     } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
-  }, [activeCallRoom?.uuid]);
+  }, [activeCallRoom?.uuid, disconnectedFrom]);
 
   useEffect(() => {
     if (callSetup) {
@@ -148,7 +148,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const onRejectCall = () => {
     if (activeCallRoom?.partner?.id) {
-      blockIncomingCall(activeCallRoom.partner.id);
+      disconnectFromCall(activeCallRoom.room_uuid); // ensure call doesn't re-appear
+      blockIncomingCall(activeCallRoom.partner.id, activeCallRoom.room_uuid);
     }
     closeModal();
   };

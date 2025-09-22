@@ -23,12 +23,12 @@ import styled, { css, useTheme } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
-import { environment } from '../../environment';
-import { USER_ENDPOINT } from '../../features/swr/index';
-import { onFormError, registerInput } from '../../helpers/form';
-import { FORGOT_PASSWORD_ROUTE } from '../../router/routes';
-import ButtonsContainer from '../atoms/ButtonsContainer';
-import PageHeader from '../atoms/PageHeader';
+import { USER_ENDPOINT } from '../../features/swr/index.ts';
+import { onFormError, registerInput } from '../../helpers/form.ts';
+import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
+import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
+import PageHeader from '../atoms/PageHeader.tsx';
+import ThemeSwitch from '../atoms/ThemeSwitch.tsx';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
 import MailingLists from '../blocks/MailingLists/MailingLists';
@@ -58,7 +58,8 @@ const StyledFormMessage = styled(StatusMessage)`
 const SettingsItem = styled.div`
   max-width: 360px;
   &:last-of-type {
-    margin-top: ${({ theme }) => theme.spacing.small};
+    margin-top: ${({ theme }) => theme.spacing.xxxlarge};
+    margin-bottom: ${({ theme }) => theme.spacing.xsmall};
   }
 `;
 
@@ -101,6 +102,14 @@ const ContentPanel = styled(Card)`
       padding: ${theme.spacing.large};
     }
   `}
+`;
+
+const NotificationsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.xxxlarge}`};
+  align-items: flex-start;
+  margin-top: ${({ theme }) => theme.spacing.medium};
 `;
 
 function ListItem({ section, label, value, setEditing }) {
@@ -160,9 +169,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     if (label === 'password') {
       setNewPassword(data).then(onResponseSuccess).catch(onError);
     } else if (type === 'email') {
-      // DISABLE; DANGEROUS
-      if (!environment.development)
-        setNewEmail(data).then(onResponseSuccess).catch(onError);
+      setNewEmail(data).then(onResponseSuccess).catch(onError);
     } else if (label === 'display_language') {
       Cookies.set('frontendLang', data.display_language);
       i18n.changeLanguage(data.display_language);
@@ -304,8 +311,9 @@ function Settings() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: user } = useSWR(USER_ENDPOINT);
-  const profile = user ?
-    {
+  const theme = useTheme();
+  const profile = user
+    ? {
         email: user.email,
         ...user.profile,
       } :
@@ -361,13 +369,15 @@ function Settings() {
               }
             />
           ))}
-          <MailingLists />
-          {!environment.isNative && <PushNotifications />}
+          <NotificationsContainer>
+            <MailingLists width="auto" />
+            <PushNotifications />
+          </NotificationsContainer>
+          <ThemeSwitch withLabel />
           <SettingsItem>
             <Button
               appearance={ButtonAppearance.Secondary}
-              color="red"
-              backgroundColor="red"
+              color={theme.color.status.error}
               size={ButtonSizes.Large}
               onClick={() => {
                 setShowConfirm(true);

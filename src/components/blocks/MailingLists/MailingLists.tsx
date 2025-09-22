@@ -5,7 +5,7 @@ import {
   StatusTypes,
   Switch,
 } from '@a-little-world/little-world-design-system';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -17,12 +17,12 @@ import { mutateUserData } from '../../../api/index';
 import { USER_ENDPOINT } from '../../../features/swr/index';
 import { onFormError } from '../../../helpers/form';
 
-const MailingListsWrapper = styled.div<{ $centred?: boolean }>`
+const MailingListsWrapper = styled.div<{ $centred?: boolean; $width?: string }>`
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: ${({ theme }) => theme.spacing.xxsmall};
-  width: 100%;
+  width: ${({ $width }) => $width || '100%'};
   max-width: 400px;
 
   ${({ theme, $centred }) =>
@@ -41,9 +41,11 @@ const CategoryForm = styled.form`
 const MailingLists = ({
   inline,
   hideLabel,
+  width,
 }: {
   inline?: boolean;
   hideLabel?: boolean;
+  width?: string;
 }) => {
   const { t } = useTranslation();
   const { control, getValues, setError, watch, handleSubmit } = useForm();
@@ -70,7 +72,7 @@ const MailingLists = ({
   }, [handleSubmit, watch]);
 
   return (
-    <MailingListsWrapper>
+    <MailingListsWrapper $width={width}>
       <form>
         <Controller
           defaultValue={subscribed}

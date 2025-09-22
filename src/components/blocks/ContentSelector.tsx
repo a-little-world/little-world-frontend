@@ -4,7 +4,6 @@ import {
   ButtonVariations,
   Link,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
@@ -40,6 +39,7 @@ const Selector = styled.div`
 export const StyledOption = styled(Button)<{ $selected?: boolean }>`
   border-color: transparent;
   transition: none;
+  flex-shrink: 0;
 
   ${({ theme, variation }) =>
     variation === ButtonVariations.Inline &&

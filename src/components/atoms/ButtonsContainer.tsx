@@ -1,14 +1,18 @@
 import styled from 'styled-components';
 
-const ButtonsContainer = styled.div`
+const ButtonsContainer = styled.div<{
+  $marginTop?: string;
+  $maxWidth?: string;
+}>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 
-  ${({ theme }) => `
-    gap: ${theme.spacing.small};
+  ${({ theme, $maxWidth, $marginTop }) => `
+    gap: ${theme.spacing.medium};
     flex-wrap: wrap;
+    margin-top: ${$marginTop || '0'};
 
     @media (max-width: ${theme.breakpoints.small}) {
       > button,
@@ -23,6 +27,7 @@ const ButtonsContainer = styled.div`
     @media (min-width: ${theme.breakpoints.small}) {
       gap: ${theme.spacing.large};
       flex-wrap: nowrap;
+      max-width: ${$maxWidth || '500px'};
 
       > button,
       > a {

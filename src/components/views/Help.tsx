@@ -17,7 +17,7 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { DragEvent, useEffect, useRef, useState } from 'react';
+import { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { I18nextProvider, TFunction, useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
@@ -337,22 +337,21 @@ function Help() {
 
           <ContactButtons>
             {adminUser?.partner?.id && (
-              <MenuLink to={supportUrl}>
-                <MessageIcon
-                  gradient={Gradients.Orange}
-                  label="message support"
-                />
-                <Text tag="span" center>
-                  {t('help.support_message_btn')}
-                </Text>
-              </MenuLink>
+              <MenuLink
+                to={supportUrl}
+                Icon={MessageIcon}
+                iconGradient={Gradients.Orange}
+                iconLabel="message support"
+                text={t('help.support_message_btn')}
+              />
             )}
-            <MenuLink to="tel:+4915234777471">
-              <PhoneIcon gradient={Gradients.Orange} label="call support" />
-              <Text tag="span" center>
-                {t('help.support_call_btn')}
-              </Text>
-            </MenuLink>
+            <MenuLink
+              to="tel:+4915234777471"
+              Icon={PhoneIcon}
+              iconGradient={Gradients.Orange}
+              iconLabel="call support"
+              text={t('help.support_call_btn')}
+            />
           </ContactButtons>
 
           <ContactInfo>

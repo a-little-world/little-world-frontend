@@ -56,7 +56,7 @@ export function renderMessageView(
   }
   root.render(
     <React.StrictMode>
-      <Root restoreScroll={false} includeModeSwitch={false}>
+      <Root restoreScroll={false}>
         <FormLayout>
           <MessageCard
             title={title}

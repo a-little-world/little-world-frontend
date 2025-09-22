@@ -53,13 +53,16 @@ You will need to install ngrok and also create an account at https://ngrok.com/
 When you have an ngrok account you can [create your own static domain](https://dashboard.ngrok.com/get-started/setup/macos). 
 ```
 brew install ngrok // if you don't have it already
-ngrok http --url=YOUR_STATIC_DOMAIN 80
+ngrok http --url=YOUR_STATIC_DOMAIN 8000
 ```
 
 3) Go to livekit development dashboard and enter the callback url:
 https://YOUR_STATIC_DOMAIN.ngrok-free.app/api/livekit/webhook?secret=secret
 
 Now when you run the video calls locally they should work!
+Make sure the ngrok server is running - this is required for the webhooks to work!
+
+ISSUE with (ngrok and recieving webhook calls)[https://stackoverflow.com/questions/73017353/how-to-bypass-ngrok-browser-warning]
 
 // More Info needed on how to handle webhooks
 

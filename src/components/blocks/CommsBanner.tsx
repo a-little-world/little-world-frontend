@@ -6,7 +6,6 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
-import React from 'react';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
@@ -186,6 +185,7 @@ const Description = styled(Text)`
 function CommsBanner() {
   const banner = useSWR(USER_ENDPOINT).data?.banner;
   if (isEmpty(banner)) return null;
+
   const isLarge = banner.type === BannerTypes.Large;
   // depending on the type and image, we want to show the ctas on LHS
   const showCtasOnLHS = banner.type === BannerTypes.Small && banner.image;
@@ -225,7 +225,7 @@ function CommsBanner() {
                   to={banner.cta_1_url}
                   buttonAppearance={ButtonAppearance.Primary}
                   buttonSize={ButtonSizes.Medium}
-                  $hasBorder={banner.name.includes('Learner')}
+                  $hasBorder={banner.name.includes('Border')}
                 >
                   {banner.cta_1_text}
                 </PrimaryCta>

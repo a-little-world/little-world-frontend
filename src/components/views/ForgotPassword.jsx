@@ -14,9 +14,15 @@ import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { requestPasswordReset } from '../../api';
-import { onFormError, registerInput } from '../../helpers/form';
-import { LOGIN_ROUTE } from '../../router/routes';
-import ButtonsContainer from '../atoms/ButtonsContainer';
+<<<<<<< HEAD
+import { onFormError, registerInput } from '../../helpers/form.ts';
+import { LOGIN_ROUTE } from '../../router/routes.ts';
+import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
+=======
+import { onFormError, registerInput } from '../../helpers/form.ts';
+import { LOGIN_ROUTE } from '../../router/routes.ts';
+import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
+>>>>>>> ea23777266c05d73faa12c6b73844cf3fed56e2d
 import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 export const ForgotPasswordDescription = styled(Text)`

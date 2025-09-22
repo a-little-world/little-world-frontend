@@ -101,7 +101,8 @@ export const WriteSection = styled.form`
 export const Messages = styled.div`
   position: relative;
   height: 100%;
-  border: 2px solid ${({ theme }) => theme.color.border.minimal};
+  background: ${({ theme }) => theme.color.surface.secondary};
+  border: 2px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: 20px;
   flex-grow: 1;
   display: flex;
@@ -148,6 +149,8 @@ export const MessageText = styled(Text)<{
   $isWidget: boolean;
 }>`
   position: relative;
+  background: ${({ theme, $isSelf }) =>
+    $isSelf ? theme.color.surface.message : theme.color.surface.primary};
   padding: ${({ theme, $isWidget }) =>
     $isWidget ?
       theme.spacing.xxxsmall :
@@ -159,12 +162,6 @@ export const MessageText = styled(Text)<{
   overflow-wrap: break-word;
   white-space: pre-wrap;
   hyphens: auto;
-
-  ${({ $isSelf, theme }) =>
-    $isSelf &&
-    `
-   background: ${theme.color.surface.message};
-`}
 
   &::before {
     content: ' ';

@@ -65,7 +65,7 @@ const Messages = () => {
 
   return (
     <>
-      <PageHeader text={t('chat_header')} />
+      <PageHeader text={t('chat.header')} />
       <ChatDashboard>
         <ChatsPanel
           chats={chats?.results || []}

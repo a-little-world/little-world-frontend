@@ -6,13 +6,18 @@ import {
   TextTypes,
   pixelate,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { LANGUAGES, LANGUAGE_LEVELS } from '../../constants/index';
-import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr/index';
+import {
+  COUNTRIES,
+  LANGUAGES,
+  LANGUAGE_LEVELS,
+  USER_TYPES,
+} from '../../constants/index.ts';
+import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr/index.ts';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard';
 import PartnerActionCard from './Cards/PartnerActionCard';
@@ -108,6 +113,9 @@ function PartnerProfiles({
   );
   const [partnerActionData, setPartnerActionData] = useState(null);
   const [showSearchConfirmModal, setShowSearchConfirmModal] = useState(false);
+  const isLearnerOutsideGermany =
+    user?.profile?.user_type === USER_TYPES.learner &&
+    user?.profile?.country_of_residence !== COUNTRIES.DE;
 
   const onModalClose = () => {
     setPartnerActionData(null);
@@ -148,6 +156,7 @@ function PartnerProfiles({
             key={match.partner.id}
             userPk={match.partner.id}
             profile={match.partner}
+            isDeleted={match.partner.isDeleted}
             isSelf={false}
             isMatch={!match.partner.isSupport}
             matchId={match.id}
@@ -158,7 +167,7 @@ function PartnerProfiles({
           />
         ))
       )}
-      {renderStatusCard()}
+      {!isLearnerOutsideGermany && renderStatusCard()}
 
       <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
         {!!partnerActionData && (

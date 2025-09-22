@@ -1,6 +1,7 @@
 import {
   CustomThemeProvider,
   GlobalStyles,
+  ThemeVariants,
 } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import {
@@ -11,35 +12,34 @@ import {
   createHashRouter,
 } from 'react-router-dom';
 
-import FireBase from '../Firebase';
-import WebsocketBridge from '../WebsocketBridge';
-import { ModeSwitch } from '../components/atoms/ModeSwitch';
-import RouterError from '../components/blocks/ErrorView/ErrorView';
-import Form from '../components/blocks/Form/Form';
-import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
-import FormLayout from '../components/blocks/Layout/FormLayout';
-import { ToastProvider } from '../components/blocks/Toast';
-import Welcome from '../components/blocks/Welcome/Welcome';
-import AboutUs from '../components/views/AboutUs/AboutUs';
-import ChangeEmail from '../components/views/ChangeEmail';
-import EditView from '../components/views/Edit';
-import EmailPreferences from '../components/views/EmailPreferences';
-import ForgotPassword from '../components/views/ForgotPassword';
-import Help from '../components/views/Help';
-import Main from '../components/views/Home';
-import Login from '../components/views/Login';
-import Messages from '../components/views/Messages';
-import NativeMessageHandler from '../components/views/NativeMessageHandler';
-import Notifications from '../components/views/Notifications';
-import Profile from '../components/views/Profile';
-import ResetPassword from '../components/views/ResetPassword';
-import Resources from '../components/views/Resources/Resources';
-import Settings from '../components/views/Settings';
-import SignUp from '../components/views/SignUp';
-import VerifyEmail from '../components/views/VerifyEmail';
-import VideoCall from '../components/views/VideoCall';
-import { environment } from '../environment';
-import AuthGuard from '../guards/AuthGuard';
+import FireBase from '../Firebase.tsx';
+import WebsocketBridge from '../WebsocketBridge.jsx';
+import RouterError from '../components/blocks/ErrorView/ErrorView.tsx';
+import Form from '../components/blocks/Form/Form.jsx';
+import { FullAppLayout } from '../components/blocks/Layout/AppLayout.tsx';
+import FormLayout from '../components/blocks/Layout/FormLayout.jsx';
+import { ToastProvider } from '../components/blocks/Toast.tsx';
+import Welcome from '../components/blocks/Welcome/Welcome.jsx';
+import AboutUs from '../components/views/AboutUs/AboutUs.tsx';
+import ChangeEmail from '../components/views/ChangeEmail.jsx';
+import EditView from '../components/views/Edit.jsx';
+import EmailPreferences from '../components/views/EmailPreferences.tsx';
+import ForgotPassword from '../components/views/ForgotPassword.jsx';
+import Help from '../components/views/Help.tsx';
+import Main from '../components/views/Home.tsx';
+import Login from '../components/views/Login.jsx';
+import Messages from '../components/views/Messages.jsx';
+import Notifications from '../components/views/Notifications.tsx';
+import Profile from '../components/views/Profile.tsx';
+import ResetPassword from '../components/views/ResetPassword.jsx';
+import Resources from '../components/views/Resources/Resources.tsx';
+import Settings from '../components/views/Settings.jsx';
+import SignUp from '../components/views/SignUp.jsx';
+import VerifyEmail from '../components/views/VerifyEmail.jsx';
+import VideoCall from '../components/views/VideoCall.jsx';
+import { STORAGE_KEYS } from '../constants/index.ts';
+import AuthGuard from '../guards/AuthGuard.tsx';
+import { getLocalStorageItem } from '../helpers/localStorage.ts';
 import {
   APP_ROUTE,
   BASE_ROUTE,
@@ -75,22 +75,27 @@ import {
   getAppRoute,
 } from './routes';
 
-export const Root = ({
-  children,
-  restoreScroll = true,
-  includeModeSwitch = false,
-}) => (
-  <CustomThemeProvider>
+const getInitialTheme = () => {
+  const storedTheme = getLocalStorageItem(STORAGE_KEYS.themePreference);
+  if (
+    storedTheme === ThemeVariants.dark ||
+    storedTheme === ThemeVariants.light
+  ) {
+    return storedTheme;
+  }
+  return undefined; // Let CustomThemeProvider use its default
+};
+
+export const Root = ({ children, restoreScroll = true }) => (
+  <CustomThemeProvider defaultMode={getInitialTheme()}>
     <ToastProvider>
       <AuthGuard>
         <WebsocketBridge />
-        {!environment.isNative && <FireBase />}
+        <FireBase />
       </AuthGuard>
       {restoreScroll && <ScrollRestoration />}
       <GlobalStyles />
       {children || <Outlet />}
-      {includeModeSwitch && <ModeSwitch />}
-      {environment.isNative && <NativeMessageHandler />}
     </ToastProvider>
   </CustomThemeProvider>
 );
@@ -98,6 +103,7 @@ export const Root = ({
 export function getWebRouter() {
   const ROOT_ROUTES = [
     {
+<<<<<<< HEAD
       path: LOGIN_ROUTE,
       element: (
         <FormLayout>
@@ -210,6 +216,15 @@ export function getWebRouter() {
         <FullAppLayout>
           <Main />
         </FullAppLayout>
+=======
+      path: BASE_ROUTE,
+      element: <Root />,
+      children: ROOT_ROUTES,
+      errorElement: (
+        <Root>
+          <RouterError />
+        </Root>
+>>>>>>> ea23777266c05d73faa12c6b73844cf3fed56e2d
       ),
     },
     {
@@ -378,10 +393,10 @@ export function getWebRouter() {
     [
       {
         path: BASE_ROUTE,
-        element: <Root includeModeSwitch />,
+        element: <Root />,
         children: ROOT_ROUTES,
         errorElement: (
-          <Root includeModeSwitch>
+          <Root>
             <RouterError />
           </Root>
         ),
