@@ -73,6 +73,9 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
 } from './routes';
+import NativeMessageHandler from '../components/views/NativeMessageHandler';
+
+import { environment } from '../environment';
 
 const getInitialTheme = () => {
   const storedTheme = getLocalStorageItem(STORAGE_KEYS.themePreference);
@@ -94,6 +97,7 @@ export const Root = ({ children, restoreScroll = true }) => (
       </AuthGuard>
       {restoreScroll && <ScrollRestoration />}
       <GlobalStyles />
+      {environment.isNative && <NativeMessageHandler />}
       {children || <Outlet />}
     </ToastProvider>
   </CustomThemeProvider>
