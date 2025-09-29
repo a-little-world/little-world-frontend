@@ -17,7 +17,7 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { DragEvent, useEffect, useRef, useState } from 'react';
+import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { I18nextProvider, TFunction, useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
@@ -182,10 +182,9 @@ export const NativeWebWrapper = ({
 export function Faqs() {
   const { t } = useTranslation();
   const [faqs, setFaqs] = useState([]);
-  const { data: matches, error } = useSWR(MATCHES_ENDPOINT, {
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: true,
   });
-
 
   const adminUser = matches?.support?.results?.[0];
   const supportUrl = getAppSubpageRoute(
@@ -284,9 +283,9 @@ export function Contact() {
         visible={Boolean(requestSuccessful || errors?.root?.serverError)}
         type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
       >
-        {requestSuccessful ?
-          t('help.contact_form_submitted') :
-          t(errors?.root?.serverError?.message)}
+        {requestSuccessful
+          ? t('help.contact_form_submitted')
+          : t(errors?.root?.serverError?.message)}
       </StatusMessage>
       <Button
         type="submit"

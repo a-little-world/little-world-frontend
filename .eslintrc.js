@@ -56,6 +56,7 @@ module.exports = {
         caughtErrorsIgnorePattern: '^_',
       },
     ],
+    'no-use-before-define': ['error', { variables: false }],
   },
   settings: {
     'import/resolver': {

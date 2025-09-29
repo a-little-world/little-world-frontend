@@ -100,7 +100,7 @@ export const postUserProfileUpdate = (
     body: JSON.stringify(updateData),
   })
     // TODO: check this
-    .then(response => onSuccess())
+    .then(() => onSuccess())
     .catch(error => {
       // TODO: check this; error.errorTags[formTag] ?
       const errorTags = error[formTag];
@@ -144,20 +144,24 @@ export const login = async ({
     }, 15000);
 
     const handler = (event: Event) => {
-      const detail = (event as CustomEvent<NativeChallengeProofEvent>).detail;
-      if (detail.challenge === challenge) {
+      const { challenge: solvedChallenge, proof: solvedProof } = (
+        event as CustomEvent<NativeChallengeProofEvent>
+      ).detail;
+      if (solvedChallenge === challenge) {
         clearTimeout(timeout);
         window.removeEventListener('native-challenge-proof', handler);
-        resolve(detail.proof);
+        resolve(solvedProof);
       }
     };
 
     window.addEventListener('native-challenge-proof', handler);
     sendMessageToReactNative({
       action: 'NATIVE_CHALLENGE_PROOF',
-      challenge,
-      timestamp,
-      email: (email || '').toLowerCase(),
+      payload: {
+        challenge,
+        timestamp,
+        email: (email || '').toLowerCase(),
+      },
     });
   });
 

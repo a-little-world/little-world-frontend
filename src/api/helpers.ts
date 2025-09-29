@@ -39,7 +39,8 @@ export const formatApiError = (responseBody: any, response: any) => {
   } else {
     const responseObj: Record<string, any> = responseBody || {};
     const errorTypeApi = Object.keys(responseObj)?.[0];
-    const errorType = API_FIELDS[errorTypeApi as keyof typeof API_FIELDS] ?? errorTypeApi;
+    const errorType =
+      API_FIELDS[errorTypeApi as keyof typeof API_FIELDS] ?? errorTypeApi;
     const errorTags = Object.values(responseObj)?.[0] as any;
     const errorTag = Array.isArray(errorTags) ? errorTags[0] : errorTags;
 
@@ -63,6 +64,39 @@ function getNativeHeaders(): Record<string, string> {
   }
 
   return headers;
+}
+
+export async function nativeRefreshAccessToken(): Promise<boolean> {
+  if (!environment.isNative) return false;
+  const { refreshToken, setTokens } = useMobileAuthTokenStore.getState();
+  if (!refreshToken) return false;
+
+  try {
+    const response = await fetch(
+      `${environment.backendUrl}/api/token/refresh`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refresh: refreshToken }),
+        credentials: 'same-origin',
+      } as RequestInit,
+    );
+
+    if (!response.ok) {
+      return false;
+    }
+    const { access, refresh } = await response.json().catch(() => {});
+    setTokens(access ?? null, refresh ?? null);
+    if (access && refresh) {
+      return true;
+    }
+    return false;
+  } catch (_e) {
+    return false;
+  }
 }
 
 export async function apiFetch<T = any>(
@@ -134,50 +168,15 @@ export async function apiFetch<T = any>(
       if (refreshed) {
         // update Authorization header with new access token
         const { accessToken } = useMobileAuthTokenStore.getState();
-        const headers = (fetchOptions.headers as Record<string, string>) || {};
         if (accessToken) {
-          headers.Authorization = `Bearer ${accessToken}`;
+          fetchOptions.headers!.Authorization = `Bearer ${accessToken}`;
         } else {
-          delete headers.Authorization;
+          delete fetchOptions.headers!.Authorization;
         }
-        fetchOptions.headers = headers;
-        return await doFetch();
+        return doFetch();
       }
     }
     console.error(`API Fetch Error (${endpoint}):`, error);
     throw error;
-  }
-}
-
-export async function nativeRefreshAccessToken(): Promise<boolean> {
-  if (!environment.isNative) return false;
-  const { refreshToken, setTokens } = useMobileAuthTokenStore.getState();
-  if (!refreshToken) return false;
-
-  try {
-    const response = await fetch(
-      `${environment.backendUrl}/api/token/refresh`,
-      {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ refresh: refreshToken }),
-      credentials: 'same-origin',
-      } as RequestInit,
-    );
-
-    if (!response.ok) {
-      return false;
-    }
-    const { access, refresh } = await response.json().catch(() => {});
-    setTokens(access ?? null, refresh ?? null);
-    if (access && refresh) {
-      return true;
-    }
-    return false;
-  } catch (_e) {
-    return false;
   }
 }
