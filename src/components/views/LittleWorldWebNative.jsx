@@ -38,8 +38,6 @@ export function LittleWorldWebNative({
   const router = getNativeRouter();
   const { handler, setSendMessageToReactNative } = useReceiveHandlerStore();
 
-  console.log('onMessage', sendMessageToReactNative);
-
   useEffect(() => {
     // Store the sendMessageToReactNative function in the store
     setSendMessageToReactNative(sendMessageToReactNative);
@@ -47,7 +45,6 @@ export function LittleWorldWebNative({
 
   useEffect(() => {
     if (registerReceiveHandler && handler) {
-      console.log('Registering new handler with native bridge:', handler);
       registerReceiveHandler(handler);
     }
   }, [registerReceiveHandler, handler]);
