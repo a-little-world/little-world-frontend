@@ -62,7 +62,6 @@ export const submitHelpForm = async (formData, onSuccess, onFailure) => {
 
       onSuccess(response);
     } catch (error) {
-      // TODO: check this
       if (error?.status === 413)
         throw new Error('validation.image_upload_required');
       else {
@@ -98,10 +97,8 @@ export const postUserProfileUpdate = (
     },
     body: JSON.stringify(updateData),
   })
-    // TODO: check this
     .then(() => onSuccess())
     .catch(error => {
-      // TODO: check this; error.errorTags[formTag] ?
       const errorTags = error[formTag];
       return onFailure(errorTags);
     });
