@@ -87,7 +87,7 @@ async function unregister(firebasePublicVapidKey: string) {
   }
 
   await unregisterFirebaseDeviceToken(firebasePublicVapidKey);
-  setFirebaseDeviceTokenRegistered(token!, true);
+  setFirebaseDeviceTokenRegistered(token!, false);
   await disableFirebase();
 }
 
