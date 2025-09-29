@@ -35,7 +35,6 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
       });
       onSuccess(response);
     } catch (error) {
-      // TODO: check this
       if (error?.status === 413)
         throw new Error('validation.image_upload_required', {
           cause: API_FIELDS.image,
