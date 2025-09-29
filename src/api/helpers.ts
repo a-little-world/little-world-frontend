@@ -151,11 +151,13 @@ export async function apiFetch<T = any>(
 
 export async function nativeRefreshAccessToken(): Promise<boolean> {
   if (!environment.isNative) return false;
-  const { refreshToken, setAccessToken } = useMobileAuthTokenStore.getState();
+  const { refreshToken, setTokens } = useMobileAuthTokenStore.getState();
   if (!refreshToken) return false;
 
   try {
-    const response = await fetch(`${environment.backendUrl}/api/token/refresh`, {
+    const response = await fetch(
+      `${environment.backendUrl}/api/token/refresh`,
+      {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -163,15 +165,15 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
       },
       body: JSON.stringify({ refresh: refreshToken }),
       credentials: 'same-origin',
-    } as RequestInit);
+      } as RequestInit,
+    );
 
     if (!response.ok) {
       return false;
     }
-    const data = await response.json().catch(() => null);
-    const newAccess = data?.access ?? data?.token_access ?? null;
-    if (newAccess) {
-      setAccessToken(newAccess);
+    const { access, refresh } = await response.json().catch(() => {});
+    setTokens(access ?? null, refresh ?? null);
+    if (access && refresh) {
       return true;
     }
     return false;
