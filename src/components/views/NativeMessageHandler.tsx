@@ -1,17 +1,28 @@
 import { useEffect, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useReceiveHandlerStore } from '../../features/stores';
+
+import {
+  useMobileAuthTokenStore,
+  useReceiveHandlerStore,
+} from '../../features/stores';
+import {
+  DomCommunicationMessage,
+  DomCommunicationMessageFn,
+} from '../../features/stores/receiveHandler';
 
 type EventHandlerState = {
   navigationHandler: ((event: Event) => void) | null;
   authTokenHandler: ((event: Event) => void) | null;
-  messageHandler: ((action: string, payload: Record<string, any>) => Promise<any>) | null;
+  messageHandler: ((message: DomCommunicationMessage) => Promise<any>) | null;
 };
 
 type EventHandlerAction =
   | { type: 'SET_NAVIGATION_HANDLER'; payload: ((event: Event) => void) | null }
   | { type: 'SET_AUTH_TOKEN_HANDLER'; payload: ((event: Event) => void) | null }
-  | { type: 'SET_MESSAGE_HANDLER'; payload: ((action: string, payload: Record<string, any>) => Promise<any>) | null }
+  | {
+      type: 'SET_MESSAGE_HANDLER';
+      payload: ((mesage: DomCommunicationMessage) => Promise<any>) | null;
+    }
   | { type: 'CLEANUP' };
 
 const initialState: EventHandlerState = {
@@ -20,7 +31,10 @@ const initialState: EventHandlerState = {
   messageHandler: null,
 };
 
-function eventHandlerReducer(state: EventHandlerState, action: EventHandlerAction): EventHandlerState {
+function eventHandlerReducer(
+  state: EventHandlerState,
+  action: EventHandlerAction,
+): EventHandlerState {
   switch (action.type) {
     case 'SET_NAVIGATION_HANDLER':
       return { ...state, navigationHandler: action.payload };
@@ -35,10 +49,17 @@ function eventHandlerReducer(state: EventHandlerState, action: EventHandlerActio
   }
 }
 
+export interface NativeChallengeProofEvent {
+  proof: string;
+  challenge: string;
+  timestamp: string;
+  email: string;
+}
+
 function NativeMessageHandler() {
   const { setHandler } = useReceiveHandlerStore();
   const navigate = useNavigate();
-  const [state, dispatch] = useReducer(eventHandlerReducer, initialState);
+  const [_state, dispatch] = useReducer(eventHandlerReducer, initialState);
 
   useEffect(() => {
     const handleNavigation = (event: Event) => {
@@ -72,56 +93,47 @@ function NativeMessageHandler() {
   }, []);
 
   useEffect(() => {
-    console.log('Establishing handler');
-    const handler = async (action: string, payload: Record<string, any>) => {
-      console.log('action', action, 'TBS');
-      console.log('payload', payload);
-
+    const handler: DomCommunicationMessageFn = async function (
+      message: DomCommunicationMessage,
+    ) {
+      const { action, payload } = message;
       switch (action) {
-        case 'PING':
-          return {
-            ok: true,
-            data: `Handled in package: ${new Date().toISOString()} payload: ${JSON.stringify(
-              payload,
-            )}, window-location: ${window.location.href}`,
-          };
-        case 'console.log':
-          console.log('Console from native package:', payload);
-          return { ok: true, data: 'Logged' };
-        case 'navigate':
-          // Dispatch a custom event for navigation instead of calling navigate directly
-          window.dispatchEvent(
-            new CustomEvent('native-navigate', {
-              detail: { path: payload?.path },
-            }),
-          );
-          console.log('Navigation event dispatched for:', payload?.path);
-          return { ok: true, data: 'Navigation event dispatched' };
-        case 'setAuthToken':
-          console.log('Frontend received token', payload);
-          window.dispatchEvent(
-            new CustomEvent('set-auth-token', {
-              detail: {
-                token: payload?.token, // legacy single token
-                accessToken: payload?.accessToken ?? payload?.token_access ?? payload?.token,
-                refreshToken: payload?.refreshToken ?? payload?.token_refresh ?? null,
-              },
-            }),
-          );
+        case 'SET_AUTH_TOKENS': {
+          const { accessToken, refreshToken } = payload;
+          useMobileAuthTokenStore.setState({
+            accessToken,
+            refreshToken,
+          });
           return { ok: true, data: 'Token stored in frontend' };
-        case 'nativeChallengeProof':
+        }
+        case 'NATIVE_CHALLENGE_PROOF': {
           // Native returns the computed HMAC proof for the given challenge
-          window.dispatchEvent(
-            new CustomEvent('native-challenge-proof', {
-              detail: {
-                proof: payload?.proof ?? null,
-                challenge: payload?.challenge ?? null,
-                timestamp: payload?.timestamp ?? null,
-                email: payload?.email ?? null,
-              },
-            }),
-          );
-          return { ok: true, data: 'Challenge proof forwarded to frontend' };
+          const { proof, challenge, timestamp, email } = payload;
+
+          if (proof) {
+            window.dispatchEvent(
+              new CustomEvent<NativeChallengeProofEvent>(
+                'native-challenge-proof',
+                {
+                  detail: {
+                    proof,
+                    challenge,
+                    timestamp,
+                    email,
+                  },
+                },
+              ),
+            );
+            return { ok: true, data: 'Challenge proof forwarded to frontend' };
+          }
+          console.error('Native did not solve the challenge');
+          return { ok: false, error: 'Native did not solve the challenge' };
+        }
+        case 'NAVIGATE': {
+          const { path } = payload;
+          navigate(path);
+          return { ok: true, data: 'Navigation event dispatched' };
+        }
         default:
           return { ok: false, error: 'Unhandled in package' };
       }
@@ -134,7 +146,7 @@ function NativeMessageHandler() {
     return () => {
       dispatch({ type: 'SET_MESSAGE_HANDLER', payload: null });
     };
-  }, [setHandler]);
+  }, [setHandler, navigate]);
 
   return null;
 }

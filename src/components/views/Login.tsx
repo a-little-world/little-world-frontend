@@ -45,23 +45,32 @@ const Login = () => {
   } = useForm({ shouldUnregister: true });
 
   const navigate = useNavigate();
+  const mobileAuthStore = useMobileAuthTokenStore();
 
   useEffect(() => {
     setFocus('email');
   }, [setFocus]);
 
-  const onError = e => {
+  const onError = (e: any) => {
     setIsSubmitting(false);
     onFormError({ e, formFields: getValues(), setError });
   };
 
-  const setAuthTokens = (accessToken, refreshToken) => {
-    useMobileAuthTokenStore
-      .getState()
-      .setTokens(accessToken || null, refreshToken || null);
+  const setAuthTokens = (
+    accessToken: string | undefined | null,
+    refreshToken: string | undefined | null,
+  ) => {
+    mobileAuthStore.setTokens(accessToken || null, refreshToken || null);
   };
 
   const { data: userData } = useSWR(USER_ENDPOINT);
+
+  const accessToken = { mobileAuthStore };
+  useEffect(() => {
+    if (accessToken) {
+      mutate(USER_ENDPOINT);
+    }
+  }, [accessToken]);
 
   useEffect(() => {
     if (!userData) {
@@ -79,42 +88,29 @@ const Login = () => {
     }
   }, [userData, navigate]);
 
-  const onFormSubmit = async data => {
+  const onFormSubmit = async (data: any) => {
     setIsSubmitting(true);
 
     login(data)
       .then(loginData => {
         if (environment.isNative) {
-          setAuthTokens(loginData.token_access, loginData.token_refresh);
-          sendMessageToReactNative('setTokenFromDom', {
-            // keep legacy for backward-compat
-            token: loginData.token_access,
-            accessToken: loginData.token_access,
-            refreshToken: loginData.token_refresh,
-            timestamp: new Date().toISOString(),
+          if (sendMessageToReactNative === null) {
+            return;
+          }
+          sendMessageToReactNative({
+            action: 'SET_AUTH_TOKENS',
+            payload: {
+              accessToken: loginData.token_access,
+              refreshToken: loginData.token_refresh,
+            },
           });
         }
 
-        mutate(USER_ENDPOINT, loginData);
         setIsSubmitting(false);
+        setAuthTokens(loginData.token_access, loginData.token_refresh);
       })
       .catch(onError);
   };
-
-  useEffect(() => {
-    const loginWithToken = event => {
-      const accessToken = event?.detail?.accessToken ?? event?.detail?.token;
-      const refreshToken = event?.detail?.refreshToken ?? null;
-      setAuthTokens(accessToken, refreshToken);
-      mutate(USER_ENDPOINT);
-    };
-
-    window.addEventListener('set-auth-token', event => loginWithToken(event));
-
-    return () => {
-      window.removeEventListener('set-auth-token', loginWithToken);
-    };
-  });
 
   return (
     <StyledCard>

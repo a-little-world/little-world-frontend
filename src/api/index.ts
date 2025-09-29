@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 
+import { NativeChallengeProofEvent } from '../components/views/NativeMessageHandler';
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
@@ -107,7 +108,13 @@ export const postUserProfileUpdate = (
     });
 };
 
-export const login = async ({ email, password }) => {
+export const login = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
   if (!environment.isNative) {
     return apiFetch(`/api/user/login/`, {
       method: 'POST',
@@ -136,9 +143,9 @@ export const login = async ({ email, password }) => {
       reject(new Error('Timeout waiting for native challenge proof'));
     }, 15000);
 
-    const handler = (event) => {
-      const detail = event?.detail || {};
-      if (detail?.challenge === challenge && detail?.proof) {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<NativeChallengeProofEvent>).detail;
+      if (detail.challenge === challenge) {
         clearTimeout(timeout);
         window.removeEventListener('native-challenge-proof', handler);
         resolve(detail.proof);
@@ -146,7 +153,8 @@ export const login = async ({ email, password }) => {
     };
 
     window.addEventListener('native-challenge-proof', handler);
-    sendMessageToReactNative('computeNativeChallengeProof', {
+    sendMessageToReactNative({
+      action: 'NATIVE_CHALLENGE_PROOF',
       challenge,
       timestamp,
       email: (email || '').toLowerCase(),
@@ -162,7 +170,10 @@ export const login = async ({ email, password }) => {
   // Store tokens locally for subsequent Authorization headers
   useMobileAuthTokenStore
     .getState()
-    .setTokens(loginData?.token_access || null, loginData?.token_refresh || null);
+    .setTokens(
+      loginData?.token_access || null,
+      loginData?.token_refresh || null,
+    );
 
   return loginData;
 };
