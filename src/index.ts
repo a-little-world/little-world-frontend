@@ -5,6 +5,7 @@ export { environment } from './environment';
 export {
   DomCommunicationMessage,
   DomCommunicationMessageFn,
+  DomCommunicationResponse,
 } from './features/stores/receiveHandler';
 
 // export default LittleWorldWebNative;
