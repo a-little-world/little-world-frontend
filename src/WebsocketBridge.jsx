@@ -9,11 +9,7 @@ import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import useToast from './hooks/useToast';
 import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
 
-const SOCKET_URL = environment.isCapacitorBuild ?
-  environment.coreWsScheme +
-    environment.backendUrl.split('//').pop() +
-    environment.coreWsPath :
-  environment.coreWsScheme + (environment.isNative ? environment.websocketHost : (typeof window !== 'undefined' ? window.location.host : '')) + environment.coreWsPath;
+const SOCKET_URL = environment.coreWsScheme + (environment.isNative ? environment.websocketHost : (typeof window !== 'undefined' ? window.location.host : '')) + environment.coreWsPath;
 
 const WebsocketBridge = () => {
   /**
