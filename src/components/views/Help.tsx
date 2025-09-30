@@ -393,14 +393,4 @@ function Help() {
   );
 }
 
-export function FaqsNativeWeb() {
-  return (
-    <I18nextProvider i18n={i18n}>
-      <NativeWebWrapper>
-        <Faqs />
-      </NativeWebWrapper>
-    </I18nextProvider>
-  );
-}
-
 export default Help;
