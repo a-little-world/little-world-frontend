@@ -24,13 +24,31 @@ export type DomCommunicationMessage =
       action: 'TEST';
       payload: {
         initial: string;
-        result?: string;
+      };
+    }
+  | {
+      action: 'PING';
+      payload: {
+        message: string;
       };
     };
 
+// export type DomCommunicationResponseMap = {
+//   SET_AUTH_TOKENS: {
+//     ok: true;
+//     data?: any;
+//   };
+//   NATIVE_CHALLENGE_PROOF: { ok: true; proof: string };
+//   NAVIGATE: { ok: true; data?: any };
+//   TEST: { ok: true; data?: any };
+// };
+
 export type DomCommunicationResponse =
-  | { ok: true; data?: unknown }
+  | { ok: true; data?: any | undefined }
   | { ok: false; error: string };
+// export type DomCommunicationErrorResponse = { ok: false; error: string };
+// export type MessageReturnType<T extends DomCommunicationMessage['action']> =
+// DomCommunicationResponseMap[T];
 
 export type DomCommunicationMessageFn = (
   message: DomCommunicationMessage,

@@ -60,6 +60,16 @@ export function LittleWorldWebNative({
         console.log('sendMessageToReactNative TEST', res, payload);
       });
       registerReceiveHandler(handler);
+      console.log('Registering new handler with native bridge:', handler);
+      const payload = {
+        initial: 'Testnachricht',
+      };
+      sendMessageToReactNative({
+        action: 'TEST',
+        payload,
+      }).then(res => {
+        console.log('sendMessageToReactNative TEST', res, payload);
+      });
     }
   }, [registerReceiveHandler, handler]);
 

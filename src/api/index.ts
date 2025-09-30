@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 
-import { NativeChallengeProofEvent } from '../components/views/NativeMessageHandler';
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
@@ -133,32 +132,22 @@ export const login = async ({
   }
 
   // Wait for proof from native layer
-  const proof = await new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      window.removeEventListener('native-challenge-proof', handler);
-      reject(new Error('Timeout waiting for native challenge proof'));
-    }, 15000);
 
-    const handler = (event: Event) => {
-      const { challenge: solvedChallenge, proof: solvedProof } = (
-        event as CustomEvent<NativeChallengeProofEvent>
-      ).detail;
-      if (solvedChallenge === challenge) {
-        clearTimeout(timeout);
-        window.removeEventListener('native-challenge-proof', handler);
-        resolve(solvedProof);
-      }
-    };
-
-    window.addEventListener('native-challenge-proof', handler);
-    sendMessageToReactNative({
-      action: 'NATIVE_CHALLENGE_PROOF',
-      payload: {
-        challenge,
-        timestamp,
-        email: (email || '').toLowerCase(),
-      },
-    });
+  const { proof } = await sendMessageToReactNative({
+    action: 'NATIVE_CHALLENGE_PROOF',
+    payload: {
+      challenge,
+      timestamp,
+      email: (email || '').toLowerCase(),
+    },
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error(res.error);
+    }
+    if (!res.data?.proof) {
+      throw new Error('Challenge proof missing');
+    }
+    return res.data.proof;
   });
 
   const loginData = await apiFetch(`/api/user/native-login/`, {

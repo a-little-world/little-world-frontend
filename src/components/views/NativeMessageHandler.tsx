@@ -93,9 +93,9 @@ function NativeMessageHandler() {
   }, []);
 
   useEffect(() => {
-    const handler: DomCommunicationMessageFn = async function (
+    const handler: DomCommunicationMessageFn = async (
       message: DomCommunicationMessage,
-    ) {
+    ) => {
       const { action, payload } = message;
       switch (action) {
         case 'SET_AUTH_TOKENS': {
@@ -104,35 +104,55 @@ function NativeMessageHandler() {
             accessToken,
             refreshToken,
           });
-          return { ok: true, data: 'Token stored in frontend' };
+          return { ok: true };
         }
-        case 'NATIVE_CHALLENGE_PROOF': {
-          // Native returns the computed HMAC proof for the given challenge
-          const { proof, challenge, timestamp, email } = payload;
+        // case 'NATIVE_CHALLENGE_PROOF': {
+        //   // Native returns the computed HMAC proof for the given challenge
+        //   const { proof, challenge, timestamp, email } = payload;
 
-          if (proof) {
-            window.dispatchEvent(
-              new CustomEvent<NativeChallengeProofEvent>(
-                'native-challenge-proof',
-                {
-                  detail: {
-                    proof,
-                    challenge,
-                    timestamp,
-                    email,
-                  },
-                },
-              ),
-            );
-            return { ok: true, data: 'Challenge proof forwarded to frontend' };
-          }
-          console.error('Native did not solve the challenge');
-          return { ok: false, error: 'Native did not solve the challenge' };
-        }
+        //   if (proof) {
+        //     window.dispatchEvent(
+        //       new CustomEvent<NativeChallengeProofEvent>(
+        //         'native-challenge-proof',
+        //         {
+        //           detail: {
+        //             proof,
+        //             challenge,
+        //             timestamp,
+        //             email,
+        //           },
+        //         },
+        //       ),
+        //     );
+        //     return { proof: 'Challenge proof forwarded to frontend' };
+        //   }
+        //   console.error('Native did not solve the challenge');
+        //   // return { ok: false, error: 'Native did not solve the challenge' };
+        //   throw new Error('');
+        // }
         case 'NAVIGATE': {
           const { path } = payload;
           navigate(path);
           return { ok: true, data: 'Navigation event dispatched' };
+          // return undefined;
+        }
+        case 'TEST': {
+          return {
+            ok: true,
+            data: {
+              response: `Response from frontend: ${new Date().toISOString()}`,
+            },
+          };
+        }
+        case 'PING': {
+          return {
+            ok: true,
+            data: {
+              message: `Received message ${
+                message.payload.message
+              } at ${new Date().toISOString()} from native`,
+            },
+          };
         }
         case 'TEST': {
           const { initial } = payload;
@@ -142,6 +162,7 @@ function NativeMessageHandler() {
         default:
           return { ok: false, error: 'Unhandled in package' };
       }
+      // return { ok: false, error: 'Unhandled in package' };
     };
 
     dispatch({ type: 'SET_MESSAGE_HANDLER', payload: handler });

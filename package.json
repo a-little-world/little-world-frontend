@@ -1,6 +1,6 @@
 {
   "name": "littleplanet",
-  "version": "0.1.226",
+  "version": "0.1.234",
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
