@@ -19,11 +19,22 @@ export type DomCommunicationMessage =
       payload: {
         path: string;
       };
+    }
+  | {
+      action: 'TEST';
+      payload: {
+        initial: string;
+        result?: string;
+      };
     };
+
+export type DomCommunicationResponse =
+  | { ok: true; data?: unknown }
+  | { ok: false; error: string };
 
 export type DomCommunicationMessageFn = (
   message: DomCommunicationMessage,
-) => Promise<any> | any;
+) => Promise<DomCommunicationResponse>;
 
 interface ReceiveHandlerState {
   handler: DomCommunicationMessageFn | null;

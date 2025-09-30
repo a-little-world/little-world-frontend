@@ -134,6 +134,11 @@ function NativeMessageHandler() {
           navigate(path);
           return { ok: true, data: 'Navigation event dispatched' };
         }
+        case 'TEST': {
+          const { initial } = payload;
+          payload.result = `Initial: ${initial}. Answered from Frontend.`;
+          return { ok: true, data: 'uninteresting' };
+        }
         default:
           return { ok: false, error: 'Unhandled in package' };
       }
@@ -146,7 +151,8 @@ function NativeMessageHandler() {
     return () => {
       dispatch({ type: 'SET_MESSAGE_HANDLER', payload: null });
     };
-  }, [setHandler, navigate]);
+    // }, [setHandler, navigate]);
+  }, [setHandler]);
 
   return null;
 }
