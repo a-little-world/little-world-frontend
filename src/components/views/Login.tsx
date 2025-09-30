@@ -65,7 +65,8 @@ const Login = () => {
 
   const { data: userData } = useSWR(USER_ENDPOINT);
 
-  const accessToken = { mobileAuthStore };
+  const accessToken = mobileAuthStore?.accessToken;
+
   useEffect(() => {
     if (accessToken) {
       mutate(USER_ENDPOINT);
