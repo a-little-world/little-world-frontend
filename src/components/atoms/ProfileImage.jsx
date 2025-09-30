@@ -45,7 +45,7 @@ export const CircleImage = styled.div`
   background: ${({ theme }) => theme.color.surface.primary};
   height: ${({ $size }) => ImageSizes[$size]};
   max-height: ${ImageSizes.large};
-  max-width: ${ImageSizes.large}l
+  max-width: ${ImageSizes.large};
   display: flex;
   align-items: end;
   justify-content: center;
