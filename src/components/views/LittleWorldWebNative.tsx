@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { SWRConfig } from 'swr';
 
 import { useReceiveHandlerStore } from '../../features/stores';
+import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler';
 import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
@@ -34,6 +35,9 @@ export function NativePreloader() {
 export function LittleWorldWebNative({
   sendMessageToReactNative,
   registerReceiveHandler,
+}: {
+  sendMessageToReactNative: DomCommunicationMessageFn;
+  registerReceiveHandler: (handler: DomCommunicationMessageFn | null) => void;
 }) {
   const router = getNativeRouter();
   const { handler, setSendMessageToReactNative } = useReceiveHandlerStore();
@@ -45,6 +49,16 @@ export function LittleWorldWebNative({
 
   useEffect(() => {
     if (registerReceiveHandler && handler) {
+      console.log('Registering new handler with native bridge:', handler);
+      const payload = {
+        initial: 'Testnachricht',
+      };
+      sendMessageToReactNative({
+        action: 'TEST',
+        payload,
+      }).then(res => {
+        console.log('sendMessageToReactNative TEST', res, payload);
+      });
       registerReceiveHandler(handler);
     }
   }, [registerReceiveHandler, handler]);
@@ -53,6 +67,13 @@ export function LittleWorldWebNative({
     <I18nextProvider i18n={i18n}>
       <SWRConfig value={swrConfig}>
         <NativePreloader />
+        <div>Hallooo</div>
+        <div>Hallooo</div>
+        <div>Hallooo</div>
+        <div>Hallooo</div>
+        <div>Hallooo</div>
+        <div>Hallooo</div>
+        <div>Hallooo</div>
         <RouterProvider router={router} />
       </SWRConfig>
     </I18nextProvider>
