@@ -192,7 +192,7 @@ function Faqs() {
   return (
     <FAQContainer>
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
-        {t('nbt_faqs')}
+        {t('menu_faqs')}
       </ContentTitle>
       <Text>{t('help.faqs_intro')}</Text>
       <FAQImageWrapper>
@@ -251,7 +251,7 @@ function Contact() {
   return (
     <ContactForm onSubmit={handleSubmit(onSubmit)}>
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
-        {t('nbt_contact')}
+        {t('menu_contact')}
       </ContentTitle>
       <Text>{t('help.contact_intro_line1')}</Text>
       <StyledIntro>{t('help.contact_intro_line2')}</StyledIntro>

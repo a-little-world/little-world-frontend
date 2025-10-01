@@ -1,0 +1,53 @@
+import styled, { css } from 'styled-components';
+
+export const Container = styled.div`
+  display: flex;
+  width: 100%;
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.small};
+  flex-wrap: wrap;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: 0;
+      max-width: 1200px;
+    }
+  `}
+`;
+
+export const InfoPanel = styled.div`
+  display: flex;
+  border: 1px solid ${({ theme }) => theme.color.border.subtle};
+  border-radius: ${({ theme }) => theme.radius.small};
+  padding: ${({ theme }) => theme.spacing.small};
+  width: 100%;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      width: unset;
+      flex-shrink: 1;
+      border-radius: ${theme.radius.medium};
+      padding: ${theme.spacing.small};
+    }
+  `}
+`;
+
+export const InfoPanelText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.small};
+`;
+
+export const Schedule = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
+`;
+
+export const InfoImage = styled.img`
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  object-fit: cover;
+`;

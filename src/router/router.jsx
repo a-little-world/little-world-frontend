@@ -61,6 +61,7 @@ import {
   OUR_WORLD_ROUTE,
   PARTNERS_ROUTE,
   PARTNER_ROUTE,
+  RANDOM_CALLS_ROUTE,
   RESET_PASSWORD_ROUTE,
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
@@ -219,6 +220,15 @@ const ROOT_ROUTES = [
   },
   {
     path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
+    element: (
+      <FullAppLayout>
+        <Main />
+      </FullAppLayout>
+    ),
+    errorElement: <RouterError />,
+  },
+  {
+    path: getAppRoute(RANDOM_CALLS_ROUTE),
     element: (
       <FullAppLayout>
         <Main />

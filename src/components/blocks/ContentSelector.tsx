@@ -71,7 +71,7 @@ const StyledHideOnMobile = styled(HideOnMobile)`
 
 const nbtTopics = {
   ourWorld: ['support', 'donate', 'about', 'stories'],
-  main: ['conversation_partners', 'events'],
+  main: ['conversation_partners', 'events', 'random_calls'],
   help: ['contact', 'faqs'],
   resources: ['trainings', 'german', 'beginners', 'story', 'partners'],
 };
@@ -107,7 +107,7 @@ function ContentSelector({
       {topics.map((topic: string) =>
         externalLinksTopics[topic] ? (
           <StyledLink key={topic} href={externalLinksTopics[topic]}>
-            {t(`nbt_${topic}`)}
+            {t(`menu_${topic}`)}
           </StyledLink>
         ) : (
           <StyledOption
@@ -126,7 +126,7 @@ function ContentSelector({
             disabled={selection === topic && disableIfSelected}
             $selected={selection === topic}
           >
-            {t(`nbt_${topic}`)}
+            {t(`menu_${topic}`)}
           </StyledOption>
         ),
       )}

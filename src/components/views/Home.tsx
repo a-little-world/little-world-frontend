@@ -8,13 +8,18 @@ import CustomPagination from '../../CustomPagination.jsx';
 import { updateMatchData } from '../../api/matches.ts';
 import { useCallSetupStore } from '../../features/stores/index.ts';
 import { getMatchEndpoint } from '../../features/swr/index.ts';
-import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../router/routes.ts';
+import {
+  COMMUNITY_EVENTS_ROUTE,
+  RANDOM_CALLS_ROUTE,
+  getAppRoute,
+} from '../../router/routes.ts';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard.tsx';
 import CommsBanner from '../blocks/CommsBanner.tsx';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent.tsx';
 import ContentSelector from '../blocks/ContentSelector.tsx';
 import NotificationPanel from '../blocks/NotificationPanel.tsx';
 import PartnerProfiles from '../blocks/PartnerProfiles.tsx';
+import RandomCalls from './RandomCalls/RandomCalls.tsx';
 
 const Home = styled.div`
   display: flex;
@@ -32,7 +37,7 @@ const Home = styled.div`
   `};
 `;
 
-type subpages = 'events' | 'conversation_partners';
+type subpages = 'events' | 'conversation_partners' | 'random_calls';
 
 const PAGE_ITEMS = 10;
 
@@ -77,14 +82,21 @@ function Main() {
     }
   }, [userId]);
 
-  const subpage =
-    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)
-      ? 'events'
-      : 'conversation_partners';
+  const getSubpage = (): subpages => {
+    if (location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)) {
+      return 'events';
+    }
+    if (location.pathname === getAppRoute(RANDOM_CALLS_ROUTE)) {
+      return 'random_calls';
+    }
+    return 'conversation_partners';
+  };
+
+  const subpage = getSubpage();
 
   const handleSubpageSelect = (page: subpages) => {
     const nextPath = page !== 'conversation_partners' ? page : '';
-    navigate(getAppRoute(nextPath));
+    navigate(getAppRoute(nextPath.replace('_', '-')));
   };
 
   const onPageChange = (page: number) => {
@@ -95,13 +107,15 @@ function Main() {
     <>
       <ContentSelector
         selection={subpage}
-        setSelection={handleSubpageSelect}
+        setSelection={(selection: string) =>
+          handleSubpageSelect(selection as subpages)
+        }
         use="main"
       />
       <CommsBanner />
-      {subpage === 'events' ? (
-        <CommunityEvents />
-      ) : (
+      {subpage === 'events' && <CommunityEvents />}
+      {subpage === 'random_calls' && <RandomCalls />}
+      {subpage === 'conversation_partners' && (
         <>
           <Home>
             <PartnerProfiles

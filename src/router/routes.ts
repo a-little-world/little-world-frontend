@@ -1,5 +1,6 @@
 export const BASE_ROUTE = '/';
 export const APP_ROUTE = 'app';
+export const RANDOM_CALLS_ROUTE = 'random-calls';
 export const COMMUNITY_EVENTS_ROUTE = 'events';
 export const OUR_WORLD_ROUTE = 'our-world';
 export const SUPPORT_US_ROUTE = 'our-world/support';
