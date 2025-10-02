@@ -3,10 +3,12 @@ import { create } from 'zustand';
 export type DomCommunicationMessage =
   | {
       action: 'SET_AUTH_TOKENS';
+      requestId?: string;
       payload: { accessToken: string | null; refreshToken: string | null };
     }
   | {
       action: 'NATIVE_CHALLENGE_PROOF';
+      requestId?: string;
       payload: {
         proof?: string;
         challenge: string;
@@ -16,21 +18,29 @@ export type DomCommunicationMessage =
     }
   | {
       action: 'NAVIGATE';
+      requestId?: string;
       payload: {
         path: string;
       };
     }
   | {
       action: 'TEST';
+      requestId?: string;
       payload: {
         initial: string;
       };
     }
   | {
       action: 'PING';
+      requestId?: string;
       payload: {
         message: string;
       };
+    }
+  | {
+      action: 'RESPONSE';
+      requestId: string;
+      payload: DomCommunicationResponse;
     };
 
 // export type DomCommunicationResponseMap = {
