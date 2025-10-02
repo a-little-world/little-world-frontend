@@ -19,14 +19,13 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { I18nextProvider, TFunction, useTranslation } from 'react-i18next';
+import { TFunction, useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR, { SWRConfig } from 'swr';
 
 import { submitHelpForm } from '../../api/index';
 import { MATCHES_ENDPOINT, swrConfig } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
-import i18n from '../../i18n';
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink from '../atoms/MenuLink';
