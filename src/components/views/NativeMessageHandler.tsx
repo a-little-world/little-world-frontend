@@ -69,6 +69,17 @@ function NativeMessageHandler() {
   }, [navigate]);
 
   useEffect(() => {
+    const { accessToken, refreshToken } = mobileAuthStore;
+    sendMessageToReactNative?.({
+      action: 'SET_AUTH_TOKENS',
+      payload: {
+        accessToken,
+        refreshToken,
+      },
+    });
+  }, [mobileAuthStore]);
+
+  useEffect(() => {
     const handler: DomCommunicationMessageFn = async (
       message: DomCommunicationMessage,
     ) => {
@@ -161,7 +172,7 @@ function NativeMessageHandler() {
 
     // Set the handler; the store will auto-register with the native bridge if available
     setHandler(handler);
-  }, [setHandler, sendMessageToReactNative]);
+  }, [setHandler, sendMessageToReactNative, mobileAuthStore]);
 }
 
 export default NativeMessageHandler;
