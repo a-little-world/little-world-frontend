@@ -22,6 +22,6 @@ export const environment: Environment = {
   coreWsScheme: 'wss://',
   coreWsPath: '/api/core/ws',
   websocketHost: '',
-  isNative: true,
+  isNative: false,
   csrfBypassToken: 'abc',
 };
