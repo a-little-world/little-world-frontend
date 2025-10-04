@@ -8,6 +8,7 @@ import {
 import {
   DomCommunicationMessage,
   DomCommunicationMessageFn,
+  DomCommunicationResponse,
 } from '../../features/stores/receiveHandler';
 
 type EventHandlerState = {
@@ -57,7 +58,7 @@ export interface NativeChallengeProofEvent {
 }
 
 function NativeMessageHandler() {
-  const { setHandler } = useReceiveHandlerStore();
+  const { setHandler, sendMessageToReactNative } = useReceiveHandlerStore();
   const navigate = useNavigate();
   const [_state, dispatch] = useReducer(eventHandlerReducer, initialState);
 
@@ -96,15 +97,28 @@ function NativeMessageHandler() {
     const handler: DomCommunicationMessageFn = async (
       message: DomCommunicationMessage,
     ) => {
-      const { action, payload } = message;
+      const { action, requestId, payload } = message;
       switch (action) {
         case 'SET_AUTH_TOKENS': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
           const { accessToken, refreshToken } = payload;
           useMobileAuthTokenStore.setState({
             accessToken,
             refreshToken,
           });
-          return { ok: true };
+
+          const response: DomCommunicationResponse = { ok: true };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId: requestId,
+            payload: response,
+          });
+
+          return response;
         }
         // case 'NATIVE_CHALLENGE_PROOF': {
         //   // Native returns the computed HMAC proof for the given challenge
@@ -131,28 +145,77 @@ function NativeMessageHandler() {
         //   throw new Error('');
         // }
         case 'NAVIGATE': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
           const { path } = payload;
           navigate(path);
-          return { ok: true, data: 'Navigation event dispatched' };
-          // return undefined;
+
+          const response: DomCommunicationResponse = {
+            ok: true,
+            data: {
+              response: `Navigation event dispatched`,
+            },
+          };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId: requestId,
+            payload: response,
+          });
+
+          return response;
         }
         case 'TEST': {
-          return {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const response: DomCommunicationResponse = {
             ok: true,
             data: {
               response: `Response from frontend: ${new Date().toISOString()}`,
             },
           };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId: requestId,
+            payload: response,
+          });
+
+          return response;
         }
         case 'PING': {
-          return {
+          console.log(
+            'received ping, sending response',
+            message,
+            sendMessageToReactNative,
+          );
+
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const response: DomCommunicationResponse = {
             ok: true,
             data: {
-              message: `Received message ${
-                message.payload.message
-              } at ${new Date().toISOString()} from native`,
+              message: `Received message ${message.payload.message} from native`,
+
+              // message: `Received message ${
+              //   message.payload.message
+              // } at ${new Date().toISOString()} from native`,
             },
           };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId: requestId,
+            payload: response,
+          });
+
+          return response;
         }
         case 'TEST': {
           const { initial } = payload;
@@ -160,7 +223,19 @@ function NativeMessageHandler() {
           return { ok: true, data: 'uninteresting' };
         }
         default:
-          return { ok: false, error: 'Unhandled in package' };
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const response = { ok: false, error: 'Unhandled in package' };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId: requestId,
+            payload: response,
+          });
+
+          return response;
       }
       // return { ok: false, error: 'Unhandled in package' };
     };
@@ -173,7 +248,7 @@ function NativeMessageHandler() {
       dispatch({ type: 'SET_MESSAGE_HANDLER', payload: null });
     };
     // }, [setHandler, navigate]);
-  }, [setHandler]);
+  }, [setHandler, sendMessageToReactNative]);
 
   return null;
 }

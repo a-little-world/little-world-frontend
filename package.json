@@ -1,6 +1,6 @@
 {
   "name": "littleplanet",
-  "version": "0.1.234",
+  "version": "0.1.241",
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
@@ -83,6 +83,7 @@
     "styled-components": "^6.1.18",
     "swr": "^2.3.6",
     "util": "^0.12.4",
+    "uuid": "^13.0.0",
     "web-vitals": "^2.1.4",
     "webpack": "^5.75.0",
     "zustand": "^5.0.4"

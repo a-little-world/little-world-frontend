@@ -77,13 +77,6 @@ export function LittleWorldWebNative({
     <I18nextProvider i18n={i18n}>
       <SWRConfig value={swrConfig}>
         <NativePreloader />
-        <div>Hallooo</div>
-        <div>Hallooo</div>
-        <div>Hallooo</div>
-        <div>Hallooo</div>
-        <div>Hallooo</div>
-        <div>Hallooo</div>
-        <div>Hallooo</div>
         <RouterProvider router={router} />
       </SWRConfig>
     </I18nextProvider>
