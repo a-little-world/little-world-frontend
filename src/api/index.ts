@@ -133,7 +133,7 @@ export const login = async ({
 
   // Wait for proof from native layer
 
-  const { proof } = await sendMessageToReactNative({
+  const proof = await sendMessageToReactNative({
     action: 'NATIVE_CHALLENGE_PROOF',
     payload: {
       challenge,

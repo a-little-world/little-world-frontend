@@ -161,9 +161,9 @@ export async function apiFetch<T = any>(
   try {
     return await doFetch();
   } catch (error: any) {
-    // If 401 on native, try to refresh and retry once
+    // If 403 on native, try to refresh and retry once
     const status = error?.status;
-    if (environment.isNative && status === 401) {
+    if (environment.isNative && status === 403) {
       const refreshed = await nativeRefreshAccessToken();
       if (refreshed) {
         // update Authorization header with new access token
@@ -176,6 +176,7 @@ export async function apiFetch<T = any>(
         return doFetch();
       }
     }
+
     console.error(`API Fetch Error (${endpoint}):`, error);
     throw error;
   }
