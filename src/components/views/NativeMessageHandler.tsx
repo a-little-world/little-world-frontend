@@ -11,27 +11,6 @@ import {
   DomCommunicationResponse,
 } from '../../features/stores/receiveHandler';
 
-type EventHandlerState = {
-  navigationHandler: ((event: Event) => void) | null;
-  authTokenHandler: ((event: Event) => void) | null;
-  messageHandler: ((message: DomCommunicationMessage) => Promise<any>) | null;
-};
-
-type EventHandlerAction =
-  | { type: 'SET_NAVIGATION_HANDLER'; payload: ((event: Event) => void) | null }
-  | { type: 'SET_AUTH_TOKEN_HANDLER'; payload: ((event: Event) => void) | null }
-  | {
-      type: 'SET_MESSAGE_HANDLER';
-      payload: ((mesage: DomCommunicationMessage) => Promise<any>) | null;
-    }
-  | { type: 'CLEANUP' };
-
-const initialState: EventHandlerState = {
-  navigationHandler: null,
-  authTokenHandler: null,
-  messageHandler: null,
-};
-
 export interface NativeChallengeProofEvent {
   proof: string;
   challenge: string;
