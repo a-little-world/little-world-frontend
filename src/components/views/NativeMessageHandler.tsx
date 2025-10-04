@@ -60,6 +60,7 @@ export interface NativeChallengeProofEvent {
 function NativeMessageHandler() {
   const { setHandler, sendMessageToReactNative } = useReceiveHandlerStore();
   const navigate = useNavigate();
+  const mobileAuthStore = useMobileAuthTokenStore();
 
   const navigateRef = useRef<NavigateFunction | null>(null);
 
@@ -79,10 +80,7 @@ function NativeMessageHandler() {
           }
 
           const { accessToken, refreshToken } = payload;
-          useMobileAuthTokenStore.setState({
-            accessToken,
-            refreshToken,
-          });
+          mobileAuthStore.setTokens(accessToken, refreshToken);
 
           const response: DomCommunicationResponse = { ok: true };
 
