@@ -1,5 +1,5 @@
-import { useEffect, useReducer } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 
 import {
   useMobileAuthTokenStore,
@@ -60,38 +60,12 @@ export interface NativeChallengeProofEvent {
 function NativeMessageHandler() {
   const { setHandler, sendMessageToReactNative } = useReceiveHandlerStore();
   const navigate = useNavigate();
-  const [_state, dispatch] = useReducer(eventHandlerReducer, initialState);
+
+  const navigateRef = useRef<NavigateFunction | null>(null);
 
   useEffect(() => {
-    const handleNavigation = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      const { path } = customEvent.detail;
-      console.log('Navigation event received, navigating to:', path);
-      navigate(path);
-    };
-
-    dispatch({ type: 'SET_NAVIGATION_HANDLER', payload: handleNavigation });
-    window.addEventListener('native-navigate', handleNavigation);
-
-    return () => {
-      window.removeEventListener('native-navigate', handleNavigation);
-      dispatch({ type: 'SET_NAVIGATION_HANDLER', payload: null });
-    };
+    navigateRef.current = navigate;
   }, [navigate]);
-
-  useEffect(() => {
-    const handler = (event: Event) => {
-      console.log('WebNative received auth token event', event);
-    };
-
-    dispatch({ type: 'SET_AUTH_TOKEN_HANDLER', payload: handler });
-    window.addEventListener('set-auth-token', handler);
-
-    return () => {
-      window.removeEventListener('set-auth-token', handler);
-      dispatch({ type: 'SET_AUTH_TOKEN_HANDLER', payload: null });
-    };
-  }, []);
 
   useEffect(() => {
     const handler: DomCommunicationMessageFn = async (
@@ -120,37 +94,14 @@ function NativeMessageHandler() {
 
           return response;
         }
-        // case 'NATIVE_CHALLENGE_PROOF': {
-        //   // Native returns the computed HMAC proof for the given challenge
-        //   const { proof, challenge, timestamp, email } = payload;
-
-        //   if (proof) {
-        //     window.dispatchEvent(
-        //       new CustomEvent<NativeChallengeProofEvent>(
-        //         'native-challenge-proof',
-        //         {
-        //           detail: {
-        //             proof,
-        //             challenge,
-        //             timestamp,
-        //             email,
-        //           },
-        //         },
-        //       ),
-        //     );
-        //     return { proof: 'Challenge proof forwarded to frontend' };
-        //   }
-        //   console.error('Native did not solve the challenge');
-        //   // return { ok: false, error: 'Native did not solve the challenge' };
-        //   throw new Error('');
-        // }
         case 'NAVIGATE': {
           if (!requestId) {
             throw new Error('Received native message without request id');
           }
 
           const { path } = payload;
-          navigate(path);
+          // circumvent infinite loop when using navigate inside dependencies
+          navigateRef.current?.(path);
 
           const response: DomCommunicationResponse = {
             ok: true,
@@ -182,10 +133,6 @@ function NativeMessageHandler() {
             ok: true,
             data: {
               message: `Received message ${message.payload.message} from native`,
-
-              // message: `Received message ${
-              //   message.payload.message
-              // } at ${new Date().toISOString()} from native`,
             },
           };
 
@@ -214,17 +161,9 @@ function NativeMessageHandler() {
       }
     };
 
-    dispatch({ type: 'SET_MESSAGE_HANDLER', payload: handler });
     // Set the handler; the store will auto-register with the native bridge if available
     setHandler(handler);
-
-    return () => {
-      dispatch({ type: 'SET_MESSAGE_HANDLER', payload: null });
-    };
-    // }, [setHandler, navigate]);
   }, [setHandler, sendMessageToReactNative]);
-
-  return null;
 }
 
 export default NativeMessageHandler;
