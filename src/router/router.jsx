@@ -28,6 +28,7 @@ import Help from '../components/views/Help';
 import Main from '../components/views/Home';
 import Login from '../components/views/Login';
 import Messages from '../components/views/Messages';
+import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
@@ -37,6 +38,7 @@ import SignUp from '../components/views/SignUp';
 import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
+import { environment } from '../environment';
 import AuthGuard from '../guards/AuthGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
 import {
@@ -73,9 +75,6 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
 } from './routes';
-import NativeMessageHandler from '../components/views/NativeMessageHandler';
-
-import { environment } from '../environment';
 
 const getInitialTheme = () => {
   const storedTheme = getLocalStorageItem(STORAGE_KEYS.themePreference);
@@ -93,7 +92,7 @@ export const Root = ({ children, restoreScroll = true }) => (
     <ToastProvider>
       <AuthGuard>
         <WebsocketBridge />
-        <FireBase />
+        {!environment.isNative && <FireBase />}
       </AuthGuard>
       {restoreScroll && <ScrollRestoration />}
       <GlobalStyles />

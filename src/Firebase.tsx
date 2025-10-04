@@ -103,7 +103,7 @@ function FireBase() {
   });
 
   // TODO: double check if this is correct ( frontend store refactored )
-  const unsubscribeRef = useRef<Unsubscribe>();
+  const unsubscribeRef = useRef<Unsubscribe | undefined>(undefined);
   const push_notifications_enabled =
     userData?.profile?.push_notifications_enabled;
 
