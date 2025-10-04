@@ -32,24 +32,6 @@ const initialState: EventHandlerState = {
   messageHandler: null,
 };
 
-function eventHandlerReducer(
-  state: EventHandlerState,
-  action: EventHandlerAction,
-): EventHandlerState {
-  switch (action.type) {
-    case 'SET_NAVIGATION_HANDLER':
-      return { ...state, navigationHandler: action.payload };
-    case 'SET_AUTH_TOKEN_HANDLER':
-      return { ...state, authTokenHandler: action.payload };
-    case 'SET_MESSAGE_HANDLER':
-      return { ...state, messageHandler: action.payload };
-    case 'CLEANUP':
-      return initialState;
-    default:
-      return state;
-  }
-}
-
 export interface NativeChallengeProofEvent {
   proof: string;
   challenge: string;
