@@ -114,7 +114,7 @@ function NativeMessageHandler() {
 
           sendMessageToReactNative!({
             action: 'RESPONSE',
-            requestId: requestId,
+            requestId,
             payload: response,
           });
 
@@ -161,27 +161,7 @@ function NativeMessageHandler() {
 
           sendMessageToReactNative!({
             action: 'RESPONSE',
-            requestId: requestId,
-            payload: response,
-          });
-
-          return response;
-        }
-        case 'TEST': {
-          if (!requestId) {
-            throw new Error('Received native message without request id');
-          }
-
-          const response: DomCommunicationResponse = {
-            ok: true,
-            data: {
-              response: `Response from frontend: ${new Date().toISOString()}`,
-            },
-          };
-
-          sendMessageToReactNative!({
-            action: 'RESPONSE',
-            requestId: requestId,
+            requestId,
             payload: response,
           });
 
@@ -211,7 +191,7 @@ function NativeMessageHandler() {
 
           sendMessageToReactNative!({
             action: 'RESPONSE',
-            requestId: requestId,
+            requestId,
             payload: response,
           });
 
@@ -226,13 +206,12 @@ function NativeMessageHandler() {
 
           sendMessageToReactNative!({
             action: 'RESPONSE',
-            requestId: requestId,
+            requestId,
             payload: response,
           });
 
           return response;
       }
-      // return { ok: false, error: 'Unhandled in package' };
     };
 
     dispatch({ type: 'SET_MESSAGE_HANDLER', payload: handler });

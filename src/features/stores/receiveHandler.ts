@@ -1,5 +1,9 @@
 import { create } from 'zustand';
 
+export type DomCommunicationResponse =
+  | { ok: true; data?: any | undefined }
+  | { ok: false; error: string };
+
 export type DomCommunicationMessage =
   | {
       action: 'SET_AUTH_TOKENS';
@@ -21,13 +25,6 @@ export type DomCommunicationMessage =
       requestId?: string;
       payload: {
         path: string;
-      };
-    }
-  | {
-      action: 'TEST';
-      requestId?: string;
-      payload: {
-        initial: string;
       };
     }
   | {

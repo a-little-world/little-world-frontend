@@ -57,6 +57,7 @@ module.exports = {
       },
     ],
     'no-use-before-define': ['error', { variables: false }],
+    'no-case-declarations': ['off'],
   },
   settings: {
     'import/resolver': {
