@@ -17,7 +17,7 @@ export const environment: Environment = {
   production: true,
   defaultLoginName: 'benjamin.tim@gmx.de',
   defaultLoginPassword: 'Test123',
-  backendUrl: 'http://localhost:8000',
+  backendUrl: '',
   backendPath: '',
   coreWsScheme: 'wss://',
   coreWsPath: '/api/core/ws',
