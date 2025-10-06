@@ -3,7 +3,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import Cookies from 'js-cookie';
 import { initReactI18next } from 'react-i18next';
 
-import { LANGUAGES } from './constants/index.ts';
+import { LANGUAGES } from './constants/index';
 import translationDE from './locale/de.json';
 import translationEN from './locale/en.json';
 
@@ -27,6 +27,8 @@ i18next
     languages: [LANGUAGES.en, LANGUAGES.de],
     fallbackLng: LANGUAGES.de,
   });
+
+export default i18next;
 
 export const COOKIE_LANG = 'frontendLang';
 const cookie = Cookies.get(COOKIE_LANG);

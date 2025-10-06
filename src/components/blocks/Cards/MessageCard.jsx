@@ -8,8 +8,9 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import React from 'react';
 
-import ButtonsContainer from '../../atoms/ButtonsContainer.tsx';
+import ButtonsContainer from '../../atoms/ButtonsContainer';
 import { ModalTitle } from './ModalCard';
 
 const StyledCard = styled(Card)`

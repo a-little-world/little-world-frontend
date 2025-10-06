@@ -8,13 +8,13 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { LANGUAGES, requestTranslation } from '../../../api/googletrans.ts';
+import { LANGUAGES, requestTranslation } from '../../../api/googletrans';
 import {
   DesiredLanguage,
   OriginalLanguage,
   SwapBtn,
   ToolContainer,
-} from './TranslationTool.styles.tsx';
+} from './TranslationTool.styles';
 
 function TranslationTool({ className }: { className?: string }) {
   const { t } = useTranslation();

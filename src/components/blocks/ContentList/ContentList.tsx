@@ -15,7 +15,7 @@ import {
   ItemImage,
   ListItem,
   ListItemCta,
-} from './ContentList.styles.tsx';
+} from './ContentList.styles';
 
 type ItemType = {
   title: string;

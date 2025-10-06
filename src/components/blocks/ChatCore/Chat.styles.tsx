@@ -5,9 +5,9 @@ import {
   TextArea,
 } from '@a-little-world/little-world-design-system';
 import { Link } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled, { StyledComponent, css } from 'styled-components';
 
-import ProfileImage from '../../atoms/ProfileImage.jsx';
+import ProfileImage from '../../atoms/ProfileImage';
 
 export const Panel = styled(Card)`
   display: flex;
@@ -152,9 +152,9 @@ export const MessageText = styled(Text)<{
   background: ${({ theme, $isSelf }) =>
     $isSelf ? theme.color.surface.message : theme.color.surface.primary};
   padding: ${({ theme, $isWidget }) =>
-    $isWidget
-      ? theme.spacing.xxxsmall
-      : `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
+    $isWidget ?
+      theme.spacing.xxxsmall :
+      `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: ${({ theme }) => theme.radius.medium};
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
@@ -172,14 +172,14 @@ export const MessageText = styled(Text)<{
     border: 5px solid;
 
     ${({ theme, $isSelf }) =>
-      $isSelf
-        ? css`
+      $isSelf ?
+        css`
             border-color: ${theme.color.border.subtle}
               ${theme.color.border.subtle} transparent transparent;
             left: auto;
             right: 15px;
-          `
-        : css`
+          ` :
+        css`
             border-color: ${theme.color.border.subtle} transparent transparent
               ${theme.color.border.subtle};
             right: auto;
@@ -196,14 +196,14 @@ export const MessageText = styled(Text)<{
     border: 5px solid;
 
     ${({ theme, $isSelf }) =>
-      $isSelf
-        ? css`
+      $isSelf ?
+        css`
             border-color: ${theme.color.surface.message}
               ${theme.color.surface.message} transparent transparent;
             left: auto;
             right: 16px;
-          `
-        : css`
+          ` :
+        css`
             border-color: ${theme.color.surface.primary} transparent transparent
               ${theme.color.surface.primary};
             right: auto;
@@ -214,7 +214,7 @@ export const MessageText = styled(Text)<{
 
 export const MessageBox = styled(TextArea)`
   background: ${({ theme }) => theme.color.surface.secondary};
-`;
+` as StyledComponent<any, any>;
 
 export const UserInfo = styled.div`
   display: flex;

@@ -13,7 +13,7 @@ const config = function (env) {
 
   const outputPath = './dist';
   const entry = './src';
-  const entryPoint = `${entry}/index.js`;
+  const entryPoint = `${entry}/main.js`;
   const debug = env.DEBUG === '1';
 
   return {

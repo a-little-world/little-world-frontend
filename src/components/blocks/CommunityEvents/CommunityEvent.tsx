@@ -11,13 +11,13 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index.ts';
-import { COMMUNITY_EVENTS_ENDPOINT } from '../../../features/swr/index.ts';
-import { formatDate, formatEventTime } from '../../../helpers/date.ts';
-import { Event, calculateNextOccurrence } from '../../../helpers/events.ts';
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
+import { COMMUNITY_EVENTS_ENDPOINT } from '../../../features/swr/index';
+import { formatDate, formatEventTime } from '../../../helpers/date';
+import { Event, calculateNextOccurrence } from '../../../helpers/events';
 import placeholderImage from '../../../images/coffee.webp';
-import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
-import ShowMoreText from '../../atoms/ShowMoreText.tsx';
+import AddToCalendarButton from '../../atoms/AddToCalendarButton';
+import ShowMoreText from '../../atoms/ShowMoreText';
 import {
   Buttons,
   DateTimeEvent,
@@ -32,7 +32,7 @@ import {
   Session,
   SessionFlex,
   Sessions,
-} from './styles.tsx';
+} from './styles';
 
 interface GroupedEvent extends Event {
   sessions?: Array<{
@@ -211,11 +211,11 @@ const EventCtas = ({
     <>
       <DateTimeEvent>
         <Text type={TextTypes.Body3} bold tag="span">
-          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly
-            ? t('community_events.every_week', {
+          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly ?
+            t('community_events.every_week', {
                 day: formatDate(startDate, 'EEEE', language),
-              })
-            : formatDate(startDate, 'cccc, LLLL do', language)}
+              }) :
+            formatDate(startDate, 'cccc, LLLL do', language)}
         </Text>
         <Text type={TextTypes.Body3} bold color={theme.color.text.heading}>
           {formatEventTime(startDate, endDate)}

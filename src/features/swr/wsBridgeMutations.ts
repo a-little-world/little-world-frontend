@@ -1,15 +1,15 @@
 import { isEmpty } from 'lodash';
 import { mutate } from 'swr';
 
-import { rejectCall } from '../../api/livekit.ts';
-import useConnectedCallStore from '../stores/connectedCall.ts';
+import { rejectCall } from '../../api/livekit';
+import useConnectedCallStore from '../stores/connectedCall';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   CHATS_ENDPOINT,
   CHATS_ENDPOINT_SEPERATE,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
-} from './index.ts';
+} from './index';
 
 interface MatchesData {
   [category: string]: any[];
@@ -102,9 +102,9 @@ export function addMessage(
             return {
               ...chat,
               unread_count:
-                senderIsSelf || message.read
-                  ? chat.unread_count
-                  : (chat.unread_count || 0) + 1,
+                senderIsSelf || message.read ?
+                  chat.unread_count :
+                  (chat.unread_count || 0) + 1,
               newest_message: message,
             };
           }

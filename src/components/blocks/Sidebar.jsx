@@ -11,7 +11,6 @@ import {
   SettingsIcon,
   StackIcon,
 } from '@a-little-world/little-world-design-system';
-import Cookies from 'js-cookie';
 import { reduce } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,12 +18,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { BACKEND_URL } from '../../ENVIRONMENT';
+import { apiFetch } from '../../api/helpers';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   resetUserQueries,
-} from '../../features/swr/index.ts';
+} from '../../features/swr/index';
 import {
   COMMUNITY_EVENTS_ROUTE,
   HELP_ROUTE,
@@ -36,9 +35,9 @@ import {
   SETTINGS_ROUTE,
   getAppRoute,
   isActiveRoute,
-} from '../../router/routes.ts';
-import Logo from '../atoms/Logo.tsx';
-import MenuLink, { MenuLinkText } from '../atoms/MenuLink.tsx';
+} from '../../router/routes';
+import Logo from '../atoms/Logo';
+import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';
@@ -158,9 +157,9 @@ function Sidebar({ isVH, sidebarMobile }) {
   const navigate = useNavigate();
   const theme = useTheme();
   const startPath =
-    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
-      ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
-      : getAppRoute();
+    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ?
+      getAppRoute(COMMUNITY_EVENTS_ROUTE) :
+      getAppRoute('');
 
   const buttonData = [
     { label: 'start', path: startPath, Icon: DashboardIcon },
@@ -189,9 +188,8 @@ function Sidebar({ isVH, sidebarMobile }) {
     {
       label: 'log_out',
       clickEvent: () => {
-        fetch(`${BACKEND_URL}/api/user/logout/`, {
+        apiFetch(`/api/user/logout/`, {
           method: 'GET',
-          headers: { 'X-CSRFToken': Cookies.get('csrftoken') },
         })
           .then(response => {
             if (response.status === 200) {
@@ -253,9 +251,9 @@ function Sidebar({ isVH, sidebarMobile }) {
                 type="button"
                 variation={ButtonVariations.Option}
                 appearance={
-                  isActive
-                    ? ButtonAppearance.Secondary
-                    : ButtonAppearance.Primary
+                  isActive ?
+                    ButtonAppearance.Secondary :
+                    ButtonAppearance.Primary
                 }
                 onClick={clickEvent}
               >

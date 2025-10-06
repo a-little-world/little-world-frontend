@@ -27,9 +27,9 @@ import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
-import Socials, { SOCIALS_LIST } from '../../atoms/Socials.tsx';
-import MailingLists from '../../blocks/MailingLists/MailingLists.tsx';
+import { USER_ENDPOINT } from '../../../features/swr/index';
+import Socials, { SOCIALS_LIST } from '../../atoms/Socials';
+import MailingLists from '../../blocks/MailingLists/MailingLists';
 
 const SupportUsAccordionContent = styled(AccordionContent)`
   background: ${({ theme }) => theme.color.surface.primary};

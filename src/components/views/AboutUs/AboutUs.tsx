@@ -7,10 +7,10 @@ import {
   OUR_WORLD_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
-} from '../../../router/routes.ts';
-import ContentSelector from '../../blocks/ContentSelector.tsx';
-import Donate from './Donate.tsx';
-import SupportUs from './SupportUs.tsx';
+} from '../../../router/routes';
+import ContentSelector from '../../blocks/ContentSelector';
+import Donate from './Donate';
+import SupportUs from './SupportUs';
 
 const Content = styled.div`
   ${({ theme }) =>
@@ -36,9 +36,9 @@ function OurWorld() {
   const navigate = useNavigate();
 
   const subpage =
-    location.pathname === getAppRoute(OUR_WORLD_ROUTE)
-      ? 'support'
-      : last(location.pathname.split('/'));
+    location.pathname === getAppRoute(OUR_WORLD_ROUTE) ?
+      'support' :
+      last(location.pathname.split('/'));
 
   const handleSubpageSelect = (page: subpages) => {
     navigate(getAppSubpageRoute(OUR_WORLD_ROUTE, page));

@@ -11,9 +11,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { confirmMatch } from '../../../api/matches.ts';
-import { revalidateMatches } from '../../../features/swr/index.ts';
-import ProfileImage from '../../atoms/ProfileImage.jsx';
+import { confirmMatch } from '../../../api/matches';
+import { revalidateMatches } from '../../../features/swr/index';
+import ProfileImage from '../../atoms/ProfileImage';
 
 const Centred = styled.div`
   display: flex;

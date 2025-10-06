@@ -16,17 +16,17 @@ import {
   LANGUAGES,
   LANGUAGE_LEVELS,
   USER_TYPES,
-} from '../../constants/index.ts';
-import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr/index.ts';
+} from '../../constants';
+import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr';
 import PlusImage from '../../images/plus-with-circle.svg';
-import LanguageLevelCard from './Cards/LanguageLevelCard.tsx';
-import PartnerActionCard from './Cards/PartnerActionCard.jsx';
+import LanguageLevelCard from './Cards/LanguageLevelCard';
+import PartnerActionCard from './Cards/PartnerActionCard';
 import ProfileCard, {
   PROFILE_CARD_HEIGHT,
   StyledProfileCard,
-} from './Cards/ProfileCard.tsx';
-import { SearchingCard } from './Cards/SearchingCard.tsx';
-import UpdateSearchStateCard from './Cards/UpdateSearchStateCard.tsx';
+} from './Cards/ProfileCard';
+import { SearchingCard } from './Cards/SearchingCard';
+import UpdateSearchStateCard from './Cards/UpdateSearchStateCard';
 
 const FindNewPartner = styled.button<{ $hasMatch: boolean }>`
   text-align: center;

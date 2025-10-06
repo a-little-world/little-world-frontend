@@ -12,10 +12,10 @@ import { useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
-import { apiFetch } from '../../../api/helpers.ts';
-import { mutateUserData } from '../../../api/index.js';
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
-import { onFormError } from '../../../helpers/form.ts';
+import { apiFetch } from '../../../api/helpers';
+import { mutateUserData } from '../../../api/index';
+import { USER_ENDPOINT } from '../../../features/swr/index';
+import { onFormError } from '../../../helpers/form';
 
 const MailingListsWrapper = styled.div<{ $centred?: boolean; $width?: string }>`
   display: flex;
@@ -92,9 +92,9 @@ const MailingLists = ({
               defaultChecked={value}
               error={error?.message}
               label={
-                hideLabel
-                  ? undefined
-                  : t('mailing_lists.newsletter_subscription_toggle')
+                hideLabel ?
+                  undefined :
+                  t('mailing_lists.newsletter_subscription_toggle')
               }
               labelInline={inline}
               required={false}
@@ -121,14 +121,11 @@ export const SingleCategoryToggle = ({ category, emailSettingsData }) => {
   const onToggle = data => {
     const chageSubscribe = data[category] ? 'subscribe' : 'unsubscribe';
 
-    fetch(
+    apiFetch(
       `/api/email_settings/${emailSettingsHash}/${category}/${chageSubscribe}`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({}),
+        body: {},
       },
     );
   };

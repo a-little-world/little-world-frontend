@@ -7,16 +7,16 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 
 import { requestPasswordReset } from '../../api';
-import { onFormError, registerInput } from '../../helpers/form.ts';
-import { LOGIN_ROUTE } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
+import { onFormError, registerInput } from '../../helpers/form';
+import { LOGIN_ROUTE } from '../../router/routes';
+import ButtonsContainer from '../atoms/ButtonsContainer';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 export const ForgotPasswordDescription = styled(Text)`
@@ -85,9 +85,9 @@ const ForgotPassword = () => {
           visible={requestSuccessful || errors?.root?.serverError}
           type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
-          {requestSuccessful
-            ? t('forgot_password.success_message')
-            : t(errors?.root?.serverError?.message)}
+          {requestSuccessful ?
+            t('forgot_password.success_message') :
+            t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Button

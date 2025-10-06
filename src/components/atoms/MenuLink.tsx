@@ -8,7 +8,6 @@ import { isNumber } from 'lodash';
 import { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
-
 import UnreadDot from './UnreadDot';
 
 const MENU_LINK_CSS = css<{ $appearance?: ButtonAppearance; $order?: number }>`

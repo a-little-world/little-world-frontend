@@ -1,4 +1,4 @@
-import { apiFetch } from './helpers.ts';
+import { apiFetch } from './helpers';
 
 export const fetchUserMatch = async ({ userId, onError, onSuccess }) => {
   try {

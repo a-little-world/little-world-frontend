@@ -1,0 +1,312 @@
+name: Release
+
+on:
+  pull_request:
+    branches:
+      - prod
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+# Add permissions for package publishing
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@a-little-world'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_PUBLISH_TOKEN }}
+
+      - name: Configure npm for GitHub Package Registry
+        run: |
+          # Clear any existing config
+          rm -f ~/.npmrc
+
+          # Set up fresh config for GitHub Package Registry
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGE_PUBLISH_TOKEN }}" > ~/.npmrc
+          echo "@a-little-world:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
+
+          # Verify configuration
+          echo "=== NPM Config ==="
+          cat ~/.npmrc
+
+      - name: Setup npm cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Packages
+        run: npm run build
+
+      - name: Preview Package Versions
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "## 📦 Package Version Preview" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "### 📊 Current Package Version:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Package | Version |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|---------|" >> $GITHUB_STEP_SUMMARY
+
+          # Get package info from root package.json
+          PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)" 2>/dev/null || echo "Unknown")
+          PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)" 2>/dev/null || echo "Unknown")
+          echo "| $PACKAGE_NAME | $PACKAGE_VERSION |" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔄 What will happen when this PR is merged to prod:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Package will be published to npm with its current version" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub release will be created for the published package" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** Make sure to bump package version locally before merging to trigger release." >> $GITHUB_STEP_SUMMARY
+
+      - name: Comment PR with Version Preview
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## 📦 Analyzing package version changes..." >> $GITHUB_STEP_SUMMARY
+
+          # Get the merge base with origin/prod for proper version comparison
+          MERGE_BASE=$(git merge-base HEAD origin/prod 2>/dev/null || echo "")
+
+          if [ -z "$MERGE_BASE" ]; then
+            echo "⚠️ Could not determine merge base, showing current version only" >> $GITHUB_STEP_SUMMARY
+            # Fallback: just show current version without comparison
+            COMMENT_BODY="## 📦 Package Version Preview
+
+            ### 📊 Current Package Version:
+
+            | Package | Version |
+            |---------|---------|
+            "
+
+            # Show current version
+            PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)" 2>/dev/null || echo "Unknown")
+            PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)" 2>/dev/null || echo "Unknown")
+            COMMENT_BODY+="| $PACKAGE_NAME | $PACKAGE_VERSION |"$'\n'
+
+            COMMENT_BODY+="
+
+            ### 📋 Summary:
+            ⚠️ **Version comparison unavailable.** Please check package.json file manually to see if version has changed.
+
+            ---
+            *This comment updates automatically on each commit.*"
+          else
+            echo "Comparing against merge base: $MERGE_BASE" >> $GITHUB_STEP_SUMMARY
+
+            # Get the previous commit's package version from the merge base
+            git show $MERGE_BASE:package.json > /tmp/prev_package.json 2>/dev/null || echo '{"version": "0.0.0"}' > /tmp/prev_package.json
+
+            # Get current version
+            PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
+            PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
+
+            # Get previous version
+            PREV_PACKAGE_VERSION=$(node -e "console.log(require('/tmp/prev_package.json').version)")
+
+            # Create the comment content
+            COMMENT_BODY="## 📦 Package Version Analysis
+
+            ### 🔄 Version Changes:
+
+            | Package | Previous | Current | Status |
+            |---------|----------|---------|--------|
+            "
+
+            # Check if version changed
+            if [ "$PACKAGE_VERSION" != "$PREV_PACKAGE_VERSION" ]; then
+              COMMENT_BODY+="| $PACKAGE_NAME | $PREV_PACKAGE_VERSION | **$PACKAGE_VERSION** | ✅ **Will be published** |"$'\n'
+              VERSION_CHANGED=true
+            else
+              COMMENT_BODY+="| $PACKAGE_NAME | $PREV_PACKAGE_VERSION | $PACKAGE_VERSION | ⏭️ No change |"$'\n'
+              VERSION_CHANGED=false
+            fi
+
+            COMMENT_BODY+="
+
+            ### 📋 Summary:"
+
+            if [ "$VERSION_CHANGED" = true ]; then
+              COMMENT_BODY+="
+              🎉 **This PR will trigger a release!** The package will be published to npm:
+              
+              - $PACKAGE_NAME@$PACKAGE_VERSION
+
+              A GitHub release will also be created with changelog information."
+            else
+              COMMENT_BODY+="
+              ⚠️ **No version change detected.** This PR will not trigger a release.
+              
+              To trigger a release, bump the version in package.json before merging."
+            fi
+
+            COMMENT_BODY+="
+
+            ---
+            *This comment updates automatically on each commit.*"
+          fi
+
+          # Create or update the comment (edit last if exists, create if none)
+          gh pr comment ${{ github.event.pull_request.number }} --body "$COMMENT_BODY" --edit-last --create-if-none
+
+      - name: Check for Version Changes
+        if: github.ref == 'refs/heads/prod'
+        id: version-check
+        run: |
+          echo "Checking for version changes..." >> $GITHUB_STEP_SUMMARY
+
+          # For prod branch, compare against the previous commit
+          PREV_COMMIT=$(git rev-parse HEAD~1 2>/dev/null || echo "")
+
+          if [ -z "$PREV_COMMIT" ]; then
+            echo "⚠️ No previous commit found, assuming first commit" >> $GITHUB_STEP_SUMMARY
+            # If this is the first commit, assume package has changed
+            PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
+            
+            echo "✅ First commit detected, package will be published" >> $GITHUB_STEP_SUMMARY
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "Comparing against previous commit: $PREV_COMMIT" >> $GITHUB_STEP_SUMMARY
+
+            # Get the previous commit's package version
+            git show $PREV_COMMIT:package.json > /tmp/prev_package.json 2>/dev/null || echo '{"version": "0.0.0"}' > /tmp/prev_package.json
+
+            # Get current version
+            PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
+
+            # Get previous version
+            PREV_PACKAGE_VERSION=$(node -e "console.log(require('/tmp/prev_package.json').version)")
+
+            # Check if version changed
+            if [ "$PACKAGE_VERSION" != "$PREV_PACKAGE_VERSION" ]; then
+              echo "✅ Package version changed: $PREV_PACKAGE_VERSION → $PACKAGE_VERSION" >> $GITHUB_STEP_SUMMARY
+              echo "has_changes=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ No version change detected" >> $GITHUB_STEP_SUMMARY
+              echo "has_changes=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Publish Package
+        if: github.ref == 'refs/heads/prod' && steps.version-check.outputs.has_changes == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_PUBLISH_TOKEN }}
+        run: |
+          echo "## 📦 Publishing package..." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Debug: Check npm configuration
+          echo "### 🔍 Debug Information:" >> $GITHUB_STEP_SUMMARY
+          echo "NPM Registry: $(npm config get registry)" >> $GITHUB_STEP_SUMMARY
+          echo "NPM Auth Token exists: $([ -n "$NODE_AUTH_TOKEN" ] && echo "Yes" || echo "No")" >> $GITHUB_STEP_SUMMARY
+          echo "NPM Auth Token length: ${#NODE_AUTH_TOKEN}" >> $GITHUB_STEP_SUMMARY
+          echo "NPM Auth Token prefix: ${NODE_AUTH_TOKEN:0:10}..." >> $GITHUB_STEP_SUMMARY
+          echo "Current directory: $(pwd)" >> $GITHUB_STEP_SUMMARY
+          echo "GitHub repository: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "GitHub actor: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Test npm authentication
+          echo "### 🔐 Testing npm authentication..." >> $GITHUB_STEP_SUMMARY
+          if npm whoami --registry=https://npm.pkg.github.com; then
+            echo "✅ npm authentication successful for GitHub Package Registry" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ npm authentication failed for GitHub Package Registry" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Get package info
+          PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
+          PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
+
+          echo "### Publishing $PACKAGE_NAME..." >> $GITHUB_STEP_SUMMARY
+
+          # Check if version already exists
+          echo "Checking if version $PACKAGE_VERSION already exists..." >> $GITHUB_STEP_SUMMARY
+          if npm view $PACKAGE_NAME@$PACKAGE_VERSION --registry=https://npm.pkg.github.com &>/dev/null; then
+            echo "❌ Version $PACKAGE_VERSION already exists in registry" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ Version $PACKAGE_VERSION does not exist, proceeding with publish" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if npm publish --registry=https://npm.pkg.github.com; then
+            echo "✅ Successfully published $PACKAGE_NAME@$PACKAGE_VERSION" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Failed to publish $PACKAGE_NAME@$PACKAGE_VERSION" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+          echo "🎉 Package published successfully!" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create GitHub Release
+        if: github.ref == 'refs/heads/prod' && steps.version-check.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PACKAGE_PUBLISH_TOKEN }}
+        run: |
+          echo "## 🏷️ Creating GitHub Release" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Get package info
+          PACKAGE_NAME=$(node -e "console.log(require('./package.json').name)")
+          PACKAGE_VERSION=$(node -e "console.log(require('./package.json').version)")
+
+          # Create release notes
+          echo "## Released Package" > release_notes.md
+          echo "" >> release_notes.md
+          echo "### $PACKAGE_NAME" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "**Version:** $PACKAGE_VERSION" >> release_notes.md
+          echo "" >> release_notes.md
+
+          # Get changelog content if it exists
+          if [ -f "CHANGELOG.md" ]; then
+            echo "**Changes:**" >> release_notes.md
+            echo "" >> release_notes.md
+            # Extract the latest version section from changelog
+            sed -n "/^## \[$PACKAGE_VERSION\]/,/^## /p" "CHANGELOG.md" | head -n -1 >> release_notes.md
+            echo "" >> release_notes.md
+          fi
+
+          # Create the GitHub release with a unique tag for the day
+          BASE_TAG="v$(date +%Y.%m.%d)"
+          TAG=$BASE_TAG
+          COUNTER=1
+          while gh release view $TAG --repo ${{ github.repository }} &>/dev/null; do
+            TAG="${BASE_TAG}-$COUNTER"
+            COUNTER=$((COUNTER+1))
+          done
+          gh release create $TAG \
+            --title "Release $TAG" \
+            --notes-file release_notes.md \
+            --repo ${{ github.repository }}
+
+          echo "✅ Created GitHub release: $TAG" >> $GITHUB_STEP_SUMMARY

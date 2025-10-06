@@ -1,4 +1,4 @@
-import { apiFetch } from './helpers.ts';
+import { apiFetch } from './helpers';
 
 export const LANGUAGES = [
   {
@@ -557,8 +557,8 @@ export const requestTranslation = async ({
   sourceLang: string;
   targetLang: string;
   text: string;
-  onError: (error: any) => void;
-  onSuccess: (response: any) => void;
+  onError: (_error: any) => void;
+  onSuccess: (_response: any) => void;
 }) => {
   try {
     const result = await apiFetch(`/api/googletrans/translate/`, {

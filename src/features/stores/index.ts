@@ -1,4 +1,6 @@
-export { default as useCallSetupStore } from './callSetup.ts';
-export { default as useConnectedCallStore } from './connectedCall.ts';
-export { default as useDevelopmentFeaturesStore } from './developmentFeatures.ts';
-export { default as usePostCallSurveyStore } from './postCallSurvey.ts';
+export { default as useCallSetupStore } from './callSetup';
+export { default as useDevelopmentFeaturesStore } from './developmentFeatures';
+export { default as usePostCallSurveyStore } from './postCallSurvey';
+export { default as useMobileAuthTokenStore } from './mobileAuthToken';
+export { default as useReceiveHandlerStore } from './receiveHandler';
+export { default as useConnectedCallStore } from './connectedCall';

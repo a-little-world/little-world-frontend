@@ -14,10 +14,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR, { mutate } from 'swr';
 
-import { updateUserSearchState } from '../../../api/profile.ts';
-import { SEARCHING_STATES } from '../../../constants/index.ts';
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
-import ButtonsContainer from '../../atoms/ButtonsContainer.tsx';
+import { updateUserSearchState } from '../../../api/profile';
+import { SEARCHING_STATES } from '../../../constants';
+import { USER_ENDPOINT } from '../../../features/swr/index';
+import ButtonsContainer from '../../atoms/ButtonsContainer';
 
 interface UpdateSearchStateCardProps {
   onClose: () => void;
@@ -27,16 +27,16 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
   const { t } = useTranslation();
   const { data: user } = useSWR(USER_ENDPOINT);
   const isSearching = user?.isSearching;
-  const currentState = isSearching
-    ? SEARCHING_STATES.searching
-    : SEARCHING_STATES.idle;
+  const currentState = isSearching ?
+    SEARCHING_STATES.searching :
+    SEARCHING_STATES.idle;
   const [error, setError] = useState(null);
 
   function activateSearching() {
     setError(null);
-    const updatedState = isSearching
-      ? SEARCHING_STATES.idle
-      : SEARCHING_STATES.searching;
+    const updatedState = isSearching ?
+      SEARCHING_STATES.idle :
+      SEARCHING_STATES.searching;
     updateUserSearchState({
       updatedState,
       onSuccess: () => {

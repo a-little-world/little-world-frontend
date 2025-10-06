@@ -12,8 +12,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { BEGINNERS_ROUTE, getAppRoute } from '../../../router/routes.ts';
-import { PROFILE_CARD_HEIGHT } from './ProfileCard.tsx';
+import { BEGINNERS_ROUTE, getAppRoute } from '../../../router/routes';
+import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
 const StyledCard = styled(Card)`
   align-items: center;

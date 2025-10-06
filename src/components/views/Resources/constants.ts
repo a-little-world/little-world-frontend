@@ -4,7 +4,7 @@ import {
   PARTNERS_ROUTE,
   TRAININGS_ROUTE,
   getAppSubpageRoute,
-} from '../../../router/routes.ts';
+} from '../../../router/routes';
 
 const LERN_FAIR_YT_ID = 'lA4CIXDXXK8';
 

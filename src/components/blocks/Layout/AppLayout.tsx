@@ -4,25 +4,25 @@ import { Outlet, useLocation } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { submitCallFeedback } from '../../../api/livekit.ts';
-import { pagesWithViewportHeight } from '../../../constants/index.ts';
+import { submitCallFeedback } from '../../../api/livekit';
+import { pagesWithViewportHeight } from '../../../constants/index';
 import {
   useCallSetupStore,
   useConnectedCallStore,
   usePostCallSurveyStore,
-} from '../../../features/stores/index.ts';
+} from '../../../features/stores';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
-} from '../../../features/swr/index.ts';
-import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations.ts';
-import useModalManager, { ModalTypes } from '../../../hooks/useModalManager.ts';
-import CallSetup from '../Calls/CallSetup.tsx';
-import IncomingCall from '../Calls/IncomingCall.tsx';
-import { MatchCardComponent } from '../Cards/MatchCard.tsx';
-import MobileNavBar from '../MobileNavBar.jsx';
-import PostCallSurvey from '../PostCallSurvey/PostCallSurvey.tsx';
-import Sidebar from '../Sidebar.jsx';
+} from '../../../features/swr/index';
+import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
+import useModalManager, { ModalTypes } from '../../../hooks/useModalManager';
+import CallSetup from '../Calls/CallSetup';
+import IncomingCall from '../Calls/IncomingCall';
+import { MatchCardComponent } from '../Cards/MatchCard';
+import MobileNavBar from '../MobileNavBar';
+import PostCallSurvey from '../PostCallSurvey/PostCallSurvey';
+import Sidebar from '../Sidebar';
 
 const Wrapper = styled.div<{ $isVH: boolean }>`
   overflow-x: hidden;
@@ -30,6 +30,7 @@ const Wrapper = styled.div<{ $isVH: boolean }>`
   flex-direction: column;
   min-height: 100vh;
   box-sizing: border-box;
+  width: 100%;
 
   ${({ $isVH }) =>
     $isVH &&
@@ -221,14 +222,14 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         <MatchCardComponent
           showNewMatch={showNewMatch}
           matchId={
-            matches?.proposed?.results?.length
-              ? matches?.proposed.results[0].id
-              : matches?.unconfirmed.results[0]?.id
+            matches?.proposed?.results?.length ?
+              matches?.proposed.results[0].id :
+              matches?.unconfirmed.results[0]?.id
           }
           profile={
-            matches?.proposed?.results?.length
-              ? matches?.proposed.results[0].partner
-              : matches?.unconfirmed.results[0]?.partner
+            matches?.proposed?.results?.length ?
+              matches?.proposed.results[0].partner :
+              matches?.unconfirmed.results[0]?.partner
           }
           onClose={closeModal}
         />

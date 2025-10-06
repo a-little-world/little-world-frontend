@@ -3,14 +3,14 @@ import { RouterProvider } from 'react-router-dom';
 import useSWR, { SWRConfig, mutate } from 'swr';
 
 import './App.css';
-import { useDevelopmentFeaturesStore } from './features/stores/index.ts';
+import { useDevelopmentFeaturesStore } from './features/stores/index';
 import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
   USER_ENDPOINT,
   swrConfig,
-} from './features/swr/index.ts';
-import router from './router/router.jsx';
+} from './features/swr/index';
+import router from './router/router';
 
 function Preloader({ children }) {
   const { error: _errorUser } = useSWR(USER_ENDPOINT, {
@@ -32,7 +32,10 @@ function Preloader({ children }) {
 }
 
 function App({ user, apiTranslations, apiOptions }) {
-  mutate(USER_ENDPOINT, user, false);
+  if (user) {
+    mutate(USER_ENDPOINT, user, false);
+  }
+
   mutate(API_OPTIONS_ENDPOINT, apiOptions, false);
   mutate(API_TRANSLATIONS_ENDPOINT, apiTranslations, false);
 
@@ -63,7 +66,7 @@ function App({ user, apiTranslations, apiOptions }) {
   return (
     <SWRConfig value={swrConfig}>
       <Preloader>
-        <RouterProvider router={router} />
+        <RouterProvider router={router()} />
       </Preloader>
     </SWRConfig>
   );

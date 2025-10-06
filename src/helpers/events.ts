@@ -8,7 +8,7 @@ import {
   startOfMonth,
 } from 'date-fns';
 
-import { COMMUNITY_EVENT_FREQUENCIES } from '../constants/index.ts';
+import { COMMUNITY_EVENT_FREQUENCIES } from '../constants/index';
 
 export interface Event {
   id: string;
