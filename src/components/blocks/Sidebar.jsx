@@ -191,7 +191,6 @@ function Sidebar({ isVH, sidebarMobile }) {
           method: 'GET',
         })
           .then(response => {
-            console.log('response', response);
             resetUserQueries();
             navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
           })
