@@ -12,7 +12,6 @@ import {
   StackIcon,
 } from '@a-little-world/little-world-design-system';
 import { reduce } from 'lodash';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
@@ -91,7 +90,7 @@ const SidebarContainer = styled.nav`
       left: 0;
 
       ${$isVH &&
-      css`
+    css`
         flex-shrink: 0;
         min-height: 0;
         max-height: 100%;
@@ -191,17 +190,9 @@ function Sidebar({ isVH, sidebarMobile }) {
         apiFetch(`/api/user/logout/`, {
           method: 'GET',
         })
-          .then(response => {
-            if (response.status === 200) {
-              resetUserQueries();
-              navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
-            } else {
-              console.error(
-                'server error',
-                response.status,
-                response.statusText,
-              );
-            }
+          .then(() => {
+            resetUserQueries();
+            navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
           })
           .catch(error => console.error(error));
       },

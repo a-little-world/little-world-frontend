@@ -94,6 +94,7 @@ const Login = () => {
 
     login(data)
       .then(loginData => {
+        mutate(USER_ENDPOINT, loginData, false);
         if (environment.isNative) {
           if (sendMessageToReactNative === null) {
             return;
@@ -105,10 +106,10 @@ const Login = () => {
               refreshToken: loginData.token_refresh,
             },
           });
+          setAuthTokens(loginData.token_access, loginData.token_refresh);
         }
 
         setIsSubmitting(false);
-        setAuthTokens(loginData.token_access, loginData.token_refresh);
       })
       .catch(onError);
   };

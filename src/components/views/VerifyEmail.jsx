@@ -45,7 +45,10 @@ const VerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
-  const { data: userData } = useSWR(USER_ENDPOINT);
+  const { data: userData } = useSWR(USER_ENDPOINT, {
+    revalidateOnFocus: true,
+    refreshInterval: 1000,
+  });
   const email = userData?.email;
   const userFormCompleted = userData?.userFormCompleted;
 
@@ -81,6 +84,12 @@ const VerifyEmail = () => {
       })
       .catch(onError);
   };
+
+  useEffect(() => {
+    if (userData?.emailVerified) {
+      navigate(getAppRoute(USER_FORM_ROUTE));
+    }
+  }, [userData]);
 
   const onFormSubmit = async ({ verificationCode }) => {
     setIsSubmitting(true);
