@@ -190,7 +190,7 @@ function Sidebar({ isVH, sidebarMobile }) {
         apiFetch(`/api/user/logout/`, {
           method: 'GET',
         })
-          .then(response => {
+          .then(() => {
             resetUserQueries();
             navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
           })
