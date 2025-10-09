@@ -24,9 +24,9 @@ interface FormErrorParams {
 }
 
 export const onFormError = ({ e, formFields, setError }: FormErrorParams) => {
-  const cause = Object.keys(formFields).includes(e.cause)
-    ? e.cause
-    : ROOT_SERVER_ERROR;
+  const cause = Object.keys(formFields).includes(e.cause) ?
+    e.cause :
+    ROOT_SERVER_ERROR;
 
   if (e.message) {
     setError(

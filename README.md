@@ -7,6 +7,7 @@ Thank you for your interest in contributing to our project! We value your effort
 ### Prerequisites
 
 Before you begin, ensure you have met the following requirements:
+
 - Node.js installed (v14.x or higher)
 
 ### Fork and Clone the Repository
@@ -21,11 +22,13 @@ Before you begin, ensure you have met the following requirements:
 ### Installing Dependencies
 
 Install the necessary dependencies using Yarn:
+
 ```bash
 npm install
 ```
 
 ### Starting the local server
+
 #### Local dev with remote API server
 
 ```bash
@@ -67,15 +70,130 @@ ISSUE with (ngrok and recieving webhook calls)[https://stackoverflow.com/questio
 
 Use the following branching strategy to manage your work:
 
-- **main**: The stable branch. All merges into this branch should be through pull requests and must pass all tests.
+- **main**: The development branch. All merges into this branch should be through pull requests and must pass all tests.
+- **prod**: The production branch. This represents what is currently deployed in production and contains the latest stable release.
 - **feature/your-feature-name**: Feature-specific branches.
 - **fix/the-issue**: branches for fixing bugs.
 - **chore/the-chore**: branches for chores such as updating dependencies.
 
 To create a new feature branch:
+
 ```bash
-git checkout -b feature/your-feature-name develop
+git checkout -b feature/your-feature-name main
 ```
+
+## Release Process
+
+### Why We Package This Frontend
+
+This frontend application is packaged and published as an npm package because it's consumed as a webview within our React Native mobile application. This approach allows us to:
+
+- **Maintain consistency**: Ensure the same UI/UX across web and mobile platforms
+- **Rapid updates**: Deploy frontend changes without requiring mobile app store updates
+- **Code sharing**: Reuse frontend components and logic in the mobile app
+- **Independent deployment**: Update the frontend independently of the mobile app release cycle
+
+**Related Repository**: [Little World React Native App](https://github.com/a-little-world/little-world-react-native)
+
+### Release Workflow
+
+Our release process is automated through GitHub Actions and follows this workflow:
+
+1. **Development**: Work happens on feature branches and gets merged to `main`
+2. **Testing**: Features are tested on the `main` branch
+3. **Production Release**: When ready for production:
+   - Create a Pull Request from `main` to `prod`
+   - The workflow automatically analyzes version changes
+   - PR comments show what will be published
+   - Upon merge to `prod`:
+     - Package is automatically published to npm (GitHub Package Registry)
+     - GitHub release is created with changelog information
+     - Mobile app can consume the updated package
+
+### Web Deployment vs Package Release
+
+**Important**: You can deploy changes to the web application without creating a new package release!
+
+- **Web Deployment**: Merge any changes to `prod` to deploy to web (versions unchanged)
+- **Package Release**: Only happens when you bump the version in `package.json`
+- **Mobile App Updates**: Only receive updates when package versions change
+
+This means you can:
+
+- Deploy bug fixes, UI improvements, and features to web users immediately
+- Control when mobile app users receive updates by managing package versions
+- Keep web and mobile releases in sync or independent as needed
+
+### Version Management
+
+- **Version Bumping**: Bump the version in `package.json` before merging to `prod`
+- **Automatic Publishing**: Only publishes when version numbers change
+- **Release Tags**: GitHub releases are automatically tagged with date-based versioning (e.g., `v2024.01.15`)
+
+### Using Changesets
+
+We use [Changesets](https://github.com/changesets/changesets) to manage versioning and changelog generation:
+
+#### Creating Changesets
+
+When you make changes that should trigger a version bump:
+
+```bash
+npm run changeset
+```
+
+This will:
+
+- Prompt you to select the type of change (patch, minor, major)
+- Ask for a description of the changes
+- Create a `.changeset/[random-name].md` file
+
+#### Versioning the Package
+
+When you're ready to release:
+
+```bash
+npm run version
+```
+
+This will:
+
+- Read all the changesets
+- Update the version in `package.json`
+- Update the changelog
+- Remove the processed changeset files
+
+#### Change Types
+
+- **patch**: Bug fixes and minor improvements (0.1.69 → 0.1.70)
+- **minor**: New features (0.1.69 → 0.2.0)
+- **major**: Breaking changes (0.1.69 → 1.0.0)
+
+### Package Registry
+
+Our package is published to the GitHub Package Registry under the `@a-little-world` scope:
+
+- **Package Name**: `@a-little-world/little-world-frontend`
+- **Registry**: `https://npm.pkg.github.com`
+- **Access**: Requires authentication with `PACKAGE_PUBLISH_TOKEN`
+
+### Release Checklist
+
+Before merging a PR to `prod`:
+
+**For Web Deployment Only (no package release):**
+
+- [ ] All tests pass
+- [ ] Code review completed
+- [ ] No version changes in `package.json`
+
+**For Package Release (mobile app update):**
+
+- [ ] Changesets created for all changes (`npm run changeset`)
+- [ ] Package versioned (`npm run version`)
+- [ ] All tests pass
+- [ ] Code review completed
+- [ ] PR shows version change in the automated comment
 
 ## Coding Standards
 
@@ -116,6 +234,7 @@ Our project utilizes a custom Design System library that includes reusable compo
 Follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for commit messages. This helps in understanding the history and allows for better automation.
 
 Example of a commit message:
+
 ```
 feat(Button): add primary variant
 
@@ -125,6 +244,7 @@ Added a primary variant to the Button component in the Design System.
 ## Pull Request Process
 
 1. Ensure your feature branch is up to date with `main`:
+
    ```bash
    git checkout main
    git pull origin main
@@ -132,17 +252,34 @@ Added a primary variant to the Button component in the Design System.
    git rebase main
    ```
 
-2. Run all tests and linters:
+2. For production releases, create a PR from `main` to `prod`:
+
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b release/prod-$(date +%Y%m%d)
+   # Bump version in package.json
+   git add package.json
+   git commit -m "chore: bump version to X.X.X"
+   git push origin release/prod-$(date +%Y%m%d)
+   # Create PR from this branch to prod
+   ```
+
+3. Run all tests and linters:
+
    ```bash
    WIP
    ```
 
-3. Push your branch to GitHub:
+4. Push your branch to GitHub:
+
    ```bash
    git push origin feature/your-feature-name
    ```
 
-4. Open a pull request against the `main` branch on GitHub.
+5. Open a pull request against the `main` branch on GitHub.
+
+6. For production releases, open a pull request against the `prod` branch on GitHub.
 
 ### Pull Request Checklist
 
@@ -155,6 +292,7 @@ Added a primary variant to the Button component in the Design System.
 ## Running Tests
 
 We use Jest for testing. To run tests:
+
 ```bash
 npm test
 ```

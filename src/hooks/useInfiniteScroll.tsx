@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseInfiniteScrollProps {
-  fetchItems: (args: { page: number;[key: string]: any }) => Promise<any>;
+  fetchItems: (args: { page: number; [key: string]: any }) => Promise<any>;
   fetchArgs?: { [key: string]: any };
   fetchCondition?: boolean;
   items?: any[];
@@ -26,11 +26,7 @@ const useInfiniteScroll = ({
   const dependencyList: string = JSON.stringify(fetchArgs);
 
   const fetchData = useCallback(async () => {
-    if (
-      !fetchCondition ||
-      loading ||
-      currentPage >= totalPages
-    ) {
+    if (!fetchCondition || loading || currentPage >= totalPages) {
       return;
     }
 
@@ -66,7 +62,7 @@ const useInfiniteScroll = ({
         fetchCondition,
         loading,
         currentPage,
-        totalPages
+        totalPages,
       });
       if (target.isIntersecting) {
         fetchData();

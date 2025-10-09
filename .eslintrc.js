@@ -56,13 +56,18 @@ module.exports = {
         caughtErrorsIgnorePattern: '^_',
       },
     ],
+    'no-use-before-define': ['error', { variables: false }],
+    'no-case-declarations': ['off'],
   },
-  "settings": {
-    "import/resolver": {
-      "typescript": {
-        "alwaysTryTypes": true,
-        "project": "./tsconfig.json"
-      }
-    }
-  }
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json',
+      },
+    },
+  },
 };

@@ -27,31 +27,31 @@ import {
   markChatMessagesReadApi,
   sendFileAttachmentMessage,
   sendMessage,
-} from '../../../api/chat.ts';
-import { useCallSetupStore } from '../../../features/stores/index.ts';
+} from '../../../api/chat';
+import { useCallSetupStore } from '../../../features/stores/index';
 import {
   CHATS_ENDPOINT_SEPERATE,
   USER_ENDPOINT,
   getChatEndpoint,
   getChatMessagesEndpoint,
   revalidateChats,
-} from '../../../features/swr/index.ts';
-import { addMessage } from '../../../features/swr/wsBridgeMutations.ts';
+} from '../../../features/swr/index';
+import { addMessage } from '../../../features/swr/wsBridgeMutations';
 import {
   formatFileName,
   getCustomChatElements,
   messageContainsWidget,
   processAttachmentWidgets,
-} from '../../../helpers/chat.ts';
-import { formatMessageDate, formatTime } from '../../../helpers/date.ts';
+} from '../../../helpers/chat';
+import { formatMessageDate, formatTime } from '../../../helpers/date';
 import {
   ROOT_SERVER_ERROR,
   onFormError,
   registerInput,
-} from '../../../helpers/form.ts';
-import useInfiniteScroll from '../../../hooks/useInfiniteScroll.tsx';
-import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes.ts';
-import UnreadDot from '../../atoms/UnreadDot.tsx';
+} from '../../../helpers/form';
+import useInfiniteScroll from '../../../hooks/useInfiniteScroll';
+import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes';
+import UnreadDot from '../../atoms/UnreadDot';
 import {
   Attachment,
   AttachmentButton,
@@ -66,7 +66,7 @@ import {
   StickyDateHeader,
   Time,
   WriteSection,
-} from './Chat.styles.tsx';
+} from './Chat.styles';
 
 const Chat = ({
   chatId,
@@ -304,9 +304,9 @@ const Chat = ({
         {chatMessages?.page &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
-              {isUnmatched
-                ? t('chat.unmatched_no_messages')
-                : t('chat.no_messages')}
+              {isUnmatched ?
+                t('chat.unmatched_no_messages') :
+                t('chat.no_messages')}
             </NoMessages>
           ) : (
             <>
@@ -324,15 +324,15 @@ const Chat = ({
                       t,
                     );
 
-                    const customChatElements = message.parsable
-                      ? getCustomChatElements({
+                    const customChatElements = message.parsable ?
+                      getCustomChatElements({
                           initCallSetup,
                           message: { ...message, text: processedMessageText },
                           userId,
                           activeChat,
                           inCall,
-                        })
-                      : [];
+                        }) :
+                      [];
 
                     return (
                       <Message
@@ -404,9 +404,9 @@ const Chat = ({
           error={t(get(errors, `${ROOT_SERVER_ERROR}.message`))}
           expandable
           placeholder={
-            isUnmatched
-              ? t('chat.unmatched_text_area_placeholder')
-              : t('chat.text_area_placeholder')
+            isUnmatched ?
+              t('chat.unmatched_text_area_placeholder') :
+              t('chat.text_area_placeholder')
           }
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
@@ -427,9 +427,9 @@ const Chat = ({
           type="button"
           variation={ButtonVariations.Circle}
           backgroundColor={
-            selectedFile
-              ? theme.color.status.error
-              : theme.color.surface.primary
+            selectedFile ?
+              theme.color.status.error :
+              theme.color.surface.primary
           }
           borderColor={theme.color.text.title}
           color={

@@ -7,15 +7,15 @@ import {
   RESOURCES_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
-} from '../../../router/routes.ts';
-import ContentSelector from '../../blocks/ContentSelector.tsx';
-import Beginners from './Beginners.tsx';
-import German from './German.tsx';
-import MyStory from './MyStory.tsx';
-import Partner from './Partners/Partner.tsx';
-import Partners from './Partners/Partners.tsx';
-import Training from './Trainings/Training.tsx';
-import Trainings from './Trainings/Trainings.tsx';
+} from '../../../router/routes';
+import ContentSelector from '../../blocks/ContentSelector';
+import Beginners from './Beginners';
+import German from './German';
+import MyStory from './MyStory';
+import Partner from './Partners/Partner';
+import Partners from './Partners/Partners';
+import Training from './Trainings/Training';
+import Trainings from './Trainings/Trainings';
 
 const Content = styled.div`
   ${({ theme }) =>

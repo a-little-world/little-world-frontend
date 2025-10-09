@@ -17,6 +17,6 @@ const EditView = () => (
   <EditContainer>
     <Form />
   </EditContainer>
-  );
+);
 
 export default EditView;

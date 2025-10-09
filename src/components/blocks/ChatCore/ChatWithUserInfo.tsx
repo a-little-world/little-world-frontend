@@ -19,9 +19,10 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { useCallSetupStore } from '../../../features/stores/index.ts';
-import { USER_ENDPOINT, getChatEndpoint } from '../../../features/swr/index.ts';
-import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes.ts';
+import { useCallSetupStore } from '../../../features/stores/index';
+import { USER_ENDPOINT, getChatEndpoint } from '../../../features/swr/index';
+import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes';
+import Chat from './Chat';
 import {
   BackButton,
   NoChatSelected,
@@ -30,8 +31,7 @@ import {
   TopSection,
   UserImage,
   UserInfo,
-} from './Chat.styles.tsx';
-import Chat from './Chat.tsx';
+} from './Chat.styles';
 
 interface Partner {
   id: string;
@@ -86,9 +86,9 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
             <UserImage
               circle
               image={
-                partner?.image_type === 'avatar'
-                  ? partner?.avatar_config
-                  : partner?.image
+                partner?.image_type === 'avatar' ?
+                  partner?.avatar_config :
+                  partner?.image
               }
               imageType={partner?.image_type}
               size="xsmall"

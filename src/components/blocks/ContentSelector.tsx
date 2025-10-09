@@ -7,9 +7,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
-import HideOnMobile from '../atoms/HideOnMobile.tsx';
-import NotificationBell from '../atoms/NotificationBell.tsx';
+import { useDevelopmentFeaturesStore } from '../../features/stores/index';
+import HideOnMobile from '../atoms/HideOnMobile';
+import NotificationBell from '../atoms/NotificationBell';
 
 const Selector = styled.div`
   display: flex;
@@ -112,14 +112,14 @@ function ContentSelector({
         ) : (
           <StyledOption
             variation={
-              selection === topic
-                ? ButtonVariations.Basic
-                : ButtonVariations.Inline
+              selection === topic ?
+                ButtonVariations.Basic :
+                ButtonVariations.Inline
             }
             appearance={
-              selection === topic
-                ? ButtonAppearance.Primary
-                : ButtonAppearance.Secondary
+              selection === topic ?
+                ButtonAppearance.Primary :
+                ButtonAppearance.Secondary
             }
             key={topic}
             onClick={() => setSelection(topic)}

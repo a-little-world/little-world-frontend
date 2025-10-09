@@ -17,21 +17,21 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { DragEvent, useEffect, useRef, useState } from 'react';
+import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
-import useSWR from 'swr';
+import useSWR, { SWRConfig } from 'swr';
 
-import { submitHelpForm } from '../../api/index.js';
-import { MATCHES_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
-import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes.ts';
-import Logo from '../atoms/Logo.tsx';
-import MenuLink from '../atoms/MenuLink.tsx';
-import Socials from '../atoms/Socials.tsx';
-import ContentSelector from '../blocks/ContentSelector.tsx';
-import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles.tsx';
+import { submitHelpForm } from '../../api/index';
+import { MATCHES_ENDPOINT, swrConfig } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
+import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes';
+import Logo from '../atoms/Logo';
+import MenuLink from '../atoms/MenuLink';
+import Socials from '../atoms/Socials';
+import ContentSelector from '../blocks/ContentSelector';
+import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles';
 import {
   BusinessName,
   ContactButtons,
@@ -54,7 +54,7 @@ import {
   StyledIntro,
   SupportTeam,
   Topper,
-} from './Help.styles.tsx';
+} from './Help.styles';
 
 const generateFAQItems = (t: TFunction, supportUrl: string) => {
   const translationKeys = [
@@ -172,11 +172,17 @@ export const FileDropzone = ({
   );
 };
 
-function Faqs() {
+export const NativeWebWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
+
+export function Faqs() {
   const { t } = useTranslation();
   const [faqs, setFaqs] = useState([]);
   const { data: matches } = useSWR(MATCHES_ENDPOINT, {
-    revalidateOnMount: false,
+    revalidateOnMount: true,
   });
 
   const adminUser = matches?.support?.results?.[0];
@@ -186,7 +192,9 @@ function Faqs() {
   );
 
   useEffect(() => {
-    setFaqs(generateFAQItems(t, supportUrl));
+    if (!faqs.length) {
+      setFaqs(generateFAQItems(t, supportUrl));
+    }
   }, [t, supportUrl]);
 
   return (
@@ -210,7 +218,7 @@ function Faqs() {
   );
 }
 
-function Contact() {
+export function Contact() {
   const { t } = useTranslation();
 
   const [requestSuccessful, setRequestSuccessful] = useState(false);

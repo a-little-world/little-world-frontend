@@ -1,8 +1,8 @@
 import { GridLayout } from '@livekit/components-react';
 import styled, { css } from 'styled-components';
 
-import ProfileImage from '../atoms/ProfileImage.jsx';
-import TranslationTool from '../blocks/TranslationTool/TranslationTool.tsx';
+import ProfileImage from '../atoms/ProfileImage';
+import TranslationTool from '../blocks/TranslationTool/TranslationTool';
 
 export const CallLayout = styled.div`
   --lk-border-radius: 0;

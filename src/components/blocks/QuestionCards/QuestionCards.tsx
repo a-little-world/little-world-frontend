@@ -12,8 +12,8 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
-import { archieveQuestion } from '../../../api/questions.ts';
-import { getQuestionsEndpoint } from '../../../features/swr/index.ts';
+import { archieveQuestion } from '../../../api/questions';
+import { getQuestionsEndpoint } from '../../../features/swr/index';
 import {
   Categories,
   CategoryControl,
@@ -23,7 +23,7 @@ import {
   QuestionContentCard,
   SidebarCard,
   TopicButton,
-} from './QuestionCards.styles.tsx';
+} from './QuestionCards.styles';
 
 function QuestionCards() {
   const { data: cards } = useSWR(getQuestionsEndpoint(false));
@@ -76,9 +76,9 @@ function QuestionCards() {
               key={topic?.uuid}
               type="button"
               appearance={
-                selectedTopic === topic?.uuid
-                  ? ButtonAppearance.Primary
-                  : ButtonAppearance.Secondary
+                selectedTopic === topic?.uuid ?
+                  ButtonAppearance.Primary :
+                  ButtonAppearance.Secondary
               }
               value={topic?.uuid}
               onClick={() => setTopic(topic?.uuid)}

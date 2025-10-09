@@ -6,9 +6,9 @@ import React, { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { formatDataField } from '../../../../userForm/formContent.ts';
-import FormStep from '../../Form/FormStep.jsx';
-import { Container } from './styles.tsx';
+import { formatDataField } from '../../../../userForm/formContent';
+import FormStep from '../../Form/FormStep';
+import { Container } from './styles';
 
 interface MultiCheckboxWithInputProps {
   control: any;
@@ -21,7 +21,8 @@ const MultiCheckboxWithInput = ({
   multiCheckbox,
   textInput,
 }: MultiCheckboxWithInputProps) => {
-  const { currentValue, dataField, formData, textInputVal, getProps } =    multiCheckbox;
+  const { currentValue, dataField, formData, textInputVal, getProps } =
+    multiCheckbox;
   const [displayTextInput, setDisplayTextInput] = useState(
     currentValue.includes(textInputVal),
   );

@@ -14,9 +14,9 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { resetPassword } from '../../api';
-import { onFormError, registerInput } from '../../helpers/form.ts';
-import { LOGIN_ROUTE } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
+import { onFormError, registerInput } from '../../helpers/form';
+import { LOGIN_ROUTE } from '../../router/routes';
+import ButtonsContainer from '../atoms/ButtonsContainer';
 import { StyledCard, StyledForm, Title } from './SignUp.styles';
 
 const ResetPassword = () => {
@@ -96,9 +96,9 @@ const ResetPassword = () => {
           visible={requestSuccessful || errors?.root?.serverError}
           type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
-          {requestSuccessful
-            ? t('reset_password.success_message')
-            : t(errors?.root?.serverError?.message)}
+          {requestSuccessful ?
+            t('reset_password.success_message') :
+            t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Link

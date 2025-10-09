@@ -12,15 +12,15 @@ import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index.ts';
+import { USER_ENDPOINT } from '../../../features/swr/index';
 import {
   getCustomChatElements,
   processAttachmentWidgets,
-} from '../../../helpers/chat.ts';
-import { formatTimeDistance } from '../../../helpers/date.ts';
-import { LoadingLine, shimmerStyles } from '../../atoms/Loading.tsx';
-import ProfileImage, { CircleImageLoading } from '../../atoms/ProfileImage.jsx';
-import UnreadIndicator from '../../atoms/UnreadIndicator.tsx';
+} from '../../../helpers/chat';
+import { formatTimeDistance } from '../../../helpers/date';
+import { LoadingLine, shimmerStyles } from '../../atoms/Loading';
+import ProfileImage, { CircleImageLoading } from '../../atoms/ProfileImage';
+import UnreadIndicator from '../../atoms/UnreadIndicator';
 
 const Panel = styled(Card)<{ $selectedChat?: any }>`
   padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
@@ -156,20 +156,20 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
           const isSender = message.newest_message?.sender === userId;
 
           // Process attachment widgets for malformed JSON if there's a newest message
-          const processedMessageText = message.newest_message
-            ? processAttachmentWidgets(message.newest_message, t)
-            : message.newest_message?.text;
+          const processedMessageText = message.newest_message ?
+            processAttachmentWidgets(message.newest_message, t) :
+            message.newest_message?.text;
 
-          const customChatElements = message.newest_message?.parsable
-            ? getCustomChatElements({
+          const customChatElements = message.newest_message?.parsable ?
+            getCustomChatElements({
                 message: {
                   ...message.newest_message,
                   text: processedMessageText,
                 },
                 userId,
                 isPreview: true,
-              })
-            : [];
+              }) :
+            [];
 
           return (
             <Message
@@ -180,9 +180,9 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
               <UserImage
                 circle
                 image={
-                  message.partner.image_type === 'avatar'
-                    ? message.partner.avatar_config
-                    : message.partner.image
+                  message.partner.image_type === 'avatar' ?
+                    message.partner.avatar_config :
+                    message.partner.image
                 }
                 imageType={message.partner.image_type}
                 size="xsmall"
@@ -190,9 +190,9 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
               <Details>
                 <Top>
                   <Text bold>
-                    {message.is_unmatched
-                      ? t('chat.inactive_match')
-                      : message.partner.first_name}
+                    {message.is_unmatched ?
+                      t('chat.inactive_match') :
+                      message.partner.first_name}
                   </Text>
                   {!!message?.newest_message?.created && (
                     <Time type={TextTypes.Body6}>

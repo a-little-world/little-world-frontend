@@ -1,4 +1,4 @@
-import { apiFetch } from './helpers.ts';
+import { apiFetch } from './helpers';
 
 // eslint-disable-next-line import/prefer-default-export
 export const archieveQuestion = async ({

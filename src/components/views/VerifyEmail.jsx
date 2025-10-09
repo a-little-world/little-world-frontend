@@ -17,14 +17,14 @@ import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { resendVerificationEmail, verifyEmail } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
+import { USER_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
 import {
   CHANGE_EMAIL_ROUTE,
   USER_FORM_ROUTE,
   getAppRoute,
-} from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
+} from '../../router/routes';
+import ButtonsContainer from '../atoms/ButtonsContainer';
 import {
   FormDescription,
   StyledCard,
@@ -45,7 +45,10 @@ const VerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
-  const { data: userData } = useSWR(USER_ENDPOINT);
+  const { data: userData } = useSWR(USER_ENDPOINT, {
+    revalidateOnFocus: true,
+    refreshInterval: 1000,
+  });
   const email = userData?.email;
   const userFormCompleted = userData?.userFormCompleted;
 
@@ -81,6 +84,12 @@ const VerifyEmail = () => {
       })
       .catch(onError);
   };
+
+  useEffect(() => {
+    if (userData?.emailVerified) {
+      navigate(getAppRoute(USER_FORM_ROUTE));
+    }
+  }, [userData]);
 
   const onFormSubmit = async ({ verificationCode }) => {
     setIsSubmitting(true);
@@ -137,9 +146,9 @@ const VerifyEmail = () => {
           visible={requestSuccessful || errors?.root?.serverError}
           type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
-          {requestSuccessful
-            ? t('verify_email.success_message')
-            : t(errors?.root?.serverError?.message)}
+          {requestSuccessful ?
+            t('verify_email.success_message') :
+            t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Button

@@ -12,11 +12,18 @@
     "rootDir": "src",
     "strict": true,
     "target": "ES5",
-    "noEmit": true,
-    "allowImportingTsExtensions": true
+    "allowJs": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "src/main.js"
+  ],
   "types": ["@testing-library/jest-dom"],
   "typeRoots": ["./node_modules/@types"]
 }

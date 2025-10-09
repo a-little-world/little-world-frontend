@@ -11,9 +11,8 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-import { STORAGE_KEYS } from '../../constants/index.ts';
-import { setLocalStorageItem } from '../../helpers/localStorage.ts';
-import useQueryParam from '../../hooks/useQueryParam.ts';
+import { STORAGE_KEYS } from '../../constants/index';
+import { setLocalStorageItem } from '../../helpers/localStorage';
 
 const SwitchContainer = styled.div`
   display: flex;
@@ -36,8 +35,7 @@ const ThemeSwitch = ({ withLabel = false }: { withLabel?: boolean }) => {
   const isDarkMode = currentMode === ThemeVariants.dark;
   const { t } = useTranslation();
 
-  const modeSwitch = useQueryParam('modeSwitch');
-  const shouldShowModeSwitch = modeSwitch === 'true' || withLabel;
+  const shouldShowModeSwitch = withLabel;
 
   const onToggle = () => {
     const newMode = isDarkMode ? ThemeVariants.light : ThemeVariants.dark;

@@ -22,18 +22,17 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
-import { DEVELOPMENT } from '../../ENVIRONMENT';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
-import { FORGOT_PASSWORD_ROUTE } from '../../router/routes.ts';
-import ButtonsContainer from '../atoms/ButtonsContainer.tsx';
-import PageHeader from '../atoms/PageHeader.tsx';
-import ThemeSwitch from '../atoms/ThemeSwitch.tsx';
+import { USER_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
+import { FORGOT_PASSWORD_ROUTE } from '../../router/routes';
+import ButtonsContainer from '../atoms/ButtonsContainer';
+import PageHeader from '../atoms/PageHeader';
+import ThemeSwitch from '../atoms/ThemeSwitch';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
 import ModalCard, { ModalTitle } from '../blocks/Cards/ModalCard';
-import MailingLists from '../blocks/MailingLists/MailingLists.tsx';
-import PushNotifications from '../blocks/PushNotifications/PushNotifications.tsx';
+import MailingLists from '../blocks/MailingLists/MailingLists';
+import PushNotifications from '../blocks/PushNotifications/PushNotifications';
 
 const types = {
   first_name: 'text',
@@ -170,9 +169,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
     if (label === 'password') {
       setNewPassword(data).then(onResponseSuccess).catch(onError);
     } else if (type === 'email') {
-      // DISABLE; DANGEROUS
-      if (!DEVELOPMENT)
-        setNewEmail(data).then(onResponseSuccess).catch(onError);
+      setNewEmail(data).then(onResponseSuccess).catch(onError);
     } else if (label === 'display_language') {
       Cookies.set('frontendLang', data.display_language);
       i18n.changeLanguage(data.display_language);
@@ -319,8 +316,8 @@ function Settings() {
     ? {
         email: user.email,
         ...user.profile,
-      }
-    : undefined;
+      } :
+    undefined;
 
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -357,14 +354,14 @@ function Settings() {
               section="personal"
               label={label}
               value={
-                label === 'display_language'
-                  ? t(`settings.display_language_${data[label]}`)
-                  : data[label]
+                label === 'display_language' ?
+                  t(`settings.display_language_${data[label]}`) :
+                  data[label]
               }
               setEditing={
-                label !== 'profilePicture'
-                  ? setEditing
-                  : () => {
+                label !== 'profilePicture' ?
+                  setEditing :
+                  () => {
                       /* For profile picture we just open the userform frontend for now */
                       navigate('/formpage?pages=6');
                       navigate(0); /* Reload page */

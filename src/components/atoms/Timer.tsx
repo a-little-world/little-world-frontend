@@ -22,7 +22,7 @@ function Timer({ className }: { className?: string }) {
       setSeconds(currentSeconds => currentSeconds + 1);
     }, 1000);
     return () => clearInterval(intervalId);
-  });
+  }, []);
 
   const remainder = seconds % 60;
   const minutes = (seconds - remainder) / 60;

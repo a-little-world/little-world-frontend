@@ -19,8 +19,8 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { TFunction, useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-import { usePostCallSurveyStore } from '../../../features/stores/index.ts';
-import { registerInput } from '../../../helpers/form.ts';
+import { usePostCallSurveyStore } from '../../../features/stores/index';
+import { registerInput } from '../../../helpers/form';
 
 const StyledCard = styled(Card)``;
 

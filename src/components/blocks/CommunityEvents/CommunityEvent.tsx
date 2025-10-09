@@ -11,14 +11,14 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index.ts';
-import { COMMUNITY_EVENTS_ENDPOINT } from '../../../features/swr/index.ts';
-import { formatDate, formatEventTime } from '../../../helpers/date.ts';
-import { Event, calculateNextOccurrence } from '../../../helpers/events.ts';
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
+import { COMMUNITY_EVENTS_ENDPOINT } from '../../../features/swr/index';
+import { formatDate, formatEventTime } from '../../../helpers/date';
+import { Event, calculateNextOccurrence } from '../../../helpers/events';
 import placeholderImage from '../../../images/coffee.webp';
-import AddToCalendarButton from '../../atoms/AddToCalendarButton.tsx';
-import PanelImage from '../../atoms/PanelImage.tsx';
-import ShowMoreText from '../../atoms/ShowMoreText.tsx';
+import AddToCalendarButton from '../../atoms/AddToCalendarButton';
+import PanelImage from '../../atoms/PanelImage';
+import ShowMoreText from '../../atoms/ShowMoreText';
 import {
   Buttons,
   DateTimeEvent,
@@ -30,7 +30,7 @@ import {
   Session,
   SessionFlex,
   Sessions,
-} from './styles.tsx';
+} from './styles';
 
 interface GroupedEvent extends Event {
   sessions?: Array<{

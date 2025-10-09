@@ -3,10 +3,11 @@ import {
   ButtonVariations,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
-import { LANGUAGES } from '../../../constants/index.ts';
+import { LANGUAGES } from '../../../constants/index';
 import { COOKIE_LANG } from '../../../i18n';
 
 const Selector = styled.div`

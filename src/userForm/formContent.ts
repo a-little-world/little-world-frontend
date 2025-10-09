@@ -18,10 +18,10 @@ import {
 import { ElementType } from 'react';
 import styled from 'styled-components';
 
-import Note from '../components/atoms/Note.tsx';
-import CategorySelector from '../components/blocks/CategorySelector/CategorySelector.jsx';
-import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic.tsx';
-import { formatMultiSelectionOptions } from '../helpers/form.ts';
+import Note from '../components/atoms/Note';
+import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
+import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
+import { formatMultiSelectionOptions } from '../helpers/form';
 
 const Warning = styled(StatusMessage)`
   margin-top: -${({ theme }) => theme.spacing.xxsmall};

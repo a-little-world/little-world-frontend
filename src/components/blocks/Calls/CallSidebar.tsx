@@ -5,15 +5,15 @@ import { useTranslation } from 'react-i18next';
 
 import '../../../App.css';
 import '../../../call.css';
-import Chat from '../ChatCore/Chat.tsx';
-import { StyledOption } from '../ContentSelector.tsx';
-import QuestionCards from '../QuestionCards/QuestionCards.tsx';
+import Chat from '../ChatCore/Chat';
+import { StyledOption } from '../ContentSelector';
+import QuestionCards from '../QuestionCards/QuestionCards';
 import {
   SidebarContent,
   SidebarSelector,
   SidebarWrapper,
-} from './CallSidebar.styles.tsx';
-import { SidebarNotes } from './SidebarNotes.tsx';
+} from './CallSidebar.styles';
+import { SidebarNotes } from './SidebarNotes';
 
 const SidebarSelectionContext = createContext();
 
@@ -30,9 +30,9 @@ function CallSidebar({ isDisplayed, chatId }) {
         {sidebarTopics.map(topic => (
           <StyledOption
             appearance={
-              sideSelection === topic
-                ? ButtonAppearance.Primary
-                : ButtonAppearance.Secondary
+              sideSelection === topic ?
+                ButtonAppearance.Primary :
+                ButtonAppearance.Secondary
             }
             key={topic}
             onClick={() => setSideSelection(topic)}

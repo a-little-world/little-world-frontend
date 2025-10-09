@@ -14,9 +14,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-import { COMMUNITY_EVENT_FREQUENCIES } from '../../constants/index.ts';
-import { formatDateForCalendarUrl, getEndTime } from '../../helpers/date.ts';
-import { CalendarEvent } from '../../helpers/events.ts';
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../constants/index';
+import { formatDateForCalendarUrl, getEndTime } from '../../helpers/date';
+import { CalendarEvent } from '../../helpers/events';
 
 export const AddToCalendarOption = styled(Button)`
   font-size: 1rem;
@@ -38,9 +38,9 @@ function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
   );
 
   // Use the endDate that's passed to us, or calculate based on duration if not provided
-  const endDate = calendarEvent.endDate
-    ? new Date(calendarEvent.endDate)
-    : getEndTime(
+  const endDate = calendarEvent.endDate ?
+    new Date(calendarEvent.endDate) :
+    getEndTime(
         new Date(calendarEvent.startDate),
         calendarEvent.durationInMinutes,
         undefined,
@@ -78,9 +78,9 @@ function generateRecurrenceRule(calendarEvent: CalendarEvent): string {
     ).getDate();
     const isLastWeek = startDate.getDate() + 7 > lastDayOfMonth;
 
-    return isLastWeek
-      ? `FREQ=MONTHLY;BYDAY=-1${dayName}`
-      : `FREQ=MONTHLY;BYDAY=${weekOfMonth}${dayName}`;
+    return isLastWeek ?
+      `FREQ=MONTHLY;BYDAY=-1${dayName}` :
+      `FREQ=MONTHLY;BYDAY=${weekOfMonth}${dayName}`;
   }
 
   return '';
@@ -94,18 +94,18 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent): string {
   const { formattedStartDate, formattedEndDate } =
     getFormattedCalendarDates(calendarEvent);
   const recurrenceRule = generateRecurrenceRule(calendarEvent);
-  const recurrenceParam = recurrenceRule
-    ? `&recur=RRULE:${recurrenceRule}`
-    : '';
+  const recurrenceParam = recurrenceRule ?
+    `&recur=RRULE:${recurrenceRule}` :
+    '';
 
   const baseUrl = 'https://www.google.com/calendar/render?action=TEMPLATE';
   const params = [
     `text=${calendarEvent.title || ''}`,
     `dates=${formattedStartDate || ''}/${formattedEndDate || ''}`,
     `details=${
-      calendarEvent.description
-        ? `${calendarEvent.description}\nhttps://little-world.com`
-        : 'https://little-world.com'
+      calendarEvent.description ?
+        `${calendarEvent.description}\nhttps://little-world.com` :
+        'https://little-world.com'
     }`,
     `location=${calendarEvent.link || ''}`,
     'ctz=Europe%2FBerlin',

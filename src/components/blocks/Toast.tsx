@@ -5,6 +5,7 @@ import {
   ToastViewport,
 } from '@a-little-world/little-world-design-system';
 import * as React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface ToastContextType {
   showToast: (props: ToastBaseProps) => void;
@@ -35,10 +36,10 @@ export function ToastProvider({ children }: ToastProviderProps) {
   const toastContext = React.useMemo<ToastContextType>(
     () => ({
       showToast: (props: ToastBaseProps) => {
-        const id = crypto.randomUUID();
+        const id = uuidv4();
         const newToastProps: ToastPropsWithId = {
           ...props,
-          id: crypto.randomUUID(),
+          id,
           onClose: () => onClose(String(id), props.onClose), // pass original onClose method to call later
         };
         setToasts(prevToastProps => [...prevToastProps, newToastProps]);

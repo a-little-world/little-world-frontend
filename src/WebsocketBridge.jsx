@@ -3,22 +3,13 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { mutate } from 'swr';
 
 import './App.css';
-import {
-  BACKEND_URL,
-  CORE_WS_PATH,
-  CORE_WS_SHEME,
-  IS_CAPACITOR_BUILD,
-} from './ENVIRONMENT';
-import {
-  NOTIFICATIONS_ENDPOINT,
-  UNREAD_NOTIFICATIONS_ENDPOINT,
-} from './features/swr/index.ts';
-import { runWsBridgeMutation } from './features/swr/wsBridgeMutations.ts';
-import useToast from './hooks/useToast.ts';
+import { environment } from './environment';
+import { NOTIFICATIONS_ENDPOINT, UNREAD_NOTIFICATIONS_ENDPOINT } from './features/swr';
+import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
+import useToast from './hooks/useToast';
+import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
 
-const SOCKET_URL = IS_CAPACITOR_BUILD
-  ? CORE_WS_SHEME + BACKEND_URL.split('//').pop() + CORE_WS_PATH
-  : CORE_WS_SHEME + window.location.host + CORE_WS_PATH;
+const SOCKET_URL = environment.coreWsScheme + (environment.isNative ? environment.websocketHost : (typeof window !== 'undefined' ? window.location.host : '')) + environment.coreWsPath;
 
 const WebsocketBridge = () => {
   /**
@@ -29,11 +20,13 @@ const WebsocketBridge = () => {
    * payload: {...}
    * } --> this will triger a simple redux dispatch in the frontend
    */
-  const [socketUrl] = useState(SOCKET_URL);
+  const accessToken = useMobileAuthTokenStore(state => state.accessToken);
+  const socketUrl = SOCKET_URL;
   const [, setMessageHistory] = useState([]);
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
+    protocols: environment.isNative && accessToken ? [`token.${accessToken}`] : undefined,
   });
 
   const toast = useToast();

@@ -6,9 +6,9 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isBoolean } from 'lodash';
 
-import { COUNTRIES, LANGUAGES, USER_TYPES } from '../constants/index.ts';
-import { USER_FORM_ROUTES } from '../router/routes.ts';
-import { ComponentTypes, formatDataField } from './formContent.ts';
+import { COUNTRIES, LANGUAGES, USER_TYPES } from '../constants';
+import { USER_FORM_ROUTES } from '../router/routes';
+import { ComponentTypes, formatDataField } from './formContent';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
 export const restrictedLangLevels = ['level-3', 'level-4'];
@@ -75,9 +75,9 @@ const formPages = {
         getProps: t => ({
           label: t('self_info.country_of_residence_label'),
           labelTooltip:
-            userData?.user_type === USER_TYPES.volunteer
-              ? null
-              : t('self_info.country_of_residence_tooltip'),
+            userData?.user_type === USER_TYPES.volunteer ?
+              null :
+              t('self_info.country_of_residence_tooltip'),
           errorRules: { required: t('validation.required') },
         }),
       },
@@ -93,9 +93,9 @@ const formPages = {
           width: InputWidth.Small,
         }),
       },
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? []
-        : [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [] :
+        [
             {
               type: ComponentTypes.warning,
               dataField: 'country_of_residence',
@@ -137,9 +137,9 @@ const formPages = {
           labelTooltip: t('self_info.language_skills_tooltip'),
           maxSegments: 8,
           restrictions:
-            userData?.user_type === USER_TYPES.volunteer
-              ? { german: restrictedLangLevels }
-              : {},
+            userData?.user_type === USER_TYPES.volunteer ?
+              { german: restrictedLangLevels } :
+              {},
           firstDropdown: {
             dataField: 'lang',
             ariaLabel: t('self_info.language_selector_label'),
@@ -212,8 +212,8 @@ const formPages = {
     prevPage: USER_FORM_ROUTES.PICTURE,
     nextPage: USER_FORM_ROUTES.AVAILABILITY,
     components: [
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [
             {
               type: ComponentTypes.radio,
               currentValue: userData?.target_group,
@@ -224,8 +224,8 @@ const formPages = {
                 errorRules: { required: t('validation.required') },
               }),
             },
-          ]
-        : []),
+          ] :
+        []),
       {
         type: ComponentTypes.radio,
         currentValue: userData?.partner_gender,
@@ -314,16 +314,16 @@ const formPages = {
           infoText: 'user_form_notifications.info',
         },
       },
-      ...(userData?.user_type === USER_TYPES.volunteer
-        ? []
-        : [
+      ...(userData?.user_type === USER_TYPES.volunteer ?
+        [] :
+        [
             {
               type: ComponentTypes.radioWithInput,
               id: 'job_search',
               radioGroup: {
-                currentValue: isBoolean(userData?.job_search) // radioGroup doesn't work with boolean values
-                  ? userData?.job_search.toString()
-                  : userData?.job_search,
+                currentValue: isBoolean(userData?.job_search) ? // radioGroup doesn't work with boolean values
+                  userData?.job_search.toString() :
+                  userData?.job_search,
                 dataField: 'job_search',
                 formData: jobSearchOptions,
                 textInputVal: jobSearchOptions[0].value,

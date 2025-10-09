@@ -12,8 +12,8 @@ import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-import { submitHelpForm } from '../../../api/index.js';
-import { FileDropzone } from '../Help.tsx';
+import { submitHelpForm } from '../../../api/index';
+import { FileDropzone } from '../Help';
 
 const ContentCard = styled(Card)`
   display: flex;

@@ -19,14 +19,14 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { mutate } from 'swr';
 
 import { signUp } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index.ts';
-import { onFormError, registerInput } from '../../helpers/form.ts';
+import { USER_ENDPOINT } from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
 import {
   LOGIN_ROUTE,
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
   passAuthenticationBoundary,
-} from '../../router/routes.ts';
+} from '../../router/routes';
 import {
   NameContainer,
   NameInputs,
@@ -82,9 +82,9 @@ const SignUp = () => {
         passAuthenticationBoundary();
         setIsSubmitting(false);
         mutate(USER_ENDPOINT, signUpData);
-        const nextRoute = signUpData?.emailVerified
-          ? getAppRoute()
-          : getAppRoute(VERIFY_EMAIL_ROUTE);
+        const nextRoute = signUpData?.emailVerified ?
+          getAppRoute() :
+          getAppRoute(VERIFY_EMAIL_ROUTE);
         navigate(nextRoute);
       })
       .catch(onError);

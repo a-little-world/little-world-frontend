@@ -1,12 +1,26 @@
 {
   "name": "littleplanet",
-  "version": "0.1.0",
+  "version": "0.1.245",
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "npm run lint -- --fix",
-    "dev": "npx webpack serve --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development"
+    "dev": "npx webpack serveviews/index.js --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development",
+    "clean": "npx rimraf dist",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run copy-files:esm && npm run copy-files:cjs && npm pack",
+    "build:esm": "tsc --project tsconfig.json --noCheck --outDir dist/esm",
+    "build:cjs": "tsc --project tsconfig.json --noCheck --module commonjs --outDir dist/cjs",
+    "copy-files:esm": "cpx \"src/**/*.css\" dist/esm && cpx \"src/images/**\" dist/esm/images && cpx \"src/locale/**\" dist/esm/locale",
+    "copy-files:cjs": "cpx \"src/**/*.css\" dist/cjs && cpx \"src/images/**\" dist/cjs/images && cpx \"src/locale/**\" dist/cjs/locale",
+    "changeset": "changeset",
+    "version": "changeset version"
   },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -69,6 +83,7 @@
     "styled-components": "^6.1.18",
     "swr": "^2.3.6",
     "util": "^0.12.4",
+    "uuid": "^13.0.0",
     "web-vitals": "^2.1.4",
     "webpack": "^5.75.0",
     "zustand": "^5.0.4"
@@ -76,6 +91,7 @@
   "devDependencies": {
     "@a-little-world/little-world-prettier-config": "^1.2.0",
     "@capacitor/cli": "^5.6.0",
+    "@changesets/cli": "^2.27.1",
     "@svgr/webpack": "^6.5.1",
     "@testing-library/user-event": "^13.5.0",
     "@types/js-cookie": "^3.0.6",
@@ -84,6 +100,7 @@
     "@typescript-eslint/parser": "^8.4.0",
     "compression-webpack-plugin": "^10.0.0",
     "copy-webpack-plugin": "^11.0.0",
+    "cpx": "^1.5.0",
     "css-loader": "^6.7.3",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -98,7 +115,8 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.5.1",
-    "typescript": "^5.3.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.0",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-bundle-tracker": "^1.8.0",

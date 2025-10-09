@@ -14,16 +14,16 @@ interface PostCallSurveyState {
   removePostCallSurvey: () => void;
 }
 
-const usePostCallSurveyStore = create<PostCallSurveyState>((set) => ({
+const usePostCallSurveyStore = create<PostCallSurveyState>(set => ({
   postCallSurvey: null,
-  addPostCallSurvey: (data) => set({ postCallSurvey: data }),
-  updatePostCallSurvey: (data) => 
-    set((state) => ({ 
-      postCallSurvey: state.postCallSurvey 
-        ? { ...state.postCallSurvey, ...data } 
-        : data 
+  addPostCallSurvey: data => set({ postCallSurvey: data }),
+  updatePostCallSurvey: data =>
+    set(state => ({
+      postCallSurvey: state.postCallSurvey ?
+        { ...state.postCallSurvey, ...data } :
+        data,
     })),
   removePostCallSurvey: () => set({ postCallSurvey: null }),
 }));
 
-export default usePostCallSurveyStore; 
+export default usePostCallSurveyStore;

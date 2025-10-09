@@ -50,13 +50,13 @@ export const getCustomChatElements = ({
           message.sender !== userId ? 'Zurück Rufen' : 'Erneut anrufen',
         isOutgoing: message.sender === userId,
         onReturnCall:
-          isPreview || inCall
-            ? undefined
-            : () => {
+          isPreview || inCall ?
+            undefined :
+            () => {
                 const targetUserId =
-                  message.sender === userId
-                    ? activeChat?.partner?.id
-                    : message.sender;
+                  message.sender === userId ?
+                    activeChat?.partner?.id :
+                    message.sender;
                 if (targetUserId) {
                   initCallSetup?.({ userId: targetUserId });
                 }
@@ -72,13 +72,13 @@ export const getCustomChatElements = ({
         header: 'Video Anruf',
         isOutgoing: message.sender === userId,
         onReturnCall:
-          isPreview || inCall
-            ? undefined
-            : () => {
+          isPreview || inCall ?
+            undefined :
+            () => {
                 const targetUserId =
-                  message.sender === userId
-                    ? activeChat?.partner?.id
-                    : message.sender;
+                  message.sender === userId ?
+                    activeChat?.partner?.id :
+                    message.sender;
                 if (targetUserId) {
                   initCallSetup?.({ userId: targetUserId });
                 }

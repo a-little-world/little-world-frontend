@@ -24,15 +24,15 @@ import {
   deleteNotification,
   fetchNotifications,
   updateNotification,
-} from '../../api/notification.ts';
+} from '../../api/notification';
 import {
   NOTIFICATIONS_ENDPOINT,
   UNREAD_NOTIFICATIONS_ENDPOINT,
-} from '../../features/swr/index.ts';
-import PageHeader from '../atoms/PageHeader.tsx';
-import Toolbar from '../atoms/Toolbar.tsx';
-import UnreadIndicator from '../atoms/UnreadIndicator.tsx';
-import { TopSection } from '../blocks/ChatCore/Chat.styles.tsx';
+} from '../../features/swr/index';
+import PageHeader from '../atoms/PageHeader';
+import Toolbar from '../atoms/Toolbar';
+import UnreadIndicator from '../atoms/UnreadIndicator';
+import { TopSection } from '../blocks/ChatCore/Chat.styles';
 import {
   BottomAlignedPagination,
   BottomContainer,
@@ -42,7 +42,7 @@ import {
   Notification,
   Options,
   RelativeDiv,
-} from './Notifications.styles.tsx';
+} from './Notifications.styles';
 
 const PAGE_SIZE = 5;
 

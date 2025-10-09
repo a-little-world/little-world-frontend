@@ -16,8 +16,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { reportMatch, unmatch } from '../../../api/matches.ts';
-import { revalidateMatches } from '../../../features/swr/index.ts';
+import { reportMatch, unmatch } from '../../../api/matches';
+import { revalidateMatches } from '../../../features/swr/index';
 
 export const PARTNER_ACTION_REPORT = 'report';
 export const PARTNER_ACTION_UNMATCH = 'unmatch';

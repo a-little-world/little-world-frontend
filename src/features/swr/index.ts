@@ -1,6 +1,8 @@
 import type { SWRConfiguration } from 'swr';
 import { mutate } from 'swr';
 
+import { apiFetch } from '../../api/helpers';
+
 export const USER_ENDPOINT = '/api/user';
 export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
 export const apiOptions = '#api_options';
@@ -13,7 +15,7 @@ export const UNREAD_NOTIFICATIONS_ENDPOINT = '/api/notifications?filter=unread';
 export const CHATS_ENDPOINT = '/api/chats/?page_size=20';
 export const CHATS_ENDPOINT_SEPERATE =
   '/api/chats/?page_size=20&pagination=true';
-export const API_TRANSLATIONS_ENDPOINT = '/api/api_translations';
+export const API_TRANSLATIONS_ENDPOINT = '/api/translations';
 
 export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
 export const getChatMessagesEndpoint = (chatId: string, page: number) =>
@@ -22,16 +24,6 @@ export const getMatchEndpoint = (page: number) =>
   `/api/matches?page=${page}&page_size=10`;
 export const getQuestionsEndpoint = (archived: boolean) =>
   `/api/user/question_cards/?archived=${archived}&category=all`;
-
-export async function fetcher<T>(url: string): Promise<T> {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    const body = await res.json();
-    throw new Error(body ? JSON.stringify(body) : res.statusText);
-  }
-  return res.json();
-}
 
 export const revalidateMatches = () => {
   mutate(key => typeof key === 'string' && key.startsWith(MATCHES_ENDPOINT));
@@ -53,5 +45,5 @@ export const resetUserQueries = () => {
 };
 
 export const swrConfig: SWRConfiguration = {
-  fetcher,
+  fetcher: apiFetch,
 };

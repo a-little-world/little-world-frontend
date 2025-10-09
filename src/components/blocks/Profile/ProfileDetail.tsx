@@ -13,7 +13,7 @@ import {
   Field,
   FieldTitle,
   ProfileSection,
-} from './styles.tsx';
+} from './styles';
 
 interface ProfileDetailProps {
   content: {

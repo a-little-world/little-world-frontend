@@ -1,7 +1,7 @@
 import React from 'react';
 
-import ConfirmMatchCard from './ConfirmMatchCard.tsx';
-import NewMatchCard from './NewMatchCard.tsx';
+import ConfirmMatchCard from './ConfirmMatchCard';
+import NewMatchCard from './NewMatchCard';
 
 type MatchCardProps = {
   showNewMatch: boolean;

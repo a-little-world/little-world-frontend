@@ -13,12 +13,12 @@ import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { useDevelopmentFeaturesStore } from '../../features/stores/index.ts';
-import { CHATS_ENDPOINT } from '../../features/swr/index.ts';
-import { APP_ROUTE } from '../../router/routes.ts';
-import Logo from '../atoms/Logo.tsx';
-import NotificationBell from '../atoms/NotificationBell.tsx';
-import UnreadDot from '../atoms/UnreadDot.tsx';
+import { useDevelopmentFeaturesStore } from '../../features/stores/index';
+import { CHATS_ENDPOINT } from '../../features/swr/index';
+import { APP_ROUTE } from '../../router/routes';
+import Logo from '../atoms/Logo';
+import NotificationBell from '../atoms/NotificationBell';
+import UnreadDot from '../atoms/UnreadDot';
 
 const LogoContainer = styled.div`
   display: flex;
@@ -85,15 +85,6 @@ function MobileNavBar({ setShowSidebarMobile }) {
 
   return (
     <MobileHeader>
-      <LogoContainer>
-        <Logo stacked={false} displayText={isHome} asLink />
-        {!isHome && (
-          <Title tag="h1" type={TextTypes.Body1} bold>
-            {t(`headers::${key}`)}
-          </Title>
-        )}
-      </LogoContainer>
-      {areDevFeaturesEnabled && <StyledNotificationBell />}
       <Button
         type="button"
         variation={ButtonVariations.Icon}
@@ -107,6 +98,15 @@ function MobileNavBar({ setShowSidebarMobile }) {
         />
         {!!unreadCount && <UnreadDot count={unreadCount} onIcon />}
       </Button>
+      {areDevFeaturesEnabled && <StyledNotificationBell />}
+      <LogoContainer>
+        <Logo stacked={false} displayText={isHome} asLink />
+        {!isHome && (
+          <Title tag="h1" type={TextTypes.Body1} bold>
+            {t(`headers::${key}`)}
+          </Title>
+        )}
+      </LogoContainer>
     </MobileHeader>
   );
 }
