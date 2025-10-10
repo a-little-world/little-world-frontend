@@ -114,11 +114,6 @@ function NativeMessageHandler() {
 
           return response;
         }
-        case 'TEST': {
-          const { initial } = payload;
-          payload.result = `Initial: ${initial}. Answered from Frontend.`;
-          return { ok: true, data: 'uninteresting' };
-        }
         default:
           if (!requestId) {
             throw new Error('Received native message without request id');
