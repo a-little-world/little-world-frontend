@@ -200,16 +200,14 @@ function Sidebar({ isVH, sidebarMobile }) {
               navigate(`/${LOGIN_ROUTE}/`);
             }else{
               setTokens(null, null)
-              sendMessageToReactNative({
-                action: 'CLEAR_AUTH_TOKENS',
-                payload: {},
-              }).then(res => {
-                if (!res.ok) {
-                  throw new Error(res.error);
-                }
-                return res.data;
-              });
-              navigate(`/`);
+              resetUserQueries();
+              navigate(`/${LOGIN_ROUTE}/`);
+              setTimeout(() => {
+                sendMessageToReactNative({
+                  action: 'CLEAR_AUTH_TOKENS',
+                  payload: {},
+                });
+              }, 400);
             }
 
           })
@@ -217,12 +215,12 @@ function Sidebar({ isVH, sidebarMobile }) {
             // Cannot call logout if isNative manually log-out
             if(environment.isNative){
               resetUserQueries();
+              setTokens(null, null)
+              navigate(`/${LOGIN_ROUTE}/`);
               sendMessageToReactNative({
                 action: 'CLEAR_AUTH_TOKENS',
                 payload: {},
               })
-              setTokens(null, null)
-              navigate(`/`);
             }
             console.error(error)
           });
