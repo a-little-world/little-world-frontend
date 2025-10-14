@@ -96,7 +96,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           refresh: refreshToken,
           integrity_token: challengeData.integrityToken,
           request_hash: challengeData.requestHash
@@ -108,7 +108,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
     if (!response.ok) {
       return false;
     }
-    const { access, refresh } = await response.json().catch(() => {});
+    const { access, refresh } = await response.json().catch(() => { });
     setTokens(access ?? null, refresh ?? null);
     if (access && refresh) {
       return true;
@@ -183,7 +183,7 @@ export async function apiFetch<T = any>(
   } catch (error: any) {
     // If 403 on native, try to refresh and retry once
     const status = error?.status;
-    if (environment.isNative && status === 403) {
+    if (environment.isNative && status === 401) {
       const refreshed = await nativeRefreshAccessToken();
       if (refreshed) {
         // update Authorization header with new access token
