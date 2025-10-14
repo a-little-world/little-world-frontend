@@ -118,42 +118,30 @@ export const login = async ({
     });
   }
 
-  // Native flow: 1) get challenge 2) ask native to compute proof 3) call native-login
-  const challengeResp = await apiFetch(`/api/user/challenge/`, {
-    method: 'POST',
-    useTagsOnly: true,
-  });
-
-  const { challenge, timestamp } = challengeResp || {};
-
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
   if (!sendMessageToReactNative) {
     throw new Error('Native bridge not available');
   }
 
-  // Wait for proof from native layer
-
-  const proof = await sendMessageToReactNative({
-    action: 'NATIVE_CHALLENGE_PROOF',
-    payload: {
-      challenge,
-      timestamp,
-      email: (email || '').toLowerCase(),
-    },
+  const challengeData = await sendMessageToReactNative({
+    action: 'GET_INTEGRITY_TOKEN',
+    payload: {},
   }).then(res => {
     if (!res.ok) {
       throw new Error(res.error);
     }
-    if (!res.data?.proof) {
-      throw new Error('Challenge proof missing');
-    }
-    return res.data.proof;
+    return res.data;
   });
 
   const loginData = await apiFetch(`/api/user/native-login/`, {
     method: 'POST',
     useTagsOnly: true,
-    body: { email, password, challenge, proof },
+    body: { 
+      email, 
+      password, 
+      integrity_token: challengeData.integrityToken,
+      request_hash: challengeData.requestHash
+    },
   });
 
   // Store tokens locally for subsequent Authorization headers

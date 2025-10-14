@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
+import { useReceiveHandlerStore, useMobileAuthTokenStore } from '../../features/stores';
 
 import { apiFetch } from '../../api/helpers';
 import {
@@ -37,6 +38,7 @@ import {
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
+import { environment } from '../../environment';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';
@@ -152,6 +154,8 @@ const MobileOverlay = styled.div`
 
 function Sidebar({ isVH, sidebarMobile }) {
   const location = useLocation();
+  const { sendMessageToReactNative } = useReceiveHandlerStore();
+  const { setTokens } = useMobileAuthTokenStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -192,9 +196,36 @@ function Sidebar({ isVH, sidebarMobile }) {
         })
           .then(() => {
             resetUserQueries();
-            navigate(`/${LOGIN_ROUTE}/`); // Redirect only valid in production
+            if(!environment.isNative){
+              navigate(`/${LOGIN_ROUTE}/`);
+            }else{
+              setTokens(null, null)
+              sendMessageToReactNative({
+                action: 'CLEAR_AUTH_TOKENS',
+                payload: {},
+              }).then(res => {
+                if (!res.ok) {
+                  throw new Error(res.error);
+                }
+                return res.data;
+              });
+              navigate(`/`);
+            }
+
           })
-          .catch(error => console.error(error));
+          .catch(error => {
+            // Cannot call logout if isNative manually log-out
+            if(environment.isNative){
+              resetUserQueries();
+              sendMessageToReactNative({
+                action: 'CLEAR_AUTH_TOKENS',
+                payload: {},
+              })
+              setTokens(null, null)
+              navigate(`/`);
+            }
+            console.error(error)
+          });
       },
     },
   ];

@@ -11,21 +11,21 @@ export type DomCommunicationMessage =
       payload: { accessToken: string | null; refreshToken: string | null };
     }
   | {
-      action: 'NATIVE_CHALLENGE_PROOF';
-      requestId?: string;
-      payload: {
-        proof?: string;
-        challenge: string;
-        timestamp: string;
-        email: string;
-      };
-    }
-  | {
       action: 'NAVIGATE';
       requestId?: string;
       payload: {
         path: string;
       };
+    }
+  | {
+      action: 'CLEAR_AUTH_TOKENS';
+      requestId?: string;
+      payload: {};
+    }
+  | {
+      action: 'GET_INTEGRITY_TOKEN';
+      requestId?: string;
+      payload: {};
     }
   | {
       action: 'PING';
