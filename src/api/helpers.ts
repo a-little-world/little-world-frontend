@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
+import useReceiveHandlerStore from '../features/stores/receiveHandler';
 
 // Add DOM types for fetch API
 type RequestCredentials = 'omit' | 'same-origin' | 'include';
@@ -71,6 +72,21 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
   const { refreshToken, setTokens } = useMobileAuthTokenStore.getState();
   if (!refreshToken) return false;
 
+  const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+  if (!sendMessageToReactNative) {
+    throw new Error('Native bridge not available');
+  }
+
+  const challengeData = await sendMessageToReactNative({
+    action: 'GET_INTEGRITY_TOKEN',
+    payload: {},
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error(res.error);
+    }
+    return res.data;
+  });
+
   try {
     const response = await fetch(
       `${environment.backendUrl}/api/token/refresh`,
@@ -80,7 +96,11 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ refresh: refreshToken }),
+        body: JSON.stringify({
+          refresh: refreshToken,
+          integrity_token: challengeData.integrityToken,
+          request_hash: challengeData.requestHash
+        }),
         credentials: 'same-origin',
       } as RequestInit,
     );
@@ -88,7 +108,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
     if (!response.ok) {
       return false;
     }
-    const { access, refresh } = await response.json().catch(() => {});
+    const { access, refresh } = await response.json().catch(() => { });
     setTokens(access ?? null, refresh ?? null);
     if (access && refresh) {
       return true;
@@ -163,7 +183,7 @@ export async function apiFetch<T = any>(
   } catch (error: any) {
     // If 403 on native, try to refresh and retry once
     const status = error?.status;
-    if (environment.isNative && status === 403) {
+    if (environment.isNative && status === 401) {
       const refreshed = await nativeRefreshAccessToken();
       if (refreshed) {
         // update Authorization header with new access token

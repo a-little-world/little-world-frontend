@@ -49,16 +49,6 @@ export function LittleWorldWebNative({
 
   useEffect(() => {
     if (registerReceiveHandler && handler) {
-      console.log('Registering new handler with native bridge:', handler);
-      const payload = {
-        initial: 'Testnachricht',
-      };
-      sendMessageToReactNative({
-        action: 'TEST',
-        payload,
-      }).then(res => {
-        console.log('sendMessageToReactNative TEST', res, payload);
-      });
       registerReceiveHandler(handler);
     }
   }, [registerReceiveHandler, handler]);

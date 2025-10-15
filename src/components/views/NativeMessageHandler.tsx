@@ -88,6 +88,26 @@ function NativeMessageHandler() {
 
           return response;
         }
+        case 'GET_WINDOW_ORIGIN': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const response: DomCommunicationResponse = {
+            ok: true,
+            data: {
+              origin: window.location.origin,
+            },
+          };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
         case 'PING': {
           console.log(
             'received ping, sending response',
@@ -113,11 +133,6 @@ function NativeMessageHandler() {
           });
 
           return response;
-        }
-        case 'TEST': {
-          const { initial } = payload;
-          payload.result = `Initial: ${initial}. Answered from Frontend.`;
-          return { ok: true, data: 'uninteresting' };
         }
         default:
           if (!requestId) {

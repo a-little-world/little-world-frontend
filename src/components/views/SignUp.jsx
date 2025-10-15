@@ -12,7 +12,7 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -99,13 +99,13 @@ const SignUp = () => {
         <NameContainer>
           {company && (
             <>
-              <Label
+              {!company?.startsWith('campaign-') && <Label
                 bold
                 htmlFor="company"
                 toolTipText={t('sign_up.company_tooltip')}
               >
                 {t('sign_up.company_name_label')}: {company}
-              </Label>
+              </Label>}
               <div
                 style={{
                   display: 'none',
