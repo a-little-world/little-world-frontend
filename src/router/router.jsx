@@ -637,6 +637,10 @@ export function getNativeRouter() {
       ),
     },
     {
+      path: getAppRoute(CALL_ROUTE),
+      element: <VideoCall />,
+    },
+    {
       path: getAppRoute(USER_FORM_ROUTE),
       element: <FormLayout />,
       errorElement: <RouterError Layout={FormLayout} />,

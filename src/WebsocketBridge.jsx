@@ -26,7 +26,7 @@ const WebsocketBridge = () => {
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
-    protocols: environment.isNative && accessToken ? [`token.${accessToken}`] : undefined,
+    protocols: environment.isNative && accessToken ? [`bearer.${accessToken}`] : undefined,
   });
 
   const toast = useToast();
