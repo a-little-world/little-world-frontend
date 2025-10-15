@@ -8,7 +8,6 @@ const Container = styled.div`
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: ${({ theme }) => theme.radius.medium};
   width: 100%;
-  max-width: 300px;
   padding: ${({ theme }) => theme.spacing.medium};
 
   ${({ theme }) => css`
@@ -16,6 +15,7 @@ const Container = styled.div`
       width: unset;
       border-radius: ${theme.radius.medium};
       padding: ${theme.spacing.small};
+      max-width: 300px;
     }
   `}
 `;
@@ -68,17 +68,24 @@ type InstructionItem = {
 };
 
 type InstructionsProps = {
-  title: string;
+  className?: string;
+  title?: string;
   items: InstructionItem[];
 };
 
-const Instructions: React.FC<InstructionsProps> = ({ title, items }) => {
+const Instructions: React.FC<InstructionsProps> = ({
+  title,
+  items,
+  className,
+}) => {
   const { t } = useTranslation();
   return (
-    <Container>
-      <InstructionsTitle type={TextTypes.Body3} tag="h2" center>
-        {title}
-      </InstructionsTitle>
+    <Container className={className}>
+      {title && (
+        <InstructionsTitle type={TextTypes.Body3} tag="h2" center>
+          {title}
+        </InstructionsTitle>
+      )}
       <Steps>
         {items.map((item, index) => (
           <StepBlock key={item.heading}>

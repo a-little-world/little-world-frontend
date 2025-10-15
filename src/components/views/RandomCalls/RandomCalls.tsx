@@ -11,9 +11,13 @@ import PanelImage from '../../atoms/PanelImage';
 import CallHistory from '../../blocks/CallHistory/CallHistory';
 import Instructions from '../../blocks/Instructions/Instructions';
 import {
+  CallHistoryDesktop,
   Container,
   InfoPanel,
   InfoPanelText,
+  InnerContainer,
+  RandomCallsAccordion,
+  RandomCallsInstructions,
   Schedule,
 } from './RandomCalls.styles';
 
@@ -42,37 +46,51 @@ const RandomCalls = () => {
   const active = true;
   return (
     <Container>
-      <InfoPanel>
-        <PanelImage
-          src={randomCallsImage}
-          label={t('random_calls.image_label')}
-          alt="random calls"
-        />
-        <InfoPanelText>
-          <Text bold tag="h2" type={TextTypes.Body2}>
-            {t('random_calls.title')}
-          </Text>
-          <Text>{t('random_calls.description')}</Text>
-          <Text bold type={TextTypes.Body3}>
-            {t('random_calls.active_heading')}
-          </Text>
-          <Schedule>
-            <Text>{t('random_calls.schedule_heading')}</Text>
-            {randomCallsSchedule.map(item => (
-              <Text key={item}>{item}</Text>
-            ))}
-          </Schedule>
-          <Button disabled={!active} width={ButtonSizes.Small}>
-            {t(
-              active
-                ? 'random_calls.start_btn'
-                : 'random_calls.start_btn_disabled',
-            )}
-          </Button>
-        </InfoPanelText>
-      </InfoPanel>
-      <Instructions title={t('random_calls.title')} items={instructions} />
-      <CallHistory />
+      <InnerContainer>
+        <InfoPanel>
+          <PanelImage
+            src={randomCallsImage}
+            label={t('random_calls.image_label')}
+            alt="random calls"
+          />
+          <InfoPanelText>
+            <Text bold tag="h2" type={TextTypes.Body2}>
+              {t('random_calls.title')}
+            </Text>
+            <Text>{t('random_calls.description')}</Text>
+            <Text bold type={TextTypes.Body3}>
+              {t('random_calls.active_heading')}
+            </Text>
+            <Schedule>
+              <Text>{t('random_calls.schedule_heading')}</Text>
+              {randomCallsSchedule.map(item => (
+                <Text key={item}>{item}</Text>
+              ))}
+            </Schedule>
+            <Button disabled={!active} width={ButtonSizes.Small}>
+              {t(
+                active
+                  ? 'random_calls.start_btn'
+                  : 'random_calls.start_btn_disabled',
+              )}
+            </Button>
+          </InfoPanelText>
+        </InfoPanel>
+        <CallHistoryDesktop />
+      </InnerContainer>
+      <RandomCallsInstructions
+        title={t('random_calls.title')}
+        items={instructions}
+      />
+      <RandomCallsAccordion
+        items={[
+          {
+            content: <Instructions items={instructions} />,
+            header: 'Instructions',
+          },
+          { content: <CallHistory />, header: 'Call History' },
+        ]}
+      />
     </Container>
   );
 };

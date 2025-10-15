@@ -1,3 +1,4 @@
+import { Text } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
 export const Container = styled.div`
@@ -10,4 +11,9 @@ export const Container = styled.div`
   width: 100%;
   align-items: center;
   justify-content: center;
+`;
+
+export const NoHistoryDescription = styled(Text)`
+  text-align: center;
+  max-width: 512px;
 `;
