@@ -77,7 +77,24 @@ function collateEvents(events: Event[]): GroupedEvent[] {
             link: event.link,
           };
         })
-        .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+        .sort((a, b) => {
+          // Get day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+          const dayA = a.startDate.getDay();
+          const dayB = b.startDate.getDay();
+
+          // Convert to Monday-first week (0 = Monday, 6 = Sunday)
+          const mondayFirstA = dayA === 0 ? 6 : dayA - 1;
+          const mondayFirstB = dayB === 0 ? 6 : dayB - 1;
+
+          // First sort by weekday
+          const dayDiff = mondayFirstA - mondayFirstB;
+          if (dayDiff !== 0) {
+            return dayDiff;
+          }
+
+          // If same weekday, sort by time (hours and minutes)
+          return a.startDate.getTime() - b.startDate.getTime();
+        });
 
       const groupedEvent: GroupedEvent = {
         ...first,
@@ -211,11 +228,11 @@ const EventCtas = ({
     <>
       <DateTimeEvent>
         <Text type={TextTypes.Body3} bold tag="span">
-          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly ?
-            t('community_events.every_week', {
+          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly
+            ? t('community_events.every_week', {
                 day: formatDate(startDate, 'EEEE', language),
-              }) :
-            formatDate(startDate, 'cccc, LLLL do', language)}
+              })
+            : formatDate(startDate, 'cccc, LLLL do', language)}
         </Text>
         <Text type={TextTypes.Body3} bold color={theme.color.text.heading}>
           {formatEventTime(startDate, endDate)}
@@ -297,6 +314,7 @@ function CommunityEvent({
 function CommunityEvents() {
   const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT);
   const groupedEvents = collateEvents(events?.results || []);
+
   return (
     <Events>
       {groupedEvents.map(eventData => (
