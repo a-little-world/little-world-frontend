@@ -92,6 +92,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
           </Title>
         )}
       </LogoContainer>
+      {areDevFeaturesEnabled && <StyledNotificationBell />}
       <Button
         type="button"
         variation={ButtonVariations.Icon}
@@ -105,7 +106,6 @@ function MobileNavBar({ setShowSidebarMobile }) {
         />
         {!!unreadCount && <UnreadDot count={unreadCount} onIcon />}
       </Button>
-      {areDevFeaturesEnabled && <StyledNotificationBell />}
     </MobileHeader>
   );
 }
