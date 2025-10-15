@@ -7,7 +7,6 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { reduce } from 'lodash';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -85,6 +84,15 @@ function MobileNavBar({ setShowSidebarMobile }) {
 
   return (
     <MobileHeader>
+      <LogoContainer>
+        <Logo stacked={false} displayText={isHome} asLink />
+        {!isHome && (
+          <Title tag="h1" type={TextTypes.Body1} bold>
+            {t(`headers::${key}`)}
+          </Title>
+        )}
+      </LogoContainer>
+      {areDevFeaturesEnabled && <StyledNotificationBell />}
       <Button
         type="button"
         variation={ButtonVariations.Icon}
@@ -98,15 +106,6 @@ function MobileNavBar({ setShowSidebarMobile }) {
         />
         {!!unreadCount && <UnreadDot count={unreadCount} onIcon />}
       </Button>
-      {areDevFeaturesEnabled && <StyledNotificationBell />}
-      <LogoContainer>
-        <Logo stacked={false} displayText={isHome} asLink />
-        {!isHome && (
-          <Title tag="h1" type={TextTypes.Body1} bold>
-            {t(`headers::${key}`)}
-          </Title>
-        )}
-      </LogoContainer>
     </MobileHeader>
   );
 }
