@@ -1,8 +1,3 @@
-export type IntegrityCheck =
-  | IntegrityCheckAndroid
-  | IntegrityCheckIOS
-  | IntegrityCheckWeb;
-
 export interface IntegrityCheckAndroid {
   platform: 'android';
   integrityToken: string;
@@ -19,3 +14,8 @@ export interface IntegrityCheckWeb {
   platform: 'web';
   bypassToken: string;
 }
+
+export type IntegrityCheck =
+  | IntegrityCheckAndroid
+  | IntegrityCheckIOS
+  | IntegrityCheckWeb;
