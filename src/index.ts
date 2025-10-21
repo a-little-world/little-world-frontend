@@ -2,6 +2,7 @@
 // // @ts-ignore
 export { LittleWorldWebNative } from './components/views/LittleWorldWebNative';
 export { environment } from './environment';
+export * from './features/integrityCheck';
 export {
   DomCommunicationMessage,
   DomCommunicationMessageFn,
