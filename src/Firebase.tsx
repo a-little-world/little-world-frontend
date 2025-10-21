@@ -42,37 +42,34 @@ function handleMessage(payload: MessagePayload, toast: ToastContextType): void {
 async function register(
   firebaseClientConfig: any,
   firebasePublicVapidKey: string,
-) {
+): Promise<boolean> {
   const permission = await Notification?.requestPermission();
   if (permission !== 'granted') {
     const supported = await isSupported();
     if (!supported) {
       // TOOD: some other error
     }
-    // TODO: show some error
-    return;
+    return false;
   }
 
   enableFirebase(firebaseClientConfig);
   const token = await getFirebaseToken(firebasePublicVapidKey);
-  console.log(token);
   if (!token) {
-    // TODO: token sollte immer gesetzt sein
-    return;
+    return false;
   }
 
   const isRegistered = isFirebaseDeviceTokenRegistered(token);
-  if (isRegistered) {
-    return;
+  if (!isRegistered) {
+    registerFirebaseDeviceToken(firebasePublicVapidKey)
+      .then(() => {
+        setFirebaseDeviceTokenRegistered(token, true);
+      })
+      .catch(e => {
+        console.error(e);
+      });
   }
 
-  registerFirebaseDeviceToken(firebasePublicVapidKey)
-    .then(() => {
-      setFirebaseDeviceTokenRegistered(token, true);
-    })
-    .catch(e => {
-      console.error(e);
-    });
+  return true;
 }
 
 async function unregister(firebasePublicVapidKey: string) {
@@ -103,7 +100,7 @@ function FireBase() {
   });
 
   // TODO: double check if this is correct ( frontend store refactored )
-  const unsubscribeRef = useRef<Unsubscribe>();
+  const unsubscribeRef = useRef<Unsubscribe | undefined>(undefined);
   const push_notifications_enabled =
     userData?.profile?.push_notifications_enabled;
 
@@ -128,13 +125,14 @@ function FireBase() {
       ) {
         return unsubscribe;
       }
-      register(firebaseClientConfig, firebasePublicVapidKey).then(() => {
-        const messaging = getFirebaseMessaging();
-        if (messaging) {
-          unsubscribeRef.current = onMessage(messaging, payload =>
-            handleMessage(payload, toast),
-          );
+      register(firebaseClientConfig, firebasePublicVapidKey).then(success => {
+        if (!success) {
+          return;
         }
+        const messaging = getFirebaseMessaging();
+        unsubscribeRef.current = onMessage(messaging, payload =>
+          handleMessage(payload, toast),
+        );
       });
     } else {
       unsubscribeRef.current?.();
