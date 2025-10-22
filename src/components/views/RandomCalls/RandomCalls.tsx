@@ -1,24 +1,34 @@
 import {
-  Button,
   ButtonSizes,
+  CalendarIcon,
+  Modal,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { joinLobby } from '../../../api/randomCalls';
 import randomCallsImage from '../../../images/item info.png';
+import { OnlineCirlce } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
 import CallHistory from '../../blocks/CallHistory/CallHistory';
 import Instructions from '../../blocks/Instructions/Instructions';
+import PostRandomCallsFlow from '../../blocks/RandomCalls/PostRandomCallsFlow';
+import RandomCallsLobby from '../../blocks/RandomCalls/RandomCallsLobby';
 import {
+  ActiveUsers,
   CallHistoryDesktop,
   Container,
   InfoPanel,
   InfoPanelText,
   InnerContainer,
+  JoinButton,
   RandomCallsAccordion,
   RandomCallsInstructions,
   Schedule,
+  ScheduleHeading,
+  ScheduleList,
 } from './RandomCalls.styles';
 
 const instructions = [
@@ -44,8 +54,38 @@ const randomCallsSchedule = [
 const RandomCalls = () => {
   const { t } = useTranslation();
   const active = true;
+  const [lobbyOpen, setLobbyOpen] = useState(false);
+  const [callEnded, setCallEnded] = useState(false); // TODO: This should be set based on actual call end event
+
+  const onJoinLobby = () => {
+    joinLobby({ onSuccess: () => setLobbyOpen(true) });
+  };
+
+  const onCloseLobby = () => {
+    setLobbyOpen(false);
+  };
+
+  const handleReturnToLobby = () => {
+    setCallEnded(false);
+    setLobbyOpen(true);
+  };
+
+  const handleClosePostCall = () => {
+    setCallEnded(false);
+  };
+
   return (
     <Container>
+      <Modal open={lobbyOpen} onClose={onCloseLobby}>
+        <RandomCallsLobby onCancel={onCloseLobby} />
+      </Modal>
+
+      <Modal open={callEnded} onClose={handleClosePostCall}>
+        <PostRandomCallsFlow
+          onReturnToStart={handleClosePostCall}
+          onReturnToLobby={handleReturnToLobby}
+        />
+      </Modal>
       <InnerContainer>
         <InfoPanel>
           <PanelImage
@@ -59,27 +99,52 @@ const RandomCalls = () => {
             </Text>
             <Text>{t('random_calls.description')}</Text>
             <Text bold type={TextTypes.Body3}>
-              {t('random_calls.active_heading')}
+              {t(
+                active
+                  ? 'random_calls.active_heading'
+                  : 'random_calls.inactive_heading',
+                { from: '18:00', to: '20:00' },
+              )}
             </Text>
-            <Schedule>
-              <Text>{t('random_calls.schedule_heading')}</Text>
-              {randomCallsSchedule.map(item => (
-                <Text key={item}>{item}</Text>
-              ))}
-            </Schedule>
-            <Button disabled={!active} width={ButtonSizes.Small}>
+            {active ? (
+              <ActiveUsers>
+                <OnlineCirlce />
+                <Text bold>
+                  {t('random_calls.active_users', { count: 18 })}
+                </Text>
+              </ActiveUsers>
+            ) : (
+              <Schedule>
+                <ScheduleHeading>
+                  <CalendarIcon label="Calendar icon" width={16} height={16} />
+                  <Text bold>{t('random_calls.schedule_heading')}</Text>
+                </ScheduleHeading>
+                <ScheduleList>
+                  {randomCallsSchedule.map(item => (
+                    <Text key={item} tag="li">
+                      {item}
+                    </Text>
+                  ))}
+                </ScheduleList>
+              </Schedule>
+            )}
+            <JoinButton
+              disabled={!active}
+              size={ButtonSizes.Small}
+              onClick={onJoinLobby}
+            >
               {t(
                 active
                   ? 'random_calls.start_btn'
                   : 'random_calls.start_btn_disabled',
               )}
-            </Button>
+            </JoinButton>
           </InfoPanelText>
         </InfoPanel>
         <CallHistoryDesktop />
       </InnerContainer>
       <RandomCallsInstructions
-        title={t('random_calls.title')}
+        title={t('random_calls.instructions_title')}
         items={instructions}
       />
       <RandomCallsAccordion

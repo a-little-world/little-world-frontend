@@ -97,7 +97,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { disconnectedFrom, disconnectFromCall } = useConnectedCallStore();
 
   // Zustand store hooks
-  const { initCallSetup } = useCallSetupStore();
+  const { cancelCallSetup, initCallSetup } = useCallSetupStore();
   const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
@@ -182,6 +182,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     else closePostCallSurvey();
   };
 
+  const closeCallSetup = () => {
+    cancelCallSetup();
+    closeModal();
+  };
+
   return (
     <Wrapper $isVH={isVH}>
       <Sidebar
@@ -192,8 +197,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
       <Content $isVH={isVH}>{children || <Outlet />}</Content>
 
-      <Modal open={isModalOpen(ModalTypes.CALL_SETUP.id)} locked>
-        <CallSetup onClose={closeModal} userPk={callSetup?.userId} />
+      <Modal
+        open={isModalOpen(ModalTypes.CALL_SETUP.id)}
+        onClose={closeCallSetup}
+      >
+        <CallSetup onClose={closeCallSetup} userPk={callSetup?.userId} />
       </Modal>
 
       <Modal
@@ -222,14 +230,14 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         <MatchCardComponent
           showNewMatch={showNewMatch}
           matchId={
-            matches?.proposed?.results?.length ?
-              matches?.proposed.results[0].id :
-              matches?.unconfirmed.results[0]?.id
+            matches?.proposed?.results?.length
+              ? matches?.proposed.results[0].id
+              : matches?.unconfirmed.results[0]?.id
           }
           profile={
-            matches?.proposed?.results?.length ?
-              matches?.proposed.results[0].partner :
-              matches?.unconfirmed.results[0]?.partner
+            matches?.proposed?.results?.length
+              ? matches?.proposed.results[0].partner
+              : matches?.unconfirmed.results[0]?.partner
           }
           onClose={closeModal}
         />

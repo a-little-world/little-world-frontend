@@ -50,7 +50,8 @@ const Steps = styled.ol`
 `;
 
 const StepNumber = styled(Text)`
-  color: ${({ theme }) => theme.color.text.secondary};
+  color: ${({ theme }) => theme.color.text.heading};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 const StepHeading = styled(Text)`
@@ -82,17 +83,17 @@ const Instructions: React.FC<InstructionsProps> = ({
   return (
     <Container className={className}>
       {title && (
-        <InstructionsTitle type={TextTypes.Body3} tag="h2" center>
+        <InstructionsTitle type={TextTypes.Body3} tag="h2" center bold>
           {title}
         </InstructionsTitle>
       )}
       <Steps>
         {items.map((item, index) => (
           <StepBlock key={item.heading}>
-            <StepNumber type={TextTypes.Body5} tag="span">
+            <StepNumber type={TextTypes.Body5} tag="span" bold>
               {t('instructions.step')} {index + 1}
             </StepNumber>
-            <StepHeading bold type={TextTypes.Body4} tag="h3">
+            <StepHeading bold type={TextTypes.Body4} tag="h3" center>
               {t(item.heading)}
             </StepHeading>
             <StepDescription type={TextTypes.Body5} tag="p" center>

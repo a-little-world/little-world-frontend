@@ -1,4 +1,4 @@
-import { Accordion } from '@a-little-world/little-world-design-system';
+import { Accordion, Button } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
 import CallHistory from '../../blocks/CallHistory/CallHistory';
@@ -44,10 +44,28 @@ export const InfoPanelText = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
 `;
 
+export const ActiveUsers = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
+`;
+
 export const Schedule = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
+`;
+
+export const ScheduleHeading = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+export const ScheduleList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
 export const InfoImage = styled.img`
@@ -55,6 +73,10 @@ export const InfoImage = styled.img`
   height: 100%;
   max-width: 400px;
   object-fit: cover;
+`;
+
+export const JoinButton = styled(Button)`
+  align-self: flex-start;
 `;
 
 export const InnerContainer = styled.div`
