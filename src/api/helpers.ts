@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
+import { IntegrityCheck } from '../features/integrityCheck';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 
@@ -77,7 +78,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
     throw new Error('Native bridge not available');
   }
 
-  const challengeData = await sendMessageToReactNative({
+  const challengeData: IntegrityCheck = await sendMessageToReactNative({
     action: 'GET_INTEGRITY_TOKEN',
     payload: {},
   }).then(res => {
@@ -89,7 +90,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
 
   try {
     const response = await fetch(
-      `${environment.backendUrl}/api/token/refresh`,
+      `${environment.backendUrl}/api/token/refresh/${challengeData.platform}`,
       {
         method: 'POST',
         headers: {
@@ -98,8 +99,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
         },
         body: JSON.stringify({
           refresh: refreshToken,
-          integrity_token: challengeData.integrityToken,
-          request_hash: challengeData.requestHash
+          ...challengeData,
         }),
         credentials: 'same-origin',
       } as RequestInit,
@@ -108,7 +108,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
     if (!response.ok) {
       return false;
     }
-    const { access, refresh } = await response.json().catch(() => { });
+    const { access, refresh } = await response.json().catch(() => {});
     setTokens(access ?? null, refresh ?? null);
     if (access && refresh) {
       return true;
