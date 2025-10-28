@@ -23,6 +23,11 @@ export type DomCommunicationMessage =
     payload: {};
   }
   | {
+    action: 'WEBVIEW_READY';
+    requestId?: string;
+    payload: {};
+  }
+  | {
     action: 'GET_WINDOW_ORIGIN';
     requestId?: string;
     payload: {};
