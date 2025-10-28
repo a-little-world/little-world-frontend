@@ -2,8 +2,8 @@ import { Link, TextTypes } from '@a-little-world/little-world-design-system';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
-import { environment } from '../../environment';
 import useSWR from 'swr';
+import { environment } from '../../environment';
 
 import { USER_ENDPOINT } from '../../features/swr/index';
 import {
