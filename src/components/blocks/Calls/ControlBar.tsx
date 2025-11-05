@@ -112,9 +112,9 @@ const StyledTimer = styled(Timer)<{ $desktopOnly?: boolean }>`
 `;
 
 const MediaControl = styled.div`
-  background: ${({ theme }) => theme.color.surface.contrast};
+  background: #6d6d6d;
   color: ${({ theme }) => theme.color.text.control};
-  border-color: ${({ theme }) => theme.color.border.contrast};
+  border-color: #6d6d6d;
   border-radius: ${({ theme }) => theme.radius.large};
   display: flex;
   align-items: center;

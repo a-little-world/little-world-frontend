@@ -142,7 +142,7 @@ export const StyledGridLayout = styled(GridLayout)`
 
   .lk-participant-metadata-item {
     background: transparent;
-    color: ${({ theme }) => theme.color.text.reversed};
+    color: white;
     opacity: 1;
   }
 
@@ -176,8 +176,8 @@ export const StyledGridLayout = styled(GridLayout)`
 `;
 
 export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
-  color: ${({ theme }) => theme.color.text.reversed};
-  background: ${({ theme }) => theme.color.text.secondary};
+  color: white;
+  background: black;
   height: 100%;
   width: 100%;
   position: absolute;
