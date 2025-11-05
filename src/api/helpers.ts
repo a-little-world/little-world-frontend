@@ -1,10 +1,12 @@
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 import { IntegrityCheck } from '../features/integrityCheck';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
+import { LOGIN_ROUTE } from '../router/routes';
 
 // Add DOM types for fetch API
 type RequestCredentials = 'omit' | 'same-origin' | 'include';
@@ -106,6 +108,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
     );
 
     if (!response.ok) {
+      setTokens(null, null);
       return false;
     }
     const { access, refresh } = await response.json().catch(() => {});
@@ -168,7 +171,10 @@ export async function apiFetch<T = any>(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw formatApiError(errorData, response);
+      if (errorData?.code !== 'token_not_valid') {
+        throw formatApiError(errorData, response);
+      }
+      throw errorData;
     }
 
     try {
@@ -181,9 +187,9 @@ export async function apiFetch<T = any>(
   try {
     return await doFetch();
   } catch (error: any) {
-    // If 403 on native, try to refresh and retry once
-    const status = error?.status;
-    if (environment.isNative && status === 401) {
+    // If access token expired, try to refresh and retry once
+    const tokenExpired = error?.code === 'token_not_valid';
+    if (environment.isNative && tokenExpired) {
       const refreshed = await nativeRefreshAccessToken();
       if (refreshed) {
         // update Authorization header with new access token
@@ -191,9 +197,12 @@ export async function apiFetch<T = any>(
         if (accessToken) {
           fetchOptions.headers!.Authorization = `Bearer ${accessToken}`;
         } else {
-          delete fetchOptions.headers!.Authorization;
+          throw new Error('Token refresh successful but returned no tokens');
         }
         return doFetch();
+      } else {
+        const navigate = useNavigate();
+        navigate(LOGIN_ROUTE);
       }
     }
 
