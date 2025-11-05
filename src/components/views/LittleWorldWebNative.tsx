@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { SWRConfig } from 'swr';
@@ -42,30 +42,41 @@ export function LittleWorldWebNative({
   registerReceiveHandler: (handler: DomCommunicationMessageFn | null) => void;
 }) {
   const router = getNativeRouter();
-  const { handler, setSendMessageToReactNative } = useReceiveHandlerStore();
+  const {
+    handler,
+    setSendMessageToReactNative,
+    sendMessageToReactNative: sendMessageToReactNativeSet,
+  } = useReceiveHandlerStore();
+  const [communicationEstablished, setCommunicationEstablished] =
+    useState(false);
 
   useEffect(() => {
-    // Store the sendMessageToReactNative function in the store
     setSendMessageToReactNative(sendMessageToReactNative);
-  }, [sendMessageToReactNative, setSendMessageToReactNative]);
+  }, [setSendMessageToReactNative, sendMessageToReactNative]);
 
   useEffect(() => {
-    if (registerReceiveHandler && handler) {
+    if (handler && sendMessageToReactNativeSet && !communicationEstablished) {
+      setCommunicationEstablished(true);
+
+      setSendMessageToReactNative(sendMessageToReactNative);
       registerReceiveHandler(handler);
+
+      sendMessageToReactNative({
+        action: 'WEBVIEW_READY',
+        payload: {},
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error(res.error);
+        }
+        return res.data;
+      });
     }
-  }, [registerReceiveHandler, handler]);
-  
-  useEffect(() => {
-    sendMessageToReactNative({
-      action: 'WEBVIEW_READY',
-      payload: {},
-    }).then(res => {
-      if (!res.ok) {
-        throw new Error(res.error);
-      }
-      return res.data;
-    });
-  }, [])
+  }, [
+    handler,
+    registerReceiveHandler,
+    sendMessageToReactNativeSet,
+    communicationEstablished,
+  ]);
 
   return (
     <I18nextProvider i18n={i18n}>

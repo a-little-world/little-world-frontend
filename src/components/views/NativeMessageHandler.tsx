@@ -41,6 +41,9 @@ function NativeMessageHandler() {
   }, [mobileAuthStore]);
 
   useEffect(() => {
+    if (!sendMessageToReactNative) {
+      return;
+    }
     const handler: DomCommunicationMessageFn = async (
       message: DomCommunicationMessage,
     ) => {
