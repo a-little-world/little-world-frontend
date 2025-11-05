@@ -23,10 +23,12 @@ import { getNativeRouter } from '../../router/router';
 export function NativePreloader() {
   const { error: _errorUser } = useSWR(USER_ENDPOINT);
   const { error: _errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT);
-  const { error: _errorApiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT);
+  const { data: apiTranslations, error: _errorApiTranslations } = useSWR(
+    API_TRANSLATIONS_ENDPOINT,
+  );
 
-  if (_errorApiTranslations) {
-    updateTranslationResources({ apiTranslations: _errorApiTranslations });
+  if (apiTranslations) {
+    updateTranslationResources({ apiTranslations });
   }
 
   return null;
