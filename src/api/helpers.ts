@@ -70,62 +70,80 @@ function getNativeHeaders(): Record<string, string> {
   return headers;
 }
 
+let tokenRefreshRequest: Promise<boolean> | null = null;
 export async function nativeRefreshAccessToken(): Promise<boolean> {
   if (!environment.isNative) return false;
-  const { refreshToken, setTokens } = useMobileAuthTokenStore.getState();
-  if (!refreshToken) return false;
 
-  const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-  if (!sendMessageToReactNative) {
-    throw new Error('Native bridge not available');
+  if (tokenRefreshRequest) {
+    return tokenRefreshRequest;
   }
 
-  const challengeData: IntegrityCheck = await sendMessageToReactNative({
-    action: 'GET_INTEGRITY_TOKEN',
-    payload: {},
-  }).then(res => {
-    if (!res.ok) {
-      throw new Error(res.error);
-    }
-    return res.data;
-  });
+  tokenRefreshRequest = (async () => {
+    try {
+      const { refreshToken, setTokens } = useMobileAuthTokenStore.getState();
+      if (!refreshToken) return false;
 
-  try {
-    const response = await fetch(
-      `${environment.backendUrl}/api/token/refresh/${challengeData.platform}`,
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          refresh: refreshToken,
-          ...challengeData,
-        }),
-        credentials: 'same-origin',
-      } as RequestInit,
-    );
+      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+      if (!sendMessageToReactNative) {
+        return false;
+      }
 
-    if (!response.ok) {
-      setTokens(null, null);
+      const challengeData: IntegrityCheck = await sendMessageToReactNative({
+        action: 'GET_INTEGRITY_TOKEN',
+        payload: {},
+      }).then(res => {
+        if (!res.ok) {
+          throw new Error(res.error);
+        }
+        return res.data;
+      });
+
+      const response = await fetch(
+        `${environment.backendUrl}/api/token/refresh/${challengeData.platform}`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            refresh: refreshToken,
+            ...challengeData,
+          }),
+          credentials: 'same-origin',
+        } as RequestInit,
+      );
+
+      if (!response.ok) {
+        setTokens(null, null);
+        return false;
+      }
+      const { access, refresh } = await response.json().catch(() => {});
+      setTokens(access ?? null, refresh ?? null);
+      if (access && refresh) {
+        return true;
+      }
       return false;
+    } catch (_e) {
+      return false;
+    } finally {
+      tokenRefreshRequest = null;
     }
-    const { access, refresh } = await response.json().catch(() => {});
-    setTokens(access ?? null, refresh ?? null);
-    if (access && refresh) {
-      return true;
-    }
-    return false;
-  } catch (_e) {
-    return false;
-  }
+  })();
+
+  return tokenRefreshRequest;
 }
 
 export async function apiFetch<T = any>(
   endpoint: string,
   options: ApiFetchOptions = {},
 ): Promise<T> {
+  if (tokenRefreshRequest) {
+    // in case we are already loading a new token, wait before sending any new requests. They would fail anyway due to the
+    // invalid access  token
+    await tokenRefreshRequest;
+  }
+
   const {
     method = 'GET',
     body,
