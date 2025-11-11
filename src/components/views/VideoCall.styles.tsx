@@ -232,6 +232,28 @@ export const MEDIA_DEVICE_MENU_CSS = css`
     }
   }
 
+  .lk-button-group-container .lk-button-menu {
+    height: auto;
+
+    &[aria-pressed='true'] {
+      &::after {
+        transform: rotate(135deg);
+        margin-bottom: -2px;
+      }
+    }
+
+    &::after {
+      width: 6px;
+      height: 6px;
+      margin: 0;
+      margin-bottom: 2px;
+    }
+
+    &::hover {
+      background-color: none;
+    }
+  }
+
   .lk-device-menu {
     background-color: ${({ theme }) => theme.color.surface.primary};
     border-color: ${({ theme }) => theme.color.border.subtle};

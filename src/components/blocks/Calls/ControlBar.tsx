@@ -147,29 +147,6 @@ const MediaControl = styled.div<{ $permissionDenied?: boolean }>`
 
   ${MEDIA_DEVICE_MENU_CSS};
 
-  .lk-button-menu {
-    padding: ${({ theme }) =>
-      `0 ${theme.spacing.small} 0 ${theme.spacing.xxxsmall}`};
-
-    &[aria-pressed='true'] {
-      &::after {
-        transform: rotate(135deg);
-        margin-bottom: -2px;
-      }
-    }
-
-    &::after {
-      width: 6px;
-      height: 6px;
-      margin: 0;
-      margin-bottom: 2px;
-    }
-
-    &::hover {
-      background-color: none;
-    }
-  }
-
   ${({ $permissionDenied }) =>
     $permissionDenied &&
     css`
