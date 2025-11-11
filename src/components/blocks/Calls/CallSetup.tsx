@@ -14,7 +14,7 @@ import {
   PreJoin,
   PreJoinValues,
 } from '@livekit/components-react';
-import { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
+import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';

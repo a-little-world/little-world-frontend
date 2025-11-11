@@ -17,7 +17,7 @@ import {
   useRoomInfo,
   useTracks,
 } from '@livekit/components-react';
-import { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
+import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
 import '@livekit/components-styles';
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
