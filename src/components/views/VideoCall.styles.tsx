@@ -99,7 +99,7 @@ export const StyledGridLayout = styled(GridLayout)`
     width: 30%;
     max-height: 50%;
     z-index: 1;
-    border-radius: 16px;
+    border-radius: ${({ theme }) => theme.radius.small};
     aspect-ratio: 9 / 16;
 
     ${({ theme }) => css`
@@ -219,6 +219,19 @@ export const DesktopTranslationTool = styled(TranslationTool)`
 `;
 
 export const MEDIA_DEVICE_MENU_CSS = css`
+  .lk-button-group-container .lk-button {
+    border-radius: ${({ theme }) => theme.radius.xxsmall};
+
+    &:hover {
+      filter: brightness(90%);
+      transition: filter 0.5s ease;
+    }
+
+    &:not(.lk-permission-denied):hover {
+      background: ${({ theme }) => theme.color.surface.primary};
+    }
+  }
+
   .lk-device-menu {
     background-color: ${({ theme }) => theme.color.surface.primary};
     border-color: ${({ theme }) => theme.color.border.subtle};
