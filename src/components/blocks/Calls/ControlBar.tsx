@@ -166,6 +166,7 @@ interface SharedControlBarProps {
 }
 
 interface ControlBarProps extends SharedControlBarProps {
+  hide: boolean;
   onFullScreenToggle: () => void;
   isFullScreen: boolean;
   onPermissionModalOpen: (permissions: {
@@ -214,6 +215,7 @@ export const TopControlBar = ({
 };
 
 function ControlBar({
+  hide,
   isFullScreen,
   onChatToggle,
   onFullScreenToggle,
@@ -238,6 +240,7 @@ function ControlBar({
     });
   };
 
+  if (hide) return null;
   return (
     <Bar $position="bottom">
       <Section>
@@ -250,6 +253,7 @@ function ControlBar({
             showIcon
             $withBackground
             $permissionDenied={audioPermissionDenied}
+            permissionDenied={audioPermissionDenied}
           />
           <MediaDeviceMenu kind="audioinput" disabled={audioPermissionDenied} />
         </MediaControl>
@@ -262,6 +266,7 @@ function ControlBar({
             showIcon
             $withBackground
             $permissionDenied={videoPermissionDenied}
+            permissionDenied={videoPermissionDenied}
           />
           <MediaDeviceMenu kind="videoinput" disabled={videoPermissionDenied} />
         </MediaControl>

@@ -204,7 +204,7 @@ function VideoCall() {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
-  const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
+  const [selectedDrawerOption, setSelectedDrawerOption] = useState(undefined);
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const [deniedPermissions, setDeniedPermissions] = useState<{
     audio: boolean;
@@ -320,46 +320,45 @@ function VideoCall() {
               />
               <RoomAudioRenderer />
               {!callRejected && (
-                <>
-                  <TopControlBar
-                    activeOption={selectedDrawerOption}
-                    onChatToggle={onMobileChatToggle}
-                    onTranslatorToggle={onMobileTranslatorToggle}
-                    onQuestionCardsToggle={onMobileQuestionsToggle}
-                  />
-                  <ControlBar
-                    isFullScreen={isFullScreen}
-                    onChatToggle={onChatToggle}
-                    onFullScreenToggle={onFullScreenToggle}
-                    onTranslatorToggle={onTranslatorToggle}
-                    onPermissionModalOpen={permissions => {
-                      setDeniedPermissions(permissions);
-                      setShowPermissionModal(true);
-                    }}
-                  />
-                </>
+                <TopControlBar
+                  activeOption={selectedDrawerOption}
+                  onChatToggle={onMobileChatToggle}
+                  onTranslatorToggle={onMobileTranslatorToggle}
+                  onQuestionCardsToggle={onMobileQuestionsToggle}
+                />
               )}
+              <ControlBar
+                hide={callRejected}
+                isFullScreen={isFullScreen}
+                onChatToggle={onChatToggle}
+                onFullScreenToggle={onFullScreenToggle}
+                onTranslatorToggle={onTranslatorToggle}
+                onPermissionModalOpen={permissions => {
+                  setDeniedPermissions(permissions);
+                  setShowPermissionModal(true);
+                }}
+              />
             </LiveKitRoom>
             {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>
           <Drawer
             title="Translate"
             open={selectedDrawerOption === 'translator'}
-            onClose={() => setSelectedDrawerOption(null)}
+            onClose={() => setSelectedDrawerOption(undefined)}
           >
             <TranslationTool />
           </Drawer>
           <Drawer
             title="Chat"
             open={selectedDrawerOption === 'chat'}
-            onClose={() => setSelectedDrawerOption(null)}
+            onClose={() => setSelectedDrawerOption(undefined)}
           >
             <Chat chatId={chatData?.uuid} inCall />
           </Drawer>
           <Drawer
             title="Questions"
             open={selectedDrawerOption === 'questions'}
-            onClose={() => setSelectedDrawerOption(null)}
+            onClose={() => setSelectedDrawerOption(undefined)}
           >
             <QuestionCards />
           </Drawer>
