@@ -9,7 +9,10 @@ export const ToolContainer = styled.div`
 `;
 
 export const SwapBtn = styled(Button)`
-  margin-top: ${({ theme }) => theme.spacing.xxsmall};
+  padding: ${({ theme }) => theme.spacing.xxxsmall};
+  margin-top: 6px;
+  border-radius: ${({ theme }) => theme.radius.half};
+  color: ${({ theme }) => theme.color.text.title};
 `;
 
 export const OriginalLanguage = styled.div`

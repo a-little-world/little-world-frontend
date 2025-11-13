@@ -1,14 +1,20 @@
 import {
+  ButtonSizes,
   ButtonVariations,
   Dropdown,
   SwapIcon,
   TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { LANGUAGES, requestTranslation } from '../../../api/googletrans';
+import {
+  AUTO_DETECT,
+  SOURCE_LANGUAGES,
+  TARGET_LANGUAGES,
+  requestTranslation,
+} from '../../../api/translator';
 import {
   DesiredLanguage,
   OriginalLanguage,
@@ -18,22 +24,23 @@ import {
 
 function TranslationTool({ className }: { className?: string }) {
   const { t } = useTranslation();
-  const [fromLang, setFromLang] = useState('en');
-  const [toLang, setToLang] = useState('de');
-  const [isSwapped, setIsSwapped] = useState(false);
-  const [error, setError] = useState(undefined);
+  const [fromLang, setFromLang] = useState<string>(AUTO_DETECT);
+  const [toLang, setToLang] = useState('DE');
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const [leftText, setLeftText] = useState('');
   const [rigthText, setRightText] = useState('');
 
-  const handleChangeLeft = event => {
+  const handleChangeLeft = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setLeftText(event.target.value);
   };
 
-  const onError = e => {
-    console.log({ e });
-    setError(e.message ? t(e.message) : t('validation.generic_try_again'));
-  };
+  const onError = useCallback(
+    (e: any) => {
+      setError(e.message ? t(e.message) : t('validation.generic_try_again'));
+    },
+    [t],
+  );
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -46,22 +53,41 @@ function TranslationTool({ className }: { className?: string }) {
         targetLang: toLang,
         text: leftText,
         onError,
-        onSuccess: ({ translatedText }) => setRightText(translatedText),
+        onSuccess: ({ translatedText, detectedSourceLanguage }) => {
+          setRightText(translatedText);
+          // If auto-detect was used, update fromLang to detected language
+          if (fromLang === AUTO_DETECT && detectedSourceLanguage) {
+            setFromLang(detectedSourceLanguage);
+          }
+        },
       });
     }, 1000);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [leftText]);
+  }, [leftText, fromLang, toLang, onError]);
+
+  // Can swap if fromLang is not AUTO_DETECT
+  const canSwap = fromLang !== AUTO_DETECT;
 
   const swapLang = () => {
-    const oldFromLang = fromLang;
-    const oldToLang = toLang;
-    setFromLang(oldToLang);
-    setToLang(oldFromLang);
-    const tmpLeftText = leftText;
-    setRightText(tmpLeftText);
+    if (!canSwap) return;
+
+    // When swapping target to source, use swapsTo if it exists
+    const targetLangData = TARGET_LANGUAGES.find(
+      lang => lang.language === toLang,
+    );
+    const newSourceLang = targetLangData?.swapsTo || toLang;
+
+    // When swapping source to target, use defaultTarget if it exists
+    const sourceLangData = SOURCE_LANGUAGES.find(
+      lang => lang.language === fromLang,
+    );
+    const newTargetLang = sourceLangData?.defaultTarget || fromLang;
+
+    setFromLang(newSourceLang);
+    setToLang(newTargetLang);
     setLeftText(rigthText);
-    setIsSwapped(!isSwapped);
+    setRightText('');
   };
 
   return (
@@ -73,9 +99,9 @@ function TranslationTool({ className }: { className?: string }) {
           placeholder={t('translator.language_placeholder')}
           onValueChange={setFromLang}
           value={fromLang}
-          options={LANGUAGES.map(lang => ({
+          options={SOURCE_LANGUAGES.map(lang => ({
             value: lang.language,
-            label: `${lang.name} - ${lang.language}`,
+            label: lang.name,
           }))}
         />
         <TextArea
@@ -86,7 +112,12 @@ function TranslationTool({ className }: { className?: string }) {
           error={error}
         />
       </OriginalLanguage>
-      <SwapBtn onClick={swapLang} variation={ButtonVariations.Icon}>
+      <SwapBtn
+        onClick={swapLang}
+        variation={ButtonVariations.Circle}
+        size={ButtonSizes.Small}
+        disabled={!canSwap}
+      >
         <SwapIcon
           label={t('translator.swap_languages')}
           width="16"
@@ -100,9 +131,9 @@ function TranslationTool({ className }: { className?: string }) {
           placeholder={t('translator.language_placeholder')}
           onValueChange={setToLang}
           value={toLang}
-          options={LANGUAGES.map(lang => ({
-            value: lang.language,
-            label: `${lang.name} - ${lang.language}`,
+          options={TARGET_LANGUAGES.map(lang => ({
+            value: lang.language as string,
+            label: lang.name,
           }))}
         />
         <TextArea
