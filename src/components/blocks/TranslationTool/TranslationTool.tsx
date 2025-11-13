@@ -16,9 +16,9 @@ import {
   requestTranslation,
 } from '../../../api/translator';
 import {
-  DesiredLanguage,
-  OriginalLanguage,
+  DropdownsRow,
   SwapBtn,
+  TextAreasRow,
   ToolContainer,
 } from './TranslationTool.styles';
 
@@ -92,7 +92,7 @@ function TranslationTool({ className }: { className?: string }) {
 
   return (
     <ToolContainer className={className}>
-      <OriginalLanguage>
+      <DropdownsRow>
         <Dropdown
           key={fromLang}
           maxWidth="100%"
@@ -104,27 +104,18 @@ function TranslationTool({ className }: { className?: string }) {
             label: lang.name,
           }))}
         />
-        <TextArea
-          placeholder={t('translator.text_placeholder')}
-          value={leftText}
-          onChange={handleChangeLeft}
-          size={TextAreaSize.Large}
-          error={error}
-        />
-      </OriginalLanguage>
-      <SwapBtn
-        onClick={swapLang}
-        variation={ButtonVariations.Circle}
-        size={ButtonSizes.Small}
-        disabled={!canSwap}
-      >
-        <SwapIcon
-          label={t('translator.swap_languages')}
-          width="16"
-          height="16"
-        />
-      </SwapBtn>
-      <DesiredLanguage>
+        <SwapBtn
+          onClick={swapLang}
+          variation={ButtonVariations.Circle}
+          size={ButtonSizes.Small}
+          disabled={!canSwap}
+        >
+          <SwapIcon
+            label={t('translator.swap_languages')}
+            width="16"
+            height="16"
+          />
+        </SwapBtn>
         <Dropdown
           key={toLang}
           maxWidth="100%"
@@ -136,13 +127,22 @@ function TranslationTool({ className }: { className?: string }) {
             label: lang.name,
           }))}
         />
+      </DropdownsRow>
+      <TextAreasRow>
+        <TextArea
+          placeholder={t('translator.text_placeholder')}
+          value={leftText}
+          onChange={handleChangeLeft}
+          size={TextAreaSize.Large}
+          error={error}
+        />
         <TextArea
           readOnly
           value={rigthText}
           size={TextAreaSize.Large}
           placeholder={t('translator.translated_placeholder')}
         />
-      </DesiredLanguage>
+      </TextAreasRow>
     </ToolContainer>
   );
 }
