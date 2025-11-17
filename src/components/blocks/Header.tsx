@@ -3,6 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
+import { environment } from '../../environment';
 
 import { USER_ENDPOINT } from '../../features/swr/index';
 import {
@@ -79,7 +80,7 @@ const Header = () => {
 
   return (
     <StyledHeader>
-      <LogoLink href={userId ? getAppRoute() : WP_HOME_ROUTE}>
+      <LogoLink href={userId ? getAppRoute() : WP_HOME_ROUTE} target={environment?.isNative ? "_blank" : "_self"}>
         <Logo stacked={false} />
       </LogoLink>
       <Options>

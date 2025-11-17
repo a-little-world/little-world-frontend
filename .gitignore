@@ -26,6 +26,7 @@ yarn-error.log*
 # Build artifacts
 dist/
 dist-*/
+!prebuild/*.tgz # Allow .tgz files in prebuild directory
 *.tgz
 *.tar.gz
 assets/

@@ -52,6 +52,18 @@ export function LittleWorldWebNative({
       registerReceiveHandler(handler);
     }
   }, [registerReceiveHandler, handler]);
+  
+  useEffect(() => {
+    sendMessageToReactNative({
+      action: 'WEBVIEW_READY',
+      payload: {},
+    }).then(res => {
+      if (!res.ok) {
+        throw new Error(res.error);
+      }
+      return res.data;
+    });
+  }, [])
 
   return (
     <I18nextProvider i18n={i18n}>
