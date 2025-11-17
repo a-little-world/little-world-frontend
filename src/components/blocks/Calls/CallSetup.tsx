@@ -199,7 +199,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
         <Text center type={TextTypes.Body4}>
           {t('pcs_sub_heading')}
         </Text>
-      </div>
+      </CardContent>
       <PreJoin
         language={language as PrejoinLanguage}
         onSubmit={handleJoin}
