@@ -191,6 +191,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     },
     [authData.token, error, setAudioPermissionError, setVideoPermissionError],
   );
+  console.log({ username });
 
   return (
     <CallSetupCard>

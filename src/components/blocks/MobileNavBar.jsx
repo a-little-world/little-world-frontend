@@ -54,23 +54,18 @@ const StyledNotificationBell = styled(NotificationBell)`
   margin-left: auto;
 `;
 
-const specialPaths = ['chat', 'profile'];
-
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
   const location = useLocation();
   const { userId } = useParams();
   const paths = location.pathname.split('/');
-  // routes use different parts of the path to determine the header
-  let key =
-    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) ||
-    APP_ROUTE;
+
+  let key = !paths[2] || paths[2] === 'events' ? APP_ROUTE : paths[2];
 
   const isHome = key === APP_ROUTE;
   if (key === 'profile' && userId) {
     key = 'user';
-  } else if (paths.includes('trainings')) key = 'trainings';
-  else if (paths.includes('partners')) key = 'partners';
+  }
 
   const { data: chats } = useSWR(CHATS_ENDPOINT);
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import Avatar from 'react-nice-avatar';
 import styled from 'styled-components';
 
@@ -79,7 +78,7 @@ export const Image = styled.img`
   width: 100%;
   max-width: 400px;
   height: ${({ $size }) => ImageSizes[$size]};
-  border-radius: 30px;
+  border-radius: ${({ theme }) => theme.radius.xlarge};
   object-fit: cover;
   min-height: 0;
 
