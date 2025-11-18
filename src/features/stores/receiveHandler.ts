@@ -6,49 +6,57 @@ export type DomCommunicationResponse =
 
 export type DomCommunicationMessage =
   | {
-    action: 'SET_AUTH_TOKENS';
-    requestId?: string;
-    payload: { accessToken: string | null; refreshToken: string | null };
-  }
+      action: 'SET_AUTH_TOKENS';
+      requestId?: string;
+      payload: { accessToken: string | null; refreshToken: string | null };
+    }
   | {
-    action: 'NAVIGATE';
-    requestId?: string;
-    payload: {
-      path: string;
+      action: 'NAVIGATE';
+      requestId?: string;
+      payload: {
+        path: string;
+      };
+    }
+  | {
+      action: 'CLEAR_AUTH_TOKENS';
+      requestId?: string;
+      payload: {};
+    }
+  | {
+      action: 'WEBVIEW_READY';
+      requestId?: string;
+      payload: {};
+    }
+  | {
+      action: 'GET_WINDOW_ORIGIN';
+      requestId?: string;
+      payload: {};
+    }
+  | {
+      action: 'GET_INTEGRITY_TOKEN';
+      requestId?: string;
+      payload: {};
+    }
+  | {
+      action: 'PING';
+      requestId?: string;
+      payload: {
+        message: string;
+      };
+    }
+  | {
+      action: 'RESPONSE';
+      requestId: string;
+      payload: DomCommunicationResponse;
+    }
+  | {
+      action: 'CONSOLE_LOG';
+      requestId?: string;
+      payload: {
+        message?: any;
+        params?: any[];
+      };
     };
-  }
-  | {
-    action: 'CLEAR_AUTH_TOKENS';
-    requestId?: string;
-    payload: {};
-  }
-  | {
-    action: 'WEBVIEW_READY';
-    requestId?: string;
-    payload: {};
-  }
-  | {
-    action: 'GET_WINDOW_ORIGIN';
-    requestId?: string;
-    payload: {};
-  }
-  | {
-    action: 'GET_INTEGRITY_TOKEN';
-    requestId?: string;
-    payload: {};
-  }
-  | {
-    action: 'PING';
-    requestId?: string;
-    payload: {
-      message: string;
-    };
-  }
-  | {
-    action: 'RESPONSE';
-    requestId: string;
-    payload: DomCommunicationResponse;
-  };
 
 export type DomCommunicationMessageFn = (
   message: DomCommunicationMessage,
