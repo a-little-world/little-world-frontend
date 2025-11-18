@@ -30,17 +30,6 @@ function NativeMessageHandler() {
   }, [navigate]);
 
   useEffect(() => {
-    const { accessToken, refreshToken } = mobileAuthStore;
-    sendMessageToReactNative?.({
-      action: 'SET_AUTH_TOKENS',
-      payload: {
-        accessToken,
-        refreshToken,
-      },
-    });
-  }, [mobileAuthStore]);
-
-  useEffect(() => {
     if (!sendMessageToReactNative) {
       return;
     }

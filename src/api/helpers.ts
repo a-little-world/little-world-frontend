@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
-import { IntegrityCheck } from '../features/integrityCheck';
+import {
+  IntegrityCheck,
+  getIntegrityCheckRequestData,
+} from '../features/integrityCheck';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { LOGIN_ROUTE } from '../router/routes';
@@ -88,6 +91,23 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
         return false;
       }
 
+      const updateTokens = (
+        accessToken: string | undefined | null,
+        refreshToken: string | undefined | null,
+      ) => {
+        accessToken = accessToken ?? null;
+        refreshToken = refreshToken ?? null;
+
+        setTokens(accessToken, refreshToken);
+        sendMessageToReactNative({
+          action: 'SET_AUTH_TOKENS',
+          payload: {
+            accessToken,
+            refreshToken,
+          },
+        });
+      };
+
       const challengeData: IntegrityCheck = await sendMessageToReactNative({
         action: 'GET_INTEGRITY_TOKEN',
         payload: {},
@@ -108,18 +128,18 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
           },
           body: JSON.stringify({
             refresh: refreshToken,
-            ...challengeData,
+            ...getIntegrityCheckRequestData(challengeData),
           }),
           credentials: 'same-origin',
         } as RequestInit,
       );
 
       if (!response.ok) {
-        setTokens(null, null);
+        updateTokens(null, null);
         return false;
       }
       const { access, refresh } = await response.json().catch(() => {});
-      setTokens(access ?? null, refresh ?? null);
+      updateTokens(access, refresh);
       if (access && refresh) {
         return true;
       }
