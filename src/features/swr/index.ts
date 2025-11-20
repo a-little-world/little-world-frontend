@@ -6,6 +6,7 @@ import { apiFetch } from '../../api/helpers';
 export const USER_ENDPOINT = '/api/user';
 export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
 export const RANDOM_CALL_HISTORY_ENDPOINT = '/api/random_call_history';
+export const RANDOM_CALL_LOBBY_ENDPOINT = '/api/random_calls/lobby/default/';
 export const apiOptions = '#api_options';
 export const API_OPTIONS_ENDPOINT = '/api/api_options';
 export const FIREBASE_ENDPOINT = '/api/firebase';
