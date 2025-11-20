@@ -7,8 +7,10 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 
 import { joinLobby } from '../../../api/randomCalls';
+import { RANDOM_CALL_LOBBY_ENDPOINT } from '../../../features/swr/index';
 import randomCallsImage from '../../../images/item info.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
@@ -51,11 +53,30 @@ const randomCallsSchedule = [
   'Freitag – 10:00–12:00 Uhr',
 ];
 
+interface RandomCallLobby {
+  name: string;
+  status: boolean;
+  start_time: string;
+  end_time: string;
+  active_users_count: number;
+}
+
 const RandomCalls = () => {
   const { t } = useTranslation();
-  const active = true;
+  const { data: lobbyData } = useSWR<RandomCallLobby>(RANDOM_CALL_LOBBY_ENDPOINT);
+  const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [callEnded, setCallEnded] = useState(false); // TODO: This should be set based on actual call end event
+
+  // Format time from ISO string to HH:MM
+  const formatTime = (dateString?: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const startTime = formatTime(lobbyData?.start_time);
+  const endTime = formatTime(lobbyData?.end_time);
 
   const onJoinLobby = () => {
     joinLobby({ onSuccess: () => setLobbyOpen(true) });
@@ -103,14 +124,14 @@ const RandomCalls = () => {
                 active
                   ? 'random_calls.active_heading'
                   : 'random_calls.inactive_heading',
-                { from: '18:00', to: '20:00' },
+                { from: startTime || '18:00', to: endTime || '20:00' },
               )}
             </Text>
             {active ? (
               <ActiveUsers>
                 <OnlineCirlce />
                 <Text bold>
-                  {t('random_calls.active_users', { count: 18 })}
+                  {t('random_calls.active_users', { count: lobbyData?.active_users_count ?? 0 })}
                 </Text>
               </ActiveUsers>
             ) : (
