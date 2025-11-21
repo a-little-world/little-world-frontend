@@ -54,23 +54,21 @@ const StyledNotificationBell = styled(NotificationBell)`
   margin-left: auto;
 `;
 
-const specialPaths = ['chat', 'profile'];
+const HIDE_TITLE_ON_PATHS = ['events', 'edit'];
 
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
   const location = useLocation();
   const { userId } = useParams();
   const paths = location.pathname.split('/');
-  // routes use different parts of the path to determine the header
-  let key =
-    (specialPaths.includes(paths[2]) ? paths[2] : paths.slice(-1)[0]) ||
-    APP_ROUTE;
 
-  const isHome = key === APP_ROUTE;
+  let key =
+    !paths[2] || HIDE_TITLE_ON_PATHS.includes(paths[2]) ? APP_ROUTE : paths[2];
+
+  const hideTitle = key === APP_ROUTE;
   if (key === 'profile' && userId) {
     key = 'user';
-  } else if (paths.includes('trainings')) key = 'trainings';
-  else if (paths.includes('partners')) key = 'partners';
+  }
 
   const { data: chats } = useSWR(CHATS_ENDPOINT);
 
@@ -85,8 +83,8 @@ function MobileNavBar({ setShowSidebarMobile }) {
   return (
     <MobileHeader>
       <LogoContainer>
-        <Logo stacked={false} displayText={isHome} asLink />
-        {!isHome && (
+        <Logo stacked={false} displayText={hideTitle} asLink />
+        {!hideTitle && (
           <Title tag="h1" type={TextTypes.Body1} bold>
             {t(`headers::${key}`)}
           </Title>

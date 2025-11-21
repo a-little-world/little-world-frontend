@@ -1,10 +1,13 @@
 import {
+  AddToChatIcon,
+  Button,
   ButtonSizes,
   ButtonVariations,
+  CopyIcon,
   Dropdown,
   SwapIcon,
-  TextArea,
   TextAreaSize,
+  Tooltip,
 } from '@a-little-world/little-world-design-system';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,15 +18,23 @@ import {
   TARGET_LANGUAGES,
   requestTranslation,
 } from '../../../api/translator';
+import { useChatInputStore } from '../../../features/stores';
 import {
   DropdownsRow,
+  ErrorBoxSpacer,
   SwapBtn,
+  TextAreaContainer,
   TextAreasRow,
   ToolContainer,
+  Toolbar,
+  TranslatedTextArea,
+  TranslatedTextAreaWrapper,
+  TranslationInput,
 } from './TranslationTool.styles';
 
 function TranslationTool({ className }: { className?: string }) {
   const { t } = useTranslation();
+  const { addTextToChat } = useChatInputStore();
   const [fromLang, setFromLang] = useState<string>(AUTO_DETECT);
   const [toLang, setToLang] = useState('DE');
   const [error, setError] = useState<string | undefined>(undefined);
@@ -90,6 +101,14 @@ function TranslationTool({ className }: { className?: string }) {
     setRightText('');
   };
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(rigthText);
+  };
+
+  const handleCopyToChat = () => {
+    addTextToChat(rigthText);
+  };
+
   return (
     <ToolContainer className={className}>
       <DropdownsRow>
@@ -129,19 +148,50 @@ function TranslationTool({ className }: { className?: string }) {
         />
       </DropdownsRow>
       <TextAreasRow>
-        <TextArea
+        <TranslationInput
           placeholder={t('translator.text_placeholder')}
           value={leftText}
           onChange={handleChangeLeft}
           size={TextAreaSize.Large}
           error={error}
         />
-        <TextArea
-          readOnly
-          value={rigthText}
-          size={TextAreaSize.Large}
-          placeholder={t('translator.translated_placeholder')}
-        />
+        <TranslatedTextAreaWrapper>
+          <TextAreaContainer>
+            <TranslatedTextArea
+              readOnly
+              value={rigthText}
+              size={TextAreaSize.Large}
+              placeholder={t('translator.translated_placeholder')}
+            />
+            <Toolbar>
+              <Tooltip
+                text={t('translator.copy_to_clipboard_label')}
+                trigger={
+                  <Button
+                    variation={ButtonVariations.Icon}
+                    size={ButtonSizes.Medium}
+                    onClick={handleCopy}
+                  >
+                    <CopyIcon label={t('translator.copy_to_clipboard_label')} />
+                  </Button>
+                }
+              />
+              <Tooltip
+                text={t('translator.add_to_chat_label')}
+                trigger={
+                  <Button
+                    variation={ButtonVariations.Icon}
+                    size={ButtonSizes.Medium}
+                    onClick={handleCopyToChat}
+                  >
+                    <AddToChatIcon label={t('translator.add_to_chat_label')} />
+                  </Button>
+                }
+              />
+            </Toolbar>
+          </TextAreaContainer>
+          <ErrorBoxSpacer />
+        </TranslatedTextAreaWrapper>
       </TextAreasRow>
     </ToolContainer>
   );
