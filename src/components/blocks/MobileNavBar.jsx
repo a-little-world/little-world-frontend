@@ -54,15 +54,18 @@ const StyledNotificationBell = styled(NotificationBell)`
   margin-left: auto;
 `;
 
+const HIDE_TITLE_ON_PATHS = ['events', 'edit'];
+
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
   const location = useLocation();
   const { userId } = useParams();
   const paths = location.pathname.split('/');
 
-  let key = !paths[2] || paths[2] === 'events' ? APP_ROUTE : paths[2];
+  let key =
+    !paths[2] || HIDE_TITLE_ON_PATHS.includes(paths[2]) ? APP_ROUTE : paths[2];
 
-  const isHome = key === APP_ROUTE;
+  const hideTitle = key === APP_ROUTE;
   if (key === 'profile' && userId) {
     key = 'user';
   }
@@ -80,8 +83,8 @@ function MobileNavBar({ setShowSidebarMobile }) {
   return (
     <MobileHeader>
       <LogoContainer>
-        <Logo stacked={false} displayText={isHome} asLink />
-        {!isHome && (
+        <Logo stacked={false} displayText={hideTitle} asLink />
+        {!hideTitle && (
           <Title tag="h1" type={TextTypes.Body1} bold>
             {t(`headers::${key}`)}
           </Title>
