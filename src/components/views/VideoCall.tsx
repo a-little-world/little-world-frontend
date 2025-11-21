@@ -28,7 +28,10 @@ import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { callAgain } from '../../api/livekit';
-import { useConnectedCallStore } from '../../features/stores';
+import {
+  useChatInputStore,
+  useConnectedCallStore,
+} from '../../features/stores';
 import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes';
@@ -204,7 +207,12 @@ function VideoCall() {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
-  const [selectedDrawerOption, setSelectedDrawerOption] = useState(undefined);
+  const [selectedDrawerOption, setSelectedDrawerOption] = useState<
+    'translator' | 'chat' | 'questions' | undefined
+  >(undefined);
+  const [sideSelection, setSideSelection] = useState<
+    'chat' | 'questions' | 'notes'
+  >('chat');
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const [deniedPermissions, setDeniedPermissions] = useState<{
     audio: boolean;
@@ -227,6 +235,7 @@ function VideoCall() {
     setCallRejected,
     callRejected,
   } = useConnectedCallStore();
+  const { setOnTextAdded } = useChatInputStore();
   const {
     uuid,
     token,
@@ -247,6 +256,19 @@ function VideoCall() {
       navigate(getCallSetupRoute(urlUserId));
     }
   }, [urlUserId, token, navigate]);
+
+  // Set up callback to open chat when text is added from TranslationTool
+  useEffect(() => {
+    setOnTextAdded(() => {
+      setShowChat(true);
+      setSideSelection('chat'); // Switch sidebar to chat tab
+      setSelectedDrawerOption('chat'); // Open chat drawer on mobile
+    });
+
+    return () => {
+      setOnTextAdded(null);
+    };
+  }, [setOnTextAdded]);
 
   const onChatToggle = () => {
     if (isFullScreen) {
@@ -283,7 +305,13 @@ function VideoCall() {
   };
 
   return (
-    <SidebarSelectionProvider>
+    <SidebarSelectionProvider
+      value={{
+        sideSelection,
+        setSideSelection: (selection: string) =>
+          setSideSelection(selection as 'chat' | 'questions' | 'notes'),
+      }}
+    >
       <LayoutContextProvider>
         <CallLayout>
           <VideoContainer $isFullScreen={isFullScreen} $showChat={showChat}>

@@ -8,6 +8,7 @@ import {
   MessageIcon,
   MessageWithQuestionIcon,
   TranslatorIcon,
+  tokens,
 } from '@a-little-world/little-world-design-system';
 import {
   MediaDeviceMenu,
@@ -23,7 +24,7 @@ import Timer from '../../atoms/Timer';
 import UnreadDot from '../../atoms/UnreadDot';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 
-const TOGGLE_BACKGROUND = '#6d6d6d';
+const TOGGLE_BACKGROUND = tokens.color.theme.light.surface.quaternary;
 const TOGGLE_BACKGROUND_DENIED = '#ea4335';
 const TOGGLE_BACKGROUND_DENIED_HOVER = '#cd3a2e';
 
@@ -58,10 +59,10 @@ const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
 `;
 
 const TOGGLE_CSS = css`
-  background: ${({ theme }) => theme.color.surface.contrast};
-  color: ${({ theme }) => theme.color.text.control};
-  border-color: ${({ theme }) => theme.color.surface.contrast};
-  border-radius: 50%;
+  background: ${TOGGLE_BACKGROUND};
+  color: ${tokens.color.theme.light.text.reversed};
+  border-color: ${TOGGLE_BACKGROUND};
+  border-radius: ${({ theme }) => theme.radius.half};
   transition: filter 0.5s ease;
 
   &:hover {
@@ -120,6 +121,7 @@ const DisconnectBtn = styled(Button)`
 const Section = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+  align-items: center;
 `;
 
 const StyledTimer = styled(Timer)<{ $desktopOnly?: boolean }>`
@@ -136,7 +138,7 @@ const MediaControl = styled.div<{ $permissionDenied?: boolean }>`
   --lk-control-active-hover-bg: ${TOGGLE_BACKGROUND};
   --lk-control-hover-bg: ${TOGGLE_BACKGROUND};
   background: ${TOGGLE_BACKGROUND};
-  color: ${({ theme }) => theme.color.text.control};
+  color: ${tokens.color.theme.light.text.reversed};
   border-color: ${TOGGLE_BACKGROUND};
   border-radius: ${({ theme }) => theme.radius.large};
   display: flex;

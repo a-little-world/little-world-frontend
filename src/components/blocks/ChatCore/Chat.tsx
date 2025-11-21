@@ -28,7 +28,7 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat';
-import { useCallSetupStore } from '../../../features/stores/index';
+import { useCallSetupStore, useChatInputStore } from '../../../features/stores/index';
 import {
   CHATS_ENDPOINT_SEPERATE,
   USER_ENDPOINT,
@@ -114,6 +114,7 @@ const Chat = ({
   const fileInputRef = useRef();
 
   const { initCallSetup } = useCallSetupStore();
+  const { textToAdd, clearText } = useChatInputStore();
 
   const { scrollRef } = useInfiniteScroll({
     fetchItems: fetchChatMessages,
@@ -156,6 +157,7 @@ const Chat = ({
     reset,
     setError,
     setFocus,
+    setValue,
   } = useForm({ shouldUnregister: true });
 
   const onSubmitError = e => {
@@ -220,6 +222,17 @@ const Chat = ({
   useEffect(() => {
     setFocus('text');
   }, [setFocus]);
+
+  // Handle text to add from TranslationTool or other sources
+  useEffect(() => {
+    if (textToAdd && chatId) {
+      const currentText = getValues('text') || '';
+      const newText = currentText ? `${currentText} ${textToAdd}` : textToAdd;
+      setValue('text', newText);
+      setFocus('text');
+      clearText();
+    }
+  }, [textToAdd, chatId, setValue, setFocus, clearText, getValues]);
 
   const handleFileSelect = event => {
     const file = event.target.files[0];

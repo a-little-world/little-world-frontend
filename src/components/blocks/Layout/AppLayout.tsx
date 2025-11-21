@@ -142,10 +142,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [callSetup?.userId, searchParams, setSearchParams]);
 
   useEffect(() => {
-    if (callSetup) {
+    if (callSetup?.userId) {
       openModal(ModalTypes.CALL_SETUP.id);
     } else if (isModalOpen(ModalTypes.CALL_SETUP.id)) closeModal();
-  }, [callSetup]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [callSetup?.userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const shouldShowMatchModal = Boolean(

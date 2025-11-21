@@ -232,8 +232,9 @@ export const MEDIA_DEVICE_MENU_CSS = css`
     }
   }
 
-  .lk-button-group-container .lk-button-menu {
+  .lk-button-menu {
     height: auto;
+    border-radius: ${({ theme }) => theme.radius.large};
 
     &[aria-pressed='true'] {
       &::after {
@@ -242,15 +243,22 @@ export const MEDIA_DEVICE_MENU_CSS = css`
       }
     }
 
+    &:hover {
+      background-color: none;
+
+      &::after {
+        filter: brightness(70%);
+        transition: filter 0.5s ease;
+      }
+    }
+  }
+
+  .lk-button-group-container .lk-button-menu {
     &::after {
       width: 6px;
       height: 6px;
       margin: 0;
       margin-bottom: 2px;
-    }
-
-    &::hover {
-      background-color: none;
     }
   }
 
