@@ -18,11 +18,29 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
+import { acceptMatch, exitLobby, getLobbyStatus, rejectMatch } from '../../../api/randomCalls';
 import { USER_ENDPOINT } from '../../../features/swr';
 import ProfileImage from '../../atoms/ProfileImage';
 import { CallSetupCard } from '../Calls/CallSetup';
 
 type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected';
+type RejectionReason = 'user_rejected' | 'partner_rejected' | 'timeout';
+
+interface PartnerInfo {
+  id: string;
+  name: string;
+  image: string;
+  image_type: string;
+  description: string;
+  interests: string[];
+}
+
+interface MatchData {
+  uuid: string;
+  accepted: boolean;
+  both_accepted: boolean;
+  partner: PartnerInfo;
+}
 
 const ProposalCard = styled(CallSetupCard)`
   max-width: 500px;
@@ -110,14 +128,6 @@ const ScheduleList = styled.ul`
   gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
-const mockPartner = {
-  name: 'Sarah',
-  image: 'https://via.placeholder.com/120',
-  description: 'Language enthusiast who loves outdoor activities and cooking.',
-  interests: ['Hiking', 'Cooking', 'Reading', 'Photography'],
-  image_type: 'image',
-};
-
 const RandomCallSetup = ({ onCancel }: { onCancel: () => void }) => {
   const { t } = useTranslation();
   const { data: user } = useSWR(USER_ENDPOINT);
@@ -153,10 +163,12 @@ const RandomCallSetup = ({ onCancel }: { onCancel: () => void }) => {
 };
 
 const PartnerProposal = ({
+  matchData,
   onAccept,
   onReject,
   isAccepting = false,
 }: {
+  matchData: MatchData;
   onAccept: () => void;
   onReject: () => void;
   isAccepting?: boolean;
@@ -179,13 +191,15 @@ const PartnerProposal = ({
     return () => clearInterval(timer);
   }, [onReject]);
 
+  const partner = matchData.partner;
+
   return (
     <RelativeCard>
       <LoadingOverlay $visible={isAccepting}>
         <Spinner />
         <Text type={TextTypes.Body3} bold>
           {t('random_calls.waiting_on_partner_response', {
-            name: mockPartner.name,
+            name: partner.name,
           })}
         </Text>
       </LoadingOverlay>
@@ -194,17 +208,17 @@ const PartnerProposal = ({
       <CardContent>
         <PartnerInfo>
           <ProfileImage
-            image={mockPartner.image}
-            imageType={mockPartner.image_type}
+            image={partner.image}
+            imageType={partner.image_type}
             circle
             size="small"
           />
           <PartnerDetails>
             <Text type={TextTypes.Body4} bold>
-              {mockPartner.name}
+              {partner.name}
             </Text>
-            <Text color="secondary">{mockPartner.description}</Text>
-            <Tags content={mockPartner.interests} />
+            <Text color="secondary">{partner.description}</Text>
+            {partner.interests.length > 0 && <Tags content={partner.interests} />}
           </PartnerDetails>
         </PartnerInfo>
 
@@ -275,7 +289,7 @@ const RejectedView = ({
   reason,
 }: {
   onReturnToLobby: () => void;
-  reason: 'user_rejected' | 'partner_rejected' | 'timeout';
+  reason: RejectionReason;
 }) => {
   const { t } = useTranslation();
 
@@ -328,32 +342,78 @@ const RejectedView = ({
 const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const [lobbyState, setLobbyState] = useState<LobbyState>('idle');
   const [isAccepting, setIsAccepting] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState<
-    'user_rejected' | 'partner_rejected' | 'timeout'
-  >('user_rejected');
+  const [rejectionReason, setRejectionReason] = useState<RejectionReason>('user_rejected');
+  const [matchData, setMatchData] = useState<MatchData | null>(null);
+  const lobbyName = 'default';
 
-  const handleCancel = () => {
-    // setLobbyState('idle');
+  // Poll lobby status every 2 seconds when in idle state
+  const { data: statusData, error } = useSWR(
+    lobbyState === 'idle' || (lobbyState === 'partner_found' && isAccepting)
+      ? `/api/random_calls/lobby/${lobbyName}/status`
+      : null,
+    () => getLobbyStatus(lobbyName),
+    {
+      refreshInterval: 2000,
+      onError: (err) => {
+        // If lobby is not active or user not in lobby, show expired view
+        if (err?.status === 400) {
+          setLobbyState('timeout');
+        }
+      },
+    }
+  );
+
+  // Check for matching
+  useEffect(() => {
+    if (statusData?.matching && lobbyState === 'idle') {
+      setMatchData(statusData.matching);
+      setLobbyState('partner_found');
+    }
+
+    // Check if both accepted while waiting for partner
+    if (
+      statusData?.matching?.both_accepted &&
+      lobbyState === 'partner_found' &&
+      isAccepting
+    ) {
+      // Both users accepted, proceed to room authentication
+      // This will be handled by parent component
+      handleBothAccepted();
+    }
+  }, [statusData, lobbyState, isAccepting]);
+
+  const handleCancel = async () => {
+    try {
+      await exitLobby(lobbyName);
+    } catch (err) {
+      console.error('Failed to exit lobby:', err);
+    }
     onCancel();
   };
 
-  const handleAccept = () => {
+  const handleAccept = async () => {
+    if (!matchData) return;
+
     setIsAccepting(true);
-    // Simulate connection or timeout
-    setTimeout(() => {
+    try {
+      await acceptMatch(lobbyName, matchData.uuid);
+      // Continue polling to check if partner also accepted
+    } catch (err) {
+      console.error('Failed to accept match:', err);
       setIsAccepting(false);
-      // For demo, randomly decide if it times out or partner rejects
-      const shouldTimeout = Math.random() > 0.5;
-      if (shouldTimeout) {
-        setLobbyState('timeout');
-      } else {
-        setRejectionReason('partner_rejected');
-        setLobbyState('rejected');
-      }
-    }, 5000);
+      setRejectionReason('timeout');
+      setLobbyState('rejected');
+    }
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
+    if (!matchData) return;
+
+    try {
+      await rejectMatch(lobbyName, matchData.uuid);
+    } catch (err) {
+      console.error('Failed to reject match:', err);
+    }
     setRejectionReason('user_rejected');
     setLobbyState('rejected');
   };
@@ -361,29 +421,33 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const handleReturnToLobby = () => {
     setLobbyState('idle');
     setIsAccepting(false);
+    setMatchData(null);
   };
 
-  const handleCloseLobby = () => {
-    // This would close the modal in the parent component
+  const handleCloseLobby = async () => {
+    try {
+      await exitLobby(lobbyName);
+    } catch (err) {
+      console.error('Failed to exit lobby:', err);
+    }
     setLobbyState('idle');
     setIsAccepting(false);
+    setMatchData(null);
+    onCancel();
   };
 
-  // For testing, simulate finding a partner after 3 seconds
-  useEffect(() => {
-    if (lobbyState === 'idle') {
-      const timer = setTimeout(() => {
-        setLobbyState('partner_found');
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-    return undefined;
-  }, [lobbyState]);
+  const handleBothAccepted = () => {
+    // TODO: Trigger room authentication and join LiveKit call
+    // This should be handled by parent component
+    console.log('Both users accepted, ready to join call');
+  };
 
   switch (lobbyState) {
     case 'partner_found':
+      if (!matchData) return <RandomCallSetup onCancel={handleCancel} />;
       return (
         <PartnerProposal
+          matchData={matchData}
           onAccept={handleAccept}
           onReject={handleReject}
           isAccepting={isAccepting}
