@@ -5,7 +5,6 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
@@ -16,7 +15,7 @@ const HeaderContainer = styled.div`
   background: ${({ theme }) => theme.color.surface.primary};
   border: 1px solid ${({ theme }) => theme.color.border.subtle};
   padding: ${({ theme }) => theme.spacing.medium};
-  border-radius: 30px;
+  border-radius: ${({ theme }) => theme.radius.xlarge};
   box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
   gap: ${({ theme }) => theme.spacing.small};
   width: 100%;

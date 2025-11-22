@@ -3,7 +3,6 @@ import {
   ButtonVariations,
   ChevronDownIcon,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import ReactDrawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import styled, { css } from 'styled-components';
@@ -21,6 +20,7 @@ const StyledDrawer = styled(ReactDrawer)`
   align-items: center;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
+  background: ${({ theme }) => theme.color.surface.primary} !important;
   height: 80% !important;
   padding: ${({ theme }) => theme.spacing.small};
   padding-top: 0;
