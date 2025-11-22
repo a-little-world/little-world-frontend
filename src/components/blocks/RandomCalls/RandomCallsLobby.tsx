@@ -10,16 +10,19 @@ import {
   ExclamationIcon,
   Tags,
   Text,
-  TextTypes,
+  TextTypes
 } from '@a-little-world/little-world-design-system';
 import { PreJoin } from '@livekit/components-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
-import { acceptMatch, exitLobby, getLobbyStatus, rejectMatch } from '../../../api/randomCalls';
+import { acceptMatch, authenticateRoom, exitLobby, getLobbyStatus, joinLobby, rejectMatch } from '../../../api/randomCalls';
+import { useConnectedCallStore } from '../../../features/stores';
 import { USER_ENDPOINT } from '../../../features/swr';
+import { getCallRoute } from '../../../router/routes';
 import ProfileImage from '../../atoms/ProfileImage';
 import { CallSetupCard } from '../Calls/CallSetup';
 
@@ -128,35 +131,91 @@ const ScheduleList = styled.ul`
   gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
-const RandomCallSetup = ({ onCancel }: { onCancel: () => void }) => {
+
+const RandomCallSetup = ({
+  onCancel,
+  onJoinComplete,
+  hasJoinedLobby
+}: {
+  onCancel: () => void;
+  onJoinComplete: () => void;
+  hasJoinedLobby: boolean;
+}) => {
   const { t } = useTranslation();
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const [permissionsGranted, setPermissionsGranted] = useState(false);
+
+  // Start countdown when permissions are granted
+  useEffect(() => {
+    if (permissionsGranted && countdown === null && !hasJoinedLobby) {
+      setCountdown(5);
+    }
+  }, [permissionsGranted, countdown, hasJoinedLobby]);
+
+  // Countdown timer
+  useEffect(() => {
+    if (countdown === null || countdown <= 0) return;
+
+    const timer = setTimeout(() => {
+      if (countdown === 1) {
+        // Countdown finished, join lobby
+        onJoinComplete();
+      } else {
+        setCountdown(countdown - 1);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [countdown, onJoinComplete]);
+
+  const handleValidate = (values: any) => {
+    // Check if at least one device is available
+    const hasDevice = values.audioAvailable || values.videoAvailable;
+    if (hasDevice) {
+      setPermissionsGranted(true);
+    }
+    return hasDevice;
+  };
 
   return (
-    <CallSetupCard $hideJoinBtn>
+    <CallSetupCard $hideJoinBtn className="">
       <CardHeader>{t('random_calls.lobby_title')}</CardHeader>
       <CardContent>
         <Text center>{t('random_calls.lobby_description')}</Text>
+
         <PreJoin
           camLabel={t('pcs_camera_label')}
           micLabel={t('pcs_mic_label')}
           joinLabel={t('pcs_btn_join_call')}
-          // onError={handleError}
-          // onSubmit={handleJoin}
-          // onValidate={handleValidate}
+          onValidate={handleValidate}
           defaults={{ username }}
           persistUserChoices={false}
         />
       </CardContent>
       <CardFooter align="center">
-        <Button
-          appearance={ButtonAppearance.Secondary}
-          onClick={onCancel}
-          size={ButtonSizes.Stretch}
-        >
-          {t('random_calls.lobby_cancel_seach')}
-        </Button>
+        {!hasJoinedLobby && countdown !== null ? (
+          <Button
+            appearance={ButtonAppearance.Primary}
+            onClick={onJoinComplete}
+            size={ButtonSizes.Stretch}
+            style={{
+              background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+              border: 'none'
+            }}
+          >
+            {t('random_calls.joining_in_x_seconds', `Joining in ${countdown} seconds - Click to join now`)}
+          </Button>
+        ) : (
+          <Button
+            appearance={ButtonAppearance.Secondary}
+            onClick={onCancel}
+            size={ButtonSizes.Stretch}
+          >
+            {t('random_calls.lobby_cancel_seach')}
+          </Button>
+        )}
       </CardFooter>
     </CallSetupCard>
   );
@@ -340,15 +399,18 @@ const RejectedView = ({
 };
 
 const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
+  const navigate = useNavigate();
+  const { connectToCall } = useConnectedCallStore();
   const [lobbyState, setLobbyState] = useState<LobbyState>('idle');
   const [isAccepting, setIsAccepting] = useState(false);
   const [rejectionReason, setRejectionReason] = useState<RejectionReason>('user_rejected');
   const [matchData, setMatchData] = useState<MatchData | null>(null);
+  const [hasJoinedLobby, setHasJoinedLobby] = useState(false);
   const lobbyName = 'default';
 
-  // Poll lobby status every 2 seconds when in idle state
+  // Poll lobby status every 2 seconds when in idle state and after joining
   const { data: statusData, error } = useSWR(
-    lobbyState === 'idle' || (lobbyState === 'partner_found' && isAccepting)
+    (lobbyState === 'idle' && hasJoinedLobby) || (lobbyState === 'partner_found' && isAccepting)
       ? `/api/random_calls/lobby/${lobbyName}/status`
       : null,
     () => getLobbyStatus(lobbyName),
@@ -382,9 +444,22 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     }
   }, [statusData, lobbyState, isAccepting]);
 
+  const handleJoinComplete = async () => {
+    try {
+      await joinLobby(lobbyName);
+      setHasJoinedLobby(true);
+    } catch (err) {
+      console.error('Failed to join lobby:', err);
+      // On error, close the modal
+      onCancel();
+    }
+  };
+
   const handleCancel = async () => {
     try {
-      await exitLobby(lobbyName);
+      if (hasJoinedLobby) {
+        await exitLobby(lobbyName);
+      }
     } catch (err) {
       console.error('Failed to exit lobby:', err);
     }
@@ -436,15 +511,38 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     onCancel();
   };
 
-  const handleBothAccepted = () => {
-    // TODO: Trigger room authentication and join LiveKit call
-    // This should be handled by parent component
-    console.log('Both users accepted, ready to join call');
+  const handleBothAccepted = async () => {
+    if (!matchData) return;
+
+    try {
+      // Call room authentication API
+      const roomData = await authenticateRoom(lobbyName, matchData.uuid);
+
+      // Set up call connection with room data
+      connectToCall({
+        userId: matchData.partner.id,
+        chatId: roomData.chat?.uuid || '',
+        token: roomData.token,
+        livekitServerUrl: roomData.server_url,
+      });
+
+      // Navigate to the random call screen for the partner
+      navigate(getCallRoute(matchData.partner.id));
+
+      // Close the lobby modal
+      onCancel();
+    } catch (err) {
+      console.error('Failed to authenticate room:', err);
+      // On error, show as rejected
+      setRejectionReason('timeout');
+      setLobbyState('rejected');
+      setIsAccepting(false);
+    }
   };
 
   switch (lobbyState) {
     case 'partner_found':
-      if (!matchData) return <RandomCallSetup onCancel={handleCancel} />;
+      if (!matchData) return <RandomCallSetup onCancel={handleCancel} onJoinComplete={handleJoinComplete} hasJoinedLobby={hasJoinedLobby} />;
       return (
         <PartnerProposal
           matchData={matchData}
@@ -463,7 +561,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
         />
       );
     default:
-      return <RandomCallSetup onCancel={handleCancel} />;
+      return <RandomCallSetup onCancel={handleCancel} onJoinComplete={handleJoinComplete} hasJoinedLobby={hasJoinedLobby} />;
   }
 };
 
