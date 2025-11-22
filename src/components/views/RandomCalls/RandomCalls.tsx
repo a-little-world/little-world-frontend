@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
-import { joinLobby } from '../../../api/randomCalls';
+import { exitLobby, joinLobby } from '../../../api/randomCalls';
 import { RANDOM_CALL_LOBBY_ENDPOINT } from '../../../features/swr/index';
 import randomCallsImage from '../../../images/item info.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
@@ -78,11 +78,21 @@ const RandomCalls = () => {
   const startTime = formatTime(lobbyData?.start_time);
   const endTime = formatTime(lobbyData?.end_time);
 
-  const onJoinLobby = () => {
-    joinLobby({ onSuccess: () => setLobbyOpen(true) });
+  const onJoinLobby = async () => {
+    try {
+      await joinLobby();
+      setLobbyOpen(true);
+    } catch (error) {
+      console.error('Failed to join lobby:', error);
+    }
   };
 
-  const onCloseLobby = () => {
+  const onCloseLobby = async () => {
+    try {
+      await exitLobby();
+    } catch (error) {
+      console.error('Failed to exit lobby:', error);
+    }
     setLobbyOpen(false);
   };
 
