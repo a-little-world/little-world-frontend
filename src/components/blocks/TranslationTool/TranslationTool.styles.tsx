@@ -13,6 +13,12 @@ export const DropdownsRow = styled.div`
   gap: ${({ theme }) => theme.spacing.xxsmall};
   align-items: flex-start;
   width: 100%;
+
+  /* Ensure dropdowns have equal width and SwapBtn doesn't shrink */
+  & > div:not(button) {
+    flex: 1 1 0;
+    min-width: 0;
+  }
 `;
 
 export const SwapBtn = styled(Button)`
@@ -20,6 +26,8 @@ export const SwapBtn = styled(Button)`
   margin-top: 6px;
   border-radius: ${({ theme }) => theme.radius.half};
   color: ${({ theme }) => theme.color.text.title};
+  flex-shrink: 0;
+  flex-grow: 0;
 `;
 
 export const TextAreasRow = styled.div`
