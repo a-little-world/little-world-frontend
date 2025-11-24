@@ -1,6 +1,6 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import { ReactNode, useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
@@ -83,6 +83,7 @@ const Content = styled.section<{ $isVH: boolean }>`
 
 export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { openModal, closeModal, isModalOpen } = useModalManager();
 
   const page = location.pathname.split('/')[2] || 'main';
@@ -92,12 +93,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   });
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT);
   const activeCallRoom = activeCallRooms?.[0];
-  const { callSetup } = useCallSetupStore();
   const { postCallSurvey } = usePostCallSurveyStore();
   const { disconnectedFrom, disconnectFromCall } = useConnectedCallStore();
 
   // Zustand store hooks
-  const { cancelCallSetup, initCallSetup } = useCallSetupStore();
+  const { initCallSetup, callSetup, cancelCallSetup } = useCallSetupStore();
   const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
@@ -118,11 +118,34 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
   }, [activeCallRoom?.uuid, disconnectedFrom]);
 
+  // Initialize call setup from query param on page load
   useEffect(() => {
-    if (callSetup) {
+    const callSetupUserId = searchParams.get('call-setup');
+    if (callSetupUserId && !callSetup) {
+      initCallSetup({ userId: callSetupUserId });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
+
+  // Add query param when call setup is initiated
+  useEffect(() => {
+    if (callSetup?.userId) {
+      const currentCallSetupParam = searchParams.get('call-setup');
+      if (currentCallSetupParam !== callSetup.userId) {
+        setSearchParams(prev => {
+          const newParams = new URLSearchParams(prev);
+          newParams.set('call-setup', callSetup.userId);
+          return newParams;
+        });
+      }
+    }
+  }, [callSetup?.userId, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (callSetup?.userId) {
       openModal(ModalTypes.CALL_SETUP.id);
     } else if (isModalOpen(ModalTypes.CALL_SETUP.id)) closeModal();
-  }, [callSetup]);
+  }, [callSetup?.userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
@@ -197,11 +220,19 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
       <Content $isVH={isVH}>{children || <Outlet />}</Content>
 
-      <Modal
-        open={isModalOpen(ModalTypes.CALL_SETUP.id)}
-        onClose={closeCallSetup}
-      >
-        <CallSetup onClose={closeCallSetup} userPk={callSetup?.userId} />
+      <Modal open={isModalOpen(ModalTypes.CALL_SETUP.id)} locked>
+        <CallSetup
+          onClose={() => {
+            cancelCallSetup();
+            setSearchParams(prev => {
+              const newParams = new URLSearchParams(prev);
+              newParams.delete('call-setup');
+              return newParams;
+            });
+            closeModal();
+          }}
+          userPk={callSetup?.userId}
+        />
       </Modal>
 
       <Modal

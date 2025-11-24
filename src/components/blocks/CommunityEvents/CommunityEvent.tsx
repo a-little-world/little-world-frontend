@@ -60,6 +60,7 @@ function collateEvents(events: Event[]): GroupedEvent[] {
           const nextOccurrence = calculateNextOccurrence(
             event.time,
             event.frequency,
+            event.end_time,
           );
           // Calculate the correct end date by preserving the original duration
           let endDate: Date | undefined;
@@ -106,6 +107,7 @@ function collateEvents(events: Event[]): GroupedEvent[] {
       const nextOccurrence = calculateNextOccurrence(
         event.time,
         event.frequency,
+        event.end_time,
       );
       // Calculate the correct end time by preserving the original duration
       let endTime: string | undefined;

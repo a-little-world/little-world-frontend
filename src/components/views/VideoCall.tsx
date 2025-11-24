@@ -11,22 +11,27 @@ import {
   LayoutContextProvider,
   LiveKitRoom,
   ParticipantTile,
+  PermissionsModal,
   RoomAudioRenderer,
   useDisconnectButton,
   useRoomInfo,
   useTracks,
 } from '@livekit/components-react';
+import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
 import '@livekit/components-styles';
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { callAgain } from '../../api/livekit';
-import { useConnectedCallStore } from '../../features/stores';
+import {
+  useChatInputStore,
+  useConnectedCallStore,
+} from '../../features/stores';
 import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import { getAppRoute, getCallSetupRoute } from '../../router/routes';
@@ -51,6 +56,20 @@ import {
   WaitingTile,
 } from './VideoCall.styles';
 
+interface MyVideoConferenceProps {
+  isFullScreen: boolean;
+  partnerId?: string | number;
+  partnerImage?: any;
+  partnerImageType?: string;
+  partnerName?: string;
+  selfImage?: any;
+  selfImageType?: string;
+  sessionId?: string;
+  initializeCallID: (uuid: string) => void;
+  setCallRejected: (rejected: boolean) => void;
+  callRejected: boolean;
+}
+
 function MyVideoConference({
   isFullScreen,
   partnerId,
@@ -63,7 +82,7 @@ function MyVideoConference({
   initializeCallID,
   setCallRejected,
   callRejected,
-}) {
+}: MyVideoConferenceProps) {
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
   const tracks = useTracks(
@@ -77,6 +96,8 @@ function MyVideoConference({
   const { buttonProps: disconnectProps } = useDisconnectButton({});
   const theme = useTheme();
 
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (name) initializeCallID(name);
   }, [name, initializeCallID]);
@@ -87,7 +108,6 @@ function MyVideoConference({
     setCurrentParticipants(tracks.length);
   }, [tracks.length]);
 
-  const { t } = useTranslation();
   const placeholders = {};
   tracks.forEach(track => {
     if (track.participant) {
@@ -112,8 +132,7 @@ function MyVideoConference({
       onSuccess: () => {
         setCallRejected(false);
       },
-      onError: error => {
-        console.error('Call again error:', error);
+      onError: () => {
         setCallAgainError('error.server_issue');
       },
     });
@@ -188,7 +207,20 @@ function VideoCall() {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [showTranslator, setShowTranslator] = useState(true);
-  const [selectedDrawerOption, setSelectedDrawerOption] = useState(null);
+  const [selectedDrawerOption, setSelectedDrawerOption] = useState<
+    'translator' | 'chat' | 'questions' | undefined
+  >(undefined);
+  const [sideSelection, setSideSelection] = useState<
+    'chat' | 'questions' | 'notes'
+  >('chat');
+  const [showPermissionModal, setShowPermissionModal] = useState(false);
+  const [deniedPermissions, setDeniedPermissions] = useState<{
+    audio: boolean;
+    video: boolean;
+  }>({ audio: false, video: false });
+  const {
+    i18n: { language },
+  } = useTranslation();
 
   useKeyboardShortcut({
     condition: isFullScreen,
@@ -203,19 +235,40 @@ function VideoCall() {
     setCallRejected,
     callRejected,
   } = useConnectedCallStore();
-  const { uuid, token, livekitServerUrl, audioOptions, videoOptions, chatId } =
-    callData || {};
+  const { setOnTextAdded } = useChatInputStore();
+  const {
+    uuid,
+    token,
+    livekitServerUrl,
+    audioOptions,
+    videoOptions,
+    chatId,
+    audioPermissionDenied,
+    videoPermissionDenied,
+  } = callData || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
 
   const { data: chatData } = useSWR(getChatEndpoint(chatId));
-
   useEffect(() => {
     if (urlUserId && !token) {
       // If userId is in url but no token available, redirect to call-setup so we can re-join the call
       navigate(getCallSetupRoute(urlUserId));
     }
   }, [urlUserId, token, navigate]);
+
+  // Set up callback to open chat when text is added from TranslationTool
+  useEffect(() => {
+    setOnTextAdded(() => {
+      setShowChat(true);
+      setSideSelection('chat'); // Switch sidebar to chat tab
+      setSelectedDrawerOption('chat'); // Open chat drawer on mobile
+    });
+
+    return () => {
+      setOnTextAdded(null);
+    };
+  }, [setOnTextAdded]);
 
   const onChatToggle = () => {
     if (isFullScreen) {
@@ -252,13 +305,19 @@ function VideoCall() {
   };
 
   return (
-    <SidebarSelectionProvider>
+    <SidebarSelectionProvider
+      value={{
+        sideSelection,
+        setSideSelection: (selection: string) =>
+          setSideSelection(selection as 'chat' | 'questions' | 'notes'),
+      }}
+    >
       <LayoutContextProvider>
         <CallLayout>
           <VideoContainer $isFullScreen={isFullScreen} $showChat={showChat}>
             <LiveKitRoom
-              video={videoOptions}
-              audio={audioOptions}
+              video={videoPermissionDenied ? true : videoOptions}
+              audio={audioPermissionDenied ? true : audioOptions}
               token={token}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
@@ -272,15 +331,15 @@ function VideoCall() {
                 partnerId={chatData?.partner?.id}
                 partnerName={chatData?.partner?.first_name}
                 partnerImage={
-                  chatData?.partner?.image_type === 'avatar' ?
-                    chatData?.partner.avatar_config :
-                    chatData?.partner?.image
+                  chatData?.partner?.image_type === 'avatar'
+                    ? chatData?.partner.avatar_config
+                    : chatData?.partner?.image
                 }
                 partnerImageType={chatData?.partner?.image_type}
                 selfImage={
-                  profile.image_type === 'avatar' ?
-                    profile.avatar_config :
-                    profile?.image
+                  profile.image_type === 'avatar'
+                    ? profile.avatar_config
+                    : profile?.image
                 }
                 selfImageType={profile.image_type}
                 initializeCallID={initializeCallID}
@@ -289,48 +348,58 @@ function VideoCall() {
               />
               <RoomAudioRenderer />
               {!callRejected && (
-                <>
-                  <TopControlBar
-                    activeOption={selectedDrawerOption}
-                    onChatToggle={onMobileChatToggle}
-                    onTranslatorToggle={onMobileTranslatorToggle}
-                    onQuestionCardsToggle={onMobileQuestionsToggle}
-                  />
-                  <ControlBar
-                    isFullScreen={isFullScreen}
-                    onChatToggle={onChatToggle}
-                    onFullScreenToggle={onFullScreenToggle}
-                    onTranslatorToggle={onTranslatorToggle}
-                  />
-                </>
+                <TopControlBar
+                  activeOption={selectedDrawerOption}
+                  onChatToggle={onMobileChatToggle}
+                  onTranslatorToggle={onMobileTranslatorToggle}
+                  onQuestionCardsToggle={onMobileQuestionsToggle}
+                />
               )}
+              <ControlBar
+                hide={callRejected}
+                isFullScreen={isFullScreen}
+                onChatToggle={onChatToggle}
+                onFullScreenToggle={onFullScreenToggle}
+                onTranslatorToggle={onTranslatorToggle}
+                onPermissionModalOpen={permissions => {
+                  setDeniedPermissions(permissions);
+                  setShowPermissionModal(true);
+                }}
+              />
             </LiveKitRoom>
             {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>
           <Drawer
             title="Translate"
             open={selectedDrawerOption === 'translator'}
-            onClose={() => setSelectedDrawerOption(null)}
+            onClose={() => setSelectedDrawerOption(undefined)}
           >
             <TranslationTool />
           </Drawer>
           <Drawer
             title="Chat"
             open={selectedDrawerOption === 'chat'}
-            onClose={() => setSelectedDrawerOption(null)}
+            onClose={() => setSelectedDrawerOption(undefined)}
           >
             <Chat chatId={chatData?.uuid} inCall />
           </Drawer>
           <Drawer
             title="Questions"
             open={selectedDrawerOption === 'questions'}
-            onClose={() => setSelectedDrawerOption(null)}
+            onClose={() => setSelectedDrawerOption(undefined)}
           >
             <QuestionCards />
           </Drawer>
           <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
         </CallLayout>
       </LayoutContextProvider>
+      {showPermissionModal && (
+        <PermissionsModal
+          language={language as PrejoinLanguage}
+          deniedPermissions={deniedPermissions}
+          onClose={() => setShowPermissionModal(false)}
+        />
+      )}
     </SidebarSelectionProvider>
   );
 }

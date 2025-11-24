@@ -40,7 +40,7 @@ export const Details = styled.div`
 export const ProfileSection = styled(Card)`
   position: relative;
   padding: ${({ theme }) => theme.spacing.medium};
-  border-radius: 30px;
+  border-radius: ${({ theme }) => theme.radius.xlarge};
   border-color: ${({ theme }) => theme.color.border.subtle};
   box-shadow: 1px 2px 5px rgb(0 0 0 / 7%);
   min-height: 136px;

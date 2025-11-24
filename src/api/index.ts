@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
+import { IntegrityCheck } from '../features/integrityCheck';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { apiFetch } from './helpers';
@@ -123,7 +124,7 @@ export const login = async ({
     throw new Error('Native bridge not available');
   }
 
-  const challengeData = await sendMessageToReactNative({
+  const challengeData: IntegrityCheck = await sendMessageToReactNative({
     action: 'GET_INTEGRITY_TOKEN',
     payload: {},
   }).then(res => {
@@ -133,16 +134,18 @@ export const login = async ({
     return res.data;
   });
 
-  const loginData = await apiFetch(`/api/user/native-login/`, {
-    method: 'POST',
-    useTagsOnly: true,
-    body: { 
-      email, 
-      password, 
-      integrity_token: challengeData.integrityToken,
-      request_hash: challengeData.requestHash
+  const loginData = await apiFetch(
+    `/api/user/native-login/${challengeData.platform}`,
+    {
+      method: 'POST',
+      useTagsOnly: true,
+      body: {
+        email,
+        password,
+        ...challengeData,
+      },
     },
-  });
+  );
 
   // Store tokens locally for subsequent Authorization headers
   useMobileAuthTokenStore

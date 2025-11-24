@@ -10,6 +10,8 @@ interface CallData {
   audioOptions?: boolean | { deviceId: string };
   videoOptions?: boolean | { deviceId: string };
   livekitServerUrl?: string;
+  audioPermissionDenied?: boolean;
+  videoPermissionDenied?: boolean;
 }
 
 interface ConnectedCallState {
@@ -17,6 +19,7 @@ interface ConnectedCallState {
   disconnectedFrom: string | null; // UUID of the session user disconnected from
   callRejected: boolean;
   connectToCall: (data: CallData) => void;
+  initializeCallID: (uuid: string) => void;
   disconnectFromCall: (sessionUuid: string) => void;
   resetDisconnectedFrom: () => void;
   setCallRejected: (callRejected: boolean) => void;

@@ -8,8 +8,14 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { LocalUserChoices, PreJoin } from '@livekit/components-react';
-import { useEffect, useState } from 'react';
+import {
+  DevicePermissionError,
+  LocalUserChoices,
+  PreJoin,
+  PreJoinValues,
+} from '@livekit/components-react';
+import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -57,16 +63,6 @@ export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
       .lk-form-control {
         display: none;
       }
-
-      .lk-button-menu {
-        height: 100%;
-      }
-
-      /* Safari fix for button groups */
-      .lk-button-group-pre-join,
-      .lk-button-group-menu-pre-join {
-        height: auto;
-      }
     }
 
     .lk-join-button {
@@ -104,17 +100,25 @@ type CallSetupProps = {
 
 function CallSetup({ onClose, userPk }: CallSetupProps) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const {
+    t,
+    i18n: { language },
+  } = useTranslation();
   const [authData, setAuthData] = useState({
     chatId: null,
     token: null,
     livekitServerUrl: null,
   });
   const [error, setError] = useState('');
+  const [audioPermissionError, setAudioPermissionError] = useState(false);
+  const [videoPermissionError, setVideoPermissionError] = useState(false);
 
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1b132601aabef4f7e0a1c477b82261ff5bea26d9
   const { connectToCall } = useConnectedCallStore();
 
   const handleJoin = (values: LocalUserChoices) => {
@@ -130,6 +134,8 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
         ? { deviceId: values.videoDeviceId }
         : false,
       livekitServerUrl: authData.livekitServerUrl || undefined,
+      audioPermissionDenied: audioPermissionError,
+      videoPermissionDenied: videoPermissionError,
     });
     onClose();
     clearActiveTracks();
@@ -153,17 +159,42 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     });
   }, []);
 
-  const handleError = () => {
-    setError('error.permissions');
-  };
+  useEffect(() => {
+    // Set permission error only when both audio and video have errors
+    if (audioPermissionError && videoPermissionError) {
+      setError('error.permissions');
+    }
+  }, [audioPermissionError, videoPermissionError]);
 
-  const handleValidate = (values: LocalUserChoices) => {
-    const isValid = Boolean(
-      (values.audioDeviceId || values.videoDeviceId) && authData.token,
-    );
-    if (isValid) setError('');
-    return isValid;
-  };
+  const handleError = useCallback((e: Error) => {
+    if (e instanceof DevicePermissionError) {
+      if (e.deviceType === 'audio') {
+        setAudioPermissionError(true);
+      } else if (e.deviceType === 'video') {
+        setVideoPermissionError(true);
+      }
+    } else {
+      setError(e?.message || 'error.server_issue');
+    }
+  }, []);
+
+  const handleValidate = useCallback(
+    (values: PreJoinValues) => {
+      const isValid = Boolean(
+        (values.audioAvailable || values.videoAvailable) && authData.token,
+      );
+
+      if (values.videoAvailable) {
+        setVideoPermissionError(false);
+      }
+      if (values.audioAvailable) {
+        setAudioPermissionError(false);
+      }
+      if (isValid && error) setError('');
+      return isValid;
+    },
+    [authData.token, error, setAudioPermissionError, setVideoPermissionError],
+  );
 
   return (
     <CallSetupCard>
@@ -172,22 +203,23 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
         <Text center type={TextTypes.Body4}>
           {t('pcs_sub_heading')}
         </Text>
-        <PreJoin
-          onSubmit={handleJoin}
-          camLabel={t('pcs_camera_label')}
-          micLabel={t('pcs_mic_label')}
-          joinLabel={t('pcs_btn_join_call')}
-          onError={handleError}
-          onValidate={handleValidate}
-          defaults={{ username }}
-          persistUserChoices={false}
-        />
-        {error && (
-          <StatusMessage type={StatusTypes.Error} visible>
-            {t(error)}
-          </StatusMessage>
-        )}
       </CardContent>
+      <PreJoin
+        language={language as PrejoinLanguage}
+        onSubmit={handleJoin}
+        camLabel={t('pcs_camera_label')}
+        micLabel={t('pcs_mic_label')}
+        joinLabel={t('pcs_btn_join_call')}
+        onError={handleError}
+        onValidate={handleValidate}
+        defaults={{ username }}
+        persistUserChoices={false}
+      />
+      {error && (
+        <StatusMessage type={StatusTypes.Error} visible>
+          {t(error)}
+        </StatusMessage>
+      )}
     </CallSetupCard>
   );
 }
