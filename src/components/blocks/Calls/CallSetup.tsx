@@ -115,10 +115,6 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
 
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
-<<<<<<< HEAD
-
-=======
->>>>>>> 1b132601aabef4f7e0a1c477b82261ff5bea26d9
   const { connectToCall } = useConnectedCallStore();
 
   const handleJoin = (values: LocalUserChoices) => {
