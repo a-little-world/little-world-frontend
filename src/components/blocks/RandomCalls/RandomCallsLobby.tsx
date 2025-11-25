@@ -428,6 +428,14 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   // Check for matching
   useEffect(() => {
     if (statusData?.matching && lobbyState === 'idle') {
+      // If both users have already accepted, skip proposal and go directly to call
+      if (statusData.matching.both_accepted) {
+        setMatchData(statusData.matching);
+        handleBothAccepted();
+        return;
+      }
+
+      // Otherwise, show the proposal screen
       setMatchData(statusData.matching);
       setLobbyState('partner_found');
     }
@@ -450,6 +458,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
       handleBothAccepted();
     }
   }, [statusData, lobbyState, isAccepting]);
+
 
 
   const handleJoinComplete = async () => {
