@@ -7,10 +7,12 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
+import { apiFetch } from '../../../api/helpers';
 import { RANDOM_CALL_HISTORY_ENDPOINT } from '../../../features/swr';
 import { formatDate, formatTime } from '../../../helpers/date';
 import ProfileImage from '../../atoms/ProfileImage';
@@ -32,6 +34,24 @@ const CallHistoryList = ({ data }: { data: any }) => {
     i18n: { language },
   } = useTranslation();
   const theme = useTheme();
+  const [requestingMatch, setRequestingMatch] = useState<string | null>(null);
+
+  const handleRequestMatch = async (matchId: string) => {
+    setRequestingMatch(matchId);
+    try {
+      await apiFetch(
+        `/api/random_calls/history/${matchId}/request_match`,
+        { method: 'POST' },
+      );
+      // Revalidate the history data to reflect the updated state
+      mutate(RANDOM_CALL_HISTORY_ENDPOINT);
+    } catch (error) {
+      console.error('Failed to request match:', error);
+      // TODO: Show error toast/notification to user
+    } finally {
+      setRequestingMatch(null);
+    }
+  };
 
   return (
     <CallHistoryListContainer>
@@ -52,19 +72,23 @@ const CallHistoryList = ({ data }: { data: any }) => {
                 {item.name}
               </Text>
               <CallDateTime>
-                <CallDate>
-                  <CalendarIcon label="Calendar icon" width={16} height={16} />
-                  <Text>
-                    {formatDate(new Date(item.date), 'd MMMM, p', language)}
-                  </Text>
-                </CallDate>
-                <CallTime>
-                  <ClockIcon label="Clock icon" width={16} height={16} />
-                  <Text>
-                    {t('call_history.duration')}:{' '}
-                    {formatTime(new Date(item.duration))}
-                  </Text>
-                </CallTime>
+                {item.date && (
+                  <CallDate>
+                    <CalendarIcon label="Calendar icon" width={16} height={16} />
+                    <Text>
+                      {formatDate(new Date(item.date), 'd MMMM, p', language)}
+                    </Text>
+                  </CallDate>
+                )}
+                {item.duration && (
+                  <CallTime>
+                    <ClockIcon label="Clock icon" width={16} height={16} />
+                    <Text>
+                      {t('call_history.duration')}:{' '}
+                      {formatTime(new Date(item.duration * 1000))}
+                    </Text>
+                  </CallTime>
+                )}
               </CallDateTime>
               {item.cannot_match && (
                 <Text color={theme.color.text.error}>
@@ -73,8 +97,19 @@ const CallHistoryList = ({ data }: { data: any }) => {
               )}
             </CallInfo>
           </CallDetails>
-          <Button disabled={item.cannot_match}>
-            {t('call_history.match_btn')}
+          <Button
+            disabled={
+              item.cannot_match ||
+              item.matching_requested ||
+              requestingMatch === item.id
+            }
+            onClick={() => handleRequestMatch(item.id)}
+          >
+            {requestingMatch === item.id
+              ? t('call_history.requesting')
+              : item.matching_requested
+                ? t('call_history.requested')
+                : t('call_history.match_btn')}
           </Button>
         </CallEntry>
       ))}
@@ -84,23 +119,11 @@ const CallHistoryList = ({ data }: { data: any }) => {
 
 const CallHistory = ({ className }: { className?: string }) => {
   const { t } = useTranslation();
-  const { data } = useSWR(RANDOM_CALL_HISTORY_ENDPOINT, () => [
-    {
-      name: 'John Doe',
-      date: '2025-01-01',
-      image: 'https://via.placeholder.com/150',
-      cannot_match: false,
-    },
-    {
-      name: 'Jane Doe',
-      date: '2025-01-02',
-      image: 'https://via.placeholder.com/151',
-      cannot_match: true,
-    },
-  ]);
+  const { data, error, isLoading } = useSWR(RANDOM_CALL_HISTORY_ENDPOINT);
+
   return (
     <Container className={className} $hasData={!isEmpty(data)}>
-      {isEmpty(data) ? (
+      {!data || isEmpty(data) ? (
         <>
           <NoHistoryDescription>
             <Text>{t('call_history.no_history')}</Text>
