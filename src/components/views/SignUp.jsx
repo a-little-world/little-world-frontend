@@ -94,14 +94,6 @@ const SignUp = () => {
 
     passAuthenticationBoundary();
 
-    sendMessageToReactNative?.({
-      action: 'CONSOLE_LOG',
-      payload: {
-        message: 'signUpData',
-        params: [signUpData],
-      },
-    });
-
     if (!userData.emailVerified) {
       navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
     } else if (!userData.userFormCompleted) {

@@ -15,7 +15,6 @@ import useSWR, { mutate } from 'swr';
 
 import { login } from '../../api';
 import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
-import useReceiveHandlerStore from '../../features/stores/receiveHandler';
 import { USER_ENDPOINT } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
 import {
@@ -32,7 +31,6 @@ const Login = () => {
   const { t } = useTranslation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { sendMessageToReactNative } = useReceiveHandlerStore();
 
   const {
     register,

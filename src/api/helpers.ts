@@ -1,5 +1,4 @@
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
 
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
@@ -73,6 +72,26 @@ function getNativeHeaders(): Record<string, string> {
   return headers;
 }
 
+function updateTokens(
+  access: string | undefined | null,
+  refresh: string | undefined | null,
+) {
+  const { setTokens } = useMobileAuthTokenStore.getState();
+  const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+
+  const accessToken = access ?? null;
+  const refreshToken = refresh ?? null;
+
+  setTokens(accessToken, refreshToken);
+  sendMessageToReactNative?.({
+    action: 'SET_AUTH_TOKENS',
+    payload: {
+      accessToken,
+      refreshToken,
+    },
+  });
+}
+
 let tokenRefreshRequest: Promise<boolean> | null = null;
 export async function nativeRefreshAccessToken(): Promise<boolean> {
   if (!environment.isNative) return false;
@@ -83,30 +102,13 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
 
   tokenRefreshRequest = (async () => {
     try {
-      const { refreshToken, setTokens } = useMobileAuthTokenStore.getState();
+      const { refreshToken } = useMobileAuthTokenStore.getState();
       if (!refreshToken) return false;
 
       const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       if (!sendMessageToReactNative) {
         return false;
       }
-
-      const updateTokens = (
-        accessToken: string | undefined | null,
-        refreshToken: string | undefined | null,
-      ) => {
-        accessToken = accessToken ?? null;
-        refreshToken = refreshToken ?? null;
-
-        setTokens(accessToken, refreshToken);
-        sendMessageToReactNative({
-          action: 'SET_AUTH_TOKENS',
-          payload: {
-            accessToken,
-            refreshToken,
-          },
-        });
-      };
 
       const challengeData: IntegrityCheck = await sendMessageToReactNative({
         action: 'GET_INTEGRITY_TOKEN',
@@ -238,10 +240,13 @@ export async function apiFetch<T = any>(
           throw new Error('Token refresh successful but returned no tokens');
         }
         return doFetch();
-      } else {
-        const navigate = useNavigate();
-        navigate(LOGIN_ROUTE);
       }
+
+      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+      sendMessageToReactNative?.({
+        action: 'NAVIGATE',
+        payload: { path: LOGIN_ROUTE },
+      });
     }
 
     console.error(`API Fetch Error (${endpoint}):`, error);
