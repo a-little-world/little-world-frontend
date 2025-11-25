@@ -472,7 +472,7 @@
   "random_calls.proposal_accept": "Gespräch starten",
   "random_calls.waiting_on_partner_response": "Warten auf {{ name }}s Bestätigung",
   "random_calls.expired_title": "Zufallsgespräche sind derzeit nicht verfügbar",
-  "random_calls.expired_description": "Zurzeit finden keine spontanen Gespräche statt. Die nächsten Sessions  sind jedoch bereits geplant.",
+  "random_calls.expired_description": "Zurzeit finden keine spontanen Gespräche statt. Die nächsten Sessions sind jedoch bereits geplant.",
   "random_calls.expired_schedule_heading": "Gespräche finden jede Woche statt",
   "random_calls.expired_additional_text": "Schau gerne zu diesen Zeiten wieder vorbei!",
   "random_calls.partner_rejected_title": "Kein Gespräch gestartet",

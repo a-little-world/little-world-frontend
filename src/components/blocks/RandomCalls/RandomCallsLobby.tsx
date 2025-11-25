@@ -408,9 +408,9 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const [hasJoinedLobby, setHasJoinedLobby] = useState(false);
   const lobbyName = 'default';
 
-  // Poll lobby status every 2 seconds when in idle state and after joining
-  const { data: statusData, error } = useSWR(
-    (lobbyState === 'idle' && hasJoinedLobby) || (lobbyState === 'partner_found' && isAccepting)
+  // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
+  const { data: statusData, error, mutate: mutateRCState } = useSWR(
+    (lobbyState === 'idle' && hasJoinedLobby) || lobbyState === 'partner_found'
       ? `/api/random_calls/lobby/${lobbyName}/status`
       : null,
     () => getLobbyStatus(lobbyName),
@@ -432,6 +432,13 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
       setLobbyState('partner_found');
     }
 
+    // If match disappears while on proposal screen (before accepting), return to lobby
+    if (!statusData?.matching && lobbyState === 'partner_found' && !isAccepting) {
+      // Match disappeared (partner rejected or timed out)
+      setMatchData(null);
+      setLobbyState('idle');
+    }
+
     // Check if both accepted while waiting for partner
     if (
       statusData?.matching?.both_accepted &&
@@ -444,6 +451,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     }
   }, [statusData, lobbyState, isAccepting]);
 
+
   const handleJoinComplete = async () => {
     try {
       await joinLobby(lobbyName);
@@ -451,6 +459,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     } catch (err) {
       console.error('Failed to join lobby:', err);
       // On error, close the modal
+      mutateRCState()
       onCancel();
     }
   };
@@ -463,6 +472,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     } catch (err) {
       console.error('Failed to exit lobby:', err);
     }
+    mutateRCState()
     onCancel();
   };
 
@@ -489,11 +499,13 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     } catch (err) {
       console.error('Failed to reject match:', err);
     }
+    mutateRCState()
     setRejectionReason('user_rejected');
     setLobbyState('rejected');
   };
 
   const handleReturnToLobby = () => {
+    mutateRCState()
     setLobbyState('idle');
     setIsAccepting(false);
     setMatchData(null);
