@@ -1,4 +1,5 @@
-import Avatar from 'react-nice-avatar';
+import React from 'react';
+import Avatar, { NiceAvatarProps } from 'react-nice-avatar';
 import styled from 'styled-components';
 
 import { DEFAULT_PROFILE_IMAGE } from '../../images/index';
@@ -20,7 +21,7 @@ const BorderSizes = {
   flex: '4px',
 };
 
-const StyledAvatar = styled(Avatar)<{ $size: keyof typeof ImageSizes }>`
+const StyledAvatar = styled(Avatar) <{ $size: keyof typeof ImageSizes }>`
   width: auto;
   height: ${({ $size }) => ImageSizes[$size]};
   max-height: ${ImageSizes.large};

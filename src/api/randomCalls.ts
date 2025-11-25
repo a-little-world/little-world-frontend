@@ -11,9 +11,9 @@ export const joinLobby = async ({ onSuccess }: { onSuccess: () => void }) => {
   }
 };
 
-export const submitRandomCallsFeedback = async () => {
+export const submitRandomCallsFeedback = async (feedback: string) => {
   try {
-    const response = await apiFetch('/api/random-calls/submit-feedback/', {
+    await apiFetch('/api/random-calls/submit-feedback/', {
       method: 'POST',
       body: {
         feedback,

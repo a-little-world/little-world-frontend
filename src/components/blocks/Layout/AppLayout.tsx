@@ -150,7 +150,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.results?.length ||
-        matches?.unconfirmed?.results?.length,
+      matches?.unconfirmed?.results?.length,
     );
 
     if (shouldShowMatchModal) {
@@ -203,11 +203,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         onError: onError ?? (() => null),
       });
     else closePostCallSurvey();
-  };
-
-  const closeCallSetup = () => {
-    cancelCallSetup();
-    closeModal();
   };
 
   return (
