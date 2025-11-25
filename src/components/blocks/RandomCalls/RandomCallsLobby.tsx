@@ -29,7 +29,7 @@ import { CallSetupCard } from '../Calls/CallSetup';
 type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected';
 type RejectionReason = 'user_rejected' | 'partner_rejected' | 'timeout';
 
-interface PartnerInfo {
+interface PartnerInfoInterface {
   id: string;
   name: string;
   image: string;
@@ -42,7 +42,7 @@ interface MatchData {
   uuid: string;
   accepted: boolean;
   both_accepted: boolean;
-  partner: PartnerInfo;
+  partner: PartnerInfoInterface;
 }
 
 const ProposalCard = styled(CallSetupCard)`
@@ -167,7 +167,7 @@ const RandomCallSetup = ({
       }
     }, 1000);
 
-    return () => clearTimeout(timer);
+    return () => { clearTimeout(timer) };
   }, [countdown, onJoinComplete]);
 
   const handleValidate = (values: any) => {
@@ -247,7 +247,7 @@ const PartnerProposal = ({
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => { clearInterval(timer) };
   }, [onReject]);
 
   const partner = matchData.partner;
@@ -409,7 +409,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const lobbyName = 'default';
 
   // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
-  const { data: statusData, error, mutate: mutateRCState } = useSWR(
+  const { data: statusData, mutate: mutateRCState } = useSWR(
     (lobbyState === 'idle' && hasJoinedLobby) || lobbyState === 'partner_found'
       ? `/api/random_calls/lobby/${lobbyName}/status`
       : null,

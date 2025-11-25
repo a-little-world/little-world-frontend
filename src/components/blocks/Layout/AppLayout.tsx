@@ -205,11 +205,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     else closePostCallSurvey();
   };
 
-  const closeCallSetup = () => {
-    cancelCallSetup();
-    closeModal();
-  };
-
   return (
     <Wrapper $isVH={isVH}>
       <Sidebar
