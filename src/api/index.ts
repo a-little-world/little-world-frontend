@@ -2,7 +2,10 @@ import Cookies from 'js-cookie';
 
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
-import { IntegrityCheck } from '../features/integrityCheck';
+import {
+  IntegrityCheck,
+  getIntegrityCheckRequestData,
+} from '../features/integrityCheck';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { apiFetch } from './helpers';
@@ -142,7 +145,7 @@ export const login = async ({
       body: {
         email,
         password,
-        ...challengeData,
+        ...getIntegrityCheckRequestData(challengeData),
       },
     },
   );
@@ -155,6 +158,16 @@ export const login = async ({
       loginData?.token_refresh || null,
     );
 
+  sendMessageToReactNative({
+    action: 'SET_AUTH_TOKENS',
+    payload: {
+      accessToken: loginData?.token_access || null,
+      refreshToken: loginData?.token_refresh || null,
+    },
+  });
+
+  delete loginData?.token_access;
+  delete loginData?.token_refresh;
   return loginData;
 };
 
@@ -167,8 +180,40 @@ export const signUp = async ({
   lastName,
   mailingList,
   company = null,
-}) =>
-  apiFetch(`/api/register/`, {
+}) => {
+  if (!environment.isNative) {
+    return apiFetch(`/api/register/`, {
+      method: 'POST',
+      useTagsOnly: true,
+      body: {
+        email,
+        password1: password,
+        password2: confirmPassword,
+        first_name: firstName,
+        second_name: lastName,
+        birth_year: birthYear,
+        newsletter_subscribed: mailingList,
+        company,
+      },
+    });
+  }
+
+  const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+  if (!sendMessageToReactNative) {
+    throw new Error('Native bridge not available');
+  }
+
+  const challengeData: IntegrityCheck = await sendMessageToReactNative({
+    action: 'GET_INTEGRITY_TOKEN',
+    payload: {},
+  }).then(res => {
+    if (!res.ok) {
+      throw new Error(res.error);
+    }
+    return res.data;
+  });
+
+  const signUpData = await apiFetch(`/api/register/${challengeData.platform}`, {
     method: 'POST',
     useTagsOnly: true,
     body: {
@@ -180,8 +225,31 @@ export const signUp = async ({
       birth_year: birthYear,
       newsletter_subscribed: mailingList,
       company,
+      ...getIntegrityCheckRequestData(challengeData),
     },
   });
+
+  // Store tokens locally for subsequent Authorization headers
+  useMobileAuthTokenStore
+    .getState()
+    .setTokens(
+      signUpData?.token_access || null,
+      signUpData?.token_refresh || null,
+    );
+
+  await sendMessageToReactNative({
+    action: 'SET_AUTH_TOKENS',
+    payload: {
+      accessToken: signUpData?.token_access || null,
+      refreshToken: signUpData?.token_refresh || null,
+    },
+  });
+
+  delete signUpData?.token_access;
+  delete signUpData?.token_refresh;
+
+  return signUpData;
+};
 
 export const requestPasswordReset = async ({ email }) =>
   apiFetch(`/api/user/resetpw/`, {
