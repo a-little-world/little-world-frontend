@@ -57,7 +57,7 @@ export const QuestionContentCard = styled.div`
 export const QuestionButton = styled(Button)`
   padding: 0px;
   background: transparent;
-  color: black;
+  color: ${({ theme }) => theme.color.text.primary};
   padding: ${({ theme }) => theme.spacing.xxsmall};
   height: fit-content;
   font-weight: normal;

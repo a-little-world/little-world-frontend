@@ -15,14 +15,25 @@ import {
 } from './CallSidebar.styles';
 import { SidebarNotes } from './SidebarNotes';
 
-const SidebarSelectionContext = createContext();
+export const SidebarSelectionContext = createContext<{
+  sideSelection: string;
+  setSideSelection: (selection: string) => void;
+} | null>(null);
 
-function CallSidebar({ isDisplayed, chatId }) {
+function CallSidebar({
+  isDisplayed,
+  chatId,
+}: {
+  isDisplayed: boolean;
+  chatId: string;
+}) {
   const { t } = useTranslation();
   const sidebarTopics = ['chat', 'questions'];
-  const { setSideSelection, sideSelection } = useContext(
-    SidebarSelectionContext,
-  );
+  const context = useContext(SidebarSelectionContext);
+  if (!context) {
+    throw new Error('CallSidebar must be used within SidebarSelectionProvider');
+  }
+  const { setSideSelection, sideSelection } = context;
 
   return (
     <SidebarWrapper $isDisplayed={isDisplayed}>
@@ -30,9 +41,9 @@ function CallSidebar({ isDisplayed, chatId }) {
         {sidebarTopics.map(topic => (
           <StyledOption
             appearance={
-              sideSelection === topic ?
-                ButtonAppearance.Primary :
-                ButtonAppearance.Secondary
+              sideSelection === topic
+                ? ButtonAppearance.Primary
+                : ButtonAppearance.Secondary
             }
             key={topic}
             onClick={() => setSideSelection(topic)}
@@ -51,16 +62,29 @@ function CallSidebar({ isDisplayed, chatId }) {
   );
 }
 
-export const SidebarSelectionProvider = ({ children }) => {
-  const [sideSelection, setSideSelection] = useState('chat');
+export const SidebarSelectionProvider = ({
+  children,
+  value,
+}: {
+  children: React.ReactNode;
+  value?: {
+    sideSelection: string;
+    setSideSelection: (selection: string) => void;
+  };
+}) => {
+  const [internalSideSelection, setInternalSideSelection] = useState('chat');
 
-  const value = useMemo(
-    () => ({ sideSelection, setSideSelection }),
-    [sideSelection, setSideSelection],
+  const contextValue = useMemo(
+    () =>
+      value || {
+        sideSelection: internalSideSelection,
+        setSideSelection: setInternalSideSelection,
+      },
+    [value, internalSideSelection],
   );
 
   return (
-    <SidebarSelectionContext.Provider value={value}>
+    <SidebarSelectionContext.Provider value={contextValue}>
       {children}
     </SidebarSelectionContext.Provider>
   );
