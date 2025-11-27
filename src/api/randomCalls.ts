@@ -36,6 +36,18 @@ export const authenticateRoom = async (lobbyName: string, matchUuid: string) => 
   });
 };
 
+export const getAcceptedRandomCallMatches = async () => {
+  return await apiFetch('/api/random_calls/history', {
+    method: 'GET',
+  });
+};
+
+export const requestRandomCallMatch = async (matchUuid: string) => {
+  return await apiFetch(`/api/random_calls/history/${matchUuid}/request_match`, {
+    method: 'POST',
+  });
+};
+
 export const submitRandomCallsFeedback = async (feedback: any) => {
   try {
     const response = await apiFetch('/api/random-calls/submit-feedback/', {

@@ -12,9 +12,9 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
-import { apiFetch } from '../../../api/helpers';
+import { requestRandomCallMatch } from '../../../api/randomCalls';
 import { RANDOM_CALL_HISTORY_ENDPOINT } from '../../../features/swr';
-import { formatDate, formatTime } from '../../../helpers/date';
+import { formatDate, formatDuration } from '../../../helpers/date';
 import ProfileImage from '../../atoms/ProfileImage';
 import {
   CallDate,
@@ -39,10 +39,7 @@ const CallHistoryList = ({ data }: { data: any }) => {
   const handleRequestMatch = async (matchId: string) => {
     setRequestingMatch(matchId);
     try {
-      await apiFetch(
-        `/api/random_calls/history/${matchId}/request_match`,
-        { method: 'POST' },
-      );
+      await requestRandomCallMatch(matchId);
       // Revalidate the history data to reflect the updated state
       mutate(RANDOM_CALL_HISTORY_ENDPOINT);
     } catch (error) {
@@ -85,7 +82,7 @@ const CallHistoryList = ({ data }: { data: any }) => {
                     <ClockIcon label="Clock icon" width={16} height={16} />
                     <Text>
                       {t('call_history.duration')}:{' '}
-                      {formatTime(new Date(item.duration * 1000))}
+                      {formatDuration(item.duration)}
                     </Text>
                   </CallTime>
                 )}

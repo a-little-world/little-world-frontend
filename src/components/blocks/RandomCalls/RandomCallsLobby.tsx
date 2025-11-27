@@ -12,17 +12,22 @@ import {
   Text,
   TextTypes
 } from '@a-little-world/little-world-design-system';
-import { PreJoin } from '@livekit/components-react';
-import { useEffect, useState } from 'react';
+import {
+  DevicePermissionError,
+  LocalUserChoices,
+  PreJoin,
+  PreJoinValues,
+} from '@livekit/components-react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
 import { acceptMatch, authenticateRoom, exitLobby, getLobbyStatus, joinLobby, rejectMatch } from '../../../api/randomCalls';
-import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE } from '../../../constants/randomCalls';
 import { useConnectedCallStore } from '../../../features/stores';
-import { USER_ENDPOINT } from '../../../features/swr';
+import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE, USER_ENDPOINT } from '../../../features/swr';
+import { clearActiveTracks } from '../../../helpers/video';
 import { getAppRoute, getRandomCallRoute, RANDOM_CALLS_ROUTE } from '../../../router/routes';
 import ProfileImage from '../../atoms/ProfileImage';
 import { CallSetupCard } from '../Calls/CallSetup';
@@ -136,17 +141,24 @@ const ScheduleList = styled.ul`
 const RandomCallSetup = ({
   onCancel,
   onJoinComplete,
-  hasJoinedLobby
+  hasJoinedLobby,
+  onDeviceChoicesChange,
+  onPermissionErrorsChange,
 }: {
   onCancel: () => void;
   onJoinComplete: () => void;
   hasJoinedLobby: boolean;
+  onDeviceChoicesChange: (choices: LocalUserChoices | null) => void;
+  onPermissionErrorsChange: (errors: { audio: boolean; video: boolean }) => void;
 }) => {
   const { t } = useTranslation();
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
   const [countdown, setCountdown] = useState<number | null>(null);
   const [permissionsGranted, setPermissionsGranted] = useState(false);
+  const [audioPermissionError, setAudioPermissionError] = useState(false);
+  const [videoPermissionError, setVideoPermissionError] = useState(false);
+  const [deviceChoices, setDeviceChoices] = useState<LocalUserChoices | null>(null);
 
   // Start countdown when permissions are granted
   useEffect(() => {
@@ -171,17 +183,61 @@ const RandomCallSetup = ({
     return () => { clearTimeout(timer) };
   }, [countdown, onJoinComplete]);
 
-  const handleValidate = (values: any) => {
+  // Update parent when device choices change
+  useEffect(() => {
+    onDeviceChoicesChange(deviceChoices);
+  }, [deviceChoices, onDeviceChoicesChange]);
+
+  // Update parent when permission errors change
+  useEffect(() => {
+    onPermissionErrorsChange({
+      audio: audioPermissionError,
+      video: videoPermissionError,
+    });
+  }, [audioPermissionError, videoPermissionError, onPermissionErrorsChange]);
+
+  const handleError = useCallback((e: Error) => {
+    if (e instanceof DevicePermissionError) {
+      if (e.deviceType === 'audio') {
+        setAudioPermissionError(true);
+      } else if (e.deviceType === 'video') {
+        setVideoPermissionError(true);
+      }
+    }
+  }, []);
+
+  const handleValidate = useCallback((values: PreJoinValues) => {
     // Check if at least one device is available
     const hasDevice = values.audioAvailable || values.videoAvailable;
     if (hasDevice) {
       setPermissionsGranted(true);
     }
+
+    // Store device choices whenever they're validated
+    if (hasDevice) {
+      setDeviceChoices({
+        username: username || '',
+        audioEnabled: values.audioEnabled ?? false,
+        videoEnabled: values.videoEnabled ?? false,
+        audioDeviceId: values.audioDeviceId,
+        videoDeviceId: values.videoDeviceId,
+        audioAvailable: values.audioAvailable ?? false,
+        videoAvailable: values.videoAvailable ?? false,
+      } as LocalUserChoices);
+    }
+
+    if (values.videoAvailable) {
+      setVideoPermissionError(false);
+    }
+    if (values.audioAvailable) {
+      setAudioPermissionError(false);
+    }
+
     return hasDevice;
-  };
+  }, []);
 
   return (
-    <CallSetupCard $hideJoinBtn className="">
+    <CallSetupCard $hideJoinBtn className="" size={undefined}>
       <CardHeader>{t('random_calls.lobby_title')}</CardHeader>
       <CardContent>
         <Text center>{t('random_calls.lobby_description')}</Text>
@@ -191,6 +247,7 @@ const RandomCallSetup = ({
           micLabel={t('pcs_mic_label')}
           joinLabel={t('pcs_btn_join_call')}
           onValidate={handleValidate}
+          onError={handleError}
           defaults={{ username }}
           persistUserChoices={false}
         />
@@ -254,7 +311,7 @@ const PartnerProposal = ({
   const partner = matchData.partner;
 
   return (
-    <RelativeCard>
+    <RelativeCard className="" size={undefined}>
       <LoadingOverlay $visible={isAccepting}>
         <Spinner />
         <Text type={TextTypes.Body3} bold>
@@ -313,7 +370,7 @@ const SessionsExpiredView = ({ onClose }: { onClose: () => void }) => {
   ];
 
   return (
-    <ProposalCard>
+    <ProposalCard className="" size={undefined}>
       <CardHeader>{t('random_calls.expired_title')}</CardHeader>
       <CardContent>
         <Text>{t('random_calls.expired_description')}</Text>
@@ -380,7 +437,7 @@ const RejectedView = ({
   };
 
   return (
-    <ProposalCard>
+    <ProposalCard className="" size={undefined}>
       <CardHeader>{t(getTitleKey())}</CardHeader>
       <CardContent>
         <ExclamationIcon
@@ -407,6 +464,9 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const [rejectionReason, setRejectionReason] = useState<RejectionReason>('user_rejected');
   const [matchData, setMatchData] = useState<MatchData | null>(null);
   const [hasJoinedLobby, setHasJoinedLobby] = useState(false);
+  const [deviceChoices, setDeviceChoices] = useState<LocalUserChoices | null>(null);
+  const [audioPermissionError, setAudioPermissionError] = useState(false);
+  const [videoPermissionError, setVideoPermissionError] = useState(false);
   const lobbyName = 'default';
 
   // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
@@ -540,15 +600,26 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
       // Call room authentication API
       const roomData = await authenticateRoom(lobbyName, matchData.uuid);
 
-      // Set up call connection with room data
+      // Set up call connection with room data, including device choices
       connectToCall({
         userId: matchData.partner.id,
         chatId: roomData.chat?.uuid || '',
+        tracks: deviceChoices || undefined,
         token: roomData.token,
         livekitServerUrl: roomData.server_url,
         callType: 'random',
+        audioOptions: deviceChoices?.audioEnabled
+          ? { deviceId: deviceChoices.audioDeviceId }
+          : false,
+        videoOptions: deviceChoices?.videoEnabled
+          ? { deviceId: deviceChoices.videoDeviceId }
+          : false,
+        audioPermissionDenied: audioPermissionError,
+        videoPermissionDenied: videoPermissionError,
         postDisconnectRedirect: `${getAppRoute(RANDOM_CALLS_ROUTE)}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
       });
+
+      clearActiveTracks();
 
       // Navigate to the random call screen for the partner
       navigate(getRandomCallRoute(matchData.partner.id));
@@ -564,9 +635,14 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     }
   };
 
+  const handlePermissionErrorsChange = useCallback((errors: { audio: boolean; video: boolean }) => {
+    setAudioPermissionError(errors.audio);
+    setVideoPermissionError(errors.video);
+  }, []);
+
   switch (lobbyState) {
     case 'partner_found':
-      if (!matchData) return <RandomCallSetup onCancel={handleCancel} onJoinComplete={handleJoinComplete} hasJoinedLobby={hasJoinedLobby} />;
+      if (!matchData) return <RandomCallSetup onCancel={handleCancel} onJoinComplete={handleJoinComplete} hasJoinedLobby={hasJoinedLobby} onDeviceChoicesChange={setDeviceChoices} onPermissionErrorsChange={handlePermissionErrorsChange} />;
       return (
         <PartnerProposal
           matchData={matchData}
@@ -585,7 +661,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
         />
       );
     default:
-      return <RandomCallSetup onCancel={handleCancel} onJoinComplete={handleJoinComplete} hasJoinedLobby={hasJoinedLobby} />;
+      return <RandomCallSetup onCancel={handleCancel} onJoinComplete={handleJoinComplete} hasJoinedLobby={hasJoinedLobby} onDeviceChoicesChange={setDeviceChoices} onPermissionErrorsChange={handlePermissionErrorsChange} />;
   }
 };
 
