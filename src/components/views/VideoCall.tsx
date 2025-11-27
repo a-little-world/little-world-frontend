@@ -28,12 +28,11 @@ import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { callAgain } from '../../api/livekit';
-import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE } from '../../constants/randomCalls';
 import {
   useChatInputStore,
   useConnectedCallStore,
 } from '../../features/stores';
-import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr';
+import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE, USER_ENDPOINT, getChatEndpoint } from '../../features/swr';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import { RANDOM_CALLS_ROUTE, getAppRoute, getCallSetupRoute } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';

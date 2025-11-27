@@ -11,8 +11,7 @@ import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { exitLobby } from '../../../api/randomCalls';
-import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE } from '../../../constants/randomCalls';
-import { RANDOM_CALL_LOBBY_ENDPOINT } from '../../../features/swr/index';
+import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE, RANDOM_CALL_LOBBY_ENDPOINT } from '../../../features/swr/index';
 import randomCallsImage from '../../../images/item info.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
