@@ -122,6 +122,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       userId: userPk,
       chatId: authData.chatId || '',
       tracks: values,
+      callType: 'direct',
       token: authData.token || undefined,
       audioOptions: values.audioEnabled
         ? { deviceId: values.audioDeviceId }
