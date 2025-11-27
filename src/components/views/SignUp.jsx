@@ -16,13 +16,15 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { mutate } from 'swr';
+import useSWR, { mutate } from 'swr';
 
 import { signUp } from '../../api';
+import { useReceiveHandlerStore } from '../../features/stores';
 import { USER_ENDPOINT } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
 import {
   LOGIN_ROUTE,
+  USER_FORM_ROUTE,
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
   passAuthenticationBoundary,
@@ -45,6 +47,10 @@ const SignUp = () => {
   // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
   const [searchParams, setSearchParams] = useSearchParams();
   const [company, setCompany] = useState(Cookies.get('lw-company', null));
+
+  const { sendMessageToReactNative } = useReceiveHandlerStore();
+
+  const { data: userData } = useSWR(USER_ENDPOINT);
 
   useEffect(() => {
     if (searchParams.has('company')) {
@@ -74,18 +80,37 @@ const SignUp = () => {
     onFormError({ e, formFields: getValues(), setError });
   };
 
+  useEffect(() => {
+    sendMessageToReactNative?.({
+      action: 'CONSOLE_LOG',
+      payload: {
+        message: 'userData + navigate',
+        params: [userData, navigate],
+      },
+    });
+    if (!userData || !navigate) {
+      return;
+    }
+
+    passAuthenticationBoundary();
+
+    if (!userData.emailVerified) {
+      navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
+    } else if (!userData.userFormCompleted) {
+      navigate(getAppRoute(USER_FORM_ROUTE));
+    } else {
+      // per default route to /app on successful login
+      navigate(getAppRoute(''));
+    }
+  }, [userData, navigate]);
+
   const onFormSubmit = async data => {
     setIsSubmitting(true);
 
     signUp(data)
-      .then(signUpData => {
-        passAuthenticationBoundary();
+      .then(async signUpData => {
         setIsSubmitting(false);
-        mutate(USER_ENDPOINT, signUpData);
-        const nextRoute = signUpData?.emailVerified ?
-          getAppRoute() :
-          getAppRoute(VERIFY_EMAIL_ROUTE);
-        navigate(nextRoute);
+        mutate(USER_ENDPOINT, signUpData, false);
       })
       .catch(onError);
   };
@@ -99,13 +124,15 @@ const SignUp = () => {
         <NameContainer>
           {company && (
             <>
-              {!company?.startsWith('campaign-') && <Label
-                bold
-                htmlFor="company"
-                toolTipText={t('sign_up.company_tooltip')}
-              >
-                {t('sign_up.company_name_label')}: {company}
-              </Label>}
+              {!company?.startsWith('campaign-') && (
+                <Label
+                  bold
+                  htmlFor="company"
+                  toolTipText={t('sign_up.company_tooltip')}
+                >
+                  {t('sign_up.company_name_label')}: {company}
+                </Label>
+              )}
               <div
                 style={{
                   display: 'none',

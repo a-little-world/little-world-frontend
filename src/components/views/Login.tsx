@@ -14,9 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
 import { login } from '../../api';
-import { environment } from '../../environment';
 import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
-import useReceiveHandlerStore from '../../features/stores/receiveHandler';
 import { USER_ENDPOINT } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
 import {
@@ -33,7 +31,6 @@ const Login = () => {
   const { t } = useTranslation();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { sendMessageToReactNative } = useReceiveHandlerStore();
 
   const {
     register,
@@ -54,13 +51,6 @@ const Login = () => {
   const onError = (e: any) => {
     setIsSubmitting(false);
     onFormError({ e, formFields: getValues(), setError });
-  };
-
-  const setAuthTokens = (
-    accessToken: string | undefined | null,
-    refreshToken: string | undefined | null,
-  ) => {
-    mobileAuthStore.setTokens(accessToken || null, refreshToken || null);
   };
 
   const { data: userData } = useSWR(USER_ENDPOINT);
@@ -94,22 +84,8 @@ const Login = () => {
 
     login(data)
       .then(loginData => {
-        mutate(USER_ENDPOINT, loginData, false);
-        if (environment.isNative) {
-          if (sendMessageToReactNative === null) {
-            return;
-          }
-          sendMessageToReactNative({
-            action: 'SET_AUTH_TOKENS',
-            payload: {
-              accessToken: loginData.token_access,
-              refreshToken: loginData.token_refresh,
-            },
-          });
-          setAuthTokens(loginData.token_access, loginData.token_refresh);
-        }
-
         setIsSubmitting(false);
+        mutate(USER_ENDPOINT, loginData, false);
       })
       .catch(onError);
   };
