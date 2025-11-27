@@ -23,18 +23,19 @@ import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { callAgain } from '../../api/livekit';
+import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE } from '../../constants/randomCalls';
 import {
   useChatInputStore,
   useConnectedCallStore,
 } from '../../features/stores';
 import { USER_ENDPOINT, getChatEndpoint } from '../../features/swr';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
-import { getAppRoute, getCallSetupRoute } from '../../router/routes';
+import { RANDOM_CALLS_ROUTE, getAppRoute, getCallSetupRoute } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import Drawer from '../atoms/Drawer';
 import ProfileImage from '../atoms/ProfileImage';
@@ -203,6 +204,7 @@ function MyVideoConference({
 
 function VideoCall() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { userId: urlUserId } = useParams();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showChat, setShowChat] = useState(true);
@@ -218,6 +220,9 @@ function VideoCall() {
     audio: boolean;
     video: boolean;
   }>({ audio: false, video: false });
+
+  // Detect if this is a random call route
+  const isRandomCallRoute = location.pathname.includes('/random-call/');
   const {
     i18n: { language },
   } = useTranslation();
@@ -245,6 +250,8 @@ function VideoCall() {
     chatId,
     audioPermissionDenied,
     videoPermissionDenied,
+    callType,
+    postDisconnectRedirect,
   } = callData || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
@@ -322,6 +329,18 @@ function VideoCall() {
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
                 disconnectFromCall(uuid);
+                if (postDisconnectRedirect) {
+                  navigate(postDisconnectRedirect, { replace: true });
+                  return;
+                }
+                // Redirect to random calls page with query param for random calls
+                if (callType === 'random' || isRandomCallRoute) {
+                  navigate(
+                    `${getAppRoute(RANDOM_CALLS_ROUTE)}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
+                    { replace: true }
+                  );
+                  return;
+                }
                 navigate(getAppRoute());
               }}
             >

@@ -5,11 +5,13 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { exitLobby } from '../../../api/randomCalls';
+import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE } from '../../../constants/randomCalls';
 import { RANDOM_CALL_LOBBY_ENDPOINT } from '../../../features/swr/index';
 import randomCallsImage from '../../../images/item info.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
@@ -66,7 +68,8 @@ const RandomCalls = () => {
   const { data: lobbyData } = useSWR<RandomCallLobby>(RANDOM_CALL_LOBBY_ENDPOINT);
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
-  const [callEnded, setCallEnded] = useState(false); // TODO: This should be set based on actual call end event
+  const [callEnded, setCallEnded] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Format time from ISO string to HH:MM
   const formatTime = (dateString?: string) => {
@@ -77,6 +80,16 @@ const RandomCalls = () => {
 
   const startTime = formatTime(lobbyData?.start_time);
   const endTime = formatTime(lobbyData?.end_time);
+
+  useEffect(() => {
+    const randomCallEnded = searchParams.get(RANDOM_CALL_EXIT_PARAM);
+    if (randomCallEnded === RANDOM_CALL_EXIT_VALUE) {
+      setCallEnded(true);
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete(RANDOM_CALL_EXIT_PARAM);
+      setSearchParams(nextParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const onJoinLobby = () => {
     setLobbyOpen(true);

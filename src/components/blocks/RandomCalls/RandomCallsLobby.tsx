@@ -20,9 +20,10 @@ import styled from 'styled-components';
 import useSWR from 'swr';
 
 import { acceptMatch, authenticateRoom, exitLobby, getLobbyStatus, joinLobby, rejectMatch } from '../../../api/randomCalls';
+import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE } from '../../../constants/randomCalls';
 import { useConnectedCallStore } from '../../../features/stores';
 import { USER_ENDPOINT } from '../../../features/swr';
-import { getCallRoute } from '../../../router/routes';
+import { getAppRoute, getRandomCallRoute, RANDOM_CALLS_ROUTE } from '../../../router/routes';
 import ProfileImage from '../../atoms/ProfileImage';
 import { CallSetupCard } from '../Calls/CallSetup';
 
@@ -545,10 +546,12 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
         chatId: roomData.chat?.uuid || '',
         token: roomData.token,
         livekitServerUrl: roomData.server_url,
+        callType: 'random',
+        postDisconnectRedirect: `${getAppRoute(RANDOM_CALLS_ROUTE)}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
       });
 
       // Navigate to the random call screen for the partner
-      navigate(getCallRoute(matchData.partner.id));
+      navigate(getRandomCallRoute(matchData.partner.id));
 
       // Close the lobby modal
       onCancel();

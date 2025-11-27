@@ -64,6 +64,7 @@ import {
   PARTNERS_ROUTE,
   PARTNER_ROUTE,
   RANDOM_CALLS_ROUTE,
+  RANDOM_CALL_ROUTE,
   RESET_PASSWORD_ROUTE,
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
@@ -210,6 +211,10 @@ export function getWebRouter() {
     },
     {
       path: getAppRoute(CALL_ROUTE),
+      element: <VideoCall />,
+    },
+    {
+      path: getAppRoute(RANDOM_CALL_ROUTE),
       element: <VideoCall />,
     },
     {
@@ -656,6 +661,10 @@ export function getNativeRouter() {
     },
     {
       path: getAppRoute(CALL_ROUTE),
+      element: <VideoCall />,
+    },
+    {
+      path: getAppRoute(RANDOM_CALL_ROUTE),
       element: <VideoCall />,
     },
     {
