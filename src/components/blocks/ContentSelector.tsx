@@ -141,6 +141,12 @@ export const StyledOption = styled(Button)<{ $selected?: boolean }>`
         background: ${theme.color.gradient.blue10};
       }
     `}
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      order: 0;
+    }
+  `};
 `;
 
 export const StyledLink = styled(Link)`

@@ -80,12 +80,12 @@ export const Toolbar = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
   align-items: center;
   justify-content: flex-end;
-  padding: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.xxsmall};
   flex-shrink: 0;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      gap: ${theme.spacing.small};
+      gap: ${theme.spacing.xxsmall};
     }
   `}
 `;
