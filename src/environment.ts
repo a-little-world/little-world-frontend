@@ -10,6 +10,7 @@ export interface Environment {
   websocketHost: string;
   isNative: boolean;
   csrfBypassToken: string;
+  allowNgrokRequests: boolean;
 }
 
 export const environment: Environment = {
@@ -24,4 +25,5 @@ export const environment: Environment = {
   websocketHost: '',
   isNative: false,
   csrfBypassToken: 'abc',
+  allowNgrokRequests: false,
 };
