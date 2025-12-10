@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import {
-  Button,
-  ButtonVariations,
-  CloseIcon,
+  CardContent,
+  CardHeader,
   StatusMessage,
   StatusTypes,
   Text,
@@ -22,33 +21,17 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { requestVideoAccessToken } from '../../../api/livekit';
-import {
-  useCallSetupStore,
-  useConnectedCallStore,
-} from '../../../features/stores';
+import { useConnectedCallStore } from '../../../features/stores';
 import { USER_ENDPOINT } from '../../../features/swr/index';
 import { clearActiveTracks } from '../../../helpers/video';
 import { getCallRoute } from '../../../router/routes';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
 
-const CloseButton = styled(Button)`
-  position: absolute;
-
-  ${({ theme }) => css`
-    right: ${theme.spacing.small};
-    top: ${theme.spacing.small};
-    @media (min-width: ${theme.breakpoints.medium}) {
-      right: ${theme.spacing.medium};
-      top: ${theme.spacing.medium};
-    }
-  `}
-`;
-
-const CallSetupCard = styled(ModalCard)`
-  ${({ theme }) => css`
+export const CallSetupCard = styled(ModalCard) <{ $hideJoinBtn?: boolean }>`
+  ${({ theme, $hideJoinBtn }) => css`
     padding: ${theme.spacing.large};
-    gap: ${theme.spacing.xsmall};
+    gap: 0;
 
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: ${theme.spacing.medium};
@@ -85,6 +68,11 @@ const CallSetupCard = styled(ModalCard)`
         transition: background-color 0.5s ease, filter 0.5s ease,
           border-color 0.5s ease, color 0.5s ease, 0.4s;
       }
+
+      ${$hideJoinBtn &&
+    css`
+        display: none;
+      `}
     }
 
     ${MEDIA_DEVICE_MENU_CSS}
@@ -114,13 +102,13 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
   const { connectToCall } = useConnectedCallStore();
-  const { cancelCallSetup } = useCallSetupStore();
 
   const handleJoin = (values: LocalUserChoices) => {
     connectToCall({
       userId: userPk,
       chatId: authData.chatId || '',
       tracks: values,
+      callType: 'direct',
       token: authData.token || undefined,
       audioOptions: values.audioEnabled
         ? { deviceId: values.audioDeviceId }
@@ -132,7 +120,6 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       audioPermissionDenied: audioPermissionError,
       videoPermissionDenied: videoPermissionError,
     });
-    cancelCallSetup();
     onClose();
     clearActiveTracks();
     navigate(getCallRoute(userPk));
@@ -194,23 +181,12 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
 
   return (
     <CallSetupCard>
-      <CloseButton
-        variation={ButtonVariations.Icon}
-        onClick={() => {
-          cancelCallSetup();
-          onClose();
-        }}
-      >
-        <CloseIcon label="close modal" width="24" height="24" />
-      </CloseButton>
-      <div>
-        <Text center type={TextTypes.Heading4}>
-          {t('pcs_main_heading')}
-        </Text>
+      <CardHeader>{t('pcs_main_heading')}</CardHeader>
+      <CardContent>
         <Text center type={TextTypes.Body4}>
           {t('pcs_sub_heading')}
         </Text>
-      </div>
+      </CardContent>
       <PreJoin
         language={language as PrejoinLanguage}
         onSubmit={handleJoin}

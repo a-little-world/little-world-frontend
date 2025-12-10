@@ -28,6 +28,7 @@ import Help from '../components/views/Help';
 import Main from '../components/views/Home';
 import Login from '../components/views/Login';
 import Messages from '../components/views/Messages';
+import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
@@ -37,6 +38,7 @@ import SignUp from '../components/views/SignUp';
 import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
+import { environment } from '../environment';
 import AuthGuard from '../guards/AuthGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
 import {
@@ -61,6 +63,8 @@ import {
   OUR_WORLD_ROUTE,
   PARTNERS_ROUTE,
   PARTNER_ROUTE,
+  RANDOM_CALLS_ROUTE,
+  RANDOM_CALL_ROUTE,
   RESET_PASSWORD_ROUTE,
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
@@ -73,9 +77,6 @@ import {
   VERIFY_EMAIL_ROUTE,
   getAppRoute,
 } from './routes';
-import NativeMessageHandler from '../components/views/NativeMessageHandler';
-
-import { environment } from '../environment';
 
 const getInitialTheme = () => {
   const storedTheme = getLocalStorageItem(STORAGE_KEYS.themePreference);
@@ -213,6 +214,10 @@ export function getWebRouter() {
       element: <VideoCall />,
     },
     {
+      path: getAppRoute(RANDOM_CALL_ROUTE),
+      element: <VideoCall />,
+    },
+    {
       path: getAppRoute(CALL_SETUP_ROUTE),
       element: (
         <FullAppLayout>
@@ -222,6 +227,15 @@ export function getWebRouter() {
     },
     {
       path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Main />
+        </FullAppLayout>
+      ),
+      errorElement: <RouterError />,
+    },
+    {
+      path: getAppRoute(RANDOM_CALLS_ROUTE),
       element: (
         <FullAppLayout>
           <Main />
@@ -501,6 +515,15 @@ export function getNativeRouter() {
       errorElement: <RouterError />,
     },
     {
+      path: getAppRoute(RANDOM_CALLS_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Main />
+        </FullAppLayout>
+      ),
+      errorElement: <RouterError />,
+    },
+    {
       path: getAppRoute(CHAT_ROUTE),
       element: (
         <FullAppLayout>
@@ -638,6 +661,10 @@ export function getNativeRouter() {
     },
     {
       path: getAppRoute(CALL_ROUTE),
+      element: <VideoCall />,
+    },
+    {
+      path: getAppRoute(RANDOM_CALL_ROUTE),
       element: <VideoCall />,
     },
     {
