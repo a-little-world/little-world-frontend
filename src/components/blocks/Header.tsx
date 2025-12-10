@@ -1,10 +1,9 @@
 import { Link, TextTypes } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
-import { environment } from '../../environment';
 
+import { environment } from '../../environment';
 import { USER_ENDPOINT } from '../../features/swr/index';
 import {
   PRIVACY_ROUTE,
@@ -80,7 +79,10 @@ const Header = () => {
 
   return (
     <StyledHeader>
-      <LogoLink href={userId ? getAppRoute() : WP_HOME_ROUTE} target={environment?.isNative ? "_blank" : "_self"}>
+      <LogoLink
+        href={userId ? getAppRoute() : WP_HOME_ROUTE}
+        target={environment?.isNative ? '_blank' : '_self'}
+      >
         <Logo stacked={false} />
       </LogoLink>
       <Options>
@@ -89,12 +91,14 @@ const Header = () => {
       <Policies>
         <Link
           href={getHomeRoute(language, TERMS_ROUTE)}
+          target="_blank"
           textType={TextTypes.Body6}
         >
           {t('header.terms')}
         </Link>
         <Link
           href={getHomeRoute(language, PRIVACY_ROUTE)}
+          target="_blank"
           textType={TextTypes.Body6}
         >
           {t('header.privacy')}

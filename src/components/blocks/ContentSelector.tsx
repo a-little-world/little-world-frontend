@@ -256,7 +256,11 @@ function ContentSelector({
       <Selector ref={scrollRef}>
         {topics.map((topic: string) =>
           externalLinksTopics[topic] ? (
-            <StyledLink key={topic} href={externalLinksTopics[topic]}>
+            <StyledLink
+              key={topic}
+              href={externalLinksTopics[topic]}
+              target="_blank"
+            >
               {t(`nbt_${topic}`)}
             </StyledLink>
           ) : (
