@@ -169,7 +169,9 @@ const RandomCallSetup = ({
 
   // Countdown timer
   useEffect(() => {
-    if (countdown === null || countdown <= 0) return;
+    if (countdown === null || countdown <= 0) {
+      return () => { };
+    }
 
     const timer = setTimeout(() => {
       if (countdown === 1) {
@@ -180,7 +182,9 @@ const RandomCallSetup = ({
       }
     }, 1000);
 
-    return () => { clearTimeout(timer) };
+    return () => {
+      clearTimeout(timer);
+    };
   }, [countdown, onJoinComplete]);
 
   // Update parent when device choices change
@@ -308,7 +312,7 @@ const PartnerProposal = ({
     return () => { clearInterval(timer) };
   }, [onReject]);
 
-  const partner = matchData.partner;
+  const { partner } = matchData;
 
   return (
     <RelativeCard className="" size={undefined}>

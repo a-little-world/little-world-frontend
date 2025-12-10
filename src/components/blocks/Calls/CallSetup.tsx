@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import {
-  Button,
   CardContent,
   CardHeader,
   StatusMessage,
@@ -28,19 +27,6 @@ import { clearActiveTracks } from '../../../helpers/video';
 import { getCallRoute } from '../../../router/routes';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
-
-const CloseButton = styled(Button)`
-  position: absolute;
-
-  ${({ theme }) => css`
-    right: ${theme.spacing.small};
-    top: ${theme.spacing.small};
-    @media (min-width: ${theme.breakpoints.medium}) {
-      right: ${theme.spacing.medium};
-      top: ${theme.spacing.medium};
-    }
-  `}
-`;
 
 export const CallSetupCard = styled(ModalCard) <{ $hideJoinBtn?: boolean }>`
   ${({ theme, $hideJoinBtn }) => css`

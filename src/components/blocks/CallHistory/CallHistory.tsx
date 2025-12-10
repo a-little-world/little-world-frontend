@@ -61,7 +61,7 @@ const CallHistoryList = ({ data }: { data: any }) => {
             <ProfileImage
               circle
               image={item.image}
-              size={'xsmall'}
+              size="xsmall"
               imageType={item.image_type}
             />
             <CallInfo>
@@ -116,7 +116,7 @@ const CallHistoryList = ({ data }: { data: any }) => {
 
 const CallHistory = ({ className }: { className?: string }) => {
   const { t } = useTranslation();
-  const { data, error, isLoading } = useSWR(RANDOM_CALL_HISTORY_ENDPOINT);
+  const { data } = useSWR(RANDOM_CALL_HISTORY_ENDPOINT);
 
   return (
     <Container className={className} $hasData={!isEmpty(data)}>

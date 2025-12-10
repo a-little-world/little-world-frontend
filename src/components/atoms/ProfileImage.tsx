@@ -1,4 +1,5 @@
-import Avatar from 'react-nice-avatar';
+import React from 'react';
+import Avatar, { type NiceAvatarProps } from 'react-nice-avatar';
 import styled from 'styled-components';
 
 import { DEFAULT_PROFILE_IMAGE } from '../../images/index';

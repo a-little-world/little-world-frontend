@@ -171,6 +171,7 @@ type ContentSelectorProps = {
   selection?: string;
   setSelection: (selection: string) => void;
   use: ContentSelectorUse;
+  excludeTopics?: string[];
 };
 
 function ContentSelector({
@@ -178,6 +179,7 @@ function ContentSelector({
   selection,
   setSelection,
   use,
+  excludeTopics,
 }: ContentSelectorProps) {
   const { t } = useTranslation();
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
@@ -241,7 +243,9 @@ function ContentSelector({
     };
   }, [checkScrollPosition, handleScroll, use]);
 
-  const topics = nbtTopics[use];
+  const topics = nbtTopics[use].filter(
+    topic => !excludeTopics?.includes(topic)
+  );
 
   return (
     <SelectorWrapper>

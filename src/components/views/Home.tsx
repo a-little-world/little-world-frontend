@@ -7,11 +7,11 @@ import useSWR, { mutate } from 'swr';
 import CustomPagination from '../../CustomPagination';
 import { updateMatchData } from '../../api/matches';
 import { useCallSetupStore } from '../../features/stores/index';
-import { getMatchEndpoint } from '../../features/swr/index';
+import { getMatchEndpoint, USER_ENDPOINT } from '../../features/swr/index';
 import {
   COMMUNITY_EVENTS_ROUTE,
-  RANDOM_CALLS_ROUTE,
   getAppRoute,
+  RANDOM_CALLS_ROUTE,
 } from '../../router/routes';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard';
 import CommsBanner from '../blocks/CommsBanner';
@@ -66,6 +66,8 @@ function Main() {
   };
 
   const { data: matches } = useSWR(getMatchEndpoint(currentPage));
+  const { data: user } = useSWR(USER_ENDPOINT);
+  const hasRandomCallAccess = user?.hasRandomCallAccess ?? false;
 
   useEffect(() => {
     const totalItems =
@@ -94,6 +96,13 @@ function Main() {
 
   const subpage = getSubpage();
 
+  useEffect(() => {
+    // Redirect away from random_calls route if user doesn't have access
+    if (subpage === 'random_calls' && !hasRandomCallAccess) {
+      navigate(getAppRoute(''));
+    }
+  }, [subpage, hasRandomCallAccess, navigate]);
+
   const handleSubpageSelect = (page: subpages) => {
     const nextPath = page !== 'conversation_partners' ? page : '';
     navigate(getAppRoute(nextPath.replace('_', '-')));
@@ -111,10 +120,11 @@ function Main() {
           handleSubpageSelect(selection as subpages)
         }
         use="main"
+        excludeTopics={!hasRandomCallAccess ? ['random_calls'] : undefined}
       />
       <CommsBanner />
       {subpage === 'events' && <CommunityEvents />}
-      {subpage === 'random_calls' && <RandomCalls />}
+      {subpage === 'random_calls' && hasRandomCallAccess && <RandomCalls />}
       {subpage === 'conversation_partners' && (
         <>
           <Home>

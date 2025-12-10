@@ -1,63 +1,55 @@
 import { apiFetch } from './helpers';
 
-export const joinLobby = async (lobbyName = 'default') => {
-  return await apiFetch(`/api/random_calls/lobby/${lobbyName}/join`, {
+export const joinLobby = (lobbyName = 'default') =>
+  apiFetch(`/api/random_calls/lobby/${lobbyName}/join`, {
     method: 'POST',
   });
-};
 
-export const exitLobby = async (lobbyName = 'default') => {
-  return await apiFetch(`/api/random_calls/lobby/${lobbyName}/exit`, {
+export const exitLobby = (lobbyName = 'default') =>
+  apiFetch(`/api/random_calls/lobby/${lobbyName}/exit`, {
     method: 'POST',
   });
-};
 
-export const getLobbyStatus = async (lobbyName = 'default') => {
-  return await apiFetch(`/api/random_calls/lobby/${lobbyName}/status`, {
+export const getLobbyStatus = (lobbyName = 'default') =>
+  apiFetch(`/api/random_calls/lobby/${lobbyName}/status`, {
     method: 'GET',
   });
-};
 
-export const acceptMatch = async (lobbyName: string, matchUuid: string) => {
-  return await apiFetch(`/api/random_calls/lobby/${lobbyName}/match/${matchUuid}/accept`, {
+export const acceptMatch = (lobbyName: string, matchUuid: string) =>
+  apiFetch(`/api/random_calls/lobby/${lobbyName}/match/${matchUuid}/accept`, {
     method: 'POST',
   });
-};
 
-export const rejectMatch = async (lobbyName: string, matchUuid: string) => {
-  return await apiFetch(`/api/random_calls/lobby/${lobbyName}/match/${matchUuid}/reject`, {
+export const rejectMatch = (lobbyName: string, matchUuid: string) =>
+  apiFetch(`/api/random_calls/lobby/${lobbyName}/match/${matchUuid}/reject`, {
     method: 'POST',
   });
-};
 
-export const authenticateRoom = async (lobbyName: string, matchUuid: string) => {
-  return await apiFetch(`/api/random_calls/lobby/${lobbyName}/match/${matchUuid}/room_authenticate`, {
+export const authenticateRoom = (lobbyName: string, matchUuid: string) =>
+  apiFetch(`/api/random_calls/lobby/${lobbyName}/match/${matchUuid}/room_authenticate`, {
     method: 'POST',
   });
-};
 
-export const getAcceptedRandomCallMatches = async () => {
-  return await apiFetch('/api/random_calls/history', {
+export const getAcceptedRandomCallMatches = () =>
+  apiFetch('/api/random_calls/history', {
     method: 'GET',
   });
-};
 
-export const requestRandomCallMatch = async (matchUuid: string) => {
-  return await apiFetch(`/api/random_calls/history/${matchUuid}/request_match`, {
+export const requestRandomCallMatch = (matchUuid: string) =>
+  apiFetch(`/api/random_calls/history/${matchUuid}/request_match`, {
     method: 'POST',
   });
-};
 
 export const submitRandomCallsFeedback = async (feedback: any) => {
   try {
-    const response = await apiFetch('/api/random-calls/submit-feedback/', {
+    return await apiFetch('/api/random-calls/submit-feedback/', {
       method: 'POST',
       body: {
         feedback,
       },
     });
-    return response;
   } catch (error) {
     console.error(error);
+    return null;
   }
 };
