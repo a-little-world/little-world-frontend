@@ -54,7 +54,7 @@ const StyledNotificationBell = styled(NotificationBell)`
   margin-left: auto;
 `;
 
-const HIDE_TITLE_ON_PATHS = ['events', 'edit'];
+const HIDE_TITLE_ON_PATHS = ['call-setup', 'events', 'edit'];
 
 function MobileNavBar({ setShowSidebarMobile }) {
   const { t } = useTranslation();
