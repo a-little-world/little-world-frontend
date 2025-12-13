@@ -32,3 +32,6 @@ dist-*/
 assets/
 
 webpack-stats.json
+
+#Personel notes and tmp files
+etka.*
