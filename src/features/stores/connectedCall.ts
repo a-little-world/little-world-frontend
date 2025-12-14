@@ -6,6 +6,8 @@ interface CallData {
   userId: string;
   chatId: string;
   tracks?: any;
+  callType?: 'direct' | 'random';
+  postDisconnectRedirect?: string;
   token?: string;
   audioOptions?: boolean | { deviceId: string };
   videoOptions?: boolean | { deviceId: string };
@@ -20,7 +22,7 @@ interface ConnectedCallState {
   callRejected: boolean;
   connectToCall: (data: CallData) => void;
   initializeCallID: (uuid: string) => void;
-  disconnectFromCall: (sessionUuid: string) => void;
+  disconnectFromCall: (sessionUuid?: string) => void;
   resetDisconnectedFrom: () => void;
   setCallRejected: (callRejected: boolean) => void;
 }
@@ -35,7 +37,11 @@ const useConnectedCallStore = create<ConnectedCallState>(set => ({
       callData: callData ? { ...callData, uuid } : null,
     })),
   disconnectFromCall: sessionUuid =>
-    set({ callData: null, disconnectedFrom: sessionUuid, callRejected: false }),
+    set({
+      callData: null,
+      disconnectedFrom: sessionUuid ?? null,
+      callRejected: false,
+    }),
   resetDisconnectedFrom: () => set({ disconnectedFrom: null }),
   setCallRejected: (callRejected: boolean) => set({ callRejected }),
 }));

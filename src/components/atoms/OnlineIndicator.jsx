@@ -1,5 +1,4 @@
 import { Text, TextTypes } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import styled from 'styled-components';
 
 const Indicator = styled.div`
@@ -24,7 +23,7 @@ const IndicatorText = styled(Text)`
   line-height: 1;
 `;
 
-const Light = styled.span`
+export const OnlineCirlce = styled.span`
   background-color: ${({ theme }) => theme.color.status.success};
   height: 9px;
   width: 9px;
@@ -37,7 +36,7 @@ const OnlineIndicator = ({ isOnline }) => (
     <IndicatorText tag="span" type={TextTypes.Body6}>
       Online
     </IndicatorText>
-    <Light />
+    <OnlineCirlce />
   </Indicator>
 );
 

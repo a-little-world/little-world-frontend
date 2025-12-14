@@ -1,5 +1,5 @@
 import { Modal } from '@a-little-world/little-world-design-system';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR, { mutate } from 'swr';
@@ -7,14 +7,19 @@ import useSWR, { mutate } from 'swr';
 import CustomPagination from '../../CustomPagination';
 import { updateMatchData } from '../../api/matches';
 import { useCallSetupStore } from '../../features/stores/index';
-import { getMatchEndpoint } from '../../features/swr/index';
-import { COMMUNITY_EVENTS_ROUTE, getAppRoute } from '../../router/routes';
+import { getMatchEndpoint, USER_ENDPOINT } from '../../features/swr/index';
+import {
+  COMMUNITY_EVENTS_ROUTE,
+  getAppRoute,
+  RANDOM_CALLS_ROUTE,
+} from '../../router/routes';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard';
 import CommsBanner from '../blocks/CommsBanner';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent';
 import ContentSelector from '../blocks/ContentSelector';
 import NotificationPanel from '../blocks/NotificationPanel';
 import PartnerProfiles from '../blocks/PartnerProfiles';
+import RandomCalls from './RandomCalls/RandomCalls';
 
 const Home = styled.div`
   display: flex;
@@ -32,7 +37,7 @@ const Home = styled.div`
   `};
 `;
 
-type subpages = 'events' | 'conversation_partners';
+type subpages = 'events' | 'conversation_partners' | 'random_calls';
 
 const PAGE_ITEMS = 10;
 
@@ -61,6 +66,8 @@ function Main() {
   };
 
   const { data: matches } = useSWR(getMatchEndpoint(currentPage));
+  const { data: user } = useSWR(USER_ENDPOINT);
+  const hasRandomCallAccess = user?.hasRandomCallAccess ?? false;
 
   useEffect(() => {
     const totalItems =
@@ -77,14 +84,28 @@ function Main() {
     }
   }, [userId]);
 
-  const subpage =
-    location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE) ?
-      'events' :
-      'conversation_partners';
+  const getSubpage = (): subpages => {
+    if (location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)) {
+      return 'events';
+    }
+    if (location.pathname === getAppRoute(RANDOM_CALLS_ROUTE)) {
+      return 'random_calls';
+    }
+    return 'conversation_partners';
+  };
+
+  const subpage = getSubpage();
+
+  useEffect(() => {
+    // Redirect away from random_calls route if user doesn't have access
+    if (subpage === 'random_calls' && !hasRandomCallAccess) {
+      navigate(getAppRoute(''));
+    }
+  }, [subpage, hasRandomCallAccess, navigate]);
 
   const handleSubpageSelect = (page: subpages) => {
     const nextPath = page !== 'conversation_partners' ? page : '';
-    navigate(getAppRoute(nextPath));
+    navigate(getAppRoute(nextPath.replace('_', '-')));
   };
 
   const onPageChange = (page: number) => {
@@ -95,13 +116,16 @@ function Main() {
     <>
       <ContentSelector
         selection={subpage}
-        setSelection={handleSubpageSelect}
+        setSelection={(selection: string) =>
+          handleSubpageSelect(selection as subpages)
+        }
         use="main"
+        excludeTopics={!hasRandomCallAccess ? ['random_calls'] : undefined}
       />
       <CommsBanner />
-      {subpage === 'events' ? (
-        <CommunityEvents />
-      ) : (
+      {subpage === 'events' && <CommunityEvents />}
+      {subpage === 'random_calls' && hasRandomCallAccess && <RandomCalls />}
+      {subpage === 'conversation_partners' && (
         <>
           <Home>
             <PartnerProfiles

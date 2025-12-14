@@ -21,6 +21,7 @@ import {
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { NiceAvatarProps } from 'react-nice-avatar';
 import styled, { css, useTheme } from 'styled-components';
 
 import { useCallSetupStore } from '../../../features/stores/index';
@@ -46,7 +47,7 @@ interface Profile {
   description: string;
   image: string;
   image_type: string;
-  avatar_config?: any;
+  avatar_config?: NiceAvatarProps;
 }
 
 interface ProfileCardProps {

@@ -47,7 +47,7 @@ const Selector = styled.div`
 
   &::-webkit-scrollbar-thumb:hover {
     background: ${({ theme }) =>
-      theme.color.border.bold || 'rgba(0, 0, 0, 0.3)'};
+    theme.color.border.bold || 'rgba(0, 0, 0, 0.3)'};
   }
 
   /* Firefox scrollbar */
@@ -114,7 +114,7 @@ const FadeOverlay = styled.div<{ $side: 'left' | 'right'; $visible: boolean }>`
   }}
 `;
 
-export const StyledOption = styled(Button)<{ $selected?: boolean }>`
+export const StyledOption = styled(Button) <{ $selected?: boolean }>`
   border-color: transparent;
   transition: none;
   flex-shrink: 0;
@@ -160,7 +160,7 @@ const StyledHideOnMobile = styled(HideOnMobile)`
 
 const nbtTopics: Record<string, string[]> = {
   ourWorld: ['support', 'donate', 'about', 'stories'],
-  main: ['conversation_partners', 'events'],
+  main: ['conversation_partners', 'events', 'random_calls'],
   help: ['contact', 'faqs'],
   resources: ['trainings', 'german', 'beginners', 'story', 'partners'],
 };
@@ -177,6 +177,7 @@ type ContentSelectorProps = {
   selection?: string;
   setSelection: (selection: string) => void;
   use: ContentSelectorUse;
+  excludeTopics?: string[];
 };
 
 function ContentSelector({
@@ -184,6 +185,7 @@ function ContentSelector({
   selection,
   setSelection,
   use,
+  excludeTopics,
 }: ContentSelectorProps) {
   const { t } = useTranslation();
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
@@ -247,7 +249,9 @@ function ContentSelector({
     };
   }, [checkScrollPosition, handleScroll, use]);
 
-  const topics = nbtTopics[use];
+  const topics = nbtTopics[use].filter(
+    topic => !excludeTopics?.includes(topic)
+  );
 
   return (
     <SelectorWrapper>
