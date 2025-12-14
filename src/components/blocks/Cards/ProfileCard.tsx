@@ -15,6 +15,7 @@ import {
   TagSizes,
   Text,
   TextTypes,
+  Tooltip,
   VideoIcon,
   pixelate,
 } from '@a-little-world/little-world-design-system';
@@ -317,13 +318,20 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       {!isSelf && (
         <Actions $onProfile={onProfile}>
           {!onProfile && (
-            <MenuLink
-              to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
-              disabled={isDeleted}
-              Icon={ProfileIcon}
-              iconGradient={Gradients.Orange}
-              iconLabel="visit profile"
-              text={t('partner_profile.profile')}
+            <Tooltip
+              text={t('profile_card.view_profile')}
+              trigger={
+                <div>
+                  <MenuLink
+                    to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
+                    disabled={isDeleted}
+                    Icon={ProfileIcon}
+                    iconGradient={Gradients.Orange}
+                    iconLabel="visit profile"
+                    text={t('partner_profile.profile')}
+                  />
+                </div>
+              }
             />
           )}
           <MenuLink
@@ -339,6 +347,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             )}
             order={isDeleted ? -1 : undefined}
           />
+
           <Button
             type="button"
             variation={ButtonVariations.Option}
