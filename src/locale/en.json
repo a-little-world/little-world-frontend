@@ -440,6 +440,7 @@
   "profile.lang_skill_title": "Language Skills",
   "profile.lang_skill_undefined": "No language skills set",
   "profile.match_profile_title": "{{userName}}'s Profile",
+  "profile.edit_button_tooltip": "Edit",
   "profile.save_btn": "Save",
   "profile.self_profile_title": "My Profile",
   "profile.deleted_name": "Deleted User",

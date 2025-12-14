@@ -2,6 +2,7 @@ import {
   ButtonVariations,
   PencilIcon,
   TextTypes,
+  Tooltip,
 } from '@a-little-world/little-world-design-system';
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,19 +43,24 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
       </FieldTitle>
       <Field>
         {editable && (
-          <EditButton
-            variation={ButtonVariations.Icon}
-            onClick={() => setEditingField(content.dataField)}
-          >
-            <PencilIcon
-              label="edit interests button"
-              width="16"
-              height="16"
-              circular
-              color={theme.color.text.accent}
-              borderColor={theme.color.text.accent}
-            />
-          </EditButton>
+          <Tooltip
+            text={t('profile.edit_button_tooltip')}
+            trigger={
+              <EditButton
+                variation={ButtonVariations.Icon}
+                onClick={() => setEditingField(content.dataField)}
+              >
+                <PencilIcon
+                  label="edit interests button"
+                  width="16"
+                  height="16"
+                  circular
+                  color={theme.color.text.accent}
+                  borderColor={theme.color.text.accent}
+                />
+              </EditButton>
+            }
+          />
         )}
         {description && <Description>{description}</Description>}
         {children}
