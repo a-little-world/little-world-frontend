@@ -254,13 +254,20 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           showCloseButton
           trigger={
             <MatchMenuToggle type="button" variation={ButtonVariations.Icon}>
-              <DotsIcon
-                circular
-                height="16px"
-                width="16px"
-                color="#7c7b7b"
-                borderColor="#7c7b7b"
-                label="menu options"
+              <Tooltip
+                text={t('profile_card.user_actions')}
+                trigger={
+                  <div>
+                    <DotsIcon
+                      circular
+                      height="16px"
+                      width="16px"
+                      color="#7c7b7b"
+                      borderColor="#7c7b7b"
+                      label="menu options"
+                    />
+                  </div>
+                }
               />
             </MatchMenuToggle>
           }
