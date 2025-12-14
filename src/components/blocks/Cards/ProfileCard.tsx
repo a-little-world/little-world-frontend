@@ -334,18 +334,25 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               }
             />
           )}
-          <MenuLink
-            to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
-            state={{ userPk }}
-            Icon={MessageIcon}
-            iconGradient={Gradients.Orange}
-            iconLabel="chat icon"
-            text={t(
-              isDeleted
-                ? 'partner_profile.messages'
-                : 'partner_profile.message',
-            )}
-            order={isDeleted ? -1 : undefined}
+          <Tooltip
+            text={t('profile_card.message')}
+            trigger={
+              <div>
+                <MenuLink
+                  to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
+                  state={{ userPk }}
+                  Icon={MessageIcon}
+                  iconGradient={Gradients.Orange}
+                  iconLabel="chat icon"
+                  text={t(
+                    isDeleted
+                      ? 'partner_profile.messages'
+                      : 'partner_profile.message',
+                  )}
+                  order={isDeleted ? -1 : undefined}
+                />
+              </div>
+            }
           />
 
           <Button
