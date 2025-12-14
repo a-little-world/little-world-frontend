@@ -362,21 +362,26 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             }
           />
 
-          <Button
-            type="button"
-            variation={ButtonVariations.Option}
-            onClick={() => callSetup.initCallSetup({ userId: userPk })}
-            disabled={isDeleted}
-          >
-            <VideoIcon
-              gradient={isDeleted ? undefined : Gradients.Orange}
-              color={isDeleted ? theme.color.text.disabled : undefined}
-              label="call icon"
-              width={38}
-              height={32}
-            />
-            <MenuLinkText>{t('partner_profile.call')}</MenuLinkText>
-          </Button>
+          <Tooltip
+            text={t('profile_card.call')}
+            trigger={
+              <Button
+                type="button"
+                variation={ButtonVariations.Option}
+                onClick={() => callSetup.initCallSetup({ userId: userPk })}
+                disabled={isDeleted}
+              >
+                <VideoIcon
+                  gradient={isDeleted ? undefined : Gradients.Orange}
+                  color={isDeleted ? theme.color.text.disabled : undefined}
+                  label="call icon"
+                  width={38}
+                  height={32}
+                />
+                <MenuLinkText>{t('partner_profile.call')}</MenuLinkText>
+              </Button>
+            }
+          />
         </Actions>
       )}
     </StyledProfileCard>
