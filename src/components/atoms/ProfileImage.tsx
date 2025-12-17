@@ -1,4 +1,5 @@
-import Avatar from 'react-nice-avatar';
+import React from 'react';
+import Avatar, { type NiceAvatarProps } from 'react-nice-avatar';
 import styled from 'styled-components';
 
 import { DEFAULT_PROFILE_IMAGE } from '../../images/index';
@@ -20,7 +21,7 @@ const BorderSizes = {
   flex: '4px',
 };
 
-const StyledAvatar = styled(Avatar)`
+const StyledAvatar = styled(Avatar)<{ $size: keyof typeof ImageSizes }>`
   width: auto;
   height: ${({ $size }) => ImageSizes[$size]};
   max-height: ${ImageSizes.large};
@@ -37,7 +38,7 @@ const StyledAvatar = styled(Avatar)`
   aspect-ratio: 1;
 `;
 
-export const CircleImage = styled.div`
+export const CircleImage = styled.div<{ $size: keyof typeof ImageSizes }>`
   border-radius: ${({ theme }) => theme.radius.half};
   border: ${({ $size }) => BorderSizes[$size]} solid #e6e8ec;
   width: auto;
@@ -69,7 +70,7 @@ export const CircleImageLoading = styled(CircleImage)`
   flex-shrink: 0;
 `;
 
-export const Image = styled.img`
+export const Image = styled.img<{ $size: keyof typeof ImageSizes }>`
   background-size: cover;
   background-position: center;
   display: flex;
@@ -88,6 +89,15 @@ export const Image = styled.img`
     }`}
 `;
 
+export interface ProfileImageProps {
+  children?: React.ReactNode;
+  className?: string;
+  image: string | NiceAvatarProps;
+  imageType: string;
+  circle?: boolean;
+  size?: keyof typeof ImageSizes;
+}
+
 function ProfileImage({
   children,
   className,
@@ -95,20 +105,31 @@ function ProfileImage({
   imageType,
   circle,
   size = 'large',
-}) {
+}: ProfileImageProps) {
   if (imageType === 'avatar')
-    return <StyledAvatar className={className} {...image} $size={size} />;
+    return (
+      <StyledAvatar
+        className={className}
+        {...(image as NiceAvatarProps)}
+        $size={size}
+      />
+    );
 
   return circle || !image ? (
     <CircleImage className={className} $size={size}>
       <CircleImageContent
-        src={image || DEFAULT_PROFILE_IMAGE}
+        src={(image as string) || DEFAULT_PROFILE_IMAGE}
         alt="profile image"
       />
       {children}
     </CircleImage>
   ) : (
-    <Image className={className} alt="user image" src={image} $size={size} />
+    <Image
+      className={className}
+      alt="user image"
+      src={image as string}
+      $size={size}
+    />
   );
 }
 

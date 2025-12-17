@@ -17,17 +17,15 @@ import { formatDate, formatEventTime } from '../../../helpers/date';
 import { Event, calculateNextOccurrence } from '../../../helpers/events';
 import placeholderImage from '../../../images/coffee.webp';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton';
+import PanelImage from '../../atoms/PanelImage';
 import ShowMoreText from '../../atoms/ShowMoreText';
 import {
   Buttons,
   DateTimeEvent,
   EventContainer,
-  EventImage,
   EventInfo,
   EventTitle,
   Events,
-  FrequencyTitle,
-  ImageContainer,
   Main,
   Session,
   SessionFlex,
@@ -288,12 +286,11 @@ function CommunityEvent({
 
   return (
     <EventContainer id={id} key={_key}>
-      <ImageContainer>
-        <EventImage alt="" src={image || placeholderImage} />
-        <FrequencyTitle>
-          {t(`community_events.frequency_${frequency}`)}
-        </FrequencyTitle>
-      </ImageContainer>
+      <PanelImage
+        src={image || placeholderImage}
+        label={t(`community_events.frequency_${frequency}`)}
+        alt="event image"
+      />
       <Main>
         <EventInfo>
           <EventTitle type={TextTypes.Heading4}>{title}</EventTitle>
