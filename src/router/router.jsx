@@ -171,7 +171,7 @@ export function getWebRouter() {
       element: <FullAppLayout />,
       errorElement: <RouterError />,
       children: [
-        {
+        { 
           path: ':slug',
           element: <EditView />,
         },
@@ -679,6 +679,17 @@ export function getNativeRouter() {
         {
           path: ':slug',
           element: <Form />,
+        },
+      ],
+    },
+    {
+      path: getAppRoute(EDIT_FORM_ROUTE),
+      element: <FullAppLayout />,
+      errorElement: <RouterError />,
+      children: [
+        {
+          path: ':slug',
+          element: <EditView />,
         },
       ],
     },
