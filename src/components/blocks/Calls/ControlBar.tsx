@@ -7,6 +7,7 @@ import {
   Gradients,
   MessageIcon,
   MessageWithQuestionIcon,
+  Tooltip,
   TranslatorIcon,
   tokens,
 } from '@a-little-world/little-world-design-system';
@@ -246,64 +247,117 @@ function ControlBar({
   return (
     <Bar $position="bottom">
       <Section>
-        <MediaControl $permissionDenied={audioPermissionDenied}>
-          <Toggle
-            onClick={
-              audioPermissionDenied ? handleOpenPermissionModal : undefined
-            }
-            source={Track.Source.Microphone}
-            showIcon
-            $withBackground
-            $permissionDenied={audioPermissionDenied}
-            permissionDenied={audioPermissionDenied}
-          />
-          <MediaDeviceMenu kind="audioinput" disabled={audioPermissionDenied} />
-        </MediaControl>
-        <MediaControl $permissionDenied={videoPermissionDenied}>
-          <Toggle
-            onClick={
-              videoPermissionDenied ? handleOpenPermissionModal : undefined
-            }
-            source={Track.Source.Camera}
-            showIcon
-            $withBackground
-            $permissionDenied={videoPermissionDenied}
-            permissionDenied={videoPermissionDenied}
-          />
-          <MediaDeviceMenu kind="videoinput" disabled={videoPermissionDenied} />
-        </MediaControl>
-        <ToggleBtn
-          $desktopOnly
-          onClick={onFullScreenToggle}
-          variation={ButtonVariations.Circle}
-        >
-          {isFullScreen ? (
-            <FullScreenExitIcon label="exit fullscreen" />
-          ) : (
-            <FullScreenIcon label="fullscreen video toggle" />
-          )}
-        </ToggleBtn>
-        <ToggleBtn
-          $desktopOnly
-          onClick={onChatToggle}
-          variation={ButtonVariations.Circle}
-        >
-          {hasUnreadMessage && <UnreadDot count={1} />}
-          <MessageIcon label={t('call.chat_label')} />
-        </ToggleBtn>
-        <ToggleBtn
-          $desktopOnly
-          onClick={onTranslatorToggle}
-          variation={ButtonVariations.Circle}
-        >
-          <TranslatorIcon label={t('call.chat_label')} />
-        </ToggleBtn>
+        <Tooltip
+          text={t('controlbar.microphone_toggle_tooltip')}
+          trigger={
+            <div>
+              <MediaControl $permissionDenied={audioPermissionDenied}>
+                <Toggle
+                  onClick={
+                    audioPermissionDenied
+                      ? handleOpenPermissionModal
+                      : undefined
+                  }
+                  source={Track.Source.Microphone}
+                  showIcon
+                  $withBackground
+                  $permissionDenied={audioPermissionDenied}
+                  permissionDenied={audioPermissionDenied}
+                />
+                <MediaDeviceMenu
+                  kind="audioinput"
+                  disabled={audioPermissionDenied}
+                />
+              </MediaControl>
+            </div>
+          }
+        />
+
+        <Tooltip
+          text={t('controlbar.camera_toggle_tooltip')}
+          trigger={
+            <MediaControl $permissionDenied={videoPermissionDenied}>
+              <div>
+                <Toggle
+                  onClick={
+                    videoPermissionDenied
+                      ? handleOpenPermissionModal
+                      : undefined
+                  }
+                  source={Track.Source.Camera}
+                  showIcon
+                  $withBackground
+                  $permissionDenied={videoPermissionDenied}
+                  permissionDenied={videoPermissionDenied}
+                />
+              </div>
+              <MediaDeviceMenu
+                kind="videoinput"
+                disabled={videoPermissionDenied}
+              />
+            </MediaControl>
+          }
+        />
+
+        <Tooltip
+          text={t('controlbar.fullscreen_toggle_tooltip')}
+          trigger={
+            <div>
+              <ToggleBtn
+                $desktopOnly
+                onClick={onFullScreenToggle}
+                variation={ButtonVariations.Circle}
+              >
+                {isFullScreen ? (
+                  <FullScreenExitIcon label="exit fullscreen" />
+                ) : (
+                  <FullScreenIcon label="fullscreen video toggle" />
+                )}
+              </ToggleBtn>
+            </div>
+          }
+        />
+        <Tooltip
+          text={t('controlbar.message_toggle_tooltip')}
+          trigger={
+            <div>
+              <ToggleBtn
+                $desktopOnly
+                onClick={onChatToggle}
+                variation={ButtonVariations.Circle}
+              >
+                {hasUnreadMessage && <UnreadDot count={1} />}
+
+                <MessageIcon label={t('call.chat_label')} />
+              </ToggleBtn>
+            </div>
+          }
+        />
+        <Tooltip
+          text={t('controlbar.translation_toggle_tooltip')}
+          trigger={
+            <div>
+              <ToggleBtn
+                $desktopOnly
+                onClick={onTranslatorToggle}
+                variation={ButtonVariations.Circle}
+              >
+                <TranslatorIcon label={t('call.chat_label')} />
+              </ToggleBtn>
+            </div>
+          }
+        />
       </Section>
       <Section>
         <StyledTimer $desktopOnly />
-        <DisconnectBtn {...disconnectProps}>
-          {t('call.leave_btn')}
-        </DisconnectBtn>
+        <Tooltip
+          text={t('controlbar.leave_call_tooltip')}
+          trigger={
+            <DisconnectBtn {...disconnectProps}>
+              {t('call.leave_btn')}
+            </DisconnectBtn>
+          }
+        />
       </Section>
     </Bar>
   );
