@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonAppearance,
+  MultiSelection,
   RadioGroup,
   StatusMessage,
   StatusTypes,
@@ -8,6 +9,7 @@ import {
   TextArea,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { RadioGroupVariations } from '@a-little-world/little-world-design-system-core';
 import { RefObject, useMemo, useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -71,9 +73,7 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
   const reportTypeRef = useRef<HTMLInputElement>(
     null,
   ) as RefObject<HTMLInputElement>;
-  const keywordsRef = useRef<HTMLInputElement>(
-    null,
-  ) as RefObject<HTMLInputElement>;
+
   const {
     control,
     handleSubmit,
@@ -113,7 +113,7 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
     }
     return keywords.map(keyword => ({
       id: keyword.id,
-      label: t(keyword.translationKey),
+      tag: t(keyword.translationKey),
       value: keyword.value,
     }));
   }, [selectedReportType, t]);
@@ -138,10 +138,10 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
   return (
     <Form onSubmit={handleSubmit(handleSubmitReport)}>
       <Text type={TextTypes.Heading4} tag="h2" center>
-        {t(`${data?.type}_modal_title`, { name: data.userName })}
+        {t(`${data?.type}.title`, { name: data.userName })}
       </Text>
       <Text>
-        {t(`${data?.type}_modal_description`, {
+        {t(`${data?.type}.description`, {
           name: data?.userName,
         })}
       </Text>
@@ -153,7 +153,7 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
             control={control}
             name="reportType"
             rules={{
-              required: t('report.report_type_required'),
+              required: t('error.required'),
             }}
             render={({
               field: { onChange, onBlur, value, name },
@@ -168,6 +168,7 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
                 onValueChange={onChange}
                 items={reportTypeOptions}
                 label={t('report.report_type_label')}
+                type={RadioGroupVariations.Pill}
               />
             )}
           />
@@ -180,19 +181,14 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
           <Controller
             control={control}
             name="keywords"
-            render={({
-              field: { onChange, onBlur, value, name },
-              fieldState: { error },
-            }) => (
-              <RadioGroup
-                name={name}
-                value={value}
-                onBlur={onBlur}
-                inputRef={keywordsRef}
+            render={({ field: { onChange }, fieldState: { error } }) => (
+              <MultiSelection
+                id="form-keywords"
                 error={error?.message}
-                onValueChange={onChange}
-                items={keywordOptions}
+                onSelection={onChange}
+                options={keywordOptions}
                 label={t('report.keywords_label')}
+                withBackground={false}
               />
             )}
           />
@@ -204,10 +200,10 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
           control={control}
           name="reason"
           rules={{
-            required: t(`${data.type}_modal_reason_error_required`),
+            required: t('error.required'),
             minLength: {
               value: 50,
-              message: t(`${data.type}_modal_reason_error_min_length`),
+              message: t(`${data.type}.reason_error_min_length`),
             },
           }}
           render={({
@@ -216,11 +212,11 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
           }) => (
             <TextArea
               inputRef={ref}
-              label={t(`${data?.type}_modal_reason_label`, {
+              label={t(`${data?.type}.reason_label`, {
                 name: data.userName,
               })}
               error={error?.message}
-              placeholder={t(`${data?.type}_modal_reason_placeholder`)}
+              placeholder={t(`${data?.type}.reason_placeholder`)}
               onChange={onChange}
               onBlur={onBlur}
               value={value}
@@ -241,13 +237,13 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
       </ReasonWrapper>
 
       <ButtonsWrapper>
-        <Button type="submit">{t(`${data?.type}_modal_confirm_btn`)}</Button>
+        <Button type="submit">{t(`${data?.type}.confirm_btn`)}</Button>
         <Button
           type="button"
           appearance={ButtonAppearance.Secondary}
           onClick={handleOnClose}
         >
-          {t(`${data?.type}_modal_cancel_btn`)}
+          {t(`${data?.type}.cancel_btn`)}
         </Button>
       </ButtonsWrapper>
     </Form>
