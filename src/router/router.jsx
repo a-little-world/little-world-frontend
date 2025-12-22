@@ -94,7 +94,7 @@ export const Root = ({ children, restoreScroll = true }) => (
     <ToastProvider>
       <AuthGuard>
         <WebsocketBridge />
-        <FireBase />
+        {!environment.isNative && <FireBase />}
       </AuthGuard>
       {restoreScroll && <ScrollRestoration />}
       <GlobalStyles />
@@ -171,7 +171,7 @@ export function getWebRouter() {
       element: <FullAppLayout />,
       errorElement: <RouterError />,
       children: [
-        { 
+        {
           path: ':slug',
           element: <EditView />,
         },
