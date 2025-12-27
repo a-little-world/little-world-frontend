@@ -350,14 +350,10 @@ function ControlBar({
       </Section>
       <Section>
         <StyledTimer $desktopOnly />
-        <Tooltip
-          text={t('controlbar.leave_call_tooltip')}
-          trigger={
-            <DisconnectBtn {...disconnectProps}>
-              {t('call.leave_btn')}
-            </DisconnectBtn>
-          }
-        />
+
+        <DisconnectBtn {...disconnectProps}>
+          {t('call.leave_btn')}
+        </DisconnectBtn>
       </Section>
     </Bar>
   );
