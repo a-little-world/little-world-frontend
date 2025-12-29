@@ -5,6 +5,7 @@ import {
   PhoneIcon,
   Text,
   TextTypes,
+  Tooltip,
 } from '@a-little-world/little-world-design-system';
 import { groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -206,17 +207,24 @@ const EventCtas = ({
                   height={14}
                 />
               </Button>
-              <AddToCalendarButton
-                calendarEvent={{
-                  title,
-                  description,
-                  frequency,
-                  startDate: session.startDate,
-                  endDate: session.endDate,
-                  durationInMinutes: 60,
-                  link: session.link,
-                }}
-                size={ButtonSizes.Small}
+              <Tooltip
+                text={t('add_to_calendar')}
+                trigger={
+                  <div>
+                    <AddToCalendarButton
+                      calendarEvent={{
+                        title,
+                        description,
+                        frequency,
+                        startDate: session.startDate,
+                        endDate: session.endDate,
+                        durationInMinutes: 60,
+                        link: session.link,
+                      }}
+                      size={ButtonSizes.Small}
+                    />
+                  </div>
+                }
               />
             </SessionFlex>
           </Session>
@@ -251,16 +259,23 @@ const EventCtas = ({
           />
           <span className="text">{t('community_events.join_call')}</span>
         </Button>
-        <AddToCalendarButton
-          calendarEvent={{
-            title,
-            frequency,
-            description,
-            startDate,
-            endDate,
-            durationInMinutes: 60,
-            link,
-          }}
+        <Tooltip
+          text={t('add_to_calendar')}
+          trigger={
+            <div>
+              <AddToCalendarButton
+                calendarEvent={{
+                  title,
+                  frequency,
+                  description,
+                  startDate,
+                  endDate,
+                  durationInMinutes: 60,
+                  link,
+                }}
+              />
+            </div>
+          }
         />
       </Buttons>
     </>
