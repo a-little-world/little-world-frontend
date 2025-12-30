@@ -70,14 +70,54 @@ export const unmatch = async ({ reason, matchId, onSuccess, onError }) => {
   }
 };
 
-export const reportMatch = async ({ reason, matchId, onError, onSuccess }) => {
+export const reportIssue = async ({
+  keywords,
+  kind,
+  matchId,
+  onError,
+  onSuccess,
+  reason,
+  reportedUserId,
+}: {
+  keywords?: [string];
+  kind?: string;
+  matchId: string;
+  onError: (error: any) => void;
+  onSuccess: (result: any) => void;
+  reason: string;
+  reportedUserId?: string;
+}) => {
   try {
-    const result = await apiFetch(`/api/matching/report/`, {
+    const body: {
+      keywords?: [string];
+      kind?: string;
+      match_id?: string;
+      reason: string;
+      reported_user_id?: string;
+    } = {
+      reason,
+    };
+
+    if (matchId) {
+      body.match_id = matchId;
+    }
+    if (reportedUserId) {
+      body.reported_user_id = reportedUserId;
+    }
+    if (kind) {
+      body.kind = kind;
+    }
+    if (keywords) {
+      body.keywords = keywords;
+    }
+
+    const url = matchId
+      ? '/api/matching/report_match/'
+      : '/api/matching/report_issue/';
+
+    const result = await apiFetch(url, {
       method: 'POST',
-      body: {
-        match_id: matchId,
-        reason,
-      },
+      body,
       useTagsOnly: true,
     });
     onSuccess(result);
