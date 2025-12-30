@@ -158,7 +158,7 @@ export const login = async ({
       loginData?.token_refresh || null,
     );
 
-  sendMessageToReactNative({
+  await sendMessageToReactNative({
     action: 'SET_AUTH_TOKENS',
     payload: {
       accessToken: loginData?.token_access || null,

@@ -21,7 +21,7 @@ const BorderSizes = {
   flex: '4px',
 };
 
-const StyledAvatar = styled(Avatar) <{ $size: keyof typeof ImageSizes }>`
+const StyledAvatar = styled(Avatar)<{ $size: keyof typeof ImageSizes }>`
   width: auto;
   height: ${({ $size }) => ImageSizes[$size]};
   max-height: ${ImageSizes.large};
@@ -89,7 +89,7 @@ export const Image = styled.img<{ $size: keyof typeof ImageSizes }>`
     }`}
 `;
 
-interface ProfileImageProps {
+export interface ProfileImageProps {
   children?: React.ReactNode;
   className?: string;
   image: string | NiceAvatarProps;
