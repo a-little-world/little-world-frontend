@@ -1,4 +1,14 @@
-export type ReportType = 'call_quality' | 'partner';
+// Report type constants
+export const REPORT_TYPE_UNMATCH = 'unmatch' as const;
+export const REPORT_TYPE_PARTNER = 'partner' as const;
+export const REPORT_TYPE_CALL_QUALITY = 'call_quality' as const;
+export const REPORT_TYPE_USER = 'user' as const;
+
+export type ReportType =
+  | typeof REPORT_TYPE_UNMATCH
+  | typeof REPORT_TYPE_PARTNER
+  | typeof REPORT_TYPE_CALL_QUALITY
+  | typeof REPORT_TYPE_USER;
 
 export interface ReportKeywordOption {
   id: string;
@@ -8,14 +18,14 @@ export interface ReportKeywordOption {
 
 export const REPORT_TYPE_OPTIONS: ReportKeywordOption[] = [
   {
-    id: 'call_quality',
+    id: REPORT_TYPE_CALL_QUALITY,
     translationKey: 'report.call_quality.label',
-    value: 'call_quality',
+    value: REPORT_TYPE_CALL_QUALITY,
   },
   {
-    id: 'partner',
-    translationKey: 'report.partner.label',
-    value: 'partner',
+    id: REPORT_TYPE_USER,
+    translationKey: 'report.user.label',
+    value: REPORT_TYPE_USER,
   },
 ];
 
@@ -57,48 +67,49 @@ export const CALL_QUALITY_KEYWORDS: ReportKeywordOption[] = [
   },
 ];
 
-export const PARTNER_KEYWORDS: ReportKeywordOption[] = [
+export const USER_KEYWORDS: ReportKeywordOption[] = [
   {
     id: 'inappropriate_behavior',
-    translationKey: 'report.partner.inappropriate_behavior',
+    translationKey: 'report.user.inappropriate_behavior',
     value: 'inappropriate_behavior',
   },
   {
     id: 'harassment',
-    translationKey: 'report.partner.harassment',
+    translationKey: 'report.user.harassment',
     value: 'harassment',
   },
   {
     id: 'spam',
-    translationKey: 'report.partner.spam',
+    translationKey: 'report.user.spam',
     value: 'spam',
   },
   {
     id: 'fake_profile',
-    translationKey: 'report.partner.fake_profile',
+    translationKey: 'report.user.fake_profile',
     value: 'fake_profile',
   },
   {
     id: 'safety_concern',
-    translationKey: 'report.partner.safety_concern',
+    translationKey: 'report.user.safety_concern',
     value: 'safety_concern',
   },
   {
     id: 'offensive_language',
-    translationKey: 'report.partner.offensive_language',
+    translationKey: 'report.user.offensive_language',
     value: 'offensive_language',
   },
   {
     id: 'inappropriate_content',
-    translationKey: 'report.partner.inappropriate_content',
+    translationKey: 'report.user.inappropriate_content',
     value: 'inappropriate_content',
   },
 ];
 
-export const REPORT_KEYWORDS_BY_TYPE: Record<
-  ReportType,
-  ReportKeywordOption[]
+export const REPORT_KEYWORDS_BY_TYPE: Partial<
+  Record<ReportType, ReportKeywordOption[]>
 > = {
-  call_quality: CALL_QUALITY_KEYWORDS,
-  partner: PARTNER_KEYWORDS,
+  [REPORT_TYPE_CALL_QUALITY]: CALL_QUALITY_KEYWORDS,
+  [REPORT_TYPE_USER]: USER_KEYWORDS,
+  [REPORT_TYPE_PARTNER]: USER_KEYWORDS,
+  // unmatch doesn't have keywords
 };

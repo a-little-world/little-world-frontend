@@ -12,12 +12,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { reportMatch, unmatch } from '../../../api/matches';
+import { reportIssue, unmatch } from '../../../api/matches';
 import { revalidateMatches } from '../../../features/swr/index';
 import ReportForm from '../ReportForm/ReportForm';
-
-export const PARTNER_ACTION_REPORT = 'report';
-export const PARTNER_ACTION_UNMATCH = 'unmatch';
+import { REPORT_TYPE_UNMATCH, ReportType } from '../ReportForm/constants';
 
 const Centred = styled.div`
   display: flex;
@@ -32,20 +30,36 @@ const Centred = styled.div`
   `}
 `;
 
-const ConfimrationText = styled(Text)`
+const ConfirmationText = styled(Text)`
   line-height: 1.5;
 `;
 
-function PartnerActionCard({ data, onClose }) {
+interface PartnerActionCardProps {
+  data: {
+    matchId: string;
+    userName: string;
+    type: ReportType;
+  };
+  onClose: () => void;
+}
+
+interface FormData {
+  reason: string;
+  reportType?: ReportType;
+  keywords?: [string];
+}
+
+function PartnerActionCard({ data, onClose }: PartnerActionCardProps) {
   const { t } = useTranslation();
   const [confirmed, setConfirmed] = useState(false);
-  const isUnmatch = data.type === PARTNER_ACTION_UNMATCH;
+  const isUnmatch = data.type === REPORT_TYPE_UNMATCH;
+  const translationKeyPrefix = isUnmatch ? 'unmatch' : 'report';
 
   const handleOnClose = () => {
     onClose();
   };
 
-  const handleUnmatch = formData => {
+  const handleUnmatch = (formData: FormData) => {
     unmatch({
       reason: formData.reason,
       matchId: data.matchId,
@@ -59,12 +73,13 @@ function PartnerActionCard({ data, onClose }) {
     });
   };
 
-  const handleReport = formData => {
-    reportMatch({
-      reason: formData.reason,
+  const handleReport = (formData: FormData) => {
+    reportIssue({
+      keywords: formData.keywords || undefined,
+      kind: formData.reportType,
       matchId: data.matchId,
-      reportType: formData.reportType,
-      keywords: formData.keywords || null,
+      reason: formData.reason,
+      reportedUserId: undefined,
       onSuccess: () => {
         setConfirmed(true);
         revalidateMatches();
@@ -80,24 +95,20 @@ function PartnerActionCard({ data, onClose }) {
       return (
         <Centred>
           {isUnmatch ? (
-            <UnmatchedImage height="120px" />
+            <UnmatchedImage height="120px" label="Unmatch with user" />
           ) : (
-            <ExclamationIcon
-              width="64px"
-              height="64px"
-              label={t('report_modal_exclamation_label')}
-            />
+            <ExclamationIcon width="64px" height="64px" label="Report issue" />
           )}
-          <ConfimrationText type={TextTypes.Body5} center>
-            {t(`${data?.type}_modal_confirmation`, { name: data.userName })}
-          </ConfimrationText>
-          {isUnmatch && <Text center>{t('unmatch_modal_search_again')}</Text>}
+          <ConfirmationText type={TextTypes.Body5} center>
+            {t(`${translationKeyPrefix}.confirmation`, { name: data.userName })}
+          </ConfirmationText>
+          {isUnmatch && <Text center>{t('unmatch.search_again')}</Text>}
           <Button
             type="button"
             appearance={ButtonAppearance.Secondary}
             onClick={handleOnClose}
           >
-            {t(`${data?.type}_modal_close_btn`)}
+            {t(`${translationKeyPrefix}.close_btn`)}
           </Button>
         </Centred>
       );
@@ -105,14 +116,15 @@ function PartnerActionCard({ data, onClose }) {
 
     return (
       <ReportForm
-        data={data}
+        reportType={data.type}
+        reportedUserName={data.userName}
         onSubmit={isUnmatch ? handleUnmatch : handleReport}
         onClose={handleOnClose}
       />
     );
   };
 
-  return <Card width={CardSizes.Medium}>{renderContent()}</Card>;
+  return <Card width={CardSizes.Large}>{renderContent()}</Card>;
 }
 
 export default PartnerActionCard;

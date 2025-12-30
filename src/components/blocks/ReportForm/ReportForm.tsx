@@ -7,9 +7,9 @@ import {
   StatusTypes,
   Text,
   TextArea,
+  TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { RadioGroupVariations } from '@a-little-world/little-world-design-system-core';
 import { RefObject, useMemo, useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -17,12 +17,12 @@ import styled from 'styled-components';
 
 import {
   REPORT_KEYWORDS_BY_TYPE,
+  REPORT_TYPE_CALL_QUALITY,
   REPORT_TYPE_OPTIONS,
+  REPORT_TYPE_PARTNER,
+  REPORT_TYPE_UNMATCH,
   ReportType,
-} from './reportKeywords';
-
-export const PARTNER_ACTION_REPORT = 'report';
-export const PARTNER_ACTION_UNMATCH = 'unmatch';
+} from './constants';
 
 const Form = styled.form`
   display: flex;
@@ -54,21 +54,22 @@ const ButtonsWrapper = styled.div`
 `;
 
 interface ReportFormProps {
-  data: {
-    matchId: string;
-    userName: string;
-    type: string;
-  };
+  reportedUserName: string;
   onClose: () => void;
   onSubmit: (formData: {
     reason: string;
-    reportType?: string;
-    keywords?: string;
+    reportType: ReportType;
+    keywords?: [string];
   }) => void;
   reportType?: ReportType;
 }
 
-function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
+function ReportForm({
+  onSubmit,
+  onClose,
+  reportType,
+  reportedUserName,
+}: ReportFormProps) {
   const { t } = useTranslation();
   const reportTypeRef = useRef<HTMLInputElement>(
     null,
@@ -82,14 +83,16 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      reportType: reportType || 'call_quality',
-      keywords: '',
+      reportType: reportType || REPORT_TYPE_CALL_QUALITY,
+      keywords: undefined,
       reason: '',
     },
   });
 
   const selectedReportType = watch('reportType') || reportType;
-  const isUnmatch = data.type === 'unmatch';
+  const isUnmatch = reportType === REPORT_TYPE_UNMATCH;
+  const isReportMatch = reportType === REPORT_TYPE_PARTNER;
+  const translationKeyPrefix = isUnmatch ? 'unmatch' : 'report';
 
   // Memoize translated report type options
   const reportTypeOptions = useMemo(
@@ -125,29 +128,41 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
 
   const handleSubmitReport = (formData: {
     reason: string;
-    reportType?: string;
-    keywords?: string;
+    reportType?: ReportType;
+    keywords?: [string];
   }) => {
     onSubmit({
       reason: formData.reason,
-      reportType: formData.reportType || reportType,
-      keywords: formData.keywords || undefined,
+      reportType: formData.reportType || selectedReportType,
+      keywords: formData.keywords,
     });
   };
 
   return (
     <Form onSubmit={handleSubmit(handleSubmitReport)}>
       <Text type={TextTypes.Heading4} tag="h2" center>
-        {t(`${data?.type}.title`, { name: data.userName })}
+        {t(
+          `${translationKeyPrefix}.${
+            reportedUserName ? 'partner' : 'generic'
+          }_title`,
+          {
+            name: reportedUserName,
+          },
+        )}
       </Text>
       <Text>
-        {t(`${data?.type}.description`, {
-          name: data?.userName,
-        })}
+        {t(
+          `${translationKeyPrefix}.${
+            reportedUserName ? 'partner' : 'generic'
+          }_description`,
+          {
+            name: reportedUserName,
+          },
+        )}
       </Text>
 
       {/* Report Type Selection - only show if not unmatch and reportType prop is not provided */}
-      {!isUnmatch && !reportType && (
+      {!isUnmatch && !isReportMatch && (
         <RadioGroupWrapper>
           <Controller
             control={control}
@@ -167,16 +182,17 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
                 error={error?.message}
                 onValueChange={onChange}
                 items={reportTypeOptions}
-                label={t('report.report_type_label')}
-                type={RadioGroupVariations.Pill}
+                label={t('report.type_label')}
+                // @ts-expect-error - "pill" is a valid value but not in the RadioGroupVariations type definition
+                type="pill"
               />
             )}
           />
         </RadioGroupWrapper>
       )}
 
-      {/* Keywords Selection - only show if not unmatch and reportType is selected */}
-      {!isUnmatch && selectedReportType && (
+      {/* Keywords Selection - only show if not unmatch */}
+      {!isUnmatch && (
         <RadioGroupWrapper>
           <Controller
             control={control}
@@ -203,7 +219,7 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
             required: t('error.required'),
             minLength: {
               value: 50,
-              message: t(`${data.type}.reason_error_min_length`),
+              message: t(`${translationKeyPrefix}.reason_error_min_length`),
             },
           }}
           render={({
@@ -212,15 +228,16 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
           }) => (
             <TextArea
               inputRef={ref}
-              label={t(`${data?.type}.reason_label`, {
-                name: data.userName,
+              label={t(`${translationKeyPrefix}.reason_label`, {
+                name: reportedUserName,
               })}
               error={error?.message}
-              placeholder={t(`${data?.type}.reason_placeholder`)}
+              placeholder={t(`${translationKeyPrefix}.reason_placeholder`)}
               onChange={onChange}
               onBlur={onBlur}
               value={value}
               name={name}
+              size={TextAreaSize.Medium}
             />
           )}
         />
@@ -237,13 +254,15 @@ function ReportForm({ data, onSubmit, onClose, reportType }: ReportFormProps) {
       </ReasonWrapper>
 
       <ButtonsWrapper>
-        <Button type="submit">{t(`${data?.type}.confirm_btn`)}</Button>
+        <Button type="submit">
+          {t(`${translationKeyPrefix}.confirm_btn`)}
+        </Button>
         <Button
           type="button"
           appearance={ButtonAppearance.Secondary}
           onClick={handleOnClose}
         >
-          {t(`${data?.type}.cancel_btn`)}
+          {t(`${translationKeyPrefix}.cancel_btn`)}
         </Button>
       </ButtonsWrapper>
     </Form>
