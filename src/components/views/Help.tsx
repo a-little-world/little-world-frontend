@@ -17,9 +17,10 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { TFunction } from 'i18next';
 import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { TFunction, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR, { SWRConfig } from 'swr';
 

@@ -14,9 +14,10 @@ import {
   TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
+import { TFunction } from 'i18next';
 import React, { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { TFunction, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
 import { usePostCallSurveyStore } from '../../../features/stores/index';
