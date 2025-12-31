@@ -201,11 +201,11 @@ export function Faqs() {
   return (
     <FAQContainer>
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
-        {t('menu_faqs')}
+        {t('nbt_faqs')}
       </ContentTitle>
       <Text>{t('help.faqs_intro')}</Text>
       <FAQImageWrapper>
-        <TeacherImage />
+        <TeacherImage label="image of woman holding book" />
       </FAQImageWrapper>
       {faqs.map(faq => (
         <FAQItems key={faq.section}>
@@ -260,7 +260,7 @@ export function Contact() {
   return (
     <ContactForm onSubmit={handleSubmit(onSubmit)}>
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
-        {t('menu_contact')}
+        {t('nbt_contact')}
       </ContentTitle>
       <Text>{t('help.contact_intro_line1')}</Text>
       <StyledIntro>{t('help.contact_intro_line2')}</StyledIntro>
