@@ -150,7 +150,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.results?.length ||
-      matches?.unconfirmed?.results?.length,
+        matches?.unconfirmed?.results?.length,
     );
 
     if (shouldShowMatchModal) {
@@ -197,7 +197,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       submitCallFeedback({
         reviewId: postCallSurvey?.review_id,
         liveSessionId: postCallSurvey?.live_session_id,
-        rating: rating || postCallSurvey?.rating,
+        rating: rating || (postCallSurvey?.rating as number),
         review: review || postCallSurvey?.review,
         onSuccess: closePostCallSurvey,
         onError: onError ?? (() => null),
@@ -215,7 +215,18 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
       <Content $isVH={isVH}>{children || <Outlet />}</Content>
 
-      <Modal open={isModalOpen(ModalTypes.CALL_SETUP.id)} locked>
+      <Modal
+        open={isModalOpen(ModalTypes.CALL_SETUP.id)}
+        onClose={() => {
+          cancelCallSetup();
+          setSearchParams(prev => {
+            const newParams = new URLSearchParams(prev);
+            newParams.delete('call-setup');
+            return newParams;
+          });
+          closeModal();
+        }}
+      >
         <CallSetup
           onClose={() => {
             cancelCallSetup();
@@ -226,7 +237,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
             });
             closeModal();
           }}
-          userPk={callSetup?.userId}
+          userPk={callSetup?.userId as string}
         />
       </Modal>
 
