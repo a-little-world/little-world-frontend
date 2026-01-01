@@ -48,6 +48,7 @@ const Form = () => {
 
   const {
     control,
+    clearErrors,
     getValues,
     handleSubmit,
     formState: { errors },
@@ -120,6 +121,7 @@ const Form = () => {
           control={control}
           setValue={setValue}
           setError={setError}
+          clearErrors={clearErrors}
         />
       );
 
@@ -224,7 +226,7 @@ const Form = () => {
         {note && <StyledNote>{t(note)}</StyledNote>}
         {renderComponents()}
         <SubmitError $visible={!!displayError}>
-          {displayError ? t(displayError.message) : ''}
+          {t(displayError?.message)}
         </SubmitError>
         <FormButtons $onlyOneBtn={Boolean(!prevPage)}>
           {Boolean(prevPage) && (

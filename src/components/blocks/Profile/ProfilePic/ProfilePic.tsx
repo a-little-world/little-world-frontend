@@ -18,6 +18,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Control,
   Controller,
+  UseFormClearErrors,
   UseFormSetError,
   UseFormSetValue,
 } from 'react-hook-form';
@@ -111,12 +112,14 @@ interface ProfilePicProps {
   control: Control<any>;
   setValue: UseFormSetValue<any>;
   setError: UseFormSetError<any>;
+  clearErrors: UseFormClearErrors<any>;
 }
 
 const ProfilePic: React.FC<ProfilePicProps> = ({
   control,
   setValue,
   setError,
+  clearErrors,
 }) => {
   const [imageType, setImageType] = useState<keyof typeof IMAGE_TYPES>(
     IMAGE_TYPES.image,
@@ -140,6 +143,8 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
     const file = e.target.files?.[0];
 
     if (!file) return; // Guard clause for no file selected
+
+    clearErrors(USER_FIELDS.image);
 
     try {
       // compress file if bigger than limit
@@ -174,6 +179,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
   // Selection for the type the user is choosing (Own Image/ Avatar)
   const onImageSelection = (type: keyof typeof IMAGE_TYPES) => {
     if (type === imageType) return;
+    clearErrors(USER_FIELDS.image);
     setImageType(type);
     setValue(USER_FIELDS.imageType, type);
     // remove other image type value
