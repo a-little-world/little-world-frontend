@@ -39,7 +39,7 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
       onSuccess(response);
     } catch (error) {
       if (error?.status === 413)
-        throw new Error('validation.image_upload_required', {
+        throw new Error('validation.image_upload_error', {
           cause: API_FIELDS.image,
         });
       else {
@@ -66,7 +66,7 @@ export const submitHelpForm = async (formData, onSuccess, onFailure) => {
       onSuccess(response);
     } catch (error) {
       if (error?.status === 413)
-        throw new Error('validation.image_upload_required');
+        throw new Error('validation.image_upload_error');
       else {
         throw error;
       }

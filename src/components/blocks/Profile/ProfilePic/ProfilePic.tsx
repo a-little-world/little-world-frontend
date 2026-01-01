@@ -5,7 +5,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ImageSearchIcon,
-  InputError,
   Label,
   Modal,
   PencilIcon,
@@ -155,8 +154,10 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
         setValue(USER_FIELDS.image, file); // Use original file here
       }
     } catch {
-      setError(USER_FIELDS.image);
-      // Handle error (e.g., show a notification to the user)
+      setError(USER_FIELDS.image, {
+        type: 'custom',
+        message: 'validation.image_upload_error',
+      });
     }
   };
 
@@ -249,7 +250,12 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
         defaultValue={undefined}
         name={USER_FIELDS.image}
         control={control}
-        rules={{ required: imageType === IMAGE_TYPES.image && !uploadedImage }}
+        rules={{
+          required:
+            imageType === IMAGE_TYPES.image && !uploadedImage
+              ? 'validation.image_upload_required'
+              : false,
+        }}
         render={({
           field: { onChange, onBlur, name, ref },
           fieldState: { error },
@@ -405,16 +411,6 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                 </AvatarEditorButton>
               </InteractiveArea>
             </SelectionPanel>
-            <InputError
-              right={0}
-              bottom="-16px"
-              textAlign="left"
-              textType={TextTypes.Body5}
-              visible={!isEmpty(error)}
-              style={{ fontSize: '1rem' }}
-            >
-              {t('validation.image_upload_required')}
-            </InputError>
           </>
         )}
       />

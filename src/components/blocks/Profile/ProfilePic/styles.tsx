@@ -8,6 +8,14 @@ import ProfileImage, { ImageSizes } from '../../../atoms/ProfileImage';
 
 export const ProfilePicWrapper = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+
+  ${({ theme }) =>
+    `@media (min-width: ${theme.breakpoints.medium}) {
+      gap: ${theme.spacing.small};
+    }`}
 `;
 
 export const SelectionPanel = styled.div<{
@@ -17,11 +25,11 @@ export const SelectionPanel = styled.div<{
   position: relative;
   border: 2.5px solid;
   border-color: ${({ $selected, theme, $error }) =>
-    $selected ?
-      $error ?
-        theme.color.border.error :
-        theme.color.border.selected :
-      theme.color.border.subtle};
+    $selected
+      ? $error
+        ? theme.color.border.error
+        : theme.color.border.selected
+      : theme.color.border.subtle};
   border-radius: 20px;
   cursor: pointer;
   display: flex;
@@ -32,13 +40,10 @@ export const SelectionPanel = styled.div<{
   flex-wrap: wrap;
   overflow: hidden;
 
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
-
   ${({ theme }) =>
     `@media (min-width: ${theme.breakpoints.medium}) {
         flex-wrap: nowrap;
         padding: ${theme.spacing.medium};
-        margin-bottom: ${theme.spacing.small};
       }`}
 `;
 
