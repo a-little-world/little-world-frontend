@@ -3,7 +3,6 @@ import {
   ButtonVariations,
   ChevronDownIcon,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import styled, { css } from 'styled-components';
 import { Drawer as VaulDrawer } from 'vaul';
 
@@ -71,11 +70,11 @@ const Drawer = ({ children, open, onClose }: DrawerProps) => (
       <VaulDrawer.Portal>
         <StyledOverlay onClick={onClose} />
         <StyledContent>
-          <DragHandle />{' '}
+          <DragHandle />
           {/* Provides the user with a visual cue that it can be scrolled */}
-          <CloseButton variation={ButtonVariations.Icon} onClick={onClose}>
-            <ChevronDownIcon label="close drawer" width="16" height="16" />
-          </CloseButton>
+
+          <ChevronDownIcon label="close drawer" width="16" height="16" />
+
           {children}
         </StyledContent>
       </VaulDrawer.Portal>
