@@ -41,11 +41,6 @@ const StyledOverlay = styled(VaulDrawer.Overlay)`
   z-index: 99;
 `;
 
-const CloseButton = styled(Button)`
-  width: 100%;
-  padding-top: ${({ theme }) => theme.spacing.small};
-`;
-
 const DragHandle = styled.div`
   width: 40px;
   height: 4px;
