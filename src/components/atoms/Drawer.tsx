@@ -1,6 +1,4 @@
 import {
-  Button,
-  ButtonVariations,
   ChevronDownIcon,
 } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
