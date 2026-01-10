@@ -166,6 +166,7 @@ interface SharedControlBarProps {
   activeOption?: string;
   onChatToggle: () => void;
   onTranslatorToggle: () => void;
+  unreadChatCount?: number;
 }
 
 interface ControlBarProps extends SharedControlBarProps {
@@ -183,11 +184,13 @@ export const TopControlBar = ({
   onChatToggle,
   onQuestionCardsToggle,
   onTranslatorToggle,
+  unreadChatCount,
 }: { onQuestionCardsToggle: () => void } & SharedControlBarProps) => {
   const { t } = useTranslation();
   return (
     <Bar $position="top">
       <ToggleBtn onClick={onChatToggle} variation={ButtonVariations.Circle}>
+        {unreadChatCount ? <UnreadDot count={unreadChatCount} /> : null}
         <MessageIcon
           label={t('call.chat_label')}
           gradient={activeOption === 'chat' ? Gradients.Orange : undefined}
@@ -224,10 +227,10 @@ function ControlBar({
   onFullScreenToggle,
   onTranslatorToggle,
   onPermissionModalOpen,
+  unreadChatCount,
 }: ControlBarProps) {
   const { t } = useTranslation();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
-  const hasUnreadMessage = false;
 
   const { permissionDenied: audioPermissionDenied } = useTrackToggle({
     source: Track.Source.Microphone,
@@ -326,8 +329,7 @@ function ControlBar({
                 onClick={onChatToggle}
                 variation={ButtonVariations.Circle}
               >
-                {hasUnreadMessage && <UnreadDot count={1} />}
-
+                {unreadChatCount ? <UnreadDot count={unreadChatCount} /> : null}
                 <MessageIcon label={t('call.chat_label')} />
               </ToggleBtn>
             </div>
