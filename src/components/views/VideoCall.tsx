@@ -32,9 +32,18 @@ import {
   useChatInputStore,
   useConnectedCallStore,
 } from '../../features/stores';
-import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE, USER_ENDPOINT, getChatEndpoint } from '../../features/swr';
+import {
+  RANDOM_CALL_EXIT_PARAM,
+  RANDOM_CALL_EXIT_VALUE,
+  USER_ENDPOINT,
+  getChatEndpoint,
+} from '../../features/swr';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
-import { RANDOM_CALLS_ROUTE, getAppRoute, getCallSetupRoute } from '../../router/routes';
+import {
+  RANDOM_CALLS_ROUTE,
+  getAppRoute,
+  getCallSetupRoute,
+} from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import Drawer from '../atoms/Drawer';
 import ProfileImage from '../atoms/ProfileImage';
@@ -86,9 +95,13 @@ function MyVideoConference({
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
   const tracks = useTracks(
-    [{ source: Track.Source.Camera, withPlaceholder: true }],
+    [
+      { source: Track.Source.Camera, withPlaceholder: true },
+      { source: Track.Source.ScreenShare, withPlaceholder: false },
+    ],
     { onlySubscribed: true },
   );
+  const [screenShareTrack] = useTracks([Track.Source.ScreenShare]);
   const [currentParticipants, setCurrentParticipants] = useState(1);
   const [otherUserDisconnected, setOtherUserDisconnected] = useState(false);
   const [callAgainError, setCallAgainError] = useState('');
@@ -97,6 +110,9 @@ function MyVideoConference({
   const theme = useTheme();
 
   const { t } = useTranslation();
+
+  const isScreenShareEnabled =
+    screenShareTrack && !screenShareTrack.publication.isMuted;
 
   useEffect(() => {
     if (name) initializeCallID(name);
@@ -335,8 +351,10 @@ function VideoCall() {
                 // Redirect to random calls page with query param for random calls
                 if (callType === 'random' || isRandomCallRoute) {
                   navigate(
-                    `${getAppRoute(RANDOM_CALLS_ROUTE)}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
-                    { replace: true }
+                    `${getAppRoute(
+                      RANDOM_CALLS_ROUTE,
+                    )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
+                    { replace: true },
                   );
                   return;
                 }

@@ -7,6 +7,7 @@ import {
   Gradients,
   MessageIcon,
   MessageWithQuestionIcon,
+  ScreenShareIcon,
   Tooltip,
   TranslatorIcon,
   tokens,
@@ -18,6 +19,7 @@ import {
   useTrackToggle,
 } from '@livekit/components-react';
 import { Track } from 'livekit-client';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
@@ -78,14 +80,38 @@ const TOGGLE_CSS = css`
   }
 `;
 
+export function supportsScreenSharing(): boolean {
+  return (
+    typeof navigator !== 'undefined' &&
+    navigator.mediaDevices &&
+    !!navigator.mediaDevices.getDisplayMedia
+  );
+}
+
 const Toggle = styled(TrackToggle)<{
+  $circular?: boolean;
   $withBackground?: boolean;
   $permissionDenied?: boolean;
 }>`
   ${TOGGLE_CSS};
   height: 100%;
-  padding: ${({ theme }) =>
-    `0 ${theme.spacing.xxxsmall} 0 ${theme.spacing.small}`};
+  padding: ${({ theme, $circular }) =>
+    $circular ? '0' : `0 ${theme.spacing.xxxsmall} 0 ${theme.spacing.small}`};
+
+  ${({ $circular }) =>
+    $circular &&
+    css`
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+
+      &:not(:disabled):hover {
+        background-color: ${TOGGLE_BACKGROUND};
+        transition: opacity 0.3s ease;
+        opacity: 0.6;
+      }
+    `}
 
   ${({ $withBackground, $permissionDenied }) =>
     $withBackground &&
@@ -228,6 +254,9 @@ function ControlBar({
   const { t } = useTranslation();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
   const hasUnreadMessage = false;
+  const [isScreenShareEnabled, setIsScreenShareEnabled] = useState(false);
+
+  const browserSupportsScreenSharing = supportsScreenSharing();
 
   const { permissionDenied: audioPermissionDenied } = useTrackToggle({
     source: Track.Source.Microphone,
@@ -243,12 +272,20 @@ function ControlBar({
     });
   };
 
+  const onScreenShareChange = useCallback(
+    (enabled: boolean) => {
+      console.log('onScreenShareChange', enabled);
+      setIsScreenShareEnabled(enabled);
+    },
+    [setIsScreenShareEnabled],
+  );
+  console.log('isScreenShareEnabled', browserSupportsScreenSharing);
   if (hide) return null;
   return (
     <Bar $position="bottom">
       <Section>
         <Tooltip
-          text={t('controlbar.microphone_toggle_tooltip')}
+          text={t('call.microphone_toggle_tooltip')}
           trigger={
             <div>
               <MediaControl $permissionDenied={audioPermissionDenied}>
@@ -274,7 +311,7 @@ function ControlBar({
         />
 
         <Tooltip
-          text={t('controlbar.camera_toggle_tooltip')}
+          text={t('call.camera_toggle_tooltip')}
           trigger={
             <MediaControl $permissionDenied={videoPermissionDenied}>
               <div>
@@ -299,8 +336,39 @@ function ControlBar({
           }
         />
 
+        {browserSupportsScreenSharing && (
+          <Tooltip
+            text={t(
+              `call.screenshare_${
+                isScreenShareEnabled ? 'stop' : 'start'
+              }_tooltip`,
+            )}
+            trigger={
+              <div>
+                <Toggle
+                  source={Track.Source.ScreenShare}
+                  captureOptions={{
+                    audio: true,
+                    selfBrowserSurface: 'include',
+                  }}
+                  showIcon={false}
+                  onChange={onScreenShareChange}
+                  onDeviceError={
+                    error => console.error(error)
+                    // onDeviceError?.({ source: Track.Source.ScreenShare, error })
+                  }
+                  $circular
+                  $withBackground
+                >
+                  <ScreenShareIcon label={t('call.screenshare_label')} />
+                </Toggle>
+              </div>
+            }
+          />
+        )}
+
         <Tooltip
-          text={t('controlbar.fullscreen_toggle_tooltip')}
+          text={t('call.fullscreen_toggle_tooltip')}
           trigger={
             <div>
               <ToggleBtn
@@ -318,7 +386,7 @@ function ControlBar({
           }
         />
         <Tooltip
-          text={t('controlbar.message_toggle_tooltip')}
+          text={t('call.message_toggle_tooltip')}
           trigger={
             <div>
               <ToggleBtn
@@ -334,7 +402,7 @@ function ControlBar({
           }
         />
         <Tooltip
-          text={t('controlbar.translation_toggle_tooltip')}
+          text={t('call.translation_toggle_tooltip')}
           trigger={
             <div>
               <ToggleBtn
