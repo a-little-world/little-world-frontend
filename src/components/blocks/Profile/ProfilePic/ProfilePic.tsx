@@ -5,7 +5,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ImageSearchIcon,
-  InputError,
   Label,
   Modal,
   PencilIcon,
@@ -19,6 +18,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Control,
   Controller,
+  UseFormClearErrors,
   UseFormSetError,
   UseFormSetValue,
 } from 'react-hook-form';
@@ -112,12 +112,14 @@ interface ProfilePicProps {
   control: Control<any>;
   setValue: UseFormSetValue<any>;
   setError: UseFormSetError<any>;
+  clearErrors: UseFormClearErrors<any>;
 }
 
 const ProfilePic: React.FC<ProfilePicProps> = ({
   control,
   setValue,
   setError,
+  clearErrors,
 }) => {
   const [imageType, setImageType] = useState<keyof typeof IMAGE_TYPES>(
     IMAGE_TYPES.image,
@@ -142,6 +144,8 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
 
     if (!file) return; // Guard clause for no file selected
 
+    clearErrors(USER_FIELDS.image);
+
     try {
       // compress file if bigger than limit
       if (file.size > MAX_IMAGE_SIZE) {
@@ -155,8 +159,10 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
         setValue(USER_FIELDS.image, file); // Use original file here
       }
     } catch {
-      setError(USER_FIELDS.image);
-      // Handle error (e.g., show a notification to the user)
+      setError(USER_FIELDS.image, {
+        type: 'custom',
+        message: 'validation.image_upload_error',
+      });
     }
   };
 
@@ -173,6 +179,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
   // Selection for the type the user is choosing (Own Image/ Avatar)
   const onImageSelection = (type: keyof typeof IMAGE_TYPES) => {
     if (type === imageType) return;
+    clearErrors(USER_FIELDS.image);
     setImageType(type);
     setValue(USER_FIELDS.imageType, type);
     // remove other image type value
@@ -249,7 +256,12 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
         defaultValue={undefined}
         name={USER_FIELDS.image}
         control={control}
-        rules={{ required: imageType === IMAGE_TYPES.image && !uploadedImage }}
+        rules={{
+          required:
+            imageType === IMAGE_TYPES.image && !uploadedImage
+              ? 'validation.image_upload_required'
+              : false,
+        }}
         render={({
           field: { onChange, onBlur, name, ref },
           fieldState: { error },
@@ -405,16 +417,6 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                 </AvatarEditorButton>
               </InteractiveArea>
             </SelectionPanel>
-            <InputError
-              right={0}
-              bottom="-16px"
-              textAlign="left"
-              textType={TextTypes.Body5}
-              visible={!isEmpty(error)}
-              style={{ fontSize: '1rem' }}
-            >
-              {t('validation.image_upload_required')}
-            </InputError>
           </>
         )}
       />

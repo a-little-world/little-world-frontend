@@ -1,9 +1,9 @@
+import { TFunction } from 'i18next';
 import {
   FieldValues,
   MultipleFieldErrors,
   UseFormRegister,
 } from 'react-hook-form';
-import { TFunction } from 'react-i18next';
 
 export const ROOT_SERVER_ERROR = 'root.serverError';
 const TRY_AGAIN_ERROR = 'validation.generic_try_again';
@@ -24,9 +24,9 @@ interface FormErrorParams {
 }
 
 export const onFormError = ({ e, formFields, setError }: FormErrorParams) => {
-  const cause = Object.keys(formFields).includes(e.cause) ?
-    e.cause :
-    ROOT_SERVER_ERROR;
+  const cause = Object.keys(formFields).includes(e.cause)
+    ? e.cause
+    : ROOT_SERVER_ERROR;
 
   if (e.message) {
     setError(

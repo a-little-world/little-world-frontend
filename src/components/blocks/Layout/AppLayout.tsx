@@ -197,7 +197,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       submitCallFeedback({
         reviewId: postCallSurvey?.review_id,
         liveSessionId: postCallSurvey?.live_session_id,
-        rating: rating || postCallSurvey?.rating,
+        rating: rating || (postCallSurvey?.rating as number),
         review: review || postCallSurvey?.review,
         onSuccess: closePostCallSurvey,
         onError: onError ?? (() => null),
@@ -237,7 +237,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
             });
             closeModal();
           }}
-          userPk={callSetup?.userId}
+          userPk={callSetup?.userId as string}
         />
       </Modal>
 
