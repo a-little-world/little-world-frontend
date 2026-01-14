@@ -1,4 +1,3 @@
-import React from 'react';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { SWRConfig, mutate } from 'swr';
 
@@ -13,11 +12,6 @@ import {
 import router from './router/router';
 
 function Preloader({ children }) {
-  const { error: _errorUser } = useSWR(USER_ENDPOINT, {
-    revalidateOnMount: false,
-    revalidateOnFocus: true,
-  });
-
   const { error: _errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT, {
     revalidateOnMount: false,
     revalidateOnFocus: false, // No need to ever revalidate this

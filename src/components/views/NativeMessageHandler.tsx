@@ -48,6 +48,11 @@ function NativeMessageHandler() {
 
           const response: DomCommunicationResponse = { ok: true };
 
+          console.log(
+            'tokens received in frontend, sending response',
+            requestId,
+          );
+
           sendMessageToReactNative!({
             action: 'RESPONSE',
             requestId,

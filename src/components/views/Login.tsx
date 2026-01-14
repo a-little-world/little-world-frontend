@@ -17,6 +17,7 @@ import { login } from '../../api';
 import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
 import { USER_ENDPOINT } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
+import useQueryParam from '../../hooks/useQueryParam';
 import {
   FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
@@ -29,6 +30,7 @@ import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 const Login = () => {
   const { t } = useTranslation();
+  const sessionExpired = useQueryParam('sessionExpired') === 'true';
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -129,6 +131,9 @@ const Login = () => {
           type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
+        </StatusMessage>
+        <StatusMessage visible={sessionExpired}>
+          Session expired. Please login again.
         </StatusMessage>
         <StyledCta
           type="submit"

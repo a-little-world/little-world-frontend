@@ -213,10 +213,10 @@ export async function apiFetch<T = any>(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      if (errorData?.code !== 'token_not_valid') {
-        throw formatApiError(errorData, response);
+      if (errorData?.code === 'token_not_valid') {
+        throw errorData;
       }
-      throw errorData;
+      throw formatApiError(errorData, response);
     }
 
     try {
