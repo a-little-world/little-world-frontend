@@ -1,8 +1,8 @@
 // Report type constants
 export const REPORT_TYPE_UNMATCH = 'unmatch' as const;
-export const REPORT_TYPE_PARTNER = 'partner' as const;
+export const REPORT_TYPE_PARTNER = 'report_partner' as const;
 export const REPORT_TYPE_CALL_QUALITY = 'call_quality' as const;
-export const REPORT_TYPE_USER = 'user' as const;
+export const REPORT_TYPE_USER = 'report_user' as const;
 
 export type ReportType =
   | typeof REPORT_TYPE_UNMATCH

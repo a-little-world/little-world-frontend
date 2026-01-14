@@ -92,10 +92,10 @@ export const reportIssue = async ({
       keywords?: [string];
       kind?: string;
       match_id?: string;
-      reason: string;
+      message: string;
       reported_user_id?: string;
     } = {
-      reason,
+      message: reason,
     };
 
     if (matchId) {
@@ -113,7 +113,7 @@ export const reportIssue = async ({
 
     const url = matchId
       ? '/api/matching/report_match/'
-      : '/api/matching/report_issue/';
+      : '/api/help_message/';
 
     const result = await apiFetch(url, {
       method: 'POST',
