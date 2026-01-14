@@ -111,9 +111,7 @@ export const reportIssue = async ({
       body.keywords = keywords;
     }
 
-    const url = matchId
-      ? '/api/matching/report_match/'
-      : '/api/help_message/';
+    const url = matchId ? '/api/matching/report_match/' : '/api/help_message/';
 
     const result = await apiFetch(url, {
       method: 'POST',

@@ -15,7 +15,11 @@ import styled from 'styled-components';
 import { reportIssue, unmatch } from '../../../api/matches';
 import { revalidateMatches } from '../../../features/swr/index';
 import ReportForm from '../ReportForm/ReportForm';
-import { REPORT_TYPE_UNMATCH, ReportType } from '../ReportForm/constants';
+import {
+  REPORT_TYPE_CALL_QUALITY,
+  REPORT_TYPE_UNMATCH,
+  ReportType,
+} from '../ReportForm/constants';
 
 const Centred = styled.div`
   display: flex;
