@@ -45,6 +45,8 @@ const DragHandle = styled.div`
   background-color: ${({ theme }) => theme.color.border.primary || '#ccc'};
   border-radius: 2px;
   margin: 8px 0;
+  flex-shrink: 0;
+  z-index: 101;
 `;
 
 type DrawerProps = {
