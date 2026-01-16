@@ -11,8 +11,13 @@ import {
   USER_ENDPOINT,
 } from './index';
 
+interface CategoryData {
+  results: any[];
+  [key: string]: any;
+}
+
 interface MatchesData {
-  [category: string]: any[];
+  [category: string]: CategoryData;
 }
 
 const sortChats = (chats: any[]) => {
@@ -41,9 +46,14 @@ export function addMatch(category: string, match: any): void {
     MATCHES_ENDPOINT,
     (matchesData: MatchesData | undefined) => {
       if (!matchesData) return matchesData;
+      const categoryData = matchesData[category];
+      if (!categoryData) return matchesData;
       return {
         ...matchesData,
-        [category]: [...(matchesData[category] || []), match],
+        [category]: {
+          ...categoryData,
+          results: [...(categoryData.results || []), match],
+        },
       };
     },
     false,
