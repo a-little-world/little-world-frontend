@@ -76,16 +76,18 @@ export const reportIssue = async ({
   matchId,
   onError,
   onSuccess,
+  origin,
   reason,
   reportedUserId,
 }: {
   keywords?: [string];
   kind?: string;
-  matchId: string;
+  matchId?: string;
   onError: (error: any) => void;
   onSuccess: (result: any) => void;
+  origin?: string;
   reason: string;
-  reportedUserId?: string;
+  reportedUserId?: string | null;
 }) => {
   try {
     const body: {
@@ -93,6 +95,7 @@ export const reportIssue = async ({
       kind?: string;
       match_id?: string;
       message: string;
+      origin?: string;
       reported_user_id?: string;
     } = {
       message: reason,
@@ -109,6 +112,9 @@ export const reportIssue = async ({
     }
     if (keywords) {
       body.keywords = keywords;
+    }
+    if (origin) {
+      body.origin = origin;
     }
 
     const url = matchId ? '/api/matching/report_match/' : '/api/help_message/';

@@ -63,7 +63,7 @@ function PartnerActionCard({ data, onClose }: PartnerActionCardProps) {
     onClose();
   };
 
-  const handleUnmatch = (formData: FormData) => {
+  const handleUnmatch = (formData: FormData, onError: (error: any) => void) => {
     unmatch({
       reason: formData.reason,
       matchId: data.matchId,
@@ -71,26 +71,21 @@ function PartnerActionCard({ data, onClose }: PartnerActionCardProps) {
         setConfirmed(true);
         revalidateMatches();
       },
-      onError: () => {
-        // Error handling will be done by ReportForm's internal error state
-      },
+      onError,
     });
   };
 
-  const handleReport = (formData: FormData) => {
+  const handleReport = (formData: FormData, onError: (error: any) => void) => {
     reportIssue({
       keywords: formData.keywords || undefined,
       kind: formData.reportType,
       matchId: data.matchId,
       reason: formData.reason,
-      reportedUserId: undefined,
       onSuccess: () => {
         setConfirmed(true);
         revalidateMatches();
       },
-      onError: () => {
-        // Error handling will be done by ReportForm's internal error state
-      },
+      onError,
     });
   };
 
@@ -120,7 +115,7 @@ function PartnerActionCard({ data, onClose }: PartnerActionCardProps) {
 
     return (
       <ReportForm
-        reportType={data.type}
+        reportType={REPORT_TYPE_CALL_QUALITY || data.type}
         reportedUserName={data.userName}
         onSubmit={isUnmatch ? handleUnmatch : handleReport}
         onClose={handleOnClose}

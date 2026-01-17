@@ -53,18 +53,21 @@ const ButtonsWrapper = styled.div`
     }`}
 `;
 
+export type ReportFormData = {
+  reason: string;
+  reportType: ReportType;
+  keywords?: [string];
+};
 interface ReportFormProps {
-  reportedUserName: string;
+  hideTitle?: boolean;
+  reportedUserName?: string;
   onClose: () => void;
-  onSubmit: (formData: {
-    reason: string;
-    reportType: ReportType;
-    keywords?: [string];
-  }) => void;
+  onSubmit: (formData: ReportFormData, onError: (error: any) => void) => void;
   reportType?: ReportType;
 }
 
 function ReportForm({
+  hideTitle = false,
   onSubmit,
   onClose,
   reportType,
@@ -80,6 +83,7 @@ function ReportForm({
     handleSubmit,
     reset,
     watch,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -126,30 +130,46 @@ function ReportForm({
     reset();
   };
 
-  const handleSubmitReport = (formData: {
-    reason: string;
-    reportType?: ReportType;
-    keywords?: [string];
-  }) => {
-    onSubmit({
-      reason: formData.reason,
-      reportType: formData.reportType || selectedReportType,
-      keywords: formData.keywords,
-    });
+  const handleSubmitReport = (formData: ReportFormData) => {
+    // Create error handler that sets server error in the form
+    const handleError = (error: any) => {
+      const errorMessage =
+        error?.message ||
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        'error.server_error';
+
+      setError('root.serverError', {
+        type: 'server',
+        message: errorMessage,
+      });
+    };
+
+    // Pass form data and error handler to parent
+    onSubmit(
+      {
+        reason: formData.reason,
+        reportType: formData.reportType || selectedReportType,
+        keywords: formData.keywords,
+      },
+      handleError,
+    );
   };
 
   return (
     <Form onSubmit={handleSubmit(handleSubmitReport)}>
-      <Text type={TextTypes.Heading4} tag="h2" center>
-        {t(
-          `${translationKeyPrefix}.${
-            reportedUserName ? 'partner' : 'generic'
-          }_title`,
-          {
-            name: reportedUserName,
-          },
-        )}
-      </Text>
+      {!hideTitle && (
+        <Text type={TextTypes.Heading4} tag="h2" center>
+          {t(
+            `${translationKeyPrefix}.${
+              reportedUserName ? 'partner' : 'generic'
+            }_title`,
+            {
+              name: reportedUserName,
+            },
+          )}
+        </Text>
+      )}
       <Text>
         {t(
           `${translationKeyPrefix}.${
