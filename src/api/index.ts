@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie';
-
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 import {
@@ -39,7 +37,7 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
       onSuccess(response);
     } catch (error) {
       if (error?.status === 413)
-        throw new Error('validation.image_upload_required', {
+        throw new Error('validation.image_upload_error', {
           cause: API_FIELDS.image,
         });
       else {
@@ -53,26 +51,18 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
 
 export const submitHelpForm = async (formData, onSuccess, onFailure) => {
   try {
-    try {
-      const response = await apiFetch(`/api/help_message/`, {
-        headers: {
-          'X-CSRFToken': Cookies.get('csrftoken'),
-          'X-UseTagsOnly': true,
-        },
-        method: 'POST',
-        body: formData,
-      });
+    const response = await apiFetch(`/api/help_message/`, {
+      method: 'POST',
+      body: formData,
+    });
 
-      onSuccess(response);
-    } catch (error) {
-      if (error?.status === 413)
-        throw new Error('validation.image_upload_required');
-      else {
-        throw error;
-      }
-    }
+    onSuccess(response);
   } catch (error) {
-    onFailure(error);
+    if (error?.status === 413) {
+      onFailure(new Error('validation.image_upload_error'));
+    } else {
+      onFailure(error);
+    }
   }
 };
 

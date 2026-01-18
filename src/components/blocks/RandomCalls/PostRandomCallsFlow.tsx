@@ -5,16 +5,17 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  Dropdown,
   Text,
-  TextArea,
 } from '@a-little-world/little-world-design-system';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
+import { reportIssue } from '../../../api/matches';
+import { useConnectedCallStore } from '../../../features/stores';
 import { CallSetupCard } from '../Calls/CallSetup';
+import ReportForm, { ReportFormData } from '../ReportForm/ReportForm';
+import { REPORT_TYPE_USER } from '../ReportForm/constants';
 
 type PostCallState = 'initial' | 'report' | 'report_confirmed';
 
@@ -30,21 +31,10 @@ const ReportProblem = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.small};
 `;
 
-const FormWrapper = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.small};
-`;
-
 interface PostRandomCallsFlowProps {
   onReturnToStart: () => void;
   onReturnToLobby: () => void;
 }
-
-type ReportFormData = {
-  reportReason: string;
-  reportDetails: string;
-};
 
 const PostRandomCallsFlow = ({
   onReturnToStart,
@@ -52,20 +42,8 @@ const PostRandomCallsFlow = ({
 }: PostRandomCallsFlowProps) => {
   const { t } = useTranslation();
   const [flowState, setFlowState] = useState<PostCallState>('initial');
+  const { disconnectedFromUser } = useConnectedCallStore();
   const theme = useTheme();
-
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { isValid },
-  } = useForm<ReportFormData>({
-    defaultValues: {
-      reportReason: '',
-      reportDetails: '',
-    },
-    mode: 'onChange',
-  });
 
   const handleReportClick = () => {
     setFlowState('report');
@@ -73,13 +51,24 @@ const PostRandomCallsFlow = ({
 
   const handleCancelReport = () => {
     setFlowState('initial');
-    reset();
   };
 
-  const onSubmitReport = (_data: ReportFormData) => {
-    // TODO: Submit report to API
-    setFlowState('report_confirmed');
-    reset();
+  const onSubmitReport = (
+    { reason, reportType, keywords }: ReportFormData,
+    onError: (error: any) => void,
+  ) => {
+    reportIssue({
+      reason,
+      kind: reportType,
+      keywords,
+      origin: 'Post Random Call',
+      reportedUserId:
+        reportType === REPORT_TYPE_USER ? disconnectedFromUser : null,
+      onSuccess: () => {
+        setFlowState('report_confirmed');
+      },
+      onError,
+    });
   };
 
   // Initial View
@@ -117,75 +106,16 @@ const PostRandomCallsFlow = ({
 
   // Report Card View
   if (flowState === 'report') {
-    const reportReasonOptions = [
-      { value: 'call_quality', label: t('random_calls.report_reason_quality') },
-      {
-        value: 'report_partner',
-        label: t('random_calls.report_reason_partner'),
-      },
-    ];
-
     return (
       <PostCallCard>
         <CardHeader>{t('random_calls.report_card_title')}</CardHeader>
         <CardContent>
-          <FormWrapper onSubmit={handleSubmit(onSubmitReport)}>
-            <Text>{t('random_calls.report_card_description')}</Text>
-
-            <Controller
-              name="reportReason"
-              control={control}
-              rules={{ required: t('validation.required') }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <Dropdown
-                  label={t('random_calls.report_reason_label')}
-                  placeholder={t('random_calls.report_reason_placeholder')}
-                  options={reportReasonOptions}
-                  value={value}
-                  onValueChange={onChange}
-                  error={error?.message}
-                />
-              )}
-            />
-
-            <Controller
-              name="reportDetails"
-              control={control}
-              rules={{ required: t('validation.required') }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <TextArea
-                  label={t('random_calls.report_details_label')}
-                  placeholder={t('random_calls.report_details_placeholder')}
-                  value={value}
-                  onChange={onChange}
-                  rows={5}
-                  error={error?.message}
-                />
-              )}
-            />
-          </FormWrapper>
+          <ReportForm
+            hideTitle
+            onSubmit={onSubmitReport}
+            onClose={handleCancelReport}
+          />
         </CardContent>
-        <CardFooter align="space-between">
-          <Button
-            appearance={ButtonAppearance.Secondary}
-            onClick={handleCancelReport}
-          >
-            {t('random_calls.report_cancel_btn')}
-          </Button>
-          <Button
-            type="submit"
-            onClick={handleSubmit(onSubmitReport)}
-            disabled={!isValid}
-          >
-            {t('random_calls.report_submit_btn')}
-          </Button>
-        </CardFooter>
       </PostCallCard>
     );
   }

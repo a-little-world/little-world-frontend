@@ -1,11 +1,12 @@
 import { Button, Switch } from '@a-little-world/little-world-design-system';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
 import { mutateUserData } from '../../../api/index';
+import { environment } from '../../../environment';
 import { useDevelopmentFeaturesStore } from '../../../features/stores/index';
 import { FIREBASE_ENDPOINT, USER_ENDPOINT } from '../../../features/swr/index';
 import {
@@ -58,7 +59,7 @@ const PushNotifications = ({
   }, [handleSubmit, watch]);
 
   useEffect(() => {
-    if (enabled) {
+    if (enabled && !environment.isNative) {
       Notification.requestPermission().then(permission => {
         if (permission !== 'granted') {
           setError('push_notifications_enabled', {

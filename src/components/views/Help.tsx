@@ -17,9 +17,10 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { TFunction } from 'i18next';
 import React, { DragEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { TFunction, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR, { SWRConfig } from 'swr';
 
@@ -200,11 +201,11 @@ export function Faqs() {
   return (
     <FAQContainer>
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
-        {t('menu_faqs')}
+        {t('nbt_faqs')}
       </ContentTitle>
       <Text>{t('help.faqs_intro')}</Text>
       <FAQImageWrapper>
-        <TeacherImage />
+        <TeacherImage label="image of woman holding book" />
       </FAQImageWrapper>
       {faqs.map(faq => (
         <FAQItems key={faq.section}>
@@ -253,13 +254,14 @@ export function Contact() {
       data.append('file', file, name);
     }
     data.append('message', formData.message);
+    data.append('origin', 'Contact Form');
     submitHelpForm(data, onSuccess, onError);
   };
 
   return (
     <ContactForm onSubmit={handleSubmit(onSubmit)}>
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
-        {t('menu_contact')}
+        {t('nbt_contact')}
       </ContentTitle>
       <Text>{t('help.contact_intro_line1')}</Text>
       <StyledIntro>{t('help.contact_intro_line2')}</StyledIntro>

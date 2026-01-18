@@ -4,13 +4,13 @@ import {
   ButtonSizes,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { completeForm, mutateUserData } from '../../../api';
+import { USER_FIELDS } from '../../../constants';
 import {
   API_OPTIONS_ENDPOINT,
   USER_ENDPOINT,
@@ -48,6 +48,7 @@ const Form = () => {
 
   const {
     control,
+    clearErrors,
     getValues,
     handleSubmit,
     formState: { errors },
@@ -120,6 +121,7 @@ const Form = () => {
           control={control}
           setValue={setValue}
           setError={setError}
+          clearErrors={clearErrors}
         />
       );
 
@@ -207,6 +209,11 @@ const Form = () => {
     return result;
   };
 
+  // Determine which error to display (prioritize server errors, then field errors)
+  const serverError = errors?.root?.serverError;
+  const imageError = errors?.[USER_FIELDS.image];
+  const displayError = serverError || imageError;
+
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading4}>
@@ -218,8 +225,8 @@ const Form = () => {
         )}
         {note && <StyledNote>{t(note)}</StyledNote>}
         {renderComponents()}
-        <SubmitError $visible={errors?.root?.serverError}>
-          {t(errors?.root?.serverError?.message)}
+        <SubmitError $visible={!!displayError}>
+          {t(displayError?.message)}
         </SubmitError>
         <FormButtons $onlyOneBtn={Boolean(!prevPage)}>
           {Boolean(prevPage) && (

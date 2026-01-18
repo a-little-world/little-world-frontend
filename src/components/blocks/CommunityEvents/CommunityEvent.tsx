@@ -5,6 +5,7 @@ import {
   PhoneIcon,
   Text,
   TextTypes,
+  Tooltip,
 } from '@a-little-world/little-world-design-system';
 import { groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -206,17 +207,24 @@ const EventCtas = ({
                   height={14}
                 />
               </Button>
-              <AddToCalendarButton
-                calendarEvent={{
-                  title,
-                  description,
-                  frequency,
-                  startDate: session.startDate,
-                  endDate: session.endDate,
-                  durationInMinutes: 60,
-                  link: session.link,
-                }}
-                size={ButtonSizes.Small}
+              <Tooltip
+                text={t('add_to_calendar')}
+                trigger={
+                  <div>
+                    <AddToCalendarButton
+                      calendarEvent={{
+                        title,
+                        description,
+                        frequency,
+                        startDate: session.startDate,
+                        endDate: session.endDate,
+                        durationInMinutes: 60,
+                        link: session.link,
+                      }}
+                      size={ButtonSizes.Small}
+                    />
+                  </div>
+                }
               />
             </SessionFlex>
           </Session>
@@ -228,11 +236,11 @@ const EventCtas = ({
     <>
       <DateTimeEvent>
         <Text type={TextTypes.Body3} bold tag="span">
-          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly
-            ? t('community_events.every_week', {
+          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly ?
+            t('community_events.every_week', {
                 day: formatDate(startDate, 'EEEE', language),
-              })
-            : formatDate(startDate, 'cccc, LLLL do', language)}
+              }) :
+            formatDate(startDate, 'cccc, LLLL do', language)}
         </Text>
         <Text type={TextTypes.Body3} bold color={theme.color.text.heading}>
           {formatEventTime(startDate, endDate)}
@@ -251,16 +259,23 @@ const EventCtas = ({
           />
           <span className="text">{t('community_events.join_call')}</span>
         </Button>
-        <AddToCalendarButton
-          calendarEvent={{
-            title,
-            frequency,
-            description,
-            startDate,
-            endDate,
-            durationInMinutes: 60,
-            link,
-          }}
+        <Tooltip
+          text={t('add_to_calendar')}
+          trigger={
+            <div>
+              <AddToCalendarButton
+                calendarEvent={{
+                  title,
+                  frequency,
+                  description,
+                  startDate,
+                  endDate,
+                  durationInMinutes: 60,
+                  link,
+                }}
+              />
+            </div>
+          }
         />
       </Buttons>
     </>

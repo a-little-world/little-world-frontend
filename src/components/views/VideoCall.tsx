@@ -32,9 +32,18 @@ import {
   useChatInputStore,
   useConnectedCallStore,
 } from '../../features/stores';
-import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE, USER_ENDPOINT, getChatEndpoint } from '../../features/swr';
+import {
+  RANDOM_CALL_EXIT_PARAM,
+  RANDOM_CALL_EXIT_VALUE,
+  USER_ENDPOINT,
+  getChatEndpoint,
+} from '../../features/swr';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
-import { RANDOM_CALLS_ROUTE, getAppRoute, getCallSetupRoute } from '../../router/routes';
+import {
+  RANDOM_CALLS_ROUTE,
+  getAppRoute,
+  getCallSetupRoute,
+} from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import Drawer from '../atoms/Drawer';
 import ProfileImage from '../atoms/ProfileImage';
@@ -327,7 +336,10 @@ function VideoCall() {
               token={token}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
-                disconnectFromCall(uuid);
+                disconnectFromCall({
+                  sessionId: uuid,
+                  partnerId: chatData?.partner?.id,
+                });
                 if (postDisconnectRedirect) {
                   navigate(postDisconnectRedirect, { replace: true });
                   return;
@@ -335,8 +347,10 @@ function VideoCall() {
                 // Redirect to random calls page with query param for random calls
                 if (callType === 'random' || isRandomCallRoute) {
                   navigate(
-                    `${getAppRoute(RANDOM_CALLS_ROUTE)}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
-                    { replace: true }
+                    `${getAppRoute(
+                      RANDOM_CALLS_ROUTE,
+                    )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
+                    { replace: true },
                   );
                   return;
                 }

@@ -15,6 +15,7 @@ import {
   TagSizes,
   Text,
   TextTypes,
+  Tooltip,
   VideoIcon,
   pixelate,
 } from '@a-little-world/little-world-design-system';
@@ -36,9 +37,9 @@ import MenuLink, { MenuLinkText } from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
 import {
-  PARTNER_ACTION_REPORT,
-  PARTNER_ACTION_UNMATCH,
-} from './PartnerActionCard';
+  REPORT_TYPE_PARTNER,
+  REPORT_TYPE_UNMATCH,
+} from '../ReportForm/constants';
 
 export const PROFILE_CARD_HEIGHT = '408px';
 
@@ -253,13 +254,20 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           showCloseButton
           trigger={
             <MatchMenuToggle type="button" variation={ButtonVariations.Icon}>
-              <DotsIcon
-                circular
-                height="16px"
-                width="16px"
-                color="#7c7b7b"
-                borderColor="#7c7b7b"
-                label="menu options"
+              <Tooltip
+                text={t('profile_card.user_actions')}
+                trigger={
+                  <div>
+                    <DotsIcon
+                      circular
+                      height="16px"
+                      width="16px"
+                      color="#7c7b7b"
+                      borderColor="#7c7b7b"
+                      label="menu options"
+                    />
+                  </div>
+                }
               />
             </MatchMenuToggle>
           }
@@ -267,7 +275,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <PartnerMenuOption
             onClick={() =>
               openPartnerModal?.({
-                type: PARTNER_ACTION_REPORT,
+                type: REPORT_TYPE_PARTNER,
                 userPk,
                 userName: profile.first_name,
                 matchId,
@@ -279,7 +287,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <PartnerMenuOption
             onClick={() =>
               openPartnerModal?.({
-                type: PARTNER_ACTION_UNMATCH,
+                type: REPORT_TYPE_UNMATCH,
                 userPk,
                 userName: profile.first_name,
                 matchId,
@@ -317,43 +325,63 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       {!isSelf && (
         <Actions $onProfile={onProfile}>
           {!onProfile && (
-            <MenuLink
-              to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
-              disabled={isDeleted}
-              Icon={ProfileIcon}
-              iconGradient={Gradients.Orange}
-              iconLabel="visit profile"
-              text={t('partner_profile.profile')}
+            <Tooltip
+              text={t('profile_card.view_profile')}
+              trigger={
+                <div>
+                  <MenuLink
+                    to={getAppRoute(`${PROFILE_ROUTE}/${userPk}`)}
+                    disabled={isDeleted}
+                    Icon={ProfileIcon}
+                    iconGradient={Gradients.Orange}
+                    iconLabel="visit profile"
+                    text={t('partner_profile.profile')}
+                  />
+                </div>
+              }
             />
           )}
-          <MenuLink
-            to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
-            state={{ userPk }}
-            Icon={MessageIcon}
-            iconGradient={Gradients.Orange}
-            iconLabel="chat icon"
-            text={t(
-              isDeleted
-                ? 'partner_profile.messages'
-                : 'partner_profile.message',
-            )}
-            order={isDeleted ? -1 : undefined}
+          <Tooltip
+            text={t('profile_card.message')}
+            trigger={
+              <div>
+                <MenuLink
+                  to={getAppSubpageRoute(MESSAGES_ROUTE, chatId)}
+                  state={{ userPk }}
+                  Icon={MessageIcon}
+                  iconGradient={Gradients.Orange}
+                  iconLabel="chat icon"
+                  text={t(
+                    isDeleted
+                      ? 'partner_profile.messages'
+                      : 'partner_profile.message',
+                  )}
+                  order={isDeleted ? -1 : undefined}
+                />
+              </div>
+            }
           />
-          <Button
-            type="button"
-            variation={ButtonVariations.Option}
-            onClick={() => callSetup.initCallSetup({ userId: userPk })}
-            disabled={isDeleted}
-          >
-            <VideoIcon
-              gradient={isDeleted ? undefined : Gradients.Orange}
-              color={isDeleted ? theme.color.text.disabled : undefined}
-              label="call icon"
-              width={38}
-              height={32}
-            />
-            <MenuLinkText>{t('partner_profile.call')}</MenuLinkText>
-          </Button>
+
+          <Tooltip
+            text={t('profile_card.call')}
+            trigger={
+              <Button
+                type="button"
+                variation={ButtonVariations.Option}
+                onClick={() => callSetup.initCallSetup({ userId: userPk })}
+                disabled={isDeleted}
+              >
+                <VideoIcon
+                  gradient={isDeleted ? undefined : Gradients.Orange}
+                  color={isDeleted ? theme.color.text.disabled : undefined}
+                  label="call icon"
+                  width={38}
+                  height={32}
+                />
+                <MenuLinkText>{t('partner_profile.call')}</MenuLinkText>
+              </Button>
+            }
+          />
         </Actions>
       )}
     </StyledProfileCard>

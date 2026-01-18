@@ -94,7 +94,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT);
   const activeCallRoom = activeCallRooms?.[0];
   const { postCallSurvey } = usePostCallSurveyStore();
-  const { disconnectedFrom, disconnectFromCall } = useConnectedCallStore();
+  const { disconnectedFromSession, disconnectFromCall } =
+    useConnectedCallStore();
 
   // Zustand store hooks
   const { initCallSetup, callSetup, cancelCallSetup } = useCallSetupStore();
@@ -112,11 +113,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (
       activeCallRoom?.room_uuid &&
-      activeCallRoom.room_uuid !== disconnectedFrom
+      activeCallRoom.room_uuid !== disconnectedFromSession
     ) {
       openModal(ModalTypes.INCOMING_CALL.id);
     } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
-  }, [activeCallRoom?.uuid, disconnectedFrom]);
+  }, [activeCallRoom?.uuid, disconnectedFromSession]);
 
   // Initialize call setup from query param on page load
   useEffect(() => {
@@ -150,7 +151,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.results?.length ||
-      matches?.unconfirmed?.results?.length,
+        matches?.unconfirmed?.results?.length,
     );
 
     if (shouldShowMatchModal) {
@@ -171,7 +172,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const onRejectCall = () => {
     if (activeCallRoom?.partner?.id) {
-      disconnectFromCall(activeCallRoom.room_uuid); // ensure call doesn't re-appear
+      disconnectFromCall({
+        sessionId: activeCallRoom.room_uuid,
+        partnerId: activeCallRoom.partner.id,
+      }); // ensure call doesn't re-appear
       blockIncomingCall(activeCallRoom.partner.id, activeCallRoom.room_uuid);
     }
     closeModal();
@@ -197,7 +201,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       submitCallFeedback({
         reviewId: postCallSurvey?.review_id,
         liveSessionId: postCallSurvey?.live_session_id,
-        rating: rating || postCallSurvey?.rating,
+        rating: rating || (postCallSurvey?.rating as number),
         review: review || postCallSurvey?.review,
         onSuccess: closePostCallSurvey,
         onError: onError ?? (() => null),
@@ -215,7 +219,18 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
       <Content $isVH={isVH}>{children || <Outlet />}</Content>
 
-      <Modal open={isModalOpen(ModalTypes.CALL_SETUP.id)} locked>
+      <Modal
+        open={isModalOpen(ModalTypes.CALL_SETUP.id)}
+        onClose={() => {
+          cancelCallSetup();
+          setSearchParams(prev => {
+            const newParams = new URLSearchParams(prev);
+            newParams.delete('call-setup');
+            return newParams;
+          });
+          closeModal();
+        }}
+      >
         <CallSetup
           onClose={() => {
             cancelCallSetup();
@@ -226,7 +241,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
             });
             closeModal();
           }}
-          userPk={callSetup?.userId}
+          userPk={callSetup?.userId as string}
         />
       </Modal>
 
