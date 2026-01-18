@@ -111,22 +111,25 @@ export function calculateNextOccurrence(
   }
 
   if (frequency === COMMUNITY_EVENT_FREQUENCIES.fortnightly) {
-    // Calculate days until next occurrence of the same weekday
-    const daysUntilNext = (originalDayOfWeek - currentDayOfWeek + 7) % 7;
-    // If it's the same day, check if we're still within the event window
-    if (daysUntilNext === 0) {
-      currentOccurrence = new Date(now);
-      currentOccurrence.setHours(
-        originalTime.hours,
-        originalTime.minutes,
-        originalTime.seconds,
-        originalTime.milliseconds,
-      );
+    // Start from the original date and add 14 days until we find the next occurrence >= now
+    currentOccurrence = new Date(originalDate);
+    currentOccurrence.setHours(
+      originalTime.hours,
+      originalTime.minutes,
+      originalTime.seconds,
+      originalTime.milliseconds,
+    );
 
-      // Check if we should return the current occurrence or move to next fortnight
+    // Keep adding 14 days until we get a date >= now
+    while (isBefore(currentOccurrence, now)) {
+      currentOccurrence = addDays(currentOccurrence, 14);
+    }
+
+    // Now check if we're on the same calendar day but past the time (with or without end time)
+    if (currentOccurrence.toDateString() === now.toDateString()) {
       if (originalEndDate) {
         // If we have an end time, check if we're past it
-        const currentOccurrenceEndTime = new Date(now);
+        const currentOccurrenceEndTime = new Date(currentOccurrence);
         currentOccurrenceEndTime.setHours(
           originalEndDate.getHours(),
           originalEndDate.getMinutes(),
@@ -145,15 +148,8 @@ export function calculateNextOccurrence(
         currentOccurrence = addDays(currentOccurrence, 14);
       }
       // Otherwise return current occurrence (event hasn't started yet)
-    } else {
-      currentOccurrence = addDays(now, daysUntilNext);
-      currentOccurrence.setHours(
-        originalTime.hours,
-        originalTime.minutes,
-        originalTime.seconds,
-        originalTime.milliseconds,
-      );
     }
+
     return currentOccurrence;
   }
 

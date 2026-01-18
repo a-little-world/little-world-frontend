@@ -8,7 +8,6 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -36,7 +35,7 @@ const SearchingImage = styled(MatchSearchingImage)<{ $hasMatch?: boolean }>`
   flex-shrink: 0;
 `;
 
-export function LanguageLevelCard() {
+function LanguageLevelCard() {
   const { t } = useTranslation();
 
   return (
