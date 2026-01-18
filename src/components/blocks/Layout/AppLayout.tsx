@@ -94,7 +94,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT);
   const activeCallRoom = activeCallRooms?.[0];
   const { postCallSurvey } = usePostCallSurveyStore();
-  const { disconnectedFrom, disconnectFromCall } = useConnectedCallStore();
+  const { disconnectedFromSession, disconnectFromCall } =
+    useConnectedCallStore();
 
   // Zustand store hooks
   const { initCallSetup, callSetup, cancelCallSetup } = useCallSetupStore();
@@ -112,11 +113,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (
       activeCallRoom?.room_uuid &&
-      activeCallRoom.room_uuid !== disconnectedFrom
+      activeCallRoom.room_uuid !== disconnectedFromSession
     ) {
       openModal(ModalTypes.INCOMING_CALL.id);
     } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
-  }, [activeCallRoom?.uuid, disconnectedFrom]);
+  }, [activeCallRoom?.uuid, disconnectedFromSession]);
 
   // Initialize call setup from query param on page load
   useEffect(() => {
@@ -171,7 +172,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const onRejectCall = () => {
     if (activeCallRoom?.partner?.id) {
-      disconnectFromCall(activeCallRoom.room_uuid); // ensure call doesn't re-appear
+      disconnectFromCall({
+        sessionId: activeCallRoom.room_uuid,
+        partnerId: activeCallRoom.partner.id,
+      }); // ensure call doesn't re-appear
       blockIncomingCall(activeCallRoom.partner.id, activeCallRoom.room_uuid);
     }
     closeModal();

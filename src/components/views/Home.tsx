@@ -7,11 +7,11 @@ import useSWR, { mutate } from 'swr';
 import CustomPagination from '../../CustomPagination';
 import { updateMatchData } from '../../api/matches';
 import { useCallSetupStore } from '../../features/stores/index';
-import { getMatchEndpoint, USER_ENDPOINT } from '../../features/swr/index';
+import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr/index';
 import {
   COMMUNITY_EVENTS_ROUTE,
-  getAppRoute,
   RANDOM_CALLS_ROUTE,
+  getAppRoute,
 } from '../../router/routes';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard';
 import CommsBanner from '../blocks/CommsBanner';

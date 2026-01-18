@@ -18,31 +18,52 @@ interface CallData {
 
 interface ConnectedCallState {
   callData: CallData | null;
-  disconnectedFrom: string | null; // UUID of the session user disconnected from
+  disconnectedFromSession: string | null; // UUID of the session user disconnected from
+  disconnectedFromUser: string | null;
   callRejected: boolean;
   connectToCall: (data: CallData) => void;
   initializeCallID: (uuid: string) => void;
-  disconnectFromCall: (sessionUuid?: string) => void;
+  disconnectFromCall: ({
+    sessionId,
+    partnerId,
+  }: {
+    sessionId?: string;
+    partnerId?: string;
+  }) => void;
   resetDisconnectedFrom: () => void;
   setCallRejected: (callRejected: boolean) => void;
 }
 
 const useConnectedCallStore = create<ConnectedCallState>(set => ({
   callData: null,
-  disconnectedFrom: null,
+  disconnectedFromSession: null,
+  disconnectedFromUser: null,
   callRejected: false,
-  connectToCall: data => set({ callData: data, disconnectedFrom: null }),
+  connectToCall: data =>
+    set({
+      callData: data,
+      disconnectedFromSession: null,
+      disconnectedFromUser: null,
+    }),
   initializeCallID: (uuid: string) =>
     set(({ callData }) => ({
       callData: callData ? { ...callData, uuid } : null,
     })),
-  disconnectFromCall: sessionUuid =>
+  disconnectFromCall: ({
+    sessionId,
+    partnerId,
+  }: {
+    sessionId?: string;
+    partnerId?: string;
+  }) =>
     set({
       callData: null,
-      disconnectedFrom: sessionUuid ?? null,
+      disconnectedFromSession: sessionId ?? null,
+      disconnectedFromUser: partnerId ?? null,
       callRejected: false,
     }),
-  resetDisconnectedFrom: () => set({ disconnectedFrom: null }),
+  resetDisconnectedFrom: () =>
+    set({ disconnectedFromSession: null, disconnectedFromUser: null }),
   setCallRejected: (callRejected: boolean) => set({ callRejected }),
 }));
 

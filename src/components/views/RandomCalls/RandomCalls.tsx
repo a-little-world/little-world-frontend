@@ -11,7 +11,11 @@ import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { exitLobby } from '../../../api/randomCalls';
-import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE, RANDOM_CALL_LOBBY_ENDPOINT } from '../../../features/swr/index';
+import {
+  RANDOM_CALL_EXIT_PARAM,
+  RANDOM_CALL_EXIT_VALUE,
+  RANDOM_CALL_LOBBY_ENDPOINT,
+} from '../../../features/swr/index';
 import randomCallsImage from '../../../images/item info.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
@@ -64,9 +68,12 @@ interface RandomCallLobby {
 
 const RandomCalls = () => {
   const { t } = useTranslation();
-  const { data: lobbyData } = useSWR<RandomCallLobby>(RANDOM_CALL_LOBBY_ENDPOINT, {
-    refreshInterval: 2000,
-  });
+  const { data: lobbyData } = useSWR<RandomCallLobby>(
+    RANDOM_CALL_LOBBY_ENDPOINT,
+    {
+      refreshInterval: 2000,
+    },
+  );
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
@@ -76,7 +83,10 @@ const RandomCalls = () => {
   const formatTime = (dateString?: string) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   const startTime = formatTime(lobbyData?.start_time);
@@ -140,9 +150,9 @@ const RandomCalls = () => {
             <Text>{t('random_calls.description')}</Text>
             <Text bold type={TextTypes.Body3}>
               {t(
-                active
-                  ? 'random_calls.active_heading'
-                  : 'random_calls.inactive_heading',
+                active ?
+                  'random_calls.active_heading' :
+                  'random_calls.inactive_heading',
                 { from: startTime || '18:00', to: endTime || '20:00' },
               )}
             </Text>
@@ -150,7 +160,9 @@ const RandomCalls = () => {
               <ActiveUsers>
                 <OnlineCirlce />
                 <Text bold>
-                  {t('random_calls.active_users', { count: lobbyData?.active_users_count ?? 0 })}
+                  {t('random_calls.active_users', {
+                    count: lobbyData?.active_users_count ?? 0,
+                  })}
                 </Text>
               </ActiveUsers>
             ) : (
@@ -174,9 +186,9 @@ const RandomCalls = () => {
               onClick={onJoinLobby}
             >
               {t(
-                active
-                  ? 'random_calls.start_btn'
-                  : 'random_calls.start_btn_disabled',
+                active ?
+                  'random_calls.start_btn' :
+                  'random_calls.start_btn_disabled',
               )}
             </JoinButton>
           </InfoPanelText>

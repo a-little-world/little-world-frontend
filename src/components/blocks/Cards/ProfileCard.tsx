@@ -37,9 +37,9 @@ import MenuLink, { MenuLinkText } from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
 import {
-  PARTNER_ACTION_REPORT,
-  PARTNER_ACTION_UNMATCH,
-} from './PartnerActionCard';
+  REPORT_TYPE_PARTNER,
+  REPORT_TYPE_UNMATCH,
+} from '../ReportForm/constants';
 
 export const PROFILE_CARD_HEIGHT = '408px';
 
@@ -275,7 +275,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <PartnerMenuOption
             onClick={() =>
               openPartnerModal?.({
-                type: PARTNER_ACTION_REPORT,
+                type: REPORT_TYPE_PARTNER,
                 userPk,
                 userName: profile.first_name,
                 matchId,
@@ -287,7 +287,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <PartnerMenuOption
             onClick={() =>
               openPartnerModal?.({
-                type: PARTNER_ACTION_UNMATCH,
+                type: REPORT_TYPE_UNMATCH,
                 userPk,
                 userName: profile.first_name,
                 matchId,
