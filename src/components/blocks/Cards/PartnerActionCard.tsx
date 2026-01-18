@@ -16,9 +16,8 @@ import { reportIssue, unmatch } from '../../../api/matches';
 import { revalidateMatches } from '../../../features/swr/index';
 import ReportForm from '../ReportForm/ReportForm';
 import {
-  REPORT_TYPE_CALL_QUALITY,
   REPORT_TYPE_UNMATCH,
-  ReportType,
+  ReportType
 } from '../ReportForm/constants';
 
 const Centred = styled.div`
@@ -115,7 +114,7 @@ function PartnerActionCard({ data, onClose }: PartnerActionCardProps) {
 
     return (
       <ReportForm
-        reportType={REPORT_TYPE_CALL_QUALITY || data.type}
+        reportType={data.type}
         reportedUserName={data.userName}
         onSubmit={isUnmatch ? handleUnmatch : handleReport}
         onClose={handleOnClose}
