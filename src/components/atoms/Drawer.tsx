@@ -1,6 +1,3 @@
-import {
-  ChevronDownIcon,
-} from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 import { Drawer as VaulDrawer } from 'vaul';
 
@@ -49,13 +46,26 @@ const DragHandle = styled.div`
   z-index: 101;
 `;
 
+const VisuallyHiddenTitle = styled(VaulDrawer.Title)`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+`;
+
 type DrawerProps = {
   children: any;
   onClose: () => void;
   open: boolean;
+  title: string;
 };
 
-const Drawer = ({ children, open, onClose }: DrawerProps) => (
+const Drawer = ({ children, open, onClose, title }: DrawerProps) => (
   <DrawerContainer>
     <VaulDrawer.Root
       open={open}
@@ -63,13 +73,10 @@ const Drawer = ({ children, open, onClose }: DrawerProps) => (
       dismissible
     >
       <VaulDrawer.Portal>
+        <VisuallyHiddenTitle>{title}</VisuallyHiddenTitle>
         <StyledOverlay onClick={onClose} />
         <StyledContent>
           <DragHandle />
-          {/* Provides the user with a visual cue that it can be scrolled */}
-
-          <ChevronDownIcon label="close drawer" width="16" height="16" />
-
           {children}
         </StyledContent>
       </VaulDrawer.Portal>
