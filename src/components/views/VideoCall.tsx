@@ -38,6 +38,7 @@ import {
   USER_ENDPOINT,
   getChatEndpoint,
 } from '../../features/swr';
+import useIsBelowBreakpoint from '../../hooks/useIsBelowBreakpoint';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import {
   RANDOM_CALLS_ROUTE,
@@ -197,9 +198,9 @@ function MyVideoConference({
           ) : (
             <Text type={TextTypes.Body4}>
               {t(
-                otherUserDisconnected
-                  ? 'call.partner_disconnected'
-                  : 'call.waiting_for_partner',
+                otherUserDisconnected ?
+                  'call.partner_disconnected' :
+                  'call.waiting_for_partner',
                 { name: partnerName },
               )}
             </Text>
@@ -249,6 +250,7 @@ function VideoCall() {
     callRejected,
   } = useConnectedCallStore();
   const { setOnTextAdded } = useChatInputStore();
+  const isBelowBreakpoint = useIsBelowBreakpoint();
   const {
     uuid,
     token,
@@ -363,15 +365,15 @@ function VideoCall() {
                 partnerId={chatData?.partner?.id}
                 partnerName={chatData?.partner?.first_name}
                 partnerImage={
-                  chatData?.partner?.image_type === 'avatar'
-                    ? chatData?.partner.avatar_config
-                    : chatData?.partner?.image
+                  chatData?.partner?.image_type === 'avatar' ?
+                    chatData?.partner.avatar_config :
+                    chatData?.partner?.image
                 }
                 partnerImageType={chatData?.partner?.image_type}
                 selfImage={
-                  profile.image_type === 'avatar'
-                    ? profile.avatar_config
-                    : profile?.image
+                  profile.image_type === 'avatar' ?
+                    profile.avatar_config :
+                    profile?.image
                 }
                 selfImageType={profile.image_type}
                 initializeCallID={initializeCallID}
@@ -385,6 +387,7 @@ function VideoCall() {
                   onChatToggle={onMobileChatToggle}
                   onTranslatorToggle={onMobileTranslatorToggle}
                   onQuestionCardsToggle={onMobileQuestionsToggle}
+                  unreadChatCount={chatData?.unread_count}
                 />
               )}
               <ControlBar
@@ -397,32 +400,38 @@ function VideoCall() {
                   setDeniedPermissions(permissions);
                   setShowPermissionModal(true);
                 }}
+                unreadChatCount={chatData?.unread_count}
               />
             </LiveKitRoom>
             {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>
-          <Drawer
-            title="Translate"
-            open={selectedDrawerOption === 'translator'}
-            onClose={() => setSelectedDrawerOption(undefined)}
-          >
-            <TranslationTool />
-          </Drawer>
-          <Drawer
-            title="Chat"
-            open={selectedDrawerOption === 'chat'}
-            onClose={() => setSelectedDrawerOption(undefined)}
-          >
-            <Chat chatId={chatData?.uuid} inCall />
-          </Drawer>
-          <Drawer
-            title="Questions"
-            open={selectedDrawerOption === 'questions'}
-            onClose={() => setSelectedDrawerOption(undefined)}
-          >
-            <QuestionCards />
-          </Drawer>
-          <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
+          {isBelowBreakpoint ? (
+            <>
+              <Drawer
+                title="Translate"
+                open={selectedDrawerOption === 'translator'}
+                onClose={() => setSelectedDrawerOption(undefined)}
+              >
+                <TranslationTool />
+              </Drawer>
+              <Drawer
+                title="Chat"
+                open={selectedDrawerOption === 'chat'}
+                onClose={() => setSelectedDrawerOption(undefined)}
+              >
+                {selectedDrawerOption === 'chat' && <Chat chatId={chatData?.uuid} inCall />}
+              </Drawer>
+              <Drawer
+                title="Questions"
+                open={selectedDrawerOption === 'questions'}
+                onClose={() => setSelectedDrawerOption(undefined)}
+              >
+                <QuestionCards />
+              </Drawer>
+            </>
+          ) : (
+            <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
+          )}
         </CallLayout>
       </LayoutContextProvider>
       {showPermissionModal && (
