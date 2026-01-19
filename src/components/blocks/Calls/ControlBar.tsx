@@ -90,12 +90,12 @@ const Toggle = styled(TrackToggle)<{
   ${({ $withBackground, $permissionDenied }) =>
     $withBackground &&
     css`
-      background: ${$permissionDenied
-        ? TOGGLE_BACKGROUND_DENIED
-        : TOGGLE_BACKGROUND};
-      border-color: ${$permissionDenied
-        ? TOGGLE_BACKGROUND_DENIED
-        : TOGGLE_BACKGROUND};
+      background: ${$permissionDenied ?
+        TOGGLE_BACKGROUND_DENIED :
+        TOGGLE_BACKGROUND};
+      border-color: ${$permissionDenied ?
+        TOGGLE_BACKGROUND_DENIED :
+        TOGGLE_BACKGROUND};
     `}
 `;
 
@@ -257,9 +257,9 @@ function ControlBar({
               <MediaControl $permissionDenied={audioPermissionDenied}>
                 <Toggle
                   onClick={
-                    audioPermissionDenied
-                      ? handleOpenPermissionModal
-                      : undefined
+                    audioPermissionDenied ?
+                      handleOpenPermissionModal :
+                      undefined
                   }
                   source={Track.Source.Microphone}
                   showIcon
@@ -283,9 +283,9 @@ function ControlBar({
               <div>
                 <Toggle
                   onClick={
-                    videoPermissionDenied
-                      ? handleOpenPermissionModal
-                      : undefined
+                    videoPermissionDenied ?
+                      handleOpenPermissionModal :
+                      undefined
                   }
                   source={Track.Source.Camera}
                   showIcon
