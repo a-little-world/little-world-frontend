@@ -132,8 +132,8 @@ const Login = () => {
         >
           {t(errors?.root?.serverError?.message)}
         </StatusMessage>
-        <StatusMessage visible={sessionExpired}>
-          Session expired. Please login again.
+        <StatusMessage visible={sessionExpired} type={StatusTypes.Info}>
+          {t('login.session_expired')}
         </StatusMessage>
         <StyledCta
           type="submit"

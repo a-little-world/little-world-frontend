@@ -247,7 +247,7 @@ export async function apiFetch<T = any>(
       const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       sendMessageToReactNative?.({
         action: 'NAVIGATE',
-        payload: { path: LOGIN_ROUTE },
+        payload: { path: `${LOGIN_ROUTE}?sessionExpired=true` },
       });
     }
 
