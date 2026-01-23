@@ -94,16 +94,19 @@ export const reportIssue = async ({
       keywords?: [string];
       kind?: string;
       match_id?: string;
-      message: string;
+      message?: string;
+      reason?: string;
       origin?: string;
       reported_user_id?: string;
-    } = {
-      message: reason,
-    };
+    } = {};
 
     if (matchId) {
       body.match_id = matchId;
+      body.reason = reason;
+    } else {
+      body.message = reason;
     }
+
     if (reportedUserId) {
       body.reported_user_id = reportedUserId;
     }
