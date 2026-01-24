@@ -60,13 +60,21 @@ const PushNotifications = ({
 
   useEffect(() => {
     if (enabled && !environment.isNative) {
-      Notification.requestPermission().then(permission => {
-        if (permission !== 'granted') {
-          setError('push_notifications_enabled', {
-            message: t('push_notifications.enable_error'),
-          });
-        }
-      });
+      // Check if Notification API is available (not available on iOS Safari outside PWA context)
+      if (typeof Notification !== 'undefined') {
+        Notification.requestPermission().then(permission => {
+          if (permission !== 'granted') {
+            setError('push_notifications_enabled', {
+              message: t('push_notifications.enable_error'),
+            });
+          }
+        });
+      } else {
+        // Notification API not supported in this browser/context
+        setError('push_notifications_enabled', {
+          message: t('push_notifications.enable_error'),
+        });
+      }
     }
   }, [enabled, setError, t]);
 
