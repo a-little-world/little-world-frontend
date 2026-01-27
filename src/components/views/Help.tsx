@@ -254,6 +254,7 @@ export function Contact() {
       data.append('file', file, name);
     }
     data.append('message', formData.message);
+    data.append('origin', 'Contact Form');
     submitHelpForm(data, onSuccess, onError);
   };
 

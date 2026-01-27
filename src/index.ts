@@ -14,6 +14,3 @@ export {
   DomCommunicationMessageFn,
   DomCommunicationResponse,
 } from './features/stores/receiveHandler';
-
-// export default LittleWorldWebNative;
-// export * from './router/routes';
