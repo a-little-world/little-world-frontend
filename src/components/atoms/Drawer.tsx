@@ -11,7 +11,7 @@ const DrawerContainer = styled.div`
 
 const StyledContent = styled(VaulDrawer.Content)`
   display: flex;
-  align-items: center;
+  align-items: stretch;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
   background: ${({ theme }) => theme.color.surface.primary};
@@ -20,7 +20,6 @@ const StyledContent = styled(VaulDrawer.Content)`
   padding-top: 0;
   border-radius: ${({ theme }) =>
     `${theme.radius.small} ${theme.radius.small} 0 0`};
-  overflow: scroll;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -36,14 +35,9 @@ const StyledOverlay = styled(VaulDrawer.Overlay)`
   z-index: 99;
 `;
 
-const DragHandle = styled.div`
-  width: 40px;
-  height: 4px;
-  background-color: ${({ theme }) => theme.color.border.primary || '#ccc'};
-  border-radius: 2px;
-  margin: 8px 0;
-  flex-shrink: 0;
-  z-index: 101;
+const DragHandle = styled(VaulDrawer.Handle)`
+  background-color: ${({ theme }) => theme.color.surface.tertiary};
+  margin-top: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 const VisuallyHiddenTitle = styled(VaulDrawer.Title)`
@@ -60,17 +54,25 @@ const VisuallyHiddenTitle = styled(VaulDrawer.Title)`
 
 type DrawerProps = {
   children: any;
+  handleOnly?: boolean;
   onClose: () => void;
   open: boolean;
   title: string;
 };
 
-const Drawer = ({ children, open, onClose, title }: DrawerProps) => (
+const Drawer = ({
+  children,
+  handleOnly,
+  open,
+  onClose,
+  title,
+}: DrawerProps) => (
   <DrawerContainer>
     <VaulDrawer.Root
+      dismissible
+      handleOnly={handleOnly}
       open={open}
       onOpenChange={isOpen => !isOpen && onClose()}
-      dismissible
     >
       <VaulDrawer.Portal>
         <VisuallyHiddenTitle>{title}</VisuallyHiddenTitle>
