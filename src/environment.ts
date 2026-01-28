@@ -23,5 +23,5 @@ export const environment: Environment = {
   websocketHost: '',
   isNative: false,
   csrfBypassToken: 'abc',
-  allowNgrokRequests: false,
+  allowNgrokRequests: true,
 };

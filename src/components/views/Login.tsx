@@ -15,8 +15,12 @@ import useSWR, { mutate } from 'swr';
 
 import { login } from '../../api';
 import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
-import { USER_ENDPOINT } from '../../features/swr/index';
+import {
+  IS_AUTHENTICATED_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
+import useQueryParam from '../../hooks/useQueryParam';
 import {
   FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
@@ -29,6 +33,7 @@ import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
 const Login = () => {
   const { t } = useTranslation();
+  const sessionExpired = useQueryParam('sessionExpired') === 'true';
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -53,7 +58,8 @@ const Login = () => {
     onFormError({ e, formFields: getValues(), setError });
   };
 
-  const { data: userData } = useSWR(USER_ENDPOINT);
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
+  const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
 
   const accessToken = mobileAuthStore?.accessToken;
 
@@ -86,6 +92,7 @@ const Login = () => {
       .then(loginData => {
         setIsSubmitting(false);
         mutate(USER_ENDPOINT, loginData, false);
+        mutate(IS_AUTHENTICATED_ENDPOINT, true, false);
       })
       .catch(onError);
   };
@@ -129,6 +136,9 @@ const Login = () => {
           type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}
+        </StatusMessage>
+        <StatusMessage visible={sessionExpired} type={StatusTypes.Info}>
+          {t('login.session_expired')}
         </StatusMessage>
         <StyledCta
           type="submit"
