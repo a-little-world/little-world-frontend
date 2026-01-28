@@ -38,6 +38,8 @@ const StyledOverlay = styled(VaulDrawer.Overlay)`
 const DragHandle = styled(VaulDrawer.Handle)`
   background-color: ${({ theme }) => theme.color.surface.tertiary};
   margin-top: ${({ theme }) => theme.spacing.xxsmall};
+  flex-shrink: 0;
+  min-height: 5px;
 `;
 
 const VisuallyHiddenTitle = styled(VaulDrawer.Title)`
