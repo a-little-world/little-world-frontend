@@ -8,7 +8,10 @@ export type DomCommunicationMessage =
   | {
       action: 'SET_AUTH_TOKENS';
       requestId?: string;
-      payload: { accessToken: string | null; refreshToken: string | null };
+      payload: {
+        accessToken: string | undefined;
+        refreshToken: string | undefined;
+      };
     }
   | {
       action: 'NAVIGATE';

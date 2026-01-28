@@ -73,14 +73,11 @@ function getNativeHeaders(): Record<string, string> {
 }
 
 function updateTokens(
-  access: string | undefined | null,
-  refresh: string | undefined | null,
+  accessToken: string | undefined,
+  refreshToken: string | undefined,
 ) {
   const { setTokens } = useMobileAuthTokenStore.getState();
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-
-  const accessToken = access ?? null;
-  const refreshToken = refresh ?? null;
 
   setTokens(accessToken, refreshToken);
   sendMessageToReactNative?.({
@@ -137,14 +134,15 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
       );
 
       if (!response.ok) {
-        updateTokens(null, null);
+        updateTokens(undefined, undefined);
         return false;
       }
       const { access, refresh } = await response.json().catch(() => {});
-      updateTokens(access, refresh);
       if (access && refresh) {
+        updateTokens(access, refresh);
         return true;
       }
+      updateTokens(undefined, undefined);
       return false;
     } catch (_e) {
       return false;
