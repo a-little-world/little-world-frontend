@@ -363,7 +363,7 @@ const Chat = ({
           ) : (
             <>
               <ScrollTrigger ref={scrollRef} />
-              {messageGroups.map((group, groupIndex) => (
+              {messageGroups.map(group => (
                 <MessageGroup key={group.date.toISOString()}>
                   <StickyDateHeader $isSticky>
                     <Text type={TextTypes.Body6}>{group.formattedDate}</Text>
