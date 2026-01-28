@@ -58,10 +58,14 @@ const Form = () => {
     watch,
   } = useForm({ shouldUnregister: true });
 
-  const { data: userData, mutate: mutateUserDataApi } = useSWR(USER_ENDPOINT, {
-    revalidateOnMount: false,
-    revalidateOnFocus: false,
-  });
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPINT);
+  const { data: userData, mutate: mutateUserDataApi } = useSWR(
+    isAuthenticated ? USER_ENDPOINT : null,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    },
+  );
   const { data: apiOptions } = useSWR(API_OPTIONS_ENDPOINT, {
     revalidateOnMount: false,
     revalidateOnFocus: false,

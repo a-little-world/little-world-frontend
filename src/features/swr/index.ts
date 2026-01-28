@@ -4,6 +4,7 @@ import { mutate } from 'swr';
 import { apiFetch } from '../../api/helpers';
 
 export const USER_ENDPOINT = '/api/user';
+export const IS_AUTHENTICATED_ENDPINT = '/api/user/authenticated';
 export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
 export const RANDOM_CALL_HISTORY_ENDPOINT = '/api/random_calls/history';
 export const RANDOM_CALL_LOBBY_ENDPOINT = '/api/random_calls/lobby/default/';

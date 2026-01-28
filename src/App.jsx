@@ -6,6 +6,7 @@ import { useDevelopmentFeaturesStore } from './features/stores/index';
 import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
+  IS_AUTHENTICATED_ENDPINT,
   USER_ENDPOINT,
   swrConfig,
 } from './features/swr/index';
@@ -28,6 +29,7 @@ function Preloader({ children }) {
 function App({ user, apiTranslations, apiOptions }) {
   if (user) {
     mutate(USER_ENDPOINT, user, false);
+    mutate(IS_AUTHENTICATED_ENDPINT, true, false);
   }
 
   mutate(API_OPTIONS_ENDPOINT, apiOptions, false);

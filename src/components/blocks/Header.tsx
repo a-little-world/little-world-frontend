@@ -4,7 +4,10 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { environment } from '../../environment';
-import { USER_ENDPOINT } from '../../features/swr/index';
+import {
+  IS_AUTHENTICATED_ENDPINT,
+  USER_ENDPOINT,
+} from '../../features/swr/index';
 import {
   PRIVACY_ROUTE,
   TERMS_ROUTE,
@@ -74,7 +77,8 @@ const Header = () => {
     i18n: { language },
     t,
   } = useTranslation();
-  const { data: user } = useSWR(USER_ENDPOINT);
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPINT);
+  const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
   const userId = user?.id;
 
   return (

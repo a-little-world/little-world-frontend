@@ -15,7 +15,10 @@ import useSWR, { mutate } from 'swr';
 
 import { login } from '../../api';
 import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
-import { USER_ENDPOINT } from '../../features/swr/index';
+import {
+  IS_AUTHENTICATED_ENDPINT,
+  USER_ENDPOINT,
+} from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
 import useQueryParam from '../../hooks/useQueryParam';
 import {
@@ -55,7 +58,8 @@ const Login = () => {
     onFormError({ e, formFields: getValues(), setError });
   };
 
-  const { data: userData } = useSWR(USER_ENDPOINT);
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPINT);
+  const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
 
   const accessToken = mobileAuthStore?.accessToken;
 
@@ -88,6 +92,7 @@ const Login = () => {
       .then(loginData => {
         setIsSubmitting(false);
         mutate(USER_ENDPOINT, loginData, false);
+        mutate(IS_AUTHENTICATED_ENDPINT, true, false);
       })
       .catch(onError);
   };
