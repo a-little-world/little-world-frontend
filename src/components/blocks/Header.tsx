@@ -5,7 +5,7 @@ import useSWR from 'swr';
 
 import { environment } from '../../environment';
 import {
-  IS_AUTHENTICATED_ENDPINT,
+  IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
 } from '../../features/swr/index';
 import {
@@ -77,7 +77,7 @@ const Header = () => {
     i18n: { language },
     t,
   } = useTranslation();
-  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPINT);
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
   const userId = user?.id;
 

@@ -19,7 +19,10 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
 import { signUp } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index';
+import {
+  IS_AUTHENTICATED_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
 import {
   LOGIN_ROUTE,
@@ -47,7 +50,7 @@ const SignUp = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [company, setCompany] = useState(Cookies.get('lw-company', null));
 
-  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPINT);
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
 
   useEffect(() => {
@@ -102,7 +105,7 @@ const SignUp = () => {
       .then(async signUpData => {
         setIsSubmitting(false);
         mutate(USER_ENDPOINT, signUpData, false);
-        mutate(IS_AUTHENTICATED_ENDPINT, true, false);
+        mutate(IS_AUTHENTICATED_ENDPOINT, true, false);
       })
       .catch(onError);
   };
