@@ -229,11 +229,20 @@ export async function apiFetch<T = any>(
   } catch (error: any) {
     // If access token expired, try to refresh and retry once
     const tokenExpired = error?.code === 'token_not_valid';
-    if (environment.isNative && tokenExpired) {
+    const noTokenPresent =
+      error?.status === 403 &&
+      useMobileAuthTokenStore.getState().accessToken === undefined;
+    if (environment.isNative && (tokenExpired || noTokenPresent)) {
       const refreshed = await nativeRefreshAccessToken();
+      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       if (refreshed) {
         // update Authorization header with new access token
-        const { accessToken } = useMobileAuthTokenStore.getState();
+        const { accessToken, refreshToken } =
+          useMobileAuthTokenStore.getState();
+        sendMessageToReactNative?.({
+          action: 'SET_AUTH_TOKENS',
+          payload: { accessToken, refreshToken },
+        });
         if (accessToken) {
           fetchOptions.headers!.Authorization = `Bearer ${accessToken}`;
         } else {
@@ -242,10 +251,9 @@ export async function apiFetch<T = any>(
         return doFetch();
       }
 
-      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       sendMessageToReactNative?.({
         action: 'NAVIGATE',
-        payload: { path: `${LOGIN_ROUTE}?sessionExpired=true` },
+        payload: { path: `/${LOGIN_ROUTE}?sessionExpired=true` },
       });
     }
 
