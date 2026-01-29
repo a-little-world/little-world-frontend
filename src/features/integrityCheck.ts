@@ -34,7 +34,7 @@ interface IntegrityCheckRequestDataWeb {
   bypass_token: string;
 }
 
-type IntegrityCheckRequestData =
+export type IntegrityCheckRequestData =
   | IntegrityCheckRequestDataAndroid
   | IntegrityCheckRequestDataIOS
   | IntegrityCheckRequestDataWeb;

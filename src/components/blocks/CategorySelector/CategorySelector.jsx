@@ -3,10 +3,13 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index';
+import {
+  IS_AUTHENTICATED_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../../features/swr/index';
 import {
   CategoryNote,
   CategorySelectorWrapper,
@@ -17,7 +20,8 @@ import {
 const CategorySelector = ({ categories, onUpdate }) => {
   const [panelSelected, setPanelSelected] = useState(null);
 
-  const { data: user } = useSWR(USER_ENDPOINT);
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
+  const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
   const userData = user?.profile;
 
   useEffect(() => {

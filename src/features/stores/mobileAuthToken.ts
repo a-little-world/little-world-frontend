@@ -1,21 +1,24 @@
 import { create } from 'zustand';
 
 interface MobileAuthTokenState {
-  accessToken: string | null;
-  refreshToken: string | null;
-  setTokens: (accessToken: string | null, refreshToken: string | null) => void;
-  setAccessToken: (accessToken: string | null) => void;
-  setRefreshToken: (refreshToken: string | null) => void;
+  accessToken: string | undefined;
+  refreshToken: string | undefined;
+  setTokens: (
+    accessToken: string | undefined,
+    refreshToken: string | undefined,
+  ) => void;
+  setAccessToken: (accessToken: string | undefined) => void;
+  setRefreshToken: (refreshToken: string | undefined) => void;
   clearTokens: () => void;
 }
 
 const useMobileAuthTokenStore = create<MobileAuthTokenState>(set => ({
-  accessToken: null,
-  refreshToken: null,
+  accessToken: undefined,
+  refreshToken: undefined,
   setTokens: (accessToken, refreshToken) => set({ accessToken, refreshToken }),
   setAccessToken: accessToken => set({ accessToken }),
   setRefreshToken: refreshToken => set({ refreshToken }),
-  clearTokens: () => set({ accessToken: null, refreshToken: null }),
+  clearTokens: () => set({ accessToken: undefined, refreshToken: undefined }),
 }));
 
-export default useMobileAuthTokenStore; 
+export default useMobileAuthTokenStore;
