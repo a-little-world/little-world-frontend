@@ -37,6 +37,10 @@ export async function getFirebaseToken(
 }
 
 export function enableFirebase(firebaseClientConfig: any) {
+  // Check if Firebase is already initialized to prevent duplicate-app error
+  if (getApps().length > 0) {
+    return;
+  }
   initializeApp(firebaseClientConfig, firebaseAppSettings);
 }
 
