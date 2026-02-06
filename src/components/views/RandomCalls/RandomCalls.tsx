@@ -16,7 +16,7 @@ import {
   RANDOM_CALL_EXIT_VALUE,
   RANDOM_CALL_LOBBY_ENDPOINT,
 } from '../../../features/swr/index';
-import randomCallsImage from '../../../images/item info.png';
+import randomCallsImage from '../../../images/random-calls-image.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
 import CallHistory from '../../blocks/CallHistory/CallHistory';
@@ -32,6 +32,7 @@ import {
   InnerContainer,
   JoinButton,
   RandomCallsAccordion,
+  RandomCallsAccordionContentWrapper,
   RandomCallsInstructions,
   Schedule,
   ScheduleHeading,
@@ -150,9 +151,9 @@ const RandomCalls = () => {
             <Text>{t('random_calls.description')}</Text>
             <Text bold type={TextTypes.Body3}>
               {t(
-                active ?
-                  'random_calls.active_heading' :
-                  'random_calls.inactive_heading',
+                active
+                  ? 'random_calls.active_heading'
+                  : 'random_calls.inactive_heading',
                 { from: startTime || '18:00', to: endTime || '20:00' },
               )}
             </Text>
@@ -186,9 +187,9 @@ const RandomCalls = () => {
               onClick={onJoinLobby}
             >
               {t(
-                active ?
-                  'random_calls.start_btn' :
-                  'random_calls.start_btn_disabled',
+                active
+                  ? 'random_calls.start_btn'
+                  : 'random_calls.start_btn_disabled',
               )}
             </JoinButton>
           </InfoPanelText>
@@ -200,6 +201,7 @@ const RandomCalls = () => {
         items={instructions}
       />
       <RandomCallsAccordion
+        ContentWrapper={RandomCallsAccordionContentWrapper}
         items={[
           {
             content: <Instructions items={instructions} />,

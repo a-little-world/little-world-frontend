@@ -8,6 +8,7 @@ import {
   CardHeader,
   ClockIcon,
   ExclamationIcon,
+  Loading,
   StatusMessage,
   StatusTypes,
   Switch,
@@ -15,6 +16,10 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import {
+  LoadingSizes,
+  LoadingType,
+} from '@a-little-world/little-world-design-system-core';
 import {
   DevicePermissionError,
   LocalUserChoices,
@@ -129,6 +134,13 @@ const Spinner = styled.div`
   }
 `;
 
+const LobbyLoading = styled(Loading)`
+  position: absolute;
+  top: ${({ theme }) => theme.spacing.medium};
+  right: ${({ theme }) => theme.spacing.medium};
+  height: auto;
+  color: ${({ theme }) => theme.color.text.title};
+`;
 const RelativeCard = styled(ProposalCard)`
   position: relative;
 `;
@@ -185,6 +197,7 @@ const RandomCallSetup = ({
     null,
   );
 
+  const switchesEnabled = false;
   const sameGenderSwitchRef = useRef<HTMLButtonElement>(null);
   const inclLearnersSwitchRef = useRef<HTMLButtonElement>(null);
 
@@ -270,6 +283,7 @@ const RandomCallSetup = ({
 
   return (
     <CallSetupCard $hideJoinBtn className="" size={undefined}>
+      <LobbyLoading size={LoadingSizes.Small} inline type={LoadingType.Ring} />
       <CardHeader>{t('random_calls.lobby_title')}</CardHeader>
       <CardContent>
         <Text center>{t('random_calls.lobby_description')}</Text>
@@ -283,13 +297,15 @@ const RandomCallSetup = ({
           defaults={{ username }}
           persistUserChoices={false}
         />
-        <Switch
-          inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
-          label={t('random_calls.lobby_switch_gender')}
-          labelInline
-          onCheckedChange={() => {}}
-        />
-        {user?.profile?.user_type === USER_TYPES.learner && (
+        {switchesEnabled && (
+          <Switch
+            inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
+            label={t('random_calls.lobby_switch_gender')}
+            labelInline
+            onCheckedChange={() => {}}
+          />
+        )}
+        {switchesEnabled && user?.profile?.user_type === USER_TYPES.learner && (
           <Switch
             inputRef={inclLearnersSwitchRef as RefObject<HTMLButtonElement>}
             label={t('random_calls.lobby_switch_learners')}
@@ -305,30 +321,18 @@ const RandomCallSetup = ({
         )}
       </CardContent>
       <CardFooter align="center">
-        {!hasJoinedLobby && countdown !== null ? (
-          <Button
-            appearance={ButtonAppearance.Primary}
-            onClick={onJoinComplete}
-            size={ButtonSizes.Stretch}
-            style={{
-              background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-              border: 'none',
-            }}
-          >
-            {t(
-              'random_calls.joining_in_x_seconds',
-              `Joining in ${countdown} seconds - Click to join now`,
-            )}
-          </Button>
-        ) : (
-          <Button
-            appearance={ButtonAppearance.Secondary}
-            onClick={onCancel}
-            size={ButtonSizes.Stretch}
-          >
-            {t('random_calls.lobby_cancel_seach')}
-          </Button>
-        )}
+        <Button
+          disabled={!hasJoinedLobby && countdown !== null}
+          appearance={ButtonAppearance.Secondary}
+          onClick={onCancel}
+          size={ButtonSizes.Stretch}
+        >
+          {!hasJoinedLobby && countdown !== null
+            ? t('random_calls.lobby_joining_in_x_seconds', {
+                seconds: countdown,
+              })
+            : t('random_calls.lobby_cancel_search')}
+        </Button>
       </CardFooter>
     </CallSetupCard>
   );
@@ -515,6 +519,7 @@ const RejectedView = ({
     }
   };
 
+  console.log({ reason, a: getTitleKey(), b: getDescriptionKey() });
   return (
     <ProposalCard className="" size={undefined}>
       <CardHeader>{t(getTitleKey())}</CardHeader>
