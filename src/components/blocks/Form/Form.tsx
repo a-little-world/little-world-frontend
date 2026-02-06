@@ -79,6 +79,7 @@ const Form = () => {
       slug,
       formOptions,
       userData: userData.profile,
+      forceMatchEligible: userData.forceMatchEligible,
     });
   const isLastStep = step === totalSteps;
 
