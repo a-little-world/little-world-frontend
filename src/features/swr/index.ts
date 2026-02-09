@@ -24,6 +24,8 @@ export const API_TRANSLATIONS_ENDPOINT = '/api/translations';
 export const getChatEndpoint = (chatId: string) => `/api/chats/${chatId}/`;
 export const getChatMessagesEndpoint = (chatId: string, page: number) =>
   `/api/messages/${chatId}/?page=${page}&page_size=20`;
+export const getCommunityEventsEndpoint = (page: number, pageSize = 15) =>
+  `/api/community?page=${page}&page_size=${pageSize}`;
 export const getMatchEndpoint = (page: number) =>
   `/api/matches?page=${page}&page_size=10`;
 export const getQuestionsEndpoint = (archived: boolean) =>
