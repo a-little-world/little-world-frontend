@@ -8,12 +8,14 @@ import {
   Tooltip,
 } from '@a-little-world/little-world-design-system';
 import { groupBy } from 'lodash';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import CustomPagination from '../../../CustomPagination';
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
-import { COMMUNITY_EVENTS_ENDPOINT } from '../../../features/swr/index';
+import { getCommunityEventsEndpoint } from '../../../features/swr/index';
 import { formatDate, formatEventTime } from '../../../helpers/date';
 import { Event, calculateNextOccurrence } from '../../../helpers/events';
 import placeholderImage from '../../../images/coffee.webp';
@@ -28,6 +30,7 @@ import {
   EventTitle,
   Events,
   Main,
+  PaginationContainer,
   Session,
   SessionFlex,
   Sessions,
@@ -326,15 +329,72 @@ function CommunityEvent({
 }
 
 function CommunityEvents() {
-  const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT);
-  const groupedEvents = collateEvents(events?.results || []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: events } = useSWR(getCommunityEventsEndpoint(currentPage));
+
+  const useMock = true;
+  const pageSize = events?.page_size ?? 15;
+
+  const fallbackEvent: Event = {
+    id: 'mock-event',
+    frequency: COMMUNITY_EVENT_FREQUENCIES.once,
+    description: 'Test event description',
+    title: 'Mock Community Event',
+    time: new Date().toISOString(),
+    link: 'https://example.com',
+  };
+
+  const baseEvent = events?.results?.[0] ?? fallbackEvent;
+  const mockResults = Array.from({ length: 80 }, (_, index) => ({
+    ...baseEvent,
+    id: `${baseEvent.id}-mock-${index}`,
+    title: `${baseEvent.title} #${index + 1}`,
+  }));
+
+  const results = useMock ? mockResults : events?.results || [];
+  const pagedResults = useMock
+    ? results.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+    : results;
+  const groupedEvents = collateEvents(pagedResults);
+  const totalPages = Math.max(
+    1,
+    useMock
+      ? Math.ceil(mockResults.length / pageSize)
+      : events?.pages_total ?? Math.ceil((events?.items_total ?? 0) / pageSize),
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  };
 
   return (
-    <Events>
-      {groupedEvents.map(eventData => (
-        <CommunityEvent key={eventData.id} _key={eventData.id} {...eventData} />
-      ))}
-    </Events>
+    <>
+      <Events>
+        {groupedEvents.map(eventData => (
+          <CommunityEvent
+            key={eventData.id}
+            _key={eventData.id}
+            {...eventData}
+          />
+        ))}
+      </Events>
+      {totalPages > 1 && (
+        <PaginationContainer>
+          <CustomPagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        </PaginationContainer>
+      )}
+    </>
   );
 }
 
