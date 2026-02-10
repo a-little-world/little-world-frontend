@@ -2,22 +2,22 @@ import { useEffect, useState } from 'react';
 import { useTheme } from 'styled-components';
 
 /**
- * Hook that returns true if the window width is below the medium breakpoint.
+ * Hook that returns true if the window width is below the large breakpoint.
  * Useful for conditionally rendering Drawers (mobile) vs CallSidebar (desktop).
  * 
- * @returns {boolean} true if below medium breakpoint, false otherwise
+ * @returns {boolean} true if below large breakpoint, false otherwise
  */
 function useIsBelowBreakpoint(): boolean {
   const theme = useTheme();
   const [isBelowBreakpoint, setIsBelowBreakpoint] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
-    // Use matchMedia to check if we're below medium breakpoint
-    const mediaQuery = window.matchMedia(`(max-width: ${theme.breakpoints.medium})`);
+    // Use matchMedia to check if we're below large breakpoint
+    const mediaQuery = window.matchMedia(`(max-width: ${theme.breakpoints.large})`);
     return mediaQuery.matches;
   });
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(`(max-width: ${theme.breakpoints.medium})`);
+    const mediaQuery = window.matchMedia(`(max-width: ${theme.breakpoints.large})`);
 
     const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
       setIsBelowBreakpoint(e.matches);
@@ -39,7 +39,7 @@ function useIsBelowBreakpoint(): boolean {
         mediaQuery.removeListener(handleChange);
       };
     
-  }, [theme.breakpoints.medium]);
+  }, [theme.breakpoints.large]);
 
   return isBelowBreakpoint;
 }
