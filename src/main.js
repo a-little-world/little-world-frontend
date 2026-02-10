@@ -78,4 +78,9 @@ export function renderMessageView(
 if (typeof window !== 'undefined') {
   window.renderApp = renderApp;
   window.renderMessageView = renderMessageView;
+  
+  // Auto-render in development mode
+  if (process.env.NODE_ENV !== 'production') {
+    renderApp({});
+  }
 }

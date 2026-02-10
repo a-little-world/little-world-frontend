@@ -22,8 +22,9 @@ const config = function (env) {
       staticfiles: entryPoint,
     },
     resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
       alias: {
-        '@': path.resolve(__dirname, '.src/'),
+        '@': path.resolve(__dirname, 'src'),
       },
     },
     output: {
@@ -54,6 +55,9 @@ const config = function (env) {
       new HtmlWebpackPlugin({
         inject: true,
         template: path.resolve('public/index.html'),
+        templateParameters: {
+          PUBLIC_URL: publicPath,
+        },
       }),
       new webpack.DefinePlugin({
         process: { env: {} },
@@ -66,9 +70,6 @@ const config = function (env) {
           test: /\.(js|jsx|tsx|ts)$/,
           exclude: /node_modules/,
           use: ['babel-loader'],
-          resolve: {
-            extensions: ['.js', '.jsx'],
-          },
           include: [path.resolve(__dirname, './src')],
         },
         {
