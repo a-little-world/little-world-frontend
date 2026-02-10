@@ -62,11 +62,13 @@ function runOptinalMatomoTriggers(userType: string, nextPage: string, navigate: 
   }
   if (MTM_CUSTOM_USER_TYPE_EVENT_TRIGGER) {
     try {
+      // eslint-disable-next-line no-underscore-dangle
       (window as any)._mtm.push({
         "event": userType === "volunteer" ? "userTypeVolunteerTrigger" : "userTypeLearnerTrigger",
       })
     } catch (error) {
-      console.error('Error setting custom variable:', error);
+      // eslint-disable-next-line no-console
+      console.error('Error setting custom Matomo triggers:', error);
     }
   }
   if (MTM_ENABLE_CONVERSION_QUERY_PARAM) {
