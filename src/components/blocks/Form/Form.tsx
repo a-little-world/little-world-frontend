@@ -14,8 +14,7 @@ import { completeForm, mutateUserData } from '../../../api';
 import { USER_FIELDS } from '../../../constants';
 import {
   API_OPTIONS_ENDPOINT,
-  IS_AUTHENTICATED_ENDPOINT,
-  USER_ENDPOINT,
+  USER_ENDPOINT
 } from '../../../features/swr/index';
 import { onFormError } from '../../../helpers/form';
 import {
@@ -98,9 +97,8 @@ const Form = () => {
     watch,
   } = useForm({ shouldUnregister: true });
 
-  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData, mutate: mutateUserDataApi } = useSWR(
-    isAuthenticated ? USER_ENDPOINT : null,
+    USER_ENDPOINT,
     {
       revalidateOnMount: false,
       revalidateOnFocus: false,
