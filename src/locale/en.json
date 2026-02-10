@@ -302,6 +302,7 @@
   "login.password_placeholder": "at least 8 characters",
   "login.submit_btn": "Sign In",
   "login.title": "Sign In",
+  "login.session_expired": "Session expired. Please log in again.",
   "mailing_lists.community_description": "Stay up to date with our latest community events, calls and activities.",
   "mailing_lists.community_label_toggle": "Community updates",
   "mailing_lists.newsletter_description": "A monthly update to share our latest news, stories and exiciting features.",
