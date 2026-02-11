@@ -144,15 +144,15 @@ export const login = async ({
   useMobileAuthTokenStore
     .getState()
     .setTokens(
-      loginData?.token_access || null,
-      loginData?.token_refresh || null,
+      loginData?.token_access ?? undefined,
+      loginData?.token_refresh ?? undefined,
     );
 
   await sendMessageToReactNative({
     action: 'SET_AUTH_TOKENS',
     payload: {
-      accessToken: loginData?.token_access || null,
-      refreshToken: loginData?.token_refresh || null,
+      accessToken: loginData?.token_access || undefined,
+      refreshToken: loginData?.token_refresh || undefined,
     },
   });
 
@@ -223,15 +223,15 @@ export const signUp = async ({
   useMobileAuthTokenStore
     .getState()
     .setTokens(
-      signUpData?.token_access || null,
-      signUpData?.token_refresh || null,
+      signUpData?.token_access ?? undefined,
+      signUpData?.token_refresh ?? undefined,
     );
 
   await sendMessageToReactNative({
     action: 'SET_AUTH_TOKENS',
     payload: {
-      accessToken: signUpData?.token_access || null,
-      refreshToken: signUpData?.token_refresh || null,
+      accessToken: signUpData?.token_access ?? undefined,
+      refreshToken: signUpData?.token_refresh ?? undefined,
     },
   });
 

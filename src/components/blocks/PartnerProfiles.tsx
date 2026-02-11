@@ -104,16 +104,19 @@ function PartnerProfiles({
   const matchesDisplay = getMatchesDisplay();
 
   const { data: user } = useSWR(USER_ENDPOINT);
-  const germanLevelInvalid = Boolean(
-    user?.profile?.lang_skill?.find(
-      (skill: any) =>
-        skill.lang === LANGUAGES.german &&
-        skill.level === LANGUAGE_LEVELS.level0,
-    ),
-  );
+  const germanLevelInvalid =
+    !user?.forceMatchEligible &&
+    Boolean(
+      user?.profile?.lang_skill?.find(
+        (skill: any) =>
+          skill.lang === LANGUAGES.german &&
+          skill.level === LANGUAGE_LEVELS.level0,
+      ),
+    );
   const [partnerActionData, setPartnerActionData] = useState(null);
   const [showSearchConfirmModal, setShowSearchConfirmModal] = useState(false);
   const isLearnerOutsideGermany =
+    !user?.forceMatchEligible &&
     user?.profile?.user_type === USER_TYPES.learner &&
     user?.profile?.country_of_residence !== COUNTRIES.DE;
 

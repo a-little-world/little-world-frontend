@@ -9,16 +9,18 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 
+import Cookies from 'js-cookie';
 import { completeForm, mutateUserData } from '../../../api';
 import { USER_FIELDS } from '../../../constants';
 import {
   API_OPTIONS_ENDPOINT,
-  USER_ENDPOINT,
+  USER_ENDPOINT
 } from '../../../features/swr/index';
 import { onFormError } from '../../../helpers/form';
 import {
   EDIT_FORM_ROUTE,
   PROFILE_ROUTE,
+  USER_FORM_USER_TYPE,
   getAppRoute,
 } from '../../../router/routes';
 import {
@@ -43,6 +45,43 @@ import {
   Title,
 } from './styles';
 
+
+// This is for Matomo, if enabled (default) it adds:
+// a query param to the route when navigating from user-type -> self-info-1
+// This allows to trigger seperate conversion on the 'self-info-1' step only for the selected user type
+const MTM_ENABLE_CONVERSION_QUERY_PARAM = true;
+// Serves the same purpose as the one above but instead users `_mtm.push` this is here for redundancy
+const MTM_CUSTOM_USER_TYPE_EVENT_TRIGGER = true;
+// Serves the same purpose as flags above, but instead uses a 'user-type' cookie
+const MTM_ENABLE_USER_TYPE_COOKIE = true;
+
+function runOptinalMatomoTriggers(userType: string, nextPage: string, navigate: (path: string) => void) {
+  let matomoNavigationApplied = false;
+  if (MTM_ENABLE_USER_TYPE_COOKIE) {
+    Cookies.set('user-type', userType);
+  }
+  if (MTM_CUSTOM_USER_TYPE_EVENT_TRIGGER) {
+    try {
+      // eslint-disable-next-line no-underscore-dangle
+      (window as any)._mtm.push({
+        "event": userType === "volunteer" ? "userTypeVolunteerTrigger" : "userTypeLearnerTrigger",
+      })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error setting custom Matomo triggers:', error);
+    }
+  }
+  if (MTM_ENABLE_CONVERSION_QUERY_PARAM) {
+    const [path, existingQuery] = nextPage.split('?');
+    const searchParams = new URLSearchParams(existingQuery);
+    searchParams.set('user-type', userType);
+    const nextPageWithQueryParam = `${path}?${searchParams.toString()}`;
+    navigate(getAppRoute(nextPageWithQueryParam));
+    matomoNavigationApplied = true;
+  }
+  return matomoNavigationApplied;
+}
+
 const Form = () => {
   const { t } = useTranslation();
 
@@ -58,10 +97,13 @@ const Form = () => {
     watch,
   } = useForm({ shouldUnregister: true });
 
-  const { data: userData, mutate: mutateUserDataApi } = useSWR(USER_ENDPOINT, {
-    revalidateOnMount: false,
-    revalidateOnFocus: false,
-  });
+  const { data: userData, mutate: mutateUserDataApi } = useSWR(
+    USER_ENDPOINT,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    },
+  );
   const { data: apiOptions } = useSWR(API_OPTIONS_ENDPOINT, {
     revalidateOnMount: false,
     revalidateOnFocus: false,
@@ -79,6 +121,7 @@ const Form = () => {
       slug,
       formOptions,
       userData: userData.profile,
+      forceMatchEligible: userData.forceMatchEligible,
     });
   const isLastStep = step === totalSteps;
 
@@ -94,6 +137,13 @@ const Form = () => {
           profile: { ...userData.profile, ...updatedUser },
         });
       });
+    }
+    // (optional) run extra conversion triggers
+    if (slug === USER_FORM_USER_TYPE && !isEditPath) {
+      const userType = userData?.profile?.user_type;
+      if (runOptinalMatomoTriggers(userType, nextPage, navigate)) {
+        return; // If triggers where run we prevent further execution (else fallback to default behavior)
+      }
     }
     navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));
   };

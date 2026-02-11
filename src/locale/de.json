@@ -303,6 +303,7 @@
   "login.password_placeholder": "mindestens 8 Zeichen",
   "login.submit_btn": "Anmelden",
   "login.title": "Anmelden",
+  "login.session_expired": "Sitzung abgelaufen. Bitte loggen Sie sich erneut ein.",
   "mailing_lists.community_description": "Bleib auf dem Laufenden über unsere neuesten Gemeindeveranstaltungen, Aufrufe und Aktivitäten.",
   "mailing_lists.community_label_toggle": "Community updates",
   "mailing_lists.newsletter_description": "Ein monatliches Update mit unseren neuesten Nachrichten, Geschichten und aufregenden Features.",

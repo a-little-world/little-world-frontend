@@ -91,12 +91,12 @@ async function unregister(firebasePublicVapidKey: string) {
 function FireBase() {
   const { data: firebaseConfig } = useSWR(FIREBASE_ENDPOINT, {
     revalidateOnMount: false,
-    revalidateOnFocus: true,
+    revalidateOnFocus: false,
   });
 
   const { data: userData } = useSWR(USER_ENDPOINT, {
     revalidateOnMount: false,
-    revalidateOnFocus: true,
+    revalidateOnFocus: false,
   });
 
   // TODO: double check if this is correct ( frontend store refactored )
