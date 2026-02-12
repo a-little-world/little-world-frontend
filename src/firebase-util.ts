@@ -134,7 +134,7 @@ export async function registerFirebaseDeviceToken(
   const installId = getInstallationId();
   const token = await getFirebaseToken(firebasePublicVapidKey);
   const platform = 'web';
-  const deviceName = navigator.userAgent;
+  const modelName = navigator.userAgent;
 
   return apiFetch('/api/push_notifications/register', {
     method: 'POST',
@@ -142,7 +142,7 @@ export async function registerFirebaseDeviceToken(
       install_id: installId,
       token,
       platform,
-      device_name: deviceName,
+      model_name: modelName,
     },
   });
 }
