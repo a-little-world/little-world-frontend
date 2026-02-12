@@ -41,6 +41,11 @@ export type DomCommunicationMessage =
       payload: {};
     }
   | {
+      action: 'UNREGISTER_DEVICE_PUSH_TOKEN';
+      requestId?: string;
+      payload: {};
+    }
+  | {
       action: 'PING';
       requestId?: string;
       payload: {

@@ -16,14 +16,19 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
-import { useReceiveHandlerStore, useMobileAuthTokenStore } from '../../features/stores';
 
 import { apiFetch } from '../../api/helpers';
+import { environment } from '../../environment';
+import {
+  useMobileAuthTokenStore,
+  useReceiveHandlerStore,
+} from '../../features/stores';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   resetUserQueries,
 } from '../../features/swr/index';
+import { unregisterFirebaseDeviceToken } from '../../firebase-util';
 import {
   COMMUNITY_EVENTS_ROUTE,
   HELP_ROUTE,
@@ -38,7 +43,6 @@ import {
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
-import { environment } from '../../environment';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';
@@ -92,7 +96,7 @@ const SidebarContainer = styled.nav`
       left: 0;
 
       ${$isVH &&
-    css`
+      css`
         flex-shrink: 0;
         min-height: 0;
         max-height: 100%;
@@ -160,9 +164,9 @@ function Sidebar({ isVH, sidebarMobile }) {
   const navigate = useNavigate();
   const theme = useTheme();
   const startPath =
-    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ?
-      getAppRoute(COMMUNITY_EVENTS_ROUTE) :
-      getAppRoute('');
+    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
+      ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
+      : getAppRoute('');
 
   const buttonData = [
     { label: 'start', path: startPath, Icon: DashboardIcon },
@@ -190,16 +194,28 @@ function Sidebar({ isVH, sidebarMobile }) {
     },
     {
       label: 'log_out',
-      clickEvent: () => {
+      clickEvent: async () => {
+        if (environment.isNative) {
+          try {
+            await sendMessageToReactNative({
+              action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
+            });
+          } catch (_e) {}
+        } else {
+          try {
+            unregisterFirebaseDeviceToken();
+          } catch (_e) {}
+        }
+
         apiFetch(`/api/user/logout/`, {
           method: 'GET',
         })
           .then(() => {
             resetUserQueries();
-            if(!environment.isNative){
+            if (!environment.isNative) {
               navigate(`/${LOGIN_ROUTE}/`);
-            }else{
-              setTokens(null, null)
+            } else {
+              setTokens(null, null);
               resetUserQueries();
               navigate(`/${LOGIN_ROUTE}/`);
               setTimeout(() => {
@@ -209,20 +225,19 @@ function Sidebar({ isVH, sidebarMobile }) {
                 });
               }, 400);
             }
-
           })
           .catch(error => {
             // Cannot call logout if isNative manually log-out
-            if(environment.isNative){
+            if (environment.isNative) {
               resetUserQueries();
-              setTokens(null, null)
+              setTokens(null, null);
               navigate(`/${LOGIN_ROUTE}/`);
               sendMessageToReactNative({
                 action: 'CLEAR_AUTH_TOKENS',
                 payload: {},
-              })
+              });
             }
-            console.error(error)
+            console.error(error);
           });
       },
     },
@@ -271,9 +286,9 @@ function Sidebar({ isVH, sidebarMobile }) {
                 type="button"
                 variation={ButtonVariations.Option}
                 appearance={
-                  isActive ?
-                    ButtonAppearance.Secondary :
-                    ButtonAppearance.Primary
+                  isActive
+                    ? ButtonAppearance.Secondary
+                    : ButtonAppearance.Primary
                 }
                 onClick={clickEvent}
               >
