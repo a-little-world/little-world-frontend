@@ -66,9 +66,9 @@ function getFirebaseDeviceTokenRegistrationInfo(): FirebaseRegistrationInfo {
   const savedInfo = window.localStorage.getItem(
     FIREBASE_DEIVCE_TOKEN_REGISTERED_KEY,
   );
-  return savedInfo ?
-    JSON.parse(savedInfo) :
-    {
+  return savedInfo
+    ? JSON.parse(savedInfo)
+    : {
         registeredTokens: [],
         timestamp: new Date(),
       };
@@ -112,15 +112,37 @@ export function setFirebaseDeviceTokenRegistered(
   }
 }
 
+function getInstallationId(): string {
+  const key = 'install_id';
+
+  try {
+    let id = localStorage.getItem(key);
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem(key, id);
+    }
+    return id;
+  } catch {
+    // fallback for strict environments
+    return crypto.randomUUID();
+  }
+}
+
 export async function registerFirebaseDeviceToken(
   firebasePublicVapidKey: string,
 ): Promise<void> {
+  const installId = getInstallationId();
   const token = await getFirebaseToken(firebasePublicVapidKey);
+  const platform = 'web';
+  const deviceName = navigator.userAgent;
 
   return apiFetch('/api/push_notifications/register', {
     method: 'POST',
     body: {
+      install_id: installId,
       token,
+      platform,
+      device_name: deviceName,
     },
   });
 }
@@ -128,11 +150,13 @@ export async function registerFirebaseDeviceToken(
 export async function unregisterFirebaseDeviceToken(
   firebasePublicVapidKey: string,
 ): Promise<void> {
+  const installId = getInstallationId();
   const token = await getFirebaseToken(firebasePublicVapidKey);
 
   return apiFetch('/api/push_notifications/unregister', {
     method: 'POST',
     body: {
+      install_id: installId,
       token,
     },
   });
