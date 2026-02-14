@@ -344,15 +344,17 @@ const PartnerProposal = ({
   onReject,
   isAccepting = false,
   error,
+  timeoutSeconds = 10,
 }: {
   matchData: MatchData;
   onAccept: () => void;
   onReject: () => void;
   isAccepting?: boolean;
   error?: string | null;
+  timeoutSeconds?: number;
 }) => {
   const { t } = useTranslation();
-  const [timeLeft, setTimeLeft] = useState(30); // 30 seconds to accept
+  const [timeLeft, setTimeLeft] = useState(timeoutSeconds);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -488,7 +490,7 @@ const RejectedView = ({
   error,
 }: {
   onReturnToLobby: () => void;
-  reason: RejectionReason;
+  reason: RejectionReason | null;
   error?: string | null;
 }) => {
   const { t } = useTranslation();
@@ -551,7 +553,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const [lobbyState, setLobbyState] = useState<LobbyState>('idle');
   const [isAccepting, setIsAccepting] = useState(false);
   const [rejectionReason, setRejectionReason] =
-    useState<RejectionReason>('user_rejected');
+    useState<RejectionReason | null>(null);
   const [matchData, setMatchData] = useState<MatchData | null>(null);
   const [hasJoinedLobby, setHasJoinedLobby] = useState(false);
   const [deviceChoices, setDeviceChoices] = useState<LocalUserChoices | null>(
@@ -561,6 +563,17 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const [videoPermissionError, setVideoPermissionError] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const lobbyName = 'default';
+
+  // Ensure we exit the lobby when the component unmounts (e.g. user navigates away)
+  useEffect(
+    () =>
+      hasJoinedLobby
+        ? () => {
+            exitLobby(lobbyName).catch(() => {});
+          }
+        : undefined,
+    [hasJoinedLobby, lobbyName],
+  );
 
   // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
   const { data: statusData, mutate: mutateRCState } = useSWR(
@@ -578,6 +591,8 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
       },
     },
   );
+
+  console.log({ statusData, lobbyState, matchData, rejectionReason });
 
   // Check for matching
   useEffect(() => {
@@ -641,6 +656,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     try {
       if (hasJoinedLobby) {
         await exitLobby(lobbyName);
+        setHasJoinedLobby(false);
       }
     } catch (_err: any) {
       // Don't show error on cancel - just log silently
@@ -689,20 +705,6 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     setLobbyState('idle');
     setIsAccepting(false);
     setMatchData(null);
-  };
-
-  const handleCloseLobby = async () => {
-    setError(null);
-    try {
-      await exitLobby(lobbyName);
-    } catch (_err: any) {
-      // Don't show error on close - user is intentionally closing
-      // Just proceed with cleanup
-    }
-    setLobbyState('idle');
-    setIsAccepting(false);
-    setMatchData(null);
-    onCancel();
   };
 
   const handleBothAccepted = async () => {
@@ -760,6 +762,8 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     [],
   );
 
+  console.log('HERE');
+
   switch (lobbyState) {
     case 'partner_found':
       if (!matchData)
@@ -780,10 +784,11 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
           onReject={handleReject}
           isAccepting={isAccepting}
           error={error}
+          timeoutSeconds={statusData?.match_proposal_timeout ?? 10}
         />
       );
     case 'timeout':
-      return <SessionsExpiredView onClose={handleCloseLobby} error={error} />;
+      return <SessionsExpiredView onClose={handleCancel} error={error} />;
     case 'rejected':
       return (
         <RejectedView

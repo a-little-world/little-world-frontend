@@ -79,6 +79,7 @@ const RandomCalls = () => {
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  console.log({ lobbyData });
 
   // Format time from ISO string to HH:MM
   const formatTime = (dateString?: string) => {
@@ -108,12 +109,12 @@ const RandomCalls = () => {
   };
 
   const onCloseLobby = async () => {
+    setLobbyOpen(false);
     try {
       await exitLobby();
     } catch (error) {
       console.error('Failed to exit lobby:', error);
     }
-    setLobbyOpen(false);
   };
 
   const handleReturnToLobby = () => {
@@ -205,9 +206,9 @@ const RandomCalls = () => {
         items={[
           {
             content: <Instructions items={instructions} />,
-            header: 'Instructions',
+            header: t('random_calls.instructions_title'),
           },
-          { content: <CallHistory />, header: 'Call History' },
+          { content: <CallHistory />, header: t('call_history.title') },
         ]}
       />
     </Container>

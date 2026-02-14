@@ -121,7 +121,7 @@ const CallHistoryList = ({ data }: { data: any }) => {
 const CallHistory = ({ className }: { className?: string }) => {
   const { t } = useTranslation();
   const { data } = useSWR(RANDOM_CALL_HISTORY_ENDPOINT);
-  console.log({ data });
+
   return (
     <Container className={className} $hasData={!isEmpty(data)}>
       {!data || isEmpty(data) ? (
