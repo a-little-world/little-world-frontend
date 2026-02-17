@@ -1,4 +1,9 @@
-import { Button, Card, Text } from '@a-little-world/little-world-design-system';
+import {
+  Button,
+  Card,
+  StatusMessage,
+  Text,
+} from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
 export const PageContent = styled.section`
@@ -67,4 +72,8 @@ export const Description = styled(Text)`
       margin-bottom: ${theme.spacing.medium};
     }
   `};
+`;
+
+export const Warning = styled(StatusMessage)`
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;

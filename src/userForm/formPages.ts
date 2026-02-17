@@ -264,6 +264,7 @@ const formPages = {
       {
         type: ComponentTypes.warning,
         alwaysVisible: userData?.country_of_residence !== COUNTRIES.DE,
+        dataField: 'country_of_residence',
         getProps: t => ({
           children: t('availability.info_text'),
         }),

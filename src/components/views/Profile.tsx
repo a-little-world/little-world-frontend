@@ -1,6 +1,7 @@
 import {
   Modal,
   MultiDropdown,
+  StatusTypes,
   Tags,
   Text,
   TextAreaSize,
@@ -39,7 +40,12 @@ import ProfileCard from '../blocks/Cards/ProfileCard';
 import FormStep from '../blocks/Form/FormStep';
 import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
-import { Details, PageContent, TextField } from '../blocks/Profile/styles';
+import {
+  Details,
+  PageContent,
+  TextField,
+  Warning,
+} from '../blocks/Profile/styles';
 
 const getProfileFields = ({
   profile,
@@ -81,10 +87,6 @@ const getProfileFields = ({
   ),
   availability: getFormComponent(
     {
-      note:
-        profile?.country_of_residence !== COUNTRIES.DE
-          ? 'availability.info_text'
-          : null,
       type: ComponentTypes.checkboxGrid,
       dataField: 'availability',
       currentValue: profile?.availability,
@@ -266,6 +268,11 @@ function Profile() {
             content={profileFields.availability}
             setEditingField={setEditingField}
           >
+            {isSelf && profile.country_of_residence !== COUNTRIES.DE && (
+              <Warning type={StatusTypes.Warning} visible withBorder>
+                {t('availability.info_text')}
+              </Warning>
+            )}
             <FormStep control={control} content={profileFields.availability} />
           </ProfileDetail>
           <ProfileDetail

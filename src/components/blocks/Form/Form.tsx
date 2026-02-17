@@ -219,6 +219,7 @@ const Form = () => {
       (component.alwaysVisible ||
         (watch(component.dataField) &&
           !component.allowedValues?.includes(watch(component.dataField))));
+
     const warningTypeButHidden =
       component.type === ComponentTypes.warning && !displayWarning;
 
@@ -268,6 +269,10 @@ const Form = () => {
   const imageError = errors?.[USER_FIELDS.image];
   const displayError = serverError || imageError;
 
+  const lastStepButtonText = userData?.hadPreMatchingCall
+    ? 'complete'
+    : 'to_appointment_booking';
+
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading4}>
@@ -294,7 +299,7 @@ const Form = () => {
             </Button>
           )}
           <Button type="submit" size={ButtonSizes.Small}>
-            {t(`form.btn_${isLastStep ? 'complete' : 'next'}`)}
+            {t(`form.btn_${isLastStep ? lastStepButtonText : 'next'}`)}
           </Button>
         </FormButtons>
       </StyledForm>
