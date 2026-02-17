@@ -16,7 +16,7 @@ import useSWR, { mutate } from 'swr';
 import { mutateUserData } from '../../api/index';
 import { fetchUserMatch } from '../../api/matches';
 import { fetchProfile } from '../../api/profile';
-import { USER_TYPES } from '../../constants/index';
+import { COUNTRIES, USER_TYPES } from '../../constants/index';
 import {
   API_OPTIONS_ENDPOINT,
   MATCHES_ENDPOINT,
@@ -81,6 +81,10 @@ const getProfileFields = ({
   ),
   availability: getFormComponent(
     {
+      note:
+        profile?.country_of_residence !== COUNTRIES.DE
+          ? 'availability.info_text'
+          : null,
       type: ComponentTypes.checkboxGrid,
       dataField: 'availability',
       currentValue: profile?.availability,

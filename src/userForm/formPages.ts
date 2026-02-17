@@ -262,6 +262,13 @@ const formPages = {
         getProps: t => ({ children: t('availability.description') }),
       },
       {
+        type: ComponentTypes.warning,
+        alwaysVisible: userData?.country_of_residence !== COUNTRIES.DE,
+        getProps: t => ({
+          children: t('availability.info_text'),
+        }),
+      },
+      {
         type: ComponentTypes.checkboxGrid,
         currentValue: userData?.availability,
         dataField: 'availability',
