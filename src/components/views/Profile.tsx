@@ -1,6 +1,7 @@
 import {
   Modal,
   MultiDropdown,
+  StatusTypes,
   Tags,
   Text,
   TextAreaSize,
@@ -16,7 +17,7 @@ import useSWR, { mutate } from 'swr';
 import { mutateUserData } from '../../api/index';
 import { fetchUserMatch } from '../../api/matches';
 import { fetchProfile } from '../../api/profile';
-import { USER_TYPES } from '../../constants/index';
+import { COUNTRIES, USER_TYPES } from '../../constants/index';
 import {
   API_OPTIONS_ENDPOINT,
   MATCHES_ENDPOINT,
@@ -39,7 +40,12 @@ import ProfileCard from '../blocks/Cards/ProfileCard';
 import FormStep from '../blocks/Form/FormStep';
 import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
-import { Details, PageContent, TextField } from '../blocks/Profile/styles';
+import {
+  Details,
+  PageContent,
+  TextField,
+  Warning,
+} from '../blocks/Profile/styles';
 
 const getProfileFields = ({
   profile,
@@ -262,6 +268,11 @@ function Profile() {
             content={profileFields.availability}
             setEditingField={setEditingField}
           >
+            {isSelf && profile.country_of_residence !== COUNTRIES.DE && (
+              <Warning type={StatusTypes.Warning} visible withBorder>
+                {t('availability.info_text')}
+              </Warning>
+            )}
             <FormStep control={control} content={profileFields.availability} />
           </ProfileDetail>
           <ProfileDetail
