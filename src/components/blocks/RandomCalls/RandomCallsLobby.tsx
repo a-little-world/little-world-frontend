@@ -564,17 +564,6 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const [error, setError] = useState<string | null>(null);
   const lobbyName = 'default';
 
-  // Ensure we exit the lobby when the component unmounts (e.g. user navigates away)
-  useEffect(
-    () =>
-      hasJoinedLobby
-        ? () => {
-            exitLobby(lobbyName).catch(() => {});
-          }
-        : undefined,
-    [hasJoinedLobby, lobbyName],
-  );
-
   // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
   const { data: statusData, mutate: mutateRCState } = useSWR(
     (lobbyState === 'idle' && hasJoinedLobby) || lobbyState === 'partner_found'
