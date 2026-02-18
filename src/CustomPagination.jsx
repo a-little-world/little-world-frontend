@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
 const Pagination = styled.div`
@@ -78,6 +79,7 @@ const CustomPagination = ({
   onPageChange,
   className,
 }) => {
+  const { t } = useTranslation();
   const generatePageNumbers = () => {
     const pageNumbers = Array.from(
       { length: totalPages },
@@ -120,7 +122,7 @@ const CustomPagination = ({
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         >
           <PaginationButton className={currentPage === 1 && 'disableButton'}>
-            <i className="fas fa-angle-left" /> Prev
+            <i className="fas fa-angle-left" /> {t('pagination.prev')}
           </PaginationButton>
         </PaginationItem>
 
@@ -148,7 +150,7 @@ const CustomPagination = ({
           <PaginationButton
             className={totalPages === currentPage && 'disableButton'}
           >
-            Next <i />
+            {t('pagination.next')} <i />
           </PaginationButton>
         </PaginationItem>
       </PaginationList>
