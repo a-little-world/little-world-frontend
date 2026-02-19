@@ -344,14 +344,14 @@ const PartnerProposal = ({
   onReject,
   isAccepting = false,
   error,
-  timeoutSeconds = 10,
+  timeoutSeconds,
 }: {
   matchData: MatchData;
   onAccept: () => void;
   onReject: () => void;
   isAccepting?: boolean;
   error?: string | null;
-  timeoutSeconds?: number;
+  timeoutSeconds: number;
 }) => {
   const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState(timeoutSeconds);
@@ -547,7 +547,13 @@ const RejectedView = ({
   );
 };
 
-const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
+const RandomCallsLobby = ({
+  lobbyUuid,
+  onCancel,
+}: {
+  lobbyUuid: string;
+  onCancel: () => void;
+}) => {
   const navigate = useNavigate();
   const { connectToCall } = useConnectedCallStore();
   const [lobbyState, setLobbyState] = useState<LobbyState>('idle');
@@ -562,14 +568,13 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const [audioPermissionError, setAudioPermissionError] = useState(false);
   const [videoPermissionError, setVideoPermissionError] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const lobbyName = 'default';
 
   // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
   const { data: statusData, mutate: mutateRCState } = useSWR(
     (lobbyState === 'idle' && hasJoinedLobby) || lobbyState === 'partner_found'
-      ? `/api/random_calls/lobby/${lobbyName}/status`
+      ? `/api/random_calls/lobby/${lobbyUuid}/status`
       : null,
-    () => getLobbyStatus(lobbyName),
+    () => getLobbyStatus(lobbyUuid),
     {
       refreshInterval: 2000,
       onError: err => {
@@ -626,7 +631,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const handleJoinComplete = async () => {
     setError(null);
     try {
-      await joinLobby(lobbyName);
+      await joinLobby(lobbyUuid);
       setHasJoinedLobby(true);
     } catch (err: any) {
       const errorMessage =
@@ -642,9 +647,10 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
 
   const handleCancel = async () => {
     setError(null);
+    onCancel();
     try {
       if (hasJoinedLobby) {
-        await exitLobby(lobbyName);
+        await exitLobby(lobbyUuid);
         setHasJoinedLobby(false);
       }
     } catch (_err: any) {
@@ -652,7 +658,6 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
       // User is intentionally leaving, so errors are less critical
     }
     mutateRCState();
-    onCancel();
   };
 
   const handleAccept = async () => {
@@ -661,7 +666,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     setError(null);
     setIsAccepting(true);
     try {
-      await acceptMatch(lobbyName, matchData.uuid);
+      await acceptMatch(lobbyUuid, matchData.uuid);
       // Continue polling to check if partner also accepted
     } catch (err: any) {
       const errorMessage =
@@ -678,7 +683,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
 
     setError(null);
     try {
-      await rejectMatch(lobbyName, matchData.uuid);
+      await rejectMatch(lobbyUuid, matchData.uuid);
     } catch (_err: any) {
       // Don't show error on reject - user is intentionally rejecting
       // Just proceed with state change
@@ -702,7 +707,7 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     setError(null);
     try {
       // Call room authentication API
-      const roomData = await authenticateRoom(lobbyName, matchData.uuid);
+      const roomData = await authenticateRoom(lobbyUuid, matchData.uuid);
 
       // Set up call connection with room data, including device choices
       connectToCall({
@@ -750,8 +755,6 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     },
     [],
   );
-
-  console.log('HERE');
 
   switch (lobbyState) {
     case 'partner_found':

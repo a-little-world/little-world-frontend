@@ -60,6 +60,7 @@ const randomCallsSchedule = [
 ];
 
 interface RandomCallLobby {
+  uuid: string;
   name: string;
   status: boolean;
   start_time: string;
@@ -69,12 +70,13 @@ interface RandomCallLobby {
 
 const RandomCalls = () => {
   const { t } = useTranslation();
-  const { data: lobbyData } = useSWR<RandomCallLobby>(
+  const { data: lobbyData } = useSWR<RandomCallLobby[]>(
     RANDOM_CALL_LOBBY_ENDPOINT,
     {
       refreshInterval: 2000,
     },
   );
+
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
@@ -110,10 +112,12 @@ const RandomCalls = () => {
 
   const onCloseLobby = async () => {
     setLobbyOpen(false);
-    try {
-      await exitLobby();
-    } catch (error) {
-      console.error('Failed to exit lobby:', error);
+    if (lobbyData?.uuid) {
+      try {
+        await exitLobby(lobbyData.uuid);
+      } catch (error) {
+        console.error('Failed to exit lobby:', error);
+      }
     }
   };
 
@@ -129,7 +133,12 @@ const RandomCalls = () => {
   return (
     <Container>
       <Modal open={lobbyOpen} onClose={onCloseLobby}>
-        <RandomCallsLobby onCancel={onCloseLobby} />
+        {lobbyData?.uuid && (
+          <RandomCallsLobby
+            lobbyUuid={lobbyData.uuid}
+            onCancel={onCloseLobby}
+          />
+        )}
       </Modal>
 
       <Modal open={callEnded} onClose={handleClosePostCall}>
