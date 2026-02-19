@@ -8,19 +8,32 @@ import styled, { css } from 'styled-components';
 
 export const PageContent = styled.section`
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
   align-items: center;
   padding: ${({ theme }) => theme.spacing.small};
   width: 100%;
+  max-width: 1200px;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: 0;
     }
+  `};
+`;
+
+export const TopDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.medium};
+  width: 100%;
+  align-items: center;
+  min-width: 0;
+
+  ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
-      align-items: flex-start;
-      flex-direction: row;
+      align-items: stretch;
+      flex-direction: row-reverse;
     }
   `};
 `;
@@ -31,15 +44,7 @@ export const TextField = styled.div`
   background: ${({ theme }) => theme.color.surface.disabled};
   padding: ${({ theme }) => theme.spacing.small};
   white-space: pre-line;
-`;
-
-export const Details = styled.div`
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.medium};
-  width: 100%;
-  min-width: 0;
+  height: 100%;
 `;
 
 export const ProfileSection = styled(Card)`
@@ -56,7 +61,13 @@ export const FieldTitle = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;
 
-export const Field = styled.div``;
+export const Field = styled.div<{ $flex?: boolean }>`
+  ${({ $flex }) =>
+    $flex &&
+    css`
+      flex: 1;
+    `}
+`;
 
 export const EditButton = styled(Button)`
   position: absolute;
