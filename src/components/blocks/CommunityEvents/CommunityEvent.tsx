@@ -373,6 +373,29 @@ function CommunityEvents() {
     setCurrentPage(page);
     window.scrollTo(0, 0);
   };
+
+  return (
+    <>
+      <Events>
+        {groupedEvents.map(eventData => (
+          <CommunityEvent
+            key={eventData.id}
+            _key={eventData.id}
+            {...eventData}
+          />
+        ))}
+      </Events>
+      {totalPages > 1 && (
+        <PaginationContainer>
+          <CustomPagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        </PaginationContainer>
+      )}
+    </>
+  );
 }
 
 export default CommunityEvents;
