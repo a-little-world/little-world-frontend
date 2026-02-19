@@ -11,7 +11,7 @@ const Container = styled.div`
   padding: ${({ theme }) => theme.spacing.medium};
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
+    @media (min-width: ${theme.breakpoints.large}) {
       width: unset;
       border-radius: ${theme.radius.medium};
       padding: ${theme.spacing.small};

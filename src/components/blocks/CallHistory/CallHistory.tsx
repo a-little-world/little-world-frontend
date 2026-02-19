@@ -1,5 +1,4 @@
 import {
-  Button,
   CalendarIcon,
   ClockDashedIcon,
   ClockIcon,
@@ -26,6 +25,7 @@ import {
   CallTime,
   Container,
   NoHistoryDescription,
+  RequestMatchButton,
 } from './CallHistory.styles';
 
 const CallHistoryList = ({ data }: { data: any }) => {
@@ -71,7 +71,11 @@ const CallHistoryList = ({ data }: { data: any }) => {
               <CallDateTime>
                 {item.date && (
                   <CallDate>
-                    <CalendarIcon label="Calendar icon" width={16} height={16} />
+                    <CalendarIcon
+                      label="Calendar icon"
+                      width={16}
+                      height={16}
+                    />
                     <Text>
                       {formatDate(new Date(item.date), 'd MMMM, p', language)}
                     </Text>
@@ -94,7 +98,7 @@ const CallHistoryList = ({ data }: { data: any }) => {
               )}
             </CallInfo>
           </CallDetails>
-          <Button
+          <RequestMatchButton
             disabled={
               item.cannot_match ||
               item.matching_requested ||
@@ -105,9 +109,9 @@ const CallHistoryList = ({ data }: { data: any }) => {
             {requestingMatch === item.id
               ? t('call_history.requesting')
               : item.matching_requested
-                ? t('call_history.requested')
-                : t('call_history.match_btn')}
-          </Button>
+              ? t('call_history.requested')
+              : t('call_history.match_btn')}
+          </RequestMatchButton>
         </CallEntry>
       ))}
     </CallHistoryListContainer>
@@ -122,9 +126,6 @@ const CallHistory = ({ className }: { className?: string }) => {
     <Container className={className} $hasData={!isEmpty(data)}>
       {!data || isEmpty(data) ? (
         <>
-          <NoHistoryDescription>
-            <Text>{t('call_history.no_history')}</Text>
-          </NoHistoryDescription>
           <ClockDashedIcon label="No call history" />
           <Text bold tag="h3" type={TextTypes.Body4}>
             {t('call_history.title_no_history')}

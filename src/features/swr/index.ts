@@ -7,7 +7,8 @@ export const USER_ENDPOINT = '/api/user';
 export const IS_AUTHENTICATED_ENDPOINT = '/api/user/authenticated';
 export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
 export const RANDOM_CALL_HISTORY_ENDPOINT = '/api/random_calls/history';
-export const RANDOM_CALL_LOBBY_ENDPOINT = '/api/random_calls/lobby/default/';
+export const RANDOM_CALL_LOBBY_ENDPOINT =
+  '/api/random_calls/lobby/default/active_or_upcoming';
 export const RANDOM_CALL_EXIT_PARAM = 'randomCallEnded';
 export const RANDOM_CALL_EXIT_VALUE = '1';
 export const apiOptions = '#api_options';

@@ -8,27 +8,51 @@ import {
   CardHeader,
   ClockIcon,
   ExclamationIcon,
+  Loading,
+  StatusMessage,
+  StatusTypes,
+  Switch,
   Tags,
   Text,
-  TextTypes
+  TextTypes,
 } from '@a-little-world/little-world-design-system';
+import {
+  LoadingSizes,
+  LoadingType,
+} from '@a-little-world/little-world-design-system-core';
 import {
   DevicePermissionError,
   LocalUserChoices,
   PreJoin,
   PreJoinValues,
 } from '@livekit/components-react';
-import { useCallback, useEffect, useState } from 'react';
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useSWR from 'swr';
 
-import { acceptMatch, authenticateRoom, exitLobby, getLobbyStatus, joinLobby, rejectMatch } from '../../../api/randomCalls';
+import {
+  acceptMatch,
+  authenticateRoom,
+  exitLobby,
+  getLobbyStatus,
+  joinLobby,
+  rejectMatch,
+} from '../../../api/randomCalls';
+import { USER_TYPES } from '../../../constants';
 import { useConnectedCallStore } from '../../../features/stores';
-import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE, USER_ENDPOINT } from '../../../features/swr';
+import {
+  RANDOM_CALL_EXIT_PARAM,
+  RANDOM_CALL_EXIT_VALUE,
+  USER_ENDPOINT,
+} from '../../../features/swr';
 import { clearActiveTracks } from '../../../helpers/video';
-import { getAppRoute, getRandomCallRoute, RANDOM_CALLS_ROUTE } from '../../../router/routes';
+import {
+  RANDOM_CALLS_ROUTE,
+  getAppRoute,
+  getRandomCallRoute,
+} from '../../../router/routes';
 import ProfileImage from '../../atoms/ProfileImage';
 import { CallSetupCard } from '../Calls/CallSetup';
 
@@ -110,6 +134,13 @@ const Spinner = styled.div`
   }
 `;
 
+const LobbyLoading = styled(Loading)`
+  position: absolute;
+  top: ${({ theme }) => theme.spacing.medium};
+  right: ${({ theme }) => theme.spacing.medium};
+  height: auto;
+  color: ${({ theme }) => theme.color.text.title};
+`;
 const RelativeCard = styled(ProposalCard)`
   position: relative;
 `;
@@ -137,19 +168,23 @@ const ScheduleList = styled.ul`
   gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
-
 const RandomCallSetup = ({
   onCancel,
   onJoinComplete,
   hasJoinedLobby,
   onDeviceChoicesChange,
   onPermissionErrorsChange,
+  error,
 }: {
   onCancel: () => void;
   onJoinComplete: () => void;
   hasJoinedLobby: boolean;
   onDeviceChoicesChange: (choices: LocalUserChoices | null) => void;
-  onPermissionErrorsChange: (errors: { audio: boolean; video: boolean }) => void;
+  onPermissionErrorsChange: (errors: {
+    audio: boolean;
+    video: boolean;
+  }) => void;
+  error?: string | null;
 }) => {
   const { t } = useTranslation();
   const { data: user } = useSWR(USER_ENDPOINT);
@@ -158,7 +193,13 @@ const RandomCallSetup = ({
   const [permissionsGranted, setPermissionsGranted] = useState(false);
   const [audioPermissionError, setAudioPermissionError] = useState(false);
   const [videoPermissionError, setVideoPermissionError] = useState(false);
-  const [deviceChoices, setDeviceChoices] = useState<LocalUserChoices | null>(null);
+  const [deviceChoices, setDeviceChoices] = useState<LocalUserChoices | null>(
+    null,
+  );
+
+  const switchesEnabled = false;
+  const sameGenderSwitchRef = useRef<HTMLButtonElement>(null);
+  const inclLearnersSwitchRef = useRef<HTMLButtonElement>(null);
 
   // Start countdown when permissions are granted
   useEffect(() => {
@@ -170,7 +211,7 @@ const RandomCallSetup = ({
   // Countdown timer
   useEffect(() => {
     if (countdown === null || countdown <= 0) {
-      return () => { };
+      return () => {};
     }
 
     const timer = setTimeout(() => {
@@ -242,6 +283,7 @@ const RandomCallSetup = ({
 
   return (
     <CallSetupCard $hideJoinBtn className="" size={undefined}>
+      <LobbyLoading size={LoadingSizes.Small} inline type={LoadingType.Ring} />
       <CardHeader>{t('random_calls.lobby_title')}</CardHeader>
       <CardContent>
         <Text center>{t('random_calls.lobby_description')}</Text>
@@ -255,29 +297,42 @@ const RandomCallSetup = ({
           defaults={{ username }}
           persistUserChoices={false}
         />
+        {switchesEnabled && (
+          <Switch
+            inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
+            label={t('random_calls.lobby_switch_gender')}
+            labelInline
+            onCheckedChange={() => {}}
+          />
+        )}
+        {switchesEnabled && user?.profile?.user_type === USER_TYPES.learner && (
+          <Switch
+            inputRef={inclLearnersSwitchRef as RefObject<HTMLButtonElement>}
+            label={t('random_calls.lobby_switch_learners')}
+            labelTooltip={t('random_calls.lobby_switch_learners_tooltip')}
+            labelInline
+            onCheckedChange={() => {}}
+          />
+        )}
+        {error && (
+          <StatusMessage type={StatusTypes.Error} visible>
+            {error}
+          </StatusMessage>
+        )}
       </CardContent>
       <CardFooter align="center">
-        {!hasJoinedLobby && countdown !== null ? (
-          <Button
-            appearance={ButtonAppearance.Primary}
-            onClick={onJoinComplete}
-            size={ButtonSizes.Stretch}
-            style={{
-              background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
-              border: 'none'
-            }}
-          >
-            {t('random_calls.joining_in_x_seconds', `Joining in ${countdown} seconds - Click to join now`)}
-          </Button>
-        ) : (
-          <Button
-            appearance={ButtonAppearance.Secondary}
-            onClick={onCancel}
-            size={ButtonSizes.Stretch}
-          >
-            {t('random_calls.lobby_cancel_seach')}
-          </Button>
-        )}
+        <Button
+          disabled={!hasJoinedLobby && countdown !== null}
+          appearance={ButtonAppearance.Secondary}
+          onClick={onCancel}
+          size={ButtonSizes.Stretch}
+        >
+          {!hasJoinedLobby && countdown !== null
+            ? t('random_calls.lobby_joining_in_x_seconds', {
+                seconds: countdown,
+              })
+            : t('random_calls.lobby_cancel_search')}
+        </Button>
       </CardFooter>
     </CallSetupCard>
   );
@@ -288,14 +343,18 @@ const PartnerProposal = ({
   onAccept,
   onReject,
   isAccepting = false,
+  error,
+  timeoutSeconds,
 }: {
   matchData: MatchData;
   onAccept: () => void;
   onReject: () => void;
   isAccepting?: boolean;
+  error?: string | null;
+  timeoutSeconds: number;
 }) => {
   const { t } = useTranslation();
-  const [timeLeft, setTimeLeft] = useState(30); // 30 seconds to accept
+  const [timeLeft, setTimeLeft] = useState(timeoutSeconds);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -309,7 +368,9 @@ const PartnerProposal = ({
       });
     }, 1000);
 
-    return () => { clearInterval(timer) };
+    return () => {
+      clearInterval(timer);
+    };
   }, [onReject]);
 
   const { partner } = matchData;
@@ -339,7 +400,9 @@ const PartnerProposal = ({
               {partner.name}
             </Text>
             <Text color="secondary">{partner.description}</Text>
-            {partner.interests.length > 0 && <Tags content={partner.interests} />}
+            {partner.interests.length > 0 && (
+              <Tags content={partner.interests} />
+            )}
           </PartnerDetails>
         </PartnerInfo>
 
@@ -347,8 +410,13 @@ const PartnerProposal = ({
           <Text type={TextTypes.Body3} bold>
             <ClockIcon label="Clock icon" width={16} height={16} /> {timeLeft}s
           </Text>
-          <Text type={TextTypes.Body5}>{t('random_calls.accept_prompt')}</Text>
+          <Text type={TextTypes.Body5}>{t('random_calls.accept_prompt')} </Text>
         </Timer>
+        {error && (
+          <StatusMessage type={StatusTypes.Error} visible>
+            {error}
+          </StatusMessage>
+        )}
       </CardContent>
       <CardFooter align="space-between">
         <Button
@@ -366,7 +434,13 @@ const PartnerProposal = ({
   );
 };
 
-const SessionsExpiredView = ({ onClose }: { onClose: () => void }) => {
+const SessionsExpiredView = ({
+  onClose,
+  error,
+}: {
+  onClose: () => void;
+  error?: string | null;
+}) => {
   const { t } = useTranslation();
   const randomCallsSchedule = [
     'Mittwoch – 18:00–20:00 Uhr',
@@ -395,6 +469,11 @@ const SessionsExpiredView = ({ onClose }: { onClose: () => void }) => {
           </ScheduleList>
         </Schedule>
         <Text>{t('random_calls.expired_additional_text')}</Text>
+        {error && (
+          <StatusMessage type={StatusTypes.Error} visible>
+            {error}
+          </StatusMessage>
+        )}
       </CardContent>
       <CardFooter>
         <Button onClick={onClose} size={ButtonSizes.Stretch}>
@@ -408,9 +487,11 @@ const SessionsExpiredView = ({ onClose }: { onClose: () => void }) => {
 const RejectedView = ({
   onReturnToLobby,
   reason,
+  error,
 }: {
   onReturnToLobby: () => void;
-  reason: RejectionReason;
+  reason: RejectionReason | null;
+  error?: string | null;
 }) => {
   const { t } = useTranslation();
 
@@ -440,6 +521,7 @@ const RejectedView = ({
     }
   };
 
+  console.log({ reason, a: getTitleKey(), b: getDescriptionKey() });
   return (
     <ProposalCard className="" size={undefined}>
       <CardHeader>{t(getTitleKey())}</CardHeader>
@@ -450,6 +532,11 @@ const RejectedView = ({
           height={20}
         />
         <Text center>{t(getDescriptionKey())}</Text>
+        {error && (
+          <StatusMessage type={StatusTypes.Error} visible>
+            {error}
+          </StatusMessage>
+        )}
       </CardContent>
       <CardFooter>
         <Button onClick={onReturnToLobby} size={ButtonSizes.Stretch}>
@@ -460,35 +547,46 @@ const RejectedView = ({
   );
 };
 
-const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
+const RandomCallsLobby = ({
+  lobbyUuid,
+  onCancel,
+}: {
+  lobbyUuid: string;
+  onCancel: () => void;
+}) => {
   const navigate = useNavigate();
   const { connectToCall } = useConnectedCallStore();
   const [lobbyState, setLobbyState] = useState<LobbyState>('idle');
   const [isAccepting, setIsAccepting] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState<RejectionReason>('user_rejected');
+  const [rejectionReason, setRejectionReason] =
+    useState<RejectionReason | null>(null);
   const [matchData, setMatchData] = useState<MatchData | null>(null);
   const [hasJoinedLobby, setHasJoinedLobby] = useState(false);
-  const [deviceChoices, setDeviceChoices] = useState<LocalUserChoices | null>(null);
+  const [deviceChoices, setDeviceChoices] = useState<LocalUserChoices | null>(
+    null,
+  );
   const [audioPermissionError, setAudioPermissionError] = useState(false);
   const [videoPermissionError, setVideoPermissionError] = useState(false);
-  const lobbyName = 'default';
+  const [error, setError] = useState<string | null>(null);
 
   // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
   const { data: statusData, mutate: mutateRCState } = useSWR(
     (lobbyState === 'idle' && hasJoinedLobby) || lobbyState === 'partner_found'
-      ? `/api/random_calls/lobby/${lobbyName}/status`
+      ? `/api/random_calls/lobby/${lobbyUuid}/status`
       : null,
-    () => getLobbyStatus(lobbyName),
+    () => getLobbyStatus(lobbyUuid),
     {
       refreshInterval: 2000,
-      onError: (err) => {
+      onError: err => {
         // If lobby is not active or user not in lobby, show expired view
         if (err?.status === 400) {
           setLobbyState('timeout');
         }
       },
-    }
+    },
   );
+
+  console.log({ statusData, lobbyState, matchData, rejectionReason });
 
   // Check for matching
   useEffect(() => {
@@ -503,13 +601,19 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
       // Otherwise, show the proposal screen
       setMatchData(statusData.matching);
       setLobbyState('partner_found');
+      setError(null); // Clear any previous errors when transitioning to partner_found
     }
 
     // If match disappears while on proposal screen (before accepting), return to lobby
-    if (!statusData?.matching && lobbyState === 'partner_found' && !isAccepting) {
+    if (
+      !statusData?.matching &&
+      lobbyState === 'partner_found' &&
+      !isAccepting
+    ) {
       // Match disappeared (partner rejected or timed out)
       setMatchData(null);
       setLobbyState('idle');
+      setError(null); // Clear errors when returning to idle
     }
 
     // Check if both accepted while waiting for partner
@@ -524,41 +628,50 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     }
   }, [statusData, lobbyState, isAccepting]);
 
-
-
   const handleJoinComplete = async () => {
+    setError(null);
     try {
-      await joinLobby(lobbyName);
+      await joinLobby(lobbyUuid);
       setHasJoinedLobby(true);
-    } catch (err) {
-      console.error('Failed to join lobby:', err);
-      // On error, close the modal
-      mutateRCState()
-      onCancel();
+    } catch (err: any) {
+      const errorMessage =
+        err?.message || 'Failed to join lobby. Please try again.';
+      setError(errorMessage);
+      // On error, close the modal after a delay to show error
+      setTimeout(() => {
+        mutateRCState();
+        onCancel();
+      }, 3000);
     }
   };
 
   const handleCancel = async () => {
+    setError(null);
+    onCancel();
     try {
       if (hasJoinedLobby) {
-        await exitLobby(lobbyName);
+        await exitLobby(lobbyUuid);
+        setHasJoinedLobby(false);
       }
-    } catch (err) {
-      console.error('Failed to exit lobby:', err);
+    } catch (_err: any) {
+      // Don't show error on cancel - just log silently
+      // User is intentionally leaving, so errors are less critical
     }
-    mutateRCState()
-    onCancel();
+    mutateRCState();
   };
 
   const handleAccept = async () => {
     if (!matchData) return;
 
+    setError(null);
     setIsAccepting(true);
     try {
-      await acceptMatch(lobbyName, matchData.uuid);
+      await acceptMatch(lobbyUuid, matchData.uuid);
       // Continue polling to check if partner also accepted
-    } catch (err) {
-      console.error('Failed to accept match:', err);
+    } catch (err: any) {
+      const errorMessage =
+        err?.message || 'Failed to accept match. Please try again.';
+      setError(errorMessage);
       setIsAccepting(false);
       setRejectionReason('timeout');
       setLobbyState('rejected');
@@ -568,41 +681,33 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
   const handleReject = async () => {
     if (!matchData) return;
 
+    setError(null);
     try {
-      await rejectMatch(lobbyName, matchData.uuid);
-    } catch (err) {
-      console.error('Failed to reject match:', err);
+      await rejectMatch(lobbyUuid, matchData.uuid);
+    } catch (_err: any) {
+      // Don't show error on reject - user is intentionally rejecting
+      // Just proceed with state change
     }
-    mutateRCState()
+    mutateRCState();
     setRejectionReason('user_rejected');
     setLobbyState('rejected');
   };
 
   const handleReturnToLobby = () => {
-    mutateRCState()
+    setError(null);
+    mutateRCState();
     setLobbyState('idle');
     setIsAccepting(false);
     setMatchData(null);
-  };
-
-  const handleCloseLobby = async () => {
-    try {
-      await exitLobby(lobbyName);
-    } catch (err) {
-      console.error('Failed to exit lobby:', err);
-    }
-    setLobbyState('idle');
-    setIsAccepting(false);
-    setMatchData(null);
-    onCancel();
   };
 
   const handleBothAccepted = async () => {
     if (!matchData) return;
 
+    setError(null);
     try {
       // Call room authentication API
-      const roomData = await authenticateRoom(lobbyName, matchData.uuid);
+      const roomData = await authenticateRoom(lobbyUuid, matchData.uuid);
 
       // Set up call connection with room data, including device choices
       connectToCall({
@@ -620,7 +725,9 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
           : false,
         audioPermissionDenied: audioPermissionError,
         videoPermissionDenied: videoPermissionError,
-        postDisconnectRedirect: `${getAppRoute(RANDOM_CALLS_ROUTE)}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
+        postDisconnectRedirect: `${getAppRoute(
+          RANDOM_CALLS_ROUTE,
+        )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
       });
 
       clearActiveTracks();
@@ -630,8 +737,10 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
 
       // Close the lobby modal
       onCancel();
-    } catch (err) {
-      console.error('Failed to authenticate room:', err);
+    } catch (err: any) {
+      const errorMessage =
+        err?.message || 'Failed to connect to call. Please try again.';
+      setError(errorMessage);
       // On error, show as rejected
       setRejectionReason('timeout');
       setLobbyState('rejected');
@@ -639,33 +748,58 @@ const RandomCallsLobby = ({ onCancel }: { onCancel: () => void }) => {
     }
   };
 
-  const handlePermissionErrorsChange = useCallback((errors: { audio: boolean; video: boolean }) => {
-    setAudioPermissionError(errors.audio);
-    setVideoPermissionError(errors.video);
-  }, []);
+  const handlePermissionErrorsChange = useCallback(
+    (errors: { audio: boolean; video: boolean }) => {
+      setAudioPermissionError(errors.audio);
+      setVideoPermissionError(errors.video);
+    },
+    [],
+  );
 
   switch (lobbyState) {
     case 'partner_found':
-      if (!matchData) return <RandomCallSetup onCancel={handleCancel} onJoinComplete={handleJoinComplete} hasJoinedLobby={hasJoinedLobby} onDeviceChoicesChange={setDeviceChoices} onPermissionErrorsChange={handlePermissionErrorsChange} />;
+      if (!matchData)
+        return (
+          <RandomCallSetup
+            onCancel={handleCancel}
+            onJoinComplete={handleJoinComplete}
+            hasJoinedLobby={hasJoinedLobby}
+            onDeviceChoicesChange={setDeviceChoices}
+            onPermissionErrorsChange={handlePermissionErrorsChange}
+            error={error}
+          />
+        );
       return (
         <PartnerProposal
           matchData={matchData}
           onAccept={handleAccept}
           onReject={handleReject}
           isAccepting={isAccepting}
+          error={error}
+          timeoutSeconds={statusData?.match_proposal_timeout ?? 10}
         />
       );
     case 'timeout':
-      return <SessionsExpiredView onClose={handleCloseLobby} />;
+      return <SessionsExpiredView onClose={handleCancel} error={error} />;
     case 'rejected':
       return (
         <RejectedView
           onReturnToLobby={handleReturnToLobby}
           reason={rejectionReason}
+          error={error}
         />
       );
     default:
-      return <RandomCallSetup onCancel={handleCancel} onJoinComplete={handleJoinComplete} hasJoinedLobby={hasJoinedLobby} onDeviceChoicesChange={setDeviceChoices} onPermissionErrorsChange={handlePermissionErrorsChange} />;
+      return (
+        <RandomCallSetup
+          onCancel={handleCancel}
+          onJoinComplete={handleJoinComplete}
+          hasJoinedLobby={hasJoinedLobby}
+          onDeviceChoicesChange={setDeviceChoices}
+          onPermissionErrorsChange={handlePermissionErrorsChange}
+          error={error}
+        />
+      );
   }
 };
 
