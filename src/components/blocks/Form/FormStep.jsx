@@ -1,4 +1,4 @@
-import { isObject, map } from 'lodash';
+import { map } from 'lodash';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -50,30 +50,27 @@ const FormStep = ({ content, control }) => {
           const componentProps = {
             ...props,
             [updater]: eventOrValue => {
-              const newVal = eventOrValue?.target ?
-                eventOrValue :
-                { target: { value: eventOrValue } };
+              const newVal = eventOrValue?.target
+                ? eventOrValue
+                : { target: { value: eventOrValue } };
 
               onChange(newVal);
             },
             [valueKey]: value,
-            ...(dataField === 'lang_skill' && error ?
-              {
+            ...(dataField === 'lang_skill' && error
+              ? {
                   firstDropdown: addErrorToLangSkill({
                     dropdownProps: props.firstDropdown,
                     error: t(error?.message),
                     values: map(value, val => val.lang),
                   }),
-                } :
-              {}),
+                }
+              : {}),
           };
-          const componentKey = isObject(currentValue) ?
-            JSON.stringify(currentValue) :
-            currentValue;
 
           return (
             <Component
-              key={name + componentKey}
+              key={name}
               name={name}
               value={value}
               onBlur={onBlur}
