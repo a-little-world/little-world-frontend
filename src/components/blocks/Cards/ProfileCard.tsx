@@ -84,7 +84,6 @@ export const StyledProfileCard = styled(Card)<{
   align-items: center;
   position: relative;
   text-align: ${({ $isSelf }) => ($isSelf ? 'center' : 'left')};
-  order: 1;
   gap: ${({ theme }) => theme.spacing.small};
 
   ${({ $unconfirmedMatch }) =>
@@ -94,11 +93,14 @@ export const StyledProfileCard = styled(Card)<{
     `};
 
   ${({ $onProfile }) =>
-    $onProfile &&
-    css`
-      max-width: ${pixelate(CardDimensions[CardSizes.Small])};
-      width: unset;
-    `};
+    $onProfile
+      ? css`
+          max-width: ${pixelate(CardDimensions[CardSizes.Small])};
+          width: unset;
+        `
+      : css`
+          order: 1;
+        `};
 
   ${({ theme, $isSelf }) => css`
     min-height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};

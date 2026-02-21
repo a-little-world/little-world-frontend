@@ -9,6 +9,7 @@ import {
   CHATS_ENDPOINT_SEPERATE,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
+  getChatEndpoint,
 } from './index';
 
 interface MatchesData {
@@ -134,6 +135,9 @@ export function addMessage(
 
     return chatsData;
   });
+
+  // Revalidate active (single) chat so Chat.tsx gets fresh unread_count
+  mutate(getChatEndpoint(chatId));
 }
 
 export function addActiveCallRoom(callRoom: any): void {
@@ -222,6 +226,9 @@ export function markChatMessagesRead(chatId: string, userId: string): void {
       }),
     };
   });
+
+  // Revalidate active (single) chat so Chat.tsx gets fresh unread_count
+  mutate(getChatEndpoint(chatId));
 }
 
 export function preMatchingAppointmentBooked(appointment: any): void {
