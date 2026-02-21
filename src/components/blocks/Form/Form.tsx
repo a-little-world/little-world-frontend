@@ -20,6 +20,7 @@ import { onFormError } from '../../../helpers/form';
 import {
   EDIT_FORM_ROUTE,
   PROFILE_ROUTE,
+  USER_FORM_SELF_INFO_1,
   USER_FORM_USER_TYPE,
   getAppRoute,
 } from '../../../router/routes';
@@ -273,6 +274,10 @@ const Form = () => {
     ? 'complete'
     : 'to_appointment_booking';
 
+  const noBackButton =
+    Boolean(!prevPage) ||
+    (userData?.userFormCompleted && slug === USER_FORM_SELF_INFO_1);
+
   return (
     <StyledCard>
       <Title tag="h2" type={TextTypes.Heading4}>
@@ -287,8 +292,8 @@ const Form = () => {
         <SubmitError $visible={!!displayError}>
           {t(displayError?.message)}
         </SubmitError>
-        <FormButtons $onlyOneBtn={Boolean(!prevPage)}>
-          {Boolean(prevPage) && (
+        <FormButtons $onlyOneBtn={noBackButton}>
+          {!noBackButton && (
             <Button
               appearance={ButtonAppearance.Secondary}
               onClick={handleBackClick}
