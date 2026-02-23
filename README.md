@@ -27,19 +27,28 @@ Install the necessary dependencies using Yarn:
 npm install
 ```
 
-### Starting the local server
+### Starting the local server without backend access
 
 #### Local dev with remote API server
 
+Set `environment.development` to `true` in `src/environment.ts`
+Then run: 
 ```bash
 npm run dev
 ./schrodingers-nginx.sh
 ```
 
+### Starting local server with backend access
+
+Please reach out to a Little World to request permission to our local backend server and help you get set-up.
+
 ### Testing Video Calls Locally
 
+**Backend access required**
 To test our in-app video calls locally you need to:
-1) Add environment variables to `little-world-backend/envs/dev.env`:
+
+1. Add environment variables to `little-world-backend/envs/dev.env`:
+
 ```
 DJ_LIVEKIT_API_KEY=REQUEST FROM TEAM
 DJ_LIVEKIT_API_SECRET=REQUEST FROM TEAM
@@ -47,17 +56,18 @@ DJ_LIVEKIT_WEBHOOK_SECRET="secret"
 DJ_LIVEKIT_URL="https://littleworld-development-4tq43oit.livekit.cloud"
 ```
 
-2) Start the Backend server & Ngrok server
+2. Start the Backend server & Ngrok server
 
 You will need to install ngrok and also create an account at https://ngrok.com/
-When you have an ngrok account you can [create your own static domain](https://dashboard.ngrok.com/get-started/setup/macos). 
+When you have an ngrok account you can [create your own static domain](https://dashboard.ngrok.com/get-started/setup/macos).
+
 ```
 brew install ngrok // if you don't have it already
 ngrok http --url=YOUR_STATIC_DOMAIN 8000
 ```
 
-3) Go to livekit development dashboard and enter the callback url:
-https://YOUR_STATIC_DOMAIN.ngrok-free.app/api/livekit/webhook?secret=secret
+3. Go to livekit development dashboard and enter the callback url:
+   https://YOUR_STATIC_DOMAIN.ngrok-free.app/api/livekit/webhook?secret=secret
 
 Now when you run the video calls locally they should work!
 Make sure the ngrok server is running - this is required for the webhooks to work!

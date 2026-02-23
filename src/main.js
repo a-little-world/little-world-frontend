@@ -1,11 +1,13 @@
+import { isEmpty } from 'lodash';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { mutate } from 'swr';
 
-import { isEmpty } from 'lodash';
 import App from './App';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
+import getTestUser from './dev/testUser';
+import { environment } from './environment';
 import { API_OPTIONS_ENDPOINT } from './features/swr/index';
 import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
@@ -78,4 +80,12 @@ export function renderMessageView(
 if (typeof window !== 'undefined') {
   window.renderApp = renderApp;
   window.renderMessageView = renderMessageView;
+}
+
+if (environment.development) {
+  renderApp({
+    user: getTestUser(),
+    apiTranslations: {},
+    apiOptions: {},
+  });
 }
