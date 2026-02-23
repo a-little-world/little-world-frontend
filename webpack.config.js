@@ -14,7 +14,6 @@ const config = function (env) {
   const outputPath = './dist';
   const entry = './src';
   const entryPoint = `${entry}/main.js`;
-  const debug = env.DEBUG === '1';
 
   return {
     context: __dirname,
@@ -23,8 +22,9 @@ const config = function (env) {
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.src/'),
+        '@': path.resolve(__dirname, 'src/'),
       },
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     },
     output: {
       path: path.join(__dirname, outputPath),
@@ -67,7 +67,7 @@ const config = function (env) {
           exclude: /node_modules/,
           use: ['babel-loader'],
           resolve: {
-            extensions: ['.js', '.jsx'],
+            extensions: ['.ts', '.tsx', '.js', '.jsx'],
           },
           include: [path.resolve(__dirname, './src')],
         },
@@ -111,7 +111,7 @@ const config = function (env) {
   };
 };
 
-module.exports = (env, argv) => {
+module.exports = env => {
   const conf = config(env);
   console.log(conf);
   return conf;
