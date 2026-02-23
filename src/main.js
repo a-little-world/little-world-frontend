@@ -6,6 +6,7 @@ import { mutate } from 'swr';
 import App from './App';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
+import getTestUser from './dev/testUser';
 import { environment } from './environment';
 import { API_OPTIONS_ENDPOINT } from './features/swr/index';
 import { updateTranslationResources } from './i18n';
@@ -83,7 +84,7 @@ if (typeof window !== 'undefined') {
 
 if (!environment.production) {
   renderApp({
-    user: undefined,
+    user: getTestUser(),
     apiTranslations: {},
     apiOptions: {},
   });
