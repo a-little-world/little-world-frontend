@@ -1,5 +1,6 @@
 export interface Environment {
   production: boolean;
+  development: boolean;
   defaultLoginName: string;
   defaultLoginPassword: string;
   backendUrl: string;
@@ -14,6 +15,7 @@ export interface Environment {
 
 export const environment: Environment = {
   production: false,
+  development: false,
   defaultLoginName: 'benjamin.tim@gmx.de',
   defaultLoginPassword: 'Test123',
   backendUrl: '',

@@ -31,6 +31,8 @@ npm install
 
 #### Local dev with remote API server
 
+Set `environment.development` to `true` in `src/environment.ts`
+Then run: 
 ```bash
 npm run dev
 ./schrodingers-nginx.sh

@@ -82,7 +82,7 @@ if (typeof window !== 'undefined') {
   window.renderMessageView = renderMessageView;
 }
 
-if (!environment.production) {
+if (environment.development) {
   renderApp({
     user: getTestUser(),
     apiTranslations: {},
