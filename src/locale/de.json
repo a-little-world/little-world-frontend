@@ -12,6 +12,7 @@
   "availability.column7": "Samstag",
   "availability.column8": "Sonntag",
   "availability.description": "Wähle die Zeitfenster aus, die für dich in den meisten Wochen passen (deutsche Zeit). Du bleibst flexibel. Die genauen Termine kannst du direkt mit deinen Gesprächspartnern vereinbaren.",
+  "availability.info_text": "Alle angezeigten und eingegebenen Zeiten auf dieser Plattform sind in deutscher Ortszeit (MEZ/MESZ). Wenn du dich außerhalb Deutschlands befindest, konvertiere deine lokale Zeit bitte in die deutsche Ortszeit, bevor du sie eingibst.",
   "availability.label": "",
   "availability.legend_text": "Deine verfügbaren Slots",
   "availability.row1": "8 bis 10 Uhr",
