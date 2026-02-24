@@ -517,11 +517,11 @@ const RejectedView = ({
   const getDescriptionKey = () => {
     switch (reason) {
       case 'user_rejected':
-        return 'random_calls.user_rejected_description';
+        return 'random_calls.user_rejected_manual_description';
       case 'partner_rejected':
         return 'random_calls.partner_rejected_description';
       case 'timeout':
-        return 'random_calls.proposal_timeout_description';
+        return 'random_calls.user_rejected_timeout_description';
       default:
         return 'random_calls.rejected_description';
     }
@@ -574,6 +574,7 @@ const RandomCallsLobby = ({
   const [audioPermissionError, setAudioPermissionError] = useState(false);
   const [videoPermissionError, setVideoPermissionError] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isManualRejectPending = useRef(false);
 
   // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
   const { data: statusData, mutate: mutateRCState } = useSWR(
@@ -634,7 +635,10 @@ const RandomCallsLobby = ({
     if (!matching && lobbyState === 'partner_found') {
       setMatchData(null);
       setIsAccepting(false);
-      if (isAccepting) {
+      if (isManualRejectPending.current) {
+        setRejectionReason('user_rejected');
+        isManualRejectPending.current = false;
+      } else if (isAccepting) {
         setRejectionReason('partner_rejected');
       } else {
         setRejectionReason('timeout');
@@ -675,6 +679,7 @@ const RandomCallsLobby = ({
 
   const handleCancel = async () => {
     setError(null);
+    isManualRejectPending.current = false;
     onCancel();
     try {
       if (hasJoinedLobby) {
@@ -710,20 +715,22 @@ const RandomCallsLobby = ({
     if (!matchData) return;
 
     setError(null);
+    isManualRejectPending.current = reason === 'user_rejected';
     try {
       await rejectMatch(lobbyUuid, matchData.uuid);
     } catch (_err: any) {
       // Don't show error on reject - user is intentionally rejecting
       // Just proceed with state change
     }
-    mutateRCState();
     setRejectionReason(reason);
     setLobbyState('rejected');
     setIsAccepting(false);
+    setMatchData(null);
   };
 
   const handleReturnToLobby = () => {
     setError(null);
+    isManualRejectPending.current = false;
     mutateRCState();
     setLobbyState('idle');
     setIsAccepting(false);
