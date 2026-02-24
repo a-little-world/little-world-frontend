@@ -8,6 +8,7 @@ import useSWR, { mutate } from 'swr';
 import { mutateUserData } from '../../../api/index';
 import { environment } from '../../../environment';
 import { useDevelopmentFeaturesStore } from '../../../features/stores/index';
+import useNotificationStore from '../../../features/stores/notification';
 import { USER_ENDPOINT } from '../../../features/swr/index';
 import {
   registerFirebaseDeviceToken,
@@ -37,7 +38,9 @@ const PushNotifications = ({
   const { t } = useTranslation();
   const { control, getValues, setError, watch, handleSubmit } = useForm<Data>();
   const { data: user } = useSWR(USER_ENDPOINT);
-  const enabled = user?.profile.push_notifications_enabled;
+  // notification store is not necessarily updated fast enough and only the initial value is used
+  const userDataPushNotificationsEnabled =
+    user?.profile.push_notifications_enabled;
 
   const onFormSuccess = (_data: Data) => {
     mutate(USER_ENDPOINT);
@@ -57,25 +60,51 @@ const PushNotifications = ({
     return () => subscription.unsubscribe();
   }, [handleSubmit, watch]);
 
-  useEffect(() => {
-    if (enabled && !environment.isNative) {
-      Notification.requestPermission().then(permission => {
-        if (permission !== 'granted') {
-          setError('push_notifications_enabled', {
-            message: t('push_notifications.enable_error'),
-          });
-        }
-      });
-    }
-  }, [enabled, setError, t]);
-
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
+
+  const notificationStore = useNotificationStore();
+  const {
+    deviceSupported,
+    devicePermissionSet,
+    devicePermissionGranted,
+    notificationsEnabled,
+  } = notificationStore;
+
+  if (!environment.isNative) {
+    useEffect(() => {
+      if (
+        notificationsEnabled &&
+        devicePermissionSet &&
+        !devicePermissionGranted
+      ) {
+        setError('push_notifications_enabled', {
+          message: t('push_notifications.permission_denied'),
+        });
+      } else {
+        setError('push_notifications_enabled', {});
+      }
+    }, [
+      notificationsEnabled,
+      devicePermissionSet,
+      devicePermissionGranted,
+      setError,
+      t,
+    ]);
+  }
+
+  const requestNotificationPermission = async () => {
+    const permissionStatus = await Notification.requestPermission();
+    notificationStore.setDevicePermissionSet(permissionStatus !== 'default');
+    notificationStore.setDevicePermissionGranted(
+      permissionStatus === 'granted',
+    );
+  };
 
   return (
     <>
       <NotificationForm>
         <Controller
-          defaultValue={enabled}
+          defaultValue={userDataPushNotificationsEnabled}
           name="push_notifications_enabled"
           control={control}
           render={({
@@ -97,6 +126,11 @@ const PushNotifications = ({
             />
           )}
         />
+        {deviceSupported && notificationsEnabled && !devicePermissionSet && (
+          <Button onClick={() => requestNotificationPermission()}>
+            {t('push_notifications.request_permission')}
+          </Button>
+        )}
       </NotificationForm>
       {areDevFeaturesEnabled && (
         <>
