@@ -56,7 +56,11 @@ import {
 import ProfileImage from '../../atoms/ProfileImage';
 import { CallSetupCard } from '../Calls/CallSetup';
 
-type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected';
+type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected' | 'partner_rejected' | 'partner_timedout';
+// - 'rejected': The user himself rejected -> Show reject view, user has to re-enter lobby
+// - 'partner_rejected': The partner rejected -> Known if 
+// TODO: actually check for an consider 'partner_rejected' if match returns
+// - 'partner_timedout': The partner timed out
 type RejectionReason = 'user_rejected' | 'partner_rejected' | 'timeout';
 
 interface PartnerInfoInterface {
@@ -211,7 +215,7 @@ const RandomCallSetup = ({
   // Countdown timer
   useEffect(() => {
     if (countdown === null || countdown <= 0) {
-      return () => {};
+      return () => { };
     }
 
     const timer = setTimeout(() => {
@@ -302,7 +306,7 @@ const RandomCallSetup = ({
             inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
             label={t('random_calls.lobby_switch_gender')}
             labelInline
-            onCheckedChange={() => {}}
+            onCheckedChange={() => { }}
           />
         )}
         {switchesEnabled && user?.profile?.user_type === USER_TYPES.learner && (
@@ -311,7 +315,7 @@ const RandomCallSetup = ({
             label={t('random_calls.lobby_switch_learners')}
             labelTooltip={t('random_calls.lobby_switch_learners_tooltip')}
             labelInline
-            onCheckedChange={() => {}}
+            onCheckedChange={() => { }}
           />
         )}
         {error && (
@@ -329,8 +333,8 @@ const RandomCallSetup = ({
         >
           {!hasJoinedLobby && countdown !== null
             ? t('random_calls.lobby_joining_in_x_seconds', {
-                seconds: countdown,
-              })
+              seconds: countdown,
+            })
             : t('random_calls.lobby_cancel_search')}
         </Button>
       </CardFooter>
@@ -590,11 +594,24 @@ const RandomCallsLobby = ({
 
   // Check for matching
   useEffect(() => {
+    // TODO: Improve handling of all possible states:
+    // - lobby waiting for match = 'idle'
+    // - lobby has matching = 'partner_found'
     if (statusData?.matching && lobbyState === 'idle') {
+      //
       // If both users have already accepted, skip proposal and go directly to call
       if (statusData.matching.both_accepted) {
         setMatchData(statusData.matching);
         handleBothAccepted();
+        return;
+      }
+
+      // The partner rejected the match, the user has already confirmed the rejection by last fetch
+      // Partner jected lobby state gets shows
+      // TODO: Decide if this is the same as 'partner_timedout', prob right?
+      if (statusData.matching?.partner_rejected) {
+        setRejectionReason('partner_rejected');
+        setLobbyState('partner_rejected'); // TODO: Ensure different view
         return;
       }
 
@@ -738,12 +755,14 @@ const RandomCallsLobby = ({
       // Close the lobby modal
       onCancel();
     } catch (err: any) {
+      // TODO: There should be a seperaete lobby state here
+      // Something around 'error connecting to call' but you can retry
       const errorMessage =
         err?.message || 'Failed to connect to call. Please try again.';
       setError(errorMessage);
       // On error, show as rejected
       setRejectionReason('timeout');
-      setLobbyState('rejected');
+      setLobbyState('rejected'); // TODO: Should be different lobby state
       setIsAccepting(false);
     }
   };

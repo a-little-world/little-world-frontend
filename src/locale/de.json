@@ -481,6 +481,7 @@
   "random_calls.lobby_cancel_search": "Suche abbrechen",
   "random_calls.lobby_joining_in_x_seconds": "Beitritt in {{ seconds }} Sekunden",
   "random_calls.partner_found": "Gesprächspartner gefunden",
+  "random_calls.partner_rejected": "Gesprächspartner hat abgelehnt",
   "random_calls.time_to_accept": "Akzeptieren bis",
   "random_calls.accept_prompt": "Bitte bestätigen Sie das Gespräch. Andernfalls werden Sie zur Seite „Zufallsgespräche“ zurückgeleitet.",
   "random_calls.proposal_reject": "Suche abbrechen",
