@@ -83,13 +83,15 @@ function getInstallationId(): string {
   }
 }
 
-export async function registerFirebaseDeviceToken(): Promise<void> {
+async function updateFirebaseDeviceRegistration(
+  step: 'register' | 'unregister',
+): Promise<void> {
   const installId = getInstallationId();
   const token = await getFirebaseToken();
   const platform = 'web';
   const modelName = navigator.userAgent;
 
-  return apiFetch('/api/push_notifications/register', {
+  return apiFetch(`/api/push_notifications/${step}`, {
     method: 'POST',
     body: {
       install_id: installId,
@@ -100,17 +102,12 @@ export async function registerFirebaseDeviceToken(): Promise<void> {
   });
 }
 
-export async function unregisterFirebaseDeviceToken(): Promise<void> {
-  const installId = getInstallationId();
-  const token = await getFirebaseToken();
+export async function registerFirebaseDeviceToken(): Promise<void> {
+  updateFirebaseDeviceRegistration('register');
+}
 
-  return apiFetch('/api/push_notifications/unregister', {
-    method: 'POST',
-    body: {
-      install_id: installId,
-      token,
-    },
-  });
+export async function unregisterFirebaseDeviceToken(): Promise<void> {
+  updateFirebaseDeviceRegistration('unregister');
 }
 
 export async function sendFirebaseTestNotification(
