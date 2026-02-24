@@ -213,7 +213,7 @@ const RandomCallSetup = ({
   // Countdown timer
   useEffect(() => {
     if (countdown === null || countdown <= 0) {
-      return () => { };
+      return () => {};
     }
 
     const timer = setTimeout(() => {
@@ -304,7 +304,7 @@ const RandomCallSetup = ({
             inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
             label={t('random_calls.lobby_switch_gender')}
             labelInline
-            onCheckedChange={() => { }}
+            onCheckedChange={() => {}}
           />
         )}
         {switchesEnabled && user?.profile?.user_type === USER_TYPES.learner && (
@@ -313,7 +313,7 @@ const RandomCallSetup = ({
             label={t('random_calls.lobby_switch_learners')}
             labelTooltip={t('random_calls.lobby_switch_learners_tooltip')}
             labelInline
-            onCheckedChange={() => { }}
+            onCheckedChange={() => {}}
           />
         )}
         {error && (
@@ -331,8 +331,8 @@ const RandomCallSetup = ({
         >
           {!hasJoinedLobby && countdown !== null
             ? t('random_calls.lobby_joining_in_x_seconds', {
-              seconds: countdown,
-            })
+                seconds: countdown,
+              })
             : t('random_calls.lobby_cancel_search')}
         </Button>
       </CardFooter>
@@ -602,7 +602,7 @@ const RandomCallsLobby = ({
         // If lobby is not active or user not in lobby, show expired view
         if (err?.status === 400) {
           setLobbyState('timeout');
-          void leaveLobbySilently();
+          leaveLobbySilently();
         }
       },
     },
@@ -633,7 +633,7 @@ const RandomCallsLobby = ({
         setLobbyState('rejected');
         setMatchData(null);
         setIsAccepting(false);
-        void leaveLobbySilently();
+        leaveLobbySilently();
         return;
       }
 
@@ -661,7 +661,7 @@ const RandomCallsLobby = ({
       }
       setLobbyState('rejected');
       setError(null); // Clear errors when returning to idle
-      void leaveLobbySilently();
+      leaveLobbySilently();
       return;
     }
 
@@ -679,7 +679,7 @@ const RandomCallsLobby = ({
 
   useEffect(() => {
     if (lobbyState === 'rejected' || lobbyState === 'timeout') {
-      void leaveLobbySilently();
+      leaveLobbySilently();
     }
   }, [lobbyState, leaveLobbySilently]);
 
@@ -736,7 +736,9 @@ const RandomCallsLobby = ({
     }
   };
 
-  const handleReject = async (reason: 'user_rejected' | 'timeout' = 'user_rejected') => {
+  const handleReject = async (
+    reason: 'user_rejected' | 'timeout' = 'user_rejected',
+  ) => {
     if (!matchData) return;
 
     setError(null);
@@ -749,9 +751,9 @@ const RandomCallsLobby = ({
         (current: any) =>
           current
             ? {
-              ...current,
-              matching: null,
-            }
+                ...current,
+                matching: null,
+              }
             : current,
         { revalidate: true },
       );
@@ -773,9 +775,9 @@ const RandomCallsLobby = ({
       (current: any) =>
         current
           ? {
-            ...current,
-            matching: null,
-          }
+              ...current,
+              matching: null,
+            }
           : current,
       { revalidate: true },
     );
