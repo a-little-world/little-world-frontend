@@ -173,6 +173,7 @@ interface ControlBarProps extends SharedControlBarProps {
   hide: boolean;
   onFullScreenToggle: () => void;
   isFullScreen: boolean;
+  onDisconnectClick?: () => void;
   onPermissionModalOpen: (permissions: {
     audio: boolean;
     video: boolean;
@@ -224,6 +225,7 @@ function ControlBar({
   hide,
   isFullScreen,
   onChatToggle,
+  onDisconnectClick,
   onFullScreenToggle,
   onTranslatorToggle,
   onPermissionModalOpen,
@@ -231,6 +233,10 @@ function ControlBar({
 }: ControlBarProps) {
   const { t } = useTranslation();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const {
+    onClick: livekitDisconnectClick,
+    ...disconnectButtonProps
+  } = disconnectProps;
 
   const { permissionDenied: audioPermissionDenied } = useTrackToggle({
     source: Track.Source.Microphone,
@@ -353,7 +359,13 @@ function ControlBar({
       <Section>
         <StyledTimer $desktopOnly />
 
-        <DisconnectBtn {...disconnectProps}>
+        <DisconnectBtn
+          {...disconnectButtonProps}
+          onClick={(event: any) => {
+            onDisconnectClick?.();
+            livekitDisconnectClick?.(event);
+          }}
+        >
           {t('call.leave_btn')}
         </DisconnectBtn>
       </Section>

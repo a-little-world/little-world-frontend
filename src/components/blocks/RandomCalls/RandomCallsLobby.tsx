@@ -794,6 +794,7 @@ const RandomCallsLobby = ({
       connectToCall({
         userId: currentMatchData.partner.id,
         chatId: roomData.chat?.uuid || '',
+        randomMatchId: roomData.random_match_id,
         tracks: deviceChoices || undefined,
         token: roomData.token,
         livekitServerUrl: roomData.server_url,

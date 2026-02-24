@@ -33,6 +33,11 @@ export const authenticateRoom = (lobbyUuid: string, matchUuid: string) =>
     },
   );
 
+export const endRandomCallMatch = (matchUuid: string) =>
+  apiFetch(`/api/random_calls/match/${matchUuid}/end_call`, {
+    method: 'POST',
+  });
+
 export const getAcceptedRandomCallMatches = () =>
   apiFetch('/api/random_calls/history', {
     method: 'GET',
