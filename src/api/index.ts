@@ -156,6 +156,15 @@ export const login = async ({
     },
   });
 
+  // Notify native app to register the firebase device push token.
+  // We can do this because the firebase sdk on native is always active.
+  // On web it is only activated when it is both supported and push notifications
+  // are enabled, so only register under these circumstances (see Firebase component)
+  await sendMessageToReactNative({
+    action: 'REGISTER_DEVICE_PUSH_TOKEN',
+    payload: {},
+  });
+
   delete loginData?.token_access;
   delete loginData?.token_refresh;
   return loginData;
@@ -233,6 +242,15 @@ export const signUp = async ({
       accessToken: signUpData?.token_access ?? undefined,
       refreshToken: signUpData?.token_refresh ?? undefined,
     },
+  });
+
+  // Notify native app to register the firebase device push token.
+  // We can do this because the firebase sdk on native is always active.
+  // On web it is only activated when it is both supported and push notifications
+  // are enabled, so only register under these circumstances (see Firebase component)
+  await sendMessageToReactNative({
+    action: 'REGISTER_DEVICE_PUSH_TOKEN',
+    payload: {},
   });
 
   delete signUpData?.token_access;

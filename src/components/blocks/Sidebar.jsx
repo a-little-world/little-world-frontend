@@ -199,6 +199,7 @@ function Sidebar({ isVH, sidebarMobile }) {
           if (environment.isNative) {
             await sendMessageToReactNative({
               action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
+              payload: {},
             });
           } else {
             await unregisterFirebaseDeviceToken();
