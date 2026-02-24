@@ -16,7 +16,7 @@ import {
   RANDOM_CALL_EXIT_VALUE,
   RANDOM_CALL_LOBBY_ENDPOINT,
 } from '../../../features/swr/index';
-import randomCallsImage from '../../../images/item info.png';
+import randomCallsImage from '../../../images/random-calls-image.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
 import CallHistory from '../../blocks/CallHistory/CallHistory';
@@ -32,6 +32,7 @@ import {
   InnerContainer,
   JoinButton,
   RandomCallsAccordion,
+  RandomCallsAccordionContentWrapper,
   RandomCallsInstructions,
   Schedule,
   ScheduleHeading,
@@ -59,6 +60,7 @@ const randomCallsSchedule = [
 ];
 
 interface RandomCallLobby {
+  uuid: string;
   name: string;
   status: boolean;
   start_time: string;
@@ -68,16 +70,18 @@ interface RandomCallLobby {
 
 const RandomCalls = () => {
   const { t } = useTranslation();
-  const { data: lobbyData } = useSWR<RandomCallLobby>(
+  const { data: lobbyData } = useSWR<RandomCallLobby[]>(
     RANDOM_CALL_LOBBY_ENDPOINT,
     {
       refreshInterval: 2000,
     },
   );
+
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  console.log({ lobbyData });
 
   // Format time from ISO string to HH:MM
   const formatTime = (dateString?: string) => {
@@ -107,12 +111,14 @@ const RandomCalls = () => {
   };
 
   const onCloseLobby = async () => {
-    try {
-      await exitLobby();
-    } catch (error) {
-      console.error('Failed to exit lobby:', error);
-    }
     setLobbyOpen(false);
+    if (lobbyData?.uuid) {
+      try {
+        await exitLobby(lobbyData.uuid);
+      } catch (error) {
+        console.error('Failed to exit lobby:', error);
+      }
+    }
   };
 
   const handleReturnToLobby = () => {
@@ -127,7 +133,12 @@ const RandomCalls = () => {
   return (
     <Container>
       <Modal open={lobbyOpen} onClose={onCloseLobby}>
-        <RandomCallsLobby onCancel={onCloseLobby} />
+        {lobbyData?.uuid && (
+          <RandomCallsLobby
+            lobbyUuid={lobbyData.uuid}
+            onCancel={onCloseLobby}
+          />
+        )}
       </Modal>
 
       <Modal open={callEnded} onClose={handleClosePostCall}>
@@ -150,9 +161,9 @@ const RandomCalls = () => {
             <Text>{t('random_calls.description')}</Text>
             <Text bold type={TextTypes.Body3}>
               {t(
-                active ?
-                  'random_calls.active_heading' :
-                  'random_calls.inactive_heading',
+                active
+                  ? 'random_calls.active_heading'
+                  : 'random_calls.inactive_heading',
                 { from: startTime || '18:00', to: endTime || '20:00' },
               )}
             </Text>
@@ -186,9 +197,9 @@ const RandomCalls = () => {
               onClick={onJoinLobby}
             >
               {t(
-                active ?
-                  'random_calls.start_btn' :
-                  'random_calls.start_btn_disabled',
+                active
+                  ? 'random_calls.start_btn'
+                  : 'random_calls.start_btn_disabled',
               )}
             </JoinButton>
           </InfoPanelText>
@@ -200,12 +211,13 @@ const RandomCalls = () => {
         items={instructions}
       />
       <RandomCallsAccordion
+        ContentWrapper={RandomCallsAccordionContentWrapper}
         items={[
           {
             content: <Instructions items={instructions} />,
-            header: 'Instructions',
+            header: t('random_calls.instructions_title'),
           },
-          { content: <CallHistory />, header: 'Call History' },
+          { content: <CallHistory />, header: t('call_history.title') },
         ]}
       />
     </Container>

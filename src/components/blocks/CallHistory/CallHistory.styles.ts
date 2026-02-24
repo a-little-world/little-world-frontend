@@ -1,4 +1,4 @@
-import { Text } from '@a-little-world/little-world-design-system';
+import { Button, Text } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div<{ $hasData: boolean }>`
@@ -37,6 +37,7 @@ export const CallEntry = styled.div`
   padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.small}`};
   justify-content: space-between;
   width: 100%;
+  flex-wrap: wrap;
 
   &:not(:last-child) {
     border-bottom: 1px solid ${({ theme }) => theme.color.border.subtle};
@@ -69,4 +70,8 @@ export const CallTime = styled(CallDate)`
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+export const RequestMatchButton = styled(Button)`
+  align-self: end;
 `;

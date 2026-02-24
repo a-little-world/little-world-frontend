@@ -21,13 +21,14 @@ import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/pre
 import '@livekit/components-styles';
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { callAgain } from '../../api/livekit';
+import { endRandomCallMatch } from '../../api/randomCalls';
 import {
   useChatInputStore,
   useConnectedCallStore,
@@ -78,6 +79,7 @@ interface MyVideoConferenceProps {
   initializeCallID: (uuid: string) => void;
   setCallRejected: (rejected: boolean) => void;
   callRejected: boolean;
+  onDisconnectClick: () => void;
 }
 
 function MyVideoConference({
@@ -92,6 +94,7 @@ function MyVideoConference({
   initializeCallID,
   setCallRejected,
   callRejected,
+  onDisconnectClick,
 }: MyVideoConferenceProps) {
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
@@ -104,6 +107,8 @@ function MyVideoConference({
   const [callAgainError, setCallAgainError] = useState('');
   const { name } = useRoomInfo();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const { onClick: livekitDisconnectClick, ...disconnectButtonProps } =
+    disconnectProps;
   const theme = useTheme();
 
   const { t } = useTranslation();
@@ -186,7 +191,11 @@ function MyVideoConference({
                   appearance={ButtonAppearance.Secondary}
                   color={theme.color.text.reversed}
                   size={ButtonSizes.Small}
-                  {...disconnectProps}
+                  {...disconnectButtonProps}
+                  onClick={(event: any) => {
+                    onDisconnectClick();
+                    livekitDisconnectClick?.(event);
+                  }}
                 >
                   {t('call.exit')}
                 </Button>
@@ -198,9 +207,9 @@ function MyVideoConference({
           ) : (
             <Text type={TextTypes.Body4}>
               {t(
-                otherUserDisconnected ?
-                  'call.partner_disconnected' :
-                  'call.waiting_for_partner',
+                otherUserDisconnected
+                  ? 'call.partner_disconnected'
+                  : 'call.waiting_for_partner',
                 { name: partnerName },
               )}
             </Text>
@@ -258,6 +267,7 @@ function VideoCall() {
     audioOptions,
     videoOptions,
     chatId,
+    randomMatchId,
     audioPermissionDenied,
     videoPermissionDenied,
     callType,
@@ -321,6 +331,15 @@ function VideoCall() {
     setSelectedDrawerOption('questions');
   };
 
+  const handleManualDisconnect = useCallback(() => {
+    if ((callType !== 'random' && !isRandomCallRoute) || !randomMatchId) {
+      return;
+    }
+    endRandomCallMatch(randomMatchId).catch(() => {
+      // Best effort: disconnect/redirect flow must continue even if this call fails.
+    });
+  }, [callType, isRandomCallRoute, randomMatchId]);
+
   return (
     <SidebarSelectionProvider
       value={{
@@ -365,20 +384,21 @@ function VideoCall() {
                 partnerId={chatData?.partner?.id}
                 partnerName={chatData?.partner?.first_name}
                 partnerImage={
-                  chatData?.partner?.image_type === 'avatar' ?
-                    chatData?.partner.avatar_config :
-                    chatData?.partner?.image
+                  chatData?.partner?.image_type === 'avatar'
+                    ? chatData?.partner.avatar_config
+                    : chatData?.partner?.image
                 }
                 partnerImageType={chatData?.partner?.image_type}
                 selfImage={
-                  profile.image_type === 'avatar' ?
-                    profile.avatar_config :
-                    profile?.image
+                  profile.image_type === 'avatar'
+                    ? profile.avatar_config
+                    : profile?.image
                 }
                 selfImageType={profile.image_type}
                 initializeCallID={initializeCallID}
                 setCallRejected={setCallRejected}
                 callRejected={callRejected}
+                onDisconnectClick={handleManualDisconnect}
               />
               <RoomAudioRenderer />
               {!callRejected && (
@@ -396,6 +416,7 @@ function VideoCall() {
                 onChatToggle={onChatToggle}
                 onFullScreenToggle={onFullScreenToggle}
                 onTranslatorToggle={onTranslatorToggle}
+                onDisconnectClick={handleManualDisconnect}
                 onPermissionModalOpen={permissions => {
                   setDeniedPermissions(permissions);
                   setShowPermissionModal(true);
@@ -419,7 +440,9 @@ function VideoCall() {
                 open={selectedDrawerOption === 'chat'}
                 onClose={() => setSelectedDrawerOption(undefined)}
               >
-                {selectedDrawerOption === 'chat' && <Chat chatId={chatData?.uuid} inCall />}
+                {selectedDrawerOption === 'chat' && (
+                  <Chat chatId={chatData?.uuid} inCall />
+                )}
               </Drawer>
               <Drawer
                 title="Questions"
