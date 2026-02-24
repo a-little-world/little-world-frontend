@@ -1,43 +1,59 @@
 import {
-  FirebaseApp,
   FirebaseAppSettings,
+  FirebaseOptions,
   deleteApp,
   getApp,
   getApps,
   initializeApp,
 } from 'firebase/app';
-import {
-  Messaging,
-  deleteToken,
-  getMessaging,
-  getToken,
-} from 'firebase/messaging';
+import { getMessaging, getToken } from 'firebase/messaging';
 
 import { apiFetch } from './api/helpers';
+import { FIREBASE_ENDPOINT } from './features/swr';
+
+type FirebaseConfig = {
+  clientConfig: FirebaseOptions;
+  publicVapidKey: string;
+};
 
 const firebaseAppSettings: FirebaseAppSettings = {
   automaticDataCollectionEnabled: false,
 };
 
-export function getFirebaseApp(): FirebaseApp {
-  return getApp();
+async function getFirebaseConfig(): Promise<FirebaseConfig> {
+  return apiFetch(FIREBASE_ENDPOINT);
 }
 
-export function getFirebaseMessaging(): Messaging {
-  const app = getFirebaseApp();
-  return getMessaging(app);
-}
+export async function getFirebaseToken(): Promise<string | undefined> {
+  if (getApps().length === 0) {
+    return undefined;
+  }
 
-export async function getFirebaseToken(
-  firebasePublicVapidKey: string,
-): Promise<string | undefined> {
+  const vapidKey = await getFirebaseConfig().then(
+    config => config.publicVapidKey,
+  );
+
   const messaging = getMessaging();
-  const token = await getToken(messaging, { vapidKey: firebasePublicVapidKey });
+  const token = await getToken(messaging, { vapidKey });
   return token;
 }
 
-export function enableFirebase(firebaseClientConfig: any) {
+export async function enableFirebase() {
+  let permissionStatus = Notification.permission;
+  if (permissionStatus === 'default') {
+    permissionStatus = await Notification?.requestPermission();
+  }
+  if (permissionStatus !== 'granted') {
+    return;
+  }
+
+  const firebaseClientConfig = await apiFetch(FIREBASE_ENDPOINT).then(
+    firebaseConfig => firebaseConfig.firebaseClientConfig,
+  );
+
   initializeApp(firebaseClientConfig, firebaseAppSettings);
+
+  await registerFirebaseDeviceToken();
 }
 
 export async function disableFirebase() {
@@ -45,71 +61,10 @@ export async function disableFirebase() {
     return;
   }
   const app = getApp();
-  const messaging = getMessaging(app);
 
-  const tokenDeleted = await deleteToken(messaging);
-  if (!tokenDeleted) {
-    console.error('Error deleting firebase token');
-  }
+  await unregisterFirebaseDeviceToken();
+
   deleteApp(app);
-}
-
-interface FirebaseRegistrationInfo {
-  registeredTokens: string[];
-  timestamp: Date;
-}
-
-const FIREBASE_DEIVCE_TOKEN_REGISTERED_KEY =
-  'firebase-device-token-registration';
-
-function getFirebaseDeviceTokenRegistrationInfo(): FirebaseRegistrationInfo {
-  const savedInfo = window.localStorage.getItem(
-    FIREBASE_DEIVCE_TOKEN_REGISTERED_KEY,
-  );
-  return savedInfo
-    ? JSON.parse(savedInfo)
-    : {
-        registeredTokens: [],
-        timestamp: new Date(),
-      };
-}
-
-export function isFirebaseDeviceTokenRegistered(token: string): boolean {
-  return getFirebaseDeviceTokenRegistrationInfo().registeredTokens.includes(
-    token,
-  );
-}
-
-export function setFirebaseDeviceTokenRegistered(
-  token: string,
-  registered: boolean,
-): void {
-  const registrationInfo = getFirebaseDeviceTokenRegistrationInfo();
-  const isCurrentlyRegistered =
-    registrationInfo.registeredTokens.includes(token);
-  let changed = false;
-  if (registered && !isCurrentlyRegistered) {
-    registrationInfo.registeredTokens.push(token);
-    changed = true;
-  } else if (!registered && isCurrentlyRegistered) {
-    registrationInfo.registeredTokens =
-      registrationInfo.registeredTokens.filter(t => t !== token);
-    changed = true;
-  }
-
-  if (!changed) {
-    return;
-  }
-
-  if (registrationInfo.registeredTokens.length === 0) {
-    window.localStorage.removeItem(FIREBASE_DEIVCE_TOKEN_REGISTERED_KEY);
-  } else {
-    registrationInfo.timestamp = new Date();
-    window.localStorage.setItem(
-      FIREBASE_DEIVCE_TOKEN_REGISTERED_KEY,
-      JSON.stringify(registrationInfo),
-    );
-  }
 }
 
 function getInstallationId(): string {
@@ -128,11 +83,9 @@ function getInstallationId(): string {
   }
 }
 
-export async function registerFirebaseDeviceToken(
-  firebasePublicVapidKey: string,
-): Promise<void> {
+export async function registerFirebaseDeviceToken(): Promise<void> {
   const installId = getInstallationId();
-  const token = await getFirebaseToken(firebasePublicVapidKey);
+  const token = await getFirebaseToken();
   const platform = 'web';
   const modelName = navigator.userAgent;
 
@@ -147,11 +100,9 @@ export async function registerFirebaseDeviceToken(
   });
 }
 
-export async function unregisterFirebaseDeviceToken(
-  firebasePublicVapidKey: string,
-): Promise<void> {
+export async function unregisterFirebaseDeviceToken(): Promise<void> {
   const installId = getInstallationId();
-  const token = await getFirebaseToken(firebasePublicVapidKey);
+  const token = await getFirebaseToken();
 
   return apiFetch('/api/push_notifications/unregister', {
     method: 'POST',
@@ -163,9 +114,16 @@ export async function unregisterFirebaseDeviceToken(
 }
 
 export async function sendFirebaseTestNotification(
-  firebasePublicVapidKey: string,
+  delay?: number,
 ): Promise<void> {
-  const token = await getFirebaseToken(firebasePublicVapidKey);
+  if (delay) {
+    const delayTimeout = new Promise<void>(resolve => {
+      setTimeout(() => resolve(), delay);
+    });
+    await delayTimeout;
+  }
+
+  const token = await getFirebaseToken();
 
   return apiFetch('/api/push_notifications/send_test', {
     method: 'POST',
@@ -173,21 +131,4 @@ export async function sendFirebaseTestNotification(
       token,
     },
   });
-}
-
-export async function sendDelayedFirebaseTestNotification(
-  firebasePublicVapidKey: string,
-): Promise<void> {
-  const token = await getFirebaseToken(firebasePublicVapidKey);
-
-  setTimeout(
-    () =>
-      apiFetch('/api/push_notifications/send_test', {
-        method: 'POST',
-        body: {
-          token,
-        },
-      }),
-    3000,
-  );
 }

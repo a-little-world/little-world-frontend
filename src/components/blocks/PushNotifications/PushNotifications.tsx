@@ -8,10 +8,9 @@ import useSWR, { mutate } from 'swr';
 import { mutateUserData } from '../../../api/index';
 import { environment } from '../../../environment';
 import { useDevelopmentFeaturesStore } from '../../../features/stores/index';
-import { FIREBASE_ENDPOINT, USER_ENDPOINT } from '../../../features/swr/index';
+import { USER_ENDPOINT } from '../../../features/swr/index';
 import {
   registerFirebaseDeviceToken,
-  sendDelayedFirebaseTestNotification,
   sendFirebaseTestNotification,
   unregisterFirebaseDeviceToken,
 } from '../../../firebase-util';
@@ -70,8 +69,6 @@ const PushNotifications = ({
     }
   }, [enabled, setError, t]);
 
-  const firebaseConfig = useSWR(FIREBASE_ENDPOINT);
-  const firebasePublicVapidKey = firebaseConfig?.firebasePublicVapidKey;
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
   return (
@@ -103,28 +100,16 @@ const PushNotifications = ({
       </NotificationForm>
       {areDevFeaturesEnabled && (
         <>
-          <Button
-            onClick={() => registerFirebaseDeviceToken(firebasePublicVapidKey)}
-          >
+          <Button onClick={() => registerFirebaseDeviceToken()}>
             Register
           </Button>
-          <Button
-            onClick={() =>
-              unregisterFirebaseDeviceToken(firebasePublicVapidKey)
-            }
-          >
+          <Button onClick={() => unregisterFirebaseDeviceToken()}>
             Unregister
           </Button>
-          <Button
-            onClick={() => sendFirebaseTestNotification(firebasePublicVapidKey)}
-          >
+          <Button onClick={() => sendFirebaseTestNotification()}>
             Send test notification
           </Button>
-          <Button
-            onClick={() =>
-              sendDelayedFirebaseTestNotification(firebasePublicVapidKey)
-            }
-          >
+          <Button onClick={() => sendFirebaseTestNotification(3000)}>
             Send delayed test notification
           </Button>
         </>

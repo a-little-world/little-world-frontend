@@ -195,17 +195,15 @@ function Sidebar({ isVH, sidebarMobile }) {
     {
       label: 'log_out',
       clickEvent: async () => {
-        if (environment.isNative) {
-          try {
+        try {
+          if (environment.isNative) {
             await sendMessageToReactNative({
               action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
             });
-          } catch (_e) {}
-        } else {
-          try {
-            unregisterFirebaseDeviceToken();
-          } catch (_e) {}
-        }
+          } else {
+            await unregisterFirebaseDeviceToken();
+          }
+        } catch (_e) {}
 
         apiFetch(`/api/user/logout/`, {
           method: 'GET',
