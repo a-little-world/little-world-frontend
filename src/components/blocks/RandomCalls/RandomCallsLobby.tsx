@@ -718,9 +718,22 @@ const RandomCallsLobby = ({
     isManualRejectPending.current = reason === 'user_rejected';
     try {
       await rejectMatch(lobbyUuid, matchData.uuid);
+      // when the user quickly clicks "search again" there might still be stuff in swr chache
+      // thus we manually clear it here
+      mutateRCState(
+        (current: any) =>
+          current
+            ? {
+              ...current,
+              matching: null,
+            }
+            : current,
+        { revalidate: true },
+      );
     } catch (_err: any) {
-      // Don't show error on reject - user is intentionally rejecting
-      // Just proceed with state change
+      isManualRejectPending.current = false;
+      setError('Failed to reject match. Please try again.');
+      return;
     }
     setRejectionReason(reason);
     setLobbyState('rejected');
