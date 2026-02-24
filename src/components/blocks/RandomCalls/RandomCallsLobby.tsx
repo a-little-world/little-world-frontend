@@ -56,11 +56,7 @@ import {
 import ProfileImage from '../../atoms/ProfileImage';
 import { CallSetupCard } from '../Calls/CallSetup';
 
-type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected' | 'partner_rejected' | 'partner_timedout';
-// - 'rejected': The user himself rejected -> Show reject view, user has to re-enter lobby
-// - 'partner_rejected': The partner rejected -> Known if 
-// TODO: actually check for an consider 'partner_rejected' if match returns
-// - 'partner_timedout': The partner timed out
+type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected';
 type RejectionReason = 'user_rejected' | 'partner_rejected' | 'timeout';
 
 interface PartnerInfoInterface {
@@ -76,6 +72,8 @@ interface MatchData {
   uuid: string;
   accepted: boolean;
   both_accepted: boolean;
+  partner_rejected?: boolean;
+  self_rejected?: boolean;
   partner: PartnerInfoInterface;
 }
 
@@ -352,7 +350,7 @@ const PartnerProposal = ({
 }: {
   matchData: MatchData;
   onAccept: () => void;
-  onReject: () => void;
+  onReject: (reason?: 'user_rejected' | 'timeout') => void;
   isAccepting?: boolean;
   error?: string | null;
   timeoutSeconds: number;
@@ -361,11 +359,15 @@ const PartnerProposal = ({
   const [timeLeft, setTimeLeft] = useState(timeoutSeconds);
 
   useEffect(() => {
+    setTimeLeft(timeoutSeconds);
+  }, [timeoutSeconds]);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          onReject(); // Auto-reject when time runs out
+          onReject('timeout');
           return 0;
         }
         return prev - 1;
@@ -425,7 +427,7 @@ const PartnerProposal = ({
       <CardFooter align="space-between">
         <Button
           appearance={ButtonAppearance.Secondary}
-          onClick={onReject}
+          onClick={() => onReject('user_rejected')}
           disabled={isAccepting}
         >
           {t('random_calls.proposal_reject')}
@@ -594,56 +596,65 @@ const RandomCallsLobby = ({
 
   // Check for matching
   useEffect(() => {
+    if (!hasJoinedLobby) return;
+
+    const matching = statusData?.matching as MatchData | undefined;
+
     // TODO: Improve handling of all possible states:
     // - lobby waiting for match = 'idle'
     // - lobby has matching = 'partner_found'
-    if (statusData?.matching && lobbyState === 'idle') {
-      //
-      // If both users have already accepted, skip proposal and go directly to call
-      if (statusData.matching.both_accepted) {
-        setMatchData(statusData.matching);
-        handleBothAccepted();
+    if (matching) {
+      // If both users have already accepted, skip proposal and go directly to call.
+      if (matching.both_accepted) {
+        setMatchData(matching);
+        handleBothAccepted(matching);
         return;
       }
 
-      // The partner rejected the match, the user has already confirmed the rejection by last fetch
-      // Partner jected lobby state gets shows
-      // TODO: Decide if this is the same as 'partner_timedout', prob right?
-      if (statusData.matching?.partner_rejected) {
+      // Partner rejected/timed out. Keep this in an explicit rejected view until user action.
+      if (matching.partner_rejected) {
         setRejectionReason('partner_rejected');
-        setLobbyState('partner_rejected'); // TODO: Ensure different view
+        setLobbyState('rejected');
+        setMatchData(null);
+        setIsAccepting(false);
         return;
       }
 
       // Otherwise, show the proposal screen
-      setMatchData(statusData.matching);
-      setLobbyState('partner_found');
+      setMatchData(matching);
+      if (lobbyState === 'idle') {
+        setLobbyState('partner_found');
+      }
       setError(null); // Clear any previous errors when transitioning to partner_found
     }
 
-    // If match disappears while on proposal screen (before accepting), return to lobby
-    if (
-      !statusData?.matching &&
-      lobbyState === 'partner_found' &&
-      !isAccepting
-    ) {
-      // Match disappeared (partner rejected or timed out)
+    // If match disappears while on proposal screen:
+    // - after accepting: partner timed out/rejected -> show partner_rejected message
+    // - before accepting: self timeout/no response path
+    if (!matching && lobbyState === 'partner_found') {
       setMatchData(null);
-      setLobbyState('idle');
+      setIsAccepting(false);
+      if (isAccepting) {
+        setRejectionReason('partner_rejected');
+      } else {
+        setRejectionReason('timeout');
+      }
+      setLobbyState('rejected');
       setError(null); // Clear errors when returning to idle
+      return;
     }
 
     // Check if both accepted while waiting for partner
     if (
-      statusData?.matching?.both_accepted &&
+      matching?.both_accepted &&
       lobbyState === 'partner_found' &&
       isAccepting
     ) {
       // Both users accepted, proceed to room authentication
       // This will be handled by parent component
-      handleBothAccepted();
+      handleBothAccepted(matching);
     }
-  }, [statusData, lobbyState, isAccepting]);
+  }, [statusData, lobbyState, isAccepting, hasJoinedLobby]);
 
   const handleJoinComplete = async () => {
     setError(null);
@@ -695,7 +706,7 @@ const RandomCallsLobby = ({
     }
   };
 
-  const handleReject = async () => {
+  const handleReject = async (reason: 'user_rejected' | 'timeout' = 'user_rejected') => {
     if (!matchData) return;
 
     setError(null);
@@ -706,8 +717,9 @@ const RandomCallsLobby = ({
       // Just proceed with state change
     }
     mutateRCState();
-    setRejectionReason('user_rejected');
+    setRejectionReason(reason);
     setLobbyState('rejected');
+    setIsAccepting(false);
   };
 
   const handleReturnToLobby = () => {
@@ -718,17 +730,18 @@ const RandomCallsLobby = ({
     setMatchData(null);
   };
 
-  const handleBothAccepted = async () => {
-    if (!matchData) return;
+  const handleBothAccepted = async (acceptedMatchData?: MatchData) => {
+    const currentMatchData = acceptedMatchData ?? matchData;
+    if (!currentMatchData) return;
 
     setError(null);
     try {
       // Call room authentication API
-      const roomData = await authenticateRoom(lobbyUuid, matchData.uuid);
+      const roomData = await authenticateRoom(lobbyUuid, currentMatchData.uuid);
 
       // Set up call connection with room data, including device choices
       connectToCall({
-        userId: matchData.partner.id,
+        userId: currentMatchData.partner.id,
         chatId: roomData.chat?.uuid || '',
         tracks: deviceChoices || undefined,
         token: roomData.token,
@@ -750,7 +763,7 @@ const RandomCallsLobby = ({
       clearActiveTracks();
 
       // Navigate to the random call screen for the partner
-      navigate(getRandomCallRoute(matchData.partner.id));
+      navigate(getRandomCallRoute(currentMatchData.partner.id));
 
       // Close the lobby modal
       onCancel();
