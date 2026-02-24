@@ -5,8 +5,8 @@ import {
   getApp,
   getApps,
   initializeApp,
-} from 'firebase/app';
-import { getMessaging, getToken } from 'firebase/messaging';
+} from '@firebase/app';
+import { getMessaging, getToken } from '@firebase/messaging';
 
 import { apiFetch } from './api/helpers';
 import { FIREBASE_ENDPOINT } from './features/swr';

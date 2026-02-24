@@ -4,7 +4,7 @@ import {
   getMessaging,
   isSupported,
   onMessage,
-} from 'firebase/messaging';
+} from '@firebase/messaging';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
 
@@ -50,7 +50,6 @@ function FireBase() {
       }
       if (push_notifications_enabled) {
         await enableFirebase();
-
         const messaging = getMessaging();
 
         unsubscribeRef.current = onMessage(messaging, payload =>
