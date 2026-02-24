@@ -576,6 +576,17 @@ const RandomCallsLobby = ({
   const [error, setError] = useState<string | null>(null);
   const isManualRejectPending = useRef(false);
 
+  const leaveLobbySilently = useCallback(async () => {
+    if (!hasJoinedLobby) return;
+    try {
+      await exitLobby(lobbyUuid);
+    } catch (_err: any) {
+      // Ignore errors while transitioning to terminal states.
+    } finally {
+      setHasJoinedLobby(false);
+    }
+  }, [hasJoinedLobby, lobbyUuid]);
+
   // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
   const { data: statusData, mutate: mutateRCState } = useSWR(
     (lobbyState === 'idle' && hasJoinedLobby) || lobbyState === 'partner_found'
@@ -588,6 +599,7 @@ const RandomCallsLobby = ({
         // If lobby is not active or user not in lobby, show expired view
         if (err?.status === 400) {
           setLobbyState('timeout');
+          void leaveLobbySilently();
         }
       },
     },
@@ -618,6 +630,7 @@ const RandomCallsLobby = ({
         setLobbyState('rejected');
         setMatchData(null);
         setIsAccepting(false);
+        void leaveLobbySilently();
         return;
       }
 
@@ -645,6 +658,7 @@ const RandomCallsLobby = ({
       }
       setLobbyState('rejected');
       setError(null); // Clear errors when returning to idle
+      void leaveLobbySilently();
       return;
     }
 
@@ -658,7 +672,13 @@ const RandomCallsLobby = ({
       // This will be handled by parent component
       handleBothAccepted(matching);
     }
-  }, [statusData, lobbyState, isAccepting, hasJoinedLobby]);
+  }, [statusData, lobbyState, isAccepting, hasJoinedLobby, leaveLobbySilently]);
+
+  useEffect(() => {
+    if (lobbyState === 'rejected' || lobbyState === 'timeout') {
+      void leaveLobbySilently();
+    }
+  }, [lobbyState, leaveLobbySilently]);
 
   const handleJoinComplete = async () => {
     setError(null);
@@ -744,10 +764,21 @@ const RandomCallsLobby = ({
   const handleReturnToLobby = () => {
     setError(null);
     isManualRejectPending.current = false;
-    mutateRCState();
+    mutateRCState(
+      (current: any) =>
+        current
+          ? {
+            ...current,
+            matching: null,
+          }
+          : current,
+      { revalidate: true },
+    );
+    setHasJoinedLobby(false);
     setLobbyState('idle');
     setIsAccepting(false);
     setMatchData(null);
+    setRejectionReason(null);
   };
 
   const handleBothAccepted = async (acceptedMatchData?: MatchData) => {
