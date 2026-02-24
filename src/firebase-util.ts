@@ -39,11 +39,7 @@ export async function getFirebaseToken(): Promise<string | undefined> {
 }
 
 export async function enableFirebase() {
-  let permissionStatus = Notification.permission;
-  if (permissionStatus === 'default') {
-    permissionStatus = await Notification?.requestPermission();
-  }
-  if (permissionStatus !== 'granted') {
+  if (getApps().length >= 1) {
     return;
   }
 
@@ -64,7 +60,7 @@ export async function disableFirebase() {
 
   await unregisterFirebaseDeviceToken();
 
-  deleteApp(app);
+  await deleteApp(app);
 }
 
 function getInstallationId(): string {
@@ -103,29 +99,29 @@ async function updateFirebaseDeviceRegistration(
 }
 
 export async function registerFirebaseDeviceToken(): Promise<void> {
-  updateFirebaseDeviceRegistration('register');
+  return updateFirebaseDeviceRegistration('register');
 }
 
 export async function unregisterFirebaseDeviceToken(): Promise<void> {
-  updateFirebaseDeviceRegistration('unregister');
+  if (getApps().length === 0) {
+    return;
+  }
+  return updateFirebaseDeviceRegistration('unregister');
 }
 
 export async function sendFirebaseTestNotification(
   delay?: number,
 ): Promise<void> {
-  if (delay) {
-    const delayTimeout = new Promise<void>(resolve => {
-      setTimeout(() => resolve(), delay);
-    });
-    await delayTimeout;
-  }
-
-  const token = await getFirebaseToken();
-
-  return apiFetch('/api/push_notifications/send_test', {
-    method: 'POST',
-    body: {
-      token,
-    },
+  const promise = new Promise<void>(resolve => {
+    setTimeout(async () => {
+      await apiFetch('/api/push_notifications/send_test', {
+        method: 'POST',
+        body: {
+          delay,
+        },
+      }).finally(() => resolve());
+    }, delay ?? 0);
   });
+
+  return promise;
 }
