@@ -563,6 +563,7 @@ const RandomCallsLobby = ({
   const navigate = useNavigate();
   const { connectToCall } = useConnectedCallStore();
   const [lobbyState, setLobbyState] = useState<LobbyState>('idle');
+  const [statusAttemptId, setStatusAttemptId] = useState<string | null>(null);
   const [isAccepting, setIsAccepting] = useState(false);
   const [rejectionReason, setRejectionReason] =
     useState<RejectionReason | null>(null);
@@ -589,8 +590,10 @@ const RandomCallsLobby = ({
 
   // Poll lobby status every 2 seconds when in idle state, after joining, or when partner is found
   const { data: statusData, mutate: mutateRCState } = useSWR(
-    (lobbyState === 'idle' && hasJoinedLobby) || lobbyState === 'partner_found'
-      ? `/api/random_calls/lobby/${lobbyUuid}/status`
+    hasJoinedLobby &&
+      (lobbyState === 'idle' || lobbyState === 'partner_found') &&
+      statusAttemptId
+      ? `/api/random_calls/lobby/${lobbyUuid}/status?attempt=${statusAttemptId}`
       : null,
     () => getLobbyStatus(lobbyUuid),
     {
@@ -684,6 +687,7 @@ const RandomCallsLobby = ({
     setError(null);
     try {
       await joinLobby(lobbyUuid);
+      setStatusAttemptId(`${Date.now()}`);
       setHasJoinedLobby(true);
     } catch (err: any) {
       const errorMessage =
@@ -700,6 +704,7 @@ const RandomCallsLobby = ({
   const handleCancel = async () => {
     setError(null);
     isManualRejectPending.current = false;
+    setStatusAttemptId(null);
     onCancel();
     try {
       if (hasJoinedLobby) {
@@ -774,6 +779,7 @@ const RandomCallsLobby = ({
           : current,
       { revalidate: true },
     );
+    setStatusAttemptId(null);
     setHasJoinedLobby(false);
     setLobbyState('idle');
     setIsAccepting(false);
