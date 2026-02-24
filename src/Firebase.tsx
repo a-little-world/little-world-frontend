@@ -23,10 +23,8 @@ interface FirebasePushNotificationData {
 function handleMessage(payload: MessagePayload, toast: ToastContextType): void {
   const data = payload.data as unknown as FirebasePushNotificationData;
   toast.showToast({
-    headline: data.headline,
-    title: data.title,
-    description: data.description,
-    timestamp: new Date(data.timestamp).toLocaleTimeString(),
+    title: payload.notification?.title,
+    description: payload.notification?.body,
   });
 }
 

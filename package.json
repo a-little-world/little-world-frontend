@@ -1,6 +1,6 @@
 {
   "name": "littleplanet",
-  "version": "0.1.296",
+  "version": "0.1.297",
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
@@ -41,7 +41,7 @@
   },
   "prettier": "@a-little-world/little-world-prettier-config",
   "dependencies": {
-    "@a-little-world/little-world-design-system": "^2.10.0",
+    "@a-little-world/little-world-design-system": "^2.12.0",
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
