@@ -116,9 +116,6 @@ export async function sendFirebaseTestNotification(
     setTimeout(async () => {
       await apiFetch('/api/push_notifications/send_test', {
         method: 'POST',
-        body: {
-          delay,
-        },
       }).finally(() => resolve());
     }, delay ?? 0);
   });
