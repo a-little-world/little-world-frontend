@@ -78,7 +78,7 @@ export const isActiveRoute = (locationPath: string, path: string) =>
 export const passAuthenticationBoundary = () => {
   try {
     if (typeof window !== 'undefined' && (window as any)?.setCookieBannerHidden) {
-      (window as any)?.setCookieBannerHidden(false);
+      (window as any)?.setCookieBannerHidden(true);
     }
   } catch (e) {
     // eslint-disable-next-line no-console
