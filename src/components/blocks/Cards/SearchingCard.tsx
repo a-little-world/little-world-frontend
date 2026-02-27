@@ -12,7 +12,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
@@ -109,11 +109,11 @@ export function SearchingCard({
 
   const isBookedState = cardState === 'pre_match_call_booked';
 
-  useEffect(() => {
-    if (!hadPreMatchingCall && !isBookedState && appointmentBtn?.current) {
-      appointmentBtn.current?.click();
-    }
-  }, [hadPreMatchingCall, isBookedState]);
+  // useEffect(() => {
+  //   if (!hadPreMatchingCall && !isBookedState && appointmentBtn?.current) {
+  //     appointmentBtn.current?.click();
+  //   }
+  // }, [hadPreMatchingCall, isBookedState]);
 
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>

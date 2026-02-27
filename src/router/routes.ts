@@ -35,6 +35,8 @@ export const WP_HOME_ROUTE = 'https://home.little-world.com';
 export const TERMS_ROUTE = 'nutzungsbedingungen';
 export const PRIVACY_ROUTE = 'datenschutz';
 export const EMAIL_PREFERENCES_ROUTE = 'email-preferences/:emailSettingsHash';
+export const ONBOARDING_ROUTE = 'onboarding';
+export const WALKTHROUGH_ROUTE = 'onboarding/walkthrough';
 
 // User form specific route slugs
 export const USER_FORM_USER_TYPE = 'user-type';
@@ -50,11 +52,13 @@ export const USER_FORM_CONDITIONS = 'conditions';
 const getUserFormRoute = (slug: string) => `${USER_FORM_ROUTE}/${slug}`;
 export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
-export const getAppRoute = (slug?: string) => `/${APP_ROUTE}${slug ? `/${slug}` : ''}`;
+export const getAppRoute = (slug?: string) =>
+  `/${APP_ROUTE}${slug ? `/${slug}` : ''}`;
 export const getAppSubpageRoute = (parent: string, slug: string) =>
   getAppRoute(`${parent}/${slug}`);
 export const getCallRoute = (userId: string) => `/${APP_ROUTE}/call/${userId}`;
-export const getRandomCallRoute = (userId: string) => `/${APP_ROUTE}/random-call/${userId}`;
+export const getRandomCallRoute = (userId: string) =>
+  `/${APP_ROUTE}/random-call/${userId}`;
 export const getCallSetupRoute = (userId: string) =>
   `/${APP_ROUTE}/call-setup/${userId}`;
 
@@ -70,9 +74,9 @@ export const USER_FORM_ROUTES = {
 };
 
 export const isActiveRoute = (locationPath: string, path: string) =>
-  locationPath === path || path !== getAppRoute('') ?
-    locationPath?.includes(path) :
-    false;
+  locationPath === path || path !== getAppRoute('')
+    ? locationPath?.includes(path)
+    : false;
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {

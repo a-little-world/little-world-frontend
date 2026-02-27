@@ -10,6 +10,7 @@ import { useCallSetupStore } from '../../features/stores/index';
 import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr/index';
 import {
   COMMUNITY_EVENTS_ROUTE,
+  ONBOARDING_ROUTE,
   RANDOM_CALLS_ROUTE,
   getAppRoute,
 } from '../../router/routes';
@@ -18,6 +19,7 @@ import CommsBanner from '../blocks/CommsBanner';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent';
 import ContentSelector from '../blocks/ContentSelector';
 import NotificationPanel from '../blocks/NotificationPanel';
+import OnboardingSelection from '../blocks/OnboardingSelection/OnboardingSelection';
 import PartnerProfiles from '../blocks/PartnerProfiles';
 import RandomCalls from './RandomCalls/RandomCalls';
 
@@ -37,7 +39,11 @@ const Home = styled.div`
   `};
 `;
 
-type subpages = 'events' | 'conversation_partners' | 'random_calls';
+type subpages =
+  | 'events'
+  | 'conversation_partners'
+  | 'random_calls'
+  | 'onboarding';
 
 const PAGE_ITEMS = 10;
 
@@ -85,13 +91,16 @@ function Main() {
   }, [userId]);
 
   const getSubpage = (): subpages => {
+    if (location.pathname === getAppRoute(ONBOARDING_ROUTE)) {
+      return 'onboarding';
+    }
     if (location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)) {
       return 'events';
     }
     if (location.pathname === getAppRoute(RANDOM_CALLS_ROUTE)) {
       return 'random_calls';
     }
-    return 'conversation_partners';
+    return user?.hadPreMatchingCall ? 'conversation_partners' : 'onboarding';
   };
 
   const subpage = getSubpage();
@@ -112,6 +121,11 @@ function Main() {
     handlePageChange(page);
   };
 
+  const excludedTopics = !hasRandomCallAccess ? ['random_calls'] : [];
+  excludedTopics.push(
+    !user?.hadPreMatchingCall ? 'conversation_partners' : 'onboarding',
+  );
+
   return (
     <>
       <ContentSelector
@@ -120,7 +134,7 @@ function Main() {
           handleSubpageSelect(selection as subpages)
         }
         use="main"
-        excludeTopics={!hasRandomCallAccess ? ['random_calls'] : undefined}
+        excludeTopics={excludedTopics}
       />
       <CommsBanner />
       {subpage === 'events' && <CommunityEvents />}
@@ -144,6 +158,7 @@ function Main() {
           )}
         </>
       )}
+      {subpage === 'onboarding' && <OnboardingSelection />}
       {showCancelSearching && (
         <Modal
           open={showCancelSearching}
