@@ -96,3 +96,8 @@ export const Session = styled.div`
   align-items: center;
   width: 100%;
 `;
+
+export const EventsPagination = styled.div`
+  padding: ${({ theme }) => theme.spacing.small};
+  margin-top: ${({ theme }) => theme.spacing.small};
+`;
