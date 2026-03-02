@@ -2,7 +2,6 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
-  CalendarIcon,
   CardContent,
   CardFooter,
   CardHeader,
@@ -45,8 +44,10 @@ import { useConnectedCallStore } from '../../../features/stores';
 import {
   RANDOM_CALL_EXIT_PARAM,
   RANDOM_CALL_EXIT_VALUE,
+  UPCOMING_LOBBIES_ENDPOINT,
   USER_ENDPOINT,
 } from '../../../features/swr';
+import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import { clearActiveTracks } from '../../../helpers/video';
 import {
   RANDOM_CALLS_ROUTE,
@@ -54,6 +55,7 @@ import {
   getRandomCallRoute,
 } from '../../../router/routes';
 import ProfileImage from '../../atoms/ProfileImage';
+import { Schedule } from '../../atoms/Schedule';
 import { CallSetupCard } from '../Calls/CallSetup';
 
 type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected';
@@ -145,29 +147,6 @@ const LobbyLoading = styled(Loading)`
 `;
 const RelativeCard = styled(ProposalCard)`
   position: relative;
-`;
-
-const Schedule = styled.div`
-  background: ${({ theme }) => theme.color.surface.secondary};
-  padding: ${({ theme }) => theme.spacing.medium};
-  border-radius: 8px;
-  margin-top: ${({ theme }) => theme.spacing.medium};
-`;
-
-const ScheduleHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.small};
-  margin-bottom: ${({ theme }) => theme.spacing.small};
-`;
-
-const ScheduleList = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 const RandomCallSetup = ({
@@ -448,32 +427,19 @@ const SessionsExpiredView = ({
   error?: string | null;
 }) => {
   const { t } = useTranslation();
-  const randomCallsSchedule = [
-    'Mittwoch – 18:00–20:00 Uhr',
-    'Freitag – 10:00–12:00 Uhr',
-  ];
+  const { data: upcomingLobbies } = useSWR<UpcomingLobbyItem[]>(
+    UPCOMING_LOBBIES_ENDPOINT,
+  );
 
   return (
     <ProposalCard className="" size={undefined}>
       <CardHeader>{t('random_calls.expired_title')}</CardHeader>
       <CardContent>
         <Text>{t('random_calls.expired_description')}</Text>
-
-        <Schedule>
-          <ScheduleHeader>
-            <CalendarIcon label="Calendar" width={20} height={20} />
-            <Text type={TextTypes.Body3} bold>
-              {t('random_calls.expired_schedule_heading')}
-            </Text>
-          </ScheduleHeader>
-          <ScheduleList>
-            {randomCallsSchedule.map(schedule => (
-              <li key={schedule}>
-                <Text type={TextTypes.Body4}>{schedule}</Text>
-              </li>
-            ))}
-          </ScheduleList>
-        </Schedule>
+        <Schedule
+          title={t('random_calls.expired_schedule_heading')}
+          sessions={upcomingLobbies ?? []}
+        />
         <Text>{t('random_calls.expired_additional_text')}</Text>
         {error && (
           <StatusMessage type={StatusTypes.Error} visible>

@@ -1,6 +1,5 @@
 import {
   ButtonSizes,
-  CalendarIcon,
   Modal,
   Text,
   TextTypes,
@@ -15,10 +14,13 @@ import {
   RANDOM_CALL_EXIT_PARAM,
   RANDOM_CALL_EXIT_VALUE,
   RANDOM_CALL_LOBBY_ENDPOINT,
+  UPCOMING_LOBBIES_ENDPOINT,
 } from '../../../features/swr/index';
+import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import randomCallsImage from '../../../images/random-calls-image.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
+import { Schedule } from '../../atoms/Schedule';
 import CallHistory from '../../blocks/CallHistory/CallHistory';
 import Instructions from '../../blocks/Instructions/Instructions';
 import PostRandomCallsFlow from '../../blocks/RandomCalls/PostRandomCallsFlow';
@@ -34,9 +36,6 @@ import {
   RandomCallsAccordion,
   RandomCallsAccordionContentWrapper,
   RandomCallsInstructions,
-  Schedule,
-  ScheduleHeading,
-  ScheduleList,
 } from './RandomCalls.styles';
 
 const instructions = [
@@ -52,11 +51,6 @@ const instructions = [
     heading: 'random_calls.step_3.heading',
     description: 'random_calls.step_3.description',
   },
-];
-
-const randomCallsSchedule = [
-  'Mittwoch – 18:00–20:00 Uhr',
-  'Freitag – 10:00–12:00 Uhr',
 ];
 
 interface RandomCallLobby {
@@ -75,6 +69,9 @@ const RandomCalls = () => {
     {
       refreshInterval: 2000,
     },
+  );
+  const { data: upcomingLobbies } = useSWR<UpcomingLobbyItem[]>(
+    UPCOMING_LOBBIES_ENDPOINT,
   );
 
   const active = lobbyData?.status ?? false;
@@ -159,14 +156,18 @@ const RandomCalls = () => {
               {t('random_calls.title')}
             </Text>
             <Text>{t('random_calls.description')}</Text>
-            <Text bold type={TextTypes.Body3}>
+            <Text bold type={TextTypes.Body4}>
               {t(
                 active
                   ? 'random_calls.active_heading'
                   : 'random_calls.inactive_heading',
-                { from: startTime || '18:00', to: endTime || '20:00' },
               )}
             </Text>
+            {active && startTime && endTime && (
+              <Text type={TextTypes.Body4}>
+                {startTime} – {endTime}
+              </Text>
+            )}
             {active ? (
               <ActiveUsers>
                 <OnlineCirlce />
@@ -177,31 +178,24 @@ const RandomCalls = () => {
                 </Text>
               </ActiveUsers>
             ) : (
-              <Schedule>
-                <ScheduleHeading>
-                  <CalendarIcon label="Calendar icon" width={16} height={16} />
-                  <Text bold>{t('random_calls.schedule_heading')}</Text>
-                </ScheduleHeading>
-                <ScheduleList>
-                  {randomCallsSchedule.map(item => (
-                    <Text key={item} tag="li">
-                      {item}
-                    </Text>
-                  ))}
-                </ScheduleList>
-              </Schedule>
+              <Schedule
+                title={t('random_calls.schedule_heading')}
+                sessions={upcomingLobbies ?? []}
+              />
             )}
-            <JoinButton
-              disabled={!active}
-              size={ButtonSizes.Small}
-              onClick={onJoinLobby}
-            >
-              {t(
-                active
-                  ? 'random_calls.start_btn'
-                  : 'random_calls.start_btn_disabled',
-              )}
-            </JoinButton>
+            {active && (
+              <JoinButton
+                disabled={!active}
+                size={ButtonSizes.Small}
+                onClick={onJoinLobby}
+              >
+                {t(
+                  active
+                    ? 'random_calls.start_btn'
+                    : 'random_calls.start_btn_disabled',
+                )}
+              </JoinButton>
+            )}
           </InfoPanelText>
         </InfoPanel>
         <CallHistoryDesktop />

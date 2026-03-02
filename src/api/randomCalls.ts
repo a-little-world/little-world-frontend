@@ -39,25 +39,22 @@ export const endRandomCallMatch = (matchUuid: string) =>
   });
 
 export const getAcceptedRandomCallMatches = () =>
-  apiFetch('/api/random_calls/history', {
+  apiFetch('/api/random_calls/user/history', {
     method: 'GET',
   });
 
-export const requestRandomCallMatch = (matchUuid: string) =>
-  apiFetch(`/api/random_calls/history/${matchUuid}/request_match`, {
+export const requestRandomCallMatch = ({
+  matchId,
+  onSuccess,
+  onError,
+}: {
+  matchId: string;
+  onSuccess: () => void;
+  onError: (error: any) => void;
+}) => {
+  apiFetch(`/api/random_calls/user/history/${matchId}/request_match`, {
     method: 'POST',
-  });
-
-export const submitRandomCallsFeedback = async (feedback: any) => {
-  try {
-    return await apiFetch('/api/random-calls/submit-feedback/', {
-      method: 'POST',
-      body: {
-        feedback,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+  })
+    .then(() => onSuccess())
+    .catch(err => onError(err));
 };

@@ -340,6 +340,8 @@ function VideoCall() {
     });
   }, [callType, isRandomCallRoute, randomMatchId]);
 
+  console.log({ chatData, chatId });
+
   return (
     <SidebarSelectionProvider
       value={{

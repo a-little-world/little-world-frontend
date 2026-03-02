@@ -56,24 +56,6 @@ export const ActiveUsers = styled.div`
   gap: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
-export const Schedule = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.small};
-`;
-
-export const ScheduleHeading = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-`;
-
-export const ScheduleList = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
-`;
-
 export const InfoImage = styled.img`
   width: 100%;
   height: 100%;
