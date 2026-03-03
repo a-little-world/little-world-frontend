@@ -96,19 +96,8 @@ export const Session = styled.div`
   align-items: center;
   width: 100%;
 `;
-export const PaginationContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
+
+export const EventsPagination = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
   margin-top: ${({ theme }) => theme.spacing.small};
-
-  ${({ theme }) => css`
-    @media (max-width: ${theme.breakpoints.medium}) {
-      position: sticky;
-      bottom: 0;
-      background: ${theme.color.surface.background};
-      z-index: 2;
-    }
-  `}
 `;

@@ -8,6 +8,7 @@ import {
   ClockIcon,
   ExclamationIcon,
   Loading,
+  LoadingSizes,
   StatusMessage,
   StatusTypes,
   Switch,
@@ -15,10 +16,6 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import {
-  LoadingSizes,
-  LoadingType,
-} from '@a-little-world/little-world-design-system-core';
 import {
   DevicePermissionError,
   LocalUserChoices,
@@ -264,7 +261,7 @@ const RandomCallSetup = ({
 
   return (
     <CallSetupCard $hideJoinBtn className="" size={undefined}>
-      <LobbyLoading size={LoadingSizes.Small} inline type={LoadingType.Ring} />
+      <LobbyLoading size={LoadingSizes.Small} inline />
       <CardHeader>{t('random_calls.lobby_title')}</CardHeader>
       <CardContent>
         <Text center>{t('random_calls.lobby_description')}</Text>

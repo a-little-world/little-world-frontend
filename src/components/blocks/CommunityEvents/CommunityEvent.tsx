@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from '@a-little-world/little-world-design-system';
 import { groupBy } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
@@ -29,8 +29,8 @@ import {
   EventInfo,
   EventTitle,
   Events,
+  EventsPagination,
   Main,
-  PaginationContainer,
   Session,
   SessionFlex,
   Sessions,
@@ -331,45 +331,11 @@ function CommunityEvent({
 function CommunityEvents() {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: events } = useSWR(getCommunityEventsEndpoint(currentPage));
+  const groupedEvents = collateEvents(events?.results || []);
 
-  const useMock = true;
-  const pageSize = events?.page_size ?? 15;
+  const totalPages = events?.pages_total || 1;
 
-  const fallbackEvent: Event = {
-    id: 'mock-event',
-    frequency: COMMUNITY_EVENT_FREQUENCIES.once,
-    description: 'Test event description',
-    title: 'Mock Community Event',
-    time: new Date().toISOString(),
-    link: 'https://example.com',
-  };
-
-  const baseEvent = events?.results?.[0] ?? fallbackEvent;
-  const mockResults = Array.from({ length: 80 }, (_, index) => ({
-    ...baseEvent,
-    id: `${baseEvent.id}-mock-${index}`,
-    title: `${baseEvent.title} #${index + 1}`,
-  }));
-
-  const results = useMock ? mockResults : events?.results || [];
-  const pagedResults = useMock
-    ? results.slice((currentPage - 1) * pageSize, currentPage * pageSize)
-    : results;
-  const groupedEvents = collateEvents(pagedResults);
-  const totalPages = Math.max(
-    1,
-    useMock
-      ? Math.ceil(mockResults.length / pageSize)
-      : events?.pages_total ?? Math.ceil((events?.items_total ?? 0) / pageSize),
-  );
-
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
-
-  const handlePageChange = (page: number) => {
+  const onPageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo(0, 0);
   };
@@ -386,13 +352,13 @@ function CommunityEvents() {
         ))}
       </Events>
       {totalPages > 1 && (
-        <PaginationContainer>
+        <EventsPagination>
           <CustomPagination
             totalPages={totalPages}
             currentPage={currentPage}
-            onPageChange={handlePageChange}
+            onPageChange={onPageChange}
           />
-        </PaginationContainer>
+        </EventsPagination>
       )}
     </>
   );

@@ -77,7 +77,7 @@ const CustomPagination = ({
   totalPages,
   currentPage,
   onPageChange,
-  className,
+  className = '',
 }) => {
   const { t } = useTranslation();
   const generatePageNumbers = () => {
@@ -122,7 +122,7 @@ const CustomPagination = ({
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         >
           <PaginationButton className={currentPage === 1 && 'disableButton'}>
-            <i className="fas fa-angle-left" /> {t('pagination.prev')}
+            <i className="fas fa-angle-left" /> {t('pagination.previous')}
           </PaginationButton>
         </PaginationItem>
 
@@ -137,6 +137,8 @@ const CustomPagination = ({
               <PaginationNumber
                 className={`numb ${currentPage === page && 'active'}`}
                 onClick={() => onPageChange(page)}
+                aria-label={t('pagination.go_to_page', { page })}
+                title={t('pagination.page', { page, total: totalPages })}
               >
                 <span>{page}</span>
               </PaginationNumber>
