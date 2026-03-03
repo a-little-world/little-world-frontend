@@ -290,7 +290,7 @@ const formPages = {
       },
     ],
   }),
-  notifications: ({ options, userData }) => ({
+  notifications: ({ options, userData, forceMatchEligible }) => ({
     title: 'user_form_notifications.title',
     step: 7,
     totalSteps: getSteps(userData?.user_type),
@@ -310,8 +310,12 @@ const formPages = {
         radioGroup: {
           currentValue: userData?.notify_channel,
           dataField: 'notify_channel',
-          formData: options?.notify_channel,
-          textInputVal: options?.notify_channel?.[1]?.value,
+          formData: forceMatchEligible
+            ? [options?.notify_channel?.find(item => item.value === 'sms')]
+            : options?.notify_channel,
+          textInputVal: forceMatchEligible
+            ? options?.notify_channel?.find(item => item.value === 'sms')?.value
+            : options?.notify_channel?.[1]?.value,
         },
         textInput: {
           currentValue: userData?.phone_mobile,
@@ -320,7 +324,7 @@ const formPages = {
             label: t('user_form_notifications.phone_number_label'),
             labelTooltip: t('user_form_notifications.phone_number_tooltip'),
             type: 'tel',
-            onlyCountries: [LANGUAGES.de],
+            onlyCountries: forceMatchEligible ? undefined : [LANGUAGES.de],
             width: InputWidth.Medium,
           }),
           infoText: 'user_form_notifications.info',
