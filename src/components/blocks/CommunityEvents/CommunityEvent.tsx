@@ -8,12 +8,14 @@ import {
   Tooltip,
 } from '@a-little-world/little-world-design-system';
 import { groupBy } from 'lodash';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import CustomPagination from '../../../CustomPagination';
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
-import { COMMUNITY_EVENTS_ENDPOINT } from '../../../features/swr/index';
+import { getCommunityEventsEndpoint } from '../../../features/swr/index';
 import { formatDate, formatEventTime } from '../../../helpers/date';
 import { Event, calculateNextOccurrence } from '../../../helpers/events';
 import placeholderImage from '../../../images/coffee.webp';
@@ -27,6 +29,7 @@ import {
   EventInfo,
   EventTitle,
   Events,
+  EventsPagination,
   Main,
   Session,
   SessionFlex,
@@ -326,15 +329,38 @@ function CommunityEvent({
 }
 
 function CommunityEvents() {
-  const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: events } = useSWR(getCommunityEventsEndpoint(currentPage));
   const groupedEvents = collateEvents(events?.results || []);
 
+  const totalPages = events?.pages_total || 1;
+
+  const onPageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  };
+
   return (
-    <Events>
-      {groupedEvents.map(eventData => (
-        <CommunityEvent key={eventData.id} _key={eventData.id} {...eventData} />
-      ))}
-    </Events>
+    <>
+      <Events>
+        {groupedEvents.map(eventData => (
+          <CommunityEvent
+            key={eventData.id}
+            _key={eventData.id}
+            {...eventData}
+          />
+        ))}
+      </Events>
+      {totalPages > 1 && (
+        <EventsPagination>
+          <CustomPagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={onPageChange}
+          />
+        </EventsPagination>
+      )}
+    </>
   );
 }
 
