@@ -204,7 +204,9 @@ function Sidebar({ isVH, sidebarMobile }) {
           } else {
             await unregisterFirebaseDeviceToken();
           }
-        } catch (_e) {}
+        } catch (_e) {
+          // ignore
+        }
 
         apiFetch(`/api/user/logout/`, {
           method: 'GET',

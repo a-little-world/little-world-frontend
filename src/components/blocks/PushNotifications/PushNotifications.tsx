@@ -70,27 +70,28 @@ const PushNotifications = ({
     notificationsEnabled,
   } = notificationStore;
 
-  if (!environment.isNative) {
-    useEffect(() => {
-      if (
-        notificationsEnabled &&
-        devicePermissionSet &&
-        !devicePermissionGranted
-      ) {
-        setError('push_notifications_enabled', {
-          message: t('push_notifications.permission_denied'),
-        });
-      } else {
-        setError('push_notifications_enabled', {});
-      }
-    }, [
-      notificationsEnabled,
-      devicePermissionSet,
-      devicePermissionGranted,
-      setError,
-      t,
-    ]);
-  }
+  useEffect(() => {
+    if (!environment.isNative) {
+      return;
+    }
+    if (
+      notificationsEnabled &&
+      devicePermissionSet &&
+      !devicePermissionGranted
+    ) {
+      setError('push_notifications_enabled', {
+        message: t('push_notifications.permission_denied'),
+      });
+    } else {
+      setError('push_notifications_enabled', {});
+    }
+  }, [
+    notificationsEnabled,
+    devicePermissionSet,
+    devicePermissionGranted,
+    setError,
+    t,
+  ]);
 
   const requestNotificationPermission = async () => {
     const permissionStatus = await Notification.requestPermission();

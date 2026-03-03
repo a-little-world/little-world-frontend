@@ -38,31 +38,6 @@ export async function getFirebaseToken(): Promise<string | undefined> {
   return token;
 }
 
-export async function enableFirebase() {
-  if (getApps().length >= 1) {
-    return;
-  }
-
-  const firebaseClientConfig = await apiFetch(FIREBASE_ENDPOINT).then(
-    firebaseConfig => firebaseConfig.firebaseClientConfig,
-  );
-
-  initializeApp(firebaseClientConfig, firebaseAppSettings);
-
-  await registerFirebaseDeviceToken();
-}
-
-export async function disableFirebase() {
-  if (getApps().length === 0) {
-    return;
-  }
-  const app = getApp();
-
-  await unregisterFirebaseDeviceToken();
-
-  await deleteApp(app);
-}
-
 function getInstallationId(): string {
   const key = 'install_id';
 
@@ -106,7 +81,32 @@ export async function unregisterFirebaseDeviceToken(): Promise<void> {
   if (getApps().length === 0) {
     return;
   }
-  return updateFirebaseDeviceRegistration('unregister');
+  await updateFirebaseDeviceRegistration('unregister');
+}
+
+export async function enableFirebase() {
+  if (getApps().length >= 1) {
+    return;
+  }
+
+  const firebaseClientConfig = await apiFetch(FIREBASE_ENDPOINT).then(
+    firebaseConfig => firebaseConfig.firebaseClientConfig,
+  );
+
+  initializeApp(firebaseClientConfig, firebaseAppSettings);
+
+  await registerFirebaseDeviceToken();
+}
+
+export async function disableFirebase() {
+  if (getApps().length === 0) {
+    return;
+  }
+  const app = getApp();
+
+  await unregisterFirebaseDeviceToken();
+
+  await deleteApp(app);
 }
 
 export async function sendFirebaseTestNotification(

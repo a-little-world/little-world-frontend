@@ -43,8 +43,8 @@ function FireBase() {
     notificationStore.setDevicePermissionGranted(
       permissionStatus === 'granted',
     );
-    isSupported().then(isSupported =>
-      notificationStore.setDeviceSupported(isSupported),
+    isSupported().then(supported =>
+      notificationStore.setDeviceSupported(supported),
     );
   }, []);
 
@@ -62,7 +62,7 @@ function FireBase() {
 
   useEffect(() => {
     if (!deviceSupported) {
-      return;
+      return undefined;
     }
 
     if (notificationsEnabled && devicePermissionGranted) {
