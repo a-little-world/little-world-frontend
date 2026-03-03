@@ -126,11 +126,14 @@ const PushNotifications = ({
             />
           )}
         />
-        {deviceSupported && notificationsEnabled && !devicePermissionSet && (
-          <Button onClick={() => requestNotificationPermission()}>
-            {t('push_notifications.request_permission')}
-          </Button>
-        )}
+        {!environment.isNative &&
+          deviceSupported &&
+          notificationsEnabled &&
+          !devicePermissionSet && (
+            <Button onClick={() => requestNotificationPermission()}>
+              {t('push_notifications.request_permission')}
+            </Button>
+          )}
       </NotificationForm>
       {areDevFeaturesEnabled && (
         <>
