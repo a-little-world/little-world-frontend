@@ -308,7 +308,7 @@ const formPages = {
         type: ComponentTypes.radioWithInput,
         id: 'notify_channel',
         radioGroup: {
-          currentValue: userData?.notify_channel,
+          currentValue: forceMatchEligible ? 'sms' : userData?.notify_channel,
           dataField: 'notify_channel',
           formData: forceMatchEligible
             ? [options?.notify_channel?.find(item => item.value === 'sms')]
@@ -316,6 +316,9 @@ const formPages = {
           textInputVal: forceMatchEligible
             ? options?.notify_channel?.find(item => item.value === 'sms')?.value
             : options?.notify_channel?.[1]?.value,
+          getProps: t => ({
+            errorRules: { required: t('validation.required') },
+          }),
         },
         textInput: {
           currentValue: userData?.phone_mobile,
@@ -326,6 +329,7 @@ const formPages = {
             type: 'tel',
             onlyCountries: forceMatchEligible ? undefined : [LANGUAGES.de],
             width: InputWidth.Medium,
+            errorRules: { required: t('validation.required') },
           }),
           infoText: 'user_form_notifications.info',
         },
