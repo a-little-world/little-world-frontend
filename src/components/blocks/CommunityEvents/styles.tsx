@@ -100,4 +100,11 @@ export const Session = styled.div`
 export const EventsPagination = styled.div`
   padding: ${({ theme }) => theme.spacing.small};
   margin-top: ${({ theme }) => theme.spacing.small};
+  align-self: center;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      margin-top: 0;
+    }
+  `}
 `;
