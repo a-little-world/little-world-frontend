@@ -134,7 +134,8 @@ const CallHistoryList = ({
               disabled={
                 item.cannot_match ||
                 item.matching_requested ||
-                requestingMatch === item.id
+                requestingMatch === item.id ||
+                item.confirmed_match
               }
               onClick={() => handleRequestMatch(item.id)}
               loading={requestingMatch === item.id}
