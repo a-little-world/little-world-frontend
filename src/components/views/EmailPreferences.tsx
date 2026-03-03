@@ -3,7 +3,6 @@ import {
   CardHeader,
   CardSizes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DynamicPublicMailingListsSettings } from '../blocks/MailingLists/MailingLists';

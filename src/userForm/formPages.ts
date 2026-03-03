@@ -48,7 +48,7 @@ const formPages = {
       },
     ],
   }),
-  'self-info-1': ({ options, userData }) => ({
+  'self-info-1': ({ options, userData, forceMatchEligible }) => ({
     title: 'self_info.title',
     step: 2,
     totalSteps: getSteps(userData?.user_type),
@@ -75,9 +75,9 @@ const formPages = {
         getProps: t => ({
           label: t('self_info.country_of_residence_label'),
           labelTooltip:
-            userData?.user_type === USER_TYPES.volunteer ?
-              null :
-              t('self_info.country_of_residence_tooltip'),
+            userData?.user_type === USER_TYPES.volunteer
+              ? null
+              : t('self_info.country_of_residence_tooltip'),
           errorRules: { required: t('validation.required') },
         }),
       },
@@ -93,17 +93,21 @@ const formPages = {
           width: InputWidth.Small,
         }),
       },
-      ...(userData?.user_type === USER_TYPES.volunteer ?
-        [] :
-        [
-            {
-              type: ComponentTypes.warning,
-              dataField: 'country_of_residence',
-              allowedValues: [COUNTRIES.DE],
-              getProps: t => ({
-                children: t('self_info.country_of_residence_warning'),
-              }),
-            },
+      ...(userData?.user_type === USER_TYPES.volunteer
+        ? []
+        : [
+            ...(forceMatchEligible === false
+              ? [
+                  {
+                    type: ComponentTypes.warning,
+                    dataField: 'country_of_residence',
+                    allowedValues: [COUNTRIES.DE],
+                    getProps: t => ({
+                      children: t('self_info.country_of_residence_warning'),
+                    }),
+                  },
+                ]
+              : []),
             {
               type: ComponentTypes.multiCheckboxWithInput,
               multiCheckbox: {
@@ -137,9 +141,9 @@ const formPages = {
           labelTooltip: t('self_info.language_skills_tooltip'),
           maxSegments: 8,
           restrictions:
-            userData?.user_type === USER_TYPES.volunteer ?
-              { german: restrictedLangLevels } :
-              {},
+            userData?.user_type === USER_TYPES.volunteer
+              ? { german: restrictedLangLevels }
+              : {},
           firstDropdown: {
             dataField: 'lang',
             ariaLabel: t('self_info.language_selector_label'),
@@ -212,8 +216,8 @@ const formPages = {
     prevPage: USER_FORM_ROUTES.PICTURE,
     nextPage: USER_FORM_ROUTES.AVAILABILITY,
     components: [
-      ...(userData?.user_type === USER_TYPES.volunteer ?
-        [
+      ...(userData?.user_type === USER_TYPES.volunteer
+        ? [
             {
               type: ComponentTypes.radio,
               currentValue: userData?.target_group,
@@ -224,8 +228,8 @@ const formPages = {
                 errorRules: { required: t('validation.required') },
               }),
             },
-          ] :
-        []),
+          ]
+        : []),
       {
         type: ComponentTypes.radio,
         currentValue: userData?.partner_gender,
@@ -258,6 +262,14 @@ const formPages = {
         getProps: t => ({ children: t('availability.description') }),
       },
       {
+        type: ComponentTypes.warning,
+        alwaysVisible: userData?.country_of_residence !== COUNTRIES.DE,
+        dataField: 'country_of_residence',
+        getProps: t => ({
+          children: t('availability.info_text'),
+        }),
+      },
+      {
         type: ComponentTypes.checkboxGrid,
         currentValue: userData?.availability,
         dataField: 'availability',
@@ -278,7 +290,7 @@ const formPages = {
       },
     ],
   }),
-  notifications: ({ options, userData }) => ({
+  notifications: ({ options, userData, forceMatchEligible }) => ({
     title: 'user_form_notifications.title',
     step: 7,
     totalSteps: getSteps(userData?.user_type),
@@ -296,10 +308,17 @@ const formPages = {
         type: ComponentTypes.radioWithInput,
         id: 'notify_channel',
         radioGroup: {
-          currentValue: userData?.notify_channel,
+          currentValue: forceMatchEligible ? 'sms' : userData?.notify_channel,
           dataField: 'notify_channel',
-          formData: options?.notify_channel,
-          textInputVal: options?.notify_channel?.[1]?.value,
+          formData: forceMatchEligible
+            ? [options?.notify_channel?.find(item => item.value === 'sms')]
+            : options?.notify_channel,
+          textInputVal: forceMatchEligible
+            ? options?.notify_channel?.find(item => item.value === 'sms')?.value
+            : options?.notify_channel?.[1]?.value,
+          getProps: t => ({
+            errorRules: { required: t('validation.required') },
+          }),
         },
         textInput: {
           currentValue: userData?.phone_mobile,
@@ -308,22 +327,23 @@ const formPages = {
             label: t('user_form_notifications.phone_number_label'),
             labelTooltip: t('user_form_notifications.phone_number_tooltip'),
             type: 'tel',
-            onlyCountries: [LANGUAGES.de],
+            onlyCountries: forceMatchEligible ? undefined : [LANGUAGES.de],
             width: InputWidth.Medium,
+            errorRules: { required: t('validation.required') },
           }),
           infoText: 'user_form_notifications.info',
         },
       },
-      ...(userData?.user_type === USER_TYPES.volunteer ?
-        [] :
-        [
+      ...(userData?.user_type === USER_TYPES.volunteer
+        ? []
+        : [
             {
               type: ComponentTypes.radioWithInput,
               id: 'job_search',
               radioGroup: {
-                currentValue: isBoolean(userData?.job_search) ? // radioGroup doesn't work with boolean values
-                  userData?.job_search.toString() :
-                  userData?.job_search,
+                currentValue: isBoolean(userData?.job_search) // radioGroup doesn't work with boolean values
+                  ? userData?.job_search.toString()
+                  : userData?.job_search,
                 dataField: 'job_search',
                 formData: jobSearchOptions,
                 textInputVal: jobSearchOptions[0].value,
@@ -388,7 +408,7 @@ const formPages = {
   }),
 };
 
-const getFormPage = ({ slug, formOptions, userData }) =>
-  formPages[slug]({ options: formOptions, userData });
+const getFormPage = ({ slug, formOptions, userData, forceMatchEligible }) =>
+  formPages[slug]({ options: formOptions, userData, forceMatchEligible });
 
 export default getFormPage;
