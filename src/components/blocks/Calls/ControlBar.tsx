@@ -90,12 +90,12 @@ const Toggle = styled(TrackToggle)<{
   ${({ $withBackground, $permissionDenied }) =>
     $withBackground &&
     css`
-      background: ${$permissionDenied ?
-        TOGGLE_BACKGROUND_DENIED :
-        TOGGLE_BACKGROUND};
-      border-color: ${$permissionDenied ?
-        TOGGLE_BACKGROUND_DENIED :
-        TOGGLE_BACKGROUND};
+      background: ${$permissionDenied
+        ? TOGGLE_BACKGROUND_DENIED
+        : TOGGLE_BACKGROUND};
+      border-color: ${$permissionDenied
+        ? TOGGLE_BACKGROUND_DENIED
+        : TOGGLE_BACKGROUND};
     `}
 `;
 
@@ -173,6 +173,7 @@ interface ControlBarProps extends SharedControlBarProps {
   hide: boolean;
   onFullScreenToggle: () => void;
   isFullScreen: boolean;
+  onDisconnectClick?: () => void;
   onPermissionModalOpen: (permissions: {
     audio: boolean;
     video: boolean;
@@ -224,6 +225,7 @@ function ControlBar({
   hide,
   isFullScreen,
   onChatToggle,
+  onDisconnectClick,
   onFullScreenToggle,
   onTranslatorToggle,
   onPermissionModalOpen,
@@ -231,6 +233,10 @@ function ControlBar({
 }: ControlBarProps) {
   const { t } = useTranslation();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const {
+    onClick: livekitDisconnectClick,
+    ...disconnectButtonProps
+  } = disconnectProps;
 
   const { permissionDenied: audioPermissionDenied } = useTrackToggle({
     source: Track.Source.Microphone,
@@ -257,9 +263,9 @@ function ControlBar({
               <MediaControl $permissionDenied={audioPermissionDenied}>
                 <Toggle
                   onClick={
-                    audioPermissionDenied ?
-                      handleOpenPermissionModal :
-                      undefined
+                    audioPermissionDenied
+                      ? handleOpenPermissionModal
+                      : undefined
                   }
                   source={Track.Source.Microphone}
                   showIcon
@@ -283,9 +289,9 @@ function ControlBar({
               <div>
                 <Toggle
                   onClick={
-                    videoPermissionDenied ?
-                      handleOpenPermissionModal :
-                      undefined
+                    videoPermissionDenied
+                      ? handleOpenPermissionModal
+                      : undefined
                   }
                   source={Track.Source.Camera}
                   showIcon
@@ -353,7 +359,13 @@ function ControlBar({
       <Section>
         <StyledTimer $desktopOnly />
 
-        <DisconnectBtn {...disconnectProps}>
+        <DisconnectBtn
+          {...disconnectButtonProps}
+          onClick={(event: any) => {
+            onDisconnectClick?.();
+            livekitDisconnectClick?.(event);
+          }}
+        >
           {t('call.leave_btn')}
         </DisconnectBtn>
       </Section>
