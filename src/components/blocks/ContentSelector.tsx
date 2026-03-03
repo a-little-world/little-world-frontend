@@ -47,7 +47,7 @@ const Selector = styled.div`
 
   &::-webkit-scrollbar-thumb:hover {
     background: ${({ theme }) =>
-    theme.color.border.bold || 'rgba(0, 0, 0, 0.3)'};
+      theme.color.border.bold || 'rgba(0, 0, 0, 0.3)'};
   }
 
   /* Firefox scrollbar */
@@ -114,11 +114,28 @@ const FadeOverlay = styled.div<{ $side: 'left' | 'right'; $visible: boolean }>`
   }}
 `;
 
-export const StyledOption = styled(Button) <{ $selected?: boolean }>`
+const NewBadge = styled.span<{ $selected?: boolean }>`
+  background: ${({ theme }) => theme.color.gradient.orange10};
+  color: ${({ theme }) => theme.color.text.button};
+  padding: ${({ theme }) =>
+    `${theme.spacing.xxxsmall} ${theme.spacing.xxsmall}`};
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border-radius: ${({ theme }) => theme.radius.small};
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+`;
+
+export const StyledOption = styled(Button)<{ $selected?: boolean }>`
+  position: relative;
   border-color: transparent;
   transition: none;
   flex-shrink: 0;
   order: ${({ $selected }) => ($selected ? -1 : 0)};
+  gap: ${({ theme }) => theme.spacing.xxsmall};
 
   ${({ theme, variation }) =>
     variation === ButtonVariations.Inline &&
@@ -178,6 +195,8 @@ type ContentSelectorProps = {
   setSelection: (selection: string) => void;
   use: ContentSelectorUse;
   excludeTopics?: string[];
+  /** Topic keys that show a "New" badge */
+  newTopics?: string[];
 };
 
 function ContentSelector({
@@ -186,6 +205,7 @@ function ContentSelector({
   setSelection,
   use,
   excludeTopics,
+  newTopics,
 }: ContentSelectorProps) {
   const { t } = useTranslation();
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
@@ -250,7 +270,7 @@ function ContentSelector({
   }, [checkScrollPosition, handleScroll, use]);
 
   const topics = nbtTopics[use].filter(
-    topic => !excludeTopics?.includes(topic)
+    topic => !excludeTopics?.includes(topic),
   );
 
   return (
@@ -285,6 +305,11 @@ function ContentSelector({
               $selected={selection === topic}
             >
               {t(`nbt_${topic}`)}
+              {newTopics?.includes(topic) && (
+                <NewBadge $selected={selection === topic}>
+                  {t('nbt_new')}
+                </NewBadge>
+              )}
             </StyledOption>
           ),
         )}

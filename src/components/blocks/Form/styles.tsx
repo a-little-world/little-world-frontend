@@ -33,7 +33,7 @@ export const StyledProgress = styled(ProgressBar)`
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
-export const FormButtons = styled.div`
+export const FormButtons = styled.div<{ $onlyOneBtn: boolean }>`
   display: flex;
   align-items: center;
   justify-content: ${({ $onlyOneBtn }) =>
@@ -55,7 +55,7 @@ export const FormButtons = styled.div`
   }`}
 `;
 
-export const SubmitError = styled.div`
+export const SubmitError = styled.div<{ $visible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;

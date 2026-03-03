@@ -15,6 +15,7 @@ export const ImageContainer = styled.div`
   @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
     width: 40%;
     max-height: unset;
+    min-width: 240px;
   }
 `;
 

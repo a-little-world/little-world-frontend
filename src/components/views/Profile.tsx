@@ -41,9 +41,9 @@ import FormStep from '../blocks/Form/FormStep';
 import ProfileDetail from '../blocks/Profile/ProfileDetail';
 import ProfileEditor from '../blocks/Profile/ProfileEditor';
 import {
-  Details,
   PageContent,
   TextField,
+  TopDetails,
   Warning,
 } from '../blocks/Profile/styles';
 
@@ -254,62 +254,64 @@ function Profile() {
     <>
       <PageHeader canGoBack={!isSelf} text={profileTitle} />
       <PageContent>
-        <Details>
+        <TopDetails>
+          <ProfileCard
+            chatId={match?.chatId}
+            userPk={userId}
+            profile={profile}
+            isSelf={isSelf}
+            onProfile
+            openEditImage={() =>
+              navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
+            }
+          />
           <ProfileDetail
             editable={isSelf}
             content={profileFields.description}
             setEditingField={setEditingField}
+            fieldIsFlex
           >
             <TextField>{profile.description}</TextField>
           </ProfileDetail>
-          <ProfileDetail
-            description={t('profile.availability_instructions')}
-            editable={false}
-            content={profileFields.availability}
-            setEditingField={setEditingField}
-          >
-            {isSelf && profile.country_of_residence !== COUNTRIES.DE && (
-              <Warning type={StatusTypes.Warning} visible withBorder>
-                {t('availability.info_text')}
-              </Warning>
-            )}
-            <FormStep control={control} content={profileFields.availability} />
-          </ProfileDetail>
-          <ProfileDetail
-            editable={isSelf}
-            content={profileFields.interests}
-            setEditingField={setEditingField}
-          >
-            <Tags content={selectedInterests} />
-          </ProfileDetail>
-          <ProfileDetail
-            editable={isSelf}
-            content={profileFields.lang_skill}
-            setEditingField={setEditingField}
-          >
-            {profile.lang_skill?.length ? (
-              <MultiDropdown
-                {...profileFields.lang_skill}
-                locked
-                label={undefined}
-              />
-            ) : (
-              <Text>
-                {t(`profile.lang_skill${isSelf ? '_self' : ''}_undefined`)}
-              </Text>
-            )}
-          </ProfileDetail>
-        </Details>
-        <ProfileCard
-          chatId={match?.chatId}
-          userPk={userId}
-          profile={profile}
-          isSelf={isSelf}
-          onProfile
-          openEditImage={() =>
-            navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
-          }
-        />
+        </TopDetails>
+
+        <ProfileDetail
+          description={t('profile.availability_instructions')}
+          editable={false}
+          content={profileFields.availability}
+          setEditingField={setEditingField}
+        >
+          {isSelf && profile.country_of_residence !== COUNTRIES.DE && (
+            <Warning type={StatusTypes.Warning} visible withBorder>
+              {t('availability.info_text')}
+            </Warning>
+          )}
+          <FormStep control={control} content={profileFields.availability} />
+        </ProfileDetail>
+        <ProfileDetail
+          editable={isSelf}
+          content={profileFields.interests}
+          setEditingField={setEditingField}
+        >
+          <Tags content={selectedInterests} />
+        </ProfileDetail>
+        <ProfileDetail
+          editable={isSelf}
+          content={profileFields.lang_skill}
+          setEditingField={setEditingField}
+        >
+          {profile.lang_skill?.length ? (
+            <MultiDropdown
+              {...profileFields.lang_skill}
+              locked
+              label={undefined}
+            />
+          ) : (
+            <Text>
+              {t(`profile.lang_skill${isSelf ? '_self' : ''}_undefined`)}
+            </Text>
+          )}
+        </ProfileDetail>
       </PageContent>
       <Modal open={!!editingField} onClose={() => setEditingField(null)}>
         <ProfileEditor
