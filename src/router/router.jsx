@@ -498,6 +498,15 @@ export function getNativeRouter() {
       errorElement: <RouterError Layout={FormLayout} />,
     },
     {
+      path: getAppRoute(CHANGE_EMAIL_ROUTE),
+      element: (
+        <FormLayout>
+          <ChangeEmail />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
       path: getAppRoute(USER_PROFILE_ROUTE),
       element: (
         <FullAppLayout>
