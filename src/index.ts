@@ -7,6 +7,9 @@ export {
   IntegrityCheckAndroid,
   IntegrityCheckIOS,
   IntegrityCheckRequestData,
+  IntegrityCheckRequestDataAndroid,
+  IntegrityCheckRequestDataIOS,
+  IntegrityCheckRequestDataWeb,
   IntegrityCheckWeb,
 } from './features/integrityCheck';
 export {
