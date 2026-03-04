@@ -13,8 +13,17 @@ import {
 } from './index';
 
 interface MatchesData {
-  [category: string]: any[];
+  [category: string]: any;
 }
+
+const isPaginatedCategoryData = (
+  categoryData: any,
+): categoryData is { results?: any[]; [key: string]: any } =>
+  Boolean(
+    categoryData &&
+      typeof categoryData === 'object' &&
+      !Array.isArray(categoryData),
+  );
 
 const sortChats = (chats: any[]) => {
   const sorted = chats.sort((a, b) => {
@@ -42,9 +51,46 @@ export function addMatch(category: string, match: any): void {
     MATCHES_ENDPOINT,
     (matchesData: MatchesData | undefined) => {
       if (!matchesData) return matchesData;
+
+      const categoryData = matchesData[category];
+
+      if (Array.isArray(categoryData)) {
+        return {
+          ...matchesData,
+          [category]: [...categoryData, match],
+        };
+      }
+
+      if (isPaginatedCategoryData(categoryData)) {
+        const currentResults = Array.isArray(categoryData.results)
+          ? categoryData.results
+          : [];
+        const nextCount =
+          typeof categoryData.count === 'number'
+            ? categoryData.count + 1
+            : currentResults.length + 1;
+
+        return {
+          ...matchesData,
+          [category]: {
+            ...categoryData,
+            results: [...currentResults, match],
+            count: nextCount,
+            results_total:
+              typeof categoryData.results_total === 'number'
+                ? categoryData.results_total + 1
+                : nextCount,
+            items_total:
+              typeof categoryData.items_total === 'number'
+                ? categoryData.items_total + 1
+                : nextCount,
+          },
+        };
+      }
+
       return {
         ...matchesData,
-        [category]: [...(matchesData[category] || []), match],
+        [category]: [match],
       };
     },
     false,
