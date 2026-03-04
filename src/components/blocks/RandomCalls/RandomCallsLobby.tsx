@@ -54,6 +54,7 @@ import {
 import ProfileImage from '../../atoms/ProfileImage';
 import { Schedule } from '../../atoms/Schedule';
 import { CallSetupCard } from '../Calls/CallSetup';
+import { TextField } from '../Profile/styles';
 
 type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected';
 type RejectionReason = 'user_rejected' | 'partner_rejected' | 'timeout';
@@ -196,6 +197,7 @@ const RandomCallSetup = ({
       if (countdown === 1) {
         // Countdown finished, join lobby
         onJoinComplete();
+        setCountdown(0);
       } else {
         setCountdown(countdown - 1);
       }
@@ -381,7 +383,7 @@ const PartnerProposal = ({
             <Text type={TextTypes.Body4} bold>
               {partner.name}
             </Text>
-            <Text color="secondary">{partner.description}</Text>
+            <TextField>{partner.description}</TextField>
             {partner.interests.length > 0 && (
               <Tags content={partner.interests} />
             )}
