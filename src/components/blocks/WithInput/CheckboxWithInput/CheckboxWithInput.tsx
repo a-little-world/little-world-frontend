@@ -50,7 +50,7 @@ const CheckboxWithInput: React.FC<CheckboxWithInputProps> = ({
   return (
     <Container>
       {checkboxProps?.heading && (
-        <Label bold toolTipText={checkboxProps.labelTooltip}>
+        <Label bold tooltipText={checkboxProps.labelTooltip}>
           {checkboxProps.heading}
         </Label>
       )}

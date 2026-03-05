@@ -386,7 +386,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                 </AvatarSelection>
                 <Label
                   bold
-                  toolTipText={t('profile_pic.avatar_tooltip')}
+                  tooltipText={t('profile_pic.avatar_tooltip')}
                   marginBottom="0"
                 >
                   {t('profile_pic.avatar_selection')}

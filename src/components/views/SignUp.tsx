@@ -2,6 +2,7 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Checkbox,
+  Dropdown,
   InputWidth,
   Label,
   Link,
@@ -20,6 +21,7 @@ import useSWR, { mutate } from 'swr';
 
 import { signUp } from '../../api';
 import {
+  API_OPTIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
 } from '../../features/swr/index';
@@ -52,6 +54,14 @@ const SignUp = () => {
 
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
+  const { data: apiOptions } = useSWR(API_OPTIONS_ENDPOINT, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false,
+  });
+  const userTypeOptions = apiOptions?.profile?.user_type.map(({ value }) => ({
+    label: t(`sign_up.user_type.${value}`),
+    value,
+  }));
 
   useEffect(() => {
     if (searchParams.has('company')) {
@@ -100,7 +110,7 @@ const SignUp = () => {
 
   const onFormSubmit = async data => {
     setIsSubmitting(true);
-
+    console.log({ data });
     signUp(data)
       .then(async signUpData => {
         setIsSubmitting(false);
@@ -123,7 +133,7 @@ const SignUp = () => {
                 <Label
                   bold
                   htmlFor="company"
-                  toolTipText={t('sign_up.company_tooltip')}
+                  tooltipText={t('sign_up.company_tooltip')}
                 >
                   {t('sign_up.company_name_label')}: {company}
                 </Label>
@@ -147,7 +157,7 @@ const SignUp = () => {
               </div>
             </>
           )}
-          <Label bold htmlFor="name" toolTipText={t('sign_up.name_tooltip')}>
+          <Label bold htmlFor="name">
             {t('sign_up.name_label')}
           </Label>
           <NameInputs>
@@ -217,6 +227,23 @@ const SignUp = () => {
           id="confirmPassword"
           error={t(errors?.confirmPassword?.message)}
           type="password"
+        />
+        <Controller
+          defaultValue={undefined}
+          name="userType"
+          control={control}
+          rules={{ required: 'error.required' }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <Dropdown
+              onValueChange={val => onChange({ target: { value: val } })}
+              value={value}
+              error={t(error?.message)}
+              label={t('sign_up.user_type_label')}
+              labelTooltip={t('sign_up.user_type_tooltip')}
+              placeholder={t('sign_up.user_type_placeholder')}
+              options={userTypeOptions}
+            />
+          )}
         />
         <TextInput
           {...registerInput({
