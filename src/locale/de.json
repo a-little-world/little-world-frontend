@@ -718,7 +718,7 @@
   "sign_up.mailing_list_label": "Ich möchte den Newsletter von Little World erhalten",
   "sign_up.user_type_label": "Ich melde mich an als:",
   "sign_up.user_type_placeholder": "Wähle deine Rolle",
-  "sign_up.user_type_tooltip": "Wähle aus, wie du auf der Plattform mitmachen möchtest. Bitte beachte: Um als Ehrenamtlicher Gesprächspartner teilzunehmen, benötigst du mindestens C1-Niveau oder musst Muttersprachler:in sein.",
+  "sign_up.user_type_tooltip": "Wähle aus, wie du auf der Plattform mitmachen möchtest. Bitte beachte: Um als ehrenamtlicher Gesprächspartner teilzunehmen, musst du Deutschkenntnisse auf C1-Niveau haben oder Muttersprachler sein.",
   "sign_up.user_type.learner": "Ehrenamtliche Gesprächspartner (C1 Niveau oder Muttersprachler)",
   "sign_up.user_type.volunteer": "Deutschlernende (ab B1 Niveau)",
   "sign_up.name_label": "Dein Name",
