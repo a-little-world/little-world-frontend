@@ -33,6 +33,8 @@ interface ApiError extends Error {
   status?: number;
   statusText?: string;
   data?: any;
+  field?: string | null;
+  response?: any;
 }
 
 export const formatApiError = (responseBody: any, response: any) => {
@@ -40,6 +42,9 @@ export const formatApiError = (responseBody: any, response: any) => {
   apiError.status = response.status;
   apiError.statusText = response.statusText;
   apiError.data = responseBody;
+  // Keep the raw response object available for downstream handlers.
+  apiError.response = response;
+  apiError.cause = response;
   if (typeof responseBody === 'string') {
     apiError.message = responseBody;
   } else {
@@ -50,7 +55,7 @@ export const formatApiError = (responseBody: any, response: any) => {
     const errorTags = Object.values(responseObj)?.[0] as any;
     const errorTag = Array.isArray(errorTags) ? errorTags[0] : errorTags;
 
-    apiError.cause = errorType ?? null;
+    apiError.field = errorType ?? null;
     apiError.message =
       apiError.data?.message || errorTag || apiError.statusText;
   }

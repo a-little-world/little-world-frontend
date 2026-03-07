@@ -11,7 +11,8 @@ const FILE_TOO_LARGE_ERROR = 'validation.file_too_large';
 
 interface FormErrorParams {
   e: {
-    cause: string;
+    cause?: unknown;
+    field?: string | null;
     message?: string;
     status?: number;
   };
@@ -24,8 +25,15 @@ interface FormErrorParams {
 }
 
 export const onFormError = ({ e, formFields, setError }: FormErrorParams) => {
-  const cause = Object.keys(formFields).includes(e.cause)
-    ? e.cause
+  let serverField: string | undefined;
+  if (typeof e.field === 'string') {
+    serverField = e.field;
+  } else if (typeof e.cause === 'string') {
+    serverField = e.cause;
+  }
+
+  const cause = serverField && Object.keys(formFields).includes(serverField)
+    ? serverField
     : ROOT_SERVER_ERROR;
 
   if (e.message) {
