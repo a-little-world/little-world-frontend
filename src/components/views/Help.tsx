@@ -88,38 +88,41 @@ const generateFAQItems = (t: TFunction, supportUrl: string) => {
   }));
 };
 
+type FAQSection = ReturnType<typeof generateFAQItems>[number];
+
 export const FileDropzone = ({
   fileRef,
+  files,
   onFileChange,
   label,
+  errorMessage,
 }: {
-  fileRef?: HTMLInputElement;
-  onFileChange: (files: any) => void;
+  fileRef: React.RefObject<HTMLInputElement | null>;
+  files: File[];
+  onFileChange: (nextFiles: File[]) => void;
   label: string;
+  errorMessage?: string;
 }) => {
   const { t } = useTranslation();
-  const [filenames, setFilenames] = useState([]);
   const [dragOver, setDragOver] = useState(false);
   const theme = useTheme();
 
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
-    const fileList = [...e.dataTransfer.items]
-      .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
-      .map(item => item.getAsFile().name);
+    const fileList = Array.from(e.dataTransfer.files);
     onFileChange?.(fileList);
-    setFilenames(current => [...current, fileList]);
     setDragOver(false);
   };
 
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => e.preventDefault();
+  const handleDragOver = (e: DragEvent<HTMLLabelElement>) => e.preventDefault();
   const handleDragEnter = () => setDragOver(true);
   const handleDragLeave = () => setDragOver(false);
 
   const handleChange = () => {
-    const fileList = [...fileRef.current.files].map(file => file.name);
+    const fileList = fileRef.current?.files
+      ? Array.from(fileRef.current.files)
+      : ([] as File[]);
     onFileChange?.(fileList);
-    setFilenames(fileList);
   };
 
   return (
@@ -139,11 +142,11 @@ export const FileDropzone = ({
           id="fileInput"
           ref={fileRef}
           multiple
-          accept="image/*"
+          accept=".jpg,.jpeg,.png,image/jpeg,image/png"
           onChange={handleChange}
         />
 
-        {filenames.length === 0 ? (
+        {files.length === 0 ? (
           <>
             <ImageSearchIcon
               label="file input icon"
@@ -155,10 +158,10 @@ export const FileDropzone = ({
           </>
         ) : (
           <>
-            {filenames.map(name => (
-              <FileName key={name}>
+            {files.map(file => (
+              <FileName key={`${file.name}-${file.size}-${file.lastModified}`}>
                 <ImageIcon label="uploaded file" width="24" height="24" />
-                {name}
+                {file.name}
               </FileName>
             ))}
             <FileText tag="span">{t('help.contact_change_files')}</FileText>
@@ -168,6 +171,9 @@ export const FileDropzone = ({
         <Text color={theme.color.text.secondary} tag="span">
           {t('help.contact_picture_drag')}
         </Text>
+        <StatusMessage visible={Boolean(errorMessage)} type={StatusTypes.Error}>
+          {errorMessage}
+        </StatusMessage>
       </UploadArea>
     </DropZoneContainer>
   );
@@ -181,7 +187,7 @@ export const NativeWebWrapper = ({
 
 export function Faqs() {
   const { t } = useTranslation();
-  const [faqs, setFaqs] = useState([]);
+  const [faqs, setFaqs] = useState<FAQSection[]>([]);
   const { data: matches } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: true,
   });
@@ -196,7 +202,7 @@ export function Faqs() {
     if (!faqs.length) {
       setFaqs(generateFAQItems(t, supportUrl));
     }
-  }, [t, supportUrl]);
+  }, [faqs.length, t, supportUrl]);
 
   return (
     <FAQContainer>
@@ -222,8 +228,14 @@ export function Faqs() {
 export function Contact() {
   const { t } = useTranslation();
 
+  const ALLOWED_FILE_EXTENSIONS = ['.jpg', '.jpeg', '.png'];
+  const ALLOWED_FILE_MIME_TYPES = ['image/jpeg', 'image/png'];
+  const MAX_UPLOAD_FILES = 3;
+  const MAX_UPLOAD_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const fileRef = useRef<HTMLInputElement>(null);
   const {
@@ -232,23 +244,83 @@ export function Contact() {
     handleSubmit,
     formState: { errors },
     setError,
+    clearErrors,
   } = useForm();
 
   const onError = (e: any) => {
     onFormError({ e, formFields: getValues(), setError });
+    setRequestSuccessful(false);
     setIsSubmitting(false);
   };
 
   const onSuccess = () => {
     setIsSubmitting(false);
     setRequestSuccessful(true);
+    clearErrors('root.serverError');
+    setSelectedFiles([]);
+    if (fileRef.current) {
+      fileRef.current.value = '';
+    }
   };
 
-  const onSubmit = formData => {
+  const validateSelectedFiles = (files: File[]) => {
+    if (files.length > MAX_UPLOAD_FILES) {
+      return 'validation.help_upload_max_files';
+    }
+
+    const hasInvalidFormat = files.some(file => {
+      const lowercaseName = file.name.toLowerCase();
+      const hasAllowedExtension = ALLOWED_FILE_EXTENSIONS.some(extension =>
+        lowercaseName.endsWith(extension),
+      );
+      const hasAllowedMimeType =
+        !file.type || ALLOWED_FILE_MIME_TYPES.includes(file.type);
+
+      return !hasAllowedExtension || !hasAllowedMimeType;
+    });
+
+    if (hasInvalidFormat) {
+      return 'validation.help_upload_only_jpg_png';
+    }
+
+    const hasOversizedFile = files.some(
+      file => file.size > MAX_UPLOAD_FILE_SIZE_BYTES,
+    );
+    if (hasOversizedFile) {
+      return 'validation.help_upload_file_too_large';
+    }
+
+    return null;
+  };
+
+  const onFilesChange = (files: File[]) => {
+    const fileValidationError = validateSelectedFiles(files);
+    if (fileValidationError) {
+      setError('root.serverError', {
+        type: 'manual',
+        message: fileValidationError,
+      });
+      return;
+    }
+
+    clearErrors('root.serverError');
+    setSelectedFiles(files);
+  };
+
+  const onSubmit = (formData: any) => {
+    const fileValidationError = validateSelectedFiles(selectedFiles);
+    if (fileValidationError) {
+      setError('root.serverError', {
+        type: 'manual',
+        message: fileValidationError,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     const data = new FormData();
-    for (let i = 0; i < fileRef.current.files.length; i += 1) {
-      const file = fileRef.current.files.item(i);
+    for (let i = 0; i < selectedFiles.length; i += 1) {
+      const file = selectedFiles[i];
       const { name } = file;
 
       data.append('file', file, name);
@@ -258,8 +330,28 @@ export function Contact() {
     submitHelpForm(data, onSuccess, onError);
   };
 
+  if (requestSuccessful) {
+    return (
+      <ContactForm>
+        <ContentTitle tag="h2" type={TextTypes.Body2} bold>
+          {t('nbt_contact')}
+        </ContentTitle>
+        <StatusMessage visible type={StatusTypes.Success}>
+          {t('help.contact_form_submitted')}
+        </StatusMessage>
+      </ContactForm>
+    );
+  }
+
+  const serverErrorMessage = errors?.root?.serverError?.message
+    ? t(String(errors?.root?.serverError?.message))
+    : undefined;
+  const messageError = errors?.message?.message
+    ? t(String(errors?.message?.message))
+    : undefined;
+
   return (
-    <ContactForm onSubmit={handleSubmit(onSubmit)}>
+    <ContactForm onSubmit={handleSubmit(onSubmit as any)}>
       <ContentTitle tag="h2" type={TextTypes.Body2} bold>
         {t('nbt_contact')}
       </ContentTitle>
@@ -275,18 +367,21 @@ export function Contact() {
         inputMode="text"
         size={TextAreaSize.Medium}
         maxLength={2000}
-        error={t(errors?.message?.message)}
+        error={messageError}
         placeholder={t('help.contact_problem_placeholder')}
       />
-      <FileDropzone fileRef={fileRef} label={t('help.contact_picture_label')} />
+      <FileDropzone
+        fileRef={fileRef}
+        files={selectedFiles}
+        onFileChange={onFilesChange}
+        label={t('help.contact_picture_label')}
+      />
 
       <StatusMessage
-        visible={Boolean(requestSuccessful || errors?.root?.serverError)}
-        type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
+        visible={Boolean(errors?.root?.serverError)}
+        type={StatusTypes.Error}
       >
-        {requestSuccessful
-          ? t('help.contact_form_submitted')
-          : t(errors?.root?.serverError?.message)}
+        {serverErrorMessage}
       </StatusMessage>
       <Button
         type="submit"
