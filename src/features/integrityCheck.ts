@@ -1,12 +1,13 @@
 export interface IntegrityCheckAndroid {
   platform: 'android';
+  challengeId: string;
   integrityToken: string;
-  keyId: string;
 }
 
 export interface IntegrityCheckIOS {
   platform: 'ios';
   keyId: string;
+  challengeId: string;
   attestationObject: string;
 }
 
@@ -20,17 +21,18 @@ export type IntegrityCheck =
   | IntegrityCheckIOS
   | IntegrityCheckWeb;
 
-interface IntegrityCheckRequestDataAndroid {
-  key_id: string;
+export interface IntegrityCheckRequestDataAndroid {
+  challenge_id: string;
   integrity_token: string;
 }
 
-interface IntegrityCheckRequestDataIOS {
+export interface IntegrityCheckRequestDataIOS {
   key_id: string;
+  challenge_id: string;
   attestation_object: string;
 }
 
-interface IntegrityCheckRequestDataWeb {
+export interface IntegrityCheckRequestDataWeb {
   bypass_token: string;
 }
 
@@ -44,20 +46,21 @@ export function getIntegrityCheckRequestData(
 ): IntegrityCheckRequestData {
   if (integrityCheck.platform === 'android') {
     return {
-      key_id: integrityCheck.keyId,
+      challenge_id: integrityCheck.challengeId,
       integrity_token: integrityCheck.integrityToken,
-    };
+    } satisfies IntegrityCheckRequestDataAndroid;
   }
   if (integrityCheck.platform === 'ios') {
     return {
       key_id: integrityCheck.keyId,
+      challenge_id: integrityCheck.challengeId,
       attestation_object: integrityCheck.attestationObject,
-    };
+    } satisfies IntegrityCheckRequestDataIOS;
   }
   if (integrityCheck.platform === 'web') {
     return {
       bypass_token: integrityCheck.bypassToken,
-    };
+    } satisfies IntegrityCheckRequestDataWeb;
   }
   throw new Error(`Unsupported platform for integrity check request data`);
 }
