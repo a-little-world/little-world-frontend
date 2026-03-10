@@ -828,7 +828,7 @@
   "user_type.learner_label": "Ich bin ein\nDeutschlernender",
   "user_type.learner_note": "Mindestens B1 Deutschniveau",
   "user_type.title": "Bestätige deine Rolle", 
-  "user_type.volunteer_description": "Ich möchte anderen dabei helfen Deutsch zu lernen.",
+  "user_type.volunteer_description": "Ich möchte anderen beim Deutschüben helfen.",
   "user_type.volunteer_label": "Ich bin ein\nSprachpate",
   "user_type.volunteer_note": "Mindestens C1 Deutschniveau",
   "validation.birth_year_empty": "Bitte gib dein Geburtsjahr an",
