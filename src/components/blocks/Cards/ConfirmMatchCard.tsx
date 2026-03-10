@@ -45,6 +45,7 @@ interface ConfirmaMatchCardProps {
   name: string;
   onClose: () => void;
   matchId: string;
+  matchType: 'standard' | 'random_call';
   image: any;
   imageType: string;
 }
@@ -93,9 +94,9 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
     <>
       <CardHeader>{t('confirm_match.title')}</CardHeader>
       <CardContent
-        $align="center"
-        $textAlign="center"
-        $marginBottom={theme.spacing.large}
+        align="center"
+        textAlign="center"
+        marginBottom={theme.spacing.large}
       >
         <ProfileInfo>
           <ProfileImage image={image} imageType={imageType} />
@@ -152,9 +153,9 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
     <>
       <CardHeader>{t('confirm_match.title')}</CardHeader>
       <CardContent
-        $align="center"
-        $textAlign="center"
-        $marginBottom={theme.spacing.large}
+        align="center"
+        textAlign="center"
+        marginBottom={theme.spacing.large}
       >
         <ProfileInfo>
           <ProfileImage image={image} imageType={imageType} />
@@ -215,6 +216,7 @@ const ConfirmMatchCard = ({
   description,
   name,
   matchId,
+  matchType,
   onClose,
   image,
   imageType,
@@ -260,7 +262,11 @@ const ConfirmMatchCard = ({
   };
 
   const handleRejectClick = () => {
-    setViewState('reject-form');
+    if (matchType === 'random_call') {
+      setViewState('reject-form');
+    } else {
+      handleRejectSubmit();
+    }
   };
 
   const handleCancelReject = () => {
@@ -268,7 +274,7 @@ const ConfirmMatchCard = ({
     reset();
   };
 
-  const handleRejectSubmit = async (data: RejectFormData) => {
+  const handleRejectSubmit = async (data?: RejectFormData) => {
     setIsLoading(true);
 
     try {
@@ -276,7 +282,7 @@ const ConfirmMatchCard = ({
         partiallyConfirmMatch({
           acceptDeny: false,
           matchId,
-          denyReason: data.rejectReason,
+          denyReason: data?.rejectReason,
           onSuccess: () => {
             revalidateMatches();
             resolve();

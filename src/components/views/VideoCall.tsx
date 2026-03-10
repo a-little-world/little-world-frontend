@@ -302,7 +302,10 @@ function VideoCall() {
       setShowChat(true);
       setIsFullScreen(false);
     } else {
-      setShowChat(prevState => !prevState);
+      setShowChat(prevState => {
+        if (prevState) setSideSelection('chat');
+        return !prevState;
+      });
     }
   };
 
@@ -339,8 +342,6 @@ function VideoCall() {
       // Best effort: disconnect/redirect flow must continue even if this call fails.
     });
   }, [callType, isRandomCallRoute, randomMatchId]);
-
-  console.log({ chatData, chatId });
 
   return (
     <SidebarSelectionProvider
