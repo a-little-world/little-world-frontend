@@ -42,6 +42,33 @@ import {
   Title,
 } from './SignUp.styles';
 
+// Triggers user-type specific conversion on sign-up submit.
+const MTM_CUSTOM_USER_TYPE_EVENT_TRIGGER = true;
+// Stores selected user type for downstream tracking after redirects.
+const MTM_ENABLE_USER_TYPE_COOKIE = true;
+
+function runOptionalMatomoTriggers(userType?: string) {
+  if (!userType) return;
+
+  if (MTM_ENABLE_USER_TYPE_COOKIE && userType) {
+    Cookies.set('user-type', userType);
+  }
+  if (MTM_CUSTOM_USER_TYPE_EVENT_TRIGGER && userType) {
+    try {
+      // eslint-disable-next-line no-underscore-dangle
+      (window as any)._mtm.push({
+        event:
+          userType === 'volunteer'
+            ? 'userTypeVolunteerTrigger'
+            : 'userTypeLearnerTrigger',
+      });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error setting custom Matomo triggers:', error);
+    }
+  }
+}
+
 const SignUp = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -110,7 +137,7 @@ const SignUp = () => {
 
   const onFormSubmit = async data => {
     setIsSubmitting(true);
-    console.log({ data });
+    runOptionalMatomoTriggers(data?.userType);
     signUp(data)
       .then(async signUpData => {
         setIsSubmitting(false);

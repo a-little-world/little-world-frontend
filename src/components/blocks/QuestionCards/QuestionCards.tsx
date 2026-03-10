@@ -9,7 +9,7 @@ import {
   DownloadIcon,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
 import { archieveQuestion } from '../../../api/questions';
@@ -110,10 +110,10 @@ function QuestionCards() {
                 {card?.content[selfUserPreferedLang]}
               </QuestionButton>
               {selectedQuestionId === card?.uuid &&
-              selectedTopic === 'archived' ? (
-                <Button
-                  variation={ButtonVariations.Icon}
-                  onClick={() => {
+                selectedTopic === 'archived' ? (
+                  <Button
+                    variation={ButtonVariations.Icon}
+                    onClick={() => {
                     archieveQuestion({
                       uuid: card.uuid,
                       archive: false,
@@ -122,12 +122,12 @@ function QuestionCards() {
                     });
                   }}
                 >
-                  <CloseIcon
-                    label="unarchive question"
-                    width={16}
-                    height={16}
+                    <CloseIcon
+                      label="unarchive question"
+                      width={16}
+                      height={16}
                   />
-                </Button>
+                  </Button>
               ) : (
                 <Button
                   variation={ButtonVariations.Icon}
