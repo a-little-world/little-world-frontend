@@ -8,10 +8,10 @@ import useSWR, { mutate } from 'swr';
 import { mutateUserData } from '../../../api/index';
 import { environment } from '../../../environment';
 import { useDevelopmentFeaturesStore } from '../../../features/stores/index';
-import { FIREBASE_ENDPOINT, USER_ENDPOINT } from '../../../features/swr/index';
+import useNotificationStore from '../../../features/stores/notification';
+import { USER_ENDPOINT } from '../../../features/swr/index';
 import {
   registerFirebaseDeviceToken,
-  sendDelayedFirebaseTestNotification,
   sendFirebaseTestNotification,
   unregisterFirebaseDeviceToken,
 } from '../../../firebase-util';
@@ -36,9 +36,12 @@ const PushNotifications = ({
   hideLabel?: boolean;
 }) => {
   const { t } = useTranslation();
-  const { control, getValues, setError, watch, handleSubmit } = useForm<Data>();
+  const { control, getValues, setError, clearErrors, watch, handleSubmit } =
+    useForm<Data>();
   const { data: user } = useSWR(USER_ENDPOINT);
-  const enabled = user?.profile.push_notifications_enabled;
+  // notification store is not necessarily updated fast enough and only the initial value is used
+  const userDataPushNotificationsEnabled =
+    user?.profile.push_notifications_enabled;
 
   const onFormSuccess = (_data: Data) => {
     mutate(USER_ENDPOINT);
@@ -58,27 +61,49 @@ const PushNotifications = ({
     return () => subscription.unsubscribe();
   }, [handleSubmit, watch]);
 
-  useEffect(() => {
-    if (enabled && !environment.isNative) {
-      Notification.requestPermission().then(permission => {
-        if (permission !== 'granted') {
-          setError('push_notifications_enabled', {
-            message: t('push_notifications.enable_error'),
-          });
-        }
-      });
-    }
-  }, [enabled, setError, t]);
-
-  const firebaseConfig = useSWR(FIREBASE_ENDPOINT);
-  const firebasePublicVapidKey = firebaseConfig?.firebasePublicVapidKey;
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
+
+  const {
+    deviceSupported,
+    devicePermissionSet,
+    devicePermissionGranted,
+    notificationsEnabled,
+    setDevicePermissionGranted,
+    setDevicePermissionSet,
+  } = useNotificationStore();
+
+  const enabledWithoutPermissionSet =
+    deviceSupported && notificationsEnabled && !devicePermissionSet;
+  const enabledWithPermissionDenied =
+    deviceSupported &&
+    notificationsEnabled &&
+    devicePermissionSet &&
+    !devicePermissionGranted;
+
+  useEffect(() => {
+    if (!environment.isNative) {
+      return;
+    }
+    if (enabledWithPermissionDenied) {
+      setError('push_notifications_enabled', {
+        message: t('push_notifications.permission_denied'),
+      });
+    } else {
+      clearErrors('push_notifications_enabled');
+    }
+  }, [enabledWithPermissionDenied, setError, clearErrors, t]);
+
+  const requestNotificationPermission = async () => {
+    const permissionStatus = await Notification.requestPermission();
+    setDevicePermissionSet(permissionStatus !== 'default');
+    setDevicePermissionGranted(permissionStatus === 'granted');
+  };
 
   return (
     <>
       <NotificationForm>
         <Controller
-          defaultValue={enabled}
+          defaultValue={userDataPushNotificationsEnabled}
           name="push_notifications_enabled"
           control={control}
           render={({
@@ -100,31 +125,24 @@ const PushNotifications = ({
             />
           )}
         />
+        {!environment.isNative && enabledWithoutPermissionSet && (
+          <Button onClick={() => requestNotificationPermission()}>
+            {t('push_notifications.request_permission')}
+          </Button>
+        )}
       </NotificationForm>
       {areDevFeaturesEnabled && (
         <>
-          <Button
-            onClick={() => registerFirebaseDeviceToken(firebasePublicVapidKey)}
-          >
+          <Button onClick={() => registerFirebaseDeviceToken()}>
             Register
           </Button>
-          <Button
-            onClick={() =>
-              unregisterFirebaseDeviceToken(firebasePublicVapidKey)
-            }
-          >
+          <Button onClick={() => unregisterFirebaseDeviceToken()}>
             Unregister
           </Button>
-          <Button
-            onClick={() => sendFirebaseTestNotification(firebasePublicVapidKey)}
-          >
+          <Button onClick={() => sendFirebaseTestNotification()}>
             Send test notification
           </Button>
-          <Button
-            onClick={() =>
-              sendDelayedFirebaseTestNotification(firebasePublicVapidKey)
-            }
-          >
+          <Button onClick={() => sendFirebaseTestNotification(3000)}>
             Send delayed test notification
           </Button>
         </>
