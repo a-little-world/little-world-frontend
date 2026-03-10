@@ -48,17 +48,24 @@ const SignUp = () => {
   // User can sign-up with a ?company='name' query
   // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
   const [searchParams, setSearchParams] = useSearchParams();
-  const [company, setCompany] = useState(Cookies.get('lw-company', null));
+  const [company, setCompany] = useState(() => Cookies.get('lw-company') || '');
 
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
 
   useEffect(() => {
     if (searchParams.has('company')) {
-      Cookies.set('lw-company', searchParams.get('company'));
-      setCompany(searchParams.get('company'));
-      // Once the query param is stored in the cookie, we can remove it from the URL
+      const companyParam = searchParams.get('company');
+      Cookies.set('lw-company', companyParam);
+      setCompany(companyParam);
       setSearchParams(new URLSearchParams());
+    } else {
+      // Always sync state with cookie if present
+      const cookieCompany = Cookies.get('lw-company');
+      console.log('cookieCompany', cookieCompany);
+      if (cookieCompany && cookieCompany !== company) {
+        setCompany(cookieCompany);
+      }
     }
   }, [searchParams, setSearchParams]);
 
