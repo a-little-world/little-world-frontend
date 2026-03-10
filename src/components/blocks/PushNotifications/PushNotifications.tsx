@@ -36,7 +36,8 @@ const PushNotifications = ({
   hideLabel?: boolean;
 }) => {
   const { t } = useTranslation();
-  const { control, getValues, setError, watch, handleSubmit } = useForm<Data>();
+  const { control, getValues, setError, clearErrors, watch, handleSubmit } =
+    useForm<Data>();
   const { data: user } = useSWR(USER_ENDPOINT);
   // notification store is not necessarily updated fast enough and only the initial value is used
   const userDataPushNotificationsEnabled =
@@ -62,43 +63,40 @@ const PushNotifications = ({
 
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
-  const notificationStore = useNotificationStore();
   const {
     deviceSupported,
     devicePermissionSet,
     devicePermissionGranted,
     notificationsEnabled,
-  } = notificationStore;
+    setDevicePermissionGranted,
+    setDevicePermissionSet,
+  } = useNotificationStore();
+
+  const enabledWithoutPermissionSet =
+    deviceSupported && notificationsEnabled && !devicePermissionSet;
+  const enabledWithPermissionDenied =
+    deviceSupported &&
+    notificationsEnabled &&
+    devicePermissionSet &&
+    !devicePermissionGranted;
 
   useEffect(() => {
     if (!environment.isNative) {
       return;
     }
-    if (
-      notificationsEnabled &&
-      devicePermissionSet &&
-      !devicePermissionGranted
-    ) {
+    if (enabledWithPermissionDenied) {
       setError('push_notifications_enabled', {
         message: t('push_notifications.permission_denied'),
       });
     } else {
-      setError('push_notifications_enabled', {});
+      clearErrors('push_notifications_enabled');
     }
-  }, [
-    notificationsEnabled,
-    devicePermissionSet,
-    devicePermissionGranted,
-    setError,
-    t,
-  ]);
+  }, [enabledWithPermissionDenied, setError, clearErrors, t]);
 
   const requestNotificationPermission = async () => {
     const permissionStatus = await Notification.requestPermission();
-    notificationStore.setDevicePermissionSet(permissionStatus !== 'default');
-    notificationStore.setDevicePermissionGranted(
-      permissionStatus === 'granted',
-    );
+    setDevicePermissionSet(permissionStatus !== 'default');
+    setDevicePermissionGranted(permissionStatus === 'granted');
   };
 
   return (
@@ -127,14 +125,11 @@ const PushNotifications = ({
             />
           )}
         />
-        {!environment.isNative &&
-          deviceSupported &&
-          notificationsEnabled &&
-          !devicePermissionSet && (
-            <Button onClick={() => requestNotificationPermission()}>
-              {t('push_notifications.request_permission')}
-            </Button>
-          )}
+        {!environment.isNative && enabledWithoutPermissionSet && (
+          <Button onClick={() => requestNotificationPermission()}>
+            {t('push_notifications.request_permission')}
+          </Button>
+        )}
       </NotificationForm>
       {areDevFeaturesEnabled && (
         <>
