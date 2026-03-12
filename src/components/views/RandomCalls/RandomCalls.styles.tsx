@@ -47,7 +47,14 @@ export const InfoPanelText = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.small} 0
+    ${({ theme }) => theme.spacing.xxsmall};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      padding: ${theme.spacing.small};
+    }
+  `}
 `;
 
 export const ActiveUsers = styled.div`

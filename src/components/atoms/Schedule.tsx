@@ -86,7 +86,7 @@ export function Schedule({ title, sessions }: ScheduleProps) {
 
   return (
     <Wrapper>
-      <Title bold type={TextTypes.Body3}>
+      <Title bold type={TextTypes.Body4}>
         {title}
       </Title>
       <SessionList>

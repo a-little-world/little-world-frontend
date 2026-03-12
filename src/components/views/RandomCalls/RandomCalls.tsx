@@ -80,7 +80,7 @@ const RandomCalls = () => {
 
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
-  const [callEnded, setCallEnded] = useState(false);
+  const [callEnded, setCallEnded] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   console.log({ lobbyData });
 
@@ -210,6 +210,7 @@ const RandomCalls = () => {
       />
       <RandomCallsAccordion
         ContentWrapper={RandomCallsAccordionContentWrapper}
+        defaultValue={t('random_calls.instructions_title')}
         items={[
           {
             content: <Instructions items={instructions} />,
