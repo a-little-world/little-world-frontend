@@ -65,3 +65,10 @@ export const pagesWithViewportHeight = ['chat'];
 export const STORAGE_KEYS = {
   themePreference: 'theme-preference',
 };
+
+export const HELP_UPLOAD = {
+  allowedFileExtensions: ['.jpg', '.jpeg', '.png'],
+  allowedFileMimeTypes: ['image/jpeg', 'image/png'],
+  maxUploadFiles: 3,
+  maxUploadFileSizeBytes: 5 * 1024 * 1024,
+};

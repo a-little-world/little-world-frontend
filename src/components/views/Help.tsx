@@ -25,6 +25,7 @@ import { useTheme } from 'styled-components';
 import useSWR, { SWRConfig } from 'swr';
 
 import { submitHelpForm } from '../../api/index';
+import { HELP_UPLOAD } from '../../constants';
 import { MATCHES_ENDPOINT, swrConfig } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
 import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes';
@@ -142,7 +143,9 @@ export const FileDropzone = ({
           id="fileInput"
           ref={fileRef}
           multiple
-          accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+          accept="application/pdf, .pdf,.doc,.docx,.txt,.rtf,.odt,
+                    .jpg,.jpeg,.png,.gif,.bmp,.webp,.tiff,
+                    .ppt,.pptx,.xls,.xlsx,.csv, image/*"
           onChange={handleChange}
         />
 
@@ -228,11 +231,6 @@ export function Faqs() {
 export function Contact() {
   const { t } = useTranslation();
 
-  const ALLOWED_FILE_EXTENSIONS = ['.jpg', '.jpeg', '.png'];
-  const ALLOWED_FILE_MIME_TYPES = ['image/jpeg', 'image/png'];
-  const MAX_UPLOAD_FILES = 3;
-  const MAX_UPLOAD_FILE_SIZE_BYTES = 5 * 1024 * 1024;
-
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -264,17 +262,17 @@ export function Contact() {
   };
 
   const validateSelectedFiles = (files: File[]) => {
-    if (files.length > MAX_UPLOAD_FILES) {
+    if (files.length > HELP_UPLOAD.maxUploadFiles) {
       return 'validation.help_upload_max_files';
     }
 
     const hasInvalidFormat = files.some(file => {
       const lowercaseName = file.name.toLowerCase();
-      const hasAllowedExtension = ALLOWED_FILE_EXTENSIONS.some(extension =>
-        lowercaseName.endsWith(extension),
+      const hasAllowedExtension = HELP_UPLOAD.allowedFileExtensions.some(
+        extension => lowercaseName.endsWith(extension),
       );
       const hasAllowedMimeType =
-        !file.type || ALLOWED_FILE_MIME_TYPES.includes(file.type);
+        !file.type || HELP_UPLOAD.allowedFileMimeTypes.includes(file.type);
 
       return !hasAllowedExtension || !hasAllowedMimeType;
     });
@@ -284,7 +282,7 @@ export function Contact() {
     }
 
     const hasOversizedFile = files.some(
-      file => file.size > MAX_UPLOAD_FILE_SIZE_BYTES,
+      file => file.size > HELP_UPLOAD.maxUploadFileSizeBytes,
     );
     if (hasOversizedFile) {
       return 'validation.help_upload_file_too_large';
