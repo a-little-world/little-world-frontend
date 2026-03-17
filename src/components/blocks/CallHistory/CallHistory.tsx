@@ -28,6 +28,7 @@ import {
   CallInfo,
   CallTime,
   Container,
+  HistoryTitle,
   NoHistoryDescription,
   RequestMatchButton,
 } from './CallHistory.styles';
@@ -81,9 +82,9 @@ const CallHistoryList = ({
   };
   return (
     <CallHistoryListContainer>
-      <Text type={TextTypes.Body4} bold>
+      <HistoryTitle type={TextTypes.Body4} bold>
         {t('call_history.title')}
-      </Text>
+      </HistoryTitle>
       {isLoading ? (
         <Loading size={LoadingSizes.Medium} />
       ) : (
@@ -123,16 +124,16 @@ const CallHistoryList = ({
                     </CallTime>
                   )}
                 </CallDateTime>
-                {item.cannot_match && (
+                {item.cannot_match_reason && (
                   <Text color={theme.color.text.error}>
-                    {t('call_history.cannot_match')}
+                    {item.cannot_match_reason}
                   </Text>
                 )}
               </CallInfo>
             </CallDetails>
             <RequestMatchButton
               disabled={
-                item.cannot_match ||
+                !!item.cannot_match_reason ||
                 item.matching_requested ||
                 requestingMatch === item.id ||
                 item.confirmed_match

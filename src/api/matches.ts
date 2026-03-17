@@ -25,7 +25,7 @@ export const confirmMatch = async ({ userHash, onError, onSuccess }) => {
   }
 };
 
-export const partiallyConfirmMatch = async ({
+export const confirmOrDenyMatch = async ({
   matchId,
   acceptDeny,
   denyReason,

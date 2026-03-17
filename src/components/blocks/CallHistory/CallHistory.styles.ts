@@ -20,6 +20,15 @@ export const Container = styled.div<{ $hasData: boolean }>`
     `}
 `;
 
+export const HistoryTitle = styled(Text)`
+  display: none;
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      display: block;
+    }
+  `}
+`;
+
 export const NoHistoryDescription = styled(Text)`
   text-align: center;
   max-width: 512px;

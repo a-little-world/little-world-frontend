@@ -15,7 +15,8 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-import { partiallyConfirmMatch } from '../../../api/matches';
+import { confirmOrDenyMatch } from '../../../api/matches';
+import { MATCH_TYPES } from '../../../constants';
 import { revalidateMatches } from '../../../features/swr/index';
 import { registerInput } from '../../../helpers/form';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
@@ -45,6 +46,7 @@ interface ConfirmaMatchCardProps {
   name: string;
   onClose: () => void;
   matchId: string;
+  matchType: 'standard' | 'random_call';
   image: any;
   imageType: string;
 }
@@ -55,27 +57,32 @@ interface RejectFormData {
 
 type ViewState = 'confirm' | 'reject-form';
 
-interface ConfirmMatchProps {
+interface BaseMatchProps {
   name: string;
-  description: string;
   image: any;
   imageType: string;
-  onConfirm: () => void;
-  onRejectClick: () => void;
   isLoading: boolean;
+  matchType: string;
 }
 
-interface RejectMatchProps {
-  name: string;
-  image: any;
-  imageType: string;
+interface ConfirmMatchProps extends BaseMatchProps {
+  description: string;
+  onConfirm: () => void;
+  onRejectClick: () => void;
+}
+
+interface RejectMatchProps extends BaseMatchProps {
   onCancel: () => void;
   onSubmit: (data: RejectFormData) => void;
   errors: any;
   register: any;
   handleSubmit: any;
-  isLoading: boolean;
 }
+
+const getTitleKey = (matchType: string) =>
+  matchType === MATCH_TYPES.standard
+    ? 'confirm_match.title_standard'
+    : 'confirm_match.title_random_call';
 
 const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
   name,
@@ -85,17 +92,18 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
   onConfirm,
   onRejectClick,
   isLoading,
+  matchType,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
   return (
     <>
-      <CardHeader>{t('confirm_match.title')}</CardHeader>
+      <CardHeader>{t(getTitleKey(matchType))}</CardHeader>
       <CardContent
-        $align="center"
-        $textAlign="center"
-        $marginBottom={theme.spacing.large}
+        align="center"
+        textAlign="center"
+        marginBottom={theme.spacing.large}
       >
         <ProfileInfo>
           <ProfileImage image={image} imageType={imageType} />
@@ -104,12 +112,16 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
           </Text>
           <TextField>{description}</TextField>
         </ProfileInfo>
-        <Text type={TextTypes.Body5}>
-          {t('confirm_match.description', { name })}
-        </Text>
-        <Text type={TextTypes.Body5}>
-          {t('confirm_match.instruction', { name })}
-        </Text>
+        {matchType === MATCH_TYPES.standard && (
+          <>
+            <Text type={TextTypes.Body5}>
+              {t('confirm_match.description', { name })}
+            </Text>
+            <Text type={TextTypes.Body5}>
+              {t('confirm_match.instruction', { name })}
+            </Text>
+          </>
+        )}
       </CardContent>
 
       <ButtonsContainer>
@@ -144,17 +156,18 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
   register,
   handleSubmit,
   isLoading,
+  matchType,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
   return (
     <>
-      <CardHeader>{t('confirm_match.title')}</CardHeader>
+      <CardHeader>{t(getTitleKey(matchType))}</CardHeader>
       <CardContent
-        $align="center"
-        $textAlign="center"
-        $marginBottom={theme.spacing.large}
+        align="center"
+        textAlign="center"
+        marginBottom={theme.spacing.large}
       >
         <ProfileInfo>
           <ProfileImage image={image} imageType={imageType} />
@@ -178,6 +191,7 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
                 },
               },
             })}
+            id="rejectReason"
             label={t('confirm_match.reject_reason_label')}
             placeholder={t('confirm_match.reject_reason_placeholder')}
             size={TextAreaSize.Medium}
@@ -215,12 +229,14 @@ const ConfirmMatchCard = ({
   description,
   name,
   matchId,
+  matchType,
   onClose,
   image,
   imageType,
 }: ConfirmaMatchCardProps) => {
   const [viewState, setViewState] = useState<ViewState>('confirm');
   const [isLoading, setIsLoading] = useState(false);
+  const isRandomCall = matchType === MATCH_TYPES.random_call;
 
   const {
     register,
@@ -230,36 +246,31 @@ const ConfirmMatchCard = ({
     reset,
   } = useForm<RejectFormData>();
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     setIsLoading(true);
-
-    try {
-      await new Promise<void>((resolve, reject) => {
-        partiallyConfirmMatch({
-          acceptDeny: true,
-          matchId,
-          onSuccess: () => {
-            revalidateMatches();
-            resolve();
-          },
-          onError: apiError => {
-            reject(apiError);
-          },
+    confirmOrDenyMatch({
+      acceptDeny: true,
+      matchId,
+      onSuccess: () => {
+        setIsLoading(false);
+        revalidateMatches();
+        onClose();
+      },
+      onError: (apiError: any) => {
+        setIsLoading(false);
+        setError('root.serverError', {
+          type: apiError?.status,
+          message: apiError?.message || 'error.server_issue',
         });
-      });
-
-      onClose();
-    } catch (apiError: any) {
-      setError('root.serverError', {
-        type: apiError?.status,
-        message: apiError?.message || 'error.server_issue',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+      },
+    });
   };
 
   const handleRejectClick = () => {
+    if (isRandomCall) {
+      handleReject();
+      return;
+    }
     setViewState('reject-form');
   };
 
@@ -268,34 +279,25 @@ const ConfirmMatchCard = ({
     reset();
   };
 
-  const handleRejectSubmit = async (data: RejectFormData) => {
+  const handleReject = (denyReason?: string) => {
     setIsLoading(true);
-
-    try {
-      await new Promise<void>((resolve, reject) => {
-        partiallyConfirmMatch({
-          acceptDeny: false,
-          matchId,
-          denyReason: data.rejectReason,
-          onSuccess: () => {
-            revalidateMatches();
-            resolve();
-          },
-          onError: apiError => {
-            reject(apiError);
-          },
+    confirmOrDenyMatch({
+      acceptDeny: false,
+      matchId,
+      denyReason,
+      onSuccess: () => {
+        setIsLoading(false);
+        revalidateMatches();
+        onClose();
+      },
+      onError: (apiError: any) => {
+        setIsLoading(false);
+        setError('root.serverError', {
+          type: apiError?.status,
+          message: apiError?.message || 'error.server_issue',
         });
-      });
-
-      onClose();
-    } catch (apiError: any) {
-      setError('root.serverError', {
-        type: apiError?.status,
-        message: apiError?.message || 'error.server_issue',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+      },
+    });
   };
 
   return (
@@ -309,6 +311,7 @@ const ConfirmMatchCard = ({
           onConfirm={handleConfirm}
           onRejectClick={handleRejectClick}
           isLoading={isLoading}
+          matchType={matchType}
         />
       )}
       {viewState === 'reject-form' && (
@@ -317,11 +320,12 @@ const ConfirmMatchCard = ({
           image={image}
           imageType={imageType}
           onCancel={handleCancelReject}
-          onSubmit={handleRejectSubmit}
+          onSubmit={(data: RejectFormData) => handleReject(data.rejectReason)}
           errors={errors}
           register={register}
           handleSubmit={handleSubmit}
           isLoading={isLoading}
+          matchType={matchType}
         />
       )}
     </Card>
