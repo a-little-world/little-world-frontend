@@ -80,7 +80,7 @@ const RandomCalls = () => {
 
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
-  const [callEnded, setCallEnded] = useState(true);
+  const [callEnded, setCallEnded] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   console.log({ lobbyData });
 

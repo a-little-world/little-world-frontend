@@ -84,3 +84,7 @@ export const CallTime = styled(CallDate)`
 export const RequestMatchButton = styled(Button)`
   align-self: end;
 `;
+
+export const CannotMatch = styled(Text)`
+  align-self: end;
+`;

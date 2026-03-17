@@ -27,6 +27,7 @@ import {
   CallHistoryListContainer,
   CallInfo,
   CallTime,
+  CannotMatch,
   Container,
   HistoryTitle,
   NoHistoryDescription,
@@ -124,29 +125,29 @@ const CallHistoryList = ({
                     </CallTime>
                   )}
                 </CallDateTime>
-                {item.cannot_match_reason && (
-                  <Text color={theme.color.text.error}>
-                    {item.cannot_match_reason}
-                  </Text>
-                )}
               </CallInfo>
             </CallDetails>
-            <RequestMatchButton
-              disabled={
-                !!item.cannot_match_reason ||
-                item.matching_requested ||
-                requestingMatch === item.id ||
-                item.confirmed_match
-              }
-              onClick={() => handleRequestMatch(item.id)}
-              loading={requestingMatch === item.id}
-            >
-              {getRequestMatchButtonLabel(
-                item.confirmed_match,
-                item.matching_requested,
-                t,
-              )}
-            </RequestMatchButton>
+            {item.cannot_match_reason ? (
+              <CannotMatch color={theme.color.text.error}>
+                {item.cannot_match_reason}
+              </CannotMatch>
+            ) : (
+              <RequestMatchButton
+                disabled={
+                  item.matching_requested ||
+                  requestingMatch === item.id ||
+                  item.confirmed_match
+                }
+                onClick={() => handleRequestMatch(item.id)}
+                loading={requestingMatch === item.id}
+              >
+                {getRequestMatchButtonLabel(
+                  item.confirmed_match,
+                  item.matching_requested,
+                  t,
+                )}
+              </RequestMatchButton>
+            )}
           </CallEntry>
         ))
       )}
