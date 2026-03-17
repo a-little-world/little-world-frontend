@@ -9,6 +9,11 @@ export const USER_TYPES = {
   learner: 'learner',
 };
 
+export const MATCH_TYPES = {
+  standard: 'standard',
+  random_call: 'random_call',
+};
+
 export const LANGUAGES = {
   de: 'de',
   en: 'en',
@@ -48,8 +53,8 @@ export const API_FIELDS = {
   token: 'token',
   reason: 'reason', // reportMatch
   other_user_hash: 'otherUserHash', // reportMatch
-  confirm: 'acceptDeny', // partiallyConfirmMatch
-  unconfirmed_match_hash: 'matchId', // partiallyConfirmMatch
+  confirm: 'acceptDeny', // confirmOrDenyMatch
+  unconfirmed_match_hash: 'matchId',
 };
 
 export const COMMUNITY_EVENT_FREQUENCIES = {

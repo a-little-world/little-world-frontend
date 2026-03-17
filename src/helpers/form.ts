@@ -2,6 +2,7 @@ import { TFunction } from 'i18next';
 import {
   FieldValues,
   MultipleFieldErrors,
+  RegisterOptions,
   UseFormRegister,
 } from 'react-hook-form';
 
@@ -42,17 +43,17 @@ export const onFormError = ({ e, formFields, setError }: FormErrorParams) => {
   }
 };
 
-interface RegisterInputParams {
-  register: UseFormRegister<FieldValues>;
-  name: string;
-  options?: any;
+interface RegisterInputParams<TFieldValues extends FieldValues = FieldValues> {
+  register: UseFormRegister<TFieldValues>;
+  name: keyof TFieldValues & string;
+  options?: RegisterOptions<TFieldValues, any>;
 }
 
-export const registerInput = ({
+export const registerInput = <TFieldValues extends FieldValues = FieldValues>({
   register,
   name,
   options,
-}: RegisterInputParams) => {
+}: RegisterInputParams<TFieldValues>) => {
   const { ref, ...rest } = register(name, options);
 
   return {

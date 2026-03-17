@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { confirmMatch } from '../../../api/matches';
-import { revalidateMatches } from '../../../features/swr/index';
+import { revalidateMatches } from '../../../features/swr';
 import ProfileImage from '../../atoms/ProfileImage';
 
 const Centred = styled.div`
@@ -36,6 +36,7 @@ interface NewMatchCardProps {
   image: any;
   imageType: string;
   userHash: string;
+  onClose: () => void;
 }
 
 const NewMatchCard: React.FC<NewMatchCardProps> = ({
@@ -43,6 +44,7 @@ const NewMatchCard: React.FC<NewMatchCardProps> = ({
   image,
   imageType,
   userHash,
+  onClose,
 }) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
@@ -52,24 +54,18 @@ const NewMatchCard: React.FC<NewMatchCardProps> = ({
     setIsLoading(true);
     setError(null);
 
-    try {
-      await new Promise<void>((resolve, reject) => {
-        confirmMatch({
-          userHash,
-          onSuccess: () => {
-            revalidateMatches();
-            resolve();
-          },
-          onError: (apiError: any) => {
-            reject(apiError);
-          },
-        });
-      });
-    } catch (apiError: any) {
-      setError(apiError?.message || t('error.server_issue'));
-    } finally {
-      setIsLoading(false);
-    }
+    confirmMatch({
+      userHash,
+      onSuccess: () => {
+        revalidateMatches();
+        setIsLoading(false);
+        onClose();
+      },
+      onError: (apiError: any) => {
+        setError(apiError?.message || t('error.server_issue'));
+        setIsLoading(false);
+      },
+    });
   };
 
   return (

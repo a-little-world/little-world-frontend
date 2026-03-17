@@ -64,7 +64,7 @@ interface RandomCallLobby {
 
 const RandomCalls = () => {
   const { t } = useTranslation();
-  const { data: lobbyData } = useSWR<RandomCallLobby[]>(
+  const { data: lobbyData } = useSWR<RandomCallLobby>(
     RANDOM_CALL_LOBBY_ENDPOINT,
     {
       refreshInterval: 2000,
