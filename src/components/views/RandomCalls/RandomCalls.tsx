@@ -51,6 +51,10 @@ const instructions = [
     heading: 'random_calls.step_3.heading',
     description: 'random_calls.step_3.description',
   },
+  {
+    heading: 'random_calls.step_4.heading',
+    description: 'random_calls.step_4.description',
+  },
 ];
 
 interface RandomCallLobby {

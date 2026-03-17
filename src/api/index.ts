@@ -170,6 +170,7 @@ export const signUp = async ({
   lastName,
   mailingList,
   company = null,
+  userType,
 }) => {
   if (!environment.isNative) {
     return apiFetch(`/api/register/`, {
@@ -184,6 +185,7 @@ export const signUp = async ({
         birth_year: birthYear,
         newsletter_subscribed: mailingList,
         company,
+        user_type: userType,
       },
     });
   }
