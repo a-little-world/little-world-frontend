@@ -81,6 +81,7 @@ const RandomCalls = () => {
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
+  const [lobbySessionKey, setLobbySessionKey] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   console.log({ lobbyData });
 
@@ -107,8 +108,14 @@ const RandomCalls = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  const onJoinLobby = () => {
+  const openLobbyFresh = () => {
+    // @tbscode TODO tempo fix forecefuly reset lobby cache by reloading everything on re-enters
+    setLobbySessionKey(prev => prev + 1);
     setLobbyOpen(true);
+  };
+
+  const onJoinLobby = () => {
+    openLobbyFresh();
   };
 
   const onCloseLobby = async () => {
@@ -124,7 +131,7 @@ const RandomCalls = () => {
 
   const handleReturnToLobby = () => {
     setCallEnded(false);
-    setLobbyOpen(true);
+    openLobbyFresh();
   };
 
   const handleClosePostCall = () => {
@@ -136,6 +143,7 @@ const RandomCalls = () => {
       <Modal open={lobbyOpen} onClose={onCloseLobby}>
         {lobbyData?.uuid && (
           <RandomCallsLobby
+            key={`${lobbyData.uuid}-${lobbySessionKey}`}
             lobbyUuid={lobbyData.uuid}
             onCancel={onCloseLobby}
           />

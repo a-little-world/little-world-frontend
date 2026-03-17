@@ -190,7 +190,7 @@ const RandomCallSetup = ({
   // Countdown timer
   useEffect(() => {
     if (countdown === null || countdown <= 0) {
-      return () => {};
+      return () => { };
     }
 
     const timer = setTimeout(() => {
@@ -282,7 +282,7 @@ const RandomCallSetup = ({
             inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
             label={t('random_calls.lobby_switch_gender')}
             labelInline
-            onCheckedChange={() => {}}
+            onCheckedChange={() => { }}
           />
         )}
         {switchesEnabled && user?.profile?.user_type === USER_TYPES.learner && (
@@ -291,7 +291,7 @@ const RandomCallSetup = ({
             label={t('random_calls.lobby_switch_learners')}
             labelTooltip={t('random_calls.lobby_switch_learners_tooltip')}
             labelInline
-            onCheckedChange={() => {}}
+            onCheckedChange={() => { }}
           />
         )}
         {error && (
@@ -309,8 +309,8 @@ const RandomCallSetup = ({
         >
           {!hasJoinedLobby && countdown !== null
             ? t('random_calls.lobby_joining_in_x_seconds', {
-                seconds: countdown,
-              })
+              seconds: countdown,
+            })
             : t('random_calls.lobby_cancel_search')}
         </Button>
       </CardFooter>
@@ -560,7 +560,7 @@ const RandomCallsLobby = ({
       statusAttemptId
       ? `/api/random_calls/lobby/${lobbyUuid}/status?attempt=${statusAttemptId}`
       : null,
-    () => getLobbyStatus(lobbyUuid),
+    () => getLobbyStatus(lobbyUuid, statusAttemptId),
     {
       refreshInterval: 2000,
       onError: err => {
@@ -708,6 +708,7 @@ const RandomCallsLobby = ({
 
     setError(null);
     isManualRejectPending.current = reason === 'user_rejected';
+    let rejectFailed = false;
     try {
       await rejectMatch(lobbyUuid, matchData.uuid);
       // when the user quickly clicks "search again" there might still be stuff in swr chache
@@ -716,17 +717,39 @@ const RandomCallsLobby = ({
         (current: any) =>
           current
             ? {
-                ...current,
-                matching: null,
-              }
+              ...current,
+              matching: null,
+            }
             : current,
         { revalidate: true },
       );
-    } catch (_err: any) {
+    } catch (err: any) {
+      rejectFailed = true;
       isManualRejectPending.current = false;
-      setError('Failed to reject match. Please try again.');
-      return;
+      // @tbscode TODO: if the reject fails cause of timeout it should fail silently
+      if (reason !== 'timeout') {
+        const errorMessage =
+          err?.message || 'Failed to reject match. Please try again.';
+        setError(errorMessage);
+        return;
+      }
+
+      setError(null);
     }
+
+    if (rejectFailed) {
+      mutateRCState(
+        (current: any) =>
+          current
+            ? {
+              ...current,
+              matching: null,
+            }
+            : current,
+        { revalidate: true },
+      );
+    }
+
     setRejectionReason(reason);
     setLobbyState('rejected');
     setIsAccepting(false);
@@ -740,9 +763,9 @@ const RandomCallsLobby = ({
       (current: any) =>
         current
           ? {
-              ...current,
-              matching: null,
-            }
+            ...current,
+            matching: null,
+          }
           : current,
       { revalidate: true },
     );

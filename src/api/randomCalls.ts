@@ -10,8 +10,8 @@ export const exitLobby = (lobbyUuid: string) =>
     method: 'POST',
   });
 
-export const getLobbyStatus = (lobbyUuid: string) =>
-  apiFetch(`/api/random_calls/lobby/${lobbyUuid}/status`, {
+export const getLobbyStatus = (lobbyUuid: string, attempt: string | null) =>
+  apiFetch(`/api/random_calls/lobby/${lobbyUuid}/status${attempt ? `?attempt=${attempt}` : ''}`, {
     method: 'GET',
   });
 
