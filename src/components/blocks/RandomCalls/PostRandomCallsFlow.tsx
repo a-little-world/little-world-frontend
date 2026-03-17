@@ -41,7 +41,7 @@ const PostRandomCallsFlow = ({
 }: PostRandomCallsFlowProps) => {
   const { t } = useTranslation();
   const [flowState, setFlowState] = useState<PostCallState>(
-    'report' || 'initial',
+    'initial',
   );
   const { disconnectedFromUser } = useConnectedCallStore();
   const theme = useTheme();
