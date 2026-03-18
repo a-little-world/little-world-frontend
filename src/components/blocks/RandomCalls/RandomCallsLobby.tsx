@@ -190,7 +190,7 @@ const RandomCallSetup = ({
   // Countdown timer
   useEffect(() => {
     if (countdown === null || countdown <= 0) {
-      return () => { };
+      return () => {};
     }
 
     const timer = setTimeout(() => {
@@ -282,7 +282,7 @@ const RandomCallSetup = ({
             inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
             label={t('random_calls.lobby_switch_gender')}
             labelInline
-            onCheckedChange={() => { }}
+            onCheckedChange={() => {}}
           />
         )}
         {switchesEnabled && user?.profile?.user_type === USER_TYPES.learner && (
@@ -291,7 +291,7 @@ const RandomCallSetup = ({
             label={t('random_calls.lobby_switch_learners')}
             labelTooltip={t('random_calls.lobby_switch_learners_tooltip')}
             labelInline
-            onCheckedChange={() => { }}
+            onCheckedChange={() => {}}
           />
         )}
         {error && (
@@ -309,8 +309,8 @@ const RandomCallSetup = ({
         >
           {!hasJoinedLobby && countdown !== null
             ? t('random_calls.lobby_joining_in_x_seconds', {
-              seconds: countdown,
-            })
+                seconds: countdown,
+              })
             : t('random_calls.lobby_cancel_search')}
         </Button>
       </CardFooter>
@@ -560,7 +560,7 @@ const RandomCallsLobby = ({
       statusAttemptId
       ? `/api/random_calls/lobby/${lobbyUuid}/status?attempt=${statusAttemptId}`
       : null,
-    () => getLobbyStatus(lobbyUuid, statusAttemptId),
+    getLobbyStatus,
     {
       refreshInterval: 2000,
       onError: err => {
@@ -717,9 +717,9 @@ const RandomCallsLobby = ({
         (current: any) =>
           current
             ? {
-              ...current,
-              matching: null,
-            }
+                ...current,
+                matching: null,
+              }
             : current,
         { revalidate: true },
       );
@@ -742,9 +742,9 @@ const RandomCallsLobby = ({
         (current: any) =>
           current
             ? {
-              ...current,
-              matching: null,
-            }
+                ...current,
+                matching: null,
+              }
             : current,
         { revalidate: true },
       );
@@ -763,9 +763,9 @@ const RandomCallsLobby = ({
       (current: any) =>
         current
           ? {
-            ...current,
-            matching: null,
-          }
+              ...current,
+              matching: null,
+            }
           : current,
       { revalidate: true },
     );
@@ -816,7 +816,7 @@ const RandomCallsLobby = ({
       // Close the lobby modal
       onCancel();
     } catch (err: any) {
-      // TODO: There should be a seperaete lobby state here
+      // TODO: There should be a seperate lobby state here
       // Something around 'error connecting to call' but you can retry
       const errorMessage =
         err?.message || 'Failed to connect to call. Please try again.';
