@@ -490,7 +490,7 @@
   "random_calls.step_2.heading": "We find a match",
   "random_calls.step_2.description": "Our system automatically connects you with someone who's also up for a chat.",
   "random_calls.step_3.heading": "Accept or decline your match",
-  "random_calls.step_3.description": "Before joining a call, we'll show you your potential partner's profile so you can decide whether you'd like to connect.", 
+  "random_calls.step_3.description": "Before joining a call, we'll show you your potential partner's profile so you can decide whether you'd like to connect.",
   "random_calls.step_4.heading": "Start chatting instantly",
   "random_calls.step_4.description": "Accept a call and jump straight into a conversation. Chat as long as you like, then move on to someone new.",
   "random_calls.lobby_title": "Finding someone for you...",
@@ -884,5 +884,10 @@
   "welcome.description": "Let's start with a few short questions to find the best possible match for you and take your needs into account.",
   "welcome.intro": "Nice to have you here!",
   "welcome.note": "You can change the information given at any time.",
-  "welcome.title": "Hey!"
+  "welcome.title": "Hey!",
+  "random_calls.error_title": "Couldn't connect",
+  "random_calls.error_description": "We couldn't connect you to the call. Please try again.",
+  "random_calls.rejected_title": "Call didn't go ahead",
+  "random_calls.rejected_description": "The call didn't go ahead. Please try again.",
+  "error.connect_to_call": "Failed to connect to call. Please try again."
 }
