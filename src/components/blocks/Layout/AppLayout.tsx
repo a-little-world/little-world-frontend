@@ -19,7 +19,7 @@ import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
 import useModalManager, { ModalTypes } from '../../../hooks/useModalManager';
 import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
-import { MatchCardComponent } from '../Cards/MatchCard';
+import MatchModal from '../Matching/MatchModal';
 import MobileNavBar from '../MobileNavBar';
 import PostCallSurvey from '../PostCallSurvey/PostCallSurvey';
 import Sidebar from '../Sidebar';
@@ -103,7 +103,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
-  const showNewMatch = Boolean(matches?.unconfirmed?.results?.length);
+  const unconfirmedMatch = matches?.unconfirmed?.results?.[0] ?? null;
+  const proposals = matches?.proposed?.results ?? [];
 
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
@@ -263,26 +264,12 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         />
       </Modal>
 
-      <Modal
+      <MatchModal
         open={isModalOpen(ModalTypes.MATCH.id)}
         onClose={closeModal}
-        locked={showNewMatch}
-      >
-        <MatchCardComponent
-          showNewMatch={showNewMatch}
-          matchId={
-            matches?.proposed?.results?.length
-              ? matches?.proposed.results[0].id
-              : matches?.unconfirmed.results[0]?.id
-          }
-          profile={
-            matches?.proposed?.results?.length
-              ? matches?.proposed.results[0].partner
-              : matches?.unconfirmed.results[0]?.partner
-          }
-          onClose={closeModal}
-        />
-      </Modal>
+        unconfirmedMatch={unconfirmedMatch}
+        proposals={proposals}
+      />
     </Wrapper>
   );
 };

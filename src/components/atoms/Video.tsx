@@ -1,12 +1,28 @@
-import React from 'react';
 import styled from 'styled-components';
 
 const YT_EMBED_URL = 'https://www.youtube.com/embed/';
 
-const VideoContainer = styled.div`
+type VideoContainerProps = {
+  $maxWidth?: string;
+  $maxHeight?: string;
+  $aspectRatio: number;
+};
+
+const VideoContainer = styled.div<VideoContainerProps>`
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+  max-width: ${({ $maxWidth, $maxHeight, $aspectRatio }) => {
+    if ($maxWidth && $maxHeight) {
+      return `min(${$maxWidth}, calc(${$maxHeight} * ${$aspectRatio}))`;
+    }
+    if ($maxHeight) {
+      return `calc(${$maxHeight} * ${$aspectRatio})`;
+    }
+    return $maxWidth ?? 'none';
+  }};
+  max-height: ${({ $maxHeight }) => $maxHeight ?? 'none'};
+  margin: 0 auto;
+  aspect-ratio: ${({ $aspectRatio }) => $aspectRatio};
   overflow: hidden;
 `;
 
@@ -19,8 +35,26 @@ const StyledIframe = styled.iframe`
   left: 0;
 `;
 
-const Video = ({ src, title }: { src: string; title: string }) => (
-  <VideoContainer>
+type VideoProps = {
+  src: string;
+  title: string;
+  maxWidth?: string;
+  maxHeight?: string;
+  aspectRatio?: number;
+};
+
+const Video = ({
+  src,
+  title,
+  maxWidth,
+  maxHeight,
+  aspectRatio = 16 / 9,
+}: VideoProps) => (
+  <VideoContainer
+    $maxWidth={maxWidth}
+    $maxHeight={maxHeight}
+    $aspectRatio={aspectRatio}
+  >
     <StyledIframe
       src={`${YT_EMBED_URL}${src}`}
       frameBorder="0"

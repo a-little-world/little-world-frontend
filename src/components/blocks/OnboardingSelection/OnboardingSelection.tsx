@@ -9,6 +9,8 @@ import {
   Gradients,
   Link,
   Modal,
+  Stepper,
+  StepperOrientations,
   Switch,
   TeacherImage,
   Text,
@@ -16,16 +18,22 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { USER_ENDPOINT, getMatchEndpoint } from '../../../features/swr';
 import { formatDate, formatTime } from '../../../helpers/date';
-import { WALKTHROUGH_ROUTE, getAppRoute } from '../../../router/routes';
+import {
+  FORM_ONBOARDING_ROUTE,
+  FORM_WALKTHROUGH_ROUTE,
+  WALKTHROUGH_ROUTE,
+  getAppRoute,
+} from '../../../router/routes';
 import OptionSelector from '../../atoms/OptionSelector';
+import SupportWidget from '../../atoms/SupportWidget';
 import PartnerActionCard from '../Cards/PartnerActionCard';
-import ProfileCard from '../Cards/ProfileCard';
+import ProfileCard, { StyledProfileCard } from '../Cards/ProfileCard';
 import type { ReportType } from '../ReportForm/constants';
 
 const getCardState = ({
@@ -77,6 +85,14 @@ const Wrapper = styled.div`
       padding-bottom: ${theme.spacing.medium};
     }
   `}
+`;
+
+const StepperWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
 
 const Main = styled.main`
@@ -157,7 +173,6 @@ const SupportColumn = styled.aside`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
-      width: 280px;
     }
   `}
 `;
@@ -255,7 +270,7 @@ const CardContentSection = styled.div`
   flex: 1;
 `;
 
-/** "What you'll accomplish" block */
+/** "What you'll accomplish" checklist */
 const AccomplishSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -294,7 +309,37 @@ const CheckIcon = styled.span`
   justify-content: center;
 `;
 
-/** Two-column stats (Duration / Steps) */
+function CheckCircleIcon() {
+  return (
+    <CheckIcon aria-hidden>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="8"
+          cy="8"
+          r="7"
+          stroke="currentColor"
+          strokeWidth="2"
+          fill="none"
+        />
+        <path
+          d="M5 8l2.5 2.5L11 6"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </CheckIcon>
+  );
+}
+
+/** Two-column comparison (How / Duration) or stats */
 const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -342,40 +387,112 @@ const StatValue = styled(Text)`
   color: ${({ theme }) => theme.color.text.heading};
 `;
 
-function CheckCircleIcon() {
+const StackedCardFooter = styled(CardFooter)`
+  flex-direction: column;
+`;
+
+function getLeadingCopyKeys(
+  mockAppointmentBooked: boolean,
+  mockWalkthroughStarted: boolean,
+): { titleKey: string; descriptionKey: string } {
+  if (mockAppointmentBooked && mockWalkthroughStarted) {
+    return {
+      titleKey: 'onboarding_selection.leading_both',
+      descriptionKey: 'onboarding_selection.leading_description_both',
+    };
+  }
+  if (mockAppointmentBooked) {
+    return {
+      titleKey: 'onboarding_selection.leading_appointment_booked',
+      descriptionKey:
+        'onboarding_selection.leading_description_appointment_booked',
+    };
+  }
+  if (mockWalkthroughStarted) {
+    return {
+      titleKey: 'onboarding_selection.leading_walkthrough_started',
+      descriptionKey:
+        'onboarding_selection.leading_description_walkthrough_started',
+    };
+  }
+  return {
+    titleKey: 'onboarding_selection.leading',
+    descriptionKey: 'onboarding_selection.leading_description',
+  };
+}
+
+function OnboardingOptionComparison({
+  variant,
+}: {
+  variant: 'walkthrough' | 'appointment';
+}) {
+  const { t } = useTranslation();
+  const formatValue =
+    variant === 'walkthrough'
+      ? t('onboarding_selection.walkthrough_format_value')
+      : t('onboarding_selection.appointment_format_value');
+  const durationValue =
+    variant === 'walkthrough'
+      ? t('onboarding_selection.walkthrough_duration')
+      : t('onboarding_selection.appointment_duration');
+
   return (
-    <CheckIcon aria-hidden>
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="8"
-          cy="8"
-          r="7"
-          stroke="currentColor"
-          strokeWidth="2"
-          fill="none"
-        />
-        <path
-          d="M5 8l2.5 2.5L11 6"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </CheckIcon>
+    <StatsGridV1>
+      <StatBox>
+        <StatLabel type={TextTypes.Body4}>
+          {t('onboarding_selection.comparison_format_label')}
+        </StatLabel>
+        <StatValue type={TextTypes.Body4} bold>
+          {formatValue}
+        </StatValue>
+      </StatBox>
+      <StatBox>
+        <StatLabel type={TextTypes.Body4}>
+          {t('onboarding_selection.duration_label')}
+        </StatLabel>
+        <StatValue type={TextTypes.Body4} bold>
+          {durationValue}
+        </StatValue>
+      </StatBox>
+    </StatsGridV1>
+  );
+}
+
+function WalkthroughInProgressComparison({
+  walkthroughProgress,
+}: {
+  walkthroughProgress: { completed: number; total: number };
+}) {
+  const { t } = useTranslation();
+  return (
+    <StatsGridV1>
+      <StatBox>
+        <StatLabel type={TextTypes.Body4}>
+          {t('onboarding_selection.comparison_format_label')}
+        </StatLabel>
+        <StatValue type={TextTypes.Body4} bold>
+          {t('onboarding_selection.walkthrough_format_value')}
+        </StatValue>
+      </StatBox>
+      <StatBox>
+        <StatLabel type={TextTypes.Body4}>
+          {t('onboarding_selection.progress_label')}
+        </StatLabel>
+        <StatValue type={TextTypes.Body4} bold>
+          {t('onboarding_selection.walkthrough_progress', {
+            completed: walkthroughProgress.completed,
+            total: walkthroughProgress.total,
+          })}
+        </StatValue>
+      </StatBox>
+    </StatsGridV1>
   );
 }
 
 const ActionsToolkitWrapper = styled.div`
   position: fixed;
   bottom: ${({ theme }) => theme.spacing.small};
-  right: ${({ theme }) => theme.spacing.small};
+  left: ${({ theme }) => theme.spacing.small};
   z-index: 100;
   padding: ${({ theme }) => theme.spacing.small};
   background: ${({ theme }) => theme.color.surface.secondary};
@@ -519,24 +636,7 @@ function BookAppointmentCardContent({
       </OptionSubtext>
       {!isBooked && (
         <>
-          <StatsGridV1>
-            <StatBox>
-              <StatLabel type={TextTypes.Body4}>
-                {t('onboarding_selection.duration_label')}
-              </StatLabel>
-              <StatValue type={TextTypes.Body3} bold>
-                {t('onboarding_selection.appointment_duration')}
-              </StatValue>
-            </StatBox>
-            <StatBox>
-              <StatLabel type={TextTypes.Body4}>
-                {t('onboarding_selection.steps_label')}
-              </StatLabel>
-              <StatValue type={TextTypes.Body3} bold>
-                {t('onboarding_selection.appointment_steps')}
-              </StatValue>
-            </StatBox>
-          </StatsGridV1>
+          <OnboardingOptionComparison variant="appointment" />
           <BookAppointmentOption override={override} />
         </>
       )}
@@ -560,22 +660,24 @@ function BookAppointmentCardContent({
               </StatValue>
             </StatBoxFullWidth>
           </StatsGridFullWidth>
-          <Link
-            buttonAppearance={ButtonAppearance.Primary}
-            buttonSize={ButtonSizes.Stretch}
-            to={override.preMatchingCallJoinLink}
-          >
-            {t('searching_card.pre_match_call_booked_join_call')}
-          </Link>
-          <Button
-            data-cal-link="#"
-            data-cal-config='{"layout":"month_view"}'
-            onClick={() => null}
-            appearance={ButtonAppearance.Secondary}
-            size={ButtonSizes.Stretch}
-          >
-            {t('searching_card.pre_match_call_booked_cta')}
-          </Button>
+          <StackedCardFooter>
+            <Link
+              buttonAppearance={ButtonAppearance.Primary}
+              buttonSize={ButtonSizes.Stretch}
+              to={override.preMatchingCallJoinLink}
+            >
+              {t('searching_card.pre_match_call_booked_join_call')}
+            </Link>
+            <Button
+              data-cal-link="#"
+              data-cal-config='{"layout":"month_view"}'
+              onClick={() => null}
+              appearance={ButtonAppearance.Secondary}
+              size={ButtonSizes.Stretch}
+            >
+              {t('searching_card.pre_match_call_booked_cta')}
+            </Button>
+          </StackedCardFooter>
         </>
       )}
     </>
@@ -583,9 +685,11 @@ function BookAppointmentCardContent({
 }
 
 function WalkthroughCardContent({
+  isFormRoute,
   mockWalkthroughStarted,
   walkthroughProgress,
 }: {
+  isFormRoute: boolean;
   mockWalkthroughStarted: boolean;
   walkthroughProgress: { completed: number; total: number };
 }) {
@@ -605,29 +709,14 @@ function WalkthroughCardContent({
       </OptionSubtext>
       {!mockWalkthroughStarted && (
         <>
-          <StatsGridV1>
-            <StatBox>
-              <StatLabel type={TextTypes.Body4}>
-                {t('onboarding_selection.duration_label')}
-              </StatLabel>
-              <StatValue type={TextTypes.Body3} bold>
-                {t('onboarding_selection.walkthrough_duration')}
-              </StatValue>
-            </StatBox>
-            <StatBox>
-              <StatLabel type={TextTypes.Body4}>
-                {t('onboarding_selection.steps_label')}
-              </StatLabel>
-              <StatValue type={TextTypes.Body3} bold>
-                {t('onboarding_selection.walkthrough_steps')}
-              </StatValue>
-            </StatBox>
-          </StatsGridV1>
+          <OnboardingOptionComparison variant="walkthrough" />
           <CardFooter>
             <Link
               buttonAppearance={ButtonAppearance.Primary}
               buttonSize={ButtonSizes.Stretch}
-              to={getAppRoute(WALKTHROUGH_ROUTE)}
+              to={getAppRoute(
+                isFormRoute ? FORM_WALKTHROUGH_ROUTE : WALKTHROUGH_ROUTE,
+              )}
             >
               {t('onboarding_selection.walkthrough_cta')}
             </Link>
@@ -636,34 +725,20 @@ function WalkthroughCardContent({
       )}
       {mockWalkthroughStarted && (
         <>
-          <StatsGridV1>
-            <StatBox>
-              <StatLabel type={TextTypes.Body4}>
-                {t('onboarding_selection.duration_label')}
-              </StatLabel>
-              <StatValue type={TextTypes.Body3} bold>
-                {t('onboarding_selection.walkthrough_duration')}
-              </StatValue>
-            </StatBox>
-            <StatBox>
-              <StatLabel type={TextTypes.Body4}>
-                {t('onboarding_selection.steps_completed_label')}
-              </StatLabel>
-              <StatValue type={TextTypes.Body3} bold>
-                {t('onboarding_selection.walkthrough_progress', {
-                  completed: walkthroughProgress.completed,
-                  total: walkthroughProgress.total,
-                })}
-              </StatValue>
-            </StatBox>
-          </StatsGridV1>
-          <Link
-            buttonAppearance={ButtonAppearance.Primary}
-            buttonSize={ButtonSizes.Stretch}
-            to={getAppRoute(WALKTHROUGH_ROUTE)}
-          >
-            {t('onboarding_selection.walkthrough_continue_cta')}
-          </Link>
+          <WalkthroughInProgressComparison
+            walkthroughProgress={walkthroughProgress}
+          />
+          <CardFooter>
+            <Link
+              buttonAppearance={ButtonAppearance.Primary}
+              buttonSize={ButtonSizes.Stretch}
+              to={getAppRoute(
+                isFormRoute ? FORM_WALKTHROUGH_ROUTE : WALKTHROUGH_ROUTE,
+              )}
+            >
+              {t('onboarding_selection.walkthrough_continue_cta')}
+            </Link>
+          </CardFooter>
         </>
       )}
     </>
@@ -671,21 +746,26 @@ function WalkthroughCardContent({
 }
 
 function OnboardingSelectionVersion1({
+  isFormRoute,
   version,
   mockAppointmentBooked,
   mockWalkthroughStarted,
+  supportWidget,
 }: {
+  isFormRoute: boolean;
   version: number;
   mockAppointmentBooked: boolean;
   mockWalkthroughStarted: boolean;
+  supportWidget: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const [partnerActionData, setPartnerActionData] =
     useState<PartnerActionData | null>(null);
-  const [activeTab, setActiveTab] = useState<OnboardingTab>('appointment');
+  const [activeTab, setActiveTab] = useState<OnboardingTab>('walkthrough');
 
-  const { data: matches } = useSWR(getMatchEndpoint(1));
+  const { data: matches, isLoading } = useSWR(getMatchEndpoint(1));
   const supportResults = matches?.support?.results ?? [];
+  const firstSupportResult = supportResults[0];
 
   const isVersion2 = version === 2;
 
@@ -699,27 +779,72 @@ function OnboardingSelectionVersion1({
       : null;
   const walkthroughProgress = MOCK_WALKTHROUGH_PROGRESS;
 
-  const leadingTitleKey =
-    mockAppointmentBooked && mockWalkthroughStarted
-      ? 'onboarding_selection.leading_both'
-      : mockAppointmentBooked
-        ? 'onboarding_selection.leading_appointment_booked'
-        : mockWalkthroughStarted
-          ? 'onboarding_selection.leading_walkthrough_started'
-          : 'onboarding_selection.leading';
-
-  const leadingDescriptionKey =
-    mockAppointmentBooked && mockWalkthroughStarted
-      ? 'onboarding_selection.leading_description_both'
-      : mockAppointmentBooked
-        ? 'onboarding_selection.leading_description_appointment_booked'
-        : mockWalkthroughStarted
-          ? 'onboarding_selection.leading_description_walkthrough_started'
-          : 'onboarding_selection.leading_description';
+  const { titleKey: leadingTitleKey, descriptionKey: leadingDescriptionKey } =
+    getLeadingCopyKeys(mockAppointmentBooked, mockWalkthroughStarted);
+  const hasStartedOnboardingOption =
+    mockAppointmentBooked || mockWalkthroughStarted;
+  let stepFiveLabelKey = 'onboarding_selection.stepper_step5_start_onboarding';
+  if (mockWalkthroughStarted) {
+    stepFiveLabelKey = 'onboarding_selection.stepper_step5_quiz_started';
+  } else if (mockAppointmentBooked) {
+    stepFiveLabelKey = 'onboarding_selection.stepper_step5_appointment_booked';
+  }
+  const onboardingSteps = [
+    { id: '1', label: t('onboarding_selection.stepper_step1_sign_in') },
+    { id: '2', label: t('onboarding_selection.stepper_step2_confirm_email') },
+    {
+      id: '3',
+      label: t('onboarding_selection.stepper_step3_complete_profile'),
+    },
+    {
+      id: '4',
+      label: t('onboarding_selection.stepper_step4_choose_onboarding'),
+    },
+    { id: '5', label: t(stepFiveLabelKey) },
+  ];
+  let supportCard = null;
+  if (isLoading) {
+    supportCard = (
+      <StyledProfileCard width={CardSizes.Small} $loading>
+        {null}
+      </StyledProfileCard>
+    );
+  } else if (firstSupportResult) {
+    supportCard = (
+      <ProfileCard
+        key={firstSupportResult.partner.id}
+        userPk={firstSupportResult.partner.id}
+        profile={firstSupportResult.partner}
+        isDeleted={firstSupportResult.partner.isDeleted}
+        isSelf={false}
+        isMatch={!firstSupportResult.partner.isSupport}
+        matchId={firstSupportResult.id}
+        openPartnerModal={params =>
+          setPartnerActionData({
+            ...params,
+            type: params.type as ReportType,
+          })
+        }
+        isOnline={firstSupportResult.partner.isOnline}
+        isSupport={firstSupportResult.partner.isSupport}
+        chatId={firstSupportResult.chatId}
+        onProfile={false}
+        loading={isLoading}
+      />
+    );
+  }
 
   return (
     <Wrapper>
       <Main>
+        <StepperWrapper>
+          <Stepper
+            steps={onboardingSteps}
+            activeStepIndex={hasStartedOnboardingOption ? 4 : 3}
+            orientation={StepperOrientations.Horizontal}
+          />
+        </StepperWrapper>
+
         <LeadingTitle type={TextTypes.Body1} bold tag="h2" center>
           {t(leadingTitleKey)}
         </LeadingTitle>
@@ -732,25 +857,119 @@ function OnboardingSelectionVersion1({
               <SegmentedControlButton
                 type="button"
                 role="tab"
-                aria-selected={activeTab === 'appointment'}
-                $active={activeTab === 'appointment'}
-                onClick={() => setActiveTab('appointment')}
-              >
-                {t('onboarding_selection.book_appointment_title')}
-              </SegmentedControlButton>
-              <SegmentedControlButton
-                type="button"
-                role="tab"
                 aria-selected={activeTab === 'walkthrough'}
                 $active={activeTab === 'walkthrough'}
                 onClick={() => setActiveTab('walkthrough')}
               >
-                {t('onboarding_selection.walkthrough_title')}
+                {t('onboarding_selection.segment_self_learning')}
+              </SegmentedControlButton>
+              <SegmentedControlButton
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'appointment'}
+                $active={activeTab === 'appointment'}
+                onClick={() => setActiveTab('appointment')}
+              >
+                {t('onboarding_selection.segment_with_team')}
               </SegmentedControlButton>
             </SegmentedControl>
             <OptionCardV2 $fullWidth>
               <TabPanel role="tabpanel">
-                {activeTab === 'appointment' ? (
+                {activeTab === 'walkthrough' ? (
+                  <>
+                    <TeacherImage label="teacher image" height={60} />
+                    <CardHeaderSection>
+                      <CardTitleV2 type={TextTypes.Body2} bold>
+                        {mockWalkthroughStarted
+                          ? t(
+                              'onboarding_selection.walkthrough_in_progress_heading',
+                            )
+                          : t('onboarding_selection.walkthrough_title')}
+                      </CardTitleV2>
+                      <CardDescriptionV2>
+                        {mockWalkthroughStarted
+                          ? t(
+                              'onboarding_selection.walkthrough_in_progress_description',
+                            )
+                          : t('onboarding_selection.walkthrough_subtext')}
+                      </CardDescriptionV2>
+                    </CardHeaderSection>
+                    <CardContentSection>
+                      {!mockWalkthroughStarted && (
+                        <>
+                          <AccomplishSection>
+                            <AccomplishHeading type={TextTypes.Body4} tag="h4">
+                              {t('onboarding_selection.what_you_accomplish')}
+                            </AccomplishHeading>
+                            <AccomplishList>
+                              <AccomplishListItem>
+                                <CheckCircleIcon />
+                                <span>
+                                  {t(
+                                    'onboarding_selection.walkthrough_accomplish_1',
+                                  )}
+                                </span>
+                              </AccomplishListItem>
+                              <AccomplishListItem>
+                                <CheckCircleIcon />
+                                <span>
+                                  {t(
+                                    'onboarding_selection.walkthrough_accomplish_2',
+                                  )}
+                                </span>
+                              </AccomplishListItem>
+                              <AccomplishListItem>
+                                <CheckCircleIcon />
+                                <span>
+                                  {t(
+                                    'onboarding_selection.walkthrough_accomplish_3',
+                                  )}
+                                </span>
+                              </AccomplishListItem>
+                            </AccomplishList>
+                          </AccomplishSection>
+                          <OnboardingOptionComparison variant="walkthrough" />
+                        </>
+                      )}
+                      {mockWalkthroughStarted ? (
+                        <>
+                          <WalkthroughInProgressComparison
+                            walkthroughProgress={walkthroughProgress}
+                          />
+                          <CardFooter>
+                            <Link
+                              buttonAppearance={ButtonAppearance.Primary}
+                              buttonSize={ButtonSizes.Stretch}
+                              to={getAppRoute(
+                                isFormRoute
+                                  ? FORM_WALKTHROUGH_ROUTE
+                                  : WALKTHROUGH_ROUTE,
+                              )}
+                            >
+                              {t(
+                                'onboarding_selection.walkthrough_continue_cta',
+                              )}
+                            </Link>
+                          </CardFooter>
+                        </>
+                      ) : (
+                        <CardFooter>
+                          <Link
+                            buttonAppearance={ButtonAppearance.Primary}
+                            buttonSize={ButtonSizes.Stretch}
+                            to={getAppRoute(
+                              isFormRoute
+                                ? FORM_WALKTHROUGH_ROUTE
+                                : WALKTHROUGH_ROUTE,
+                            )}
+                          >
+                            {t('onboarding_selection.walkthrough_cta')}
+                          </Link>
+                        </CardFooter>
+                      )}
+                    </CardContentSection>
+                  </>
+                ) : (
                   <>
                     <MatchingCallImage
                       label="matching call image"
@@ -805,24 +1024,7 @@ function OnboardingSelectionVersion1({
                               </AccomplishListItem>
                             </AccomplishList>
                           </AccomplishSection>
-                          <StatsGrid>
-                            <StatBox>
-                              <StatLabel type={TextTypes.Body4}>
-                                {t('onboarding_selection.duration_label')}
-                              </StatLabel>
-                              <StatValue type={TextTypes.Body3} bold>
-                                {t('onboarding_selection.appointment_duration')}
-                              </StatValue>
-                            </StatBox>
-                            <StatBox>
-                              <StatLabel type={TextTypes.Body4}>
-                                {t('onboarding_selection.steps_label')}
-                              </StatLabel>
-                              <StatValue type={TextTypes.Body3} bold>
-                                {t('onboarding_selection.appointment_steps')}
-                              </StatValue>
-                            </StatBox>
-                          </StatsGrid>
+                          <OnboardingOptionComparison variant="appointment" />
                           <BookAppointmentOption
                             override={appointmentOverride}
                           />
@@ -864,147 +1066,27 @@ function OnboardingSelectionVersion1({
                               </StatValue>
                             </StatBox>
                           </StatsGrid>
-                          <Link
-                            buttonAppearance={ButtonAppearance.Primary}
-                            buttonSize={ButtonSizes.Stretch}
-                            to={appointmentOverride.preMatchingCallJoinLink}
-                          >
-                            {t(
-                              'searching_card.pre_match_call_booked_join_call',
-                            )}
-                          </Link>
-                          <Button
-                            data-cal-link="#"
-                            data-cal-config='{"layout":"month_view"}'
-                            onClick={() => null}
-                            appearance={ButtonAppearance.Secondary}
-                            size={ButtonSizes.Stretch}
-                          >
-                            {t('searching_card.pre_match_call_booked_cta')}
-                          </Button>
+                          <CardFooter>
+                            <Button
+                              data-cal-link="#"
+                              data-cal-config='{"layout":"month_view"}'
+                              onClick={() => null}
+                              appearance={ButtonAppearance.Secondary}
+                              size={ButtonSizes.Stretch}
+                            >
+                              {t('searching_card.pre_match_call_booked_cta')}
+                            </Button>
+                            <Link
+                              buttonAppearance={ButtonAppearance.Primary}
+                              buttonSize={ButtonSizes.Stretch}
+                              to={appointmentOverride.preMatchingCallJoinLink}
+                            >
+                              {t(
+                                'searching_card.pre_match_call_booked_join_call',
+                              )}
+                            </Link>
+                          </CardFooter>
                         </>
-                      )}
-                    </CardContentSection>
-                  </>
-                ) : (
-                  <>
-                    <TeacherImage label="teacher image" height={60} />
-                    <CardHeaderSection>
-                      <CardTitleV2 type={TextTypes.Body2} bold>
-                        {mockWalkthroughStarted
-                          ? t(
-                              'onboarding_selection.walkthrough_in_progress_heading',
-                            )
-                          : t('onboarding_selection.walkthrough_title')}
-                      </CardTitleV2>
-                      <CardDescriptionV2>
-                        {mockWalkthroughStarted
-                          ? t(
-                              'onboarding_selection.walkthrough_in_progress_description',
-                            )
-                          : t('onboarding_selection.walkthrough_subtext')}
-                      </CardDescriptionV2>
-                    </CardHeaderSection>
-                    <CardContentSection>
-                      {!mockWalkthroughStarted && (
-                        <>
-                          <AccomplishSection>
-                            <AccomplishHeading type={TextTypes.Body4} tag="h4">
-                              {t('onboarding_selection.what_you_accomplish')}
-                            </AccomplishHeading>
-                            <AccomplishList>
-                              <AccomplishListItem>
-                                <CheckCircleIcon />
-                                <span>
-                                  {t(
-                                    'onboarding_selection.walkthrough_accomplish_1',
-                                  )}
-                                </span>
-                              </AccomplishListItem>
-                              <AccomplishListItem>
-                                <CheckCircleIcon />
-                                <span>
-                                  {t(
-                                    'onboarding_selection.walkthrough_accomplish_2',
-                                  )}
-                                </span>
-                              </AccomplishListItem>
-                              <AccomplishListItem>
-                                <CheckCircleIcon />
-                                <span>
-                                  {t(
-                                    'onboarding_selection.walkthrough_accomplish_3',
-                                  )}
-                                </span>
-                              </AccomplishListItem>
-                            </AccomplishList>
-                          </AccomplishSection>
-                          <StatsGrid>
-                            <StatBox>
-                              <StatLabel type={TextTypes.Body4}>
-                                {t('onboarding_selection.duration_label')}
-                              </StatLabel>
-                              <StatValue type={TextTypes.Body3} bold>
-                                {t('onboarding_selection.walkthrough_duration')}
-                              </StatValue>
-                            </StatBox>
-                            <StatBox>
-                              <StatLabel type={TextTypes.Body4}>
-                                {t('onboarding_selection.steps_label')}
-                              </StatLabel>
-                              <StatValue type={TextTypes.Body3} bold>
-                                {t('onboarding_selection.walkthrough_steps')}
-                              </StatValue>
-                            </StatBox>
-                          </StatsGrid>
-                        </>
-                      )}
-                      {mockWalkthroughStarted ? (
-                        <>
-                          <StatsGrid>
-                            <StatBox>
-                              <StatLabel type={TextTypes.Body4}>
-                                {t('onboarding_selection.duration_label')}
-                              </StatLabel>
-                              <StatValue type={TextTypes.Body3} bold>
-                                {t('onboarding_selection.walkthrough_duration')}
-                              </StatValue>
-                            </StatBox>
-                            <StatBox>
-                              <StatLabel type={TextTypes.Body4}>
-                                {t(
-                                  'onboarding_selection.steps_completed_label',
-                                )}
-                              </StatLabel>
-                              <StatValue type={TextTypes.Body3} bold>
-                                {t(
-                                  'onboarding_selection.walkthrough_progress',
-                                  {
-                                    completed: walkthroughProgress.completed,
-                                    total: walkthroughProgress.total,
-                                  },
-                                )}
-                              </StatValue>
-                            </StatBox>
-                          </StatsGrid>
-                          <Link
-                            buttonAppearance={ButtonAppearance.Primary}
-                            buttonSize={ButtonSizes.Stretch}
-                            to={getAppRoute(WALKTHROUGH_ROUTE)}
-                          >
-                            {t('onboarding_selection.walkthrough_continue_cta')}
-                          </Link>
-                        </>
-                      ) : (
-                        <CardFooter>
-                          <Link
-                            buttonAppearance={ButtonAppearance.Primary}
-                            buttonSize={ButtonSizes.Stretch}
-                            to={getAppRoute(WALKTHROUGH_ROUTE)}
-                          >
-                            {t('onboarding_selection.walkthrough_cta')}
-                          </Link>
-                        </CardFooter>
                       )}
                     </CardContentSection>
                   </>
@@ -1016,51 +1098,31 @@ function OnboardingSelectionVersion1({
           <OptionsRow>
             <OptionCard
               width={CardSizes.Medium}
-              $inProgress={mockAppointmentBooked}
-            >
-              <BookAppointmentCardContent override={appointmentOverride} />
-            </OptionCard>
-            <OptionCard
-              width={CardSizes.Medium}
               $inProgress={mockWalkthroughStarted}
             >
               <WalkthroughCardContent
+                isFormRoute={isFormRoute}
                 mockWalkthroughStarted={mockWalkthroughStarted}
                 walkthroughProgress={walkthroughProgress}
               />
             </OptionCard>
+            <OptionCard
+              width={CardSizes.Medium}
+              $inProgress={mockAppointmentBooked}
+            >
+              <BookAppointmentCardContent override={appointmentOverride} />
+            </OptionCard>
           </OptionsRow>
         )}
       </Main>
-      <SupportColumn>
-        {supportResults.length > 0 && (
-          <SupportCards>
-            {supportResults.map(
-              (match: { partner: any; id: string; chatId: string }) => (
-                <ProfileCard
-                  key={match.partner.id}
-                  userPk={match.partner.id}
-                  profile={match.partner}
-                  isDeleted={match.partner.isDeleted}
-                  isSelf={false}
-                  isMatch={!match.partner.isSupport}
-                  matchId={match.id}
-                  openPartnerModal={params =>
-                    setPartnerActionData({
-                      ...params,
-                      type: params.type as ReportType,
-                    })
-                  }
-                  isOnline={match.partner.isOnline}
-                  isSupport={match.partner.isSupport}
-                  chatId={match.chatId}
-                  onProfile={false}
-                />
-              ),
-            )}
-          </SupportCards>
-        )}
-      </SupportColumn>
+      {!isFormRoute &&
+        (supportWidget ? (
+          <SupportWidget />
+        ) : (
+          <SupportColumn>
+            <SupportCards>{supportCard}</SupportCards>
+          </SupportColumn>
+        ))}
       <Modal
         open={Boolean(partnerActionData)}
         onClose={() => setPartnerActionData(null)}
@@ -1087,6 +1149,8 @@ function ActionsToolkit({
   onAppointmentBookedChange,
   mockWalkthroughStarted,
   onWalkthroughStartedChange,
+  supportWidget,
+  onSupportWidgetChange,
 }: {
   version: number;
   onVersionChange: (v: number) => void;
@@ -1094,14 +1158,13 @@ function ActionsToolkit({
   onAppointmentBookedChange: (checked: boolean) => void;
   mockWalkthroughStarted: boolean;
   onWalkthroughStartedChange: (checked: boolean) => void;
+  supportWidget: boolean;
+  onSupportWidgetChange: (checked: boolean) => void;
 }) {
   const { t } = useTranslation();
   return (
     <ActionsToolkitWrapper>
       <div>
-        <Text type={TextTypes.Body4}>
-          {t('onboarding_selection.toolkit_version')}
-        </Text>
         <OptionSelector
           options={[
             { value: 1, label: 'V1' },
@@ -1128,18 +1191,28 @@ function ActionsToolkit({
           label={t('onboarding_selection.toolkit_walkthrough_started')}
           labelInline
         />
+        <Switch
+          id="toolkit-support-widget"
+          checked={supportWidget}
+          onCheckedChange={onSupportWidgetChange}
+          label={t('onboarding_selection.toolkit_support_widget')}
+          labelInline
+        />
       </div>
     </ActionsToolkitWrapper>
   );
 }
 
 function OnboardingSelection() {
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const versionParam = searchParams.get('version');
   const version = versionParam === '2' ? 2 : 1;
+  const isFormRoute = location.pathname === getAppRoute(FORM_ONBOARDING_ROUTE);
 
   const [mockAppointmentBooked, setMockAppointmentBooked] = useState(false);
   const [mockWalkthroughStarted, setMockWalkthroughStarted] = useState(false);
+  const [supportWidget, setSupportWidget] = useState(false);
 
   const setVersion = (v: number) => {
     setSearchParams(prev => {
@@ -1158,11 +1231,15 @@ function OnboardingSelection() {
         onAppointmentBookedChange={setMockAppointmentBooked}
         mockWalkthroughStarted={mockWalkthroughStarted}
         onWalkthroughStartedChange={setMockWalkthroughStarted}
+        supportWidget={supportWidget}
+        onSupportWidgetChange={setSupportWidget}
       />
       <OnboardingSelectionVersion1
+        isFormRoute={isFormRoute}
         version={version}
         mockAppointmentBooked={mockAppointmentBooked}
         mockWalkthroughStarted={mockWalkthroughStarted}
+        supportWidget={supportWidget}
       />
     </>
   );

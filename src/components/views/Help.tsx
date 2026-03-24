@@ -31,6 +31,7 @@ import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink from '../atoms/MenuLink';
 import Socials from '../atoms/Socials';
+import SupportWidget from '../atoms/SupportWidget';
 import ContentSelector from '../blocks/ContentSelector';
 import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles';
 import {
@@ -187,9 +188,10 @@ export function Faqs() {
   });
 
   const adminUser = matches?.support?.results?.[0];
+  const supportChatId = adminUser?.chatId;
   const supportUrl = getAppSubpageRoute(
     MESSAGES_ROUTE,
-    adminUser?.chatId ?? '',
+    supportChatId ?? '',
   );
 
   useEffect(() => {
@@ -308,9 +310,10 @@ function Help() {
   const theme = useTheme();
 
   const adminUser = matches?.support?.results?.[0];
+  const supportChatId = adminUser?.chatId;
   const supportUrl = getAppSubpageRoute(
     MESSAGES_ROUTE,
-    adminUser?.chatId ?? '',
+    supportChatId ?? '',
   );
 
   return (
@@ -390,6 +393,7 @@ function Help() {
           </ContactInfo>
         </HelpSupport>
       </HelpContainer>
+      <SupportWidget />
     </>
   );
 }

@@ -37,6 +37,8 @@ export const PRIVACY_ROUTE = 'datenschutz';
 export const EMAIL_PREFERENCES_ROUTE = 'email-preferences/:emailSettingsHash';
 export const ONBOARDING_ROUTE = 'onboarding';
 export const WALKTHROUGH_ROUTE = 'onboarding/walkthrough';
+export const FORM_ONBOARDING_ROUTE = 'form/onboarding';
+export const FORM_WALKTHROUGH_ROUTE = 'form/onboarding/walkthrough';
 
 // User form specific route slugs
 export const USER_FORM_USER_TYPE = 'user-type';
@@ -81,8 +83,11 @@ export const isActiveRoute = (locationPath: string, path: string) =>
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {
   try {
-    if (typeof window !== 'undefined' && (window as any)?.unloadCookieBanner) {
-      (window as any)?.unloadCookieBanner();
+    if (
+      typeof window !== 'undefined' &&
+      (window as any)?.setCookieBannerHidden
+    ) {
+      (window as any)?.setCookieBannerHidden(true);
     }
   } catch (e) {
     // eslint-disable-next-line no-console

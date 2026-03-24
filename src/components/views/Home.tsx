@@ -135,6 +135,7 @@ function Main() {
         }
         use="main"
         excludeTopics={excludedTopics}
+        newTopics={['random_calls']}
       />
       <CommsBanner />
       {subpage === 'events' && <CommunityEvents />}

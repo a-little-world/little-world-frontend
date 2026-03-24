@@ -16,12 +16,17 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
-import { useReceiveHandlerStore, useMobileAuthTokenStore } from '../../features/stores';
 
 import { apiFetch } from '../../api/helpers';
+import { environment } from '../../environment';
+import {
+  useMobileAuthTokenStore,
+  useReceiveHandlerStore,
+} from '../../features/stores';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
+  USER_ENDPOINT,
   resetUserQueries,
 } from '../../features/swr/index';
 import {
@@ -29,6 +34,7 @@ import {
   HELP_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
+  ONBOARDING_ROUTE,
   OUR_WORLD_ROUTE,
   PROFILE_ROUTE,
   RESOURCES_ROUTE,
@@ -38,7 +44,6 @@ import {
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
-import { environment } from '../../environment';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';
@@ -92,7 +97,7 @@ const SidebarContainer = styled.nav`
       left: 0;
 
       ${$isVH &&
-    css`
+      css`
         flex-shrink: 0;
         min-height: 0;
         max-height: 100%;
@@ -159,14 +164,14 @@ function Sidebar({ isVH, sidebarMobile }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { data: user, isLoading } = useSWR(USER_ENDPOINT);
+  const isOnboarded = isLoading ? false : user?.is_onboarded;
   const startPath =
-    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname ?
-      getAppRoute(COMMUNITY_EVENTS_ROUTE) :
-      getAppRoute('');
+    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
+      ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
+      : getAppRoute('');
 
-  const buttonData = [
-    { label: 'start', path: startPath, Icon: DashboardIcon },
-    { label: 'messages', path: getAppRoute(MESSAGES_ROUTE), Icon: MessageIcon },
+  const onboardedOnlyButtons = [
     {
       label: 'my_profile',
       path: getAppRoute(PROFILE_ROUTE),
@@ -177,16 +182,30 @@ function Sidebar({ isVH, sidebarMobile }) {
       path: getAppRoute(RESOURCES_ROUTE),
       Icon: StackIcon,
     },
+    {
+      label: 'about_us',
+      path: getAppRoute(OUR_WORLD_ROUTE),
+      Icon: HeartIcon,
+    },
+  ];
+
+  const buttonData = [
+    {
+      label: isOnboarded ? 'start' : 'onboarding',
+      path: isOnboarded ? startPath : getAppRoute(ONBOARDING_ROUTE),
+      Icon: DashboardIcon,
+    },
+    {
+      label: isOnboarded ? 'messages' : 'support_chat',
+      path: getAppRoute(MESSAGES_ROUTE),
+      Icon: MessageIcon,
+    },
+    ...(isOnboarded ? onboardedOnlyButtons : []),
     { label: 'help', path: getAppRoute(HELP_ROUTE), Icon: QuestionIcon },
     {
       label: 'settings',
       path: getAppRoute(SETTINGS_ROUTE),
       Icon: SettingsIcon,
-    },
-    {
-      label: 'about_us',
-      path: getAppRoute(OUR_WORLD_ROUTE),
-      Icon: HeartIcon,
     },
     {
       label: 'log_out',
@@ -196,10 +215,10 @@ function Sidebar({ isVH, sidebarMobile }) {
         })
           .then(() => {
             resetUserQueries();
-            if(!environment.isNative){
+            if (!environment.isNative) {
               navigate(`/${LOGIN_ROUTE}/`);
-            }else{
-              setTokens(null, null)
+            } else {
+              setTokens(null, null);
               resetUserQueries();
               navigate(`/${LOGIN_ROUTE}/`);
               setTimeout(() => {
@@ -209,20 +228,19 @@ function Sidebar({ isVH, sidebarMobile }) {
                 });
               }, 400);
             }
-
           })
           .catch(error => {
             // Cannot call logout if isNative manually log-out
-            if(environment.isNative){
+            if (environment.isNative) {
               resetUserQueries();
-              setTokens(null, null)
+              setTokens(null, null);
               navigate(`/${LOGIN_ROUTE}/`);
               sendMessageToReactNative({
                 action: 'CLEAR_AUTH_TOKENS',
                 payload: {},
-              })
+              });
             }
-            console.error(error)
+            console.error(error);
           });
       },
     },
@@ -269,11 +287,11 @@ function Sidebar({ isVH, sidebarMobile }) {
               <LogoutButton
                 key={label}
                 type="button"
-                variation={ButtonVariations.Option}
+                variation={ButtonVariations.Stacked}
                 appearance={
-                  isActive ?
-                    ButtonAppearance.Secondary :
-                    ButtonAppearance.Primary
+                  isActive
+                    ? ButtonAppearance.Secondary
+                    : ButtonAppearance.Primary
                 }
                 onClick={clickEvent}
               >
