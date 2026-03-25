@@ -10,10 +10,10 @@ import useSWR from 'swr';
 import { apiFetch } from '../../api/helpers';
 import { USER_ENDPOINT } from '../../features/swr';
 import { getAppRoute } from '../../router/routes';
-import type { QuizStep } from '../blocks/Quiz/Quiz';
 import CourseChaptersLayoutOptionA, {
   type CourseChapter,
 } from '../blocks/Course/ChaptersLayout';
+import type { QuizStep } from '../blocks/Quiz/Quiz';
 
 const ONBOARDING_VIDEOS: Array<{
   id: string;
@@ -73,7 +73,10 @@ const quizSteps: QuizStep[] = [
     question: 'Wie sind die Treffen organisiert?',
     required: true,
     options: [
-      { id: 'a', label: 'Little World legt feste Termine und Zeiten für alle fest.' },
+      {
+        id: 'a',
+        label: 'Little World legt feste Termine und Zeiten für alle fest.',
+      },
       {
         id: 'b',
         label:
@@ -170,8 +173,7 @@ const quizSteps: QuizStep[] = [
       },
       {
         id: 'c',
-        label:
-          'Das Support-Team vereinbart automatisch euren ersten Termin.',
+        label: 'Das Support-Team vereinbart automatisch euren ersten Termin.',
       },
       {
         id: 'd',
@@ -215,7 +217,10 @@ const quizSteps: QuizStep[] = [
         label:
           'Für 10 Wochen regelmäßig zu sprechen - idealerweise etwa 30 Minuten pro Woche.',
       },
-      { id: 'c', label: 'So schnell wie möglich perfektes Deutsch zu erreichen.' },
+      {
+        id: 'c',
+        label: 'So schnell wie möglich perfektes Deutsch zu erreichen.',
+      },
       { id: 'd', label: 'Möglichst viele Themen in kurzer Zeit zu behandeln.' },
     ],
     correctOptionId: 'b',
@@ -225,7 +230,10 @@ const quizSteps: QuizStep[] = [
     question: 'Warum ist es wichtig, früh über Ziele zu sprechen?',
     required: true,
     options: [
-      { id: 'a', label: 'Damit du einen festen Unterrichtsplan erstellen kannst.' },
+      {
+        id: 'a',
+        label: 'Damit du einen festen Unterrichtsplan erstellen kannst.',
+      },
       {
         id: 'b',
         label: 'Damit ihr Erwartungen klärt und entspannter zusammenarbeitet.',
@@ -246,7 +254,8 @@ const quizSteps: QuizStep[] = [
       { id: 'a', label: 'An Gruppengesprächen teilnehmen.' },
       {
         id: 'b',
-        label: 'Unsere Inhalte auf Social Media teilen und uns weiterempfehlen.',
+        label:
+          'Unsere Inhalte auf Social Media teilen und uns weiterempfehlen.',
       },
       { id: 'c', label: 'Dich als interne Ehrenamtliche engagieren.' },
       { id: 'd', label: 'Alle genannten Möglichkeiten.' },
@@ -290,16 +299,16 @@ const OnboardingWalkthrough = () => {
   const navigate = useNavigate();
   const { data, isLoading } = useSWR(USER_ENDPOINT);
 
-  const backendOnboardingStep =
-    typeof data?.onboarding_step === 'number' ? data.onboarding_step : 0;
+  const currentStep =
+    typeof data?.walkhrough_step === 'number' ? data.walkhrough_step : 0;
 
-  const persistOnboardingStep = async (nextOnboardingStep: number) => {
-    // Best-effort persistence. If the backend endpoint differs, update the URL/body here.
+  const persistWalkthroughStep = async (nextWalkthroughStep: number) => {
+    // Best-effort persistence.
     try {
-      await apiFetch('/api/user/onboarding_step/', {
+      await apiFetch('/api/user/walkthrough_step/', {
         method: 'POST',
         body: {
-          onboarding_step: nextOnboardingStep,
+          onboarding_step: nextWalkthroughStep,
         },
       });
     } catch {
@@ -313,10 +322,10 @@ const OnboardingWalkthrough = () => {
   return (
     <CourseChaptersLayoutOptionA
       chapters={chapters}
-      backendOnboardingStep={backendOnboardingStep}
+      currentStep={currentStep}
       courseTitle={t('onboarding_walkthrough.title')}
       onBack={() => navigate(-1)}
-      onPersistOnboardingStep={persistOnboardingStep}
+      onPersistCourseStep={persistWalkthroughStep}
       onCourseComplete={() => navigate(getAppRoute())}
     />
   );

@@ -164,14 +164,23 @@ export const FooterRow = styled(CardFooter)`
   min-height: 49px; // button height
 `;
 
-export const CompletionContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.medium};
-  padding: ${({ theme }) => theme.spacing.large} 0;
-`;
-
 export const StyledProgressBar = styled(ProgressBar)`
   margin-bottom: ${({ theme }) => theme.spacing.small};
+`;
+
+const float = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+`;
+
+export const FloatingCelebration = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 120px;
+  width: 100%;
+
+  & > * {
+    animation: ${float} 2.8s ease-in-out infinite;
+  }
 `;

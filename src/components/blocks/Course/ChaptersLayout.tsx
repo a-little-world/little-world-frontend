@@ -4,22 +4,15 @@ import {
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
-  Card,
   CardContent,
-  CardFooter,
-  CardHeader,
-  CardSizes,
-  ConfettiImage,
-  Modal,
   ProgressBar,
-  Tag,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import styled, { keyframes, useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import Video from '../../atoms/Video';
 import Quiz, { type QuizAnswer, type QuizStep } from '../Quiz/Quiz';
@@ -36,29 +29,19 @@ export type CourseChapter = {
   quizSteps: QuizStep[];
 };
 
-export type CourseChaptersLayoutOptionAProps = {
+export type ChaptersLayoutProps = {
   chapters: CourseChapter[];
-  backendOnboardingStep?: number;
+  currentStep?: number;
   courseTitle?: string;
   onBack: () => void;
   /**
    * Persist progress in backend (best-effort). If not provided, we still update local UI + URL params.
-   * The expected backend behavior is to update `user.onboarding_step` so that it points to the next unlocked
+   * The expected backend behavior is to update `user.walkthrough_step` so that it points to the next unlocked
    * chapter video index.
    */
-  onPersistOnboardingStep?: (nextOnboardingStep: number) => Promise<void>;
+  onPersistCourseStep?: (nextCourseStep: number) => Promise<void>;
   onCourseComplete?: () => void;
 };
-
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
-
-const float = keyframes`
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-`;
 
 const CourseContainer = styled.div`
   min-height: 100vh;
@@ -179,19 +162,6 @@ const Main = styled.main`
   gap: ${({ theme }) => theme.spacing.medium};
 `;
 
-const ContentHeader = styled.div<{ $variant: 'video' | 'quiz' }>`
-  padding: ${({ theme }) => theme.spacing.medium};
-  background: ${({ theme, $variant }) =>
-    $variant === 'video'
-      ? theme.color.gradient.blue10
-      : theme.color.gradient.orange10};
-  border-bottom: 1px solid ${({ theme }) => theme.color.border.subtle};
-`;
-
-const ContentTitle = styled(Text)`
-  color: ${({ theme }) => theme.color.text.reversed};
-`;
-
 const ChapterContent = styled(CardContent)`
   display: flex;
   flex-direction: column;
@@ -215,39 +185,15 @@ const VideoWrapper = styled.div`
 
 const NavButton = styled(Button)``;
 
-const CompletionCard = styled(Card)`
-  border: 2px solid ${({ theme }) => theme.color.border.selected};
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  animation: ${fadeIn} 260ms ease-out both;
-`;
-
-const FloatingCelebration = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 120px;
-  width: 100%;
-
-  & > * {
-    animation: ${float} 2.8s ease-in-out infinite;
-  }
-`;
-
-const CompletionTitle = styled(Text)``;
-
-const CompletionBody = styled(Text)`
-  color: ${({ theme }) => theme.color.text.secondary};
-`;
-
 const getQueryInt = (value: string | null) => {
   if (!value) return undefined;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : undefined;
 };
 
-function computeCompletedContiguousCount(completedIndices: Set<number>) {
+function computeUnlockedChapterCount(completedChapterIndexes: Set<number>) {
   let count = 0;
-  while (completedIndices.has(count)) count += 1;
+  while (completedChapterIndexes.has(count)) count += 1;
   return count;
 }
 
@@ -255,44 +201,42 @@ function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
 
-export default function CourseChaptersLayoutOptionA({
+export default function ChaptersLayout({
   chapters,
-  backendOnboardingStep,
+  currentStep = 0,
   courseTitle,
   onBack,
-  onPersistOnboardingStep,
+  onPersistCourseStep,
   onCourseComplete,
-}: CourseChaptersLayoutOptionAProps) {
+}: ChaptersLayoutProps) {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const theme = useTheme();
 
-  const backendStep = backendOnboardingStep ?? 0;
-  const backendCompletedCount = clamp(
-    Math.floor(backendStep),
+  const completedCount = clamp(
+    Math.floor(currentStep),
     0,
     Math.max(0, chapters.length),
   );
 
-  const [completedIndices, setCompletedIndices] = useState<Set<number>>(
-    () => new Set(Array.from({ length: backendCompletedCount }, (_, i) => i)),
-  );
+  const [completedChapterIndexes, setCompletedChapterIndexes] = useState<
+    Set<number>
+  >(() => new Set(Array.from({ length: completedCount }, (_, i) => i)));
 
   useEffect(() => {
-    const backendSet = new Set(
-      Array.from({ length: backendCompletedCount }, (_, i) => i),
+    const currentSet = new Set(
+      Array.from({ length: completedCount }, (_, i) => i),
     );
-    setCompletedIndices(prev => {
+    setCompletedChapterIndexes(prev => {
       const next = new Set<number>();
       prev.forEach(value => next.add(value));
-      backendSet.forEach(value => next.add(value));
+      currentSet.forEach(value => next.add(value));
       return next;
     });
-  }, [backendCompletedCount]);
+  }, [completedCount]);
 
-  const completedContiguousCount = useMemo(
-    () => computeCompletedContiguousCount(completedIndices),
-    [completedIndices],
+  const unlockedChapterCount = useMemo(
+    () => computeUnlockedChapterCount(completedChapterIndexes),
+    [completedChapterIndexes],
   );
 
   const requestedChapterIndex =
@@ -300,7 +244,7 @@ export default function CourseChaptersLayoutOptionA({
   const requestedMode = searchParams.get('mode');
 
   const unlockedNextIndex = clamp(
-    completedContiguousCount,
+    unlockedChapterCount,
     0,
     Math.max(0, chapters.length - 1),
   );
@@ -312,18 +256,18 @@ export default function CourseChaptersLayoutOptionA({
       0,
       Math.max(0, chapters.length - 1),
     );
-    if (idx > completedContiguousCount) return unlockedNextIndex;
+    if (idx > unlockedChapterCount) return unlockedNextIndex;
     return idx;
   }, [
     requestedChapterIndex,
     unlockedNextIndex,
-    completedContiguousCount,
+    unlockedChapterCount,
     chapters.length,
   ]);
 
   // Ensure we always have an explicit chapter/mode in the URL.
   // Otherwise, when backend progress changes, activeChapterIndex would be derived from unlockedNextIndex,
-  // which can cause premature chapter switching while the completion modal is open.
+  // which can cause premature chapter switching while completion state is open.
   useEffect(() => {
     const chapterParam = searchParams.get('chapter');
     const modeParam = searchParams.get('mode');
@@ -341,24 +285,27 @@ export default function CourseChaptersLayoutOptionA({
 
   const [mode, setMode] = useState<'video' | 'quiz'>(() => initialMode);
 
-  const [showChapterCompleteModal, setShowChapterCompleteModal] =
-    useState(false);
+  const [isQuizCompleted, setIsQuizCompleted] = useState(false);
 
   // Sync mode with query + completion state.
   useEffect(() => {
-    // Prevent quiz -> video switching while the completion modal is open.
-    if (showChapterCompleteModal) return;
     const nextMode: 'video' | 'quiz' =
       requestedMode === 'quiz' ? 'quiz' : 'video';
 
     // Never allow quiz for already completed chapters.
-    if (nextMode === 'quiz' && activeChapterIndex < completedContiguousCount) {
+    // But when the user just finished the quiz (completion screen),
+    // keep them in quiz mode until they explicitly continue.
+    if (
+      nextMode === 'quiz' &&
+      activeChapterIndex < unlockedChapterCount &&
+      !isQuizCompleted
+    ) {
       setMode('video');
       return;
     }
 
     // If chapter is locked, force video.
-    if (activeChapterIndex > completedContiguousCount) {
+    if (activeChapterIndex > unlockedChapterCount) {
       setMode('video');
       return;
     }
@@ -367,11 +314,10 @@ export default function CourseChaptersLayoutOptionA({
   }, [
     requestedMode,
     activeChapterIndex,
-    completedContiguousCount,
-    showChapterCompleteModal,
+    unlockedChapterCount,
+    isQuizCompleted,
   ]);
 
-  const isCourseComplete = completedContiguousCount >= chapters.length;
   const activeChapter = chapters[activeChapterIndex];
 
   const [quizCorrectStepIds, setQuizCorrectStepIds] = useState<Set<string>>(
@@ -380,7 +326,12 @@ export default function CourseChaptersLayoutOptionA({
 
   // Reset quiz tracking whenever we enter a new chapter's quiz mode.
   useEffect(() => {
-    if (mode === 'quiz') setQuizCorrectStepIds(new Set());
+    if (mode === 'quiz') {
+      setQuizCorrectStepIds(new Set());
+      setIsQuizCompleted(false);
+    } else {
+      setIsQuizCompleted(false);
+    }
   }, [activeChapterIndex, mode]);
 
   const totalProgressSteps = useMemo(
@@ -393,7 +344,7 @@ export default function CourseChaptersLayoutOptionA({
 
     for (let i = 0; i < chapters.length; i += 1) {
       const chapter = chapters[i];
-      const isChapterCompleted = i < completedContiguousCount;
+      const isChapterCompleted = i < unlockedChapterCount;
 
       if (isChapterCompleted) {
         done += chapter.quizSteps.length;
@@ -411,7 +362,7 @@ export default function CourseChaptersLayoutOptionA({
     return clamp(done, 0, totalProgressSteps);
   }, [
     chapters,
-    completedContiguousCount,
+    unlockedChapterCount,
     activeChapterIndex,
     mode,
     quizCorrectStepIds,
@@ -438,7 +389,7 @@ export default function CourseChaptersLayoutOptionA({
     setChapterAndMode(chapterIndex, 'quiz');
 
   const handleChapterPillClick = (index: number) => {
-    const isLocked = index > completedContiguousCount;
+    const isLocked = index > unlockedChapterCount;
     if (isLocked) return;
     goToVideo(index);
   };
@@ -454,45 +405,42 @@ export default function CourseChaptersLayoutOptionA({
   };
 
   const persistOnboardingStepBestEffort = async (next: number) => {
-    if (!onPersistOnboardingStep) return;
+    if (!onPersistCourseStep) return;
     try {
-      await onPersistOnboardingStep(next);
+      await onPersistCourseStep(next);
     } catch {
       // Best-effort only; URL + local state still drive the UX.
     }
   };
 
-  const handleQuizComplete = () => {
-    // Mark the chapter as completed immediately so:
-    // - locking and progress UI update right away
-    // - dismissing the completion modal still keeps the chapter completed
-    setCompletedIndices(prev => {
+  const handleQuizComplete = async () => {
+    setIsQuizCompleted(true);
+
+    // Mark the chapter completed so progress/pills reflect it immediately,
+    // but keep the user in quiz mode until they click continue.
+    setCompletedChapterIndexes(prev => {
+      if (prev.has(activeChapterIndex)) return prev;
       const next = new Set<number>();
       prev.forEach(value => next.add(value));
       next.add(activeChapterIndex);
       return next;
     });
 
-    // Persist by moving the onboarding step forward so the next chapter becomes unlocked.
-    // If your backend expects a different mapping, adjust this in OnboardingModule.
-    persistOnboardingStepBestEffort(activeChapterIndex + 1).catch(() => {});
-    setShowChapterCompleteModal(true);
+    // Best-effort persistence; progress UI continues regardless.
+    await persistOnboardingStepBestEffort(activeChapterIndex + 1);
   };
 
-  const handleContinueAfterChapterComplete = async () => {
-    const chapterCompletedIndex = activeChapterIndex;
-    const nextChapterIndex = chapterCompletedIndex + 1;
+  const handleContinueAfterChapterComplete = () => {
+    const nextChapterIndex = activeChapterIndex + 1;
 
-    setShowChapterCompleteModal(false);
-
+    setIsQuizCompleted(false);
     if (nextChapterIndex < chapters.length) {
       goToVideo(nextChapterIndex);
-    } else {
-      // Course finished.
-      if (onCourseComplete) onCourseComplete();
-      // Keep user on the last chapter video in case they refresh.
-      goToVideo(chapters.length - 1);
+      return;
     }
+
+    if (onCourseComplete) onCourseComplete();
+    else onBack();
   };
 
   if (!activeChapter || chapters.length === 0) return null;
@@ -515,7 +463,7 @@ export default function CourseChaptersLayoutOptionA({
           <ProgressMeta>
             <Text type={TextTypes.Body4}>{progressPercent}% complete</Text>
             <Text type={TextTypes.Body4}>
-              {Math.min(completedContiguousCount, chapters.length)}/
+              {Math.min(unlockedChapterCount, chapters.length)}/
               {chapters.length} chapters
             </Text>
           </ProgressMeta>
@@ -529,9 +477,11 @@ export default function CourseChaptersLayoutOptionA({
         <PillsRow>
           {chapters.map((chapter, index) => {
             const isActive = index === activeChapterIndex;
-            const isCompleted = index < completedContiguousCount;
-            const isLocked = index > completedContiguousCount;
-            let pillStatus = t('onboarding_walkthrough.pill_status_in_progress');
+            const isCompleted = index < unlockedChapterCount;
+            const isLocked = index > unlockedChapterCount;
+            let pillStatus = t(
+              'onboarding_walkthrough.pill_status_in_progress',
+            );
             if (isCompleted) {
               pillStatus = t('onboarding_walkthrough.pill_status_completed');
             } else if (isLocked) {
@@ -558,17 +508,6 @@ export default function CourseChaptersLayoutOptionA({
       </StickyHeader>
 
       <Main>
-        <ContentHeader $variant={mode === 'quiz' ? 'quiz' : 'video'}>
-          <Tag>
-            {mode === 'quiz'
-              ? t('onboarding_walkthrough.mode_quiz')
-              : t('onboarding_walkthrough.mode_video')}
-          </Tag>
-          <ContentTitle type={TextTypes.Heading4} bold>
-            {activeChapter.title}
-          </ContentTitle>
-        </ContentHeader>
-
         {mode === 'video' && (
           <>
             <ChapterContent key={`${activeChapterIndex}-video`}>
@@ -580,7 +519,7 @@ export default function CourseChaptersLayoutOptionA({
                 />
               </VideoWrapper>
 
-              {activeChapterIndex < completedContiguousCount && (
+              {activeChapterIndex < unlockedChapterCount && (
                 <Text center type={TextTypes.Body4}>
                   {t('onboarding_walkthrough.chapter_completed_hint')}
                 </Text>
@@ -594,7 +533,7 @@ export default function CourseChaptersLayoutOptionA({
                 onClick={() => {
                   if (
                     activeChapterIndex > 0 &&
-                    activeChapterIndex <= completedContiguousCount
+                    activeChapterIndex <= unlockedChapterCount
                   ) {
                     goToVideo(activeChapterIndex - 1);
                   }
@@ -608,7 +547,7 @@ export default function CourseChaptersLayoutOptionA({
                 appearance={ButtonAppearance.Primary}
                 size={ButtonSizes.Medium}
                 onClick={() => goToQuiz(activeChapterIndex)}
-                disabled={activeChapterIndex < completedContiguousCount}
+                disabled={activeChapterIndex < unlockedChapterCount}
               >
                 {t('onboarding_walkthrough.nav_continue_to_quiz')}
               </NavButton>
@@ -623,6 +562,7 @@ export default function CourseChaptersLayoutOptionA({
                 steps={activeChapter.quizSteps}
                 currentStep={1}
                 exitRoute={undefined}
+                hideProgress
                 onAnswer={handleQuizAnswer}
                 onComplete={handleQuizComplete}
               />
@@ -635,68 +575,25 @@ export default function CourseChaptersLayoutOptionA({
               >
                 {t('onboarding_walkthrough.nav_back_to_video')}
               </NavButton>
+              {isQuizCompleted && (
+                <NavButton
+                  appearance={ButtonAppearance.Primary}
+                  size={ButtonSizes.Medium}
+                  onClick={handleContinueAfterChapterComplete}
+                >
+                  {activeChapterIndex + 1 < chapters.length
+                    ? t(
+                        'onboarding_walkthrough.chapter_complete_button_continue',
+                      )
+                    : t(
+                        'onboarding_walkthrough.chapter_complete_button_finish',
+                      )}
+                </NavButton>
+              )}
             </ChapterFooter>
           </>
         )}
       </Main>
-
-      <Modal
-        open={showChapterCompleteModal || isCourseComplete}
-        onClose={() => {
-          if (showChapterCompleteModal) return;
-          if (onCourseComplete) onCourseComplete();
-          else onBack();
-        }}
-      >
-        <CompletionCard width={CardSizes.Medium}>
-          <CardHeader asContainer>
-            <FloatingCelebration>
-              <ConfettiImage label={t('quiz.completed_confetti_label')} />
-            </FloatingCelebration>
-          </CardHeader>
-
-          <CardContent marginBottom={theme.spacing.large}>
-            <CompletionTitle type={TextTypes.Body2} tag="h2" bold>
-              {showChapterCompleteModal
-                ? t('onboarding_walkthrough.chapter_complete_title')
-                : t('onboarding_walkthrough.course_complete_title')}
-            </CompletionTitle>
-
-            <CompletionBody>
-              {showChapterCompleteModal
-                ? t('onboarding_walkthrough.chapter_complete_description', {
-                    chapterTitle: activeChapter.title,
-                  })
-                : t('onboarding_walkthrough.course_complete_description')}
-            </CompletionBody>
-          </CardContent>
-
-          <CardFooter>
-            {showChapterCompleteModal ? (
-              <Button
-                appearance={ButtonAppearance.Primary}
-                size={ButtonSizes.Stretch}
-                onClick={handleContinueAfterChapterComplete}
-              >
-                {activeChapterIndex + 1 < chapters.length
-                  ? t('onboarding_walkthrough.chapter_complete_button_continue')
-                  : t('onboarding_walkthrough.chapter_complete_button_finish')}
-              </Button>
-            ) : (
-              <Button
-                appearance={ButtonAppearance.Primary}
-                size={ButtonSizes.Stretch}
-                onClick={() => {
-                  if (onCourseComplete) onCourseComplete();
-                  else onBack();
-                }}
-              >
-                {t('quiz.exit')}
-              </Button>
-            )}
-          </CardFooter>
-        </CompletionCard>
-      </Modal>
     </CourseContainer>
   );
 }

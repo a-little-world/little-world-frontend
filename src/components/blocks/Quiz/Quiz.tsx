@@ -15,7 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  CompletionContainer,
+  FloatingCelebration,
   FooterRow,
   IconWrapper,
   OptionButton,
@@ -54,6 +54,7 @@ export type QuizAnswer = {
 export type QuizProps = {
   steps: QuizStep[];
   exitRoute?: string;
+  hideProgress?: boolean;
   currentStep?: number; // 1-based; only used as initial value
   onAnswer?: (answer: QuizAnswer) => void;
   onComplete?: () => void;
@@ -81,6 +82,7 @@ const Quiz = ({
   steps,
   currentStep = 1,
   exitRoute,
+  hideProgress = false,
   onAnswer,
   onComplete,
 }: QuizProps) => {
@@ -217,22 +219,22 @@ const Quiz = ({
     return (
       <QuizCard>
         <QuizContent>
-          <CompletionContainer>
+          <FloatingCelebration>
             <ConfettiImage label={t('quiz.completed_confetti_label')} />
-            <Text type={TextTypes.Body2} tag="h2" bold center>
-              {t('quiz.completed_title')}
-            </Text>
-            <Text center>{t('quiz.completed_description')}</Text>
-            {exitRoute && (
-              <Link
-                to={exitRoute}
-                buttonAppearance={ButtonAppearance.Primary}
-                buttonSize={ButtonSizes.Stretch}
-              >
-                {t('quiz.exit')}
-              </Link>
-            )}
-          </CompletionContainer>
+          </FloatingCelebration>
+          <Text type={TextTypes.Body2} tag="h2" bold center>
+            {t('quiz.completed_title')}
+          </Text>
+          <Text center>{t('quiz.completed_description')}</Text>
+          {exitRoute && (
+            <Link
+              to={exitRoute}
+              buttonAppearance={ButtonAppearance.Primary}
+              buttonSize={ButtonSizes.Stretch}
+            >
+              {t('quiz.exit')}
+            </Link>
+          )}
         </QuizContent>
       </QuizCard>
     );
@@ -255,7 +257,13 @@ const Quiz = ({
       </CardHeader>
 
       <QuizContent>
-        <StyledProgressBar fullWidth max={steps.length} value={progressValue} />
+        {!hideProgress && (
+          <StyledProgressBar
+            fullWidth
+            max={steps.length}
+            value={progressValue}
+          />
+        )}
         <QuestionText type={TextTypes.Body2} bold tag="h2">
           {step.question}
         </QuestionText>
