@@ -1,25 +1,26 @@
 import {
-  ArrowLeftIcon,
-  Button,
-  ButtonVariations,
   Loading,
   LoadingSizes,
   LoadingType,
-  Text,
-  TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import useSWR from 'swr';
 
+import { apiFetch } from '../../api/helpers';
 import { USER_ENDPOINT } from '../../features/swr';
 import { getAppRoute } from '../../router/routes';
-import Video from '../atoms/Video';
-import Quiz, { QuizAnswer, type QuizStep } from '../blocks/Quiz/Quiz';
+import type { QuizStep } from '../blocks/Quiz/Quiz';
+import CourseChaptersLayoutOptionA, {
+  type CourseChapter,
+} from '../blocks/Course/ChaptersLayout';
 
-const ONBOARDING_VIDEOS = [
+const ONBOARDING_VIDEOS: Array<{
+  id: string;
+  title: string;
+  description: string;
+  video: string;
+}> = [
   {
     id: '1',
     title: 'Video 1',
@@ -39,35 +40,6 @@ const ONBOARDING_VIDEOS = [
     video: 'https://youtu.be/Ewqdy8sWzNU?si=0CWKJ8b8-K-kZH71',
   },
 ];
-
-const OnboardingWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.medium};
-  width: 100%;
-  align-items: center;
-`;
-
-const Header = styled.div`
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  width: 100%;
-`;
-
-const BackButton = styled(Button)`
-  justify-self: start;
-`;
-
-const HeaderTitle = styled(Text)`
-  justify-self: center;
-  text-align: center;
-`;
-
-const HeaderSpacer = styled.div`
-  width: 40px;
-  height: 40px;
-`;
 
 // Dummy quiz data to test the Quiz component UI/behavior.
 // - At least 3 steps are marked `required`
@@ -123,7 +95,7 @@ const quizSteps: QuizStep[] = [
   {
     id: 'q3',
     question: 'Wo findet die Kommunikation statt?',
-    required: false,
+    required: true,
     options: [
       {
         id: 'a',
@@ -157,7 +129,7 @@ const quizSteps: QuizStep[] = [
   {
     id: 'q5',
     question: 'Was passiert nach Abschluss der Einführung?',
-    required: false,
+    required: true,
     options: [
       {
         id: 'a',
@@ -184,7 +156,7 @@ const quizSteps: QuizStep[] = [
   {
     id: 'q6',
     question: 'Was passiert, wenn die lernende Person das Match bestätigt?',
-    required: false,
+    required: true,
     options: [
       {
         id: 'a',
@@ -212,7 +184,7 @@ const quizSteps: QuizStep[] = [
   {
     id: 'q7',
     question: 'Wie finden eure Gespräche statt?',
-    required: false,
+    required: true,
     options: [
       {
         id: 'a',
@@ -235,7 +207,7 @@ const quizSteps: QuizStep[] = [
   {
     id: 'q8',
     question: 'Was ist das Ziel der Gespräche?',
-    required: false,
+    required: true,
     options: [
       { id: 'a', label: 'Jeden Fehler sofort zu korrigieren.' },
       {
@@ -251,7 +223,7 @@ const quizSteps: QuizStep[] = [
   {
     id: 'q9',
     question: 'Warum ist es wichtig, früh über Ziele zu sprechen?',
-    required: false,
+    required: true,
     options: [
       { id: 'a', label: 'Damit du einen festen Unterrichtsplan erstellen kannst.' },
       {
@@ -269,7 +241,7 @@ const quizSteps: QuizStep[] = [
   {
     id: 'q10',
     question: 'Wie kannst du Little World zusätzlich unterstützen?',
-    required: false,
+    required: true,
     options: [
       { id: 'a', label: 'An Gruppengesprächen teilnehmen.' },
       {
@@ -283,58 +255,70 @@ const quizSteps: QuizStep[] = [
   },
 ];
 
+const chapters: CourseChapter[] = [
+  {
+    id: 'chapter-1',
+    title: 'Kapitel 1',
+    video: {
+      url: ONBOARDING_VIDEOS[0].video,
+      title: ONBOARDING_VIDEOS[0].title,
+    },
+    quizSteps: quizSteps.slice(0, 3),
+  },
+  {
+    id: 'chapter-2',
+    title: 'Kapitel 2',
+    video: {
+      url: ONBOARDING_VIDEOS[1].video,
+      title: ONBOARDING_VIDEOS[1].title,
+    },
+    quizSteps: quizSteps.slice(3, 6),
+  },
+  {
+    id: 'chapter-3',
+    title: 'Kapitel 3',
+    video: {
+      url: ONBOARDING_VIDEOS[2].video,
+      title: ONBOARDING_VIDEOS[2].title,
+    },
+    quizSteps: quizSteps.slice(6),
+  },
+];
+
 const OnboardingWalkthrough = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const { data, isLoading } = useSWR(USER_ENDPOINT);
-  // const isFinalStep = currentStep === ONBOARDING_VIDEOS.length - 1;
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { data, isLoading } = useSWR(USER_ENDPOINT);
 
-  useEffect(() => {
-    if (data) {
-      setCurrentStep(data.onboarding_step || 0);
+  const backendOnboardingStep =
+    typeof data?.onboarding_step === 'number' ? data.onboarding_step : 0;
+
+  const persistOnboardingStep = async (nextOnboardingStep: number) => {
+    // Best-effort persistence. If the backend endpoint differs, update the URL/body here.
+    try {
+      await apiFetch('/api/user/onboarding_step/', {
+        method: 'POST',
+        body: {
+          onboarding_step: nextOnboardingStep,
+        },
+      });
+    } catch {
+      // UX falls back to URL params + local state.
     }
-  }, [data]);
-
-  // const completeOnboarding = () => {};
-
-  // const handleNextStep = () => {
-  //   if (isFinalStep) {
-  //     completeOnboarding();
-  //   } else if (currentStep < ONBOARDING_VIDEOS.length - 1) {
-  //     setCurrentStep(currentStep + 1);
-  //   }
-  // };
-
-  const handleAnswer = (_answer: QuizAnswer) => {};
-  const onBackButton = () => navigate(-1);
+  };
 
   if (isLoading)
     return <Loading type={LoadingType.Logo} size={LoadingSizes.XLarge} />;
 
   return (
-    <OnboardingWrapper>
-      <Header>
-        <BackButton variation={ButtonVariations.Icon} onClick={onBackButton}>
-          <ArrowLeftIcon label="return to selection" width="16" height="16" />
-        </BackButton>
-        <HeaderTitle type={TextTypes.Heading2}>
-          {t('onboarding_walkthrough.title')}
-        </HeaderTitle>
-        <HeaderSpacer />
-      </Header>
-      <Video
-        src={ONBOARDING_VIDEOS[currentStep].video}
-        title={ONBOARDING_VIDEOS[currentStep].title}
-        maxWidth="450px"
-      />
-      <Quiz
-        steps={quizSteps}
-        currentStep={1}
-        exitRoute={getAppRoute()}
-        onAnswer={handleAnswer}
-      />
-    </OnboardingWrapper>
+    <CourseChaptersLayoutOptionA
+      chapters={chapters}
+      backendOnboardingStep={backendOnboardingStep}
+      courseTitle={t('onboarding_walkthrough.title')}
+      onBack={() => navigate(-1)}
+      onPersistOnboardingStep={persistOnboardingStep}
+      onCourseComplete={() => navigate(getAppRoute())}
+    />
   );
 };
 
