@@ -52,15 +52,15 @@ const Content = styled.div<{ $isLarge: boolean }>`
   width: 100%;
   gap: ${({ theme, $isLarge }) =>
     $isLarge ? theme.spacing.large : theme.spacing.medium};
-  max-width: 1200px;
+  max-width: ${({ $isLarge }) => ($isLarge ? '1200px' : '800px')};
 
   ${({ theme, $isLarge }) => css`
-    @media (min-width: ${$isLarge ?
-        theme.breakpoints.large :
-        theme.breakpoints.medium}) {
+    @media (min-width: ${$isLarge
+        ? theme.breakpoints.large
+        : theme.breakpoints.medium}) {
       flex-direction: row;
       gap: ${$isLarge ? theme.spacing.xlarge : theme.spacing.large};
-      justify-content: ${$isLarge ? 'space-between' : 'center'};
+      justify-content: ${$isLarge ? 'space-between' : 'flex-start'};
     }
   `};
 `;
@@ -82,7 +82,7 @@ const Container = styled.div<{ $hasImage?: boolean }>`
 
 const LeftContainer = styled(Container)`
   justify-content: flex-start;
-  gap: ${({ theme }) => theme.spacing.xsmall};
+  gap: ${({ theme }) => theme.spacing.small};
 `;
 
 const RightContainer = styled(Container)<{ $ctasOnLHS: boolean }>`
@@ -104,9 +104,9 @@ const MobileBannerImage = styled.img<{ $isLarge: boolean }>`
   ${({ theme, $isLarge }) => css`
     display: ${$isLarge ? 'flex' : 'none'};
     max-height: ${$isLarge ? '240px' : '120px'};
-    @media (min-width: ${$isLarge ?
-        theme.breakpoints.large :
-        theme.breakpoints.medium}) {
+    @media (min-width: ${$isLarge
+        ? theme.breakpoints.large
+        : theme.breakpoints.medium}) {
       display: none;
     }
   `};
@@ -117,9 +117,9 @@ const DesktopBannerImage = styled.img<{ $isLarge: boolean }>`
   border-radius: ${({ theme }) => theme.radius.small};
 
   ${({ theme, $isLarge }) => css`
-    @media (min-width: ${$isLarge ?
-        theme.breakpoints.large :
-        theme.breakpoints.medium}) {
+    @media (min-width: ${$isLarge
+        ? theme.breakpoints.large
+        : theme.breakpoints.medium}) {
       display: block;
       width: auto;
       height: auto;
@@ -132,6 +132,18 @@ const DesktopBannerImage = styled.img<{ $isLarge: boolean }>`
 
 const Title = styled(Text)`
   line-height: 1;
+`;
+
+const TitleDescriptionStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
+  max-width: 200px;
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.small}) {
+      max-width: 400px;
+    }
+  `};
 `;
 
 const Ctas = styled.div<{ $isRHS?: boolean }>`
@@ -170,6 +182,9 @@ const Cta = styled(Link)`
 
 const PrimaryCta = styled(Cta)<{ $hasBorder: boolean }>`
   ${({ $hasBorder }) => $hasBorder && `border: 2px solid #fff;`}
+  color: ${({ theme }) => theme.color.text.title};
+  border-color: ${({ theme }) => theme.color.text.title};
+  background-color: ${({ theme }) => theme.color.surface.primary};
 `;
 
 const Description = styled(Text)`
@@ -188,7 +203,7 @@ function CommsBanner() {
 
   const isLarge = banner.type === BannerTypes.Large;
   // depending on the type and image, we want to show the ctas on LHS
-  const showCtasOnLHS = banner.type === BannerTypes.Small && banner.image;
+  const showCtasOnLHS = banner.type === BannerTypes.Small;
 
   return (
     <Banner $background={banner.background} $isLarge={isLarge}>
@@ -201,14 +216,17 @@ function CommsBanner() {
               $isLarge={isLarge}
             />
           )}
-          <Title
-            tag="h3"
-            type={isLarge ? TextTypes.Heading3 : TextTypes.Heading5}
-            color={banner.text_color}
-          >
-            {banner.title}
-          </Title>
-          <Description color={banner.text_color}>{banner.text}</Description>
+          <TitleDescriptionStack>
+            <Title
+              tag="h3"
+              type={isLarge ? TextTypes.Body2 : TextTypes.Body3}
+              bold
+              color={banner.text_color}
+            >
+              {banner.title}
+            </Title>
+            <Description color={banner.text_color}>{banner.text}</Description>
+          </TitleDescriptionStack>
           {showCtasOnLHS && (
             <Ctas>
               {banner.cta_2_url && (
@@ -223,7 +241,7 @@ function CommsBanner() {
               {banner.cta_1_url && (
                 <PrimaryCta
                   to={banner.cta_1_url}
-                  buttonAppearance={ButtonAppearance.Primary}
+                  buttonAppearance={ButtonAppearance.Secondary}
                   buttonSize={ButtonSizes.Medium}
                   $hasBorder={banner.name.includes('Border')}
                 >
