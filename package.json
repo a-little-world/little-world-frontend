@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "npm run lint -- --fix",
-    "dev": "npx webpack serveviews/index.js --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development",
+    "dev": "npx webpack serve --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development",
     "clean": "npx rimraf dist",
     "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run copy-files:esm && npm run copy-files:cjs && npm pack",
     "build:esm": "tsc --project tsconfig.json --noCheck --outDir dist/esm",
