@@ -369,7 +369,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             trigger={
               <Button
                 type="button"
-                variation={ButtonVariations.Option}
+                variation={ButtonVariations.Stacked}
                 onClick={() => callSetup.initCallSetup({ userId: userPk })}
                 disabled={isDeleted}
               >
