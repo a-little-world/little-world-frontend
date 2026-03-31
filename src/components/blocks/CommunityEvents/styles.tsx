@@ -7,11 +7,11 @@ export const Events = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
   flex: 1 1 0;
   max-width: 1200px;
-  padding: 0 ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.small};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
-      padding: ${theme.spacing.small};
+      padding: 0;
     }
   `}
 `;
@@ -95,4 +95,16 @@ export const Session = styled.div`
   gap: ${({ theme }) => theme.spacing.xxsmall};
   align-items: center;
   width: 100%;
+`;
+
+export const EventsPagination = styled.div`
+  padding: ${({ theme }) => theme.spacing.small};
+  margin-top: ${({ theme }) => theme.spacing.small};
+  align-self: center;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      margin-top: 0;
+    }
+  `}
 `;

@@ -35,7 +35,15 @@ export const ModalTitle = ({ children, ...rest }) => (
   </Title>
 );
 
-const ModalCard = ({ className, children, size }) => (
+const ModalCard = ({
+  className,
+  children,
+  size,
+}: {
+  className?: string;
+  children: React.ReactNode;
+  size?: CardSizes;
+}) => (
   <StyledCard className={className} width={size || CardSizes.Medium}>
     {children}
   </StyledCard>

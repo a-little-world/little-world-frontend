@@ -1,6 +1,5 @@
 import {
   ButtonSizes,
-  CalendarIcon,
   Modal,
   Text,
   TextTypes,
@@ -15,10 +14,13 @@ import {
   RANDOM_CALL_EXIT_PARAM,
   RANDOM_CALL_EXIT_VALUE,
   RANDOM_CALL_LOBBY_ENDPOINT,
+  UPCOMING_LOBBIES_ENDPOINT,
 } from '../../../features/swr/index';
-import randomCallsImage from '../../../images/item info.png';
+import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
+import randomCallsImage from '../../../images/random-calls-image.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
+import { Schedule } from '../../atoms/Schedule';
 import CallHistory from '../../blocks/CallHistory/CallHistory';
 import Instructions from '../../blocks/Instructions/Instructions';
 import PostRandomCallsFlow from '../../blocks/RandomCalls/PostRandomCallsFlow';
@@ -32,10 +34,8 @@ import {
   InnerContainer,
   JoinButton,
   RandomCallsAccordion,
+  RandomCallsAccordionContentWrapper,
   RandomCallsInstructions,
-  Schedule,
-  ScheduleHeading,
-  ScheduleList,
 } from './RandomCalls.styles';
 
 const instructions = [
@@ -51,14 +51,14 @@ const instructions = [
     heading: 'random_calls.step_3.heading',
     description: 'random_calls.step_3.description',
   },
-];
-
-const randomCallsSchedule = [
-  'Mittwoch – 18:00–20:00 Uhr',
-  'Freitag – 10:00–12:00 Uhr',
+  {
+    heading: 'random_calls.step_4.heading',
+    description: 'random_calls.step_4.description',
+  },
 ];
 
 interface RandomCallLobby {
+  uuid: string;
   name: string;
   status: boolean;
   start_time: string;
@@ -74,10 +74,16 @@ const RandomCalls = () => {
       refreshInterval: 2000,
     },
   );
+  const { data: upcomingLobbies } = useSWR<UpcomingLobbyItem[]>(
+    UPCOMING_LOBBIES_ENDPOINT,
+  );
+
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
+  const [lobbySessionKey, setLobbySessionKey] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
+  console.log({ lobbyData });
 
   // Format time from ISO string to HH:MM
   const formatTime = (dateString?: string) => {
@@ -102,22 +108,30 @@ const RandomCalls = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  const onJoinLobby = () => {
+  const openLobbyFresh = () => {
+    // @tbscode TODO tempo fix forecefuly reset lobby cache by reloading everything on re-enters
+    setLobbySessionKey(prev => prev + 1);
     setLobbyOpen(true);
   };
 
+  const onJoinLobby = () => {
+    openLobbyFresh();
+  };
+
   const onCloseLobby = async () => {
-    try {
-      await exitLobby();
-    } catch (error) {
-      console.error('Failed to exit lobby:', error);
-    }
     setLobbyOpen(false);
+    if (lobbyData?.uuid) {
+      try {
+        await exitLobby(lobbyData.uuid);
+      } catch (error) {
+        console.error('Failed to exit lobby:', error);
+      }
+    }
   };
 
   const handleReturnToLobby = () => {
     setCallEnded(false);
-    setLobbyOpen(true);
+    openLobbyFresh();
   };
 
   const handleClosePostCall = () => {
@@ -127,7 +141,13 @@ const RandomCalls = () => {
   return (
     <Container>
       <Modal open={lobbyOpen} onClose={onCloseLobby}>
-        <RandomCallsLobby onCancel={onCloseLobby} />
+        {lobbyData?.uuid && (
+          <RandomCallsLobby
+            key={`${lobbyData.uuid}-${lobbySessionKey}`}
+            lobbyUuid={lobbyData.uuid}
+            onCancel={onCloseLobby}
+          />
+        )}
       </Modal>
 
       <Modal open={callEnded} onClose={handleClosePostCall}>
@@ -148,14 +168,18 @@ const RandomCalls = () => {
               {t('random_calls.title')}
             </Text>
             <Text>{t('random_calls.description')}</Text>
-            <Text bold type={TextTypes.Body3}>
+            <Text bold type={TextTypes.Body4}>
               {t(
-                active ?
-                  'random_calls.active_heading' :
-                  'random_calls.inactive_heading',
-                { from: startTime || '18:00', to: endTime || '20:00' },
+                active
+                  ? 'random_calls.active_heading'
+                  : 'random_calls.inactive_heading',
               )}
             </Text>
+            {active && startTime && endTime && (
+              <Text type={TextTypes.Body4}>
+                {startTime} – {endTime}
+              </Text>
+            )}
             {active ? (
               <ActiveUsers>
                 <OnlineCirlce />
@@ -166,31 +190,24 @@ const RandomCalls = () => {
                 </Text>
               </ActiveUsers>
             ) : (
-              <Schedule>
-                <ScheduleHeading>
-                  <CalendarIcon label="Calendar icon" width={16} height={16} />
-                  <Text bold>{t('random_calls.schedule_heading')}</Text>
-                </ScheduleHeading>
-                <ScheduleList>
-                  {randomCallsSchedule.map(item => (
-                    <Text key={item} tag="li">
-                      {item}
-                    </Text>
-                  ))}
-                </ScheduleList>
-              </Schedule>
+              <Schedule
+                title={t('random_calls.schedule_heading')}
+                sessions={upcomingLobbies ?? []}
+              />
             )}
-            <JoinButton
-              disabled={!active}
-              size={ButtonSizes.Small}
-              onClick={onJoinLobby}
-            >
-              {t(
-                active ?
-                  'random_calls.start_btn' :
-                  'random_calls.start_btn_disabled',
-              )}
-            </JoinButton>
+            {active && (
+              <JoinButton
+                disabled={!active}
+                size={ButtonSizes.Small}
+                onClick={onJoinLobby}
+              >
+                {t(
+                  active
+                    ? 'random_calls.start_btn'
+                    : 'random_calls.start_btn_disabled',
+                )}
+              </JoinButton>
+            )}
           </InfoPanelText>
         </InfoPanel>
         <CallHistoryDesktop />
@@ -200,12 +217,14 @@ const RandomCalls = () => {
         items={instructions}
       />
       <RandomCallsAccordion
+        ContentWrapper={RandomCallsAccordionContentWrapper}
+        defaultValue={t('random_calls.instructions_title')}
         items={[
           {
             content: <Instructions items={instructions} />,
-            header: 'Instructions',
+            header: t('random_calls.instructions_title'),
           },
-          { content: <CallHistory />, header: 'Call History' },
+          { content: <CallHistory />, header: t('call_history.title') },
         ]}
       />
     </Container>

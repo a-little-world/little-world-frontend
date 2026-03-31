@@ -121,6 +121,7 @@ function Main() {
         }
         use="main"
         excludeTopics={!hasRandomCallAccess ? ['random_calls'] : undefined}
+        newTopics={['random_calls']}
       />
       <CommsBanner />
       {subpage === 'events' && <CommunityEvents />}

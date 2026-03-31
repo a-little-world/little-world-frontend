@@ -13,7 +13,7 @@ import {
 import { RefObject, useMemo, useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import {
   REPORT_KEYWORDS_BY_TYPE,
@@ -27,8 +27,32 @@ import {
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  height: 100%;
+  min-height: 0;
+`;
+
+const ScrollableContent = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
-  overflow: scroll;
+  padding-bottom: ${({ theme }) => theme.spacing.small};
+`;
+
+const Footer = styled.div`
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
+  padding-top: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      padding-top: ${theme.spacing.xxsmall};
+    }
+  `}
 `;
 
 const ReasonWrapper = styled.div``;
@@ -158,109 +182,114 @@ function ReportForm({
 
   return (
     <Form onSubmit={handleSubmit(handleSubmitReport)}>
-      {!hideTitle && (
-        <Text type={TextTypes.Heading4} tag="h2" center>
+      <ScrollableContent>
+        {!hideTitle && (
+          <Text type={TextTypes.Heading4} tag="h2" center>
+            {t(
+              `${translationKeyPrefix}.${
+                reportedUserName ? 'partner' : 'generic'
+              }_title`,
+              {
+                name: reportedUserName,
+              },
+            )}
+          </Text>
+        )}
+        <Text>
           {t(
             `${translationKeyPrefix}.${
               reportedUserName ? 'partner' : 'generic'
-            }_title`,
+            }_description`,
             {
               name: reportedUserName,
             },
           )}
         </Text>
-      )}
-      <Text>
-        {t(
-          `${translationKeyPrefix}.${
-            reportedUserName ? 'partner' : 'generic'
-          }_description`,
-          {
-            name: reportedUserName,
-          },
-        )}
-      </Text>
 
-      {/* Report Type Selection - only show if not unmatch and reportType prop is not provided */}
-      {!isUnmatch && !isReportMatch && (
-        <RadioGroupWrapper>
+        {/* Report Type Selection - only show if not unmatch and reportType prop is not provided */}
+        {!isUnmatch && !isReportMatch && (
+          <RadioGroupWrapper>
+            <Controller
+              control={control}
+              name="reportType"
+              rules={{
+                required: t('error.required'),
+              }}
+              render={({
+                field: { onChange, onBlur, value, name },
+                fieldState: { error },
+              }) => (
+                <RadioGroup
+                  name={name}
+                  value={value}
+                  onBlur={onBlur}
+                  inputRef={reportTypeRef}
+                  error={error?.message}
+                  onValueChange={onChange}
+                  items={reportTypeOptions}
+                  label={t('report.type_label')}
+                  // @ts-expect-error - "pill" is a valid value but not in the RadioGroupVariations type definition
+                  type="pill"
+                />
+              )}
+            />
+          </RadioGroupWrapper>
+        )}
+
+        {/* Keywords Selection - only show if not unmatch */}
+        {!isUnmatch && (
+          <RadioGroupWrapper>
+            <Controller
+              control={control}
+              name="keywords"
+              render={({ field: { onChange }, fieldState: { error } }) => (
+                <MultiSelection
+                  id="form-keywords"
+                  error={error?.message}
+                  onSelection={onChange}
+                  options={keywordOptions}
+                  label={t('report.keywords_label')}
+                  withBackground={false}
+                />
+              )}
+            />
+          </RadioGroupWrapper>
+        )}
+
+        <ReasonWrapper>
           <Controller
             control={control}
-            name="reportType"
+            name="reason"
             rules={{
               required: t('error.required'),
+              minLength: {
+                value: 50,
+                message: t(`${translationKeyPrefix}.reason_error_min_length`),
+              },
             }}
             render={({
-              field: { onChange, onBlur, value, name },
+              field: { onChange, onBlur, value, name, ref },
               fieldState: { error },
             }) => (
-              <RadioGroup
-                name={name}
-                value={value}
+              <TextArea
+                inputRef={ref}
+                label={t(`${translationKeyPrefix}.reason_label`, {
+                  name: reportedUserName,
+                })}
+                error={error?.message}
+                placeholder={t(`${translationKeyPrefix}.reason_placeholder`)}
+                onChange={onChange}
                 onBlur={onBlur}
-                inputRef={reportTypeRef}
-                error={error?.message}
-                onValueChange={onChange}
-                items={reportTypeOptions}
-                label={t('report.type_label')}
-                // @ts-expect-error - "pill" is a valid value but not in the RadioGroupVariations type definition
-                type="pill"
+                value={value}
+                name={name}
+                size={TextAreaSize.Medium}
               />
             )}
           />
-        </RadioGroupWrapper>
-      )}
+        </ReasonWrapper>
+      </ScrollableContent>
 
-      {/* Keywords Selection - only show if not unmatch */}
-      {!isUnmatch && (
-        <RadioGroupWrapper>
-          <Controller
-            control={control}
-            name="keywords"
-            render={({ field: { onChange }, fieldState: { error } }) => (
-              <MultiSelection
-                id="form-keywords"
-                error={error?.message}
-                onSelection={onChange}
-                options={keywordOptions}
-                label={t('report.keywords_label')}
-                withBackground={false}
-              />
-            )}
-          />
-        </RadioGroupWrapper>
-      )}
-
-      <ReasonWrapper>
-        <Controller
-          control={control}
-          name="reason"
-          rules={{
-            required: t('error.required'),
-            minLength: {
-              value: 50,
-              message: t(`${translationKeyPrefix}.reason_error_min_length`),
-            },
-          }}
-          render={({
-            field: { onChange, onBlur, value, name, ref },
-            fieldState: { error },
-          }) => (
-            <TextArea
-              inputRef={ref}
-              label={t(`${translationKeyPrefix}.reason_label`, {
-                name: reportedUserName,
-              })}
-              error={error?.message}
-              placeholder={t(`${translationKeyPrefix}.reason_placeholder`)}
-              onChange={onChange}
-              onBlur={onBlur}
-              value={value}
-              name={name}
-              size={TextAreaSize.Medium}
-            />
-          )}
-        />
+      <Footer>
         {errors?.root?.serverError && (
           <StatusMessage
             visible={!!errors?.root?.serverError}
@@ -271,20 +300,19 @@ function ReportForm({
               : ''}
           </StatusMessage>
         )}
-      </ReasonWrapper>
-
-      <ButtonsWrapper>
-        <Button type="submit">
-          {t(`${translationKeyPrefix}.confirm_btn`)}
-        </Button>
-        <Button
-          type="button"
-          appearance={ButtonAppearance.Secondary}
-          onClick={handleOnClose}
-        >
-          {t(`${translationKeyPrefix}.cancel_btn`)}
-        </Button>
-      </ButtonsWrapper>
+        <ButtonsWrapper>
+          <Button type="submit">
+            {t(`${translationKeyPrefix}.confirm_btn`)}
+          </Button>
+          <Button
+            type="button"
+            appearance={ButtonAppearance.Secondary}
+            onClick={handleOnClose}
+          >
+            {t(`${translationKeyPrefix}.cancel_btn`)}
+          </Button>
+        </ButtonsWrapper>
+      </Footer>
     </Form>
   );
 }

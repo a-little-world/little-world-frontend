@@ -9,9 +9,10 @@ const Container = styled.div`
   border-radius: ${({ theme }) => theme.radius.medium};
   width: 100%;
   padding: ${({ theme }) => theme.spacing.medium};
+  flex-shrink: 0;
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
+    @media (min-width: ${theme.breakpoints.large}) {
       width: unset;
       border-radius: ${theme.radius.medium};
       padding: ${theme.spacing.small};
@@ -51,7 +52,7 @@ const Steps = styled.ol`
 
 const StepNumber = styled(Text)`
   color: ${({ theme }) => theme.color.text.heading};
-  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 const StepHeading = styled(Text)`

@@ -5,6 +5,7 @@ interface CallData {
   uuid?: string; // added only when call is active
   userId: string;
   chatId: string;
+  randomMatchId?: string;
   tracks?: any;
   callType?: 'direct' | 'random';
   postDisconnectRedirect?: string;

@@ -5,6 +5,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardSizes,
   Text,
 } from '@a-little-world/little-world-design-system';
 import { useState } from 'react';
@@ -13,15 +14,13 @@ import styled, { useTheme } from 'styled-components';
 
 import { reportIssue } from '../../../api/matches';
 import { useConnectedCallStore } from '../../../features/stores';
-import { CallSetupCard } from '../Calls/CallSetup';
+import ModalCard from '../Cards/ModalCard';
 import ReportForm, { ReportFormData } from '../ReportForm/ReportForm';
 import { REPORT_TYPE_USER } from '../ReportForm/constants';
 
 type PostCallState = 'initial' | 'report' | 'report_confirmed';
 
-const PostCallCard = styled(CallSetupCard)`
-  max-width: 500px;
-`;
+const PostCallCard = styled(ModalCard)``;
 
 const ReportProblem = styled.div`
   display: flex;
@@ -41,7 +40,9 @@ const PostRandomCallsFlow = ({
   onReturnToLobby,
 }: PostRandomCallsFlowProps) => {
   const { t } = useTranslation();
-  const [flowState, setFlowState] = useState<PostCallState>('initial');
+  const [flowState, setFlowState] = useState<PostCallState>(
+    'initial',
+  );
   const { disconnectedFromUser } = useConnectedCallStore();
   const theme = useTheme();
 
@@ -107,8 +108,10 @@ const PostRandomCallsFlow = ({
   // Report Card View
   if (flowState === 'report') {
     return (
-      <PostCallCard>
-        <CardHeader>{t('random_calls.report_card_title')}</CardHeader>
+      <PostCallCard size={CardSizes.Large}>
+        <CardHeader marginBottom="0">
+          {t('random_calls.report_card_title')}
+        </CardHeader>
         <CardContent>
           <ReportForm
             hideTitle
