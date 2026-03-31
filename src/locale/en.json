@@ -538,7 +538,6 @@
   "random_calls.report_cancel_btn": "Cancel",
   "random_calls.report_confirmed_title": "Thanks for your report!",
   "random_calls.report_confirmed_description": "We've received your report and will get back to you as soon as possible.",
->>>>>>> b83dbb2ec32d02aad5d1958046c9d868e0d0acfc
   "report.call_quality.audio_delay": "Audio Delay",
   "report.call_quality.connection_problems": "Connection Problems",
   "report.call_quality.frozen_screen": "Frozen Screen",
