@@ -4,12 +4,22 @@ import { mutate } from 'swr';
 
 import './App.css';
 import { environment } from './environment';
-import { NOTIFICATIONS_ENDPOINT, UNREAD_NOTIFICATIONS_ENDPOINT } from './features/swr';
+import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
+import {
+  NOTIFICATIONS_ENDPOINT,
+  UNREAD_NOTIFICATIONS_ENDPOINT,
+} from './features/swr';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import useToast from './hooks/useToast';
-import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
 
-const SOCKET_URL = environment.coreWsScheme + (environment.isNative ? environment.websocketHost : (typeof window !== 'undefined' ? window.location.host : '')) + environment.coreWsPath;
+const SOCKET_URL =
+  environment.coreWsScheme +
+  (environment.isNative
+    ? environment.websocketHost
+    : typeof window !== 'undefined'
+    ? window.location.host
+    : '') +
+  environment.coreWsPath;
 
 const WebsocketBridge = () => {
   /**
@@ -26,7 +36,10 @@ const WebsocketBridge = () => {
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
-    protocols: environment.isNative && accessToken ? [`bearer.${accessToken}`] : undefined,
+    protocols:
+      environment.isNative && accessToken
+        ? [`bearer.${accessToken}`]
+        : undefined,
   });
 
   const toast = useToast();
@@ -38,12 +51,10 @@ const WebsocketBridge = () => {
       console.log('CORE SOCKET:', message);
 
       if (message.action === 'addNotification' && message.payload?.showToast) {
-        const { headline, title, description, created_at } = message.payload;
+        const { title, description } = message.payload;
         toast.showToast({
-          headline,
           title,
           description,
-          timestamp: new Date(created_at).toLocaleTimeString(),
         });
 
         // TODO: only if message is also persisted

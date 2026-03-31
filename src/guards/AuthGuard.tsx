@@ -1,9 +1,16 @@
 import useSWR from 'swr';
 
+import { apiFetch } from '../api/helpers';
 import { IS_AUTHENTICATED_ENDPOINT } from '../features/swr/index';
 
 function AuthGuard({ children }) {
-  const { data, isLoading, error } = useSWR(IS_AUTHENTICATED_ENDPOINT);
+  const { data, isLoading, error } = useSWR(
+    IS_AUTHENTICATED_ENDPOINT,
+    apiFetch,
+    {
+      refreshInterval: authenticated => (authenticated ? 0 : 3000),
+    },
+  );
   // TODO: should also check 1. 'session_id' present
   // 2. if 'session_id' & user present, else fetch userData
   const isAuthenticated = data && !isLoading && !error;
