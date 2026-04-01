@@ -1,14 +1,13 @@
 import {
   Button,
-  ButtonSizes,
-  ButtonVariations,
   Card,
-  CardContent,
-  CardFooter,
+  CardHeader,
   ProgressBar,
   Text,
 } from '@a-little-world/little-world-design-system';
 import styled, { css, keyframes } from 'styled-components';
+
+const MAX_WIDTH = '1040px';
 
 const fadeSlideIn = keyframes`
   from {
@@ -22,14 +21,19 @@ const fadeSlideIn = keyframes`
 `;
 
 export const QuizCard = styled(Card)`
+  position: relative;
   width: 100%;
-  max-width: 1240px;
+  max-width: ${MAX_WIDTH};
+  overflow: visible;
+  padding-top: ${({ theme }) => theme.spacing.medium};
 `;
 
-export const QuizContent = styled(CardContent)`
+export const QuizLayout = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
+  align-items: center;
 `;
 
 export const StepContainer = styled.div`
@@ -59,15 +63,13 @@ const scaleIn = keyframes`
   }
 `;
 
-export const QuizHeaderRow = styled.div`
+export const QuizQuestion = styled(CardHeader)`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.small};
-`;
-
-export const QuizTitle = styled(Text)`
-  color: ${({ theme }) => theme.color.text.heading};
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing.xxxxsmall};
+  text-align: left;
 `;
 
 export const QuizCounter = styled(Text)`
@@ -103,24 +105,19 @@ export const OptionsGroup = styled.div`
 `;
 
 export const IconWrapper = styled.span<{ $variant: 'correct' | 'incorrect' }>`
-  width: 24px;
-  height: 24px;
+  width: ${({ theme }) => theme.spacing.medium};
+  height: ${({ theme }) => theme.spacing.medium};
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   background: ${({ theme, $variant }) =>
-    $variant === 'correct'
-      ? theme.color.status.success
-      : theme.color.status.error};
+    $variant === 'correct' ? theme.color.text.success : theme.color.text.error};
   color: ${({ theme }) => theme.color.text.reversed};
 `;
 
-export const OptionButton = styled(Button).attrs({
-  variation: ButtonVariations.Option,
-  size: ButtonSizes.Large,
-})<{
+export const OptionButton = styled(Button)<{
   $isCorrect?: boolean;
   $isIncorrect?: boolean;
 }>`
@@ -159,9 +156,45 @@ export const RequiredLabel = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
 `;
 
-export const FooterRow = styled(CardFooter)`
+export const ControlsRow = styled.div`
   display: flex;
-  min-height: 49px; // button height
+  min-height: 49px;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: ${MAX_WIDTH};
+  gap: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) => css`
+    @media (max-width: ${theme.breakpoints.medium}) {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      padding: ${theme.spacing.medium};
+      background: ${theme.color.surface.primary};
+      border-top: 1px solid ${theme.color.border.subtle};
+      box-shadow: 0 -4px 14px rgb(0 0 0 / 12%);
+    }
+
+    @media (min-width: ${theme.breakpoints.medium}) {
+      position: static;
+      padding: 0;
+      background: transparent;
+      border-top: none;
+      box-shadow: none;
+    }
+  `}
+`;
+
+/** Full-width bar with primary action aligned to the end (completed / exit). */
+export const ExitControlsRow = styled(ControlsRow)`
+  align-items: flex-end;
+  justify-content: flex-end;
+
+  & > * {
+    align-self: flex-end;
+  }
 `;
 
 export const StyledProgressBar = styled(ProgressBar)`

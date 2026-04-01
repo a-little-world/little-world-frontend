@@ -4,16 +4,19 @@ import {
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
-  CardContent,
   ProgressBar,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { mutate } from 'swr';
 
+import { SELF_ONBOARDING_WALKTHROUGH_STEP_IDS } from '../../../constants';
+import { USER_ENDPOINT } from '../../../features/swr';
 import Video from '../../atoms/Video';
 import Quiz, { type QuizAnswer, type QuizStep } from '../Quiz/Quiz';
 
@@ -27,11 +30,17 @@ export type CourseChapter = {
   title: string;
   video: CourseVideo;
   quizSteps: QuizStep[];
+  quizCompletedTitle?: string;
+  quizCompletedDescription?: string;
+  quizCompletedAdditionalText?: string;
+  quizCompletedIcon?: ReactNode;
+  quizCompletedCtaLabel?: string;
 };
 
 export type ChaptersLayoutProps = {
   chapters: CourseChapter[];
-  currentStep?: number;
+  /** Latest completed self-onboarding step id from the backend (drives unlocked chapters). */
+  currentStepId?: string;
   courseTitle?: string;
   onBack: () => void;
   /**
@@ -39,12 +48,11 @@ export type ChaptersLayoutProps = {
    * The expected backend behavior is to update `user.walkthrough_step` so that it points to the next unlocked
    * chapter video index.
    */
-  onPersistCourseStep?: (nextCourseStep: number) => Promise<void>;
+  onUpdateCourseStep?: (nextStepId: string) => Promise<void>;
   onCourseComplete?: () => void;
 };
 
 const CourseContainer = styled.div`
-  min-height: 100vh;
   width: 100%;
 
   @media (prefers-reduced-motion: reduce) {
@@ -56,70 +64,97 @@ const CourseContainer = styled.div`
   }
 `;
 
-const StickyHeader = styled.header`
-  position: sticky;
-  top: 0;
-  z-index: 50;
+const Header = styled.header`
   background: ${({ theme }) => theme.color.surface.primary};
   border-bottom: 1px solid ${({ theme }) => theme.color.border.subtle};
-`;
-
-const HeaderInner = styled.div`
-  padding: ${({ theme }) => theme.spacing.small}
-    ${({ theme }) => theme.spacing.medium};
+  width: 100%;
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.medium};
 `;
 
-const HeaderLeft = styled.div`
-  width: 40px;
+const HeaderContent = styled.div`
+  width: 100%;
+  max-width: 1240px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: flex-start;
 `;
 
 const HeaderTitle = styled(Text)`
-  text-align: center;
-`;
-
-const HeaderRight = styled.div`
-  width: 40px;
+  display: none;
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+  `}
 `;
 
 const ProgressRow = styled.div`
-  padding: 0 ${({ theme }) => theme.spacing.medium}
-    ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.xxsmall};
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+  width: 100%;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.small} ${theme.spacing.small}
+        ${theme.spacing.xxsmall};
+    }
+  `}
 `;
 
-const ProgressMeta = styled.div`
+const Navigation = styled.nav`
   display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  width: 100%;
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.small};
 `;
 
-const PillsRow = styled.nav`
+const NavButton = styled(Button)`
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
+  font-weight: 600;
+  padding: ${({ theme }) => theme.spacing.xxsmall} !important;
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      margin-bottom: ${theme.spacing.xsmall};
+    }
+  `}
+`;
+
+const ChaptersNav = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   overflow-x: auto;
   padding: ${({ theme }) => theme.spacing.xsmall}
-    ${({ theme }) => theme.spacing.medium};
+    ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.small} ${theme.spacing.medium};
+    }
+  `}
 `;
 
-const PillButton = styled.button<{
+const ChapterButton = styled.button<{
   $isActive?: boolean;
   $isCompleted?: boolean;
   $isLocked?: boolean;
 }>`
   min-height: 44px;
   min-width: 130px;
-  padding: ${({ theme }) => theme.spacing.xsmall}
-    ${({ theme }) => theme.spacing.medium};
   border-radius: ${({ theme }) => theme.radius.large};
+  padding: ${({ theme }) => theme.spacing.xsmall};
   border: 2px solid
     ${({ theme, $isActive, $isCompleted }) => {
       if ($isActive) return theme.color.border.selected;
@@ -141,28 +176,40 @@ const PillButton = styled.button<{
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.xsmall} ${theme.spacing.medium};
+    }
+  `}
 `;
 
-const PillTitle = styled(Text)`
+const ChapterTitle = styled(Text)`
   font-size: 14px;
   font-weight: 600;
 `;
 
-const PillSub = styled(Text)`
+const ChapterSub = styled(Text)`
   font-size: 12px;
   color: ${({ theme }) => theme.color.text.secondary};
 `;
 
 const Main = styled.main`
-  padding: ${({ theme }) => theme.spacing.medium};
+  padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.small}`};
   max-width: 1240px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.medium};
+    }
+  `}
 `;
 
-const ChapterContent = styled(CardContent)`
+const ChapterContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
@@ -175,6 +222,9 @@ const ChapterFooter = styled.div`
   align-items: center;
   margin-top: auto;
   gap: ${({ theme }) => theme.spacing.small};
+  width: 100%;
+  max-width: 960px; // video max width
+  margin: 0 auto;
 `;
 
 const VideoWrapper = styled.div`
@@ -183,7 +233,9 @@ const VideoWrapper = styled.div`
   width: 100%;
 `;
 
-const NavButton = styled(Button)``;
+const FooterPrimaryButton = styled(Button)`
+  margin-left: auto;
+`;
 
 const getQueryInt = (value: string | null) => {
   if (!value) return undefined;
@@ -201,20 +253,30 @@ function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
 
+function completedChaptersFromStepId(
+  stepId: string | undefined,
+  maxChapters: number,
+): number {
+  if (!stepId) return 0;
+  const ids = SELF_ONBOARDING_WALKTHROUGH_STEP_IDS as readonly string[];
+  const idx = ids.indexOf(stepId);
+  if (idx < 0) return 0;
+  return clamp(idx + 1, 0, maxChapters);
+}
+
 export default function ChaptersLayout({
   chapters,
-  currentStep = 0,
+  currentStepId,
   courseTitle,
   onBack,
-  onPersistCourseStep,
+  onUpdateCourseStep,
   onCourseComplete,
 }: ChaptersLayoutProps) {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const completedCount = clamp(
-    Math.floor(currentStep),
-    0,
+  const completedCount = completedChaptersFromStepId(
+    currentStepId,
     Math.max(0, chapters.length),
   );
 
@@ -319,6 +381,7 @@ export default function ChaptersLayout({
   ]);
 
   const activeChapter = chapters[activeChapterIndex];
+  const isLastChapter = activeChapterIndex >= chapters.length - 1;
 
   const [quizCorrectStepIds, setQuizCorrectStepIds] = useState<Set<string>>(
     new Set(),
@@ -369,10 +432,6 @@ export default function ChaptersLayout({
     totalProgressSteps,
   ]);
 
-  const progressPercent = totalProgressSteps
-    ? Math.round((progressValue / totalProgressSteps) * 100)
-    : 0;
-
   const setChapterAndMode = (
     chapterIndex: number,
     nextMode: 'video' | 'quiz',
@@ -388,7 +447,7 @@ export default function ChaptersLayout({
   const goToQuiz = (chapterIndex: number) =>
     setChapterAndMode(chapterIndex, 'quiz');
 
-  const handleChapterPillClick = (index: number) => {
+  const handleChapterClick = (index: number) => {
     const isLocked = index > unlockedChapterCount;
     if (isLocked) return;
     goToVideo(index);
@@ -404,40 +463,61 @@ export default function ChaptersLayout({
     });
   };
 
-  const persistOnboardingStepBestEffort = async (next: number) => {
-    if (!onPersistCourseStep) return;
-    try {
-      await onPersistCourseStep(next);
-    } catch {
-      // Best-effort only; URL + local state still drive the UX.
-    }
+  const persistOnboardingStepBestEffort = async (stepId: string) => {
+    if (!onUpdateCourseStep) return;
+    await onUpdateCourseStep(stepId);
   };
 
   const handleQuizComplete = async () => {
     setIsQuizCompleted(true);
 
-    // Mark the chapter completed so progress/pills reflect it immediately,
-    // but keep the user in quiz mode until they click continue.
-    setCompletedChapterIndexes(prev => {
-      if (prev.has(activeChapterIndex)) return prev;
-      const next = new Set<number>();
-      prev.forEach(value => next.add(value));
-      next.add(activeChapterIndex);
-      return next;
-    });
+    const alreadyRecorded = completedChapterIndexes.has(activeChapterIndex);
+    // Persist as soon as chapter quiz is completed (before continue / final navigation).
+    if (!alreadyRecorded) {
+      const stepId = SELF_ONBOARDING_WALKTHROUGH_STEP_IDS[activeChapterIndex];
+      if (stepId) await persistOnboardingStepBestEffort(stepId);
+    }
 
-    // Best-effort persistence; progress UI continues regardless.
-    await persistOnboardingStepBestEffort(activeChapterIndex + 1);
+    if (!isLastChapter) {
+      goToNextChapter();
+    }
   };
 
-  const handleContinueAfterChapterComplete = () => {
-    const nextChapterIndex = activeChapterIndex + 1;
+  const goToNextChapter = () => {
+    const alreadyRecorded = completedChapterIndexes.has(activeChapterIndex);
+    if (!alreadyRecorded) {
+      setIsQuizCompleted(false);
+      setCompletedChapterIndexes(prev => {
+        if (prev.has(activeChapterIndex)) return prev;
+        const next = new Set<number>();
+        prev.forEach(value => next.add(value));
+        next.add(activeChapterIndex);
+        return next;
+      });
+    }
 
-    setIsQuizCompleted(false);
+    const nextChapterIndex = activeChapterIndex + 1;
     if (nextChapterIndex < chapters.length) {
       goToVideo(nextChapterIndex);
-      return;
     }
+  };
+
+  const handleOnCourseComplete = async () => {
+    setIsQuizCompleted(false);
+
+    const alreadyRecorded = completedChapterIndexes.has(activeChapterIndex);
+    if (!alreadyRecorded) {
+      setCompletedChapterIndexes(prev => {
+        if (prev.has(activeChapterIndex)) return prev;
+        const next = new Set<number>();
+        prev.forEach(value => next.add(value));
+        next.add(activeChapterIndex);
+        return next;
+      });
+    }
+
+    // Ensure onboarding redirect logic reads fresh user state before navigating.
+    await mutate(USER_ENDPOINT);
 
     if (onCourseComplete) onCourseComplete();
     else onBack();
@@ -446,66 +526,69 @@ export default function ChaptersLayout({
   if (!activeChapter || chapters.length === 0) return null;
   return (
     <CourseContainer>
-      <StickyHeader>
-        <HeaderInner>
-          <HeaderLeft>
-            <Button variation={ButtonVariations.Icon} onClick={onBack}>
-              <ArrowLeftIcon label="back" width={16} height={16} />
-            </Button>
-          </HeaderLeft>
-          <HeaderTitle type={TextTypes.Body1} bold>
+      <Header>
+        <HeaderContent>
+          <HeaderTitle type={TextTypes.Body1} bold center>
             {courseTitle ?? t('onboarding_walkthrough.title')}
           </HeaderTitle>
-          <HeaderRight />
-        </HeaderInner>
-
-        <ProgressRow>
-          <ProgressMeta>
-            <Text type={TextTypes.Body4}>{progressPercent}% complete</Text>
-            <Text type={TextTypes.Body4}>
-              {Math.min(unlockedChapterCount, chapters.length)}/
-              {chapters.length} chapters
-            </Text>
-          </ProgressMeta>
-          <ProgressBar
-            fullWidth
-            max={totalProgressSteps}
-            value={progressValue}
-          />
-        </ProgressRow>
-
-        <PillsRow>
-          {chapters.map((chapter, index) => {
-            const isActive = index === activeChapterIndex;
-            const isCompleted = index < unlockedChapterCount;
-            const isLocked = index > unlockedChapterCount;
-            let pillStatus = t(
-              'onboarding_walkthrough.pill_status_in_progress',
-            );
-            if (isCompleted) {
-              pillStatus = t('onboarding_walkthrough.pill_status_completed');
-            } else if (isLocked) {
-              pillStatus = t('onboarding_walkthrough.pill_status_locked');
-            }
-            return (
-              <PillButton
-                key={chapter.id}
-                type="button"
-                onClick={() => handleChapterPillClick(index)}
-                disabled={isLocked}
-                $isActive={isActive}
-                $isCompleted={isCompleted}
-                $isLocked={isLocked}
+          <ProgressRow>
+            <ProgressBar
+              fullWidth
+              max={totalProgressSteps}
+              value={progressValue}
+            />
+          </ProgressRow>
+          <Navigation>
+            <ChaptersNav>
+              {chapters.map((chapter, index) => {
+                const isActive = index === activeChapterIndex;
+                const isCompleted = index < unlockedChapterCount;
+                const isLocked = index > unlockedChapterCount;
+                let chapterStatus = t(
+                  'onboarding_walkthrough.chapter_status_in_progress',
+                );
+                if (isCompleted) {
+                  chapterStatus = t(
+                    'onboarding_walkthrough.chapter_status_completed',
+                  );
+                } else if (isLocked) {
+                  chapterStatus = t(
+                    'onboarding_walkthrough.chapter_status_locked',
+                  );
+                }
+                return (
+                  <ChapterButton
+                    key={`nav-${chapter.id}`}
+                    type="button"
+                    onClick={() => handleChapterClick(index)}
+                    disabled={isLocked}
+                    $isActive={isActive}
+                    $isCompleted={isCompleted}
+                    $isLocked={isLocked}
+                  >
+                    <ChapterTitle type={TextTypes.Body3} bold>
+                      {chapter.title}
+                    </ChapterTitle>
+                    <ChapterSub type={TextTypes.Body4}>
+                      {chapterStatus}
+                    </ChapterSub>
+                  </ChapterButton>
+                );
+              })}
+            </ChaptersNav>
+            {mode === 'quiz' && (
+              <NavButton
+                variation={ButtonVariations.Icon}
+                appearance={ButtonAppearance.Secondary}
+                onClick={() => goToVideo(activeChapterIndex)}
               >
-                <PillTitle type={TextTypes.Body3} bold>
-                  {chapter.title}
-                </PillTitle>
-                <PillSub type={TextTypes.Body4}>{pillStatus}</PillSub>
-              </PillButton>
-            );
-          })}
-        </PillsRow>
-      </StickyHeader>
+                <ArrowLeftIcon label="back" width={16} height={16} />
+                {t('onboarding_walkthrough.nav_back_to_video')}
+              </NavButton>
+            )}
+          </Navigation>
+        </HeaderContent>
+      </Header>
 
       <Main>
         {mode === 'video' && (
@@ -518,80 +601,78 @@ export default function ChaptersLayout({
                   maxWidth="960px"
                 />
               </VideoWrapper>
-
-              {activeChapterIndex < unlockedChapterCount && (
-                <Text center type={TextTypes.Body4}>
-                  {t('onboarding_walkthrough.chapter_completed_hint')}
-                </Text>
-              )}
             </ChapterContent>
 
             <ChapterFooter>
-              <NavButton
-                appearance={ButtonAppearance.Secondary}
-                size={ButtonSizes.Medium}
-                onClick={() => {
-                  if (
-                    activeChapterIndex > 0 &&
-                    activeChapterIndex <= unlockedChapterCount
-                  ) {
-                    goToVideo(activeChapterIndex - 1);
-                  }
-                }}
-                disabled={activeChapterIndex === 0}
-              >
-                {t('onboarding_walkthrough.nav_back')}
-              </NavButton>
+              {activeChapterIndex > 0 && (
+                <Button
+                  appearance={ButtonAppearance.Secondary}
+                  size={ButtonSizes.Medium}
+                  onClick={() => {
+                    if (activeChapterIndex <= unlockedChapterCount) {
+                      goToVideo(activeChapterIndex - 1);
+                    }
+                  }}
+                  disabled={activeChapterIndex === 0}
+                >
+                  {t('onboarding_walkthrough.nav_back')}
+                </Button>
+              )}
 
-              <NavButton
-                appearance={ButtonAppearance.Primary}
-                size={ButtonSizes.Medium}
-                onClick={() => goToQuiz(activeChapterIndex)}
-                disabled={activeChapterIndex < unlockedChapterCount}
-              >
-                {t('onboarding_walkthrough.nav_continue_to_quiz')}
-              </NavButton>
+              {isLastChapter && completedCount === chapters.length ? (
+                <FooterPrimaryButton
+                  appearance={ButtonAppearance.Primary}
+                  size={ButtonSizes.Medium}
+                  onClick={handleOnCourseComplete}
+                >
+                  {t('onboarding_walkthrough.chapter_complete_button_finish')}
+                </FooterPrimaryButton>
+              ) : (
+                <FooterPrimaryButton
+                  appearance={ButtonAppearance.Primary}
+                  size={ButtonSizes.Medium}
+                  onClick={
+                    activeChapterIndex < unlockedChapterCount
+                      ? goToNextChapter
+                      : () => goToQuiz(activeChapterIndex)
+                  }
+                >
+                  {activeChapterIndex < unlockedChapterCount
+                    ? t(
+                        'onboarding_walkthrough.chapter_complete_button_continue',
+                      )
+                    : t('onboarding_walkthrough.nav_continue_to_quiz')}
+                </FooterPrimaryButton>
+              )}
             </ChapterFooter>
           </>
         )}
 
         {mode === 'quiz' && (
-          <>
-            <ChapterContent>
-              <Quiz
-                steps={activeChapter.quizSteps}
-                currentStep={1}
-                exitRoute={undefined}
-                hideProgress
-                onAnswer={handleQuizAnswer}
-                onComplete={handleQuizComplete}
-              />
-            </ChapterContent>
-            <ChapterFooter>
-              <NavButton
-                appearance={ButtonAppearance.Secondary}
-                size={ButtonSizes.Medium}
-                onClick={() => goToVideo(activeChapterIndex)}
-              >
-                {t('onboarding_walkthrough.nav_back_to_video')}
-              </NavButton>
-              {isQuizCompleted && (
-                <NavButton
-                  appearance={ButtonAppearance.Primary}
-                  size={ButtonSizes.Medium}
-                  onClick={handleContinueAfterChapterComplete}
-                >
-                  {activeChapterIndex + 1 < chapters.length
-                    ? t(
-                        'onboarding_walkthrough.chapter_complete_button_continue',
-                      )
-                    : t(
-                        'onboarding_walkthrough.chapter_complete_button_finish',
-                      )}
-                </NavButton>
-              )}
-            </ChapterFooter>
-          </>
+          <ChapterContent>
+            <Quiz
+              steps={activeChapter.quizSteps}
+              currentStep={1}
+              exitRoute={undefined}
+              hideProgress
+              completedIcon={activeChapter.quizCompletedIcon}
+              completedTitle={activeChapter.quizCompletedTitle}
+              completedDescription={activeChapter.quizCompletedDescription}
+              completedAdditionalText={
+                activeChapter.quizCompletedAdditionalText
+              }
+              completedCtaLabel={activeChapter.quizCompletedCtaLabel}
+              showCompletionCard={isLastChapter}
+              onExitLabel={
+                activeChapterIndex + 1 < chapters.length
+                  ? t('onboarding_walkthrough.chapter_complete_button_continue')
+                  : t('onboarding_walkthrough.chapter_complete_button_finish')
+              }
+              onAnswer={handleQuizAnswer}
+              onComplete={handleQuizComplete}
+              onExit={isLastChapter ? handleOnCourseComplete : undefined}
+            />
+          </ChapterContent>
         )}
       </Main>
     </CourseContainer>

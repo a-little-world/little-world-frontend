@@ -36,9 +36,7 @@ export const TERMS_ROUTE = 'nutzungsbedingungen';
 export const PRIVACY_ROUTE = 'datenschutz';
 export const EMAIL_PREFERENCES_ROUTE = 'email-preferences/:emailSettingsHash';
 export const ONBOARDING_ROUTE = 'onboarding';
-export const WALKTHROUGH_ROUTE = 'onboarding/walkthrough';
-export const FORM_ONBOARDING_ROUTE = 'form/onboarding';
-export const FORM_WALKTHROUGH_ROUTE = 'form/onboarding/walkthrough';
+export const SELF_ONBOARDING_ROUTE = 'onboarding/walkthrough';
 
 // User form specific route slugs
 export const USER_FORM_USER_TYPE = 'user-type';

@@ -1,10 +1,37 @@
 import {
+  Card,
   CardFooter,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+export const OptionCard = styled(Card)<{
+  $inProgress?: boolean;
+}>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-width: 2px;
+  border-color: ${({ theme, $inProgress }) =>
+    $inProgress ? theme.color.border.selected : theme.color.border.subtle};
+  background: ${({ theme }) => theme.color.surface.secondary};
+  padding: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  min-width: 0;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.color.border.selected};
+  }
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      gap: ${theme.spacing.small};
+    }
+  `}
+`;
 
 export const OptionTitle = styled(Text)`
   color: ${({ theme }) => theme.color.text.heading};
@@ -14,10 +41,15 @@ export const OptionTitle = styled(Text)`
 export const OptionSubtext = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
   text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+  margin-bottom: ${({ theme }) => theme.spacing.small};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      margin-bottom: ${theme.spacing.xxsmall};
+    }
+  `}
 `;
 
-/** "What you'll accomplish" checklist */
 export const AccomplishSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -129,6 +161,10 @@ export const StatLabel = styled(Text)`
 
 export const StatValue = styled(Text)`
   color: ${({ theme }) => theme.color.text.heading};
+`;
+
+export const ProgressValue = styled(Text)`
+  color: ${({ theme }) => theme.color.text.success};
 `;
 
 export const StackedCardFooter = styled(CardFooter)`

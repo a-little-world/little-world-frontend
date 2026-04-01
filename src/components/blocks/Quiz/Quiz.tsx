@@ -2,7 +2,8 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
-  CardHeader,
+  ButtonVariations,
+  CardContent,
   CardSizes,
   CheckIcon,
   CloseIcon,
@@ -11,22 +12,23 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+  ControlsRow,
+  ExitControlsRow,
   FloatingCelebration,
-  FooterRow,
   IconWrapper,
   OptionButton,
   OptionsGroup,
   QuestionSection,
   QuestionText,
   QuizCard,
-  QuizContent,
   QuizCounter,
-  QuizHeaderRow,
-  QuizTitle,
+  QuizLayout,
+  QuizQuestion,
   StyledProgressBar,
 } from './Quiz.styles';
 
@@ -55,9 +57,20 @@ export type QuizProps = {
   steps: QuizStep[];
   exitRoute?: string;
   hideProgress?: boolean;
+  /** Whether to show the completion card after finishing the last step. */
+  showCompletionCard?: boolean;
+  completedAdditionalText?: string;
+  completedIcon?: ReactNode;
+  completedTitle?: string;
+  completedDescription?: string;
+  completedCtaLabel?: string;
+  /** Shown on the completed screen footer button when `onExit` is provided. */
+  onExitLabel?: string;
   currentStep?: number; // 1-based; only used as initial value
   onAnswer?: (answer: QuizAnswer) => void;
   onComplete?: () => void;
+  /** When set, completed state shows `ControlsRow` with a primary button that calls this. */
+  onExit?: () => void;
 };
 
 function getQuizProgressValue({
@@ -83,8 +96,16 @@ const Quiz = ({
   currentStep = 1,
   exitRoute,
   hideProgress = false,
+  showCompletionCard = true,
+  completedAdditionalText,
+  completedIcon,
+  completedTitle,
+  completedDescription,
+  completedCtaLabel,
+  onExitLabel,
   onAnswer,
   onComplete,
+  onExit,
 }: QuizProps) => {
   const { t } = useTranslation();
 
@@ -137,6 +158,10 @@ const Quiz = ({
   const isRequired = step?.required === true;
   const isCorrectSelected = isCorrect === true;
   const canProceed = step ? !isRequired || isCorrectSelected : false;
+  const showRetryButton =
+    hasAnsweredCurrentStep && isRequired && !isCorrectSelected;
+  const showNextButton = canProceed;
+  const hasControls = showRetryButton || showNextButton;
   const countsCurrentStepAsDone =
     hasAnsweredCurrentStep && (!isRequired || isCorrectSelected);
 
@@ -193,12 +218,12 @@ const Quiz = ({
 
     const isLastStep = stepIndex >= steps.length - 1;
     if (isLastStep) {
-      setIsCompleted(true);
       try {
         onComplete?.();
       } catch (_err) {
         // Swallow callback errors to avoid breaking the UI.
       }
+      if (showCompletionCard) setIsCompleted(true);
       return;
     }
 
@@ -208,6 +233,7 @@ const Quiz = ({
     hasAnsweredCurrentStep,
     isCompleted,
     onComplete,
+    showCompletionCard,
     step,
     stepIndex,
     steps.length,
@@ -216,47 +242,68 @@ const Quiz = ({
   if (!step || steps.length === 0) return null;
 
   if (isCompleted) {
+    const showExitButton = typeof onExit === 'function';
+
     return (
-      <QuizCard>
-        <QuizContent>
-          <FloatingCelebration>
-            <ConfettiImage label={t('quiz.completed_confetti_label')} />
-          </FloatingCelebration>
-          <Text type={TextTypes.Body2} tag="h2" bold center>
-            {t('quiz.completed_title')}
-          </Text>
-          <Text center>{t('quiz.completed_description')}</Text>
-          {exitRoute && (
-            <Link
-              to={exitRoute}
-              buttonAppearance={ButtonAppearance.Primary}
-              buttonSize={ButtonSizes.Stretch}
+      <QuizLayout>
+        <QuizCard>
+          <CardContent scrollable={false}>
+            <FloatingCelebration>
+              {completedIcon ?? (
+                <ConfettiImage label={t('quiz.completed_confetti_label')} />
+              )}
+            </FloatingCelebration>
+            <Text type={TextTypes.Body2} tag="h2" bold center>
+              {completedTitle ?? t('quiz.completed_title')}
+            </Text>
+            <Text center>
+              {completedDescription ?? t('quiz.completed_description')}
+            </Text>
+            {completedAdditionalText && (
+              <Text center>{completedAdditionalText}</Text>
+            )}
+            {exitRoute && (
+              <Link
+                to={exitRoute}
+                buttonAppearance={ButtonAppearance.Primary}
+                buttonSize={ButtonSizes.Stretch}
+              >
+                {completedCtaLabel ?? t('quiz.exit')}
+              </Link>
+            )}
+          </CardContent>
+        </QuizCard>
+
+        {showExitButton && (
+          <ExitControlsRow>
+            <Button
+              appearance={ButtonAppearance.Primary}
+              size={ButtonSizes.Medium}
+              onClick={onExit}
             >
-              {t('quiz.exit')}
-            </Link>
-          )}
-        </QuizContent>
-      </QuizCard>
+              {onExitLabel ?? t('quiz.exit')}
+            </Button>
+          </ExitControlsRow>
+        )}
+      </QuizLayout>
     );
   }
 
   return (
-    <QuizCard width={CardSizes.FullWidth}>
-      <CardHeader marginBottom={0}>
-        <QuizHeaderRow>
-          <QuizTitle type={TextTypes.Body2} bold tag="h2">
-            {t('quiz.title')}
-          </QuizTitle>
-          <QuizCounter type={TextTypes.Body4}>
+    <QuizLayout>
+      <QuizCard width={CardSizes.FullWidth}>
+        <QuizQuestion asContainer marginBottom={0} align="flex-start">
+          <QuizCounter type={TextTypes.Body5}>
             {t('quiz.question_counter', {
               current: stepIndex + 1,
               total: steps.length,
             })}
           </QuizCounter>
-        </QuizHeaderRow>
-      </CardHeader>
+          <QuestionText type={TextTypes.Body2} bold tag="h2">
+            {step.question}
+          </QuestionText>
+        </QuizQuestion>
 
-      <QuizContent>
         {!hideProgress && (
           <StyledProgressBar
             fullWidth
@@ -264,9 +311,6 @@ const Quiz = ({
             value={progressValue}
           />
         )}
-        <QuestionText type={TextTypes.Body2} bold tag="h2">
-          {step.question}
-        </QuestionText>
 
         <QuestionSection
           key={`${step.id}-${retryAnimationNonce}`}
@@ -297,6 +341,8 @@ const Quiz = ({
                   $isIncorrect={isIncorrectOption}
                   disabled={showingFeedback}
                   onClick={() => handleOptionSelect(option.id)}
+                  variation={ButtonVariations.Option}
+                  size={ButtonSizes.Stretch}
                 >
                   <span>{option.label}</span>
 
@@ -304,8 +350,8 @@ const Quiz = ({
                     <IconWrapper $variant="correct">
                       <CheckIcon
                         label={t('quiz.feedback.correct')}
-                        width={16}
-                        height={16}
+                        width={12}
+                        height={12}
                       />
                     </IconWrapper>
                   )}
@@ -324,28 +370,33 @@ const Quiz = ({
             })}
           </OptionsGroup>
         </QuestionSection>
-      </QuizContent>
+      </QuizCard>
 
-      <FooterRow align="flex-end">
-        {hasAnsweredCurrentStep && isRequired && !isCorrectSelected && (
-          <Button appearance={ButtonAppearance.Secondary} onClick={handleRetry}>
-            {t('quiz.retry')}
-          </Button>
-        )}
+      {hasControls && (
+        <ControlsRow>
+          {showRetryButton && (
+            <Button
+              appearance={ButtonAppearance.Secondary}
+              onClick={handleRetry}
+            >
+              {t('quiz.retry')}
+            </Button>
+          )}
 
-        {canProceed && (
-          <Button
-            appearance={ButtonAppearance.Primary}
-            onClick={handleNext}
-            disabled={!canProceed}
-          >
-            {stepIndex >= steps.length - 1
-              ? t('quiz.finish')
-              : t('quiz.next_step')}
-          </Button>
-        )}
-      </FooterRow>
-    </QuizCard>
+          {showNextButton && (
+            <Button
+              appearance={ButtonAppearance.Primary}
+              onClick={handleNext}
+              disabled={!canProceed}
+            >
+              {stepIndex >= steps.length - 1
+                ? t('quiz.finish')
+                : t('quiz.next_step')}
+            </Button>
+          )}
+        </ControlsRow>
+      )}
+    </QuizLayout>
   );
 };
 

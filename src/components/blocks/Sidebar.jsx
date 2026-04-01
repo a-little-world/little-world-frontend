@@ -34,7 +34,6 @@ import {
   HELP_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
-  ONBOARDING_ROUTE,
   OUR_WORLD_ROUTE,
   PROFILE_ROUTE,
   RESOURCES_ROUTE,
@@ -164,14 +163,24 @@ function Sidebar({ isVH, sidebarMobile }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
-  const { data: user, isLoading } = useSWR(USER_ENDPOINT);
-  const isOnboarded = isLoading ? false : user?.is_onboarded;
+  const { data: user } = useSWR(USER_ENDPOINT);
+  const isOnboarded = user?.isOnboarded;
   const startPath =
     getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
       ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
       : getAppRoute('');
 
-  const onboardedOnlyButtons = [
+  const buttonData = [
+    {
+      label: 'start',
+      path: startPath,
+      Icon: DashboardIcon,
+    },
+    {
+      label: isOnboarded ? 'messages' : 'support_chat',
+      path: getAppRoute(MESSAGES_ROUTE),
+      Icon: MessageIcon,
+    },
     {
       label: 'my_profile',
       path: getAppRoute(PROFILE_ROUTE),
@@ -187,26 +196,13 @@ function Sidebar({ isVH, sidebarMobile }) {
       path: getAppRoute(OUR_WORLD_ROUTE),
       Icon: HeartIcon,
     },
-  ];
-
-  const buttonData = [
-    {
-      label: isOnboarded ? 'start' : 'onboarding',
-      path: isOnboarded ? startPath : getAppRoute(ONBOARDING_ROUTE),
-      Icon: DashboardIcon,
-    },
-    {
-      label: isOnboarded ? 'messages' : 'support_chat',
-      path: getAppRoute(MESSAGES_ROUTE),
-      Icon: MessageIcon,
-    },
-    ...(isOnboarded ? onboardedOnlyButtons : []),
     { label: 'help', path: getAppRoute(HELP_ROUTE), Icon: QuestionIcon },
     {
       label: 'settings',
       path: getAppRoute(SETTINGS_ROUTE),
       Icon: SettingsIcon,
     },
+
     {
       label: 'log_out',
       clickEvent: () => {

@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { completeForm, mutateUserData } from '../../../api';
-import { USER_FIELDS } from '../../../constants';
+import { USER_FIELDS, USER_TYPES } from '../../../constants';
 import {
   API_OPTIONS_ENDPOINT,
   USER_ENDPOINT,
@@ -218,9 +218,11 @@ const Form = () => {
   const imageError = errors?.[USER_FIELDS.image];
   const displayError = serverError || imageError;
 
-  const lastStepButtonText = userData?.hadPreMatchingCall
+  const lastStepButtonText = userData?.isOnboarded
     ? 'complete'
-    : 'to_appointment_booking';
+    : userData?.profile?.user_type === USER_TYPES.learner
+    ? 'to_appointment_booking'
+    : 'to_onboarding';
 
   const noBackButton =
     Boolean(!prevPage) ||

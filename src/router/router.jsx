@@ -17,7 +17,6 @@ import RouterError from '../components/blocks/ErrorView/ErrorView';
 import Form from '../components/blocks/Form/Form';
 import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
 import FormLayout from '../components/blocks/Layout/FormLayout';
-import OnboardingSelection from '../components/blocks/OnboardingSelection/OnboardingSelection';
 import { ToastProvider } from '../components/blocks/Toast';
 import Welcome from '../components/blocks/Welcome/Welcome';
 import AboutUs from '../components/views/AboutUs/AboutUs';
@@ -31,7 +30,8 @@ import Login from '../components/views/Login';
 import Messages from '../components/views/Messages';
 import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
-import OnboardingModule from '../components/views/OnboardingModule';
+import OnboardingModule from '../components/views/Onboarding/OnboardingModule';
+import OnboardingSelection from '../components/views/Onboarding/OnboardingSelection';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
@@ -56,8 +56,6 @@ import {
   EDIT_FORM_ROUTE,
   EMAIL_PREFERENCES_ROUTE,
   FORGOT_PASSWORD_ROUTE,
-  FORM_ONBOARDING_ROUTE,
-  FORM_WALKTHROUGH_ROUTE,
   HELP_ROUTE,
   LANGUAGE_RESOURCES_ROUTE,
   LOGIN_ROUTE,
@@ -72,6 +70,7 @@ import {
   RANDOM_CALL_ROUTE,
   RESET_PASSWORD_ROUTE,
   RESOURCES_ROUTE,
+  SELF_ONBOARDING_ROUTE,
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
@@ -80,7 +79,6 @@ import {
   USER_FORM_ROUTE,
   USER_PROFILE_ROUTE,
   VERIFY_EMAIL_ROUTE,
-  WALKTHROUGH_ROUTE,
   getAppRoute,
 } from './routes';
 
@@ -386,7 +384,7 @@ export function getWebRouter() {
       ),
     },
     {
-      path: getAppRoute(FORM_ONBOARDING_ROUTE),
+      path: getAppRoute(ONBOARDING_ROUTE),
       element: (
         <FormLayout>
           <OnboardingSelection />
@@ -394,23 +392,7 @@ export function getWebRouter() {
       ),
     },
     {
-      path: getAppRoute(ONBOARDING_ROUTE),
-      element: (
-        <FullAppLayout>
-          <OnboardingSelection />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(WALKTHROUGH_ROUTE),
-      element: (
-        <FullAppLayout>
-          <OnboardingModule />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(FORM_WALKTHROUGH_ROUTE),
+      path: getAppRoute(SELF_ONBOARDING_ROUTE),
       element: (
         <FormLayout>
           <OnboardingModule />
@@ -517,6 +499,7 @@ export function getNativeRouter() {
       ),
       errorElement: <RouterError Layout={FormLayout} />,
     },
+
     {
       path: APP_ROUTE,
       element: (
@@ -525,6 +508,24 @@ export function getNativeRouter() {
         </FullAppLayout>
       ),
       errorElement: <RouterError />,
+    },
+    {
+      path: getAppRoute(ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingSelection />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: getAppRoute(SELF_ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingModule />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
     },
     {
       path: getAppRoute(VERIFY_EMAIL_ROUTE),

@@ -70,3 +70,12 @@ export const pagesWithViewportHeight = ['chat'];
 export const STORAGE_KEYS = {
   themePreference: 'theme-preference',
 };
+
+/**
+ * Must match `SELF_ONBOARDING_STEP_ORDER` in `back/management/api/user.py`.
+ */
+export const SELF_ONBOARDING_WALKTHROUGH_STEP_IDS = [
+  'self_onboarding_c1_q_1',
+  'self_onboarding_c2_q_1',
+  'self_onboarding_c3_q_1',
+] as const;
