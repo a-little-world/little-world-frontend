@@ -37,9 +37,11 @@ function FireBase() {
 
   const notificationStore = useNotificationStore();
 
-  const permissionStatus = Notification.permission;
+  const permissionStatus = globalThis.Notification?.permission;
   useEffect(() => {
-    notificationStore.setDevicePermissionSet(permissionStatus !== 'default');
+    notificationStore.setDevicePermissionSet(
+      permissionStatus !== undefined && permissionStatus !== 'default',
+    );
     notificationStore.setDevicePermissionGranted(
       permissionStatus === 'granted',
     );

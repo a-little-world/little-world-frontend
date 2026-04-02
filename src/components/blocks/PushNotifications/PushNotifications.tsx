@@ -94,7 +94,11 @@ const PushNotifications = ({
   }, [enabledWithPermissionDenied, setError, clearErrors, t]);
 
   const requestNotificationPermission = async () => {
-    const permissionStatus = await Notification.requestPermission();
+    const NotificationCtor = globalThis.Notification;
+    if (typeof NotificationCtor?.requestPermission !== 'function') {
+      return;
+    }
+    const permissionStatus = await NotificationCtor.requestPermission();
     setDevicePermissionSet(permissionStatus !== 'default');
     setDevicePermissionGranted(permissionStatus === 'granted');
   };
