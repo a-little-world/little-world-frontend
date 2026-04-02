@@ -218,7 +218,7 @@ const Form = () => {
   const imageError = errors?.[USER_FIELDS.image];
   const displayError = serverError || imageError;
 
-  const lastStepButtonText = userData?.hadPreMatchingCall
+  const lastStepButtonText = userData?.isOnboarded
     ? 'complete'
     : 'to_appointment_booking';
 
