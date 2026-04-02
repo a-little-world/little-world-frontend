@@ -61,15 +61,6 @@ const Wrapper = styled.div<{ $isVH: boolean }>`
   `};
 `;
 
-const LoadingCenter = styled.div`
-  display: flex;
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 100%;
-`;
-
 const Content = styled.section<{ $isVH: boolean }>`
   display: flex;
   flex-direction: column;
