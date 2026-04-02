@@ -59,7 +59,7 @@ export const submitHelpForm = async (formData, onSuccess, onFailure) => {
     onSuccess(response);
   } catch (error) {
     if (error?.status === 413) {
-      onFailure(new Error('validation.image_upload_error'));
+      onFailure(new Error('validation.help_upload_file_too_large'));
     } else {
       onFailure(error);
     }
