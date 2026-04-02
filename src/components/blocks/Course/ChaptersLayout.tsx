@@ -536,6 +536,7 @@ export default function ChaptersLayout({
               fullWidth
               max={totalProgressSteps}
               value={progressValue}
+              hideLabel
             />
           </ProgressRow>
           <Navigation>

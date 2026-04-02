@@ -23,21 +23,21 @@ const ONBOARDING_VIDEOS: Array<{
 }> = [
   {
     id: '1',
-    title: 'Video 1',
-    description: 'Description 1',
+    title: 'Little World Einführung - Teil 1',
+    description: '',
     video: 'https://youtu.be/2djMjpVy3ss',
   },
   {
     id: '2',
-    title: 'Video 2',
-    description: 'Description 2',
+    title: 'Little World Einführung - Teil 2',
+    description: '',
     video: 'https://youtu.be/MtjitzgSnm8',
   },
   {
     id: '3',
-    title: 'Video 3',
-    description: 'Description 3',
-    video: 'https://youtu.be/DGejr3GCXKc',
+    title: 'Little World Einführung - Teil 3',
+    description: '',
+    video: 'https://youtu.be/nv2V01yCHjw',
   },
 ];
 
