@@ -1,17 +1,18 @@
 import {
   ButtonAppearance,
   Gradients,
-  OPTION_BUTTON_CSS,
+  STACKED_BUTTON_CSS,
   Text,
 } from '@a-little-world/little-world-design-system';
 import { isNumber } from 'lodash';
 import { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
+
 import UnreadDot from './UnreadDot';
 
 const MENU_LINK_CSS = css<{ $appearance?: ButtonAppearance; $order?: number }>`
-  ${OPTION_BUTTON_CSS}
+  ${STACKED_BUTTON_CSS}
   position: relative;
   flex-shrink: 0;
 

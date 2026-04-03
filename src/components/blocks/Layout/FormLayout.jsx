@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -22,7 +21,7 @@ const Content = styled.div`
   ${({ theme }) => `
   padding: ${theme.spacing.small};
 
-  @media (min-width: ${theme.breakpoints.small}) {
+  @media (min-width: ${theme.breakpoints.medium}) {
       flex: unset;
       padding: ${theme.spacing.large};
     }

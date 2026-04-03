@@ -7,7 +7,7 @@ import {
 import { isBoolean } from 'lodash';
 
 import { COUNTRIES, LANGUAGES, USER_TYPES } from '../constants';
-import { USER_FORM_ROUTES } from '../router/routes';
+import { ONBOARDING_ROUTE, USER_FORM_ROUTES } from '../router/routes';
 import { ComponentTypes, formatDataField } from './formContent';
 
 const columnKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
@@ -373,7 +373,8 @@ const formPages = {
     step: 8,
     totalSteps: getSteps(userData?.user_type),
     prevPage: USER_FORM_ROUTES.NOTIFICATIONS,
-    nextPage: '',
+    nextPage:
+      userData?.user_type === USER_TYPES.volunteer ? ONBOARDING_ROUTE : '',
     components: [
       {
         type: ComponentTypes.textContent,

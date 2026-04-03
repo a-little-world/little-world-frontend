@@ -26,6 +26,7 @@ import {
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
+  USER_ENDPOINT,
   resetUserQueries,
 } from '../../features/swr/index';
 import { unregisterFirebaseDeviceToken } from '../../firebase-util';
@@ -163,14 +164,24 @@ function Sidebar({ isVH, sidebarMobile }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { data: user } = useSWR(USER_ENDPOINT);
+  const isOnboarded = user?.isOnboarded;
   const startPath =
     getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
       ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
       : getAppRoute('');
 
   const buttonData = [
-    { label: 'start', path: startPath, Icon: DashboardIcon },
-    { label: 'messages', path: getAppRoute(MESSAGES_ROUTE), Icon: MessageIcon },
+    {
+      label: 'start',
+      path: startPath,
+      Icon: DashboardIcon,
+    },
+    {
+      label: isOnboarded ? 'messages' : 'support_chat',
+      path: getAppRoute(MESSAGES_ROUTE),
+      Icon: MessageIcon,
+    },
     {
       label: 'my_profile',
       path: getAppRoute(PROFILE_ROUTE),
@@ -181,17 +192,18 @@ function Sidebar({ isVH, sidebarMobile }) {
       path: getAppRoute(RESOURCES_ROUTE),
       Icon: StackIcon,
     },
+    {
+      label: 'about_us',
+      path: getAppRoute(OUR_WORLD_ROUTE),
+      Icon: HeartIcon,
+    },
     { label: 'help', path: getAppRoute(HELP_ROUTE), Icon: QuestionIcon },
     {
       label: 'settings',
       path: getAppRoute(SETTINGS_ROUTE),
       Icon: SettingsIcon,
     },
-    {
-      label: 'about_us',
-      path: getAppRoute(OUR_WORLD_ROUTE),
-      Icon: HeartIcon,
-    },
+
     {
       label: 'log_out',
       clickEvent: async () => {
@@ -285,7 +297,7 @@ function Sidebar({ isVH, sidebarMobile }) {
               <LogoutButton
                 key={label}
                 type="button"
-                variation={ButtonVariations.Option}
+                variation={ButtonVariations.Stacked}
                 appearance={
                   isActive
                     ? ButtonAppearance.Secondary

@@ -25,7 +25,7 @@ import {
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import {
@@ -57,7 +57,11 @@ import { CallSetupCard } from '../Calls/CallSetup';
 import { TextField } from '../Profile/styles';
 
 type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected';
-type RejectionReason = 'user_rejected' | 'partner_rejected' | 'timeout';
+type RejectionReason =
+  | 'user_rejected'
+  | 'partner_rejected'
+  | 'timeout'
+  | 'error';
 
 interface PartnerInfoInterface {
   id: string;
@@ -190,7 +194,7 @@ const RandomCallSetup = ({
   // Countdown timer
   useEffect(() => {
     if (countdown === null || countdown <= 0) {
-      return () => { };
+      return () => {};
     }
 
     const timer = setTimeout(() => {
@@ -282,7 +286,7 @@ const RandomCallSetup = ({
             inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
             label={t('random_calls.lobby_switch_gender')}
             labelInline
-            onCheckedChange={() => { }}
+            onCheckedChange={() => {}}
           />
         )}
         {switchesEnabled && user?.profile?.user_type === USER_TYPES.learner && (
@@ -291,7 +295,7 @@ const RandomCallSetup = ({
             label={t('random_calls.lobby_switch_learners')}
             labelTooltip={t('random_calls.lobby_switch_learners_tooltip')}
             labelInline
-            onCheckedChange={() => { }}
+            onCheckedChange={() => {}}
           />
         )}
         {error && (
@@ -309,8 +313,8 @@ const RandomCallSetup = ({
         >
           {!hasJoinedLobby && countdown !== null
             ? t('random_calls.lobby_joining_in_x_seconds', {
-              seconds: countdown,
-            })
+                seconds: countdown,
+              })
             : t('random_calls.lobby_cancel_search')}
         </Button>
       </CardFooter>
@@ -418,7 +422,7 @@ const PartnerProposal = ({
   );
 };
 
-const SessionsExpiredView = ({
+const LobbyExpiredView = ({
   onClose,
   error,
 }: {
@@ -465,6 +469,7 @@ const RejectedView = ({
   error?: string | null;
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   const getTitleKey = () => {
     switch (reason) {
@@ -474,6 +479,8 @@ const RejectedView = ({
         return 'random_calls.partner_rejected_title';
       case 'timeout':
         return 'random_calls.proposal_timeout_title';
+      case 'error':
+        return 'random_calls.error_title';
       default:
         return 'random_calls.rejected_title';
     }
@@ -487,21 +494,23 @@ const RejectedView = ({
         return 'random_calls.partner_rejected_description';
       case 'timeout':
         return 'random_calls.user_rejected_timeout_description';
+      case 'error':
+        return 'random_calls.error_description';
       default:
         return 'random_calls.rejected_description';
     }
   };
 
-  console.log({ reason, a: getTitleKey(), b: getDescriptionKey() });
   return (
     <ProposalCard className="" size={undefined}>
+      <ExclamationIcon
+        label="Exclamation mark"
+        width={24}
+        height={24}
+        color={theme.color.text.error}
+      />
       <CardHeader>{t(getTitleKey())}</CardHeader>
       <CardContent>
-        <ExclamationIcon
-          label="Exclamation circle icon"
-          width={20}
-          height={20}
-        />
         <Text center>{t(getDescriptionKey())}</Text>
         {error && (
           <StatusMessage type={StatusTypes.Error} visible>
@@ -525,6 +534,7 @@ const RandomCallsLobby = ({
   lobbyUuid: string;
   onCancel: () => void;
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { connectToCall } = useConnectedCallStore();
   const [lobbyState, setLobbyState] = useState<LobbyState>('idle');
@@ -560,7 +570,7 @@ const RandomCallsLobby = ({
       statusAttemptId
       ? `/api/random_calls/lobby/${lobbyUuid}/status?attempt=${statusAttemptId}`
       : null,
-    () => getLobbyStatus(lobbyUuid, statusAttemptId),
+    getLobbyStatus,
     {
       refreshInterval: 2000,
       onError: err => {
@@ -574,7 +584,6 @@ const RandomCallsLobby = ({
   );
 
   console.log({ statusData, lobbyState, matchData, rejectionReason });
-
   // Check for matching
   useEffect(() => {
     if (!hasJoinedLobby) return;
@@ -717,9 +726,9 @@ const RandomCallsLobby = ({
         (current: any) =>
           current
             ? {
-              ...current,
-              matching: null,
-            }
+                ...current,
+                matching: null,
+              }
             : current,
         { revalidate: true },
       );
@@ -742,9 +751,9 @@ const RandomCallsLobby = ({
         (current: any) =>
           current
             ? {
-              ...current,
-              matching: null,
-            }
+                ...current,
+                matching: null,
+              }
             : current,
         { revalidate: true },
       );
@@ -763,9 +772,9 @@ const RandomCallsLobby = ({
       (current: any) =>
         current
           ? {
-            ...current,
-            matching: null,
-          }
+              ...current,
+              matching: null,
+            }
           : current,
       { revalidate: true },
     );
@@ -783,7 +792,6 @@ const RandomCallsLobby = ({
 
     setError(null);
     try {
-      // Call room authentication API
       const roomData = await authenticateRoom(lobbyUuid, currentMatchData.uuid);
 
       // Set up call connection with room data, including device choices
@@ -816,14 +824,11 @@ const RandomCallsLobby = ({
       // Close the lobby modal
       onCancel();
     } catch (err: any) {
-      // TODO: There should be a seperaete lobby state here
-      // Something around 'error connecting to call' but you can retry
-      const errorMessage =
-        err?.message || 'Failed to connect to call. Please try again.';
+      const errorMessage = err?.message || t('error.connect_to_call');
       setError(errorMessage);
       // On error, show as rejected
-      setRejectionReason('timeout');
-      setLobbyState('rejected'); // TODO: Should be different lobby state
+      setRejectionReason('error');
+      setLobbyState('rejected');
       setIsAccepting(false);
     }
   };
@@ -860,7 +865,7 @@ const RandomCallsLobby = ({
         />
       );
     case 'timeout':
-      return <SessionsExpiredView onClose={handleCancel} error={error} />;
+      return <LobbyExpiredView onClose={handleCancel} error={error} />;
     case 'rejected':
       return (
         <RejectedView
