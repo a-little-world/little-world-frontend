@@ -166,7 +166,9 @@ function OnboardingSelection() {
   const { t } = useTranslation();
   const [partnerActionData, setPartnerActionData] =
     useState<PartnerActionData | null>(null);
-  const { data: user, isLoading } = useSWR(USER_ENDPOINT);
+  const { data: user, isLoading } = useSWR(USER_ENDPOINT, {
+    revalidateOnFocus: true,
+  });
   const selfOnboardingStep = user?.selfOnboardingStepId;
   const preMatchingAppointment = user?.preMatchingAppointment;
   const hasAppointment = !!preMatchingAppointment?.start_time;
@@ -197,7 +199,10 @@ function OnboardingSelection() {
 
   if (isLoading) return <LoadingScreen />;
 
-  if (user?.profile?.user_type === USER_TYPES.learner) {
+  if (
+    user?.profile?.user_type === USER_TYPES.learner ||
+    user?.state?.is_onboarded
+  ) {
     return <Navigate to={getAppRoute()} replace />;
   }
 

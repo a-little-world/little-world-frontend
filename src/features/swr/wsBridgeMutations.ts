@@ -103,9 +103,9 @@ export function addMessage(
             return {
               ...chat,
               unread_count:
-                senderIsSelf || message.read ?
-                  chat.unread_count :
-                  (chat.unread_count || 0) + 1,
+                senderIsSelf || message.read
+                  ? chat.unread_count
+                  : (chat.unread_count || 0) + 1,
               newest_message: message,
             };
           }
@@ -298,13 +298,13 @@ export function runWsBridgeMutation(
       break;
     }
     case 'preMatchingAppointmentBooked': {
-      const { appointment } = payload;
-      preMatchingAppointmentBooked(appointment);
+      // Payload is PreMatchingAppointmentSerializer data
+      preMatchingAppointmentBooked(payload);
       break;
     }
     case 'addPostCallSurvey': {
-      const { postCallSurvey } = payload;
-      addPostCallSurvey(postCallSurvey);
+      // Payload is the post-call survey dict
+      addPostCallSurvey(payload);
       break;
     }
     default:
