@@ -3,7 +3,6 @@ import {
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
-  CardContent,
   CardSizes,
   CheckIcon,
   CloseIcon,
@@ -29,6 +28,7 @@ import {
   QuizCounter,
   QuizLayout,
   QuizQuestion,
+  StyledCardContent,
   StyledProgressBar,
 } from './Quiz.styles';
 
@@ -247,7 +247,7 @@ const Quiz = ({
     return (
       <QuizLayout>
         <QuizCard>
-          <CardContent scrollable={false}>
+          <StyledCardContent scrollable={false}>
             <FloatingCelebration>
               {completedIcon ?? (
                 <ConfettiImage label={t('quiz.completed_confetti_label')} />
@@ -271,7 +271,7 @@ const Quiz = ({
                 {completedCtaLabel ?? t('quiz.exit')}
               </Link>
             )}
-          </CardContent>
+          </StyledCardContent>
         </QuizCard>
 
         {showExitButton && (

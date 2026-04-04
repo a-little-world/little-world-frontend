@@ -15,6 +15,7 @@ import {
   getAppRoute,
   getHomeRoute,
 } from '../../router/routes';
+import { USER_TYPES } from '../../constants';
 import Logo from '../atoms/Logo';
 import LanguageSelector from './LanguageSelector/LanguageSelector';
 
@@ -76,13 +77,14 @@ const Header = () => {
   const { t } = useTranslation();
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
-  const userId = user?.id;
+  const accessToMainApp = user?.profile?.user_type === USER_TYPES.learner ? user?.state?.userFormCompleted : user?.state?.is_onboarded;
+  const href = accessToMainApp ? getAppRoute() : WP_HOME_ROUTE;
 
   return (
     <StyledHeader>
       <LogoLink
-        href={userId ? getAppRoute() : WP_HOME_ROUTE}
-        target={environment?.isNative ? '_blank' : '_self'}
+        href={href}
+        target={environment?.isNative || !accessToMainApp ? '_blank' : '_self'}
       >
         <Logo stacked={false} />
       </LogoLink>

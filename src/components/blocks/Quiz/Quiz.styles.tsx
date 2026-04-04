@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  CardContent,
   CardHeader,
   ProgressBar,
   Text,
@@ -34,6 +35,11 @@ export const QuizLayout = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.medium};
   align-items: center;
+`;
+
+export const StyledCardContent = styled(CardContent)`
+  max-width: 800px;
+  margin: 0 auto;
 `;
 
 export const StepContainer = styled.div`
