@@ -12,6 +12,53 @@ import reportWebVitals from './reportWebVitals';
 import { Root } from './router/router';
 
 let root;
+const IG_WEBVIEW_BRIDGE_ERROR_PATTERN =
+  /enableButtonsClickedMetaDataLogging.*Java object is gone/i;
+const IG_WEBVIEW_BRIDGE_GUARD_FLAG = 'lwInstagramBridgeErrorGuardInstalled';
+
+const isInstagramWebviewBridgeError = value => {
+  if (!value) return false;
+  if (typeof value === 'string') {
+    return IG_WEBVIEW_BRIDGE_ERROR_PATTERN.test(value);
+  }
+  if (typeof value.message === 'string') {
+    return IG_WEBVIEW_BRIDGE_ERROR_PATTERN.test(value.message);
+  }
+  try {
+    return IG_WEBVIEW_BRIDGE_ERROR_PATTERN.test(String(value));
+  } catch (_error) {
+    return false;
+  }
+};
+
+const suppressIfInstagramBridgeError = (event, candidate) => {
+  if (!isInstagramWebviewBridgeError(candidate)) return;
+  event.preventDefault?.();
+  event.stopImmediatePropagation?.();
+};
+
+const installInstagramBridgeErrorGuard = () => {
+  if (typeof window === 'undefined') return;
+  if (window[IG_WEBVIEW_BRIDGE_GUARD_FLAG]) return;
+
+  window[IG_WEBVIEW_BRIDGE_GUARD_FLAG] = true;
+  window.addEventListener(
+    'error',
+    event => {
+      suppressIfInstagramBridgeError(event, event.error || event.message);
+    },
+    true,
+  );
+  window.addEventListener(
+    'unhandledrejection',
+    event => {
+      suppressIfInstagramBridgeError(event, event.reason);
+    },
+    true,
+  );
+};
+
+installInstagramBridgeErrorGuard();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function renderApp({ user, apiTranslations, apiOptions }) {
