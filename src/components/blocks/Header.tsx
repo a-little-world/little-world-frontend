@@ -73,10 +73,7 @@ const LogoLink = styled.a`
 `;
 
 const Header = () => {
-  const {
-    i18n: { language },
-    t,
-  } = useTranslation();
+  const { t } = useTranslation();
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
   const userId = user?.id;
@@ -94,14 +91,14 @@ const Header = () => {
       </Options>
       <Policies>
         <Link
-          href={getHomeRoute(language, TERMS_ROUTE)}
+          href={getHomeRoute('de', TERMS_ROUTE)}
           target="_blank"
           textType={TextTypes.Body6}
         >
           {t('header.terms')}
         </Link>
         <Link
-          href={getHomeRoute(language, PRIVACY_ROUTE)}
+          href={getHomeRoute('de', PRIVACY_ROUTE)}
           target="_blank"
           textType={TextTypes.Body6}
         >
