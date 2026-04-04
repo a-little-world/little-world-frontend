@@ -199,10 +199,7 @@ function OnboardingSelection() {
 
   if (isLoading) return <LoadingScreen />;
 
-  if (
-    user?.profile?.user_type === USER_TYPES.learner ||
-    user?.state?.is_onboarded
-  ) {
+  if (user?.profile?.user_type === USER_TYPES.learner || user?.isOnboarded) {
     return <Navigate to={getAppRoute()} replace />;
   }
 

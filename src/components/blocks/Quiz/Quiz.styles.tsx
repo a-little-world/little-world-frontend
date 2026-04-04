@@ -40,6 +40,7 @@ export const QuizLayout = styled.div`
 export const StyledCardContent = styled(CardContent)`
   max-width: 800px;
   margin: 0 auto;
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
 
 export const StepContainer = styled.div`

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
+import { USER_TYPES } from '../../constants';
 import { environment } from '../../environment';
 import {
   IS_AUTHENTICATED_ENDPOINT,
@@ -15,7 +16,6 @@ import {
   getAppRoute,
   getHomeRoute,
 } from '../../router/routes';
-import { USER_TYPES } from '../../constants';
 import Logo from '../atoms/Logo';
 import LanguageSelector from './LanguageSelector/LanguageSelector';
 
@@ -77,7 +77,10 @@ const Header = () => {
   const { t } = useTranslation();
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
-  const accessToMainApp = user?.profile?.user_type === USER_TYPES.learner ? user?.state?.userFormCompleted : user?.state?.is_onboarded;
+  const accessToMainApp =
+    user?.profile?.user_type === USER_TYPES.learner
+      ? user?.userFormCompleted
+      : user?.isOnboarded;
   const href = accessToMainApp ? getAppRoute() : WP_HOME_ROUTE;
 
   return (
