@@ -217,10 +217,16 @@ export const FloatingCelebration = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 120px;
+  max-width: 80px;
   width: 100%;
 
   & > * {
     animation: ${float} 2.8s ease-in-out infinite;
   }
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      max-width: 120px;
+    }
+  `}
 `;

@@ -30,8 +30,8 @@ import Login from '../components/views/Login';
 import Messages from '../components/views/Messages';
 import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
-import OnboardingModule from '../components/views/Onboarding/OnboardingModule';
 import OnboardingSelection from '../components/views/Onboarding/OnboardingSelection';
+import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalkthrough';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
@@ -395,7 +395,7 @@ export function getWebRouter() {
       path: getAppRoute(SELF_ONBOARDING_ROUTE),
       element: (
         <FormLayout>
-          <OnboardingModule />
+          <OnboardingWalkthrough />
         </FormLayout>
       ),
     },
@@ -522,7 +522,7 @@ export function getNativeRouter() {
       path: getAppRoute(SELF_ONBOARDING_ROUTE),
       element: (
         <FormLayout>
-          <OnboardingModule />
+          <OnboardingWalkthrough />
         </FormLayout>
       ),
       errorElement: <RouterError Layout={FormLayout} />,

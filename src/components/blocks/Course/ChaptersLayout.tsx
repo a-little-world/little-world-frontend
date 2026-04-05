@@ -8,6 +8,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { isFunction } from 'lodash';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -82,16 +83,72 @@ const HeaderContent = styled.div`
   justify-content: flex-start;
 `;
 
-const HeaderTitle = styled(Text)`
-  display: none;
+const HeaderTitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: ${({ theme }) => theme.spacing.small};
+  width: 100%;
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: center;
-      width: 100%;
+      padding: 0 ${theme.spacing.small} ${theme.spacing.xxsmall};
     }
   `}
+`;
+
+const HeaderBackCell = styled.div`
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      justify-self: start;
+    }
+  `}
+`;
+
+const HeaderTitleCenter = styled.div`
+  display: none;
+  min-width: 0;
+  text-align: center;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: block;
+      justify-self: center;
+    }
+  `}
+`;
+
+const HeaderTitleTrailing = styled.div`
+  display: none;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: block;
+    }
+  `}
+`;
+
+const HeaderTitle = styled(Text)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+`;
+
+const BackButton = styled(Button)`
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
+  font-weight: 600;
+  padding: ${({ theme }) => theme.spacing.xxsmall} !important;
+  flex-shrink: 0;
+  text-align: left;
+
+  > svg {
+    flex-shrink: 0;
+  }
 `;
 
 const ProgressRow = styled.div`
@@ -109,35 +166,13 @@ const ProgressRow = styled.div`
   `}
 `;
 
-const Navigation = styled.nav`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  width: 100%;
-  justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing.small};
-`;
-
-const NavButton = styled(Button)`
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
-  font-weight: 600;
-  padding: ${({ theme }) => theme.spacing.xxsmall} !important;
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      margin-bottom: ${theme.spacing.xsmall};
-    }
-  `}
-`;
-
-const ChaptersNav = styled.div`
+const ChaptersNav = styled.nav`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   overflow-x: auto;
-  padding: ${({ theme }) => theme.spacing.xsmall}
-    ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.xsmall};
+  width: 100%;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
@@ -528,9 +563,32 @@ export default function ChaptersLayout({
     <CourseContainer>
       <Header>
         <HeaderContent>
-          <HeaderTitle type={TextTypes.Body1} bold center>
-            {courseTitle ?? t('onboarding_walkthrough.title')}
-          </HeaderTitle>
+          <HeaderTitleRow>
+            <HeaderBackCell>
+              {isFunction(onBack) && (mode === 'video' || mode === 'quiz') && (
+                <BackButton
+                  variation={ButtonVariations.Icon}
+                  appearance={ButtonAppearance.Secondary}
+                  onClick={
+                    mode === 'video'
+                      ? onBack
+                      : () => goToVideo(activeChapterIndex)
+                  }
+                >
+                  <ArrowLeftIcon label="back" width={12} height={12} />
+                  {mode === 'video'
+                    ? t('onboarding_walkthrough.nav_back')
+                    : t('onboarding_walkthrough.nav_back_to_video')}
+                </BackButton>
+              )}
+            </HeaderBackCell>
+            <HeaderTitleCenter>
+              <HeaderTitle type={TextTypes.Body1} bold center>
+                {courseTitle ?? t('onboarding_walkthrough.title')}
+              </HeaderTitle>
+            </HeaderTitleCenter>
+            <HeaderTitleTrailing aria-hidden />
+          </HeaderTitleRow>
           <ProgressRow>
             <ProgressBar
               fullWidth
@@ -539,55 +597,43 @@ export default function ChaptersLayout({
               hideLabel
             />
           </ProgressRow>
-          <Navigation>
-            <ChaptersNav>
-              {chapters.map((chapter, index) => {
-                const isActive = index === activeChapterIndex;
-                const isCompleted = index < unlockedChapterCount;
-                const isLocked = index > unlockedChapterCount;
-                let chapterStatus = t(
-                  'onboarding_walkthrough.chapter_status_in_progress',
+          <ChaptersNav>
+            {chapters.map((chapter, index) => {
+              const isActive = index === activeChapterIndex;
+              const isCompleted = index < unlockedChapterCount;
+              const isLocked = index > unlockedChapterCount;
+              let chapterStatus = t(
+                'onboarding_walkthrough.chapter_status_in_progress',
+              );
+              if (isCompleted) {
+                chapterStatus = t(
+                  'onboarding_walkthrough.chapter_status_completed',
                 );
-                if (isCompleted) {
-                  chapterStatus = t(
-                    'onboarding_walkthrough.chapter_status_completed',
-                  );
-                } else if (isLocked) {
-                  chapterStatus = t(
-                    'onboarding_walkthrough.chapter_status_locked',
-                  );
-                }
-                return (
-                  <ChapterButton
-                    key={`nav-${chapter.id}`}
-                    type="button"
-                    onClick={() => handleChapterClick(index)}
-                    disabled={isLocked}
-                    $isActive={isActive}
-                    $isCompleted={isCompleted}
-                    $isLocked={isLocked}
-                  >
-                    <ChapterTitle type={TextTypes.Body3} bold>
-                      {chapter.title}
-                    </ChapterTitle>
-                    <ChapterSub type={TextTypes.Body4}>
-                      {chapterStatus}
-                    </ChapterSub>
-                  </ChapterButton>
+              } else if (isLocked) {
+                chapterStatus = t(
+                  'onboarding_walkthrough.chapter_status_locked',
                 );
-              })}
-            </ChaptersNav>
-            {mode === 'quiz' && (
-              <NavButton
-                variation={ButtonVariations.Icon}
-                appearance={ButtonAppearance.Secondary}
-                onClick={() => goToVideo(activeChapterIndex)}
-              >
-                <ArrowLeftIcon label="back" width={16} height={16} />
-                {t('onboarding_walkthrough.nav_back_to_video')}
-              </NavButton>
-            )}
-          </Navigation>
+              }
+              return (
+                <ChapterButton
+                  key={`nav-${chapter.id}`}
+                  type="button"
+                  onClick={() => handleChapterClick(index)}
+                  disabled={isLocked}
+                  $isActive={isActive}
+                  $isCompleted={isCompleted}
+                  $isLocked={isLocked}
+                >
+                  <ChapterTitle type={TextTypes.Body3} bold>
+                    {chapter.title}
+                  </ChapterTitle>
+                  <ChapterSub type={TextTypes.Body4}>
+                    {chapterStatus}
+                  </ChapterSub>
+                </ChapterButton>
+              );
+            })}
+          </ChaptersNav>
         </HeaderContent>
       </Header>
 
@@ -616,7 +662,7 @@ export default function ChaptersLayout({
                   }}
                   disabled={activeChapterIndex === 0}
                 >
-                  {t('onboarding_walkthrough.nav_back')}
+                  {t('onboarding_walkthrough.nav_previous_chapter')}
                 </Button>
               )}
 
