@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
@@ -12,14 +11,15 @@ import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo';
 import ChatsPanel from '../blocks/ChatCore/ChatsPanel';
 import { ChatDashboard } from './Messages.styles';
 
+/** Stable empty list so we do not create a new [] every render while SWR is loading. */
+const EMPTY_CHAT_LIST = [];
+
 const Messages = () => {
   const { chatId } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [selectedChat, setSelectedChat] = useState(chatId);
 
   const selectChat = selectedChatId => {
-    setSelectedChat(selectedChatId);
     navigate(getAppRoute(`chat/${selectedChatId}`));
   };
 
@@ -53,32 +53,31 @@ const Messages = () => {
         },
       );
     },
-    currentPage: chats?.page ? chats.page : 0,
+    currentPage: chats?.page ?? 0,
     totalPages: chats?.pages_total || 1,
-    items: chats?.results || [],
+    items: chats?.results ?? EMPTY_CHAT_LIST,
   });
 
   const handleOnChatBackBtn = () => {
-    setSelectedChat(null);
     navigate(getAppRoute(MESSAGES_ROUTE));
   };
+
+  const chatResults = chats?.results ?? EMPTY_CHAT_LIST;
 
   return (
     <>
       <PageHeader text={t('chat.header')} />
       <ChatDashboard>
         <ChatsPanel
-          chats={chats?.results || []}
+          chats={chatResults}
           selectChat={selectChat}
-          selectedChat={selectedChat}
+          selectedChat={chatId}
           scrollRef={scrollRef}
         />
         <ChatWithUserInfo
-          chatId={selectedChat}
+          chatId={chatId}
           onBackButton={handleOnChatBackBtn}
-          partner={
-            chats?.results?.find(item => item?.uuid === selectedChat)?.partner
-          }
+          partner={chatResults.find(item => item?.uuid === chatId)?.partner}
         />
       </ChatDashboard>
     </>

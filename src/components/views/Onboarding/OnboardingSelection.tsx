@@ -168,6 +168,7 @@ function OnboardingSelection() {
     useState<PartnerActionData | null>(null);
   const { data: user, isLoading } = useSWR(USER_ENDPOINT, {
     revalidateOnFocus: true,
+    refreshInterval: 2000, // 2 seconds
   });
   const selfOnboardingStep = user?.selfOnboardingStepId;
   const preMatchingAppointment = user?.preMatchingAppointment;

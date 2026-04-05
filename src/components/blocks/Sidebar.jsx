@@ -26,7 +26,6 @@ import {
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
-  USER_ENDPOINT,
   resetUserQueries,
 } from '../../features/swr/index';
 import { unregisterFirebaseDeviceToken } from '../../firebase-util';
@@ -164,8 +163,7 @@ function Sidebar({ isVH, sidebarMobile }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
-  const { data: user } = useSWR(USER_ENDPOINT);
-  const isOnboarded = user?.isOnboarded;
+
   const startPath =
     getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
       ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
@@ -178,7 +176,7 @@ function Sidebar({ isVH, sidebarMobile }) {
       Icon: DashboardIcon,
     },
     {
-      label: isOnboarded ? 'messages' : 'support_chat',
+      label: 'messages',
       path: getAppRoute(MESSAGES_ROUTE),
       Icon: MessageIcon,
     },

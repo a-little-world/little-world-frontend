@@ -8,7 +8,7 @@ import {
   USER_TYPES,
 } from '../../../constants';
 import { USER_ENDPOINT } from '../../../features/swr';
-import { getAppRoute } from '../../../router/routes';
+import { ONBOARDING_ROUTE, getAppRoute } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import CourseChaptersLayout, {
   type CourseChapter,
@@ -159,7 +159,7 @@ const OnboardingWalkthrough = () => {
       chapters={chapters}
       currentStepId={currentStep}
       courseTitle={t('onboarding_walkthrough.title')}
-      onBack={() => navigate(-1)}
+      onBack={() => navigate(getAppRoute(ONBOARDING_ROUTE))}
       onUpdateCourseStep={updateSelfOnboardingStep}
       onCourseComplete={() => navigate(getAppRoute())}
     />

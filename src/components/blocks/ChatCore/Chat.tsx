@@ -72,6 +72,8 @@ import {
   WriteSection,
 } from './Chat.styles';
 
+const EMPTY_MESSAGE_LIST: [] = [];
+
 const Chat = ({
   chatId,
   inCall = false,
@@ -108,7 +110,7 @@ const Chat = ({
       revalidateOnFocus: true,
     },
   );
-  const messages = chatMessages?.results || [];
+  const messages = chatMessages?.results ?? EMPTY_MESSAGE_LIST;
   const messagesResult = messages;
   const isUnmatched = activeChat?.is_unmatched;
 
@@ -127,8 +129,8 @@ const Chat = ({
     fetchArgs: { id: chatId },
     fetchCondition: !!chatId,
     items: messages,
-    currentPage: chatMessages?.page,
-    totalPages: chatMessages?.pages_total,
+    currentPage: chatMessages?.page ?? 0,
+    totalPages: chatMessages?.pages_total ?? 1,
     setItems: items => {
       if (chatMessages && messagesRef.current) {
         // Preserve scroll position when loading older messages
@@ -137,8 +139,9 @@ const Chat = ({
 
         mutateMessages(
           (prev: any) => {
+            const prevResults = prev?.results ?? [];
             const existingUuids = new Set(
-              prev?.results?.map((message: any) => message.uuid) || [],
+              prevResults.map((message: any) => message.uuid),
             );
             const newResults = items.results.filter(
               (message: any) => !existingUuids.has(message.uuid),
@@ -147,7 +150,7 @@ const Chat = ({
             return {
               ...prev,
               ...items,
-              results: [...prev.results, ...newResults],
+              results: [...prevResults, ...newResults],
             };
           },
           {
