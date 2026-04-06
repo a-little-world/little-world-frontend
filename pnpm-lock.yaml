@@ -12,7 +12,7 @@ importers:
         specifier: ^2.13.2
         version: 2.13.2(@types/react@19.0.0)(react-dom@19.2.4(react@19.2.4))(react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(styled-components@6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@babel/core':
-        specifier: ^7.20.12
+        specifier: ^7.29.0
         version: 7.29.0
       '@babel/preset-env':
         specifier: ^7.20.2
@@ -5268,7 +5268,7 @@ snapshots:
 
   '@babel/generator@7.17.7':
     dependencies:
-      '@babel/types': 7.17.0
+      '@babel/types': 7.29.0
       jsesc: 2.5.2
       source-map: 0.5.7
 
