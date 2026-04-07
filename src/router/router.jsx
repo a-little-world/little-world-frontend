@@ -30,6 +30,8 @@ import Login from '../components/views/Login';
 import Messages from '../components/views/Messages';
 import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
+import OnboardingSelection from '../components/views/Onboarding/OnboardingSelection';
+import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalkthrough';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
@@ -60,6 +62,7 @@ import {
   MESSAGES_ROUTE,
   MY_STORY_ROUTE,
   NOTIFICATIONS_ROUTE,
+  ONBOARDING_ROUTE,
   OUR_WORLD_ROUTE,
   PARTNERS_ROUTE,
   PARTNER_ROUTE,
@@ -67,6 +70,7 @@ import {
   RANDOM_CALL_ROUTE,
   RESET_PASSWORD_ROUTE,
   RESOURCES_ROUTE,
+  SELF_ONBOARDING_ROUTE,
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
@@ -380,6 +384,22 @@ export function getWebRouter() {
       ),
     },
     {
+      path: getAppRoute(ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingSelection />
+        </FormLayout>
+      ),
+    },
+    {
+      path: getAppRoute(SELF_ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingWalkthrough />
+        </FormLayout>
+      ),
+    },
+    {
       path: getAppRoute(USER_FORM_ROUTE),
       element: <FormLayout />,
       errorElement: <RouterError Layout={FormLayout} />,
@@ -479,6 +499,7 @@ export function getNativeRouter() {
       ),
       errorElement: <RouterError Layout={FormLayout} />,
     },
+
     {
       path: APP_ROUTE,
       element: (
@@ -489,10 +510,37 @@ export function getNativeRouter() {
       errorElement: <RouterError />,
     },
     {
+      path: getAppRoute(ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingSelection />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: getAppRoute(SELF_ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingWalkthrough />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
       path: getAppRoute(VERIFY_EMAIL_ROUTE),
       element: (
         <FormLayout>
           <VerifyEmail />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: getAppRoute(CHANGE_EMAIL_ROUTE),
+      element: (
+        <FormLayout>
+          <ChangeEmail />
         </FormLayout>
       ),
       errorElement: <RouterError Layout={FormLayout} />,

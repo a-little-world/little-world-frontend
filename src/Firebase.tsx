@@ -1,99 +1,28 @@
-import { getApps } from 'firebase/app';
 import {
   MessagePayload,
   Unsubscribe,
+  getMessaging,
   isSupported,
   onMessage,
-} from 'firebase/messaging';
+} from '@firebase/messaging';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
 
 import { ToastContextType } from './components/blocks/Toast';
-import { FIREBASE_ENDPOINT, USER_ENDPOINT } from './features/swr/index';
-import {
-  disableFirebase,
-  enableFirebase,
-  getFirebaseMessaging,
-  getFirebaseToken,
-  isFirebaseDeviceTokenRegistered,
-  registerFirebaseDeviceToken,
-  setFirebaseDeviceTokenRegistered,
-  unregisterFirebaseDeviceToken,
-} from './firebase-util';
+import useNotificationStore from './features/stores/notification';
+import { USER_ENDPOINT } from './features/swr/index';
+import { disableFirebase, enableFirebase } from './firebase-util';
 import useToast from './hooks/useToast';
 
-interface FirebasePushNotificationData {
-  headline: string;
-  title: string;
-  description: string;
-  timestamp: string;
-}
-
 function handleMessage(payload: MessagePayload, toast: ToastContextType): void {
-  const data = payload.data as unknown as FirebasePushNotificationData;
   toast.showToast({
-    headline: data.headline,
-    title: data.title,
-    description: data.description,
-    timestamp: new Date(data.timestamp).toLocaleTimeString(),
+    title: payload.notification?.title,
+    description: payload.notification?.body,
+    duration: 3000,
   });
-}
-
-async function register(
-  firebaseClientConfig: any,
-  firebasePublicVapidKey: string,
-): Promise<boolean> {
-  const permission = await Notification?.requestPermission();
-  if (permission !== 'granted') {
-    const supported = await isSupported();
-    if (!supported) {
-      // TOOD: some other error
-    }
-    return false;
-  }
-
-  enableFirebase(firebaseClientConfig);
-  const token = await getFirebaseToken(firebasePublicVapidKey);
-  if (!token) {
-    return false;
-  }
-
-  const isRegistered = isFirebaseDeviceTokenRegistered(token);
-  if (!isRegistered) {
-    registerFirebaseDeviceToken(firebasePublicVapidKey)
-      .then(() => {
-        setFirebaseDeviceTokenRegistered(token, true);
-      })
-      .catch(e => {
-        console.error(e);
-      });
-  }
-
-  return true;
-}
-
-async function unregister(firebasePublicVapidKey: string) {
-  if (getApps().length === 0) {
-    return;
-  }
-
-  const token = await getFirebaseToken(firebasePublicVapidKey);
-  // TODO: token sollte immer gesetzt sein
-  if (!token) {
-    return;
-  }
-
-  await unregisterFirebaseDeviceToken(firebasePublicVapidKey);
-  setFirebaseDeviceTokenRegistered(token!, false);
-  await disableFirebase();
 }
 
 function FireBase() {
-  const { data: firebaseConfig } = useSWR(FIREBASE_ENDPOINT, {
-    revalidateOnMount: false,
-    revalidateOnFocus: false,
-  });
-
   const { data: userData } = useSWR(USER_ENDPOINT, {
     revalidateOnMount: false,
     revalidateOnFocus: false,
@@ -101,35 +30,46 @@ function FireBase() {
 
   // TODO: double check if this is correct ( frontend store refactored )
   const unsubscribeRef = useRef<Unsubscribe | undefined>(undefined);
-  const push_notifications_enabled =
+  const userNotificationsEnabled =
     userData?.profile?.push_notifications_enabled;
 
-  const firebaseClientConfig = firebaseConfig?.firebaseClientConfig;
-  const firebasePublicVapidKey = firebaseConfig?.firebasePublicVapidKey;
   const toast = useToast();
 
+  const notificationStore = useNotificationStore();
+
+  const permissionStatus = globalThis.Notification?.permission;
   useEffect(() => {
-    console.log(
-      'push notifications enabled userData',
-      push_notifications_enabled,
+    notificationStore.setDevicePermissionSet(
+      permissionStatus !== undefined && permissionStatus !== 'default',
     );
+    notificationStore.setDevicePermissionGranted(
+      permissionStatus === 'granted',
+    );
+    isSupported().then(supported =>
+      notificationStore.setDeviceSupported(supported),
+    );
+  }, []);
 
-    const unsubscribe = () => {
-      unsubscribeRef.current?.();
-    };
+  useEffect(() => {
+    if (
+      userNotificationsEnabled !== undefined &&
+      userNotificationsEnabled !== null
+    ) {
+      notificationStore.setNotificationsEnabled(userNotificationsEnabled);
+    }
+  }, [userNotificationsEnabled]);
 
-    if (push_notifications_enabled) {
-      if (
-        firebaseClientConfig === undefined ||
-        firebasePublicVapidKey === undefined
-      ) {
-        return unsubscribe;
-      }
-      register(firebaseClientConfig, firebasePublicVapidKey).then(success => {
-        if (!success) {
-          return;
-        }
-        const messaging = getFirebaseMessaging();
+  const { deviceSupported, notificationsEnabled, devicePermissionGranted } =
+    notificationStore;
+
+  useEffect(() => {
+    if (!deviceSupported) {
+      return undefined;
+    }
+
+    if (notificationsEnabled && devicePermissionGranted) {
+      enableFirebase().then(() => {
+        const messaging = getMessaging();
         unsubscribeRef.current = onMessage(messaging, payload =>
           handleMessage(payload, toast),
         );
@@ -137,16 +77,16 @@ function FireBase() {
     } else {
       unsubscribeRef.current?.();
       unsubscribeRef.current = undefined;
-
-      unregister(firebasePublicVapidKey);
+      // free up firebase resources
+      disableFirebase();
     }
 
+    const unsubscribe = () => {
+      unsubscribeRef.current?.();
+    };
+
     return unsubscribe;
-  }, [
-    push_notifications_enabled,
-    firebaseClientConfig,
-    firebasePublicVapidKey,
-  ]);
+  }, [deviceSupported, notificationsEnabled, devicePermissionGranted]);
 
   return null;
 }

@@ -1,11 +1,16 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import { ReactNode, useEffect, useState } from 'react';
-import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
+import {
+  Navigate,
+  Outlet,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit';
-import { pagesWithViewportHeight } from '../../../constants/index';
+import { USER_TYPES, pagesWithViewportHeight } from '../../../constants/index';
 import {
   useCallSetupStore,
   useConnectedCallStore,
@@ -14,9 +19,12 @@ import {
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
+  USER_ENDPOINT,
 } from '../../../features/swr/index';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
 import useModalManager, { ModalTypes } from '../../../hooks/useModalManager';
+import { ONBOARDING_ROUTE, getAppRoute } from '../../../router/routes';
+import LoadingScreen from '../../atoms/LoadingScreen';
 import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
 import MatchModal from '../Matching/MatchModal';
@@ -85,6 +93,16 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { openModal, closeModal, isModalOpen } = useModalManager();
+
+  const { data: user, isLoading: isUserLoading } = useSWR(USER_ENDPOINT);
+  const onboardingBasePath = getAppRoute(ONBOARDING_ROUTE);
+  const isOnOnboardingRoute =
+    location.pathname === onboardingBasePath ||
+    location.pathname.startsWith(`${onboardingBasePath}/`);
+  const shouldRedirectVolunteerToOnboarding =
+    user?.profile?.user_type === USER_TYPES.volunteer &&
+    !user?.isOnboarded &&
+    !isOnOnboardingRoute;
 
   const page = location.pathname.split('/')[2] || 'main';
   const isVH = pagesWithViewportHeight.includes(page);
@@ -209,6 +227,18 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       });
     else closePostCallSurvey();
   };
+
+  if (isUserLoading && !user) {
+    return (
+      <Wrapper $isVH={isVH}>
+        <LoadingScreen />
+      </Wrapper>
+    );
+  }
+
+  if (shouldRedirectVolunteerToOnboarding) {
+    return <Navigate to={onboardingBasePath} replace />;
+  }
 
   return (
     <Wrapper $isVH={isVH}>

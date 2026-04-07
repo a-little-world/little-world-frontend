@@ -37,7 +37,11 @@ const Home = styled.div`
   `};
 `;
 
-type subpages = 'events' | 'conversation_partners' | 'random_calls';
+type subpages =
+  | 'events'
+  | 'conversation_partners'
+  | 'random_calls'
+  | 'onboarding';
 
 const PAGE_ITEMS = 10;
 
@@ -91,7 +95,7 @@ function Main() {
     if (location.pathname === getAppRoute(RANDOM_CALLS_ROUTE)) {
       return 'random_calls';
     }
-    return 'conversation_partners';
+    return user?.isOnboarded ? 'conversation_partners' : 'onboarding';
   };
 
   const subpage = getSubpage();
@@ -112,6 +116,11 @@ function Main() {
     handlePageChange(page);
   };
 
+  const excludedTopics = !hasRandomCallAccess ? ['random_calls'] : [];
+  excludedTopics.push(
+    !user?.isOnboarded ? 'conversation_partners' : 'onboarding',
+  );
+
   return (
     <>
       <ContentSelector
@@ -120,13 +129,13 @@ function Main() {
           handleSubpageSelect(selection as subpages)
         }
         use="main"
-        excludeTopics={!hasRandomCallAccess ? ['random_calls'] : undefined}
+        excludeTopics={excludedTopics}
         newTopics={['random_calls']}
       />
       <CommsBanner />
       {subpage === 'events' && <CommunityEvents />}
       {subpage === 'random_calls' && hasRandomCallAccess && <RandomCalls />}
-      {subpage === 'conversation_partners' && (
+      {(subpage === 'conversation_partners' || subpage === 'onboarding') && (
         <>
           <Home>
             <PartnerProfiles

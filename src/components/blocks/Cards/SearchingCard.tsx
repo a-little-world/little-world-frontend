@@ -69,15 +69,15 @@ const AppointmentButton = styled(Button)<{ $isLink?: boolean }>`
 
 const getCardState = ({
   hasMatch,
-  hadPreMatchingCall,
   hasAppointment,
+  isOnboarded,
 }: {
   hasMatch: boolean;
-  hadPreMatchingCall: boolean;
   hasAppointment: boolean;
+  isOnboarded: boolean;
 }) => {
   if (hasMatch) return 'matched';
-  if (hadPreMatchingCall) return 'pre_match_call_completed';
+  if (isOnboarded) return 'onboarding_completed';
   if (hasAppointment) return 'pre_match_call_booked';
   return 'pre_match_call_not_booked';
 };
@@ -92,28 +92,28 @@ export function SearchingCard({
     i18n: { language },
   } = useTranslation();
 
-  const appointmentBtn = useRef();
+  const appointmentBtn = useRef<HTMLButtonElement>(null);
 
   const { data: user } = useSWR(USER_ENDPOINT);
   const hasMatch = user?.hasMatch;
-  const hadPreMatchingCall = user?.hadPreMatchingCall;
   const preMatchingAppointment = user?.preMatchingAppointment;
   const calComAppointmentLink = user?.calComAppointmentLink;
   const preMatchingCallJoinLink = user?.preMatchingCallJoinLink;
+  const isOnboarded = user?.isOnboarded;
 
   const cardState = getCardState({
     hasMatch,
-    hadPreMatchingCall,
+    isOnboarded,
     hasAppointment: !!preMatchingAppointment,
   });
 
   const isBookedState = cardState === 'pre_match_call_booked';
 
   useEffect(() => {
-    if (!hadPreMatchingCall && !isBookedState && appointmentBtn?.current) {
+    if (!isOnboarded && !isBookedState && appointmentBtn?.current) {
       appointmentBtn.current?.click();
     }
-  }, [hadPreMatchingCall, isBookedState]);
+  }, [isOnboarded, isBookedState]);
 
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
@@ -130,7 +130,7 @@ export function SearchingCard({
           <WelcomeTitle tag="h3" type={TextTypes.Body1} bold center>
             {t(`searching_card.${cardState}_title`)}
           </WelcomeTitle>
-          {hadPreMatchingCall ? (
+          {isOnboarded ? (
             <SearchingImage
               label="searching for match image"
               $hasMatch={hasMatch}
@@ -162,7 +162,7 @@ export function SearchingCard({
         </>
       )}
 
-      {hadPreMatchingCall || hasMatch ? (
+      {isOnboarded || hasMatch ? (
         <>
           <Link
             buttonAppearance={ButtonAppearance.Primary}
