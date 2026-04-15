@@ -2,7 +2,7 @@
 // // @ts-ignore
 export { LittleWorldWebNative } from './components/views/LittleWorldWebNative';
 export { environment } from './environment';
-export {
+export type {
   IntegrityCheck,
   IntegrityCheckAndroid,
   IntegrityCheckIOS,
@@ -10,9 +10,9 @@ export {
   IntegrityCheckRequestDataAndroid,
   IntegrityCheckRequestDataIOS,
   IntegrityCheckRequestDataWeb,
-  IntegrityCheckWeb,
 } from './features/integrityCheck';
-export {
+export type { IntegrityCheckWeb } from './features/integrityCheck';
+export type {
   DomCommunicationMessage,
   DomCommunicationMessageFn,
   DomCommunicationResponse,
