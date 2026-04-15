@@ -9,7 +9,7 @@
     "clean": "npx rimraf dist",
     "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run copy-files:esm && npm run copy-files:cjs && npm pack",
     "build:esm": "tsc --project tsconfig.json --noCheck --outDir dist/esm",
-    "build:cjs": "tsc --project tsconfig.json --noCheck --module commonjs --outDir dist/cjs",
+    "build:cjs": "tsc --project tsconfig.json --noCheck --module commonjs --moduleResolution node --outDir dist/cjs",
     "copy-files:esm": "node scripts/copy-assets.mjs esm",
     "copy-files:cjs": "node scripts/copy-assets.mjs cjs",
     "changeset": "changeset",
