@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
-import { environment } from '../../environment';
 import LogoImageSvg from '../../images/logo-image.svg';
 import LogoTextSvg from '../../images/logo-text.svg';
 import { getAppRoute } from '../../router/routes';
@@ -68,19 +67,11 @@ const Logo = ({
 
     return (
       <LogoImageStyled $size={size}>
-        {environment.isNative ? (
-          // For native builds, use SVG as React component
-          <LogoImageSvg role="img">
-            <title>Little World Logo</title>
-          </LogoImageSvg>
-        ) : (
-          // For web builds, use SVG as src URL (webpack will handle the bundling)
-          <img
-            src={LogoImageSvg}
-            alt="Little World Logo"
-            style={{ width: '100%', height: '100%' }}
-          />
-        )}
+        <img
+          src={LogoImageSvg}
+          alt="Little World Logo"
+          style={{ width: '100%', height: '100%' }}
+        />
       </LogoImageStyled>
     );
   };
@@ -89,19 +80,11 @@ const Logo = ({
     if (!displayText) return null;
     return (
       <LogoTextStyled $size={size}>
-        {environment.isNative ? (
-          // For native builds, use SVG as React component
-          <LogoTextSvg role="img">
-            <title>Little World Logo</title>
-          </LogoTextSvg>
-        ) : (
-          // For web builds, use SVG as src URL (webpack will handle the bundling)
-          <img
-            src={LogoTextSvg}
-            alt="Little World"
-            style={{ width: '100%', height: '100%' }}
-          />
-        )}
+        <img
+          src={LogoTextSvg}
+          alt="Little World"
+          style={{ width: '100%', height: '100%' }}
+        />
       </LogoTextStyled>
     );
   };
