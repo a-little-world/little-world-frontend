@@ -132,7 +132,7 @@ function Main() {
         excludeTopics={excludedTopics}
         newTopics={['random_calls']}
       />
-      <CommsBanner />
+      {subpage !== 'random_calls' && <CommsBanner />}
       {subpage === 'events' && <CommunityEvents />}
       {subpage === 'random_calls' && hasRandomCallAccess && <RandomCalls />}
       {(subpage === 'conversation_partners' || subpage === 'onboarding') && (

@@ -563,6 +563,7 @@
   "random_calls.step_4.description": "Nimm einen Anruf an und spring direkt ins Gespräch. Chatte so lange du möchtest – und triff danach jemand Neues.",
   "random_calls.lobby_title": "Wir suchen für dich...",
   "random_calls.lobby_description": "Wir sind auf der Suche nach einem passenden Gesprächspartner für dich.\nDas dauert meist nur 1–2 Minuten.",
+  "random_calls.lobby_enable_mic_or_video_to_join": "Aktiviere dein Mikrofon oder Video, um beizutreten",
   "random_calls.lobby_cancel_search": "Suche abbrechen",
   "random_calls.lobby_joining_in_x_seconds": "Beitritt in {{ seconds }} Sekunden",
   "random_calls.partner_found": "Jemand gefunden!",

@@ -570,6 +570,7 @@
   "random_calls.step_4.description": "Accept a call and jump straight into a conversation. Chat as long as you like, then move on to someone new.",
   "random_calls.lobby_title": "Finding someone for you...",
   "random_calls.lobby_description": "We're looking for a great match for you.\nThis usually only takes 1–2 minutes.",
+  "random_calls.lobby_enable_mic_or_video_to_join": "Enable your mic or video to join",
   "random_calls.lobby_cancel_search": "Cancel search",
   "random_calls.lobby_joining_in_x_seconds": "Joining in {{ seconds }} seconds",
   "random_calls.partner_found": "Someone found!",
