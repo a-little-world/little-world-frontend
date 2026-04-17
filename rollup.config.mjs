@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,7 +9,26 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
-const assetPattern = /\.(css|json|svg|png|jpe?g|gif|webp)$/i;
+const assetPattern = /\.(css|json|png|jpe?g|gif|webp)$/i;
+
+const inlineSvgAssets = () => ({
+  name: 'inline-svg-assets',
+  load(id) {
+    if (!id.endsWith('.svg')) {
+      return null;
+    }
+
+    const svgContent = fs.readFileSync(id, 'utf8');
+    const minifiedSvg = svgContent
+      .replace(/\r?\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .replace(/> </g, '><')
+      .trim();
+    const dataUri = `data:image/svg+xml;base64,${Buffer.from(minifiedSvg).toString('base64')}`;
+
+    return `export default ${JSON.stringify(dataUri)};`;
+  },
+});
 
 const isExternal = id => {
   if (assetPattern.test(id)) {
@@ -34,6 +54,7 @@ const createConfig = (format, dir) => ({
   },
   external: isExternal,
   plugins: [
+    inlineSvgAssets(),
     nodeResolve({
       extensions,
       preferBuiltins: false,
