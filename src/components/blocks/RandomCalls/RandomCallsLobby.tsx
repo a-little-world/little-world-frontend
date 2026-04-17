@@ -85,12 +85,16 @@ const ProposalCard = styled(CallSetupCard)`
   max-width: 500px;
 `;
 
+const RejectedCardHeader = styled(CardHeader)`
+  gap: ${({ theme }) => theme.spacing.small};
+`;
+
 const PartnerInfo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.medium};
-  margin-bottom: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.small};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 const PartnerDetails = styled.div`
@@ -102,7 +106,6 @@ const PartnerDetails = styled.div`
 
 const Timer = styled.div`
   text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.medium};
 `;
 
 const LoadingOverlay = styled.div<{ $visible: boolean }>`
@@ -265,6 +268,15 @@ const RandomCallSetup = ({
     return hasDevice;
   }, []);
 
+  let cancelButtonLabel = t('random_calls.lobby_cancel_search');
+  if (!permissionsGranted) {
+    cancelButtonLabel = t('random_calls.lobby_enable_mic_or_video_to_join');
+  } else if (!hasJoinedLobby && countdown !== null) {
+    cancelButtonLabel = t('random_calls.lobby_joining_in_x_seconds', {
+      seconds: countdown,
+    });
+  }
+
   return (
     <CallSetupCard $hideJoinBtn className="" size={undefined}>
       <LobbyLoading size={LoadingSizes.Small} inline />
@@ -306,16 +318,14 @@ const RandomCallSetup = ({
       </CardContent>
       <CardFooter align="center">
         <Button
-          disabled={!hasJoinedLobby && countdown !== null}
+          disabled={
+            !permissionsGranted || (!hasJoinedLobby && countdown !== null)
+          }
           appearance={ButtonAppearance.Secondary}
           onClick={onCancel}
           size={ButtonSizes.Stretch}
         >
-          {!hasJoinedLobby && countdown !== null
-            ? t('random_calls.lobby_joining_in_x_seconds', {
-                seconds: countdown,
-              })
-            : t('random_calls.lobby_cancel_search')}
+          {cancelButtonLabel}
         </Button>
       </CardFooter>
     </CallSetupCard>
@@ -339,6 +349,7 @@ const PartnerProposal = ({
 }) => {
   const { t } = useTranslation();
   const [timeLeft, setTimeLeft] = useState(timeoutSeconds);
+  const theme = useTheme();
 
   useEffect(() => {
     setTimeLeft(timeoutSeconds);
@@ -374,8 +385,15 @@ const PartnerProposal = ({
         </Text>
       </LoadingOverlay>
 
-      <CardHeader>{t('random_calls.partner_found')}</CardHeader>
-      <CardContent>
+      <CardHeader marginBottom={0}>
+        {t('random_calls.partner_found')}
+      </CardHeader>
+      <CardContent marginBottom={theme.spacing.medium}>
+        <Timer>
+          <Text type={TextTypes.Body3} bold>
+            <ClockIcon label="Clock icon" width={16} height={16} /> {timeLeft}s
+          </Text>
+        </Timer>
         <PartnerInfo>
           <ProfileImage
             image={partner.image}
@@ -393,13 +411,9 @@ const PartnerProposal = ({
             )}
           </PartnerDetails>
         </PartnerInfo>
-
-        <Timer>
-          <Text type={TextTypes.Body3} bold>
-            <ClockIcon label="Clock icon" width={16} height={16} /> {timeLeft}s
-          </Text>
-          <Text type={TextTypes.Body5}>{t('random_calls.accept_prompt')} </Text>
-        </Timer>
+        <Text type={TextTypes.Body5} center>
+          {t('random_calls.accept_prompt')}
+        </Text>
         {error && (
           <StatusMessage type={StatusTypes.Error} visible>
             {error}
@@ -435,7 +449,7 @@ const LobbyExpiredView = ({
   );
 
   return (
-    <ProposalCard className="" size={undefined}>
+    <ProposalCard>
       <CardHeader>{t('random_calls.expired_title')}</CardHeader>
       <CardContent>
         <Text>{t('random_calls.expired_description')}</Text>
@@ -502,14 +516,18 @@ const RejectedView = ({
   };
 
   return (
-    <ProposalCard className="" size={undefined}>
-      <ExclamationIcon
-        label="Exclamation mark"
-        width={24}
-        height={24}
-        color={theme.color.text.error}
-      />
-      <CardHeader>{t(getTitleKey())}</CardHeader>
+    <ProposalCard>
+      <RejectedCardHeader align="center" asContainer>
+        <ExclamationIcon
+          label="Exclamation mark"
+          width={32}
+          height={32}
+          color={theme.color.text.error}
+        />
+        <Text tag="h3" type={TextTypes.Heading4} center>
+          {t(getTitleKey())}
+        </Text>
+      </RejectedCardHeader>
       <CardContent>
         <Text center>{t(getDescriptionKey())}</Text>
         {error && (
@@ -583,7 +601,6 @@ const RandomCallsLobby = ({
     },
   );
 
-  console.log({ statusData, lobbyState, matchData, rejectionReason });
   // Check for matching
   useEffect(() => {
     if (!hasJoinedLobby) return;
@@ -686,8 +703,7 @@ const RandomCallsLobby = ({
         setHasJoinedLobby(false);
       }
     } catch (_err: any) {
-      // Don't show error on cancel - just log silently
-      // User is intentionally leaving, so errors are less critical
+      // Don't show error on cancel - user is intentionally leaving
     }
     mutateRCState();
   };

@@ -1,5 +1,7 @@
 import {
   ButtonSizes,
+  Loading,
+  LoadingSizes,
   Modal,
   Text,
   TextTypes,
@@ -74,16 +76,15 @@ const RandomCalls = () => {
       refreshInterval: 2000,
     },
   );
-  const { data: upcomingLobbies } = useSWR<UpcomingLobbyItem[]>(
-    UPCOMING_LOBBIES_ENDPOINT,
-  );
+  const { data: upcomingLobbies, isLoading: lobbyLoading } = useSWR<
+    UpcomingLobbyItem[]
+  >(UPCOMING_LOBBIES_ENDPOINT);
 
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [lobbySessionKey, setLobbySessionKey] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log({ lobbyData });
 
   // Format time from ISO string to HH:MM
   const formatTime = (dateString?: string) => {
@@ -168,45 +169,51 @@ const RandomCalls = () => {
               {t('random_calls.title')}
             </Text>
             <Text>{t('random_calls.description')}</Text>
-            <Text bold type={TextTypes.Body4}>
-              {t(
-                active
-                  ? 'random_calls.active_heading'
-                  : 'random_calls.inactive_heading',
-              )}
-            </Text>
-            {active && startTime && endTime && (
-              <Text type={TextTypes.Body4}>
-                {startTime} – {endTime}
-              </Text>
-            )}
-            {active ? (
-              <ActiveUsers>
-                <OnlineCirlce />
-                <Text bold>
-                  {t('random_calls.active_users', {
-                    count: lobbyData?.active_users_count ?? 0,
-                  })}
-                </Text>
-              </ActiveUsers>
+            {lobbyLoading ? (
+              <Loading size={LoadingSizes.Medium} />
             ) : (
-              <Schedule
-                title={t('random_calls.schedule_heading')}
-                sessions={upcomingLobbies ?? []}
-              />
-            )}
-            {active && (
-              <JoinButton
-                disabled={!active}
-                size={ButtonSizes.Small}
-                onClick={onJoinLobby}
-              >
-                {t(
-                  active
-                    ? 'random_calls.start_btn'
-                    : 'random_calls.start_btn_disabled',
+              <>
+                <Text bold type={TextTypes.Body4}>
+                  {t(
+                    active
+                      ? 'random_calls.active_heading'
+                      : 'random_calls.inactive_heading',
+                  )}
+                </Text>
+                {active && startTime && endTime && (
+                  <Text type={TextTypes.Body4}>
+                    {startTime} – {endTime}
+                  </Text>
                 )}
-              </JoinButton>
+                {active ? (
+                  <ActiveUsers>
+                    <OnlineCirlce />
+                    <Text bold>
+                      {t('random_calls.active_users', {
+                        count: lobbyData?.active_users_count ?? 0,
+                      })}
+                    </Text>
+                  </ActiveUsers>
+                ) : (
+                  <Schedule
+                    title={t('random_calls.schedule_heading')}
+                    sessions={upcomingLobbies ?? []}
+                  />
+                )}
+                {active && (
+                  <JoinButton
+                    disabled={!active}
+                    size={ButtonSizes.Small}
+                    onClick={onJoinLobby}
+                  >
+                    {t(
+                      active
+                        ? 'random_calls.start_btn'
+                        : 'random_calls.start_btn_disabled',
+                    )}
+                  </JoinButton>
+                )}
+              </>
             )}
           </InfoPanelText>
         </InfoPanel>
