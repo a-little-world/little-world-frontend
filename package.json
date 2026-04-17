@@ -1,6 +1,6 @@
 {
   "name": "littleplanet",
-  "version": "0.1.299",
+  "version": "0.1.302",
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
@@ -54,7 +54,7 @@
     "@radix-ui/react-popover": "^1.0.7",
     "@reduxjs/toolkit": "^2.8.2",
     "@types/node": "^18.11.18",
-    "@types/react": "19.2.14",
+    "@types/react": "19.1.0",
     "babel-loader": "^9.1.2",
     "babel-plugin-styled-components": "^2.0.7",
     "classnames": "^2.3.1",
@@ -68,8 +68,8 @@
     "moment": "^2.29.4",
     "motion": "^12.4.10",
     "process": "^0.11.10",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-hook-form": "^7.51.0",
     "react-i18next": "^14.0.0",
     "react-nice-avatar": "file:prebuild/react-nice-avatar-1.6.1.tgz",
