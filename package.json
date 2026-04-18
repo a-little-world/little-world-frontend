@@ -1,6 +1,6 @@
 {
   "name": "littleplanet",
-  "version": "0.1.299",
+  "version": "0.1.316",
   "private": true,
   "scripts": {
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
@@ -54,7 +54,7 @@
     "@radix-ui/react-popover": "^1.0.7",
     "@reduxjs/toolkit": "^2.8.2",
     "@types/node": "^18.11.18",
-    "@types/react": "19.2.14",
+    "@types/react": "19.2.4",
     "babel-loader": "^9.1.2",
     "babel-plugin-styled-components": "^2.0.7",
     "classnames": "^2.3.1",
@@ -92,6 +92,7 @@
     "@firebase/messaging-types": "^0.6.1",
     "@rollup/plugin-babel": "^7.0.0",
     "@rollup/plugin-commonjs": "^29.0.2",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@svgr/webpack": "^6.5.1",
     "@testing-library/user-event": "^13.5.0",
