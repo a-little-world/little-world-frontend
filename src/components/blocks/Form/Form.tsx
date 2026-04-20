@@ -19,7 +19,7 @@ import { onFormError } from '../../../helpers/form';
 import {
   EDIT_FORM_ROUTE,
   PROFILE_ROUTE,
-  USER_FORM_SELF_INFO_1,
+  USER_FORM_PARTNER_1,
   getAppRoute,
 } from '../../../router/routes';
 import {
@@ -81,6 +81,7 @@ const Form = () => {
       formOptions,
       userData: userData.profile,
       forceMatchEligible: userData.forceMatchEligible,
+      isOnboarded: userData.isOnboarded,
     });
   const isLastStep = step === totalSteps;
 
@@ -226,7 +227,7 @@ const Form = () => {
 
   const noBackButton =
     Boolean(!prevPage) ||
-    (userData?.userFormCompleted && slug === USER_FORM_SELF_INFO_1);
+    (userData?.userFormCompleted && slug === USER_FORM_PARTNER_1);
 
   return (
     <StyledCard>

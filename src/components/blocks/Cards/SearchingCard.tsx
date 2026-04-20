@@ -167,7 +167,7 @@ export function SearchingCard({
           <Link
             buttonAppearance={ButtonAppearance.Primary}
             buttonSize={ButtonSizes.Stretch}
-            to={getAppRoute(USER_FORM_ROUTES.SELF_INFO_1)}
+            to={getAppRoute(USER_FORM_ROUTES.PARTNER_1)}
           >
             {t('searching_card.modify_search')}
           </Link>
