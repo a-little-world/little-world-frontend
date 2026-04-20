@@ -37,6 +37,7 @@ import {
 } from './styles';
 
 interface GroupedEvent extends Event {
+  original_time?: string;
   sessions?: Array<{
     startDate: Date;
     endDate?: Date;
@@ -124,6 +125,7 @@ function collateEvents(events: Event[]): GroupedEvent[] {
       }
       result.push({
         ...event,
+        original_time: event.time,
         time: nextOccurrence.toISOString(),
         end_time: endTime,
       });
@@ -162,6 +164,7 @@ const EventCtas = ({
   description,
   link,
   startDate,
+  originalStartDate,
   endDate,
   sessions,
 }: {
@@ -169,6 +172,7 @@ const EventCtas = ({
   description: string;
   link: string;
   startDate: Date;
+  originalStartDate: Date;
   endDate?: Date;
   frequency: string;
   sessions?: Array<{
@@ -182,6 +186,12 @@ const EventCtas = ({
     t,
     i18n: { language },
   } = useTranslation();
+  const now = new Date();
+  const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+  const isWeeklyLabelInRange =
+    frequency === COMMUNITY_EVENT_FREQUENCIES.weekly &&
+    (originalStartDate.getTime() <= now.getTime() ||
+      originalStartDate.getTime() - now.getTime() < oneWeekMs);
 
   if (sessions)
     return (
@@ -239,11 +249,11 @@ const EventCtas = ({
     <>
       <DateTimeEvent>
         <Text type={TextTypes.Body3} bold tag="span">
-          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly
+          {isWeeklyLabelInRange
             ? t('community_events.every_week', {
                 day: formatDate(startDate, 'EEEE', language),
               })
-            : formatDate(startDate, 'cccc, LLLL do', language)}
+            : formatDate(startDate, 'cccc, do LLLL', language)}
         </Text>
         <Text type={TextTypes.Body3} bold color={theme.color.text.heading}>
           {formatEventTime(startDate, endDate)}
@@ -293,14 +303,16 @@ function CommunityEvent({
   image,
   title,
   time,
-  end_time,
+  original_time: originalTime,
+  end_time: endTime,
   link,
   sessions,
 }: CommunityEventProps) {
   const { t } = useTranslation();
 
   const startDate = new Date(time);
-  const endDate = end_time ? new Date(end_time) : undefined;
+  const originalStartDate = new Date(originalTime || time);
+  const endDate = endTime ? new Date(endTime) : undefined;
 
   return (
     <EventContainer id={id} key={_key}>
@@ -319,6 +331,7 @@ function CommunityEvent({
           description={description}
           link={link}
           startDate={startDate}
+          originalStartDate={originalStartDate}
           endDate={endDate}
           frequency={frequency}
           sessions={sessions}

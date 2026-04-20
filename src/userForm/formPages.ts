@@ -48,7 +48,7 @@ const formPages = {
       },
     ],
   }),
-  'self-info-1': ({ options, userData, forceMatchEligible }) => ({
+  'self-info-1': ({ options, userData, forceMatchEligible, isOnboarded }) => ({
     title: 'self_info.title',
     step: 2,
     totalSteps: getSteps(userData?.user_type),
@@ -66,33 +66,37 @@ const formPages = {
           errorRules: { required: t('validation.required') },
         }),
       },
-      {
-        type: ComponentTypes.dropdown,
-        currentValue: userData?.country_of_residence,
-        dataField: 'country_of_residence',
-        formData: options?.country_of_residence,
-        grouped: true,
-        getProps: t => ({
-          label: t('self_info.country_of_residence_label'),
-          labelTooltip:
-            userData?.user_type === USER_TYPES.volunteer
-              ? null
-              : t('self_info.country_of_residence_tooltip'),
-          errorRules: { required: t('validation.required') },
-        }),
-      },
-      {
-        type: ComponentTypes.textInput,
-        currentValue: userData?.postal_code,
-        dataField: 'postal_code',
-        formData: options?.postal_code,
-        grouped: true,
-        getProps: t => ({
-          label: t('self_info.post_code_label'),
-          labelTooltip: t('self_info.post_code_tooltip'),
-          width: InputWidth.Small,
-        }),
-      },
+      ...(!isOnboarded
+        ? [
+            {
+              type: ComponentTypes.dropdown,
+              currentValue: userData?.country_of_residence,
+              dataField: 'country_of_residence',
+              formData: options?.country_of_residence,
+              grouped: true,
+              getProps: t => ({
+                label: t('self_info.country_of_residence_label'),
+                labelTooltip:
+                  userData?.user_type === USER_TYPES.volunteer
+                    ? null
+                    : t('self_info.country_of_residence_tooltip'),
+                errorRules: { required: t('validation.required') },
+              }),
+            },
+            {
+              type: ComponentTypes.textInput,
+              currentValue: userData?.postal_code,
+              dataField: 'postal_code',
+              formData: options?.postal_code,
+              grouped: true,
+              getProps: t => ({
+                label: t('self_info.post_code_label'),
+                labelTooltip: t('self_info.post_code_tooltip'),
+                width: InputWidth.Small,
+              }),
+            },
+          ]
+        : []),
       ...(userData?.user_type === USER_TYPES.volunteer
         ? []
         : [
@@ -409,7 +413,18 @@ const formPages = {
   }),
 };
 
-const getFormPage = ({ slug, formOptions, userData, forceMatchEligible }) =>
-  formPages[slug]({ options: formOptions, userData, forceMatchEligible });
+const getFormPage = ({
+  slug,
+  formOptions,
+  userData,
+  forceMatchEligible,
+  isOnboarded,
+}) =>
+  formPages[slug]({
+    options: formOptions,
+    userData,
+    forceMatchEligible,
+    isOnboarded,
+  });
 
 export default getFormPage;
