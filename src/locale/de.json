@@ -931,6 +931,7 @@
   "vc_btn_chat": "Chat",
   "vc_btn_notes": "Notizen",
   "vc_btn_questions": "Fragen",
+  "video_call.firefox_warning": "Wir sehen aktuell Probleme in Firefox. Falls Video oder Verbindung nicht klappt, versuche bitte einen anderen Browser.",
   "verify_email.change_email_btn": "E-mail Adresse ändern",
   "verify_email.code_placeholder": "5-stelliger Code",
   "verify_email.description": "Um dein Konto zu bestätigen, gib bitte den 5-stelligen Code ein, den wir an <bold>{{ email }}</bold> gesendet haben.",

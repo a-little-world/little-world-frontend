@@ -5,3 +5,4 @@ export { default as usePostCallSurveyStore } from './postCallSurvey';
 export { default as useMobileAuthTokenStore } from './mobileAuthToken';
 export { default as useReceiveHandlerStore } from './receiveHandler';
 export { default as useConnectedCallStore } from './connectedCall';
+export { default as useModalManagerStore } from './modalManager';

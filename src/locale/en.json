@@ -937,6 +937,7 @@
   "vc_btn_chat": "Chat",
   "vc_btn_notes": "Notes",
   "vc_btn_questions": "Questions",
+  "video_call.firefox_warning": "We're currently seeing some issues in Firefox. If video or connection fails, please try another browser.",
   "vc_translator_type_here": "Type here…",
   "verify_email.change_email_btn": "Change Email",
   "verify_email.code_placeholder": "5-digit code",

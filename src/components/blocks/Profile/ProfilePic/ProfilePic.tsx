@@ -30,6 +30,7 @@ import useSWR from 'swr';
 import { USER_FIELDS } from '../../../../constants/index';
 import { USER_ENDPOINT } from '../../../../features/swr/index';
 import useImageCompression from '../../../../hooks/useImageCompression';
+import useSystemModalBlocker from '../../../../hooks/useSystemModalBlocker';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import AvatarEditor from './AvatarEditor';
 import {
@@ -126,6 +127,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
   );
   const [avatarConfig, setAvatarConfig] = useState(genConfig());
   const [showAvatarEditor, setShowAvatarEditor] = useState(false);
+  useSystemModalBlocker(showAvatarEditor, 'profile-pic-avatar-editor');
   const [avatarIndex, setAvatarIndex] = useState(0);
   const [avatarList, setAvatarList] = useState<any[]>([]);
   const [uploadedImage, setUploadedImage] = useState<string | null>('');
