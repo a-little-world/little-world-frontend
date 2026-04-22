@@ -273,6 +273,17 @@ function ContentSelector({
     topic => !excludeTopics?.includes(topic),
   );
 
+  const onTopicSelect = (topic: string) => {
+    setSelection(topic);
+  };
+
+  useEffect(() => {
+    if (!scrollRef.current) return;
+
+    scrollRef.current.scrollLeft = 0;
+    checkScrollPosition();
+  }, [selection, use, checkScrollPosition]);
+
   return (
     <SelectorWrapper>
       <FadeOverlay $side="left" $visible={showLeftFade} />
@@ -300,7 +311,7 @@ function ContentSelector({
                   : ButtonAppearance.Secondary
               }
               key={topic}
-              onClick={() => setSelection(topic)}
+              onClick={() => onTopicSelect(topic)}
               disabled={selection === topic && disableIfSelected}
               $selected={selection === topic}
             >

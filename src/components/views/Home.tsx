@@ -8,6 +8,7 @@ import CustomPagination from '../../CustomPagination';
 import { updateMatchData } from '../../api/matches';
 import { useCallSetupStore } from '../../features/stores/index';
 import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr/index';
+import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import {
   COMMUNITY_EVENTS_ROUTE,
   RANDOM_CALLS_ROUTE,
@@ -55,6 +56,7 @@ function Main() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showCancelSearching, setShowCancelSearching] = useState(false);
+  useSystemModalBlocker(showCancelSearching, 'home-cancel-searching');
 
   const handlePageChange = async (page: number) => {
     updateMatchData({

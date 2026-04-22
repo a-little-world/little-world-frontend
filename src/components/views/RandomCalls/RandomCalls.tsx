@@ -19,6 +19,7 @@ import {
   UPCOMING_LOBBIES_ENDPOINT,
 } from '../../../features/swr/index';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
+import useSystemModalBlocker from '../../../hooks/useSystemModalBlocker';
 import randomCallsImage from '../../../images/random-calls-image.png';
 import { OnlineCirlce } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
@@ -108,6 +109,8 @@ const RandomCalls = () => {
       setSearchParams(nextParams, { replace: true });
     }
   }, [searchParams, setSearchParams]);
+
+  useSystemModalBlocker(lobbyOpen || callEnded, 'random-calls');
 
   const openLobbyFresh = () => {
     // @tbscode TODO tempo fix forecefuly reset lobby cache by reloading everything on re-enters

@@ -25,7 +25,7 @@ import {
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import styled, { useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import {
@@ -51,6 +51,7 @@ import {
   getAppRoute,
   getRandomCallRoute,
 } from '../../../router/routes';
+import FirefoxConnectionWarning from '../../atoms/FirefoxConnectionWarning';
 import ProfileImage from '../../atoms/ProfileImage';
 import { Schedule } from '../../atoms/Schedule';
 import { CallSetupCard } from '../Calls/CallSetup';
@@ -145,10 +146,17 @@ const Spinner = styled.div`
 
 const LobbyLoading = styled(Loading)`
   position: absolute;
-  top: ${({ theme }) => theme.spacing.medium};
-  right: ${({ theme }) => theme.spacing.medium};
+  top: ${({ theme }) => theme.spacing.small};
+  right: 20px;
   height: auto;
   color: ${({ theme }) => theme.color.text.title};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      top: ${theme.spacing.medium};
+      right: ${theme.spacing.medium};
+    }
+  `}
 `;
 const RelativeCard = styled(ProposalCard)`
   position: relative;
@@ -283,7 +291,6 @@ const RandomCallSetup = ({
       <CardHeader>{t('random_calls.lobby_title')}</CardHeader>
       <CardContent>
         <Text center>{t('random_calls.lobby_description')}</Text>
-
         <PreJoin
           camLabel={t('pcs_camera_label')}
           micLabel={t('pcs_mic_label')}
@@ -293,6 +300,7 @@ const RandomCallSetup = ({
           defaults={{ username }}
           persistUserChoices={false}
         />
+        <FirefoxConnectionWarning />
         {switchesEnabled && (
           <Switch
             inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
