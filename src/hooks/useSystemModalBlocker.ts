@@ -7,28 +7,22 @@ const useSystemModalBlocker = (isOpen: boolean, source: string) => {
   const blockingSource = useModalManagerStore(state => state.blockingSource);
 
   useEffect(() => {
-    if (!source) return;
+    if (source) {
+      const isBlockedBySource = blockingSource === source;
 
-    const isBlockedBySource = blockingSource === source;
-
-    if (isOpen && (!blockingSource || isBlockedBySource)) {
-      blockSystemModals(source);
-    } else if (!isOpen && isBlockedBySource) {
-      unblockSystemModals(source);
+      if (isOpen && (!blockingSource || isBlockedBySource)) {
+        blockSystemModals(source);
+      } else if (!isOpen && isBlockedBySource) {
+        unblockSystemModals(source);
+      }
     }
 
     return () => {
-      if (blockingSource === source) {
+      if (source && blockingSource === source) {
         unblockSystemModals(source);
       }
     };
-  }, [
-    blockSystemModals,
-    blockingSource,
-    isOpen,
-    source,
-    unblockSystemModals,
-  ]);
+  }, [blockSystemModals, blockingSource, isOpen, source, unblockSystemModals]);
 };
 
 export default useSystemModalBlocker;
