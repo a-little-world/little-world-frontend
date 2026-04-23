@@ -58,8 +58,16 @@ const Login = () => {
     onFormError({ e, formFields: getValues(), setError });
   };
 
-  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
-  const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT, {
+    revalidateOnMount: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
+  const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null, {
+    revalidateOnMount: true,
+    revalidateOnFocus: true,
+    revalidateOnReconnect: true,
+  });
 
   const accessToken = mobileAuthStore?.accessToken;
 

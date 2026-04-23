@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import { mutate } from 'swr';
 
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
@@ -72,7 +73,7 @@ function getNativeHeaders(): Record<string, string> {
   return headers;
 }
 
-function updateTokens(
+async function updateTokens(
   accessToken: string | undefined,
   refreshToken: string | undefined,
 ) {
@@ -80,7 +81,7 @@ function updateTokens(
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
 
   setTokens(accessToken, refreshToken);
-  sendMessageToReactNative?.({
+  await sendMessageToReactNative?.({
     action: 'SET_AUTH_TOKENS',
     payload: {
       accessToken,
@@ -134,15 +135,15 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
       );
 
       if (!response.ok) {
-        updateTokens(undefined, undefined);
+        await updateTokens(undefined, undefined);
         return false;
       }
       const { access, refresh } = await response.json().catch(() => {});
       if (access && refresh) {
-        updateTokens(access, refresh);
+        await updateTokens(access, refresh);
         return true;
       }
-      updateTokens(undefined, undefined);
+      await updateTokens(undefined, undefined);
       return false;
     } catch (_e) {
       return false;
@@ -152,6 +153,14 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
   })();
 
   return tokenRefreshRequest;
+}
+
+export async function clearSwrCache() {
+  await mutate(
+    () => true, // Match all cache keys
+    undefined, // Set data to undefined
+    { revalidate: false }, // Do not trigger a refetch
+  );
 }
 
 export async function apiFetch<T = any>(
@@ -237,12 +246,7 @@ export async function apiFetch<T = any>(
       const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       if (refreshed) {
         // update Authorization header with new access token
-        const { accessToken, refreshToken } =
-          useMobileAuthTokenStore.getState();
-        sendMessageToReactNative?.({
-          action: 'SET_AUTH_TOKENS',
-          payload: { accessToken, refreshToken },
-        });
+        const { accessToken } = useMobileAuthTokenStore.getState();
         if (accessToken) {
           fetchOptions.headers!.Authorization = `Bearer ${accessToken}`;
         } else {
@@ -251,7 +255,8 @@ export async function apiFetch<T = any>(
         return doFetch();
       }
 
-      sendMessageToReactNative?.({
+      await clearSwrCache();
+      await sendMessageToReactNative?.({
         action: 'NAVIGATE',
         payload: { path: `/${LOGIN_ROUTE}?sessionExpired=true` },
       });
