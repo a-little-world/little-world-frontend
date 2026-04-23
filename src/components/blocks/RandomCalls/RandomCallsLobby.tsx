@@ -823,6 +823,7 @@ const RandomCallsLobby = ({
         userId: currentMatchData.partner.id,
         chatId: roomData.chat?.uuid || '',
         randomMatchId: roomData.random_match_id,
+        randomLobbyUuid: lobbyUuid,
         tracks: deviceChoices || undefined,
         token: roomData.token,
         livekitServerUrl: roomData.server_url,
