@@ -37,7 +37,7 @@ const pulse = keyframes`
     box-shadow: 0 0 0 0px rgba(46, 169, 87, 0.2);
   }
   100% {
-    box-shadow: 0 0 0 5px rgba(46, 169, 87, 0);
+    box-shadow: 0 0 0 4px rgba(46, 169, 87, 0);
   }
 `;
 
