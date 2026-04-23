@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
+import { debugStore } from '../features/stores/debugStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 
 function useErrorBridge() {
   useEffect(() => {
     const send = (message: string, stack?: string, source?: string) => {
+      if (!debugStore.getState().debugEnabled) return;
       const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       sendMessageToReactNative?.({
         action: 'LOG_ERROR',

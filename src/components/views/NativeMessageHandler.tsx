@@ -5,6 +5,7 @@ import {
   useMobileAuthTokenStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
+import useDebugStore from '../../features/stores/debugStore';
 import {
   DomCommunicationMessage,
   DomCommunicationMessageFn,
@@ -38,6 +39,22 @@ function NativeMessageHandler() {
     ) => {
       const { action, requestId, payload } = message;
       switch (action) {
+        case 'SET_DEBUG_CONFIG': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const { debugEnabled, backendUrlOverride } = payload;
+          useDebugStore.getState().setDebugConfig({ debugEnabled, backendUrlOverride });
+
+          const response: DomCommunicationResponse = { ok: true };
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+          return response;
+        }
         case 'SET_AUTH_TOKENS': {
           if (!requestId) {
             throw new Error('Received native message without request id');

@@ -66,6 +66,14 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'SET_DEBUG_CONFIG';
+      requestId?: string;
+      payload: {
+        debugEnabled: boolean;
+        backendUrlOverride: string | null;
+      };
+    }
+  | {
       action: 'LOG_ERROR';
       requestId?: string;
       payload:

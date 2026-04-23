@@ -7,9 +7,14 @@ import {
   IntegrityCheck,
   getIntegrityCheckRequestData,
 } from '../features/integrityCheck';
+import { debugStore } from '../features/stores/debugStore';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { LOGIN_ROUTE } from '../router/routes';
+
+function getEffectiveBackendUrl(): string {
+  return debugStore.getState().backendUrlOverride ?? environment.backendUrl;
+}
 
 // Add DOM types for fetch API
 type RequestCredentials = 'omit' | 'same-origin' | 'include';
@@ -119,7 +124,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
       });
 
       const response = await fetch(
-        `${environment.backendUrl}/api/token/refresh/${challengeData.platform}`,
+        `${getEffectiveBackendUrl()}/api/token/refresh/${challengeData.platform}`,
         {
           method: 'POST',
           headers: {
@@ -214,7 +219,7 @@ export async function apiFetch<T = any>(
 
   const doFetch = async (): Promise<T> => {
     const response = await fetch(
-      `${environment.backendUrl}${endpoint}`,
+      `${getEffectiveBackendUrl()}${endpoint}`,
       fetchOptions,
     );
 
@@ -262,20 +267,22 @@ export async function apiFetch<T = any>(
       });
     }
 
-    const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-    sendMessageToReactNative?.({
-      action: 'LOG_ERROR',
-      payload: {
-        type: 'fetch',
-        method,
-        endpoint,
-        url: `${environment.backendUrl}${endpoint}`,
-        headers: fetchOptions.headers as Record<string, string>,
-        requestBody: body,
-        status: (error as any)?.status,
-        error,
-      },
-    })?.catch?.(() => {});
+    if (debugStore.getState().debugEnabled) {
+      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+      sendMessageToReactNative?.({
+        action: 'LOG_ERROR',
+        payload: {
+          type: 'fetch',
+          method,
+          endpoint,
+          url: `${getEffectiveBackendUrl()}${endpoint}`,
+          headers: fetchOptions.headers as Record<string, string>,
+          requestBody: body,
+          status: (error as any)?.status,
+          error,
+        },
+      })?.catch?.(() => {});
+    }
 
     console.error(`API Fetch Error (${endpoint}):`, error);
     throw error;
