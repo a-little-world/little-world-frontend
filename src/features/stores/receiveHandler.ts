@@ -64,6 +64,27 @@ export type DomCommunicationMessage =
         message?: any;
         params?: any[];
       };
+    }
+  | {
+      action: 'LOG_ERROR';
+      requestId?: string;
+      payload:
+        | {
+            type: 'react';
+            message: string;
+            stack?: string;
+            source?: string;
+          }
+        | {
+            type: 'fetch';
+            method: string;
+            endpoint: string;
+            url: string;
+            headers: Record<string, string>;
+            requestBody: unknown;
+            status?: number;
+            error: unknown;
+          };
     };
 
 export type DomCommunicationMessageFn = (

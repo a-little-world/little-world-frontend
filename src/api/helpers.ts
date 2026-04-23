@@ -221,7 +221,7 @@ export async function apiFetch<T = any>(
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       if (errorData?.code === 'token_not_valid') {
-        throw errorData;
+        throw { ...errorData, status: response.status };
       }
       throw formatApiError(errorData, response);
     }
@@ -261,6 +261,21 @@ export async function apiFetch<T = any>(
         payload: { path: `/${LOGIN_ROUTE}?sessionExpired=true` },
       });
     }
+
+    const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+    sendMessageToReactNative?.({
+      action: 'LOG_ERROR',
+      payload: {
+        type: 'fetch',
+        method,
+        endpoint,
+        url: `${environment.backendUrl}${endpoint}`,
+        headers: fetchOptions.headers as Record<string, string>,
+        requestBody: body,
+        status: (error as any)?.status,
+        error,
+      },
+    })?.catch?.(() => {});
 
     console.error(`API Fetch Error (${endpoint}):`, error);
     throw error;
