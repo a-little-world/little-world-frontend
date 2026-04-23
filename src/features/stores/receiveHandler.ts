@@ -21,11 +21,6 @@ export type DomCommunicationMessage =
       };
     }
   | {
-      action: 'CLEAR_AUTH_TOKENS';
-      requestId?: string;
-      payload: {};
-    }
-  | {
       action: 'WEBVIEW_READY';
       requestId?: string;
       payload: {};
