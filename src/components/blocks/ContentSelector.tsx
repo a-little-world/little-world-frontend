@@ -11,6 +11,7 @@ import styled, { css } from 'styled-components';
 import { useDevelopmentFeaturesStore } from '../../features/stores/index';
 import HideOnMobile from '../atoms/HideOnMobile';
 import NotificationBell from '../atoms/NotificationBell';
+import OnlineIndicator from '../atoms/OnlineIndicator';
 
 const SelectorWrapper = styled.div`
   position: relative;
@@ -197,6 +198,8 @@ type ContentSelectorProps = {
   excludeTopics?: string[];
   /** Topic keys that show a "New" badge */
   newTopics?: string[];
+  /** Topic keys that show an "Online" badge */
+  onlineTopics?: string[];
 };
 
 function ContentSelector({
@@ -206,6 +209,7 @@ function ContentSelector({
   use,
   excludeTopics,
   newTopics,
+  onlineTopics,
 }: ContentSelectorProps) {
   const { t } = useTranslation();
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
@@ -316,10 +320,17 @@ function ContentSelector({
               $selected={selection === topic}
             >
               {t(`nbt_${topic}`)}
-              {newTopics?.includes(topic) && (
-                <NewBadge $selected={selection === topic}>
-                  {t('nbt_new')}
-                </NewBadge>
+              {onlineTopics?.includes(topic) ? (
+                <OnlineIndicator
+                  isOnline
+                  customText={t('online_indicator.now')}
+                />
+              ) : (
+                newTopics?.includes(topic) && (
+                  <NewBadge $selected={selection === topic}>
+                    {t('nbt_new')}
+                  </NewBadge>
+                )
               )}
             </StyledOption>
           ),
