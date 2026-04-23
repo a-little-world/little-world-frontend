@@ -607,6 +607,7 @@
   "random_calls.report_confirmed_title": "Danke für deine Meldung!",
   "random_calls.report_confirmed_description": "Wir haben deine Meldung erhalten und melden uns so bald wie möglich bei dir.",
   "random_call.partner_timedout_joining": "{{name}} hat es nicht geschafft in den Anruf zu kommen. Du kannst den Anruf beenden und eine neue Suche starten.",
+  "random_call.waiting_for_partner_countdown": "Warte auf {{name}}... noch {{seconds}}s.",
   "report.cancel_btn": "Abbrechen",
   "report.call_quality.audio_delay": "Audio-Verzögerung",
   "report.call_quality.connection_problems": "Verbindungsprobleme",
