@@ -173,17 +173,17 @@ function MyVideoConference({
     ? isPartnerDisconnectedInRandomCall
       ? t('call.partner_disconnected', { name: partnerName })
       : isPartnerTimedOutJoining
-      ? t('random_call.partner_timedout_joining', { name: partnerName })
-      : t('random_call.waiting_for_partner_countdown', {
+        ? t('random_call.partner_timedout_joining', { name: partnerName })
+        : t('random_call.waiting_for_partner_countdown', {
           name: partnerName,
           seconds: randomCallCountdownSeconds,
         })
     : t(
-        otherUserDisconnected
-          ? 'call.partner_disconnected'
-          : 'call.waiting_for_partner',
-        { name: partnerName },
-      );
+      otherUserDisconnected
+        ? 'call.partner_disconnected'
+        : 'call.waiting_for_partner',
+      { name: partnerName },
+    );
 
   if (isEmpty(tracks)) return null;
 
@@ -319,6 +319,7 @@ function VideoCall() {
     console.log('Random call match status:', randomCallMatchStatus);
   }, [isRandomCall, randomCallMatchStatusEndpoint, randomCallMatchStatus]);
 
+  const { data: chatData } = useSWR(chatId ? getChatEndpoint(chatId) : null);
   useEffect(() => {
     if (urlUserId && !token) {
       // If userId is in url but no token available, redirect to call-setup so we can re-join the call

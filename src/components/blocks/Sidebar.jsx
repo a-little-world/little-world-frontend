@@ -36,6 +36,7 @@ import {
   MESSAGES_ROUTE,
   OUR_WORLD_ROUTE,
   PROFILE_ROUTE,
+  RANDOM_CALLS_ROUTE,
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
   getAppRoute,
@@ -164,10 +165,13 @@ function Sidebar({ isVH, sidebarMobile }) {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const startPath =
-    getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname
-      ? getAppRoute(COMMUNITY_EVENTS_ROUTE)
-      : getAppRoute('');
+  let startPath = getAppRoute('');
+  if (getAppRoute(COMMUNITY_EVENTS_ROUTE) === location.pathname) {
+    startPath = getAppRoute(COMMUNITY_EVENTS_ROUTE);
+  }
+  if (getAppRoute(RANDOM_CALLS_ROUTE) === location.pathname) {
+    startPath = getAppRoute(RANDOM_CALLS_ROUTE);
+  }
 
   const buttonData = [
     {
