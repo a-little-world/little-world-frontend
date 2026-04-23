@@ -169,21 +169,27 @@ function MyVideoConference({
     !!randomCallMatchStatus?.partner_left_session;
   const isPartnerTimedOutJoining =
     !!randomCallMatchStatus?.partner_timedout_joining;
-  const waitingMessage = isRandomCall
-    ? isPartnerDisconnectedInRandomCall
-      ? t('call.partner_disconnected', { name: partnerName })
-      : isPartnerTimedOutJoining
-        ? t('random_call.partner_timedout_joining', { name: partnerName })
-        : t('random_call.waiting_for_partner_countdown', {
-          name: partnerName,
-          seconds: randomCallCountdownSeconds,
-        })
-    : t(
-      otherUserDisconnected
-        ? 'call.partner_disconnected'
-        : 'call.waiting_for_partner',
-      { name: partnerName },
-    );
+  const getWaitingMessage = () => {
+    if (isRandomCall) {
+      if (isPartnerDisconnectedInRandomCall) {
+        return t('call.partner_disconnected', { name: partnerName });
+      }
+      if (isPartnerTimedOutJoining) {
+        return t('random_call.partner_timedout_joining', { name: partnerName });
+      }
+      return t('random_call.waiting_for_partner_countdown', {
+        name: partnerName,
+        seconds: randomCallCountdownSeconds,
+      });
+    }
+
+    if (otherUserDisconnected) {
+      return t('call.partner_disconnected', { name: partnerName });
+    }
+
+    return t('call.waiting_for_partner', { name: partnerName });
+  };
+  const waitingMessage = getWaitingMessage();
 
   if (isEmpty(tracks)) return null;
 
