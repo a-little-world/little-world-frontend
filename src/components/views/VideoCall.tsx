@@ -272,11 +272,26 @@ function VideoCall() {
     videoPermissionDenied,
     callType,
     postDisconnectRedirect,
+    randomLobbyUuid,
   } = callData || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
 
   const { data: chatData } = useSWR(getChatEndpoint(chatId));
+  const isRandomCall = callType === 'random' || isRandomCallRoute;
+  const randomCallMatchStatusEndpoint =
+    isRandomCall && randomLobbyUuid && randomMatchId
+      ? `/api/random_calls/lobby/${randomLobbyUuid}/match/${randomMatchId}/status`
+      : null;
+  const { data: randomCallMatchStatus } = useSWR(randomCallMatchStatusEndpoint, {
+    refreshInterval: 2000,
+  });
+
+  useEffect(() => {
+    if (!isRandomCall || !randomCallMatchStatusEndpoint) return;
+    console.log('Random call match status:', randomCallMatchStatus);
+  }, [isRandomCall, randomCallMatchStatusEndpoint, randomCallMatchStatus]);
+
   useEffect(() => {
     if (urlUserId && !token) {
       // If userId is in url but no token available, redirect to call-setup so we can re-join the call
