@@ -314,11 +314,6 @@ function VideoCall() {
     refreshInterval: 1000,
   });
 
-  useEffect(() => {
-    if (!isRandomCall || !randomCallMatchStatusEndpoint) return;
-    console.log('Random call match status:', randomCallMatchStatus);
-  }, [isRandomCall, randomCallMatchStatusEndpoint, randomCallMatchStatus]);
-
   const { data: chatData } = useSWR(chatId ? getChatEndpoint(chatId) : null);
   useEffect(() => {
     if (urlUserId && !token) {
