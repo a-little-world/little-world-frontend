@@ -44,7 +44,7 @@ import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import {
   RANDOM_CALLS_ROUTE,
   getAppRoute,
-  getCallSetupRoute,
+  getCallSetupRoute
 } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import Drawer from '../atoms/Drawer';
@@ -69,6 +69,12 @@ import {
 
 interface MyVideoConferenceProps {
   isFullScreen: boolean;
+  isRandomCall: boolean;
+  randomCallMatchStatus?: {
+    partner_timedout_joining?: boolean;
+    partner_left_session?: boolean;
+    remaining_video_call_join_time?: number;
+  };
   partnerId?: string | number;
   partnerImage?: any;
   partnerImageType?: string;
@@ -84,6 +90,8 @@ interface MyVideoConferenceProps {
 
 function MyVideoConference({
   isFullScreen,
+  isRandomCall,
+  randomCallMatchStatus,
   partnerId,
   partnerImage,
   partnerImageType,
@@ -153,6 +161,30 @@ function MyVideoConference({
     });
   };
 
+  const randomCallCountdownSeconds = Math.max(
+    0,
+    Math.ceil(randomCallMatchStatus?.remaining_video_call_join_time ?? 0),
+  );
+  const isPartnerDisconnectedInRandomCall =
+    !!randomCallMatchStatus?.partner_left_session;
+  const isPartnerTimedOutJoining =
+    !!randomCallMatchStatus?.partner_timedout_joining;
+  const waitingMessage = isRandomCall
+    ? isPartnerDisconnectedInRandomCall
+      ? t('call.partner_disconnected', { name: partnerName })
+      : isPartnerTimedOutJoining
+      ? t('random_call.partner_timedout_joining', { name: partnerName })
+      : t('random_call.waiting_for_partner_countdown', {
+          name: partnerName,
+          seconds: randomCallCountdownSeconds,
+        })
+    : t(
+        otherUserDisconnected
+          ? 'call.partner_disconnected'
+          : 'call.waiting_for_partner',
+        { name: partnerName },
+      );
+
   if (isEmpty(tracks)) return null;
 
   return (
@@ -206,12 +238,7 @@ function MyVideoConference({
             </>
           ) : (
             <Text type={TextTypes.Body4}>
-              {t(
-                otherUserDisconnected
-                  ? 'call.partner_disconnected'
-                  : 'call.waiting_for_partner',
-                { name: partnerName },
-              )}
+              {waitingMessage}
             </Text>
           )}
         </WaitingTile>
@@ -284,7 +311,7 @@ function VideoCall() {
       ? `/api/random_calls/lobby/${randomLobbyUuid}/match/${randomMatchId}/status`
       : null;
   const { data: randomCallMatchStatus } = useSWR(randomCallMatchStatusEndpoint, {
-    refreshInterval: 2000,
+    refreshInterval: 1000,
   });
 
   useEffect(() => {
@@ -295,7 +322,11 @@ function VideoCall() {
   useEffect(() => {
     if (urlUserId && !token) {
       // If userId is in url but no token available, redirect to call-setup so we can re-join the call
-      navigate(getCallSetupRoute(urlUserId));
+      if (isRandomCallRoute) {
+        navigate(getAppRoute(RANDOM_CALLS_ROUTE));
+      } else {
+        navigate(getCallSetupRoute(urlUserId));
+      }
     }
   }, [urlUserId, token, navigate]);
 
@@ -398,6 +429,8 @@ function VideoCall() {
             >
               <MyVideoConference
                 isFullScreen={isFullScreen}
+                isRandomCall={isRandomCall}
+                randomCallMatchStatus={randomCallMatchStatus}
                 sessionId={uuid}
                 partnerId={chatData?.partner?.id}
                 partnerName={chatData?.partner?.first_name}
