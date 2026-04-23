@@ -20,7 +20,7 @@ import {
   USER_ENDPOINT,
 } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
-import useQueryParam from '../../hooks/useQueryParam';
+import useQueryParam, { useRemoveQueryParam } from '../../hooks/useQueryParam';
 import {
   FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
@@ -47,6 +47,7 @@ const Login = () => {
   } = useForm({ shouldUnregister: true });
 
   const navigate = useNavigate();
+  const removeQueryParam = useRemoveQueryParam();
   const mobileAuthStore = useMobileAuthTokenStore();
 
   useEffect(() => {
@@ -96,6 +97,10 @@ const Login = () => {
   const onFormSubmit = async (data: any) => {
     setIsSubmitting(true);
 
+    if (sessionExpired) {
+      removeQueryParam('sessionExpired');
+    }
+
     login(data)
       .then(loginData => {
         setIsSubmitting(false);
@@ -139,14 +144,17 @@ const Login = () => {
         <Link to={`/${FORGOT_PASSWORD_ROUTE}/`}>
           {t('login.forgot_password')}
         </Link>
-        <StatusMessage
-          visible={Boolean(errors?.root?.serverError) || sessionExpired}
-          type={sessionExpired ? StatusTypes.Info : StatusTypes.Error}
-        >
-          {sessionExpired
-            ? t('login.session_expired')
-            : t(errors?.root?.serverError?.message as string)}
-        </StatusMessage>
+        {Boolean(errors?.root?.serverError || sessionExpired) && (
+          <StatusMessage
+            visible={Boolean(errors?.root?.serverError || sessionExpired)}
+            type={sessionExpired ? StatusTypes.Info : StatusTypes.Error}
+          >
+            {sessionExpired
+              ? t('login.session_expired')
+              : t(errors?.root?.serverError?.message as string)}
+          </StatusMessage>
+        )}
+
         <StyledCta
           type="submit"
           disabled={isSubmitting}
