@@ -613,6 +613,7 @@
   "random_calls.report_cancel_btn": "Cancel",
   "random_calls.report_confirmed_title": "Thanks for your report!",
   "random_calls.report_confirmed_description": "We've received your report and will get back to you as soon as possible.",
+  "random_call.partner_timedout_joining": "{{name}} didn't manage to join the call, you can exit and search for a new match.",
   "report.call_quality.audio_delay": "Audio Delay",
   "report.call_quality.connection_problems": "Connection Problems",
   "report.call_quality.frozen_screen": "Frozen Screen",
