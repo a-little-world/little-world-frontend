@@ -304,7 +304,7 @@ function VideoCall() {
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
 
-  const { data: chatData } = useSWR(getChatEndpoint(chatId));
+  const { data: chatData } = useSWR(chatId ? getChatEndpoint(chatId) : null);
   const isRandomCall = callType === 'random' || isRandomCallRoute;
   const randomCallMatchStatusEndpoint =
     isRandomCall && randomLobbyUuid && randomMatchId
@@ -314,7 +314,6 @@ function VideoCall() {
     refreshInterval: 1000,
   });
 
-  const { data: chatData } = useSWR(chatId ? getChatEndpoint(chatId) : null);
   useEffect(() => {
     if (urlUserId && !token) {
       // If userId is in url but no token available, redirect to call-setup so we can re-join the call
