@@ -28,7 +28,9 @@ export type DomCommunicationMessage =
   | {
       action: 'GET_WINDOW_ORIGIN';
       requestId?: string;
-      payload: {};
+      payload: {
+        origin: string;
+      };
     }
   | {
       action: 'GET_INTEGRITY_TOKEN';

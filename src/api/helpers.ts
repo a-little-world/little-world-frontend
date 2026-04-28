@@ -124,7 +124,9 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
       });
 
       const response = await fetch(
-        `${getEffectiveBackendUrl()}/api/token/refresh/${challengeData.platform}`,
+        `${getEffectiveBackendUrl()}/api/token/refresh/${
+          challengeData.platform
+        }`,
         {
           method: 'POST',
           headers: {
@@ -139,11 +141,12 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
         } as RequestInit,
       );
 
+      const responseBody = await response.json().catch(() => {});
+      const { access, refresh } = responseBody;
       if (!response.ok) {
         await updateTokens(undefined, undefined);
         return false;
       }
-      const { access, refresh } = await response.json().catch(() => {});
       if (access && refresh) {
         await updateTokens(access, refresh);
         return true;
@@ -151,6 +154,7 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
       await updateTokens(undefined, undefined);
       return false;
     } catch (_e) {
+      await updateTokens(undefined, undefined);
       return false;
     } finally {
       tokenRefreshRequest = null;
@@ -241,6 +245,37 @@ export async function apiFetch<T = any>(
   try {
     return await doFetch();
   } catch (error: any) {
+    if (!environment.isNative) {
+      console.error(`API Fetch Error (${endpoint}):`, error);
+      throw error;
+    }
+
+    const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+
+    const { debugEnabled } = debugStore.getState();
+    // Network-level errors (CORS, DNS, connection refused) throw TypeError with no status
+    if (error instanceof TypeError && debugEnabled) {
+      sendMessageToReactNative?.({
+        action: 'LOG_ERROR',
+        payload: {
+          type: 'fetch',
+          method,
+          endpoint,
+          url: `${getEffectiveBackendUrl()}${endpoint}`,
+          headers: fetchOptions.headers as Record<string, string>,
+          requestBody: body,
+          status: (error as any)?.status ?? 999,
+          error: {
+            type: 'TypeError',
+            message: error.message,
+            details:
+              'Possible causes: Internect connection issues or CORS error',
+          },
+        },
+      })?.catch?.(() => {});
+      throw error;
+    }
+
     // If access token expired, try to refresh and retry once
     const tokenExpired = error?.code === 'token_not_valid';
     const noTokenPresent =
@@ -248,7 +283,6 @@ export async function apiFetch<T = any>(
       useMobileAuthTokenStore.getState().accessToken === undefined;
     if (environment.isNative && (tokenExpired || noTokenPresent)) {
       const refreshed = await nativeRefreshAccessToken();
-      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       if (refreshed) {
         // update Authorization header with new access token
         const { accessToken } = useMobileAuthTokenStore.getState();
@@ -267,8 +301,7 @@ export async function apiFetch<T = any>(
       });
     }
 
-    if (debugStore.getState().debugEnabled) {
-      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+    if (debugEnabled) {
       sendMessageToReactNative?.({
         action: 'LOG_ERROR',
         payload: {
