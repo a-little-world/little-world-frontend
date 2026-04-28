@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 
-import { apiFetch } from '../api/helpers';
+import { apiFetch, nativeRefreshAccessToken } from '../api/helpers';
 import { IS_AUTHENTICATED_ENDPOINT } from '../features/swr/index';
 
 function AuthGuard({ children }) {
@@ -8,7 +8,14 @@ function AuthGuard({ children }) {
     IS_AUTHENTICATED_ENDPOINT,
     apiFetch,
     {
-      refreshInterval: authenticated => (authenticated ? 0 : 3000),
+      refreshInterval: authenticated => {
+        // keep polling every 3s until authenticated
+        if (authenticated !== true) {
+          nativeRefreshAccessToken();
+          return 3000;
+        }
+        return 0;
+      },
     },
   );
   // TODO: should also check 1. 'session_id' present
