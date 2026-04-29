@@ -28,6 +28,11 @@ export type DomCommunicationMessage =
       payload: {};
     }
   | {
+      action: 'NATIVE_READY';
+      requestId?: string;
+      payload: {};
+    }
+  | {
       action: 'GET_WINDOW_ORIGIN';
       requestId?: string;
       payload: {

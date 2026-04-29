@@ -8,6 +8,7 @@ import {
   useNavigationStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
+import useNativeStore from '../../features/stores/nativeStore';
 import {
   DomCommunicationMessage,
   DomCommunicationMessageFn,
@@ -106,6 +107,25 @@ function NativeMessageHandler() {
 
           const { sessionExpired } = payload;
           await navigateToLogin(sessionExpired);
+
+          const response: DomCommunicationResponse = {
+            ok: true,
+          };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
+        case 'NATIVE_READY': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          useNativeStore.getState().setReady();
 
           const response: DomCommunicationResponse = {
             ok: true,

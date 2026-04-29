@@ -13,6 +13,7 @@ import {
   useNavigationStore,
 } from '../features/stores';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
+import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { LOGIN_ROUTE } from '../router/routes';
 
@@ -128,7 +129,6 @@ function getNativeHeaders(): Record<string, string> {
   if (accessToken) {
     headers.Authorization = `Bearer ${accessToken}`;
   }
-
   return headers;
 }
 
@@ -222,9 +222,13 @@ export async function apiFetch<T = any>(
   endpoint: string,
   options: ApiFetchOptions = {},
 ): Promise<T> {
+  if (environment.isNative) {
+    const { ready: nativeReady } = useNativeStore.getState();
+    await nativeReady;
+  }
   if (tokenRefreshRequest) {
     // in case we are already loading a new token, wait before sending any new requests. They would fail anyway due to the
-    // invalid access  token
+    // invalid access token
     await tokenRefreshRequest;
   }
 
