@@ -6,6 +6,7 @@ interface CallData {
   userId: string;
   chatId: string;
   randomMatchId?: string;
+  randomLobbyUuid?: string;
   tracks?: any;
   callType?: 'direct' | 'random';
   postDisconnectRedirect?: string;

@@ -7,7 +7,12 @@ import useSWR, { mutate } from 'swr';
 import CustomPagination from '../../CustomPagination';
 import { updateMatchData } from '../../api/matches';
 import { useCallSetupStore } from '../../features/stores/index';
-import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr/index';
+import {
+  RANDOM_CALL_LOBBY_ENDPOINT,
+  USER_ENDPOINT,
+  getMatchEndpoint,
+} from '../../features/swr/index';
+import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import {
   COMMUNITY_EVENTS_ROUTE,
   RANDOM_CALLS_ROUTE,
@@ -20,6 +25,15 @@ import ContentSelector from '../blocks/ContentSelector';
 import NotificationPanel from '../blocks/NotificationPanel';
 import PartnerProfiles from '../blocks/PartnerProfiles';
 import RandomCalls from './RandomCalls/RandomCalls';
+
+interface RandomCallLobby {
+  uuid: string;
+  name: string;
+  status: boolean;
+  start_time: string;
+  end_time: string;
+  active_users_count: number;
+}
 
 const Home = styled.div`
   display: flex;
@@ -55,6 +69,7 @@ function Main() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showCancelSearching, setShowCancelSearching] = useState(false);
+  useSystemModalBlocker(showCancelSearching, 'home-cancel-searching');
 
   const handlePageChange = async (page: number) => {
     updateMatchData({
@@ -72,6 +87,12 @@ function Main() {
   const { data: matches } = useSWR(getMatchEndpoint(currentPage));
   const { data: user } = useSWR(USER_ENDPOINT);
   const hasRandomCallAccess = user?.hasRandomCallAccess ?? false;
+  const { data: lobbyData } = useSWR<RandomCallLobby>(
+    hasRandomCallAccess ? RANDOM_CALL_LOBBY_ENDPOINT : null,
+    {
+      refreshInterval: 2000,
+    },
+  );
 
   useEffect(() => {
     const totalItems =
@@ -131,10 +152,13 @@ function Main() {
         use="main"
         excludeTopics={excludedTopics}
         newTopics={['random_calls']}
+        onlineTopics={lobbyData?.status ? ['random_calls'] : []}
       />
       {subpage !== 'random_calls' && <CommsBanner />}
       {subpage === 'events' && <CommunityEvents />}
-      {subpage === 'random_calls' && hasRandomCallAccess && <RandomCalls />}
+      {subpage === 'random_calls' && hasRandomCallAccess && (
+        <RandomCalls lobbyData={lobbyData} />
+      )}
       {(subpage === 'conversation_partners' || subpage === 'onboarding') && (
         <>
           <Home>

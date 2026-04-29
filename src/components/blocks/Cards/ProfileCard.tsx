@@ -300,7 +300,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           </PartnerMenuOption>
         </Popover>
       )}
-      <OnlineIndicator isOnline={isOnline} />
+      <OnlineIndicator isOnline={isOnline} position="absolute" />
       <ProfileInfo>
         <NameContainer $isSelf={isSelf}>
           <Text type={TextTypes.Body3} bold>

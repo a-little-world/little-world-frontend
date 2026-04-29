@@ -18,6 +18,7 @@ import {
   USER_TYPES,
 } from '../../constants';
 import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr';
+import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard';
 import PartnerActionCard from './Cards/PartnerActionCard';
@@ -115,6 +116,10 @@ function PartnerProfiles({
     );
   const [partnerActionData, setPartnerActionData] = useState(null);
   const [showSearchConfirmModal, setShowSearchConfirmModal] = useState(false);
+  useSystemModalBlocker(
+    Boolean(partnerActionData) || showSearchConfirmModal,
+    'partner-profiles-modal',
+  );
   const isLearnerOutsideGermany =
     !user?.forceMatchEligible &&
     user?.profile?.user_type === USER_TYPES.learner &&

@@ -22,7 +22,9 @@ import {
   USER_ENDPOINT,
 } from '../../../features/swr/index';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
-import useModalManager, { ModalTypes } from '../../../hooks/useModalManager';
+import useModalManagerStore, {
+  ModalTypes,
+} from '../../../features/stores/modalManager';
 import { ONBOARDING_ROUTE, getAppRoute } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import CallSetup from '../Calls/CallSetup';
@@ -92,7 +94,8 @@ const Content = styled.section<{ $isVH: boolean }>`
 export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { openModal, closeModal, isModalOpen } = useModalManager();
+  const { openModal, closeModal, dismissModal, isModalOpen } =
+    useModalManagerStore();
 
   const { data: user, isLoading: isUserLoading } = useSWR(USER_ENDPOINT);
   const onboardingBasePath = getAppRoute(ONBOARDING_ROUTE);
@@ -135,7 +138,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       activeCallRoom.room_uuid !== disconnectedFromSession
     ) {
       openModal(ModalTypes.INCOMING_CALL.id);
-    } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
+    } else dismissModal(ModalTypes.INCOMING_CALL.id);
   }, [activeCallRoom?.uuid, disconnectedFromSession]);
 
   // Initialize call setup from query param on page load
@@ -164,7 +167,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (callSetup?.userId) {
       openModal(ModalTypes.CALL_SETUP.id);
-    } else if (isModalOpen(ModalTypes.CALL_SETUP.id)) closeModal();
+    } else dismissModal(ModalTypes.CALL_SETUP.id);
   }, [callSetup?.userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -175,13 +178,13 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
     if (shouldShowMatchModal) {
       openModal(ModalTypes.MATCH.id);
-    } else if (isModalOpen(ModalTypes.MATCH.id)) closeModal();
+    } else dismissModal(ModalTypes.MATCH.id);
   }, [matches]); // eslint-disable-line
 
   useEffect(() => {
     if (postCallSurvey) {
       openModal(ModalTypes.POST_CALL_SURVEY.id);
-    } else if (isModalOpen(ModalTypes.POST_CALL_SURVEY.id)) closeModal();
+    } else dismissModal(ModalTypes.POST_CALL_SURVEY.id);
   }, [postCallSurvey]);
 
   const onAnswerCall = () => {

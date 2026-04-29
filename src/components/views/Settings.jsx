@@ -24,6 +24,7 @@ import useSWR, { mutate } from 'swr';
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
 import { USER_ENDPOINT } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
+import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import PageHeader from '../atoms/PageHeader';
@@ -319,6 +320,7 @@ function Settings() {
 
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  useSystemModalBlocker(Boolean(editing) || showConfirm, 'settings-modal');
 
   const items = [
     // with ordering

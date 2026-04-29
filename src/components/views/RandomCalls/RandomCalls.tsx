@@ -15,12 +15,12 @@ import { exitLobby } from '../../../api/randomCalls';
 import {
   RANDOM_CALL_EXIT_PARAM,
   RANDOM_CALL_EXIT_VALUE,
-  RANDOM_CALL_LOBBY_ENDPOINT,
   UPCOMING_LOBBIES_ENDPOINT,
 } from '../../../features/swr/index';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
+import useSystemModalBlocker from '../../../hooks/useSystemModalBlocker';
 import randomCallsImage from '../../../images/random-calls-image.png';
-import { OnlineCirlce } from '../../atoms/OnlineIndicator';
+import { OnlineCircle } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
 import { Schedule } from '../../atoms/Schedule';
 import CallHistory from '../../blocks/CallHistory/CallHistory';
@@ -68,14 +68,8 @@ interface RandomCallLobby {
   active_users_count: number;
 }
 
-const RandomCalls = () => {
+const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
   const { t } = useTranslation();
-  const { data: lobbyData } = useSWR<RandomCallLobby>(
-    RANDOM_CALL_LOBBY_ENDPOINT,
-    {
-      refreshInterval: 2000,
-    },
-  );
   const { data: upcomingLobbies, isLoading: lobbyLoading } = useSWR<
     UpcomingLobbyItem[]
   >(UPCOMING_LOBBIES_ENDPOINT);
@@ -108,6 +102,8 @@ const RandomCalls = () => {
       setSearchParams(nextParams, { replace: true });
     }
   }, [searchParams, setSearchParams]);
+
+  useSystemModalBlocker(lobbyOpen || callEnded, 'random-calls');
 
   const openLobbyFresh = () => {
     // @tbscode TODO tempo fix forecefuly reset lobby cache by reloading everything on re-enters
@@ -187,7 +183,7 @@ const RandomCalls = () => {
                 )}
                 {active ? (
                   <ActiveUsers>
-                    <OnlineCirlce />
+                    <OnlineCircle />
                     <Text bold>
                       {t('random_calls.active_users', {
                         count: lobbyData?.active_users_count ?? 0,

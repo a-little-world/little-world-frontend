@@ -4,6 +4,7 @@ export { default as useConnectedCallStore } from './connectedCall';
 export { debugStore, default as useDebugStore } from './debugStore';
 export { default as useDevelopmentFeaturesStore } from './developmentFeatures';
 export { default as useMobileAuthTokenStore } from './mobileAuthToken';
+export { default as useModalManagerStore } from './modalManager';
 export { default as useNavigationStore } from './navigation';
 export { default as usePostCallSurveyStore } from './postCallSurvey';
 export { default as useReceiveHandlerStore } from './receiveHandler';

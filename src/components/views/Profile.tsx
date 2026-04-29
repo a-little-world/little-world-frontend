@@ -25,6 +25,7 @@ import {
   revalidateMatches,
 } from '../../features/swr/index';
 import { onFormError } from '../../helpers/form';
+import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../router/routes';
 import {
   ComponentTypes,
@@ -157,6 +158,7 @@ function Profile() {
   const formOptions = useSWR(API_OPTIONS_ENDPOINT).data?.profile;
 
   const [editingField, setEditingField] = useState(null);
+  useSystemModalBlocker(Boolean(editingField), 'profile-edit-field');
 
   const { data: matches } = useSWR(MATCHES_ENDPOINT);
   const match = !matches

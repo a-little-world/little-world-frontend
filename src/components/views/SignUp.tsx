@@ -47,6 +47,18 @@ const MTM_CUSTOM_USER_TYPE_EVENT_TRIGGER = true;
 // Stores selected user type for downstream tracking after redirects.
 const MTM_ENABLE_USER_TYPE_COOKIE = true;
 
+/** Still submitted as `company`, but the read-only name label is not shown. */
+const SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL = [
+  'campaign-',
+  'self-organized-',
+] as const;
+
+function signUpCompanySlugHidesNameLabel(company: string): boolean {
+  return SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL.some(prefix =>
+    company.startsWith(prefix),
+  );
+}
+
 function runOptionalMatomoTriggers(userType?: string) {
   if (!userType) return;
 
@@ -156,7 +168,7 @@ const SignUp = () => {
         <NameContainer>
           {company && (
             <>
-              {!company?.startsWith('campaign-') && (
+              {!signUpCompanySlugHidesNameLabel(company) && (
                 <Label
                   bold
                   htmlFor="company"
