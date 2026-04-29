@@ -92,7 +92,6 @@ export type DomCommunicationMessage =
             type: 'react';
             message: string;
             stack?: string;
-            source?: string;
           }
         | {
             type: 'fetch';

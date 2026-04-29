@@ -293,28 +293,6 @@ export async function apiFetch<T = any>(
       throw error;
     }
 
-    // If access token expired, try to refresh and retry once
-    const tokenExpired = error?.code === 'token_not_valid';
-    const noTokenPresent =
-      error?.status === 403 &&
-      useMobileAuthTokenStore.getState().accessToken === undefined;
-    if (environment.isNative && (tokenExpired || noTokenPresent)) {
-      const tokenStatus = await nativeRefreshAccessToken();
-      if (tokenStatus === TokenStatus.VALID) {
-        // update Authorization header with new access token
-        const { accessToken } = useMobileAuthTokenStore.getState();
-        if (accessToken) {
-          fetchOptions.headers!.Authorization = `Bearer ${accessToken}`;
-        } else {
-          throw new Error('Token refresh successful but returned no tokens');
-        }
-        return doFetch();
-      }
-
-      await navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
-      throw error;
-    }
-
     const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
     const { debugEnabled } = debugStore.getState();
 
@@ -339,7 +317,6 @@ export async function apiFetch<T = any>(
             },
           },
         })?.catch?.(() => {});
-        throw error;
       }
 
       sendMessageToReactNative?.({
@@ -355,6 +332,28 @@ export async function apiFetch<T = any>(
           error,
         },
       })?.catch?.(() => {});
+    }
+
+    // If access token expired, try to refresh and retry once
+    const tokenExpired = error?.code === 'token_not_valid';
+    const noTokenPresent =
+      error?.status === 403 &&
+      useMobileAuthTokenStore.getState().accessToken === undefined;
+    if (environment.isNative && (tokenExpired || noTokenPresent)) {
+      const tokenStatus = await nativeRefreshAccessToken();
+      if (tokenStatus === TokenStatus.VALID) {
+        // update Authorization header with new access token
+        const { accessToken } = useMobileAuthTokenStore.getState();
+        if (accessToken) {
+          fetchOptions.headers!.Authorization = `Bearer ${accessToken}`;
+        } else {
+          throw new Error('Token refresh successful but returned no tokens');
+        }
+        return doFetch();
+      }
+
+      await navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
+      throw error;
     }
 
     console.error(`API Fetch Error (${endpoint}):`, error);

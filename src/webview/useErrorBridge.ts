@@ -1,29 +1,30 @@
 import { useEffect } from 'react';
+
 import { debugStore } from '../features/stores/debugStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 
 function useErrorBridge() {
   useEffect(() => {
-    const send = (message: string, stack?: string, source?: string) => {
+    const send = (message: string, stack?: string) => {
       if (!debugStore.getState().debugEnabled) return;
       const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       sendMessageToReactNative?.({
         action: 'LOG_ERROR',
-        payload: { type: 'react', message, stack, source },
+        payload: {
+          type: 'react',
+          message,
+          stack,
+        },
       })?.catch?.(() => {});
     };
 
     const handleError = (event: ErrorEvent) => {
-      send(event.message, event.error?.stack, 'uncaught');
+      send(event.message, event.error?.stack);
     };
 
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       const error = event.reason;
-      send(
-        error?.message ?? String(error),
-        error?.stack,
-        'unhandledrejection',
-      );
+      send(error?.message ?? String(error), error?.stack);
     };
 
     window.addEventListener('error', handleError);
@@ -31,7 +32,10 @@ function useErrorBridge() {
 
     return () => {
       window.removeEventListener('error', handleError);
-      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+      window.removeEventListener(
+        'unhandledrejection',
+        handleUnhandledRejection,
+      );
     };
   }, []);
 }
