@@ -44,6 +44,14 @@ export async function clearSwrCache() {
 }
 
 export async function navigateToLogin(expired: boolean = false): Promise<void> {
+  const location = window?.location.hash.replaceAll('#', '');
+  if (
+    location.startsWith(`/${LOGIN_ROUTE}`) &&
+    (!expired || location.includes(`?sessionExpired=${expired}`))
+  ) {
+    return;
+  }
+
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
 
   await clearSwrCache();
@@ -305,7 +313,7 @@ export async function apiFetch<T = any>(
         return doFetch();
       }
 
-      navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
+      await navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
     }
 
     const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
