@@ -86,9 +86,9 @@ function Main() {
 
   const { data: matches } = useSWR(getMatchEndpoint(currentPage));
   const { data: user } = useSWR(USER_ENDPOINT);
-  const hasRandomCallAccess = user?.hasRandomCallAccess ?? false;
+  const hasRandomCallsAccess = user?.hasRandomCallsAccess ?? false;
   const { data: lobbyData } = useSWR<RandomCallLobby>(
-    hasRandomCallAccess ? RANDOM_CALL_LOBBY_ENDPOINT : null,
+    hasRandomCallsAccess ? RANDOM_CALL_LOBBY_ENDPOINT : null,
     {
       refreshInterval: 2000,
     },
@@ -123,10 +123,10 @@ function Main() {
 
   useEffect(() => {
     // Redirect away from random_calls route if user doesn't have access
-    if (subpage === 'random_calls' && !hasRandomCallAccess) {
+    if (subpage === 'random_calls' && !hasRandomCallsAccess) {
       navigate(getAppRoute(''));
     }
-  }, [subpage, hasRandomCallAccess, navigate]);
+  }, [subpage, hasRandomCallsAccess, navigate]);
 
   const handleSubpageSelect = (page: subpages) => {
     const nextPath = page !== 'conversation_partners' ? page : '';
@@ -137,7 +137,7 @@ function Main() {
     handlePageChange(page);
   };
 
-  const excludedTopics = !hasRandomCallAccess ? ['random_calls'] : [];
+  const excludedTopics = !hasRandomCallsAccess ? ['random_calls'] : [];
   excludedTopics.push(
     !user?.isOnboarded ? 'conversation_partners' : 'onboarding',
   );
@@ -156,7 +156,7 @@ function Main() {
       />
       {subpage !== 'random_calls' && <CommsBanner />}
       {subpage === 'events' && <CommunityEvents />}
-      {subpage === 'random_calls' && hasRandomCallAccess && (
+      {subpage === 'random_calls' && hasRandomCallsAccess && (
         <RandomCalls lobbyData={lobbyData} />
       )}
       {(subpage === 'conversation_partners' || subpage === 'onboarding') && (
