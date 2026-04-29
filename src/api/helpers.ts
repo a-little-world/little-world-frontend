@@ -7,13 +7,32 @@ import {
   IntegrityCheck,
   getIntegrityCheckRequestData,
 } from '../features/integrityCheck';
-import { debugStore } from '../features/stores/debugStore';
+import useDebugStore, { debugStore } from '../features/stores/debugStore';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { LOGIN_ROUTE } from '../router/routes';
 
 export function getEffectiveBackendUrl(): string {
   return debugStore.getState().backendUrlOverride ?? environment.backendUrl;
+}
+
+export function useEffectiveBackendUrl(): string {
+  const { backendUrlOverride } = useDebugStore();
+  return backendUrlOverride ?? environment.backendUrl;
+}
+
+function getCoreWsScheme(backendUrl: string): string {
+  return `ws${backendUrl.startsWith('https') ? 's' : ''}://`;
+}
+
+export function getEffectiveCoreWsScheme(): string {
+  const effectiveBackendUrl = getEffectiveBackendUrl();
+  return getCoreWsScheme(effectiveBackendUrl);
+}
+
+export function useEffectiveCoreWsScheme(): string {
+  const effectiveBackendUrl = useEffectiveBackendUrl();
+  return getCoreWsScheme(effectiveBackendUrl);
 }
 
 export async function clearSwrCache() {
