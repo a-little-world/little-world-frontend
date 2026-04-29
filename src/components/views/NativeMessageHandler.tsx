@@ -45,7 +45,9 @@ function NativeMessageHandler() {
           }
 
           const { debugEnabled, backendUrlOverride } = payload;
-          useDebugStore.getState().setDebugConfig({ debugEnabled, backendUrlOverride });
+          useDebugStore
+            .getState()
+            .setDebugConfig({ debugEnabled, backendUrlOverride });
 
           const response: DomCommunicationResponse = { ok: true };
           sendMessageToReactNative!({
@@ -78,9 +80,9 @@ function NativeMessageHandler() {
             throw new Error('Received native message without request id');
           }
 
-          const { path } = payload;
+          const { path, options } = payload;
           // circumvent infinite loop when using navigate inside dependencies
-          navigateRef.current?.(path);
+          navigateRef.current?.(path, options);
 
           const response: DomCommunicationResponse = {
             ok: true,

@@ -1,3 +1,4 @@
+import { NavigateOptions } from 'react-router-dom';
 import { create } from 'zustand';
 
 export type DomCommunicationResponse =
@@ -18,6 +19,7 @@ export type DomCommunicationMessage =
       requestId?: string;
       payload: {
         path: string;
+        options?: NavigateOptions;
       };
     }
   | {
