@@ -12,8 +12,34 @@ import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { LOGIN_ROUTE } from '../router/routes';
 
-function getEffectiveBackendUrl(): string {
+export function getEffectiveBackendUrl(): string {
   return debugStore.getState().backendUrlOverride ?? environment.backendUrl;
+}
+
+export async function clearSwrCache() {
+  await mutate(
+    () => true, // Match all cache keys
+    undefined, // Set data to undefined
+    { revalidate: false }, // Do not trigger a refetch
+  );
+}
+
+export async function navigateToLogin(expired: boolean = false): Promise<void> {
+  const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+
+  await clearSwrCache();
+  await sendMessageToReactNative?.({
+    action: 'NAVIGATE',
+    payload: {
+      path: `/${LOGIN_ROUTE}${expired ? '?sessionExpired=true' : ''}`,
+    },
+  });
+}
+
+export enum TokenStatus {
+  VALID,
+  EXPIRED,
+  MISSING,
 }
 
 // Add DOM types for fetch API
@@ -95,9 +121,9 @@ async function updateTokens(
   });
 }
 
-let tokenRefreshRequest: Promise<boolean> | null = null;
-export async function nativeRefreshAccessToken(): Promise<boolean> {
-  if (!environment.isNative) return false;
+let tokenRefreshRequest: Promise<TokenStatus> | null = null;
+export async function nativeRefreshAccessToken(): Promise<TokenStatus> {
+  if (!environment.isNative) return TokenStatus.MISSING;
 
   if (tokenRefreshRequest) {
     return tokenRefreshRequest;
@@ -106,11 +132,11 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
   tokenRefreshRequest = (async () => {
     try {
       const { refreshToken } = useMobileAuthTokenStore.getState();
-      if (!refreshToken) return false;
+      if (!refreshToken) return TokenStatus.MISSING;
 
       const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       if (!sendMessageToReactNative) {
-        return false;
+        return TokenStatus.MISSING;
       }
 
       const challengeData: IntegrityCheck = await sendMessageToReactNative({
@@ -145,31 +171,23 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
       const { access, refresh } = responseBody;
       if (!response.ok) {
         await updateTokens(undefined, undefined);
-        return false;
+        return TokenStatus.EXPIRED;
       }
       if (access && refresh) {
         await updateTokens(access, refresh);
-        return true;
+        return TokenStatus.VALID;
       }
       await updateTokens(undefined, undefined);
-      return false;
+      return TokenStatus.EXPIRED;
     } catch (_e) {
       await updateTokens(undefined, undefined);
-      return false;
+      return TokenStatus.EXPIRED;
     } finally {
       tokenRefreshRequest = null;
     }
   })();
 
   return tokenRefreshRequest;
-}
-
-export async function clearSwrCache() {
-  await mutate(
-    () => true, // Match all cache keys
-    undefined, // Set data to undefined
-    { revalidate: false }, // Do not trigger a refetch
-  );
 }
 
 export async function apiFetch<T = any>(
@@ -250,40 +268,14 @@ export async function apiFetch<T = any>(
       throw error;
     }
 
-    const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-
-    const { debugEnabled } = debugStore.getState();
-    // Network-level errors (CORS, DNS, connection refused) throw TypeError with no status
-    if (error instanceof TypeError && debugEnabled) {
-      sendMessageToReactNative?.({
-        action: 'LOG_ERROR',
-        payload: {
-          type: 'fetch',
-          method,
-          endpoint,
-          url: `${getEffectiveBackendUrl()}${endpoint}`,
-          headers: fetchOptions.headers as Record<string, string>,
-          requestBody: body,
-          status: (error as any)?.status ?? 999,
-          error: {
-            type: 'TypeError',
-            message: error.message,
-            details:
-              'Possible causes: Internect connection issues or CORS error',
-          },
-        },
-      })?.catch?.(() => {});
-      throw error;
-    }
-
     // If access token expired, try to refresh and retry once
     const tokenExpired = error?.code === 'token_not_valid';
     const noTokenPresent =
       error?.status === 403 &&
       useMobileAuthTokenStore.getState().accessToken === undefined;
     if (environment.isNative && (tokenExpired || noTokenPresent)) {
-      const refreshed = await nativeRefreshAccessToken();
-      if (refreshed) {
+      const tokenStatus = await nativeRefreshAccessToken();
+      if (tokenStatus === TokenStatus.VALID) {
         // update Authorization header with new access token
         const { accessToken } = useMobileAuthTokenStore.getState();
         if (accessToken) {
@@ -294,14 +286,36 @@ export async function apiFetch<T = any>(
         return doFetch();
       }
 
-      await clearSwrCache();
-      await sendMessageToReactNative?.({
-        action: 'NAVIGATE',
-        payload: { path: `/${LOGIN_ROUTE}?sessionExpired=true` },
-      });
+      navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
     }
 
-    if (debugEnabled) {
+    const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+    const { debugEnabled } = debugStore.getState();
+
+    if (environment.isNative && debugEnabled) {
+      // Network-level errors (CORS, DNS, connection refused) throw TypeError with no status
+      if (error instanceof TypeError && debugEnabled) {
+        sendMessageToReactNative?.({
+          action: 'LOG_ERROR',
+          payload: {
+            type: 'fetch',
+            method,
+            endpoint,
+            url: `${getEffectiveBackendUrl()}${endpoint}`,
+            headers: fetchOptions.headers as Record<string, string>,
+            requestBody: body,
+            status: (error as any)?.status ?? 999,
+            error: {
+              type: 'TypeError',
+              message: error.message,
+              details:
+                'Possible causes: Internect connection issues or CORS error',
+            },
+          },
+        })?.catch?.(() => {});
+        throw error;
+      }
+
       sendMessageToReactNative?.({
         action: 'LOG_ERROR',
         payload: {

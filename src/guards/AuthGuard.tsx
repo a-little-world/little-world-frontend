@@ -1,17 +1,35 @@
 import useSWR from 'swr';
 
-import { apiFetch, nativeRefreshAccessToken } from '../api/helpers';
+import {
+  TokenStatus,
+  apiFetch,
+  nativeRefreshAccessToken,
+  navigateToLogin,
+} from '../api/helpers';
 import { IS_AUTHENTICATED_ENDPOINT } from '../features/swr/index';
 
 function AuthGuard({ children }) {
-  const { data, isLoading, error } = useSWR(
+  const { data, error, isLoading } = useSWR<boolean>(
     IS_AUTHENTICATED_ENDPOINT,
-    apiFetch,
+    endpoint =>
+      apiFetch(endpoint).then(async isAuthenticated => {
+        if (!isAuthenticated) {
+          const tokenStatus = await nativeRefreshAccessToken();
+          if (
+            tokenStatus === TokenStatus.EXPIRED ||
+            tokenStatus === TokenStatus.MISSING
+          ) {
+            await navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
+            return false;
+          }
+          return true;
+        }
+        return true;
+      }),
     {
-      refreshInterval: authenticated => {
+      refreshInterval: isAuthenticated => {
         // keep polling every 3s until authenticated
-        if (authenticated !== true) {
-          nativeRefreshAccessToken();
+        if (isAuthenticated !== true) {
           return 3000;
         }
         return 0;
