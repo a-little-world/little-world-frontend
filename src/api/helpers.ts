@@ -7,7 +7,11 @@ import {
   IntegrityCheck,
   getIntegrityCheckRequestData,
 } from '../features/integrityCheck';
-import useDebugStore, { debugStore } from '../features/stores/debugStore';
+import {
+  debugStore,
+  useDebugStore,
+  useNavigationStore,
+} from '../features/stores';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { LOGIN_ROUTE } from '../router/routes';
@@ -44,23 +48,20 @@ export async function clearSwrCache() {
 }
 
 export async function navigateToLogin(expired: boolean = false): Promise<void> {
-  const location = window?.location.hash.replaceAll('#', '');
+  const currentPath = (window?.location?.hash ?? '').replaceAll('#', '');
   if (
-    location.startsWith(`/${LOGIN_ROUTE}`) &&
-    (!expired || location.includes(`?sessionExpired=${expired}`))
+    currentPath.startsWith(`/${LOGIN_ROUTE}`) &&
+    (!expired || currentPath.includes('?sessionExpired=true'))
   ) {
+    // prevent subsequent navigations from overriding expiration status
     return;
   }
 
-  const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-
   await clearSwrCache();
-  await sendMessageToReactNative?.({
-    action: 'NAVIGATE',
-    payload: {
-      path: `/${LOGIN_ROUTE}${expired ? '?sessionExpired=true' : ''}`,
-    },
-  });
+
+  const path = `/${LOGIN_ROUTE}${expired ? '?sessionExpired=true' : ''}`;
+  const { navigate } = useNavigationStore.getState();
+  navigate?.(path);
 }
 
 export enum TokenStatus {
@@ -314,6 +315,7 @@ export async function apiFetch<T = any>(
       }
 
       await navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
+      throw error;
     }
 
     const { sendMessageToReactNative } = useReceiveHandlerStore.getState();

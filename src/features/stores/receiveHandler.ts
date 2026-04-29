@@ -78,6 +78,13 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'NAVIGATE_TO_LOGIN';
+      requestId?: string;
+      payload: {
+        sessionExpired: boolean;
+      };
+    }
+  | {
       action: 'LOG_ERROR';
       requestId?: string;
       payload:
