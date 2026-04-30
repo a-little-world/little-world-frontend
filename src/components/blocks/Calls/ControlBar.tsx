@@ -15,9 +15,9 @@ import {
   MediaDeviceMenu,
   TrackToggle,
   useDisconnectButton,
-  useTrackToggle,
 } from '@livekit/components-react';
 import { Track } from 'livekit-client';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
@@ -233,17 +233,10 @@ function ControlBar({
 }: ControlBarProps) {
   const { t } = useTranslation();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
-  const {
-    onClick: livekitDisconnectClick,
-    ...disconnectButtonProps
-  } = disconnectProps;
-
-  const { permissionDenied: audioPermissionDenied } = useTrackToggle({
-    source: Track.Source.Microphone,
-  });
-  const { permissionDenied: videoPermissionDenied } = useTrackToggle({
-    source: Track.Source.Camera,
-  });
+  const { onClick: livekitDisconnectClick, ...disconnectButtonProps } =
+    disconnectProps;
+  const [audioPermissionDenied, setAudioPermissionDenied] = useState(false);
+  const [videoPermissionDenied, setVideoPermissionDenied] = useState(false);
 
   const handleOpenPermissionModal = () => {
     onPermissionModalOpen?.({
@@ -268,6 +261,7 @@ function ControlBar({
                       : undefined
                   }
                   source={Track.Source.Microphone}
+                  onPermissionsChange={setAudioPermissionDenied}
                   showIcon
                   $withBackground
                   $permissionDenied={audioPermissionDenied}
@@ -294,6 +288,7 @@ function ControlBar({
                       : undefined
                   }
                   source={Track.Source.Camera}
+                  onPermissionsChange={setVideoPermissionDenied}
                   showIcon
                   $withBackground
                   $permissionDenied={videoPermissionDenied}

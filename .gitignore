@@ -26,9 +26,10 @@ yarn-error.log*
 # Build artifacts
 dist/
 dist-*/
-!prebuild/*.tgz # Allow .tgz files in prebuild directory
 *.tgz
 *.tar.gz
+# Allow .tgz files in prebuild directory
+!prebuild/*.tgz
 assets/
 
 webpack-stats.json
