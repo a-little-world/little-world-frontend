@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { SWRConfig } from 'swr';
@@ -12,6 +12,10 @@ import {
 } from '../../features/swr/index';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
+import {
+  createSafeNativeMessageSender,
+  hasNativeWebViewBridge,
+} from '../../webview/nativeBridge';
 
 /**
  * TODO:
@@ -40,6 +44,10 @@ export function LittleWorldWebNative({
   registerReceiveHandler: (handler: DomCommunicationMessageFn | null) => void;
 }) {
   const router = getNativeRouter();
+  const safeSendMessageToReactNative = useMemo(
+    () => createSafeNativeMessageSender(sendMessageToReactNative),
+    [sendMessageToReactNative],
+  );
   const {
     handler,
     setSendMessageToReactNative,
@@ -49,22 +57,33 @@ export function LittleWorldWebNative({
     useState(false);
 
   useEffect(() => {
-    setSendMessageToReactNative(sendMessageToReactNative);
-  }, [setSendMessageToReactNative, sendMessageToReactNative]);
+    if (!hasNativeWebViewBridge()) {
+      setSendMessageToReactNative(null);
+      return;
+    }
+
+    setSendMessageToReactNative(safeSendMessageToReactNative);
+  }, [setSendMessageToReactNative, safeSendMessageToReactNative]);
 
   useEffect(() => {
-    if (handler && sendMessageToReactNativeSet && !communicationEstablished) {
+    if (
+      handler &&
+      sendMessageToReactNativeSet &&
+      hasNativeWebViewBridge() &&
+      !communicationEstablished
+    ) {
       setCommunicationEstablished(true);
 
-      setSendMessageToReactNative(sendMessageToReactNative);
+      setSendMessageToReactNative(safeSendMessageToReactNative);
       registerReceiveHandler(handler);
 
-      sendMessageToReactNative({
+      safeSendMessageToReactNative({
         action: 'WEBVIEW_READY',
         payload: {},
       }).then(res => {
         if (!res.ok) {
-          throw new Error(res.error);
+          console.warn(res.error);
+          return undefined;
         }
         return res.data;
       });
@@ -73,6 +92,8 @@ export function LittleWorldWebNative({
     handler,
     registerReceiveHandler,
     sendMessageToReactNativeSet,
+    setSendMessageToReactNative,
+    safeSendMessageToReactNative,
     communicationEstablished,
   ]);
 
