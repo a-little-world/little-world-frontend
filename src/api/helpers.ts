@@ -40,11 +40,11 @@ export function useEffectiveCoreWsScheme(): string {
   return getCoreWsScheme(effectiveBackendUrl);
 }
 
-export async function clearSwrCache() {
+export async function clearSwrCache(revalidate = true) {
   await mutate(
     () => true, // Match all cache keys
     undefined, // Set data to undefined
-    { revalidate: false }, // Do not trigger a refetch
+    { revalidate },
   );
 }
 
@@ -58,7 +58,7 @@ export async function navigateToLogin(expired: boolean = false): Promise<void> {
     return;
   }
 
-  await clearSwrCache();
+  await clearSwrCache(false);
 
   const path = `/${LOGIN_ROUTE}${expired ? '?sessionExpired=true' : ''}`;
   const { navigate } = useNavigationStore.getState();

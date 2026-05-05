@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { navigateToLogin } from '../../api/helpers';
+import { clearSwrCache, navigateToLogin } from '../../api/helpers';
 import {
   useDebugStore,
   useMobileAuthTokenStore,
@@ -46,10 +46,16 @@ function NativeMessageHandler() {
             throw new Error('Received native message without request id');
           }
 
+          const debugConfigState = useDebugStore.getState();
           const { debugEnabled, backendUrlOverride } = payload;
-          useDebugStore
-            .getState()
-            .setDebugConfig({ debugEnabled, backendUrlOverride });
+          const backendUrlChanged =
+            backendUrlOverride !== debugConfigState.backendUrlOverride;
+
+          debugConfigState.setDebugConfig({ debugEnabled, backendUrlOverride });
+
+          if (backendUrlChanged) {
+            clearSwrCache();
+          }
 
           const response: DomCommunicationResponse = { ok: true };
           sendMessageToReactNative!({
