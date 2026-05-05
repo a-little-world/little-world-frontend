@@ -68,7 +68,7 @@ const WebsocketBridge = () => {
         console.warn('CORE SOCKET ERROR:', e);
       }
     }
-  }, [lastMessage, setMessageHistory]);
+  }, [lastMessage, setMessageHistory, toast]);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
