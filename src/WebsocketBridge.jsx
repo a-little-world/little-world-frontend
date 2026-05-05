@@ -28,14 +28,7 @@ const WebsocketBridge = () => {
   const backendUrl = useEffectiveBackendUrl();
   const coreWsScheme = useEffectiveCoreWsScheme();
   const webSocketHost = new URL(backendUrl).host;
-  const socketUrl =
-    coreWsScheme +
-    (environment.isNative
-      ? webSocketHost
-      : typeof window !== 'undefined'
-      ? window.location.host
-      : '') +
-    environment.coreWsPath;
+  const socketUrl = coreWsScheme + webSocketHost + environment.coreWsPath;
 
   const accessToken = useMobileAuthTokenStore(state => state.accessToken);
   const [, setMessageHistory] = useState([]);
