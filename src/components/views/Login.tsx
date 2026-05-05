@@ -136,16 +136,14 @@ const Login = () => {
         <Link to={`/${FORGOT_PASSWORD_ROUTE}/`}>
           {t('login.forgot_password')}
         </Link>
-        {Boolean(errors?.root?.serverError || sessionExpired) && (
-          <StatusMessage
-            visible={Boolean(errors?.root?.serverError || sessionExpired)}
-            type={sessionExpired ? StatusTypes.Info : StatusTypes.Error}
-          >
-            {sessionExpired
-              ? t('login.session_expired')
-              : t(errors?.root?.serverError?.message as string)}
-          </StatusMessage>
-        )}
+        <StatusMessage
+          visible={Boolean(errors?.root?.serverError) || sessionExpired}
+          type={sessionExpired ? StatusTypes.Info : StatusTypes.Error}
+        >
+          {sessionExpired
+            ? t('login.session_expired')
+            : t(errors?.root?.serverError?.message as string)}
+        </StatusMessage>
 
         <StyledCta
           type="submit"
