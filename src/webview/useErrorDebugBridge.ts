@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { debugStore } from '../features/stores/debugStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 
-function useErrorBridge() {
+function useErrorDebugBridge() {
   useEffect(() => {
     const send = (message: string, stack?: string) => {
       if (!debugStore.getState().debugEnabled) return;
@@ -40,4 +40,4 @@ function useErrorBridge() {
   }, []);
 }
 
-export default useErrorBridge;
+export default useErrorDebugBridge;
