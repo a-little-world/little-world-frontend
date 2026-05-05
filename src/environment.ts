@@ -2,7 +2,6 @@ export interface Environment {
   defaultLoginName: string;
   defaultLoginPassword: string;
   backendUrl: string;
-  coreWsScheme: string;
   coreWsPath: string;
   websocketHost: string;
   isNative: boolean;
@@ -14,7 +13,6 @@ export const environment: Environment = {
   defaultLoginName: 'benjamin.tim@gmx.de',
   defaultLoginPassword: 'Test123',
   backendUrl: '',
-  coreWsScheme: 'wss://',
   coreWsPath: '/api/core/ws',
   websocketHost: '',
   isNative: false,
