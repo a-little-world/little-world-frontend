@@ -1,10 +1,14 @@
-import { useEffect, useRef } from 'react';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { clearSwrCache, navigateToLogin } from '../../api/helpers';
 import {
+  useDebugStore,
   useMobileAuthTokenStore,
+  useNavigationStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
+import useNativeStore from '../../features/stores/nativeStore';
 import {
   DomCommunicationMessage,
   DomCommunicationMessageFn,
@@ -22,12 +26,11 @@ function NativeMessageHandler() {
   const { setHandler, sendMessageToReactNative } = useReceiveHandlerStore();
   const navigate = useNavigate();
   const mobileAuthStore = useMobileAuthTokenStore();
-
-  const navigateRef = useRef<NavigateFunction | null>(null);
+  const { setNavigate } = useNavigationStore();
 
   useEffect(() => {
-    navigateRef.current = navigate;
-  }, [navigate]);
+    setNavigate(navigate);
+  }, [navigate, setNavigate]);
 
   useEffect(() => {
     if (!sendMessageToReactNative) {
@@ -38,6 +41,30 @@ function NativeMessageHandler() {
     ) => {
       const { action, requestId, payload } = message;
       switch (action) {
+        case 'SET_DEBUG_CONFIG': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const debugConfigState = useDebugStore.getState();
+          const { debugEnabled, backendUrlOverride } = payload;
+          const backendUrlChanged =
+            backendUrlOverride !== debugConfigState.backendUrlOverride;
+
+          debugConfigState.setDebugConfig({ debugEnabled, backendUrlOverride });
+
+          if (backendUrlChanged) {
+            clearSwrCache();
+          }
+
+          const response: DomCommunicationResponse = { ok: true };
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+          return response;
+        }
         case 'SET_AUTH_TOKENS': {
           if (!requestId) {
             throw new Error('Received native message without request id');
@@ -61,15 +88,53 @@ function NativeMessageHandler() {
             throw new Error('Received native message without request id');
           }
 
-          const { path } = payload;
-          // circumvent infinite loop when using navigate inside dependencies
-          navigateRef.current?.(path);
+          const { path, options } = payload;
+          useNavigationStore.getState().navigate?.(path, options);
 
           const response: DomCommunicationResponse = {
             ok: true,
             data: {
               response: `Navigation event dispatched`,
             },
+          };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
+        case 'NAVIGATE_TO_LOGIN': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const { sessionExpired } = payload;
+          await navigateToLogin(sessionExpired);
+
+          const response: DomCommunicationResponse = {
+            ok: true,
+          };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
+        case 'NATIVE_READY': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          useNativeStore.getState().setReady();
+
+          const response: DomCommunicationResponse = {
+            ok: true,
           };
 
           sendMessageToReactNative!({

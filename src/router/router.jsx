@@ -43,6 +43,7 @@ import { STORAGE_KEYS } from '../constants';
 import { environment } from '../environment';
 import AuthGuard from '../guards/AuthGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
+import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
   APP_ROUTE,
   BASE_ROUTE,
@@ -93,20 +94,23 @@ const getInitialTheme = () => {
   return undefined; // Let CustomThemeProvider use its default
 };
 
-export const Root = ({ children, restoreScroll = true }) => (
-  <CustomThemeProvider defaultMode={getInitialTheme()}>
-    <ToastProvider>
-      <AuthGuard>
-        <WebsocketBridge />
-        {!environment.isNative && <FireBase />}
-      </AuthGuard>
-      {restoreScroll && <ScrollRestoration />}
-      <GlobalStyles />
-      {environment.isNative && <NativeMessageHandler />}
-      {children || <Outlet />}
-    </ToastProvider>
-  </CustomThemeProvider>
-);
+export const Root = ({ children, restoreScroll = true }) => {
+  useErrorDebugBridge();
+  return (
+    <CustomThemeProvider defaultMode={getInitialTheme()}>
+      <ToastProvider>
+        <AuthGuard>
+          <WebsocketBridge />
+          {!environment.isNative && <FireBase />}
+        </AuthGuard>
+        {restoreScroll && <ScrollRestoration />}
+        <GlobalStyles />
+        {environment.isNative && <NativeMessageHandler />}
+        {children || <Outlet />}
+      </ToastProvider>
+    </CustomThemeProvider>
+  );
+};
 
 export function getWebRouter() {
   const ROOT_ROUTES = [

@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import { mutate } from 'swr';
 
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
@@ -6,9 +7,73 @@ import {
   IntegrityCheck,
   getIntegrityCheckRequestData,
 } from '../features/integrityCheck';
+import {
+  debugStore,
+  useDebugStore,
+  useNavigationStore,
+} from '../features/stores';
 import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
+import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { LOGIN_ROUTE } from '../router/routes';
+
+export function getEffectiveBackendUrl(): string {
+  return debugStore.getState().backendUrlOverride ?? environment.backendUrl;
+}
+
+export function useEffectiveBackendUrl(): string {
+  const { backendUrlOverride } = useDebugStore();
+  return (
+    backendUrlOverride ??
+    (environment.backendUrl ||
+      (typeof window !== 'undefined' ? window.location.origin : ''))
+  );
+}
+
+function getCoreWsScheme(backendUrl: string): string {
+  return `ws${backendUrl.startsWith('https') ? 's' : ''}://`;
+}
+
+export function getEffectiveCoreWsScheme(): string {
+  const effectiveBackendUrl = getEffectiveBackendUrl();
+  return getCoreWsScheme(effectiveBackendUrl);
+}
+
+export function useEffectiveCoreWsScheme(): string {
+  const effectiveBackendUrl = useEffectiveBackendUrl();
+  return getCoreWsScheme(effectiveBackendUrl);
+}
+
+export async function clearSwrCache(revalidate = true) {
+  await mutate(
+    () => true, // Match all cache keys
+    undefined, // Set data to undefined
+    { revalidate },
+  );
+}
+
+export async function navigateToLogin(expired: boolean = false): Promise<void> {
+  const currentPath = (window?.location?.hash ?? '').replaceAll('#', '');
+  if (
+    currentPath.startsWith(`/${LOGIN_ROUTE}`) &&
+    (!expired || currentPath.includes('?sessionExpired=true'))
+  ) {
+    // prevent subsequent navigations from overriding expiration status
+    return;
+  }
+
+  await clearSwrCache(false);
+
+  const path = `/${LOGIN_ROUTE}${expired ? '?sessionExpired=true' : ''}`;
+  const { navigate } = useNavigationStore.getState();
+  navigate?.(path);
+}
+
+export enum TokenStatus {
+  VALID,
+  EXPIRED,
+  MISSING,
+}
 
 // Add DOM types for fetch API
 type RequestCredentials = 'omit' | 'same-origin' | 'include';
@@ -68,11 +133,10 @@ function getNativeHeaders(): Record<string, string> {
   if (accessToken) {
     headers.Authorization = `Bearer ${accessToken}`;
   }
-
   return headers;
 }
 
-function updateTokens(
+async function updateTokens(
   accessToken: string | undefined,
   refreshToken: string | undefined,
 ) {
@@ -80,7 +144,7 @@ function updateTokens(
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
 
   setTokens(accessToken, refreshToken);
-  sendMessageToReactNative?.({
+  await sendMessageToReactNative?.({
     action: 'SET_AUTH_TOKENS',
     payload: {
       accessToken,
@@ -89,9 +153,9 @@ function updateTokens(
   });
 }
 
-let tokenRefreshRequest: Promise<boolean> | null = null;
-export async function nativeRefreshAccessToken(): Promise<boolean> {
-  if (!environment.isNative) return false;
+let tokenRefreshRequest: Promise<TokenStatus> | null = null;
+export async function nativeRefreshAccessToken(): Promise<TokenStatus> {
+  if (!environment.isNative) return TokenStatus.MISSING;
 
   if (tokenRefreshRequest) {
     return tokenRefreshRequest;
@@ -100,11 +164,11 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
   tokenRefreshRequest = (async () => {
     try {
       const { refreshToken } = useMobileAuthTokenStore.getState();
-      if (!refreshToken) return false;
+      if (!refreshToken) return TokenStatus.MISSING;
 
       const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
       if (!sendMessageToReactNative) {
-        return false;
+        return TokenStatus.MISSING;
       }
 
       const challengeData: IntegrityCheck = await sendMessageToReactNative({
@@ -118,7 +182,9 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
       });
 
       const response = await fetch(
-        `${environment.backendUrl}/api/token/refresh/${challengeData.platform}`,
+        `${getEffectiveBackendUrl()}/api/token/refresh/${
+          challengeData.platform
+        }`,
         {
           method: 'POST',
           headers: {
@@ -133,19 +199,21 @@ export async function nativeRefreshAccessToken(): Promise<boolean> {
         } as RequestInit,
       );
 
+      const responseBody = await response.json().catch(() => {});
+      const { access, refresh } = responseBody;
       if (!response.ok) {
-        updateTokens(undefined, undefined);
-        return false;
+        await updateTokens(undefined, undefined);
+        return TokenStatus.EXPIRED;
       }
-      const { access, refresh } = await response.json().catch(() => {});
       if (access && refresh) {
-        updateTokens(access, refresh);
-        return true;
+        await updateTokens(access, refresh);
+        return TokenStatus.VALID;
       }
-      updateTokens(undefined, undefined);
-      return false;
+      await updateTokens(undefined, undefined);
+      return TokenStatus.EXPIRED;
     } catch (_e) {
-      return false;
+      await updateTokens(undefined, undefined);
+      return TokenStatus.EXPIRED;
     } finally {
       tokenRefreshRequest = null;
     }
@@ -158,9 +226,13 @@ export async function apiFetch<T = any>(
   endpoint: string,
   options: ApiFetchOptions = {},
 ): Promise<T> {
+  if (environment.isNative) {
+    const { ready: nativeReady } = useNativeStore.getState();
+    await nativeReady;
+  }
   if (tokenRefreshRequest) {
     // in case we are already loading a new token, wait before sending any new requests. They would fail anyway due to the
-    // invalid access  token
+    // invalid access token
     await tokenRefreshRequest;
   }
 
@@ -205,15 +277,12 @@ export async function apiFetch<T = any>(
 
   const doFetch = async (): Promise<T> => {
     const response = await fetch(
-      `${environment.backendUrl}${endpoint}`,
+      `${getEffectiveBackendUrl()}${endpoint}`,
       fetchOptions,
     );
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      if (errorData?.code === 'token_not_valid') {
-        throw errorData;
-      }
       throw formatApiError(errorData, response);
     }
 
@@ -227,22 +296,62 @@ export async function apiFetch<T = any>(
   try {
     return await doFetch();
   } catch (error: any) {
+    if (!environment.isNative) {
+      console.error(`API Fetch Error (${endpoint}):`, error);
+      throw error;
+    }
+
+    const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+    const { debugEnabled } = debugStore.getState();
+
+    if (environment.isNative && debugEnabled) {
+      // Network-level errors (CORS, DNS, connection refused) throw TypeError with no status
+      if (error instanceof TypeError && debugEnabled) {
+        sendMessageToReactNative?.({
+          action: 'LOG_ERROR',
+          payload: {
+            type: 'fetch',
+            method,
+            endpoint,
+            url: `${getEffectiveBackendUrl()}${endpoint}`,
+            headers: fetchOptions.headers as Record<string, string>,
+            requestBody: body,
+            status: (error as any)?.status ?? 999,
+            error: {
+              type: 'TypeError',
+              message: error.message,
+              details:
+                'Possible causes: Internect connection issues or CORS error',
+            },
+          },
+        })?.catch?.(() => {});
+      }
+
+      sendMessageToReactNative?.({
+        action: 'LOG_ERROR',
+        payload: {
+          type: 'fetch',
+          method,
+          endpoint,
+          url: `${getEffectiveBackendUrl()}${endpoint}`,
+          headers: fetchOptions.headers as Record<string, string>,
+          requestBody: body,
+          status: (error as any)?.status,
+          error,
+        },
+      })?.catch?.(() => {});
+    }
+
     // If access token expired, try to refresh and retry once
     const tokenExpired = error?.code === 'token_not_valid';
     const noTokenPresent =
       error?.status === 403 &&
       useMobileAuthTokenStore.getState().accessToken === undefined;
     if (environment.isNative && (tokenExpired || noTokenPresent)) {
-      const refreshed = await nativeRefreshAccessToken();
-      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-      if (refreshed) {
+      const tokenStatus = await nativeRefreshAccessToken();
+      if (tokenStatus === TokenStatus.VALID) {
         // update Authorization header with new access token
-        const { accessToken, refreshToken } =
-          useMobileAuthTokenStore.getState();
-        sendMessageToReactNative?.({
-          action: 'SET_AUTH_TOKENS',
-          payload: { accessToken, refreshToken },
-        });
+        const { accessToken } = useMobileAuthTokenStore.getState();
         if (accessToken) {
           fetchOptions.headers!.Authorization = `Bearer ${accessToken}`;
         } else {
@@ -251,10 +360,8 @@ export async function apiFetch<T = any>(
         return doFetch();
       }
 
-      sendMessageToReactNative?.({
-        action: 'NAVIGATE',
-        payload: { path: `/${LOGIN_ROUTE}?sessionExpired=true` },
-      });
+      await navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
+      throw error;
     }
 
     console.error(`API Fetch Error (${endpoint}):`, error);

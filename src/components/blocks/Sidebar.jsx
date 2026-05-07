@@ -235,8 +235,8 @@ function Sidebar({ isVH, sidebarMobile }) {
               navigate(`/${LOGIN_ROUTE}/`);
               setTimeout(() => {
                 sendMessageToReactNative({
-                  action: 'CLEAR_AUTH_TOKENS',
-                  payload: {},
+                  action: 'SET_AUTH_TOKENS',
+                  payload: { accessToken: undefined, refreshToken: undefined },
                 });
               }, 400);
             }
@@ -248,8 +248,8 @@ function Sidebar({ isVH, sidebarMobile }) {
               setTokens(null, null);
               navigate(`/${LOGIN_ROUTE}/`);
               sendMessageToReactNative({
-                action: 'CLEAR_AUTH_TOKENS',
-                payload: {},
+                action: 'SET_AUTH_TOKENS',
+                payload: { accessToken: undefined, refreshToken: undefined },
               });
             }
             console.error(error);
