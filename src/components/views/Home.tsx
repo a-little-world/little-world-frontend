@@ -35,6 +35,16 @@ interface RandomCallLobby {
   active_users_count: number;
 }
 
+interface EmptyRandomCallLobbyResponse {
+  data: null;
+  message: string;
+}
+
+const isRandomCallLobby = (
+  payload: RandomCallLobby | EmptyRandomCallLobbyResponse | undefined,
+): payload is RandomCallLobby =>
+  Boolean(payload && 'uuid' in payload);
+
 const Home = styled.div`
   display: flex;
   align-items: flex-start;
@@ -87,13 +97,17 @@ function Main() {
   const { data: matches } = useSWR(getMatchEndpoint(currentPage));
   const { data: user } = useSWR(USER_ENDPOINT);
   const hasRandomCallsAccess = user?.hasRandomCallsAccess ?? false;
-  const { data: lobbyData } = useSWR<RandomCallLobby>(
+  const { data: lobbyDataResponse } = useSWR<
+    RandomCallLobby | EmptyRandomCallLobbyResponse
+  >(
     hasRandomCallsAccess ? RANDOM_CALL_LOBBY_ENDPOINT : null,
     {
       refreshInterval: 2000,
     },
   );
-
+  const lobbyData = isRandomCallLobby(lobbyDataResponse)
+    ? lobbyDataResponse
+    : undefined;
   useEffect(() => {
     const totalItems =
       (matches?.confirmed?.results_total ?? 1) +
