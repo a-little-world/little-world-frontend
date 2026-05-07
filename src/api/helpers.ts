@@ -23,7 +23,11 @@ export function getEffectiveBackendUrl(): string {
 
 export function useEffectiveBackendUrl(): string {
   const { backendUrlOverride } = useDebugStore();
-  return backendUrlOverride ?? environment.backendUrl;
+  return (
+    backendUrlOverride ??
+    (environment.backendUrl ||
+      (typeof window !== 'undefined' ? window.location.origin : ''))
+  );
 }
 
 function getCoreWsScheme(backendUrl: string): string {
