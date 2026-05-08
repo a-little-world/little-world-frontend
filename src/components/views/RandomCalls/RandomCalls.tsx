@@ -187,7 +187,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                     {startTime} – {endTime}
                   </Text>
                 )}
-                {(lobbyData?.active_users_count ?? 0) > 0 ? (
+                {(lobbyData?.active_users_count ?? 0) > 0 && (
                   <ActiveUsers>
                     <OnlineCircle />
                     <Text bold>
@@ -196,7 +196,8 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                       })}
                     </Text>
                   </ActiveUsers>
-                ) : (
+                )}
+                {!active && (
                   <Schedule
                     title={t('random_calls.schedule_heading')}
                     sessions={upcomingLobbies ?? []}
