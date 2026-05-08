@@ -53,9 +53,22 @@ const SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL = [
   'self-organized-',
 ] as const;
 
+type WebKitBridgeWindow = Window & {
+  webkit?: {
+    messageHandlers?: Record<string, unknown>;
+  };
+};
+
 function signUpCompanySlugHidesNameLabel(company: string): boolean {
   return SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL.some(prefix =>
     company.startsWith(prefix),
+  );
+}
+
+function hasWebKitMessageHandlers(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    Boolean((window as WebKitBridgeWindow).webkit?.messageHandlers)
   );
 }
 
@@ -66,6 +79,12 @@ function runOptionalMatomoTriggers(userType?: string) {
     Cookies.set('user-type', userType);
   }
   if (MTM_CUSTOM_USER_TYPE_EVENT_TRIGGER && userType) {
+    // These Matomo events trigger native iOS bridge handlers when present.
+    // Third-party iOS browsers do not inject window.webkit.messageHandlers.
+    if (!hasWebKitMessageHandlers()) {
+      return;
+    }
+
     try {
       // eslint-disable-next-line no-underscore-dangle
       (window as any)._mtm.push({
