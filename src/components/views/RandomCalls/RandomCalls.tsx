@@ -187,7 +187,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                     {startTime} – {endTime}
                   </Text>
                 )}
-                {active ? (
+                {(lobbyData?.active_users_count ?? 0) > 0 ? (
                   <ActiveUsers>
                     <OnlineCircle />
                     <Text bold>
