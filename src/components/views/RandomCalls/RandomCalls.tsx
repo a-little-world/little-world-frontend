@@ -70,9 +70,11 @@ interface RandomCallLobby {
 
 const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
   const { t } = useTranslation();
-  const { data: upcomingLobbies, isLoading: lobbyLoading } = useSWR<
-    UpcomingLobbyItem[]
-  >(UPCOMING_LOBBIES_ENDPOINT);
+  const {
+    data: upcomingLobbies,
+    isLoading: lobbyLoading,
+    mutate,
+  } = useSWR<UpcomingLobbyItem[]>(UPCOMING_LOBBIES_ENDPOINT);
 
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
@@ -92,6 +94,10 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
 
   const startTime = formatTime(lobbyData?.start_time);
   const endTime = formatTime(lobbyData?.end_time);
+
+  useEffect(() => {
+    mutate();
+  }, [lobbyData?.status, mutate]);
 
   useEffect(() => {
     const randomCallEnded = searchParams.get(RANDOM_CALL_EXIT_PARAM);
@@ -181,7 +187,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                     {startTime} – {endTime}
                   </Text>
                 )}
-                {active ? (
+                {(lobbyData?.active_users_count ?? 0) > 0 ? (
                   <ActiveUsers>
                     <OnlineCircle />
                     <Text bold>

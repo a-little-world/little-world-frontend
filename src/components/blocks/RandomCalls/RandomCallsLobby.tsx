@@ -361,7 +361,7 @@ const PartnerProposal = ({
 
   useEffect(() => {
     setTimeLeft(timeoutSeconds);
-  }, [timeoutSeconds]);
+  }, [matchData.uuid, timeoutSeconds]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -881,6 +881,7 @@ const RandomCallsLobby = ({
         );
       return (
         <PartnerProposal
+          key={matchData.uuid}
           matchData={matchData}
           onAccept={handleAccept}
           onReject={handleReject}
