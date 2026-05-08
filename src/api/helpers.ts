@@ -62,7 +62,9 @@ export async function navigateToLogin(expired: boolean = false): Promise<void> {
     return;
   }
 
-  await clearSwrCache(false);
+  if (environment.isNative) {
+    await clearSwrCache(false);
+  }
 
   const path = `/${LOGIN_ROUTE}${expired ? '?sessionExpired=true' : ''}`;
   const { navigate } = useNavigationStore.getState();
@@ -182,8 +184,7 @@ export async function nativeRefreshAccessToken(): Promise<TokenStatus> {
       });
 
       const response = await fetch(
-        `${getEffectiveBackendUrl()}/api/token/refresh/${
-          challengeData.platform
+        `${getEffectiveBackendUrl()}/api/token/refresh/${challengeData.platform
         }`,
         {
           method: 'POST',
@@ -199,7 +200,7 @@ export async function nativeRefreshAccessToken(): Promise<TokenStatus> {
         } as RequestInit,
       );
 
-      const responseBody = await response.json().catch(() => {});
+      const responseBody = await response.json().catch(() => { });
       const { access, refresh } = responseBody;
       if (!response.ok) {
         await updateTokens(undefined, undefined);
@@ -324,7 +325,7 @@ export async function apiFetch<T = any>(
                 'Possible causes: Internect connection issues or CORS error',
             },
           },
-        })?.catch?.(() => {});
+        })?.catch?.(() => { });
       }
 
       sendMessageToReactNative?.({
@@ -339,7 +340,7 @@ export async function apiFetch<T = any>(
           status: (error as any)?.status,
           error,
         },
-      })?.catch?.(() => {});
+      })?.catch?.(() => { });
     }
 
     // If access token expired, try to refresh and retry once
