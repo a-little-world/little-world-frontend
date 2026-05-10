@@ -12,9 +12,47 @@ import {
   getChatEndpoint,
 } from './index';
 
-interface MatchesData {
-  [category: string]: any[];
+interface PaginatedMatchesCategory {
+  results?: any[];
+  count?: number;
+  items_total?: number;
+  results_total?: number;
+  [key: string]: any;
 }
+
+type MatchesCategory = any[] | PaginatedMatchesCategory | undefined;
+
+interface MatchesData {
+  [category: string]: MatchesCategory;
+}
+
+const incrementIfNumber = (value: number | undefined) =>
+  typeof value === 'number' ? value + 1 : value;
+
+const addMatchToCategory = (
+  categoryData: MatchesCategory,
+  match: any,
+): MatchesCategory => {
+  if (Array.isArray(categoryData)) {
+    return [...categoryData, match];
+  }
+
+  if (categoryData && typeof categoryData === 'object') {
+    const results = Array.isArray(categoryData.results)
+      ? categoryData.results
+      : [];
+
+    return {
+      ...categoryData,
+      results: [...results, match],
+      count: incrementIfNumber(categoryData.count),
+      items_total: incrementIfNumber(categoryData.items_total),
+      results_total: incrementIfNumber(categoryData.results_total),
+    };
+  }
+
+  return [match];
+};
 
 const sortChats = (chats: any[]) => {
   const sorted = chats.sort((a, b) => {
@@ -44,7 +82,7 @@ export function addMatch(category: string, match: any): void {
       if (!matchesData) return matchesData;
       return {
         ...matchesData,
-        [category]: [...(matchesData[category] || []), match],
+        [category]: addMatchToCategory(matchesData[category], match),
       };
     },
     false,
