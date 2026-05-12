@@ -11,12 +11,12 @@ export const fetchUserMatch = async ({ userId, onError, onSuccess }) => {
   }
 };
 
-export const confirmMatch = async ({ userHash, onError, onSuccess }) => {
-  /** TODO: for consistency this api should also accept a matchId in the backend rather than userHashes ... */
+export const confirmMatch = async ({ userUuid, onError, onSuccess }) => {
+  /** This used to be a User-Hash ( @tbscode: This comment can be removed after say ~ July 2026 ) */
   try {
     const result = await apiFetch(`/api/user/confirm_match/`, {
       method: 'POST',
-      body: { matches: [userHash] },
+      body: { matches: [userUuid] },
       useTagsOnly: true,
     });
     onSuccess(result);
@@ -42,7 +42,7 @@ export const confirmOrDenyMatch = async ({
     const result = await apiFetch(`/api/user/match/confirm_deny/`, {
       method: 'POST',
       body: {
-        unconfirmed_match_hash: matchId,
+        unconfirmed_match_uuid: matchId,
         confirm: acceptDeny,
         deny_reason: denyReason,
       },

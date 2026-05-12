@@ -35,7 +35,7 @@ interface NewMatchCardProps {
   name: string;
   image: any;
   imageType: string;
-  userHash: string;
+  userUuid: string;
   onClose: () => void;
 }
 
@@ -43,7 +43,7 @@ const NewMatchCard: React.FC<NewMatchCardProps> = ({
   name,
   image,
   imageType,
-  userHash,
+  userUuid,
   onClose,
 }) => {
   const { t } = useTranslation();
@@ -55,7 +55,7 @@ const NewMatchCard: React.FC<NewMatchCardProps> = ({
     setError(null);
 
     confirmMatch({
-      userHash,
+      userUuid,
       onSuccess: () => {
         revalidateMatches();
         setIsLoading(false);

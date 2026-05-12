@@ -52,9 +52,9 @@ export const API_FIELDS = {
   newsletter_subscribed: 'mailingList',
   token: 'token',
   reason: 'reason', // reportMatch
-  other_user_hash: 'otherUserHash', // reportMatch
+  other_user_uuid: 'otherUserUuid', // reportMatch
   confirm: 'acceptDeny', // confirmOrDenyMatch
-  unconfirmed_match_hash: 'matchId',
+  unconfirmed_match_uuid: 'matchId',
 };
 
 export const COMMUNITY_EVENT_FREQUENCIES = {

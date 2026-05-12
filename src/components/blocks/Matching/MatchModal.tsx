@@ -64,7 +64,7 @@ const MatchModal = ({
         image={
           usesAvatar(profile.image_type) ? profile.avatar_config : profile.image
         }
-        userHash={profile.id}
+        userUuid={profile.id}
         onClose={handleClose}
       />
     );
