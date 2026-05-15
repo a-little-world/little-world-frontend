@@ -379,7 +379,7 @@ export const MatchProposals: React.FC<MatchProposalsProps> = ({
         setProposalState(proposal.id, { status: 'accepted', loading: false });
         // on proposals view, automatically confirm the match for the partner
         confirmMatch({
-          userHash: proposal.partner?.id,
+          userUuid: proposal.partner?.id,
           onSuccess: revalidateMatches,
           onError: () => {},
         });
