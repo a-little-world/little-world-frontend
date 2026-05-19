@@ -7,12 +7,14 @@ import {
 } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
-export const HelpContainer = styled.div`
+export const ContactUsContainer = styled.div`
   display: flex;
+  flex: 1;
   justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
   width: 100%;
+  height: 100%;
 
   ${({ theme }) => `
     padding: ${theme.spacing.small};
@@ -21,19 +23,19 @@ export const HelpContainer = styled.div`
     @media (min-width: ${theme.breakpoints.large}) {
       justify-content: flex-start;
       flex-wrap: nowrap;
-      padding: ${theme.spacing.xxsmall};
+      padding: 0;
   }`}
 `;
 
-export const HelpPanel = styled(Card)`
-  ${({ theme }) => `
-  @media (min-width: ${theme.breakpoints.medium}) {
-    max-width: ${pixelate(CardDimensions[CardSizes.Large])};
-  }`}
-`;
-
-export const HelpSupport = styled(Card)`
+export const FAQsContainer = styled.div`
   display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+`;
+
+export const SupportCard = styled(Card)`
+  display: none;
   flex-direction: column;
   align-items: center;
   height: fit-content;
@@ -43,10 +45,17 @@ export const HelpSupport = styled(Card)`
   ${({ theme }) => `
     padding: ${theme.spacing.medium} ${theme.spacing.small};
     @media (min-width: ${theme.breakpoints.large}) {
+      display: flex;
       padding: ${theme.spacing.large};
       width: unset;
       max-width: unset;
     }`}
+`;
+
+export const SupportChatWrapper = styled.div`
+  display: flex;
+  height: 100%;
+  flex: 1;
 `;
 
 export const Topper = styled.div`
@@ -64,12 +73,6 @@ export const SupportTeam = styled.div`
   h2 {
     margin: 0;
   }
-`;
-
-export const ContactForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 export const ContactButtons = styled.div`
@@ -106,66 +109,19 @@ export const Contacts = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xxsmall};
-  margin-bottom: ${({ theme }) => theme.spacing.small};
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   white-space: nowrap;
 `;
 
 export const BusinessName = styled(Text)``;
 
 export const ContentWrapper = styled.div``;
-export const DropZoneContainer = styled.div``;
 
 export const ContactLink = styled.a`
   display: flex;
   text-align: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   align-items: center;
-`;
-
-export const FileName = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-  color: ${({ theme }) => theme.color.text.accent};
-`;
-
-export const FileText = styled(Text)`
-  color: ${({ theme }) => theme.color.text.accent};
-  margin-top: ${({ theme }) => theme.spacing.xxxsmall};
-`;
-
-export const FAQContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.small};
-`;
-
-export const FAQImageWrapper = styled.div`
-  width: 80%;
-  max-width: 200px;
-  margin: 0 auto;
-`;
-
-export const FAQItems = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: ${({ theme }) => theme.spacing.medium};
-`;
-
-export const FAQSectionTitle = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
-`;
-
-export const ContentTitle = styled(Text)`
-  color: ${({ theme }) => theme.color.text.title};
-  text-align: center;
-
-  ${({ theme }) => `
-  @media (min-width: ${theme.breakpoints.small}) {
-    text-align: left;
-  }`}
-`;
-
-export const StyledIntro = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+  justify-content: center;
+  width: 100%;
 `;

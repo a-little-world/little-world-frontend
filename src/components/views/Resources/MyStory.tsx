@@ -8,12 +8,14 @@ import {
   TextContent,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
-import React, { FC, useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
 import { submitHelpForm } from '../../../api/index';
-import { FileDropzone } from '../Help';
+import FileDropzone, {
+  AcceptedFiles,
+} from '../../blocks/FileDropzone/FileDropzone';
 
 const ContentCard = styled(Card)`
   display: flex;
@@ -39,10 +41,10 @@ const MyStory: FC = () => {
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [hasFiles, setHasFiles] = useState(false);
 
-  const onError = e => {
+  const onError = (e?: { message?: string }) => {
     setIsSubmitting(false);
     setError(t(e?.message || 'resources.my_story.submit_error'));
   };
@@ -53,14 +55,22 @@ const MyStory: FC = () => {
   };
 
   const onFileUpload = () => {
+    const files = fileRef.current?.files;
+
+    if (!files?.length) {
+      return;
+    }
+
     setError(null);
     setIsSubmitting(true);
     const data = new FormData();
-    for (let i = 0; i < fileRef.current.files.length; i += 1) {
-      const file = fileRef.current.files.item(i);
-      const { name } = file;
+    for (let i = 0; i < files.length; i += 1) {
+      const file = files.item(i);
 
-      data.append('file', file, name);
+      if (file) {
+        const { name } = file;
+        data.append('file', file, name);
+      }
     }
     data.append('message', 'My Story: Image Upload');
     submitHelpForm(data, onSuccess, onError);
@@ -123,6 +133,7 @@ const MyStory: FC = () => {
       />
       <UploadContainer>
         <FileDropzone
+          acceptedFiles={AcceptedFiles.Images}
           label={t('resources.my_story.dropzone_label')}
           fileRef={fileRef}
           onFileChange={files => setHasFiles(!isEmpty(files))}

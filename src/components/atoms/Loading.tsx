@@ -1,5 +1,7 @@
 import styled, { css, keyframes } from 'styled-components';
 
+import { CircleImage } from './ProfileImage';
+
 export const shimmer = keyframes`
   to {
     background-position: 200% 0;
@@ -31,4 +33,11 @@ export const LoadingLine = styled.div<{ $width?: string; $height?: string }>`
   background-size: 200% 100%;
   animation: ${shimmer} 2.5s infinite ease-in reverse;
   width: ${({ $width }) => $width || '100%'};
+`;
+
+export const CircleImageLoading = styled(CircleImage)`
+  background: ${shimmerGradient};
+  background-size: 200% 100%;
+  animation: ${shimmer} 1.5s infinite reverse;
+  flex-shrink: 0;
 `;

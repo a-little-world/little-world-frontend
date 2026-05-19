@@ -187,12 +187,12 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                     {startTime} – {endTime}
                   </Text>
                 )}
-                {(lobbyData?.active_users_count ?? 0) > 0 && (
+                {(lobbyData?.active_users_count ?? 0) > 1 && (
                   <ActiveUsers>
                     <OnlineCircle />
                     <Text bold>
                       {t('random_calls.active_users', {
-                        count: lobbyData?.active_users_count ?? 0,
+                        count: lobbyData?.active_users_count,
                       })}
                     </Text>
                   </ActiveUsers>

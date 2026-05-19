@@ -1,178 +1,39 @@
 import {
-  Accordion,
-  Button,
   Gradients,
-  ImageIcon,
-  ImageSearchIcon,
-  Label,
   MailIcon,
-  MessageIcon,
-  MobileIcon,
-  PhoneIcon,
-  StatusMessage,
-  StatusTypes,
-  TeacherImage,
-  Text,
-  TextArea,
-  TextAreaSize,
-  TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { TFunction } from 'i18next';
-import React, { DragEvent, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { last } from 'lodash';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR, { SWRConfig } from 'swr';
 
-import { submitHelpForm } from '../../api/index';
 import { MATCHES_ENDPOINT, swrConfig } from '../../features/swr/index';
-import { onFormError, registerInput } from '../../helpers/form';
-import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes';
+import {
+  HELP_CONTACT_ROUTE,
+  HELP_FAQS_ROUTE,
+  MESSAGES_ROUTE,
+  getAppRoute,
+  getAppSubpageRoute,
+} from '../../router/routes';
 import Logo from '../atoms/Logo';
-import MenuLink from '../atoms/MenuLink';
 import Socials from '../atoms/Socials';
-import SupportWidget from '../atoms/SupportWidget';
+import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo';
 import ContentSelector from '../blocks/ContentSelector';
-import { FileInput, UploadArea } from '../blocks/Profile/ProfilePic/styles';
+import FAQs from '../blocks/FAQs/FAQs';
 import {
   BusinessName,
-  ContactButtons,
-  ContactForm,
   ContactInfo,
   ContactLink,
+  ContactUsContainer,
   Contacts,
-  ContentTitle,
   ContentWrapper,
-  DropZoneContainer,
-  FAQContainer,
-  FAQImageWrapper,
-  FAQItems,
-  FAQSectionTitle,
-  FileName,
-  FileText,
-  HelpContainer,
-  HelpPanel,
-  HelpSupport,
-  StyledIntro,
+  SupportCard,
+  SupportChatWrapper,
   SupportTeam,
   Topper,
 } from './Help.styles';
-
-const generateFAQItems = (t: TFunction, supportUrl: string) => {
-  const translationKeys = [
-    {
-      section: 'before_talk',
-      questions: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9'],
-    },
-    {
-      section: 'during_talk',
-      questions: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'],
-    },
-    {
-      section: 'after_talk',
-      questions: ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'],
-    },
-  ];
-
-  return translationKeys.map(({ section, questions }) => ({
-    section: t(`faq::section_title::${section}`),
-    items: questions.map(question => ({
-      header: t(`faq::section_content::${section}::${question}::question`),
-      content: (
-        <Text>
-          {t(`faq::section_content::${section}::${question}::answer`, {
-            supportUrl,
-          })}
-        </Text>
-      ),
-    })),
-  }));
-};
-
-export const FileDropzone = ({
-  fileRef,
-  onFileChange,
-  label,
-}: {
-  fileRef?: HTMLInputElement;
-  onFileChange: (files: any) => void;
-  label: string;
-}) => {
-  const { t } = useTranslation();
-  const [filenames, setFilenames] = useState([]);
-  const [dragOver, setDragOver] = useState(false);
-  const theme = useTheme();
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const fileList = [...e.dataTransfer.items]
-      .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
-      .map(item => item.getAsFile().name);
-    onFileChange?.(fileList);
-    setFilenames(current => [...current, fileList]);
-    setDragOver(false);
-  };
-
-  const handleDragOver = (e: DragEvent<HTMLDivElement>) => e.preventDefault();
-  const handleDragEnter = () => setDragOver(true);
-  const handleDragLeave = () => setDragOver(false);
-
-  const handleChange = () => {
-    const fileList = [...fileRef.current.files].map(file => file.name);
-    onFileChange?.(fileList);
-    setFilenames(fileList);
-  };
-
-  return (
-    <DropZoneContainer>
-      <Label bold>{label}</Label>
-      <UploadArea
-        $dragging={dragOver}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        onDragEnter={handleDragEnter}
-        onDragLeave={handleDragLeave}
-        htmlFor="fileInput"
-        $padding={theme.spacing.xlarge}
-      >
-        <FileInput
-          type="file"
-          id="fileInput"
-          ref={fileRef}
-          multiple
-          accept="image/*"
-          onChange={handleChange}
-        />
-
-        {filenames.length === 0 ? (
-          <>
-            <ImageSearchIcon
-              label="file input icon"
-              width={32}
-              height={32}
-              color={theme.color.text.accent}
-            />
-            <FileText tag="span">{t('help.contact_picture_btn')}</FileText>
-          </>
-        ) : (
-          <>
-            {filenames.map(name => (
-              <FileName key={name}>
-                <ImageIcon label="uploaded file" width="24" height="24" />
-                {name}
-              </FileName>
-            ))}
-            <FileText tag="span">{t('help.contact_change_files')}</FileText>
-          </>
-        )}
-
-        <Text color={theme.color.text.secondary} tag="span">
-          {t('help.contact_picture_drag')}
-        </Text>
-      </UploadArea>
-    </DropZoneContainer>
-  );
-};
 
 export const NativeWebWrapper = ({
   children,
@@ -180,220 +41,127 @@ export const NativeWebWrapper = ({
   children: React.ReactNode;
 }) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
 
-export function Faqs() {
-  const { t } = useTranslation();
-  const [faqs, setFaqs] = useState([]);
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
-    revalidateOnMount: true,
-  });
+type HelpSubpage = 'contact-us' | 'faqs';
 
-  const adminUser = matches?.support?.results?.[0];
-  const supportChatId = adminUser?.chatId;
-  const supportUrl = getAppSubpageRoute(
-    MESSAGES_ROUTE,
-    supportChatId ?? '',
-  );
+const HELP_SUBPAGE_ROUTES: Record<HelpSubpage, string> = {
+  'contact-us': HELP_CONTACT_ROUTE,
+  faqs: HELP_FAQS_ROUTE,
+};
 
-  useEffect(() => {
-    if (!faqs.length) {
-      setFaqs(generateFAQItems(t, supportUrl));
-    }
-  }, [t, supportUrl]);
-
-  return (
-    <FAQContainer>
-      <ContentTitle tag="h2" type={TextTypes.Body2} bold>
-        {t('nbt_faqs')}
-      </ContentTitle>
-      <Text>{t('help.faqs_intro')}</Text>
-      <FAQImageWrapper>
-        <TeacherImage label="image of woman holding book" />
-      </FAQImageWrapper>
-      {faqs.map(faq => (
-        <FAQItems key={faq.section}>
-          <FAQSectionTitle bold type={TextTypes.Body3}>
-            {faq.section}
-          </FAQSectionTitle>
-          <Accordion items={faq.items} />
-        </FAQItems>
-      ))}
-    </FAQContainer>
-  );
+interface SupportMatch {
+  chatId?: string;
+  partner?: {
+    id: string;
+    first_name: string;
+    image: string;
+    image_type: string;
+    avatar_config: object;
+  };
 }
 
-export function Contact() {
+export function Contact({
+  supportMatch,
+  isLoading,
+}: {
+  supportMatch?: SupportMatch;
+  isLoading?: boolean;
+}) {
   const { t } = useTranslation();
-
-  const [requestSuccessful, setRequestSuccessful] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const fileRef = useRef<HTMLInputElement>(null);
-  const {
-    register,
-    getValues,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm();
-
-  const onError = (e: any) => {
-    onFormError({ e, formFields: getValues(), setError });
-    setIsSubmitting(false);
-  };
-
-  const onSuccess = () => {
-    setIsSubmitting(false);
-    setRequestSuccessful(true);
-  };
-
-  const onSubmit = formData => {
-    setIsSubmitting(true);
-    const data = new FormData();
-    for (let i = 0; i < fileRef.current.files.length; i += 1) {
-      const file = fileRef.current.files.item(i);
-      const { name } = file;
-
-      data.append('file', file, name);
-    }
-    data.append('message', formData.message);
-    data.append('origin', 'Contact Form');
-    submitHelpForm(data, onSuccess, onError);
-  };
+  const theme = useTheme();
 
   return (
-    <ContactForm onSubmit={handleSubmit(onSubmit)}>
-      <ContentTitle tag="h2" type={TextTypes.Body2} bold>
-        {t('nbt_contact')}
-      </ContentTitle>
-      <Text>{t('help.contact_intro_line1')}</Text>
-      <StyledIntro>{t('help.contact_intro_line2')}</StyledIntro>
-      <TextArea
-        {...registerInput({
-          register,
-          name: 'message',
-          options: { required: 'error.required' },
-        })}
-        label={t('help.contact_problem_label')}
-        inputMode="text"
-        size={TextAreaSize.Medium}
-        maxLength={2000}
-        error={t(errors?.message?.message)}
-        placeholder={t('help.contact_problem_placeholder')}
-      />
-      <FileDropzone fileRef={fileRef} label={t('help.contact_picture_label')} />
-
-      <StatusMessage
-        visible={Boolean(requestSuccessful || errors?.root?.serverError)}
-        type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
-      >
-        {requestSuccessful
-          ? t('help.contact_form_submitted')
-          : t(errors?.root?.serverError?.message)}
-      </StatusMessage>
-      <Button
-        type="submit"
-        style={{ maxWidth: '100%' }}
-        disabled={isSubmitting}
-      >
-        {t('help.contact_submit')}
-      </Button>
-    </ContactForm>
+    <ContactUsContainer>
+      <SupportChatWrapper>
+        <ChatWithUserInfo
+          isLoading={isLoading}
+          isSupportChat
+          chatId={supportMatch?.chatId}
+          partner={supportMatch?.partner}
+        />
+      </SupportChatWrapper>
+      <SupportCard>
+        <Topper>
+          <Logo />
+          <SupportTeam>
+            <h2>{t('help.support_header')}</h2>
+            <div>{t('help.support_slogan')}</div>
+          </SupportTeam>
+        </Topper>
+        <ContactInfo>
+          <ContentWrapper>
+            <BusinessName center bold>
+              A Little World gUG
+            </BusinessName>
+          </ContentWrapper>
+          <Contacts>
+            <ContactLink href="mailto:support@little-world.com">
+              <MailIcon
+                circular
+                label="e-mail"
+                backgroundColor={theme.color.surface.quaternary}
+                borderColor={theme.color.border.subtle}
+                color={theme.color.text.reversed}
+                width={12}
+                height={12}
+              />
+              support@little-world.com
+            </ContactLink>
+          </Contacts>
+          <Socials type="social_media" gradient={Gradients.Blue} />
+        </ContactInfo>
+      </SupportCard>
+    </ContactUsContainer>
   );
 }
 
 function Help() {
-  const { t } = useTranslation();
-  const [subpage, selectSubpage] = useState('contact');
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
-    revalidateOnMount: false,
-  });
-  const theme = useTheme();
-
-  const adminUser = matches?.support?.results?.[0];
-  const supportChatId = adminUser?.chatId;
-  const supportUrl = getAppSubpageRoute(
-    MESSAGES_ROUTE,
-    supportChatId ?? '',
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { data: matches, isLoading: isMatchesLoading } = useSWR(
+    MATCHES_ENDPOINT,
+    {
+      revalidateOnMount: true,
+    },
   );
+
+  const subpage = useMemo<HelpSubpage>(() => {
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+    const lastSegment = last(pathSegments);
+
+    if (lastSegment === 'faqs' || lastSegment === 'contact-us') {
+      return lastSegment;
+    }
+
+    return 'contact-us';
+  }, [location.pathname]);
+
+  const handleSubpageSelect = useCallback(
+    (page: string) => {
+      const route = HELP_SUBPAGE_ROUTES[page as HelpSubpage];
+
+      if (route) {
+        navigate(getAppRoute(route));
+      }
+    },
+    [navigate],
+  );
+
+  const supportUser = matches?.support?.results?.[0];
+  const supportChatId = supportUser?.chatId;
+  const supportUrl = getAppSubpageRoute(MESSAGES_ROUTE, supportChatId ?? '');
 
   return (
     <>
       <ContentSelector
         selection={subpage}
-        setSelection={selectSubpage}
+        setSelection={handleSubpageSelect}
         use="help"
       />
-      <HelpContainer>
-        <HelpPanel>
-          {subpage === 'faqs' && <Faqs />}
-          {subpage === 'contact' && <Contact />}
-        </HelpPanel>
 
-        <HelpSupport>
-          <Topper>
-            <Logo />
-            <SupportTeam>
-              <h2>{t('help.support_header')}</h2>
-              <div>{t('help.support_slogan')}</div>
-            </SupportTeam>
-          </Topper>
-
-          <ContactButtons>
-            {adminUser?.partner?.id && (
-              <MenuLink
-                to={supportUrl}
-                Icon={MessageIcon}
-                iconGradient={Gradients.Orange}
-                iconLabel="message support"
-                text={t('help.support_message_btn')}
-              />
-            )}
-            <MenuLink
-              to="tel:+4915234777471"
-              Icon={PhoneIcon}
-              iconGradient={Gradients.Orange}
-              iconLabel="call support"
-              text={t('help.support_call_btn')}
-            />
-          </ContactButtons>
-
-          <ContactInfo>
-            <ContentWrapper>
-              <BusinessName center bold>
-                A Little World gUG
-              </BusinessName>
-            </ContentWrapper>
-            <Contacts>
-              <ContactLink href="mailto:support@little-world.com">
-                <MailIcon
-                  circular
-                  label="e-mail"
-                  backgroundColor={theme.color.surface.quaternary}
-                  borderColor={theme.color.border.subtle}
-                  color={theme.color.text.reversed}
-                  width={16}
-                  height={16}
-                />
-                support@little-world.com
-              </ContactLink>
-              <ContactLink href="tel:+4915234777471">
-                <MobileIcon
-                  circular
-                  label="e-mail"
-                  backgroundColor={theme.color.surface.quaternary}
-                  borderColor={theme.color.border.subtle}
-                  color={theme.color.text.reversed}
-                  width={16}
-                  height={16}
-                />
-                +49 152 34 777 471
-              </ContactLink>
-            </Contacts>
-            <Socials type="social_media" gradient={Gradients.Blue} />
-          </ContactInfo>
-        </HelpSupport>
-      </HelpContainer>
-      <SupportWidget />
+      {subpage === 'faqs' && <FAQs supportUrl={supportUrl} />}
+      {subpage === 'contact-us' && (
+        <Contact supportMatch={supportUser} isLoading={isMatchesLoading} />
+      )}
     </>
   );
 }

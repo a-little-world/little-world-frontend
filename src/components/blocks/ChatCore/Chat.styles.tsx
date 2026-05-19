@@ -7,6 +7,7 @@ import {
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
+import { shimmerStyles } from '../../atoms/Loading';
 import ProfileImage from '../../atoms/ProfileImage';
 
 export const Panel = styled(Card)`
@@ -32,15 +33,15 @@ export const Panel = styled(Card)`
   `}
 `;
 
-export const NoChatSelected = styled(Panel)`
+export const NoChatSelected = styled(Panel)<{ $isSupportChat?: boolean }>`
   background: ${({ theme }) => theme.color.surface.secondary};
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: ${({ theme }) => theme.spacing.medium};
 
-  ${({ theme }) => css`
-    display: none;
+  ${({ theme, $isSupportChat }) => css`
+    display: ${$isSupportChat ? 'flex' : 'none'};
     @media (min-width: ${theme.breakpoints.xlarge}) {
       position: relative;
       display: flex;
@@ -283,4 +284,14 @@ export const ProfileLink = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+export const MessagesSkeleton = styled.div`
+  flex: 1 1 0;
+  background: ${({ theme }) => theme.color.surface.secondary};
+  border: 2px solid ${({ theme }) => theme.color.border.subtle};
+  border-radius: 20px;
+  min-height: 0;
+  overflow: hidden;
+  ${shimmerStyles}
 `;

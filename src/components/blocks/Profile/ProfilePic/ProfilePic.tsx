@@ -4,14 +4,12 @@ import {
   ButtonVariations,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ImageSearchIcon,
   Label,
   Modal,
   PencilIcon,
   PlusIcon,
   Text,
   TextTypes,
-  TrashIcon,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
@@ -24,7 +22,7 @@ import {
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Avatar, { genConfig } from 'react-nice-avatar';
-import styled, { css, useTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { USER_FIELDS } from '../../../../constants/index';
@@ -32,20 +30,16 @@ import { USER_ENDPOINT } from '../../../../features/swr/index';
 import useImageCompression from '../../../../hooks/useImageCompression';
 import useSystemModalBlocker from '../../../../hooks/useSystemModalBlocker';
 import { ImageSizes } from '../../../atoms/ProfileImage';
+import UploadImage from '../../../atoms/UploadImage';
+import FileDropzone, { AcceptedFiles } from '../../FileDropzone/FileDropzone';
 import AvatarEditor from './AvatarEditor';
 import {
   AvatarEditorButton,
   AvatarSelection,
-  CircleButton,
-  FileInput,
   ImageContainer,
   InteractiveArea,
   ProfilePicWrapper,
   SelectionPanel,
-  StyledFileIcon,
-  StyledProfileImage,
-  TrashButton,
-  UploadArea,
 } from './styles';
 
 const IMAGE_TYPES = {
@@ -54,60 +48,6 @@ const IMAGE_TYPES = {
 } as const;
 
 const MAX_IMAGE_SIZE = 1000000; // bytes
-
-interface CircleImageProps {
-  className?: string;
-  icon: React.ReactNode;
-  fileInputRef: React.RefObject<HTMLInputElement>;
-  uploadedImage: string | null;
-  onImageDelete: (e: React.MouseEvent) => void;
-}
-
-const CircleImage: React.FC<CircleImageProps> = ({
-  className,
-  icon,
-  fileInputRef,
-  uploadedImage,
-  onImageDelete,
-}) => {
-  const theme = useTheme();
-  return uploadedImage ? (
-    <StyledProfileImage
-      className={className}
-      image={uploadedImage}
-      size="medium"
-      circle
-    >
-      <TrashButton
-        onClick={onImageDelete}
-        variation={ButtonVariations.Icon}
-        type="button"
-      >
-        <TrashIcon label="delete image" color={theme.color.surface.disabled} />
-      </TrashButton>
-    </StyledProfileImage>
-  ) : (
-    <CircleButton
-      className={className}
-      htmlFor="fileInput"
-      onClick={() => fileInputRef.current?.click()}
-      type="button"
-    >
-      {icon}
-    </CircleButton>
-  );
-};
-
-const MobileCircleImage = styled(CircleImage)`
-  ${({ theme }) => css`
-    display: flex;
-    margin-bottom: ${theme.spacing.xsmall};
-
-    @media (min-width: ${theme.breakpoints.medium}) {
-      display: none;
-    }
-  `}
-`;
 
 interface ProfilePicProps {
   control: Control<any>;
@@ -140,10 +80,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
   const { compressImage } = useImageCompression();
 
   // Needs to be async now, to wait for the compression
-  const onImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Imagefile the user wants to upload
-    const file = e.target.files?.[0];
-
+  const onImageUpload = async (file?: File) => {
     if (!file) return; // Guard clause for no file selected
 
     clearErrors(USER_FIELDS.image);
@@ -154,11 +91,17 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
         const compressedFile = await compressImage(file);
         const image = URL.createObjectURL(compressedFile);
         setUploadedImage(image);
-        setValue(USER_FIELDS.image, compressedFile); // Use compressed file here
+        setValue(USER_FIELDS.image, compressedFile, {
+          shouldDirty: true,
+          shouldValidate: true,
+        }); // Use compressed file here
       } else {
         const image = URL.createObjectURL(file);
         setUploadedImage(image);
-        setValue(USER_FIELDS.image, file); // Use original file here
+        setValue(USER_FIELDS.image, file, {
+          shouldDirty: true,
+          shouldValidate: true,
+        }); // Use original file here
       }
     } catch {
       setError(USER_FIELDS.image, {
@@ -213,20 +156,6 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
     if (userData?.image) setUploadedImage(userData.image);
   }, [userData?.image]);
 
-  const handleDrop = (event: React.DragEvent) => {
-    event.preventDefault();
-    const files = event?.dataTransfer?.files;
-    const isValidFile = ['image/x-png', 'image/png', 'image/jpeg'].includes(
-      files?.[0]?.type || '',
-    );
-    if (isValidFile && files) {
-      onImageSelection(IMAGE_TYPES.image);
-      onImageUpload({
-        target: { files },
-      } as React.ChangeEvent<HTMLInputElement>);
-    }
-  };
-
   const updateAvatar = (config: any) => {
     setAvatarConfig(config);
     setValue(USER_FIELDS.avatar, config);
@@ -264,10 +193,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
               ? 'validation.image_upload_required'
               : false,
         }}
-        render={({
-          field: { onChange, onBlur, name, ref },
-          fieldState: { error },
-        }) => (
+        render={({ field: { onBlur, name, ref }, fieldState: { error } }) => (
           <>
             <SelectionPanel
               onClick={() => onImageSelection(IMAGE_TYPES.image)}
@@ -275,7 +201,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
               $error={!isEmpty(error)}
             >
               <ImageContainer>
-                <CircleImage
+                <UploadImage
                   icon={
                     <PlusIcon
                       label="add image"
@@ -289,57 +215,30 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                   uploadedImage={uploadedImage}
                 />
               </ImageContainer>
-              <UploadArea
-                onDrop={handleDrop}
-                onDragOver={event => event.preventDefault()}
-                htmlFor="fileInput"
-              >
-                <MobileCircleImage
-                  icon={
-                    <ImageSearchIcon
-                      label="uploaded image"
-                      color={theme.color.text.accent}
-                      width={56}
-                      height={56}
-                    />
-                  }
-                  onImageDelete={onImageDelete}
-                  fileInputRef={fileInputRef}
-                  uploadedImage={uploadedImage}
-                />
-                <StyledFileIcon label="upload image" width={56} height={56} />
-                <Text
-                  color={theme.color.text.accent}
-                  bold
-                  type={TextTypes.Body5}
-                  tag="h4"
-                >
-                  {t('profile_pic.click_to_upload')}
-                </Text>
-                <Text
-                  color={theme.color.text.quaternary}
-                  type={TextTypes.Body5}
-                >
-                  {t('profile_pic.drop_image')}
-                </Text>
+              <FileDropzone
+                acceptedFiles={AcceptedFiles.Images}
+                dropHint={t('profile_picture.drop_hint')}
+                fileRef={element => {
+                  ref(element);
+                  fileInputRef.current = element;
+                }}
+                multiple={false}
+                name={name}
+                onBlur={onBlur}
+                onFileChange={files => {
+                  const file = files[0];
 
-                <FileInput
-                  value={undefined}
-                  ref={e => {
-                    ref(e);
-                    fileInputRef.current = e;
-                  }}
-                  type="file"
-                  name={name}
-                  id="fileInput"
-                  onBlur={onBlur}
-                  onChange={e => {
-                    onChange(e);
-                    onImageUpload(e);
-                  }}
-                  accept="image/x-png, image/png, image/jpeg"
-                />
-              </UploadArea>
+                  if (!file) {
+                    return;
+                  }
+
+                  onImageSelection(IMAGE_TYPES.image);
+                  onImageUpload(file);
+                }}
+                onImageDelete={onImageDelete}
+                showSelectedFiles={false}
+                uploadedImage={uploadedImage}
+              />
             </SelectionPanel>
             <SelectionPanel
               onClick={() => onImageSelection(IMAGE_TYPES.avatar)}
