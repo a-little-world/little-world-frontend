@@ -57,6 +57,8 @@ import {
   EDIT_FORM_ROUTE,
   EMAIL_PREFERENCES_ROUTE,
   FORGOT_PASSWORD_ROUTE,
+  HELP_CONTACT_ROUTE,
+  HELP_FAQS_ROUTE,
   HELP_ROUTE,
   LANGUAGE_RESOURCES_ROUTE,
   LOGIN_ROUTE,
@@ -372,7 +374,20 @@ export function getWebRouter() {
       ),
     },
     {
+      // Legacy / bookmarked `/app/help` → default help subpage (no standalone help index).
       path: getAppRoute(HELP_ROUTE),
+      element: <Navigate to={getAppRoute(HELP_CONTACT_ROUTE)} replace />,
+    },
+    {
+      path: getAppRoute(HELP_CONTACT_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Help />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(HELP_FAQS_ROUTE),
       element: (
         <FullAppLayout>
           <Help />
@@ -696,7 +711,20 @@ export function getNativeRouter() {
       ),
     },
     {
+      // Legacy / bookmarked `/app/help` → default help subpage (no standalone help index).
       path: getAppRoute(HELP_ROUTE),
+      element: <Navigate to={getAppRoute(HELP_CONTACT_ROUTE)} replace />,
+    },
+    {
+      path: getAppRoute(HELP_CONTACT_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Help />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(HELP_FAQS_ROUTE),
       element: (
         <FullAppLayout>
           <Help />

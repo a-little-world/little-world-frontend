@@ -16,15 +16,15 @@ import {
   useConnectedCallStore,
   usePostCallSurveyStore,
 } from '../../../features/stores';
+import useModalManagerStore, {
+  ModalTypes,
+} from '../../../features/stores/modalManager';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
 } from '../../../features/swr/index';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
-import useModalManagerStore, {
-  ModalTypes,
-} from '../../../features/stores/modalManager';
 import { ONBOARDING_ROUTE, getAppRoute } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import CallSetup from '../Calls/CallSetup';
@@ -107,8 +107,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     !user?.isOnboarded &&
     !isOnOnboardingRoute;
 
-  const page = location.pathname.split('/')[2] || 'main';
-  const isVH = pagesWithViewportHeight.includes(page);
+  const subPath = location.pathname.split('/').slice(2).join('/');
+  const isVH = pagesWithViewportHeight.some(
+    route => subPath === route || subPath.startsWith(`${route}/`),
+  );
   const { data: matches } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: true,
   });

@@ -44,7 +44,7 @@ import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import {
   RANDOM_CALLS_ROUTE,
   getAppRoute,
-  getCallSetupRoute
+  getCallSetupRoute,
 } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import Drawer from '../atoms/Drawer';
@@ -243,7 +243,7 @@ function MyVideoConference({
               </ButtonsContainer>
             </>
           ) : (
-            <Text type={TextTypes.Body4}>
+            <Text type={TextTypes.Body4} center>
               {waitingMessage}
             </Text>
           )}
@@ -316,9 +316,12 @@ function VideoCall() {
     isRandomCall && randomLobbyUuid && randomMatchId
       ? `/api/random_calls/lobby/${randomLobbyUuid}/match/${randomMatchId}/status`
       : null;
-  const { data: randomCallMatchStatus } = useSWR(randomCallMatchStatusEndpoint, {
-    refreshInterval: 1000,
-  });
+  const { data: randomCallMatchStatus } = useSWR(
+    randomCallMatchStatusEndpoint,
+    {
+      refreshInterval: 1000,
+    },
+  );
 
   useEffect(() => {
     if (urlUserId && !token) {

@@ -188,7 +188,7 @@ const AvatarEditor: React.FC<AvatarEditorProps> = ({
             )}
             {colorKey && (
               <ColorPicker
-                background={editorConfig[colorKey]}
+                $background={editorConfig[colorKey]}
                 ariaLabel={translations[colorKey as keyof typeof translations]}
                 key={colorKey}
                 onClick={() => {

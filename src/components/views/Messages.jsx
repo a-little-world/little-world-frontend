@@ -3,7 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { fetchChats } from '../../api/chat';
-import { CHATS_ENDPOINT_SEPERATE } from '../../features/swr/index';
+import {
+  CHATS_ENDPOINT_SEPERATE,
+  MATCHES_ENDPOINT,
+} from '../../features/swr/index';
 import useIniniteScroll from '../../hooks/useInfiniteScroll';
 import { MESSAGES_ROUTE, getAppRoute } from '../../router/routes';
 import PageHeader from '../atoms/PageHeader';
@@ -27,6 +30,13 @@ const Messages = () => {
     revalidateOnMount: true,
     revalidateOnFocus: false,
   });
+
+  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
+    revalidateOnMount: true,
+  });
+
+  const supportChatId = matches?.support?.results?.[0]?.chatId;
+  const isSupportChat = supportChatId === chatId;
 
   const { scrollRef } = useIniniteScroll({
     fetchItems: fetchChats,
@@ -72,9 +82,11 @@ const Messages = () => {
           chats={chatResults}
           selectChat={selectChat}
           selectedChat={chatId}
+          supportChatId={supportChatId}
           scrollRef={scrollRef}
         />
         <ChatWithUserInfo
+          isSupportChat={isSupportChat}
           chatId={chatId}
           onBackButton={handleOnChatBackBtn}
           partner={chatResults.find(item => item?.uuid === chatId)?.partner}

@@ -1,18 +1,18 @@
 import {
   Button,
+  ButtonAppearance,
+  ButtonSizes,
   ButtonVariations,
   Card,
   CardDimensions,
   CardSizes,
   DotsIcon,
   Gradients,
-  Logo,
+  Link,
   MessageIcon,
   PencilIcon,
   Popover,
   ProfileIcon,
-  Tag,
-  TagSizes,
   Text,
   TextTypes,
   Tooltip,
@@ -27,6 +27,7 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { useCallSetupStore } from '../../../features/stores/index';
 import {
+  HELP_CONTACT_ROUTE,
   MESSAGES_ROUTE,
   PROFILE_ROUTE,
   getAppRoute,
@@ -36,6 +37,7 @@ import { shimmerStyles } from '../../atoms/Loading';
 import MenuLink, { MenuLinkText } from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
+import SupportTag from '../../atoms/SupportTag';
 import {
   REPORT_TYPE_PARTNER,
   REPORT_TYPE_UNMATCH,
@@ -189,15 +191,15 @@ export const NameContainer = styled.div<{ $isSelf: boolean }>`
   justify-content: ${({ $isSelf }) => ($isSelf ? 'center' : 'space-between')};
 `;
 
-export const TagText = styled.span`
-  font-family: revert;
-`;
-
 export const Description = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
+`;
+
+export const SupportChatLink = styled(Link)`
+  margin-top: auto;
 `;
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
@@ -306,12 +308,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <Text type={TextTypes.Body3} bold>
             {isDeleted ? t('profile.deleted_name') : profile.first_name}
           </Text>
-          {isSupport && (
-            <Tag color={theme.color.status.info} bold size={TagSizes.small}>
-              <TagText>{t('profile_card.support_user')}</TagText>
-              <Logo height="16" width="16" label="support logo" />
-            </Tag>
-          )}
+          {isSupport && <SupportTag />}
         </NameContainer>
 
         {!onProfile && (
@@ -324,7 +321,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           </Description>
         )}
       </ProfileInfo>
-      {!isSelf && (
+      {isSelf ? null : isSupport ? (
+        <SupportChatLink
+          to={getAppRoute(HELP_CONTACT_ROUTE)}
+          buttonAppearance={ButtonAppearance.Primary}
+          buttonSize={ButtonSizes.Stretch}
+        >
+          {t('profile_card.support_chat')}
+        </SupportChatLink>
+      ) : (
         <Actions $onProfile={onProfile}>
           {!onProfile && (
             <Tooltip

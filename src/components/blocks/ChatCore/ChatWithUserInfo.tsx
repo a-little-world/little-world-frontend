@@ -10,6 +10,7 @@ import {
   TagAppearance,
   TagSizes,
   Text,
+  TextAreaSize,
   TextTypes,
   VideoIcon,
 } from '@a-little-world/little-world-design-system';
@@ -22,9 +23,13 @@ import useSWR from 'swr';
 import { useCallSetupStore } from '../../../features/stores/index';
 import { USER_ENDPOINT, getChatEndpoint } from '../../../features/swr/index';
 import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes';
+import { CircleImageLoading, LoadingLine } from '../../atoms/Loading';
+import SupportTag from '../../atoms/SupportTag';
 import Chat from './Chat';
 import {
   BackButton,
+  MessageBox,
+  MessagesSkeleton,
   NoChatSelected,
   Panel,
   ProfileLink,
@@ -42,13 +47,17 @@ interface Partner {
 }
 
 interface ChatWithUserInfoProps {
-  chatId: string;
+  chatId?: string;
+  isLoading?: boolean;
+  isSupportChat?: boolean;
   onBackButton?: () => void;
-  partner: Partner;
+  partner?: Partner;
 }
 
 const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
   chatId,
+  isLoading: isLoadingProp,
+  isSupportChat,
   onBackButton,
   partner,
 }) => {
@@ -56,9 +65,10 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
   const { t } = useTranslation();
 
   const { data: user } = useSWR(USER_ENDPOINT);
-  const isSupport = user?.isSupport;
-  const { data: activeChat } = useSWR(chatId ? getChatEndpoint(chatId) : null);
-
+  const loggedInAsSupport = user?.isSupport;
+  const { data: activeChat, isLoading: isChatLoading } = useSWR(
+    chatId ? getChatEndpoint(chatId) : null,
+  );
   const unmatched = activeChat?.is_unmatched;
 
   const callSetup = useCallSetupStore();
@@ -66,6 +76,21 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
   const callPartner = () => {
     callSetup.initCallSetup({ userId: partner?.id });
   };
+
+  if (isLoadingProp || (chatId && (!partner || isChatLoading))) {
+    return (
+      <Panel>
+        <TopSection>
+          <UserInfo>
+            <CircleImageLoading $size="xsmall" />
+            <LoadingLine $width="120px" $height="16px" />
+          </UserInfo>
+        </TopSection>
+        <MessagesSkeleton />
+        <MessageBox disabled size={TextAreaSize.Xsmall} />
+      </Panel>
+    );
+  }
 
   return chatId ? (
     <Panel>
@@ -80,15 +105,15 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
           </BackButton>
 
           <ProfileLink
-            as={unmatched ? 'div' : RouterLink}
+            as={unmatched || isSupportChat ? 'div' : RouterLink}
             to={getAppRoute(`${PROFILE_ROUTE}/${partner?.id}`)}
           >
             <UserImage
               circle
               image={
-                partner?.image_type === 'avatar' ?
-                  partner?.avatar_config :
-                  partner?.image
+                partner?.image_type === 'avatar'
+                  ? partner?.avatar_config
+                  : partner?.image
               }
               imageType={partner?.image_type}
               size="xsmall"
@@ -97,7 +122,7 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
               {unmatched ? t('chat.unmatched_user') : partner?.first_name}
             </Text>
           </ProfileLink>
-          {isSupport && (
+          {loggedInAsSupport && (
             <Link
               href={`${window?.origin}/matching/user/${partner?.id}`}
               target="_blank"
@@ -110,6 +135,8 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
           <Tag size={TagSizes.small} appearance={TagAppearance.error}>
             {t('chat.inactive_match')}
           </Tag>
+        ) : isSupportChat ? (
+          <SupportTag />
         ) : (
           <Button
             variation={ButtonVariations.Circle}
@@ -129,14 +156,16 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
       <Chat chatId={chatId} />
     </Panel>
   ) : (
-    <NoChatSelected>
+    <NoChatSelected $isSupportChat={isSupportChat}>
       <GroupChatIcon
         label="Chat Icon"
         gradient={Gradients.Blue}
         width="144px"
         height="144px"
       />
-      <Text type={TextTypes.Body4}>{t('chat.not_selected')}</Text>
+      <Text type={TextTypes.Body4}>
+        {isSupportChat ? t('chat.support_unavailable') : t('chat.not_selected')}
+      </Text>
     </NoChatSelected>
   );
 };

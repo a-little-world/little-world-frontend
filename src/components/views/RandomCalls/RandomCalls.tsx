@@ -175,29 +175,35 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
               <Loading size={LoadingSizes.Medium} />
             ) : (
               <>
-                <Text bold type={TextTypes.Body4}>
-                  {t(
-                    active
-                      ? 'random_calls.active_heading'
-                      : 'random_calls.inactive_heading',
-                  )}
-                </Text>
-                {active && startTime && endTime && (
-                  <Text type={TextTypes.Body4}>
-                    {startTime} – {endTime}
+                <div>
+                  <Text bold type={TextTypes.Body4}>
+                    {t(
+                      active
+                        ? 'random_calls.active_heading'
+                        : 'random_calls.inactive_heading',
+                    )}
                   </Text>
-                )}
-                {(lobbyData?.active_users_count ?? 0) > 0 && (
-                  <ActiveUsers>
-                    <OnlineCircle />
-                    <Text bold>
-                      {t('random_calls.active_users', {
-                        count: lobbyData?.active_users_count ?? 0,
-                      })}
+                  {active && startTime && endTime && (
+                    <Text type={TextTypes.Body4}>
+                      {startTime} – {endTime}
                     </Text>
+                  )}
+                </div>
+
+                {active ? (
+                  <ActiveUsers>
+                    {(lobbyData?.active_users_count ?? 0) > 1 && (
+                      <>
+                        <OnlineCircle />
+                        <Text bold>
+                          {t('random_calls.active_users', {
+                            count: lobbyData?.active_users_count,
+                          })}
+                        </Text>
+                      </>
+                    )}
                   </ActiveUsers>
-                )}
-                {!active && (
+                ) : (
                   <Schedule
                     title={t('random_calls.schedule_heading')}
                     sessions={upcomingLobbies ?? []}

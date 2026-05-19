@@ -1,10 +1,7 @@
-import {
-  Button,
-  ImageSearchIcon,
-} from '@a-little-world/little-world-design-system';
-import styled, { css } from 'styled-components';
+import { Button } from '@a-little-world/little-world-design-system';
+import styled from 'styled-components';
 
-import ProfileImage, { ImageSizes } from '../../../atoms/ProfileImage';
+import { INTERACTIVE_AREA_CSS } from '../../FileDropzone/FileDropzone.styles';
 
 export const ProfilePicWrapper = styled.div`
   position: relative;
@@ -57,19 +54,6 @@ export const ImageContainer = styled.div`
       }`}
 `;
 
-export const INTERACTIVE_AREA_CSS = css`
-  background: ${({ theme }) => theme.color.surface.secondary};
-  border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  flex-grow: 1;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-`;
-
 export const InteractiveArea = styled.div`
   ${INTERACTIVE_AREA_CSS}
 
@@ -81,88 +65,12 @@ export const InteractiveArea = styled.div`
     }`}
 `;
 
-export const UploadArea = styled.label<{
-  $dragging?: boolean;
-  $padding?: string;
-}>`
-  ${INTERACTIVE_AREA_CSS}
-  cursor: pointer;
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
-  padding: ${({ theme, $padding }) => $padding || theme.spacing.xsmall};
-  text-align: center;
-
-  * {
-    cursor: pointer;
-  }
-
-  ${({ theme, $padding }) =>
-    `@media (min-width: ${theme.breakpoints.medium}) {
-        padding: ${$padding || theme.spacing.medium};
-    }`}
-
-  ${({ $dragging }) =>
-    $dragging &&
-    css`
-      border-style: dashed;
-      filter: contrast(105%);
-
-      * {
-        pointer-events: none;
-      }
-    `}
-`;
-
-export const StyledProfileImage = styled(ProfileImage)`
-  width: ${ImageSizes.small};
-  height: ${ImageSizes.small};
-
-  ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.medium}) {
-      width: ${ImageSizes.medium};
-      height: ${ImageSizes.medium};
-    }`}
-`;
-
-export const CircleButton = styled(Button)`
-  border-radius: 50%;
-  border: 3px solid ${({ theme }) => theme.color.surface.bold};
-  background: ${({ theme }) => theme.color.surface.primary};
-
-  width: ${ImageSizes.small};
-  height: ${ImageSizes.small};
-
-  ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.medium}) {
-      width: ${ImageSizes.medium};
-      height: ${ImageSizes.medium};
-    }`}
-`;
-
-export const TrashButton = styled(Button)`
-  position: absolute;
-  bottom: ${({ theme }) => theme.spacing.large};
-`;
-
 export const AvatarSelection = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.small};
   align-items: center;
   justify-content: space-between;
   width: 100%;
-`;
-
-export const FileInput = styled.input`
-  visibility: hidden;
-  position: absolute;
-
-  &::-webkit-file-upload-button {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    opacity: 0;
-  }
 `;
 
 export const RadioInput = styled.input`
@@ -259,8 +167,8 @@ export const OptionToggle = styled.button`
     }
   `;
 
-export const ColorPicker = styled.button`
-  background: ${({ background }) => background};
+export const ColorPicker = styled.button<{ $background: string }>`
+  background: ${({ $background }) => $background};
   height: 32px;
   width: 32px;
   border: 1px solid white;
@@ -277,15 +185,4 @@ export const Buttons = styled.div`
 export const AvatarEditorButton = styled(Button)`
   padding: 0 ${({ theme }) => theme.spacing.xxxsmall};
   border-radius: 5px;
-`;
-
-export const StyledFileIcon = styled(ImageSearchIcon)`
-  display: none;
-
-  ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.medium}) {
-        display: block;
-        color: ${theme.color.surface.bold};
-        margin-bottom: ${theme.spacing.xxsmall};
-    }`}
 `;

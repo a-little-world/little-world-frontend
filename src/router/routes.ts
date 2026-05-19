@@ -21,7 +21,10 @@ export const TRAINING_ROUTE = 'resources/trainings/:trainingSlug?/';
 export const BEGINNERS_ROUTE = 'resources/beginners';
 export const LANGUAGE_RESOURCES_ROUTE = 'resources/german';
 export const MY_STORY_ROUTE = 'resources/story';
+/** Redirect-only; link to HELP_CONTACT_ROUTE or HELP_FAQS_ROUTE instead. */
 export const HELP_ROUTE = 'help';
+export const HELP_CONTACT_ROUTE = 'help/contact';
+export const HELP_FAQS_ROUTE = 'help/faqs';
 export const SETTINGS_ROUTE = 'settings';
 export const LOGIN_ROUTE = 'login';
 export const SIGN_UP_ROUTE = 'sign-up';
@@ -73,10 +76,16 @@ export const USER_FORM_ROUTES = {
   CONDITIONS: getUserFormRoute(USER_FORM_CONDITIONS),
 };
 
-export const isActiveRoute = (locationPath: string, path: string) =>
-  locationPath === path || path !== getAppRoute('')
-    ? locationPath?.includes(path)
-    : false;
+/** True when pathname is exactly `path` or a nested route under it (e.g. `/app/help/faqs` under `/app/help`). */
+export const isActiveRoute = (locationPath: string, path: string) => {
+  const appHome = getAppRoute('');
+
+  if (!path || path === appHome) {
+    return locationPath === appHome;
+  }
+
+  return locationPath === path || locationPath.startsWith(`${path}/`);
+};
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {

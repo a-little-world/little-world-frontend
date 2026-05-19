@@ -29,7 +29,12 @@ const LogoContainer = styled.div<{ $stacked?: boolean }>`
 // Styled components for both approaches
 const LogoImageStyled = styled.div<{ $size: SizesType }>`
   max-width: 100%;
-  width: ${({ $size }) => ($size === LogoSizes.Small ? '30px' : '70px')};
+  width: ${({ $size }) => ($size === LogoSizes.Small ? '30px' : '56px')};
+  ${({ theme, $size }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      width: ${$size === LogoSizes.Small ? '30px' : '70px'};
+    }
+  `}
 `;
 
 const LogoTextStyled = styled.div<{ $size: SizesType }>`

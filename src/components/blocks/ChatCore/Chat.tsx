@@ -55,6 +55,7 @@ import {
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes';
 import UnreadDot from '../../atoms/UnreadDot';
+import { AcceptedFiles } from '../FileDropzone/FileDropzone';
 import {
   Attachment,
   AttachmentButton,
@@ -79,7 +80,7 @@ const Chat = ({
   inCall = false,
 }: {
   chatId: string;
-  inCall: boolean;
+  inCall?: boolean;
 }) => {
   const {
     t,
@@ -441,9 +442,7 @@ const Chat = ({
           ref={fileInputRef}
           onChange={handleFileSelect}
           style={{ display: 'none' }}
-          accept="application/pdf, .pdf,.doc,.docx,.txt,.rtf,.odt,
-                    .jpg,.jpeg,.png,.gif,.bmp,.webp,.tiff,
-                    .ppt,.pptx,.xls,.xlsx,.csv, image/*"
+          accept={AcceptedFiles.Generic}
         />
 
         <MessageBox

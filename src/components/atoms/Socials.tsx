@@ -6,12 +6,13 @@ import {
   TelegramIcon,
   WhatsappIcon,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import styled from 'styled-components';
 
 const SocialLinks = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.medium};
+  align-items: center;
+  justify-content: center;
 `;
 
 export const SOCIALS_LIST = {

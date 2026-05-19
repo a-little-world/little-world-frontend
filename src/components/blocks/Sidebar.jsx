@@ -1,6 +1,5 @@
 import {
   Button,
-  ButtonAppearance,
   ButtonVariations,
   DashboardIcon,
   HeartIcon,
@@ -31,6 +30,7 @@ import {
 import { unregisterFirebaseDeviceToken } from '../../firebase-util';
 import {
   COMMUNITY_EVENTS_ROUTE,
+  HELP_CONTACT_ROUTE,
   HELP_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
@@ -199,7 +199,12 @@ function Sidebar({ isVH, sidebarMobile }) {
       path: getAppRoute(OUR_WORLD_ROUTE),
       Icon: HeartIcon,
     },
-    { label: 'help', path: getAppRoute(HELP_ROUTE), Icon: QuestionIcon },
+    {
+      label: 'help',
+      path: getAppRoute(HELP_CONTACT_ROUTE),
+      activePath: getAppRoute(HELP_ROUTE),
+      Icon: QuestionIcon,
+    },
     {
       label: 'settings',
       path: getAppRoute(SETTINGS_ROUTE),
@@ -281,8 +286,11 @@ function Sidebar({ isVH, sidebarMobile }) {
       >
         <StyledLogo asLink />
         <SidebarContent $isScrollable={isVH}>
-          {buttonData.map(({ label, path, clickEvent, Icon }) => {
-            const isActive = isActiveRoute(location.pathname, path);
+          {buttonData.map(({ label, path, activePath, clickEvent, Icon }) => {
+            const isActive = isActiveRoute(
+              location.pathname,
+              activePath ?? path,
+            );
             const unreadCount = unread[label] ?? 0;
 
             return typeof clickEvent === typeof undefined ? (
@@ -300,11 +308,6 @@ function Sidebar({ isVH, sidebarMobile }) {
                 key={label}
                 type="button"
                 variation={ButtonVariations.Stacked}
-                appearance={
-                  isActive
-                    ? ButtonAppearance.Secondary
-                    : ButtonAppearance.Primary
-                }
                 onClick={clickEvent}
               >
                 <LogoutIcon
