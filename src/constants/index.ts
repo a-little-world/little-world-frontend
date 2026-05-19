@@ -66,8 +66,8 @@ export const COMMUNITY_EVENT_FREQUENCIES = {
 
 // Pages with height equal to the full height of the viewport.
 // Entries are matched against the sub-path after /app/ (e.g. 'chat' matches
-// /app/chat and /app/chat/:id; 'help/contact-us' matches only that exact sub-page).
-export const pagesWithViewportHeight = ['chat', 'help/contact-us'];
+// /app/chat and /app/chat/:id; 'help/contact' matches only that exact sub-page).
+export const pagesWithViewportHeight = ['chat', 'help/contact'];
 
 export const STORAGE_KEYS = {
   themePreference: 'theme-preference',

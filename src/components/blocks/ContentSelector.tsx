@@ -179,7 +179,7 @@ const StyledHideOnMobile = styled(HideOnMobile)`
 const nbtTopics: Record<string, string[]> = {
   ourWorld: ['support', 'donate', 'about', 'stories'],
   main: ['conversation_partners', 'onboarding', 'events', 'random_calls'],
-  help: ['contact-us', 'faqs'],
+  help: ['contact', 'faqs'],
   resources: ['trainings', 'german', 'beginners', 'story', 'partners'],
 };
 

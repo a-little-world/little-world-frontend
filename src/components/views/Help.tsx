@@ -41,10 +41,10 @@ export const NativeWebWrapper = ({
   children: React.ReactNode;
 }) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
 
-type HelpSubpage = 'contact-us' | 'faqs';
+type HelpSubpage = 'contact' | 'faqs';
 
 const HELP_SUBPAGE_ROUTES: Record<HelpSubpage, string> = {
-  'contact-us': HELP_CONTACT_ROUTE,
+  contact: HELP_CONTACT_ROUTE,
   faqs: HELP_FAQS_ROUTE,
 };
 
@@ -128,11 +128,11 @@ function Help() {
     const pathSegments = location.pathname.split('/').filter(Boolean);
     const lastSegment = last(pathSegments);
 
-    if (lastSegment === 'faqs' || lastSegment === 'contact-us') {
+    if (lastSegment === 'faqs' || lastSegment === 'contact') {
       return lastSegment;
     }
 
-    return 'contact-us';
+    return 'contact';
   }, [location.pathname]);
 
   const handleSubpageSelect = useCallback(
@@ -159,7 +159,7 @@ function Help() {
       />
 
       {subpage === 'faqs' && <FAQs supportUrl={supportUrl} />}
-      {subpage === 'contact-us' && (
+      {subpage === 'contact' && (
         <Contact supportMatch={supportUser} isLoading={isMatchesLoading} />
       )}
     </>

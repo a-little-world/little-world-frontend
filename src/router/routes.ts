@@ -23,7 +23,7 @@ export const LANGUAGE_RESOURCES_ROUTE = 'resources/german';
 export const MY_STORY_ROUTE = 'resources/story';
 /** Redirect-only; link to HELP_CONTACT_ROUTE or HELP_FAQS_ROUTE instead. */
 export const HELP_ROUTE = 'help';
-export const HELP_CONTACT_ROUTE = 'help/contact-us';
+export const HELP_CONTACT_ROUTE = 'help/contact';
 export const HELP_FAQS_ROUTE = 'help/faqs';
 export const SETTINGS_ROUTE = 'settings';
 export const LOGIN_ROUTE = 'login';
