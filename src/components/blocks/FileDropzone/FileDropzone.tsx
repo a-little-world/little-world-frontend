@@ -79,7 +79,8 @@ const assignRef = <T,>(ref: Ref<T> | undefined, value: T | null) => {
     return;
   }
 
-  (ref as { current: T | null }).current = value;
+  const mutableRef = ref as { current: T | null };
+  mutableRef.current = value;
 };
 
 const matchesAcceptedFile = (file: File, acceptedFiles: string) => {
