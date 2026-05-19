@@ -61,6 +61,7 @@ export const ActiveUsers = styled.div`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xxxsmall};
+  min-height: ${({ theme }) => theme.spacing.medium};
 `;
 
 export const InfoImage = styled.img`
