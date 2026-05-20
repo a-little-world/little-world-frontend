@@ -9,8 +9,10 @@ import {
   QuestionIcon,
   SettingsIcon,
   StackIcon,
+  UserSearchIcon,
 } from '@a-little-world/little-world-design-system';
 import { reduce } from 'lodash';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
@@ -25,6 +27,7 @@ import {
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
+  USER_ENDPOINT,
   resetUserQueries,
 } from '../../features/swr/index';
 import { unregisterFirebaseDeviceToken } from '../../firebase-util';
@@ -173,7 +176,12 @@ function Sidebar({ isVH, sidebarMobile }) {
     startPath = getAppRoute(RANDOM_CALLS_ROUTE);
   }
 
-  const buttonData = [
+  const { data: notifications } = useSWR(NOTIFICATIONS_ENDPOINT);
+  const { data: chats } = useSWR(CHATS_ENDPOINT);
+  const { data: user } = useSWR(USER_ENDPOINT);
+  const hasMatchingPermissions = Boolean(user?.hasMatchingPermissions);
+
+  const buttonData = useMemo(() => [
     {
       label: 'start',
       path: startPath,
@@ -210,7 +218,15 @@ function Sidebar({ isVH, sidebarMobile }) {
       path: getAppRoute(SETTINGS_ROUTE),
       Icon: SettingsIcon,
     },
-
+    ...(hasMatchingPermissions
+      ? [
+          {
+            label: 'management',
+            path: '/matching/',
+            Icon: UserSearchIcon,
+          },
+        ]
+      : []),
     {
       label: 'log_out',
       clickEvent: async () => {
@@ -261,15 +277,12 @@ function Sidebar({ isVH, sidebarMobile }) {
           });
       },
     },
-  ];
+  ], [hasMatchingPermissions, startPath, navigate, sendMessageToReactNative, setTokens]);
 
   const [showSidebarMobile, setShowSidebarMobile] = [
     sidebarMobile?.get,
     sidebarMobile?.set,
   ];
-
-  const { data: notifications } = useSWR(NOTIFICATIONS_ENDPOINT);
-  const { data: chats } = useSWR(CHATS_ENDPOINT);
 
   const unread = {
     notifications: notifications?.unread?.results.filter(

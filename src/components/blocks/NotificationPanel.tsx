@@ -17,6 +17,7 @@ import {
 } from '../../features/swr/index';
 import { formatTimeDistance } from '../../helpers/date';
 import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes';
+import MatchingUserTag from '../atoms/MatchingUserTag';
 import ProfileImage from '../atoms/ProfileImage';
 
 const ProfileInfo = styled.div`
@@ -97,6 +98,7 @@ function NotificationPanel() {
   const theme = useTheme();
 
   const { data: user } = useSWR(USER_ENDPOINT);
+  const hasMatchingPermissions = Boolean(user?.hasMatchingPermissions);
   const usesAvatar = (user as any)?.profile.image_type === 'avatar';
   const { data: unreadNotifications } = useSWR(UNREAD_NOTIFICATIONS_ENDPOINT);
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
@@ -109,6 +111,7 @@ function NotificationPanel() {
           image={usesAvatar ? user?.profile.avatar_config : user?.profile.image}
           imageType={user?.profile.image_type}
         />
+        {hasMatchingPermissions && <MatchingUserTag />}
         <Text tag="h3" type={TextTypes.Body3} bold>
           {`${user?.profile.first_name} ${user?.profile.second_name}`}
         </Text>
