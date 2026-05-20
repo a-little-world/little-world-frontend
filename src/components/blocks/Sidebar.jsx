@@ -224,6 +224,7 @@ function Sidebar({ isVH, sidebarMobile }) {
             label: 'management',
             path: '/matching/',
             Icon: UserSearchIcon,
+            reloadDocument: true,
           },
         ]
       : []),
@@ -299,7 +300,7 @@ function Sidebar({ isVH, sidebarMobile }) {
       >
         <StyledLogo asLink />
         <SidebarContent $isScrollable={isVH}>
-          {buttonData.map(({ label, path, activePath, clickEvent, Icon }) => {
+          {buttonData.map(({ label, path, activePath, clickEvent, Icon, reloadDocument }) => {
             const isActive = isActiveRoute(
               location.pathname,
               activePath ?? path,
@@ -315,6 +316,7 @@ function Sidebar({ isVH, sidebarMobile }) {
                 iconLabel={label}
                 text={t(`nbs_${label}`)}
                 unreadCount={unreadCount}
+                reloadDocument={reloadDocument}
               />
             ) : (
               <LogoutButton
