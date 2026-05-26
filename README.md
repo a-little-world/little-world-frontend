@@ -203,7 +203,8 @@ Before merging a PR to `prod`:
 - **Code Style**: Follow the [Airbnb JavaScript/React style guide](https://github.com/airbnb/javascript/tree/master/react) with ESLint for linting.
 - **Prettier**: Use Prettier for code formatting. Ensure your code is formatted before committing:
   ```
-  npm format
+  pnpm run format:check
+  pnpm run format:fix
   ```
 
 ### React and TypeScript
