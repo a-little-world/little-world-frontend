@@ -290,14 +290,6 @@ Added a primary variant to the Button component in the Design System.
 - Include screenshots or GIFs if your changes include UI modifications.
 - Request a review from at least one team member.
 
-## Running Tests
-
-We use Jest for testing. To run tests:
-
-```bash
-npm test
-```
-
 ## Code Review
 
 All contributions are reviewed by a team member. Feedback may be provided, and changes might be requested. Ensure you address the feedback promptly and update your pull request accordingly.
