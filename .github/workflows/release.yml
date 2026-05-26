@@ -211,10 +211,10 @@ jobs:
 
           # Debug: Check pnpm configuration
           echo "### 🔍 Debug Information:" >> $GITHUB_STEP_SUMMARY
-          echo "Registry: $(pnpm config get registry)" >> $GITHUB_STEP_SUMMARY
-          echo "Auth Token exists: $([ -n "$NODE_AUTH_TOKEN" ] && echo "Yes" || echo "No")" >> $GITHUB_STEP_SUMMARY
-          echo "Auth Token length: ${#NODE_AUTH_TOKEN}" >> $GITHUB_STEP_SUMMARY
-          echo "Auth Token prefix: ${NODE_AUTH_TOKEN:0:10}..." >> $GITHUB_STEP_SUMMARY
+          echo "NPM Registry: $(pnpm config get registry)" >> $GITHUB_STEP_SUMMARY
+          echo "NPM Auth Token exists: $([ -n "$NODE_AUTH_TOKEN" ] && echo "Yes" || echo "No")" >> $GITHUB_STEP_SUMMARY
+          echo "NPM Auth Token length: ${#NODE_AUTH_TOKEN}" >> $GITHUB_STEP_SUMMARY
+          echo "NPM Auth Token prefix: ${NODE_AUTH_TOKEN:0:10}..." >> $GITHUB_STEP_SUMMARY
           echo "Current directory: $(pwd)" >> $GITHUB_STEP_SUMMARY
           echo "GitHub repository: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
           echo "GitHub actor: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
