@@ -21,10 +21,10 @@ Before you begin, ensure you have met the following requirements:
 
 ### Installing Dependencies
 
-Install the necessary dependencies using Yarn:
+Install the necessary dependencies using pnpm:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Starting the local server
@@ -32,7 +32,7 @@ npm install
 #### Local dev with remote API server
 
 ```bash
-npm run dev
+pnpm run dev
 ./schrodingers-nginx.sh
 ```
 
@@ -139,7 +139,7 @@ We use [Changesets](https://github.com/changesets/changesets) to manage versioni
 When you make changes that should trigger a version bump:
 
 ```bash
-npm run changeset
+pnpm run changeset
 ```
 
 This will:
@@ -153,7 +153,7 @@ This will:
 When you're ready to release:
 
 ```bash
-npm run version
+pnpm run version
 ```
 
 This will:
@@ -189,8 +189,8 @@ Before merging a PR to `prod`:
 
 **For Package Release (mobile app update):**
 
-- [ ] Changesets created for all changes (`npm run changeset`)
-- [ ] Package versioned (`npm run version`)
+- [ ] Changesets created for all changes (`pnpm run changeset`)
+- [ ] Package versioned (`pnpm run version`)
 - [ ] All tests pass
 - [ ] Code review completed
 - [ ] PR shows version change in the automated comment
