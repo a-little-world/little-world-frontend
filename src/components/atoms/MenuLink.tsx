@@ -70,6 +70,7 @@ const MenuLink = ({
   text,
   to,
   unreadCount,
+  reloadDocument = false,
 }: {
   active?: boolean;
   disabled?: boolean;
@@ -81,6 +82,8 @@ const MenuLink = ({
   text?: string;
   to?: string;
   unreadCount?: number;
+  /** Full page load (e.g. leaving this SPA for another frontend). */
+  reloadDocument?: boolean;
 }) => {
   const theme = useTheme();
   if (disabled || !to)
@@ -98,6 +101,7 @@ const MenuLink = ({
   return (
     <StyledMenuLink
       to={to}
+      reloadDocument={reloadDocument}
       state={state}
       $appearance={
         active ? ButtonAppearance.Secondary : ButtonAppearance.Primary
