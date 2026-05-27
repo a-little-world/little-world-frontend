@@ -109,3 +109,29 @@ export const ListItemCta = styled(Button)`
     align-self: flex-start;
   }
 `;
+
+export type ItemBadgeType = 'video' | 'interactive';
+
+export const ItemBadge = styled.span<{ $type: ItemBadgeType }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: fit-content;
+
+  ${({ $type }) =>
+    $type === 'interactive'
+      ? css`
+          background: rgba(219, 89, 11, 0.1);
+          color: #db590b;
+        `
+      : css`
+          background: rgba(0, 99, 175, 0.08);
+          color: #0063af;
+        `}
+`;

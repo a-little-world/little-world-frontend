@@ -24,8 +24,6 @@ export const DropdownsRow = styled.div`
 export const SwapBtn = styled(Button)`
   padding: ${({ theme }) => theme.spacing.xxxsmall};
   margin-top: 6px;
-  border-radius: ${({ theme }) => theme.radius.half};
-  color: ${({ theme }) => theme.color.text.title};
   flex-shrink: 0;
   flex-grow: 0;
 `;

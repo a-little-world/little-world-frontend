@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@a-little-world/little-world-design-system':
-        specifier: ^2.14.0
-        version: 2.15.0(@types/react@19.2.4)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(styled-components@6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        specifier: ^2.15.1
+        version: 2.15.1(@types/react@19.2.4)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(styled-components@6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@babel/core':
         specifier: ^7.20.12
         version: 7.29.0
@@ -258,8 +258,8 @@ packages:
       react: ^19.0.0
       react-dom: ^19.0.0
 
-  '@a-little-world/little-world-design-system@2.15.0':
-    resolution: {integrity: sha512-/88DudlxTJXDF8BBpKVoQmbC54swn2hTS3Grt368GYRCpTD42TMKQTOzYAX4qKslP2eKb0oOsrsN1xPWWbw+3g==}
+  '@a-little-world/little-world-design-system@2.15.1':
+    resolution: {integrity: sha512-0k1r4RjKdN4aBN9e0R2w8D9XNKFY+nALRXrzcHyj3V3x1WwDQ3K/aX+GE6buVxliZVqI/A0a6KPwkp3Qx9zHqw==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -5411,7 +5411,7 @@ snapshots:
       react-dom: 19.2.4(react@19.2.4)
       svgson: 5.3.1
 
-  '@a-little-world/little-world-design-system@2.15.0(@types/react@19.2.4)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(styled-components@6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@a-little-world/little-world-design-system@2.15.1(@types/react@19.2.4)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(styled-components@6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
       '@a-little-world/little-world-design-system-core': 1.11.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@base-ui/react': 1.5.0(@types/react@19.2.4)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)

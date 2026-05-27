@@ -62,6 +62,7 @@ function QuestionCards() {
         <CategoryControl
           size={ButtonSizes.Medium}
           variation={ButtonVariations.Circle}
+          appearance={ButtonAppearance.Secondary}
           onClick={() => changeScroll('left')}
         >
           <ChevronLeftIcon
@@ -76,9 +77,9 @@ function QuestionCards() {
               key={topic?.uuid}
               type="button"
               appearance={
-                selectedTopic === topic?.uuid ?
-                  ButtonAppearance.Primary :
-                  ButtonAppearance.Secondary
+                selectedTopic === topic?.uuid
+                  ? ButtonAppearance.Primary
+                  : ButtonAppearance.Secondary
               }
               value={topic?.uuid}
               onClick={() => setTopic(topic?.uuid)}
@@ -90,6 +91,7 @@ function QuestionCards() {
         <CategoryControl
           size={ButtonSizes.Medium}
           variation={ButtonVariations.Circle}
+          appearance={ButtonAppearance.Secondary}
           onClick={() => changeScroll('right')}
         >
           <ChevronRightIcon label="next topics" width={6} height={10} />
@@ -110,10 +112,10 @@ function QuestionCards() {
                 {card?.content[selfUserPreferedLang]}
               </QuestionButton>
               {selectedQuestionId === card?.uuid &&
-                selectedTopic === 'archived' ? (
-                  <Button
-                    variation={ButtonVariations.Icon}
-                    onClick={() => {
+              selectedTopic === 'archived' ? (
+                <Button
+                  variation={ButtonVariations.Icon}
+                  onClick={() => {
                     archieveQuestion({
                       uuid: card.uuid,
                       archive: false,
@@ -122,12 +124,12 @@ function QuestionCards() {
                     });
                   }}
                 >
-                    <CloseIcon
-                      label="unarchive question"
-                      width={16}
-                      height={16}
+                  <CloseIcon
+                    label="unarchive question"
+                    width={16}
+                    height={16}
                   />
-                  </Button>
+                </Button>
               ) : (
                 <Button
                   variation={ButtonVariations.Icon}

@@ -10,14 +10,11 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isFunction } from 'lodash';
 import type { ReactNode } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { mutate } from 'swr';
 
-import { SELF_ONBOARDING_WALKTHROUGH_STEP_IDS } from '../../../constants';
-import { USER_ENDPOINT } from '../../../features/swr';
 import Video from '../../atoms/Video';
 import Quiz, { type QuizAnswer, type QuizStep } from '../Quiz/Quiz';
 
@@ -39,18 +36,35 @@ export type CourseChapter = {
 };
 
 export type ChaptersLayoutProps = {
+  backLabel?: string;
   chapters: CourseChapter[];
-  /** Latest completed self-onboarding step id from the backend (drives unlocked chapters). */
-  currentStepId?: string;
+  /** Number of chapters already completed. Defaults to 0 (fresh start). */
+  completedChapterCount?: number;
+  /**
+   * 0-based index of the quiz step the user should resume from within the
+   * current in-progress chapter. Only applied to the first unlocked chapter;
+   * all other chapters start at step 0.
+   */
+  initialStepIndex?: number;
   courseTitle?: string;
   onBack: () => void;
   /**
-   * Persist progress in backend (best-effort). If not provided, we still update local UI + URL params.
-   * The expected backend behavior is to update `user.walkthrough_step` so that it points to the next unlocked
-   * chapter video index.
+   * Called each time the user correctly answers a quiz step (except the last step of a chapter,
+   * which is handled by `onChapterComplete` to avoid a race between the two calls).
+   * Receives the chapter's id and the 0-based index of the completed step.
+   * Best-effort — errors are swallowed.
    */
-  onUpdateCourseStep?: (nextStepId: string) => Promise<void>;
-  onCourseComplete?: () => void;
+  onStepComplete?: (chapterId: string, stepIndex: number) => Promise<void>;
+  /**
+   * Called when the user completes a chapter's quiz. Best-effort — errors are swallowed.
+   * Receives the chapter's id and its 0-based index.
+   */
+  onChapterComplete?: (
+    chapterId: string,
+    chapterIndex: number,
+  ) => Promise<void>;
+  /** Called after the last chapter completes. May be async — awaited before any fallback navigation. */
+  onCourseComplete?: () => void | Promise<void>;
 };
 
 const CourseContainer = styled.div`
@@ -288,32 +302,29 @@ function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
 
-function completedChaptersFromStepId(
-  stepId: string | undefined,
-  maxChapters: number,
-): number {
-  if (!stepId) return 0;
-  const ids = SELF_ONBOARDING_WALKTHROUGH_STEP_IDS as readonly string[];
-  const idx = ids.indexOf(stepId);
-  if (idx < 0) return 0;
-  return clamp(idx + 1, 0, maxChapters);
-}
-
 export default function ChaptersLayout({
   chapters,
-  currentStepId,
+  completedChapterCount: completedChapterCountProp,
+  initialStepIndex = 0,
   courseTitle,
+  backLabel,
   onBack,
-  onUpdateCourseStep,
+  onStepComplete,
+  onChapterComplete,
   onCourseComplete,
 }: ChaptersLayoutProps) {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const completedCount = completedChaptersFromStepId(
-    currentStepId,
-    Math.max(0, chapters.length),
-  );
+  const completedCount = completedChapterCountProp ?? 0;
+
+  // Keep a ref to chapters so the quiz-reset effect can read the current value
+  // without needing chapters in its dependency array (chapters is often a new
+  // reference on every render when the caller maps API data inline).
+  const chaptersRef = useRef(chapters);
+  useEffect(() => {
+    chaptersRef.current = chapters;
+  });
 
   const [completedChapterIndexes, setCompletedChapterIndexes] = useState<
     Set<number>
@@ -422,15 +433,25 @@ export default function ChaptersLayout({
     new Set(),
   );
 
-  // Reset quiz tracking whenever we enter a new chapter's quiz mode.
+  // Reset (or resume) quiz tracking whenever we enter a chapter's quiz mode.
   useEffect(() => {
     if (mode === 'quiz') {
-      setQuizCorrectStepIds(new Set());
+      // When entering the current in-progress chapter, pre-populate the steps
+      // the user has already answered so the progress bar and skip logic are
+      // correct on resume. For all other chapters start fresh.
+      const isCurrentProgressChapter = activeChapterIndex === completedCount;
+      const preAnsweredCount = isCurrentProgressChapter ? initialStepIndex : 0;
+      const chapter = chaptersRef.current[activeChapterIndex];
+      const preAnswered =
+        preAnsweredCount > 0 && chapter
+          ? new Set(chapter.quizSteps.slice(0, preAnsweredCount).map(s => s.id))
+          : new Set<string>();
+      setQuizCorrectStepIds(preAnswered);
       setIsQuizCompleted(false);
     } else {
       setIsQuizCompleted(false);
     }
-  }, [activeChapterIndex, mode]);
+  }, [activeChapterIndex, completedCount, initialStepIndex, mode]);
 
   const totalProgressSteps = useMemo(
     () => chapters.reduce((acc, ch) => acc + ch.quizSteps.length, 0),
@@ -490,17 +511,29 @@ export default function ChaptersLayout({
 
   const handleQuizAnswer = (answer: QuizAnswer) => {
     if (!answer.isCorrect) return;
+
+    const alreadyAnswered = quizCorrectStepIds.has(answer.stepId);
     setQuizCorrectStepIds(prev => {
-      const next = new Set<string>();
-      prev.forEach(value => next.add(value));
+      const next = new Set<string>(prev);
       next.add(answer.stepId);
       return next;
     });
-  };
 
-  const persistOnboardingStepBestEffort = async (stepId: string) => {
-    if (!onUpdateCourseStep) return;
-    await onUpdateCourseStep(stepId);
+    if (!alreadyAnswered && onStepComplete) {
+      // Skip step-level persistence for the last unanswered step: onChapterComplete
+      // will advance to the next chapter and would race with this call.
+      const remainingUnanswered = activeChapter.quizSteps.filter(
+        s => s.id !== answer.stepId && !quizCorrectStepIds.has(s.id),
+      );
+      if (remainingUnanswered.length > 0) {
+        const stepIndex = activeChapter.quizSteps.findIndex(
+          s => s.id === answer.stepId,
+        );
+        if (stepIndex >= 0) {
+          onStepComplete(activeChapter.id, stepIndex).catch(() => {});
+        }
+      }
+    }
   };
 
   const handleQuizComplete = async () => {
@@ -508,9 +541,10 @@ export default function ChaptersLayout({
 
     const alreadyRecorded = completedChapterIndexes.has(activeChapterIndex);
     // Persist as soon as chapter quiz is completed (before continue / final navigation).
-    if (!alreadyRecorded) {
-      const stepId = SELF_ONBOARDING_WALKTHROUGH_STEP_IDS[activeChapterIndex];
-      if (stepId) await persistOnboardingStepBestEffort(stepId);
+    if (!alreadyRecorded && onChapterComplete) {
+      await onChapterComplete(activeChapter.id, activeChapterIndex).catch(
+        () => {},
+      );
     }
 
     if (!isLastChapter) {
@@ -551,10 +585,7 @@ export default function ChaptersLayout({
       });
     }
 
-    // Ensure onboarding redirect logic reads fresh user state before navigating.
-    await mutate(USER_ENDPOINT);
-
-    if (onCourseComplete) onCourseComplete();
+    if (onCourseComplete) await onCourseComplete();
     else onBack();
   };
 
@@ -577,14 +608,14 @@ export default function ChaptersLayout({
                 >
                   <ArrowLeftIcon label="back" width={12} height={12} />
                   {mode === 'video'
-                    ? t('onboarding_walkthrough.nav_back')
-                    : t('onboarding_walkthrough.nav_back_to_video')}
+                    ? backLabel ?? t('course.nav_back')
+                    : t('course.nav_back_to_video')}
                 </BackButton>
               )}
             </HeaderBackCell>
             <HeaderTitleCenter>
               <HeaderTitle type={TextTypes.Body1} bold center>
-                {courseTitle ?? t('onboarding_walkthrough.title')}
+                {courseTitle ?? t('course.title')}
               </HeaderTitle>
             </HeaderTitleCenter>
             <HeaderTitleTrailing aria-hidden />
@@ -602,17 +633,11 @@ export default function ChaptersLayout({
               const isActive = index === activeChapterIndex;
               const isCompleted = index < unlockedChapterCount;
               const isLocked = index > unlockedChapterCount;
-              let chapterStatus = t(
-                'onboarding_walkthrough.chapter_status_in_progress',
-              );
+              let chapterStatus = t('course.chapter_status_in_progress');
               if (isCompleted) {
-                chapterStatus = t(
-                  'onboarding_walkthrough.chapter_status_completed',
-                );
+                chapterStatus = t('course.chapter_status_completed');
               } else if (isLocked) {
-                chapterStatus = t(
-                  'onboarding_walkthrough.chapter_status_locked',
-                );
+                chapterStatus = t('course.chapter_status_locked');
               }
               return (
                 <ChapterButton
@@ -662,7 +687,7 @@ export default function ChaptersLayout({
                   }}
                   disabled={activeChapterIndex === 0}
                 >
-                  {t('onboarding_walkthrough.nav_previous_chapter')}
+                  {t('course.nav_previous_chapter')}
                 </Button>
               )}
 
@@ -672,7 +697,7 @@ export default function ChaptersLayout({
                   size={ButtonSizes.Medium}
                   onClick={handleOnCourseComplete}
                 >
-                  {t('onboarding_walkthrough.chapter_complete_button_finish')}
+                  {t('course.chapter_complete_button_finish')}
                 </FooterPrimaryButton>
               ) : (
                 <FooterPrimaryButton
@@ -685,10 +710,8 @@ export default function ChaptersLayout({
                   }
                 >
                   {activeChapterIndex < unlockedChapterCount
-                    ? t(
-                        'onboarding_walkthrough.chapter_complete_button_continue',
-                      )
-                    : t('onboarding_walkthrough.nav_continue_to_quiz')}
+                    ? t('course.chapter_complete_button_continue')
+                    : t('course.nav_continue_to_quiz')}
                 </FooterPrimaryButton>
               )}
             </ChapterFooter>
@@ -698,8 +721,11 @@ export default function ChaptersLayout({
         {mode === 'quiz' && (
           <ChapterContent>
             <Quiz
+              key={`quiz-${activeChapterIndex}`}
               steps={activeChapter.quizSteps}
-              currentStep={1}
+              currentStep={
+                activeChapterIndex === completedCount ? initialStepIndex + 1 : 1
+              }
               exitRoute={undefined}
               hideProgress
               completedIcon={activeChapter.quizCompletedIcon}
@@ -712,8 +738,8 @@ export default function ChaptersLayout({
               showCompletionCard={isLastChapter}
               onExitLabel={
                 activeChapterIndex + 1 < chapters.length
-                  ? t('onboarding_walkthrough.chapter_complete_button_continue')
-                  : t('onboarding_walkthrough.chapter_complete_button_finish')
+                  ? t('course.chapter_complete_button_continue')
+                  : t('course.chapter_complete_button_finish')
               }
               onAnswer={handleQuizAnswer}
               onComplete={handleQuizComplete}
