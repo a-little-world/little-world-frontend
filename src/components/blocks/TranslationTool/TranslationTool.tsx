@@ -1,6 +1,7 @@
 import {
   AddToChatIcon,
   Button,
+  ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
   CopyIcon,
@@ -11,6 +12,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components';
 
 import {
   AUTO_DETECT,
@@ -34,6 +36,7 @@ import {
 
 function TranslationTool({ className }: { className?: string }) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { addTextToChat } = useChatInputStore();
   const [fromLang, setFromLang] = useState<string>(AUTO_DETECT);
   const [toLang, setToLang] = useState('DE');
@@ -126,6 +129,8 @@ function TranslationTool({ className }: { className?: string }) {
         <SwapBtn
           onClick={swapLang}
           variation={ButtonVariations.Circle}
+          appearance={ButtonAppearance.Secondary}
+          color={theme.color.text.title}
           size={ButtonSizes.Small}
           disabled={!canSwap}
         >

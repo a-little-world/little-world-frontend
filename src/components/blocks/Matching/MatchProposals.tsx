@@ -1,6 +1,7 @@
 import {
   ArrowLeftIcon,
   Button,
+  ButtonAppearance,
   ButtonVariations,
   Card,
   CardContent,
@@ -264,10 +265,10 @@ function ProposalRowContent({
             <Button
               type="button"
               variation={ButtonVariations.Circle}
+              appearance={ButtonAppearance.Secondary}
               onClick={onCancelReject}
               disabled={state.loading}
               aria-label={t('btn_cancel')}
-              borderColor={theme.color.border.moderate}
               color={theme.color.text.secondary}
             >
               <ArrowLeftIcon label={t('btn_cancel')} width={16} height={16} />
@@ -294,11 +295,11 @@ function ProposalRowContent({
               <Button
                 type="button"
                 variation={ButtonVariations.Circle}
+                appearance={ButtonAppearance.Secondary}
                 onClick={isStandard ? onRejectClick : onRejectDirect}
                 disabled={state.loading}
                 aria-label={t('confirm_match.reject_button')}
-                borderColor={theme.color.border.reject}
-                color={theme.color.surface.reject}
+                color={theme.color.border.reject}
               >
                 <CloseIcon
                   label={t('confirm_match.reject_button')}
@@ -314,7 +315,6 @@ function ProposalRowContent({
                 loading={state.loading}
                 aria-label={t('confirm_match.confirm_button')}
                 backgroundColor={theme.color.surface.confirm}
-                borderColor={theme.color.surface.confirm}
                 color={theme.color.text.button}
               >
                 <CheckIcon

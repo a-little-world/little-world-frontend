@@ -35,6 +35,7 @@ import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalk
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
+import Training from '../components/views/Resources/Trainings/Training';
 import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
 import VerifyEmail from '../components/views/VerifyEmail';
@@ -286,6 +287,14 @@ export function getWebRouter() {
       ),
     },
     {
+      path: getAppRoute(TRAINING_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Training />
+        </FullAppLayout>
+      ),
+    },
+    {
       path: getAppRoute(RESOURCES_ROUTE),
       element: (
         <FullAppLayout>
@@ -295,14 +304,6 @@ export function getWebRouter() {
     },
     {
       path: getAppRoute(TRAININGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAINING_ROUTE),
       element: (
         <FullAppLayout>
           <Resources />
@@ -623,6 +624,14 @@ export function getNativeRouter() {
       ),
     },
     {
+      path: getAppRoute(TRAINING_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Training />
+        </FullAppLayout>
+      ),
+    },
+    {
       path: getAppRoute(RESOURCES_ROUTE),
       element: (
         <FullAppLayout>
@@ -632,14 +641,6 @@ export function getNativeRouter() {
     },
     {
       path: getAppRoute(TRAININGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAINING_ROUTE),
       element: (
         <FullAppLayout>
           <Resources />

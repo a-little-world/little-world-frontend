@@ -143,7 +143,11 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
 
   return (
     <Container>
-      <Modal open={lobbyOpen} onClose={onCloseLobby}>
+      <Modal
+        open={lobbyOpen}
+        onClose={onCloseLobby}
+        closeOnBackdropClick={false}
+      >
         {lobbyData?.uuid && (
           <RandomCallsLobby
             key={`${lobbyData.uuid}-${lobbySessionKey}`}

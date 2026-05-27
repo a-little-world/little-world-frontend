@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate } from 'react-router-dom';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 import updateSelfOnboardingStep from '../../../api/onboarding';
 import {
@@ -154,14 +154,27 @@ const OnboardingWalkthrough = () => {
     },
   ];
 
+  // Derive progress from the stored step id. Chapter IDs are the step IDs, so
+  // we find the matching chapter index and count everything up to and including it.
+  const completedChapterCount = currentStep
+    ? Math.max(0, chapters.findIndex(ch => ch.id === currentStep) + 1)
+    : 0;
+
   return (
     <CourseChaptersLayout
+      backLabel={t('onboarding_walkthrough.nav_back')}
       chapters={chapters}
-      currentStepId={currentStep}
+      completedChapterCount={completedChapterCount}
       courseTitle={t('onboarding_walkthrough.title')}
       onBack={() => navigate(getAppRoute(ONBOARDING_ROUTE))}
-      onUpdateCourseStep={updateSelfOnboardingStep}
-      onCourseComplete={() => navigate(getAppRoute())}
+      onChapterComplete={async chapterId => {
+        await updateSelfOnboardingStep(chapterId);
+      }}
+      onCourseComplete={async () => {
+        // Refresh user state so any redirect logic sees the updated step id.
+        await mutate(USER_ENDPOINT);
+        navigate(getAppRoute());
+      }}
     />
   );
 };

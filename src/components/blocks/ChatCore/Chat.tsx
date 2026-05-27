@@ -1,5 +1,6 @@
 import {
   AttachmentIcon,
+  ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
   CloseIcon,
@@ -478,6 +479,7 @@ const Chat = ({
           size={ButtonSizes.Large}
           type="button"
           variation={ButtonVariations.Circle}
+          appearance={ButtonAppearance.Secondary}
           backgroundColor={
             selectedFile
               ? theme.color.status.error
@@ -510,7 +512,6 @@ const Chat = ({
           type="submit"
           disabled={isSubmitting || isUnmatched}
           variation={ButtonVariations.Circle}
-          backgroundColor={theme.color.gradient.orange10}
         >
           <SendIcon
             label={t('chat.send_btn')}

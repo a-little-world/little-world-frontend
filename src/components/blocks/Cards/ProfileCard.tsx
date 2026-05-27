@@ -153,9 +153,8 @@ export const MatchMenuToggle = styled(Button)`
   position: absolute;
 
   ${({ theme }) => `
-    padding: ${theme.spacing.xxxsmall} ${theme.spacing.xxsmall};
-    top: ${theme.spacing.xsmall};
-    right: ${theme.spacing.xsmall};
+    top: ${theme.spacing.small};
+    right: ${theme.spacing.small};
   `};
 `;
 
@@ -257,19 +256,18 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           width={PopoverSizes.Large}
           showCloseButton
           trigger={
-            <MatchMenuToggle type="button" variation={ButtonVariations.Icon}>
+            <MatchMenuToggle
+              variation={ButtonVariations.Circle}
+              appearance={ButtonAppearance.Secondary}
+              size={ButtonSizes.Medium}
+              backgroundColor={theme.color.surface.secondary}
+              color={theme.color.text.tertiary}
+            >
               <Tooltip
                 text={t('profile_card.user_actions')}
                 trigger={
-                  <div>
-                    <DotsIcon
-                      circular
-                      height="16px"
-                      width="16px"
-                      color="#7c7b7b"
-                      borderColor="#7c7b7b"
-                      label="menu options"
-                    />
+                  <div style={{ display: 'flex' }}>
+                    <DotsIcon height="16px" width="16px" label="menu options" />
                   </div>
                 }
               />

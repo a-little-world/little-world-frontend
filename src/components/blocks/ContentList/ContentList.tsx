@@ -4,7 +4,6 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { map } from 'lodash';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,19 +11,27 @@ import {
   ContentListLayouts,
   ImageWrapper,
   Info,
+  ItemBadge as ItemBadgeEl,
+  ItemBadgeType,
   ItemImage,
   ListItem,
   ListItemCta,
 } from './ContentList.styles';
 
-type ItemType = {
+export type ItemBadgeMeta = {
+  type: ItemBadgeType;
+  label: string;
+};
+
+export type ItemType = {
   title: string;
   description: string;
   bio?: string;
   link: string;
   linkText: string;
-  image: string;
-  altImage: string;
+  image?: string;
+  altImage?: string;
+  badge?: ItemBadgeMeta;
 };
 
 interface ContentListItemProps {
@@ -32,18 +39,34 @@ interface ContentListItemProps {
   layout: ContentListLayouts;
 }
 
+const BADGE_ICONS: Record<ItemBadgeType, string> = {
+  interactive: '◆',
+  video: '▶',
+};
+
 const ContentListItem = ({ item, layout }: ContentListItemProps) => {
   const { t } = useTranslation();
 
   return (
     <ListItem to={item.link} $layout={layout}>
-      <ImageWrapper $layout={layout}>
-        <ItemImage src={item.image} alt={item.altImage} $layout={layout} />
-      </ImageWrapper>
+      {item.image && (
+        <ImageWrapper $layout={layout}>
+          <ItemImage
+            src={item.image}
+            alt={item.altImage ?? ''}
+            $layout={layout}
+          />
+        </ImageWrapper>
+      )}
       <Info>
         <Text tag="h3" type={TextTypes.Heading5}>
           {t(item.title)}
         </Text>
+        {item.badge && (
+          <ItemBadgeEl $type={item.badge.type}>
+            {BADGE_ICONS[item.badge.type]} {t(item.badge.label)}
+          </ItemBadgeEl>
+        )}
         <Text>{t(item.description)}</Text>
         {item.bio && <Text>{t(item.bio)}</Text>}
         <ListItemCta size={ButtonSizes.Small}>{t(item.linkText)}</ListItemCta>

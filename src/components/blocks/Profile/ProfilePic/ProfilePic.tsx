@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
   ChevronLeftIcon,
@@ -247,9 +248,9 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
               <InteractiveArea>
                 <AvatarSelection>
                   <Button
-                    backgroundColor={theme.color.surface.primary}
-                    borderColor={theme.color.border.contrast}
+                    color={theme.color.border.contrast}
                     variation={ButtonVariations.Circle}
+                    appearance={ButtonAppearance.Secondary}
                     size={ButtonSizes.Medium}
                     disabled={avatarIndex === 0}
                     onClick={onPrevAvatar}
@@ -271,9 +272,9 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                     />
                   </div>
                   <Button
-                    backgroundColor={theme.color.surface.primary}
-                    borderColor={theme.color.border.contrast}
+                    color={theme.color.border.contrast}
                     variation={ButtonVariations.Circle}
+                    appearance={ButtonAppearance.Secondary}
                     onClick={onNextAvatar}
                     size={ButtonSizes.Medium}
                     type="button"

@@ -211,7 +211,6 @@ const EventCtas = ({
                 }}
                 variation={ButtonVariations.Circle}
                 size={ButtonSizes.Small}
-                backgroundColor={theme.color.gradient.orange10}
               >
                 <PhoneIcon
                   label="join call"

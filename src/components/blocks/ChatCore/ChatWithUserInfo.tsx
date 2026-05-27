@@ -142,7 +142,6 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
             variation={ButtonVariations.Circle}
             onClick={callPartner}
             size={ButtonSizes.Large}
-            backgroundColor={theme.color.gradient.orange10}
           >
             <VideoIcon
               label="Video Call Icon"
