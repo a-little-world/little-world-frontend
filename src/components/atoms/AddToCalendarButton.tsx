@@ -10,7 +10,6 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
@@ -38,9 +37,9 @@ function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
   );
 
   // Use the endDate that's passed to us, or calculate based on duration if not provided
-  const endDate = calendarEvent.endDate ?
-    new Date(calendarEvent.endDate) :
-    getEndTime(
+  const endDate = calendarEvent.endDate
+    ? new Date(calendarEvent.endDate)
+    : getEndTime(
         new Date(calendarEvent.startDate),
         calendarEvent.durationInMinutes,
         undefined,
@@ -78,9 +77,9 @@ function generateRecurrenceRule(calendarEvent: CalendarEvent): string {
     ).getDate();
     const isLastWeek = startDate.getDate() + 7 > lastDayOfMonth;
 
-    return isLastWeek ?
-      `FREQ=MONTHLY;BYDAY=-1${dayName}` :
-      `FREQ=MONTHLY;BYDAY=${weekOfMonth}${dayName}`;
+    return isLastWeek
+      ? `FREQ=MONTHLY;BYDAY=-1${dayName}`
+      : `FREQ=MONTHLY;BYDAY=${weekOfMonth}${dayName}`;
   }
 
   return '';
@@ -94,18 +93,18 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent): string {
   const { formattedStartDate, formattedEndDate } =
     getFormattedCalendarDates(calendarEvent);
   const recurrenceRule = generateRecurrenceRule(calendarEvent);
-  const recurrenceParam = recurrenceRule ?
-    `&recur=RRULE:${recurrenceRule}` :
-    '';
+  const recurrenceParam = recurrenceRule
+    ? `&recur=RRULE:${recurrenceRule}`
+    : '';
 
   const baseUrl = 'https://www.google.com/calendar/render?action=TEMPLATE';
   const params = [
     `text=${calendarEvent.title || ''}`,
     `dates=${formattedStartDate || ''}/${formattedEndDate || ''}`,
     `details=${
-      calendarEvent.description ?
-        `${calendarEvent.description}\nhttps://little-world.com` :
-        'https://little-world.com'
+      calendarEvent.description
+        ? `${calendarEvent.description}\nhttps://little-world.com`
+        : 'https://little-world.com'
     }`,
     `location=${calendarEvent.link || ''}`,
     'ctz=Europe%2FBerlin',
@@ -187,7 +186,7 @@ export default function AddToCalendarButton({
         <Button
           type="button"
           variation={ButtonVariations.Circle}
-          appearance={ButtonAppearance.Primary}
+          appearance={ButtonAppearance.Secondary}
           borderColor={theme.color.text.link}
           size={size}
           color={theme.color.text.link}

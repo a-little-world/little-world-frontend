@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonAppearance,
   ButtonVariations,
   Label,
   MoonIcon,
@@ -49,19 +50,15 @@ const ThemeSwitch = ({ withLabel = false }: { withLabel?: boolean }) => {
     <SwitchButton
       $withLabel={withLabel}
       backgroundColor={theme.color.surface.secondary}
-      borderColor={theme.color.border.selected}
+      color={theme.color.border.selected}
       variation={ButtonVariations.Circle}
+      appearance={ButtonAppearance.Secondary}
       onClick={onToggle}
     >
       {isDarkMode ? (
         <SunIcon width="24" height="24" label="turn dark mode on" />
       ) : (
-        <MoonIcon
-          width="24"
-          height="24"
-          label="turn light mode on"
-          color={theme.color.text.highlight}
-        />
+        <MoonIcon width="24" height="24" label="turn light mode on" />
       )}
     </SwitchButton>
   );
