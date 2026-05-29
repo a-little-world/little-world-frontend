@@ -12,6 +12,8 @@ interface NativeStoreState {
   setRefreshAccessToken: (refreshFn: () => Promise<TokenStatus>) => void;
   tokenStatus: TokenStatus | undefined; // undefined = token status has not been determined yet
   setTokenStatus: (status: TokenStatus | undefined) => void;
+  isTokenRefreshing: boolean;
+  setIstokenRefreshing: (isRefreshing: boolean) => void;
 }
 
 const useNativeStore = create<NativeStoreState>(set => {
@@ -37,6 +39,8 @@ const useNativeStore = create<NativeStoreState>(set => {
     tokenStatus: undefined,
     setRefreshAccessToken: refreshAccessToken => set({ refreshAccessToken }),
     setTokenStatus: tokenStatus => set({ tokenStatus }),
+    isTokenRefreshing: false,
+    setIstokenRefreshing: isTokenRefreshing => set({ isTokenRefreshing }),
   };
 });
 

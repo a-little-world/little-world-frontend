@@ -10,8 +10,8 @@ import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler'
 import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
-  swrConfig,
 } from '../../features/swr/index';
+import useNativeSwrConfig from '../../hooks/useNativeSwrConfig';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
 
@@ -92,6 +92,8 @@ export function LittleWorldWebNative({
     sendMessageToReactNativeSet,
     communicationEstablished,
   ]);
+
+  const swrConfig = useNativeSwrConfig();
 
   return (
     <I18nextProvider i18n={i18n}>
