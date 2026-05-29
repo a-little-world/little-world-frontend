@@ -15,7 +15,7 @@ import useNativeSwrConfig from '../../hooks/useNativeSwrConfig';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
 
-interface LittleWorldWebNativeProps {
+export interface LittleWorldWebNativeProps {
   sendMessageToReactNative: DomCommunicationMessageFn;
   registerReceiveHandler: (handler: DomCommunicationMessageFn | null) => void;
   apiFetchNative: typeof apiFetch;
@@ -28,7 +28,7 @@ interface LittleWorldWebNativeProps {
  * - cleaner way to manage user authorization states and auto redirects from the frontend client.
  */
 
-export function NativePreloader() {
+function NativePreloader() {
   const { error: _errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT);
   const { data: apiTranslations, error: _errorApiTranslations } = useSWR(
     API_TRANSLATIONS_ENDPOINT,
