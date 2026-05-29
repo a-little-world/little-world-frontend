@@ -24,16 +24,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@a-little-world'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.PACKAGE_PUBLISH_TOKEN }}
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        # omit version, uses version of packageManager in package.json
 
-      - name: Configure npm for GitHub Package Registry
+      - name: Configure registry for GitHub Package Registry
         run: |
           # Clear any existing config
           rm -f ~/.npmrc
@@ -44,22 +39,14 @@ jobs:
           echo "registry=https://registry.npmjs.org/" >> ~/.npmrc
 
           # Verify configuration
-          echo "=== NPM Config ==="
+          echo "=== Registry Config ==="
           cat ~/.npmrc
 
-      - name: Setup npm cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-cache-
-
       - name: Install Dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build Packages
-        run: npm run build
+        run: pnpm build
 
       - name: Preview Package Versions
         if: github.event_name == 'pull_request'
@@ -222,9 +209,9 @@ jobs:
           echo "## 📦 Publishing package..." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Debug: Check npm configuration
+          # Debug: Check pnpm configuration
           echo "### 🔍 Debug Information:" >> $GITHUB_STEP_SUMMARY
-          echo "NPM Registry: $(npm config get registry)" >> $GITHUB_STEP_SUMMARY
+          echo "NPM Registry: $(pnpm config get registry)" >> $GITHUB_STEP_SUMMARY
           echo "NPM Auth Token exists: $([ -n "$NODE_AUTH_TOKEN" ] && echo "Yes" || echo "No")" >> $GITHUB_STEP_SUMMARY
           echo "NPM Auth Token length: ${#NODE_AUTH_TOKEN}" >> $GITHUB_STEP_SUMMARY
           echo "NPM Auth Token prefix: ${NODE_AUTH_TOKEN:0:10}..." >> $GITHUB_STEP_SUMMARY
@@ -233,12 +220,12 @@ jobs:
           echo "GitHub actor: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Test npm authentication
-          echo "### 🔐 Testing npm authentication..." >> $GITHUB_STEP_SUMMARY
-          if npm whoami --registry=https://npm.pkg.github.com; then
-            echo "✅ npm authentication successful for GitHub Package Registry" >> $GITHUB_STEP_SUMMARY
+          # Test pnpm authentication
+          echo "### 🔐 Testing pnpm authentication..." >> $GITHUB_STEP_SUMMARY
+          if pnpm whoami --registry=https://npm.pkg.github.com; then
+            echo "✅ pnpm authentication successful for GitHub Package Registry" >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ npm authentication failed for GitHub Package Registry" >> $GITHUB_STEP_SUMMARY
+            echo "❌ pnpm authentication failed for GitHub Package Registry" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -251,14 +238,14 @@ jobs:
 
           # Check if version already exists
           echo "Checking if version $PACKAGE_VERSION already exists..." >> $GITHUB_STEP_SUMMARY
-          if npm view $PACKAGE_NAME@$PACKAGE_VERSION --registry=https://npm.pkg.github.com &>/dev/null; then
+          if pnpm view $PACKAGE_NAME@$PACKAGE_VERSION --registry=https://npm.pkg.github.com &>/dev/null; then
             echo "❌ Version $PACKAGE_VERSION already exists in registry" >> $GITHUB_STEP_SUMMARY
             exit 1
           else
             echo "✅ Version $PACKAGE_VERSION does not exist, proceeding with publish" >> $GITHUB_STEP_SUMMARY
           fi
 
-          if npm publish --registry=https://npm.pkg.github.com; then
+          if pnpm publish --registry=https://npm.pkg.github.com --no-git-checks; then
             echo "✅ Successfully published $PACKAGE_NAME@$PACKAGE_VERSION" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Failed to publish $PACKAGE_NAME@$PACKAGE_VERSION" >> $GITHUB_STEP_SUMMARY
