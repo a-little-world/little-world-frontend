@@ -3,7 +3,9 @@ import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { SWRConfig } from 'swr';
 
+import { apiFetch, TokenStatus } from '../../api/helpers';
 import { useReceiveHandlerStore } from '../../features/stores';
+import useNativeStore from '../../features/stores/nativeStore';
 import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler';
 import {
   API_OPTIONS_ENDPOINT,
@@ -12,6 +14,13 @@ import {
 } from '../../features/swr/index';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
+
+interface LittleWorldWebNativeProps {
+  sendMessageToReactNative: DomCommunicationMessageFn;
+  registerReceiveHandler: (handler: DomCommunicationMessageFn | null) => void;
+  apiFetchNative: typeof apiFetch;
+  refreshAccessToken: () => Promise<TokenStatus>;
+}
 
 /**
  * TODO:
@@ -35,10 +44,9 @@ export function NativePreloader() {
 export function LittleWorldWebNative({
   sendMessageToReactNative,
   registerReceiveHandler,
-}: {
-  sendMessageToReactNative: DomCommunicationMessageFn;
-  registerReceiveHandler: (handler: DomCommunicationMessageFn | null) => void;
-}) {
+  apiFetchNative,
+  refreshAccessToken,
+}: LittleWorldWebNativeProps) {
   const router = getNativeRouter();
   const {
     handler,
@@ -47,10 +55,19 @@ export function LittleWorldWebNative({
   } = useReceiveHandlerStore();
   const [communicationEstablished, setCommunicationEstablished] =
     useState(false);
+  const { setApiFetchNative, setRefreshAccessToken } = useNativeStore();
 
   useEffect(() => {
     setSendMessageToReactNative(sendMessageToReactNative);
   }, [setSendMessageToReactNative, sendMessageToReactNative]);
+
+  useEffect(() => {
+    setApiFetchNative(apiFetchNative);
+  }, [apiFetchNative, setApiFetchNative]);
+
+  useEffect(() => {
+    setRefreshAccessToken(refreshAccessToken);
+  }, [refreshAccessToken, setRefreshAccessToken]);
 
   useEffect(() => {
     if (handler && sendMessageToReactNativeSet && !communicationEstablished) {

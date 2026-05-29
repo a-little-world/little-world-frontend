@@ -1,13 +1,20 @@
 import { create } from 'zustand';
 
+import { apiFetch, TokenStatus } from '../../api/helpers';
 import { environment } from '../../environment';
 
 interface NativeStoreState {
   ready: Promise<void>;
   setReady: () => void;
+  apiFetchNative: typeof apiFetch;
+  setApiFetchNative: (fetch: typeof apiFetch) => void;
+  refreshAccessToken: () => Promise<TokenStatus>;
+  setRefreshAccessToken: (refreshFn: () => Promise<TokenStatus>) => void;
+  tokenStatus: TokenStatus | undefined; // undefined = token status has not been determined yet
+  setTokenStatus: (status: TokenStatus | undefined) => void;
 }
 
-const useNativeStore = create<NativeStoreState>(() => {
+const useNativeStore = create<NativeStoreState>(set => {
   let setReady: () => void = () => {};
   const readyPromise = new Promise<void>(resolve => {
     setReady = () => resolve();
@@ -17,9 +24,19 @@ const useNativeStore = create<NativeStoreState>(() => {
     }
   });
 
+  const errorFn = (functionName: string) => () => {
+    throw new Error(`${functionName} has not been set yet.`);
+  };
+
   return {
     ready: readyPromise,
     setReady,
+    apiFetchNative: errorFn('apiFetchNative'),
+    setApiFetchNative: apiFetchNative => set({ apiFetchNative }),
+    refreshAccessToken: errorFn('refreshAccessToken'),
+    tokenStatus: undefined,
+    setRefreshAccessToken: refreshAccessToken => set({ refreshAccessToken }),
+    setTokenStatus: tokenStatus => set({ tokenStatus }),
   };
 });
 
