@@ -8,7 +8,9 @@ import {
   useDebugStore,
   useNavigationStore,
 } from '../features/stores';
+import useNativeStore from '../features/stores/nativeStore';
 import { LOGIN_ROUTE } from '../router/routes';
+import { ApiError, ApiFetchOptions, RequestInit } from './types';
 
 export function getEffectiveBackendUrl(): string {
   return debugStore.getState().backendUrlOverride ?? environment.backendUrl;
@@ -64,37 +66,6 @@ export async function navigateToLogin(expired: boolean = false): Promise<void> {
   navigate?.(path);
 }
 
-export enum TokenStatus {
-  VALID,
-  EXPIRED,
-  MISSING,
-}
-
-// Add DOM types for fetch API
-type RequestCredentials = 'omit' | 'same-origin' | 'include';
-type RequestInit = {
-  method?: string;
-  headers?: Record<string, string>;
-  body?: string | FormData;
-  credentials?: RequestCredentials;
-};
-
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-
-interface ApiFetchOptions {
-  method?: HttpMethod;
-  body?: object | FormData;
-  headers?: Record<string, string>;
-  credentials?: RequestCredentials;
-  useTagsOnly?: boolean;
-}
-
-interface ApiError extends Error {
-  status?: number;
-  statusText?: string;
-  data?: any;
-}
-
 export const formatApiError = (responseBody: any, response: any) => {
   const apiError: ApiError = new Error('API request failed');
   apiError.status = response.status;
@@ -118,7 +89,7 @@ export const formatApiError = (responseBody: any, response: any) => {
   return apiError;
 };
 
-export async function apiFetch<T = any>(
+async function apiFetchWeb<T = any>(
   endpoint: string,
   options: ApiFetchOptions = {},
 ): Promise<T> {
@@ -184,3 +155,7 @@ export async function apiFetch<T = any>(
     throw error;
   }
 }
+
+export const apiFetch: typeof apiFetchWeb = environment.isNative
+  ? useNativeStore.getState().apiFetchNative
+  : apiFetchWeb;

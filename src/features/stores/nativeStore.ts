@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { apiFetch, TokenStatus } from '../../api/helpers';
+import { TokenStatus } from '../../api/types';
 import { environment } from '../../environment';
 
 interface NativeStoreState {
