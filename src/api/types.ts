@@ -33,5 +33,3 @@ export type ApiFetchFn<T = any> = (
   endpoint: string,
   options?: ApiFetchOptions,
 ) => Promise<T>;
-
-export default TokenStatus;

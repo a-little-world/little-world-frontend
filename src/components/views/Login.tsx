@@ -14,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
 import { login } from '../../api';
-import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
 import {
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
@@ -48,7 +47,6 @@ const Login = () => {
 
   const navigate = useNavigate();
   const removeQueryParam = useRemoveQueryParam();
-  const mobileAuthStore = useMobileAuthTokenStore();
 
   useEffect(() => {
     setFocus('email');
@@ -61,14 +59,6 @@ const Login = () => {
 
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
-
-  const accessToken = mobileAuthStore?.accessToken;
-
-  useEffect(() => {
-    if (accessToken) {
-      mutate(USER_ENDPOINT);
-    }
-  }, [accessToken]);
 
   useEffect(() => {
     if (!userData) {

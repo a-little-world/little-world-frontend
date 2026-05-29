@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 
-import { TokenStatus } from '../../api/types';
+import { ApiFetchFn, TokenStatus } from '../../api/types';
 import { environment } from '../../environment';
 
 interface NativeStoreState {
   ready: Promise<void>;
   setReady: () => void;
-  apiFetchNative: typeof apiFetch;
-  setApiFetchNative: (fetch: typeof apiFetch) => void;
+  apiFetchNative: ApiFetchFn;
+  setApiFetchNative: (fetch: ApiFetchFn) => void;
   refreshAccessToken: () => Promise<TokenStatus>;
   setRefreshAccessToken: (refreshFn: () => Promise<TokenStatus>) => void;
   tokenStatus: TokenStatus | undefined; // undefined = token status has not been determined yet

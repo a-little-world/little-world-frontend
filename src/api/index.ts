@@ -4,7 +4,6 @@ import {
   IntegrityCheck,
   getIntegrityCheckRequestData,
 } from '../features/integrityCheck';
-import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { apiFetch } from './helpers';
 
@@ -140,22 +139,6 @@ export const login = async ({
     },
   );
 
-  // Store tokens locally for subsequent Authorization headers
-  useMobileAuthTokenStore
-    .getState()
-    .setTokens(
-      loginData?.token_access ?? undefined,
-      loginData?.token_refresh ?? undefined,
-    );
-
-  await sendMessageToReactNative({
-    action: 'SET_AUTH_TOKENS',
-    payload: {
-      accessToken: loginData?.token_access || undefined,
-      refreshToken: loginData?.token_refresh || undefined,
-    },
-  });
-
   // Notify native app to register the firebase device push token.
   // We can do this because the firebase sdk on native is always active.
   // On web it is only activated when it is both supported and push notifications
@@ -165,8 +148,6 @@ export const login = async ({
     payload: {},
   });
 
-  delete loginData?.token_access;
-  delete loginData?.token_refresh;
   return loginData;
 };
 
@@ -230,22 +211,6 @@ export const signUp = async ({
     },
   });
 
-  // Store tokens locally for subsequent Authorization headers
-  useMobileAuthTokenStore
-    .getState()
-    .setTokens(
-      signUpData?.token_access ?? undefined,
-      signUpData?.token_refresh ?? undefined,
-    );
-
-  await sendMessageToReactNative({
-    action: 'SET_AUTH_TOKENS',
-    payload: {
-      accessToken: signUpData?.token_access ?? undefined,
-      refreshToken: signUpData?.token_refresh ?? undefined,
-    },
-  });
-
   // Notify native app to register the firebase device push token.
   // We can do this because the firebase sdk on native is always active.
   // On web it is only activated when it is both supported and push notifications
@@ -254,9 +219,6 @@ export const signUp = async ({
     action: 'REGISTER_DEVICE_PUSH_TOKEN',
     payload: {},
   });
-
-  delete signUpData?.token_access;
-  delete signUpData?.token_refresh;
 
   return signUpData;
 };

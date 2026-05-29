@@ -8,7 +8,6 @@ import {
   useEffectiveCoreWsScheme,
 } from './api/helpers';
 import { environment } from './environment';
-import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
 import {
   NOTIFICATIONS_ENDPOINT,
   UNREAD_NOTIFICATIONS_ENDPOINT,
@@ -30,7 +29,8 @@ const WebsocketBridge = () => {
   const webSocketHost = new URL(backendUrl).host;
   const socketUrl = coreWsScheme + webSocketHost + environment.coreWsPath;
 
-  const accessToken = useMobileAuthTokenStore(state => state.accessToken);
+  // const accessToken = useMobileAuthTokenStore(state => state.accessToken);
+  const accessToken = ''; // TODO: pass native function for getting access token
   const [, setMessageHistory] = useState([]);
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,

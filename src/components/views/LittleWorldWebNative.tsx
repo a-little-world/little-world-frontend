@@ -3,7 +3,8 @@ import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { SWRConfig } from 'swr';
 
-import { apiFetch, TokenStatus } from '../../api/helpers';
+import { apiFetch } from '../../api/helpers';
+import { TokenStatus } from '../../api/types';
 import { useReceiveHandlerStore } from '../../features/stores';
 import useNativeStore from '../../features/stores/nativeStore';
 import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler';
