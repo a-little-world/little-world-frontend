@@ -1,31 +1,11 @@
 import useSWR from 'swr';
 
-import {
-  TokenStatus,
-  apiFetch,
-  nativeRefreshAccessToken,
-  navigateToLogin,
-} from '../api/helpers';
+import { ReactNode } from 'react';
 import { IS_AUTHENTICATED_ENDPOINT } from '../features/swr/index';
 
-function AuthGuard({ children }) {
+function AuthGuard({ children }: { children: ReactNode }) {
   const { data, error, isLoading } = useSWR<boolean>(
     IS_AUTHENTICATED_ENDPOINT,
-    endpoint =>
-      apiFetch(endpoint).then(async isAuthenticated => {
-        if (!isAuthenticated) {
-          const tokenStatus = await nativeRefreshAccessToken();
-          if (
-            tokenStatus === TokenStatus.EXPIRED ||
-            tokenStatus === TokenStatus.MISSING
-          ) {
-            await navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
-            return false;
-          }
-          return true;
-        }
-        return true;
-      }),
     {
       refreshInterval: isAuthenticated => {
         // keep polling every 3s until authenticated

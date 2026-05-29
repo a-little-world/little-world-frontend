@@ -4,17 +4,10 @@ import { mutate } from 'swr';
 import { API_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 import {
-  IntegrityCheck,
-  getIntegrityCheckRequestData,
-} from '../features/integrityCheck';
-import {
   debugStore,
   useDebugStore,
   useNavigationStore,
 } from '../features/stores';
-import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
-import useNativeStore from '../features/stores/nativeStore';
-import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { LOGIN_ROUTE } from '../router/routes';
 
 export function getEffectiveBackendUrl(): string {
@@ -125,118 +118,10 @@ export const formatApiError = (responseBody: any, response: any) => {
   return apiError;
 };
 
-function getNativeHeaders(): Record<string, string> {
-  const { accessToken } = useMobileAuthTokenStore.getState();
-
-  const headers = {
-    'X-CSRF-Bypass-Token': environment.csrfBypassToken,
-  } as Record<string, string>;
-
-  if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return headers;
-}
-
-async function updateTokens(
-  accessToken: string | undefined,
-  refreshToken: string | undefined,
-) {
-  const { setTokens } = useMobileAuthTokenStore.getState();
-  const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-
-  setTokens(accessToken, refreshToken);
-  await sendMessageToReactNative?.({
-    action: 'SET_AUTH_TOKENS',
-    payload: {
-      accessToken,
-      refreshToken,
-    },
-  });
-}
-
-let tokenRefreshRequest: Promise<TokenStatus> | null = null;
-export async function nativeRefreshAccessToken(): Promise<TokenStatus> {
-  if (!environment.isNative) return TokenStatus.MISSING;
-
-  if (tokenRefreshRequest) {
-    return tokenRefreshRequest;
-  }
-
-  tokenRefreshRequest = (async () => {
-    try {
-      const { refreshToken } = useMobileAuthTokenStore.getState();
-      if (!refreshToken) return TokenStatus.MISSING;
-
-      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-      if (!sendMessageToReactNative) {
-        return TokenStatus.MISSING;
-      }
-
-      const challengeData: IntegrityCheck = await sendMessageToReactNative({
-        action: 'GET_INTEGRITY_TOKEN',
-        payload: {},
-      }).then(res => {
-        if (!res.ok) {
-          throw new Error(res.error);
-        }
-        return res.data;
-      });
-
-      const response = await fetch(
-        `${getEffectiveBackendUrl()}/api/token/refresh/${challengeData.platform
-        }`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            refresh: refreshToken,
-            ...getIntegrityCheckRequestData(challengeData),
-          }),
-          credentials: 'same-origin',
-        } as RequestInit,
-      );
-
-      const responseBody = await response.json().catch(() => { });
-      const { access, refresh } = responseBody;
-      if (!response.ok) {
-        await updateTokens(undefined, undefined);
-        return TokenStatus.EXPIRED;
-      }
-      if (access && refresh) {
-        await updateTokens(access, refresh);
-        return TokenStatus.VALID;
-      }
-      await updateTokens(undefined, undefined);
-      return TokenStatus.EXPIRED;
-    } catch (_e) {
-      await updateTokens(undefined, undefined);
-      return TokenStatus.EXPIRED;
-    } finally {
-      tokenRefreshRequest = null;
-    }
-  })();
-
-  return tokenRefreshRequest;
-}
-
 export async function apiFetch<T = any>(
   endpoint: string,
   options: ApiFetchOptions = {},
 ): Promise<T> {
-  if (environment.isNative) {
-    const { ready: nativeReady } = useNativeStore.getState();
-    await nativeReady;
-  }
-  if (tokenRefreshRequest) {
-    // in case we are already loading a new token, wait before sending any new requests. They would fail anyway due to the
-    // invalid access token
-    await tokenRefreshRequest;
-  }
-
   const {
     method = 'GET',
     body,
@@ -258,11 +143,9 @@ export async function apiFetch<T = any>(
     defaultHeaders['X-UseTagsOnly'] = 'true';
   }
 
-  const nativeHeaders = environment.isNative ? getNativeHeaders() : {};
-
   const fetchOptions: RequestInit = {
     method,
-    headers: { ...defaultHeaders, ...headers, ...nativeHeaders },
+    headers: { ...defaultHeaders, ...headers },
     credentials,
   };
 
@@ -297,74 +180,6 @@ export async function apiFetch<T = any>(
   try {
     return await doFetch();
   } catch (error: any) {
-    if (!environment.isNative) {
-      console.error(`API Fetch Error (${endpoint}):`, error);
-      throw error;
-    }
-
-    const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-    const { debugEnabled } = debugStore.getState();
-
-    if (environment.isNative && debugEnabled) {
-      // Network-level errors (CORS, DNS, connection refused) throw TypeError with no status
-      if (error instanceof TypeError && debugEnabled) {
-        sendMessageToReactNative?.({
-          action: 'LOG_ERROR',
-          payload: {
-            type: 'fetch',
-            method,
-            endpoint,
-            url: `${getEffectiveBackendUrl()}${endpoint}`,
-            headers: fetchOptions.headers as Record<string, string>,
-            requestBody: body,
-            status: (error as any)?.status ?? 999,
-            error: {
-              type: 'TypeError',
-              message: error.message,
-              details:
-                'Possible causes: Internect connection issues or CORS error',
-            },
-          },
-        })?.catch?.(() => { });
-      }
-
-      sendMessageToReactNative?.({
-        action: 'LOG_ERROR',
-        payload: {
-          type: 'fetch',
-          method,
-          endpoint,
-          url: `${getEffectiveBackendUrl()}${endpoint}`,
-          headers: fetchOptions.headers as Record<string, string>,
-          requestBody: body,
-          status: (error as any)?.status,
-          error,
-        },
-      })?.catch?.(() => { });
-    }
-
-    // If access token expired, try to refresh and retry once
-    const tokenExpired = error?.code === 'token_not_valid';
-    const noTokenPresent =
-      error?.status === 403 &&
-      useMobileAuthTokenStore.getState().accessToken === undefined;
-    if (environment.isNative && (tokenExpired || noTokenPresent)) {
-      const tokenStatus = await nativeRefreshAccessToken();
-      if (tokenStatus === TokenStatus.VALID) {
-        // update Authorization header with new access token
-        const { accessToken } = useMobileAuthTokenStore.getState();
-        if (accessToken) {
-          fetchOptions.headers!.Authorization = `Bearer ${accessToken}`;
-        } else {
-          throw new Error('Token refresh successful but returned no tokens');
-        }
-        return doFetch();
-      }
-
-      await navigateToLogin(tokenStatus === TokenStatus.EXPIRED);
-      throw error;
-    }
-
     console.error(`API Fetch Error (${endpoint}):`, error);
     throw error;
   }
