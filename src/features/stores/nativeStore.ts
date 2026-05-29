@@ -14,6 +14,8 @@ interface NativeStoreState {
   setTokenStatus: (status: TokenStatus | undefined) => void;
   isTokenRefreshing: boolean;
   setIstokenRefreshing: (isRefreshing: boolean) => void;
+  getAccessToken: () => string | undefined;
+  setGetAccesToken: (getAccessTokenFn: () => string | undefined) => void;
 }
 
 const useNativeStore = create<NativeStoreState>(set => {
@@ -41,6 +43,8 @@ const useNativeStore = create<NativeStoreState>(set => {
     setTokenStatus: tokenStatus => set({ tokenStatus }),
     isTokenRefreshing: false,
     setIstokenRefreshing: isTokenRefreshing => set({ isTokenRefreshing }),
+    getAccessToken: () => undefined,
+    setGetAccesToken: getAccessToken => set({ getAccessToken }),
   };
 });
 
