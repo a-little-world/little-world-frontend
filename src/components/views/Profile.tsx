@@ -1,6 +1,7 @@
 import {
   Modal,
   MultiDropdown,
+  MultiDropdownVariants,
   StatusTypes,
   Tags,
   Text,
@@ -122,6 +123,7 @@ const getProfileFields = ({
         label: trans('self_info.language_skills_label'),
         labelTooltip: trans('self_info.language_skills_tooltip'),
         maxSegments: 8,
+        variant: MultiDropdownVariants.Combobox,
         restrictions:
           profile?.user_type === USER_TYPES.volunteer
             ? { german: restrictedLangLevels }
