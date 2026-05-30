@@ -21,10 +21,10 @@ Before you begin, ensure you have met the following requirements:
 
 ### Installing Dependencies
 
-Install the necessary dependencies using Yarn:
+Install the necessary dependencies using pnpm:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Starting the local server
@@ -32,7 +32,7 @@ npm install
 #### Local dev with remote API server
 
 ```bash
-npm run dev
+pnpm run dev
 ./schrodingers-nginx.sh
 ```
 
@@ -139,7 +139,7 @@ We use [Changesets](https://github.com/changesets/changesets) to manage versioni
 When you make changes that should trigger a version bump:
 
 ```bash
-npm run changeset
+pnpm run changeset
 ```
 
 This will:
@@ -153,7 +153,7 @@ This will:
 When you're ready to release:
 
 ```bash
-npm run version
+pnpm run version
 ```
 
 This will:
@@ -189,8 +189,8 @@ Before merging a PR to `prod`:
 
 **For Package Release (mobile app update):**
 
-- [ ] Changesets created for all changes (`npm run changeset`)
-- [ ] Package versioned (`npm run version`)
+- [ ] Changesets created for all changes (`pnpm run changeset`)
+- [ ] Package versioned (`pnpm run version`)
 - [ ] All tests pass
 - [ ] Code review completed
 - [ ] PR shows version change in the automated comment
@@ -203,7 +203,8 @@ Before merging a PR to `prod`:
 - **Code Style**: Follow the [Airbnb JavaScript/React style guide](https://github.com/airbnb/javascript/tree/master/react) with ESLint for linting.
 - **Prettier**: Use Prettier for code formatting. Ensure your code is formatted before committing:
   ```
-  npm format
+  pnpm run format:check
+  pnpm run format:fix
   ```
 
 ### React and TypeScript
@@ -288,14 +289,6 @@ Added a primary variant to the Button component in the Design System.
 - Update documentation if applicable.
 - Include screenshots or GIFs if your changes include UI modifications.
 - Request a review from at least one team member.
-
-## Running Tests
-
-We use Jest for testing. To run tests:
-
-```bash
-npm test
-```
 
 ## Code Review
 

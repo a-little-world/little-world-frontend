@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@a-little-world/little-world-design-system':
-        specifier: ^2.13.3
-        version: 2.13.3(@types/react@19.2.4)(react-dom@19.2.4(react@19.2.4))(react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(styled-components@6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        specifier: ^2.16.0
+        version: 2.16.0(@types/react@19.2.4)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(styled-components@6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@babel/core':
         specifier: ^7.20.12
         version: 7.29.0
@@ -30,11 +30,11 @@ importers:
         specifier: ^0.12.23
         version: 0.12.25(@firebase/app@0.14.10)
       '@livekit/components-react':
-        specifier: file:prebuild/livekit-components-react-2.9.16.tgz
-        version: file:prebuild/livekit-components-react-2.9.16.tgz(livekit-client@2.18.1(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)
+        specifier: file:prebuild/livekit-components-react-2.9.21.tgz
+        version: file:prebuild/livekit-components-react-2.9.21.tgz(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)
       '@livekit/components-styles':
-        specifier: file:prebuild/livekit-components-styles-1.1.7.tgz
-        version: file:prebuild/livekit-components-styles-1.1.7.tgz
+        specifier: file:prebuild/livekit-components-styles-1.2.1.tgz
+        version: file:prebuild/livekit-components-styles-1.2.1.tgz
       '@radix-ui/react-dialog':
         specifier: ^1.0.6
         version: 1.1.15(@types/react@19.2.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -44,6 +44,9 @@ importers:
       '@reduxjs/toolkit':
         specifier: ^2.8.2
         version: 2.11.2(react@19.2.4)
+      '@remix-run/router':
+        specifier: ^1.23.2
+        version: 1.23.2
       '@types/node':
         specifier: ^18.11.18
         version: 18.19.130
@@ -72,8 +75,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.5
       livekit-client:
-        specifier: ^2.5.2
-        version: 2.18.1(@types/dom-mediacapture-record@1.0.22)
+        specifier: ^2.18.7
+        version: 2.19.0(@types/dom-mediacapture-record@1.0.22)
       lodash:
         specifier: ^4.17.21
         version: 4.18.1
@@ -219,9 +222,6 @@ importers:
       eslint-plugin-react-hooks:
         specifier: ^4.3.0
         version: 4.6.2(eslint@8.57.1)
-      file-loader:
-        specifier: ^6.2.0
-        version: 6.2.0(webpack@5.105.4)
       html-webpack-plugin:
         specifier: ^5.5.0
         version: 5.6.6(webpack@5.105.4)
@@ -255,14 +255,14 @@ importers:
 
 packages:
 
-  '@a-little-world/little-world-design-system-core@1.10.1':
-    resolution: {integrity: sha512-jWawLwNTs6xNBeQgxNHraBXnSKmEH4Q+ycIj8No8Q2VBu6enSIPUIIjQpuEM20ECHM+NXn1Dwlcd5dQncDH95A==}
+  '@a-little-world/little-world-design-system-core@1.12.0':
+    resolution: {integrity: sha512-MJU1axJkNMOE+6MRd26WydXzjhxoHzEgkYIr7WC/7N/5cnLHoJXKK/iB0bNWAtjLNIzhjJYXGN61zlRg31nP/g==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
 
-  '@a-little-world/little-world-design-system@2.13.3':
-    resolution: {integrity: sha512-Z04FWVL+TPZP0hrQ/wXJM0F44r466gbEeqNkol9RsmJxXzlsoBzB4POoT/RGpiq3ONlfL6Hg9uAeVIsJAKhUCQ==}
+  '@a-little-world/little-world-design-system@2.16.0':
+    resolution: {integrity: sha512-uQCnnzDCErz5yC68C2dvuYr8fTpTlV/DSWc2AkCy/bd7rZ7iLN+ZBtj92/TIZSPKdvP0vGwqnbeJjIDDP6wH+Q==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -855,6 +855,33 @@ packages:
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
+  '@base-ui/react@1.5.0':
+    resolution: {integrity: sha512-z1gSAlced1yY+iM+mHDEtIkD8UI3Ebs52MuBPxvV6f5hRutk+xvCH/wuB7hDqDzK9JG5FoMz5nhrqtSs1wjt1A==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      '@date-fns/tz': ^1.2.0
+      '@types/react': ^17 || ^18 || ^19
+      date-fns: ^4.0.0
+      react: ^17 || ^18 || ^19
+      react-dom: ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@date-fns/tz':
+        optional: true
+      '@types/react':
+        optional: true
+      date-fns:
+        optional: true
+
+  '@base-ui/utils@0.2.9':
+    resolution: {integrity: sha512-x/PDDCYzoqPpjrdyb3VcyylTI2IjUXEtYDGi5foh7KsnmNJIIaVwA2GLgDH1dps1GgXiJbA60hM+AyuTfQzIvw==}
+    peerDependencies:
+      '@types/react': ^17 || ^18 || ^19
+      react: ^17 || ^18 || ^19
+      react-dom: ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
   '@bufbuild/protobuf@1.10.1':
     resolution: {integrity: sha512-wJ8ReQbHxsAfXhrf9ixl0aYbZorRuOWpBNzm8pL8ftmSxQx/wnJD5Eg861NwJU/czy2VXFIebCeZnZrI9rktIQ==}
 
@@ -1179,9 +1206,9 @@ packages:
       livekit-client: ^2.17.2
       tslib: ^2.6.2
 
-  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.16.tgz':
-    resolution: {integrity: sha512-f9SPOC7G2qRgHH7+XZWIbFGG+y9RAJ0ectIO/k6jpdNOv7FAc4+nW9zF7mLpovh4rTEMEkQSS60Y8f+0t57+pA==, tarball: file:prebuild/livekit-components-react-2.9.16.tgz}
-    version: 2.9.16
+  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.21.tgz':
+    resolution: {integrity: sha512-fNL3Mi54VYDfKDF46NzeHLQXIUa9SkMSFjbnTmFihMQyQJGtv68RSibuTo9XpohvLTu2MKman9oi9aKkh0oJMQ==, tarball: file:prebuild/livekit-components-react-2.9.21.tgz}
+    version: 2.9.21
     engines: {node: '>=18'}
     peerDependencies:
       '@livekit/krisp-noise-filter': ^0.2.12 || ^0.3.0
@@ -1193,16 +1220,16 @@ packages:
       '@livekit/krisp-noise-filter':
         optional: true
 
-  '@livekit/components-styles@file:prebuild/livekit-components-styles-1.1.7.tgz':
-    resolution: {integrity: sha512-EFmxYIIq+SZUobBr5HvLItUOwfLPveAoHaDnt1mOlVCDLJy4UGaNI3cLTLzp51sT8E56kEpHty+7+c5bYWfYzA==, tarball: file:prebuild/livekit-components-styles-1.1.7.tgz}
-    version: 1.1.7
+  '@livekit/components-styles@file:prebuild/livekit-components-styles-1.2.1.tgz':
+    resolution: {integrity: sha512-lwqtOUEnGo/wAsvaiZ3ymiEKnS0rJZ6i7Wd931RcirGEfLbj/wFPDI+DZ/btgUSeYB+YE390etby1QelSbZSPw==, tarball: file:prebuild/livekit-components-styles-1.2.1.tgz}
+    version: 1.2.1
     engines: {node: '>=18'}
 
   '@livekit/mutex@1.1.1':
     resolution: {integrity: sha512-EsshAucklmpuUAfkABPxJNhzj9v2sG7JuzFDL4ML1oJQSV14sqrpTYnsaOudMAw9yOaW53NU3QQTlUQoRs4czw==}
 
-  '@livekit/protocol@1.44.0':
-    resolution: {integrity: sha512-/vfhDUGcUKO8Q43r6i+5FrDhl5oZjm/X3U4x2Iciqvgn5C8qbj+57YPcWSJ1kyIZm5Cm6AV2nAPjMm3ETD/iyg==}
+  '@livekit/protocol@1.45.8':
+    resolution: {integrity: sha512-Q+l57E7w/xxOBFVWzdX5rkAZO7ffyF+rlDzNUYq2SU114+5aTyCq+PK4unaEVDNd4952Af7wteKr3sOgasGuaA==}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -2435,11 +2462,6 @@ packages:
       ajv:
         optional: true
 
-  ajv-keywords@3.5.2:
-    resolution: {integrity: sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==}
-    peerDependencies:
-      ajv: ^6.9.1
-
   ajv-keywords@5.1.0:
     resolution: {integrity: sha512-YCS/JNFAUyr5vAuhk1DWm1CBxRHW9LbJ2ozWeemrIqpbsqKjHVxYPyi5GC0rjZIT5JxJ3virVTS8wk4i/Z+krw==}
     peerDependencies:
@@ -2600,9 +2622,6 @@ packages:
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
     engines: {node: '>=4'}
-
-  big.js@5.2.2:
-    resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -3003,10 +3022,6 @@ packages:
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
 
-  emojis-list@3.0.0:
-    resolution: {integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==}
-    engines: {node: '>= 4'}
-
   encodeurl@2.0.0:
     resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
     engines: {node: '>= 0.8'}
@@ -3305,12 +3320,6 @@ packages:
   file-entry-cache@6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
-
-  file-loader@6.2.0:
-    resolution: {integrity: sha512-qo3glqyTa61Ytg4u73GultjHGjdRyig3tG6lPtyX/jOEJvHif9uB0/OCI2Kif6ctF3caQTW2G5gym21oAsI4pw==}
-    engines: {node: '>= 10.13.0'}
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -3930,18 +3939,14 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  livekit-client@2.18.1:
-    resolution: {integrity: sha512-nGjuEEV1mVN01EcAMwGIwG3J1gpBMqwn2V4R6W/8zz9Rah1CaAohIm6AMLG7BdctQpyeh34dfAOLfDodIsWyYA==}
+  livekit-client@2.19.0:
+    resolution: {integrity: sha512-aolY1XDAtx0nHKBNm29W9OhzBnSz1CP5kq3phvRhFfi1NbvMXs8tcACjAkZTnIKgihkp+BiJScZZ3tZv0Gz8sA==}
     peerDependencies:
       '@types/dom-mediacapture-record': ^1
 
   loader-runner@4.3.1:
     resolution: {integrity: sha512-IWqP2SCPhyVFTBtRcgMHdzlf9ul25NwaFx4wCEH/KjAXuuHY4yNjvPXsBokp8jCB936PyWRaPKUNh8NvylLp2Q==}
     engines: {node: '>=6.11.5'}
-
-  loader-utils@2.0.4:
-    resolution: {integrity: sha512-xXqpXoINfFhgua9xiqD8fPFHgkoq1mmmpE92WlDbm9rNRd/EbRb+Gqf908T2DMfuHjjJlksiK2RbHVOdD/MqSw==}
-    engines: {node: '>=8.9.0'}
 
   locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
@@ -4728,10 +4733,6 @@ packages:
   scheduler@0.27.0:
     resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
 
-  schema-utils@3.3.0:
-    resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
-    engines: {node: '>= 10.13.0'}
-
   schema-utils@4.3.3:
     resolution: {integrity: sha512-eflK8wEtyOE6+hsaRVPxvUKYCpRgzLqDTb8krvAsRIwOGlHoSgYLgBXoubGgLd2fT41/OUYdb48v4k4WWHQurA==}
     engines: {node: '>= 10.13.0'}
@@ -5292,8 +5293,8 @@ packages:
       webpack-cli:
         optional: true
 
-  webrtc-adapter@9.0.4:
-    resolution: {integrity: sha512-5ZZY1+lGq8LEKuDlg9M2RPJHlH3R7OVwyHqMcUsLKCgd9Wvf+QrFTCItkXXYPmrJn8H6gRLXbSgxLLdexiqHxw==}
+  webrtc-adapter@9.0.5:
+    resolution: {integrity: sha512-U9vjByy/sK2OMXu5mmfuZFKTMIUQe34c0JXRO+oDrxJTsntdYT2iIFwYMOV7HhMTuktcZLGf2W1N/OcSf9ssWg==}
     engines: {node: '>=6.0.0', npm: '>=3.10.0'}
 
   websocket-driver@0.7.4:
@@ -5404,7 +5405,7 @@ packages:
 
 snapshots:
 
-  '@a-little-world/little-world-design-system-core@1.10.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@a-little-world/little-world-design-system-core@1.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@babel/runtime': 7.29.2
       csstype: 3.2.3
@@ -5413,9 +5414,10 @@ snapshots:
       react-dom: 19.2.4(react@19.2.4)
       svgson: 5.3.1
 
-  '@a-little-world/little-world-design-system@2.13.3(@types/react@19.2.4)(react-dom@19.2.4(react@19.2.4))(react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(styled-components@6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@a-little-world/little-world-design-system@2.16.0(@types/react@19.2.4)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react-router-dom@6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(styled-components@6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
-      '@a-little-world/little-world-design-system-core': 1.10.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@a-little-world/little-world-design-system-core': 1.12.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@base-ui/react': 1.5.0(@types/react@19.2.4)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@radix-ui/react-accordion': 1.2.12(@types/react@19.2.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@radix-ui/react-checkbox': 1.3.3(@types/react@19.2.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@radix-ui/react-label': 2.1.8(@types/react@19.2.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -5439,8 +5441,10 @@ snapshots:
       styled-components: 6.3.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       tua-body-scroll-lock: 1.6.3
     transitivePeerDependencies:
+      - '@date-fns/tz'
       - '@types/react'
       - '@types/react-dom'
+      - date-fns
 
   '@a-little-world/little-world-prettier-config@1.2.0(prettier@2.8.8)':
     dependencies:
@@ -6225,6 +6229,30 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
+  '@base-ui/react@1.5.0(@types/react@19.2.4)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      '@babel/runtime': 7.29.2
+      '@base-ui/utils': 0.2.9(@types/react@19.2.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@floating-ui/react-dom': 2.1.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@floating-ui/utils': 0.2.11
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      use-sync-external-store: 1.6.0(react@19.2.4)
+    optionalDependencies:
+      '@types/react': 19.2.4
+      date-fns: 3.6.0
+
+  '@base-ui/utils@0.2.9(@types/react@19.2.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      '@babel/runtime': 7.29.2
+      '@floating-ui/utils': 0.2.11
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      reselect: 5.1.1
+      use-sync-external-store: 1.6.0(react@19.2.4)
+    optionalDependencies:
+      '@types/react': 19.2.4
+
   '@bufbuild/protobuf@1.10.1': {}
 
   '@changesets/apply-release-plan@7.1.0':
@@ -6660,29 +6688,31 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-  '@livekit/components-core@0.12.13(livekit-client@2.18.1(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)':
+  '@livekit/components-core@0.12.13(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)':
     dependencies:
       '@floating-ui/dom': 1.7.4
-      livekit-client: 2.18.1(@types/dom-mediacapture-record@1.0.22)
+      livekit-client: 2.19.0(@types/dom-mediacapture-record@1.0.22)
       loglevel: 1.9.1
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.16.tgz(livekit-client@2.18.1(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)':
+  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.21.tgz(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)':
     dependencies:
-      '@livekit/components-core': 0.12.13(livekit-client@2.18.1(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
+      '@livekit/components-core': 0.12.13(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
       clsx: 2.1.1
-      livekit-client: 2.18.1(@types/dom-mediacapture-record@1.0.22)
+      events: 3.3.0
+      jose: 6.2.2
+      livekit-client: 2.19.0(@types/dom-mediacapture-record@1.0.22)
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       tslib: 2.8.1
       usehooks-ts: 3.1.1(react@19.2.4)
 
-  '@livekit/components-styles@file:prebuild/livekit-components-styles-1.1.7.tgz': {}
+  '@livekit/components-styles@file:prebuild/livekit-components-styles-1.2.1.tgz': {}
 
   '@livekit/mutex@1.1.1': {}
 
-  '@livekit/protocol@1.44.0':
+  '@livekit/protocol@1.45.8':
     dependencies:
       '@bufbuild/protobuf': 1.10.1
 
@@ -7956,10 +7986,6 @@ snapshots:
     optionalDependencies:
       ajv: 8.18.0
 
-  ajv-keywords@3.5.2(ajv@6.14.0):
-    dependencies:
-      ajv: 6.14.0
-
   ajv-keywords@5.1.0(ajv@8.18.0):
     dependencies:
       ajv: 8.18.0
@@ -8155,8 +8181,6 @@ snapshots:
   better-path-resolve@1.0.0:
     dependencies:
       is-windows: 1.0.2
-
-  big.js@5.2.2: {}
 
   binary-extensions@2.3.0: {}
 
@@ -8553,8 +8577,6 @@ snapshots:
   electron-to-chromium@1.5.331: {}
 
   emoji-regex@9.2.2: {}
-
-  emojis-list@3.0.0: {}
 
   encodeurl@2.0.0: {}
 
@@ -8997,12 +9019,6 @@ snapshots:
   file-entry-cache@6.0.1:
     dependencies:
       flat-cache: 3.2.0
-
-  file-loader@6.2.0(webpack@5.105.4):
-    dependencies:
-      loader-utils: 2.0.4
-      schema-utils: 3.3.0
-      webpack: 5.105.4(webpack-cli@5.1.4)
 
   fill-range@7.1.1:
     dependencies:
@@ -9618,10 +9634,10 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  livekit-client@2.18.1(@types/dom-mediacapture-record@1.0.22):
+  livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22):
     dependencies:
       '@livekit/mutex': 1.1.1
-      '@livekit/protocol': 1.44.0
+      '@livekit/protocol': 1.45.8
       '@types/dom-mediacapture-record': 1.0.22
       events: 3.3.0
       jose: 6.2.2
@@ -9629,15 +9645,9 @@ snapshots:
       sdp-transform: 2.15.0
       tslib: 2.8.1
       typed-emitter: 2.1.0
-      webrtc-adapter: 9.0.4
+      webrtc-adapter: 9.0.5
 
   loader-runner@4.3.1: {}
-
-  loader-utils@2.0.4:
-    dependencies:
-      big.js: 5.2.2
-      emojis-list: 3.0.0
-      json5: 2.2.3
 
   locate-path@5.0.0:
     dependencies:
@@ -10410,12 +10420,6 @@ snapshots:
 
   scheduler@0.27.0: {}
 
-  schema-utils@3.3.0:
-    dependencies:
-      '@types/json-schema': 7.0.15
-      ajv: 6.14.0
-      ajv-keywords: 3.5.2(ajv@6.14.0)
-
   schema-utils@4.3.3:
     dependencies:
       '@types/json-schema': 7.0.15
@@ -11128,7 +11132,7 @@ snapshots:
       - esbuild
       - uglify-js
 
-  webrtc-adapter@9.0.4:
+  webrtc-adapter@9.0.5:
     dependencies:
       sdp: 3.2.1
 
