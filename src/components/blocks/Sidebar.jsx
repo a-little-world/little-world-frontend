@@ -18,20 +18,23 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import { apiFetch } from '../../api/helpers';
 import { environment } from '../../environment';
 import { useReceiveHandlerStore } from '../../features/stores';
 import useNativeStore from '../../features/stores/nativeStore';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
-  USER_ENDPOINT,
   resetUserQueries,
+  USER_ENDPOINT,
 } from '../../features/swr/index';
 import { unregisterFirebaseDeviceToken } from '../../firebase-util';
 import {
   COMMUNITY_EVENTS_ROUTE,
+  getAppRoute,
   HELP_CONTACT_ROUTE,
   HELP_ROUTE,
+  isActiveRoute,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
   OUR_WORLD_ROUTE,
@@ -39,8 +42,6 @@ import {
   RANDOM_CALLS_ROUTE,
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
-  getAppRoute,
-  isActiveRoute,
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
@@ -231,21 +232,28 @@ function Sidebar({ isVH, sidebarMobile }) {
             if (environment.isNative) {
               const { sendMessageToReactNative } =
                 useReceiveHandlerStore.getState();
-              const { setAccessTokens } = useNativeStore.getState();
-
-              await sendMessageToReactNative({
+              await sendMessageToReactNative?.({
                 action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
                 payload: {},
               });
-              await setAccessTokens(undefined, undefined);
-              resetUserQueries();
             } else {
               await unregisterFirebaseDeviceToken();
             }
           } catch (_e) {
             // ignore
+          }
+
+          try {
+            await apiFetch(`/api/user/logout/`, {
+              method: 'GET',
+            });
           } finally {
-            navigate(`/${LOGIN_ROUTE}/`);
+            if (environment.isNative) {
+              const { setAccessTokens } = useNativeStore.getState();
+              await setAccessTokens(null, null);
+            }
+            resetUserQueries();
+            await navigate(`/${LOGIN_ROUTE}/`);
           }
         },
       },
