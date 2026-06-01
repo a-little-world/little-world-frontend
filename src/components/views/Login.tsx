@@ -23,9 +23,6 @@ import useQueryParam, { useRemoveQueryParam } from '../../hooks/useQueryParam';
 import {
   FORGOT_PASSWORD_ROUTE,
   SIGN_UP_ROUTE,
-  USER_FORM_ROUTE,
-  VERIFY_EMAIL_ROUTE,
-  getAppRoute,
   passAuthenticationBoundary,
 } from '../../router/routes';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
@@ -66,15 +63,7 @@ const Login = () => {
     }
 
     passAuthenticationBoundary();
-    if (!userData.emailVerified) {
-      navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
-    } else if (!userData.userFormCompleted) {
-      navigate(getAppRoute(USER_FORM_ROUTE));
-    } else {
-      // per default route to /app on successful login
-      navigate(getAppRoute(''));
-    }
-  }, [userData, navigate]);
+  }, [userData]);
 
   const onFormSubmit = async (data: any) => {
     setIsSubmitting(true);

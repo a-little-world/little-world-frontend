@@ -26,13 +26,7 @@ import {
   USER_ENDPOINT,
 } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
-import {
-  LOGIN_ROUTE,
-  USER_FORM_ROUTE,
-  VERIFY_EMAIL_ROUTE,
-  getAppRoute,
-  passAuthenticationBoundary,
-} from '../../router/routes';
+import { LOGIN_ROUTE, passAuthenticationBoundary } from '../../router/routes';
 import {
   NameContainer,
   NameInputs,
@@ -131,21 +125,12 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-    if (!userData || !navigate) {
+    if (!userData) {
       return;
     }
 
     passAuthenticationBoundary();
-
-    if (!userData.emailVerified) {
-      navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
-    } else if (!userData.userFormCompleted) {
-      navigate(getAppRoute(USER_FORM_ROUTE));
-    } else {
-      // per default route to /app on successful login
-      navigate(getAppRoute(''));
-    }
-  }, [userData, navigate]);
+  }, [userData]);
 
   const onFormSubmit = async data => {
     setIsSubmitting(true);
