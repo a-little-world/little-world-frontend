@@ -87,7 +87,7 @@ const Details = styled.div`
   justify-content: center;
   align-items: flex-start;
   text-align: left;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
 const UserImage = styled(ProfileImage)`
@@ -204,11 +204,13 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
                 <Top>
                   {isSupportChat ? (
                     <SupportName>
-                      <Text bold>{message.partner.first_name}</Text>
+                      <Text type={TextTypes.Heading6}>
+                        {message.partner.first_name}
+                      </Text>
                       <Logo height="16" width="16" label="support logo" />
                     </SupportName>
                   ) : (
-                    <Text bold>
+                    <Text type={TextTypes.Heading6}>
                       {message.is_unmatched
                         ? t('chat.inactive_match')
                         : message.partner.first_name}

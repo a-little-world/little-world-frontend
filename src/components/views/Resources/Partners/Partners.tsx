@@ -1,13 +1,13 @@
 import { Text, TextTypes } from '@a-little-world/little-world-design-system';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
 import ContentList from '../../../blocks/ContentList/ContentList';
-import { PARTNERS_DATA } from '../constants';
-import { Description } from './Partners.styles';
-import { ContentCard } from '../shared.styles';
 import { ContentListLayouts } from '../../../blocks/ContentList/ContentList.styles';
+import { PARTNERS_DATA } from '../constants';
+import { ContentCard } from '../shared.styles';
+import { Description } from './Partners.styles';
 
 const Partners: FC = () => {
   const { t } = useTranslation();
@@ -15,7 +15,12 @@ const Partners: FC = () => {
 
   return (
     <ContentCard>
-      <Text color={theme.color.text.title} type={TextTypes.Body2} bold tag="h2">
+      <Text
+        color={theme.color.text.title}
+        type={TextTypes.Heading4}
+        bold
+        tag="h2"
+      >
         {t('resources.partners.title')}
       </Text>
       <Description>{t('resources.partners.description')}</Description>

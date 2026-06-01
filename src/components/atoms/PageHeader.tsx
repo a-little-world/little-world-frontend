@@ -54,7 +54,7 @@ function PageHeader({
           <ArrowLeftIcon label="return to profile" width="24" height="24" />
         </BackButton>
       )}
-      <Text tag="h2" bold type={TextTypes.Body2}>
+      <Text tag="h2" bold type={TextTypes.Heading4}>
         {text}
       </Text>
     </HeaderContainer>

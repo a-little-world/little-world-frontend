@@ -40,7 +40,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
 
   return (
     <ProfileSection>
-      <FieldTitle tag="h3" type={TextTypes.Body3} bold>
+      <FieldTitle tag="h3" type={TextTypes.Heading5} bold>
         {t(`profile.${content.dataField}_title`)}
       </FieldTitle>
       <Field $flex={fieldIsFlex}>
