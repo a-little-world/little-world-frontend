@@ -15,7 +15,6 @@ import FireBase from '../Firebase';
 import WebsocketBridge from '../WebsocketBridge';
 import RouterError from '../components/blocks/ErrorView/ErrorView';
 import Form from '../components/blocks/Form/Form';
-import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
 import FormLayout from '../components/blocks/Layout/FormLayout';
 import { ToastProvider } from '../components/blocks/Toast';
 import Welcome from '../components/blocks/Welcome/Welcome';
@@ -26,6 +25,7 @@ import EmailPreferences from '../components/views/EmailPreferences';
 import ForgotPassword from '../components/views/ForgotPassword';
 import Help from '../components/views/Help';
 import Main from '../components/views/Home';
+import LoadingPage from '../components/views/Loading';
 import Login from '../components/views/Login';
 import Messages from '../components/views/Messages';
 import NativeMessageHandler from '../components/views/NativeMessageHandler';
@@ -43,6 +43,7 @@ import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
 import { environment } from '../environment';
 import AuthGuard from '../guards/AuthGuard';
+import RouteGuard from '../guards/RouteGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
@@ -117,33 +118,7 @@ export const Root = ({ children, restoreScroll = true }) => {
 
 export function getWebRouter() {
   const ROOT_ROUTES = [
-    {
-      path: LOGIN_ROUTE,
-      element: (
-        <FormLayout>
-          <Login />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: SIGN_UP_ROUTE,
-      element: (
-        <FormLayout>
-          <SignUp />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: FORGOT_PASSWORD_ROUTE,
-      element: (
-        <FormLayout>
-          <ForgotPassword />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
+    // Unguarded — accessible regardless of auth state
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
@@ -153,285 +128,97 @@ export function getWebRouter() {
       ),
       errorElement: <RouterError Layout={FormLayout} />,
     },
+
+    // Public routes — redirect to /app if already authenticated
     {
-      path: RESET_PASSWORD_ROUTE,
-      element: (
-        <FormLayout>
-          <ResetPassword />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: USER_FORM_ROUTE,
-      element: <FormLayout />,
+      element: <RouteGuard authRequired={false} Layout={FormLayout} />,
       errorElement: <RouterError Layout={FormLayout} />,
       children: [
+        { path: LOGIN_ROUTE, element: <Login /> },
+        { path: SIGN_UP_ROUTE, element: <SignUp /> },
+        { path: FORGOT_PASSWORD_ROUTE, element: <ForgotPassword /> },
+        { path: RESET_PASSWORD_ROUTE, element: <ResetPassword /> },
+      ],
+    },
+
+    // Protected + FormLayout
+    {
+      element: <RouteGuard Layout={FormLayout} />,
+      errorElement: <RouterError Layout={FormLayout} />,
+      children: [
+        { path: getAppRoute(VERIFY_EMAIL_ROUTE), element: <VerifyEmail /> },
+        { path: getAppRoute(CHANGE_EMAIL_ROUTE), element: <ChangeEmail /> },
         {
-          path: '',
-          element: <Welcome />,
+          path: getAppRoute(ONBOARDING_ROUTE),
+          element: <OnboardingSelection />,
         },
         {
-          path: ':slug',
-          element: <Form />,
+          path: getAppRoute(SELF_ONBOARDING_ROUTE),
+          element: <OnboardingWalkthrough />,
+        },
+        {
+          path: USER_FORM_ROUTE,
+          children: [
+            { path: '', element: <Welcome /> },
+            { path: ':slug', element: <Form /> },
+          ],
+        },
+        {
+          path: getAppRoute(USER_FORM_ROUTE),
+          children: [
+            { path: '', element: <Welcome /> },
+            { path: ':slug', element: <Form /> },
+          ],
         },
       ],
     },
+
+    // Protected + no layout
     {
-      path: getAppRoute(EDIT_FORM_ROUTE),
-      element: <FullAppLayout />,
-      errorElement: <RouterError />,
+      element: <RouteGuard Layout={null} />,
       children: [
-        {
-          path: ':slug',
-          element: <EditView />,
-        },
+        { path: getAppRoute(CALL_ROUTE), element: <VideoCall /> },
+        { path: getAppRoute(RANDOM_CALL_ROUTE), element: <VideoCall /> },
       ],
     },
+
+    // Protected + FullAppLayout
     {
-      path: APP_ROUTE,
-      element: (
-        <FullAppLayout>
-          <Main />
-        </FullAppLayout>
-      ),
+      element: <RouteGuard />,
       errorElement: <RouterError />,
-    },
-    {
-      path: `${APP_ROUTE}/:id`,
-      element: <RouterError />,
-      errorElement: <RouterError />,
-    },
-    {
-      path: getAppRoute(VERIFY_EMAIL_ROUTE),
-      element: (
-        <FormLayout>
-          <VerifyEmail />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: getAppRoute(CHANGE_EMAIL_ROUTE),
-      element: (
-        <FormLayout>
-          <ChangeEmail />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: getAppRoute(CALL_ROUTE),
-      element: <VideoCall />,
-    },
-    {
-      path: getAppRoute(RANDOM_CALL_ROUTE),
-      element: <VideoCall />,
-    },
-    {
-      path: getAppRoute(CALL_SETUP_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Main />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Main />
-        </FullAppLayout>
-      ),
-      errorElement: <RouterError />,
-    },
-    {
-      path: getAppRoute(RANDOM_CALLS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Main />
-        </FullAppLayout>
-      ),
-      errorElement: <RouterError />,
-    },
-    {
-      path: getAppRoute(CHAT_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Messages />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(OUR_WORLD_ROUTE),
-      element: (
-        <FullAppLayout>
-          <AboutUs />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(SUPPORT_US_ROUTE),
-      element: (
-        <FullAppLayout>
-          <AboutUs />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(DONATE_ROUTE),
-      element: (
-        <FullAppLayout>
-          <AboutUs />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAINING_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Training />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(RESOURCES_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAININGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(BEGINNERS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(LANGUAGE_RESOURCES_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(MY_STORY_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(PARTNERS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(PARTNER_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(MESSAGES_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Messages />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(NOTIFICATIONS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Notifications />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(USER_PROFILE_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Profile />
-        </FullAppLayout>
-      ),
-    },
-    {
-      // Legacy / bookmarked `/app/help` → default help subpage (no standalone help index).
-      path: getAppRoute(HELP_ROUTE),
-      element: <Navigate to={getAppRoute(HELP_CONTACT_ROUTE)} replace />,
-    },
-    {
-      path: getAppRoute(HELP_CONTACT_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Help />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(HELP_FAQS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Help />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(SETTINGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Settings />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(ONBOARDING_ROUTE),
-      element: (
-        <FormLayout>
-          <OnboardingSelection />
-        </FormLayout>
-      ),
-    },
-    {
-      path: getAppRoute(SELF_ONBOARDING_ROUTE),
-      element: (
-        <FormLayout>
-          <OnboardingWalkthrough />
-        </FormLayout>
-      ),
-    },
-    {
-      path: getAppRoute(USER_FORM_ROUTE),
-      element: <FormLayout />,
-      errorElement: <RouterError Layout={FormLayout} />,
       children: [
+        { path: APP_ROUTE, element: <Main /> },
+        { path: `${APP_ROUTE}/:id`, element: <RouterError /> },
         {
-          path: '',
-          element: <Welcome />,
+          path: getAppRoute(EDIT_FORM_ROUTE),
+          children: [{ path: ':slug', element: <EditView /> }],
         },
+        { path: getAppRoute(CALL_SETUP_ROUTE), element: <Main /> },
+        { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
+        { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
+        { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
+        { path: getAppRoute(OUR_WORLD_ROUTE), element: <AboutUs /> },
+        { path: getAppRoute(SUPPORT_US_ROUTE), element: <AboutUs /> },
+        { path: getAppRoute(DONATE_ROUTE), element: <AboutUs /> },
+        { path: getAppRoute(TRAINING_ROUTE), element: <Training /> },
+        { path: getAppRoute(RESOURCES_ROUTE), element: <Resources /> },
+        { path: getAppRoute(TRAININGS_ROUTE), element: <Resources /> },
+        { path: getAppRoute(BEGINNERS_ROUTE), element: <Resources /> },
+        { path: getAppRoute(LANGUAGE_RESOURCES_ROUTE), element: <Resources /> },
+        { path: getAppRoute(MY_STORY_ROUTE), element: <Resources /> },
+        { path: getAppRoute(PARTNERS_ROUTE), element: <Resources /> },
+        { path: getAppRoute(PARTNER_ROUTE), element: <Resources /> },
+        { path: getAppRoute(MESSAGES_ROUTE), element: <Messages /> },
+        { path: getAppRoute(NOTIFICATIONS_ROUTE), element: <Notifications /> },
+        { path: getAppRoute(USER_PROFILE_ROUTE), element: <Profile /> },
         {
-          path: ':slug',
-          element: <Form />,
+          // Legacy / bookmarked `/app/help` → default help subpage (no standalone help index).
+          path: getAppRoute(HELP_ROUTE),
+          element: <Navigate to={getAppRoute(HELP_CONTACT_ROUTE)} replace />,
         },
+        { path: getAppRoute(HELP_CONTACT_ROUTE), element: <Help /> },
+        { path: getAppRoute(HELP_FAQS_ROUTE), element: <Help /> },
+        { path: getAppRoute(SETTINGS_ROUTE), element: <Settings /> },
       ],
     },
   ];
@@ -456,51 +243,7 @@ export function getWebRouter() {
 
 export function getNativeRouter() {
   const ROOT_ROUTES = [
-    {
-      path: LOGIN_ROUTE,
-      element: (
-        <FormLayout>
-          <Login />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: '',
-      element: (
-        <FormLayout>
-          <Login />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: '/',
-      element: (
-        <FormLayout>
-          <Login />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: SIGN_UP_ROUTE,
-      element: (
-        <FormLayout>
-          <SignUp />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: FORGOT_PASSWORD_ROUTE,
-      element: (
-        <FormLayout>
-          <ForgotPassword />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
+    // Unguarded — accessible regardless of auth state
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
@@ -510,274 +253,94 @@ export function getNativeRouter() {
       ),
       errorElement: <RouterError Layout={FormLayout} />,
     },
+
+    // Public routes — redirect to /app if already authenticated
     {
-      path: RESET_PASSWORD_ROUTE,
-      element: (
-        <FormLayout>
-          <ResetPassword />
-        </FormLayout>
-      ),
+      element: <RouteGuard authRequired={false} Layout={FormLayout} />,
       errorElement: <RouterError Layout={FormLayout} />,
+      children: [
+        { path: LOGIN_ROUTE, element: <Login /> },
+        { path: '', element: <LoadingPage /> },
+        { path: '/', element: <LoadingPage /> },
+        { path: SIGN_UP_ROUTE, element: <SignUp /> },
+        { path: FORGOT_PASSWORD_ROUTE, element: <ForgotPassword /> },
+        { path: RESET_PASSWORD_ROUTE, element: <ResetPassword /> },
+      ],
     },
 
+    // Protected + FormLayout
     {
-      path: APP_ROUTE,
-      element: (
-        <FullAppLayout>
-          <Main />
-        </FullAppLayout>
-      ),
-      errorElement: <RouterError />,
-    },
-    {
-      path: getAppRoute(ONBOARDING_ROUTE),
-      element: (
-        <FormLayout>
-          <OnboardingSelection />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: getAppRoute(SELF_ONBOARDING_ROUTE),
-      element: (
-        <FormLayout>
-          <OnboardingWalkthrough />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: getAppRoute(VERIFY_EMAIL_ROUTE),
-      element: (
-        <FormLayout>
-          <VerifyEmail />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: getAppRoute(CHANGE_EMAIL_ROUTE),
-      element: (
-        <FormLayout>
-          <ChangeEmail />
-        </FormLayout>
-      ),
-      errorElement: <RouterError Layout={FormLayout} />,
-    },
-    {
-      path: getAppRoute(USER_PROFILE_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Profile />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(COMMUNITY_EVENTS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Main />
-        </FullAppLayout>
-      ),
-      errorElement: <RouterError />,
-    },
-    {
-      path: getAppRoute(RANDOM_CALLS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Main />
-        </FullAppLayout>
-      ),
-      errorElement: <RouterError />,
-    },
-    {
-      path: getAppRoute(CHAT_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Messages />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(OUR_WORLD_ROUTE),
-      element: (
-        <FullAppLayout>
-          <AboutUs />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(SUPPORT_US_ROUTE),
-      element: (
-        <FullAppLayout>
-          <AboutUs />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(DONATE_ROUTE),
-      element: (
-        <FullAppLayout>
-          <AboutUs />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAINING_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Training />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(RESOURCES_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAININGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(BEGINNERS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(LANGUAGE_RESOURCES_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(MY_STORY_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(PARTNERS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(PARTNER_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(MESSAGES_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Messages />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(NOTIFICATIONS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Notifications />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(USER_PROFILE_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Profile />
-        </FullAppLayout>
-      ),
-    },
-    {
-      // Legacy / bookmarked `/app/help` → default help subpage (no standalone help index).
-      path: getAppRoute(HELP_ROUTE),
-      element: <Navigate to={getAppRoute(HELP_CONTACT_ROUTE)} replace />,
-    },
-    {
-      path: getAppRoute(HELP_CONTACT_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Help />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(HELP_FAQS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Help />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(SETTINGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Settings />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(CALL_ROUTE),
-      element: <VideoCall />,
-    },
-    {
-      path: getAppRoute(RANDOM_CALL_ROUTE),
-      element: <VideoCall />,
-    },
-    {
-      path: getAppRoute(USER_FORM_ROUTE),
-      element: <FormLayout />,
+      element: <RouteGuard Layout={FormLayout} />,
       errorElement: <RouterError Layout={FormLayout} />,
       children: [
+        { path: getAppRoute(VERIFY_EMAIL_ROUTE), element: <VerifyEmail /> },
+        { path: getAppRoute(CHANGE_EMAIL_ROUTE), element: <ChangeEmail /> },
         {
-          path: '',
-          element: <Welcome />,
+          path: getAppRoute(ONBOARDING_ROUTE),
+          element: <OnboardingSelection />,
         },
         {
-          path: ':slug',
-          element: <Form />,
+          path: getAppRoute(SELF_ONBOARDING_ROUTE),
+          element: <OnboardingWalkthrough />,
+        },
+        {
+          path: getAppRoute(USER_FORM_ROUTE),
+          children: [
+            { path: '', element: <Welcome /> },
+            { path: ':slug', element: <Form /> },
+          ],
         },
       ],
     },
+
+    // Protected + no layout
     {
-      path: getAppRoute(EDIT_FORM_ROUTE),
-      element: <FullAppLayout />,
-      errorElement: <RouterError />,
+      element: <RouteGuard Layout={null} />,
       children: [
-        {
-          path: ':slug',
-          element: <EditView />,
-        },
+        { path: getAppRoute(CALL_ROUTE), element: <VideoCall /> },
+        { path: getAppRoute(RANDOM_CALL_ROUTE), element: <VideoCall /> },
       ],
     },
+
+    // Protected + FullAppLayout
     {
-      path: '*',
-      element: <Navigate to="/" replace />,
+      element: <RouteGuard />,
+      errorElement: <RouterError />,
+      children: [
+        { path: APP_ROUTE, element: <Main /> },
+        {
+          path: getAppRoute(EDIT_FORM_ROUTE),
+          children: [{ path: ':slug', element: <EditView /> }],
+        },
+        { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
+        { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
+        { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
+        { path: getAppRoute(OUR_WORLD_ROUTE), element: <AboutUs /> },
+        { path: getAppRoute(SUPPORT_US_ROUTE), element: <AboutUs /> },
+        { path: getAppRoute(DONATE_ROUTE), element: <AboutUs /> },
+        { path: getAppRoute(TRAINING_ROUTE), element: <Training /> },
+        { path: getAppRoute(RESOURCES_ROUTE), element: <Resources /> },
+        { path: getAppRoute(TRAININGS_ROUTE), element: <Resources /> },
+        { path: getAppRoute(BEGINNERS_ROUTE), element: <Resources /> },
+        { path: getAppRoute(LANGUAGE_RESOURCES_ROUTE), element: <Resources /> },
+        { path: getAppRoute(MY_STORY_ROUTE), element: <Resources /> },
+        { path: getAppRoute(PARTNERS_ROUTE), element: <Resources /> },
+        { path: getAppRoute(PARTNER_ROUTE), element: <Resources /> },
+        { path: getAppRoute(MESSAGES_ROUTE), element: <Messages /> },
+        { path: getAppRoute(NOTIFICATIONS_ROUTE), element: <Notifications /> },
+        { path: getAppRoute(USER_PROFILE_ROUTE), element: <Profile /> },
+        {
+          // Legacy / bookmarked `/app/help` → default help subpage (no standalone help index).
+          path: getAppRoute(HELP_ROUTE),
+          element: <Navigate to={getAppRoute(HELP_CONTACT_ROUTE)} replace />,
+        },
+        { path: getAppRoute(HELP_CONTACT_ROUTE), element: <Help /> },
+        { path: getAppRoute(HELP_FAQS_ROUTE), element: <Help /> },
+        { path: getAppRoute(SETTINGS_ROUTE), element: <Settings /> },
+      ],
     },
+
+    { path: '*', element: <Navigate to="/" replace /> },
   ];
 
   const router = createHashRouter(
