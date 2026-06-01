@@ -30,7 +30,9 @@ const WebsocketBridge = () => {
   const webSocketHost = new URL(backendUrl).host;
   const socketUrl = coreWsScheme + webSocketHost + environment.coreWsPath;
 
-  const accessToken = useNativeStore.getState().getAccessToken();
+  const accessToken = environment.isNative
+    ? useNativeStore.getState().getAccessToken()
+    : undefined;
   const [, setMessageHistory] = useState([]);
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,
