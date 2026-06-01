@@ -19,8 +19,11 @@ const nativeTokenRefreshMiddleware: Middleware =
 
         if (!isTokenError) throw error;
 
-        const { setIstokenRefreshing, refreshAccessToken, setTokenStatus } =
-          useNativeStore.getState();
+        const {
+          setIsTokenRefreshing: setIstokenRefreshing,
+          refreshAccessToken,
+          setTokenStatus,
+        } = useNativeStore.getState();
 
         if (!tokenRefreshPromise) {
           setIstokenRefreshing(true);
