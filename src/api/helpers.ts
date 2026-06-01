@@ -156,6 +156,13 @@ async function apiFetchWeb<T = any>(
   }
 }
 
-export const apiFetch: typeof apiFetchWeb = environment.isNative
-  ? useNativeStore.getState().apiFetchNative
-  : apiFetchWeb;
+export function apiFetch<T = any>(
+  endpoint: string,
+  options: ApiFetchOptions = {},
+): Promise<T> {
+  const fetcher = environment.isNative
+    ? useNativeStore.getState().apiFetchNative
+    : apiFetchWeb;
+
+  return fetcher(endpoint, options);
+}
