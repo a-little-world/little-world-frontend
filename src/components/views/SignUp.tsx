@@ -16,7 +16,7 @@ import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
 import { signUp } from '../../api';
@@ -78,7 +78,6 @@ function runOptionalMatomoTriggers(userType?: string) {
 const SignUp = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
 
   // User can sign-up with a ?company='name' query
   // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
