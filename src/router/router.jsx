@@ -25,7 +25,6 @@ import EmailPreferences from '../components/views/EmailPreferences';
 import ForgotPassword from '../components/views/ForgotPassword';
 import Help from '../components/views/Help';
 import Main from '../components/views/Home';
-import LoadingPage from '../components/views/Loading';
 import Login from '../components/views/Login';
 import Messages from '../components/views/Messages';
 import NativeMessageHandler from '../components/views/NativeMessageHandler';
@@ -260,8 +259,8 @@ export function getNativeRouter() {
       errorElement: <RouterError Layout={FormLayout} />,
       children: [
         { path: LOGIN_ROUTE, element: <Login /> },
-        { path: '', element: <LoadingPage /> },
-        { path: '/', element: <LoadingPage /> },
+        { path: '', element: <Login /> },
+        { path: '/', element: <Login /> },
         { path: SIGN_UP_ROUTE, element: <SignUp /> },
         { path: FORGOT_PASSWORD_ROUTE, element: <ForgotPassword /> },
         { path: RESET_PASSWORD_ROUTE, element: <ResetPassword /> },
