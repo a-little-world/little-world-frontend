@@ -18,9 +18,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { apiFetch } from '../../api/helpers';
 import { environment } from '../../environment';
 import { useReceiveHandlerStore } from '../../features/stores';
+import useNativeStore from '../../features/stores/nativeStore';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
@@ -159,7 +159,6 @@ const MobileOverlay = styled.div`
 
 function Sidebar({ isVH, sidebarMobile }) {
   const location = useLocation();
-  const { sendMessageToReactNative } = useReceiveHandlerStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -230,39 +229,28 @@ function Sidebar({ isVH, sidebarMobile }) {
         clickEvent: async () => {
           try {
             if (environment.isNative) {
+              const { sendMessageToReactNative } =
+                useReceiveHandlerStore.getState();
+              const { setAccessTokens } = useNativeStore.getState();
+
               await sendMessageToReactNative({
                 action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
                 payload: {},
               });
+              await setAccessTokens(undefined, undefined);
+              resetUserQueries();
             } else {
               await unregisterFirebaseDeviceToken();
             }
           } catch (_e) {
             // ignore
+          } finally {
+            navigate(`/${LOGIN_ROUTE}/`);
           }
-
-          apiFetch(`/api/user/logout/`, {
-            method: 'GET',
-          })
-            .then(() => {
-              if (environment.isNative) {
-                resetUserQueries();
-              }
-
-              navigate(`/${LOGIN_ROUTE}/`);
-            })
-            .catch(error => {
-              // Cannot call logout if isNative manually log-out
-              if (environment.isNative) {
-                resetUserQueries();
-                navigate(`/${LOGIN_ROUTE}/`);
-              }
-              console.error(error);
-            });
         },
       },
     ],
-    [hasMatchingPermissions, startPath, navigate, sendMessageToReactNative],
+    [hasMatchingPermissions, startPath, navigate],
   );
 
   const [showSidebarMobile, setShowSidebarMobile] = [

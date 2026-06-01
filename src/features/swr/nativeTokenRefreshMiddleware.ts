@@ -1,6 +1,6 @@
 import type { Middleware } from 'swr';
 
-import { TokenStatus } from '../../api/helpers';
+import { TokenStatus } from '../../api/types';
 import useNativeStore from '../stores/nativeStore';
 
 let tokenRefreshPromise: Promise<TokenStatus> | null = null;

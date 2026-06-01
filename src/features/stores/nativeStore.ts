@@ -4,8 +4,8 @@ import { ApiFetchFn, TokenStatus } from '../../api/types';
 import { environment } from '../../environment';
 
 interface NativeStoreState {
-  ready: Promise<void>;
-  setReady: () => void;
+  isReady: boolean;
+  setReady: () => void; // set isReady to true when native has initialized web
   apiFetchNative: ApiFetchFn;
   setApiFetchNative: (fetch: ApiFetchFn) => void;
   refreshAccessToken: () => Promise<TokenStatus>;
@@ -16,25 +16,26 @@ interface NativeStoreState {
   setIstokenRefreshing: (isRefreshing: boolean) => void;
   getAccessToken: () => string | undefined;
   setGetAccesToken: (getAccessTokenFn: () => string | undefined) => void;
+  setAccessTokens: (
+    accessToken: string | undefined,
+    refreshToken: string | undefined,
+  ) => Promise<void>;
+  setSetAccessTokens: (
+    setAccessTokensFn: (
+      accessToken: string | undefined,
+      refreshToken: string | undefined,
+    ) => Promise<void>,
+  ) => void;
 }
 
 const useNativeStore = create<NativeStoreState>(set => {
-  let setReady: () => void = () => {};
-  const readyPromise = new Promise<void>(resolve => {
-    setReady = () => resolve();
-
-    if (!environment.isNative) {
-      resolve();
-    }
-  });
-
   const errorFn = (functionName: string) => () => {
     throw new Error(`${functionName} has not been set yet.`);
   };
 
   return {
-    ready: readyPromise,
-    setReady,
+    isReady: !environment.isNative,
+    setReady: () => set({ isReady: true }),
     apiFetchNative: errorFn('apiFetchNative'),
     setApiFetchNative: apiFetchNative => set({ apiFetchNative }),
     refreshAccessToken: errorFn('refreshAccessToken'),
@@ -43,8 +44,10 @@ const useNativeStore = create<NativeStoreState>(set => {
     setTokenStatus: tokenStatus => set({ tokenStatus }),
     isTokenRefreshing: false,
     setIstokenRefreshing: isTokenRefreshing => set({ isTokenRefreshing }),
-    getAccessToken: () => undefined,
+    getAccessToken: errorFn('getAccessToken'),
     setGetAccesToken: getAccessToken => set({ getAccessToken }),
+    setAccessTokens: errorFn('setAccessTokens'),
+    setSetAccessTokens: setAccessTokens => set({ setAccessTokens }),
   };
 });
 

@@ -18,10 +18,14 @@ import { getNativeRouter } from '../../router/router';
 
 export interface LittleWorldWebNativeProps {
   sendMessageToReactNative: DomCommunicationMessageFn;
-  registerReceiveHandler: (handler: DomCommunicationMessageFn | null) => void;
+  registerReceiveHandler: (handler: DomCommunicationMessageFn) => void;
   apiFetchNative: typeof apiFetch;
   refreshAccessToken: () => Promise<TokenStatus>;
   getAccessToken: () => string | undefined;
+  setAccessTokens: (
+    accessToken: string | undefined,
+    refreshToken: string | undefined,
+  ) => Promise<void>;
 }
 
 /**
@@ -49,6 +53,7 @@ export function LittleWorldWebNative({
   apiFetchNative,
   refreshAccessToken,
   getAccessToken,
+  setAccessTokens,
 }: LittleWorldWebNativeProps) {
   const router = getNativeRouter();
   const {
@@ -58,8 +63,12 @@ export function LittleWorldWebNative({
   } = useReceiveHandlerStore();
   const [communicationEstablished, setCommunicationEstablished] =
     useState(false);
-  const { setApiFetchNative, setRefreshAccessToken, setGetAccesToken } =
-    useNativeStore();
+  const {
+    setApiFetchNative,
+    setRefreshAccessToken,
+    setGetAccesToken,
+    setSetAccessTokens,
+  } = useNativeStore();
 
   useEffect(() => {
     setSendMessageToReactNative(sendMessageToReactNative);
@@ -76,6 +85,10 @@ export function LittleWorldWebNative({
   useEffect(() => {
     setGetAccesToken(getAccessToken);
   }, [getAccessToken, setGetAccesToken]);
+
+  useEffect(() => {
+    setSetAccessTokens(setAccessTokens);
+  }, [setAccessTokens, setSetAccessTokens]);
 
   useEffect(() => {
     if (handler && sendMessageToReactNativeSet && !communicationEstablished) {
@@ -99,6 +112,8 @@ export function LittleWorldWebNative({
     registerReceiveHandler,
     sendMessageToReactNativeSet,
     communicationEstablished,
+    setSendMessageToReactNative,
+    sendMessageToReactNative,
   ]);
 
   const swrConfig = useNativeSwrConfig();

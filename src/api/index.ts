@@ -4,6 +4,7 @@ import {
   IntegrityCheck,
   getIntegrityCheckRequestData,
 } from '../features/integrityCheck';
+import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { apiFetch } from './helpers';
 
@@ -96,13 +97,13 @@ export const postUserProfileUpdate = (
     });
 };
 
-export const login = async ({
+export async function login({
   email,
   password,
 }: {
   email: string;
   password: string;
-}) => {
+}) {
   if (!environment.isNative) {
     return apiFetch(`/api/user/login/`, {
       method: 'POST',
@@ -112,7 +113,8 @@ export const login = async ({
   }
 
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-  if (!sendMessageToReactNative) {
+  const { setAccessTokens } = useNativeStore.getState();
+  if (!sendMessageToReactNative || !setAccessTokens) {
     throw new Error('Native bridge not available');
   }
 
@@ -139,6 +141,11 @@ export const login = async ({
     },
   );
 
+  await setAccessTokens(
+    loginData?.token_access || undefined,
+    loginData?.token_refresh || undefined,
+  );
+
   // Notify native app to register the firebase device push token.
   // We can do this because the firebase sdk on native is always active.
   // On web it is only activated when it is both supported and push notifications
@@ -148,10 +155,13 @@ export const login = async ({
     payload: {},
   });
 
-  return loginData;
-};
+  delete loginData?.token_access;
+  delete loginData?.token_refresh;
 
-export const signUp = async ({
+  return loginData;
+}
+
+export async function signUp({
   email,
   birthYear,
   password,
@@ -161,7 +171,7 @@ export const signUp = async ({
   mailingList,
   company = null,
   userType,
-}) => {
+}) {
   if (!environment.isNative) {
     return apiFetch(`/api/register/`, {
       method: 'POST',
@@ -181,7 +191,8 @@ export const signUp = async ({
   }
 
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-  if (!sendMessageToReactNative) {
+  const { setAccessTokens } = useNativeStore.getState();
+  if (!sendMessageToReactNative || !setAccessTokens) {
     throw new Error('Native bridge not available');
   }
 
@@ -211,6 +222,11 @@ export const signUp = async ({
     },
   });
 
+  await setAccessTokens(
+    signUpData?.token_access || undefined,
+    signUpData?.token_refresh || undefined,
+  );
+
   // Notify native app to register the firebase device push token.
   // We can do this because the firebase sdk on native is always active.
   // On web it is only activated when it is both supported and push notifications
@@ -221,7 +237,7 @@ export const signUp = async ({
   });
 
   return signUpData;
-};
+}
 
 export const requestPasswordReset = async ({ email }) =>
   apiFetch(`/api/user/resetpw/`, {
