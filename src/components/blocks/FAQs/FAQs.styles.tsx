@@ -41,5 +41,10 @@ export const FAQItems = styled.div`
 `;
 
 export const FAQSectionTitle = styled(Text)`
+  color: ${({ theme }) => theme.color.text.heading};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+`;
+
+export const FAQsDescription = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;

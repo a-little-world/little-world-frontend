@@ -118,7 +118,7 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
               imageType={partner?.image_type}
               size="xsmall"
             />
-            <Text bold type={TextTypes.Body4}>
+            <Text bold type={TextTypes.Heading5}>
               {unmatched ? t('chat.unmatched_user') : partner?.first_name}
             </Text>
           </ProfileLink>

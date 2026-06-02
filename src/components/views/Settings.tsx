@@ -118,7 +118,7 @@ function ListItem({ section, label, value, setEditing }) {
 
   return (
     <SettingsItem>
-      <FieldTitle tag="h3" type={TextTypes.Body5} bold>
+      <FieldTitle tag="h3" type={TextTypes.Heading7} bold>
         {t(`settings.${section}_${label}`)}
       </FieldTitle>
       <Field>

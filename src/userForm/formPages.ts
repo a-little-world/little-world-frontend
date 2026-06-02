@@ -1,6 +1,7 @@
 import {
   ContentTypes,
   InputWidth,
+  MultiDropdownVariants,
   TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
@@ -69,7 +70,7 @@ const formPages = {
       ...(!isOnboarded
         ? [
             {
-              type: ComponentTypes.dropdown,
+              type: ComponentTypes.combobox,
               currentValue: userData?.country_of_residence,
               dataField: 'country_of_residence',
               formData: options?.country_of_residence,
@@ -144,6 +145,7 @@ const formPages = {
           label: t('self_info.language_skills_label'),
           labelTooltip: t('self_info.language_skills_tooltip'),
           maxSegments: 8,
+          variant: MultiDropdownVariants.Combobox,
           restrictions:
             userData?.user_type === USER_TYPES.volunteer
               ? { german: restrictedLangLevels }

@@ -5,7 +5,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
@@ -33,7 +33,7 @@ const Partner: FC = () => {
       <NotFoundCard>
         <Text
           color={theme.color.text.title}
-          type={TextTypes.Body2}
+          type={TextTypes.Heading4}
           bold
           tag="h2"
           center

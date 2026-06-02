@@ -5,7 +5,6 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
@@ -112,7 +111,7 @@ function NotificationPanel() {
           imageType={user?.profile.image_type}
         />
         {hasMatchingPermissions && <MatchingUserTag />}
-        <Text tag="h3" type={TextTypes.Body3} bold>
+        <Text tag="h3" type={TextTypes.Heading5} bold>
           {`${user?.profile.first_name} ${user?.profile.second_name}`}
         </Text>
       </ProfileInfo>

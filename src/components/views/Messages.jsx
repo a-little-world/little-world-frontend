@@ -36,7 +36,7 @@ const Messages = () => {
   });
 
   const supportChatId = matches?.support?.results?.[0]?.chatId;
-  const isSupportChat = supportChatId === chatId;
+  const isSupportChat = chatId && supportChatId === chatId;
 
   const { scrollRef } = useIniniteScroll({
     fetchItems: fetchChats,

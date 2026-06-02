@@ -22,7 +22,7 @@ import {
   WomanOnRocketImage,
   tokens,
 } from '@a-little-world/little-world-design-system';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
@@ -240,7 +240,7 @@ const SupportUs: FC = () => {
       <Title
         tag="h1"
         bold
-        type={TextTypes.Body2}
+        type={TextTypes.Heading4}
         color={theme.color.text.title}
       >
         {t('support_us.title')}

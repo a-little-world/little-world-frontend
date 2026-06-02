@@ -10,7 +10,7 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { formatDate, formatTime } from '../../../helpers/date';
 import {
@@ -28,14 +28,6 @@ const MatchingCallImage = styled(CalendarAddIcon)`
   width: 60px;
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
   flex-shrink: 0;
-`;
-
-const AppointmentButton = styled(Button)<{ $isLink?: boolean }>`
-  ${({ theme, $isLink }) =>
-    $isLink &&
-    css`
-      color: ${theme.color.text.link};
-    `}
 `;
 
 const getCardState = ({ hasAppointment }: { hasAppointment: boolean }) => {
@@ -75,18 +67,15 @@ function AppointmentOption({
       </OptionSubtext>
       {!isBooked && (
         <CardFooter>
-          <AppointmentButton
+          <Button
             data-cal-link={bookAppointmentLink}
             data-cal-config='{"layout":"month_view"}'
             onClick={() => null}
             size={ButtonSizes.Stretch}
-            appearance={
-              isBooked ? ButtonAppearance.Secondary : ButtonAppearance.Primary
-            }
-            $isLink={isBooked}
+            appearance={ButtonAppearance.Primary}
           >
             {t(`searching_card.${cardState}_cta`)}
-          </AppointmentButton>
+          </Button>
         </CardFooter>
       )}
       {isBooked && (
@@ -116,7 +105,7 @@ function AppointmentOption({
               {t('searching_card.pre_match_call_booked_join_call')}
             </Link>
             <Button
-              data-cal-link="#"
+              data-cal-link={bookAppointmentLink}
               data-cal-config='{"layout":"month_view"}'
               onClick={() => null}
               appearance={ButtonAppearance.Secondary}
