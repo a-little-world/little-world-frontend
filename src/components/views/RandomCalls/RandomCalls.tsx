@@ -171,7 +171,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
             alt="random calls"
           />
           <InfoPanelText>
-            <Text bold tag="h2" type={TextTypes.Body2}>
+            <Text bold tag="h2" type={TextTypes.Heading4}>
               {t('random_calls.title')}
             </Text>
             <Text>{t('random_calls.description')}</Text>
@@ -180,7 +180,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
             ) : (
               <>
                 <div>
-                  <Text bold type={TextTypes.Body4}>
+                  <Text bold type={TextTypes.Body5}>
                     {t(
                       active
                         ? 'random_calls.active_heading'

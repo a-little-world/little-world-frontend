@@ -32,10 +32,10 @@ function WalkthroughOption({
   return (
     <OptionCard $inProgress={started} width={CardSizes.Medium}>
       <TeacherImage label="teacher image" height={60} />
-      <OptionTitle type={TextTypes.Body3} bold>
+      <OptionTitle type={TextTypes.Heading4}>
         {t('onboarding_selection.walkthrough_title')}
       </OptionTitle>
-      <OptionSubtext type={TextTypes.Body4}>
+      <OptionSubtext type={TextTypes.Body5}>
         {started
           ? t('onboarding_selection.walkthrough_in_progress_description')
           : t('onboarding_selection.walkthrough_subtext')}

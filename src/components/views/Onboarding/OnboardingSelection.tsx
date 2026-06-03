@@ -130,38 +130,6 @@ type PartnerActionData = {
   matchId?: string;
 };
 
-//  <AccomplishSection>
-/* <AccomplishHeading type={TextTypes.Body4} tag="h4">
-{t('onboarding_selection.what_you_accomplish')}
-</AccomplishHeading>
-<AccomplishList>
-<AccomplishListItem>
-  <CheckCircleIcon />
-  <span>
-    {t(
-      'onboarding_selection.walkthrough_accomplish_1',
-    )}
-  </span>
-</AccomplishListItem>
-<AccomplishListItem>
-  <CheckCircleIcon />
-  <span>
-    {t(
-      'onboarding_selection.walkthrough_accomplish_2',
-    )}
-  </span>
-</AccomplishListItem>
-<AccomplishListItem>
-  <CheckCircleIcon />
-  <span>
-    {t(
-      'onboarding_selection.walkthrough_accomplish_3',
-    )}
-  </span>
-</AccomplishListItem>
-</AccomplishList>
-</AccomplishSection> */
-
 function OnboardingSelection() {
   const { t } = useTranslation();
   const [partnerActionData, setPartnerActionData] =
@@ -215,7 +183,7 @@ function OnboardingSelection() {
           />
         </StepperWrapper>
 
-        <LeadingTitle type={TextTypes.Body1} bold tag="h2" center>
+        <LeadingTitle type={TextTypes.Heading3} tag="h2" center>
           {t(leadingTitleKey)}
         </LeadingTitle>
         <LeadingDescription type={TextTypes.Body4} center>
