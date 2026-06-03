@@ -55,12 +55,12 @@ function AppointmentOption({
         label="matching call image"
         gradient={Gradients.Orange}
       />
-      <OptionTitle type={TextTypes.Body3} bold>
+      <OptionTitle type={TextTypes.Heading4}>
         {isBooked
           ? t('onboarding_selection.appointment_booked_heading')
           : t('onboarding_selection.book_appointment_title')}
       </OptionTitle>
-      <OptionSubtext type={TextTypes.Body4}>
+      <OptionSubtext type={TextTypes.Body5}>
         {isBooked
           ? t('onboarding_selection.appointment_booked_description')
           : t('onboarding_selection.book_appointment_subtext')}
@@ -82,14 +82,14 @@ function AppointmentOption({
         <>
           <StatsGridFullWidth>
             <StatBoxFullWidth>
-              <StatValue type={TextTypes.Body3} bold>
+              <StatValue type={TextTypes.Heading5}>
                 {formatDate(
                   new Date(onboardingAppointment.start_time),
                   'cccc, do LLLL',
                   i18n.language,
                 )}
               </StatValue>
-              <StatValue type={TextTypes.Body3} bold>
+              <StatValue type={TextTypes.Heading5}>
                 {formatTime(new Date(onboardingAppointment.start_time))}
                 {' – '}
                 {formatTime(new Date(onboardingAppointment.end_time))}

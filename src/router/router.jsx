@@ -35,6 +35,7 @@ import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalk
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
+import CoursePreview from '../components/views/Resources/Trainings/CoursePreview';
 import Training from '../components/views/Resources/Trainings/Training';
 import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
@@ -78,6 +79,7 @@ import {
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
+  COURSE_PREVIEW_ROUTE,
   TRAININGS_ROUTE,
   TRAINING_ROUTE,
   USER_FORM_ROUTE,
@@ -283,6 +285,14 @@ export function getWebRouter() {
       element: (
         <FullAppLayout>
           <AboutUs />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(COURSE_PREVIEW_ROUTE),
+      element: (
+        <FullAppLayout>
+          <CoursePreview />
         </FullAppLayout>
       ),
     },
@@ -620,6 +630,14 @@ export function getNativeRouter() {
       element: (
         <FullAppLayout>
           <AboutUs />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(COURSE_PREVIEW_ROUTE),
+      element: (
+        <FullAppLayout>
+          <CoursePreview />
         </FullAppLayout>
       ),
     },

@@ -51,8 +51,17 @@ export interface CourseDetail {
   chapters: ApiCourseChapter[];
 }
 
-export const fetchCourseDetail = (slug: string, preview = false) =>
-  apiFetch<CourseDetail>(`/api/courses/${slug}/${preview ? '?preview=1' : ''}`);
+export const fetchCourseDetail = (slug: string) =>
+  apiFetch<CourseDetail>(`/api/courses/${slug}/`);
+
+/** Staff preview of draft/inactive courses (requires matching permission on the API). */
+export const fetchCoursePreview = (slug: string) =>
+  apiFetch<CourseDetail>(`/api/courses/preview/${slug}/`);
+
+export const SELF_ONBOARDING_COURSE_ENDPOINT = '/api/self-onboarding/course/';
+
+export const fetchSelfOnboardingCourse = () =>
+  apiFetch<CourseDetail>(SELF_ONBOARDING_COURSE_ENDPOINT);
 
 // ---------------------------------------------------------------------------
 // Progress

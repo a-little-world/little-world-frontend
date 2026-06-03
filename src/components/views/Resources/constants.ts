@@ -49,6 +49,7 @@ export const PARTNERS_DATA = {
     additionalImage: LernFairImage,
     additionalAltImage: 'Girl studying',
     videoId: LERN_FAIR_YT_ID,
+    videoTitle: '',
   },
 };
 

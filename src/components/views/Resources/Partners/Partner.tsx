@@ -3,17 +3,16 @@ import {
   ButtonSizes,
   Link,
   Text,
-  TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { useTheme } from 'styled-components';
 
 import { PARTNERS_ROUTE, getAppRoute } from '../../../../router/routes';
+import NotFoundCard from '../../../atoms/NotFound';
 import Video from '../../../atoms/Video';
 import { PARTNERS_DATA, getDataBySlug } from '../constants';
-import { Container, ContentCard, NotFoundCard } from '../shared.styles';
+import { Container, ContentCard } from '../shared.styles';
 import {
   AdditionalImage,
   Cta,
@@ -24,22 +23,12 @@ import {
 
 const Partner: FC = () => {
   const { partnerSlug } = useParams();
-  const theme = useTheme();
   const { t } = useTranslation();
   const partner = getDataBySlug(PARTNERS_DATA, partnerSlug);
 
   if (!partner)
     return (
-      <NotFoundCard>
-        <Text
-          color={theme.color.text.title}
-          type={TextTypes.Heading4}
-          bold
-          tag="h2"
-          center
-        >
-          {t('resources.partners.not_found')}
-        </Text>
+      <NotFoundCard title={t('resources.partners.not_found')}>
         <Link
           to={getAppRoute(PARTNERS_ROUTE)}
           buttonAppearance={ButtonAppearance.Primary}
