@@ -9,6 +9,11 @@ export const USER_TYPES = {
   learner: 'learner',
 };
 
+export const MATCH_TYPES = {
+  standard: 'standard',
+  random_call: 'random_call',
+};
+
 export const LANGUAGES = {
   de: 'de',
   en: 'en',
@@ -47,9 +52,9 @@ export const API_FIELDS = {
   newsletter_subscribed: 'mailingList',
   token: 'token',
   reason: 'reason', // reportMatch
-  other_user_hash: 'otherUserHash', // reportMatch
-  confirm: 'acceptDeny', // partiallyConfirmMatch
-  unconfirmed_match_hash: 'matchId', // partiallyConfirmMatch
+  other_user_uuid: 'otherUserUuid', // reportMatch
+  confirm: 'acceptDeny', // confirmOrDenyMatch
+  unconfirmed_match_uuid: 'matchId',
 };
 
 export const COMMUNITY_EVENT_FREQUENCIES = {
@@ -59,9 +64,22 @@ export const COMMUNITY_EVENT_FREQUENCIES = {
   once: 'once',
 };
 
-// Pages with height equal to the full height of the viewport
-export const pagesWithViewportHeight = ['chat'];
+// Pages with height equal to the full height of the viewport.
+// Entries are matched against the sub-path after /app/ (e.g. 'chat' matches
+// /app/chat and /app/chat/:id; 'help/contact' matches only that exact sub-page).
+export const pagesWithViewportHeight = ['chat', 'help/contact'];
 
 export const STORAGE_KEYS = {
   themePreference: 'theme-preference',
 };
+
+/**
+ * Quiz step ids sent to `/api/user/self_onboarding/update/`.
+ * Built as `{chapter_id}_q_{quiz order}` — use chapter_ids `self_onboarding_c1` etc. in CMS.
+ * Must match `SELF_ONBOARDING_STEP_ORDER` in `back/management/api/user.py`.
+ */
+export const SELF_ONBOARDING_WALKTHROUGH_STEP_IDS = [
+  'self_onboarding_c1_q_1',
+  'self_onboarding_c2_q_1',
+  'self_onboarding_c3_q_1',
+] as const;

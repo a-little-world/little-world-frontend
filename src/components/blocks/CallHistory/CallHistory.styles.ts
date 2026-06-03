@@ -1,4 +1,4 @@
-import { Text } from '@a-little-world/little-world-design-system';
+import { Button, Text } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
 export const Container = styled.div<{ $hasData: boolean }>`
@@ -20,6 +20,15 @@ export const Container = styled.div<{ $hasData: boolean }>`
     `}
 `;
 
+export const HistoryTitle = styled(Text)`
+  display: none;
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      display: block;
+    }
+  `}
+`;
+
 export const NoHistoryDescription = styled(Text)`
   text-align: center;
   max-width: 512px;
@@ -37,6 +46,7 @@ export const CallEntry = styled.div`
   padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.small}`};
   justify-content: space-between;
   width: 100%;
+  flex-wrap: wrap;
 
   &:not(:last-child) {
     border-bottom: 1px solid ${({ theme }) => theme.color.border.subtle};
@@ -69,4 +79,12 @@ export const CallTime = styled(CallDate)`
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+export const RequestMatchButton = styled(Button)`
+  align-self: end;
+`;
+
+export const CannotMatch = styled(Text)`
+  align-self: end;
 `;

@@ -9,9 +9,10 @@ const Container = styled.div`
   border-radius: ${({ theme }) => theme.radius.medium};
   width: 100%;
   padding: ${({ theme }) => theme.spacing.medium};
+  flex-shrink: 0;
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
+    @media (min-width: ${theme.breakpoints.large}) {
       width: unset;
       border-radius: ${theme.radius.medium};
       padding: ${theme.spacing.small};
@@ -21,7 +22,7 @@ const Container = styled.div`
 `;
 
 const InstructionsTitle = styled(Text)`
-  margin-bottom: ${({ theme }) => theme.spacing.medium};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 const StepBlock = styled.li`
@@ -51,7 +52,7 @@ const Steps = styled.ol`
 
 const StepNumber = styled(Text)`
   color: ${({ theme }) => theme.color.text.heading};
-  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 const StepHeading = styled(Text)`
@@ -83,17 +84,17 @@ const Instructions: React.FC<InstructionsProps> = ({
   return (
     <Container className={className}>
       {title && (
-        <InstructionsTitle type={TextTypes.Body3} tag="h2" center bold>
+        <InstructionsTitle type={TextTypes.Heading4} tag="h2" center bold>
           {title}
         </InstructionsTitle>
       )}
       <Steps>
         {items.map((item, index) => (
           <StepBlock key={item.heading}>
-            <StepNumber type={TextTypes.Body5} tag="span" bold>
+            <StepNumber type={TextTypes.Heading6} tag="span" bold>
               {t('instructions.step')} {index + 1}
             </StepNumber>
-            <StepHeading bold type={TextTypes.Body4} tag="h3" center>
+            <StepHeading bold type={TextTypes.Heading5} tag="h3" center>
               {t(item.heading)}
             </StepHeading>
             <StepDescription type={TextTypes.Body5} tag="p" center>

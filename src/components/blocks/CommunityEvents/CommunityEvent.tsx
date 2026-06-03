@@ -8,12 +8,14 @@ import {
   Tooltip,
 } from '@a-little-world/little-world-design-system';
 import { groupBy } from 'lodash';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import CustomPagination from '../../../CustomPagination';
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
-import { COMMUNITY_EVENTS_ENDPOINT } from '../../../features/swr/index';
+import { getCommunityEventsEndpoint } from '../../../features/swr/index';
 import { formatDate, formatEventTime } from '../../../helpers/date';
 import { Event, calculateNextOccurrence } from '../../../helpers/events';
 import placeholderImage from '../../../images/coffee.webp';
@@ -27,6 +29,7 @@ import {
   EventInfo,
   EventTitle,
   Events,
+  EventsPagination,
   Main,
   Session,
   SessionFlex,
@@ -34,6 +37,7 @@ import {
 } from './styles';
 
 interface GroupedEvent extends Event {
+  original_time?: string;
   sessions?: Array<{
     startDate: Date;
     endDate?: Date;
@@ -121,6 +125,7 @@ function collateEvents(events: Event[]): GroupedEvent[] {
       }
       result.push({
         ...event,
+        original_time: event.time,
         time: nextOccurrence.toISOString(),
         end_time: endTime,
       });
@@ -159,6 +164,7 @@ const EventCtas = ({
   description,
   link,
   startDate,
+  originalStartDate,
   endDate,
   sessions,
 }: {
@@ -166,6 +172,7 @@ const EventCtas = ({
   description: string;
   link: string;
   startDate: Date;
+  originalStartDate: Date;
   endDate?: Date;
   frequency: string;
   sessions?: Array<{
@@ -179,6 +186,12 @@ const EventCtas = ({
     t,
     i18n: { language },
   } = useTranslation();
+  const now = new Date();
+  const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+  const isWeeklyLabelInRange =
+    frequency === COMMUNITY_EVENT_FREQUENCIES.weekly &&
+    (originalStartDate.getTime() <= now.getTime() ||
+      originalStartDate.getTime() - now.getTime() < oneWeekMs);
 
   if (sessions)
     return (
@@ -198,7 +211,6 @@ const EventCtas = ({
                 }}
                 variation={ButtonVariations.Circle}
                 size={ButtonSizes.Small}
-                backgroundColor={theme.color.gradient.orange10}
               >
                 <PhoneIcon
                   label="join call"
@@ -235,14 +247,14 @@ const EventCtas = ({
   return (
     <>
       <DateTimeEvent>
-        <Text type={TextTypes.Body3} bold tag="span">
-          {frequency === COMMUNITY_EVENT_FREQUENCIES.weekly
+        <Text type={TextTypes.Heading5} bold tag="span">
+          {isWeeklyLabelInRange
             ? t('community_events.every_week', {
                 day: formatDate(startDate, 'EEEE', language),
               })
-            : formatDate(startDate, 'cccc, LLLL do', language)}
+            : formatDate(startDate, 'cccc, do LLLL', language)}
         </Text>
-        <Text type={TextTypes.Body3} bold color={theme.color.text.heading}>
+        <Text type={TextTypes.Heading5} bold color={theme.color.text.heading}>
           {formatEventTime(startDate, endDate)}
         </Text>
       </DateTimeEvent>
@@ -290,14 +302,16 @@ function CommunityEvent({
   image,
   title,
   time,
-  end_time,
+  original_time: originalTime,
+  end_time: endTime,
   link,
   sessions,
 }: CommunityEventProps) {
   const { t } = useTranslation();
 
   const startDate = new Date(time);
-  const endDate = end_time ? new Date(end_time) : undefined;
+  const originalStartDate = new Date(originalTime || time);
+  const endDate = endTime ? new Date(endTime) : undefined;
 
   return (
     <EventContainer id={id} key={_key}>
@@ -316,6 +330,7 @@ function CommunityEvent({
           description={description}
           link={link}
           startDate={startDate}
+          originalStartDate={originalStartDate}
           endDate={endDate}
           frequency={frequency}
           sessions={sessions}
@@ -326,15 +341,38 @@ function CommunityEvent({
 }
 
 function CommunityEvents() {
-  const { data: events } = useSWR(COMMUNITY_EVENTS_ENDPOINT);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: events } = useSWR(getCommunityEventsEndpoint(currentPage));
   const groupedEvents = collateEvents(events?.results || []);
 
+  const totalPages = events?.pages_total || 1;
+
+  const onPageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  };
+
   return (
-    <Events>
-      {groupedEvents.map(eventData => (
-        <CommunityEvent key={eventData.id} _key={eventData.id} {...eventData} />
-      ))}
-    </Events>
+    <>
+      <Events>
+        {groupedEvents.map(eventData => (
+          <CommunityEvent
+            key={eventData.id}
+            _key={eventData.id}
+            {...eventData}
+          />
+        ))}
+      </Events>
+      {totalPages > 1 && (
+        <EventsPagination>
+          <CustomPagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={onPageChange}
+          />
+        </EventsPagination>
+      )}
+    </>
   );
 }
 

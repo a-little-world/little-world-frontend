@@ -1,6 +1,7 @@
 import {
   ButtonSizes,
-  CalendarIcon,
+  Loading,
+  LoadingSizes,
   Modal,
   Text,
   TextTypes,
@@ -11,10 +12,17 @@ import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { exitLobby } from '../../../api/randomCalls';
-import { RANDOM_CALL_EXIT_PARAM, RANDOM_CALL_EXIT_VALUE, RANDOM_CALL_LOBBY_ENDPOINT } from '../../../features/swr/index';
-import randomCallsImage from '../../../images/item info.png';
-import { OnlineCirlce } from '../../atoms/OnlineIndicator';
+import {
+  RANDOM_CALL_EXIT_PARAM,
+  RANDOM_CALL_EXIT_VALUE,
+  UPCOMING_LOBBIES_ENDPOINT,
+} from '../../../features/swr/index';
+import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
+import useSystemModalBlocker from '../../../hooks/useSystemModalBlocker';
+import randomCallsImage from '../../../images/random-calls-image.png';
+import { OnlineCircle } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
+import { Schedule } from '../../atoms/Schedule';
 import CallHistory from '../../blocks/CallHistory/CallHistory';
 import Instructions from '../../blocks/Instructions/Instructions';
 import PostRandomCallsFlow from '../../blocks/RandomCalls/PostRandomCallsFlow';
@@ -28,10 +36,8 @@ import {
   InnerContainer,
   JoinButton,
   RandomCallsAccordion,
+  RandomCallsAccordionContentWrapper,
   RandomCallsInstructions,
-  Schedule,
-  ScheduleHeading,
-  ScheduleList,
 } from './RandomCalls.styles';
 
 const instructions = [
@@ -47,14 +53,14 @@ const instructions = [
     heading: 'random_calls.step_3.heading',
     description: 'random_calls.step_3.description',
   },
-];
-
-const randomCallsSchedule = [
-  'Mittwoch – 18:00–20:00 Uhr',
-  'Freitag – 10:00–12:00 Uhr',
+  {
+    heading: 'random_calls.step_4.heading',
+    description: 'random_calls.step_4.description',
+  },
 ];
 
 interface RandomCallLobby {
+  uuid: string;
   name: string;
   status: boolean;
   start_time: string;
@@ -62,25 +68,36 @@ interface RandomCallLobby {
   active_users_count: number;
 }
 
-const RandomCalls = () => {
+const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
   const { t } = useTranslation();
-  const { data: lobbyData } = useSWR<RandomCallLobby>(RANDOM_CALL_LOBBY_ENDPOINT, {
-    refreshInterval: 2000,
-  });
+  const {
+    data: upcomingLobbies,
+    isLoading: lobbyLoading,
+    mutate,
+  } = useSWR<UpcomingLobbyItem[]>(UPCOMING_LOBBIES_ENDPOINT);
+
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
+  const [lobbySessionKey, setLobbySessionKey] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Format time from ISO string to HH:MM
   const formatTime = (dateString?: string) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString('de-DE', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   const startTime = formatTime(lobbyData?.start_time);
   const endTime = formatTime(lobbyData?.end_time);
+
+  useEffect(() => {
+    mutate();
+  }, [lobbyData?.status, mutate]);
 
   useEffect(() => {
     const randomCallEnded = searchParams.get(RANDOM_CALL_EXIT_PARAM);
@@ -92,22 +109,32 @@ const RandomCalls = () => {
     }
   }, [searchParams, setSearchParams]);
 
-  const onJoinLobby = () => {
+  useSystemModalBlocker(lobbyOpen || callEnded, 'random-calls');
+
+  const openLobbyFresh = () => {
+    // @tbscode TODO tempo fix forecefuly reset lobby cache by reloading everything on re-enters
+    setLobbySessionKey(prev => prev + 1);
     setLobbyOpen(true);
   };
 
+  const onJoinLobby = () => {
+    openLobbyFresh();
+  };
+
   const onCloseLobby = async () => {
-    try {
-      await exitLobby();
-    } catch (error) {
-      console.error('Failed to exit lobby:', error);
-    }
     setLobbyOpen(false);
+    if (lobbyData?.uuid) {
+      try {
+        await exitLobby(lobbyData.uuid);
+      } catch (error) {
+        console.error('Failed to exit lobby:', error);
+      }
+    }
   };
 
   const handleReturnToLobby = () => {
     setCallEnded(false);
-    setLobbyOpen(true);
+    openLobbyFresh();
   };
 
   const handleClosePostCall = () => {
@@ -116,8 +143,18 @@ const RandomCalls = () => {
 
   return (
     <Container>
-      <Modal open={lobbyOpen} onClose={onCloseLobby}>
-        <RandomCallsLobby onCancel={onCloseLobby} />
+      <Modal
+        open={lobbyOpen}
+        onClose={onCloseLobby}
+        closeOnBackdropClick={false}
+      >
+        {lobbyData?.uuid && (
+          <RandomCallsLobby
+            key={`${lobbyData.uuid}-${lobbySessionKey}`}
+            lobbyUuid={lobbyData.uuid}
+            onCancel={onCloseLobby}
+          />
+        )}
       </Modal>
 
       <Modal open={callEnded} onClose={handleClosePostCall}>
@@ -134,51 +171,63 @@ const RandomCalls = () => {
             alt="random calls"
           />
           <InfoPanelText>
-            <Text bold tag="h2" type={TextTypes.Body2}>
+            <Text bold tag="h2" type={TextTypes.Heading4}>
               {t('random_calls.title')}
             </Text>
             <Text>{t('random_calls.description')}</Text>
-            <Text bold type={TextTypes.Body3}>
-              {t(
-                active
-                  ? 'random_calls.active_heading'
-                  : 'random_calls.inactive_heading',
-                { from: startTime || '18:00', to: endTime || '20:00' },
-              )}
-            </Text>
-            {active ? (
-              <ActiveUsers>
-                <OnlineCirlce />
-                <Text bold>
-                  {t('random_calls.active_users', { count: lobbyData?.active_users_count ?? 0 })}
-                </Text>
-              </ActiveUsers>
+            {lobbyLoading ? (
+              <Loading size={LoadingSizes.Medium} />
             ) : (
-              <Schedule>
-                <ScheduleHeading>
-                  <CalendarIcon label="Calendar icon" width={16} height={16} />
-                  <Text bold>{t('random_calls.schedule_heading')}</Text>
-                </ScheduleHeading>
-                <ScheduleList>
-                  {randomCallsSchedule.map(item => (
-                    <Text key={item} tag="li">
-                      {item}
+              <>
+                <div>
+                  <Text bold type={TextTypes.Body5}>
+                    {t(
+                      active
+                        ? 'random_calls.active_heading'
+                        : 'random_calls.inactive_heading',
+                    )}
+                  </Text>
+                  {active && startTime && endTime && (
+                    <Text type={TextTypes.Body4}>
+                      {startTime} – {endTime}
                     </Text>
-                  ))}
-                </ScheduleList>
-              </Schedule>
+                  )}
+                </div>
+
+                {active ? (
+                  <ActiveUsers>
+                    {(lobbyData?.active_users_count ?? 0) > 1 && (
+                      <>
+                        <OnlineCircle />
+                        <Text bold>
+                          {t('random_calls.active_users', {
+                            count: lobbyData?.active_users_count,
+                          })}
+                        </Text>
+                      </>
+                    )}
+                  </ActiveUsers>
+                ) : (
+                  <Schedule
+                    title={t('random_calls.schedule_heading')}
+                    sessions={upcomingLobbies ?? []}
+                  />
+                )}
+                {active && (
+                  <JoinButton
+                    disabled={!active}
+                    size={ButtonSizes.Small}
+                    onClick={onJoinLobby}
+                  >
+                    {t(
+                      active
+                        ? 'random_calls.start_btn'
+                        : 'random_calls.start_btn_disabled',
+                    )}
+                  </JoinButton>
+                )}
+              </>
             )}
-            <JoinButton
-              disabled={!active}
-              size={ButtonSizes.Small}
-              onClick={onJoinLobby}
-            >
-              {t(
-                active
-                  ? 'random_calls.start_btn'
-                  : 'random_calls.start_btn_disabled',
-              )}
-            </JoinButton>
           </InfoPanelText>
         </InfoPanel>
         <CallHistoryDesktop />
@@ -188,12 +237,14 @@ const RandomCalls = () => {
         items={instructions}
       />
       <RandomCallsAccordion
+        ContentWrapper={RandomCallsAccordionContentWrapper}
+        defaultValue={t('random_calls.instructions_title')}
         items={[
           {
             content: <Instructions items={instructions} />,
-            header: 'Instructions',
+            header: t('random_calls.instructions_title'),
           },
-          { content: <CallHistory />, header: 'Call History' },
+          { content: <CallHistory />, header: t('call_history.title') },
         ]}
       />
     </Container>

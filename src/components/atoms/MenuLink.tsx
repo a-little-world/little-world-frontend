@@ -1,17 +1,18 @@
 import {
   ButtonAppearance,
   Gradients,
-  OPTION_BUTTON_CSS,
+  STACKED_BUTTON_CSS,
   Text,
 } from '@a-little-world/little-world-design-system';
 import { isNumber } from 'lodash';
 import { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
+
 import UnreadDot from './UnreadDot';
 
 const MENU_LINK_CSS = css<{ $appearance?: ButtonAppearance; $order?: number }>`
-  ${OPTION_BUTTON_CSS}
+  ${STACKED_BUTTON_CSS}
   position: relative;
   flex-shrink: 0;
 
@@ -69,6 +70,7 @@ const MenuLink = ({
   text,
   to,
   unreadCount,
+  reloadDocument = false,
 }: {
   active?: boolean;
   disabled?: boolean;
@@ -80,6 +82,8 @@ const MenuLink = ({
   text?: string;
   to?: string;
   unreadCount?: number;
+  /** Full page load (e.g. leaving this SPA for another frontend). */
+  reloadDocument?: boolean;
 }) => {
   const theme = useTheme();
   if (disabled || !to)
@@ -97,6 +101,7 @@ const MenuLink = ({
   return (
     <StyledMenuLink
       to={to}
+      reloadDocument={reloadDocument}
       state={state}
       $appearance={
         active ? ButtonAppearance.Secondary : ButtonAppearance.Primary

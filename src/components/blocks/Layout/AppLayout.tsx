@@ -1,25 +1,35 @@
 import { Modal } from '@a-little-world/little-world-design-system';
 import { ReactNode, useEffect, useState } from 'react';
-import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
+import {
+  Navigate,
+  Outlet,
+  useLocation,
+  useSearchParams,
+} from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit';
-import { pagesWithViewportHeight } from '../../../constants/index';
+import { USER_TYPES, pagesWithViewportHeight } from '../../../constants/index';
 import {
   useCallSetupStore,
   useConnectedCallStore,
   usePostCallSurveyStore,
 } from '../../../features/stores';
+import useModalManagerStore, {
+  ModalTypes,
+} from '../../../features/stores/modalManager';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   MATCHES_ENDPOINT,
+  USER_ENDPOINT,
 } from '../../../features/swr/index';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
-import useModalManager, { ModalTypes } from '../../../hooks/useModalManager';
+import { ONBOARDING_ROUTE, getAppRoute } from '../../../router/routes';
+import LoadingScreen from '../../atoms/LoadingScreen';
 import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
-import { MatchCardComponent } from '../Cards/MatchCard';
+import MatchModal from '../Matching/MatchModal';
 import MobileNavBar from '../MobileNavBar';
 import PostCallSurvey from '../PostCallSurvey/PostCallSurvey';
 import Sidebar from '../Sidebar';
@@ -84,17 +94,31 @@ const Content = styled.section<{ $isVH: boolean }>`
 export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { openModal, closeModal, isModalOpen } = useModalManager();
+  const { openModal, closeModal, dismissModal, isModalOpen } =
+    useModalManagerStore();
 
-  const page = location.pathname.split('/')[2] || 'main';
-  const isVH = pagesWithViewportHeight.includes(page);
+  const { data: user, isLoading: isUserLoading } = useSWR(USER_ENDPOINT);
+  const onboardingBasePath = getAppRoute(ONBOARDING_ROUTE);
+  const isOnOnboardingRoute =
+    location.pathname === onboardingBasePath ||
+    location.pathname.startsWith(`${onboardingBasePath}/`);
+  const shouldRedirectVolunteerToOnboarding =
+    user?.profile?.user_type === USER_TYPES.volunteer &&
+    !user?.isOnboarded &&
+    !isOnOnboardingRoute;
+
+  const subPath = location.pathname.split('/').slice(2).join('/');
+  const isVH = pagesWithViewportHeight.some(
+    route => subPath === route || subPath.startsWith(`${route}/`),
+  );
   const { data: matches } = useSWR(MATCHES_ENDPOINT, {
     revalidateOnMount: true,
   });
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT);
   const activeCallRoom = activeCallRooms?.[0];
   const { postCallSurvey } = usePostCallSurveyStore();
-  const { disconnectedFrom, disconnectFromCall } = useConnectedCallStore();
+  const { disconnectedFromSession, disconnectFromCall } =
+    useConnectedCallStore();
 
   // Zustand store hooks
   const { initCallSetup, callSetup, cancelCallSetup } = useCallSetupStore();
@@ -102,7 +126,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
 
-  const showNewMatch = Boolean(matches?.unconfirmed?.results?.length);
+  const unconfirmedMatch = matches?.unconfirmed?.results?.[0] ?? null;
+  const proposals = matches?.proposed?.results ?? [];
 
   // Manage the top navbar & extra case where a user profile is selected ( must include the backup button top left instead of the hamburger menu )
   useEffect(() => {
@@ -112,11 +137,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (
       activeCallRoom?.room_uuid &&
-      activeCallRoom.room_uuid !== disconnectedFrom
+      activeCallRoom.room_uuid !== disconnectedFromSession
     ) {
       openModal(ModalTypes.INCOMING_CALL.id);
-    } else if (isModalOpen(ModalTypes.INCOMING_CALL.id)) closeModal();
-  }, [activeCallRoom?.uuid, disconnectedFrom]);
+    } else dismissModal(ModalTypes.INCOMING_CALL.id);
+  }, [activeCallRoom?.uuid, disconnectedFromSession]);
 
   // Initialize call setup from query param on page load
   useEffect(() => {
@@ -144,7 +169,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (callSetup?.userId) {
       openModal(ModalTypes.CALL_SETUP.id);
-    } else if (isModalOpen(ModalTypes.CALL_SETUP.id)) closeModal();
+    } else dismissModal(ModalTypes.CALL_SETUP.id);
   }, [callSetup?.userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -155,13 +180,13 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
     if (shouldShowMatchModal) {
       openModal(ModalTypes.MATCH.id);
-    } else if (isModalOpen(ModalTypes.MATCH.id)) closeModal();
+    } else dismissModal(ModalTypes.MATCH.id);
   }, [matches]); // eslint-disable-line
 
   useEffect(() => {
     if (postCallSurvey) {
       openModal(ModalTypes.POST_CALL_SURVEY.id);
-    } else if (isModalOpen(ModalTypes.POST_CALL_SURVEY.id)) closeModal();
+    } else dismissModal(ModalTypes.POST_CALL_SURVEY.id);
   }, [postCallSurvey]);
 
   const onAnswerCall = () => {
@@ -171,7 +196,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   const onRejectCall = () => {
     if (activeCallRoom?.partner?.id) {
-      disconnectFromCall(activeCallRoom.room_uuid); // ensure call doesn't re-appear
+      disconnectFromCall({
+        sessionId: activeCallRoom.room_uuid,
+        partnerId: activeCallRoom.partner.id,
+      }); // ensure call doesn't re-appear
       blockIncomingCall(activeCallRoom.partner.id, activeCallRoom.room_uuid);
     }
     closeModal();
@@ -204,6 +232,18 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       });
     else closePostCallSurvey();
   };
+
+  if (isUserLoading && !user) {
+    return (
+      <Wrapper $isVH={isVH}>
+        <LoadingScreen />
+      </Wrapper>
+    );
+  }
+
+  if (shouldRedirectVolunteerToOnboarding) {
+    return <Navigate to={onboardingBasePath} replace />;
+  }
 
   return (
     <Wrapper $isVH={isVH}>
@@ -259,26 +299,12 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         />
       </Modal>
 
-      <Modal
+      <MatchModal
         open={isModalOpen(ModalTypes.MATCH.id)}
         onClose={closeModal}
-        locked={showNewMatch}
-      >
-        <MatchCardComponent
-          showNewMatch={showNewMatch}
-          matchId={
-            matches?.proposed?.results?.length
-              ? matches?.proposed.results[0].id
-              : matches?.unconfirmed.results[0]?.id
-          }
-          profile={
-            matches?.proposed?.results?.length
-              ? matches?.proposed.results[0].partner
-              : matches?.unconfirmed.results[0]?.partner
-          }
-          onClose={closeModal}
-        />
-      </Modal>
+        unconfirmedMatch={unconfirmedMatch}
+        proposals={proposals}
+      />
     </Wrapper>
   );
 };

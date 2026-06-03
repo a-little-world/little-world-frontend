@@ -3,7 +3,6 @@ import Avatar, { type NiceAvatarProps } from 'react-nice-avatar';
 import styled from 'styled-components';
 
 import { DEFAULT_PROFILE_IMAGE } from '../../images/index';
-import { shimmer, shimmerGradient } from './Loading';
 
 export const ImageSizes = {
   xsmall: '72px',
@@ -61,13 +60,6 @@ const CircleImageContent = styled.img`
   object-position: center;
   border-radius: ${({ theme }) => theme.radius.half};
   display: block;
-`;
-
-export const CircleImageLoading = styled(CircleImage)`
-  background: ${shimmerGradient};
-  background-size: 200% 100%;
-  animation: ${shimmer} 1.5s infinite reverse;
-  flex-shrink: 0;
 `;
 
 export const Image = styled.img<{ $size: keyof typeof ImageSizes }>`

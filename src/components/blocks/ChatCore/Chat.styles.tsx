@@ -7,6 +7,7 @@ import {
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
+import { shimmerStyles } from '../../atoms/Loading';
 import ProfileImage from '../../atoms/ProfileImage';
 
 export const Panel = styled(Card)`
@@ -32,15 +33,15 @@ export const Panel = styled(Card)`
   `}
 `;
 
-export const NoChatSelected = styled(Panel)`
+export const NoChatSelected = styled(Panel)<{ $isSupportChat?: boolean }>`
   background: ${({ theme }) => theme.color.surface.secondary};
   align-items: center;
   justify-content: center;
   text-align: center;
   padding: ${({ theme }) => theme.spacing.medium};
 
-  ${({ theme }) => css`
-    display: none;
+  ${({ theme, $isSupportChat }) => css`
+    display: ${$isSupportChat ? 'flex' : 'none'};
     @media (min-width: ${theme.breakpoints.xlarge}) {
       position: relative;
       display: flex;
@@ -85,7 +86,6 @@ export const ChatContainer = styled.div`
   overflow: visible;
   min-height: 0;
   width: 100%;
-  height: 100%;
 `;
 
 export const WriteSection = styled.form`
@@ -100,19 +100,26 @@ export const WriteSection = styled.form`
 
 export const Messages = styled.div`
   position: relative;
-  height: 100%;
+  flex: 1 1 0;
   background: ${({ theme }) => theme.color.surface.secondary};
   border: 2px solid ${({ theme }) => theme.color.border.subtle};
   border-radius: 20px;
-  flex-grow: 1;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
   padding: ${({ theme }) => theme.spacing.small};
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
   -webkit-overflow-scrolling: touch;
+`;
+
+export const ScrollTrigger = styled.div`
+  margin: 0;
+  margin-bottom: calc(-1 * ${({ theme }) => theme.spacing.small});
+  padding: 0;
+  height: 1px;
+  width: 100%;
 `;
 
 export const MessageGroup = styled.div`
@@ -277,4 +284,14 @@ export const ProfileLink = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+export const MessagesSkeleton = styled.div`
+  flex: 1 1 0;
+  background: ${({ theme }) => theme.color.surface.secondary};
+  border: 2px solid ${({ theme }) => theme.color.border.subtle};
+  border-radius: 20px;
+  min-height: 0;
+  overflow: hidden;
+  ${shimmerStyles}
 `;

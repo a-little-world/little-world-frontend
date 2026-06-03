@@ -8,7 +8,6 @@ import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler'
 import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
-  USER_ENDPOINT,
   swrConfig,
 } from '../../features/swr/index';
 import i18n, { updateTranslationResources } from '../../i18n';
@@ -21,7 +20,6 @@ import { getNativeRouter } from '../../router/router';
  */
 
 export function NativePreloader() {
-  const { error: _errorUser } = useSWR(USER_ENDPOINT);
   const { error: _errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT);
   const { data: apiTranslations, error: _errorApiTranslations } = useSWR(
     API_TRANSLATIONS_ENDPOINT,

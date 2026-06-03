@@ -11,6 +11,7 @@ import styled, { css } from 'styled-components';
 import { useDevelopmentFeaturesStore } from '../../features/stores/index';
 import HideOnMobile from '../atoms/HideOnMobile';
 import NotificationBell from '../atoms/NotificationBell';
+import OnlineIndicator from '../atoms/OnlineIndicator';
 
 const SelectorWrapper = styled.div`
   position: relative;
@@ -47,7 +48,7 @@ const Selector = styled.div`
 
   &::-webkit-scrollbar-thumb:hover {
     background: ${({ theme }) =>
-    theme.color.border.bold || 'rgba(0, 0, 0, 0.3)'};
+      theme.color.border.bold || 'rgba(0, 0, 0, 0.3)'};
   }
 
   /* Firefox scrollbar */
@@ -114,11 +115,28 @@ const FadeOverlay = styled.div<{ $side: 'left' | 'right'; $visible: boolean }>`
   }}
 `;
 
-export const StyledOption = styled(Button) <{ $selected?: boolean }>`
+const NewBadge = styled.span<{ $selected?: boolean }>`
+  background: ${({ theme }) => theme.color.gradient.orange10};
+  color: ${({ theme }) => theme.color.text.button};
+  padding: ${({ theme }) =>
+    `${theme.spacing.xxxsmall} ${theme.spacing.xxsmall}`};
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border-radius: ${({ theme }) => theme.radius.small};
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+`;
+
+export const StyledOption = styled(Button)<{ $selected?: boolean }>`
+  position: relative;
   border-color: transparent;
   transition: none;
   flex-shrink: 0;
   order: ${({ $selected }) => ($selected ? -1 : 0)};
+  gap: ${({ theme }) => theme.spacing.xxsmall};
 
   ${({ theme, variation }) =>
     variation === ButtonVariations.Inline &&
@@ -160,7 +178,7 @@ const StyledHideOnMobile = styled(HideOnMobile)`
 
 const nbtTopics: Record<string, string[]> = {
   ourWorld: ['support', 'donate', 'about', 'stories'],
-  main: ['conversation_partners', 'events', 'random_calls'],
+  main: ['conversation_partners', 'onboarding', 'events', 'random_calls'],
   help: ['contact', 'faqs'],
   resources: ['trainings', 'german', 'beginners', 'story', 'partners'],
 };
@@ -178,6 +196,10 @@ type ContentSelectorProps = {
   setSelection: (selection: string) => void;
   use: ContentSelectorUse;
   excludeTopics?: string[];
+  /** Topic keys that show a "New" badge */
+  newTopics?: string[];
+  /** Topic keys that show an "Online" badge */
+  onlineTopics?: string[];
 };
 
 function ContentSelector({
@@ -186,6 +208,8 @@ function ContentSelector({
   setSelection,
   use,
   excludeTopics,
+  newTopics,
+  onlineTopics,
 }: ContentSelectorProps) {
   const { t } = useTranslation();
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
@@ -250,8 +274,19 @@ function ContentSelector({
   }, [checkScrollPosition, handleScroll, use]);
 
   const topics = nbtTopics[use].filter(
-    topic => !excludeTopics?.includes(topic)
+    topic => !excludeTopics?.includes(topic),
   );
+
+  const onTopicSelect = (topic: string) => {
+    setSelection(topic);
+  };
+
+  useEffect(() => {
+    if (!scrollRef.current) return;
+
+    scrollRef.current.scrollLeft = 0;
+    checkScrollPosition();
+  }, [selection, use, checkScrollPosition]);
 
   return (
     <SelectorWrapper>
@@ -280,11 +315,23 @@ function ContentSelector({
                   : ButtonAppearance.Secondary
               }
               key={topic}
-              onClick={() => setSelection(topic)}
+              onClick={() => onTopicSelect(topic)}
               disabled={selection === topic && disableIfSelected}
               $selected={selection === topic}
             >
               {t(`nbt_${topic}`)}
+              {onlineTopics?.includes(topic) ? (
+                <OnlineIndicator
+                  isOnline
+                  customText={t('online_indicator.now')}
+                />
+              ) : (
+                newTopics?.includes(topic) && (
+                  <NewBadge $selected={selection === topic}>
+                    {t('nbt_new')}
+                  </NewBadge>
+                )
+              )}
             </StyledOption>
           ),
         )}

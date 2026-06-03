@@ -17,11 +17,18 @@ export const RESOURCES_ROUTE = 'resources';
 export const PARTNERS_ROUTE = 'resources/partners';
 export const PARTNER_ROUTE = 'resources/partners/:partnerSlug?/';
 export const TRAININGS_ROUTE = 'resources/trainings';
-export const TRAINING_ROUTE = 'resources/trainings/:trainingSlug?/';
+export const TRAINING_ROUTE = 'resources/trainings/:trainingSlug';
+export const COURSE_PREVIEW_ROUTE = 'courses/preview/:courseSlug';
+
+export const getCoursePreviewRoute = (slug: string) =>
+  getAppRoute(`courses/preview/${slug}`);
 export const BEGINNERS_ROUTE = 'resources/beginners';
 export const LANGUAGE_RESOURCES_ROUTE = 'resources/german';
 export const MY_STORY_ROUTE = 'resources/story';
+/** Redirect-only; link to HELP_CONTACT_ROUTE or HELP_FAQS_ROUTE instead. */
 export const HELP_ROUTE = 'help';
+export const HELP_CONTACT_ROUTE = 'help/contact';
+export const HELP_FAQS_ROUTE = 'help/faqs';
 export const SETTINGS_ROUTE = 'settings';
 export const LOGIN_ROUTE = 'login';
 export const SIGN_UP_ROUTE = 'sign-up';
@@ -35,6 +42,8 @@ export const WP_HOME_ROUTE = 'https://home.little-world.com';
 export const TERMS_ROUTE = 'nutzungsbedingungen';
 export const PRIVACY_ROUTE = 'datenschutz';
 export const EMAIL_PREFERENCES_ROUTE = 'email-preferences/:emailSettingsHash';
+export const ONBOARDING_ROUTE = 'onboarding';
+export const SELF_ONBOARDING_ROUTE = 'onboarding/walkthrough';
 
 // User form specific route slugs
 export const USER_FORM_USER_TYPE = 'user-type';
@@ -50,11 +59,13 @@ export const USER_FORM_CONDITIONS = 'conditions';
 const getUserFormRoute = (slug: string) => `${USER_FORM_ROUTE}/${slug}`;
 export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
-export const getAppRoute = (slug?: string) => `/${APP_ROUTE}${slug ? `/${slug}` : ''}`;
+export const getAppRoute = (slug?: string) =>
+  `/${APP_ROUTE}${slug ? `/${slug}` : ''}`;
 export const getAppSubpageRoute = (parent: string, slug: string) =>
   getAppRoute(`${parent}/${slug}`);
 export const getCallRoute = (userId: string) => `/${APP_ROUTE}/call/${userId}`;
-export const getRandomCallRoute = (userId: string) => `/${APP_ROUTE}/random-call/${userId}`;
+export const getRandomCallRoute = (userId: string) =>
+  `/${APP_ROUTE}/random-call/${userId}`;
 export const getCallSetupRoute = (userId: string) =>
   `/${APP_ROUTE}/call-setup/${userId}`;
 
@@ -69,16 +80,25 @@ export const USER_FORM_ROUTES = {
   CONDITIONS: getUserFormRoute(USER_FORM_CONDITIONS),
 };
 
-export const isActiveRoute = (locationPath: string, path: string) =>
-  locationPath === path || path !== getAppRoute('') ?
-    locationPath?.includes(path) :
-    false;
+/** True when pathname is exactly `path` or a nested route under it (e.g. `/app/help/faqs` under `/app/help`). */
+export const isActiveRoute = (locationPath: string, path: string) => {
+  const appHome = getAppRoute('');
+
+  if (!path || path === appHome) {
+    return locationPath === appHome;
+  }
+
+  return locationPath === path || locationPath.startsWith(`${path}/`);
+};
 
 // should be called when passing from unauthenticated to authenticated state
 export const passAuthenticationBoundary = () => {
   try {
-    if (typeof window !== 'undefined' && (window as any)?.unloadCookieBanner) {
-      (window as any)?.unloadCookieBanner();
+    if (
+      typeof window !== 'undefined' &&
+      (window as any)?.setCookieBannerHidden
+    ) {
+      (window as any)?.setCookieBannerHidden(true);
     }
   } catch (e) {
     // eslint-disable-next-line no-console

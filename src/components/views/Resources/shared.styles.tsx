@@ -23,16 +23,6 @@ export const ResourcesListCard = styled(ContentCard)`
   }
 `;
 
-export const NotFoundCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.xlarge};
-  padding: ${({ theme }) =>
-    `${theme.spacing.large} ${theme.spacing.medium} ${theme.spacing.xlarge}`};
-`;
-
 export const Container = styled.div`
   display: flex;
   flex-direction: column;

@@ -1,0 +1,372 @@
+import {
+  ButtonAppearance,
+  ButtonSizes,
+  Checkbox,
+  Dropdown,
+  InputWidth,
+  Label,
+  Link,
+  StatusMessage,
+  StatusTypes,
+  Text,
+  TextInput,
+  TextTypes,
+} from '@a-little-world/little-world-design-system';
+import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import useSWR, { mutate } from 'swr';
+
+import { signUp } from '../../api';
+import {
+  API_OPTIONS_ENDPOINT,
+  IS_AUTHENTICATED_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../features/swr/index';
+import { onFormError, registerInput } from '../../helpers/form';
+import {
+  LOGIN_ROUTE,
+  USER_FORM_ROUTE,
+  VERIFY_EMAIL_ROUTE,
+  getAppRoute,
+  passAuthenticationBoundary,
+} from '../../router/routes';
+import {
+  NameContainer,
+  NameInputs,
+  StyledCard,
+  StyledCta,
+  StyledForm,
+  Title,
+} from './SignUp.styles';
+
+// Triggers user-type specific conversion on sign-up submit.
+const MTM_CUSTOM_USER_TYPE_EVENT_TRIGGER = true;
+// Stores selected user type for downstream tracking after redirects.
+const MTM_ENABLE_USER_TYPE_COOKIE = true;
+
+/** Still submitted as `company`, but the read-only name label is not shown. */
+const SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL = [
+  'campaign-',
+  'self-organized-',
+] as const;
+
+function signUpCompanySlugHidesNameLabel(company: string): boolean {
+  return SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL.some(prefix =>
+    company.startsWith(prefix),
+  );
+}
+
+function runOptionalMatomoTriggers(userType?: string) {
+  if (!userType) return;
+
+  if (MTM_ENABLE_USER_TYPE_COOKIE && userType) {
+    Cookies.set('user-type', userType);
+  }
+  if (MTM_CUSTOM_USER_TYPE_EVENT_TRIGGER && userType) {
+    try {
+      // eslint-disable-next-line no-underscore-dangle
+      (window as any)._mtm.push({
+        event:
+          userType === 'volunteer'
+            ? 'userTypeVolunteerTrigger'
+            : 'userTypeLearnerTrigger',
+      });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error setting custom Matomo triggers:', error);
+    }
+  }
+}
+
+const SignUp = () => {
+  const { t } = useTranslation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+
+  // User can sign-up with a ?company='name' query
+  // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [company, setCompany] = useState(Cookies.get('lw-company', null));
+
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
+  const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
+  const { data: apiOptions } = useSWR(API_OPTIONS_ENDPOINT, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false,
+  });
+  const userTypeOptions = apiOptions?.profile?.user_type.map(({ value }) => ({
+    label: t(`sign_up.user_type.${value}`),
+    value,
+  }));
+
+  useEffect(() => {
+    if (searchParams.has('company')) {
+      Cookies.set('lw-company', searchParams.get('company'));
+      setCompany(searchParams.get('company'));
+      // Once the query param is stored in the cookie, we can remove it from the URL
+      setSearchParams(new URLSearchParams());
+    }
+  }, [searchParams, setSearchParams]);
+
+  const {
+    control,
+    getValues,
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    setFocus,
+  } = useForm({ shouldUnregister: true });
+
+  useEffect(() => {
+    setFocus('firstName');
+  }, [setFocus]);
+
+  const onError = e => {
+    setIsSubmitting(false);
+    onFormError({ e, formFields: getValues(), setError });
+  };
+
+  useEffect(() => {
+    if (!userData || !navigate) {
+      return;
+    }
+
+    passAuthenticationBoundary();
+
+    if (!userData.emailVerified) {
+      navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
+    } else if (!userData.userFormCompleted) {
+      navigate(getAppRoute(USER_FORM_ROUTE));
+    } else {
+      // per default route to /app on successful login
+      navigate(getAppRoute(''));
+    }
+  }, [userData, navigate]);
+
+  const onFormSubmit = async data => {
+    setIsSubmitting(true);
+    runOptionalMatomoTriggers(data?.userType);
+    signUp(data)
+      .then(async signUpData => {
+        setIsSubmitting(false);
+        mutate(USER_ENDPOINT, signUpData, false);
+        mutate(IS_AUTHENTICATED_ENDPOINT, true, false);
+      })
+      .catch(onError);
+  };
+
+  return (
+    <StyledCard>
+      <Title tag="h2" type={TextTypes.Heading4}>
+        {t('sign_up.title')}
+      </Title>
+      <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
+        <NameContainer>
+          {company && (
+            <>
+              {!signUpCompanySlugHidesNameLabel(company) && (
+                <Label
+                  bold
+                  htmlFor="company"
+                  tooltipText={t('sign_up.company_tooltip')}
+                >
+                  {t('sign_up.company_name_label')}: {company}
+                </Label>
+              )}
+              <div
+                style={{
+                  display: 'none',
+                }}
+              >
+                <TextInput
+                  {...registerInput({
+                    register,
+                    name: 'company',
+                  })}
+                  defaultValue={company}
+                  style={{ display: 'none' }}
+                  id="company"
+                  error={t(errors?.company?.message)}
+                  type="text"
+                />
+              </div>
+            </>
+          )}
+          <Label bold htmlFor="name">
+            {t('sign_up.name_label')}
+          </Label>
+          <NameInputs>
+            <TextInput
+              {...registerInput({
+                register,
+                name: 'firstName',
+                options: { required: 'error.required' },
+              })}
+              id="firstName"
+              error={t(errors?.firstName?.message)}
+              placeholder={t('sign_up.first_name_placeholder')}
+              type="text"
+            />
+            <TextInput
+              {...registerInput({
+                register,
+                name: 'lastName',
+                options: { required: 'error.required' },
+              })}
+              id="lastName"
+              error={t(errors?.lastName?.message)}
+              placeholder={t('sign_up.second_name_placeholder')}
+              type="text"
+            />
+          </NameInputs>
+        </NameContainer>
+        <TextInput
+          {...registerInput({
+            register,
+            name: 'email',
+            options: { required: 'error.required' },
+          })}
+          id="email"
+          label={t('sign_up.email_label')}
+          error={t(errors?.email?.message)}
+          placeholder={t('sign_up.email_placeholder')}
+          type="email"
+        />
+        <TextInput
+          {...registerInput({
+            register,
+            name: 'password',
+            options: {
+              required: 'error.required',
+              minLength: { message: 'error.password_min_length', value: 8 },
+            },
+          })}
+          id="password"
+          error={t(errors?.password?.message)}
+          label={t('sign_up.password_label')}
+          placeholder={t('sign_up.password_placeholder')}
+          type="password"
+        />
+        <TextInput
+          {...registerInput({
+            register,
+            name: 'confirmPassword',
+            options: {
+              required: 'error.required',
+              validate: (v, values) =>
+                values.password === v || t('error.passwords_do_not_match'),
+              minLength: { message: 'error.password_min_length', value: 8 },
+            },
+          })}
+          label={t('sign_up.confirm_password_label')}
+          id="confirmPassword"
+          error={t(errors?.confirmPassword?.message)}
+          type="password"
+        />
+        <Controller
+          defaultValue={undefined}
+          name="userType"
+          control={control}
+          rules={{ required: 'error.required' }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <Dropdown
+              onValueChange={val => onChange({ target: { value: val } })}
+              value={value}
+              error={t(error?.message)}
+              label={t('sign_up.user_type_label')}
+              labelTooltip={t('sign_up.user_type_tooltip')}
+              placeholder={t('sign_up.user_type_placeholder')}
+              options={userTypeOptions}
+            />
+          )}
+        />
+        <TextInput
+          {...registerInput({
+            register,
+            name: 'birthYear',
+            options: { required: 'error.required' },
+          })}
+          label={t('sign_up.birth_year_label')}
+          labelTooltip={t('sign_up.birth_year_tooltip')}
+          id="birthYear"
+          error={t(errors?.birthYear?.message)}
+          placeholder={t('sign_up.birth_year_placeholder')}
+          type="number"
+          width={InputWidth.Small}
+          min={1900}
+          max={2007}
+        />
+        <Controller
+          defaultValue={false}
+          name="mailingList"
+          control={control}
+          render={({
+            field: { onChange, onBlur, value, name, ref },
+            fieldState: { error },
+          }) => (
+            <Checkbox
+              id="mailingList"
+              name={name}
+              inputRef={ref}
+              onCheckedChange={val => onChange({ target: { value: val } })}
+              onBlur={onBlur}
+              value={value}
+              error={t(error?.message)}
+              label={t('sign_up.mailing_list_label')}
+              required={false}
+            />
+          )}
+        />
+        <Controller
+          defaultValue={false}
+          name="terms"
+          control={control}
+          rules={{ required: 'error.required' }}
+          render={({
+            field: { onChange, onBlur, value, name, ref },
+            fieldState: { error },
+          }) => (
+            <Checkbox
+              id="terms"
+              name={name}
+              inputRef={ref}
+              onCheckedChange={val => onChange({ target: { value: val } })}
+              onBlur={onBlur}
+              value={value}
+              error={t(error?.message)}
+              label={t('sign_up.terms_label')}
+            />
+          )}
+        />
+        <Text>{t('sign_up.privacy_policy')}</Text>
+        <StatusMessage
+          visible={errors?.root?.serverError}
+          type={StatusTypes.Error}
+        >
+          {t(errors?.root?.serverError?.message)}
+        </StatusMessage>
+        <StyledCta
+          type="submit"
+          disabled={isSubmitting}
+          loading={isSubmitting}
+          size={ButtonSizes.Stretch}
+        >
+          {t('sign_up.submit_btn')}
+        </StyledCta>
+        <Link
+          to={`/${LOGIN_ROUTE}`}
+          buttonAppearance={ButtonAppearance.Secondary}
+          buttonSize={ButtonSizes.Stretch}
+        >
+          {t('sign_up.change_location_cta')}
+        </Link>
+      </StyledForm>
+    </StyledCard>
+  );
+};
+
+export default SignUp;

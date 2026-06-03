@@ -1,18 +1,18 @@
 import {
   Button,
+  ButtonAppearance,
+  ButtonSizes,
   ButtonVariations,
   Card,
   CardDimensions,
   CardSizes,
   DotsIcon,
   Gradients,
-  Logo,
+  Link,
   MessageIcon,
   PencilIcon,
   Popover,
   ProfileIcon,
-  Tag,
-  TagSizes,
   Text,
   TextTypes,
   Tooltip,
@@ -27,6 +27,7 @@ import styled, { css, useTheme } from 'styled-components';
 
 import { useCallSetupStore } from '../../../features/stores/index';
 import {
+  HELP_CONTACT_ROUTE,
   MESSAGES_ROUTE,
   PROFILE_ROUTE,
   getAppRoute,
@@ -36,10 +37,11 @@ import { shimmerStyles } from '../../atoms/Loading';
 import MenuLink, { MenuLinkText } from '../../atoms/MenuLink';
 import OnlineIndicator from '../../atoms/OnlineIndicator';
 import ProfileImage from '../../atoms/ProfileImage';
+import SupportTag from '../../atoms/SupportTag';
 import {
-  PARTNER_ACTION_REPORT,
-  PARTNER_ACTION_UNMATCH,
-} from './PartnerActionCard';
+  REPORT_TYPE_PARTNER,
+  REPORT_TYPE_UNMATCH,
+} from '../ReportForm/constants';
 
 export const PROFILE_CARD_HEIGHT = '408px';
 
@@ -84,7 +86,6 @@ export const StyledProfileCard = styled(Card)<{
   align-items: center;
   position: relative;
   text-align: ${({ $isSelf }) => ($isSelf ? 'center' : 'left')};
-  order: 1;
   gap: ${({ theme }) => theme.spacing.small};
 
   ${({ $unconfirmedMatch }) =>
@@ -94,11 +95,14 @@ export const StyledProfileCard = styled(Card)<{
     `};
 
   ${({ $onProfile }) =>
-    $onProfile &&
-    css`
-      max-width: ${pixelate(CardDimensions[CardSizes.Small])};
-      width: unset;
-    `};
+    $onProfile
+      ? css`
+          max-width: ${pixelate(CardDimensions[CardSizes.Small])};
+          width: unset;
+        `
+      : css`
+          order: 1;
+        `};
 
   ${({ theme, $isSelf }) => css`
     min-height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
@@ -149,9 +153,8 @@ export const MatchMenuToggle = styled(Button)`
   position: absolute;
 
   ${({ theme }) => `
-    padding: ${theme.spacing.xxxsmall} ${theme.spacing.xxsmall};
-    top: ${theme.spacing.xsmall};
-    right: ${theme.spacing.xsmall};
+    top: ${theme.spacing.small};
+    right: ${theme.spacing.small};
   `};
 `;
 
@@ -187,15 +190,15 @@ export const NameContainer = styled.div<{ $isSelf: boolean }>`
   justify-content: ${({ $isSelf }) => ($isSelf ? 'center' : 'space-between')};
 `;
 
-export const TagText = styled.span`
-  font-family: revert;
-`;
-
 export const Description = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
+`;
+
+export const SupportChatLink = styled(Link)`
+  margin-top: auto;
 `;
 
 const ProfileCard: React.FC<ProfileCardProps> = ({
@@ -253,19 +256,18 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           width={PopoverSizes.Large}
           showCloseButton
           trigger={
-            <MatchMenuToggle type="button" variation={ButtonVariations.Icon}>
+            <MatchMenuToggle
+              variation={ButtonVariations.Circle}
+              appearance={ButtonAppearance.Secondary}
+              size={ButtonSizes.Medium}
+              backgroundColor={theme.color.surface.secondary}
+              color={theme.color.text.tertiary}
+            >
               <Tooltip
                 text={t('profile_card.user_actions')}
                 trigger={
-                  <div>
-                    <DotsIcon
-                      circular
-                      height="16px"
-                      width="16px"
-                      color="#7c7b7b"
-                      borderColor="#7c7b7b"
-                      label="menu options"
-                    />
+                  <div style={{ display: 'flex' }}>
+                    <DotsIcon height="16px" width="16px" label="menu options" />
                   </div>
                 }
               />
@@ -275,7 +277,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <PartnerMenuOption
             onClick={() =>
               openPartnerModal?.({
-                type: PARTNER_ACTION_REPORT,
+                type: REPORT_TYPE_PARTNER,
                 userPk,
                 userName: profile.first_name,
                 matchId,
@@ -287,7 +289,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           <PartnerMenuOption
             onClick={() =>
               openPartnerModal?.({
-                type: PARTNER_ACTION_UNMATCH,
+                type: REPORT_TYPE_UNMATCH,
                 userPk,
                 userName: profile.first_name,
                 matchId,
@@ -298,18 +300,13 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           </PartnerMenuOption>
         </Popover>
       )}
-      <OnlineIndicator isOnline={isOnline} />
+      <OnlineIndicator isOnline={isOnline} position="absolute" />
       <ProfileInfo>
         <NameContainer $isSelf={isSelf}>
-          <Text type={TextTypes.Body3} bold>
+          <Text type={TextTypes.Heading5} bold>
             {isDeleted ? t('profile.deleted_name') : profile.first_name}
           </Text>
-          {isSupport && (
-            <Tag color={theme.color.status.info} bold size={TagSizes.small}>
-              <TagText>{t('profile_card.support_user')}</TagText>
-              <Logo height="16" width="16" label="support logo" />
-            </Tag>
-          )}
+          {isSupport && <SupportTag />}
         </NameContainer>
 
         {!onProfile && (
@@ -322,7 +319,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           </Description>
         )}
       </ProfileInfo>
-      {!isSelf && (
+      {isSelf ? null : isSupport ? (
+        <SupportChatLink
+          to={getAppRoute(HELP_CONTACT_ROUTE)}
+          buttonAppearance={ButtonAppearance.Primary}
+          buttonSize={ButtonSizes.Stretch}
+        >
+          {t('profile_card.support_chat')}
+        </SupportChatLink>
+      ) : (
         <Actions $onProfile={onProfile}>
           {!onProfile && (
             <Tooltip
@@ -367,7 +372,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             trigger={
               <Button
                 type="button"
-                variation={ButtonVariations.Option}
+                variation={ButtonVariations.Stacked}
                 onClick={() => callSetup.initCallSetup({ userId: userPk })}
                 disabled={isDeleted}
               >

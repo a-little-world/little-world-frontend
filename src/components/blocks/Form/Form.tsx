@@ -1,0 +1,266 @@
+import {
+  Button,
+  ButtonAppearance,
+  ButtonSizes,
+  TextTypes,
+} from '@a-little-world/little-world-design-system';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useSWR from 'swr';
+
+import { completeForm, mutateUserData } from '../../../api';
+import { USER_FIELDS, USER_TYPES } from '../../../constants';
+import {
+  API_OPTIONS_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../../features/swr/index';
+import { onFormError } from '../../../helpers/form';
+import {
+  EDIT_FORM_ROUTE,
+  PROFILE_ROUTE,
+  USER_FORM_PARTNER_1,
+  getAppRoute,
+} from '../../../router/routes';
+import {
+  ComponentTypes,
+  getFormComponent,
+} from '../../../userForm/formContent';
+import getFormPage from '../../../userForm/formPages';
+import ProfilePic from '../Profile/ProfilePic/ProfilePic';
+import CheckboxWithInput from '../WithInput/CheckboxWithInput/CheckboxWithInput';
+import DropdownWithInput from '../WithInput/DropdownWithInput/DropdownWithInput';
+import MultiCheckboxWithInput from '../WithInput/MultiCheckboxWithInput/MultiCheckboxWithInput';
+import RadioGroupWithInput from '../WithInput/RadioGroupWithInput/RadioGroupWithInput';
+import FormStep from './FormStep';
+import {
+  FormButtons,
+  GroupedRow,
+  StyledCard,
+  StyledForm,
+  StyledNote,
+  StyledProgress,
+  SubmitError,
+  Title,
+} from './styles';
+
+const Form = () => {
+  const { t } = useTranslation();
+
+  const {
+    control,
+    clearErrors,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+    setError,
+    watch,
+  } = useForm({ shouldUnregister: true });
+
+  const { data: userData, mutate: mutateUserDataApi } = useSWR(USER_ENDPOINT, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false,
+  });
+  const { data: apiOptions } = useSWR(API_OPTIONS_ENDPOINT, {
+    revalidateOnMount: false,
+    revalidateOnFocus: false,
+  });
+  const formOptions = apiOptions?.profile;
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const paths = location.pathname.split('/');
+  const slug = paths.slice(-1)[0];
+  const isEditPath = paths[2] === EDIT_FORM_ROUTE;
+
+  const { title, note, step, totalSteps, components, nextPage, prevPage } =
+    getFormPage({
+      slug,
+      formOptions,
+      userData: userData.profile,
+      forceMatchEligible: userData.forceMatchEligible,
+      isOnboarded: userData.isOnboarded,
+    });
+  const isLastStep = step === totalSteps;
+
+  const onFormSuccess = response => {
+    mutateUserDataApi({
+      ...userData,
+      profile: { ...userData.profile, ...response },
+    });
+    if (isLastStep && !userData?.userFormCompleted) {
+      completeForm().then(updatedUser => {
+        mutateUserDataApi({
+          ...userData,
+          profile: { ...userData.profile, ...updatedUser },
+        });
+      });
+    }
+    navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));
+  };
+
+  const handleBackClick = e => {
+    e.preventDefault();
+    reset({ values: {} });
+    navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : prevPage));
+  };
+
+  const onError = e => {
+    onFormError({ e, formFields: getValues(), setError });
+  };
+
+  const onFormSubmit = async data => {
+    mutateUserData(data, onFormSuccess, onError);
+  };
+
+  const renderComponent = component => {
+    // ProfilePic updates multiple data fields
+    if (component?.type === ComponentTypes.picture)
+      return (
+        <ProfilePic
+          key={ProfilePic.name}
+          control={control}
+          setValue={setValue}
+          setError={setError}
+          clearErrors={clearErrors}
+        />
+      );
+
+    if (component?.type === ComponentTypes.radioWithInput)
+      return (
+        <RadioGroupWithInput
+          key={`${RadioGroupWithInput.name} ${component?.id}`}
+          control={control}
+          {...component}
+        />
+      );
+
+    if (component?.type === ComponentTypes.dropdownWithInput)
+      return (
+        <DropdownWithInput
+          key={DropdownWithInput.name}
+          control={control}
+          {...component}
+        />
+      );
+
+    if (component?.type === ComponentTypes.checkboxWithInput)
+      return (
+        <CheckboxWithInput
+          key={CheckboxWithInput.name}
+          control={control}
+          {...component}
+        />
+      );
+
+    if (component?.type === ComponentTypes.multiCheckboxWithInput)
+      return (
+        <MultiCheckboxWithInput
+          key={MultiCheckboxWithInput.name}
+          control={control}
+          {...component}
+        />
+      );
+
+    const displayWarning =
+      component.type === ComponentTypes.warning &&
+      (component.alwaysVisible ||
+        (watch(component.dataField) &&
+          !component.allowedValues?.includes(watch(component.dataField))));
+
+    const warningTypeButHidden =
+      component.type === ComponentTypes.warning && !displayWarning;
+
+    return warningTypeButHidden ? null : (
+      <FormStep
+        key={`FormStep Component ${component?.dataField}`}
+        control={control}
+        content={getFormComponent(component, t)}
+      />
+    );
+  };
+
+  const renderComponents = () => {
+    const result = [];
+    let groupBuffer = [];
+
+    components.forEach((component, index) => {
+      if (component.grouped) {
+        groupBuffer.push(renderComponent(component));
+      } else {
+        // If we have grouped components in buffer, render them first
+        if (groupBuffer.length > 0) {
+          result.push(
+            <GroupedRow key={`group-${component.dataField || index}`}>
+              {groupBuffer}
+            </GroupedRow>,
+          );
+
+          groupBuffer = [];
+        }
+
+        // Render current ungrouped component
+        result.push(renderComponent(component));
+      }
+    });
+
+    // Don't forget any remaining grouped components
+    if (groupBuffer.length > 0) {
+      result.push(<GroupedRow key="group-final">{groupBuffer}</GroupedRow>);
+    }
+
+    return result;
+  };
+
+  // Determine which error to display (prioritize server errors, then field errors)
+  const serverError = errors?.root?.serverError;
+  const imageError = errors?.[USER_FIELDS.image];
+  const displayError = serverError || imageError;
+
+  const lastStepButtonText = userData?.isOnboarded
+    ? 'complete'
+    : userData?.profile?.user_type === USER_TYPES.learner
+    ? 'to_appointment_booking'
+    : 'to_onboarding';
+
+  const noBackButton =
+    Boolean(!prevPage) ||
+    (userData?.userFormCompleted && slug === USER_FORM_PARTNER_1);
+
+  return (
+    <StyledCard>
+      <Title tag="h2" type={TextTypes.Heading4}>
+        {t(title)}
+      </Title>
+      <StyledForm onSubmit={handleSubmit(onFormSubmit)}>
+        {step && !isEditPath && (
+          <StyledProgress max={totalSteps} value={step} />
+        )}
+        {note && <StyledNote>{t(note)}</StyledNote>}
+        {renderComponents()}
+        <SubmitError $visible={!!displayError}>
+          {t(displayError?.message)}
+        </SubmitError>
+        <FormButtons $onlyOneBtn={noBackButton}>
+          {!noBackButton && (
+            <Button
+              appearance={ButtonAppearance.Secondary}
+              onClick={handleBackClick}
+              size={ButtonSizes.Small}
+              type="button"
+            >
+              {t('form.btn_back')}
+            </Button>
+          )}
+          <Button type="submit" size={ButtonSizes.Small}>
+            {t(`form.btn_${isLastStep ? lastStepButtonText : 'next'}`)}
+          </Button>
+        </FormButtons>
+      </StyledForm>
+    </StyledCard>
+  );
+};
+
+export default Form;

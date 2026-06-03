@@ -1,5 +1,6 @@
 import {
   AttachmentIcon,
+  ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
   CloseIcon,
@@ -14,7 +15,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isSameDay } from 'date-fns';
 import { get, isEmpty } from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -28,7 +29,10 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat';
-import { useCallSetupStore, useChatInputStore } from '../../../features/stores/index';
+import {
+  useCallSetupStore,
+  useChatInputStore,
+} from '../../../features/stores/index';
 import {
   CHATS_ENDPOINT_SEPERATE,
   USER_ENDPOINT,
@@ -52,6 +56,7 @@ import {
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll';
 import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes';
 import UnreadDot from '../../atoms/UnreadDot';
+import { AcceptedFiles } from '../FileDropzone/FileDropzone';
 import {
   Attachment,
   AttachmentButton,
@@ -62,18 +67,21 @@ import {
   MessageText,
   Messages,
   NoMessages,
+  ScrollTrigger,
   SendButton,
   StickyDateHeader,
   Time,
   WriteSection,
 } from './Chat.styles';
 
+const EMPTY_MESSAGE_LIST: [] = [];
+
 const Chat = ({
   chatId,
   inCall = false,
 }: {
   chatId: string;
-  inCall: boolean;
+  inCall?: boolean;
 }) => {
   const {
     t,
@@ -81,7 +89,7 @@ const Chat = ({
   } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
-  const messagesRef = useRef();
+  const messagesRef = useRef<HTMLDivElement>(null);
   const { data: user } = useSWR(USER_ENDPOINT);
   const userId = user?.id;
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,14 +112,16 @@ const Chat = ({
       revalidateOnFocus: true,
     },
   );
-  const messages = chatMessages?.results || [];
+  const messages = chatMessages?.results ?? EMPTY_MESSAGE_LIST;
   const messagesResult = messages;
   const isUnmatched = activeChat?.is_unmatched;
 
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
   const [selectedFile, setSelectedFile] = useState(null);
-  const fileInputRef = useRef();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const hasInitiallyScrolledRef = useRef(false);
+  const previousNewestMessageUuidRef = useRef<string | null>(null);
 
   const { initCallSetup } = useCallSetupStore();
   const { textToAdd, clearText } = useChatInputStore();
@@ -121,14 +131,19 @@ const Chat = ({
     fetchArgs: { id: chatId },
     fetchCondition: !!chatId,
     items: messages,
-    currentPage: chatMessages?.page,
-    totalPages: chatMessages?.pages_total,
+    currentPage: chatMessages?.page ?? 0,
+    totalPages: chatMessages?.pages_total ?? 1,
     setItems: items => {
-      if (chatMessages) {
+      if (chatMessages && messagesRef.current) {
+        // Preserve scroll position when loading older messages
+        const scrollHeightBefore = messagesRef.current.scrollHeight;
+        const scrollTopBefore = messagesRef.current.scrollTop;
+
         mutateMessages(
           (prev: any) => {
+            const prevResults = prev?.results ?? [];
             const existingUuids = new Set(
-              prev?.results?.map((message: any) => message.uuid) || [],
+              prevResults.map((message: any) => message.uuid),
             );
             const newResults = items.results.filter(
               (message: any) => !existingUuids.has(message.uuid),
@@ -137,13 +152,22 @@ const Chat = ({
             return {
               ...prev,
               ...items,
-              results: [...prev.results, ...newResults],
+              results: [...prevResults, ...newResults],
             };
           },
           {
             revalidate: false,
           },
         );
+
+        // Restore scroll position after DOM updates
+        setTimeout(() => {
+          if (messagesRef.current) {
+            const scrollHeightAfter = messagesRef.current.scrollHeight;
+            const heightDifference = scrollHeightAfter - scrollHeightBefore;
+            messagesRef.current.scrollTop = scrollTopBefore + heightDifference;
+          }
+        }, 0);
       }
     },
     onError,
@@ -261,7 +285,6 @@ const Chat = ({
     clearSelectedFile();
     addMessage(data, chatId, null, true);
     setIsSubmitting(false);
-    messagesRef.current.scrollTop = 0;
     setMessagesSent(curr => curr + 1);
   };
 
@@ -289,7 +312,10 @@ const Chat = ({
   const groupMessagesByDate = ungroupedMessages => {
     if (!ungroupedMessages) return [];
 
-    return ungroupedMessages.reduce((groups, message) => {
+    // Reverse messages so oldest is first (for standard chat behavior)
+    const chronologicalMessages = [...ungroupedMessages].reverse();
+
+    return chronologicalMessages.reduce((groups, message) => {
       const messageDate = new Date(message.created);
       const prevGroup = groups[groups.length - 1];
 
@@ -301,8 +327,8 @@ const Chat = ({
           messages: [message],
         });
       } else {
-        // Add message to existing group
-        prevGroup.messages.unshift(message);
+        // Add message to existing group (chronological order - oldest first)
+        prevGroup.messages.push(message);
       }
 
       return groups;
@@ -311,23 +337,40 @@ const Chat = ({
 
   const messageGroups = groupMessagesByDate(messagesResult);
 
+  // Scroll to bottom on initial mount or when receiving a new message
+  const newestMessageUuid =
+    messagesResult.length > 0 ? messagesResult[0]?.uuid : null;
+
+  useEffect(() => {
+    if (!messagesRef.current || !newestMessageUuid) return;
+
+    const isInitialMount = !hasInitiallyScrolledRef.current;
+    const isNewMessageReceived =
+      newestMessageUuid !== previousNewestMessageUuidRef.current;
+
+    if (isInitialMount || isNewMessageReceived) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+      hasInitiallyScrolledRef.current = true;
+      previousNewestMessageUuidRef.current = newestMessageUuid;
+    }
+  }, [newestMessageUuid]);
+
   return (
     <ChatContainer>
       <Messages ref={messagesRef}>
         {chatMessages?.page &&
           (isEmpty(messagesResult) ? (
             <NoMessages type={TextTypes.Body4}>
-              {isUnmatched ?
-                t('chat.unmatched_no_messages') :
-                t('chat.no_messages')}
+              {isUnmatched
+                ? t('chat.unmatched_no_messages')
+                : t('chat.no_messages')}
             </NoMessages>
           ) : (
             <>
-              {messageGroups.map((group, groupIndex) => (
+              <ScrollTrigger ref={scrollRef} />
+              {messageGroups.map(group => (
                 <MessageGroup key={group.date.toISOString()}>
-                  <StickyDateHeader
-                    $isSticky={groupIndex !== messageGroups.length - 1}
-                  >
+                  <StickyDateHeader $isSticky>
                     <Text type={TextTypes.Body6}>{group.formattedDate}</Text>
                   </StickyDateHeader>
                   {group.messages.map(message => {
@@ -337,15 +380,15 @@ const Chat = ({
                       t,
                     );
 
-                    const customChatElements = message.parsable ?
-                      getCustomChatElements({
+                    const customChatElements = message.parsable
+                      ? getCustomChatElements({
                           initCallSetup,
                           message: { ...message, text: processedMessageText },
                           userId,
                           activeChat,
                           inCall,
-                        }) :
-                      [];
+                        })
+                      : [];
 
                     return (
                       <Message
@@ -391,7 +434,6 @@ const Chat = ({
                   })}
                 </MessageGroup>
               ))}
-              <div ref={scrollRef} />
             </>
           ))}
       </Messages>
@@ -401,9 +443,7 @@ const Chat = ({
           ref={fileInputRef}
           onChange={handleFileSelect}
           style={{ display: 'none' }}
-          accept="application/pdf, .pdf,.doc,.docx,.txt,.rtf,.odt,
-                    .jpg,.jpeg,.png,.gif,.bmp,.webp,.tiff,
-                    .ppt,.pptx,.xls,.xlsx,.csv, image/*"
+          accept={AcceptedFiles.Generic}
         />
 
         <MessageBox
@@ -417,9 +457,9 @@ const Chat = ({
           error={t(get(errors, `${ROOT_SERVER_ERROR}.message`))}
           expandable
           placeholder={
-            isUnmatched ?
-              t('chat.unmatched_text_area_placeholder') :
-              t('chat.text_area_placeholder')
+            isUnmatched
+              ? t('chat.unmatched_text_area_placeholder')
+              : t('chat.text_area_placeholder')
           }
           onSubmit={() => handleSubmit(onSendMessage)()}
           size={TextAreaSize.Xsmall}
@@ -439,10 +479,11 @@ const Chat = ({
           size={ButtonSizes.Large}
           type="button"
           variation={ButtonVariations.Circle}
+          appearance={ButtonAppearance.Secondary}
           backgroundColor={
-            selectedFile ?
-              theme.color.status.error :
-              theme.color.surface.primary
+            selectedFile
+              ? theme.color.status.error
+              : theme.color.surface.primary
           }
           borderColor={theme.color.text.title}
           color={
@@ -471,7 +512,6 @@ const Chat = ({
           type="submit"
           disabled={isSubmitting || isUnmatched}
           variation={ButtonVariations.Circle}
-          backgroundColor={theme.color.gradient.orange10}
         >
           <SendIcon
             label={t('chat.send_btn')}

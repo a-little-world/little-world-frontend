@@ -9,6 +9,7 @@ import {
   CHATS_ENDPOINT_SEPERATE,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
+  getChatEndpoint,
 } from './index';
 
 interface MatchesData {
@@ -102,9 +103,9 @@ export function addMessage(
             return {
               ...chat,
               unread_count:
-                senderIsSelf || message.read ?
-                  chat.unread_count :
-                  (chat.unread_count || 0) + 1,
+                senderIsSelf || message.read
+                  ? chat.unread_count
+                  : (chat.unread_count || 0) + 1,
               newest_message: message,
             };
           }
@@ -134,6 +135,9 @@ export function addMessage(
 
     return chatsData;
   });
+
+  // Revalidate active (single) chat so Chat.tsx gets fresh unread_count
+  mutate(getChatEndpoint(chatId));
 }
 
 export function addActiveCallRoom(callRoom: any): void {
@@ -222,6 +226,9 @@ export function markChatMessagesRead(chatId: string, userId: string): void {
       }),
     };
   });
+
+  // Revalidate active (single) chat so Chat.tsx gets fresh unread_count
+  mutate(getChatEndpoint(chatId));
 }
 
 export function preMatchingAppointmentBooked(appointment: any): void {
@@ -291,13 +298,13 @@ export function runWsBridgeMutation(
       break;
     }
     case 'preMatchingAppointmentBooked': {
-      const { appointment } = payload;
-      preMatchingAppointmentBooked(appointment);
+      // Payload is PreMatchingAppointmentSerializer data
+      preMatchingAppointmentBooked(payload);
       break;
     }
     case 'addPostCallSurvey': {
-      const { postCallSurvey } = payload;
-      addPostCallSurvey(postCallSurvey);
+      // Payload is the post-call survey dict
+      addPostCallSurvey(payload);
       break;
     }
     default:

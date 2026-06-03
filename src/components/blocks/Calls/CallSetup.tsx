@@ -25,10 +25,11 @@ import { useConnectedCallStore } from '../../../features/stores';
 import { USER_ENDPOINT } from '../../../features/swr/index';
 import { clearActiveTracks } from '../../../helpers/video';
 import { getCallRoute } from '../../../router/routes';
+import FirefoxConnectionWarning from '../../atoms/FirefoxConnectionWarning';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
 
-export const CallSetupCard = styled(ModalCard) <{ $hideJoinBtn?: boolean }>`
+export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
   ${({ theme, $hideJoinBtn }) => css`
     padding: ${theme.spacing.large};
     gap: 0;
@@ -70,7 +71,7 @@ export const CallSetupCard = styled(ModalCard) <{ $hideJoinBtn?: boolean }>`
       }
 
       ${$hideJoinBtn &&
-    css`
+      css`
         display: none;
       `}
     }
@@ -186,6 +187,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
         <Text center type={TextTypes.Body4}>
           {t('pcs_sub_heading')}
         </Text>
+        <FirefoxConnectionWarning />
       </CardContent>
       <PreJoin
         language={language as PrejoinLanguage}

@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie';
-
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 import {
@@ -53,26 +51,18 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
 
 export const submitHelpForm = async (formData, onSuccess, onFailure) => {
   try {
-    try {
-      const response = await apiFetch(`/api/help_message/`, {
-        headers: {
-          'X-CSRFToken': Cookies.get('csrftoken'),
-          'X-UseTagsOnly': true,
-        },
-        method: 'POST',
-        body: formData,
-      });
+    const response = await apiFetch(`/api/help_message/`, {
+      method: 'POST',
+      body: formData,
+    });
 
-      onSuccess(response);
-    } catch (error) {
-      if (error?.status === 413)
-        throw new Error('validation.image_upload_error');
-      else {
-        throw error;
-      }
-    }
+    onSuccess(response);
   } catch (error) {
-    onFailure(error);
+    if (error?.status === 413) {
+      onFailure(new Error('validation.image_upload_error'));
+    } else {
+      onFailure(error);
+    }
   }
 };
 
@@ -154,16 +144,25 @@ export const login = async ({
   useMobileAuthTokenStore
     .getState()
     .setTokens(
-      loginData?.token_access || null,
-      loginData?.token_refresh || null,
+      loginData?.token_access ?? undefined,
+      loginData?.token_refresh ?? undefined,
     );
 
   await sendMessageToReactNative({
     action: 'SET_AUTH_TOKENS',
     payload: {
-      accessToken: loginData?.token_access || null,
-      refreshToken: loginData?.token_refresh || null,
+      accessToken: loginData?.token_access || undefined,
+      refreshToken: loginData?.token_refresh || undefined,
     },
+  });
+
+  // Notify native app to register the firebase device push token.
+  // We can do this because the firebase sdk on native is always active.
+  // On web it is only activated when it is both supported and push notifications
+  // are enabled, so only register under these circumstances (see Firebase component)
+  await sendMessageToReactNative({
+    action: 'REGISTER_DEVICE_PUSH_TOKEN',
+    payload: {},
   });
 
   delete loginData?.token_access;
@@ -180,6 +179,7 @@ export const signUp = async ({
   lastName,
   mailingList,
   company = null,
+  userType,
 }) => {
   if (!environment.isNative) {
     return apiFetch(`/api/register/`, {
@@ -194,6 +194,7 @@ export const signUp = async ({
         birth_year: birthYear,
         newsletter_subscribed: mailingList,
         company,
+        user_type: userType,
       },
     });
   }
@@ -233,16 +234,25 @@ export const signUp = async ({
   useMobileAuthTokenStore
     .getState()
     .setTokens(
-      signUpData?.token_access || null,
-      signUpData?.token_refresh || null,
+      signUpData?.token_access ?? undefined,
+      signUpData?.token_refresh ?? undefined,
     );
 
   await sendMessageToReactNative({
     action: 'SET_AUTH_TOKENS',
     payload: {
-      accessToken: signUpData?.token_access || null,
-      refreshToken: signUpData?.token_refresh || null,
+      accessToken: signUpData?.token_access ?? undefined,
+      refreshToken: signUpData?.token_refresh ?? undefined,
     },
+  });
+
+  // Notify native app to register the firebase device push token.
+  // We can do this because the firebase sdk on native is always active.
+  // On web it is only activated when it is both supported and push notifications
+  // are enabled, so only register under these circumstances (see Firebase component)
+  await sendMessageToReactNative({
+    action: 'REGISTER_DEVICE_PUSH_TOKEN',
+    payload: {},
   });
 
   delete signUpData?.token_access;

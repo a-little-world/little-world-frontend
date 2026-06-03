@@ -41,9 +41,9 @@ function CallSidebar({
         {sidebarTopics.map(topic => (
           <StyledOption
             appearance={
-              sideSelection === topic
-                ? ButtonAppearance.Primary
-                : ButtonAppearance.Secondary
+              sideSelection === topic ?
+                ButtonAppearance.Primary :
+                ButtonAppearance.Secondary
             }
             key={topic}
             onClick={() => setSideSelection(topic)}
@@ -54,7 +54,7 @@ function CallSidebar({
         ))}
       </SidebarSelector>
       <SidebarContent>
-        {sideSelection === 'chat' && <Chat chatId={chatId} inCall />}
+        {(sideSelection === 'chat' && isDisplayed) && <Chat chatId={chatId} inCall />}
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </SidebarContent>

@@ -3,7 +3,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
@@ -77,7 +77,7 @@ const Donate: FC = () => {
       <Title
         tag="h1"
         bold
-        type={TextTypes.Body2}
+        type={TextTypes.Heading4}
         color={theme.color.text.title}
         center
       >

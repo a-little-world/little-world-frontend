@@ -1,3 +1,5 @@
+import clamp from 'lodash/clamp';
+import toFinite from 'lodash/toFinite';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseInfiniteScrollProps {
@@ -5,7 +7,9 @@ interface UseInfiniteScrollProps {
   fetchArgs?: { [key: string]: any };
   fetchCondition?: boolean;
   items?: any[];
+  /** Last loaded page from the API (1-based). Use `0` before any fetch so the mount effect requests page 1. */
   currentPage?: number;
+  /** Total page count from the API (`pages_total`). Omit while unknown — clamped to ≥1 so we do not paginate forever. */
   totalPages?: number;
   setItems: (items: any) => void;
   onError?: () => void;
@@ -17,7 +21,7 @@ const useInfiniteScroll = ({
   fetchCondition = true,
   items = [],
   currentPage = 0,
-  totalPages = 0,
+  totalPages,
   setItems,
   onError,
 }: UseInfiniteScrollProps) => {
@@ -25,8 +29,14 @@ const useInfiniteScroll = ({
   const scrollRef = useRef(null);
   const dependencyList: string = JSON.stringify(fetchArgs);
 
+  const effectiveTotalPages = clamp(
+    toFinite(totalPages),
+    1,
+    Number.MAX_SAFE_INTEGER,
+  );
+
   const fetchData = useCallback(async () => {
-    if (!fetchCondition || loading || currentPage >= totalPages) {
+    if (!fetchCondition || loading || currentPage >= effectiveTotalPages) {
       return;
     }
 
@@ -46,24 +56,28 @@ const useInfiniteScroll = ({
         onError?.();
         setLoading(false);
       });
-  }, [currentPage, loading, dependencyList, items, fetchArgs]);
+  }, [
+    currentPage,
+    loading,
+    dependencyList,
+    items,
+    fetchArgs,
+    fetchCondition,
+    effectiveTotalPages,
+    fetchItems,
+    setItems,
+    onError,
+  ]);
 
   useEffect(() => {
     // only fetch on mount and when page is reset to 0
     if (!currentPage) fetchData();
-  }, [currentPage, dependencyList]);
+  }, [currentPage, dependencyList, fetchData]);
 
   // fetch on scroll
   useEffect(() => {
     const observer = new IntersectionObserver(entries => {
       const target = entries[0];
-      console.log('Intersection observer:', {
-        isIntersecting: target.isIntersecting,
-        fetchCondition,
-        loading,
-        currentPage,
-        totalPages,
-      });
       if (target.isIntersecting) {
         fetchData();
       }
@@ -78,7 +92,7 @@ const useInfiniteScroll = ({
         observer.unobserve(scrollRef.current);
       }
     };
-  }, [fetchData, items, currentPage, totalPages]);
+  }, [fetchData, items, currentPage, effectiveTotalPages]);
 
   return {
     scrollRef,

@@ -1,41 +1,23 @@
-import {
-  Button,
-  ButtonVariations,
-} from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import styled, { css } from 'styled-components';
 
+import OptionSelector from '../../atoms/OptionSelector';
 import { LANGUAGES } from '../../../constants/index';
 import { COOKIE_LANG } from '../../../i18n';
 
-const Selector = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const LanguageButton = styled(Button)`
-  font-weight: bold;
-  border: none;
-  font-size: 0.875rem;
-  line-height: 1rem;
-  background: ${({ theme }) => theme.color.surface.disabled};
-  color: ${({ theme }) => theme.color.border.moderate};
-  cursor: pointer;
-  text-transform: uppercase;
-  padding: ${({ theme }) => theme.spacing.xxsmall};
-
-  ${({ disabled }) =>
-    disabled &&
-    css`
-      background: ${({ theme }) => theme.color.surface.primary} !important;
-      color: ${({ theme }) => theme.color.text.highlight} !important;
-    `}
-`;
+const LANGUAGE_OPTIONS = [
+  { value: LANGUAGES.de, label: 'DE', ariaLabel: 'switch language to German' },
+  { value: LANGUAGES.en, label: 'EN', ariaLabel: 'switch language to English' },
+];
 
 const LanguageSelector = () => {
   const { i18n } = useTranslation();
+
+  const currentValue =
+    i18n.language === LANGUAGES.de || i18n.language?.startsWith?.(LANGUAGES.de) ?
+      LANGUAGES.de :
+      LANGUAGES.en;
 
   const handleChangeLanguage = lang => {
     i18n.changeLanguage(lang);
@@ -43,25 +25,11 @@ const LanguageSelector = () => {
   };
 
   return (
-    <Selector>
-      <LanguageButton
-        aria-label="switch language to German"
-        variation={ButtonVariations.Inline}
-        onClick={() => handleChangeLanguage(LANGUAGES.de)}
-        disabled={i18n.language === LANGUAGES.de}
-        $right
-      >
-        DE
-      </LanguageButton>
-      <LanguageButton
-        aria-label="switch language to English"
-        variation={ButtonVariations.Inline}
-        onClick={() => handleChangeLanguage(LANGUAGES.en)}
-        disabled={i18n.language.includes(LANGUAGES.en)} // multiple en codes e.g. en-GB
-      >
-        EN
-      </LanguageButton>
-    </Selector>
+    <OptionSelector
+      options={LANGUAGE_OPTIONS}
+      value={currentValue}
+      onChange={handleChangeLanguage}
+    />
   );
 };
 

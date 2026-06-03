@@ -30,9 +30,13 @@ import Login from '../components/views/Login';
 import Messages from '../components/views/Messages';
 import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
+import OnboardingSelection from '../components/views/Onboarding/OnboardingSelection';
+import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalkthrough';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
+import CoursePreview from '../components/views/Resources/Trainings/CoursePreview';
+import Training from '../components/views/Resources/Trainings/Training';
 import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
 import VerifyEmail from '../components/views/VerifyEmail';
@@ -41,6 +45,7 @@ import { STORAGE_KEYS } from '../constants';
 import { environment } from '../environment';
 import AuthGuard from '../guards/AuthGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
+import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
   APP_ROUTE,
   BASE_ROUTE,
@@ -54,12 +59,15 @@ import {
   EDIT_FORM_ROUTE,
   EMAIL_PREFERENCES_ROUTE,
   FORGOT_PASSWORD_ROUTE,
+  HELP_CONTACT_ROUTE,
+  HELP_FAQS_ROUTE,
   HELP_ROUTE,
   LANGUAGE_RESOURCES_ROUTE,
   LOGIN_ROUTE,
   MESSAGES_ROUTE,
   MY_STORY_ROUTE,
   NOTIFICATIONS_ROUTE,
+  ONBOARDING_ROUTE,
   OUR_WORLD_ROUTE,
   PARTNERS_ROUTE,
   PARTNER_ROUTE,
@@ -67,9 +75,11 @@ import {
   RANDOM_CALL_ROUTE,
   RESET_PASSWORD_ROUTE,
   RESOURCES_ROUTE,
+  SELF_ONBOARDING_ROUTE,
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
+  COURSE_PREVIEW_ROUTE,
   TRAININGS_ROUTE,
   TRAINING_ROUTE,
   USER_FORM_ROUTE,
@@ -89,20 +99,23 @@ const getInitialTheme = () => {
   return undefined; // Let CustomThemeProvider use its default
 };
 
-export const Root = ({ children, restoreScroll = true }) => (
-  <CustomThemeProvider defaultMode={getInitialTheme()}>
-    <ToastProvider>
-      <AuthGuard>
-        <WebsocketBridge />
-        {!environment.isNative && <FireBase />}
-      </AuthGuard>
-      {restoreScroll && <ScrollRestoration />}
-      <GlobalStyles />
-      {environment.isNative && <NativeMessageHandler />}
-      {children || <Outlet />}
-    </ToastProvider>
-  </CustomThemeProvider>
-);
+export const Root = ({ children, restoreScroll = true }) => {
+  useErrorDebugBridge();
+  return (
+    <CustomThemeProvider defaultMode={getInitialTheme()}>
+      <ToastProvider>
+        <AuthGuard>
+          <WebsocketBridge />
+          {!environment.isNative && <FireBase />}
+        </AuthGuard>
+        {restoreScroll && <ScrollRestoration />}
+        <GlobalStyles />
+        {environment.isNative && <NativeMessageHandler />}
+        {children || <Outlet />}
+      </ToastProvider>
+    </CustomThemeProvider>
+  );
+};
 
 export function getWebRouter() {
   const ROOT_ROUTES = [
@@ -276,6 +289,22 @@ export function getWebRouter() {
       ),
     },
     {
+      path: getAppRoute(COURSE_PREVIEW_ROUTE),
+      element: (
+        <FullAppLayout>
+          <CoursePreview />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(TRAINING_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Training />
+        </FullAppLayout>
+      ),
+    },
+    {
       path: getAppRoute(RESOURCES_ROUTE),
       element: (
         <FullAppLayout>
@@ -285,14 +314,6 @@ export function getWebRouter() {
     },
     {
       path: getAppRoute(TRAININGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAINING_ROUTE),
       element: (
         <FullAppLayout>
           <Resources />
@@ -364,7 +385,20 @@ export function getWebRouter() {
       ),
     },
     {
+      // Legacy / bookmarked `/app/help` → default help subpage (no standalone help index).
       path: getAppRoute(HELP_ROUTE),
+      element: <Navigate to={getAppRoute(HELP_CONTACT_ROUTE)} replace />,
+    },
+    {
+      path: getAppRoute(HELP_CONTACT_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Help />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(HELP_FAQS_ROUTE),
       element: (
         <FullAppLayout>
           <Help />
@@ -377,6 +411,22 @@ export function getWebRouter() {
         <FullAppLayout>
           <Settings />
         </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingSelection />
+        </FormLayout>
+      ),
+    },
+    {
+      path: getAppRoute(SELF_ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingWalkthrough />
+        </FormLayout>
       ),
     },
     {
@@ -479,6 +529,7 @@ export function getNativeRouter() {
       ),
       errorElement: <RouterError Layout={FormLayout} />,
     },
+
     {
       path: APP_ROUTE,
       element: (
@@ -489,10 +540,37 @@ export function getNativeRouter() {
       errorElement: <RouterError />,
     },
     {
+      path: getAppRoute(ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingSelection />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: getAppRoute(SELF_ONBOARDING_ROUTE),
+      element: (
+        <FormLayout>
+          <OnboardingWalkthrough />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
       path: getAppRoute(VERIFY_EMAIL_ROUTE),
       element: (
         <FormLayout>
           <VerifyEmail />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: getAppRoute(CHANGE_EMAIL_ROUTE),
+      element: (
+        <FormLayout>
+          <ChangeEmail />
         </FormLayout>
       ),
       errorElement: <RouterError Layout={FormLayout} />,
@@ -556,6 +634,22 @@ export function getNativeRouter() {
       ),
     },
     {
+      path: getAppRoute(COURSE_PREVIEW_ROUTE),
+      element: (
+        <FullAppLayout>
+          <CoursePreview />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(TRAINING_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Training />
+        </FullAppLayout>
+      ),
+    },
+    {
       path: getAppRoute(RESOURCES_ROUTE),
       element: (
         <FullAppLayout>
@@ -565,14 +659,6 @@ export function getNativeRouter() {
     },
     {
       path: getAppRoute(TRAININGS_ROUTE),
-      element: (
-        <FullAppLayout>
-          <Resources />
-        </FullAppLayout>
-      ),
-    },
-    {
-      path: getAppRoute(TRAINING_ROUTE),
       element: (
         <FullAppLayout>
           <Resources />
@@ -644,7 +730,20 @@ export function getNativeRouter() {
       ),
     },
     {
+      // Legacy / bookmarked `/app/help` → default help subpage (no standalone help index).
       path: getAppRoute(HELP_ROUTE),
+      element: <Navigate to={getAppRoute(HELP_CONTACT_ROUTE)} replace />,
+    },
+    {
+      path: getAppRoute(HELP_CONTACT_ROUTE),
+      element: (
+        <FullAppLayout>
+          <Help />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(HELP_FAQS_ROUTE),
       element: (
         <FullAppLayout>
           <Help />

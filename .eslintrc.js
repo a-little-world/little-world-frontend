@@ -39,7 +39,6 @@ module.exports = {
     'react/require-default-props': 'off',
     'import/extensions': 'off',
     'arrow-parens': 'off',
-    'operator-linebreak': [1, 'after'],
     'no-confusing-arrow': 0,
     'no-unused-vars': 0,
     'no-undef': 'error',

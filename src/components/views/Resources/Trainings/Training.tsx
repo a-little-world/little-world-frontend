@@ -1,56 +1,32 @@
-import {
-  ButtonAppearance,
-  Link,
-  Text,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
+import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import { last } from 'lodash';
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 
 import useScrollToTop from '../../../../hooks/useScrollToTop';
-import { TRAININGS_ROUTE, getAppRoute } from '../../../../router/routes';
 import Stepper from '../../../atoms/Stepper';
 import Video from '../../../atoms/Video';
 import { TRAININGS_DATA, TRAINING_IDS, getDataBySlug } from '../constants';
-import {
-  Container,
-  ContentCard,
-  NotFoundCard,
-  VideoDescription,
-} from '../shared.styles';
+import { Container, ContentCard, VideoDescription } from '../shared.styles';
+import DynamicCourse from './DynamicCourse';
 import { CheckInText } from './Trainings.styles';
 
-const Training: FC = () => {
-  const { trainingSlug } = useParams();
+// ---------------------------------------------------------------------------
+// Hardcoded (video-only) training view
+// ---------------------------------------------------------------------------
+
+type HardcodedTrainingData =
+  (typeof TRAININGS_DATA)[keyof typeof TRAININGS_DATA];
+
+const HardcodedTraining: FC<{ training: HardcodedTrainingData }> = ({
+  training,
+}) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const scrollToTop = useScrollToTop();
-  const training = getDataBySlug(TRAININGS_DATA, trainingSlug);
-  const [videoId, setVideoId] = useState(training?.video[0].id);
-
-  if (!training || !videoId)
-    return (
-      <NotFoundCard>
-        <Text
-          color={theme.color.text.title}
-          type={TextTypes.Body2}
-          tag="h2"
-          bold
-          center
-        >
-          {t('resources.trainings.not_found')}
-        </Text>
-        <Link
-          to={getAppRoute(TRAININGS_ROUTE)}
-          buttonAppearance={ButtonAppearance.Primary}
-        >
-          {t('resources.trainings.return')}
-        </Link>
-      </NotFoundCard>
-    );
+  const [videoId, setVideoId] = useState(training.video[0].id);
 
   const handleVideoSelect = (id: string) => {
     setVideoId(id);
@@ -86,6 +62,21 @@ const Training: FC = () => {
       </Container>
     </ContentCard>
   );
+};
+
+// ---------------------------------------------------------------------------
+// Route-level component — dispatches to hardcoded or dynamic view
+// ---------------------------------------------------------------------------
+
+const Training: FC = () => {
+  const { trainingSlug } = useParams();
+  const hardcoded = getDataBySlug(TRAININGS_DATA, trainingSlug);
+
+  if (hardcoded) {
+    return <HardcodedTraining training={hardcoded} />;
+  }
+
+  return <DynamicCourse slug={trainingSlug} />;
 };
 
 export default Training;

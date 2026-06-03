@@ -1,5 +1,5 @@
 import { last } from 'lodash';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -14,7 +14,6 @@ import German from './German';
 import MyStory from './MyStory';
 import Partner from './Partners/Partner';
 import Partners from './Partners/Partners';
-import Training from './Trainings/Training';
 import Trainings from './Trainings/Trainings';
 
 const Content = styled.div`
@@ -40,7 +39,6 @@ type Subpages =
 const ROOT_PATH = 'trainings';
 
 const renderResourceContent = (page?: Subpages) => {
-  if (page === 'training') return <Training />;
   if (page === 'trainings') return <Trainings />;
   if (page === 'german') return <German />;
   if (page === 'beginners') return <Beginners />;

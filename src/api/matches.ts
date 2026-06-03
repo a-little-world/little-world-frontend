@@ -11,12 +11,12 @@ export const fetchUserMatch = async ({ userId, onError, onSuccess }) => {
   }
 };
 
-export const confirmMatch = async ({ userHash, onError, onSuccess }) => {
-  /** TODO: for consistency this api should also accept a matchId in the backend rather than userHashes ... */
+export const confirmMatch = async ({ userUuid, onError, onSuccess }) => {
+  /** This used to be a User-Hash ( @tbscode: This comment can be removed after say ~ July 2026 ) */
   try {
     const result = await apiFetch(`/api/user/confirm_match/`, {
       method: 'POST',
-      body: { matches: [userHash] },
+      body: { matches: [userUuid] },
       useTagsOnly: true,
     });
     onSuccess(result);
@@ -25,7 +25,7 @@ export const confirmMatch = async ({ userHash, onError, onSuccess }) => {
   }
 };
 
-export const partiallyConfirmMatch = async ({
+export const confirmOrDenyMatch = async ({
   matchId,
   acceptDeny,
   denyReason,
@@ -42,7 +42,7 @@ export const partiallyConfirmMatch = async ({
     const result = await apiFetch(`/api/user/match/confirm_deny/`, {
       method: 'POST',
       body: {
-        unconfirmed_match_hash: matchId,
+        unconfirmed_match_uuid: matchId,
         confirm: acceptDeny,
         deny_reason: denyReason,
       },
@@ -70,14 +70,61 @@ export const unmatch = async ({ reason, matchId, onSuccess, onError }) => {
   }
 };
 
-export const reportMatch = async ({ reason, matchId, onError, onSuccess }) => {
+export const reportIssue = async ({
+  keywords,
+  kind,
+  matchId,
+  onError,
+  onSuccess,
+  origin,
+  reason,
+  reportedUserId,
+}: {
+  keywords?: [string];
+  kind?: string;
+  matchId?: string;
+  onError: (error: any) => void;
+  onSuccess: (result: any) => void;
+  origin?: string;
+  reason: string;
+  reportedUserId?: string | null;
+}) => {
   try {
-    const result = await apiFetch(`/api/matching/report/`, {
+    const body: {
+      keywords?: [string];
+      kind?: string;
+      match_id?: string;
+      message?: string;
+      reason?: string;
+      origin?: string;
+      reported_user_id?: string;
+    } = {};
+
+    if (matchId) {
+      body.match_id = matchId;
+      body.reason = reason;
+    } else {
+      body.message = reason;
+    }
+
+    if (reportedUserId) {
+      body.reported_user_id = reportedUserId;
+    }
+    if (kind) {
+      body.kind = kind;
+    }
+    if (keywords) {
+      body.keywords = keywords;
+    }
+    if (origin) {
+      body.origin = origin;
+    }
+
+    const url = matchId ? '/api/matching/report_match/' : '/api/help_message/';
+
+    const result = await apiFetch(url, {
       method: 'POST',
-      body: {
-        match_id: matchId,
-        reason,
-      },
+      body,
       useTagsOnly: true,
     });
     onSuccess(result);

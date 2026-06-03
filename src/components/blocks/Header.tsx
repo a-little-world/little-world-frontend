@@ -3,8 +3,12 @@ import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
+import { USER_TYPES } from '../../constants';
 import { environment } from '../../environment';
-import { USER_ENDPOINT } from '../../features/swr/index';
+import {
+  IS_AUTHENTICATED_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../features/swr/index';
 import {
   PRIVACY_ROUTE,
   TERMS_ROUTE,
@@ -70,18 +74,20 @@ const LogoLink = styled.a`
 `;
 
 const Header = () => {
-  const {
-    i18n: { language },
-    t,
-  } = useTranslation();
-  const { data: user } = useSWR(USER_ENDPOINT);
-  const userId = user?.id;
+  const { t } = useTranslation();
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
+  const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
+  const accessToMainApp =
+    user?.profile?.user_type === USER_TYPES.learner
+      ? user?.userFormCompleted
+      : user?.isOnboarded;
+  const href = accessToMainApp ? getAppRoute() : WP_HOME_ROUTE;
 
   return (
     <StyledHeader>
       <LogoLink
-        href={userId ? getAppRoute() : WP_HOME_ROUTE}
-        target={environment?.isNative ? '_blank' : '_self'}
+        href={href}
+        target={environment?.isNative || !accessToMainApp ? '_blank' : '_self'}
       >
         <Logo stacked={false} />
       </LogoLink>
@@ -90,14 +96,14 @@ const Header = () => {
       </Options>
       <Policies>
         <Link
-          href={getHomeRoute(language, TERMS_ROUTE)}
+          href={getHomeRoute('de', TERMS_ROUTE)}
           target="_blank"
           textType={TextTypes.Body6}
         >
           {t('header.terms')}
         </Link>
         <Link
-          href={getHomeRoute(language, PRIVACY_ROUTE)}
+          href={getHomeRoute('de', PRIVACY_ROUTE)}
           target="_blank"
           textType={TextTypes.Body6}
         >

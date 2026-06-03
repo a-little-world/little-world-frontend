@@ -7,11 +7,16 @@ import useSWR, { mutate } from 'swr';
 import CustomPagination from '../../CustomPagination';
 import { updateMatchData } from '../../api/matches';
 import { useCallSetupStore } from '../../features/stores/index';
-import { getMatchEndpoint, USER_ENDPOINT } from '../../features/swr/index';
+import {
+  RANDOM_CALL_LOBBY_ENDPOINT,
+  USER_ENDPOINT,
+  getMatchEndpoint,
+} from '../../features/swr/index';
+import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import {
   COMMUNITY_EVENTS_ROUTE,
-  getAppRoute,
   RANDOM_CALLS_ROUTE,
+  getAppRoute,
 } from '../../router/routes';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard';
 import CommsBanner from '../blocks/CommsBanner';
@@ -20,6 +25,25 @@ import ContentSelector from '../blocks/ContentSelector';
 import NotificationPanel from '../blocks/NotificationPanel';
 import PartnerProfiles from '../blocks/PartnerProfiles';
 import RandomCalls from './RandomCalls/RandomCalls';
+
+interface RandomCallLobby {
+  uuid: string;
+  name: string;
+  status: boolean;
+  start_time: string;
+  end_time: string;
+  active_users_count: number;
+}
+
+interface EmptyRandomCallLobbyResponse {
+  data: null;
+  message: string;
+}
+
+const isRandomCallLobby = (
+  payload: RandomCallLobby | EmptyRandomCallLobbyResponse | undefined,
+): payload is RandomCallLobby =>
+  Boolean(payload && 'uuid' in payload);
 
 const Home = styled.div`
   display: flex;
@@ -37,7 +61,11 @@ const Home = styled.div`
   `};
 `;
 
-type subpages = 'events' | 'conversation_partners' | 'random_calls';
+type subpages =
+  | 'events'
+  | 'conversation_partners'
+  | 'random_calls'
+  | 'onboarding';
 
 const PAGE_ITEMS = 10;
 
@@ -51,6 +79,7 @@ function Main() {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [showCancelSearching, setShowCancelSearching] = useState(false);
+  useSystemModalBlocker(showCancelSearching, 'home-cancel-searching');
 
   const handlePageChange = async (page: number) => {
     updateMatchData({
@@ -67,8 +96,18 @@ function Main() {
 
   const { data: matches } = useSWR(getMatchEndpoint(currentPage));
   const { data: user } = useSWR(USER_ENDPOINT);
-  const hasRandomCallAccess = user?.hasRandomCallAccess ?? false;
-
+  const hasRandomCallsAccess = user?.hasRandomCallsAccess ?? false;
+  const { data: lobbyDataResponse } = useSWR<
+    RandomCallLobby | EmptyRandomCallLobbyResponse
+  >(
+    hasRandomCallsAccess ? RANDOM_CALL_LOBBY_ENDPOINT : null,
+    {
+      refreshInterval: 2000,
+    },
+  );
+  const lobbyData = isRandomCallLobby(lobbyDataResponse)
+    ? lobbyDataResponse
+    : undefined;
   useEffect(() => {
     const totalItems =
       (matches?.confirmed?.results_total ?? 1) +
@@ -91,17 +130,17 @@ function Main() {
     if (location.pathname === getAppRoute(RANDOM_CALLS_ROUTE)) {
       return 'random_calls';
     }
-    return 'conversation_partners';
+    return user?.isOnboarded ? 'conversation_partners' : 'onboarding';
   };
 
   const subpage = getSubpage();
 
   useEffect(() => {
     // Redirect away from random_calls route if user doesn't have access
-    if (subpage === 'random_calls' && !hasRandomCallAccess) {
+    if (subpage === 'random_calls' && !hasRandomCallsAccess) {
       navigate(getAppRoute(''));
     }
-  }, [subpage, hasRandomCallAccess, navigate]);
+  }, [subpage, hasRandomCallsAccess, navigate]);
 
   const handleSubpageSelect = (page: subpages) => {
     const nextPath = page !== 'conversation_partners' ? page : '';
@@ -112,6 +151,11 @@ function Main() {
     handlePageChange(page);
   };
 
+  const excludedTopics = !hasRandomCallsAccess ? ['random_calls'] : [];
+  excludedTopics.push(
+    !user?.isOnboarded ? 'conversation_partners' : 'onboarding',
+  );
+
   return (
     <>
       <ContentSelector
@@ -120,12 +164,16 @@ function Main() {
           handleSubpageSelect(selection as subpages)
         }
         use="main"
-        excludeTopics={!hasRandomCallAccess ? ['random_calls'] : undefined}
+        excludeTopics={excludedTopics}
+        newTopics={['random_calls']}
+        onlineTopics={lobbyData?.status ? ['random_calls'] : []}
       />
-      <CommsBanner />
+      {subpage !== 'random_calls' && <CommsBanner />}
       {subpage === 'events' && <CommunityEvents />}
-      {subpage === 'random_calls' && hasRandomCallAccess && <RandomCalls />}
-      {subpage === 'conversation_partners' && (
+      {subpage === 'random_calls' && hasRandomCallsAccess && (
+        <RandomCalls lobbyData={lobbyData} />
+      )}
+      {(subpage === 'conversation_partners' || subpage === 'onboarding') && (
         <>
           <Home>
             <PartnerProfiles

@@ -9,7 +9,7 @@ import {
   DownloadIcon,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
 import { archieveQuestion } from '../../../api/questions';
@@ -62,6 +62,7 @@ function QuestionCards() {
         <CategoryControl
           size={ButtonSizes.Medium}
           variation={ButtonVariations.Circle}
+          appearance={ButtonAppearance.Secondary}
           onClick={() => changeScroll('left')}
         >
           <ChevronLeftIcon
@@ -76,9 +77,9 @@ function QuestionCards() {
               key={topic?.uuid}
               type="button"
               appearance={
-                selectedTopic === topic?.uuid ?
-                  ButtonAppearance.Primary :
-                  ButtonAppearance.Secondary
+                selectedTopic === topic?.uuid
+                  ? ButtonAppearance.Primary
+                  : ButtonAppearance.Secondary
               }
               value={topic?.uuid}
               onClick={() => setTopic(topic?.uuid)}
@@ -90,6 +91,7 @@ function QuestionCards() {
         <CategoryControl
           size={ButtonSizes.Medium}
           variation={ButtonVariations.Circle}
+          appearance={ButtonAppearance.Secondary}
           onClick={() => changeScroll('right')}
         >
           <ChevronRightIcon label="next topics" width={6} height={10} />

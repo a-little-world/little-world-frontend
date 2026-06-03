@@ -49,6 +49,7 @@ export const PARTNERS_DATA = {
     additionalImage: LernFairImage,
     additionalAltImage: 'Girl studying',
     videoId: LERN_FAIR_YT_ID,
+    videoTitle: '',
   },
 };
 
@@ -67,7 +68,7 @@ export const TRAININGS_DATA = {
     link: getAppSubpageRoute(TRAININGS_ROUTE, 'kulturelle-missverstaendnisse'),
     linkText: 'resources.trainings.training_cta',
     image:
-      'https://home.little-world.com/wp-content/uploads/2025/03/Kulturelle-Missverstandnisse-Thumbnail.jpg',
+      'https://home.little-world.com/wp-content/uploads/2026/01/Kulturelle-Missverstaendnisse-und-Vorurteile.jpg',
     altImage: 'Kulturelle Missverständnisse Training',
     hasHandout: true,
     video: [
@@ -100,7 +101,7 @@ export const TRAININGS_DATA = {
     link: getAppSubpageRoute(TRAININGS_ROUTE, 'interkulturelle-kommunikation'),
     linkText: 'resources.trainings.training_cta',
     image:
-      'https://home.little-world.com/wp-content/uploads/2025/03/Interkulturelle-Kommunikation-Thumbnail.jpg',
+      'https://home.little-world.com/wp-content/uploads/2026/01/Interkulturellen-Kommunikation-Workshop.jpg',
     altImage: 'Interkulturelle Kommunikation Training',
     hasHandout: false,
     video: [

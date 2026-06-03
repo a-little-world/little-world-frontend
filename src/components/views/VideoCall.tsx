@@ -21,13 +21,14 @@ import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/pre
 import '@livekit/components-styles';
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { callAgain } from '../../api/livekit';
+import { endRandomCallMatch } from '../../api/randomCalls';
 import {
   useChatInputStore,
   useConnectedCallStore,
@@ -38,6 +39,7 @@ import {
   USER_ENDPOINT,
   getChatEndpoint,
 } from '../../features/swr';
+import useIsBelowBreakpoint from '../../hooks/useIsBelowBreakpoint';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import {
   RANDOM_CALLS_ROUTE,
@@ -67,6 +69,12 @@ import {
 
 interface MyVideoConferenceProps {
   isFullScreen: boolean;
+  isRandomCall: boolean;
+  randomCallMatchStatus?: {
+    partner_timedout_joining?: boolean;
+    partner_left_session?: boolean;
+    remaining_video_call_join_time?: number;
+  };
   partnerId?: string | number;
   partnerImage?: any;
   partnerImageType?: string;
@@ -77,10 +85,13 @@ interface MyVideoConferenceProps {
   initializeCallID: (uuid: string) => void;
   setCallRejected: (rejected: boolean) => void;
   callRejected: boolean;
+  onDisconnectClick: () => void;
 }
 
 function MyVideoConference({
   isFullScreen,
+  isRandomCall,
+  randomCallMatchStatus,
   partnerId,
   partnerImage,
   partnerImageType,
@@ -91,6 +102,7 @@ function MyVideoConference({
   initializeCallID,
   setCallRejected,
   callRejected,
+  onDisconnectClick,
 }: MyVideoConferenceProps) {
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
@@ -107,6 +119,8 @@ function MyVideoConference({
   const [callAgainError, setCallAgainError] = useState('');
   const { name } = useRoomInfo();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const { onClick: livekitDisconnectClick, ...disconnectButtonProps } =
+    disconnectProps;
   const theme = useTheme();
 
   const { t } = useTranslation();
@@ -154,6 +168,36 @@ function MyVideoConference({
     });
   };
 
+  const randomCallCountdownSeconds = Math.max(
+    0,
+    Math.ceil(randomCallMatchStatus?.remaining_video_call_join_time ?? 0),
+  );
+  const isPartnerDisconnectedInRandomCall =
+    !!randomCallMatchStatus?.partner_left_session;
+  const isPartnerTimedOutJoining =
+    !!randomCallMatchStatus?.partner_timedout_joining;
+  const getWaitingMessage = () => {
+    if (isRandomCall) {
+      if (isPartnerDisconnectedInRandomCall) {
+        return t('call.partner_disconnected', { name: partnerName });
+      }
+      if (isPartnerTimedOutJoining) {
+        return t('random_call.partner_timedout_joining', { name: partnerName });
+      }
+      return t('random_call.waiting_for_partner_countdown', {
+        name: partnerName,
+        seconds: randomCallCountdownSeconds,
+      });
+    }
+
+    if (otherUserDisconnected) {
+      return t('call.partner_disconnected', { name: partnerName });
+    }
+
+    return t('call.waiting_for_partner', { name: partnerName });
+  };
+  const waitingMessage = getWaitingMessage();
+
   if (isEmpty(tracks)) return null;
 
   return (
@@ -192,7 +236,11 @@ function MyVideoConference({
                   appearance={ButtonAppearance.Secondary}
                   color={theme.color.text.reversed}
                   size={ButtonSizes.Small}
-                  {...disconnectProps}
+                  {...disconnectButtonProps}
+                  onClick={(event: any) => {
+                    onDisconnectClick();
+                    livekitDisconnectClick?.(event);
+                  }}
                 >
                   {t('call.exit')}
                 </Button>
@@ -202,13 +250,8 @@ function MyVideoConference({
               </ButtonsContainer>
             </>
           ) : (
-            <Text type={TextTypes.Body4}>
-              {t(
-                otherUserDisconnected
-                  ? 'call.partner_disconnected'
-                  : 'call.waiting_for_partner',
-                { name: partnerName },
-              )}
+            <Text type={TextTypes.Body4} center>
+              {waitingMessage}
             </Text>
           )}
         </WaitingTile>
@@ -256,6 +299,7 @@ function VideoCall() {
     callRejected,
   } = useConnectedCallStore();
   const { setOnTextAdded } = useChatInputStore();
+  const isBelowBreakpoint = useIsBelowBreakpoint();
   const {
     uuid,
     token,
@@ -263,19 +307,37 @@ function VideoCall() {
     audioOptions,
     videoOptions,
     chatId,
+    randomMatchId,
     audioPermissionDenied,
     videoPermissionDenied,
     callType,
     postDisconnectRedirect,
+    randomLobbyUuid,
   } = callData || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
 
-  const { data: chatData } = useSWR(getChatEndpoint(chatId));
+  const { data: chatData } = useSWR(chatId ? getChatEndpoint(chatId) : null);
+  const isRandomCall = callType === 'random' || isRandomCallRoute;
+  const randomCallMatchStatusEndpoint =
+    isRandomCall && randomLobbyUuid && randomMatchId
+      ? `/api/random_calls/lobby/${randomLobbyUuid}/match/${randomMatchId}/status`
+      : null;
+  const { data: randomCallMatchStatus } = useSWR(
+    randomCallMatchStatusEndpoint,
+    {
+      refreshInterval: 1000,
+    },
+  );
+
   useEffect(() => {
     if (urlUserId && !token) {
       // If userId is in url but no token available, redirect to call-setup so we can re-join the call
-      navigate(getCallSetupRoute(urlUserId));
+      if (isRandomCallRoute) {
+        navigate(getAppRoute(RANDOM_CALLS_ROUTE));
+      } else {
+        navigate(getCallSetupRoute(urlUserId));
+      }
     }
   }, [urlUserId, token, navigate]);
 
@@ -297,7 +359,10 @@ function VideoCall() {
       setShowChat(true);
       setIsFullScreen(false);
     } else {
-      setShowChat(prevState => !prevState);
+      setShowChat(prevState => {
+        if (prevState) setSideSelection('chat');
+        return !prevState;
+      });
     }
   };
 
@@ -326,6 +391,15 @@ function VideoCall() {
     setSelectedDrawerOption('questions');
   };
 
+  const handleManualDisconnect = useCallback(() => {
+    if ((callType !== 'random' && !isRandomCallRoute) || !randomMatchId) {
+      return;
+    }
+    endRandomCallMatch(randomMatchId).catch(() => {
+      // Best effort: disconnect/redirect flow must continue even if this call fails.
+    });
+  }, [callType, isRandomCallRoute, randomMatchId]);
+
   return (
     <SidebarSelectionProvider
       value={{
@@ -343,7 +417,10 @@ function VideoCall() {
               token={token}
               serverUrl={livekitServerUrl}
               onDisconnected={() => {
-                disconnectFromCall(uuid);
+                disconnectFromCall({
+                  sessionId: uuid,
+                  partnerId: chatData?.partner?.id,
+                });
                 if (postDisconnectRedirect) {
                   navigate(postDisconnectRedirect, { replace: true });
                   return;
@@ -363,6 +440,8 @@ function VideoCall() {
             >
               <MyVideoConference
                 isFullScreen={isFullScreen}
+                isRandomCall={isRandomCall}
+                randomCallMatchStatus={randomCallMatchStatus}
                 sessionId={uuid}
                 partnerId={chatData?.partner?.id}
                 partnerName={chatData?.partner?.first_name}
@@ -381,6 +460,7 @@ function VideoCall() {
                 initializeCallID={initializeCallID}
                 setCallRejected={setCallRejected}
                 callRejected={callRejected}
+                onDisconnectClick={handleManualDisconnect}
               />
               <RoomAudioRenderer />
               {!callRejected && (
@@ -389,6 +469,7 @@ function VideoCall() {
                   onChatToggle={onMobileChatToggle}
                   onTranslatorToggle={onMobileTranslatorToggle}
                   onQuestionCardsToggle={onMobileQuestionsToggle}
+                  unreadChatCount={chatData?.unread_count}
                 />
               )}
               <ControlBar
@@ -397,36 +478,45 @@ function VideoCall() {
                 onChatToggle={onChatToggle}
                 onFullScreenToggle={onFullScreenToggle}
                 onTranslatorToggle={onTranslatorToggle}
+                onDisconnectClick={handleManualDisconnect}
                 onPermissionModalOpen={permissions => {
                   setDeniedPermissions(permissions);
                   setShowPermissionModal(true);
                 }}
+                unreadChatCount={chatData?.unread_count}
               />
             </LiveKitRoom>
             {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>
-          <Drawer
-            title="Translate"
-            open={selectedDrawerOption === 'translator'}
-            onClose={() => setSelectedDrawerOption(undefined)}
-          >
-            <TranslationTool />
-          </Drawer>
-          <Drawer
-            title="Chat"
-            open={selectedDrawerOption === 'chat'}
-            onClose={() => setSelectedDrawerOption(undefined)}
-          >
-            <Chat chatId={chatData?.uuid} inCall />
-          </Drawer>
-          <Drawer
-            title="Questions"
-            open={selectedDrawerOption === 'questions'}
-            onClose={() => setSelectedDrawerOption(undefined)}
-          >
-            <QuestionCards />
-          </Drawer>
-          <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
+          {isBelowBreakpoint ? (
+            <>
+              <Drawer
+                title="Translate"
+                open={selectedDrawerOption === 'translator'}
+                onClose={() => setSelectedDrawerOption(undefined)}
+              >
+                <TranslationTool />
+              </Drawer>
+              <Drawer
+                title="Chat"
+                open={selectedDrawerOption === 'chat'}
+                onClose={() => setSelectedDrawerOption(undefined)}
+              >
+                {selectedDrawerOption === 'chat' && (
+                  <Chat chatId={chatData?.uuid} inCall />
+                )}
+              </Drawer>
+              <Drawer
+                title="Questions"
+                open={selectedDrawerOption === 'questions'}
+                onClose={() => setSelectedDrawerOption(undefined)}
+              >
+                <QuestionCards />
+              </Drawer>
+            </>
+          ) : (
+            <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
+          )}
         </CallLayout>
       </LayoutContextProvider>
       {showPermissionModal && (

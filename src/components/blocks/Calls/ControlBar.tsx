@@ -16,7 +16,6 @@ import {
   MediaDeviceMenu,
   TrackToggle,
   useDisconnectButton,
-  useTrackToggle,
 } from '@livekit/components-react';
 import { Track } from 'livekit-client';
 import { useCallback, useState } from 'react';
@@ -192,12 +191,14 @@ interface SharedControlBarProps {
   activeOption?: string;
   onChatToggle: () => void;
   onTranslatorToggle: () => void;
+  unreadChatCount?: number;
 }
 
 interface ControlBarProps extends SharedControlBarProps {
   hide: boolean;
   onFullScreenToggle: () => void;
   isFullScreen: boolean;
+  onDisconnectClick?: () => void;
   onPermissionModalOpen: (permissions: {
     audio: boolean;
     video: boolean;
@@ -209,11 +210,13 @@ export const TopControlBar = ({
   onChatToggle,
   onQuestionCardsToggle,
   onTranslatorToggle,
+  unreadChatCount,
 }: { onQuestionCardsToggle: () => void } & SharedControlBarProps) => {
   const { t } = useTranslation();
   return (
     <Bar $position="top">
       <ToggleBtn onClick={onChatToggle} variation={ButtonVariations.Circle}>
+        {unreadChatCount ? <UnreadDot count={unreadChatCount} /> : null}
         <MessageIcon
           label={t('call.chat_label')}
           gradient={activeOption === 'chat' ? Gradients.Orange : undefined}
@@ -247,23 +250,22 @@ function ControlBar({
   hide,
   isFullScreen,
   onChatToggle,
+  onDisconnectClick,
   onFullScreenToggle,
   onTranslatorToggle,
   onPermissionModalOpen,
+  unreadChatCount,
 }: ControlBarProps) {
   const { t } = useTranslation();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
-  const hasUnreadMessage = false;
+
   const [isScreenShareEnabled, setIsScreenShareEnabled] = useState(false);
 
   const browserSupportsScreenSharing = supportsScreenSharing();
-
-  const { permissionDenied: audioPermissionDenied } = useTrackToggle({
-    source: Track.Source.Microphone,
-  });
-  const { permissionDenied: videoPermissionDenied } = useTrackToggle({
-    source: Track.Source.Camera,
-  });
+  const { onClick: livekitDisconnectClick, ...disconnectButtonProps } =
+    disconnectProps;
+  const [audioPermissionDenied, setAudioPermissionDenied] = useState(false);
+  const [videoPermissionDenied, setVideoPermissionDenied] = useState(false);
 
   const handleOpenPermissionModal = () => {
     onPermissionModalOpen?.({
@@ -296,6 +298,7 @@ function ControlBar({
                       : undefined
                   }
                   source={Track.Source.Microphone}
+                  onPermissionsChange={setAudioPermissionDenied}
                   showIcon
                   $withBackground
                   $permissionDenied={audioPermissionDenied}
@@ -322,6 +325,7 @@ function ControlBar({
                       : undefined
                   }
                   source={Track.Source.Camera}
+                  onPermissionsChange={setVideoPermissionDenied}
                   showIcon
                   $withBackground
                   $permissionDenied={videoPermissionDenied}
@@ -394,8 +398,7 @@ function ControlBar({
                 onClick={onChatToggle}
                 variation={ButtonVariations.Circle}
               >
-                {hasUnreadMessage && <UnreadDot count={1} />}
-
+                {unreadChatCount ? <UnreadDot count={unreadChatCount} /> : null}
                 <MessageIcon label={t('call.chat_label')} />
               </ToggleBtn>
             </div>
@@ -419,7 +422,13 @@ function ControlBar({
       <Section>
         <StyledTimer $desktopOnly />
 
-        <DisconnectBtn {...disconnectProps}>
+        <DisconnectBtn
+          {...disconnectButtonProps}
+          onClick={(event: any) => {
+            onDisconnectClick?.();
+            livekitDisconnectClick?.(event);
+          }}
+        >
           {t('call.leave_btn')}
         </DisconnectBtn>
       </Section>

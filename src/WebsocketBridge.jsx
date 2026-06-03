@@ -3,13 +3,18 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { mutate } from 'swr';
 
 import './App.css';
+import {
+  useEffectiveBackendUrl,
+  useEffectiveCoreWsScheme,
+} from './api/helpers';
 import { environment } from './environment';
-import { NOTIFICATIONS_ENDPOINT, UNREAD_NOTIFICATIONS_ENDPOINT } from './features/swr';
+import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
+import {
+  NOTIFICATIONS_ENDPOINT,
+  UNREAD_NOTIFICATIONS_ENDPOINT,
+} from './features/swr';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import useToast from './hooks/useToast';
-import useMobileAuthTokenStore from './features/stores/mobileAuthToken';
-
-const SOCKET_URL = environment.coreWsScheme + (environment.isNative ? environment.websocketHost : (typeof window !== 'undefined' ? window.location.host : '')) + environment.coreWsPath;
 
 const WebsocketBridge = () => {
   /**
@@ -20,13 +25,20 @@ const WebsocketBridge = () => {
    * payload: {...}
    * } --> this will triger a simple redux dispatch in the frontend
    */
+  const backendUrl = useEffectiveBackendUrl();
+  const coreWsScheme = useEffectiveCoreWsScheme();
+  const webSocketHost = new URL(backendUrl).host;
+  const socketUrl = coreWsScheme + webSocketHost + environment.coreWsPath;
+
   const accessToken = useMobileAuthTokenStore(state => state.accessToken);
-  const socketUrl = SOCKET_URL;
   const [, setMessageHistory] = useState([]);
   const { lastMessage, readyState } = useWebSocket(socketUrl, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
-    protocols: environment.isNative && accessToken ? [`bearer.${accessToken}`] : undefined,
+    protocols:
+      environment.isNative && accessToken
+        ? [`bearer.${accessToken}`]
+        : undefined,
   });
 
   const toast = useToast();
@@ -38,12 +50,10 @@ const WebsocketBridge = () => {
       console.log('CORE SOCKET:', message);
 
       if (message.action === 'addNotification' && message.payload?.showToast) {
-        const { headline, title, description, created_at } = message.payload;
+        const { title, description } = message.payload;
         toast.showToast({
-          headline,
           title,
           description,
-          timestamp: new Date(created_at).toLocaleTimeString(),
         });
 
         // TODO: only if message is also persisted
@@ -58,7 +68,7 @@ const WebsocketBridge = () => {
         console.warn('CORE SOCKET ERROR:', e);
       }
     }
-  }, [lastMessage, setMessageHistory]);
+  }, [lastMessage, setMessageHistory, toast]);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',

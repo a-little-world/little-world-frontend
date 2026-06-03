@@ -23,6 +23,7 @@ interface ProfileDetailProps {
   children?: ReactNode;
   description?: string;
   editable?: boolean;
+  fieldIsFlex?: boolean;
   setEditingField: (field: string) => void;
 }
 
@@ -31,6 +32,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
   children,
   description,
   editable = true,
+  fieldIsFlex = false,
   setEditingField,
 }) => {
   const { t } = useTranslation();
@@ -38,10 +40,10 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
 
   return (
     <ProfileSection>
-      <FieldTitle tag="h3" type={TextTypes.Body3} bold>
+      <FieldTitle tag="h3" type={TextTypes.Heading5} bold>
         {t(`profile.${content.dataField}_title`)}
       </FieldTitle>
-      <Field>
+      <Field $flex={fieldIsFlex}>
         {editable && (
           <Tooltip
             text={t('profile.edit_button_tooltip')}
