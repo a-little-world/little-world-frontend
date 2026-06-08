@@ -90,10 +90,11 @@ const SignUp = () => {
     revalidateOnMount: false,
     revalidateOnFocus: false,
   });
-  const userTypeOptions = apiOptions?.profile?.user_type.map(({ value }) => ({
-    label: t(`sign_up.user_type.${value}`),
-    value,
-  }));
+  const userTypeOptions =
+    apiOptions?.profile?.user_type.map(({ value }) => ({
+      label: t(`sign_up.user_type.${value}`),
+      value,
+    })) ?? [];
 
   useEffect(() => {
     if (searchParams.has('company')) {
@@ -264,7 +265,7 @@ const SignUp = () => {
               label={t('sign_up.user_type_label')}
               labelTooltip={t('sign_up.user_type_tooltip')}
               placeholder={t('sign_up.user_type_placeholder')}
-              options={userTypeOptions ?? []}
+              options={userTypeOptions}
             />
           )}
         />
