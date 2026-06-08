@@ -14,8 +14,10 @@ interface NativeStoreState {
   setTokenStatus: (status: TokenStatus | undefined) => void;
   isTokenRefreshing: boolean;
   setIsTokenRefreshing: (isRefreshing: boolean) => void;
-  getAccessToken: () => string | undefined;
-  setGetAccesToken: (getAccessTokenFn: () => string | undefined) => void;
+  getAccessToken: () => Promise<string | undefined>;
+  setGetAccesToken: (
+    getAccessTokenFn: () => Promise<string | undefined>,
+  ) => void;
   setAccessTokens: (
     accessToken: string | undefined,
     refreshToken: string | undefined,

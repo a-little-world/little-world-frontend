@@ -25,16 +25,25 @@ const WebsocketBridge = () => {
    * payload: {...}
    * } --> this will triger a simple redux dispatch in the frontend
    */
+  const [accessToken, setAccessToken] = useState(undefined);
+  const [ready, setReady] = useState(!environment.isNative);
+  const [, setMessageHistory] = useState([]);
+
   const backendUrl = useEffectiveBackendUrl();
   const coreWsScheme = useEffectiveCoreWsScheme();
   const webSocketHost = new URL(backendUrl).host;
   const socketUrl = coreWsScheme + webSocketHost + environment.coreWsPath;
 
-  const accessToken = environment.isNative
-    ? useNativeStore.getState().getAccessToken()
-    : undefined;
-  const [, setMessageHistory] = useState([]);
-  const { lastMessage, readyState } = useWebSocket(socketUrl, {
+  useEffect(() => {
+    if (!environment.isNative) return;
+    const resolveToken = async () => {
+      const token = await useNativeStore.getState().getAccessToken();
+      setAccessToken(token);
+      setReady(true);
+    };
+    resolveToken();
+  }, []);
+  const { lastMessage, readyState } = useWebSocket(ready ? socketUrl : null, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
     protocols:
