@@ -46,6 +46,8 @@ function NativePreloader() {
     }
   }, [isReady]);
 
+  useSWR(IS_AUTHENTICATED_ENDPOINT);
+  useSWR(API_OPTIONS_ENDPOINT);
   const { data: apiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT);
 
   if (apiTranslations) {
