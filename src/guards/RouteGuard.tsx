@@ -7,7 +7,6 @@ import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
 import useNativeStore from '../features/stores/nativeStore';
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../features/swr';
 import {
-  APP_ROUTE,
   LOGIN_ROUTE,
   USER_FORM_ROUTE,
   VERIFY_EMAIL_ROUTE,
@@ -59,7 +58,7 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
 
   if (!authRequired) {
     if (user) {
-      return <Navigate to={`/${APP_ROUTE}`} replace />;
+      return <Navigate to={getAppRoute()} replace />;
     }
   }
 
