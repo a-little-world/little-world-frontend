@@ -12,7 +12,7 @@ import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
-} from '../../features/swr/index';
+} from '../../features/swr';
 import useNativeSwrConfig from '../../hooks/useNativeSwrConfig';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
@@ -36,10 +36,17 @@ export interface LittleWorldWebNativeProps {
  */
 
 function NativePreloader() {
-  const { error: _errorApiOptions } = useSWR(API_OPTIONS_ENDPOINT);
-  const { data: apiTranslations, error: _errorApiTranslations } = useSWR(
-    API_TRANSLATIONS_ENDPOINT,
-  );
+  const { isReady } = useNativeStore();
+
+  useEffect(() => {
+    if (isReady) {
+      mutate(IS_AUTHENTICATED_ENDPOINT);
+      mutate(API_OPTIONS_ENDPOINT);
+      mutate(API_TRANSLATIONS_ENDPOINT);
+    }
+  }, [isReady]);
+
+  const { data: apiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT);
 
   if (apiTranslations) {
     updateTranslationResources({ apiTranslations });
@@ -70,11 +77,6 @@ export function LittleWorldWebNative({
     setGetAccesToken,
     setSetAccessTokens,
   } = useNativeStore();
-
-  useEffect(() => {
-    // native has already loaded auth tokens
-    mutate(IS_AUTHENTICATED_ENDPOINT);
-  }, []);
 
   useEffect(() => {
     setSendMessageToReactNative(sendMessageToReactNative);
