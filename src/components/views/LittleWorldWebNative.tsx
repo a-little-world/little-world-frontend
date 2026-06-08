@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
-import useSWR, { SWRConfig } from 'swr';
+import useSWR, { mutate, SWRConfig } from 'swr';
 
 import { apiFetch } from '../../api/helpers';
 import { TokenStatus } from '../../api/types';
@@ -11,6 +11,7 @@ import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler'
 import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
+  IS_AUTHENTICATED_ENDPOINT,
 } from '../../features/swr/index';
 import useNativeSwrConfig from '../../hooks/useNativeSwrConfig';
 import i18n, { updateTranslationResources } from '../../i18n';
@@ -21,7 +22,7 @@ export interface LittleWorldWebNativeProps {
   registerReceiveHandler: (handler: DomCommunicationMessageFn) => void;
   apiFetchNative: typeof apiFetch;
   refreshAccessToken: () => Promise<TokenStatus>;
-  getAccessToken: () => string | undefined;
+  getAccessToken: () => Promise<string | undefined>;
   setAccessTokens: (
     accessToken: string | undefined,
     refreshToken: string | undefined,
@@ -69,6 +70,11 @@ export function LittleWorldWebNative({
     setGetAccesToken,
     setSetAccessTokens,
   } = useNativeStore();
+
+  useEffect(() => {
+    // native has already loaded auth tokens
+    mutate(IS_AUTHENTICATED_ENDPOINT);
+  }, []);
 
   useEffect(() => {
     setSendMessageToReactNative(sendMessageToReactNative);
