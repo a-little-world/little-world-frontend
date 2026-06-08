@@ -264,7 +264,7 @@ const SignUp = () => {
               label={t('sign_up.user_type_label')}
               labelTooltip={t('sign_up.user_type_tooltip')}
               placeholder={t('sign_up.user_type_placeholder')}
-              options={userTypeOptions}
+              options={userTypeOptions ?? []}
             />
           )}
         />
