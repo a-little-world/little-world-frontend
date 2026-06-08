@@ -4,6 +4,7 @@ import {
   ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
+  Link,
   ProgressBar,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -34,6 +35,8 @@ import {
   VideoWrapper,
 } from './Course.styles';
 
+import { getAppRoute, TRAININGS_ROUTE } from '../../../router/routes';
+import NotFound from '../../atoms/NotFound';
 import Video from '../../atoms/Video';
 import Quiz, { type QuizAnswer, type QuizStep } from '../Quiz/Quiz';
 
@@ -54,7 +57,7 @@ export type CourseChapter = {
   quizCompletedCtaLabel?: string;
 };
 
-export type ChaptersLayoutProps = {
+export type CourseProps = {
   backLabel?: string;
   chapters: CourseChapter[];
   /** Number of chapters already completed. Defaults to 0 (fresh start). */
@@ -102,7 +105,7 @@ function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
 }
 
-export default function ChaptersLayout({
+export default function Course({
   chapters,
   completedChapterCount: completedChapterCountProp,
   initialStepIndex = 0,
@@ -112,7 +115,7 @@ export default function ChaptersLayout({
   onStepComplete,
   onChapterComplete,
   onCourseComplete,
-}: ChaptersLayoutProps) {
+}: CourseProps) {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -389,7 +392,17 @@ export default function ChaptersLayout({
     else onBack();
   };
 
-  if (!activeChapter || chapters.length === 0) return null;
+  if (!activeChapter || chapters.length === 0)
+    return (
+      <NotFound title={t('resources.trainings.not_found')}>
+        <Link
+          to={getAppRoute(TRAININGS_ROUTE)}
+          buttonAppearance={ButtonAppearance.Primary}
+        >
+          {t('resources.trainings.return')}
+        </Link>
+      </NotFound>
+    );
   return (
     <CourseContainer>
       <Header>
