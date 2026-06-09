@@ -172,21 +172,23 @@ export async function signUp({
   company = null,
   userType,
 }) {
+  const requestBody = {
+    email,
+    password1: password,
+    password2: confirmPassword,
+    first_name: firstName,
+    second_name: lastName,
+    birth_year: birthYear,
+    newsletter_subscribed: mailingList,
+    company,
+    user_type: userType,
+  };
+
   if (!environment.isNative) {
     return apiFetch(`/api/register/`, {
       method: 'POST',
       useTagsOnly: true,
-      body: {
-        email,
-        password1: password,
-        password2: confirmPassword,
-        first_name: firstName,
-        second_name: lastName,
-        birth_year: birthYear,
-        newsletter_subscribed: mailingList,
-        company,
-        user_type: userType,
-      },
+      body: requestBody,
     });
   }
 
@@ -210,14 +212,7 @@ export async function signUp({
     method: 'POST',
     useTagsOnly: true,
     body: {
-      email,
-      password1: password,
-      password2: confirmPassword,
-      first_name: firstName,
-      second_name: lastName,
-      birth_year: birthYear,
-      newsletter_subscribed: mailingList,
-      company,
+      ...requestBody,
       ...getIntegrityCheckRequestData(challengeData),
     },
   });
