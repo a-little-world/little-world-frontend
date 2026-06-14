@@ -127,7 +127,7 @@ export function SearchingCard({
         </>
       ) : (
         <>
-          <WelcomeTitle tag="h3" type={TextTypes.Body1} bold center>
+          <WelcomeTitle tag="h3" type={TextTypes.Heading4} center>
             {t(`searching_card.${cardState}_title`)}
           </WelcomeTitle>
           {isOnboarded ? (

@@ -7,7 +7,9 @@ import {
   Gradients,
   MessageIcon,
   MessageWithQuestionIcon,
+  PhoneIcon,
   ScreenShareIcon,
+  ScreenShareStopIcon,
   Tooltip,
   TranslatorIcon,
   tokens,
@@ -16,12 +18,14 @@ import {
   MediaDeviceMenu,
   TrackToggle,
   useDisconnectButton,
+  useTracks,
 } from '@livekit/components-react';
-import { Track } from 'livekit-client';
-import { useCallback, useState } from 'react';
+import { LocalParticipant, Track } from 'livekit-client';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
+import useIsBelowBreakpoint from '../../../hooks/useIsBelowBreakpoint';
 import Timer from '../../atoms/Timer';
 import UnreadDot from '../../atoms/UnreadDot';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
@@ -112,7 +116,7 @@ const Toggle = styled(TrackToggle)<{
       }
     `}
 
-  ${({ $withBackground, $permissionDenied }) =>
+  ${({ $withBackground, $permissionDenied, theme }) =>
     $withBackground &&
     css`
       background: ${$permissionDenied
@@ -121,6 +125,11 @@ const Toggle = styled(TrackToggle)<{
       border-color: ${$permissionDenied
         ? TOGGLE_BACKGROUND_DENIED
         : TOGGLE_BACKGROUND};
+
+      &[data-lk-source='screen_share'][data-lk-enabled='true'] {
+        background: ${theme.color.gradient.orange20};
+        border-color: ${TOGGLE_BACKGROUND_DENIED};
+      }
     `}
 `;
 
@@ -157,6 +166,10 @@ const StyledTimer = styled(Timer)<{ $desktopOnly?: boolean }>`
       display: flex;
     }
   `}
+`;
+
+const LeaveCallIcon = styled(PhoneIcon)`
+  transform: rotate(135deg);
 `;
 
 const MediaControl = styled.div<{ $permissionDenied?: boolean }>`
@@ -257,15 +270,34 @@ function ControlBar({
   unreadChatCount,
 }: ControlBarProps) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const isBelowBreakpoint = useIsBelowBreakpoint(theme.breakpoints.xlarge);
 
-  const [isScreenShareEnabled, setIsScreenShareEnabled] = useState(false);
+  const [isScreenShareActive, setIsScreenShareActive] = useState(false);
 
   const browserSupportsScreenSharing = supportsScreenSharing();
   const { onClick: livekitDisconnectClick, ...disconnectButtonProps } =
     disconnectProps;
   const [audioPermissionDenied, setAudioPermissionDenied] = useState(false);
   const [videoPermissionDenied, setVideoPermissionDenied] = useState(false);
+
+  const remoteScreenShareTracks = useTracks(
+    [{ source: Track.Source.ScreenShare, withPlaceholder: false }],
+    { onlySubscribed: true },
+  );
+
+  const isRemoteScreenShareActive = useMemo(
+    () =>
+      remoteScreenShareTracks.some(
+        track =>
+          track.participant &&
+          !(track.participant instanceof LocalParticipant) &&
+          track.publication &&
+          !track.publication.isMuted,
+      ),
+    [remoteScreenShareTracks],
+  );
 
   const handleOpenPermissionModal = () => {
     onPermissionModalOpen?.({
@@ -277,11 +309,16 @@ function ControlBar({
   const onScreenShareChange = useCallback(
     (enabled: boolean) => {
       console.log('onScreenShareChange', enabled);
-      setIsScreenShareEnabled(enabled);
+      setIsScreenShareActive(enabled);
     },
-    [setIsScreenShareEnabled],
+    [setIsScreenShareActive],
   );
-  console.log('isScreenShareEnabled', browserSupportsScreenSharing);
+  console.log(
+    'isScreenShareActive',
+    browserSupportsScreenSharing,
+    isRemoteScreenShareActive,
+    remoteScreenShareTracks,
+  );
   if (hide) return null;
   return (
     <Bar $position="bottom">
@@ -344,7 +381,7 @@ function ControlBar({
           <Tooltip
             text={t(
               `call.screenshare_${
-                isScreenShareEnabled ? 'stop' : 'start'
+                isScreenShareActive ? 'stop' : 'start'
               }_tooltip`,
             )}
             trigger={
@@ -364,7 +401,13 @@ function ControlBar({
                   $circular
                   $withBackground
                 >
-                  <ScreenShareIcon label={t('call.screenshare_label')} />
+                  {isScreenShareActive ? (
+                    <ScreenShareStopIcon
+                      label={t('call.screenshare_stop_label')}
+                    />
+                  ) : (
+                    <ScreenShareIcon label={t('call.screenshare_label')} />
+                  )}
                 </Toggle>
               </div>
             }
@@ -421,16 +464,28 @@ function ControlBar({
       </Section>
       <Section>
         <StyledTimer $desktopOnly />
-
-        <DisconnectBtn
-          {...disconnectButtonProps}
-          onClick={(event: any) => {
-            onDisconnectClick?.();
-            livekitDisconnectClick?.(event);
-          }}
-        >
-          {t('call.leave_btn')}
-        </DisconnectBtn>
+        {isBelowBreakpoint ? (
+          <DisconnectBtn
+            {...disconnectButtonProps}
+            onClick={(event: any) => {
+              onDisconnectClick?.();
+              livekitDisconnectClick?.(event);
+            }}
+            variation={ButtonVariations.Circle}
+          >
+            <LeaveCallIcon label="leave call" />
+          </DisconnectBtn>
+        ) : (
+          <DisconnectBtn
+            {...disconnectButtonProps}
+            onClick={(event: any) => {
+              onDisconnectClick?.();
+              livekitDisconnectClick?.(event);
+            }}
+          >
+            {t('call.leave_btn')}
+          </DisconnectBtn>
+        )}
       </Section>
     </Bar>
   );

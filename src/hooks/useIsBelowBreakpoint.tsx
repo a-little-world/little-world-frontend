@@ -2,44 +2,42 @@ import { useEffect, useState } from 'react';
 import { useTheme } from 'styled-components';
 
 /**
- * Hook that returns true if the window width is below the large breakpoint.
- * Useful for conditionally rendering Drawers (mobile) vs CallSidebar (desktop).
- * 
- * @returns {boolean} true if below large breakpoint, false otherwise
+ * Returns true if the window width is below the given breakpoint.
+ * Pass a theme breakpoint value so JS layout matches your CSS media queries, e.g.
+ * `useIsBelowBreakpoint(theme.breakpoints.xlarge)`.
+ *
+ * Defaults to `theme.breakpoints.large` when omitted.
  */
-function useIsBelowBreakpoint(): boolean {
+function useIsBelowBreakpoint(breakpoint?: string): boolean {
   const theme = useTheme();
+  const breakpointValue = breakpoint ?? theme.breakpoints.large;
+
   const [isBelowBreakpoint, setIsBelowBreakpoint] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
-    // Use matchMedia to check if we're below large breakpoint
-    const mediaQuery = window.matchMedia(`(max-width: ${theme.breakpoints.large})`);
-    return mediaQuery.matches;
+    return window.matchMedia(`(max-width: ${breakpointValue})`).matches;
   });
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(`(max-width: ${theme.breakpoints.large})`);
+    const mediaQuery = window.matchMedia(`(max-width: ${breakpointValue})`);
 
     const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
       setIsBelowBreakpoint(e.matches);
     };
 
-    // Set initial value
     setIsBelowBreakpoint(mediaQuery.matches);
 
-    // Modern browsers support addEventListener on MediaQueryList
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', handleChange);
       return () => {
         mediaQuery.removeEventListener('change', handleChange);
       };
-    } 
-      // Fallback for older browsers
-      mediaQuery.addListener(handleChange);
-      return () => {
-        mediaQuery.removeListener(handleChange);
-      };
-    
-  }, [theme.breakpoints.large]);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => {
+      mediaQuery.removeListener(handleChange);
+    };
+  }, [breakpointValue]);
 
   return isBelowBreakpoint;
 }
