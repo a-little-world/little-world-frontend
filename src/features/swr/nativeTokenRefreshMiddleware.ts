@@ -5,6 +5,33 @@ import { TokenStatus } from '../../api/types';
 import useNativeStore from '../stores/nativeStore';
 
 let tokenRefreshPromise: Promise<TokenStatus> | null = null;
+
+async function triggerLogout() {
+  await mutate(IS_AUTHENTICATED_ENDPOINT, false, false);
+  await mutate(USER_ENDPOINT, null, false);
+}
+
+async function refreshToken() {
+  const { setIsTokenRefreshing, refreshAccessToken, setTokenStatus } =
+    useNativeStore.getState();
+
+  if (!tokenRefreshPromise) {
+    setIsTokenRefreshing(true);
+    // infinite refresh loop prevented on native side -> if token expired/missing it does not perform any requests
+    tokenRefreshPromise = refreshAccessToken()
+      .then(status => {
+        setTokenStatus(status);
+        return status;
+      })
+      .finally(() => {
+        setIsTokenRefreshing(false);
+        tokenRefreshPromise = null;
+      });
+  }
+
+  return tokenRefreshPromise;
+}
+
 const nativeTokenRefreshMiddleware: Middleware =
   useSWRNext => (key, fetcher, config) => {
     if (!fetcher) {
@@ -13,14 +40,21 @@ const nativeTokenRefreshMiddleware: Middleware =
 
     const wrappedFetcher = async (...args: Parameters<typeof fetcher>) => {
       try {
-        return await fetcher(...args);
+        const result = await fetcher(...args);
+
+        if (key === IS_AUTHENTICATED_ENDPOINT && result === false) {
+          const tokenStatus = await refreshToken();
+          if (tokenStatus === TokenStatus.VALID) {
+            return fetcher(...args);
+          }
+
+          await triggerLogout();
+          return result;
+        }
+
+        return result;
       } catch (error: any) {
-        const {
-          getAccessToken,
-          setIsTokenRefreshing,
-          refreshAccessToken,
-          setTokenStatus,
-        } = useNativeStore.getState();
+        const { getAccessToken } = useNativeStore.getState();
         const accessToken = await getAccessToken();
 
         const isTokenExpiredError =
@@ -30,27 +64,13 @@ const nativeTokenRefreshMiddleware: Middleware =
 
         if (!isTokenError) throw error;
 
-        if (!tokenRefreshPromise) {
-          setIsTokenRefreshing(true);
-          // infinite refresh loop prevented on native side -> if token expired/missing it does not perform any requests
-          tokenRefreshPromise = refreshAccessToken()
-            .then(status => {
-              setTokenStatus(status);
-              return status;
-            })
-            .finally(() => {
-              setIsTokenRefreshing(false);
-              tokenRefreshPromise = null;
-            });
-        }
-        const tokenStatus = await tokenRefreshPromise;
+        const tokenStatus = await refreshToken();
 
         if (tokenStatus === TokenStatus.VALID) {
           return fetcher(...args);
         }
-        // trigger logout
-        await mutate(IS_AUTHENTICATED_ENDPOINT, false, false);
-        await mutate(USER_ENDPOINT, null, false);
+
+        await triggerLogout();
         throw new Error('Unauthenticated');
       }
     };
