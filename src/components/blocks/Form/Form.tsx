@@ -85,20 +85,18 @@ const Form = () => {
     });
   const isLastStep = step === totalSteps;
 
-  const onFormSuccess = response => {
-    mutateUserDataApi({
+  const onFormSuccess = async response => {
+    let updatedUser = {
       ...userData,
       profile: { ...userData.profile, ...response },
-    });
+    };
     if (isLastStep && !userData?.userFormCompleted) {
-      completeForm().then(updatedUser => {
-        mutateUserDataApi({
-          ...userData,
-          profile: { ...userData.profile, ...updatedUser },
-        });
-      });
+      updatedUser = await completeForm();
     }
-    navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));
+
+    await mutateUserDataApi(updatedUser);
+
+    await navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));
   };
 
   const handleBackClick = e => {
