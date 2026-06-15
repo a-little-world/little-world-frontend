@@ -4,68 +4,76 @@ import styled, { css, type DefaultTheme } from 'styled-components';
 import ProfileImage from '../atoms/ProfileImage';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool';
 
-const pipCameraTileStyles = (theme: DefaultTheme, stackIndex: 0 | 1) => {
-  const gap = theme.spacing.large;
+const pipCameraTileAppearance = (theme: DefaultTheme) => css`
+  width: 100%;
+  max-height: none;
+  border-radius: ${theme.radius.small};
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
 
-  return css`
-    position: absolute !important;
-    right: ${theme.spacing.small};
-    width: 30%;
-    max-height: none;
-    z-index: ${stackIndex === 0 ? 2 : 1};
-    border-radius: ${theme.radius.small};
-    aspect-ratio: 9 / 16;
-    top: ${stackIndex === 0
-      ? '72px'
-      : `calc(72px + 30% * 16 / 9 + ${gap})`};
+  @media (min-width: ${theme.breakpoints.small}) {
+    aspect-ratio: 16 / 9;
+  }
 
-    @media (min-width: ${theme.breakpoints.small}) {
-      aspect-ratio: 16 / 9;
-      width: 25%;
-      top: ${stackIndex === 0
-        ? '72px'
-        : `calc(72px + 25% * 9 / 16 + ${gap})`};
-    }
+  .lk-participant-metadata {
+    justify-content: flex-end;
+    top: unset;
+    left: unset;
+    right: 0;
+    bottom: 0;
+  }
 
-    @media (min-width: ${theme.breakpoints.large}) {
-      width: 20%;
-      top: ${stackIndex === 0
-        ? theme.spacing.small
-        : `calc(${theme.spacing.small} + 20% * 9 / 16 + ${gap})`};
-    }
+  .lk-participant-metadata-item:first-child {
+    display: none;
+  }
 
-    .lk-participant-metadata {
-      justify-content: flex-end;
-      top: unset;
-      left: unset;
-      right: 0;
-      bottom: 0;
-    }
+  video {
+    object-fit: cover !important;
+  }
+`;
 
-    .lk-participant-metadata-item:first-child {
-      display: none;
-    }
-  `;
-};
+/** Absolute corner PiP used for the local camera when screen share is off. */
+const pipCameraTileCornerPosition = (theme: DefaultTheme) => css`
+  position: absolute !important;
+  right: ${theme.spacing.small};
+  width: 30%;
+  top: 72px;
+  z-index: 2;
+
+  @media (min-width: ${theme.breakpoints.small}) {
+    width: 25%;
+  }
+
+  @media (min-width: ${theme.breakpoints.large}) {
+    width: 20%;
+    top: ${theme.spacing.small};
+  }
+`;
 
 export const CameraPipOverlay = styled.div`
   position: absolute;
-  inset: 0;
+  top: 72px;
+  right: ${({ theme }) => theme.spacing.small};
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.large};
+  width: 30%;
   pointer-events: none;
-`;
 
-export const CameraPipWrapper = styled.div<{ $stackIndex: 0 | 1 }>`
-  pointer-events: auto;
-  ${({ theme, $stackIndex }) => pipCameraTileStyles(theme, $stackIndex)}
+  @media (min-width: ${({ theme }) => theme.breakpoints.small}) {
+    width: 25%;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
+    top: ${({ theme }) => theme.spacing.small};
+    width: 20%;
+  }
 
   .lk-participant-tile {
-    position: relative !important;
-    top: auto !important;
-    right: auto !important;
-    width: 100% !important;
-    height: 100% !important;
-    max-height: none !important;
+    position: relative;
+    pointer-events: auto;
+    ${({ theme }) => pipCameraTileAppearance(theme)}
   }
 `;
 
@@ -179,7 +187,8 @@ export const StyledGridLayout = styled(GridLayout)<{
     !$screenShareActive &&
     css`
       .lk-participant-tile[data-lk-local-participant='true'][data-lk-source='camera'] {
-        ${pipCameraTileStyles(theme, 0)};
+        ${pipCameraTileCornerPosition(theme)}
+        ${pipCameraTileAppearance(theme)}
         max-height: 50%;
       }
     `}

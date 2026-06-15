@@ -145,11 +145,10 @@ export const ChapterButton = styled.button<{
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
-  width: 168px;
-  height: 72px;
+  min-width: ${({ theme }) => theme.spacing.massive};
+  height: ${({ theme }) => theme.spacing.xxlarge};
   border-radius: ${({ theme }) => theme.radius.large};
-  padding: ${({ theme }) => theme.spacing.xsmall};
+  padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.small}`};
   border: 2px solid
     ${({ theme, $isActive, $isCompleted }) => {
       if ($isActive) return theme.color.border.selected;
@@ -174,7 +173,7 @@ export const ChapterButton = styled.button<{
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.xsmall} ${theme.spacing.small};
+      padding: ${theme.spacing.xxsmall} ${theme.spacing.small};
     }
   `}
 `;

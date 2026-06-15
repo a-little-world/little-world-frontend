@@ -61,7 +61,6 @@ import {
   CallLayout,
   CallRejectedTextContainer,
   CameraPipOverlay,
-  CameraPipWrapper,
   DesktopTranslationTool,
   StyledGridLayout,
   VideoContainer,
@@ -257,20 +256,16 @@ function MyVideoConference({
           {isScreenShareActive && (
             <CameraPipOverlay>
               {localCameraTrack && (
-                <CameraPipWrapper $stackIndex={0}>
-                  <ParticipantTile
-                    trackRef={localCameraTrack}
-                    placeholders={placeholders}
-                  />
-                </CameraPipWrapper>
+                <ParticipantTile
+                  trackRef={localCameraTrack}
+                  placeholders={placeholders}
+                />
               )}
               {remoteCameraTrack && (
-                <CameraPipWrapper $stackIndex={1}>
-                  <ParticipantTile
-                    trackRef={remoteCameraTrack}
-                    placeholders={placeholders}
-                  />
-                </CameraPipWrapper>
+                <ParticipantTile
+                  trackRef={remoteCameraTrack}
+                  placeholders={placeholders}
+                />
               )}
             </CameraPipOverlay>
           )}
