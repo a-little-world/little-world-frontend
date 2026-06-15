@@ -12,6 +12,7 @@ import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
+  USER_ENDPOINT,
 } from '../../features/swr';
 import useNativeSwrConfig from '../../hooks/useNativeSwrConfig';
 import i18n, { updateTranslationResources } from '../../i18n';
@@ -40,15 +41,18 @@ function NativePreloader() {
 
   useEffect(() => {
     if (isReady) {
-      mutate(IS_AUTHENTICATED_ENDPOINT);
-      mutate(API_OPTIONS_ENDPOINT);
-      mutate(API_TRANSLATIONS_ENDPOINT);
+      // force initial auth check
+      apiFetch(IS_AUTHENTICATED_ENDPOINT).then(isAuthenticated =>
+        mutate(IS_AUTHENTICATED_ENDPOINT, isAuthenticated, {
+          revalidate: false,
+        }),
+      );
     }
   }, [isReady]);
-
-  useSWR(IS_AUTHENTICATED_ENDPOINT);
   useSWR(API_OPTIONS_ENDPOINT);
   const { data: apiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT);
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
+  useSWR(isAuthenticated ? USER_ENDPOINT : null);
 
   if (apiTranslations) {
     updateTranslationResources({ apiTranslations });
