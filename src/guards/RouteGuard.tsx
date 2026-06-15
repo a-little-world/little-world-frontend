@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { TokenStatus } from '../api/types';
@@ -7,6 +7,7 @@ import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
 import useNativeStore from '../features/stores/nativeStore';
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../features/swr';
 import {
+  CHANGE_EMAIL_ROUTE,
   LOGIN_ROUTE,
   USER_FORM_ROUTE,
   VERIFY_EMAIL_ROUTE,
@@ -21,6 +22,7 @@ interface Props {
 
 function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
   const { isTokenRefreshing, tokenStatus, isReady } = useNativeStore();
+  const { pathname } = useLocation();
   const { data: isAuthenticated, isLoading: isAuthenticatedLoading } = useSWR(
     IS_AUTHENTICATED_ENDPOINT,
   );
@@ -49,10 +51,18 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
     }
 
     if (!user.emailVerified) {
-      return <Navigate to={getAppRoute(VERIFY_EMAIL_ROUTE)} replace />;
-    }
-    if (!user.userFormCompleted) {
-      return <Navigate to={getAppRoute(USER_FORM_ROUTE)} replace />;
+      // use nested if-cases to prevent looping navigation between email verification and user form
+      if (
+        pathname !== getAppRoute(VERIFY_EMAIL_ROUTE) &&
+        pathname !== getAppRoute(CHANGE_EMAIL_ROUTE)
+      ) {
+        // change email is allowed
+        return <Navigate to={getAppRoute(VERIFY_EMAIL_ROUTE)} replace />;
+      }
+    } else if (!user.userFormCompleted) {
+      if (!pathname.startsWith(getAppRoute(USER_FORM_ROUTE))) {
+        return <Navigate to={getAppRoute(USER_FORM_ROUTE)} replace />;
+      }
     }
   }
 

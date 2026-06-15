@@ -85,12 +85,6 @@ const VerifyEmail = () => {
       .catch(onError);
   };
 
-  useEffect(() => {
-    if (userData?.emailVerified) {
-      navigate(getAppRoute(USER_FORM_ROUTE));
-    }
-  }, [userData]);
-
   const onFormSubmit = async ({ verificationCode }) => {
     setIsSubmitting(true);
     verifyEmail({ verificationCode })
@@ -146,9 +140,9 @@ const VerifyEmail = () => {
           visible={requestSuccessful || errors?.root?.serverError}
           type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
-          {requestSuccessful ?
-            t('verify_email.success_message') :
-            t(errors?.root?.serverError?.message)}
+          {requestSuccessful
+            ? t('verify_email.success_message')
+            : t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Button
