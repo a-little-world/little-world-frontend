@@ -7,6 +7,9 @@ import {
   Gradients,
   MessageIcon,
   MessageWithQuestionIcon,
+  PhoneIcon,
+  ScreenShareIcon,
+  ScreenShareStopIcon,
   Tooltip,
   TranslatorIcon,
   tokens,
@@ -15,12 +18,14 @@ import {
   MediaDeviceMenu,
   TrackToggle,
   useDisconnectButton,
+  useTracks,
 } from '@livekit/components-react';
-import { Track } from 'livekit-client';
-import { useState } from 'react';
+import { LocalParticipant, Track } from 'livekit-client';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
+import useIsBelowBreakpoint from '../../../hooks/useIsBelowBreakpoint';
 import Timer from '../../atoms/Timer';
 import UnreadDot from '../../atoms/UnreadDot';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
@@ -78,16 +83,40 @@ const TOGGLE_CSS = css`
   }
 `;
 
+export function supportsScreenSharing(): boolean {
+  return (
+    typeof navigator !== 'undefined' &&
+    navigator.mediaDevices &&
+    !!navigator.mediaDevices.getDisplayMedia
+  );
+}
+
 const Toggle = styled(TrackToggle)<{
+  $circular?: boolean;
   $withBackground?: boolean;
   $permissionDenied?: boolean;
 }>`
   ${TOGGLE_CSS};
   height: 100%;
-  padding: ${({ theme }) =>
-    `0 ${theme.spacing.xxxsmall} 0 ${theme.spacing.small}`};
+  padding: ${({ theme, $circular }) =>
+    $circular ? '0' : `0 ${theme.spacing.xxxsmall} 0 ${theme.spacing.small}`};
 
-  ${({ $withBackground, $permissionDenied }) =>
+  ${({ $circular }) =>
+    $circular &&
+    css`
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+
+      &:not(:disabled):hover {
+        background-color: ${TOGGLE_BACKGROUND};
+        transition: opacity 0.3s ease;
+        opacity: 0.6;
+      }
+    `}
+
+  ${({ $withBackground, $permissionDenied, theme }) =>
     $withBackground &&
     css`
       background: ${$permissionDenied
@@ -96,6 +125,11 @@ const Toggle = styled(TrackToggle)<{
       border-color: ${$permissionDenied
         ? TOGGLE_BACKGROUND_DENIED
         : TOGGLE_BACKGROUND};
+
+      &[data-lk-source='screen_share'][data-lk-enabled='true'] {
+        background: ${theme.color.gradient.orange20};
+        border-color: ${TOGGLE_BACKGROUND_DENIED};
+      }
     `}
 `;
 
@@ -132,6 +166,10 @@ const StyledTimer = styled(Timer)<{ $desktopOnly?: boolean }>`
       display: flex;
     }
   `}
+`;
+
+const LeaveCallIcon = styled(PhoneIcon)`
+  transform: rotate(135deg);
 `;
 
 const MediaControl = styled.div<{ $permissionDenied?: boolean }>`
@@ -232,11 +270,34 @@ function ControlBar({
   unreadChatCount,
 }: ControlBarProps) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const isBelowBreakpoint = useIsBelowBreakpoint(theme.breakpoints.xlarge);
+
+  const [isScreenShareActive, setIsScreenShareActive] = useState(false);
+
+  const browserSupportsScreenSharing = supportsScreenSharing();
   const { onClick: livekitDisconnectClick, ...disconnectButtonProps } =
     disconnectProps;
   const [audioPermissionDenied, setAudioPermissionDenied] = useState(false);
   const [videoPermissionDenied, setVideoPermissionDenied] = useState(false);
+
+  const remoteScreenShareTracks = useTracks(
+    [{ source: Track.Source.ScreenShare, withPlaceholder: false }],
+    { onlySubscribed: true },
+  );
+
+  const isRemoteScreenShareActive = useMemo(
+    () =>
+      remoteScreenShareTracks.some(
+        track =>
+          track.participant &&
+          !(track.participant instanceof LocalParticipant) &&
+          track.publication &&
+          !track.publication.isMuted,
+      ),
+    [remoteScreenShareTracks],
+  );
 
   const handleOpenPermissionModal = () => {
     onPermissionModalOpen?.({
@@ -245,12 +306,25 @@ function ControlBar({
     });
   };
 
+  const onScreenShareChange = useCallback(
+    (enabled: boolean) => {
+      console.log('onScreenShareChange', enabled);
+      setIsScreenShareActive(enabled);
+    },
+    [setIsScreenShareActive],
+  );
+  console.log(
+    'isScreenShareActive',
+    browserSupportsScreenSharing,
+    isRemoteScreenShareActive,
+    remoteScreenShareTracks,
+  );
   if (hide) return null;
   return (
     <Bar $position="bottom">
       <Section>
         <Tooltip
-          text={t('controlbar.microphone_toggle_tooltip')}
+          text={t('call.microphone_toggle_tooltip')}
           trigger={
             <div>
               <MediaControl $permissionDenied={audioPermissionDenied}>
@@ -277,7 +351,7 @@ function ControlBar({
         />
 
         <Tooltip
-          text={t('controlbar.camera_toggle_tooltip')}
+          text={t('call.camera_toggle_tooltip')}
           trigger={
             <MediaControl $permissionDenied={videoPermissionDenied}>
               <div>
@@ -303,8 +377,45 @@ function ControlBar({
           }
         />
 
+        {browserSupportsScreenSharing && (
+          <Tooltip
+            text={t(
+              `call.screenshare_${
+                isScreenShareActive ? 'stop' : 'start'
+              }_tooltip`,
+            )}
+            trigger={
+              <div>
+                <Toggle
+                  source={Track.Source.ScreenShare}
+                  captureOptions={{
+                    audio: true,
+                    selfBrowserSurface: 'include',
+                  }}
+                  showIcon={false}
+                  onChange={onScreenShareChange}
+                  onDeviceError={
+                    error => console.error(error)
+                    // onDeviceError?.({ source: Track.Source.ScreenShare, error })
+                  }
+                  $circular
+                  $withBackground
+                >
+                  {isScreenShareActive ? (
+                    <ScreenShareStopIcon
+                      label={t('call.screenshare_stop_label')}
+                    />
+                  ) : (
+                    <ScreenShareIcon label={t('call.screenshare_label')} />
+                  )}
+                </Toggle>
+              </div>
+            }
+          />
+        )}
+
         <Tooltip
-          text={t('controlbar.fullscreen_toggle_tooltip')}
+          text={t('call.fullscreen_toggle_tooltip')}
           trigger={
             <div>
               <ToggleBtn
@@ -322,7 +433,7 @@ function ControlBar({
           }
         />
         <Tooltip
-          text={t('controlbar.message_toggle_tooltip')}
+          text={t('call.message_toggle_tooltip')}
           trigger={
             <div>
               <ToggleBtn
@@ -337,7 +448,7 @@ function ControlBar({
           }
         />
         <Tooltip
-          text={t('controlbar.translation_toggle_tooltip')}
+          text={t('call.translation_toggle_tooltip')}
           trigger={
             <div>
               <ToggleBtn
@@ -353,16 +464,28 @@ function ControlBar({
       </Section>
       <Section>
         <StyledTimer $desktopOnly />
-
-        <DisconnectBtn
-          {...disconnectButtonProps}
-          onClick={(event: any) => {
-            onDisconnectClick?.();
-            livekitDisconnectClick?.(event);
-          }}
-        >
-          {t('call.leave_btn')}
-        </DisconnectBtn>
+        {isBelowBreakpoint ? (
+          <DisconnectBtn
+            {...disconnectButtonProps}
+            onClick={(event: any) => {
+              onDisconnectClick?.();
+              livekitDisconnectClick?.(event);
+            }}
+            variation={ButtonVariations.Circle}
+          >
+            <LeaveCallIcon label="leave call" />
+          </DisconnectBtn>
+        ) : (
+          <DisconnectBtn
+            {...disconnectButtonProps}
+            onClick={(event: any) => {
+              onDisconnectClick?.();
+              livekitDisconnectClick?.(event);
+            }}
+          >
+            {t('call.leave_btn')}
+          </DisconnectBtn>
+        )}
       </Section>
     </Bar>
   );

@@ -1,8 +1,81 @@
 import { GridLayout } from '@livekit/components-react';
-import styled, { css } from 'styled-components';
+import styled, { css, type DefaultTheme } from 'styled-components';
 
 import ProfileImage from '../atoms/ProfileImage';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool';
+
+const pipCameraTileAppearance = (theme: DefaultTheme) => css`
+  width: 100%;
+  max-height: none;
+  border-radius: ${theme.radius.small};
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+
+  @media (min-width: ${theme.breakpoints.small}) {
+    aspect-ratio: 16 / 9;
+  }
+
+  .lk-participant-metadata {
+    justify-content: flex-end;
+    top: unset;
+    left: unset;
+    right: 0;
+    bottom: 0;
+  }
+
+  .lk-participant-metadata-item:first-child {
+    display: none;
+  }
+
+  video {
+    object-fit: cover !important;
+  }
+`;
+
+/** Absolute corner PiP used for the local camera when screen share is off. */
+const pipCameraTileCornerPosition = (theme: DefaultTheme) => css`
+  position: absolute !important;
+  right: ${theme.spacing.small};
+  width: 30%;
+  top: 72px;
+  z-index: 2;
+
+  @media (min-width: ${theme.breakpoints.small}) {
+    width: 25%;
+  }
+
+  @media (min-width: ${theme.breakpoints.large}) {
+    width: 20%;
+    top: ${theme.spacing.small};
+  }
+`;
+
+export const CameraPipOverlay = styled.div`
+  position: absolute;
+  top: 72px;
+  right: ${({ theme }) => theme.spacing.small};
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.large};
+  width: 30%;
+  pointer-events: none;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.small}) {
+    width: 25%;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
+    top: ${({ theme }) => theme.spacing.small};
+    width: 20%;
+  }
+
+  .lk-participant-tile {
+    position: relative;
+    pointer-events: auto;
+    ${({ theme }) => pipCameraTileAppearance(theme)}
+  }
+`;
 
 export const CallLayout = styled.div`
   --lk-border-radius: 0;
@@ -88,40 +161,37 @@ export const VideoContainer = styled.div<{
     `}
 `;
 
-export const StyledGridLayout = styled(GridLayout)`
-  --lk-row-count: 1 !important;
-  --lk-col-count: 1 !important;
+export const Videos = styled.div`
+  position: relative;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+`;
 
-  .lk-participant-tile[data-lk-local-participant='true'] {
-    position: absolute !important;
-    top: 72px;
-    right: ${({ theme }) => theme.spacing.small};
-    width: 30%;
-    max-height: 50%;
-    z-index: 1;
-    border-radius: ${({ theme }) => theme.radius.small};
-    aspect-ratio: 9 / 16;
+export const StyledGridLayout = styled(GridLayout)<{
+  $screenShareActive?: boolean;
+}>`
+  position: relative;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
 
-    ${({ theme }) => css`
-      @media (min-width: ${theme.breakpoints.small}) {
-        aspect-ratio: 16 / 9;
-        width: 25%;
-      }
-
-      @media (min-width: ${theme.breakpoints.large}) {
-        top: ${theme.spacing.small};
-        width: 20%;
-      }
+  ${({ $screenShareActive }) =>
+    !$screenShareActive &&
+    css`
+      --lk-row-count: 1 !important;
+      --lk-col-count: 1 !important;
     `}
 
-    .lk-participant-metadata-item:first-child {
-      display: none;
-    }
-
-    .lk-participant-metadata {
-      justify-content: flex-end;
-    }
-  }
+  ${({ $screenShareActive, theme }) =>
+    !$screenShareActive &&
+    css`
+      .lk-participant-tile[data-lk-local-participant='true'][data-lk-source='camera'] {
+        ${pipCameraTileCornerPosition(theme)}
+        ${pipCameraTileAppearance(theme)}
+        max-height: 50%;
+      }
+    `}
 
   .lk-participant-placeholder {
     padding: ${({ theme }) => theme.spacing.xxsmall};
@@ -151,24 +221,26 @@ export const StyledGridLayout = styled(GridLayout)`
     color: ${({ theme }) => theme.color.text.tertiary};
   }
 
-  .lk-participant-tile[data-lk-local-participant='false']
-    .lk-participant-metadata {
-    justify-content: flex-start;
-    top: 80px;
-    left: ${({ theme }) => theme.spacing.small};
-    right: 0;
-    bottom: unset;
+  ${({ $screenShareActive, theme }) =>
+    !$screenShareActive &&
+    css`
+      .lk-participant-tile[data-lk-local-participant='false'][data-lk-source='camera']
+        .lk-participant-metadata {
+        justify-content: flex-start;
+        top: 80px;
+        left: ${theme.spacing.small};
+        right: 0;
+        bottom: unset;
 
-    ${({ theme }) => css`
-      @media (min-width: ${theme.breakpoints.large}) {
-        top: ${theme.spacing.small};
+        @media (min-width: ${theme.breakpoints.large}) {
+          top: ${theme.spacing.small};
+        }
+
+        .lk-participant-placeholder {
+          background: ${theme.color.text.secondary};
+        }
       }
     `}
-
-    .lk-participant-placeholder {
-      background: ${({ theme }) => theme.color.text.secondary};
-    }
-  }
 
   video {
     object-fit: contain !important;
@@ -202,11 +274,6 @@ export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
         ${theme.spacing.xlarge};
     }
   `}
-`;
-
-export const Videos = styled.div`
-  height: 100%;
-  width: 100%;
 `;
 
 export const DesktopTranslationTool = styled(TranslationTool)`

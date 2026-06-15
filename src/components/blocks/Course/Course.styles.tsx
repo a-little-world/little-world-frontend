@@ -25,6 +25,7 @@ export const Header = styled.header`
 export const HeaderContent = styled.div`
   width: 100%;
   max-width: 1240px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -116,11 +117,16 @@ export const ProgressRow = styled.div`
 
 export const ChaptersNav = styled.nav`
   display: flex;
-  align-items: center;
+  flex-wrap: nowrap;
+  align-items: stretch;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   overflow-x: auto;
-  padding: ${({ theme }) => theme.spacing.xsmall};
+  overflow-y: hidden;
+  min-width: 0;
   width: 100%;
+  padding: ${({ theme }) => theme.spacing.xsmall};
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
@@ -134,10 +140,15 @@ export const ChapterButton = styled.button<{
   $isCompleted?: boolean;
   $isLocked?: boolean;
 }>`
-  min-height: 44px;
-  min-width: 130px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: ${({ theme }) => theme.spacing.massive};
+  height: ${({ theme }) => theme.spacing.xxlarge};
   border-radius: ${({ theme }) => theme.radius.large};
-  padding: ${({ theme }) => theme.spacing.xsmall};
+  padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.small}`};
   border: 2px solid
     ${({ theme, $isActive, $isCompleted }) => {
       if ($isActive) return theme.color.border.selected;
@@ -162,7 +173,7 @@ export const ChapterButton = styled.button<{
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.xsmall} ${theme.spacing.medium};
+      padding: ${theme.spacing.xxsmall} ${theme.spacing.small};
     }
   `}
 `;
