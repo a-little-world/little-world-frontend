@@ -135,7 +135,6 @@ const getProfileFields = ({
           options: formatDataField(formOptions?.lang_skill.lang, trans),
           values: profile?.lang_skill?.map(el => el.lang),
           lockedValue: 'german',
-          inModal: true,
           errors: [],
         },
         secondDropdown: {
@@ -144,7 +143,6 @@ const getProfileFields = ({
           placeholder: trans('self_info.language_level_placeholder'),
           options: formatDataField(formOptions?.lang_skill.level, trans),
           values: profile?.lang_skill?.map(el => el.level),
-          inModal: true,
           errors: [],
         },
       }),
