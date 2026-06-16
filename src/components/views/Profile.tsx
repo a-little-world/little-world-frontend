@@ -123,7 +123,8 @@ const getProfileFields = ({
         label: trans('self_info.language_skills_label'),
         labelTooltip: trans('self_info.language_skills_tooltip'),
         maxSegments: 8,
-        variant: MultiDropdownVariants.Dropdown,
+        variant: MultiDropdownVariants.Combobox,
+        inModal: true,
         restrictions:
           profile?.user_type === USER_TYPES.volunteer
             ? { german: restrictedLangLevels }
@@ -309,7 +310,6 @@ function Profile() {
               {...profileFields.lang_skill}
               locked
               label={undefined}
-              inModal
             />
           ) : (
             <Text>

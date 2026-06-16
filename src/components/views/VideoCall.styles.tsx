@@ -32,6 +32,51 @@ const pipCameraTileAppearance = (theme: DefaultTheme) => css`
   }
 `;
 
+const participantPlaceholderAppearance = (theme: DefaultTheme) => css`
+  .lk-participant-placeholder {
+    padding: ${theme.spacing.xxsmall};
+    background: ${theme.color.surface.contrast};
+    border-radius: 0;
+
+    svg {
+      padding: 0;
+    }
+  }
+`;
+
+const participantMutedCameraTileAppearance = (theme: DefaultTheme) => css`
+  .lk-participant-tile[data-lk-video-muted='true'] {
+    background: ${theme.color.text.secondary};
+
+    svg {
+      max-height: 320px;
+    }
+  }
+`;
+
+const participantMutedCameraPlaceholderAppearance = (theme: DefaultTheme) => css`
+  .lk-participant-tile[data-lk-video-muted='true'][data-lk-source='camera']
+    .lk-participant-placeholder {
+    opacity: 1;
+    background: ${theme.color.text.secondary};
+  }
+`;
+
+/**
+ * react-nice-avatar stacks SVG layers with percentage-based absolute positioning;
+ * they only align when the root avatar box is a predictable square. VideoPlaceholder
+ * (size="flex") flips width/height by breakpoint, which resolves badly inside the
+ * small 9:16 / 16:9 PiP tiles — size from the placeholder's definite height instead.
+ */
+const pipParticipantPlaceholderAvatarSizing = css`
+  .lk-participant-placeholder > * {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    aspect-ratio: 1;
+  }
+`;
+
 /** Absolute corner PiP used for the local camera when screen share is off. */
 const pipCameraTileCornerPosition = (theme: DefaultTheme) => css`
   position: absolute !important;
@@ -75,6 +120,11 @@ export const CameraPipOverlay = styled.div`
     pointer-events: auto;
     ${({ theme }) => pipCameraTileAppearance(theme)}
   }
+
+  ${({ theme }) => participantPlaceholderAppearance(theme)}
+  ${({ theme }) => participantMutedCameraTileAppearance(theme)}
+  ${({ theme }) => participantMutedCameraPlaceholderAppearance(theme)}
+  ${pipParticipantPlaceholderAvatarSizing}
 `;
 
 export const CallLayout = styled.div`
@@ -193,22 +243,9 @@ export const StyledGridLayout = styled(GridLayout)<{
       }
     `}
 
-  .lk-participant-placeholder {
-    padding: ${({ theme }) => theme.spacing.xxsmall};
-    background: ${({ theme }) => theme.color.surface.contrast};
-    border-radius: 0;
-
-    svg {
-      padding: 0;
-    }
-  }
-
-  .lk-participant-tile[data-lk-video-muted='true'] {
-    background: ${({ theme }) => theme.color.text.secondary};
-    svg {
-      max-height: 320px;
-    }
-  }
+  ${({ theme }) => participantPlaceholderAppearance(theme)}
+  ${({ theme }) => participantMutedCameraTileAppearance(theme)}
+  ${({ theme }) => participantMutedCameraPlaceholderAppearance(theme)}
 
   .lk-participant-metadata-item {
     background: transparent;
@@ -234,10 +271,6 @@ export const StyledGridLayout = styled(GridLayout)<{
 
         @media (min-width: ${theme.breakpoints.large}) {
           top: ${theme.spacing.small};
-        }
-
-        .lk-participant-placeholder {
-          background: ${theme.color.text.secondary};
         }
       }
     `}
