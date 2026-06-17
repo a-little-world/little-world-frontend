@@ -7,11 +7,13 @@ import {
   ChevronRightIcon,
   CloseIcon,
   DownloadIcon,
+  Tooltip,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 
+import { useTranslation } from 'react-i18next';
 import { archieveQuestion } from '../../../api/questions';
 import { getQuestionsEndpoint } from '../../../features/swr/index';
 import {
@@ -26,6 +28,7 @@ import {
 } from './QuestionCards.styles';
 
 function QuestionCards() {
+  const { t } = useTranslation();
   const { data: cards } = useSWR(getQuestionsEndpoint(false));
   const cardsByCategory = cards?.cards;
 
@@ -94,7 +97,11 @@ function QuestionCards() {
           appearance={ButtonAppearance.Secondary}
           onClick={() => changeScroll('right')}
         >
-          <ChevronRightIcon label="next topics" width={6} height={10} />
+          <ChevronRightIcon
+            label={t('question_cards.next_topic')}
+            width={6}
+            height={10}
+          />
         </CategoryControl>
       </QuestionCategories>
       <QuestionContentCard>
@@ -125,29 +132,34 @@ function QuestionCards() {
                   }}
                 >
                   <CloseIcon
-                    label="unarchive question"
+                    label={t('question_cards.unarchive')}
                     width={16}
                     height={16}
                   />
                 </Button>
               ) : (
-                <Button
-                  variation={ButtonVariations.Icon}
-                  onClick={() => {
-                    archieveQuestion({
-                      uuid: card.uuid,
-                      archive: true,
-                      onSuccess: () => mutate(getQuestionsEndpoint(false)),
-                      onError: () => null,
-                    });
-                  }}
-                >
-                  <DownloadIcon
-                    label="archive question"
-                    width={16}
-                    height={16}
-                  />
-                </Button>
+                <Tooltip
+                  text={t('question_cards.archive')}
+                  trigger={
+                    <Button
+                      variation={ButtonVariations.Icon}
+                      onClick={() => {
+                        archieveQuestion({
+                          uuid: card.uuid,
+                          archive: true,
+                          onSuccess: () => mutate(getQuestionsEndpoint(false)),
+                          onError: () => null,
+                        });
+                      }}
+                    >
+                      <DownloadIcon
+                        label={t('question_cards.archive')}
+                        width={16}
+                        height={16}
+                      />
+                    </Button>
+                  }
+                />
               )}
             </QuestionCard>
           ))}
