@@ -1,6 +1,7 @@
 import {
   Checkbox,
   CheckboxGrid,
+  Combobox,
   Dropdown,
   Gradients,
   MultiCheckbox,
@@ -28,24 +29,25 @@ const Warning = styled(StatusMessage)`
 `;
 
 export const ComponentTypes = {
-  infoText: 'infoText',
-  text: 'text',
-  textContent: 'textContent',
-  textArea: 'textArea',
-  textInput: 'textInput',
-  radio: 'radio',
-  radioWithInput: 'radioWithInput',
-  panelSelector: 'panelSelector',
-  multiCheckbox: 'multiCheckbox',
-  multiCheckboxWithInput: 'multiCheckboxWithInput',
-  multiSelection: 'multiSelection',
-  multiDropdown: 'multiDropdown',
+  checkbox: 'checkbox',
+  checkboxGrid: 'checkboxGrid',
+  checkboxWithInput: 'checkboxWithInput',
+  combobox: 'combobox',
   dropdown: 'dropdown',
   dropdownWithInput: 'dropdownWithInput',
-  checkbox: 'checkbox',
-  checkboxWithInput: 'checkboxWithInput',
-  checkboxGrid: 'checkboxGrid',
+  infoText: 'infoText',
+  multiCheckbox: 'multiCheckbox',
+  multiCheckboxWithInput: 'multiCheckboxWithInput',
+  multiDropdown: 'multiDropdown',
+  multiSelection: 'multiSelection',
+  panelSelector: 'panelSelector',
   picture: 'picture',
+  radio: 'radio',
+  radioWithInput: 'radioWithInput',
+  text: 'text',
+  textArea: 'textArea',
+  textContent: 'textContent',
+  textInput: 'textInput',
   warning: 'warning',
 } as const;
 
@@ -177,6 +179,16 @@ export const getFormComponent = (
         valueKey: 'preSelected',
         currentValue: currentValue || [],
         options: formatMultiSelectionOptions({ data: formData, t }),
+        ...props,
+      };
+
+    case ComponentTypes.combobox:
+      return {
+        Component: Combobox,
+        dataField,
+        updater: 'onValueChange',
+        options: formatDataField(formData, t, true),
+        currentValue: currentValue || '',
         ...props,
       };
 

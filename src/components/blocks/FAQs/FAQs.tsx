@@ -16,6 +16,7 @@ import {
   FAQItems,
   FAQSectionTitle,
   FAQsCard,
+  FAQsDescription,
 } from './FAQs.styles';
 
 const translationKeys = [
@@ -55,19 +56,19 @@ function FAQs({ supportUrl }: { supportUrl: string }) {
 
   return (
     <FAQsCard>
-      <CardHeader textColor={theme.color.text.title}>
+      <CardHeader textColor={theme.color.text.title} marginBottom="0px">
         {t('nbt_faqs')}
       </CardHeader>
       <FAQContainer>
         <FAQImageWrapper>
           <TeacherImage label="image of woman holding book" />
         </FAQImageWrapper>
-        <Text type={TextTypes.Body5} center>
+        <FAQsDescription type={TextTypes.Body5} center>
           {t('help.faqs_intro')}
-        </Text>
+        </FAQsDescription>
         {faqs.map(faq => (
           <FAQItems key={faq.section}>
-            <FAQSectionTitle bold type={TextTypes.Body3}>
+            <FAQSectionTitle bold type={TextTypes.Heading5}>
               {faq.section}
             </FAQSectionTitle>
             <Accordion items={faq.items} />

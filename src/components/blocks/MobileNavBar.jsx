@@ -85,7 +85,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
       <LogoContainer>
         <Logo stacked={false} displayText={hideTitle} asLink />
         {!hideTitle && (
-          <Title tag="h1" type={TextTypes.Body1} bold>
+          <Title tag="h1" type={TextTypes.Heading4} bold>
             {t(`headers::${key}`)}
           </Title>
         )}

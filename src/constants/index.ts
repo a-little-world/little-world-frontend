@@ -74,6 +74,8 @@ export const STORAGE_KEYS = {
 };
 
 /**
+ * Quiz step ids sent to `/api/user/self_onboarding/update/`.
+ * Built as `{chapter_id}_q_{quiz order}` — use chapter_ids `self_onboarding_c1` etc. in CMS.
  * Must match `SELF_ONBOARDING_STEP_ORDER` in `back/management/api/user.py`.
  */
 export const SELF_ONBOARDING_WALKTHROUGH_STEP_IDS = [

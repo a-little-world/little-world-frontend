@@ -253,7 +253,7 @@ const Quiz = ({
                 <ConfettiImage label={t('quiz.completed_confetti_label')} />
               )}
             </FloatingCelebration>
-            <Text type={TextTypes.Body2} tag="h2" bold center>
+            <Text type={TextTypes.Heading4} tag="h2" center>
               {completedTitle ?? t('quiz.completed_title')}
             </Text>
             <Text center>
@@ -293,13 +293,13 @@ const Quiz = ({
     <QuizLayout>
       <QuizCard width={CardSizes.FullWidth}>
         <QuizQuestion asContainer marginBottom={0} align="flex-start">
-          <QuizCounter type={TextTypes.Body5}>
+          <QuizCounter type={TextTypes.Heading5}>
             {t('quiz.question_counter', {
               current: stepIndex + 1,
               total: steps.length,
             })}
           </QuizCounter>
-          <QuestionText type={TextTypes.Body2} bold tag="h2">
+          <QuestionText type={TextTypes.Heading4} bold tag="h2">
             {step.question}
           </QuestionText>
         </QuizQuestion>

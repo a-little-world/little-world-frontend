@@ -303,7 +303,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       <OnlineIndicator isOnline={isOnline} position="absolute" />
       <ProfileInfo>
         <NameContainer $isSelf={isSelf}>
-          <Text type={TextTypes.Body3} bold>
+          <Text type={TextTypes.Heading5} bold>
             {isDeleted ? t('profile.deleted_name') : profile.first_name}
           </Text>
           {isSupport && <SupportTag />}

@@ -247,14 +247,14 @@ const EventCtas = ({
   return (
     <>
       <DateTimeEvent>
-        <Text type={TextTypes.Body3} bold tag="span">
+        <Text type={TextTypes.Heading5} bold tag="span">
           {isWeeklyLabelInRange
             ? t('community_events.every_week', {
                 day: formatDate(startDate, 'EEEE', language),
               })
             : formatDate(startDate, 'cccc, do LLLL', language)}
         </Text>
-        <Text type={TextTypes.Body3} bold color={theme.color.text.heading}>
+        <Text type={TextTypes.Heading5} bold color={theme.color.text.heading}>
           {formatEventTime(startDate, endDate)}
         </Text>
       </DateTimeEvent>

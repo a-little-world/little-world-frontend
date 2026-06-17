@@ -18,6 +18,10 @@ export const PARTNERS_ROUTE = 'resources/partners';
 export const PARTNER_ROUTE = 'resources/partners/:partnerSlug?/';
 export const TRAININGS_ROUTE = 'resources/trainings';
 export const TRAINING_ROUTE = 'resources/trainings/:trainingSlug';
+export const COURSE_PREVIEW_ROUTE = 'courses/preview/:courseSlug';
+
+export const getCoursePreviewRoute = (slug: string) =>
+  getAppRoute(`courses/preview/${slug}`);
 export const BEGINNERS_ROUTE = 'resources/beginners';
 export const LANGUAGE_RESOURCES_ROUTE = 'resources/german';
 export const MY_STORY_ROUTE = 'resources/story';

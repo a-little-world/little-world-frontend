@@ -10,7 +10,7 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { formatDate, formatTime } from '../../../helpers/date';
 import {
@@ -28,14 +28,6 @@ const MatchingCallImage = styled(CalendarAddIcon)`
   width: 60px;
   margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
   flex-shrink: 0;
-`;
-
-const AppointmentButton = styled(Button)<{ $isLink?: boolean }>`
-  ${({ theme, $isLink }) =>
-    $isLink &&
-    css`
-      color: ${theme.color.text.link};
-    `}
 `;
 
 const getCardState = ({ hasAppointment }: { hasAppointment: boolean }) => {
@@ -63,44 +55,41 @@ function AppointmentOption({
         label="matching call image"
         gradient={Gradients.Orange}
       />
-      <OptionTitle type={TextTypes.Body3} bold>
+      <OptionTitle type={TextTypes.Heading4}>
         {isBooked
           ? t('onboarding_selection.appointment_booked_heading')
           : t('onboarding_selection.book_appointment_title')}
       </OptionTitle>
-      <OptionSubtext type={TextTypes.Body4}>
+      <OptionSubtext type={TextTypes.Body5}>
         {isBooked
           ? t('onboarding_selection.appointment_booked_description')
           : t('onboarding_selection.book_appointment_subtext')}
       </OptionSubtext>
       {!isBooked && (
         <CardFooter>
-          <AppointmentButton
+          <Button
             data-cal-link={bookAppointmentLink}
             data-cal-config='{"layout":"month_view"}'
             onClick={() => null}
             size={ButtonSizes.Stretch}
-            appearance={
-              isBooked ? ButtonAppearance.Secondary : ButtonAppearance.Primary
-            }
-            $isLink={isBooked}
+            appearance={ButtonAppearance.Primary}
           >
             {t(`searching_card.${cardState}_cta`)}
-          </AppointmentButton>
+          </Button>
         </CardFooter>
       )}
       {isBooked && (
         <>
           <StatsGridFullWidth>
             <StatBoxFullWidth>
-              <StatValue type={TextTypes.Body3} bold>
+              <StatValue type={TextTypes.Heading5}>
                 {formatDate(
                   new Date(onboardingAppointment.start_time),
                   'cccc, do LLLL',
                   i18n.language,
                 )}
               </StatValue>
-              <StatValue type={TextTypes.Body3} bold>
+              <StatValue type={TextTypes.Heading5}>
                 {formatTime(new Date(onboardingAppointment.start_time))}
                 {' – '}
                 {formatTime(new Date(onboardingAppointment.end_time))}
@@ -116,7 +105,7 @@ function AppointmentOption({
               {t('searching_card.pre_match_call_booked_join_call')}
             </Link>
             <Button
-              data-cal-link="#"
+              data-cal-link={bookAppointmentLink}
               data-cal-config='{"layout":"month_view"}'
               onClick={() => null}
               appearance={ButtonAppearance.Secondary}

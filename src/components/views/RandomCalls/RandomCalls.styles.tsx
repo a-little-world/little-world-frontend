@@ -52,7 +52,7 @@ export const InfoPanelText = styled.div`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
-      padding: ${theme.spacing.small};
+      padding: ${theme.spacing.xxsmall} ${theme.spacing.small} 0;
     }
   `}
 `;

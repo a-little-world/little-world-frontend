@@ -13,6 +13,7 @@ import {
   ParticipantTile,
   PermissionsModal,
   RoomAudioRenderer,
+  TrackReferenceOrPlaceholder,
   useDisconnectButton,
   useRoomInfo,
   useTracks,
@@ -21,7 +22,7 @@ import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/pre
 import '@livekit/components-styles';
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
@@ -59,6 +60,7 @@ import TranslationTool from '../blocks/TranslationTool/TranslationTool';
 import {
   CallLayout,
   CallRejectedTextContainer,
+  CameraPipOverlay,
   DesktopTranslationTool,
   StyledGridLayout,
   VideoContainer,
@@ -107,7 +109,10 @@ function MyVideoConference({
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
   const tracks = useTracks(
-    [{ source: Track.Source.Camera, withPlaceholder: true }],
+    [
+      { source: Track.Source.Camera, withPlaceholder: true },
+      { source: Track.Source.ScreenShare, withPlaceholder: false },
+    ],
     { onlySubscribed: true },
   );
   const [currentParticipants, setCurrentParticipants] = useState(1);
@@ -121,6 +126,51 @@ function MyVideoConference({
 
   const { t } = useTranslation();
 
+  const isScreenShareActive = useMemo(
+    () =>
+      tracks.some(
+        track =>
+          track.source === Track.Source.ScreenShare &&
+          track.publication &&
+          !track.publication.isMuted,
+      ),
+    [tracks],
+  );
+
+  const gridTracks = useMemo(
+    () =>
+      isScreenShareActive
+        ? tracks.filter(
+            track =>
+              track.source === Track.Source.ScreenShare &&
+              track.publication &&
+              !track.publication.isMuted,
+          )
+        : tracks,
+    [isScreenShareActive, tracks],
+  );
+
+  const localCameraTrack = useMemo(
+    () =>
+      tracks.find(
+        track =>
+          track.source === Track.Source.Camera &&
+          track.participant instanceof LocalParticipant,
+      ),
+    [tracks],
+  );
+
+  const remoteCameraTrack = useMemo(
+    () =>
+      tracks.find(
+        track =>
+          track.source === Track.Source.Camera &&
+          track.participant &&
+          !(track.participant instanceof LocalParticipant),
+      ),
+    [tracks],
+  );
+
   useEffect(() => {
     if (name) initializeCallID(name);
   }, [name, initializeCallID]);
@@ -132,9 +182,11 @@ function MyVideoConference({
   }, [tracks.length]);
 
   const placeholders = {};
+  const remoteTracks: TrackReferenceOrPlaceholder[] = [];
   tracks.forEach(track => {
     if (track.participant) {
       const isLocal = track?.participant instanceof LocalParticipant;
+      if (!isLocal) remoteTracks.push(track);
 
       placeholders[track.participant.identity] = (
         <VideoPlaceholder
@@ -190,18 +242,37 @@ function MyVideoConference({
     return t('call.waiting_for_partner', { name: partnerName });
   };
   const waitingMessage = getWaitingMessage();
-
   if (isEmpty(tracks)) return null;
-
   return (
     <Videos>
       {!callRejected && (
-        <StyledGridLayout tracks={tracks}>
-          <ParticipantTile placeholders={placeholders} />
-        </StyledGridLayout>
+        <>
+          <StyledGridLayout
+            tracks={gridTracks}
+            $screenShareActive={isScreenShareActive}
+          >
+            <ParticipantTile placeholders={placeholders} />
+          </StyledGridLayout>
+          {isScreenShareActive && (
+            <CameraPipOverlay>
+              {localCameraTrack && (
+                <ParticipantTile
+                  trackRef={localCameraTrack}
+                  placeholders={placeholders}
+                />
+              )}
+              {remoteCameraTrack && (
+                <ParticipantTile
+                  trackRef={remoteCameraTrack}
+                  placeholders={placeholders}
+                />
+              )}
+            </CameraPipOverlay>
+          )}
+        </>
       )}
 
-      {tracks.length === 1 && (
+      {isEmpty(remoteTracks) && (
         <WaitingTile $isFullScreen={isFullScreen}>
           <ProfileImage
             circle

@@ -34,6 +34,7 @@ import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalk
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
+import CoursePreview from '../components/views/Resources/Trainings/CoursePreview';
 import Training from '../components/views/Resources/Trainings/Training';
 import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
@@ -54,6 +55,7 @@ import {
   CHANGE_EMAIL_ROUTE,
   CHAT_ROUTE,
   COMMUNITY_EVENTS_ROUTE,
+  COURSE_PREVIEW_ROUTE,
   DONATE_ROUTE,
   EDIT_FORM_ROUTE,
   EMAIL_PREFERENCES_ROUTE,
@@ -194,6 +196,7 @@ export function getWebRouter() {
         },
         { path: getAppRoute(CALL_SETUP_ROUTE), element: <Main /> },
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
+        { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
         { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
         { path: getAppRoute(OUR_WORLD_ROUTE), element: <AboutUs /> },
@@ -312,6 +315,7 @@ export function getNativeRouter() {
           children: [{ path: ':slug', element: <EditView /> }],
         },
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
+        { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
         { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
         { path: getAppRoute(OUR_WORLD_ROUTE), element: <AboutUs /> },

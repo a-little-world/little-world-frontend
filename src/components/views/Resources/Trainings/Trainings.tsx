@@ -55,7 +55,12 @@ const Trainings: FC = () => {
 
   return (
     <ContentCard>
-      <Text color={theme.color.text.title} type={TextTypes.Body2} bold tag="h2">
+      <Text
+        color={theme.color.text.title}
+        type={TextTypes.Heading4}
+        bold
+        tag="h2"
+      >
         {t('resources.trainings.title')}
       </Text>
       <Text bold>{t('resources.trainings.description')}</Text>

@@ -49,48 +49,15 @@ export const PARTNERS_DATA = {
     additionalImage: LernFairImage,
     additionalAltImage: 'Girl studying',
     videoId: LERN_FAIR_YT_ID,
+    videoTitle: '',
   },
 };
 
 export enum TRAINING_IDS {
   intercultural = 'intercultural',
-  misunderstandings = 'misunderstandings',
 }
 
 export const TRAININGS_DATA = {
-  [TRAINING_IDS.misunderstandings]: {
-    id: TRAINING_IDS.misunderstandings,
-    title: 'Kulturelle Missverständnisse & Vorurteile',
-    description: 'resources.trainings.misunderstandings.description',
-    bio: 'resources.trainings.misunderstandings.teacher',
-    slug: 'kulturelle-missverstaendnisse',
-    link: getAppSubpageRoute(TRAININGS_ROUTE, 'kulturelle-missverstaendnisse'),
-    linkText: 'resources.trainings.training_cta',
-    image:
-      'https://home.little-world.com/wp-content/uploads/2026/01/Kulturelle-Missverstaendnisse-und-Vorurteile.jpg',
-    altImage: 'Kulturelle Missverständnisse Training',
-    hasHandout: true,
-    video: [
-      {
-        id: 'gzJWyH6tg7I',
-        label: 'Kulturelle Missverständnisse & Vorurteile - Missverständnisse',
-      },
-      {
-        id: 'p2zls4SjnPQ',
-        label:
-          'Kulturelle Missverständnisse & Vorurteile - Was sind Vorurteile?',
-      },
-      {
-        id: 't0QnPD9HpHo',
-        label: 'Kulturelle Missverständnisse & Vorurteile - Mikroaggressionen',
-      },
-      {
-        id: 'lI7JhoYyb4c',
-        label:
-          'Kulturelle Missverständnisse & Vorurteile - Folgen von Vorurteilen',
-      },
-    ],
-  },
   [TRAINING_IDS.intercultural]: {
     id: TRAINING_IDS.intercultural,
     title: 'Interkulturelle Kommunikation',
