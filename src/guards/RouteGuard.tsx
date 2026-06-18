@@ -42,34 +42,37 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
     return pageContent;
   }
 
-  if (authRequired) {
-    if (!user) {
-      const sessionExpired = tokenStatus === TokenStatus.EXPIRED;
-      const sessionExpiredString = sessionExpired ? '?sessionExpired=true' : '';
+  if (authRequired && !user) {
+    const sessionExpired = tokenStatus === TokenStatus.EXPIRED;
+    const sessionExpiredString = sessionExpired ? '?sessionExpired=true' : '';
 
-      return <Navigate to={`/${LOGIN_ROUTE}${sessionExpiredString}`} replace />;
-    }
-
-    if (!user.emailVerified) {
-      // use nested if-cases to prevent looping navigation between email verification and user form
-      if (
-        pathname !== getAppRoute(VERIFY_EMAIL_ROUTE) &&
-        pathname !== getAppRoute(CHANGE_EMAIL_ROUTE)
-      ) {
-        // change email is allowed
-        return <Navigate to={getAppRoute(VERIFY_EMAIL_ROUTE)} replace />;
-      }
-    } else if (!user.userFormCompleted) {
-      if (!pathname.startsWith(getAppRoute(USER_FORM_ROUTE))) {
-        return <Navigate to={getAppRoute(USER_FORM_ROUTE)} replace />;
-      }
-    }
+    return <Navigate to={`/${LOGIN_ROUTE}${sessionExpiredString}`} replace />;
   }
 
-  if (!authRequired) {
-    if (user) {
-      return <Navigate to={getAppRoute()} replace />;
-    }
+  // Unverified email -> verify-email (change-email is also allowed)
+  if (
+    authRequired &&
+    user &&
+    !user.emailVerified &&
+    pathname !== getAppRoute(VERIFY_EMAIL_ROUTE) &&
+    pathname !== getAppRoute(CHANGE_EMAIL_ROUTE)
+  ) {
+    return <Navigate to={getAppRoute(VERIFY_EMAIL_ROUTE)} replace />;
+  }
+
+  // Verified email but user form not completed -> user-form
+  if (
+    authRequired &&
+    user &&
+    user.emailVerified &&
+    !user.userFormCompleted &&
+    !pathname.startsWith(getAppRoute(USER_FORM_ROUTE))
+  ) {
+    return <Navigate to={getAppRoute(USER_FORM_ROUTE)} replace />;
+  }
+
+  if (!authRequired && user) {
+    return <Navigate to={getAppRoute()} replace />;
   }
 
   return pageContent;
