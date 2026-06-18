@@ -19,7 +19,11 @@ import useSWR from 'swr';
 import { resendVerificationEmail, verifyEmail } from '../../api';
 import { USER_ENDPOINT } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
-import { CHANGE_EMAIL_ROUTE, getAppRoute } from '../../router/routes';
+import {
+  CHANGE_EMAIL_ROUTE,
+  getAppRoute,
+  USER_FORM_ROUTE,
+} from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import {
   FormDescription,
@@ -41,7 +45,7 @@ const VerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
-  const { data: userData } = useSWR(USER_ENDPOINT, {
+  const { data: userData, mutate: mutateUser } = useSWR(USER_ENDPOINT, {
     revalidateOnFocus: true,
     refreshInterval: 1000,
   });
