@@ -842,7 +842,7 @@
   "support_us.join_events.link_href": "/app/events",
   "support_us.join_events.link_text": "Join Events",
   "support_us.join_events.title": "Join Group Events",
-  "support_us.join_groups.description": "Typically only 5-10% of your followers on social media see your post. To enhance our visibility, we have created WhatsApp and Signal groups where we share direct links to our posts for quick engagement. Fast engagement after posting significantly improves our reach. Join our WhatsApp and Signal groups to stay updated and spread some love to help boost our visibility.",
+  "support_us.join_groups.description": "Typically only 5-10% of your followers on social media see your post. To enhance our visibility, we have created WhatsApp and Telegram groups where we share direct links to our posts for quick engagement. Fast engagement after posting significantly improves our reach. Join our WhatsApp and Telegram groups to stay updated and spread some love to help boost our visibility.",
   "support_us.join_groups.title": "Join Our Engagement Groups",
   "support_us.organize_an_event.description": "Share your passion, knowledge, or the unique aspects of your home country with our community by hosting a group event. Events can range from 5 to 30 minutes and provide a great opportunity to connect, practice German, learn new things, and discover interesting conversation topics.",
   "support_us.organize_an_event.link_href": "{{- supportUrl }}",

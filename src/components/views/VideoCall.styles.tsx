@@ -5,8 +5,6 @@ import ProfileImage from '../atoms/ProfileImage';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool';
 
 const pipCameraTileAppearance = (theme: DefaultTheme) => css`
-  width: 100%;
-  max-height: none;
   border-radius: ${theme.radius.small};
   aspect-ratio: 9 / 16;
   overflow: hidden;
@@ -54,7 +52,9 @@ const participantMutedCameraTileAppearance = (theme: DefaultTheme) => css`
   }
 `;
 
-const participantMutedCameraPlaceholderAppearance = (theme: DefaultTheme) => css`
+const participantMutedCameraPlaceholderAppearance = (
+  theme: DefaultTheme,
+) => css`
   .lk-participant-tile[data-lk-video-muted='true'][data-lk-source='camera']
     .lk-participant-placeholder {
     opacity: 1;
@@ -77,43 +77,31 @@ const pipParticipantPlaceholderAvatarSizing = css`
   }
 `;
 
-/** Absolute corner PiP used for the local camera when screen share is off. */
-const pipCameraTileCornerPosition = (theme: DefaultTheme) => css`
+const pipCameraCornerPosition = (theme: DefaultTheme) => css`
   position: absolute !important;
   right: ${theme.spacing.small};
-  width: 30%;
-  top: 72px;
+  width: clamp(88px, 24vw, 112px);
+  bottom: 80px;
   z-index: 2;
 
   @media (min-width: ${theme.breakpoints.small}) {
-    width: 25%;
+    width: clamp(120px, 20vw, 180px);
+    top: 72px;
+    bottom: auto;
   }
 
   @media (min-width: ${theme.breakpoints.large}) {
-    width: 20%;
+    width: clamp(160px, 14vw, 240px);
     top: ${theme.spacing.small};
   }
 `;
 
 export const CameraPipOverlay = styled.div`
-  position: absolute;
-  top: 72px;
-  right: ${({ theme }) => theme.spacing.small};
-  z-index: 2;
+  ${({ theme }) => pipCameraCornerPosition(theme)}
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.large};
-  width: 30%;
   pointer-events: none;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.small}) {
-    width: 25%;
-  }
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
-    top: ${({ theme }) => theme.spacing.small};
-    width: 20%;
-  }
 
   .lk-participant-tile {
     position: relative;
@@ -237,7 +225,7 @@ export const StyledGridLayout = styled(GridLayout)<{
     !$screenShareActive &&
     css`
       .lk-participant-tile[data-lk-local-participant='true'][data-lk-source='camera'] {
-        ${pipCameraTileCornerPosition(theme)}
+        ${pipCameraCornerPosition(theme)}
         ${pipCameraTileAppearance(theme)}
         max-height: 50%;
       }
