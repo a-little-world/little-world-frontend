@@ -6,6 +6,7 @@ export const StyledCard = styled(Card)`
   max-width: 500px;
   align-self: flex-start;
   flex: 1;
+  overflow: auto;
 
   ${({ theme }) =>
     `@media (max-width: ${theme.breakpoints.small}) {
