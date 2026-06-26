@@ -2,7 +2,7 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Checkbox,
-  Dropdown,
+  Select,
   InputWidth,
   Label,
   Link,
@@ -273,7 +273,7 @@ const SignUp = () => {
           control={control}
           rules={{ required: 'error.required' }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <Dropdown
+            <Select
               onValueChange={val => onChange({ target: { value: val } })}
               value={value}
               error={t(error?.message)}

@@ -1,8 +1,5 @@
-import {
-  Dropdown,
-  TextInput,
-} from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import { Select, TextInput } from '@a-little-world/little-world-design-system';
+import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -10,14 +7,13 @@ import { formatDataField } from '../../../../userForm/formContent';
 import FormStep from '../../Form/FormStep';
 import { Container } from './styles';
 
-const DropdownWithInput = ({ control, dropdown, textInput }) => {
-  const { currentValue, dataField, formData, textInputVal, getProps } =
-    dropdown;
+const SelectWithInput = ({ control, select, textInput }) => {
+  const { currentValue, dataField, formData, textInputVal, getProps } = select;
   const [displayTextInput, setDisplayTextInput] = useState(
     textInputVal === currentValue,
   );
   const { t } = useTranslation();
-  const dropdownProps = getProps?.(t);
+  const selectProps = getProps?.(t);
   return (
     <Container>
       <Controller
@@ -25,7 +21,7 @@ const DropdownWithInput = ({ control, dropdown, textInput }) => {
           field: { onChange, onBlur, value, name, ref },
           fieldState: { error },
         }) => (
-          <Dropdown
+          <Select
             name={name}
             value={value}
             onBlur={onBlur}
@@ -36,13 +32,13 @@ const DropdownWithInput = ({ control, dropdown, textInput }) => {
               onChange(val);
             }}
             options={formatDataField(formData, t)}
-            {...dropdownProps}
+            {...selectProps}
           />
         )}
         defaultValue={currentValue}
         name={dataField}
         control={control}
-        rules={dropdownProps?.errorRules}
+        rules={selectProps?.errorRules}
       />
       {displayTextInput && (
         <FormStep
@@ -60,4 +56,4 @@ const DropdownWithInput = ({ control, dropdown, textInput }) => {
   );
 };
 
-export default DropdownWithInput;
+export default SelectWithInput;

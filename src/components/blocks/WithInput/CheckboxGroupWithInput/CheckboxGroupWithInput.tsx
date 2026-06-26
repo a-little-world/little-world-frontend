@@ -1,8 +1,8 @@
 import {
-  MultiCheckbox,
+  CheckboxGroup,
   TextInput,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -10,24 +10,24 @@ import { formatDataField } from '../../../../userForm/formContent';
 import FormStep from '../../Form/FormStep';
 import { Container } from './styles';
 
-interface MultiCheckboxWithInputProps {
+interface CheckboxGroupWithInputProps {
   control: any;
-  multiCheckbox: any;
+  checkboxGroup: any;
   textInput: any;
 }
 
-const MultiCheckboxWithInput = ({
+const CheckboxGroupWithInput = ({
   control,
-  multiCheckbox,
+  checkboxGroup,
   textInput,
-}: MultiCheckboxWithInputProps) => {
+}: CheckboxGroupWithInputProps) => {
   const { currentValue, dataField, formData, textInputVal, getProps } =
-    multiCheckbox;
+    checkboxGroup;
   const [displayTextInput, setDisplayTextInput] = useState(
     currentValue.includes(textInputVal),
   );
   const { t } = useTranslation();
-  const MultiCheckboxProps = getProps?.(t);
+  const CheckboxGroupProps = getProps?.(t);
   return (
     <Container>
       <Controller
@@ -35,7 +35,7 @@ const MultiCheckboxWithInput = ({
           field: { onChange, onBlur, value, name, ref },
           fieldState: { error },
         }) => (
-          <MultiCheckbox
+          <CheckboxGroup
             name={name}
             preSelected={value}
             onBlur={onBlur}
@@ -46,13 +46,13 @@ const MultiCheckboxWithInput = ({
               onChange(val);
             }}
             options={formatDataField(formData, t)}
-            {...MultiCheckboxProps}
+            {...CheckboxGroupProps}
           />
         )}
         defaultValue={currentValue}
         name={dataField}
         control={control}
-        rules={MultiCheckboxProps?.errorRules}
+        rules={CheckboxGroupProps?.errorRules}
       />
       {displayTextInput && (
         <FormStep
@@ -70,4 +70,4 @@ const MultiCheckboxWithInput = ({
   );
 };
 
-export default MultiCheckboxWithInput;
+export default CheckboxGroupWithInput;
