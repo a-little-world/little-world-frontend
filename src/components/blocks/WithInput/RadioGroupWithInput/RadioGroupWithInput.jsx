@@ -2,7 +2,7 @@ import {
   RadioGroup,
   TextInput,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -42,6 +42,7 @@ const RadioGroupWithInput = ({ control, radioGroup, textInput }) => {
             }))}
             label={radioGroupProps?.label}
             labelTooltip={radioGroupProps?.labelTooltip}
+            orientation="vertical"
           />
         )}
         defaultValue={currentValue}

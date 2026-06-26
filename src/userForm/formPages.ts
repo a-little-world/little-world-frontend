@@ -1,7 +1,7 @@
 import {
   ContentTypes,
   InputWidth,
-  MultiDropdownVariants,
+  MultiSelectVariants,
   TextArea,
   TextAreaSize,
 } from '@a-little-world/little-world-design-system';
@@ -57,7 +57,7 @@ const formPages = {
     nextPage: USER_FORM_ROUTES.INTERESTS,
     components: [
       {
-        type: ComponentTypes.dropdown,
+        type: ComponentTypes.select,
         currentValue: userData?.gender,
         dataField: 'gender',
         formData: options?.gender,
@@ -114,8 +114,8 @@ const formPages = {
                 ]
               : []),
             {
-              type: ComponentTypes.multiCheckboxWithInput,
-              multiCheckbox: {
+              type: ComponentTypes.checkboxGroupWithInput,
+              checkboxGroup: {
                 currentValue: userData?.target_groups,
                 dataField: 'target_groups',
                 formData: options?.target_groups,
@@ -137,7 +137,7 @@ const formPages = {
             },
           ]),
       {
-        type: ComponentTypes.multiDropdown,
+        type: ComponentTypes.multiSelect,
         currentValue: userData?.lang_skill,
         dataField: 'lang_skill',
         getProps: t => ({
@@ -145,12 +145,12 @@ const formPages = {
           label: t('self_info.language_skills_label'),
           labelTooltip: t('self_info.language_skills_tooltip'),
           maxSegments: 8,
-          variant: MultiDropdownVariants.Combobox,
+          variant: MultiSelectVariants.Combobox,
           restrictions:
             userData?.user_type === USER_TYPES.volunteer
               ? { german: restrictedLangLevels }
               : {},
-          firstDropdown: {
+          firstSelect: {
             dataField: 'lang',
             ariaLabel: t('self_info.language_selector_label'),
             placeholder: t('self_info.language_selector_placeholder'),
@@ -159,7 +159,7 @@ const formPages = {
             lockedValue: 'german',
             errors: [],
           },
-          secondDropdown: {
+          secondSelect: {
             dataField: 'level',
             ariaLabel: t('self_info.language_level_label'),
             placeholder: t('self_info.language_level_placeholder'),

@@ -4,10 +4,10 @@ import {
   ButtonSizes,
   ButtonVariations,
   Card,
-  Dropdown,
   Link,
   Modal,
   PencilIcon,
+  Select,
   StatusMessage,
   StatusTypes,
   Text,
@@ -58,7 +58,7 @@ const StyledFormMessage = styled(StatusMessage)`
 const SettingsItem = styled.div`
   max-width: 360px;
   &:last-of-type {
-    margin-top: ${({ theme }) => theme.spacing.xxxlarge};
+    margin-top: ${({ theme }) => theme.spacing.xxlarge};
     margin-bottom: ${({ theme }) => theme.spacing.xsmall};
   }
 `;
@@ -202,7 +202,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
               field: { onChange, onBlur, value, name, ref },
               fieldState: { error },
             }) => (
-              <Dropdown
+              <Select
                 name={name}
                 inputRef={ref}
                 onValueChange={val => onChange({ target: { value: val } })}
@@ -211,6 +211,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
                 error={t(error?.message)}
                 label={t('settings.personal_display_language')}
                 options={displayLanguages}
+                inModal
               />
             )}
           />
@@ -285,7 +286,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
           />
         )}
         <StyledFormMessage
-          visible={errors?.root?.serverError}
+          visible={!!errors?.root?.serverError}
           type={StatusTypes.Error}
         >
           {t(errors?.root?.serverError?.message)}

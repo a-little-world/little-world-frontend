@@ -15,7 +15,7 @@ const firstDuplicate = arr => {
   return -1;
 };
 
-const addErrorToLangSkill = ({ dropdownProps, error, values }) => {
+const addErrorToLangSkill = ({ selectProps, error, values }) => {
   const numberOfValues = values.length;
   const errors = Array(numberOfValues).fill(undefined);
   const errorIndex =
@@ -24,7 +24,7 @@ const addErrorToLangSkill = ({ dropdownProps, error, values }) => {
       : firstDuplicate(values);
 
   errors.splice(errorIndex, 1, error);
-  return { ...dropdownProps, errors };
+  return { ...selectProps, errors };
 };
 
 const FormStep = ({ content, control }) => {
@@ -59,8 +59,8 @@ const FormStep = ({ content, control }) => {
             [valueKey]: value,
             ...(dataField === 'lang_skill' && error
               ? {
-                  firstDropdown: addErrorToLangSkill({
-                    dropdownProps: props.firstDropdown,
+                  firstSelect: addErrorToLangSkill({
+                    selectProps: props.firstSelect,
                     error: t(error?.message),
                     values: map(value, val => val.lang),
                   }),

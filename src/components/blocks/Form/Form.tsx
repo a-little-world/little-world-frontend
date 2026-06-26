@@ -28,10 +28,10 @@ import {
 } from '../../../userForm/formContent';
 import getFormPage from '../../../userForm/formPages';
 import ProfilePic from '../Profile/ProfilePic/ProfilePic';
+import CheckboxGroupWithInput from '../WithInput/CheckboxGroupWithInput/CheckboxGroupWithInput';
 import CheckboxWithInput from '../WithInput/CheckboxWithInput/CheckboxWithInput';
-import DropdownWithInput from '../WithInput/DropdownWithInput/DropdownWithInput';
-import MultiCheckboxWithInput from '../WithInput/MultiCheckboxWithInput/MultiCheckboxWithInput';
 import RadioGroupWithInput from '../WithInput/RadioGroupWithInput/RadioGroupWithInput';
+import SelectWithInput from '../WithInput/SelectWithInput/SelectWithInput';
 import FormStep from './FormStep';
 import {
   FormButtons,
@@ -137,10 +137,10 @@ const Form = () => {
         />
       );
 
-    if (component?.type === ComponentTypes.dropdownWithInput)
+    if (component?.type === ComponentTypes.selectWithInput)
       return (
-        <DropdownWithInput
-          key={DropdownWithInput.name}
+        <SelectWithInput
+          key={SelectWithInput.name}
           control={control}
           {...component}
         />
@@ -155,10 +155,10 @@ const Form = () => {
         />
       );
 
-    if (component?.type === ComponentTypes.multiCheckboxWithInput)
+    if (component?.type === ComponentTypes.checkboxGroupWithInput)
       return (
-        <MultiCheckboxWithInput
-          key={MultiCheckboxWithInput.name}
+        <CheckboxGroupWithInput
+          key={CheckboxGroupWithInput.name}
           control={control}
           {...component}
         />

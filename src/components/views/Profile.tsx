@@ -1,7 +1,7 @@
 import {
   Modal,
-  MultiDropdown,
-  MultiDropdownVariants,
+  MultiSelect,
+  MultiSelectVariants,
   StatusTypes,
   Tags,
   Text,
@@ -115,7 +115,7 @@ const getProfileFields = ({
   ),
   lang_skill: getFormComponent(
     {
-      type: ComponentTypes.multiDropdown,
+      type: ComponentTypes.multiSelect,
       dataField: 'lang_skill',
       currentValue: profile.lang_skill,
       getProps: (trans: TFunction) => ({
@@ -123,13 +123,13 @@ const getProfileFields = ({
         label: trans('self_info.language_skills_label'),
         labelTooltip: trans('self_info.language_skills_tooltip'),
         maxSegments: 8,
-        variant: MultiDropdownVariants.Combobox,
+        variant: MultiSelectVariants.Combobox,
         inModal: true,
         restrictions:
           profile?.user_type === USER_TYPES.volunteer
             ? { german: restrictedLangLevels }
             : {},
-        firstDropdown: {
+        firstSelect: {
           dataField: 'lang',
           ariaLabel: trans('self_info.language_selector_label'),
           placeholder: trans('self_info.language_selector_placeholder'),
@@ -138,7 +138,7 @@ const getProfileFields = ({
           lockedValue: 'german',
           errors: [],
         },
-        secondDropdown: {
+        secondSelect: {
           dataField: 'level',
           ariaLabel: trans('self_info.language_level_label'),
           placeholder: trans('self_info.language_level_placeholder'),
@@ -306,7 +306,7 @@ function Profile() {
           setEditingField={setEditingField}
         >
           {profile.lang_skill?.length ? (
-            <MultiDropdown
+            <MultiSelect
               {...profileFields.lang_skill}
               locked
               label={undefined}

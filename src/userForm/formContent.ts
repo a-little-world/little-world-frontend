@@ -1,13 +1,13 @@
 import {
   Checkbox,
   CheckboxGrid,
+  CheckboxGroup,
   Combobox,
-  Dropdown,
   Gradients,
-  MultiCheckbox,
-  MultiDropdown,
+  MultiSelect,
   MultiSelection,
   RadioGroup,
+  Select,
   StatusMessage,
   StatusTypes,
   Text,
@@ -32,18 +32,18 @@ export const ComponentTypes = {
   checkbox: 'checkbox',
   checkboxGrid: 'checkboxGrid',
   checkboxWithInput: 'checkboxWithInput',
+  checkboxGroup: 'checkboxGroup',
+  checkboxGroupWithInput: 'checkboxGroupWithInput',
   combobox: 'combobox',
-  dropdown: 'dropdown',
-  dropdownWithInput: 'dropdownWithInput',
   infoText: 'infoText',
-  multiCheckbox: 'multiCheckbox',
-  multiCheckboxWithInput: 'multiCheckboxWithInput',
-  multiDropdown: 'multiDropdown',
+  multiSelect: 'multiSelect',
   multiSelection: 'multiSelection',
   panelSelector: 'panelSelector',
   picture: 'picture',
   radio: 'radio',
   radioWithInput: 'radioWithInput',
+  select: 'select',
+  selectWithInput: 'selectWithInput',
   text: 'text',
   textArea: 'textArea',
   textContent: 'textContent',
@@ -139,6 +139,7 @@ export const getFormComponent = (
           label: t(tag),
           value,
         })),
+        orientation: 'vertical',
         ...props,
       };
 
@@ -192,9 +193,9 @@ export const getFormComponent = (
         ...props,
       };
 
-    case ComponentTypes.dropdown:
+    case ComponentTypes.select:
       return {
-        Component: Dropdown,
+        Component: Select,
         dataField,
         updater: 'onValueChange',
         options: formatDataField(formData, t, true),
@@ -202,9 +203,9 @@ export const getFormComponent = (
         ...props,
       };
 
-    case ComponentTypes.multiDropdown:
+    case ComponentTypes.multiSelect:
       return {
-        Component: MultiDropdown,
+        Component: MultiSelect,
         updater: 'onValueChange',
         dataField,
         currentValue: currentValue || [],
@@ -230,9 +231,9 @@ export const getFormComponent = (
         ...props,
       };
 
-    case ComponentTypes.multiCheckbox:
+    case ComponentTypes.checkboxGroup:
       return {
-        Component: MultiCheckbox,
+        Component: CheckboxGroup,
         dataField,
         updater: 'onSelection',
         currentValue: currentValue || '',
