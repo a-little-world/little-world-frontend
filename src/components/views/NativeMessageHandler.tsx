@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { clearSwrCache, navigateToLogin } from '../../api/helpers';
 import {
   useDebugStore,
-  useMobileAuthTokenStore,
   useNavigationStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
@@ -25,7 +24,6 @@ export interface NativeChallengeProofEvent {
 function NativeMessageHandler() {
   const { setHandler, sendMessageToReactNative } = useReceiveHandlerStore();
   const navigate = useNavigate();
-  const mobileAuthStore = useMobileAuthTokenStore();
   const { setNavigate } = useNavigationStore();
 
   useEffect(() => {
@@ -63,24 +61,6 @@ function NativeMessageHandler() {
             requestId,
             payload: response,
           });
-          return response;
-        }
-        case 'SET_AUTH_TOKENS': {
-          if (!requestId) {
-            throw new Error('Received native message without request id');
-          }
-
-          const { accessToken, refreshToken } = payload;
-          mobileAuthStore.setTokens(accessToken, refreshToken);
-
-          const response: DomCommunicationResponse = { ok: true };
-
-          sendMessageToReactNative!({
-            action: 'RESPONSE',
-            requestId,
-            payload: response,
-          });
-
           return response;
         }
         case 'NAVIGATE': {
@@ -210,7 +190,7 @@ function NativeMessageHandler() {
 
     // Set the handler; the store will auto-register with the native bridge if available
     setHandler(handler);
-  }, [setHandler, sendMessageToReactNative, mobileAuthStore]);
+  }, [setHandler, sendMessageToReactNative]);
 }
 
 export default NativeMessageHandler;

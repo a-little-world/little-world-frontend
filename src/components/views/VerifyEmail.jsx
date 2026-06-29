@@ -21,8 +21,8 @@ import { USER_ENDPOINT } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
 import {
   CHANGE_EMAIL_ROUTE,
-  USER_FORM_ROUTE,
   getAppRoute,
+  USER_FORM_ROUTE,
 } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import {
@@ -45,12 +45,11 @@ const VerifyEmail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const theme = useTheme();
-  const { data: userData } = useSWR(USER_ENDPOINT, {
+  const { data: userData, mutate: mutateUser } = useSWR(USER_ENDPOINT, {
     revalidateOnFocus: true,
     refreshInterval: 1000,
   });
   const email = userData?.email;
-  const userFormCompleted = userData?.userFormCompleted;
 
   const [searchParams] = useSearchParams();
 
@@ -85,20 +84,17 @@ const VerifyEmail = () => {
       .catch(onError);
   };
 
-  useEffect(() => {
-    if (userData?.emailVerified) {
-      navigate(getAppRoute(USER_FORM_ROUTE));
-    }
-  }, [userData]);
-
   const onFormSubmit = async ({ verificationCode }) => {
     setIsSubmitting(true);
     verifyEmail({ verificationCode })
-      .then(() => {
+      .then(async () => {
         setIsSubmitting(false);
         setRequestSuccessful(true);
 
-        if (!userFormCompleted) {
+        // Revalidate cached user before navigating so RouteGuard sees the
+        // fresh `emailVerified` flag and does not bounce us back here.
+        const updatedUser = await mutateUser();
+        if (!updatedUser?.userFormCompleted) {
           // only navigate to /user-form when it's not completed
           // when a user changes email they see verify-email again but can go directly to /app after
           navigate(getAppRoute(USER_FORM_ROUTE));
@@ -146,9 +142,9 @@ const VerifyEmail = () => {
           visible={requestSuccessful || errors?.root?.serverError}
           type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
-          {requestSuccessful ?
-            t('verify_email.success_message') :
-            t(errors?.root?.serverError?.message)}
+          {requestSuccessful
+            ? t('verify_email.success_message')
+            : t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Button

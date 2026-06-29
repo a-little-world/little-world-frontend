@@ -4,7 +4,7 @@ import {
   IntegrityCheck,
   getIntegrityCheckRequestData,
 } from '../features/integrityCheck';
-import useMobileAuthTokenStore from '../features/stores/mobileAuthToken';
+import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { apiFetch } from './helpers';
 
@@ -97,13 +97,13 @@ export const postUserProfileUpdate = (
     });
 };
 
-export const login = async ({
+export async function login({
   email,
   password,
 }: {
   email: string;
   password: string;
-}) => {
+}) {
   if (!environment.isNative) {
     return apiFetch(`/api/user/login/`, {
       method: 'POST',
@@ -113,7 +113,8 @@ export const login = async ({
   }
 
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-  if (!sendMessageToReactNative) {
+  const { setAccessTokens } = useNativeStore.getState();
+  if (!sendMessageToReactNative || !setAccessTokens) {
     throw new Error('Native bridge not available');
   }
 
@@ -140,21 +141,10 @@ export const login = async ({
     },
   );
 
-  // Store tokens locally for subsequent Authorization headers
-  useMobileAuthTokenStore
-    .getState()
-    .setTokens(
-      loginData?.token_access ?? undefined,
-      loginData?.token_refresh ?? undefined,
-    );
-
-  await sendMessageToReactNative({
-    action: 'SET_AUTH_TOKENS',
-    payload: {
-      accessToken: loginData?.token_access || undefined,
-      refreshToken: loginData?.token_refresh || undefined,
-    },
-  });
+  await setAccessTokens(
+    loginData?.token_access || undefined,
+    loginData?.token_refresh || undefined,
+  );
 
   // Notify native app to register the firebase device push token.
   // We can do this because the firebase sdk on native is always active.
@@ -167,10 +157,11 @@ export const login = async ({
 
   delete loginData?.token_access;
   delete loginData?.token_refresh;
-  return loginData;
-};
 
-export const signUp = async ({
+  return loginData;
+}
+
+export async function signUp({
   email,
   birthYear,
   password,
@@ -180,27 +171,30 @@ export const signUp = async ({
   mailingList,
   company = null,
   userType,
-}) => {
+}) {
+  const requestBody = {
+    email,
+    password1: password,
+    password2: confirmPassword,
+    first_name: firstName,
+    second_name: lastName,
+    birth_year: birthYear,
+    newsletter_subscribed: mailingList,
+    company,
+    user_type: userType,
+  };
+
   if (!environment.isNative) {
     return apiFetch(`/api/register/`, {
       method: 'POST',
       useTagsOnly: true,
-      body: {
-        email,
-        password1: password,
-        password2: confirmPassword,
-        first_name: firstName,
-        second_name: lastName,
-        birth_year: birthYear,
-        newsletter_subscribed: mailingList,
-        company,
-        user_type: userType,
-      },
+      body: requestBody,
     });
   }
 
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-  if (!sendMessageToReactNative) {
+  const { setAccessTokens } = useNativeStore.getState();
+  if (!sendMessageToReactNative || !setAccessTokens) {
     throw new Error('Native bridge not available');
   }
 
@@ -218,33 +212,15 @@ export const signUp = async ({
     method: 'POST',
     useTagsOnly: true,
     body: {
-      email,
-      password1: password,
-      password2: confirmPassword,
-      first_name: firstName,
-      second_name: lastName,
-      birth_year: birthYear,
-      newsletter_subscribed: mailingList,
-      company,
+      ...requestBody,
       ...getIntegrityCheckRequestData(challengeData),
     },
   });
 
-  // Store tokens locally for subsequent Authorization headers
-  useMobileAuthTokenStore
-    .getState()
-    .setTokens(
-      signUpData?.token_access ?? undefined,
-      signUpData?.token_refresh ?? undefined,
-    );
-
-  await sendMessageToReactNative({
-    action: 'SET_AUTH_TOKENS',
-    payload: {
-      accessToken: signUpData?.token_access ?? undefined,
-      refreshToken: signUpData?.token_refresh ?? undefined,
-    },
-  });
+  await setAccessTokens(
+    signUpData?.token_access || undefined,
+    signUpData?.token_refresh || undefined,
+  );
 
   // Notify native app to register the firebase device push token.
   // We can do this because the firebase sdk on native is always active.
@@ -255,11 +231,8 @@ export const signUp = async ({
     payload: {},
   });
 
-  delete signUpData?.token_access;
-  delete signUpData?.token_refresh;
-
   return signUpData;
-};
+}
 
 export const requestPasswordReset = async ({ email }) =>
   apiFetch(`/api/user/resetpw/`, {
