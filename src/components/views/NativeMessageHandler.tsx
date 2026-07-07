@@ -87,6 +87,32 @@ function NativeMessageHandler() {
 
           return response;
         }
+        case 'NAVIGATE_BACK': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          // React Router maintains `idx` in history state (0 = first entry this
+          // session). idx > 0 means there is an SPA screen to go back to.
+          const idx = (window.history.state?.idx as number | undefined) ?? 0;
+          const canGoBack = idx > 0;
+          if (canGoBack) {
+            useNavigationStore.getState().navigate?.(-1);
+          }
+
+          const response: DomCommunicationResponse = {
+            ok: true,
+            data: { handled: canGoBack },
+          };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
         case 'NAVIGATE_TO_LOGIN': {
           if (!requestId) {
             throw new Error('Received native message without request id');
