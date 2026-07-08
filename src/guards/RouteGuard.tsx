@@ -22,13 +22,17 @@ interface Props {
 
 function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
   const { isTokenRefreshing, tokenStatus, isReady } = useNativeStore();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const nextParam = new URLSearchParams(search).get('next');
   const { data: isAuthenticated, isLoading: isAuthenticatedLoading } = useSWR(
     IS_AUTHENTICATED_ENDPOINT,
   );
   const { data: user, isLoading: userLoading } = useSWR(
     isAuthenticated ? USER_ENDPOINT : null,
   );
+
+  const withNext = (route: string) =>
+    nextParam ? `${route}?next=${encodeURIComponent(nextParam)}` : route;
 
   const pageContent = Layout ? (
     <Layout>
@@ -44,9 +48,16 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
 
   if (authRequired && !user) {
     const sessionExpired = tokenStatus === TokenStatus.EXPIRED;
-    const sessionExpiredString = sessionExpired ? '?sessionExpired=true' : '';
+    const params = new URLSearchParams();
+    if (sessionExpired) {
+      params.set('sessionExpired', 'true');
+      params.set('next', `${pathname}${search}`);
+    }
+    const query = params.toString();
 
-    return <Navigate to={`/${LOGIN_ROUTE}${sessionExpiredString}`} replace />;
+    return (
+      <Navigate to={`/${LOGIN_ROUTE}${query ? `?${query}` : ''}`} replace />
+    );
   }
 
   // Unverified email -> verify-email (change-email is also allowed)
@@ -57,7 +68,7 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
     pathname !== getAppRoute(VERIFY_EMAIL_ROUTE) &&
     pathname !== getAppRoute(CHANGE_EMAIL_ROUTE)
   ) {
-    return <Navigate to={getAppRoute(VERIFY_EMAIL_ROUTE)} replace />;
+    return <Navigate to={withNext(getAppRoute(VERIFY_EMAIL_ROUTE))} replace />;
   }
 
   // Verified email but user form not completed -> user-form
@@ -68,11 +79,11 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
     !user.userFormCompleted &&
     !pathname.startsWith(getAppRoute(USER_FORM_ROUTE))
   ) {
-    return <Navigate to={getAppRoute(USER_FORM_ROUTE)} replace />;
+    return <Navigate to={withNext(getAppRoute(USER_FORM_ROUTE))} replace />;
   }
 
   if (!authRequired && user) {
-    return <Navigate to={getAppRoute()} replace />;
+    return <Navigate to={nextParam || getAppRoute()} replace />;
   }
 
   return pageContent;
