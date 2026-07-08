@@ -23,7 +23,12 @@ interface Props {
 function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
   const { isTokenRefreshing, tokenStatus, isReady } = useNativeStore();
   const { pathname, search } = useLocation();
-  const nextParam = new URLSearchParams(search).get('next');
+  // only internal absolute paths
+  const rawNext = new URLSearchParams(search).get('next');
+  const nextParam =
+    rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')
+      ? rawNext
+      : null;
   const { data: isAuthenticated, isLoading: isAuthenticatedLoading } = useSWR(
     IS_AUTHENTICATED_ENDPOINT,
   );
