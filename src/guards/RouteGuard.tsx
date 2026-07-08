@@ -4,6 +4,8 @@ import useSWR from 'swr';
 
 import { TokenStatus } from '../api/types';
 import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
+// import { environment } from '../environment';
+// import LoadingScreen from '../components/atoms/LoadingScreen';
 import useNativeStore from '../features/stores/nativeStore';
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../features/swr';
 import {
@@ -46,6 +48,17 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
   ) : (
     <Outlet />
   );
+
+  // TODO: enable if the optimistic app shell looks broken before user data loads on native.
+  // Keeps mid-session token refresh flicker-free (return current page), but shows the
+  // loading logo during the initial auth determination instead of a half-rendered shell.
+  // Web is unchanged. Requires the commented imports (environment, LoadingScreen) above.
+  // if (isTokenRefreshing) {
+  //   return pageContent;
+  // }
+  // if (environment.isNative && (!isReady || isAuthenticatedLoading || userLoading)) {
+  //   return <LoadingScreen />;
+  // }
 
   if (!isReady || isTokenRefreshing || isAuthenticatedLoading || userLoading) {
     return pageContent;

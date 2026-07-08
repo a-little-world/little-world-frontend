@@ -5,6 +5,7 @@ import useSWR, { mutate, SWRConfig } from 'swr';
 
 import { apiFetch } from '../../api/helpers';
 import { TokenStatus } from '../../api/types';
+import { environment } from '../../environment';
 import { useReceiveHandlerStore } from '../../features/stores';
 import useNativeStore from '../../features/stores/nativeStore';
 import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler';
@@ -17,6 +18,7 @@ import {
 import useNativeSwrConfig from '../../hooks/useNativeSwrConfig';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
+import { getAppRoute } from '../../router/routes';
 
 export interface LittleWorldWebNativeProps {
   sendMessageToReactNative: DomCommunicationMessageFn;
@@ -28,6 +30,7 @@ export interface LittleWorldWebNativeProps {
     accessToken: string | undefined,
     refreshToken: string | undefined,
   ) => Promise<void>;
+  hasStoredToken?: boolean;
 }
 
 /**
@@ -68,7 +71,18 @@ export function LittleWorldWebNative({
   refreshAccessToken,
   getAccessToken,
   setAccessTokens,
+  hasStoredToken,
 }: LittleWorldWebNativeProps) {
+  // Optimistic startup: if native has a stored token, boot the hash-router at the app
+  // route instead of the default login route so RouteGuard renders the app immediately
+  // and only bounces to login if the token proves invalid. Empty-hash guard keeps this a
+  // no-op after any real navigation (e.g. logout -> #/login), so no login flash.
+  if (environment.isNative && hasStoredToken) {
+    const h = window.location.hash;
+    if (!h || h === '#' || h === '#/') {
+      window.location.hash = getAppRoute();
+    }
+  }
   const router = getNativeRouter();
   const {
     handler,
