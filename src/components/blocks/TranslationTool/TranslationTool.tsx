@@ -5,7 +5,7 @@ import {
   ButtonSizes,
   ButtonVariations,
   CopyIcon,
-  Dropdown,
+  Select,
   SwapIcon,
   TextAreaSize,
   Tooltip,
@@ -115,7 +115,7 @@ function TranslationTool({ className }: { className?: string }) {
   return (
     <ToolContainer className={className}>
       <DropdownsRow>
-        <Dropdown
+        <Select
           key={fromLang}
           maxWidth="100%"
           placeholder={t('translator.language_placeholder')}
@@ -140,7 +140,7 @@ function TranslationTool({ className }: { className?: string }) {
             height="16"
           />
         </SwapBtn>
-        <Dropdown
+        <Select
           key={toLang}
           maxWidth="100%"
           placeholder={t('translator.language_placeholder')}
