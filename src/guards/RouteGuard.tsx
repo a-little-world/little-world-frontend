@@ -31,12 +31,15 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
     rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')
       ? rawNext
       : null;
-  const { data: isAuthenticated, isLoading: isAuthenticatedLoading } = useSWR(
-    IS_AUTHENTICATED_ENDPOINT,
-  );
-  const { data: user, isLoading: userLoading } = useSWR(
-    isAuthenticated ? USER_ENDPOINT : null,
-  );
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
+  const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
+
+  // Use "value not yet known" (=== undefined) rather than SWR's isLoading:
+  // isLoading only clears when a fetch completes, so a fetch started while
+  // paused stays "loading" forever even after an optimistic mutate sets the
+  // value, which stranded post-login redirects.
+  const authUndetermined = isAuthenticated === undefined;
+  const userUndetermined = !!isAuthenticated && user === undefined;
 
   const withNext = (route: string) =>
     nextParam ? `${route}?next=${encodeURIComponent(nextParam)}` : route;
@@ -60,7 +63,7 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
   //   return <LoadingScreen />;
   // }
 
-  if (!isReady || isTokenRefreshing || isAuthenticatedLoading || userLoading) {
+  if (!isReady || isTokenRefreshing || authUndetermined || userUndetermined) {
     return pageContent;
   }
 
