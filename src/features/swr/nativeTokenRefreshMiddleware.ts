@@ -40,19 +40,7 @@ const nativeTokenRefreshMiddleware: Middleware =
 
     const wrappedFetcher = async (...args: Parameters<typeof fetcher>) => {
       try {
-        const result = await fetcher(...args);
-
-        if (key === IS_AUTHENTICATED_ENDPOINT && result === false) {
-          const tokenStatus = await refreshToken();
-          if (tokenStatus === TokenStatus.VALID) {
-            return fetcher(...args);
-          }
-
-          await triggerLogout();
-          return result;
-        }
-
-        return result;
+        return await fetcher(...args);
       } catch (error: any) {
         const { getAccessToken } = useNativeStore.getState();
         const accessToken = await getAccessToken();

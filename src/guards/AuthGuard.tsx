@@ -7,15 +7,6 @@ import { IS_AUTHENTICATED_ENDPOINT } from '../features/swr/index';
 function AuthGuard({ children }: { children: ReactNode }) {
   const { data: authenticated, isValidating } = useSWR<boolean>(
     IS_AUTHENTICATED_ENDPOINT,
-    {
-      refreshInterval: isAuthenticated => {
-        // keep polling every 3s until authenticated
-        if (isAuthenticated !== true) {
-          return 3000;
-        }
-        return 0;
-      },
-    },
   );
   const { isTokenRefreshing } = useNativeStore();
 
