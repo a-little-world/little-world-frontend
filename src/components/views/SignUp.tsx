@@ -2,10 +2,10 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Checkbox,
-  Select,
   InputWidth,
   Label,
   Link,
+  Select,
   StatusMessage,
   StatusTypes,
   Text,
@@ -87,7 +87,7 @@ const SignUp = () => {
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
   const { data: apiOptions } = useSWR(API_OPTIONS_ENDPOINT, {
-    revalidateOnMount: false,
+    revalidateOnMount: true,
     revalidateOnFocus: false,
   });
   const userTypeOptions =
