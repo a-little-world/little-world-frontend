@@ -58,7 +58,7 @@ export async function navigateToLogin(expired: boolean = false): Promise<void> {
   }
 
   if (environment.isNative) {
-    await clearSwrCache(false);
+    await clearSwrCache();
   }
 
   const path = `/${LOGIN_ROUTE}${expired ? '?sessionExpired=true' : ''}`;

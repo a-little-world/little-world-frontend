@@ -51,7 +51,8 @@ function NativeMessageHandler() {
 
           debugConfigState.setDebugConfig({ debugEnabled, backendUrlOverride });
 
-          if (backendUrlChanged) {
+          // Only clear on actual runtime backend switch
+          if (backendUrlChanged && useNativeStore.getState().isReady) {
             clearSwrCache();
           }
 
