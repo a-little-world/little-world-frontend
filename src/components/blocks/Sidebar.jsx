@@ -18,24 +18,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { apiFetch } from '../../api/helpers';
-import { environment } from '../../environment';
-import { useReceiveHandlerStore } from '../../features/stores';
-import useNativeStore from '../../features/stores/nativeStore';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
-  resetUserQueries,
   USER_ENDPOINT,
 } from '../../features/swr/index';
-import { unregisterFirebaseDeviceToken } from '../../firebase-util';
 import {
   COMMUNITY_EVENTS_ROUTE,
   getAppRoute,
   HELP_CONTACT_ROUTE,
   HELP_ROUTE,
   isActiveRoute,
-  LOGIN_ROUTE,
   MESSAGES_ROUTE,
   OUR_WORLD_ROUTE,
   PROFILE_ROUTE,
@@ -45,6 +38,7 @@ import {
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
+import { logout } from '../../api';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';
@@ -227,35 +221,7 @@ function Sidebar({ isVH, sidebarMobile }) {
         : []),
       {
         label: 'log_out',
-        clickEvent: async () => {
-          try {
-            if (environment.isNative) {
-              const { sendMessageToReactNative } =
-                useReceiveHandlerStore.getState();
-              await sendMessageToReactNative?.({
-                action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
-                payload: {},
-              });
-            } else {
-              await unregisterFirebaseDeviceToken();
-            }
-          } catch (_e) {
-            // ignore
-          }
-
-          try {
-            await apiFetch(`/api/user/logout/`, {
-              method: 'GET',
-            });
-          } finally {
-            if (environment.isNative) {
-              const { setAccessTokens } = useNativeStore.getState();
-              await setAccessTokens(null, null);
-            }
-            resetUserQueries();
-            await navigate(`/${LOGIN_ROUTE}/`);
-          }
-        },
+        clickEvent: () => logout(navigate),
       },
     ],
     [hasMatchingPermissions, startPath, navigate],

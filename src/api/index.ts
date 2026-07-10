@@ -1,3 +1,4 @@
+import { NavigateFunction } from 'react-router-dom';
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 import {
@@ -6,6 +7,9 @@ import {
 } from '../features/integrityCheck';
 import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
+import { resetUserQueries } from '../features/swr';
+import { unregisterFirebaseDeviceToken } from '../firebase-util';
+import { LOGIN_ROUTE } from '../router/routes';
 import { apiFetch } from './helpers';
 
 export const completeForm = async () => apiFetch(`/api/profile/completed/`);
@@ -159,6 +163,35 @@ export async function login({
   delete loginData?.token_refresh;
 
   return loginData;
+}
+
+export async function logout(navigate: NavigateFunction) {
+  try {
+    if (environment.isNative) {
+      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
+      await sendMessageToReactNative?.({
+        action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
+        payload: {},
+      });
+    } else {
+      await unregisterFirebaseDeviceToken();
+    }
+  } catch (_e) {
+    // ignore
+  }
+
+  try {
+    await apiFetch(`/api/user/logout/`, {
+      method: 'GET',
+    });
+  } finally {
+    if (environment.isNative) {
+      const { setAccessTokens } = useNativeStore.getState();
+      await setAccessTokens(undefined, undefined);
+    }
+    resetUserQueries();
+    await navigate(`/${LOGIN_ROUTE}/`);
+  }
 }
 
 export async function signUp({
