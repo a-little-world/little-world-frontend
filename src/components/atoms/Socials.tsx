@@ -3,16 +3,16 @@ import {
   InstagramIcon,
   Link,
   LinkedinIcon,
-  TelegramIcon,
-  WhatsappIcon,
 } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
-const SocialLinks = styled.div`
+const SocialLinks = styled.div<{
+  $align: 'center' | 'flex-start' | 'flex-end';
+}>`
   display: flex;
   gap: ${({ theme }) => theme.spacing.medium};
   align-items: center;
-  justify-content: center;
+  justify-content: ${({ $align }) => $align};
 `;
 
 export const SOCIALS_LIST = {
@@ -33,28 +33,18 @@ export const SOCIALS_LIST = {
       label: 'linkedin',
     },
   ],
-  join_groups: [
-    {
-      Icon: WhatsappIcon,
-      url: 'https://chat.whatsapp.com/DDoLv0AFtHh6CEtXlKz91k',
-      label: 'whatsapp',
-    },
-    {
-      Icon: TelegramIcon,
-      url: 'https://t.me/+nhDqI57icllkMmYy',
-      label: 'telegram',
-    },
-  ],
 };
 
 const Socials = ({
   type,
   gradient,
+  align = 'center',
 }: {
+  align?: 'center' | 'flex-start' | 'flex-end';
   gradient?: string;
-  type: 'social_media' | 'join_groups';
+  type: 'social_media';
 }) => (
-  <SocialLinks>
+  <SocialLinks $align={align}>
     {SOCIALS_LIST[type].map(({ Icon, url, label }: any) => (
       <Link key={label} href={url} textDecoration={false}>
         <Icon label={label} gradient={gradient} />

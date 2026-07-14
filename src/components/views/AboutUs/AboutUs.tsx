@@ -1,5 +1,4 @@
 import { last } from 'lodash';
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -23,7 +22,7 @@ const Content = styled.div`
     }`};
 `;
 
-type subpages = 'stories' | 'about' | 'support' | 'donate';
+type subpages = 'about' | 'support' | 'donate';
 
 const renderResourceContent = (page?: subpages | string) => {
   if (page === 'support') return <SupportUs />;
@@ -36,9 +35,9 @@ function OurWorld() {
   const navigate = useNavigate();
 
   const subpage =
-    location.pathname === getAppRoute(OUR_WORLD_ROUTE) ?
-      'support' :
-      last(location.pathname.split('/'));
+    location.pathname === getAppRoute(OUR_WORLD_ROUTE)
+      ? 'support'
+      : last(location.pathname.split('/'));
 
   const handleSubpageSelect = (page: subpages) => {
     navigate(getAppSubpageRoute(OUR_WORLD_ROUTE, page));

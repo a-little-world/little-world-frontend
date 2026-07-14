@@ -5,6 +5,7 @@ export const COMMUNITY_EVENTS_ROUTE = 'events';
 export const OUR_WORLD_ROUTE = 'our-world';
 export const SUPPORT_US_ROUTE = 'our-world/support';
 export const DONATE_ROUTE = 'our-world/donate';
+export const MATERIALS_ROUTE = 'our-world/materials';
 export const CALL_ROUTE = 'call/:userId?/';
 export const RANDOM_CALL_ROUTE = 'random-call/:userId?/';
 export const CALL_SETUP_ROUTE = 'call-setup/:userId?';
