@@ -7,15 +7,14 @@ import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
-import useSWR, { SWRConfig } from 'swr';
+import { SWRConfig } from 'swr';
 
-import { MATCHES_ENDPOINT, swrConfig } from '../../features/swr/index';
+import { swrConfig } from '../../features/swr/index';
+import useSupportChat, { type SupportMatch } from '../../hooks/useSupportChat';
 import {
   HELP_CONTACT_ROUTE,
   HELP_FAQS_ROUTE,
-  MESSAGES_ROUTE,
   getAppRoute,
-  getAppSubpageRoute,
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import Socials from '../atoms/Socials';
@@ -48,24 +47,15 @@ const HELP_SUBPAGE_ROUTES: Record<HelpSubpage, string> = {
   faqs: HELP_FAQS_ROUTE,
 };
 
-interface SupportMatch {
-  chatId?: string;
-  partner?: {
-    id: string;
-    first_name: string;
-    image: string;
-    image_type: string;
-    avatar_config: object;
-  };
+interface SupportMatchProps {
+  supportMatch?: SupportMatch;
+  isLoading?: boolean;
 }
 
 export function Contact({
   supportMatch,
   isLoading,
-}: {
-  supportMatch?: SupportMatch;
-  isLoading?: boolean;
-}) {
+}: SupportMatchProps) {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -117,12 +107,10 @@ export function Contact({
 function Help() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: matches, isLoading: isMatchesLoading } = useSWR(
-    MATCHES_ENDPOINT,
-    {
+  const { supportMatch, supportUrl, isLoading: isMatchesLoading } =
+    useSupportChat({
       revalidateOnMount: true,
-    },
-  );
+    });
 
   const subpage = useMemo<HelpSubpage>(() => {
     const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -146,10 +134,6 @@ function Help() {
     [navigate],
   );
 
-  const supportUser = matches?.support?.results?.[0];
-  const supportChatId = supportUser?.chatId;
-  const supportUrl = getAppSubpageRoute(MESSAGES_ROUTE, supportChatId ?? '');
-
   return (
     <>
       <ContentSelector
@@ -158,9 +142,9 @@ function Help() {
         use="help"
       />
 
-      {subpage === 'faqs' && <FAQs supportUrl={supportUrl} />}
+      {subpage === 'faqs' && <FAQs supportUrl={supportUrl ?? ''} />}
       {subpage === 'contact' && (
-        <Contact supportMatch={supportUser} isLoading={isMatchesLoading} />
+        <Contact supportMatch={supportMatch} isLoading={isMatchesLoading} />
       )}
     </>
   );
