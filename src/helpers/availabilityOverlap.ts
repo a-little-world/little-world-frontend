@@ -43,7 +43,9 @@ const groupConsecutiveSlots = (slots: string[]) => {
   const groups: string[][] = [[ordered[0]]];
   ordered.slice(1).forEach(slot => {
     const lastGroup = groups[groups.length - 1];
-    const lastSlotIndex = SLOTS.indexOf(lastGroup[lastGroup.length - 1] as (typeof SLOTS)[number]);
+    const lastSlotIndex = SLOTS.indexOf(
+      lastGroup[lastGroup.length - 1] as (typeof SLOTS)[number],
+    );
     const slotIndex = SLOTS.indexOf(slot as (typeof SLOTS)[number]);
     if (slotIndex === lastSlotIndex + 1) {
       lastGroup.push(slot);
@@ -79,33 +81,36 @@ const getOverlapCandidates = (
   today.setHours(0, 0, 0, 0);
   const bestPerDate = new Map<string, OverlapCandidate>();
 
-  Array.from({ length: lookaheadDays }, (_, index) => index + 1).forEach(offset => {
-    const overlapDate = new Date(today);
-    overlapDate.setDate(today.getDate() + offset);
-    const day = DAYS[getWeekdayIndex(overlapDate)];
-    const overlappingSlots = SLOTS.filter(
-      slot =>
-        availability1[day]?.includes(slot) && availability2[day]?.includes(slot),
-    );
-    if (!overlappingSlots.length) {
-      return;
-    }
-
-    groupConsecutiveSlots(overlappingSlots).forEach(slotGroup => {
-      const candidate: OverlapCandidate = {
-        day,
-        dayOffset: offset,
-        slotCount: slotGroup.length,
-        slots: slotGroup,
-        overlapDate,
-      };
-      const dateKey = overlapDate.toISOString().slice(0, 10);
-      const existing = bestPerDate.get(dateKey);
-      if (!existing || candidate.slotCount > existing.slotCount) {
-        bestPerDate.set(dateKey, candidate);
+  Array.from({ length: lookaheadDays }, (_, index) => index + 1).forEach(
+    offset => {
+      const overlapDate = new Date(today);
+      overlapDate.setDate(today.getDate() + offset);
+      const day = DAYS[getWeekdayIndex(overlapDate)];
+      const overlappingSlots = SLOTS.filter(
+        slot =>
+          availability1[day]?.includes(slot) &&
+          availability2[day]?.includes(slot),
+      );
+      if (!overlappingSlots.length) {
+        return;
       }
-    });
-  });
+
+      groupConsecutiveSlots(overlappingSlots).forEach(slotGroup => {
+        const candidate: OverlapCandidate = {
+          day,
+          dayOffset: offset,
+          slotCount: slotGroup.length,
+          slots: slotGroup,
+          overlapDate,
+        };
+        const dateKey = overlapDate.toISOString().slice(0, 10);
+        const existing = bestPerDate.get(dateKey);
+        if (!existing || candidate.slotCount > existing.slotCount) {
+          bestPerDate.set(dateKey, candidate);
+        }
+      });
+    },
+  );
 
   return Array.from(bestPerDate.values());
 };
@@ -124,6 +129,7 @@ const selectOverlapCandidates = (
     .slice(0, maxSuggestions)
     .sort((left, right) => left.dayOffset - right.dayOffset);
 
+// eslint-disable-next-line import/prefer-default-export
 export const formatSuggestedAvailabilityOverlap = (
   availability1?: Availability,
   availability2?: Availability,
@@ -135,6 +141,8 @@ export const formatSuggestedAvailabilityOverlap = (
   )
     .map(
       candidate =>
-        `• ${DAY_LABELS_DE[candidate.day]} (${formatOverlapDate(candidate.overlapDate)}), ${formatSlotRange(candidate.slots)}`,
+        `• ${DAY_LABELS_DE[candidate.day]} (${formatOverlapDate(
+          candidate.overlapDate,
+        )}), ${formatSlotRange(candidate.slots)}`,
     )
     .join('\n');
