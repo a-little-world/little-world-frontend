@@ -35,9 +35,12 @@ export const getMatchEndpoint = (page: number) =>
 export const getQuestionsEndpoint = (archived: boolean) =>
   `/api/user/question_cards/?archived=${archived}&category=all`;
 
-export const revalidateMatches = () => {
-  mutate(key => typeof key === 'string' && key.startsWith(MATCHES_ENDPOINT));
-};
+export const revalidateMatches = () =>
+  mutate(
+    key => typeof key === 'string' && key.startsWith(MATCHES_ENDPOINT),
+    undefined,
+    { revalidate: true },
+  );
 
 export const revalidateChats = () => {
   mutate(key => typeof key === 'string' && key.startsWith(CHATS_ENDPOINT));

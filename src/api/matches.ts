@@ -29,12 +29,14 @@ export const confirmOrDenyMatch = async ({
   matchId,
   acceptDeny,
   denyReason,
+  confirmMessage,
   onError,
   onSuccess,
 }: {
   matchId: string;
   acceptDeny: boolean;
   denyReason?: string;
+  confirmMessage?: string;
   onError: (error: any) => void;
   onSuccess: (result: any) => void;
 }) => {
@@ -45,6 +47,7 @@ export const confirmOrDenyMatch = async ({
         unconfirmed_match_uuid: matchId,
         confirm: acceptDeny,
         deny_reason: denyReason,
+        confirm_message: confirmMessage,
       },
       useTagsOnly: true,
     });

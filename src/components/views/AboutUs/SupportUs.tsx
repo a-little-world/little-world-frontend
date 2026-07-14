@@ -9,7 +9,6 @@ import {
   GroupHandsImage,
   LaptopWithPhoneImage,
   Link,
-  LivingRoomImage,
   ManOnRocketImage,
   PaperPlaneImage,
   PeopleTogetherImage,
@@ -19,33 +18,19 @@ import {
   TextContent,
   TextTypes,
   TimeFlexibleImage,
-  WomanOnRocketImage,
   tokens,
 } from '@a-little-world/little-world-design-system';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
-import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index';
+import useSupportChat from '../../../hooks/useSupportChat';
 import Socials, { SOCIALS_LIST } from '../../atoms/Socials';
 import MailingLists from '../../blocks/MailingLists/MailingLists';
 
 const SupportUsAccordionContent = styled(AccordionContent)`
   background: ${({ theme }) => theme.color.surface.primary};
   gap: ${({ theme }) => theme.spacing.medium};
-
-  ${({ theme }) =>
-    `@media (min-width: ${theme.breakpoints.medium}) {
-        > div {
-            &:nth-child(even) {
-                & > div:first-child {
-                  order: 1;
-                }
-            }
-        }
-    }
-  `}
 `;
 
 const ContentCard = styled(Card)`
@@ -126,19 +111,10 @@ const Ctas = styled.div`
 
 const SECTIONS_WITH_TWO_CTAS = ['volunteer'];
 const SECTION_IMAGES = {
-  subscribe_to_newsletter: <WomanOnRocketImage label="woman on rocket" />,
-  share_improvements: (
-    <LaptopWithPhoneImage
-      label="laptop with phone"
-      color={tokens.color.theme.light.text.heading}
-    />
-  ),
-  thank_your_partner: <FriendshipImage label="friendship" />,
-  share_with_friends: <TeacherImage label="teacher" />,
   join_events: <PeopleTogetherImage label="people together" />,
   organize_an_event: <GroupHandsImage label="group hands" />,
-  write_a_review: <LivingRoomImage label="living room" />,
   become_a_volunteer: <FriendshipImage label="friendship" />,
+  stories: <TeacherImage label="stories" />,
   donate: <RaisingMoneyImage label="raising money" />,
   get_interviewed: (
     <LaptopWithPhoneImage
@@ -147,48 +123,33 @@ const SECTION_IMAGES = {
     />
   ),
   distribute: <ManOnRocketImage label="man on rocket" />,
-  corporate_involvement: <PeopleTogetherImage label="people together" />,
   volunteer: <TimeFlexibleImage label="time flexible" />,
 };
 
 const SECTIONS = [
   {
-    title: 'simple_ways',
-    items: [
-      'subscribe_to_newsletter',
-      'share_improvements',
-      'thank_your_partner',
-      'social_media',
-      'join_groups',
-      'share_with_friends',
-      'join_events',
-      'write_a_review',
-    ],
+    title: 'share',
+    items: ['distribute', 'subscribe_to_newsletter', 'stories', 'social_media'],
   },
   {
-    title: 'intermediate_ways',
-    items: [
-      'organize_an_event',
-      'become_a_volunteer',
-      'get_interviewed',
-      'donate',
-    ],
+    title: 'community',
+    items: ['join_events', 'organize_an_event', 'get_interviewed'],
   },
   {
     title: 'advanced_ways',
-    items: ['distribute', 'corporate_involvement', 'volunteer'],
+    items: ['donate', 'volunteer'],
   },
 ];
 
 const SegmentCta = ({ label }: { label: string }) => {
   const { t } = useTranslation();
-  const { data: userData } = useSWR(USER_ENDPOINT);
-  const supportUrl = userData?.supportUrl;
+  const { supportUrl } = useSupportChat();
   if (label === 'subscribe_to_newsletter') return <MailingLists hideLabel />;
 
   return SOCIALS_LIST[label] ? (
     <Socials
-      type={label as 'social_media' | 'join_groups'}
+      align="flex-start"
+      type={label as 'social_media'}
       gradient={Gradients.Blue}
     />
   ) : (
