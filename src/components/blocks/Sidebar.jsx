@@ -18,35 +18,27 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { apiFetch } from '../../api/helpers';
-import { environment } from '../../environment';
-import {
-  useMobileAuthTokenStore,
-  useReceiveHandlerStore,
-} from '../../features/stores';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
-  resetUserQueries,
 } from '../../features/swr/index';
-import { unregisterFirebaseDeviceToken } from '../../firebase-util';
 import {
   COMMUNITY_EVENTS_ROUTE,
+  getAppRoute,
   HELP_CONTACT_ROUTE,
   HELP_ROUTE,
-  LOGIN_ROUTE,
+  isActiveRoute,
   MESSAGES_ROUTE,
   OUR_WORLD_ROUTE,
   PROFILE_ROUTE,
   RANDOM_CALLS_ROUTE,
   RESOURCES_ROUTE,
   SETTINGS_ROUTE,
-  getAppRoute,
-  isActiveRoute,
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
+import { logout } from '../../api';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';
@@ -162,8 +154,6 @@ const MobileOverlay = styled.div`
 
 function Sidebar({ isVH, sidebarMobile }) {
   const location = useLocation();
-  const { sendMessageToReactNative } = useReceiveHandlerStore();
-  const { setTokens } = useMobileAuthTokenStore();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -181,104 +171,61 @@ function Sidebar({ isVH, sidebarMobile }) {
   const { data: user } = useSWR(USER_ENDPOINT);
   const hasMatchingPermissions = Boolean(user?.hasMatchingPermissions);
 
-  const buttonData = useMemo(() => [
-    {
-      label: 'start',
-      path: startPath,
-      Icon: DashboardIcon,
-    },
-    {
-      label: 'messages',
-      path: getAppRoute(MESSAGES_ROUTE),
-      Icon: MessageIcon,
-    },
-    {
-      label: 'my_profile',
-      path: getAppRoute(PROFILE_ROUTE),
-      Icon: ProfileIcon,
-    },
-    {
-      label: 'resources',
-      path: getAppRoute(RESOURCES_ROUTE),
-      Icon: StackIcon,
-    },
-    {
-      label: 'about_us',
-      path: getAppRoute(OUR_WORLD_ROUTE),
-      Icon: HeartIcon,
-    },
-    {
-      label: 'help',
-      path: getAppRoute(HELP_CONTACT_ROUTE),
-      activePath: getAppRoute(HELP_ROUTE),
-      Icon: QuestionIcon,
-    },
-    {
-      label: 'settings',
-      path: getAppRoute(SETTINGS_ROUTE),
-      Icon: SettingsIcon,
-    },
-    ...(hasMatchingPermissions
-      ? [
-          {
-            label: 'management',
-            path: '/matching/',
-            Icon: UserSearchIcon,
-            reloadDocument: true,
-          },
-        ]
-      : []),
-    {
-      label: 'log_out',
-      clickEvent: async () => {
-        try {
-          if (environment.isNative) {
-            await sendMessageToReactNative({
-              action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
-              payload: {},
-            });
-          } else {
-            await unregisterFirebaseDeviceToken();
-          }
-        } catch (_e) {
-          // ignore
-        }
-
-        apiFetch(`/api/user/logout/`, {
-          method: 'GET',
-        })
-          .then(() => {
-            resetUserQueries();
-            if (!environment.isNative) {
-              navigate(`/${LOGIN_ROUTE}/`);
-            } else {
-              setTokens(null, null);
-              resetUserQueries();
-              navigate(`/${LOGIN_ROUTE}/`);
-              setTimeout(() => {
-                sendMessageToReactNative({
-                  action: 'SET_AUTH_TOKENS',
-                  payload: { accessToken: undefined, refreshToken: undefined },
-                });
-              }, 400);
-            }
-          })
-          .catch(error => {
-            // Cannot call logout if isNative manually log-out
-            if (environment.isNative) {
-              resetUserQueries();
-              setTokens(null, null);
-              navigate(`/${LOGIN_ROUTE}/`);
-              sendMessageToReactNative({
-                action: 'SET_AUTH_TOKENS',
-                payload: { accessToken: undefined, refreshToken: undefined },
-              });
-            }
-            console.error(error);
-          });
+  const buttonData = useMemo(
+    () => [
+      {
+        label: 'start',
+        path: startPath,
+        Icon: DashboardIcon,
       },
-    },
-  ], [hasMatchingPermissions, startPath, navigate, sendMessageToReactNative, setTokens]);
+      {
+        label: 'messages',
+        path: getAppRoute(MESSAGES_ROUTE),
+        Icon: MessageIcon,
+      },
+      {
+        label: 'my_profile',
+        path: getAppRoute(PROFILE_ROUTE),
+        Icon: ProfileIcon,
+      },
+      {
+        label: 'resources',
+        path: getAppRoute(RESOURCES_ROUTE),
+        Icon: StackIcon,
+      },
+      {
+        label: 'about_us',
+        path: getAppRoute(OUR_WORLD_ROUTE),
+        Icon: HeartIcon,
+      },
+      {
+        label: 'help',
+        path: getAppRoute(HELP_CONTACT_ROUTE),
+        activePath: getAppRoute(HELP_ROUTE),
+        Icon: QuestionIcon,
+      },
+      {
+        label: 'settings',
+        path: getAppRoute(SETTINGS_ROUTE),
+        Icon: SettingsIcon,
+      },
+      ...(hasMatchingPermissions
+        ? [
+            {
+              label: 'management',
+              path: '/matching/',
+              Icon: UserSearchIcon,
+              reloadDocument: true,
+            },
+          ]
+        : []),
+      {
+        label: 'log_out',
+        clickEvent: () => logout(navigate),
+      },
+    ],
+    [hasMatchingPermissions, startPath, navigate],
+  );
 
   const [showSidebarMobile, setShowSidebarMobile] = [
     sidebarMobile?.get,
@@ -300,41 +247,43 @@ function Sidebar({ isVH, sidebarMobile }) {
       >
         <StyledLogo asLink />
         <SidebarContent $isScrollable={isVH}>
-          {buttonData.map(({ label, path, activePath, clickEvent, Icon, reloadDocument }) => {
-            const isActive = isActiveRoute(
-              location.pathname,
-              activePath ?? path,
-            );
-            const unreadCount = unread[label] ?? 0;
+          {buttonData.map(
+            ({ label, path, activePath, clickEvent, Icon, reloadDocument }) => {
+              const isActive = isActiveRoute(
+                location.pathname,
+                activePath ?? path,
+              );
+              const unreadCount = unread[label] ?? 0;
 
-            return typeof clickEvent === typeof undefined ? (
-              <MenuLink
-                to={path}
-                key={label}
-                active={isActive}
-                Icon={Icon}
-                iconLabel={label}
-                text={t(`nbs_${label}`)}
-                unreadCount={unreadCount}
-                reloadDocument={reloadDocument}
-              />
-            ) : (
-              <LogoutButton
-                key={label}
-                type="button"
-                variation={ButtonVariations.Stacked}
-                onClick={clickEvent}
-              >
-                <LogoutIcon
-                  color={theme.color.text.tertiary}
-                  label={label}
-                  width={32}
-                  height={32}
+              return typeof clickEvent === typeof undefined ? (
+                <MenuLink
+                  to={path}
+                  key={label}
+                  active={isActive}
+                  Icon={Icon}
+                  iconLabel={label}
+                  text={t(`nbs_${label}`)}
+                  unreadCount={unreadCount}
+                  reloadDocument={reloadDocument}
                 />
-                <MenuLinkText>{t(`nbs_${label}`)}</MenuLinkText>
-              </LogoutButton>
-            );
-          })}
+              ) : (
+                <LogoutButton
+                  key={label}
+                  type="button"
+                  variation={ButtonVariations.Stacked}
+                  onClick={clickEvent}
+                >
+                  <LogoutIcon
+                    color={theme.color.text.tertiary}
+                    label={label}
+                    width={32}
+                    height={32}
+                  />
+                  <MenuLinkText>{t(`nbs_${label}`)}</MenuLinkText>
+                </LogoutButton>
+              );
+            },
+          )}
         </SidebarContent>
       </SidebarContainer>
       <MobileOverlay

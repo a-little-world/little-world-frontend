@@ -2,10 +2,10 @@ import {
   ButtonAppearance,
   ButtonSizes,
   Checkbox,
-  Select,
   InputWidth,
   Label,
   Link,
+  Select,
   StatusMessage,
   StatusTypes,
   Text,
@@ -16,7 +16,7 @@ import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
 import { signUp } from '../../api';
@@ -26,13 +26,7 @@ import {
   USER_ENDPOINT,
 } from '../../features/swr/index';
 import { onFormError, registerInput } from '../../helpers/form';
-import {
-  LOGIN_ROUTE,
-  USER_FORM_ROUTE,
-  VERIFY_EMAIL_ROUTE,
-  getAppRoute,
-  passAuthenticationBoundary,
-} from '../../router/routes';
+import { LOGIN_ROUTE, passAuthenticationBoundary } from '../../router/routes';
 import {
   NameContainer,
   NameInputs,
@@ -84,7 +78,6 @@ function runOptionalMatomoTriggers(userType?: string) {
 const SignUp = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
 
   // User can sign-up with a ?company='name' query
   // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
@@ -94,13 +87,14 @@ const SignUp = () => {
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
   const { data: apiOptions } = useSWR(API_OPTIONS_ENDPOINT, {
-    revalidateOnMount: false,
+    revalidateOnMount: true,
     revalidateOnFocus: false,
   });
-  const userTypeOptions = apiOptions?.profile?.user_type.map(({ value }) => ({
-    label: t(`sign_up.user_type.${value}`),
-    value,
-  }));
+  const userTypeOptions =
+    apiOptions?.profile?.user_type.map(({ value }) => ({
+      label: t(`sign_up.user_type.${value}`),
+      value,
+    })) ?? [];
 
   useEffect(() => {
     if (searchParams.has('company')) {
@@ -131,21 +125,12 @@ const SignUp = () => {
   };
 
   useEffect(() => {
-    if (!userData || !navigate) {
+    if (!userData) {
       return;
     }
 
     passAuthenticationBoundary();
-
-    if (!userData.emailVerified) {
-      navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
-    } else if (!userData.userFormCompleted) {
-      navigate(getAppRoute(USER_FORM_ROUTE));
-    } else {
-      // per default route to /app on successful login
-      navigate(getAppRoute(''));
-    }
-  }, [userData, navigate]);
+  }, [userData]);
 
   const onFormSubmit = async data => {
     setIsSubmitting(true);
