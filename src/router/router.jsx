@@ -32,6 +32,7 @@ import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
 import OnboardingSelection from '../components/views/Onboarding/OnboardingSelection';
 import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalkthrough';
+import MatchOverview from '../components/views/MatchOverview';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
@@ -64,6 +65,7 @@ import {
   HELP_ROUTE,
   LANGUAGE_RESOURCES_ROUTE,
   LOGIN_ROUTE,
+  MATCH_OVERVIEW_ROUTE,
   MESSAGES_ROUTE,
   MY_STORY_ROUTE,
   NOTIFICATIONS_ROUTE,
@@ -377,6 +379,14 @@ export function getWebRouter() {
       ),
     },
     {
+      path: getAppRoute(MATCH_OVERVIEW_ROUTE),
+      element: (
+        <FullAppLayout>
+          <MatchOverview />
+        </FullAppLayout>
+      ),
+    },
+    {
       path: getAppRoute(USER_PROFILE_ROUTE),
       element: (
         <FullAppLayout>
@@ -576,6 +586,14 @@ export function getNativeRouter() {
       errorElement: <RouterError Layout={FormLayout} />,
     },
     {
+      path: getAppRoute(MATCH_OVERVIEW_ROUTE),
+      element: (
+        <FullAppLayout>
+          <MatchOverview />
+        </FullAppLayout>
+      ),
+    },
+    {
       path: getAppRoute(USER_PROFILE_ROUTE),
       element: (
         <FullAppLayout>
@@ -718,6 +736,14 @@ export function getNativeRouter() {
       element: (
         <FullAppLayout>
           <Notifications />
+        </FullAppLayout>
+      ),
+    },
+    {
+      path: getAppRoute(MATCH_OVERVIEW_ROUTE),
+      element: (
+        <FullAppLayout>
+          <MatchOverview />
         </FullAppLayout>
       ),
     },

@@ -74,6 +74,7 @@ const formPages = {
               currentValue: userData?.country_of_residence,
               dataField: 'country_of_residence',
               formData: options?.country_of_residence,
+              pinValue: COUNTRIES.DE,
               grouped: true,
               getProps: t => ({
                 label: t('self_info.country_of_residence_label'),

@@ -20,12 +20,17 @@ import {
   pixelate,
 } from '@a-little-world/little-world-design-system';
 import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NiceAvatarProps } from 'react-nice-avatar';
 import styled, { css, useTheme } from 'styled-components';
 
 import { useCallSetupStore } from '../../../features/stores/index';
+import {
+  buildMatchTeaserViewModel,
+  matchTeaserShowsDescription,
+} from '../../../helpers/buildMatchTeaserViewModel';
+import type { MatchTeaserInput } from '../../../helpers/deriveMatchTeaserState';
 import {
   HELP_CONTACT_ROUTE,
   MESSAGES_ROUTE,
@@ -42,6 +47,7 @@ import {
   REPORT_TYPE_PARTNER,
   REPORT_TYPE_UNMATCH,
 } from '../ReportForm/constants';
+import MatchTeaser from './MatchTeaser';
 
 export const PROFILE_CARD_HEIGHT = '408px';
 
@@ -73,6 +79,7 @@ interface ProfileCardProps {
   openEditImage?: () => void;
   type?: string;
   loading?: boolean;
+  matchTeaserInput?: MatchTeaserInput | null;
 }
 
 export const StyledProfileCard = styled(Card)<{
@@ -104,11 +111,11 @@ export const StyledProfileCard = styled(Card)<{
           order: 1;
         `};
 
-  ${({ theme, $isSelf }) => css`
-    min-height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
+  ${({ theme, $isSelf, $onProfile }) => css`
+    min-height: ${$isSelf || $onProfile ? 'initial' : PROFILE_CARD_HEIGHT};
 
     @media (min-width: ${theme.breakpoints.medium}) {
-      height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
+      height: ${$isSelf || $onProfile ? 'initial' : PROFILE_CARD_HEIGHT};
     }
   `};
 
@@ -145,7 +152,6 @@ export const ProfileInfo = styled.div`
   ${({ theme }) => `
     padding-left: ${theme.spacing.xxxsmall};
     gap: ${theme.spacing.xxsmall};
-    margin-bottom: ${theme.spacing.xxsmall};
   `};
 `;
 
@@ -216,11 +222,26 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   openEditImage,
   type,
   loading = false,
+  matchTeaserInput = null,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const usesAvatar = profile.image_type === 'avatar';
   const callSetup = useCallSetupStore();
+  const teaserViewModel = useMemo(
+    () =>
+      matchTeaserInput && isMatch && !isSupport && !isDeleted && matchId
+        ? buildMatchTeaserViewModel(matchTeaserInput, {
+            chatId,
+            userPk,
+            matchId,
+          })
+        : null,
+    [chatId, isDeleted, isMatch, isSupport, matchId, matchTeaserInput, userPk],
+  );
+  const showsDescription = matchTeaserShowsDescription(
+    teaserViewModel?.kind ?? null,
+  );
 
   return (
     <StyledProfileCard
@@ -248,6 +269,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <ProfileImage
           image={usesAvatar ? profile.avatar_config : profile.image}
           imageType={profile.image_type}
+          size={onProfile ? 'large' : 'medium'}
         />
       )}
 
@@ -309,7 +331,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           {isSupport && <SupportTag />}
         </NameContainer>
 
-        {!onProfile && (
+        {!onProfile && (isSupport || isDeleted || showsDescription) && (
           <Description>
             {isSupport
               ? t('profile_card.support_description')
@@ -319,6 +341,16 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           </Description>
         )}
       </ProfileInfo>
+      {teaserViewModel && (
+        <MatchTeaser
+          variant={teaserViewModel.variant}
+          icon={teaserViewModel.icon}
+          titleKey={teaserViewModel.titleKey}
+          sublineKey={teaserViewModel.sublineKey}
+          sublineParams={teaserViewModel.sublineParams}
+          href={teaserViewModel.href}
+        />
+      )}
       {isSelf ? null : isSupport ? (
         <SupportChatLink
           to={getAppRoute(HELP_CONTACT_ROUTE)}

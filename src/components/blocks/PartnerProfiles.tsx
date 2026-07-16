@@ -26,6 +26,7 @@ import ProfileCard, {
   PROFILE_CARD_HEIGHT,
   StyledProfileCard,
 } from './Cards/ProfileCard';
+import { getMatchTeaserDummyInput } from './Cards/matchTeaserDummyData';
 import { SearchingCard } from './Cards/SearchingCard';
 import UpdateSearchStateCard from './Cards/UpdateSearchStateCard';
 
@@ -159,7 +160,7 @@ function PartnerProfiles({
       {matchesLoading ? (
         <StyledProfileCard width={CardSizes.Small} $loading />
       ) : (
-        matchesDisplay?.map(match => (
+        matchesDisplay?.map((match, index) => (
           <ProfileCard
             key={match.partner.id}
             userPk={match.partner.id}
@@ -172,6 +173,11 @@ function PartnerProfiles({
             isOnline={match.partner.isOnline}
             isSupport={match.partner.isSupport}
             chatId={match.chatId}
+            matchTeaserInput={
+              !match.partner.isSupport
+                ? getMatchTeaserDummyInput(index)
+                : null
+            }
           />
         ))
       )}

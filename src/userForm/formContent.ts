@@ -22,7 +22,7 @@ import styled from 'styled-components';
 import Note from '../components/atoms/Note';
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
 import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
-import { formatMultiSelectionOptions } from '../helpers/form';
+import { formatMultiSelectionOptions, orderSelectOptions } from '../helpers/form';
 
 const Warning = styled(StatusMessage)`
   margin-top: -${({ theme }) => theme.spacing.xxsmall};
@@ -58,6 +58,7 @@ export interface FormComponentConfig {
   dataField?: string;
   currentValue?: any;
   formData?: Array<{ tag: string; value: string }>;
+  pinValue?: string;
   getProps?: (t: (key: string) => string) => Record<string, any>;
 }
 
@@ -66,24 +67,28 @@ interface ComponentReturn {
   [key: string]: any;
 }
 
+export type FormatDataFieldOptions = {
+  alphabetize?: boolean;
+  pinValue?: string;
+  sortLocale?: string;
+};
+
 export const formatDataField = (
   data: Array<{ tag: string; value: string }> | undefined,
   t: (key: string) => string,
-  alphabetize: boolean = false,
+  options: boolean | FormatDataFieldOptions = {},
 ): Array<{ label: string; value: string }> => {
   if (!data) return [];
 
-  if (alphabetize) {
-    return data
-      .map(({ tag, value }) => ({ label: t(tag), value }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }
+  const config: FormatDataFieldOptions =
+    typeof options === 'boolean' ? { alphabetize: options } : options;
 
-  return data.map(({ tag, value }) => ({ label: t(tag), value }));
+  const mapped = data.map(({ tag, value }) => ({ label: t(tag), value }));
+  return orderSelectOptions(mapped, config);
 };
 
 export const getFormComponent = (
-  { type, currentValue, dataField, formData, getProps }: FormComponentConfig,
+  { type, currentValue, dataField, formData, pinValue, getProps }: FormComponentConfig,
   t: (key: string) => string,
 ): ComponentReturn | null => {
   const props = getProps?.(t);
@@ -188,7 +193,7 @@ export const getFormComponent = (
         Component: Combobox,
         dataField,
         updater: 'onValueChange',
-        options: formatDataField(formData, t, true),
+        options: formatDataField(formData, t, { alphabetize: true, pinValue }),
         currentValue: currentValue || '',
         ...props,
       };
@@ -198,7 +203,7 @@ export const getFormComponent = (
         Component: Select,
         dataField,
         updater: 'onValueChange',
-        options: formatDataField(formData, t, true),
+        options: formatDataField(formData, t, { alphabetize: true, pinValue }),
         currentValue: currentValue || '',
         ...props,
       };

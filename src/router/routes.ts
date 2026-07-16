@@ -13,6 +13,7 @@ export const CHAT_ROUTE = 'chat/:chatId/';
 export const MESSAGES_ROUTE = 'chat';
 export const NOTIFICATIONS_ROUTE = 'notifications';
 export const USER_PROFILE_ROUTE = 'profile/:userId?/';
+export const MATCH_OVERVIEW_ROUTE = 'match/:id';
 export const PROFILE_ROUTE = 'profile';
 export const RESOURCES_ROUTE = 'resources';
 export const PARTNERS_ROUTE = 'resources/partners';
@@ -69,6 +70,8 @@ export const getRandomCallRoute = (userId: string) =>
   `/${APP_ROUTE}/random-call/${userId}`;
 export const getCallSetupRoute = (userId: string) =>
   `/${APP_ROUTE}/call-setup/${userId}`;
+export const getMatchOverviewRoute = (matchId: string) =>
+  getAppRoute(`match/${matchId}`);
 
 export const USER_FORM_ROUTES = {
   USER_TYPE: getUserFormRoute(USER_FORM_USER_TYPE),

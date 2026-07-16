@@ -218,7 +218,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
               </ImageContainer>
               <FileDropzone
                 acceptedFiles={AcceptedFiles.Images}
-                dropHint={t('profile_picture.drop_hint')}
+                dropHint={t('profile_pic.drop_hint')}
                 fileRef={element => {
                   ref(element);
                   fileInputRef.current = element;
