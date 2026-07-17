@@ -138,6 +138,7 @@ export type ProposalItem = {
     image?: string;
     avatar_config?: NiceAvatarProps;
     image_type: string;
+    availability?: Record<string, string[]>;
   };
 };
 

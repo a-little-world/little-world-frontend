@@ -10,14 +10,16 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
+import useSWR from 'swr';
 
 import { confirmOrDenyMatch } from '../../../api/matches';
 import { MATCH_TYPES } from '../../../constants';
-import { revalidateMatches } from '../../../features/swr/index';
+import { revalidateMatches, USER_ENDPOINT } from '../../../features/swr/index';
+import { formatSuggestedAvailabilityOverlap } from '../../../helpers/availabilityOverlap';
 import { registerInput } from '../../../helpers/form';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
@@ -33,7 +35,11 @@ const ProfileInfo = styled.div`
   width: 100%;
 `;
 
-const RejectReasonContainer = styled.form`
+const Description = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+const MessageContainer = styled.form`
   width: 100%;
 `;
 
@@ -49,13 +55,15 @@ interface ConfirmaMatchCardProps {
   matchType: 'standard' | 'random_call';
   image: any;
   imageType: string;
+  partnerAvailability?: Record<string, string[]>;
 }
 
-interface RejectFormData {
-  rejectReason: string;
+interface MatchDecisionFormData {
+  rejectReason?: string;
+  confirmMessage: string;
 }
 
-type ViewState = 'confirm' | 'reject-form';
+type ViewState = 'confirm' | 'confirm-message-form' | 'reject-form';
 
 interface BaseMatchProps {
   name: string;
@@ -67,13 +75,21 @@ interface BaseMatchProps {
 
 interface ConfirmMatchProps extends BaseMatchProps {
   description: string;
-  onConfirm: () => void;
+  onConfirmClick: () => void;
   onRejectClick: () => void;
+}
+
+interface ConfirmMessageProps extends BaseMatchProps {
+  onCancel: () => void;
+  onSubmit: (data: MatchDecisionFormData) => void;
+  errors: any;
+  register: any;
+  handleSubmit: any;
 }
 
 interface RejectMatchProps extends BaseMatchProps {
   onCancel: () => void;
-  onSubmit: (data: RejectFormData) => void;
+  onSubmit: (data: MatchDecisionFormData) => void;
   errors: any;
   register: any;
   handleSubmit: any;
@@ -84,12 +100,17 @@ const getTitleKey = (matchType: string) =>
     ? 'confirm_match.title_standard'
     : 'confirm_match.title_random_call';
 
+const getDefaultConfirmMessageKey = (suggestedAvailability?: string) =>
+  suggestedAvailability
+    ? 'confirm_match.message_default_with_availability'
+    : 'confirm_match.message_default';
+
 const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
   name,
   description,
   image,
   imageType,
-  onConfirm,
+  onConfirmClick,
   onRejectClick,
   isLoading,
   matchType,
@@ -106,21 +127,24 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
         marginBottom={theme.spacing.large}
       >
         <ProfileInfo>
-          <ProfileImage image={image} imageType={imageType} />
+          <ProfileImage
+            image={image}
+            imageType={imageType}
+            size="medium"
+            circle
+          />
           <Text tag="h3" bold type={TextTypes.Heading5} center>
             {name}
           </Text>
-          <TextField>{description}</TextField>
+          <Description type={TextTypes.Body5}>
+            {t('confirm_match.description')}
+          </Description>
+          <TextField>„{description?.trim()}“</TextField>
         </ProfileInfo>
         {matchType === MATCH_TYPES.standard && (
-          <>
-            <Text type={TextTypes.Body5}>
-              {t('confirm_match.description', { name })}
-            </Text>
-            <Text type={TextTypes.Body5}>
-              {t('confirm_match.instruction', { name })}
-            </Text>
-          </>
+          <Text type={TextTypes.Body5}>
+            {t('confirm_match.instruction', { name })}
+          </Text>
         )}
       </CardContent>
 
@@ -135,11 +159,91 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
         </Button>
         <Button
           type="button"
-          onClick={onConfirm}
+          onClick={onConfirmClick}
           loading={isLoading}
           disabled={isLoading}
         >
           {t('confirm_match.confirm_button')}
+        </Button>
+      </ButtonsContainer>
+    </>
+  );
+};
+
+const ConfirmMessage: React.FC<ConfirmMessageProps> = ({
+  name,
+  image,
+  imageType,
+  onCancel,
+  onSubmit,
+  errors,
+  register,
+  handleSubmit,
+  isLoading,
+}) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+
+  return (
+    <>
+      <CardHeader>{t('confirm_match.message_title', { name })}</CardHeader>
+      <CardContent
+        align="center"
+        textAlign="center"
+        marginBottom={theme.spacing.large}
+      >
+        <ProfileInfo>
+          <ProfileImage
+            image={image}
+            imageType={imageType}
+            size="medium"
+            circle
+          />
+          <Text tag="h3" bold type={TextTypes.Heading5} center>
+            {name}
+          </Text>
+          <Text type={TextTypes.Body5}>
+            {t('confirm_match.message_info', { name })}
+          </Text>
+        </ProfileInfo>
+        <MessageContainer onSubmit={handleSubmit(onSubmit)}>
+          <TextArea
+            {...registerInput({
+              register,
+              name: 'confirmMessage',
+              options: {
+                required: 'error.required',
+                validate: (value: string) =>
+                  value.trim().length > 0 || 'error.required',
+              },
+            })}
+            id="confirmMessage"
+            label={t('confirm_match.message_label')}
+            placeholder={t('confirm_match.message_placeholder', { name })}
+            size={TextAreaSize.Medium}
+            error={t(errors?.confirmMessage?.message)}
+            disabled={isLoading}
+          />
+        </MessageContainer>
+      </CardContent>
+
+      <ButtonsContainer>
+        <Button
+          type="button"
+          appearance={ButtonAppearance.Secondary}
+          onClick={onCancel}
+          disabled={isLoading}
+        >
+          {t('form.btn_back')}
+        </Button>
+        <Button
+          type="button"
+          appearance={ButtonAppearance.Primary}
+          onClick={handleSubmit(onSubmit)}
+          loading={isLoading}
+          disabled={isLoading}
+        >
+          {t('confirm_match.confirm_and_send_button')}
         </Button>
       </ButtonsContainer>
     </>
@@ -170,7 +274,12 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
         marginBottom={theme.spacing.large}
       >
         <ProfileInfo>
-          <ProfileImage image={image} imageType={imageType} />
+          <ProfileImage
+            image={image}
+            imageType={imageType}
+            size="medium"
+            circle
+          />
           <Text tag="h3" bold type={TextTypes.Heading5} center>
             {name}
           </Text>
@@ -178,7 +287,7 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
         <RejectNote type={TextTypes.Body5}>
           {t('confirm_match.reject_info')}
         </RejectNote>
-        <RejectReasonContainer onSubmit={handleSubmit(onSubmit)}>
+        <MessageContainer onSubmit={handleSubmit(onSubmit)}>
           <TextArea
             {...registerInput({
               register,
@@ -199,7 +308,7 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
             maxLength={500}
             disabled={isLoading}
           />
-        </RejectReasonContainer>
+        </MessageContainer>
       </CardContent>
 
       <ButtonsContainer>
@@ -233,10 +342,25 @@ const ConfirmMatchCard = ({
   onClose,
   image,
   imageType,
+  partnerAvailability,
 }: ConfirmaMatchCardProps) => {
+  const { t } = useTranslation();
+  const { data: user } = useSWR(USER_ENDPOINT);
   const [viewState, setViewState] = useState<ViewState>('confirm');
   const [isLoading, setIsLoading] = useState(false);
   const isRandomCall = matchType === MATCH_TYPES.random_call;
+
+  const buildConfirmMessage = useCallback(() => {
+    const suggestedAvailability = formatSuggestedAvailabilityOverlap(
+      user?.profile?.availability,
+      partnerAvailability,
+    );
+
+    return t(getDefaultConfirmMessageKey(suggestedAvailability), {
+      name,
+      suggestedAvailability,
+    });
+  }, [name, partnerAvailability, t, user?.profile?.availability]);
 
   const {
     register,
@@ -244,13 +368,32 @@ const ConfirmMatchCard = ({
     formState: { errors },
     setError,
     reset,
-  } = useForm<RejectFormData>();
+  } = useForm<MatchDecisionFormData>({
+    defaultValues: {
+      confirmMessage: '',
+    },
+  });
 
-  const handleConfirm = () => {
+  const handleConfirmClick = () => {
+    if (matchType !== MATCH_TYPES.standard) {
+      handleConfirm();
+      return;
+    }
+
+    reset({ confirmMessage: buildConfirmMessage() });
+    setViewState('confirm-message-form');
+  };
+
+  const handleCancelConfirm = () => {
+    setViewState('confirm');
+  };
+
+  const handleConfirm = (confirmMessage?: string) => {
     setIsLoading(true);
     confirmOrDenyMatch({
       acceptDeny: true,
       matchId,
+      ...(confirmMessage ? { confirmMessage: confirmMessage.trim() } : {}),
       onSuccess: () => {
         setIsLoading(false);
         revalidateMatches();
@@ -308,8 +451,24 @@ const ConfirmMatchCard = ({
           description={description}
           image={image}
           imageType={imageType}
-          onConfirm={handleConfirm}
+          onConfirmClick={handleConfirmClick}
           onRejectClick={handleRejectClick}
+          isLoading={isLoading}
+          matchType={matchType}
+        />
+      )}
+      {viewState === 'confirm-message-form' && (
+        <ConfirmMessage
+          name={name}
+          image={image}
+          imageType={imageType}
+          onCancel={handleCancelConfirm}
+          onSubmit={(data: MatchDecisionFormData) =>
+            handleConfirm(data.confirmMessage)
+          }
+          errors={errors}
+          register={register}
+          handleSubmit={handleSubmit}
           isLoading={isLoading}
           matchType={matchType}
         />
@@ -320,7 +479,9 @@ const ConfirmMatchCard = ({
           image={image}
           imageType={imageType}
           onCancel={handleCancelReject}
-          onSubmit={(data: RejectFormData) => handleReject(data.rejectReason)}
+          onSubmit={(data: MatchDecisionFormData) =>
+            handleReject(data.rejectReason)
+          }
           errors={errors}
           register={register}
           handleSubmit={handleSubmit}

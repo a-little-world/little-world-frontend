@@ -1,5 +1,4 @@
 export interface UserData {
-  supportUrl: string;
   communityEvents: any[];
   user: any;
   notifications: any;
