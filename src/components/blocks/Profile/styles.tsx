@@ -39,12 +39,12 @@ export const TopDetails = styled.div`
 `;
 
 export const TextField = styled.div`
-  border: 1px solid ${({ theme }) => theme.color.border.subtle};
-  border-radius: 10px;
+  border-radius: ${({ theme }) => theme.radius.xsmall};
   background: ${({ theme }) => theme.color.surface.disabled};
   padding: ${({ theme }) => theme.spacing.small};
   white-space: pre-line;
   height: 100%;
+  border-left: 4px solid ${({ theme }) => theme.color.border.selected};
 `;
 
 export const ProfileSection = styled(Card)`

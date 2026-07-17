@@ -5,10 +5,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import useSWR from 'swr';
 
-import { MATCHES_ENDPOINT } from '../../features/swr';
-import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../router/routes';
+import useSupportChat from '../../hooks/useSupportChat';
 
 const FloatingSupportButton = styled.button`
   position: fixed;
@@ -37,23 +35,13 @@ const FloatingSupportButton = styled.button`
 function SupportWidget() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: matches } = useSWR(MATCHES_ENDPOINT, {
-    revalidateOnMount: false,
-  });
+  const { supportUrl } = useSupportChat();
 
-  const adminUser = matches?.support?.results?.[0];
-  const supportChatId = adminUser?.chatId;
-
-  const to =
-    adminUser?.partner?.id && supportChatId
-      ? getAppSubpageRoute(MESSAGES_ROUTE, supportChatId)
-      : undefined;
-
-  if (!to) return null;
+  if (!supportUrl) return null;
 
   const supportLabel = t('help.support_widget_tooltip');
   const handleSupportClick = () => {
-    navigate(to);
+    navigate(supportUrl);
   };
 
   return (

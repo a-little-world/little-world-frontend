@@ -82,6 +82,7 @@ const MatchModal = ({
         description={partner?.description ?? ''}
         matchId={id}
         matchType={matchType}
+        partnerAvailability={partner?.availability}
         onClose={handleClose}
       />
     );
