@@ -45,6 +45,9 @@ export const TextField = styled.div`
   white-space: pre-line;
   height: 100%;
   border-left: 4px solid ${({ theme }) => theme.color.border.selected};
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const ProfileSection = styled(Card)`
