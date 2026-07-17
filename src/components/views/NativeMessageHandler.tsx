@@ -92,10 +92,10 @@ function NativeMessageHandler() {
             throw new Error('Received native message without request id');
           }
 
+          // hacky solution
           // React Router maintains `idx` in history state (0 = first entry this
           // session). idx > 0 means there is an SPA screen to go back to.
-          const idx = (window.history.state?.idx as number | undefined) ?? 0;
-          const canGoBack = idx > 0;
+          const canGoBack = (window.history.state?.idx ?? 0) > 0;
           if (canGoBack) {
             useNavigationStore.getState().navigate?.(-1);
           }
