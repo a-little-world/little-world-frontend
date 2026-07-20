@@ -1,5 +1,6 @@
-import { TextTypes } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
+
+import { TextTypes } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
@@ -199,11 +200,11 @@ export function SidebarNotes() {
 
       if (response && response.status === 200) {
         const updatedField =
-          actionType === 'remove' ?
-            'is_deleted' :
-            actionType === 'favorite' ?
-            'is_favorite' :
-            'is_archived';
+          actionType === 'remove'
+            ? 'is_deleted'
+            : actionType === 'favorite'
+              ? 'is_favorite'
+              : 'is_archived';
 
         updatedNotesData[noteIndex] = {
           ...updatedNotesData[noteIndex],

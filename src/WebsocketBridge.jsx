@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { mutate } from 'swr';
 
 import './App.css';
+
 import {
   useEffectiveBackendUrl,
   useEffectiveCoreWsScheme,

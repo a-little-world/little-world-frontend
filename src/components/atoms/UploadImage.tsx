@@ -1,9 +1,10 @@
+import React from 'react';
+
 import {
   Button,
   ButtonVariations,
   TrashIcon,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
 import ProfileImage, { ImageSizes } from './ProfileImage';

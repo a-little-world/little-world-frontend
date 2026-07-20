@@ -1,6 +1,7 @@
+import { ReactNode, useMemo, useRef } from 'react';
+
 import useSWR from 'swr';
 
-import { ReactNode, useMemo, useRef } from 'react';
 import useNativeStore from '../features/stores/nativeStore';
 import { IS_AUTHENTICATED_ENDPOINT } from '../features/swr/index';
 

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -8,15 +10,14 @@ import {
   CardSizes,
   Text,
 } from '@a-little-world/little-world-design-system';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
 import { reportIssue } from '../../../api/matches';
 import { useConnectedCallStore } from '../../../features/stores';
 import ModalCard from '../Cards/ModalCard';
-import ReportForm, { ReportFormData } from '../ReportForm/ReportForm';
 import { REPORT_TYPE_USER } from '../ReportForm/constants';
+import ReportForm, { ReportFormData } from '../ReportForm/ReportForm';
 
 type PostCallState = 'initial' | 'report' | 'report_confirmed';
 
@@ -40,9 +41,7 @@ const PostRandomCallsFlow = ({
   onReturnToLobby,
 }: PostRandomCallsFlowProps) => {
   const { t } = useTranslation();
-  const [flowState, setFlowState] = useState<PostCallState>(
-    'initial',
-  );
+  const [flowState, setFlowState] = useState<PostCallState>('initial');
   const { disconnectedFromUser } = useConnectedCallStore();
   const theme = useTheme();
 

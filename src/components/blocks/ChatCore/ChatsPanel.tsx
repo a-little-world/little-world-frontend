@@ -1,14 +1,15 @@
+import React from 'react';
+
 import {
   Card,
   Logo,
   Text,
+  textParser,
   TextTypes,
   TickDoubleIcon,
   TickIcon,
-  textParser,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';

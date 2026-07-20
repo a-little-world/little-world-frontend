@@ -4,15 +4,13 @@ import {
   ThemeVariants,
 } from '@a-little-world/little-world-design-system';
 import {
+  createBrowserRouter,
+  createHashRouter,
   Navigate,
   Outlet,
   ScrollRestoration,
-  createBrowserRouter,
-  createHashRouter,
 } from 'react-router-dom';
 
-import FireBase from '../Firebase';
-import WebsocketBridge from '../WebsocketBridge';
 import RouterError from '../components/blocks/ErrorView/ErrorView';
 import Form from '../components/blocks/Form/Form';
 import FormLayout from '../components/blocks/Layout/FormLayout';
@@ -42,9 +40,11 @@ import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
 import { environment } from '../environment';
+import FireBase from '../Firebase';
 import AuthGuard from '../guards/AuthGuard';
 import RouteGuard from '../guards/RouteGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
+import WebsocketBridge from '../WebsocketBridge';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
   APP_ROUTE,
@@ -60,6 +60,7 @@ import {
   EDIT_FORM_ROUTE,
   EMAIL_PREFERENCES_ROUTE,
   FORGOT_PASSWORD_ROUTE,
+  getAppRoute,
   HELP_CONTACT_ROUTE,
   HELP_FAQS_ROUTE,
   HELP_ROUTE,
@@ -71,22 +72,21 @@ import {
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
   OUR_WORLD_ROUTE,
-  PARTNERS_ROUTE,
   PARTNER_ROUTE,
-  RANDOM_CALLS_ROUTE,
+  PARTNERS_ROUTE,
   RANDOM_CALL_ROUTE,
+  RANDOM_CALLS_ROUTE,
   RESET_PASSWORD_ROUTE,
   RESOURCES_ROUTE,
   SELF_ONBOARDING_ROUTE,
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
-  TRAININGS_ROUTE,
   TRAINING_ROUTE,
+  TRAININGS_ROUTE,
   USER_FORM_ROUTE,
   USER_PROFILE_ROUTE,
   VERIFY_EMAIL_ROUTE,
-  getAppRoute,
 } from './routes';
 
 const getInitialTheme = () => {

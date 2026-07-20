@@ -1,15 +1,16 @@
-import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import { FC } from 'react';
+
+import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import {
-  COURSES_ENDPOINT,
   Course,
+  COURSES_ENDPOINT,
   fetchCourses,
 } from '../../../../api/courses';
-import { TRAININGS_ROUTE, getAppSubpageRoute } from '../../../../router/routes';
+import { getAppSubpageRoute, TRAININGS_ROUTE } from '../../../../router/routes';
 import ContentList, { ItemType } from '../../../blocks/ContentList/ContentList';
 import { TRAININGS_DATA } from '../constants';
 import { ContentCard } from '../shared.styles';

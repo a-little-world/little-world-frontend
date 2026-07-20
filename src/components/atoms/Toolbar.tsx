@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   ArchiveIcon,
   BellIcon,
@@ -7,7 +9,6 @@ import {
   ClockDashedIcon,
   ClockIcon,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 

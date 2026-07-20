@@ -1,3 +1,5 @@
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -22,7 +24,6 @@ import {
   PreJoin,
   PreJoinValues,
 } from '@livekit/components-react';
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
@@ -47,9 +48,9 @@ import {
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import { clearActiveTracks } from '../../../helpers/video';
 import {
-  RANDOM_CALLS_ROUTE,
   getAppRoute,
   getRandomCallRoute,
+  RANDOM_CALLS_ROUTE,
 } from '../../../router/routes';
 import FirefoxConnectionWarning from '../../atoms/FirefoxConnectionWarning';
 import ProfileImage from '../../atoms/ProfileImage';

@@ -1,5 +1,6 @@
-import { Card, CardHeader } from '@a-little-world/little-world-design-system';
 import { ReactNode } from 'react';
+
+import { Card, CardHeader } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
 const NotFoundCard = styled(Card)`

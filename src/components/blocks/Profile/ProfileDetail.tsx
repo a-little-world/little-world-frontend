@@ -1,10 +1,11 @@
+import React, { ReactNode } from 'react';
+
 import {
   ButtonVariations,
   PencilIcon,
   TextTypes,
   Tooltip,
 } from '@a-little-world/little-world-design-system';
-import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 

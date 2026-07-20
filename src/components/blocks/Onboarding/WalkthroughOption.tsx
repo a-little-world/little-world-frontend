@@ -10,7 +10,7 @@ import {
 import { round } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { SELF_ONBOARDING_ROUTE, getAppRoute } from '../../../router/routes';
+import { getAppRoute, SELF_ONBOARDING_ROUTE } from '../../../router/routes';
 import {
   OptionCard,
   OptionSubtext,

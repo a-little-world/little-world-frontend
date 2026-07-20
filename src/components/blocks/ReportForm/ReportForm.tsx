@@ -1,3 +1,5 @@
+import { RefObject, useMemo, useRef } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -10,7 +12,6 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { RefObject, useMemo, useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';

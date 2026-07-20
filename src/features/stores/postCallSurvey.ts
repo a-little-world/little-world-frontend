@@ -19,9 +19,9 @@ const usePostCallSurveyStore = create<PostCallSurveyState>(set => ({
   addPostCallSurvey: data => set({ postCallSurvey: data }),
   updatePostCallSurvey: data =>
     set(state => ({
-      postCallSurvey: state.postCallSurvey ?
-        { ...state.postCallSurvey, ...data } :
-        data,
+      postCallSurvey: state.postCallSurvey
+        ? { ...state.postCallSurvey, ...data }
+        : data,
     })),
   removePostCallSurvey: () => set({ postCallSurvey: null }),
 }));

@@ -1,4 +1,5 @@
 import { SWRConfiguration } from 'swr';
+
 import useNativeStore from '../features/stores/nativeStore';
 import nativeTokenRefreshMiddleware from '../features/swr/nativeTokenRefreshMiddleware';
 

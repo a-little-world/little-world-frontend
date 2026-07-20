@@ -1,5 +1,6 @@
-import { Separator } from '@a-little-world/little-world-design-system';
 import React from 'react';
+
+import { Separator } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
 interface StepProps {

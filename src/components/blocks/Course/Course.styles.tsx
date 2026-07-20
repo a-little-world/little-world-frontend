@@ -164,7 +164,9 @@ export const ChapterButton = styled.button<{
     $isLocked ? theme.color.text.secondary : theme.color.text.heading};
   cursor: ${({ $isLocked }) => ($isLocked ? 'not-allowed' : 'pointer')};
   opacity: ${({ $isLocked }) => ($isLocked ? 0.6 : 1)};
-  transition: transform 160ms ease, box-shadow 160ms ease;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);

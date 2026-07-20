@@ -1,5 +1,6 @@
-import { Text } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useState } from 'react';
+
+import { Text } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
 const TimerContainer = styled.div`

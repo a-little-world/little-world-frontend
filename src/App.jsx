@@ -1,14 +1,15 @@
 import { RouterProvider } from 'react-router-dom';
-import useSWR, { SWRConfig, mutate } from 'swr';
+import useSWR, { mutate, SWRConfig } from 'swr';
 
 import './App.css';
+
 import { useDevelopmentFeaturesStore } from './features/stores/index';
 import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
-  USER_ENDPOINT,
   swrConfig,
+  USER_ENDPOINT,
 } from './features/swr/index';
 import router from './router/router';
 
