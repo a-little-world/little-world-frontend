@@ -94,6 +94,7 @@
     "@changesets/cli": "^2.27.1",
     "@firebase/app-types": "^0.9.3",
     "@firebase/messaging-types": "^0.6.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
     "@rollup/plugin-babel": "^7.0.0",
     "@rollup/plugin-commonjs": "^29.0.2",
     "@rollup/plugin-json": "^6.1.0",
