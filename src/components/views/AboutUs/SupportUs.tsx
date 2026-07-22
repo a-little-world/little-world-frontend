@@ -157,6 +157,7 @@ const SegmentCta = ({ label }: { label: string }) => {
       <SegmentLink
         href={t(`support_us.${label}.link_href`, { supportUrl })}
         buttonAppearance={ButtonAppearance.Secondary}
+        target="_blank"
       >
         {t(`support_us.${label}.link_text`)}
       </SegmentLink>
@@ -164,6 +165,7 @@ const SegmentCta = ({ label }: { label: string }) => {
         <SegmentLink
           href={t(`support_us.${label}.link_2_href`, { supportUrl })}
           buttonAppearance={ButtonAppearance.Secondary}
+          target="_blank"
         >
           {t(`support_us.${label}.link_2_text`)}
         </SegmentLink>

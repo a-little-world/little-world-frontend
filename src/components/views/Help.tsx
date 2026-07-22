@@ -52,10 +52,7 @@ interface SupportMatchProps {
   isLoading?: boolean;
 }
 
-export function Contact({
-  supportMatch,
-  isLoading,
-}: SupportMatchProps) {
+export function Contact({ supportMatch, isLoading }: SupportMatchProps) {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -107,10 +104,13 @@ export function Contact({
 function Help() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { supportMatch, supportUrl, isLoading: isMatchesLoading } =
-    useSupportChat({
-      revalidateOnMount: true,
-    });
+  const {
+    supportMatch,
+    supportUrl,
+    isLoading: isMatchesLoading,
+  } = useSupportChat({
+    revalidateOnMount: true,
+  });
 
   const subpage = useMemo<HelpSubpage>(() => {
     const pathSegments = location.pathname.split('/').filter(Boolean);

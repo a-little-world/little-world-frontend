@@ -46,7 +46,7 @@ const Socials = ({
 }) => (
   <SocialLinks $align={align}>
     {SOCIALS_LIST[type].map(({ Icon, url, label }: any) => (
-      <Link key={label} href={url} textDecoration={false}>
+      <Link key={label} href={url} textDecoration={false} target="_blank">
         <Icon label={label} gradient={gradient} />
       </Link>
     ))}
