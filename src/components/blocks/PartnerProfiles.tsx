@@ -1,23 +1,24 @@
+import { useState } from 'react';
+
 import {
   CardDimensions,
   CardSizes,
   Modal,
+  pixelate,
   Text,
   TextTypes,
-  pixelate,
 } from '@a-little-world/little-world-design-system';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import {
   COUNTRIES,
-  LANGUAGES,
   LANGUAGE_LEVELS,
+  LANGUAGES,
   USER_TYPES,
 } from '../../constants';
-import { USER_ENDPOINT, getMatchEndpoint } from '../../features/swr';
+import { getMatchEndpoint, USER_ENDPOINT } from '../../features/swr';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard';

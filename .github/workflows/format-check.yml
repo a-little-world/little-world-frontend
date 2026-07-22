@@ -1,15 +1,18 @@
-name: Lint Check
+name: Format Check
 
 on:
   pull_request:
 
+permissions:
+  contents: read
+
 concurrency:
-  group: lint-check-${{ github.ref }}
+  group: format-check-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  lint-check:
-    name: lint check
+  format-check:
+    name: prettier format check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,12 +32,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Run ESLint
-        run: pnpm lint
-
-      - name: Upload ESLint report
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: eslint-report
-          path: eslint-report.log
+      - name: Run prettier --check
+        run: pnpm run format:check

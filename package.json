@@ -90,10 +90,11 @@
     "zustand": "^5.0.4"
   },
   "devDependencies": {
-    "@a-little-world/little-world-prettier-config": "^1.2.0",
+    "@a-little-world/little-world-prettier-config": "^2.0.0",
     "@changesets/cli": "^2.27.1",
     "@firebase/app-types": "^0.9.3",
     "@firebase/messaging-types": "^0.6.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
     "@rollup/plugin-babel": "^7.0.0",
     "@rollup/plugin-commonjs": "^29.0.2",
     "@rollup/plugin-json": "^6.1.0",
@@ -118,7 +119,7 @@
     "eslint-plugin-react": "^7.29.2",
     "eslint-plugin-react-hooks": "^4.3.0",
     "html-webpack-plugin": "^5.5.0",
-    "prettier": "^2.5.1",
+    "prettier": "3.8.4",
     "rimraf": "^6.0.1",
     "rollup": "^4.60.1",
     "typescript": "^5.8.3",

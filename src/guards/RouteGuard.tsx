@@ -1,4 +1,5 @@
 import { ComponentType } from 'react';
+
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import useSWR from 'swr';
 
@@ -10,10 +11,10 @@ import useNativeStore from '../features/stores/nativeStore';
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../features/swr';
 import {
   CHANGE_EMAIL_ROUTE,
+  getAppRoute,
   LOGIN_ROUTE,
   USER_FORM_ROUTE,
   VERIFY_EMAIL_ROUTE,
-  getAppRoute,
 } from '../router/routes';
 
 interface Props {

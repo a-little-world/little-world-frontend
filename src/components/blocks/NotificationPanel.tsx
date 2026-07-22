@@ -15,7 +15,7 @@ import {
   USER_ENDPOINT,
 } from '../../features/swr/index';
 import { formatTimeDistance } from '../../helpers/date';
-import { NOTIFICATIONS_ROUTE, getAppRoute } from '../../router/routes';
+import { getAppRoute, NOTIFICATIONS_ROUTE } from '../../router/routes';
 import MatchingUserTag from '../atoms/MatchingUserTag';
 import ProfileImage from '../atoms/ProfileImage';
 

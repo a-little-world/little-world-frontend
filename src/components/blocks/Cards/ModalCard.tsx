@@ -1,10 +1,11 @@
+import React from 'react';
+
 import {
   Card,
   CardSizes,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import styled from 'styled-components';
 
 export const Centred = styled.div`

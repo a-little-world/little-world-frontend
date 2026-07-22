@@ -1,9 +1,10 @@
 import { NavigateFunction } from 'react-router-dom';
+
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
 import {
-  IntegrityCheck,
   getIntegrityCheckRequestData,
+  IntegrityCheck,
 } from '../features/integrityCheck';
 import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { mutate, SWRConfig } from 'swr';

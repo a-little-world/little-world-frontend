@@ -1,4 +1,6 @@
 /* eslint-disable jsx-a11y/media-has-caption */
+import { useCallback, useEffect, useState } from 'react';
+
 import {
   CardContent,
   CardHeader,
@@ -14,7 +16,6 @@ import {
   PreJoinValues,
 } from '@livekit/components-react';
 import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
-import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -61,13 +62,21 @@ export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
       color: ${theme.color.text.reversed};
       border: none;
       background: ${theme.color.gradient.orange10};
-      transition: background-color 0.5s ease, filter 0.5s ease,
-        border-color 0.5s ease, color 0.5s ease, 0.4s;
+      transition:
+        background-color 0.5s ease,
+        filter 0.5s ease,
+        border-color 0.5s ease,
+        color 0.5s ease,
+        0.4s;
 
       &:not(:disabled):hover {
         filter: brightness(80%);
-        transition: background-color 0.5s ease, filter 0.5s ease,
-          border-color 0.5s ease, color 0.5s ease, 0.4s;
+        transition:
+          background-color 0.5s ease,
+          filter 0.5s ease,
+          border-color 0.5s ease,
+          color 0.5s ease,
+          0.4s;
       }
 
       ${$hideJoinBtn &&

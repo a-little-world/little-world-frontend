@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Button,
   ButtonSizes,
@@ -8,16 +10,15 @@ import {
   Tooltip,
 } from '@a-little-world/little-world-design-system';
 import { groupBy } from 'lodash';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import CustomPagination from '../../../CustomPagination';
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
+import CustomPagination from '../../../CustomPagination';
 import { getCommunityEventsEndpoint } from '../../../features/swr/index';
 import { formatDate, formatEventTime } from '../../../helpers/date';
-import { Event, calculateNextOccurrence } from '../../../helpers/events';
+import { calculateNextOccurrence, Event } from '../../../helpers/events';
 import placeholderImage from '../../../images/coffee.webp';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton';
 import PanelImage from '../../atoms/PanelImage';
@@ -27,9 +28,9 @@ import {
   DateTimeEvent,
   EventContainer,
   EventInfo,
-  EventTitle,
   Events,
   EventsPagination,
+  EventTitle,
   Main,
   Session,
   SessionFlex,

@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -5,10 +7,9 @@ import {
   Label,
   MoonIcon,
   SunIcon,
-  ThemeVariants,
   themeContext,
+  ThemeVariants,
 } from '@a-little-world/little-world-design-system';
-import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 

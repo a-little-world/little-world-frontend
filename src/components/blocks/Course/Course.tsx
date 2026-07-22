@@ -1,3 +1,6 @@
+import type { ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+
 import {
   ArrowLeftIcon,
   Button,
@@ -9,10 +12,13 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { isFunction } from 'lodash';
-import type { ReactNode } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
+
+import { getAppRoute, TRAININGS_ROUTE } from '../../../router/routes';
+import NotFound from '../../atoms/NotFound';
+import Video from '../../atoms/Video';
+import Quiz, { type QuizAnswer, type QuizStep } from '../Quiz/Quiz';
 import {
   BackButton,
   ChapterButton,
@@ -34,11 +40,6 @@ import {
   ProgressRow,
   VideoWrapper,
 } from './Course.styles';
-
-import { getAppRoute, TRAININGS_ROUTE } from '../../../router/routes';
-import NotFound from '../../atoms/NotFound';
-import Video from '../../atoms/Video';
-import Quiz, { type QuizAnswer, type QuizStep } from '../Quiz/Quiz';
 
 type CourseVideo = {
   url: string;
@@ -421,7 +422,7 @@ export default function Course({
                 >
                   <ArrowLeftIcon label="back" width={12} height={12} />
                   {mode === 'video'
-                    ? backLabel ?? t('course.nav_back')
+                    ? (backLabel ?? t('course.nav_back'))
                     : t('course.nav_back_to_video')}
                 </BackButton>
               )}

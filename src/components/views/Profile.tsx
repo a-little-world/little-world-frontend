@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import {
   Modal,
   MultiSelect,
@@ -9,7 +11,6 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { TFunction } from 'i18next';
 import { isEmpty } from 'lodash';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -22,8 +23,8 @@ import { COUNTRIES, USER_TYPES } from '../../constants/index';
 import {
   API_OPTIONS_ENDPOINT,
   MATCHES_ENDPOINT,
-  USER_ENDPOINT,
   revalidateMatches,
+  USER_ENDPOINT,
 } from '../../features/swr/index';
 import { onFormError } from '../../helpers/form';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';

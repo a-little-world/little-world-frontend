@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import {
   ButtonAppearance,
   ButtonSizes,
@@ -7,7 +9,6 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import useSWR, { mutate } from 'swr';
@@ -21,8 +22,8 @@ import { onFormError, registerInput } from '../../helpers/form';
 import useQueryParam, { useRemoveQueryParam } from '../../hooks/useQueryParam';
 import {
   FORGOT_PASSWORD_ROUTE,
-  SIGN_UP_ROUTE,
   passAuthenticationBoundary,
+  SIGN_UP_ROUTE,
 } from '../../router/routes';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 

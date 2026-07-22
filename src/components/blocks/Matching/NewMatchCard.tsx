@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+
 import {
   Button,
   Card,
@@ -7,14 +9,13 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { confirmMatch } from '../../../api/matches';
 import { revalidateMatches } from '../../../features/swr';
-import { MESSAGES_ROUTE, getAppSubpageRoute } from '../../../router/routes';
+import { getAppSubpageRoute, MESSAGES_ROUTE } from '../../../router/routes';
 import ProfileImage from '../../atoms/ProfileImage';
 
 const Centred = styled.div`
