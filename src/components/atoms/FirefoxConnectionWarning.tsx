@@ -1,8 +1,9 @@
+import { useMemo } from 'react';
+
 import {
   StatusMessage,
   StatusTypes,
 } from '@a-little-world/little-world-design-system';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const FirefoxConnectionWarning = () => {

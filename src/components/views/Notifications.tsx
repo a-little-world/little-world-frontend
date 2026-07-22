@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   ArchiveIcon,
   Button,
@@ -13,16 +15,15 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { formatDistance } from 'date-fns';
 import { AnimatePresence, motion } from 'motion/react';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { createSearchParams, useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import {
-  NotificationState,
-  NotificationStateFilter,
   deleteNotification,
   fetchNotifications,
+  NotificationState,
+  NotificationStateFilter,
   updateNotification,
 } from '../../api/notification';
 import {

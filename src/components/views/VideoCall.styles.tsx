@@ -140,7 +140,9 @@ export const VideoContainer = styled.div<{
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
-  transition: width ease 0.3s, height ease 0.3s;
+  transition:
+    width ease 0.3s,
+    height ease 0.3s;
   width: 100%;
 
   ${({ theme, $showChat }) => css`

@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 import {
   Accordion,
   AccordionContent,
@@ -20,7 +22,6 @@ import {
   TimeFlexibleImage,
   tokens,
 } from '@a-little-world/little-world-design-system';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 

@@ -18,9 +18,9 @@ import {
 import { onFormError } from '../../../helpers/form';
 import {
   EDIT_FORM_ROUTE,
+  getAppRoute,
   PROFILE_ROUTE,
   USER_FORM_PARTNER_1,
-  getAppRoute,
 } from '../../../router/routes';
 import {
   ComponentTypes,
@@ -220,8 +220,8 @@ const Form = () => {
   const lastStepButtonText = userData?.isOnboarded
     ? 'complete'
     : userData?.profile?.user_type === USER_TYPES.learner
-    ? 'to_appointment_booking'
-    : 'to_onboarding';
+      ? 'to_appointment_booking'
+      : 'to_onboarding';
 
   const noBackButton =
     Boolean(!prevPage) ||

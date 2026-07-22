@@ -3,9 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
-  OUR_WORLD_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
+  OUR_WORLD_ROUTE,
 } from '../../../router/routes';
 import ContentSelector from '../../blocks/ContentSelector';
 import Donate from './Donate';

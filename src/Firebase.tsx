@@ -1,11 +1,12 @@
+import { useEffect, useRef } from 'react';
+
 import {
-  MessagePayload,
-  Unsubscribe,
   getMessaging,
   isSupported,
+  MessagePayload,
   onMessage,
+  Unsubscribe,
 } from '@firebase/messaging';
-import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
 
 import { ToastContextType } from './components/blocks/Toast';

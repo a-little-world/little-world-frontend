@@ -1,9 +1,10 @@
+import React, { useCallback, useMemo } from 'react';
+
 import {
   Gradients,
   MailIcon,
 } from '@a-little-world/little-world-design-system';
 import { last } from 'lodash';
-import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
@@ -12,9 +13,9 @@ import { SWRConfig } from 'swr';
 import { swrConfig } from '../../features/swr/index';
 import useSupportChat, { type SupportMatch } from '../../hooks/useSupportChat';
 import {
+  getAppRoute,
   HELP_CONTACT_ROUTE,
   HELP_FAQS_ROUTE,
-  getAppRoute,
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import Socials from '../atoms/Socials';
@@ -25,8 +26,8 @@ import {
   BusinessName,
   ContactInfo,
   ContactLink,
-  ContactUsContainer,
   Contacts,
+  ContactUsContainer,
   ContentWrapper,
   SupportCard,
   SupportChatWrapper,
@@ -52,10 +53,7 @@ interface SupportMatchProps {
   isLoading?: boolean;
 }
 
-export function Contact({
-  supportMatch,
-  isLoading,
-}: SupportMatchProps) {
+export function Contact({ supportMatch, isLoading }: SupportMatchProps) {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -107,10 +105,13 @@ export function Contact({
 function Help() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { supportMatch, supportUrl, isLoading: isMatchesLoading } =
-    useSupportChat({
-      revalidateOnMount: true,
-    });
+  const {
+    supportMatch,
+    supportUrl,
+    isLoading: isMatchesLoading,
+  } = useSupportChat({
+    revalidateOnMount: true,
+  });
 
   const subpage = useMemo<HelpSubpage>(() => {
     const pathSegments = location.pathname.split('/').filter(Boolean);

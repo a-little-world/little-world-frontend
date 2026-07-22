@@ -1,9 +1,10 @@
+import { PropsWithChildren } from 'react';
+
 import {
   InfoIcon,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 
 const StyledNote = styled.div<{ $center: boolean }>`

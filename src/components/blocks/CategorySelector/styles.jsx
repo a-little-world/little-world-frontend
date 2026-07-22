@@ -28,7 +28,9 @@ export const SelectionPanel = styled.button`
   box-shadow: 2px 2px 7px 0px #0000001f;
   width: 100%;
   flex-basis: 100%;
-  transition: box-shadow 0.25s, transform 0.25s;
+  transition:
+    box-shadow 0.25s,
+    transform 0.25s;
 
   > svg {
     width: 80px;

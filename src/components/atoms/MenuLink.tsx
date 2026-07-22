@@ -1,3 +1,5 @@
+import { ComponentType } from 'react';
+
 import {
   ButtonAppearance,
   Gradients,
@@ -5,7 +7,6 @@ import {
   Text,
 } from '@a-little-world/little-world-design-system';
 import { isNumber } from 'lodash';
-import { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 
@@ -16,8 +17,12 @@ const MENU_LINK_CSS = css<{ $appearance?: ButtonAppearance; $order?: number }>`
   position: relative;
   flex-shrink: 0;
 
-  transition: background-color 0.5s ease, filter 0.5s ease,
-    border-color 0.5s ease, color 0.5s ease, 0.4s;
+  transition:
+    background-color 0.5s ease,
+    filter 0.5s ease,
+    border-color 0.5s ease,
+    color 0.5s ease,
+    0.4s;
 
   ${({ $order }) =>
     isNumber($order) &&
@@ -28,7 +33,8 @@ const MENU_LINK_CSS = css<{ $appearance?: ButtonAppearance; $order?: number }>`
   &:hover {
     filter: brightness(95%);
     cursor: pointer;
-    box-shadow: 0 0 10px 1px rgb(0 0 0 / 11%),
+    box-shadow:
+      0 0 10px 1px rgb(0 0 0 / 11%),
       0 0 8px 3px rgb(255 255 255 / 15%);
   }
 `;

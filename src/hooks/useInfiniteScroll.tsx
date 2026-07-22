@@ -1,6 +1,7 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 import clamp from 'lodash/clamp';
 import toFinite from 'lodash/toFinite';
-import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseInfiniteScrollProps {
   fetchItems: (args: { page: number; [key: string]: any }) => Promise<any>;

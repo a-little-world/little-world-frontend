@@ -1,3 +1,5 @@
+import { ElementType } from 'react';
+
 import {
   Checkbox,
   CheckboxGrid,
@@ -16,7 +18,6 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { ElementType } from 'react';
 import styled from 'styled-components';
 
 import Note from '../components/atoms/Note';

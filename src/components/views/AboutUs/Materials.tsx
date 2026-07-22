@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 import {
   Card,
   CardContent,
@@ -5,7 +7,6 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 

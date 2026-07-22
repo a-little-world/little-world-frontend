@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import {
   Button,
   ButtonVariations,
@@ -12,12 +14,12 @@ import {
   UserSearchIcon,
 } from '@a-little-world/little-world-design-system';
 import { reduce } from 'lodash';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import { logout } from '../../api';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
@@ -38,7 +40,6 @@ import {
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
-import { logout } from '../../api';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';

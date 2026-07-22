@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+
 import {
   ArrowLeftIcon,
   Button,
@@ -14,7 +16,6 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { NiceAvatarProps } from 'react-nice-avatar';

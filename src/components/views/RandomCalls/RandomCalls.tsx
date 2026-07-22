@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import {
   ButtonSizes,
   Loading,
@@ -6,7 +8,6 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';

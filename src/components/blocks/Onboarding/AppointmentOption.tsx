@@ -19,8 +19,8 @@ import {
   OptionTitle,
   StackedCardFooter,
   StatBoxFullWidth,
-  StatValue,
   StatsGridFullWidth,
+  StatValue,
 } from './Onboarding.styles';
 
 const MatchingCallImage = styled(CalendarAddIcon)`

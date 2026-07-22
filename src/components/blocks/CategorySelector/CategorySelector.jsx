@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react';
+
 import {
   ProfileChatIcon,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import {

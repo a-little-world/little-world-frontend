@@ -1,6 +1,7 @@
+import { FC, useState } from 'react';
+
 import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import { last } from 'lodash';
-import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
@@ -8,7 +9,7 @@ import { useTheme } from 'styled-components';
 import useScrollToTop from '../../../../hooks/useScrollToTop';
 import Stepper from '../../../atoms/Stepper';
 import Video from '../../../atoms/Video';
-import { TRAININGS_DATA, TRAINING_IDS, getDataBySlug } from '../constants';
+import { getDataBySlug, TRAINING_IDS, TRAININGS_DATA } from '../constants';
 import { Container, ContentCard, VideoDescription } from '../shared.styles';
 import DynamicCourse from './DynamicCourse';
 import { CheckInText } from './Trainings.styles';
