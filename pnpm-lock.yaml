@@ -153,6 +153,9 @@ importers:
       '@firebase/messaging-types':
         specifier: ^0.6.1
         version: 0.6.1(@firebase/app-types@0.9.3)
+      '@ianvs/prettier-plugin-sort-imports':
+        specifier: ^4.7.1
+        version: 4.7.1(prettier@3.8.4)
       '@rollup/plugin-babel':
         specifier: ^7.0.0
         version: 7.0.0(@babel/core@7.29.0)(rollup@4.60.1)
