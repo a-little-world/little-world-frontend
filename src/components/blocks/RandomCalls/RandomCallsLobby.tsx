@@ -185,6 +185,7 @@ const RandomCallSetup = ({
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [isJoining, setIsJoining] = useState(false);
   const [permissionsGranted, setPermissionsGranted] = useState(false);
   const [audioPermissionError, setAudioPermissionError] = useState(false);
   const [videoPermissionError, setVideoPermissionError] = useState(false);
@@ -205,15 +206,15 @@ const RandomCallSetup = ({
 
   // Countdown timer
   useEffect(() => {
-    if (countdown === null || countdown <= 0) {
+    if (isJoining || countdown === null || countdown <= 0) {
       return () => {};
     }
 
     const timer = setTimeout(() => {
       if (countdown === 1) {
-        // Countdown finished, join lobby
-        onJoinComplete();
+        setIsJoining(true);
         setCountdown(0);
+        onJoinComplete();
       } else {
         setCountdown(countdown - 1);
       }
@@ -222,7 +223,14 @@ const RandomCallSetup = ({
     return () => {
       clearTimeout(timer);
     };
-  }, [countdown, onJoinComplete]);
+  }, [countdown, isJoining, onJoinComplete]);
+
+  // Clear joining state once the parent confirms we're in the lobby
+  useEffect(() => {
+    if (hasJoinedLobby) {
+      setIsJoining(false);
+    }
+  }, [hasJoinedLobby]);
 
   // Update parent when device choices change
   useEffect(() => {
@@ -280,6 +288,8 @@ const RandomCallSetup = ({
   let cancelButtonLabel = t('random_calls.lobby_cancel_search');
   if (!permissionsGranted) {
     cancelButtonLabel = t('random_calls.lobby_enable_mic_or_video_to_join');
+  } else if (isJoining || (countdown === 0 && !hasJoinedLobby)) {
+    cancelButtonLabel = t('random_calls.lobby_connecting');
   } else if (!hasJoinedLobby && countdown !== null) {
     cancelButtonLabel = t('random_calls.lobby_joining_in_x_seconds', {
       seconds: countdown,
@@ -328,11 +338,14 @@ const RandomCallSetup = ({
       <CardFooter align="center">
         <Button
           disabled={
-            !permissionsGranted || (!hasJoinedLobby && countdown !== null)
+            !permissionsGranted ||
+            isJoining ||
+            (!hasJoinedLobby && countdown !== null)
           }
           appearance={ButtonAppearance.Secondary}
           onClick={onCancel}
           size={ButtonSizes.Stretch}
+          loading={isJoining}
         >
           {cancelButtonLabel}
         </Button>
@@ -683,7 +696,7 @@ const RandomCallsLobby = ({
     }
   }, [lobbyState, leaveLobbySilently]);
 
-  const handleJoinComplete = async () => {
+  const handleJoinComplete = useCallback(async () => {
     setError(null);
     try {
       await joinLobby(lobbyUuid);
@@ -699,7 +712,7 @@ const RandomCallsLobby = ({
         onCancel();
       }, 3000);
     }
-  };
+  }, [lobbyUuid, mutateRCState, onCancel]);
 
   const handleCancel = async () => {
     setError(null);

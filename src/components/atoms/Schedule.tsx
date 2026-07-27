@@ -1,13 +1,16 @@
 import {
+  ButtonSizes,
   CalendarIcon,
   ClockIcon,
   Text,
   TextTypes,
+  Tooltip,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 
 import { formatDate, formatEventTime } from '../../helpers/date';
+import AddToCalendarButton from './AddToCalendarButton';
 
 export type ScheduleSession = {
   start_time: string;
@@ -17,6 +20,14 @@ export type ScheduleSession = {
 export type ScheduleProps = {
   title: string;
   sessions: ScheduleSession[];
+  addToCalendar?: {
+    title: string;
+    description: string;
+    link: string;
+    frequency: string;
+    durationInMinutes?: number;
+    size?: ButtonSizes;
+  };
 };
 
 const Wrapper = styled.div`
@@ -47,17 +58,13 @@ const SessionList = styled.div`
 
 const SessionRow = styled.div`
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   gap: ${({ theme }) => theme.spacing.small};
   align-items: center;
   padding: ${({ theme }) => theme.spacing.xsmall};
   background: ${({ theme }) => theme.color.surface.secondary};
   border-radius: ${({ theme }) => theme.radius.small};
   transition: background 0.15s ease;
-
-  &:hover {
-    background: ${({ theme }) => theme.color.surface.tertiary};
-  }
 `;
 
 const SessionDate = styled(Text)`
@@ -80,7 +87,7 @@ const IconWrap = styled.span`
   color: ${({ theme }) => theme.color.text.secondary};
 `;
 
-export function Schedule({ title, sessions }: ScheduleProps) {
+export function Schedule({ title, sessions, addToCalendar }: ScheduleProps) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
 
@@ -120,6 +127,28 @@ export function Schedule({ title, sessions }: ScheduleProps) {
                   </IconWrap>
                   <SessionTime tag="span">{timeLabel}</SessionTime>
                 </SessionTimeWrapper>
+                {addToCalendar && (
+                  <Tooltip
+                    text={t('add_to_calendar')}
+                    trigger={
+                      <div>
+                        <AddToCalendarButton
+                          size={addToCalendar.size ?? ButtonSizes.Small}
+                          calendarEvent={{
+                            title: addToCalendar.title,
+                            description: addToCalendar.description,
+                            frequency: addToCalendar.frequency,
+                            startDate: start,
+                            endDate: end,
+                            durationInMinutes:
+                              addToCalendar.durationInMinutes ?? 60,
+                            link: addToCalendar.link,
+                          }}
+                        />
+                      </div>
+                    }
+                  />
+                )}
               </SessionRow>
             );
           })

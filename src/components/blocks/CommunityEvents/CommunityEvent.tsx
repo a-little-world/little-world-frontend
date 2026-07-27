@@ -11,20 +11,32 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { groupBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
 import CustomPagination from '../../../CustomPagination';
-import { getCommunityEventsEndpoint } from '../../../features/swr/index';
+import {
+  getCommunityEventsEndpoint,
+  UPCOMING_LOBBIES_ENDPOINT,
+} from '../../../features/swr/index';
 import { formatDate, formatEventTime } from '../../../helpers/date';
 import { calculateNextOccurrence, Event } from '../../../helpers/events';
+import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import placeholderImage from '../../../images/coffee.webp';
+import randomCallsImage from '../../../images/random-calls-image.png';
+import {
+  getAppAbsoluteRoute,
+  getAppRoute,
+  RANDOM_CALLS_ROUTE,
+} from '../../../router/routes';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton';
 import PanelImage from '../../atoms/PanelImage';
 import ShowMoreText from '../../atoms/ShowMoreText';
 import {
   Buttons,
+  DateText,
   DateTimeEvent,
   EventContainer,
   EventInfo,
@@ -37,13 +49,20 @@ import {
   Sessions,
 } from './styles';
 
+type EventSession = {
+  id?: string;
+  startDate: Date;
+  endDate?: Date;
+  link: string;
+};
+
 interface GroupedEvent extends Event {
   original_time?: string;
-  sessions?: Array<{
-    startDate: Date;
-    endDate?: Date;
-    link: string;
-  }>;
+  sessions?: EventSession[];
+  sessionDateFormat?: string;
+  openInApp?: boolean;
+  joinCtaLabel?: string;
+  calendarLink?: string;
 }
 
 interface CommunityEventProps extends GroupedEvent {
@@ -168,6 +187,10 @@ const EventCtas = ({
   originalStartDate,
   endDate,
   sessions,
+  sessionDateFormat = 'cccc',
+  openInApp = false,
+  joinCtaLabel,
+  calendarLink,
 }: {
   title: string;
   description: string;
@@ -176,13 +199,14 @@ const EventCtas = ({
   originalStartDate: Date;
   endDate?: Date;
   frequency: string;
-  sessions?: Array<{
-    startDate: Date;
-    endDate?: Date;
-    link: string;
-  }>;
+  sessions?: EventSession[];
+  sessionDateFormat?: string;
+  openInApp?: boolean;
+  joinCtaLabel?: string;
+  calendarLink?: string;
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const {
     t,
     i18n: { language },
@@ -193,23 +217,36 @@ const EventCtas = ({
     frequency === COMMUNITY_EVENT_FREQUENCIES.weekly &&
     (originalStartDate.getTime() <= now.getTime() ||
       originalStartDate.getTime() - now.getTime() < oneWeekMs);
+  const showWideSessionDate = sessionDateFormat !== 'cccc';
+  const joinLabel = joinCtaLabel ?? t('community_events.join_call');
+  const showJoinIcon = !joinCtaLabel;
+  const eventCalendarLink = calendarLink ?? link;
+
+  const onJoin = (sessionLink: string) => {
+    if (openInApp) {
+      navigate(sessionLink);
+      return;
+    }
+    window.open(sessionLink, '_blank');
+  };
 
   if (sessions)
     return (
       <Sessions>
         {sessions.map(session => (
-          <Session key={session.link}>
+          <Session
+            key={session.id || session.link}
+            $wideDate={showWideSessionDate}
+          >
             <Text type={TextTypes.Body4} bold tag="span">
-              {formatDate(session.startDate, 'cccc', language)}
+              {formatDate(session.startDate, sessionDateFormat, language)}
             </Text>
             <Text type={TextTypes.Body4} bold color={theme.color.text.heading}>
               {formatEventTime(session.startDate, session.endDate)}
             </Text>
             <SessionFlex>
               <Button
-                onClick={() => {
-                  window.open(session.link, '_blank');
-                }}
+                onClick={() => onJoin(session.link)}
                 variation={ButtonVariations.Circle}
                 size={ButtonSizes.Small}
               >
@@ -232,7 +269,7 @@ const EventCtas = ({
                         startDate: session.startDate,
                         endDate: session.endDate,
                         durationInMinutes: 60,
-                        link: session.link,
+                        link: eventCalendarLink,
                       }}
                       size={ButtonSizes.Small}
                     />
@@ -248,29 +285,27 @@ const EventCtas = ({
   return (
     <>
       <DateTimeEvent>
-        <Text type={TextTypes.Heading5} bold tag="span">
+        <DateText type={TextTypes.Heading5} bold>
           {isWeeklyLabelInRange
             ? t('community_events.every_week', {
                 day: formatDate(startDate, 'EEEE', language),
               })
             : formatDate(startDate, 'cccc, do LLLL', language)}
-        </Text>
+        </DateText>
         <Text type={TextTypes.Heading5} bold color={theme.color.text.heading}>
           {formatEventTime(startDate, endDate)}
         </Text>
       </DateTimeEvent>
       <Buttons>
-        <Button
-          onClick={() => {
-            window.open(link, '_blank');
-          }}
-        >
-          <PhoneIcon
-            label="join call icon"
-            color={theme.color.text.button}
-            width="20px"
-          />
-          <span className="text">{t('community_events.join_call')}</span>
+        <Button onClick={() => onJoin(link)}>
+          {showJoinIcon && (
+            <PhoneIcon
+              label="join call icon"
+              color={theme.color.text.button}
+              width="20px"
+            />
+          )}
+          {joinLabel}
         </Button>
         <Tooltip
           text={t('add_to_calendar')}
@@ -284,7 +319,7 @@ const EventCtas = ({
                   startDate,
                   endDate,
                   durationInMinutes: 60,
-                  link,
+                  link: eventCalendarLink,
                 }}
               />
             </div>
@@ -307,6 +342,10 @@ function CommunityEvent({
   end_time: endTime,
   link,
   sessions,
+  sessionDateFormat,
+  openInApp,
+  joinCtaLabel,
+  calendarLink,
 }: CommunityEventProps) {
   const { t } = useTranslation();
 
@@ -335,16 +374,75 @@ function CommunityEvent({
           endDate={endDate}
           frequency={frequency}
           sessions={sessions}
+          sessionDateFormat={sessionDateFormat}
+          openInApp={openInApp}
+          joinCtaLabel={joinCtaLabel}
+          calendarLink={calendarLink}
         />
       </Main>
     </EventContainer>
   );
 }
 
+function buildRandomCallsEvent(
+  lobbies: UpcomingLobbyItem[],
+  title: string,
+  description: string,
+  joinCtaLabel: string,
+): GroupedEvent | null {
+  if (lobbies.length === 0) return null;
+
+  const randomCallsRoute = getAppRoute(RANDOM_CALLS_ROUTE);
+  const randomCallsCalendarLink = getAppAbsoluteRoute(RANDOM_CALLS_ROUTE);
+  const sortedLobbies = [...lobbies].sort(
+    (a, b) =>
+      new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
+  );
+  const [firstLobby] = sortedLobbies;
+
+  return {
+    id: 'random-calls',
+    frequency: COMMUNITY_EVENT_FREQUENCIES.once,
+    description,
+    image: randomCallsImage,
+    title,
+    time: firstLobby.start_time,
+    end_time: firstLobby.end_time,
+    link: randomCallsRoute,
+    calendarLink: randomCallsCalendarLink,
+    openInApp: true,
+    joinCtaLabel,
+    ...(sortedLobbies.length > 1 && {
+      sessions: sortedLobbies.map(lobby => ({
+        id: lobby.uuid,
+        startDate: new Date(lobby.start_time),
+        endDate: new Date(lobby.end_time),
+        link: randomCallsRoute,
+      })),
+      sessionDateFormat: 'EEE d MMM',
+    }),
+  };
+}
+
 function CommunityEvents() {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const { data: events } = useSWR(getCommunityEventsEndpoint(currentPage));
+  const { data: upcomingLobbies } = useSWR<UpcomingLobbyItem[]>(
+    UPCOMING_LOBBIES_ENDPOINT,
+  );
   const groupedEvents = collateEvents(events?.results || []);
+  const randomCallsEvent =
+    currentPage === 1
+      ? buildRandomCallsEvent(
+          upcomingLobbies ?? [],
+          t('community_events.random_calls_title'),
+          t('community_events.random_calls_description', {
+            randomCallsLink: getAppAbsoluteRoute(RANDOM_CALLS_ROUTE),
+          }),
+          t('community_events.random_calls_cta'),
+        )
+      : null;
 
   const totalPages = events?.pages_total || 1;
 
@@ -356,6 +454,13 @@ function CommunityEvents() {
   return (
     <>
       <Events>
+        {randomCallsEvent && (
+          <CommunityEvent
+            key={randomCallsEvent.id}
+            _key={randomCallsEvent.id}
+            {...randomCallsEvent}
+          />
+        )}
         {groupedEvents.map(eventData => (
           <CommunityEvent
             key={eventData.id}

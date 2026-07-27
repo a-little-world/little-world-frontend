@@ -89,9 +89,11 @@ export const Sessions = styled.div`
   }
 `;
 
-export const Session = styled.div`
+export const Session = styled.div<{ $wideDate?: boolean }>`
   display: grid;
-  grid-template-columns: 104px auto auto;
+  grid-template-columns:
+    ${({ $wideDate }) => ($wideDate ? 'minmax(7.5rem, max-content)' : '104px')}
+    auto auto;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   align-items: center;
   width: 100%;
@@ -107,4 +109,8 @@ export const EventsPagination = styled.div`
       margin-top: 0;
     }
   `}
+`;
+
+export const DateText = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxxxsmall};
 `;

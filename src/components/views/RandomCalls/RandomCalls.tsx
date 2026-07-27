@@ -13,6 +13,11 @@ import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { exitLobby } from '../../../api/randomCalls';
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
+import {
+  getAppAbsoluteRoute,
+  RANDOM_CALLS_ROUTE,
+} from '../../../router/routes';
 import {
   RANDOM_CALL_EXIT_PARAM,
   RANDOM_CALL_EXIT_VALUE,
@@ -212,6 +217,14 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                   <Schedule
                     title={t('random_calls.schedule_heading')}
                     sessions={upcomingLobbies ?? []}
+                    addToCalendar={{
+                      title: t('random_calls.title'),
+                      description: t('random_calls.description'),
+                      frequency: COMMUNITY_EVENT_FREQUENCIES.once,
+                      durationInMinutes: 60,
+                      link: getAppAbsoluteRoute(RANDOM_CALLS_ROUTE),
+                      size: ButtonSizes.Small,
+                    }}
                   />
                 )}
                 {active && (
