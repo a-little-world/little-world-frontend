@@ -30,6 +30,7 @@ import {
   CallTime,
   CannotMatch,
   Container,
+  HistoryHeader,
   HistoryTitle,
   NoHistoryDescription,
   RequestMatchButton,
@@ -84,9 +85,12 @@ const CallHistoryList = ({
   };
   return (
     <CallHistoryListContainer>
-      <HistoryTitle type={TextTypes.Body4} bold>
-        {t('call_history.title')}
-      </HistoryTitle>
+      <HistoryHeader>
+        <HistoryTitle type={TextTypes.Heading5} bold>
+          {t('call_history.title')}
+        </HistoryTitle>
+        <Text>{t('call_history.description')}</Text>
+      </HistoryHeader>
       {isLoading ? (
         <Loading size={LoadingSizes.Medium} />
       ) : (

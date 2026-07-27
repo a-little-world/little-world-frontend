@@ -160,10 +160,16 @@ interface RejectMatchProps extends BaseMatchProps {
   handleSubmit: any;
 }
 
-const getTitleKey = (matchType: string) =>
+const getConfirmMatchCopyKeys = (matchType: string) =>
   matchType === MATCH_TYPES.standard
-    ? 'confirm_match.title_standard'
-    : 'confirm_match.title_random_call';
+    ? {
+        title: 'confirm_match.title_standard',
+        description: 'confirm_match.description_standard',
+      }
+    : {
+        title: 'confirm_match.title_random_call',
+        description: 'confirm_match.description_random_call',
+      };
 
 const getDefaultConfirmMessageKey = (suggestedAvailability?: string) =>
   suggestedAvailability
@@ -182,10 +188,11 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const copyKeys = getConfirmMatchCopyKeys(matchType);
 
   return (
     <>
-      <CardHeader>{t(getTitleKey(matchType))}</CardHeader>
+      <CardHeader>{t(copyKeys.title)}</CardHeader>
       <CardContent
         align="center"
         textAlign="center"
@@ -202,7 +209,7 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
             {name}
           </Text>
           <Description type={TextTypes.Body5}>
-            {t('confirm_match.description')}
+            {t(copyKeys.description, { name })}
           </Description>
           <TextField>„{description?.trim()}“</TextField>
         </ProfileInfo>
@@ -380,10 +387,11 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const copyKeys = getConfirmMatchCopyKeys(matchType);
 
   return (
     <>
-      <CardHeader>{t(getTitleKey(matchType))}</CardHeader>
+      <CardHeader>{t(copyKeys.title)}</CardHeader>
       <CardContent
         align="center"
         textAlign="center"
