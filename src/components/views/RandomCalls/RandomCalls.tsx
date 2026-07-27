@@ -217,6 +217,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                   <Schedule
                     title={t('random_calls.schedule_heading')}
                     sessions={upcomingLobbies ?? []}
+                    listMaxHeight={260}
                     addToCalendar={{
                       title: t('random_calls.title'),
                       description: t('random_calls.description'),

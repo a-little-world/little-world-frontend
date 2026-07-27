@@ -37,7 +37,7 @@ import {
   joinLobby,
   rejectMatch,
 } from '../../../api/randomCalls';
-import { USER_TYPES } from '../../../constants';
+import { COMMUNITY_EVENT_FREQUENCIES, USER_TYPES } from '../../../constants';
 import { useConnectedCallStore } from '../../../features/stores';
 import {
   RANDOM_CALL_EXIT_PARAM,
@@ -48,6 +48,7 @@ import {
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import { clearActiveTracks } from '../../../helpers/video';
 import {
+  getAppAbsoluteRoute,
   getAppRoute,
   getRandomCallRoute,
   RANDOM_CALLS_ROUTE,
@@ -478,6 +479,14 @@ const LobbyExpiredView = ({
         <Schedule
           title={t('random_calls.expired_schedule_heading')}
           sessions={upcomingLobbies ?? []}
+          addToCalendar={{
+            title: t('random_calls.title'),
+            description: t('random_calls.description'),
+            frequency: COMMUNITY_EVENT_FREQUENCIES.once,
+            durationInMinutes: 60,
+            link: getAppAbsoluteRoute(RANDOM_CALLS_ROUTE),
+            size: ButtonSizes.Small,
+          }}
         />
         <Text>{t('random_calls.expired_additional_text')}</Text>
         {error && (

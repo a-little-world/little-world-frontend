@@ -23,6 +23,7 @@ export const Centred = styled.div`
 `;
 
 export const StyledCard = styled(Card)`
+  position: relative;
   gap: ${({ theme }) => theme.spacing.medium};
 `;
 

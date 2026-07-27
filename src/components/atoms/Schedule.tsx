@@ -5,6 +5,7 @@ import {
   Text,
   TextTypes,
   Tooltip,
+  pixelate,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
@@ -20,6 +21,8 @@ export type ScheduleSession = {
 export type ScheduleProps = {
   title: string;
   sessions: ScheduleSession[];
+  /** When set, the session list scrolls instead of growing the card. */
+  listMaxHeight?: number;
   addToCalendar?: {
     title: string;
     description: string;
@@ -50,10 +53,18 @@ const Title = styled(Text)`
   color: ${({ theme }) => theme.color.text.heading};
 `;
 
-const SessionList = styled.div`
+const SessionList = styled.div<{ $maxHeight?: number }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.xxsmall};
+
+  ${({ $maxHeight }) =>
+    $maxHeight &&
+    css`
+      max-height: ${pixelate($maxHeight)};
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    `}
 `;
 
 const SessionRow = styled.div`
@@ -87,7 +98,12 @@ const IconWrap = styled.span`
   color: ${({ theme }) => theme.color.text.secondary};
 `;
 
-export function Schedule({ title, sessions, addToCalendar }: ScheduleProps) {
+export function Schedule({
+  title,
+  sessions,
+  listMaxHeight,
+  addToCalendar,
+}: ScheduleProps) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
 
@@ -96,7 +112,7 @@ export function Schedule({ title, sessions, addToCalendar }: ScheduleProps) {
       <Title bold type={TextTypes.Heading6}>
         {title}
       </Title>
-      <SessionList>
+      <SessionList $maxHeight={listMaxHeight}>
         {sessions.length === 0 ? (
           <Text>{t('random_calls.schedule_empty')}</Text>
         ) : (
