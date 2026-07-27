@@ -15,10 +15,6 @@ import useSWR from 'swr';
 import { exitLobby } from '../../../api/randomCalls';
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
 import {
-  getAppAbsoluteRoute,
-  RANDOM_CALLS_ROUTE,
-} from '../../../router/routes';
-import {
   RANDOM_CALL_EXIT_PARAM,
   RANDOM_CALL_EXIT_VALUE,
   UPCOMING_LOBBIES_ENDPOINT,
@@ -26,6 +22,10 @@ import {
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import useSystemModalBlocker from '../../../hooks/useSystemModalBlocker';
 import randomCallsImage from '../../../images/random-calls-image.png';
+import {
+  getAppAbsoluteRoute,
+  RANDOM_CALLS_ROUTE,
+} from '../../../router/routes';
 import { OnlineCircle } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
 import { Schedule } from '../../atoms/Schedule';
