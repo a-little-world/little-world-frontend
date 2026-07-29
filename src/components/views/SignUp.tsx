@@ -46,7 +46,7 @@ const MTM_ENABLE_USER_TYPE_COOKIE = true;
 const SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL = [
   'campaign-',
   'self-organized-',
-  'dl-ukr',
+  'dl-',
 ] as const;
 
 function signUpCompanySlugHidesNameLabel(company: string): boolean {
