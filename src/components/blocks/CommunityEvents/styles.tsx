@@ -1,4 +1,4 @@
-import { Text } from '@a-little-world/little-world-design-system';
+import { Button, Text } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
 export const Events = styled.div`
@@ -81,7 +81,6 @@ export const Buttons = styled.div`
 export const Sessions = styled.div`
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.xsmall};
 
   @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
@@ -113,4 +112,8 @@ export const EventsPagination = styled.div`
 
 export const DateText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxxxsmall};
+`;
+
+export const ShowMoreButton = styled(Button)`
+  height: 44px;
 `;

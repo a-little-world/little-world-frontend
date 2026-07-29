@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import {
   Button,
+  ButtonAppearance,
   ButtonSizes,
   ButtonVariations,
   PhoneIcon,
@@ -47,6 +48,7 @@ import {
   Session,
   SessionFlex,
   Sessions,
+  ShowMoreButton,
 } from './styles';
 
 type EventSession = {
@@ -222,6 +224,9 @@ const EventCtas = ({
   const showJoinIcon = !joinCtaLabel;
   const eventCalendarLink = calendarLink ?? link;
 
+  const SESSIONS_COLLAPSED_COUNT = 5;
+  const [sessionsExpanded, setSessionsExpanded] = useState(false);
+
   const onJoin = (sessionLink: string) => {
     if (openInApp) {
       navigate(sessionLink);
@@ -230,10 +235,15 @@ const EventCtas = ({
     window.open(sessionLink, '_blank');
   };
 
-  if (sessions)
+  if (sessions) {
+    const hasMore = sessions.length > SESSIONS_COLLAPSED_COUNT;
+    const visibleSessions = sessionsExpanded
+      ? sessions
+      : sessions.slice(0, SESSIONS_COLLAPSED_COUNT);
+
     return (
       <Sessions>
-        {sessions.map(session => (
+        {visibleSessions.map(session => (
           <Session
             key={session.id || session.link}
             $wideDate={showWideSessionDate}
@@ -279,8 +289,20 @@ const EventCtas = ({
             </SessionFlex>
           </Session>
         ))}
+        {hasMore && (
+          <ShowMoreButton
+            appearance={ButtonAppearance.Secondary}
+            size={ButtonSizes.Small}
+            onClick={() => setSessionsExpanded(prev => !prev)}
+          >
+            {sessionsExpanded
+              ? t('community_events.show_less')
+              : t('community_events.show_all')}
+          </ShowMoreButton>
+        )}
       </Sessions>
     );
+  }
 
   return (
     <>

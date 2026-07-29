@@ -27,7 +27,6 @@ export const Image = styled.img`
 
 export const ImageLabel = styled(Text)`
   background: ${({ theme }) => theme.color.surface.primary};
-  border-radius: 100px;
   position: absolute;
   bottom: 0;
 
