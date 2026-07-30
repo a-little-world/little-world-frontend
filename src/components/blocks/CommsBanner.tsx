@@ -10,8 +10,6 @@ import { USER_ENDPOINT } from '../../features/swr/index';
 function CommsBanner() {
   const banner = useSWR(USER_ENDPOINT).data?.banner;
   if (isEmpty(banner)) return null;
-  const primaryCtaHasBorder =
-    banner.name?.includes('Border') || banner.name?.includes('Learner');
 
   return (
     <Banner
@@ -22,11 +20,12 @@ function CommsBanner() {
       background={banner.background}
       image={banner.image || undefined}
       imageAlt={banner.image_alt}
+      primaryCtaColor={banner.cta_1_color || undefined}
       primaryCtaText={banner.cta_1_text || undefined}
       primaryCtaUrl={banner.cta_1_url || undefined}
+      secondaryCtaColor={banner.cta_2_color || undefined}
       secondaryCtaText={banner.cta_2_text || undefined}
       secondaryCtaUrl={banner.cta_2_url || undefined}
-      primaryCtaHasBorder={Boolean(primaryCtaHasBorder)}
     />
   );
 }
