@@ -858,7 +858,7 @@
   "support_us.donate.link_text": "Spenden",
   "support_us.donate.title": "Spenden",
   "support_us.get_interviewed.description": "Teile deine Erlebnisse auf Little World! Nach einem kurzen Interview verfassen wir deine Geschichte für unseren Blog und veröffentlichen sie mit deiner Zustimmung. So können andere von deinen Erfahrungen inspiriert werden und selbst aktiv werden!",
-  "support_us.get_interviewed.link_href": "{{- supportUrl }}",
+  "support_us.get_interviewed.link_href": "https://forms.gle/Vgb2utCWy7twbMoP6",
   "support_us.get_interviewed.link_text": "Interview vereinbaren",
   "support_us.get_interviewed.title": "Deine Geschichte erzählen",
   "support_us.join_events.description": "Lerne andere Mitglieder kennen und werde Teil der Community.",
