@@ -282,7 +282,9 @@ function Profile() {
         </TopDetails>
 
         <ProfileDetail
-          description={t('profile.availability_instructions')}
+          description={
+            isSelf ? t('profile.availability_instructions') : undefined
+          }
           editable={false}
           content={profileFields.availability}
           setEditingField={setEditingField}

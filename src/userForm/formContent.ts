@@ -23,7 +23,9 @@ import styled from 'styled-components';
 import Note from '../components/atoms/Note';
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
 import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
+import { COUNTRIES } from '../constants';
 import { formatMultiSelectionOptions } from '../helpers/form';
+import i18n from '../i18n';
 
 const Warning = styled(StatusMessage)`
   margin-top: -${({ theme }) => theme.spacing.xxsmall};
@@ -67,20 +69,42 @@ interface ComponentReturn {
   [key: string]: any;
 }
 
+interface FormatDataFieldOptions {
+  alphabetize?: boolean;
+  pinFirstValue?: string;
+  locale?: string;
+}
+
 export const formatDataField = (
   data: Array<{ tag: string; value: string }> | undefined,
   t: (key: string) => string,
-  alphabetize: boolean = false,
+  {
+    alphabetize = false,
+    pinFirstValue,
+    locale = i18n.language,
+  }: FormatDataFieldOptions = {},
 ): Array<{ label: string; value: string }> => {
   if (!data) return [];
 
-  if (alphabetize) {
-    return data
-      .map(({ tag, value }) => ({ label: t(tag), value }))
-      .sort((a, b) => a.label.localeCompare(b.label));
+  const options = data.map(({ tag, value }) => ({ label: t(tag), value }));
+
+  if (!alphabetize && !pinFirstValue) {
+    return options;
   }
 
-  return data.map(({ tag, value }) => ({ label: t(tag), value }));
+  const sortByLabel = (a: { label: string }, b: { label: string }) =>
+    a.label.localeCompare(b.label, locale);
+
+  if (pinFirstValue) {
+    const pinned = options.find(({ value }) => value === pinFirstValue);
+    const others = options
+      .filter(({ value }) => value !== pinFirstValue)
+      .sort(sortByLabel);
+
+    return pinned ? [pinned, ...others] : others;
+  }
+
+  return options.sort(sortByLabel);
 };
 
 export const getFormComponent = (
@@ -189,7 +213,11 @@ export const getFormComponent = (
         Component: Combobox,
         dataField,
         updater: 'onValueChange',
-        options: formatDataField(formData, t, true),
+        options: formatDataField(formData, t, {
+          alphabetize: true,
+          pinFirstValue:
+            dataField === 'country_of_residence' ? COUNTRIES.DE : undefined,
+        }),
         currentValue: currentValue || '',
         ...props,
       };
@@ -199,7 +227,7 @@ export const getFormComponent = (
         Component: Select,
         dataField,
         updater: 'onValueChange',
-        options: formatDataField(formData, t, true),
+        options: formatDataField(formData, t, { alphabetize: true }),
         currentValue: currentValue || '',
         ...props,
       };
