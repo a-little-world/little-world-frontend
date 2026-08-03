@@ -53,7 +53,6 @@ import {
   getRandomCallRoute,
   RANDOM_CALLS_ROUTE,
 } from '../../../router/routes';
-import FirefoxConnectionWarning from '../../atoms/FirefoxConnectionWarning';
 import ProfileImage from '../../atoms/ProfileImage';
 import { Schedule } from '../../atoms/Schedule';
 import { CallSetupCard } from '../Calls/CallSetup';
@@ -312,7 +311,6 @@ const RandomCallSetup = ({
           defaults={{ username }}
           persistUserChoices={false}
         />
-        <FirefoxConnectionWarning />
         {switchesEnabled && (
           <Switch
             inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}

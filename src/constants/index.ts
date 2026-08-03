@@ -83,3 +83,11 @@ export const SELF_ONBOARDING_WALKTHROUGH_STEP_IDS = [
   'self_onboarding_c2_q_1',
   'self_onboarding_c3_q_1',
 ] as const;
+
+export const TARGET_GROUPS = {
+  any: 'any',
+  refugee: 'refugee',
+  student: 'student',
+  worker: 'worker',
+  other: 'other',
+};
