@@ -2,10 +2,10 @@ import {
   ButtonSizes,
   CalendarIcon,
   ClockIcon,
+  pixelate,
   Text,
   TextTypes,
   Tooltip,
-  pixelate,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
