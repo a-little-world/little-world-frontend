@@ -29,7 +29,6 @@ function FireBase() {
     revalidateOnFocus: false,
   });
 
-  // TODO: double check if this is correct ( frontend store refactored )
   const unsubscribeRef = useRef<Unsubscribe | undefined>(undefined);
   const userNotificationsEnabled =
     userData?.profile?.push_notifications_enabled;
@@ -63,12 +62,23 @@ function FireBase() {
   const { deviceSupported, notificationsEnabled, devicePermissionGranted } =
     notificationStore;
 
+  // prevent multiple (de-)activations
+  const firebaseEnabledRef = useRef<boolean | undefined>(undefined);
+
+  useEffect(() => () => unsubscribeRef.current?.(), []);
+
   useEffect(() => {
     if (!deviceSupported) {
-      return undefined;
+      return;
     }
 
-    if (notificationsEnabled && devicePermissionGranted) {
+    const enabled = Boolean(notificationsEnabled && devicePermissionGranted);
+    if (firebaseEnabledRef.current === enabled) {
+      return;
+    }
+    firebaseEnabledRef.current = enabled;
+
+    if (enabled) {
       enableFirebase().then(() => {
         const messaging = getMessaging();
         unsubscribeRef.current = onMessage(messaging, payload =>
@@ -78,15 +88,8 @@ function FireBase() {
     } else {
       unsubscribeRef.current?.();
       unsubscribeRef.current = undefined;
-      // free up firebase resources
       disableFirebase();
     }
-
-    const unsubscribe = () => {
-      unsubscribeRef.current?.();
-    };
-
-    return unsubscribe;
   }, [deviceSupported, notificationsEnabled, devicePermissionGranted, toast]);
 
   return null;

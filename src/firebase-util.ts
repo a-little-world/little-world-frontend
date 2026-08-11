@@ -1,8 +1,6 @@
 import {
-  deleteApp,
   FirebaseAppSettings,
   FirebaseOptions,
-  getApp,
   getApps,
   initializeApp,
 } from '@firebase/app';
@@ -12,16 +10,21 @@ import { apiFetch } from './api/helpers';
 import { FIREBASE_ENDPOINT } from './features/swr';
 
 type FirebaseConfig = {
-  clientConfig: FirebaseOptions;
-  publicVapidKey: string;
+  firebaseClientConfig: FirebaseOptions;
+  firebasePublicVapidKey: string;
 };
 
 const firebaseAppSettings: FirebaseAppSettings = {
   automaticDataCollectionEnabled: false,
 };
 
-async function getFirebaseConfig(): Promise<FirebaseConfig> {
-  return apiFetch(FIREBASE_ENDPOINT);
+let firebaseConfig: Promise<FirebaseConfig> | undefined;
+
+function getFirebaseConfig(): Promise<FirebaseConfig> {
+  if (!firebaseConfig) {
+    firebaseConfig = apiFetch(FIREBASE_ENDPOINT);
+  }
+  return firebaseConfig;
 }
 
 export async function getFirebaseToken(): Promise<string | undefined> {
@@ -29,12 +32,10 @@ export async function getFirebaseToken(): Promise<string | undefined> {
     return undefined;
   }
 
-  const vapidKey = await getFirebaseConfig().then(
-    config => config.publicVapidKey,
-  );
+  const { firebasePublicVapidKey } = await getFirebaseConfig();
 
   const messaging = getMessaging();
-  const token = await getToken(messaging, { vapidKey });
+  const token = await getToken(messaging, { vapidKey: firebasePublicVapidKey });
   return token;
 }
 
@@ -86,10 +87,7 @@ export async function enableFirebase() {
   if (getApps().length >= 1) {
     return;
   }
-
-  const firebaseClientConfig = await apiFetch(FIREBASE_ENDPOINT).then(
-    firebaseConfig => firebaseConfig.firebaseClientConfig,
-  );
+  const { firebaseClientConfig } = await getFirebaseConfig();
 
   initializeApp(firebaseClientConfig, firebaseAppSettings);
 
@@ -100,11 +98,8 @@ export async function disableFirebase() {
   if (getApps().length === 0) {
     return;
   }
-  const app = getApp();
 
   await unregisterFirebaseDeviceToken();
-
-  await deleteApp(app);
 }
 
 export async function sendFirebaseTestNotification(
