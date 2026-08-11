@@ -87,7 +87,7 @@ function FireBase() {
     };
 
     return unsubscribe;
-  }, [deviceSupported, notificationsEnabled, devicePermissionGranted]);
+  }, [deviceSupported, notificationsEnabled, devicePermissionGranted, toast]);
 
   return null;
 }
