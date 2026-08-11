@@ -54,34 +54,24 @@ function getInstallationId(): string {
   }
 }
 
-async function updateFirebaseDeviceRegistration(
-  step: 'register' | 'unregister',
-): Promise<void> {
-  const installId = getInstallationId();
+export async function registerFirebaseDeviceToken(): Promise<void> {
   const token = await getFirebaseToken();
-  const platform = 'web';
-  const modelName = navigator.userAgent;
-
-  return apiFetch(`/api/push_notifications/${step}`, {
+  return apiFetch('/api/push_notifications/register', {
     method: 'POST',
     body: {
-      install_id: installId,
+      install_id: getInstallationId(),
       token,
-      platform,
-      model_name: modelName,
+      platform: 'web',
+      model_name: navigator.userAgent,
     },
   });
 }
 
-export async function registerFirebaseDeviceToken(): Promise<void> {
-  return updateFirebaseDeviceRegistration('register');
-}
-
 export async function unregisterFirebaseDeviceToken(): Promise<void> {
-  if (getApps().length === 0) {
-    return;
-  }
-  await updateFirebaseDeviceRegistration('unregister');
+  await apiFetch('/api/push_notifications/unregister', {
+    method: 'POST',
+    body: { install_id: getInstallationId() },
+  });
 }
 
 export async function enableFirebase() {
