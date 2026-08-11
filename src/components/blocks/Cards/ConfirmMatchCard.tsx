@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { confirmOrDenyMatch } from '../../../api/matches';
+import { respondToProposedMatch } from '../../../api/matches';
 import { MATCH_TYPES } from '../../../constants';
 import { revalidateMatches, USER_ENDPOINT } from '../../../features/swr/index';
 import {
@@ -514,7 +514,7 @@ const ConfirmMatchCard = ({
 
   const handleConfirm = (confirmMessage?: string) => {
     setIsLoading(true);
-    confirmOrDenyMatch({
+    respondToProposedMatch({
       acceptDeny: true,
       matchId,
       ...(confirmMessage ? { confirmMessage: confirmMessage.trim() } : {}),
@@ -548,7 +548,7 @@ const ConfirmMatchCard = ({
 
   const handleReject = (denyReason?: string) => {
     setIsLoading(true);
-    confirmOrDenyMatch({
+    respondToProposedMatch({
       acceptDeny: false,
       matchId,
       denyReason,

@@ -25,7 +25,7 @@ export const confirmMatch = async ({ userUuid, onError, onSuccess }) => {
   }
 };
 
-export const confirmOrDenyMatch = async ({
+export const respondToProposedMatch = async ({
   matchId,
   acceptDeny,
   denyReason,
@@ -41,7 +41,7 @@ export const confirmOrDenyMatch = async ({
   onSuccess: (result: any) => void;
 }) => {
   try {
-    const result = await apiFetch(`/api/user/match/confirm_deny/`, {
+    const result = await apiFetch(`/api/user/match/proposal/respond/`, {
       method: 'POST',
       body: {
         unconfirmed_match_uuid: matchId,

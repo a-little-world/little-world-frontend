@@ -53,7 +53,7 @@ export const API_FIELDS = {
   token: 'token',
   reason: 'reason', // reportMatch
   other_user_uuid: 'otherUserUuid', // reportMatch
-  confirm: 'acceptDeny', // confirmOrDenyMatch
+  confirm: 'acceptDeny', // respondToProposedMatch
   unconfirmed_match_uuid: 'matchId',
 };
 
