@@ -32,6 +32,11 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'GET_CURRENT_PATH';
+      requestId?: string;
+      payload: {};
+    }
+  | {
       action: 'GET_INTEGRITY_TOKEN';
       requestId?: string;
       payload: {};

@@ -147,6 +147,26 @@ function NativeMessageHandler() {
 
           return response;
         }
+        case 'GET_CURRENT_PATH': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const response: DomCommunicationResponse = {
+            ok: true,
+            data: {
+              path: window.location.hash.replace(/^#/, '') || '/',
+            },
+          };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
         case 'PING': {
           console.log(
             'received ping, sending response',
