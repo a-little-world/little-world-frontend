@@ -32,9 +32,13 @@ export type DomCommunicationMessage =
       };
     }
   | {
-      action: 'GET_CURRENT_PATH';
+      action: 'DISPLAY_NOTIFICATION';
       requestId?: string;
-      payload: {};
+      payload: {
+        title?: string;
+        body?: string;
+        path?: string;
+      };
     }
   | {
       action: 'GET_INTEGRITY_TOKEN';

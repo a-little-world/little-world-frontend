@@ -14,6 +14,7 @@ import {
   DomCommunicationMessageFn,
   DomCommunicationResponse,
 } from '../../features/stores/receiveHandler';
+import useToast from '../../hooks/useToast';
 
 export interface NativeChallengeProofEvent {
   proof: string;
@@ -26,6 +27,7 @@ function NativeMessageHandler() {
   const { setHandler, sendMessageToReactNative } = useReceiveHandlerStore();
   const navigate = useNavigate();
   const { setNavigate } = useNavigationStore();
+  const toast = useToast();
 
   useEffect(() => {
     setNavigate(navigate);
@@ -147,18 +149,26 @@ function NativeMessageHandler() {
 
           return response;
         }
-        case 'GET_CURRENT_PATH': {
+        case 'DISPLAY_NOTIFICATION': {
           if (!requestId) {
             throw new Error('Received native message without request id');
           }
 
-          const response: DomCommunicationResponse = {
-            ok: true,
-            data: {
-              path: window.location.hash.replace(/^#/, '') || '/',
-            },
-          };
+          const { title, body, path } = payload;
+          const currentPath = window.location.hash.replace(/^#/, '') || '/';
 
+          if (path && path !== currentPath) {
+            toast.showToast({
+              title,
+              description: body,
+              duration: 3000,
+              onClick: path
+                ? () => useNavigationStore.getState().navigate?.(path)
+                : undefined,
+            });
+          }
+
+          const response: DomCommunicationResponse = { ok: true };
           sendMessageToReactNative!({
             action: 'RESPONSE',
             requestId,
@@ -212,7 +222,7 @@ function NativeMessageHandler() {
 
     // Set the handler; the store will auto-register with the native bridge if available
     setHandler(handler);
-  }, [setHandler, sendMessageToReactNative]);
+  }, [setHandler, sendMessageToReactNative, toast]);
 }
 
 export default NativeMessageHandler;
