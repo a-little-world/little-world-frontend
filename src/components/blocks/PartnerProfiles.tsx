@@ -97,7 +97,9 @@ function PartnerProfiles({
     }
 
     if (confirmed.page === 1) {
-      return [...support.results, ...confirmed.results];
+      return confirmed.results.length > 0
+        ? [...confirmed.results, ...support.results]
+        : [...support.results];
     }
 
     return [...confirmed.results];
