@@ -27,15 +27,46 @@ function getFirebaseConfig(): Promise<FirebaseConfig> {
   return firebaseConfig;
 }
 
+// Registered ourselves instead of letting FCM do it: FCM's default scope
+// (/firebase-cloud-messaging-push-scope) does not control the app's pages, and an
+// uncontrolled client cannot be navigated on notification click.
+async function registerServiceWorker(): Promise<ServiceWorkerRegistration> {
+  await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+    scope: '/',
+  });
+  // resolves once the worker is activated, getToken needs an active one
+  return navigator.serviceWorker.ready;
+}
+
 export async function getFirebaseToken(): Promise<string | undefined> {
   if (getApps().length === 0) {
+    console.log('now app found while getting firebase token');
     return undefined;
   }
 
   const { firebasePublicVapidKey } = await getFirebaseConfig();
+  console.log('firebasePublicVapidKey', firebasePublicVapidKey);
+
+  const serviceWorkerRegistration = await registerServiceWorker();
+  console.log('service worker', serviceWorkerRegistration.active?.state);
 
   const messaging = getMessaging();
-  const token = await getToken(messaging, { vapidKey: firebasePublicVapidKey });
+  console.log('messaging', messaging);
+  // pushManager.subscribe() hangs forever instead of rejecting when the browser
+  // cannot reach its push service, so getToken needs a deadline of its own
+  const token = await Promise.race([
+    getToken(messaging, {
+      vapidKey: firebasePublicVapidKey,
+      serviceWorkerRegistration,
+    }),
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error('timed out waiting for a firebase token')),
+        20000,
+      ),
+    ),
+  ]);
+  console.log('token', token);
   return token;
 }
 
@@ -56,7 +87,9 @@ function getInstallationId(): string {
 }
 
 export async function registerFirebaseDeviceToken(): Promise<void> {
+  console.log('registering firebase device token');
   const token = await getFirebaseToken();
+  console.log('firebase device token', token);
   if (!token) {
     return;
   }
@@ -84,12 +117,18 @@ export async function unregisterFirebaseDeviceToken(): Promise<void> {
 }
 
 export async function enableFirebase() {
+  console.log('enabling firebase');
   if (getApps().length >= 1) {
+    console.log('firebase already enabled');
     return;
   }
+  console.log('loading firebase config');
   const { firebaseClientConfig } = await getFirebaseConfig();
+  console.log('got firebase config', firebaseClientConfig);
 
+  console.log('initializing app');
   initializeApp(firebaseClientConfig, firebaseAppSettings);
+  console.log('app initialized');
 
   await registerFirebaseDeviceToken();
 }
