@@ -1,17 +1,18 @@
+import { FC } from 'react';
+
 import {
   ButtonAppearance,
   ButtonSizes,
   Link,
   Text,
 } from '@a-little-world/little-world-design-system';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { PARTNERS_ROUTE, getAppRoute } from '../../../../router/routes';
+import { getAppRoute, PARTNERS_ROUTE } from '../../../../router/routes';
 import NotFoundCard from '../../../atoms/NotFound';
 import Video from '../../../atoms/Video';
-import { PARTNERS_DATA, getDataBySlug } from '../constants';
+import { getDataBySlug, PARTNERS_DATA } from '../constants';
 import { Container, ContentCard } from '../shared.styles';
 import {
   AdditionalImage,

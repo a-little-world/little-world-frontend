@@ -20,6 +20,12 @@ export const Container = styled.div<{ $hasData: boolean }>`
     `}
 `;
 
+export const HistoryHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
 export const HistoryTitle = styled(Text)`
   display: none;
   ${({ theme }) => css`

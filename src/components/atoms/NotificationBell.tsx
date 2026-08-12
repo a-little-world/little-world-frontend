@@ -1,10 +1,11 @@
+import React from 'react';
+
 import {
   BellIcon,
   Button,
   ButtonSizes,
   ButtonVariations,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 

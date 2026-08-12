@@ -1,16 +1,17 @@
+import { FC, useEffect, useState } from 'react';
+
 import {
   ButtonAppearance,
   Link,
 } from '@a-little-world/little-world-design-system';
-import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 
 import {
+  completeCourse,
   CourseDetail,
   CourseProgress,
-  completeCourse,
   fetchCourseDetail,
   fetchCoursePreview,
   startCourse,
@@ -20,7 +21,7 @@ import {
   getCompletedChapterCountForCourseProgress,
   mapChapter,
 } from '../../../../helpers/course';
-import { TRAININGS_ROUTE, getAppRoute } from '../../../../router/routes';
+import { getAppRoute, TRAININGS_ROUTE } from '../../../../router/routes';
 import LoadingScreen from '../../../atoms/LoadingScreen';
 import NotFoundCard from '../../../atoms/NotFound';
 import CourseChaptersLayout from '../../../blocks/Course/Course';

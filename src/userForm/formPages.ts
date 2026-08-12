@@ -7,7 +7,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { isBoolean } from 'lodash';
 
-import { COUNTRIES, LANGUAGES, USER_TYPES } from '../constants';
+import { COUNTRIES, LANGUAGES, TARGET_GROUPS, USER_TYPES } from '../constants';
 import { ONBOARDING_ROUTE, USER_FORM_ROUTES } from '../router/routes';
 import { ComponentTypes, formatDataField } from './formContent';
 
@@ -124,7 +124,7 @@ const formPages = {
                   heading: t('self_info.target_group_label'),
                   errorRules: { required: t('validation.required') },
                 }),
-                textInputVal: options?.target_groups[0].value,
+                textInputVal: TARGET_GROUPS.other,
               },
               textInput: {
                 currentValue: userData?.other_target_group,

@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import {
   ButtonSizes,
   Loading,
@@ -6,12 +8,12 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { exitLobby } from '../../../api/randomCalls';
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
 import {
   RANDOM_CALL_EXIT_PARAM,
   RANDOM_CALL_EXIT_VALUE,
@@ -20,6 +22,10 @@ import {
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import useSystemModalBlocker from '../../../hooks/useSystemModalBlocker';
 import randomCallsImage from '../../../images/random-calls-image.png';
+import {
+  getAppAbsoluteRoute,
+  RANDOM_CALLS_ROUTE,
+} from '../../../router/routes';
 import { OnlineCircle } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
 import { Schedule } from '../../atoms/Schedule';
@@ -211,6 +217,15 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                   <Schedule
                     title={t('random_calls.schedule_heading')}
                     sessions={upcomingLobbies ?? []}
+                    listMaxHeight={260}
+                    addToCalendar={{
+                      title: t('random_calls.title'),
+                      description: t('random_calls.description'),
+                      frequency: COMMUNITY_EVENT_FREQUENCIES.once,
+                      durationInMinutes: 60,
+                      link: getAppAbsoluteRoute(RANDOM_CALLS_ROUTE),
+                      size: ButtonSizes.Small,
+                    }}
                   />
                 )}
                 {active && (

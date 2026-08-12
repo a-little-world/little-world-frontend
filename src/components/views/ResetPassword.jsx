@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -8,7 +10,6 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -96,9 +97,9 @@ const ResetPassword = () => {
           visible={requestSuccessful || errors?.root?.serverError}
           type={requestSuccessful ? StatusTypes.Success : StatusTypes.Error}
         >
-          {requestSuccessful ?
-            t('reset_password.success_message') :
-            t(errors?.root?.serverError?.message)}
+          {requestSuccessful
+            ? t('reset_password.success_message')
+            : t(errors?.root?.serverError?.message)}
         </StatusMessage>
         <ButtonsContainer>
           <Link

@@ -1,5 +1,6 @@
-import { Modal } from '@a-little-world/little-world-design-system';
 import React, { useEffect, useRef, useState } from 'react';
+
+import { Modal } from '@a-little-world/little-world-design-system';
 
 import { MATCH_TYPES } from '../../../constants';
 import { usesAvatar } from '../../../helpers/profile';

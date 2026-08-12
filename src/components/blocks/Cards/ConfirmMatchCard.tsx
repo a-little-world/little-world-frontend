@@ -1,27 +1,38 @@
+import React, { useCallback, useMemo, useState } from 'react';
+
 import {
+  Accordion,
+  AccordionContent,
   Button,
   ButtonAppearance,
+  CalendarIcon,
   Card,
   CardContent,
   CardHeader,
   CardSizes,
+  Tag,
+  TagAppearance,
+  TagSizes,
   Text,
   TextArea,
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { confirmOrDenyMatch } from '../../../api/matches';
+import { respondToProposedMatch } from '../../../api/matches';
 import { MATCH_TYPES } from '../../../constants';
 import { revalidateMatches, USER_ENDPOINT } from '../../../features/swr/index';
-import { formatSuggestedAvailabilityOverlap } from '../../../helpers/availabilityOverlap';
+import {
+  buildAvailabilityRows,
+  formatSuggestedAvailabilityOverlap,
+} from '../../../helpers/availability';
 import { registerInput } from '../../../helpers/form';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
+import Note from '../../atoms/Note';
 import ProfileImage from '../../atoms/ProfileImage';
 import { TextField } from '../Profile/styles';
 
@@ -43,8 +54,61 @@ const MessageContainer = styled.form`
   width: 100%;
 `;
 
+const AccordionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
+const AvailabilityAccordion = styled(Accordion)`
+  width: 100%;
+`;
+
+const AvailabilityContent = styled(AccordionContent)`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+  width: 100%;
+  background: ${({ theme }) => theme.color.surface.primary};
+  padding: 0;
+  padding-top: ${({ theme }) => theme.spacing.small};
+`;
+
+const AvailabilityList = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const AvailabilityDayRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+  padding: ${({ theme }) => theme.spacing.xxsmall}
+    ${({ theme }) => theme.spacing.xxxxsmall};
+
+  & + & {
+    border-top: 1px solid ${({ theme }) => theme.color.border.subtle};
+  }
+`;
+
+const AvailabilityDayLabel = styled(Text)`
+  flex-shrink: 0;
+  width: 40px;
+`;
+
+const AvailabilityRanges = styled.div`
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+`;
+
 const RejectNote = styled(Text)`
   text-align: justify;
+`;
+
+const TimeSlot = styled(Tag)`
+  color: ${({ theme }) => theme.color.text.primary};
 `;
 
 interface ConfirmaMatchCardProps {
@@ -85,6 +149,7 @@ interface ConfirmMessageProps extends BaseMatchProps {
   errors: any;
   register: any;
   handleSubmit: any;
+  partnerAvailability?: Record<string, string[]>;
 }
 
 interface RejectMatchProps extends BaseMatchProps {
@@ -95,10 +160,16 @@ interface RejectMatchProps extends BaseMatchProps {
   handleSubmit: any;
 }
 
-const getTitleKey = (matchType: string) =>
+const getConfirmMatchCopyKeys = (matchType: string) =>
   matchType === MATCH_TYPES.standard
-    ? 'confirm_match.title_standard'
-    : 'confirm_match.title_random_call';
+    ? {
+        title: 'confirm_match.title_standard',
+        description: 'confirm_match.description_standard',
+      }
+    : {
+        title: 'confirm_match.title_random_call',
+        description: 'confirm_match.description_random_call',
+      };
 
 const getDefaultConfirmMessageKey = (suggestedAvailability?: string) =>
   suggestedAvailability
@@ -117,10 +188,11 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const copyKeys = getConfirmMatchCopyKeys(matchType);
 
   return (
     <>
-      <CardHeader>{t(getTitleKey(matchType))}</CardHeader>
+      <CardHeader>{t(copyKeys.title)}</CardHeader>
       <CardContent
         align="center"
         textAlign="center"
@@ -137,7 +209,7 @@ const ConfirmMatch: React.FC<ConfirmMatchProps> = ({
             {name}
           </Text>
           <Description type={TextTypes.Body5}>
-            {t('confirm_match.description')}
+            {t(copyKeys.description, { name })}
           </Description>
           <TextField>„{description?.trim()}“</TextField>
         </ProfileInfo>
@@ -180,9 +252,15 @@ const ConfirmMessage: React.FC<ConfirmMessageProps> = ({
   register,
   handleSubmit,
   isLoading,
+  partnerAvailability,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const availabilityRows = useMemo(
+    () => buildAvailabilityRows(partnerAvailability),
+    [partnerAvailability],
+  );
+  const showAvailability = availabilityRows.length > 0;
 
   return (
     <>
@@ -206,6 +284,51 @@ const ConfirmMessage: React.FC<ConfirmMessageProps> = ({
             {t('confirm_match.message_info', { name })}
           </Text>
         </ProfileInfo>
+        {showAvailability && (
+          <AvailabilityAccordion
+            headerType={TextTypes.Heading7}
+            ContentWrapper={AvailabilityContent}
+            items={[
+              {
+                // @ts-expect-error Accordion header typing expects string; ReactNode works at runtime
+                header: (
+                  <AccordionHeader>
+                    <CalendarIcon label="" width={16} height={16} />
+                    {t('confirm_match.availability_accordion', { name })}
+                  </AccordionHeader>
+                ),
+                content: (
+                  <>
+                    <Note center={false}>
+                      {t('confirm_match.availability_timezone_note')}
+                    </Note>
+                    <AvailabilityList>
+                      {availabilityRows.map(({ day, ranges }) => (
+                        <AvailabilityDayRow key={day}>
+                          <AvailabilityDayLabel bold>
+                            {t(`availability.day_short_${day}`)}
+                          </AvailabilityDayLabel>
+                          <AvailabilityRanges>
+                            {ranges.map(range => (
+                              <TimeSlot
+                                key={range}
+                                appearance={TagAppearance.filled}
+                                color={theme.color.surface.subtle}
+                                size={TagSizes.small}
+                              >
+                                {range}
+                              </TimeSlot>
+                            ))}
+                          </AvailabilityRanges>
+                        </AvailabilityDayRow>
+                      ))}
+                    </AvailabilityList>
+                  </>
+                ),
+              },
+            ]}
+          />
+        )}
         <MessageContainer onSubmit={handleSubmit(onSubmit)}>
           <TextArea
             {...registerInput({
@@ -264,10 +387,11 @@ const RejectMatch: React.FC<RejectMatchProps> = ({
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const copyKeys = getConfirmMatchCopyKeys(matchType);
 
   return (
     <>
-      <CardHeader>{t(getTitleKey(matchType))}</CardHeader>
+      <CardHeader>{t(copyKeys.title)}</CardHeader>
       <CardContent
         align="center"
         textAlign="center"
@@ -390,7 +514,7 @@ const ConfirmMatchCard = ({
 
   const handleConfirm = (confirmMessage?: string) => {
     setIsLoading(true);
-    confirmOrDenyMatch({
+    respondToProposedMatch({
       acceptDeny: true,
       matchId,
       ...(confirmMessage ? { confirmMessage: confirmMessage.trim() } : {}),
@@ -424,7 +548,7 @@ const ConfirmMatchCard = ({
 
   const handleReject = (denyReason?: string) => {
     setIsLoading(true);
-    confirmOrDenyMatch({
+    respondToProposedMatch({
       acceptDeny: false,
       matchId,
       denyReason,
@@ -471,6 +595,7 @@ const ConfirmMatchCard = ({
           handleSubmit={handleSubmit}
           isLoading={isLoading}
           matchType={matchType}
+          partnerAvailability={partnerAvailability}
         />
       )}
       {viewState === 'reject-form' && (

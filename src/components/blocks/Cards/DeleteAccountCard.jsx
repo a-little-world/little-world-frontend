@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -8,7 +10,6 @@ import {
   StatusMessage,
   StatusTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 

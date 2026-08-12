@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import {
   ButtonAppearance,
   ButtonSizes,
@@ -7,14 +9,11 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
 import { login } from '../../api';
-import useMobileAuthTokenStore from '../../features/stores/mobileAuthToken';
 import {
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
@@ -23,11 +22,8 @@ import { onFormError, registerInput } from '../../helpers/form';
 import useQueryParam, { useRemoveQueryParam } from '../../hooks/useQueryParam';
 import {
   FORGOT_PASSWORD_ROUTE,
-  SIGN_UP_ROUTE,
-  USER_FORM_ROUTE,
-  VERIFY_EMAIL_ROUTE,
-  getAppRoute,
   passAuthenticationBoundary,
+  SIGN_UP_ROUTE,
 } from '../../router/routes';
 import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 
@@ -46,9 +42,7 @@ const Login = () => {
     setFocus,
   } = useForm({ shouldUnregister: true });
 
-  const navigate = useNavigate();
   const removeQueryParam = useRemoveQueryParam();
-  const mobileAuthStore = useMobileAuthTokenStore();
 
   useEffect(() => {
     setFocus('email');
@@ -62,29 +56,13 @@ const Login = () => {
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
 
-  const accessToken = mobileAuthStore?.accessToken;
-
-  useEffect(() => {
-    if (accessToken) {
-      mutate(USER_ENDPOINT);
-    }
-  }, [accessToken]);
-
   useEffect(() => {
     if (!userData) {
       return;
     }
 
     passAuthenticationBoundary();
-    if (!userData.emailVerified) {
-      navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
-    } else if (!userData.userFormCompleted) {
-      navigate(getAppRoute(USER_FORM_ROUTE));
-    } else {
-      // per default route to /app on successful login
-      navigate(getAppRoute(''));
-    }
-  }, [userData, navigate]);
+  }, [userData]);
 
   const onFormSubmit = async (data: any) => {
     setIsSubmitting(true);

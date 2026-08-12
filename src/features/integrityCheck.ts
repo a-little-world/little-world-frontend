@@ -2,6 +2,7 @@ export interface IntegrityCheckAndroid {
   platform: 'android';
   challengeId: string;
   integrityToken: string;
+  bypassToken?: string;
 }
 
 export interface IntegrityCheckIOS {
@@ -9,6 +10,7 @@ export interface IntegrityCheckIOS {
   keyId: string;
   challengeId: string;
   attestationObject: string;
+  bypassToken?: string;
 }
 
 export interface IntegrityCheckWeb {
@@ -24,12 +26,14 @@ export type IntegrityCheck =
 export interface IntegrityCheckRequestDataAndroid {
   challenge_id: string;
   integrity_token: string;
+  bypass_token?: string;
 }
 
 export interface IntegrityCheckRequestDataIOS {
   key_id: string;
   challenge_id: string;
   attestation_object: string;
+  bypass_token?: string;
 }
 
 export interface IntegrityCheckRequestDataWeb {
@@ -48,6 +52,7 @@ export function getIntegrityCheckRequestData(
     return {
       challenge_id: integrityCheck.challengeId,
       integrity_token: integrityCheck.integrityToken,
+      bypass_token: integrityCheck.bypassToken,
     } satisfies IntegrityCheckRequestDataAndroid;
   }
   if (integrityCheck.platform === 'ios') {
@@ -55,6 +60,7 @@ export function getIntegrityCheckRequestData(
       key_id: integrityCheck.keyId,
       challenge_id: integrityCheck.challengeId,
       attestation_object: integrityCheck.attestationObject,
+      bypass_token: integrityCheck.bypassToken,
     } satisfies IntegrityCheckRequestDataIOS;
   }
   if (integrityCheck.platform === 'web') {

@@ -1,3 +1,5 @@
+import { FC, useRef, useState } from 'react';
+
 import {
   Button,
   ButtonSizes,
@@ -8,7 +10,6 @@ import {
   TextContent,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
-import { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 

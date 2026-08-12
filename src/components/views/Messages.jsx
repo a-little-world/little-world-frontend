@@ -8,10 +8,10 @@ import {
   MATCHES_ENDPOINT,
 } from '../../features/swr/index';
 import useIniniteScroll from '../../hooks/useInfiniteScroll';
-import { MESSAGES_ROUTE, getAppRoute } from '../../router/routes';
+import { getAppRoute, MESSAGES_ROUTE } from '../../router/routes';
 import PageHeader from '../atoms/PageHeader';
-import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo';
 import ChatsPanel from '../blocks/ChatCore/ChatsPanel';
+import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo';
 import { ChatDashboard } from './Messages.styles';
 
 /** Stable empty list so we do not create a new [] every render while SWR is loading. */

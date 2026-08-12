@@ -1,11 +1,4 @@
 import {
-  ImageIcon,
-  ImageSearchIcon,
-  Label,
-  Text,
-  TextTypes,
-} from '@a-little-world/little-world-design-system';
-import {
   DragEvent,
   FocusEventHandler,
   MouseEvent,
@@ -14,6 +7,14 @@ import {
   useRef,
   useState,
 } from 'react';
+
+import {
+  ImageIcon,
+  ImageSearchIcon,
+  Label,
+  Text,
+  TextTypes,
+} from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 

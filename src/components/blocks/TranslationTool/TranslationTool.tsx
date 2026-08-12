@@ -1,3 +1,5 @@
+import React, { useCallback, useEffect, useState } from 'react';
+
 import {
   AddToChatIcon,
   Button,
@@ -10,15 +12,14 @@ import {
   TextAreaSize,
   Tooltip,
 } from '@a-little-world/little-world-design-system';
-import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
 import {
   AUTO_DETECT,
+  requestTranslation,
   SOURCE_LANGUAGES,
   TARGET_LANGUAGES,
-  requestTranslation,
 } from '../../../api/translator';
 import { useChatInputStore } from '../../../features/stores';
 import {
@@ -27,8 +28,8 @@ import {
   SwapBtn,
   TextAreaContainer,
   TextAreasRow,
-  ToolContainer,
   Toolbar,
+  ToolContainer,
   TranslatedTextArea,
   TranslatedTextAreaWrapper,
   TranslationInput,

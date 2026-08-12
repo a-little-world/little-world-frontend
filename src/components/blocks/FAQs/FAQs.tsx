@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import {
   Accordion,
   CardHeader,
@@ -6,7 +8,6 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { TFunction } from 'i18next';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
@@ -14,9 +15,9 @@ import {
   FAQContainer,
   FAQImageWrapper,
   FAQItems,
-  FAQSectionTitle,
   FAQsCard,
   FAQsDescription,
+  FAQSectionTitle,
 } from './FAQs.styles';
 
 const translationKeys = [

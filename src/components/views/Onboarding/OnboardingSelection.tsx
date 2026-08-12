@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Modal,
   Stepper,
@@ -5,7 +7,6 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';

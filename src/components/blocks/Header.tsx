@@ -10,11 +10,11 @@ import {
   USER_ENDPOINT,
 } from '../../features/swr/index';
 import {
+  getAppRoute,
+  getHomeRoute,
   PRIVACY_ROUTE,
   TERMS_ROUTE,
   WP_HOME_ROUTE,
-  getAppRoute,
-  getHomeRoute,
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import LanguageSelector from './LanguageSelector/LanguageSelector';

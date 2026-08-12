@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -15,7 +17,6 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import Cookies from 'js-cookie';
-import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';

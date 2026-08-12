@@ -19,9 +19,9 @@ const useChatInputStore = create<ChatInputState>((set, get) => ({
       onTextAdded();
     }
   },
-  setOnTextAdded: (callback: (() => void) | null) => set({ onTextAdded: callback }),
+  setOnTextAdded: (callback: (() => void) | null) =>
+    set({ onTextAdded: callback }),
   clearText: () => set({ textToAdd: null }),
 }));
 
 export default useChatInputStore;
-

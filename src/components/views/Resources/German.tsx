@@ -1,9 +1,10 @@
+import React, { FC } from 'react';
+
 import {
   ContentTypes,
   TextContent,
   WavyLinesImage,
 } from '@a-little-world/little-world-design-system';
-import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 

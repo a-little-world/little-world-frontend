@@ -1,22 +1,23 @@
-import { Modal } from '@a-little-world/little-world-design-system';
 import { useEffect, useState } from 'react';
+
+import { Modal } from '@a-little-world/little-world-design-system';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
-import CustomPagination from '../../CustomPagination';
 import { updateMatchData } from '../../api/matches';
+import CustomPagination from '../../CustomPagination';
 import { useCallSetupStore } from '../../features/stores/index';
 import {
+  getMatchEndpoint,
   RANDOM_CALL_LOBBY_ENDPOINT,
   USER_ENDPOINT,
-  getMatchEndpoint,
 } from '../../features/swr/index';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import {
   COMMUNITY_EVENTS_ROUTE,
-  RANDOM_CALLS_ROUTE,
   getAppRoute,
+  RANDOM_CALLS_ROUTE,
 } from '../../router/routes';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard';
 import CommsBanner from '../blocks/CommsBanner';
@@ -42,8 +43,7 @@ interface EmptyRandomCallLobbyResponse {
 
 const isRandomCallLobby = (
   payload: RandomCallLobby | EmptyRandomCallLobbyResponse | undefined,
-): payload is RandomCallLobby =>
-  Boolean(payload && 'uuid' in payload);
+): payload is RandomCallLobby => Boolean(payload && 'uuid' in payload);
 
 const Home = styled.div`
   display: flex;
@@ -99,12 +99,9 @@ function Main() {
   const hasRandomCallsAccess = user?.hasRandomCallsAccess ?? false;
   const { data: lobbyDataResponse } = useSWR<
     RandomCallLobby | EmptyRandomCallLobbyResponse
-  >(
-    hasRandomCallsAccess ? RANDOM_CALL_LOBBY_ENDPOINT : null,
-    {
-      refreshInterval: 2000,
-    },
-  );
+  >(hasRandomCallsAccess ? RANDOM_CALL_LOBBY_ENDPOINT : null, {
+    refreshInterval: 2000,
+  });
   const lobbyData = isRandomCallLobby(lobbyDataResponse)
     ? lobbyDataResponse
     : undefined;

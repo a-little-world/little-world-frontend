@@ -53,7 +53,7 @@ export const API_FIELDS = {
   token: 'token',
   reason: 'reason', // reportMatch
   other_user_uuid: 'otherUserUuid', // reportMatch
-  confirm: 'acceptDeny', // confirmOrDenyMatch
+  confirm: 'acceptDeny', // respondToProposedMatch
   unconfirmed_match_uuid: 'matchId',
 };
 
@@ -83,3 +83,11 @@ export const SELF_ONBOARDING_WALKTHROUGH_STEP_IDS = [
   'self_onboarding_c2_q_1',
   'self_onboarding_c3_q_1',
 ] as const;
+
+export const TARGET_GROUPS = {
+  any: 'any',
+  refugee: 'refugee',
+  student: 'student',
+  worker: 'worker',
+  other: 'other',
+};

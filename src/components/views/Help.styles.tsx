@@ -2,8 +2,8 @@ import {
   Card,
   CardDimensions,
   CardSizes,
-  Text,
   pixelate,
+  Text,
 } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 

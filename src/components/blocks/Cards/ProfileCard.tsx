@@ -1,3 +1,5 @@
+import React, { useMemo } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -11,16 +13,15 @@ import {
   Link,
   MessageIcon,
   PencilIcon,
+  pixelate,
   Popover,
+  PopoverSizes,
   ProfileIcon,
   Text,
   TextTypes,
   Tooltip,
   VideoIcon,
-  pixelate,
 } from '@a-little-world/little-world-design-system';
-import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
-import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NiceAvatarProps } from 'react-nice-avatar';
 import styled, { css, useTheme } from 'styled-components';
@@ -32,11 +33,11 @@ import {
 } from '../../../helpers/buildMatchTeaserViewModel';
 import type { MatchTeaserInput } from '../../../helpers/deriveMatchTeaserState';
 import {
+  getAppRoute,
+  getAppSubpageRoute,
   HELP_CONTACT_ROUTE,
   MESSAGES_ROUTE,
   PROFILE_ROUTE,
-  getAppRoute,
-  getAppSubpageRoute,
 } from '../../../router/routes';
 import { shimmerStyles } from '../../atoms/Loading';
 import MenuLink, { MenuLinkText } from '../../atoms/MenuLink';
@@ -336,8 +337,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             {isSupport
               ? t('profile_card.support_description')
               : isDeleted
-              ? t('profile.deleted_description')
-              : profile.description}
+                ? t('profile.deleted_description')
+                : profile.description}
           </Description>
         )}
       </ProfileInfo>

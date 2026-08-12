@@ -3,12 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
-  OUR_WORLD_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
+  OUR_WORLD_ROUTE,
 } from '../../../router/routes';
 import ContentSelector from '../../blocks/ContentSelector';
 import Donate from './Donate';
+import Materials from './Materials';
 import SupportUs from './SupportUs';
 
 const Content = styled.div`
@@ -17,16 +18,18 @@ const Content = styled.div`
     width: 100%;
     max-width: 1200px;
     padding: ${theme.spacing.xxsmall};
+
     @media (min-width: ${theme.breakpoints.medium}) {
      padding: 0;
     }`};
 `;
 
-type subpages = 'about' | 'support' | 'donate';
+type subpages = 'about' | 'support' | 'donate' | 'materials';
 
 const renderResourceContent = (page?: subpages | string) => {
   if (page === 'support') return <SupportUs />;
   if (page === 'donate') return <Donate />;
+  if (page === 'materials') return <Materials />;
   return null;
 };
 

@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import {
   Loading,
   LoadingSizes,
@@ -5,7 +7,6 @@ import {
   StatusTypes,
   Switch,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -92,9 +93,9 @@ const MailingLists = ({
               defaultChecked={value}
               error={error?.message}
               label={
-                hideLabel ?
-                  undefined :
-                  t('mailing_lists.newsletter_subscription_toggle')
+                hideLabel
+                  ? undefined
+                  : t('mailing_lists.newsletter_subscription_toggle')
               }
               labelInline={inline}
               required={false}

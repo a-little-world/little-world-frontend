@@ -1,3 +1,5 @@
+import { ElementType } from 'react';
+
 import {
   Checkbox,
   CheckboxGrid,
@@ -16,13 +18,13 @@ import {
   TextInput,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { ElementType } from 'react';
 import styled from 'styled-components';
 
 import Note from '../components/atoms/Note';
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
 import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
-import { formatMultiSelectionOptions, orderSelectOptions } from '../helpers/form';
+import { formatMultiSelectionOptions } from '../helpers/form';
+import i18n from '../i18n';
 
 const Warning = styled(StatusMessage)`
   margin-top: -${({ theme }) => theme.spacing.xxsmall};
@@ -67,28 +69,53 @@ interface ComponentReturn {
   [key: string]: any;
 }
 
-export type FormatDataFieldOptions = {
+interface FormatDataFieldOptions {
   alphabetize?: boolean;
-  pinValue?: string;
-  sortLocale?: string;
-};
+  pinFirstValue?: string;
+  locale?: string;
+}
 
 export const formatDataField = (
   data: Array<{ tag: string; value: string }> | undefined,
   t: (key: string) => string,
-  options: boolean | FormatDataFieldOptions = {},
+  {
+    alphabetize = false,
+    pinFirstValue,
+    locale = i18n.language,
+  }: FormatDataFieldOptions = {},
 ): Array<{ label: string; value: string }> => {
   if (!data) return [];
 
-  const config: FormatDataFieldOptions =
-    typeof options === 'boolean' ? { alphabetize: options } : options;
+  const options = data.map(({ tag, value }) => ({ label: t(tag), value }));
 
-  const mapped = data.map(({ tag, value }) => ({ label: t(tag), value }));
-  return orderSelectOptions(mapped, config);
+  if (!alphabetize && !pinFirstValue) {
+    return options;
+  }
+
+  const sortByLabel = (a: { label: string }, b: { label: string }) =>
+    a.label.localeCompare(b.label, locale);
+
+  if (pinFirstValue) {
+    const pinned = options.find(({ value }) => value === pinFirstValue);
+    const others = options
+      .filter(({ value }) => value !== pinFirstValue)
+      .sort(sortByLabel);
+
+    return pinned ? [pinned, ...others] : others;
+  }
+
+  return options.sort(sortByLabel);
 };
 
 export const getFormComponent = (
-  { type, currentValue, dataField, formData, pinValue, getProps }: FormComponentConfig,
+  {
+    type,
+    currentValue,
+    dataField,
+    formData,
+    pinValue,
+    getProps,
+  }: FormComponentConfig,
   t: (key: string) => string,
 ): ComponentReturn | null => {
   const props = getProps?.(t);
@@ -193,7 +220,10 @@ export const getFormComponent = (
         Component: Combobox,
         dataField,
         updater: 'onValueChange',
-        options: formatDataField(formData, t, { alphabetize: true, pinValue }),
+        options: formatDataField(formData, t, {
+          alphabetize: true,
+          pinFirstValue: pinValue,
+        }),
         currentValue: currentValue || '',
         ...props,
       };
@@ -203,7 +233,10 @@ export const getFormComponent = (
         Component: Select,
         dataField,
         updater: 'onValueChange',
-        options: formatDataField(formData, t, { alphabetize: true, pinValue }),
+        options: formatDataField(formData, t, {
+          alphabetize: true,
+          pinFirstValue: pinValue,
+        }),
         currentValue: currentValue || '',
         ...props,
       };

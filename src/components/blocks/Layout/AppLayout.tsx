@@ -1,5 +1,6 @@
-import { Modal } from '@a-little-world/little-world-design-system';
 import { ReactNode, useEffect, useState } from 'react';
+
+import { Modal } from '@a-little-world/little-world-design-system';
 import {
   Navigate,
   Outlet,
@@ -10,7 +11,7 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { submitCallFeedback } from '../../../api/livekit';
-import { USER_TYPES, pagesWithViewportHeight } from '../../../constants/index';
+import { pagesWithViewportHeight, USER_TYPES } from '../../../constants/index';
 import {
   useCallSetupStore,
   useConnectedCallStore,
@@ -25,7 +26,7 @@ import {
   USER_ENDPOINT,
 } from '../../../features/swr/index';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
-import { ONBOARDING_ROUTE, getAppRoute } from '../../../router/routes';
+import { getAppRoute, ONBOARDING_ROUTE } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
@@ -175,7 +176,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const shouldShowMatchModal = Boolean(
       matches?.proposed?.results?.length ||
-        matches?.unconfirmed?.results?.length,
+      matches?.unconfirmed?.results?.length,
     );
 
     if (shouldShowMatchModal) {

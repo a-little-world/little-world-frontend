@@ -1,12 +1,13 @@
-import { last } from 'lodash';
 import { useCallback, useMemo } from 'react';
+
+import { last } from 'lodash';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import {
-  RESOURCES_ROUTE,
   getAppRoute,
   getAppSubpageRoute,
+  RESOURCES_ROUTE,
 } from '../../../router/routes';
 import ContentSelector from '../../blocks/ContentSelector';
 import Beginners from './Beginners';

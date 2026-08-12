@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react';
+
 import {
   AttachmentIcon,
   ButtonAppearance,
@@ -8,14 +10,13 @@ import {
   SendIcon,
   Text,
   TextAreaSize,
+  textParser,
   TextTypes,
   TickDoubleIcon,
   TickIcon,
-  textParser,
 } from '@a-little-world/little-world-design-system';
 import { isSameDay } from 'date-fns';
 import { get, isEmpty } from 'lodash';
-import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -35,10 +36,10 @@ import {
 } from '../../../features/stores/index';
 import {
   CHATS_ENDPOINT_SEPERATE,
-  USER_ENDPOINT,
   getChatEndpoint,
   getChatMessagesEndpoint,
   revalidateChats,
+  USER_ENDPOINT,
 } from '../../../features/swr/index';
 import { addMessage } from '../../../features/swr/wsBridgeMutations';
 import {
@@ -49,12 +50,12 @@ import {
 } from '../../../helpers/chat';
 import { formatMessageDate, formatTime } from '../../../helpers/date';
 import {
-  ROOT_SERVER_ERROR,
   onFormError,
   registerInput,
+  ROOT_SERVER_ERROR,
 } from '../../../helpers/form';
 import useInfiniteScroll from '../../../hooks/useInfiniteScroll';
-import { MESSAGES_ROUTE, getAppRoute } from '../../../router/routes';
+import { getAppRoute, MESSAGES_ROUTE } from '../../../router/routes';
 import UnreadDot from '../../atoms/UnreadDot';
 import { AcceptedFiles } from '../FileDropzone/FileDropzone';
 import {
@@ -64,8 +65,8 @@ import {
   Message,
   MessageBox,
   MessageGroup,
-  MessageText,
   Messages,
+  MessageText,
   NoMessages,
   ScrollTrigger,
   SendButton,

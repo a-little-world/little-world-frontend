@@ -22,7 +22,9 @@ const FloatingSupportButton = styled.button`
   color: ${({ theme }) => theme.color.text.button};
   box-shadow: 0 8px 20px rgb(0 0 0 / 20%);
   z-index: 1000;
-  transition: transform 160ms ease, filter 160ms ease;
+  transition:
+    transform 160ms ease,
+    filter 160ms ease;
   border: none;
   cursor: pointer;
 

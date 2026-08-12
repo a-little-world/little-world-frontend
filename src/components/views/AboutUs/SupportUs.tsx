@@ -1,3 +1,5 @@
+import { FC } from 'react';
+
 import {
   Accordion,
   AccordionContent,
@@ -20,7 +22,6 @@ import {
   TimeFlexibleImage,
   tokens,
 } from '@a-little-world/little-world-design-system';
-import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
@@ -157,6 +158,7 @@ const SegmentCta = ({ label }: { label: string }) => {
       <SegmentLink
         href={t(`support_us.${label}.link_href`, { supportUrl })}
         buttonAppearance={ButtonAppearance.Secondary}
+        target="_blank"
       >
         {t(`support_us.${label}.link_text`)}
       </SegmentLink>
@@ -164,6 +166,7 @@ const SegmentCta = ({ label }: { label: string }) => {
         <SegmentLink
           href={t(`support_us.${label}.link_2_href`, { supportUrl })}
           buttonAppearance={ButtonAppearance.Secondary}
+          target="_blank"
         >
           {t(`support_us.${label}.link_2_text`)}
         </SegmentLink>

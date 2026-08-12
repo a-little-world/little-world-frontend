@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -10,7 +12,6 @@ import {
   StatusTypes,
   Text,
 } from '@a-little-world/little-world-design-system';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR, { mutate } from 'swr';
 
@@ -27,16 +28,16 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
   const { t } = useTranslation();
   const { data: user } = useSWR(USER_ENDPOINT);
   const isSearching = user?.isSearching;
-  const currentState = isSearching ?
-    SEARCHING_STATES.searching :
-    SEARCHING_STATES.idle;
+  const currentState = isSearching
+    ? SEARCHING_STATES.searching
+    : SEARCHING_STATES.idle;
   const [error, setError] = useState(null);
 
   function activateSearching() {
     setError(null);
-    const updatedState = isSearching ?
-      SEARCHING_STATES.idle :
-      SEARCHING_STATES.searching;
+    const updatedState = isSearching
+      ? SEARCHING_STATES.idle
+      : SEARCHING_STATES.searching;
     updateUserSearchState({
       updatedState,
       onSuccess: () => {

@@ -7,9 +7,9 @@ import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   CHATS_ENDPOINT,
   CHATS_ENDPOINT_SEPERATE,
+  getChatEndpoint,
   MATCHES_ENDPOINT,
   USER_ENDPOINT,
-  getChatEndpoint,
 } from './index';
 
 interface MatchesData {

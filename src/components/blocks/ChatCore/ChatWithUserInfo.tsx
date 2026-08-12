@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   ArrowLeftIcon,
   Button,
@@ -14,15 +16,14 @@ import {
   TextTypes,
   VideoIcon,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { useCallSetupStore } from '../../../features/stores/index';
-import { USER_ENDPOINT, getChatEndpoint } from '../../../features/swr/index';
-import { PROFILE_ROUTE, getAppRoute } from '../../../router/routes';
+import { getChatEndpoint, USER_ENDPOINT } from '../../../features/swr/index';
+import { getAppRoute, PROFILE_ROUTE } from '../../../router/routes';
 import { CircleImageLoading, LoadingLine } from '../../atoms/Loading';
 import SupportTag from '../../atoms/SupportTag';
 import Chat from './Chat';

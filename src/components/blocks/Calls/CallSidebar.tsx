@@ -1,10 +1,12 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import { ButtonAppearance } from '@a-little-world/little-world-design-system';
 import React, { createContext, useContext, useMemo, useState } from 'react';
+
+import { ButtonAppearance } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 
 import '../../../App.css';
 import '../../../call.css';
+
 import Chat from '../ChatCore/Chat';
 import { StyledOption } from '../ContentSelector';
 import QuestionCards from '../QuestionCards/QuestionCards';
@@ -41,9 +43,9 @@ function CallSidebar({
         {sidebarTopics.map(topic => (
           <StyledOption
             appearance={
-              sideSelection === topic ?
-                ButtonAppearance.Primary :
-                ButtonAppearance.Secondary
+              sideSelection === topic
+                ? ButtonAppearance.Primary
+                : ButtonAppearance.Secondary
             }
             key={topic}
             onClick={() => setSideSelection(topic)}
@@ -54,7 +56,9 @@ function CallSidebar({
         ))}
       </SidebarSelector>
       <SidebarContent>
-        {(sideSelection === 'chat' && isDisplayed) && <Chat chatId={chatId} inCall />}
+        {sideSelection === 'chat' && isDisplayed && (
+          <Chat chatId={chatId} inCall />
+        )}
         {sideSelection === 'questions' && <QuestionCards />}
         {sideSelection === 'notes' && <SidebarNotes />}
       </SidebarContent>

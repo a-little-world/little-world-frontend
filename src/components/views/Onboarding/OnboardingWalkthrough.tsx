@@ -7,8 +7,8 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
 import {
-  SELF_ONBOARDING_COURSE_ENDPOINT,
   fetchSelfOnboardingCourse,
+  SELF_ONBOARDING_COURSE_ENDPOINT,
 } from '../../../api/courses';
 import updateSelfOnboardingStep from '../../../api/onboarding';
 import { USER_TYPES } from '../../../constants';
@@ -18,7 +18,7 @@ import {
   getSelfOnboardingStepIdForChapter,
   mapChapter,
 } from '../../../helpers/course';
-import { ONBOARDING_ROUTE, getAppRoute } from '../../../router/routes';
+import { getAppRoute, ONBOARDING_ROUTE } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import NotFoundCard from '../../atoms/NotFound';
 import Course from '../../blocks/Course/Course';

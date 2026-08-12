@@ -1,10 +1,11 @@
-import Cookies from 'js-cookie';
 import React from 'react';
+
+import Cookies from 'js-cookie';
 import { useTranslation } from 'react-i18next';
 
-import OptionSelector from '../../atoms/OptionSelector';
 import { LANGUAGES } from '../../../constants/index';
 import { COOKIE_LANG } from '../../../i18n';
+import OptionSelector from '../../atoms/OptionSelector';
 
 const LANGUAGE_OPTIONS = [
   { value: LANGUAGES.de, label: 'DE', ariaLabel: 'switch language to German' },
@@ -15,9 +16,9 @@ const LanguageSelector = () => {
   const { i18n } = useTranslation();
 
   const currentValue =
-    i18n.language === LANGUAGES.de || i18n.language?.startsWith?.(LANGUAGES.de) ?
-      LANGUAGES.de :
-      LANGUAGES.en;
+    i18n.language === LANGUAGES.de || i18n.language?.startsWith?.(LANGUAGES.de)
+      ? LANGUAGES.de
+      : LANGUAGES.en;
 
   const handleChangeLanguage = lang => {
     i18n.changeLanguage(lang);

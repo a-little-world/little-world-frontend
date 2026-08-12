@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -8,17 +10,13 @@ import {
   TextTypes,
   UnmatchedImage,
 } from '@a-little-world/little-world-design-system';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { reportIssue, unmatch } from '../../../api/matches';
 import { revalidateMatches } from '../../../features/swr/index';
+import { REPORT_TYPE_UNMATCH, ReportType } from '../ReportForm/constants';
 import ReportForm from '../ReportForm/ReportForm';
-import {
-  REPORT_TYPE_UNMATCH,
-  ReportType
-} from '../ReportForm/constants';
 
 const Centred = styled.div`
   display: flex;

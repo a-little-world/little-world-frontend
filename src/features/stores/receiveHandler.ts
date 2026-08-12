@@ -7,20 +7,17 @@ export type DomCommunicationResponse =
 
 export type DomCommunicationMessage =
   | {
-      action: 'SET_AUTH_TOKENS';
-      requestId?: string;
-      payload: {
-        accessToken: string | undefined;
-        refreshToken: string | undefined;
-      };
-    }
-  | {
       action: 'NAVIGATE';
       requestId?: string;
       payload: {
         path: string;
         options?: NavigateOptions;
       };
+    }
+  | {
+      action: 'NAVIGATE_BACK';
+      requestId?: string;
+      payload: {};
     }
   | {
       action: 'WEBVIEW_READY';

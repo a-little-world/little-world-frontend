@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   CalendarIcon,
   ClockDashedIcon,
@@ -9,7 +11,6 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { isEmpty } from 'lodash';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR, { mutate } from 'swr';
@@ -29,6 +30,7 @@ import {
   CallTime,
   CannotMatch,
   Container,
+  HistoryHeader,
   HistoryTitle,
   NoHistoryDescription,
   RequestMatchButton,
@@ -83,9 +85,12 @@ const CallHistoryList = ({
   };
   return (
     <CallHistoryListContainer>
-      <HistoryTitle type={TextTypes.Body4} bold>
-        {t('call_history.title')}
-      </HistoryTitle>
+      <HistoryHeader>
+        <HistoryTitle type={TextTypes.Heading5} bold>
+          {t('call_history.title')}
+        </HistoryTitle>
+        <Text>{t('call_history.description')}</Text>
+      </HistoryHeader>
       {isLoading ? (
         <Loading size={LoadingSizes.Medium} />
       ) : (

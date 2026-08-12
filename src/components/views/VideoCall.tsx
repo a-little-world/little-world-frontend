@@ -19,10 +19,13 @@ import {
   useTracks,
 } from '@livekit/components-react';
 import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
+
 import '@livekit/components-styles';
+
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
@@ -35,17 +38,17 @@ import {
   useConnectedCallStore,
 } from '../../features/stores';
 import {
+  getChatEndpoint,
   RANDOM_CALL_EXIT_PARAM,
   RANDOM_CALL_EXIT_VALUE,
   USER_ENDPOINT,
-  getChatEndpoint,
 } from '../../features/swr';
 import useIsBelowBreakpoint from '../../hooks/useIsBelowBreakpoint';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import {
-  RANDOM_CALLS_ROUTE,
   getAppRoute,
   getCallSetupRoute,
+  RANDOM_CALLS_ROUTE,
 } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import Drawer from '../atoms/Drawer';

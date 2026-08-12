@@ -1,8 +1,9 @@
 import React from 'react';
+
+import { isEmpty } from 'lodash';
 import { createRoot } from 'react-dom/client';
 import { mutate } from 'swr';
 
-import { isEmpty } from 'lodash';
 import App from './App';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';

@@ -1,9 +1,10 @@
+import { FC, useEffect, useRef } from 'react';
+
 import {
   Card,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 

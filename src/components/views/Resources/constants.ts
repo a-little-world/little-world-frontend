@@ -1,9 +1,9 @@
 import LernFairLogo from '../../../images/partners/lern-fair-logo.svg';
 import LernFairImage from '../../../images/partners/lern-fair-studying.jpg';
 import {
+  getAppSubpageRoute,
   PARTNERS_ROUTE,
   TRAININGS_ROUTE,
-  getAppSubpageRoute,
 } from '../../../router/routes';
 
 const LERN_FAIR_YT_ID = 'lA4CIXDXXK8';
@@ -108,10 +108,13 @@ export function getDataBySlug<TIds extends string, TData extends DataWithSlug>(
 ): TData | null {
   if (!slug) return null;
 
-  const slugToIdMap = Object.entries(data).reduce((acc, [id, itemData]) => {
-    acc[(itemData as DataWithSlug).slug] = id as TIds;
-    return acc;
-  }, {} as Record<string, TIds>);
+  const slugToIdMap = Object.entries(data).reduce(
+    (acc, [id, itemData]) => {
+      acc[(itemData as DataWithSlug).slug] = id as TIds;
+      return acc;
+    },
+    {} as Record<string, TIds>,
+  );
 
   const id = slugToIdMap[slug];
   return id ? data[id] : null;

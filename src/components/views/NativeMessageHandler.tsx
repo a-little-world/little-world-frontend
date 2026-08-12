@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
+
 import { useNavigate } from 'react-router-dom';
 
 import { clearSwrCache, navigateToLogin } from '../../api/helpers';
 import {
   useDebugStore,
-  useMobileAuthTokenStore,
   useNavigationStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
@@ -25,7 +25,6 @@ export interface NativeChallengeProofEvent {
 function NativeMessageHandler() {
   const { setHandler, sendMessageToReactNative } = useReceiveHandlerStore();
   const navigate = useNavigate();
-  const mobileAuthStore = useMobileAuthTokenStore();
   const { setNavigate } = useNavigationStore();
 
   useEffect(() => {
@@ -53,7 +52,8 @@ function NativeMessageHandler() {
 
           debugConfigState.setDebugConfig({ debugEnabled, backendUrlOverride });
 
-          if (backendUrlChanged) {
+          // Only clear on actual runtime backend switch
+          if (backendUrlChanged && useNativeStore.getState().isReady) {
             clearSwrCache();
           }
 
@@ -63,24 +63,6 @@ function NativeMessageHandler() {
             requestId,
             payload: response,
           });
-          return response;
-        }
-        case 'SET_AUTH_TOKENS': {
-          if (!requestId) {
-            throw new Error('Received native message without request id');
-          }
-
-          const { accessToken, refreshToken } = payload;
-          mobileAuthStore.setTokens(accessToken, refreshToken);
-
-          const response: DomCommunicationResponse = { ok: true };
-
-          sendMessageToReactNative!({
-            action: 'RESPONSE',
-            requestId,
-            payload: response,
-          });
-
           return response;
         }
         case 'NAVIGATE': {
@@ -96,6 +78,32 @@ function NativeMessageHandler() {
             data: {
               response: `Navigation event dispatched`,
             },
+          };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
+        case 'NAVIGATE_BACK': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          // hacky solution
+          // React Router maintains `idx` in history state (0 = first entry this
+          // session). idx > 0 means there is an SPA screen to go back to.
+          const canGoBack = (window.history.state?.idx ?? 0) > 0;
+          if (canGoBack) {
+            useNavigationStore.getState().navigate?.(-1);
+          }
+
+          const response: DomCommunicationResponse = {
+            ok: true,
+            data: { handled: canGoBack },
           };
 
           sendMessageToReactNative!({
@@ -210,7 +218,7 @@ function NativeMessageHandler() {
 
     // Set the handler; the store will auto-register with the native bridge if available
     setHandler(handler);
-  }, [setHandler, sendMessageToReactNative, mobileAuthStore]);
+  }, [setHandler, sendMessageToReactNative]);
 }
 
 export default NativeMessageHandler;

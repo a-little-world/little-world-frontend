@@ -1,9 +1,7 @@
 import { apiFetch } from './helpers';
 
 export const fetchChatMessages = async ({ id, page }) =>
-  apiFetch(
-    `/api/messages/${id}/?page=${page}&page_size=20`,
-  );
+  apiFetch(`/api/messages/${id}/?page=${page}&page_size=20`);
 
 export const fetchChats = async ({ page }) =>
   apiFetch(`/api/chats/?page=${page}&page_size=20`);

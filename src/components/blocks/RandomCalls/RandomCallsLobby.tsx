@@ -1,3 +1,5 @@
+import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -22,7 +24,6 @@ import {
   PreJoin,
   PreJoinValues,
 } from '@livekit/components-react';
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
@@ -36,7 +37,7 @@ import {
   joinLobby,
   rejectMatch,
 } from '../../../api/randomCalls';
-import { USER_TYPES } from '../../../constants';
+import { COMMUNITY_EVENT_FREQUENCIES, USER_TYPES } from '../../../constants';
 import { useConnectedCallStore } from '../../../features/stores';
 import {
   RANDOM_CALL_EXIT_PARAM,
@@ -47,11 +48,11 @@ import {
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import { clearActiveTracks } from '../../../helpers/video';
 import {
-  RANDOM_CALLS_ROUTE,
+  getAppAbsoluteRoute,
   getAppRoute,
   getRandomCallRoute,
+  RANDOM_CALLS_ROUTE,
 } from '../../../router/routes';
-import FirefoxConnectionWarning from '../../atoms/FirefoxConnectionWarning';
 import ProfileImage from '../../atoms/ProfileImage';
 import { Schedule } from '../../atoms/Schedule';
 import { CallSetupCard } from '../Calls/CallSetup';
@@ -184,6 +185,7 @@ const RandomCallSetup = ({
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [isJoining, setIsJoining] = useState(false);
   const [permissionsGranted, setPermissionsGranted] = useState(false);
   const [audioPermissionError, setAudioPermissionError] = useState(false);
   const [videoPermissionError, setVideoPermissionError] = useState(false);
@@ -204,15 +206,15 @@ const RandomCallSetup = ({
 
   // Countdown timer
   useEffect(() => {
-    if (countdown === null || countdown <= 0) {
+    if (isJoining || countdown === null || countdown <= 0) {
       return () => {};
     }
 
     const timer = setTimeout(() => {
       if (countdown === 1) {
-        // Countdown finished, join lobby
-        onJoinComplete();
+        setIsJoining(true);
         setCountdown(0);
+        onJoinComplete();
       } else {
         setCountdown(countdown - 1);
       }
@@ -221,7 +223,14 @@ const RandomCallSetup = ({
     return () => {
       clearTimeout(timer);
     };
-  }, [countdown, onJoinComplete]);
+  }, [countdown, isJoining, onJoinComplete]);
+
+  // Clear joining state once the parent confirms we're in the lobby
+  useEffect(() => {
+    if (hasJoinedLobby) {
+      setIsJoining(false);
+    }
+  }, [hasJoinedLobby]);
 
   // Update parent when device choices change
   useEffect(() => {
@@ -279,6 +288,8 @@ const RandomCallSetup = ({
   let cancelButtonLabel = t('random_calls.lobby_cancel_search');
   if (!permissionsGranted) {
     cancelButtonLabel = t('random_calls.lobby_enable_mic_or_video_to_join');
+  } else if (isJoining || (countdown === 0 && !hasJoinedLobby)) {
+    cancelButtonLabel = t('random_calls.lobby_connecting');
   } else if (!hasJoinedLobby && countdown !== null) {
     cancelButtonLabel = t('random_calls.lobby_joining_in_x_seconds', {
       seconds: countdown,
@@ -300,7 +311,6 @@ const RandomCallSetup = ({
           defaults={{ username }}
           persistUserChoices={false}
         />
-        <FirefoxConnectionWarning />
         {switchesEnabled && (
           <Switch
             inputRef={sameGenderSwitchRef as RefObject<HTMLButtonElement>}
@@ -327,11 +337,14 @@ const RandomCallSetup = ({
       <CardFooter align="center">
         <Button
           disabled={
-            !permissionsGranted || (!hasJoinedLobby && countdown !== null)
+            !permissionsGranted ||
+            isJoining ||
+            (!hasJoinedLobby && countdown !== null)
           }
           appearance={ButtonAppearance.Secondary}
           onClick={onCancel}
           size={ButtonSizes.Stretch}
+          loading={isJoining}
         >
           {cancelButtonLabel}
         </Button>
@@ -464,6 +477,14 @@ const LobbyExpiredView = ({
         <Schedule
           title={t('random_calls.expired_schedule_heading')}
           sessions={upcomingLobbies ?? []}
+          addToCalendar={{
+            title: t('random_calls.title'),
+            description: t('random_calls.description'),
+            frequency: COMMUNITY_EVENT_FREQUENCIES.once,
+            durationInMinutes: 60,
+            link: getAppAbsoluteRoute(RANDOM_CALLS_ROUTE),
+            size: ButtonSizes.Small,
+          }}
         />
         <Text>{t('random_calls.expired_additional_text')}</Text>
         {error && (
@@ -682,7 +703,7 @@ const RandomCallsLobby = ({
     }
   }, [lobbyState, leaveLobbySilently]);
 
-  const handleJoinComplete = async () => {
+  const handleJoinComplete = useCallback(async () => {
     setError(null);
     try {
       await joinLobby(lobbyUuid);
@@ -698,7 +719,7 @@ const RandomCallsLobby = ({
         onCancel();
       }, 3000);
     }
-  };
+  }, [lobbyUuid, mutateRCState, onCancel]);
 
   const handleCancel = async () => {
     setError(null);

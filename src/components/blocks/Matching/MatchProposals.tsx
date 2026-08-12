@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+
 import {
   ArrowLeftIcon,
   Button,
@@ -14,13 +16,12 @@ import {
   TextAreaSize,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { NiceAvatarProps } from 'react-nice-avatar';
 import styled, { useTheme } from 'styled-components';
 
-import { confirmMatch, confirmOrDenyMatch } from '../../../api/matches';
+import { respondToProposedMatch } from '../../../api/matches';
 import { MATCH_TYPES } from '../../../constants';
 import { revalidateMatches } from '../../../features/swr';
 import { registerInput } from '../../../helpers/form';
@@ -373,17 +374,12 @@ export const MatchProposals: React.FC<MatchProposalsProps> = ({
 
   const handleAccept = (proposal: ProposalItem) => () => {
     setProposalState(proposal.id, { loading: true, error: null });
-    confirmOrDenyMatch({
+    respondToProposedMatch({
       matchId: proposal.id,
       acceptDeny: true,
       onSuccess: () => {
         setProposalState(proposal.id, { status: 'accepted', loading: false });
-        // on proposals view, automatically confirm the match for the partner
-        confirmMatch({
-          userUuid: proposal.partner?.id,
-          onSuccess: revalidateMatches,
-          onError: () => {},
-        });
+        revalidateMatches();
       },
       onError: (err: any) => {
         setProposalState(proposal.id, { loading: false });
@@ -402,7 +398,7 @@ export const MatchProposals: React.FC<MatchProposalsProps> = ({
     proposal: ProposalItem,
   ) => {
     setProposalState(proposal.id, { loading: true });
-    confirmOrDenyMatch({
+    respondToProposedMatch({
       matchId: proposal.id,
       acceptDeny: false,
       denyReason: data.rejectReason,
@@ -418,7 +414,7 @@ export const MatchProposals: React.FC<MatchProposalsProps> = ({
 
   const handleRejectRandomCall = (proposal: ProposalItem) => () => {
     setProposalState(proposal.id, { loading: true });
-    confirmOrDenyMatch({
+    respondToProposedMatch({
       matchId: proposal.id,
       acceptDeny: false,
       onSuccess: () => {

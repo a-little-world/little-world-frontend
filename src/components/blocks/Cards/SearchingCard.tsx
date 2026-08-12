@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -12,14 +14,13 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../features/swr/index';
 import { formatDate, formatTime } from '../../../helpers/date';
-import { USER_FORM_ROUTES, getAppRoute } from '../../../router/routes';
+import { getAppRoute, USER_FORM_ROUTES } from '../../../router/routes';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
 const StyledCard = styled(Card)<{ $hasMatch?: boolean }>`

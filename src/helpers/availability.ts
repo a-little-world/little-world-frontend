@@ -1,5 +1,5 @@
-const DAYS = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'] as const;
-const SLOTS = [
+export const DAYS = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'] as const;
+export const SLOTS = [
   '08_10',
   '10_12',
   '12_14',
@@ -9,7 +9,16 @@ const SLOTS = [
   '20_22',
 ] as const;
 
-const DAY_LABELS_DE: Record<(typeof DAYS)[number], string> = {
+export type DayKey = (typeof DAYS)[number];
+export type SlotKey = (typeof SLOTS)[number];
+export type Availability = Partial<Record<DayKey, string[]>>;
+
+export type AvailabilityRow = {
+  day: DayKey;
+  ranges: string[];
+};
+
+const DAY_LABELS_DE: Record<DayKey, string> = {
   mo: 'Montag',
   tu: 'Dienstag',
   we: 'Mittwoch',
@@ -19,10 +28,8 @@ const DAY_LABELS_DE: Record<(typeof DAYS)[number], string> = {
   su: 'Sonntag',
 };
 
-type Availability = Partial<Record<(typeof DAYS)[number], string[]>>;
-
 type OverlapCandidate = {
-  day: (typeof DAYS)[number];
+  day: DayKey;
   dayOffset: number;
   slotCount: number;
   slots: string[];
@@ -34,7 +41,8 @@ const getWeekdayIndex = (date: Date) => {
   return jsDay === 0 ? 6 : jsDay - 1;
 };
 
-const groupConsecutiveSlots = (slots: string[]) => {
+/** Collapse consecutive 2-hour slots into contiguous groups, preserving slot order. */
+export const groupConsecutiveSlots = (slots: string[]) => {
   const ordered = SLOTS.filter(slot => slots.includes(slot));
   if (!ordered.length) {
     return [];
@@ -44,9 +52,9 @@ const groupConsecutiveSlots = (slots: string[]) => {
   ordered.slice(1).forEach(slot => {
     const lastGroup = groups[groups.length - 1];
     const lastSlotIndex = SLOTS.indexOf(
-      lastGroup[lastGroup.length - 1] as (typeof SLOTS)[number],
+      lastGroup[lastGroup.length - 1] as SlotKey,
     );
-    const slotIndex = SLOTS.indexOf(slot as (typeof SLOTS)[number]);
+    const slotIndex = SLOTS.indexOf(slot as SlotKey);
     if (slotIndex === lastSlotIndex + 1) {
       lastGroup.push(slot);
       return;
@@ -56,7 +64,15 @@ const groupConsecutiveSlots = (slots: string[]) => {
   return groups;
 };
 
-const formatSlotRange = (slots: string[]) => {
+/** Compact range for UI pills, e.g. `8–12`. */
+export const formatSlotRangeShort = (slots: string[]) => {
+  const [startHour] = slots[0].split('_');
+  const [, endHour] = slots[slots.length - 1].split('_');
+  return `${Number(startHour)}–${Number(endHour)}`;
+};
+
+/** Message-friendly German range, e.g. `08-12 Uhr`. */
+export const formatSlotRange = (slots: string[]) => {
   const [startHour] = slots[0].split('_');
   const [, endHour] = slots[slots.length - 1].split('_');
   return `${startHour}-${endHour} Uhr`;
@@ -129,7 +145,25 @@ const selectOverlapCandidates = (
     .slice(0, maxSuggestions)
     .sort((left, right) => left.dayOffset - right.dayOffset);
 
-// eslint-disable-next-line import/prefer-default-export
+/** Build weekday rows with merged ranges for read-only availability UI. */
+export const buildAvailabilityRows = (
+  availability?: Availability | Record<string, string[]>,
+): AvailabilityRow[] => {
+  if (!availability) {
+    return [];
+  }
+
+  return DAYS.flatMap(day => {
+    const ranges = groupConsecutiveSlots(availability[day] || []).map(
+      formatSlotRangeShort,
+    );
+    if (!ranges.length) {
+      return [];
+    }
+    return [{ day, ranges }];
+  });
+};
+
 export const formatSuggestedAvailabilityOverlap = (
   availability1?: Availability,
   availability2?: Availability,
