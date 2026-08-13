@@ -41,7 +41,9 @@ const CategoryTogglesWrapper = styled.div<{ $open: boolean }>`
   grid-template-rows: ${({ $open }) => ($open ? '1fr' : '0fr')};
   opacity: ${({ $open }) => ($open ? 1 : 0)};
   transform: translateY(${({ $open }) => ($open ? '0' : '-1fr')});
-  transition: grid-template-rows 250ms ease, opacity 200ms ease,
+  transition:
+    grid-template-rows 250ms ease,
+    opacity 200ms ease,
     transform 250ms ease;
 `;
 
@@ -53,7 +55,12 @@ const CategoryToggles = styled.div`
   overflow: hidden;
 `;
 
-const CATEGORIES = ['chats', 'matches', 'random_calls', 'announcements'] as const;
+const CATEGORIES = [
+  'chats',
+  'matches',
+  'random_calls',
+  'announcements',
+] as const;
 
 type Data = {
   push_notifications_enabled: boolean;
@@ -62,12 +69,7 @@ type Data = {
   boolean
 >;
 
-const PushNotifications = ({
-  hideLabel,
-}: {
-  inline?: boolean;
-  hideLabel?: boolean;
-}) => {
+const PushNotifications = ({ hideLabel }: { hideLabel?: boolean }) => {
   const { t } = useTranslation();
   const { control, getValues, setError, clearErrors, watch, handleSubmit } =
     useForm<Data>();
