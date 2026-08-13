@@ -129,7 +129,15 @@ function FireBase() {
         });
       },
     });
-  }, [deviceSupported, notificationsEnabled, devicePermissionSet, toast, t]);
+  }, [
+    deviceSupported,
+    notificationsEnabled,
+    devicePermissionSet,
+    setDevicePermissionGranted,
+    setDevicePermissionSet,
+    toast,
+    t,
+  ]);
 
   // prevent multiple (de-)activations
   const firebaseEnabledRef = useRef<boolean | undefined>(undefined);
