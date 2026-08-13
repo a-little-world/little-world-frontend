@@ -561,6 +561,8 @@
   "profile.deleted_description": "Dieses Konto wurde gelöscht.",
   "push_notifications": "Benachrichtigungen",
   "push_notifications.request_permission": "Benachrichtigungen in diesem Browser erlauben",
+  "push_notifications.permission_missing": "Benachrichtigungen sind in diesem Browser deaktiviert",
+  "push_notifications.permission_missing.description": "Du hast Benachrichtigungen aktiviert, aber nocht nicht in deinem Browser erlaubt.",
   "push_notifications.permission_denied": "Benachrichtigungen konnten nicht aktiviert werden. Bitte überprüfe die Berechtigungen der Seite und lade sie anschließend neu.",
   "push_notifications.category.chats": "Chat-Nachrichten",
   "push_notifications.category.matches": "Match-Benachrichtigungen",

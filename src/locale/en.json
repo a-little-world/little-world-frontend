@@ -567,6 +567,8 @@
   "profile.deleted_description": "This account has been deleted",
   "push_notifications": "Notifications",
   "push_notifications.request_permission": "Allow notifications in this browser",
+  "push_notifications.permission_missing": "Notifications disabled in this browser",
+  "push_notifications.permission_missing.description": "You have notifications turned on, but not granted the permission for this browser.",
   "push_notifications.permission_denied": "Notifications could not be enabled. Please check the notification permission for this page and then reload it.",
   "push_notifications.enable_error": "Notifications could not be enabled. Please check the notification permission for this page and then reload it.",
   "push_notifications.category.chats": "Chat messages",

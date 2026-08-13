@@ -7,6 +7,7 @@ import {
   onMessage,
   Unsubscribe,
 } from '@firebase/messaging';
+import { useTranslation } from 'react-i18next';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 
@@ -43,6 +44,7 @@ function FireBase() {
 
   const toast = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // handle desktop notification navigation in-app to prevent reloads
   useEffect(() => {
@@ -89,8 +91,42 @@ function FireBase() {
     }
   }, [userNotificationsEnabled]);
 
-  const { deviceSupported, notificationsEnabled, devicePermissionGranted } =
-    notificationStore;
+  const {
+    deviceSupported,
+    notificationsEnabled,
+    devicePermissionGranted,
+    devicePermissionSet,
+    setDevicePermissionSet,
+    setDevicePermissionGranted,
+  } = notificationStore;
+
+  // Show one-time toast when browser has not granted notification
+  // permission yet
+  useEffect(() => {
+    if (
+      !deviceSupported ||
+      !notificationsEnabled ||
+      devicePermissionSet !== false
+    ) {
+      return;
+    }
+
+    toast.showToast({
+      title: t('push_notifications.permission_missing'),
+      description: t('push_notifications.permission_missing.description'),
+      actionText: t('push_notifications.request_permission'),
+      actionAltText: 'test',
+      duration: 1000 * 60, // show for 1 minute
+      showClose: true,
+      // click is required for browser to show permission prompt
+      onActionClick: () => {
+        Notification.requestPermission().then(permission => {
+          setDevicePermissionSet(permission !== 'default');
+          setDevicePermissionGranted(permission === 'granted');
+        });
+      },
+    });
+  }, [deviceSupported, notificationsEnabled, devicePermissionSet, toast, t]);
 
   // prevent multiple (de-)activations
   const firebaseEnabledRef = useRef<boolean | undefined>(undefined);
