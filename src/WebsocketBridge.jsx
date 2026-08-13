@@ -44,18 +44,23 @@ const WebsocketBridge = () => {
     environment.coreWsPath +
     (installId ? `?install_id=${encodeURIComponent(installId)}` : '');
 
+  const loadAccessToken = async () => {
+    const token = await useNativeStore.getState().getAccessToken();
+    setAccessToken(token);
+  };
+
   useEffect(() => {
     if (!environment.isNative) return;
     const resolveToken = async () => {
       const nativeStore = useNativeStore.getState();
-      const token = await nativeStore.getAccessToken();
-      setAccessToken(token);
-      const installId = await nativeStore.getInstallId();
-      setInstallId(installId);
+      await loadAccessToken();
+      const nativeInstallId = await nativeStore.getInstallId();
+      setInstallId(nativeInstallId);
       setReady(true);
     };
     resolveToken();
   }, []);
+
   const { lastMessage, readyState } = useWebSocket(ready ? socketUrl : null, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
@@ -64,6 +69,10 @@ const WebsocketBridge = () => {
       returnMessage: 'pong',
       interval: 60000,
       timeout: 180000,
+    },
+    // old token may have expired -> load current one
+    onClose: () => {
+      if (environment.isNative) loadAccessToken();
     },
     protocols:
       environment.isNative && accessToken
