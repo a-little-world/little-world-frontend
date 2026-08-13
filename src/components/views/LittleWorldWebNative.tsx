@@ -32,7 +32,7 @@ export interface LittleWorldWebNativeProps {
     refreshToken: string | undefined,
   ) => Promise<void>;
   getInstallId: () => Promise<string>;
-  hasStoredToken?: boolean;
+  hasStoredToken: boolean;
 }
 
 /**
