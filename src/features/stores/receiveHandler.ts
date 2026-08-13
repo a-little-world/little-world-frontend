@@ -15,6 +15,11 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'NAVIGATE_BACK';
+      requestId?: string;
+      payload: {};
+    }
+  | {
       action: 'WEBVIEW_READY';
       requestId?: string;
       payload: {};
