@@ -24,12 +24,15 @@ function handleMessage(
   navigate: NavigateFunction,
 ): void {
   const path = payload.data?.path;
-  toast.showToast({
-    title: payload.notification?.title,
-    description: payload.notification?.body,
-    duration: 3000,
-    onClick: path?.startsWith('/') ? () => navigate(path) : undefined,
-  });
+  const currentPath = window.location.pathname;
+  if (path && path !== currentPath) {
+    toast.showToast({
+      title: payload.notification?.title,
+      description: payload.notification?.body,
+      duration: 3000,
+      onClick: path?.startsWith('/') ? () => navigate(path) : undefined,
+    });
+  }
 }
 
 function FireBase() {
@@ -134,13 +137,17 @@ function FireBase() {
   useEffect(() => () => unsubscribeRef.current?.(), []);
 
   useEffect(() => {
+    const unsubscribe = () => {
+      unsubscribeRef.current?.();
+    };
+
     if (!deviceSupported) {
-      return;
+      return unsubscribe;
     }
 
     const enabled = Boolean(notificationsEnabled && devicePermissionGranted);
     if (firebaseEnabledRef.current === enabled) {
-      return;
+      return unsubscribe;
     }
     firebaseEnabledRef.current = enabled;
 
@@ -158,10 +165,6 @@ function FireBase() {
       unsubscribeRef.current = undefined;
       disableFirebase();
     }
-
-    const unsubscribe = () => {
-      unsubscribeRef.current?.();
-    };
 
     return unsubscribe;
   }, [
