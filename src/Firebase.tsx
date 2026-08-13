@@ -119,7 +119,7 @@ function FireBase() {
       description: t('push_notifications.permission_missing.description'),
       actionText: t('push_notifications.request_permission'),
       actionAltText: 'test',
-      duration: 1000 * 60, // show for 1 minute
+      duration: Infinity, // show indefinitely
       showClose: true,
       // click is required for browser to show permission prompt
       onActionClick: () => {
