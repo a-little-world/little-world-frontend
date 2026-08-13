@@ -70,7 +70,7 @@ export async function getFirebaseToken(): Promise<string | undefined> {
   return token;
 }
 
-function getInstallationId(): string {
+export function getInstallationId(): string {
   const key = 'install_id';
 
   try {

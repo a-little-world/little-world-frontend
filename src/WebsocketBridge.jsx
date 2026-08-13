@@ -16,6 +16,7 @@ import {
   UNREAD_NOTIFICATIONS_ENDPOINT,
 } from './features/swr';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
+import { getInstallationId } from './firebase-util';
 import useToast from './hooks/useToast';
 
 const WebsocketBridge = () => {
@@ -30,17 +31,27 @@ const WebsocketBridge = () => {
   const [accessToken, setAccessToken] = useState(undefined);
   const [ready, setReady] = useState(!environment.isNative);
   const [, setMessageHistory] = useState([]);
+  const [installId, setInstallId] = useState(
+    environment.isNative ? undefined : getInstallationId(),
+  );
 
   const backendUrl = useEffectiveBackendUrl();
   const coreWsScheme = useEffectiveCoreWsScheme();
   const webSocketHost = new URL(backendUrl).host;
-  const socketUrl = coreWsScheme + webSocketHost + environment.coreWsPath;
+  const socketUrl =
+    coreWsScheme +
+    webSocketHost +
+    environment.coreWsPath +
+    (installId ? `?install_id=${encodeURIComponent(installId)}` : '');
 
   useEffect(() => {
     if (!environment.isNative) return;
     const resolveToken = async () => {
-      const token = await useNativeStore.getState().getAccessToken();
+      const nativeStore = useNativeStore.getState();
+      const token = await nativeStore.getAccessToken();
       setAccessToken(token);
+      const installId = await nativeStore.getInstallId();
+      setInstallId(installId);
       setReady(true);
     };
     resolveToken();
@@ -48,6 +59,12 @@ const WebsocketBridge = () => {
   const { lastMessage, readyState } = useWebSocket(ready ? socketUrl : null, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
+    heartbeat: {
+      message: 'ping',
+      returnMessage: 'pong',
+      interval: 60000,
+      timeout: 180000,
+    },
     protocols:
       environment.isNative && accessToken
         ? [`bearer.${accessToken}`]
