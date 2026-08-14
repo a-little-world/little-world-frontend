@@ -20,6 +20,7 @@ body {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
+  overflow: hidden;
   padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left) !important;
   background-color: #ffffff;
   display: flex;
@@ -30,10 +31,9 @@ body {
   position: relative;
   height: 100%;
   width: 100%;
-  /* Trap fixed-positioned descendants inside the inset #root box so they
-     respect the safe-area padding instead of anchoring to the viewport. */
   contain: layout;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 body,
