@@ -1,5 +1,9 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
+import {
+  themeContext,
+  ThemeVariants,
+} from '@a-little-world/little-world-design-system';
 import { useNavigate } from 'react-router-dom';
 
 import { clearSwrCache, navigateToLogin } from '../../api/helpers';
@@ -26,10 +30,20 @@ function NativeMessageHandler() {
   const { setHandler, sendMessageToReactNative } = useReceiveHandlerStore();
   const navigate = useNavigate();
   const { setNavigate } = useNavigationStore();
+  const { currentMode } = useContext(themeContext);
+  const isReady = useNativeStore(state => state.isReady);
 
   useEffect(() => {
     setNavigate(navigate);
   }, [navigate, setNavigate]);
+
+  useEffect(() => {
+    if (!isReady || !sendMessageToReactNative) return;
+    sendMessageToReactNative({
+      action: 'SET_THEME',
+      payload: { mode: currentMode === ThemeVariants.dark ? 'dark' : 'light' },
+    });
+  }, [isReady, currentMode, sendMessageToReactNative]);
 
   useEffect(() => {
     if (!sendMessageToReactNative) {
