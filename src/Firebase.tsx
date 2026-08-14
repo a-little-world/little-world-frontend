@@ -17,6 +17,9 @@ import { USER_ENDPOINT } from './features/swr/index';
 import { disableFirebase, enableFirebase } from './firebase-util';
 import useToast from './hooks/useToast';
 
+const SHOW_NOTIFICATION_PERMISSION_TOAST_KEY =
+  'notification-permission-show-toast';
+
 // show foreground messages as in-app toast
 function handleMessage(
   payload: MessagePayload,
@@ -103,17 +106,22 @@ function FireBase() {
     setDevicePermissionGranted,
   } = notificationStore;
 
+  const showNotificationPermissionToast = !Boolean(
+    localStorage.getItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY),
+  );
   // Show one-time toast when browser has not granted notification
   // permission yet
   useEffect(() => {
     if (
       !deviceSupported ||
       !notificationsEnabled ||
-      devicePermissionSet !== false
+      devicePermissionSet !== false ||
+      !showNotificationPermissionToast
     ) {
       return;
     }
 
+    localStorage.setItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY, 'true');
     toast.showToast({
       title: t('push_notifications.permission_missing'),
       description: t('push_notifications.permission_missing.description'),
