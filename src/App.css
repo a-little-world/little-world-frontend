@@ -3,15 +3,37 @@
   display: none;
 }
 
+/* Safe-area insets for system status/navigation bars.
+   0 in the browser; the native app sets these to the real device insets. */
+:root {
+  --safe-top: 0px;
+  --safe-bottom: 0px;
+  --safe-left: 0px;
+  --safe-right: 0px;
+}
+
 html {
   height: 100%;
 }
 
 body {
+  box-sizing: border-box;
   height: 100%;
+  width: 100%;
+  padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left) !important;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
+}
+
+#root {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  /* Trap fixed-positioned descendants inside the inset #root box so they
+     respect the safe-area padding instead of anchoring to the viewport. */
+  contain: layout;
+  overflow: hidden;
 }
 
 body,

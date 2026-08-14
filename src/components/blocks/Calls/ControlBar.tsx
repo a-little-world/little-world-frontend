@@ -52,14 +52,14 @@ const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
   ${({ $position, theme }) => {
     if ($position === 'top')
       return css`
-        top: 0;
+        top: var(--safe-top);
         @media (min-width: ${theme.breakpoints.large}) {
           display: none;
         }
       `;
     if ($position === 'bottom')
       return css`
-        bottom: 0;
+        bottom: var(--safe-bottom);
       `;
     return null;
   }}

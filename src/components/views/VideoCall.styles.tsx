@@ -121,8 +121,7 @@ export const CallLayout = styled.div`
   --lk-control-active-hover-bg: ${({ theme }) => theme.color.surface.contrast};
   --lk-control-hover-bg: ${({ theme }) => theme.color.surface.contrast};
   display: flex;
-  height: 100vh;
-  height: 100dvh;
+  height: 100%;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.large}) {
@@ -164,7 +163,7 @@ export const VideoContainer = styled.div<{
 
   .lk-control-bar {
     position: absolute;
-    bottom: 0;
+    bottom: 0px;
     transform: translateX(50%);
     right: 50%;
   }
@@ -184,12 +183,6 @@ export const VideoContainer = styled.div<{
     css`
       --lk-border-radius: 0;
       .lk-room-container {
-        height: 100vh !important;
-        width: 100vw;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1000;
         background: ${theme.color.text.secondary};
       }
 
