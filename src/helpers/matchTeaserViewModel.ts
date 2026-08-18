@@ -1,8 +1,14 @@
-import type { MatchTeaserState } from './deriveMatchTeaserState';
+import type { MatchState, MatchStateKind } from './deriveMatchState.ts';
 
-export type MatchTeaserKind = MatchTeaserState['state'];
+export type MatchTeaserKind = MatchStateKind;
 export type MatchTeaserVariant = 'success' | 'accent' | 'subtle';
-export type MatchTeaserIcon = 'star' | 'message' | 'video' | 'clock' | 'heart';
+export type MatchTeaserIcon =
+  | 'star'
+  | 'message'
+  | 'video'
+  | 'clock'
+  | 'heart'
+  | 'flame';
 
 export interface MatchTeaserViewModel {
   kind: MatchTeaserKind;
@@ -15,22 +21,24 @@ export interface MatchTeaserViewModel {
 }
 
 const getVariant = (kind: MatchTeaserKind): MatchTeaserVariant => {
-  if (kind === 'cycle_complete') return 'success';
-  if (kind === 'active') return 'subtle';
+  if (kind === 'successful') return 'success';
+  if (kind === 'engaged') return 'subtle';
   return 'accent';
 };
 
 const getIcon = (kind: MatchTeaserKind): MatchTeaserIcon => {
   switch (kind) {
-    case 'cycle_complete':
+    case 'successful':
       return 'star';
     case 'no_message':
       return 'message';
     case 'no_call':
       return 'video';
-    case 'gone_quiet':
+    case 'dormant':
       return 'clock';
-    case 'active':
+    case 'streak_active':
+      return 'flame';
+    case 'engaged':
       return 'heart';
     default:
       return 'message';
@@ -38,12 +46,12 @@ const getIcon = (kind: MatchTeaserKind): MatchTeaserIcon => {
 };
 
 const getCopyKeys = (
-  state: MatchTeaserState,
+  state: MatchState,
 ): Pick<MatchTeaserViewModel, 'titleKey' | 'sublineKey' | 'sublineParams'> => {
   const baseKey = `matchCard.teaser.${state.state}`;
 
   switch (state.state) {
-    case 'cycle_complete':
+    case 'successful':
       return {
         titleKey: `${baseKey}.title`,
         sublineKey: `${baseKey}.subline`,
@@ -53,7 +61,7 @@ const getCopyKeys = (
         },
       };
     case 'no_message':
-    case 'gone_quiet':
+    case 'dormant':
       return {
         titleKey: `${baseKey}.title`,
         sublineKey: `${baseKey}.subline`,
@@ -66,23 +74,23 @@ const getCopyKeys = (
           messages: state.messages,
         },
       };
-    case 'active':
-      return state.weekStreak >= 2
-        ? {
-            titleKey: `${baseKey}.title`,
-            sublineKey: `${baseKey}.subline_with_streak`,
-            sublineParams: {
-              calls: state.calls,
-              weeks: state.weekStreak,
-            },
-          }
-        : {
-            titleKey: `${baseKey}.title`,
-            sublineKey: `${baseKey}.subline`,
-            sublineParams: {
-              calls: state.calls,
-            },
-          };
+    case 'streak_active':
+      return {
+        titleKey: `${baseKey}.title`,
+        sublineKey: `${baseKey}.subline`,
+        sublineParams: {
+          calls: state.calls,
+          weeks: state.weekStreak,
+        },
+      };
+    case 'engaged':
+      return {
+        titleKey: `${baseKey}.title`,
+        sublineKey: `${baseKey}.subline`,
+        sublineParams: {
+          calls: state.calls,
+        },
+      };
     default:
       return {
         titleKey: '',
@@ -91,8 +99,8 @@ const getCopyKeys = (
   }
 };
 
-export function mapMatchTeaserStateToViewModel(
-  state: MatchTeaserState,
+export function mapMatchStateToTeaserViewModel(
+  state: MatchState,
   href: string,
 ): MatchTeaserViewModel {
   const kind = state.state;

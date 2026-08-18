@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import {
   Button,
   ButtonAppearance,
@@ -13,11 +11,9 @@ import {
   Text,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
-import useSWR, { mutate } from 'swr';
 
-import { updateUserSearchState } from '../../../api/profile';
 import { SEARCHING_STATES } from '../../../constants';
-import { USER_ENDPOINT } from '../../../features/swr/index';
+import useSearchState from '../../../hooks/useSearchState';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 
 interface UpdateSearchStateCardProps {
@@ -26,26 +22,13 @@ interface UpdateSearchStateCardProps {
 
 function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
   const { t } = useTranslation();
-  const { data: user } = useSWR(USER_ENDPOINT);
-  const isSearching = user?.isSearching;
+  const { isSearching, error, setSearching } = useSearchState();
   const currentState = isSearching
     ? SEARCHING_STATES.searching
     : SEARCHING_STATES.idle;
-  const [error, setError] = useState(null);
 
   function activateSearching() {
-    setError(null);
-    const updatedState = isSearching
-      ? SEARCHING_STATES.idle
-      : SEARCHING_STATES.searching;
-    updateUserSearchState({
-      updatedState,
-      onSuccess: () => {
-        mutate(USER_ENDPOINT);
-        onClose();
-      },
-      onError: e => setError(e.message),
-    });
+    setSearching(!isSearching, onClose);
   }
 
   return (
@@ -54,8 +37,8 @@ function UpdateSearchStateCard({ onClose }: UpdateSearchStateCardProps) {
       <CardContent>
         <Text>{t(`update_search_modal.${currentState}.description`)}</Text>
         {error && (
-          <StatusMessage visible={!!error} type={StatusTypes.Error}>
-            {error}
+          <StatusMessage visible type={StatusTypes.Error}>
+            {error.message}
           </StatusMessage>
         )}
       </CardContent>

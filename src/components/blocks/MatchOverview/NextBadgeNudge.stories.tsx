@@ -9,15 +9,16 @@ export default {
 };
 
 const inProgress: Extract<ResolvedBadge, { status: 'in_progress' }> = {
-  id: 'ten_calls',
-  nameKey: 'match_overview.badges.ten_calls.name',
-  unlockHintKey: 'match_overview.badges.ten_calls.hint',
+  id: 'ten_active_weeks',
+  nameKey: 'match_overview.badges.ten_active_weeks.name',
+  unlockHintKey: 'match_overview.badges.ten_active_weeks.hint',
   icon: 'star',
+  metric: 'active_weeks',
   status: 'in_progress',
-  current: 7,
+  current: 8,
   target: 10,
-  remaining: 3,
-  progress: 0.7,
+  remaining: 2,
+  progress: 0.8,
 };
 
 export const Default = () => (

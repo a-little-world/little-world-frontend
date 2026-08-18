@@ -10,7 +10,10 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import type { ResolvedBadge } from '../../helpers/matchOverviewBadges';
+import {
+  badgeProgressCopyValues,
+  type ResolvedBadge,
+} from '../../../helpers/matchOverviewBadges';
 
 export interface NextBadgeNudgeProps {
   badge: Extract<ResolvedBadge, { status: 'in_progress' }> | null;
@@ -63,11 +66,10 @@ function NextBadgeNudge({ badge, onPlanCall, className }: NextBadgeNudgeProps) {
       </IconWrap>
       <Copy type={TextTypes.Body5} tag="p">
         <Trans
-          i18nKey="match_overview.next_badge_nudge"
+          i18nKey={`match_overview.next_badge_nudge.${badge.metric}`}
           values={{
             badgeName: t(badge.nameKey),
-            remaining: badge.remaining,
-            count: badge.remaining,
+            ...badgeProgressCopyValues(badge),
           }}
           components={{ b: <strong /> }}
         />

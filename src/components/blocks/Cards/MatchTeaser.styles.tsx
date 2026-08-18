@@ -1,6 +1,8 @@
 import {
   ChevronRightIcon,
   ClockIcon,
+  FlameIcon,
+  Gradients,
   HeartIcon,
   MessageIcon,
   StarIcon,
@@ -11,7 +13,10 @@ import {
 import { Link } from 'react-router-dom';
 import styled, { DefaultTheme } from 'styled-components';
 
-import type { MatchTeaserIcon, MatchTeaserVariant } from '../../../helpers/matchTeaserViewModel';
+import type {
+  MatchTeaserIcon,
+  MatchTeaserVariant,
+} from '../../../helpers/matchTeaserViewModel';
 
 export type TeaserTint = MatchTeaserVariant;
 
@@ -37,7 +42,9 @@ export const TeaserLink = styled(Link)<{ $tint: TeaserTint }>`
   border-radius: ${({ theme }) => theme.radius.small};
   border: 2px solid transparent;
   text-decoration: none;
-  transition: transform 160ms ease, border-color 160ms ease;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease;
   background: ${({ theme, $tint }) => teaserBackground($tint, theme)};
   color: ${({ theme, $tint }) => teaserForeground($tint, theme)};
 
@@ -126,6 +133,8 @@ export const TeaserIcon = ({
       return <ClockIcon {...iconProps} />;
     case 'heart':
       return <HeartIcon {...iconProps} />;
+    case 'flame':
+      return <FlameIcon {...iconProps} gradient={Gradients.Orange} />;
     default:
       return null;
   }

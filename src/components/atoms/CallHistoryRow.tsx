@@ -1,13 +1,24 @@
 import {
   CallIncomingIcon,
   CallOutgoingIcon,
+  PhoneIcon,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
-export type CallDirection = 'outgoing' | 'incoming';
+import { formatDate } from '../../helpers/date';
+
+// 'unknown' is a real state, not a fallback: 15% of sessions have no recorded
+// initiator, and showing those as outgoing told both participants they placed the call.
+export type CallDirection = 'outgoing' | 'incoming' | 'unknown';
+
+const DIRECTION_ICON = {
+  outgoing: CallOutgoingIcon,
+  incoming: CallIncomingIcon,
+  unknown: PhoneIcon,
+} as const;
 
 export interface CallHistoryRowProps {
   direction: CallDirection;
@@ -62,13 +73,9 @@ function CallHistoryRow({
   const { t, i18n } = useTranslation();
   const theme = useTheme();
 
-  const dateLabel = new Intl.DateTimeFormat(i18n.language, {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  }).format(startedAt);
+  const dateLabel = formatDate(startedAt, 'EEEE, dd/MM/yyyy', i18n.language);
 
-  const Icon = direction === 'outgoing' ? CallOutgoingIcon : CallIncomingIcon;
+  const Icon = DIRECTION_ICON[direction];
 
   return (
     <Row className={className}>
@@ -76,7 +83,7 @@ function CallHistoryRow({
         <Icon label="" width={20} height={20} color={theme.color.text.accent} />
       </IconWrap>
       <Middle>
-        <Text type={TextTypes.Body5} tag="span" bold>
+        <Text type={TextTypes.Body5} tag="span">
           {dateLabel}
         </Text>
         {showStatus && (
@@ -87,7 +94,7 @@ function CallHistoryRow({
           </Text>
         )}
       </Middle>
-      <Duration type={TextTypes.Body5} tag="span">
+      <Duration type={TextTypes.Body5} tag="span" bold>
         {t('match_overview.call_duration', {
           count: durationMinutes,
           minutes: durationMinutes,

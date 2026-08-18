@@ -24,7 +24,7 @@ import ForgotPassword from '../components/views/ForgotPassword';
 import Help from '../components/views/Help';
 import Main from '../components/views/Home';
 import Login from '../components/views/Login';
-import MatchOverview from '../components/views/MatchOverview';
+import MatchOverview from '../components/views/MatchOverview/MatchOverview';
 import Messages from '../components/views/Messages';
 import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';

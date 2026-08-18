@@ -181,6 +181,7 @@ function PartnerProfiles({
                 ? getMatchTeaserDummyInput(index)
                 : null
             }
+            unreadCount={match.chat?.unread_count}
           />
         ))
       )}

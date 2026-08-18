@@ -1,26 +1,23 @@
 import {
-  MESSAGES_ROUTE,
   getAppSubpageRoute,
   getCallSetupRoute,
   getMatchOverviewRoute,
+  MESSAGES_ROUTE,
 } from '../router/routes';
+import { deriveMatchState, type MatchStateInput } from './deriveMatchState.ts';
 import {
-  mapMatchTeaserStateToViewModel,
+  mapMatchStateToTeaserViewModel,
   type MatchTeaserKind,
   type MatchTeaserViewModel,
-} from './matchTeaserViewModel';
-import {
-  deriveMatchTeaserState,
-  type MatchTeaserInput,
-} from './deriveMatchTeaserState';
+} from './matchTeaserViewModel.ts';
 
 export type {
   MatchTeaserIcon,
   MatchTeaserKind,
   MatchTeaserVariant,
   MatchTeaserViewModel,
-} from './matchTeaserViewModel';
-export { matchTeaserShowsDescription } from './matchTeaserViewModel';
+} from './matchTeaserViewModel.ts';
+export { matchTeaserShowsDescription } from './matchTeaserViewModel.ts';
 
 export interface MatchTeaserContext {
   chatId: string;
@@ -28,13 +25,17 @@ export interface MatchTeaserContext {
   matchId: string;
 }
 
-const getHref = (kind: MatchTeaserKind, context: MatchTeaserContext): string => {
+const getHref = (
+  kind: MatchTeaserKind,
+  context: MatchTeaserContext,
+): string => {
   switch (kind) {
-    case 'cycle_complete':
-    case 'active':
+    case 'successful':
+    case 'streak_active':
+    case 'engaged':
       return getMatchOverviewRoute(context.matchId);
     case 'no_message':
-    case 'gone_quiet':
+    case 'dormant':
       return getAppSubpageRoute(MESSAGES_ROUTE, context.chatId);
     case 'no_call':
       return getCallSetupRoute(context.userPk);
@@ -44,11 +45,11 @@ const getHref = (kind: MatchTeaserKind, context: MatchTeaserContext): string => 
 };
 
 export function buildMatchTeaserViewModel(
-  input: MatchTeaserInput,
+  input: MatchStateInput,
   context: MatchTeaserContext,
   now: Date = new Date(),
 ): MatchTeaserViewModel {
-  const state = deriveMatchTeaserState(input, now);
+  const state = deriveMatchState(input, now);
 
-  return mapMatchTeaserStateToViewModel(state, getHref(state.state, context));
+  return mapMatchStateToTeaserViewModel(state, getHref(state.state, context));
 }

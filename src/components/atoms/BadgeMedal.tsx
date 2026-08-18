@@ -3,22 +3,25 @@ import {
   Gradients,
   HeartIcon,
   MessageIcon,
+  ProgressRing,
+  ProgressRingAppearances,
+  ProgressRingSizes,
   StarIcon,
   Text,
   TextTypes,
   VideoIcon,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import type { ResolvedBadge } from '../../helpers/matchOverviewBadges';
-import ProgressRing from './ProgressRing';
 
 export interface BadgeMedalProps {
   badge: ResolvedBadge;
   className?: string;
 }
+
+const ICON_SIZE = 32;
 
 const Medal = styled.div<{ $status: ResolvedBadge['status'] }>`
   display: flex;
@@ -27,42 +30,6 @@ const Medal = styled.div<{ $status: ResolvedBadge['status'] }>`
   text-align: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   width: 100%;
-`;
-
-const Circle = styled.div<{ $status: ResolvedBadge['status'] }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: calc(
-    ${({ theme }) => theme.spacing.xxxlarge} +
-      ${({ theme }) => theme.spacing.xxsmall}
-  );
-  height: calc(
-    ${({ theme }) => theme.spacing.xxxlarge} +
-      ${({ theme }) => theme.spacing.xxsmall}
-  );
-  border-radius: ${({ theme }) => theme.radius.half};
-  flex-shrink: 0;
-
-  ${({ theme, $status }) => {
-    if ($status === 'earned') {
-      return css`
-        background: ${theme.color.surface.accent};
-        border: 2px solid ${theme.color.border.selected};
-      `;
-    }
-    if ($status === 'locked') {
-      return css`
-        background: ${theme.color.surface.disabled};
-        border: 2px dashed ${theme.color.border.moderate};
-        opacity: 0.55;
-      `;
-    }
-    return css`
-      background: transparent;
-      border: none;
-    `;
-  }}
 `;
 
 const Name = styled(Text)<{ $status: ResolvedBadge['status'] }>`
@@ -90,8 +57,8 @@ const BadgeIcon = ({
   const theme = useTheme();
   const props = {
     label: '',
-    width: 32,
-    height: 32,
+    width: ICON_SIZE,
+    height: ICON_SIZE,
     ...(muted
       ? { color: theme.color.text.disabled }
       : { gradient: Gradients.Orange }),
@@ -117,38 +84,27 @@ function BadgeMedal({ badge, className }: BadgeMedalProps) {
   const { t, i18n } = useTranslation();
   const name = t(badge.nameKey);
 
-  let meta = '';
-  let ariaLabel = name;
-
-  if (badge.status === 'earned') {
-    meta = new Intl.DateTimeFormat(i18n.language, {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    }).format(badge.earnedAt);
-    ariaLabel = `${name}, ${meta}`;
-  } else if (badge.status === 'in_progress') {
-    meta = t('match_overview.badge_progress', {
-      current: badge.current,
-      target: badge.target,
-      remaining: badge.remaining,
-      count: badge.remaining,
-    });
-    ariaLabel = t('match_overview.badge_aria_in_progress', {
-      name,
-      remaining: badge.remaining,
-      count: badge.remaining,
-    });
-  } else {
-    meta = t(badge.unlockHintKey);
-    ariaLabel = `${name}, ${meta}`;
-  }
+  // Subtext is optional, and it is one of two things: the day an earned badge was
+  // earned, or what an unearned one asks for. No running tally — "7 of 10, 3 weeks to
+  // go" turned a keepsake into a progress bar with numbers, and the ring already shows
+  // how far along it is. An earned badge whose date we could not infer simply has none.
+  const earnedOn =
+    badge.status === 'earned' && badge.earnedAt
+      ? new Intl.DateTimeFormat(i18n.language, {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        }).format(badge.earnedAt)
+      : null;
+  const meta =
+    badge.status === 'earned' ? earnedOn : t(badge.unlockHintKey) || null;
+  const ariaLabel = meta ? `${name}, ${meta}` : name;
 
   return (
     <Medal className={className} $status={badge.status} aria-label={ariaLabel}>
       {badge.status === 'in_progress' ? (
         <ProgressRing
-          size="badge"
+          size={ProgressRingSizes.Small}
           value={badge.current}
           max={badge.target}
           label={ariaLabel}
@@ -156,16 +112,26 @@ function BadgeMedal({ badge, className }: BadgeMedalProps) {
           <BadgeIcon icon={badge.icon} muted />
         </ProgressRing>
       ) : (
-        <Circle $status={badge.status} aria-hidden>
+        <ProgressRing
+          size={ProgressRingSizes.Small}
+          label={ariaLabel}
+          appearance={
+            badge.status === 'earned'
+              ? ProgressRingAppearances.Complete
+              : ProgressRingAppearances.Inactive
+          }
+        >
           <BadgeIcon icon={badge.icon} muted={badge.status === 'locked'} />
-        </Circle>
+        </ProgressRing>
       )}
       <Name type={TextTypes.Body6} tag="span" $status={badge.status}>
         {name}
       </Name>
-      <Meta type={TextTypes.Body7} tag="span" $status={badge.status}>
-        {meta}
-      </Meta>
+      {meta ? (
+        <Meta type={TextTypes.Body7} tag="span" $status={badge.status}>
+          {meta}
+        </Meta>
+      ) : null}
     </Medal>
   );
 }

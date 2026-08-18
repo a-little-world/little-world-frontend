@@ -1,21 +1,24 @@
 export const MATCH_CYCLE_WEEKS = 10;
 
 export interface MatchOverviewStatsInput {
-  week: number;
+  /** Weeks containing at least one qualifying video call, from the API snapshot. */
+  activeWeeks: number;
   calls: number;
   totalMinutes: number;
   streakWeeks: number;
   messages: number;
+  cycleWeeks?: number;
 }
 
 export interface MatchOverviewDerived {
-  isFreePlay: boolean;
+  isCycleComplete: boolean;
   ringValue: number;
   ringMax: number;
   weeksRemaining: number;
   avgMinutesPerCall: number | null;
   totalHours: number;
   totalMinutesRemainder: number;
+  activeWeeks: number;
   calls: number;
   streakWeeks: number;
   messages: number;
@@ -23,34 +26,36 @@ export interface MatchOverviewDerived {
 
 /**
  * Derives display values for the Match Overview page.
- * Week 10 is the last cycle week (ring full). Week > 10 is free-play.
+ *
+ * Progress is measured in *active* weeks — weeks the pair actually had a video call —
+ * not in weeks elapsed on the calendar and not in consecutive weeks. A pair who skip a
+ * week have banked one fewer week, nothing more; the cycle completes on the tenth week
+ * they call, whenever that lands. The calendar week (`snapshot.current_week`) and the
+ * streak both answer different questions and neither belongs in the ring.
  */
 export function deriveMatchOverviewStats(
   input: MatchOverviewStatsInput,
 ): MatchOverviewDerived {
-  const { week, calls, totalMinutes, streakWeeks, messages } = input;
-  const isFreePlay = week > MATCH_CYCLE_WEEKS;
-  const weeksRemaining = isFreePlay
-    ? 0
-    : Math.max(0, MATCH_CYCLE_WEEKS - week);
-  const ringValue = isFreePlay
-    ? MATCH_CYCLE_WEEKS
-    : Math.min(Math.max(week, 0), MATCH_CYCLE_WEEKS);
+  const { activeWeeks, calls, totalMinutes, streakWeeks, messages } = input;
+  const cycleWeeks = input.cycleWeeks ?? MATCH_CYCLE_WEEKS;
+  const bankedWeeks = Math.min(Math.max(activeWeeks, 0), cycleWeeks);
+  const isCycleComplete = bankedWeeks >= cycleWeeks;
 
-  const avgMinutesPerCall =
-    calls > 0 ? Math.round(totalMinutes / calls) : null;
+  const avgMinutesPerCall = calls > 0 ? Math.round(totalMinutes / calls) : null;
 
-  const totalHours = Math.floor(totalMinutes / 60);
-  const totalMinutesRemainder = totalMinutes % 60;
+  const roundedMinutes = Math.round(totalMinutes);
+  const totalHours = Math.floor(roundedMinutes / 60);
+  const totalMinutesRemainder = roundedMinutes % 60;
 
   return {
-    isFreePlay,
-    ringValue,
-    ringMax: MATCH_CYCLE_WEEKS,
-    weeksRemaining,
+    isCycleComplete,
+    ringValue: bankedWeeks,
+    ringMax: cycleWeeks,
+    weeksRemaining: cycleWeeks - bankedWeeks,
     avgMinutesPerCall,
     totalHours,
     totalMinutesRemainder,
+    activeWeeks,
     calls,
     streakWeeks,
     messages,

@@ -24,17 +24,21 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import { NiceAvatarProps } from 'react-nice-avatar';
+import { Link as RouterLink } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
+import useSWR from 'swr';
 
 import { useCallSetupStore } from '../../../features/stores/index';
+import { CHATS_ENDPOINT } from '../../../features/swr/index';
 import {
   buildMatchTeaserViewModel,
   matchTeaserShowsDescription,
 } from '../../../helpers/buildMatchTeaserViewModel';
-import type { MatchTeaserInput } from '../../../helpers/deriveMatchTeaserState';
+import type { MatchStateInput } from '../../../helpers/deriveMatchState';
 import {
   getAppRoute,
   getAppSubpageRoute,
+  getMatchOverviewRoute,
   HELP_CONTACT_ROUTE,
   MESSAGES_ROUTE,
   PROFILE_ROUTE,
@@ -80,7 +84,8 @@ interface ProfileCardProps {
   openEditImage?: () => void;
   type?: string;
   loading?: boolean;
-  matchTeaserInput?: MatchTeaserInput | null;
+  matchTeaserInput?: MatchStateInput | null;
+  unreadCount?: number;
 }
 
 export const StyledProfileCard = styled(Card)<{
@@ -165,21 +170,36 @@ export const MatchMenuToggle = styled(Button)`
   `};
 `;
 
-export const PartnerMenuOption = styled.button`
+const partnerMenuOptionStyles = css`
+  display: block;
+  width: 100%;
   font-size: 1rem;
   font-weight: normal;
   justify-content: flex-start;
   padding: ${({ theme }) => theme.spacing.xxsmall};
-  padding-left: 0px;
+  padding-left: 0;
   text-align: left;
+  color: inherit;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
 
   &:hover {
     filter: opacity(0.6);
   }
 
-  &:first-of-type {
+  &:not(:last-child) {
     margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   }
+`;
+
+export const PartnerMenuOption = styled.button`
+  ${partnerMenuOptionStyles}
+`;
+
+export const PartnerMenuLink = styled(RouterLink)`
+  ${partnerMenuOptionStyles}
 `;
 
 export const Actions = styled.div<{ $onProfile: boolean }>`
@@ -224,11 +244,20 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   type,
   loading = false,
   matchTeaserInput = null,
+  unreadCount: unreadCountProp,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const usesAvatar = profile.image_type === 'avatar';
   const callSetup = useCallSetupStore();
+  const { data: chats } = useSWR(chatId ? CHATS_ENDPOINT : null);
+  const unreadCount = useMemo(() => {
+    const fromChatList = chats?.results?.find(
+      (chat: { uuid?: string; unread_count?: number }) =>
+        String(chat.uuid) === String(chatId),
+    )?.unread_count;
+    return fromChatList ?? unreadCountProp ?? 0;
+  }, [chatId, chats, unreadCountProp]);
   const teaserViewModel = useMemo(
     () =>
       matchTeaserInput && isMatch && !isSupport && !isDeleted && matchId
@@ -297,6 +326,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             </MatchMenuToggle>
           }
         >
+          {matchId && (
+            <PartnerMenuLink to={getMatchOverviewRoute(matchId)}>
+              {t('partner_profile.match_stats')}
+            </PartnerMenuLink>
+          )}
           <PartnerMenuOption
             onClick={() =>
               openPartnerModal?.({
@@ -389,6 +423,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                   Icon={MessageIcon}
                   iconGradient={Gradients.Orange}
                   iconLabel="chat icon"
+                  unreadCount={unreadCount}
                   text={t(
                     isDeleted
                       ? 'partner_profile.messages'

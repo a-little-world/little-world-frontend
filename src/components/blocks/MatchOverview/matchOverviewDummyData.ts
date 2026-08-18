@@ -1,6 +1,9 @@
 import type { NiceAvatarProps } from 'react-nice-avatar';
 
-import type { BadgeDefinition } from '../../../helpers/matchOverviewBadges';
+import {
+  MATCH_OVERVIEW_BADGE_DEFINITIONS,
+  type BadgeDefinition,
+} from '../../../helpers/matchOverviewBadges';
 import type { CallDirection } from '../../atoms/CallHistoryRow';
 
 export interface MatchOverviewProfile {
@@ -39,7 +42,36 @@ const daysAgo = (days: number, hour = 18) => {
   return date.toISOString();
 };
 
-/** Temporary page payload until the match overview API exists. */
+/**
+ * Storybook-only dummy payload. The live Match Overview page reads
+ * GET /api/matches/<uuid>/overview and resolves badges on the client from
+ * ``MATCH_OVERVIEW_BADGE_DEFINITIONS``.
+ */
+export const PLACEHOLDER_STREAK_WEEKS = 3;
+
+/** Counts the placeholder badges are resolved against, so the card is self-consistent. */
+export const PLACEHOLDER_BADGE_STATS = {
+  calls: 7,
+  messages: 214,
+  callMinutes: 165,
+  activeWeeks: 8,
+};
+
+const PLACEHOLDER_EARNED_AT: Partial<Record<string, string>> = {
+  first_call: daysAgo(40),
+  fifty_messages: daysAgo(24),
+  hundred_messages: daysAgo(12),
+  two_hours: daysAgo(18),
+  five_active_weeks: daysAgo(10),
+};
+
+export const PLACEHOLDER_BADGES: BadgeDefinition[] =
+  MATCH_OVERVIEW_BADGE_DEFINITIONS.map(badge => {
+    const earnedAt = PLACEHOLDER_EARNED_AT[badge.id];
+    return earnedAt ? { ...badge, earnedAt } : badge;
+  });
+
+/** Temporary page payload for stories. Live page uses GET /api/matches/<uuid>/overview. */
 export function getMatchOverviewDummyData(
   partner: MatchOverviewProfile,
   self: MatchOverviewProfile,
@@ -48,65 +80,13 @@ export function getMatchOverviewDummyData(
     week: 8,
     calls: 7,
     totalMinutes: 165,
-    streakWeeks: 3,
+    streakWeeks: PLACEHOLDER_STREAK_WEEKS,
     messages: 214,
     matchedAt: daysAgo(56),
     lastCallAt: daysAgo(3),
     partner,
     self,
-    badges: [
-      {
-        id: 'first_call',
-        nameKey: 'match_overview.badges.first_call.name',
-        unlockHintKey: 'match_overview.badges.first_call.hint',
-        icon: 'video',
-        metric: 'calls',
-        target: 1,
-        earnedAt: daysAgo(40),
-      },
-      {
-        id: 'five_calls',
-        nameKey: 'match_overview.badges.five_calls.name',
-        unlockHintKey: 'match_overview.badges.five_calls.hint',
-        icon: 'heart',
-        metric: 'calls',
-        target: 5,
-        earnedAt: daysAgo(20),
-      },
-      {
-        id: 'ten_calls',
-        nameKey: 'match_overview.badges.ten_calls.name',
-        unlockHintKey: 'match_overview.badges.ten_calls.hint',
-        icon: 'star',
-        metric: 'calls',
-        target: 10,
-      },
-      {
-        id: 'twenty_calls',
-        nameKey: 'match_overview.badges.twenty_calls.name',
-        unlockHintKey: 'match_overview.badges.twenty_calls.hint',
-        icon: 'star',
-        metric: 'calls',
-        target: 20,
-      },
-      {
-        id: 'cycle_complete',
-        nameKey: 'match_overview.badges.cycle_complete.name',
-        unlockHintKey: 'match_overview.badges.cycle_complete.hint',
-        icon: 'clock',
-        metric: 'weeks',
-        target: 10,
-      },
-      {
-        id: 'hundred_messages',
-        nameKey: 'match_overview.badges.hundred_messages.name',
-        unlockHintKey: 'match_overview.badges.hundred_messages.hint',
-        icon: 'message',
-        metric: 'messages',
-        target: 100,
-        earnedAt: daysAgo(12),
-      },
-    ],
+    badges: PLACEHOLDER_BADGES,
     callHistory: [
       {
         id: '1',
