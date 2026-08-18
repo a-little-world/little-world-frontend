@@ -97,7 +97,14 @@ const SidebarContent = styled.div`
   overflow-y: auto;
   position: relative;
   width: 100%;
-  height: 100%;
+  /* Sized by flex rather than a percentage height. ScrollFade's wrapper takes its own
+     height from the flex algorithm, which is not a definite height to take 100% of,
+     and flex sizing is also the only kind that counts this padding as part of the box
+     without a border-box reset. min-height: 0 is what lets it shrink far enough to
+     scroll — overflow-y already zeroes the automatic minimum, but only while this is
+     a flex item. */
+  flex: 1;
+  min-height: 0;
   padding: ${({ theme }) =>
     `${theme.spacing.xxsmall} ${theme.spacing.medium} ${theme.spacing.medium}`};
 `;
@@ -219,7 +226,12 @@ function Sidebar({ isVH, sidebarMobile }) {
         $isVH={isVH && !showSidebarMobile}
       >
         <StyledLogo asLink />
-        <ScrollFade axis="vertical" fill={isVH && !showSidebarMobile}>
+        {/* Always filling, unlike $isVH: those styles are scoped to the desktop media
+            query, but this prop is not, and the container bounds its height on mobile
+            too (fixed, top and bottom pinned). Harmless where it does not: a
+            content-height container has no free space to grow into, so every child
+            stays at its content size. */}
+        <ScrollFade axis="vertical" fill>
           <SidebarContent>
             {buttonData.map(
               ({

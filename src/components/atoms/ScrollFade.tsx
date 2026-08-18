@@ -97,9 +97,16 @@ const Wrap = styled.div<{ $fill?: boolean }>`
   ${({ $fill }) =>
     $fill &&
     css`
+      /* A column flex box, not a plain block. The scroll container is the child, so it
+         has to be told "take what is left, then scroll" — and only flex sizing can say
+         that here. A percentage height on the child would not resolve: this wrapper's
+         own height comes from the flex algorithm rather than a height declaration, so
+         it is not a definite height to take a percentage of. The child would fall back
+         to its content height, grow past the clipped parent, and never scroll. */
+      display: flex;
+      flex-direction: column;
       flex: 1;
       min-height: 0;
-      max-height: 100%;
     `};
 `;
 
