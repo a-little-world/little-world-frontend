@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import {
   getMessaging,
@@ -73,42 +73,53 @@ function FireBase() {
       );
   }, [navigate]);
 
-  const notificationStore = useNotificationStore();
+  const deviceSupported = useNotificationStore(s => s.deviceSupported);
+  const notificationsEnabled = useNotificationStore(
+    s => s.notificationsEnabled,
+  );
+  const devicePermissionSet = useNotificationStore(s => s.devicePermissionSet);
+  const devicePermissionGranted = useNotificationStore(
+    s => s.devicePermissionGranted,
+  );
+  const setDeviceSupported = useNotificationStore(s => s.setDeviceSupported);
+  const setNotificationsEnabled = useNotificationStore(
+    s => s.setNotificationsEnabled,
+  );
+  const setDevicePermissionSet = useNotificationStore(
+    s => s.setDevicePermissionSet,
+  );
+  const setDevicePermissionGranted = useNotificationStore(
+    s => s.setDevicePermissionGranted,
+  );
 
   const permissionStatus = globalThis.Notification?.permission;
   useEffect(() => {
-    notificationStore.setDevicePermissionSet(
+    setDevicePermissionSet(
       permissionStatus !== undefined && permissionStatus !== 'default',
     );
-    notificationStore.setDevicePermissionGranted(
-      permissionStatus === 'granted',
-    );
-    isSupported().then(supported =>
-      notificationStore.setDeviceSupported(supported),
-    );
-  }, []);
+    setDevicePermissionGranted(permissionStatus === 'granted');
+    isSupported().then(setDeviceSupported);
+  }, [
+    permissionStatus,
+    setDevicePermissionSet,
+    setDevicePermissionGranted,
+    setDeviceSupported,
+  ]);
 
   useEffect(() => {
     if (
       userNotificationsEnabled !== undefined &&
       userNotificationsEnabled !== null
     ) {
-      notificationStore.setNotificationsEnabled(userNotificationsEnabled);
+      setNotificationsEnabled(userNotificationsEnabled);
     }
-  }, [userNotificationsEnabled]);
+  }, [userNotificationsEnabled, setNotificationsEnabled]);
 
-  const {
-    deviceSupported,
-    notificationsEnabled,
-    devicePermissionGranted,
-    devicePermissionSet,
-    setDevicePermissionSet,
-    setDevicePermissionGranted,
-  } = notificationStore;
-
-  const showNotificationPermissionToast = !Boolean(
-    localStorage.getItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY),
+  const showNotificationPermissionToast = useMemo(
+    () => localStorage.getItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY) === null,
+    [],
   );
+
   // Show one-time toast when browser has not granted notification
   // permission yet
   useEffect(() => {
@@ -121,14 +132,15 @@ function FireBase() {
       return;
     }
 
-    localStorage.setItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY, 'true');
     toast.showToast({
       title: t('push_notifications.permission_missing'),
       description: t('push_notifications.permission_missing.description'),
       actionText: t('push_notifications.request_permission'),
-      actionAltText: 'test',
+      actionAltText: 'request notification permission',
       duration: Infinity, // show indefinitely
+      width: '600px',
       showClose: true,
+      closeOnClick: false,
       // click is required for browser to show permission prompt
       onActionClick: () => {
         Notification.requestPermission().then(permission => {
@@ -136,11 +148,15 @@ function FireBase() {
           setDevicePermissionGranted(permission === 'granted');
         });
       },
+      onClose: () => {
+        localStorage.setItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY, 'false');
+      },
     });
   }, [
     deviceSupported,
     notificationsEnabled,
     devicePermissionSet,
+    showNotificationPermissionToast,
     setDevicePermissionGranted,
     setDevicePermissionSet,
     toast,
@@ -168,14 +184,12 @@ function FireBase() {
     firebaseEnabledRef.current = enabled;
 
     if (enabled) {
-      enableFirebase()
-        .then(() => {
-          const messaging = getMessaging();
-          unsubscribeRef.current = onMessage(messaging, payload =>
-            handleMessage(payload, toast, navigate),
-          );
-        })
-        .catch(error => console.error('[push] setup failed', error));
+      enableFirebase().then(() => {
+        const messaging = getMessaging();
+        unsubscribeRef.current = onMessage(messaging, payload =>
+          handleMessage(payload, toast, navigate),
+        );
+      });
     } else {
       unsubscribeRef.current?.();
       unsubscribeRef.current = undefined;
