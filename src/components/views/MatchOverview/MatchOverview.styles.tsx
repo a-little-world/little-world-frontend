@@ -326,25 +326,6 @@ export const BadgeActions = styled.div`
   justify-content: center;
 `;
 
-/**
- * Link appearance, button semantics: it toggles a view rather than navigating, so it
- * must stay a real button for keyboard and screen-reader users.
- */
-export const LinkButton = styled.button`
-  appearance: none;
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-  font: inherit;
-  text-decoration: underline;
-  color: ${({ theme }) => theme.color.text.accent};
-
-  &:hover {
-    text-decoration: none;
-  }
-`;
-
 export const CallList = styled.ul`
   margin: 0;
   padding: 0;

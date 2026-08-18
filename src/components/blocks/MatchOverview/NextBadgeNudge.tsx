@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   Button,
   ButtonAppearance,
@@ -6,7 +8,6 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 

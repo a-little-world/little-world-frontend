@@ -222,7 +222,14 @@ function Sidebar({ isVH, sidebarMobile }) {
         <ScrollFade axis="vertical" fill={isVH && !showSidebarMobile}>
           <SidebarContent>
             {buttonData.map(
-              ({ label, path, activePath, clickEvent, Icon, reloadDocument }) => {
+              ({
+                label,
+                path,
+                activePath,
+                clickEvent,
+                Icon,
+                reloadDocument,
+              }) => {
                 const isActive = isActiveRoute(
                   location.pathname,
                   activePath ?? path,

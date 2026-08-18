@@ -38,7 +38,6 @@ import type { MatchStateInput } from '../../../helpers/deriveMatchState';
 import {
   getAppRoute,
   getAppSubpageRoute,
-  getMatchOverviewRoute,
   HELP_CONTACT_ROUTE,
   MESSAGES_ROUTE,
   PROFILE_ROUTE,
@@ -52,7 +51,6 @@ import {
   REPORT_TYPE_PARTNER,
   REPORT_TYPE_UNMATCH,
 } from '../ReportForm/constants';
-import MatchTeaser from './MatchTeaser';
 
 export const PROFILE_CARD_HEIGHT = '408px';
 
@@ -326,11 +324,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             </MatchMenuToggle>
           }
         >
-          {matchId && (
+          {/* {matchId && (
             <PartnerMenuLink to={getMatchOverviewRoute(matchId)}>
               {t('partner_profile.match_stats')}
             </PartnerMenuLink>
-          )}
+          )} */}
           <PartnerMenuOption
             onClick={() =>
               openPartnerModal?.({
@@ -366,7 +364,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           {isSupport && <SupportTag />}
         </NameContainer>
 
-        {!onProfile && (isSupport || isDeleted || showsDescription) && (
+        {!onProfile && (isSupport || isDeleted) && (
           <Description>
             {isSupport
               ? t('profile_card.support_description')
@@ -376,7 +374,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           </Description>
         )}
       </ProfileInfo>
-      {teaserViewModel && (
+      {/* {teaserViewModel && (
         <MatchTeaser
           variant={teaserViewModel.variant}
           icon={teaserViewModel.icon}
@@ -385,7 +383,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           sublineParams={teaserViewModel.sublineParams}
           href={teaserViewModel.href}
         />
-      )}
+      )} */}
       {isSelf ? null : isSupport ? (
         <SupportChatLink
           to={getAppRoute(HELP_CONTACT_ROUTE)}

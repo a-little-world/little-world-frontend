@@ -1,5 +1,9 @@
 import { useMemo, useState } from 'react';
 
+import {
+  Button,
+  ButtonVariations,
+} from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -15,7 +19,6 @@ import {
   BadgeActions,
   BadgeItem,
   BadgeStrip,
-  LinkButton,
   OverviewCard,
   Section,
   SectionHeading,
@@ -65,13 +68,16 @@ function MatchOverviewBadges({ badges, onPlanCall }: MatchOverviewBadgesProps) {
         </ScrollFade>
         {(canExpand || expanded) && (
           <BadgeActions>
-            <LinkButton type="button" onClick={() => setExpanded(!expanded)}>
+            <Button
+              variation={ButtonVariations.Inline}
+              onClick={() => setExpanded(!expanded)}
+            >
               {t(
                 expanded
                   ? 'match_overview.show_less_badges'
                   : 'match_overview.show_all_badges',
               )}
-            </LinkButton>
+            </Button>
           </BadgeActions>
         )}
         <NextBadgeNudge badge={nextBadge} onPlanCall={onPlanCall} />

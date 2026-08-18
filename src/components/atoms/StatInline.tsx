@@ -1,5 +1,6 @@
-import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import React from 'react';
+
+import { Text, TextTypes } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
 export interface StatInlineProps {

@@ -22,12 +22,12 @@ import { getMatchEndpoint, USER_ENDPOINT } from '../../features/swr';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard';
+import { getMatchTeaserDummyInput } from './Cards/matchTeaserDummyData';
 import PartnerActionCard from './Cards/PartnerActionCard';
 import ProfileCard, {
   PROFILE_CARD_HEIGHT,
   StyledProfileCard,
 } from './Cards/ProfileCard';
-import { getMatchTeaserDummyInput } from './Cards/matchTeaserDummyData';
 import { SearchingCard } from './Cards/SearchingCard';
 import UpdateSearchStateCard from './Cards/UpdateSearchStateCard';
 
@@ -177,9 +177,7 @@ function PartnerProfiles({
             isSupport={match.partner.isSupport}
             chatId={match.chatId}
             matchTeaserInput={
-              !match.partner.isSupport
-                ? getMatchTeaserDummyInput(index)
-                : null
+              !match.partner.isSupport ? getMatchTeaserDummyInput(index) : null
             }
             unreadCount={match.chat?.unread_count}
           />
