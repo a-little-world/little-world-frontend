@@ -31,11 +31,6 @@ import useSWR from 'swr';
 import { useCallSetupStore } from '../../../features/stores/index';
 import { CHATS_ENDPOINT } from '../../../features/swr/index';
 import {
-  buildMatchTeaserViewModel,
-  matchTeaserShowsDescription,
-} from '../../../helpers/buildMatchTeaserViewModel';
-import type { MatchStateInput } from '../../../helpers/deriveMatchState';
-import {
   getAppRoute,
   getAppSubpageRoute,
   HELP_CONTACT_ROUTE,
@@ -82,7 +77,7 @@ interface ProfileCardProps {
   openEditImage?: () => void;
   type?: string;
   loading?: boolean;
-  matchTeaserInput?: MatchStateInput | null;
+  // matchTeaserInput?: MatchStateInput | null;
   unreadCount?: number;
 }
 
@@ -241,7 +236,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   openEditImage,
   type,
   loading = false,
-  matchTeaserInput = null,
+  // matchTeaserInput = null,
   unreadCount: unreadCountProp,
 }) => {
   const { t } = useTranslation();
@@ -256,20 +251,20 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     )?.unread_count;
     return fromChatList ?? unreadCountProp ?? 0;
   }, [chatId, chats, unreadCountProp]);
-  const teaserViewModel = useMemo(
-    () =>
-      matchTeaserInput && isMatch && !isSupport && !isDeleted && matchId
-        ? buildMatchTeaserViewModel(matchTeaserInput, {
-            chatId,
-            userPk,
-            matchId,
-          })
-        : null,
-    [chatId, isDeleted, isMatch, isSupport, matchId, matchTeaserInput, userPk],
-  );
-  const showsDescription = matchTeaserShowsDescription(
-    teaserViewModel?.kind ?? null,
-  );
+  // const teaserViewModel = useMemo(
+  //   () =>
+  //     matchTeaserInput && isMatch && !isSupport && !isDeleted && matchId
+  //       ? buildMatchTeaserViewModel(matchTeaserInput, {
+  //           chatId,
+  //           userPk,
+  //           matchId,
+  //         })
+  //       : null,
+  //   [chatId, isDeleted, isMatch, isSupport, matchId, matchTeaserInput, userPk],
+  // );
+  // const showsDescription = matchTeaserShowsDescription(
+  //   teaserViewModel?.kind ?? null,
+  // );
 
   return (
     <StyledProfileCard
