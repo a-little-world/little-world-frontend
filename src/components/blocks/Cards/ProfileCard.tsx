@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import {
   Button,
@@ -15,18 +15,21 @@ import {
   PencilIcon,
   pixelate,
   Popover,
+  PopoverSizes,
   ProfileIcon,
   Text,
   TextTypes,
   Tooltip,
   VideoIcon,
 } from '@a-little-world/little-world-design-system';
-import { PopoverSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Popover/Popover';
 import { useTranslation } from 'react-i18next';
 import { NiceAvatarProps } from 'react-nice-avatar';
+import { Link as RouterLink } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
+import useSWR from 'swr';
 
 import { useCallSetupStore } from '../../../features/stores/index';
+import { CHATS_ENDPOINT } from '../../../features/swr/index';
 import {
   getAppRoute,
   getAppSubpageRoute,
@@ -74,6 +77,8 @@ interface ProfileCardProps {
   openEditImage?: () => void;
   type?: string;
   loading?: boolean;
+  // matchTeaserInput?: MatchStateInput | null;
+  unreadCount?: number;
 }
 
 export const StyledProfileCard = styled(Card)<{
@@ -105,11 +110,11 @@ export const StyledProfileCard = styled(Card)<{
           order: 1;
         `};
 
-  ${({ theme, $isSelf }) => css`
-    min-height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
+  ${({ theme, $isSelf, $onProfile }) => css`
+    min-height: ${$isSelf || $onProfile ? 'initial' : PROFILE_CARD_HEIGHT};
 
     @media (min-width: ${theme.breakpoints.medium}) {
-      height: ${$isSelf ? 'initial' : PROFILE_CARD_HEIGHT};
+      height: ${$isSelf || $onProfile ? 'initial' : PROFILE_CARD_HEIGHT};
     }
   `};
 
@@ -146,7 +151,6 @@ export const ProfileInfo = styled.div`
   ${({ theme }) => `
     padding-left: ${theme.spacing.xxxsmall};
     gap: ${theme.spacing.xxsmall};
-    margin-bottom: ${theme.spacing.xxsmall};
   `};
 `;
 
@@ -159,21 +163,36 @@ export const MatchMenuToggle = styled(Button)`
   `};
 `;
 
-export const PartnerMenuOption = styled.button`
+const partnerMenuOptionStyles = css`
+  display: block;
+  width: 100%;
   font-size: 1rem;
   font-weight: normal;
   justify-content: flex-start;
   padding: ${({ theme }) => theme.spacing.xxsmall};
-  padding-left: 0px;
+  padding-left: 0;
   text-align: left;
+  color: inherit;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
 
   &:hover {
     filter: opacity(0.6);
   }
 
-  &:first-of-type {
+  &:not(:last-child) {
     margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   }
+`;
+
+export const PartnerMenuOption = styled.button`
+  ${partnerMenuOptionStyles}
+`;
+
+export const PartnerMenuLink = styled(RouterLink)`
+  ${partnerMenuOptionStyles}
 `;
 
 export const Actions = styled.div<{ $onProfile: boolean }>`
@@ -217,11 +236,35 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   openEditImage,
   type,
   loading = false,
+  // matchTeaserInput = null,
+  unreadCount: unreadCountProp,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const usesAvatar = profile.image_type === 'avatar';
   const callSetup = useCallSetupStore();
+  const { data: chats } = useSWR(chatId ? CHATS_ENDPOINT : null);
+  const unreadCount = useMemo(() => {
+    const fromChatList = chats?.results?.find(
+      (chat: { uuid?: string; unread_count?: number }) =>
+        String(chat.uuid) === String(chatId),
+    )?.unread_count;
+    return fromChatList ?? unreadCountProp ?? 0;
+  }, [chatId, chats, unreadCountProp]);
+  // const teaserViewModel = useMemo(
+  //   () =>
+  //     matchTeaserInput && isMatch && !isSupport && !isDeleted && matchId
+  //       ? buildMatchTeaserViewModel(matchTeaserInput, {
+  //           chatId,
+  //           userPk,
+  //           matchId,
+  //         })
+  //       : null,
+  //   [chatId, isDeleted, isMatch, isSupport, matchId, matchTeaserInput, userPk],
+  // );
+  // const showsDescription = matchTeaserShowsDescription(
+  //   teaserViewModel?.kind ?? null,
+  // );
 
   return (
     <StyledProfileCard
@@ -249,6 +292,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <ProfileImage
           image={usesAvatar ? profile.avatar_config : profile.image}
           imageType={profile.image_type}
+          size={onProfile ? 'large' : 'medium'}
         />
       )}
 
@@ -275,6 +319,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             </MatchMenuToggle>
           }
         >
+          {/* {matchId && (
+            <PartnerMenuLink to={getMatchOverviewRoute(matchId)}>
+              {t('partner_profile.match_stats')}
+            </PartnerMenuLink>
+          )} */}
           <PartnerMenuOption
             onClick={() =>
               openPartnerModal?.({
@@ -310,7 +359,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           {isSupport && <SupportTag />}
         </NameContainer>
 
-        {!onProfile && (
+        {!onProfile && (isSupport || isDeleted) && (
           <Description>
             {isSupport
               ? t('profile_card.support_description')
@@ -320,6 +369,16 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           </Description>
         )}
       </ProfileInfo>
+      {/* {teaserViewModel && (
+        <MatchTeaser
+          variant={teaserViewModel.variant}
+          icon={teaserViewModel.icon}
+          titleKey={teaserViewModel.titleKey}
+          sublineKey={teaserViewModel.sublineKey}
+          sublineParams={teaserViewModel.sublineParams}
+          href={teaserViewModel.href}
+        />
+      )} */}
       {isSelf ? null : isSupport ? (
         <SupportChatLink
           to={getAppRoute(HELP_CONTACT_ROUTE)}
@@ -357,6 +416,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                   Icon={MessageIcon}
                   iconGradient={Gradients.Orange}
                   iconLabel="chat icon"
+                  unreadCount={unreadCount}
                   text={t(
                     isDeleted
                       ? 'partner_profile.messages'

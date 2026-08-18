@@ -40,6 +40,7 @@ import {
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import MenuLink, { MenuLinkText } from '../atoms/MenuLink';
+import ScrollFade from '../atoms/ScrollFade';
 
 const SIDEBAR_WIDTH_MOBILE = '192px';
 const SIDEBAR_WIDTH_DESKTOP = '174px';
@@ -64,26 +65,6 @@ const SidebarContainer = styled.nav`
   padding: ${({ theme }) => `${theme.spacing.medium} 0 0 0`};
 
   ${({ theme, $isVH }) => css`
-    /* Add fade-out effect */
-    &::after {
-      content: '';
-      position: absolute;
-      width: 80%;
-      margin: 0 auto;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: ${theme.spacing.medium};
-      background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        ${theme.color.surface.primary} 100%
-      );
-      pointer-events: none;
-      z-index: 1;
-      border-radius: 0 0 ${theme.radius.xlarge} ${theme.radius.xlarge};
-    }
-
     @media (min-width: ${theme.breakpoints.medium}) {
       position: relative;
       margin-bottom: auto;
@@ -116,18 +97,9 @@ const SidebarContent = styled.div`
   overflow-y: auto;
   position: relative;
   width: 100%;
+  height: 100%;
   padding: ${({ theme }) =>
     `${theme.spacing.xxsmall} ${theme.spacing.medium} ${theme.spacing.medium}`};
-
-  ${({ $isScrollable, theme }) =>
-    $isScrollable &&
-    css`
-      @media (min-width: ${theme.breakpoints.medium}) {
-        flex: 1;
-        min-height: 0;
-        max-height: 100%;
-      }
-    `}
 `;
 
 const LogoutButton = styled(Button)`
@@ -247,45 +219,54 @@ function Sidebar({ isVH, sidebarMobile }) {
         $isVH={isVH && !showSidebarMobile}
       >
         <StyledLogo asLink />
-        <SidebarContent $isScrollable={isVH}>
-          {buttonData.map(
-            ({ label, path, activePath, clickEvent, Icon, reloadDocument }) => {
-              const isActive = isActiveRoute(
-                location.pathname,
-                activePath ?? path,
-              );
-              const unreadCount = unread[label] ?? 0;
+        <ScrollFade axis="vertical" fill={isVH && !showSidebarMobile}>
+          <SidebarContent>
+            {buttonData.map(
+              ({
+                label,
+                path,
+                activePath,
+                clickEvent,
+                Icon,
+                reloadDocument,
+              }) => {
+                const isActive = isActiveRoute(
+                  location.pathname,
+                  activePath ?? path,
+                );
+                const unreadCount = unread[label] ?? 0;
 
-              return typeof clickEvent === typeof undefined ? (
-                <MenuLink
-                  to={path}
-                  key={label}
-                  active={isActive}
-                  Icon={Icon}
-                  iconLabel={label}
-                  text={t(`nbs_${label}`)}
-                  unreadCount={unreadCount}
-                  reloadDocument={reloadDocument}
-                />
-              ) : (
-                <LogoutButton
-                  key={label}
-                  type="button"
-                  variation={ButtonVariations.Stacked}
-                  onClick={clickEvent}
-                >
-                  <LogoutIcon
-                    color={theme.color.text.tertiary}
-                    label={label}
-                    width={32}
-                    height={32}
+                return typeof clickEvent === typeof undefined ? (
+                  <MenuLink
+                    to={path}
+                    key={label}
+                    active={isActive}
+                    Icon={Icon}
+                    iconLabel={label}
+                    text={t(`nbs_${label}`)}
+                    unreadCount={unreadCount}
+                    reloadDocument={reloadDocument}
                   />
-                  <MenuLinkText>{t(`nbs_${label}`)}</MenuLinkText>
-                </LogoutButton>
-              );
-            },
-          )}
-        </SidebarContent>
+                ) : (
+                  <LogoutButton
+                    key={label}
+                    type="button"
+                    variation={ButtonVariations.Stacked}
+                    onClick={clickEvent}
+                  >
+                    <LogoutIcon
+                      color={theme.color.text.tertiary}
+                      label={label}
+                      width={32}
+                      height={32}
+                    />
+                    <MenuLinkText>{t(`nbs_${label}`)}</MenuLinkText>
+                  </LogoutButton>
+                );
+              },
+            )}
+          </SidebarContent>
+        </ScrollFade>
       </SidebarContainer>
       <MobileOverlay
         onClick={() => setShowSidebarMobile(false)}

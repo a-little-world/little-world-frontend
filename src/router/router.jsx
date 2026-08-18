@@ -24,6 +24,7 @@ import ForgotPassword from '../components/views/ForgotPassword';
 import Help from '../components/views/Help';
 import Main from '../components/views/Home';
 import Login from '../components/views/Login';
+import MatchOverview from '../components/views/MatchOverview/MatchOverview';
 import Messages from '../components/views/Messages';
 import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
@@ -66,6 +67,7 @@ import {
   HELP_ROUTE,
   LANGUAGE_RESOURCES_ROUTE,
   LOGIN_ROUTE,
+  MATCH_OVERVIEW_ROUTE,
   MATERIALS_ROUTE,
   MESSAGES_ROUTE,
   MY_STORY_ROUTE,
@@ -223,6 +225,7 @@ export function getWebRouter() {
         { path: getAppRoute(HELP_CONTACT_ROUTE), element: <Help /> },
         { path: getAppRoute(HELP_FAQS_ROUTE), element: <Help /> },
         { path: getAppRoute(SETTINGS_ROUTE), element: <Settings /> },
+        { path: getAppRoute(MATCH_OVERVIEW_ROUTE), element: <MatchOverview /> },
       ],
     },
   ];
@@ -343,6 +346,7 @@ export function getNativeRouter() {
         { path: getAppRoute(HELP_CONTACT_ROUTE), element: <Help /> },
         { path: getAppRoute(HELP_FAQS_ROUTE), element: <Help /> },
         { path: getAppRoute(SETTINGS_ROUTE), element: <Settings /> },
+        { path: getAppRoute(MATCH_OVERVIEW_ROUTE), element: <MatchOverview /> },
       ],
     },
 
