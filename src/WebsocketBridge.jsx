@@ -68,7 +68,7 @@ const WebsocketBridge = () => {
       message: 'ping',
       returnMessage: 'pong',
       interval: 60000,
-      timeout: 180000,
+      timeout: 150000,
     },
     // old token may have expired -> load current one
     onClose: () => {
