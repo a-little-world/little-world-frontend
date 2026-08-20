@@ -9,9 +9,9 @@ import {
 } from '@firebase/messaging';
 import useSWR from 'swr';
 
+import { USER_ENDPOINT } from './api/endpoints';
 import { ToastContextType } from './components/blocks/Toast';
 import useNotificationStore from './features/stores/notification';
-import { USER_ENDPOINT } from './features/swr/index';
 import { disableFirebase, enableFirebase } from './firebase-util';
 import useToast from './hooks/useToast';
 

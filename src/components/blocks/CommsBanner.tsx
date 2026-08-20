@@ -5,7 +5,7 @@ import {
 import { isEmpty } from 'lodash';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../features/swr/index';
+import { USER_ENDPOINT } from '../../api/endpoints';
 
 function CommsBanner() {
   const banner = useSWR(USER_ENDPOINT).data?.banner;

@@ -8,8 +8,8 @@ import {
 } from '@firebase/app';
 import { getMessaging, getToken } from '@firebase/messaging';
 
+import { FIREBASE_ENDPOINT } from './api/endpoints';
 import { apiFetch } from './api/helpers';
-import { FIREBASE_ENDPOINT } from './features/swr';
 
 type FirebaseConfig = {
   clientConfig: FirebaseOptions;

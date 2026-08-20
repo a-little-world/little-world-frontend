@@ -10,6 +10,11 @@ import {
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
+import {
+  ACTIVE_CALL_ROOMS_ENDPOINT,
+  MATCHES_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../../api/endpoints';
 import { submitCallFeedback } from '../../../api/livekit';
 import { pagesWithViewportHeight, USER_TYPES } from '../../../constants/index';
 import {
@@ -20,11 +25,6 @@ import {
 import useModalManagerStore, {
   ModalTypes,
 } from '../../../features/stores/modalManager';
-import {
-  ACTIVE_CALL_ROOMS_ENDPOINT,
-  MATCHES_ENDPOINT,
-  USER_ENDPOINT,
-} from '../../../features/swr/index';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
 import { getAppRoute, ONBOARDING_ROUTE } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';

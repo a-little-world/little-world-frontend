@@ -1,6 +1,6 @@
 import { mutate, type Middleware } from 'swr';
 
-import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '.';
+import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../../api/endpoints';
 import { TokenStatus } from '../../api/types';
 import useNativeStore from '../stores/nativeStore';
 

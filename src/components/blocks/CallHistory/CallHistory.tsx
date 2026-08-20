@@ -15,8 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
+import { RANDOM_CALL_HISTORY_ENDPOINT } from '../../../api/endpoints';
 import { requestRandomCallMatch } from '../../../api/randomCalls';
-import { RANDOM_CALL_HISTORY_ENDPOINT } from '../../../features/swr';
 import { formatDate, formatDuration } from '../../../helpers/date';
 import useToast from '../../../hooks/useToast';
 import ProfileImage from '../../atoms/ProfileImage';

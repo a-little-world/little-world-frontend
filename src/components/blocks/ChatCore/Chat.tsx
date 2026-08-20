@@ -31,16 +31,16 @@ import {
   sendMessage,
 } from '../../../api/chat';
 import {
-  useCallSetupStore,
-  useChatInputStore,
-} from '../../../features/stores/index';
-import {
   CHATS_ENDPOINT_SEPERATE,
   getChatEndpoint,
   getChatMessagesEndpoint,
-  revalidateChats,
   USER_ENDPOINT,
-} from '../../../features/swr/index';
+} from '../../../api/endpoints';
+import {
+  useCallSetupStore,
+  useChatInputStore,
+} from '../../../features/stores/index';
+import { revalidateChats } from '../../../features/swr';
 import { addMessage } from '../../../features/swr/wsBridgeMutations';
 import {
   formatFileName,

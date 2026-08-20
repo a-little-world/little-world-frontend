@@ -24,7 +24,7 @@ import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr/index';
+} from '../../api/endpoints';
 import {
   COMMUNITY_EVENTS_ROUTE,
   getAppRoute,

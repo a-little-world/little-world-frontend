@@ -2,8 +2,8 @@ import { ReactNode, useMemo, useRef } from 'react';
 
 import useSWR from 'swr';
 
+import { IS_AUTHENTICATED_ENDPOINT } from '../api/endpoints';
 import useNativeStore from '../features/stores/nativeStore';
-import { IS_AUTHENTICATED_ENDPOINT } from '../features/swr/index';
 
 function AuthGuard({ children }: { children: ReactNode }) {
   const { data: authenticated, isValidating } = useSWR<boolean>(

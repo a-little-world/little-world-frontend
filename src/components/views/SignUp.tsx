@@ -25,7 +25,7 @@ import {
   API_OPTIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr/index';
+} from '../../api/endpoints';
 import { onFormError, registerInput } from '../../helpers/form';
 import { LOGIN_ROUTE, passAuthenticationBoundary } from '../../router/routes';
 import {
