@@ -7,9 +7,9 @@ export interface Environment {
 }
 
 export const environment: Environment = {
-  backendUrl: '',
+  backendUrl: 'https://backend.netbird.jannistoelle.de',
   coreWsPath: '/api/core/ws',
-  isNative: false,
+  isNative: true,
   csrfBypassToken: 'abc',
   allowNgrokRequests: false,
 };

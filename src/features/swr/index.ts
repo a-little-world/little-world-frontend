@@ -1,10 +1,13 @@
 import type { SWRConfiguration } from 'swr';
 import { mutate } from 'swr';
 
-import { apiFetch } from '../../api/helpers';
+import {
+  apiFetch,
+  IS_AUTHENTICATED_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../api/helpers';
 
-export const USER_ENDPOINT = '/api/user';
-export const IS_AUTHENTICATED_ENDPOINT = '/api/user/authenticated';
+export { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT };
 export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
 export const RANDOM_CALL_HISTORY_ENDPOINT = '/api/random_calls/user/history';
 export const RANDOM_CALL_LOBBY_ENDPOINT =
