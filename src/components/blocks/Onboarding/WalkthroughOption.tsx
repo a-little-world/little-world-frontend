@@ -51,7 +51,7 @@ function WalkthroughOption({
           </Link>
         </CardFooter>
       )}
-      {started && progress && (
+      {started && (
         <>
           <StatBoxFullWidth>
             <StatLabel type={TextTypes.Body4}>
@@ -59,7 +59,7 @@ function WalkthroughOption({
             </StatLabel>
             <ProgressValue type={TextTypes.Body4} bold>
               {t('onboarding_selection.walkthrough_progress', {
-                count: round(progress * 100),
+                count: round((progress ?? 0) * 100),
               })}
             </ProgressValue>
           </StatBoxFullWidth>

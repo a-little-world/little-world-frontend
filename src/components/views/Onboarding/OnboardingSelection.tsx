@@ -139,19 +139,18 @@ function OnboardingSelection() {
     revalidateOnFocus: true,
     refreshInterval: 2000, // 2 seconds
   });
-  const selfOnboardingStep = user?.selfOnboardingStepId;
+  const walkthroughStarted = Boolean(user?.selfOnboardingStarted);
+  const walkthroughProgress = user?.selfOnboardingProgress ?? 0;
   const preMatchingAppointment = user?.preMatchingAppointment;
   const hasAppointment = !!preMatchingAppointment?.start_time;
 
-  const walkthroughProgress = user?.selfOnboardingProgress;
-
   const { titleKey: leadingTitleKey, descriptionKey: leadingDescriptionKey } =
-    getLeadingCopyKeys(hasAppointment, !!selfOnboardingStep);
+    getLeadingCopyKeys(hasAppointment, walkthroughStarted);
 
   let stepFiveLabelKey = 'onboarding_selection.stepper_step4_choose_onboarding';
-  if (selfOnboardingStep) {
+  if (walkthroughStarted) {
     stepFiveLabelKey = 'onboarding_selection.stepper_step4_quiz_started';
-  } else if (selfOnboardingStep || hasAppointment) {
+  } else if (hasAppointment) {
     stepFiveLabelKey = 'onboarding_selection.stepper_step4_appointment_booked';
   }
   const onboardingSteps = [
@@ -192,7 +191,7 @@ function OnboardingSelection() {
         </LeadingDescription>
         <OptionsRow>
           <WalkthroughOption
-            started={!!walkthroughProgress}
+            started={walkthroughStarted}
             progress={walkthroughProgress}
           />
           <AppointmentOption

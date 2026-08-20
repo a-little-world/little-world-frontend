@@ -33,26 +33,6 @@ export function mapChapter(ch: ApiCourseChapter): CourseChapter {
   };
 }
 
-/** Step id persisted by `/api/user/self_onboarding/update/` (last quiz step per chapter). */
-export function getSelfOnboardingStepIdForChapter(
-  chapter: CourseChapter,
-): string {
-  return chapter.quizSteps.at(-1)?.id ?? chapter.id;
-}
-
-export function getCompletedChapterCountForStoredStep(
-  chapters: CourseChapter[],
-  storedStepId: string,
-): number {
-  if (!storedStepId) return 0;
-  const idx = chapters.findIndex(
-    ch =>
-      ch.id === storedStepId ||
-      ch.quizSteps.some(step => step.id === storedStepId),
-  );
-  return idx >= 0 ? idx + 1 : 0;
-}
-
 export function getCompletedChapterCountForCourseProgress(
   chapters: CourseChapter[],
   currentChapterId: string,

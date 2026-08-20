@@ -58,6 +58,7 @@ export const fetchCourseDetail = (slug: string) =>
 export const fetchCoursePreview = (slug: string) =>
   apiFetch<CourseDetail>(`/api/courses/preview/${slug}/`);
 
+export const SELF_ONBOARDING_SLUG = 'self-onboarding';
 export const SELF_ONBOARDING_COURSE_ENDPOINT = '/api/self-onboarding/course/';
 
 export const fetchSelfOnboardingCourse = () =>
