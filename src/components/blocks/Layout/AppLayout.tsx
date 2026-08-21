@@ -39,15 +39,15 @@ const Wrapper = styled.div<{ $isVH: boolean }>`
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100%;
   box-sizing: border-box;
   width: 100%;
 
   ${({ $isVH }) =>
     $isVH &&
     css`
-      height: 100vh;
-      max-height: 100vh;
+      height: 100%;
+      max-height: 100%;
     `}
 
   ${({ theme }) => css`
