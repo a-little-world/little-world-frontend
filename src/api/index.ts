@@ -9,7 +9,10 @@ import {
 import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
 import { resetUserQueries } from '../features/swr';
-import { unregisterFirebaseDeviceToken } from '../firebase-util';
+import {
+  registerFirebaseDeviceToken,
+  unregisterFirebaseDeviceToken,
+} from '../firebase-util';
 import { LOGIN_ROUTE } from '../router/routes';
 import { apiFetch } from './helpers';
 
@@ -110,11 +113,13 @@ export async function login({
   password: string;
 }) {
   if (!environment.isNative) {
-    return apiFetch(`/api/user/login/`, {
+    const loginData = await apiFetch(`/api/user/login/`, {
       method: 'POST',
       useTagsOnly: true,
       body: { email, password },
     });
+    await registerFirebaseDeviceToken();
+    return loginData;
   }
 
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
@@ -219,11 +224,13 @@ export async function signUp({
   };
 
   if (!environment.isNative) {
-    return apiFetch(`/api/register/`, {
+    const signUpData = await apiFetch(`/api/register/`, {
       method: 'POST',
       useTagsOnly: true,
       body: requestBody,
     });
+    await registerFirebaseDeviceToken();
+    return signUpData;
   }
 
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
