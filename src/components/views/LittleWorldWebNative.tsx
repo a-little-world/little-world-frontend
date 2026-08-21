@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { mutate, SWRConfig } from 'swr';
 
 import { apiFetch } from '../../api/helpers';
-import { TokenStatus } from '../../api/types';
 import { environment } from '../../environment';
 import { useReceiveHandlerStore } from '../../features/stores';
 import useNativeStore from '../../features/stores/nativeStore';
@@ -25,7 +24,6 @@ export interface LittleWorldWebNativeProps {
   sendMessageToReactNative: DomCommunicationMessageFn;
   registerReceiveHandler: (handler: DomCommunicationMessageFn) => void;
   apiFetchNative: typeof apiFetch;
-  refreshAccessToken: () => Promise<TokenStatus>;
   getAccessToken: () => Promise<string | undefined>;
   setAccessTokens: (
     accessToken: string | undefined,
@@ -73,7 +71,6 @@ export function LittleWorldWebNative({
   sendMessageToReactNative,
   registerReceiveHandler,
   apiFetchNative,
-  refreshAccessToken,
   getAccessToken,
   setAccessTokens,
   hasStoredToken,
@@ -95,11 +92,8 @@ export function LittleWorldWebNative({
     setSendMessageToReactNative,
     sendMessageToReactNative: sendMessageToReactNativeSet,
   } = useReceiveHandlerStore();
-  const [communicationEstablished, setCommunicationEstablished] =
-    useState(false);
   const {
     setApiFetchNative,
-    setRefreshAccessToken,
     setGetAccesToken,
     setSetAccessTokens,
     setGetInstallId,
@@ -114,10 +108,6 @@ export function LittleWorldWebNative({
   }, [apiFetchNative, setApiFetchNative]);
 
   useEffect(() => {
-    setRefreshAccessToken(refreshAccessToken);
-  }, [refreshAccessToken, setRefreshAccessToken]);
-
-  useEffect(() => {
     setGetAccesToken(getAccessToken);
   }, [getAccessToken, setGetAccesToken]);
 
@@ -130,30 +120,26 @@ export function LittleWorldWebNative({
   }, [getInstallId, setGetInstallId]);
 
   useEffect(() => {
-    if (handler && sendMessageToReactNativeSet && !communicationEstablished) {
-      setCommunicationEstablished(true);
-
-      setSendMessageToReactNative(sendMessageToReactNative);
+    if (handler) {
       registerReceiveHandler(handler);
-
-      sendMessageToReactNative({
-        action: 'WEBVIEW_READY',
-        payload: {},
-      }).then(res => {
-        if (!res.ok) {
-          throw new Error(res.error);
-        }
-        return res.data;
-      });
     }
-  }, [
-    handler,
-    registerReceiveHandler,
-    sendMessageToReactNativeSet,
-    communicationEstablished,
-    setSendMessageToReactNative,
-    sendMessageToReactNative,
-  ]);
+  }, [handler, registerReceiveHandler]);
+
+  const handshakeSentRef = useRef(false);
+  useEffect(() => {
+    if (!handler || !sendMessageToReactNativeSet || handshakeSentRef.current) {
+      return;
+    }
+    handshakeSentRef.current = true;
+
+    sendMessageToReactNative({
+      action: 'WEBVIEW_READY',
+      payload: {},
+    }).catch(error => {
+      handshakeSentRef.current = false;
+      console.error('WEBVIEW_READY handshake failed', error);
+    });
+  }, [handler, sendMessageToReactNativeSet, sendMessageToReactNative]);
 
   const swrConfig = useNativeSwrConfig();
 
