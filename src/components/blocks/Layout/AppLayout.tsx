@@ -279,6 +279,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
             closeModal();
           }}
           userPk={callSetup?.userId as string}
+          skipPrejoin={callSetup?.skipPrejoin}
         />
       </Modal>
 

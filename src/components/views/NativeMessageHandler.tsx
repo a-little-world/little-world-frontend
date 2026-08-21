@@ -250,8 +250,12 @@ function NativeMessageHandler() {
           const { action: callAction, partnerId, roomUuid, rejected } = payload;
 
           if (callAction === 'answer') {
-            // Same entry point the INCOMING_CALL modal's answer button uses.
-            useCallSetupStore.getState().initCallSetup({ userId: partnerId });
+            // Same entry point the INCOMING_CALL modal's answer button uses,
+            // but the native ring screen already collected the Accept tap, so
+            // skip the prejoin device picker and join directly.
+            useCallSetupStore
+              .getState()
+              .initCallSetup({ userId: partnerId, skipPrejoin: true });
           } else {
             useConnectedCallStore
               .getState()

@@ -2,6 +2,10 @@ import { create } from 'zustand';
 
 interface CallSetupData {
   userId: string;
+  /** Answered from the native ring screen: join immediately with default devices
+   * instead of showing the prejoin device picker (the native side already got
+   * an explicit Accept tap). */
+  skipPrejoin?: boolean;
 }
 
 interface CallSetupState {

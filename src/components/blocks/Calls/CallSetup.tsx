@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   CardContent,
@@ -91,9 +91,10 @@ export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
 type CallSetupProps = {
   onClose: () => void;
   userPk: string;
+  skipPrejoin?: boolean;
 };
 
-function CallSetup({ onClose, userPk }: CallSetupProps) {
+function CallSetup({ onClose, userPk, skipPrejoin }: CallSetupProps) {
   const navigate = useNavigate();
   const {
     t,
@@ -151,6 +152,25 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     });
   }, []);
 
+  // Answered from the native ring screen: the user already made the accept
+  // decision there, so join with default devices instead of making them pick
+  // devices and press Join again.
+  const joinedRef = useRef(false);
+  useEffect(() => {
+    if (!skipPrejoin || !authData.token || joinedRef.current) {
+      return;
+    }
+    joinedRef.current = true;
+    handleJoin({
+      username: username || '',
+      videoEnabled: true,
+      audioEnabled: true,
+      videoDeviceId: 'default',
+      audioDeviceId: 'default',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skipPrejoin, authData.token]);
+
   useEffect(() => {
     // Set permission error only when both audio and video have errors
     if (audioPermissionError && videoPermissionError) {
@@ -196,17 +216,19 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
           {t('pcs_sub_heading')}
         </Text>
       </CardContent>
-      <PreJoin
-        language={language as PrejoinLanguage}
-        onSubmit={handleJoin}
-        camLabel={t('pcs_camera_label')}
-        micLabel={t('pcs_mic_label')}
-        joinLabel={t('pcs_btn_join_call')}
-        onError={handleError}
-        onValidate={handleValidate}
-        defaults={{ username }}
-        persistUserChoices={false}
-      />
+      {!skipPrejoin && (
+        <PreJoin
+          language={language as PrejoinLanguage}
+          onSubmit={handleJoin}
+          camLabel={t('pcs_camera_label')}
+          micLabel={t('pcs_mic_label')}
+          joinLabel={t('pcs_btn_join_call')}
+          onError={handleError}
+          onValidate={handleValidate}
+          defaults={{ username }}
+          persistUserChoices={false}
+        />
+      )}
       {error && (
         <StatusMessage type={StatusTypes.Error} visible>
           {t(error)}
