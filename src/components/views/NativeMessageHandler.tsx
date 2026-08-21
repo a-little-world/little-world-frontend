@@ -8,7 +8,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { clearSwrCache, navigateToLogin } from '../../api/helpers';
 import {
+  useCallSetupStore,
+  useConnectedCallStore,
   useDebugStore,
+  useModalManagerStore,
   useNavigationStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
@@ -18,6 +21,7 @@ import {
   DomCommunicationMessageFn,
   DomCommunicationResponse,
 } from '../../features/stores/receiveHandler';
+import { blockIncomingCall } from '../../features/swr/wsBridgeMutations';
 import useToast from '../../hooks/useToast';
 
 export interface NativeChallengeProofEvent {
@@ -228,6 +232,36 @@ function NativeMessageHandler() {
                 : undefined,
             });
           }
+
+          const response: DomCommunicationResponse = { ok: true };
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
+        case 'NATIVE_CALL_ACTION': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const { action: callAction, partnerId, roomUuid, rejected } = payload;
+
+          if (callAction === 'answer') {
+            // Same entry point the INCOMING_CALL modal's answer button uses.
+            useCallSetupStore.getState().initCallSetup({ userId: partnerId });
+          } else {
+            useConnectedCallStore
+              .getState()
+              .disconnectFromCall({ sessionId: roomUuid, partnerId });
+            // Drop the room from the cache so the modal cannot re-open. Pass
+            // the session id only when native could not reach the reject
+            // endpoint, since that is what triggers the retry.
+            blockIncomingCall(partnerId, rejected ? undefined : roomUuid);
+          }
+          useModalManagerStore.getState().closeModal();
 
           const response: DomCommunicationResponse = { ok: true };
           sendMessageToReactNative!({

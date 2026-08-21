@@ -48,6 +48,20 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      // The user answered or declined an incoming call on the native ring
+      // screen; mirror what the INCOMING_CALL modal would have done.
+      action: 'NATIVE_CALL_ACTION';
+      requestId?: string;
+      payload: {
+        action: 'answer' | 'decline';
+        partnerId: string;
+        roomUuid: string;
+        // Whether native already reached /api/call_rejected. When false the
+        // web side retries it through the authenticated path.
+        rejected?: boolean;
+      };
+    }
+  | {
       action: 'GET_INTEGRITY_TOKEN';
       requestId?: string;
       payload: {};
