@@ -20,8 +20,6 @@ import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { logout } from '../../api';
-import { environment } from '../../environment';
-import { useReceiveHandlerStore } from '../../features/stores';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
