@@ -12,7 +12,13 @@
     "rootDir": "src",
     "strict": true,
     "target": "ES2020",
-    "allowJs": true
+    "allowJs": true,
+    // Every test file already imports its subject as `./subject.ts`, because the node
+    // test runner resolves ESM by exact filename. Allowing the same specifier in source
+    // lets helpers share a module (helpers/matchWeek.ts) rather than each keeping its
+    // own copy of a rule. Satisfied by `tsc --noEmit` and by `build:types`, which
+    // passes --emitDeclarationOnly.
+    "allowImportingTsExtensions": true
   },
   "include": ["src"],
   "exclude": [

@@ -22,6 +22,7 @@ import { getMatchEndpoint, USER_ENDPOINT } from '../../features/swr';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard';
+import { getMatchTeaserDummyInput } from './Cards/matchTeaserDummyData';
 import PartnerActionCard from './Cards/PartnerActionCard';
 import ProfileCard, {
   PROFILE_CARD_HEIGHT,
@@ -162,7 +163,7 @@ function PartnerProfiles({
       {matchesLoading ? (
         <StyledProfileCard width={CardSizes.Small} $loading />
       ) : (
-        matchesDisplay?.map(match => (
+        matchesDisplay?.map((match, index) => (
           <ProfileCard
             key={match.partner.id}
             userPk={match.partner.id}
@@ -175,6 +176,10 @@ function PartnerProfiles({
             isOnline={match.partner.isOnline}
             isSupport={match.partner.isSupport}
             chatId={match.chatId}
+            matchTeaserInput={
+              !match.partner.isSupport ? getMatchTeaserDummyInput(index) : null
+            }
+            unreadCount={match.chat?.unread_count}
           />
         ))
       )}
