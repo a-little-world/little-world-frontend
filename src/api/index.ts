@@ -1,4 +1,5 @@
 import { NavigateFunction } from 'react-router-dom';
+import { mutate } from 'swr';
 
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
@@ -8,7 +9,7 @@ import {
 } from '../features/integrityCheck';
 import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
-import { resetUserQueries } from '../features/swr';
+import { resetUserQueries, USER_ENDPOINT } from '../features/swr';
 import { LOGIN_ROUTE } from '../router/routes';
 import { apiFetch } from './helpers';
 
@@ -38,6 +39,12 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
         useTagsOnly: true,
         body: data,
       });
+      await mutate(
+        USER_ENDPOINT,
+        user =>
+          user ? { ...user, profile: { ...user.profile, ...response } } : user,
+        { revalidate: false },
+      );
       onSuccess(response);
     } catch (error) {
       if (error?.status === 413)

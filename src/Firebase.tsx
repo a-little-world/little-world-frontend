@@ -124,16 +124,21 @@ function FireBase() {
     [],
   );
 
+  const toastShownRef = useRef(false);
+
   // Show one-time toast when browser has not granted notification
   // permission yet
   useEffect(() => {
     if (
       !deviceSupported ||
-      devicePermissionSet !== false ||
-      !showNotificationPermissionToast
+      notificationsEnabled === undefined || // profile not loaded yet
+      (devicePermissionSet && notificationsEnabled) ||
+      !showNotificationPermissionToast ||
+      toastShownRef.current
     ) {
       return;
     }
+    toastShownRef.current = true;
 
     const titleKey = notificationsEnabled
       ? 'push_notifications.permission_missing.title'

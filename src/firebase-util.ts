@@ -104,7 +104,7 @@ export async function registerFirebaseDeviceToken(): Promise<void> {
     await apiFetch('/api/push_notifications/register', {
       method: 'POST',
       body: {
-        install_id: getInstallationId(),
+        install_id: await getInstallationId(),
         token,
         platform: 'web',
         model_name: navigator.userAgent,
@@ -126,7 +126,7 @@ export async function unregisterFirebaseDeviceToken(): Promise<void> {
 
   await apiFetch('/api/push_notifications/unregister', {
     method: 'POST',
-    body: { install_id: getInstallationId() },
+    body: { install_id: await getInstallationId() },
   });
 }
 
@@ -156,6 +156,7 @@ export async function enableNotificationsInProfile(
     onSuccess,
     onFailure,
   );
+  // TODO: mutate user profile
 }
 
 export async function sendFirebaseTestNotification(
