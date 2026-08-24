@@ -6,7 +6,11 @@ import {
 } from '@firebase/app';
 import { getMessaging, getToken } from '@firebase/messaging';
 
+import { mutateUserData } from './api';
 import { apiFetch } from './api/helpers';
+import { environment } from './environment';
+import { useReceiveHandlerStore } from './features/stores';
+import useNativeStore from './features/stores/nativeStore';
 import { FIREBASE_ENDPOINT } from './features/swr';
 
 type FirebaseConfig = {
@@ -62,7 +66,11 @@ export async function getFirebaseToken(): Promise<string | undefined> {
   return token;
 }
 
-export function getInstallationId(): string {
+export async function getInstallationId(): Promise<string> {
+  if (environment.isNative) {
+    return useNativeStore.getState().getInstallId();
+  }
+
   const key = 'install_id';
 
   try {
@@ -79,6 +87,14 @@ export function getInstallationId(): string {
 }
 
 export async function registerFirebaseDeviceToken(): Promise<void> {
+  if (environment.isNative) {
+    await useReceiveHandlerStore.getState().sendMessageToReactNative?.({
+      action: 'REGISTER_DEVICE_PUSH_TOKEN',
+      payload: {},
+    });
+    return;
+  }
+
   const token = await getFirebaseToken();
   if (!token) {
     return;
@@ -100,6 +116,14 @@ export async function registerFirebaseDeviceToken(): Promise<void> {
 }
 
 export async function unregisterFirebaseDeviceToken(): Promise<void> {
+  if (environment.isNative) {
+    await useReceiveHandlerStore.getState().sendMessageToReactNative?.({
+      action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
+      payload: {},
+    });
+    return;
+  }
+
   await apiFetch('/api/push_notifications/unregister', {
     method: 'POST',
     body: { install_id: getInstallationId() },
@@ -121,6 +145,17 @@ export async function disableFirebase() {
   }
 
   await unregisterFirebaseDeviceToken();
+}
+
+export async function enableNotificationsInProfile(
+  onSuccess: () => void = () => {},
+  onFailure: () => void = () => {},
+) {
+  await mutateUserData(
+    { push_notifications_enabled: true },
+    onSuccess,
+    onFailure,
+  );
 }
 
 export async function sendFirebaseTestNotification(

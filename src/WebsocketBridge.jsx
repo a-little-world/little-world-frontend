@@ -29,11 +29,9 @@ const WebsocketBridge = () => {
    * } --> this will triger a simple redux dispatch in the frontend
    */
   const [accessToken, setAccessToken] = useState(undefined);
-  const [ready, setReady] = useState(!environment.isNative);
+  const [ready, setReady] = useState(false);
   const [, setMessageHistory] = useState([]);
-  const [installId, setInstallId] = useState(
-    environment.isNative ? undefined : getInstallationId(),
-  );
+  const [installId, setInstallId] = useState(undefined);
 
   const backendUrl = useEffectiveBackendUrl();
   const coreWsScheme = useEffectiveCoreWsScheme();
@@ -49,16 +47,19 @@ const WebsocketBridge = () => {
     setAccessToken(token);
   };
 
+  const loadInstallId = async () => {
+    const id = await getInstallationId();
+    setInstallId(id);
+  };
+
   useEffect(() => {
-    if (!environment.isNative) return;
-    const resolveToken = async () => {
-      const nativeStore = useNativeStore.getState();
-      await loadAccessToken();
-      const nativeInstallId = await nativeStore.getInstallId();
-      setInstallId(nativeInstallId);
+    (async () => {
+      if (environment.isNative) {
+        await loadAccessToken();
+      }
+      await loadInstallId();
       setReady(true);
-    };
-    resolveToken();
+    })();
   }, []);
 
   const { lastMessage, readyState } = useWebSocket(ready ? socketUrl : null, {

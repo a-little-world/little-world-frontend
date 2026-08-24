@@ -20,11 +20,14 @@ import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { logout } from '../../api';
+import { environment } from '../../environment';
+import { useReceiveHandlerStore } from '../../features/stores';
 import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
 } from '../../features/swr/index';
+import { unregisterFirebaseDeviceToken } from '../../firebase-util';
 import {
   COMMUNITY_EVENTS_ROUTE,
   getAppRoute,
@@ -222,7 +225,14 @@ function Sidebar({ isVH, sidebarMobile }) {
         : []),
       {
         label: 'log_out',
-        clickEvent: () => logout(navigate),
+        clickEvent: async () => {
+          try {
+            await unregisterFirebaseDeviceToken();
+          } catch (_e) {
+            // ignore
+          }
+          logout(navigate);
+        },
       },
     ],
     [hasMatchingPermissions, startPath, navigate],

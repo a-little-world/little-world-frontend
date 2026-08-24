@@ -14,7 +14,11 @@ import useSWR from 'swr';
 import { ToastContextType } from './components/blocks/Toast';
 import useNotificationStore from './features/stores/notification';
 import { USER_ENDPOINT } from './features/swr/index';
-import { disableFirebase, enableFirebase } from './firebase-util';
+import {
+  disableFirebase,
+  enableFirebase,
+  enableNotificationsInProfile,
+} from './firebase-util';
 import useToast from './hooks/useToast';
 
 const SHOW_NOTIFICATION_PERMISSION_TOAST_KEY =
@@ -125,16 +129,21 @@ function FireBase() {
   useEffect(() => {
     if (
       !deviceSupported ||
-      !notificationsEnabled ||
       devicePermissionSet !== false ||
       !showNotificationPermissionToast
     ) {
       return;
     }
 
+    const titleKey = notificationsEnabled
+      ? 'push_notifications.permission_missing.title'
+      : 'push_notifications.initial_toast.enable.title';
+    const descriptionKey = notificationsEnabled
+      ? 'push_notifications.permission_missing.description'
+      : 'push_notifications.initial_toast.enable.description';
     toast.showToast({
-      title: t('push_notifications.permission_missing'),
-      description: t('push_notifications.permission_missing.description'),
+      title: t(titleKey),
+      description: t(descriptionKey),
       actionText: t('push_notifications.request_permission'),
       actionAltText: 'request notification permission',
       duration: Infinity, // show indefinitely
@@ -143,6 +152,8 @@ function FireBase() {
       closeOnClick: false,
       // click is required for browser to show permission prompt
       onActionClick: () => {
+        enableNotificationsInProfile();
+
         Notification.requestPermission().then(permission => {
           setDevicePermissionSet(permission !== 'default');
           setDevicePermissionGranted(permission === 'granted');
