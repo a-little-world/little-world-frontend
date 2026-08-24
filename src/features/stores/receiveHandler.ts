@@ -37,6 +37,15 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'DISPLAY_NOTIFICATION';
+      requestId?: string;
+      payload: {
+        title?: string;
+        body?: string;
+        path?: string;
+      };
+    }
+  | {
       action: 'GET_INTEGRITY_TOKEN';
       requestId?: string;
       payload: {};
