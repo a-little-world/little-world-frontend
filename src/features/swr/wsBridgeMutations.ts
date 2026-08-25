@@ -245,20 +245,6 @@ export function preMatchingAppointmentBooked(appointment: any): void {
   );
 }
 
-export function addPostCallSurvey(postCallSurvey: any): void {
-  mutate(
-    USER_ENDPOINT,
-    (userData: any) => {
-      if (!userData) return userData;
-      return {
-        ...userData,
-        postCallSurvey,
-      };
-    },
-    false,
-  );
-}
-
 export function runWsBridgeMutation(
   action: string,
   payload: { [key: string]: any },
@@ -300,11 +286,6 @@ export function runWsBridgeMutation(
     case 'preMatchingAppointmentBooked': {
       // Payload is PreMatchingAppointmentSerializer data
       preMatchingAppointmentBooked(payload);
-      break;
-    }
-    case 'addPostCallSurvey': {
-      // Payload is the post-call survey dict
-      addPostCallSurvey(payload);
       break;
     }
     default:
