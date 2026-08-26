@@ -100,5 +100,15 @@ export function progressCopyParams(
 
 /** Only this state shows the last-call line; elsewhere it competes with the ask. */
 export function progressShowsLastCall(state: MatchStateKind): boolean {
-  return state === 'engaged' || state === 'streak_active';
+  return (
+    state === 'engaged' || state === 'streak_active' || state === 'dormant'
+  );
+}
+
+/**
+ * A weekday is only unambiguous on an active streak — "last Wednesday" is this run.
+ * Engaged or dormant can be several Wednesdays ago, so those get the calendar date.
+ */
+export function progressLastCallUsesWeekday(state: MatchStateKind): boolean {
+  return state === 'streak_active';
 }

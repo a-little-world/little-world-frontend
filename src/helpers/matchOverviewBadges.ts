@@ -358,7 +358,7 @@ function byCategoryThenRung(a: ResolvedBadge, b: ResolvedBadge): number {
 /**
  * The collapsed strip: earned badges plus the next rung of each category, in category
  * order. How many of these are on screen is a layout question, not this function's —
- * the strip scrolls, so it shows as many as the width allows.
+ * the strip fits what it can and the last slot is the view-all control.
  */
 export function orderBadgesForStrip(badges: ResolvedBadge[]): ResolvedBadge[] {
   return [...visibleOverviewBadges(badges)].sort(byCategoryThenRung);
