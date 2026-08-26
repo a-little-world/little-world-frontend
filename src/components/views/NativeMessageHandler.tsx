@@ -67,6 +67,19 @@ function NativeMessageHandler() {
           });
           return response;
         }
+        case 'SET_LOCKED_SESSION': {
+          useNativeStore.getState().setIsLockedSession(payload.locked);
+
+          const response: DomCommunicationResponse = { ok: true };
+          if (requestId) {
+            sendMessageToReactNative!({
+              action: 'RESPONSE',
+              requestId,
+              payload: response,
+            });
+          }
+          return response;
+        }
         case 'NAVIGATE': {
           if (!requestId) {
             throw new Error('Received native message without request id');

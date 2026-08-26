@@ -37,6 +37,7 @@ import {
   useChatInputStore,
   useConnectedCallStore,
 } from '../../features/stores';
+import useReceiveHandlerStore from '../../features/stores/receiveHandler';
 import {
   getChatEndpoint,
   RANDOM_CALL_EXIT_PARAM,
@@ -366,6 +367,7 @@ function VideoCall() {
     callRejected,
   } = useConnectedCallStore();
   const { setOnTextAdded } = useChatInputStore();
+  const { sendMessageToReactNative } = useReceiveHandlerStore();
   const isBelowBreakpoint = useIsBelowBreakpoint();
   const {
     uuid,
@@ -487,6 +489,12 @@ function VideoCall() {
                 disconnectFromCall({
                   sessionId: uuid,
                   partnerId: chatData?.partner?.id,
+                });
+                // Native releases the lock screen on this; a call answered from
+                // the keyguard must not leave the app reachable afterwards.
+                sendMessageToReactNative?.({
+                  action: 'CALL_ENDED',
+                  payload: {},
                 });
                 if (postDisconnectRedirect) {
                   navigate(postDisconnectRedirect, { replace: true });

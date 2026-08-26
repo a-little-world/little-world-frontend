@@ -60,6 +60,22 @@ export const USER_FORM_CONDITIONS = 'conditions';
 const getUserFormRoute = (slug: string) => `${USER_FORM_ROUTE}/${slug}`;
 export const getHomeRoute = (locale: string, slug: string) =>
   `${WP_HOME_ROUTE}/${locale}/${slug}`;
+/**
+ * Routes reachable while the app is restricted to a lock-screen call session.
+ * Accept lands on `/app?call-setup=<id>` (a modal over the home route), and the
+ * modal then navigates to `/app/call/<id>`.
+ */
+export const isCallRoute = (pathname: string, search: string) => {
+  const appRoute = `/${APP_ROUTE}`;
+  if (pathname === appRoute || pathname === `${appRoute}/`) {
+    return new URLSearchParams(search).has('call-setup');
+  }
+  return (
+    pathname.startsWith(`${appRoute}/call/`) ||
+    pathname.startsWith(`${appRoute}/call-setup/`)
+  );
+};
+
 export const getAppRoute = (slug?: string) =>
   `/${APP_ROUTE}${slug ? `/${slug}` : ''}`;
 export const getAppAbsoluteRoute = (slug?: string) =>

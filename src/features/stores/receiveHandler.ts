@@ -89,6 +89,18 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'SET_LOCKED_SESSION';
+      requestId?: string;
+      payload: {
+        locked: boolean;
+      };
+    }
+  | {
+      action: 'CALL_ENDED';
+      requestId?: string;
+      payload: {};
+    }
+  | {
       action: 'NAVIGATE_TO_LOGIN';
       requestId?: string;
       payload: {

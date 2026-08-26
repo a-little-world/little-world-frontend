@@ -142,18 +142,19 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     ) {
       openModal(ModalTypes.INCOMING_CALL.id);
     } else dismissModal(ModalTypes.INCOMING_CALL.id);
-  }, [activeCallRoom?.uuid, disconnectedFromSession]);
+  }, [activeCallRoom?.room_uuid, disconnectedFromSession]);
 
-  // Initialize call setup from query param on page load
+  // Initialize call setup from query param, also when the param changes later
+  // (e.g. an incoming call accepted from a push notification while mounted)
+  const callSetupParam = searchParams.get('call-setup');
   useEffect(() => {
-    const callSetupUserId = searchParams.get('call-setup');
-    if (callSetupUserId && !callSetup) {
-      initCallSetup({ userId: callSetupUserId });
+    if (callSetupParam && !callSetup) {
+      initCallSetup({ userId: callSetupParam });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount
+  }, [callSetupParam]); // Only react to the param value itself
 
-  // Add query param when call setup is initiated
+  // Add query param when call setup is initiated, remove it when it ends
   useEffect(() => {
     if (callSetup?.userId) {
       const currentCallSetupParam = searchParams.get('call-setup');
@@ -164,6 +165,12 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
           return newParams;
         });
       }
+    } else if (searchParams.has('call-setup')) {
+      setSearchParams(prev => {
+        const newParams = new URLSearchParams(prev);
+        newParams.delete('call-setup');
+        return newParams;
+      });
     }
   }, [callSetup?.userId, searchParams, setSearchParams]);
 

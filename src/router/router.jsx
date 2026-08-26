@@ -9,8 +9,10 @@ import {
   Navigate,
   Outlet,
   ScrollRestoration,
+  useLocation,
 } from 'react-router-dom';
 
+import LockedScreen from '../components/atoms/LockedScreen';
 import RouterError from '../components/blocks/ErrorView/ErrorView';
 import Form from '../components/blocks/Form/Form';
 import FormLayout from '../components/blocks/Layout/FormLayout';
@@ -40,6 +42,7 @@ import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
 import { environment } from '../environment';
+import useNativeStore from '../features/stores/nativeStore';
 import FireBase from '../Firebase';
 import AuthGuard from '../guards/AuthGuard';
 import RouteGuard from '../guards/RouteGuard';
@@ -64,6 +67,7 @@ import {
   HELP_CONTACT_ROUTE,
   HELP_FAQS_ROUTE,
   HELP_ROUTE,
+  isCallRoute,
   LANGUAGE_RESOURCES_ROUTE,
   LOGIN_ROUTE,
   MATERIALS_ROUTE,
@@ -102,6 +106,14 @@ const getInitialTheme = () => {
 
 export const Root = ({ children, restoreScroll = true }) => {
   useErrorDebugBridge();
+  const isLockedSession = useNativeStore(state => state.isLockedSession);
+  const { pathname, search } = useLocation();
+
+  // Native only: the app is on screen solely because a call arrived on a locked
+  // phone, so nothing but the call may be shown. Sits above the router outlet
+  // rather than in RouteGuard so the unguarded routes are covered too.
+  const locked = isLockedSession && !isCallRoute(pathname, search);
+
   return (
     <CustomThemeProvider defaultMode={getInitialTheme()}>
       <ToastProvider>
@@ -112,7 +124,7 @@ export const Root = ({ children, restoreScroll = true }) => {
         {restoreScroll && <ScrollRestoration />}
         <GlobalStyles />
         {environment.isNative && <NativeMessageHandler />}
-        {children || <Outlet />}
+        {locked ? <LockedScreen /> : children || <Outlet />}
       </ToastProvider>
     </CustomThemeProvider>
   );

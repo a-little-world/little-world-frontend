@@ -14,6 +14,10 @@ interface NativeStoreState {
   setTokenStatus: (status: TokenStatus | undefined) => void;
   isTokenRefreshing: boolean;
   setIsTokenRefreshing: (isRefreshing: boolean) => void;
+  // Native only: the app is on screen solely because a call arrived on a locked
+  // phone, so only the call routes may be shown. Set over the bridge.
+  isLockedSession: boolean;
+  setIsLockedSession: (isLockedSession: boolean) => void;
   getAccessToken: () => Promise<string | undefined>;
   setGetAccesToken: (
     getAccessTokenFn: () => Promise<string | undefined>,
@@ -48,6 +52,8 @@ const useNativeStore = create<NativeStoreState>(set => {
     setTokenStatus: tokenStatus => set({ tokenStatus }),
     isTokenRefreshing: false,
     setIsTokenRefreshing: isTokenRefreshing => set({ isTokenRefreshing }),
+    isLockedSession: false,
+    setIsLockedSession: isLockedSession => set({ isLockedSession }),
     getAccessToken: errorFn('getAccessToken'),
     setGetAccesToken: getAccessToken => set({ getAccessToken }),
     getInstallId: errorFn('getInstallId'),
