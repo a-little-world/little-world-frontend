@@ -33,9 +33,11 @@ import useSWR from 'swr';
 
 import { callAgain } from '../../api/livekit';
 import { endRandomCallMatch } from '../../api/randomCalls';
+import { environment } from '../../environment';
 import {
   useChatInputStore,
   useConnectedCallStore,
+  useReceiveHandlerStore,
 } from '../../features/stores';
 import {
   getChatEndpoint,
@@ -396,6 +398,21 @@ function VideoCall() {
       refreshInterval: 1000,
     },
   );
+
+  // Native hosts the call in a WebView and needs to know when to redirect the
+  // hardware volume keys at the stream the call audio is actually on.
+  useEffect(() => {
+    if (!environment.isNative) return undefined;
+    const notify = (inCall: boolean) =>
+      useReceiveHandlerStore.getState().sendMessageToReactNative?.({
+        action: 'CALL_STATE_CHANGED',
+        payload: { inCall },
+      });
+    notify(true);
+    return () => {
+      notify(false);
+    };
+  }, []);
 
   useEffect(() => {
     if (urlUserId && !token) {
