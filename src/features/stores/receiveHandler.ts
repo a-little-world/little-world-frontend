@@ -89,6 +89,13 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'CALL_STATE_CHANGED';
+      requestId?: string;
+      payload: {
+        inCall: boolean;
+      };
+    }
+  | {
       action: 'NAVIGATE_TO_LOGIN';
       requestId?: string;
       payload: {
