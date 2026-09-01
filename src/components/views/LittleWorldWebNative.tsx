@@ -139,9 +139,8 @@ export function LittleWorldWebNative({
     sendMessageToReactNative({
       action: 'WEBVIEW_READY',
       payload: {},
-    }).catch(error => {
+    }).catch(() => {
       handshakeSentRef.current = false;
-      console.error('WEBVIEW_READY handshake failed', error);
     });
   }, [handler, sendMessageToReactNativeSet, sendMessageToReactNative]);
 
