@@ -13,12 +13,8 @@ import useSWR from 'swr';
 
 import { ToastContextType } from './components/blocks/Toast';
 import useNotificationStore from './features/stores/notification';
-import { USER_ENDPOINT } from './features/swr/index';
-import {
-  disableFirebase,
-  enableFirebase,
-  enableNotificationsInProfile,
-} from './firebase-util';
+import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from './features/swr/index';
+import { enableFirebase, enableNotificationsInProfile } from './firebase-util';
 import useToast from './hooks/useToast';
 
 const SHOW_NOTIFICATION_PERMISSION_TOAST_KEY =
@@ -47,6 +43,8 @@ function FireBase() {
     revalidateOnMount: false,
     revalidateOnFocus: false,
   });
+
+  const { data: isAuthenticated } = useSWR<boolean>(IS_AUTHENTICATED_ENDPOINT);
 
   const unsubscribeRef = useRef<Unsubscribe | undefined>(undefined);
   const userNotificationsEnabled =
@@ -179,7 +177,7 @@ function FireBase() {
     t,
   ]);
 
-  // prevent multiple (de-)activations
+  // prevent multiple activations
   const firebaseEnabledRef = useRef<boolean | undefined>(undefined);
 
   useEffect(() => () => unsubscribeRef.current?.(), []);
@@ -189,33 +187,24 @@ function FireBase() {
       unsubscribeRef.current?.();
     };
 
-    if (!deviceSupported) {
+    const enabled = Boolean(isAuthenticated && devicePermissionGranted);
+    if (!deviceSupported || !enabled || firebaseEnabledRef.current) {
       return unsubscribe;
     }
 
-    const enabled = Boolean(notificationsEnabled && devicePermissionGranted);
-    if (firebaseEnabledRef.current === enabled) {
-      return unsubscribe;
-    }
-    firebaseEnabledRef.current = enabled;
+    firebaseEnabledRef.current = true;
 
-    if (enabled) {
-      enableFirebase().then(() => {
-        const messaging = getMessaging();
-        unsubscribeRef.current = onMessage(messaging, payload =>
-          handleMessage(payload, toast, navigate),
-        );
-      });
-    } else {
-      unsubscribeRef.current?.();
-      unsubscribeRef.current = undefined;
-      disableFirebase();
-    }
+    enableFirebase().then(() => {
+      const messaging = getMessaging();
+      unsubscribeRef.current = onMessage(messaging, payload =>
+        handleMessage(payload, toast, navigate),
+      );
+    });
 
     return unsubscribe;
   }, [
     deviceSupported,
-    notificationsEnabled,
+    isAuthenticated,
     devicePermissionGranted,
     toast,
     navigate,

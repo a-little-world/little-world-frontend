@@ -18,7 +18,6 @@ import {
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
 } from '../../features/swr/index';
-import { registerFirebaseDeviceToken } from '../../firebase-util';
 import { onFormError, registerInput } from '../../helpers/form';
 import useQueryParam, { useRemoveQueryParam } from '../../hooks/useQueryParam';
 import {
@@ -75,7 +74,6 @@ const Login = () => {
     login(data)
       .then(loginData => {
         setIsSubmitting(false);
-        registerFirebaseDeviceToken();
         mutate(USER_ENDPOINT, loginData, false);
         mutate(IS_AUTHENTICATED_ENDPOINT, true, false);
       })

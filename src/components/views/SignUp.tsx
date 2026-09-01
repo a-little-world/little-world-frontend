@@ -26,7 +26,6 @@ import {
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
 } from '../../features/swr/index';
-import { registerFirebaseDeviceToken } from '../../firebase-util';
 import { onFormError, registerInput } from '../../helpers/form';
 import { LOGIN_ROUTE, passAuthenticationBoundary } from '../../router/routes';
 import {
@@ -142,7 +141,6 @@ const SignUp = () => {
     signUp(data)
       .then(async signUpData => {
         setIsSubmitting(false);
-        registerFirebaseDeviceToken();
         mutate(USER_ENDPOINT, signUpData, false);
         mutate(IS_AUTHENTICATED_ENDPOINT, true, false);
       })
