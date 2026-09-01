@@ -16,6 +16,7 @@ import {
   UNREAD_NOTIFICATIONS_ENDPOINT,
 } from './features/swr';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
+import { getInstallationId } from './firebase-util';
 import useToast from './hooks/useToast';
 
 const WebsocketBridge = () => {
@@ -28,26 +29,51 @@ const WebsocketBridge = () => {
    * } --> this will triger a simple redux dispatch in the frontend
    */
   const [accessToken, setAccessToken] = useState(undefined);
-  const [ready, setReady] = useState(!environment.isNative);
+  const [ready, setReady] = useState(false);
   const [, setMessageHistory] = useState([]);
+  const [installId, setInstallId] = useState(undefined);
 
   const backendUrl = useEffectiveBackendUrl();
   const coreWsScheme = useEffectiveCoreWsScheme();
   const webSocketHost = new URL(backendUrl).host;
-  const socketUrl = coreWsScheme + webSocketHost + environment.coreWsPath;
+  const socketUrl =
+    coreWsScheme +
+    webSocketHost +
+    environment.coreWsPath +
+    (installId ? `?install_id=${encodeURIComponent(installId)}` : '');
+
+  const loadAccessToken = async () => {
+    const token = await useNativeStore.getState().getAccessToken();
+    setAccessToken(token);
+  };
+
+  const loadInstallId = async () => {
+    const id = await getInstallationId();
+    setInstallId(id);
+  };
 
   useEffect(() => {
-    if (!environment.isNative) return;
-    const resolveToken = async () => {
-      const token = await useNativeStore.getState().getAccessToken();
-      setAccessToken(token);
+    (async () => {
+      if (environment.isNative) {
+        await loadAccessToken();
+      }
+      await loadInstallId();
       setReady(true);
-    };
-    resolveToken();
+    })();
   }, []);
   const { lastMessage } = useWebSocket(ready ? socketUrl : null, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
+    heartbeat: {
+      message: 'ping',
+      returnMessage: 'pong',
+      interval: 60000,
+      timeout: 150000,
+    },
+    // old token may have expired -> load current one
+    onClose: () => {
+      if (environment.isNative) loadAccessToken();
+    },
     protocols:
       environment.isNative && accessToken
         ? [`bearer.${accessToken}`]
