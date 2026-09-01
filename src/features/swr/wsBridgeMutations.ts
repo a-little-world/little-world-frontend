@@ -9,6 +9,7 @@ import {
   CHATS_ENDPOINT_SEPERATE,
   getChatEndpoint,
   MATCHES_ENDPOINT,
+  PENDING_SURVEY_ENDPOINT,
   USER_ENDPOINT,
 } from './index';
 
@@ -245,6 +246,19 @@ export function preMatchingAppointmentBooked(appointment: any): void {
   );
 }
 
+/**
+ * A survey is waiting — re-fetch the pending endpoint.
+ *
+ * Carries no payload and writes no cache entry by hand: the socket only removes the wait,
+ * and `/api/surveys/pending` stays the single source of truth. The previous implementation
+ * pushed the survey itself into a store the modal never read, so a delivered push showed
+ * nothing and left no trace. Revalidating instead of writing means the socket cannot
+ * disagree with the server.
+ */
+export function surveyOffered(): void {
+  mutate(PENDING_SURVEY_ENDPOINT);
+}
+
 export function runWsBridgeMutation(
   action: string,
   payload: { [key: string]: any },
@@ -286,6 +300,10 @@ export function runWsBridgeMutation(
     case 'preMatchingAppointmentBooked': {
       // Payload is PreMatchingAppointmentSerializer data
       preMatchingAppointmentBooked(payload);
+      break;
+    }
+    case 'surveyOffered': {
+      surveyOffered();
       break;
     }
     default:
