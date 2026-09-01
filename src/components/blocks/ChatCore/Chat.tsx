@@ -30,6 +30,7 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat';
+import { environment } from '../../../environment';
 import {
   useCallSetupStore,
   useChatInputStore,
@@ -245,7 +246,10 @@ const Chat = ({
   }, [activeChat, chatId, isEmpty(messagesResult)]);
 
   useEffect(() => {
-    setFocus('text');
+    // automatically opens keyboard on native, can be distracting
+    if (!environment.isNative) {
+      setFocus('text');
+    }
   }, [setFocus]);
 
   // Handle text to add from TranslationTool or other sources

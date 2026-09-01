@@ -5,6 +5,7 @@ import type { MatchStateKind } from './deriveMatchState.ts';
 import {
   progressCopyKeys,
   progressCtaTarget,
+  progressLastCallUsesWeekday,
   progressShowsLastCall,
 } from './deriveProgressCopy.ts';
 
@@ -65,5 +66,13 @@ describe('progressShowsLastCall', () => {
     assert.ok(progressShowsLastCall('streak_active'));
     assert.ok(!progressShowsLastCall('no_call'));
     assert.ok(!progressShowsLastCall('dormant'));
+  });
+});
+
+describe('progressLastCallUsesWeekday', () => {
+  it('names the weekday only while a streak is live', () => {
+    assert.ok(progressLastCallUsesWeekday('streak_active'));
+    assert.ok(!progressLastCallUsesWeekday('engaged'));
+    assert.ok(!progressLastCallUsesWeekday('dormant'));
   });
 });

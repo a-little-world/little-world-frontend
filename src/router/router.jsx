@@ -109,8 +109,8 @@ export const Root = ({ children, restoreScroll = true }) => {
       <ToastProvider>
         <AuthGuard>
           <WebsocketBridge />
-          {!environment.isNative && <FireBase />}
         </AuthGuard>
+        {!environment.isNative && <FireBase />}
         {restoreScroll && <ScrollRestoration />}
         <GlobalStyles />
         {environment.isNative && <NativeMessageHandler />}

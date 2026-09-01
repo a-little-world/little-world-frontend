@@ -1,5 +1,6 @@
 import {
   Card,
+  Link,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -38,7 +39,7 @@ export const ContentRow = styled.div`
   width: 100%;
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media (min-width: ${theme.breakpoints.xlarge}) {
       flex-direction: row;
       align-items: flex-start;
     }
@@ -61,7 +62,7 @@ export const PrimaryColumn = styled.div`
 
 export const SecondaryColumn = styled(OverviewCard)`
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media (min-width: ${theme.breakpoints.xlarge}) {
       flex: 0 1 22rem;
       min-width: 0;
       max-width: 22rem;
@@ -133,46 +134,6 @@ export const MatchSince = styled(Text).attrs({
   color: ${({ theme }) => theme.color.text.secondary};
 `;
 
-/**
- * Ring centre, rendered as ProgressRing `children`.
- *
- * The DS clamps its own label to `max`, so a pair on their fourteenth active week would
- * read "10 / 10" — the arc is full but the count they earned is not. The arc still takes
- * the clamped value (it cannot draw past a full circle); only the number is uncapped.
- * Mirrors the DS Fraction/Caption treatment so it is indistinguishable from the default.
- */
-export const RingFraction = styled.div`
-  display: inline-flex;
-  align-items: baseline;
-  line-height: 1;
-  gap: 1px;
-`;
-
-export const RingValue = styled(Text).attrs({
-  tag: 'span',
-  bold: true,
-  center: true,
-})`
-  color: ${({ theme }) => theme.color.text.heading};
-  line-height: 1;
-  margin-right: ${({ theme }) => theme.spacing.xxxxsmall};
-`;
-
-export const RingRest = styled(Text).attrs({
-  tag: 'span',
-  bold: true,
-})`
-  color: ${({ theme }) => theme.color.text.secondary};
-  line-height: 1;
-`;
-
-export const RingCaption = styled(Text).attrs({
-  tag: 'span',
-  center: true,
-})`
-  color: ${({ theme }) => theme.color.text.secondary};
-`;
-
 export const ProgressHero = styled.section`
   display: flex;
   flex-direction: column;
@@ -219,7 +180,9 @@ export const SearchToggleWrap = styled.div`
 
 export const CtaBlock = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
   gap: ${({ theme }) => theme.spacing.small};
   margin-top: ${({ theme }) => theme.spacing.xxsmall};
@@ -228,18 +191,20 @@ export const CtaBlock = styled.div`
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       width: auto;
+      flex-direction: row;
+      justify-content: flex-start;
     }
   `};
+`;
 
-  > :is(button, a) {
-    width: 100%;
+export const CtaLink = styled(Link)`
+  width: 100%;
 
-    ${({ theme }) => css`
-      @media (min-width: ${theme.breakpoints.medium}) {
-        width: auto;
-      }
-    `};
-  }
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      width: auto;
+    }
+  `};
 `;
 
 export const CtaContext = styled(Text)`
@@ -247,9 +212,9 @@ export const CtaContext = styled(Text)`
 `;
 
 export const StatsStrip = styled.section`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center;
   align-items: baseline;
   gap: ${({ theme }) => theme.spacing.small}
     ${({ theme }) => theme.spacing.medium};
@@ -257,6 +222,14 @@ export const StatsStrip = styled.section`
     ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.radius.small};
   background: ${({ theme }) => theme.color.surface.subtle};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+    }
+  `};
 `;
 
 export const Section = styled.section`
@@ -276,18 +249,25 @@ export const SectionHeading = styled(Text).attrs({
 
 /**
  * One medal's width. Everything about how many badges are on screen follows from this:
- * the row fits as many as the card is wide enough for and scrolls the rest, so a phone
- * shows three and a 700px card shows six. The previous rule sized each item at a
- * *fraction* of the container (`/ 2.5`), which meant a wide card just drew wider
- * badges — 2.5 of them at any width, with the space going spare.
+ * the row fits as many as the card is wide enough for, so a phone shows three and a
+ * 700px card shows six. The previous rule sized each item at a *fraction* of the
+ * container (`/ 2.5`), which meant a wide card just drew wider badges — 2.5 of them
+ * at any width, with the space going spare.
  *
  * Wide enough for a small ring above two short words; the expanded grid lets tracks
- * stretch past it to fill a row evenly, the strip does not.
+ * stretch past it to fill a row evenly, the strip does not. Collapsed with a view-all
+ * control reserves the last slot, so the visible count stays the same.
  */
-const BADGE_WIDTH = '7rem';
+export const BADGE_WIDTH = '7rem';
+
+export const BadgeStripMeasure = styled.div`
+  width: 100%;
+  min-width: 0;
+`;
 
 export const BadgeStrip = styled.ul<{ $expanded?: boolean }>`
   display: grid;
+  align-items: start;
   gap: ${({ theme }) => theme.spacing.xxsmall};
   margin: 0;
   padding: 0;
@@ -319,11 +299,6 @@ export const BadgeStrip = styled.ul<{ $expanded?: boolean }>`
 export const BadgeItem = styled.li`
   min-width: 0;
   scroll-snap-align: start;
-`;
-
-export const BadgeActions = styled.div`
-  display: flex;
-  justify-content: center;
 `;
 
 export const CallList = styled.ul`

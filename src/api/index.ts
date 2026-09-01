@@ -1,4 +1,5 @@
 import { NavigateFunction } from 'react-router-dom';
+import { mutate } from 'swr';
 
 import { API_FIELDS, USER_FIELDS } from '../constants/index';
 import { environment } from '../environment';
@@ -8,8 +9,7 @@ import {
 } from '../features/integrityCheck';
 import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
-import { resetUserQueries } from '../features/swr';
-import { unregisterFirebaseDeviceToken } from '../firebase-util';
+import { resetUserQueries, USER_ENDPOINT } from '../features/swr';
 import { LOGIN_ROUTE } from '../router/routes';
 import { apiFetch } from './helpers';
 
@@ -39,6 +39,12 @@ export const mutateUserData = async (formData, onSuccess, onFailure) => {
         useTagsOnly: true,
         body: data,
       });
+      await mutate(
+        USER_ENDPOINT,
+        user =>
+          user ? { ...user, profile: { ...user.profile, ...response } } : user,
+        { revalidate: false },
+      );
       onSuccess(response);
     } catch (error) {
       if (error?.status === 413)
@@ -110,11 +116,12 @@ export async function login({
   password: string;
 }) {
   if (!environment.isNative) {
-    return apiFetch(`/api/user/login/`, {
+    const loginData = await apiFetch(`/api/user/login/`, {
       method: 'POST',
       useTagsOnly: true,
       body: { email, password },
     });
+    return loginData;
   }
 
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
@@ -151,15 +158,6 @@ export async function login({
     loginData?.token_refresh || undefined,
   );
 
-  // Notify native app to register the firebase device push token.
-  // We can do this because the firebase sdk on native is always active.
-  // On web it is only activated when it is both supported and push notifications
-  // are enabled, so only register under these circumstances (see Firebase component)
-  await sendMessageToReactNative({
-    action: 'REGISTER_DEVICE_PUSH_TOKEN',
-    payload: {},
-  });
-
   delete loginData?.token_access;
   delete loginData?.token_refresh;
 
@@ -167,20 +165,6 @@ export async function login({
 }
 
 export async function logout(navigate: NavigateFunction) {
-  try {
-    if (environment.isNative) {
-      const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
-      await sendMessageToReactNative?.({
-        action: 'UNREGISTER_DEVICE_PUSH_TOKEN',
-        payload: {},
-      });
-    } else {
-      await unregisterFirebaseDeviceToken();
-    }
-  } catch (_e) {
-    // ignore
-  }
-
   try {
     await apiFetch(`/api/user/logout/`, {
       method: 'GET',
@@ -219,11 +203,13 @@ export async function signUp({
   };
 
   if (!environment.isNative) {
-    return apiFetch(`/api/register/`, {
+    const signUpData = await apiFetch(`/api/register/`, {
       method: 'POST',
       useTagsOnly: true,
       body: requestBody,
     });
+
+    return signUpData;
   }
 
   const { sendMessageToReactNative } = useReceiveHandlerStore.getState();
@@ -255,15 +241,6 @@ export async function signUp({
     signUpData?.token_access || undefined,
     signUpData?.token_refresh || undefined,
   );
-
-  // Notify native app to register the firebase device push token.
-  // We can do this because the firebase sdk on native is always active.
-  // On web it is only activated when it is both supported and push notifications
-  // are enabled, so only register under these circumstances (see Firebase component)
-  await sendMessageToReactNative({
-    action: 'REGISTER_DEVICE_PUSH_TOKEN',
-    payload: {},
-  });
 
   return signUpData;
 }

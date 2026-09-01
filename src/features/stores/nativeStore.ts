@@ -18,6 +18,8 @@ interface NativeStoreState {
   setGetAccesToken: (
     getAccessTokenFn: () => Promise<string | undefined>,
   ) => void;
+  getInstallId: () => Promise<string>;
+  setGetInstallId: (getInstallIdFn: () => Promise<string>) => void;
   setAccessTokens: (
     accessToken: string | undefined,
     refreshToken: string | undefined,
@@ -48,6 +50,8 @@ const useNativeStore = create<NativeStoreState>(set => {
     setIsTokenRefreshing: isTokenRefreshing => set({ isTokenRefreshing }),
     getAccessToken: errorFn('getAccessToken'),
     setGetAccesToken: getAccessToken => set({ getAccessToken }),
+    getInstallId: errorFn('getInstallId'),
+    setGetInstallId: getInstallId => set({ getInstallId }),
     setAccessTokens: errorFn('setAccessTokens'),
     setSetAccessTokens: setAccessTokens => set({ setAccessTokens }),
   };
