@@ -23,7 +23,6 @@ import styled from 'styled-components';
 import Note from '../components/atoms/Note';
 import CategorySelector from '../components/blocks/CategorySelector/CategorySelector';
 import ProfilePic from '../components/blocks/Profile/ProfilePic/ProfilePic';
-import { COUNTRIES } from '../constants';
 import { formatMultiSelectionOptions } from '../helpers/form';
 import i18n from '../i18n';
 
@@ -61,6 +60,7 @@ export interface FormComponentConfig {
   dataField?: string;
   currentValue?: any;
   formData?: Array<{ tag: string; value: string }>;
+  pinValue?: string;
   getProps?: (t: (key: string) => string) => Record<string, any>;
 }
 
@@ -108,7 +108,14 @@ export const formatDataField = (
 };
 
 export const getFormComponent = (
-  { type, currentValue, dataField, formData, getProps }: FormComponentConfig,
+  {
+    type,
+    currentValue,
+    dataField,
+    formData,
+    pinValue,
+    getProps,
+  }: FormComponentConfig,
   t: (key: string) => string,
 ): ComponentReturn | null => {
   const props = getProps?.(t);
@@ -215,8 +222,7 @@ export const getFormComponent = (
         updater: 'onValueChange',
         options: formatDataField(formData, t, {
           alphabetize: true,
-          pinFirstValue:
-            dataField === 'country_of_residence' ? COUNTRIES.DE : undefined,
+          pinFirstValue: pinValue,
         }),
         currentValue: currentValue || '',
         ...props,
@@ -227,7 +233,10 @@ export const getFormComponent = (
         Component: Select,
         dataField,
         updater: 'onValueChange',
-        options: formatDataField(formData, t, { alphabetize: true }),
+        options: formatDataField(formData, t, {
+          alphabetize: true,
+          pinFirstValue: pinValue,
+        }),
         currentValue: currentValue || '',
         ...props,
       };

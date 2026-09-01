@@ -67,6 +67,38 @@ interface FormatMultiSelectionOptionsParams {
   t: TFunction;
 }
 
+export interface SelectOption {
+  label: string;
+  value: string;
+}
+
+export interface OrderSelectOptionsConfig {
+  alphabetize?: boolean;
+  pinValue?: string;
+  sortLocale?: string;
+}
+
+export function orderSelectOptions(
+  options: SelectOption[],
+  { alphabetize = false, pinValue, sortLocale }: OrderSelectOptionsConfig = {},
+): SelectOption[] {
+  if (!alphabetize && !pinValue) {
+    return options;
+  }
+
+  const pinned = pinValue
+    ? options.find(option => option.value === pinValue)
+    : undefined;
+  const rest = pinValue
+    ? options.filter(option => option.value !== pinValue)
+    : options;
+  const orderedRest = alphabetize
+    ? [...rest].sort((a, b) => a.label.localeCompare(b.label, sortLocale))
+    : rest;
+
+  return pinned ? [pinned, ...orderedRest] : orderedRest;
+}
+
 export const formatMultiSelectionOptions = ({
   data,
   t,

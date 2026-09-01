@@ -31,7 +31,8 @@ export interface LittleWorldWebNativeProps {
     accessToken: string | undefined,
     refreshToken: string | undefined,
   ) => Promise<void>;
-  hasStoredToken?: boolean;
+  getInstallId: () => Promise<string>;
+  hasStoredToken: boolean;
 }
 
 /**
@@ -76,6 +77,7 @@ export function LittleWorldWebNative({
   getAccessToken,
   setAccessTokens,
   hasStoredToken,
+  getInstallId,
 }: LittleWorldWebNativeProps) {
   // Optimistic startup: if native has a stored token, boot the hash-router at the app
   // route instead of the default login route so RouteGuard renders the app immediately
@@ -100,6 +102,7 @@ export function LittleWorldWebNative({
     setRefreshAccessToken,
     setGetAccesToken,
     setSetAccessTokens,
+    setGetInstallId,
   } = useNativeStore();
 
   useEffect(() => {
@@ -121,6 +124,10 @@ export function LittleWorldWebNative({
   useEffect(() => {
     setSetAccessTokens(setAccessTokens);
   }, [setAccessTokens, setSetAccessTokens]);
+
+  useEffect(() => {
+    setGetInstallId(getInstallId);
+  }, [getInstallId, setGetInstallId]);
 
   useEffect(() => {
     if (handler && sendMessageToReactNativeSet && !communicationEstablished) {
