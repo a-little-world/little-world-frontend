@@ -4,7 +4,6 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
-  Link,
   ProgressRing,
   ProgressRingSizes,
   ProgressRingTones,
@@ -30,6 +29,7 @@ import {
   progressCopyKeys,
   progressCopyParams,
   progressCtaTarget,
+  progressLastCallUsesWeekday,
   progressShowsLastCall,
 } from '../../../helpers/deriveProgressCopy';
 import { resolveOverviewBadges } from '../../../helpers/matchOverviewBadges';
@@ -54,6 +54,7 @@ import {
   ContentRow,
   CtaBlock,
   CtaContext,
+  CtaLink,
   HeaderBlock,
   HeaderIdentity,
   MatchSince,
@@ -66,10 +67,6 @@ import {
   ProgressCopy,
   ProgressHeading,
   ProgressHero,
-  RingCaption,
-  RingFraction,
-  RingRest,
-  RingValue,
   SearchToggleWrap,
   SecondaryColumn,
   Section,
@@ -258,11 +255,19 @@ function MatchOverview() {
       : partnerChatTo;
   const showLastCall = progressShowsLastCall(matchState.state);
 
-  const lastCallWeekday = snapshot.last_call_at
-    ? new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(
-        new Date(snapshot.last_call_at),
-      )
-    : null;
+  let lastCallWhen: string | null = null;
+  if (snapshot.last_call_at) {
+    const lastCallAt = new Date(snapshot.last_call_at);
+    lastCallWhen = progressLastCallUsesWeekday(matchState.state)
+      ? new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(
+          lastCallAt,
+        )
+      : new Intl.DateTimeFormat(i18n.language, {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        }).format(lastCallAt);
+  }
 
   const visibleCalls = showAllCalls
     ? overview.calls
@@ -357,7 +362,7 @@ function MatchOverview() {
             </StatsStrip>
             <ProgressHero>
               <ProgressRing
-                value={derived.ringValue}
+                value={derived.activeWeeks}
                 max={derived.ringMax}
                 size={ProgressRingSizes.XLarge}
                 tone={
@@ -369,20 +374,8 @@ function MatchOverview() {
                   value: derived.activeWeeks,
                   max: derived.ringMax,
                 })}
-              >
-                {/* Own centre content: the DS label clamps to max, and a pair past
-                      ten active weeks should still see the weeks they actually did. */}
-                <RingFraction>
-                  <RingValue type={TextTypes.Body2}>
-                    {derived.activeWeeks}
-                  </RingValue>
-                  <RingRest type={TextTypes.Body4}>/</RingRest>
-                  <RingRest type={TextTypes.Body4}>{derived.ringMax}</RingRest>
-                </RingFraction>
-                <RingCaption type={TextTypes.Body5}>
-                  {t('match_overview.ring_caption')}
-                </RingCaption>
-              </ProgressRing>
+                caption={t('match_overview.ring_caption')}
+              />
               <ProgressCopy>
                 <ProgressHeading type={TextTypes.Heading5} tag="h2">
                   {t(copyKeys.headingKey, copyParams)}
@@ -403,12 +396,12 @@ function MatchOverview() {
                       </SearchToggleWrap>
                     </>
                   )}
-                {(copyKeys.ctaKey || (showLastCall && lastCallWeekday)) && (
+                {(copyKeys.ctaKey || (showLastCall && lastCallWhen)) && (
                   <CtaBlock>
                     {copyKeys.ctaKey && ctaTo && (
-                      <Link
+                      <CtaLink
                         buttonAppearance={ButtonAppearance.Primary}
-                        buttonSize={ButtonSizes.Medium}
+                        buttonSize={ButtonSizes.Large}
                         textDecoration={false}
                         to={ctaTo}
                         state={
@@ -418,12 +411,12 @@ function MatchOverview() {
                         }
                       >
                         {t(copyKeys.ctaKey)}
-                      </Link>
+                      </CtaLink>
                     )}
-                    {showLastCall && lastCallWeekday && (
+                    {showLastCall && lastCallWhen && (
                       <CtaContext type={TextTypes.Body6}>
                         {t('match_overview.last_call', {
-                          weekday: lastCallWeekday,
+                          when: lastCallWhen,
                         })}
                       </CtaContext>
                     )}

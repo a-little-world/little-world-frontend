@@ -359,7 +359,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           {isSupport && <SupportTag />}
         </NameContainer>
 
-        {!onProfile && (isSupport || isDeleted) && (
+        {!onProfile && (
           <Description>
             {isSupport
               ? t('profile_card.support_description')

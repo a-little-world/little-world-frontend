@@ -105,14 +105,6 @@ const ContentPanel = styled(Card)`
   `}
 `;
 
-const NotificationsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.xxxlarge}`};
-  align-items: flex-start;
-  margin-top: ${({ theme }) => theme.spacing.medium};
-`;
-
 function ListItem({ section, label, value, setEditing }) {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -362,10 +354,8 @@ function Settings() {
               setEditing={setEditing}
             />
           ))}
-          <NotificationsContainer>
-            <MailingLists width="auto" />
-            <PushNotifications />
-          </NotificationsContainer>
+          <MailingLists width="auto" />
+          <PushNotifications />
           <ThemeSwitch withLabel />
           <SettingsItem>
             <Button

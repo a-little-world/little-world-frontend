@@ -25,6 +25,7 @@ import {
   NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
 } from '../../api/endpoints';
+import { unregisterFirebaseDeviceToken } from '../../firebase-util';
 import {
   COMMUNITY_EVENTS_ROUTE,
   getAppRoute,
@@ -201,7 +202,14 @@ function Sidebar({ isVH, sidebarMobile }) {
         : []),
       {
         label: 'log_out',
-        clickEvent: () => logout(navigate),
+        clickEvent: async () => {
+          try {
+            await unregisterFirebaseDeviceToken();
+          } catch (_e) {
+            // ignore
+          }
+          logout(navigate);
+        },
       },
     ],
     [hasMatchingPermissions, startPath, navigate],
