@@ -30,13 +30,13 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat';
-import { environment } from '../../../environment';
 import {
   CHATS_ENDPOINT_SEPERATE,
   getChatEndpoint,
   getChatMessagesEndpoint,
   USER_ENDPOINT,
 } from '../../../api/endpoints';
+import { environment } from '../../../environment';
 import {
   useCallSetupStore,
   useChatInputStore,
