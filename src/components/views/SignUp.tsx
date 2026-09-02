@@ -49,6 +49,7 @@ const SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL = [
   'self-organized-',
   'dl-',
   'club',
+  'bef',
 ] as const;
 
 function signUpCompanySlugHidesNameLabel(company: string): boolean {
