@@ -7,10 +7,10 @@ import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
-  swrConfig,
   USER_ENDPOINT,
 } from './api/endpoints';
 import { useDevelopmentFeaturesStore } from './features/stores/index';
+import { swrConfig } from './features/swr';
 import router from './router/router';
 
 function Preloader({ children }) {
