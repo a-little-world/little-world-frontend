@@ -97,6 +97,7 @@
   "course.nav_back": "Zurück",
   "course.nav_previous_chapter": "Zurück",
   "course.nav_continue_to_quiz": "Zum Quiz",
+  "course.nav_continue_to_next_chapter": "Zum nächsten Kapitel",
   "course.nav_back_to_video": "Zurück zum Video",
   "course.chapter_complete_title": "Kapitel abgeschlossen",
   "course.chapter_complete_description": "Super! Du hast {{chapterTitle}} fertig abgeschlossen.",
