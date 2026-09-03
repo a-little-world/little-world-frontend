@@ -57,10 +57,21 @@ export function getCompletedChapterCountForStoredStep(
   return idx >= 0 ? idx + 1 : 0;
 }
 
+/**
+ * How many chapters the learner has finished, from persisted course progress.
+ *
+ * `current_chapter_id` names the chapter they are *on*, so the count is its index — which
+ * caps at `chapters.length - 1` and can never say "all done". Only the `completed` flag
+ * can express that, so a finished course short-circuits to every chapter, exactly as the
+ * backend's `UserCourseProgress.progress_fraction()` does. Without it the final chapter
+ * still renders as in progress after the course has been completed.
+ */
 export function getCompletedChapterCountForCourseProgress(
   chapters: CourseChapter[],
   currentChapterId: string,
+  isCourseCompleted = false,
 ): number {
+  if (isCourseCompleted) return chapters.length;
   if (!currentChapterId) return 0;
   const idx = chapters.findIndex(ch => ch.id === currentChapterId);
   return idx > 0 ? idx : 0;
