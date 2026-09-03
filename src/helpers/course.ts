@@ -33,7 +33,11 @@ export function mapChapter(ch: ApiCourseChapter): CourseChapter {
   };
 }
 
-/** Step id persisted by `/api/user/self_onboarding/update/` (last quiz step per chapter). */
+/**
+ * Marker persisted by `/api/user/self_onboarding/update/` for a finished chapter: its last
+ * quiz step id, or the chapter id itself when the chapter is video-only and has no quiz step
+ * to report. The endpoint accepts both forms.
+ */
 export function getSelfOnboardingStepIdForChapter(
   chapter: CourseChapter,
 ): string {
@@ -60,4 +64,54 @@ export function getCompletedChapterCountForCourseProgress(
   if (!currentChapterId) return 0;
   const idx = chapters.findIndex(ch => ch.id === currentChapterId);
   return idx > 0 ? idx : 0;
+}
+
+export type PrimaryVideoAction =
+  | 'start_quiz'
+  | 'complete_chapter'
+  | 'next_chapter'
+  | 'finish_course';
+
+export type PrimaryVideoCta = {
+  action: PrimaryVideoAction;
+  labelKey: string;
+};
+
+/**
+ * The primary button below a chapter's video.
+ *
+ * A chapter with no quiz steps is video-only: there is no quiz to send the learner to, so
+ * the button completes the chapter itself and moves on (or finishes the course).
+ */
+export function derivePrimaryVideoCta({
+  isChapterCompleted,
+  hasChapterQuiz,
+  isLastChapter,
+}: {
+  isChapterCompleted: boolean;
+  hasChapterQuiz: boolean;
+  isLastChapter: boolean;
+}): PrimaryVideoCta {
+  if (isChapterCompleted) {
+    return isLastChapter
+      ? {
+          action: 'finish_course',
+          labelKey: 'course.chapter_complete_button_finish',
+        }
+      : {
+          action: 'next_chapter',
+          labelKey: 'course.chapter_complete_button_continue',
+        };
+  }
+
+  if (hasChapterQuiz) {
+    return { action: 'start_quiz', labelKey: 'course.nav_continue_to_quiz' };
+  }
+
+  return {
+    action: 'complete_chapter',
+    labelKey: isLastChapter
+      ? 'course.chapter_complete_button_finish'
+      : 'course.nav_continue_to_next_chapter',
+  };
 }
