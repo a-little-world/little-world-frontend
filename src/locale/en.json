@@ -130,6 +130,7 @@
   "course.nav_back": "Back",
   "course.nav_previous_chapter": "Back",
   "course.nav_continue_to_quiz": "Continue to quiz",
+  "course.nav_continue_to_next_chapter": "Go to next chapter",
   "course.nav_back_to_video": "Back to video",
   "course.chapter_complete_title": "Chapter complete",
   "course.chapter_complete_description": "Great job! You finished {{chapterTitle}}.",
