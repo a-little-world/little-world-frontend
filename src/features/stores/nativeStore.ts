@@ -3,21 +3,22 @@ import { create } from 'zustand';
 import { ApiFetchFn, TokenStatus } from '../../api/types';
 import { environment } from '../../environment';
 
+export interface TokenState {
+  isRefreshing: boolean;
+  status?: TokenStatus;
+}
+
 interface NativeStoreState {
   isReady: boolean;
   setReady: () => void; // set isReady to true when native has initialized web
   apiFetchNative: ApiFetchFn;
   setApiFetchNative: (fetch: ApiFetchFn) => void;
-  refreshAccessToken: () => Promise<TokenStatus>;
-  setRefreshAccessToken: (refreshFn: () => Promise<TokenStatus>) => void;
-  tokenStatus: TokenStatus | undefined; // undefined = token status has not been determined yet
-  setTokenStatus: (status: TokenStatus | undefined) => void;
-  isTokenRefreshing: boolean;
-  setIsTokenRefreshing: (isRefreshing: boolean) => void;
   getAccessToken: () => Promise<string | undefined>;
   setGetAccesToken: (
     getAccessTokenFn: () => Promise<string | undefined>,
   ) => void;
+  tokenState?: TokenState;
+  setTokenState: (tokenState: TokenState) => void;
   getInstallId: () => Promise<string>;
   setGetInstallId: (getInstallIdFn: () => Promise<string>) => void;
   setAccessTokens: (
@@ -42,14 +43,9 @@ const useNativeStore = create<NativeStoreState>(set => {
     setReady: () => set({ isReady: true }),
     apiFetchNative: errorFn('apiFetchNative'),
     setApiFetchNative: apiFetchNative => set({ apiFetchNative }),
-    refreshAccessToken: errorFn('refreshAccessToken'),
-    tokenStatus: undefined,
-    setRefreshAccessToken: refreshAccessToken => set({ refreshAccessToken }),
-    setTokenStatus: tokenStatus => set({ tokenStatus }),
-    isTokenRefreshing: false,
-    setIsTokenRefreshing: isTokenRefreshing => set({ isTokenRefreshing }),
     getAccessToken: errorFn('getAccessToken'),
     setGetAccesToken: getAccessToken => set({ getAccessToken }),
+    setTokenState: tokenState => set({ tokenState }),
     getInstallId: errorFn('getInstallId'),
     setGetInstallId: getInstallId => set({ getInstallId }),
     setAccessTokens: errorFn('setAccessTokens'),
