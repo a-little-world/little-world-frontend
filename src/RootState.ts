@@ -11,7 +11,6 @@ export interface UserData {
   activeCallRooms: any;
   callSetup: any;
   activeCall: any;
-  postCallSurvey: any;
 }
 
 export interface RootState {

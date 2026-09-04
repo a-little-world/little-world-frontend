@@ -1,6 +1,7 @@
 export const USER_ENDPOINT = '/api/user';
 export const IS_AUTHENTICATED_ENDPOINT = '/api/user/authenticated';
 export const COMMUNITY_EVENTS_ENDPOINT = '/api/community';
+export const PENDING_SURVEY_ENDPOINT = '/api/surveys/pending';
 export const RANDOM_CALL_HISTORY_ENDPOINT = '/api/random_calls/user/history';
 export const RANDOM_CALL_LOBBY_ENDPOINT =
   '/api/random_calls/lobby/default/active_or_upcoming';
