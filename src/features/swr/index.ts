@@ -23,6 +23,7 @@ export const MATCHES_ENDPOINT = '/api/matches';
 export const getMatchOverviewEndpoint = (matchUuid: string) =>
   `/api/matches/${matchUuid}/overview`;
 export const ACTIVE_CALL_ROOMS_ENDPOINT = '/api/call_rooms';
+export const PENDING_SURVEY_ENDPOINT = '/api/surveys/pending';
 export const NOTIFICATIONS_ENDPOINT = '/api/notifications';
 export const UNREAD_NOTIFICATIONS_ENDPOINT = '/api/notifications?filter=unread';
 export const CHATS_ENDPOINT = '/api/chats/?page_size=20';
