@@ -183,6 +183,9 @@ export const VideoContainer = styled.div<{
     css`
       --lk-border-radius: 0;
       .lk-room-container {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
         background: ${theme.color.text.secondary};
       }
 
