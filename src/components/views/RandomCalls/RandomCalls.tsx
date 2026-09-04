@@ -12,13 +12,13 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
-import { exitLobby } from '../../../api/randomCalls';
-import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
 import {
   RANDOM_CALL_EXIT_PARAM,
   RANDOM_CALL_EXIT_VALUE,
   UPCOMING_LOBBIES_ENDPOINT,
-} from '../../../features/swr/index';
+} from '../../../api/endpoints';
+import { exitLobby } from '../../../api/randomCalls';
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import useSystemModalBlocker from '../../../hooks/useSystemModalBlocker';
 import randomCallsImage from '../../../images/random-calls-image.png';

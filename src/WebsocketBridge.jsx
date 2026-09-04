@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 
-import useWebSocket, { ReadyState } from 'react-use-websocket';
+import useWebSocket from 'react-use-websocket';
 import { mutate } from 'swr';
 
 import './App.css';
 
+import {
+  NOTIFICATIONS_ENDPOINT,
+  UNREAD_NOTIFICATIONS_ENDPOINT,
+} from './api/endpoints';
 import {
   useEffectiveBackendUrl,
   useEffectiveCoreWsScheme,
 } from './api/helpers';
 import { environment } from './environment';
 import useNativeStore from './features/stores/nativeStore';
-import {
-  NOTIFICATIONS_ENDPOINT,
-  UNREAD_NOTIFICATIONS_ENDPOINT,
-} from './features/swr';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import { getInstallationId } from './firebase-util';
 import useToast from './hooks/useToast';
@@ -61,8 +61,7 @@ const WebsocketBridge = () => {
       setReady(true);
     })();
   }, []);
-
-  const { lastMessage, readyState } = useWebSocket(ready ? socketUrl : null, {
+  const { lastMessage } = useWebSocket(ready ? socketUrl : null, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
     heartbeat: {
@@ -87,7 +86,6 @@ const WebsocketBridge = () => {
     if (lastMessage !== null) {
       setMessageHistory(prev => prev.concat(lastMessage));
       const message = JSON.parse(lastMessage.data);
-      console.log('CORE SOCKET:', message);
 
       if (message.action === 'addNotification' && message.payload?.showToast) {
         const { title, description } = message.payload;
@@ -109,15 +107,6 @@ const WebsocketBridge = () => {
       }
     }
   }, [lastMessage, setMessageHistory, toast]);
-
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: 'Connecting',
-    [ReadyState.OPEN]: 'Open',
-    [ReadyState.CLOSING]: 'Closing',
-    [ReadyState.CLOSED]: 'Closed',
-    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-  }[readyState];
-  console.log('SOCKET LOADED', connectionStatus);
 
   return null;
 };

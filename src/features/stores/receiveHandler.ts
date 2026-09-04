@@ -1,6 +1,8 @@
 import { NavigateOptions } from 'react-router-dom';
 import { create } from 'zustand';
 
+import { TokenStatus } from '../../api/types';
+
 export type DomCommunicationResponse =
   | { ok: true; data?: any | undefined }
   | { ok: false; error: string };
@@ -100,6 +102,14 @@ export type DomCommunicationMessage =
       requestId?: string;
       payload: {
         sessionExpired: boolean;
+      };
+    }
+  | {
+      action: 'SET_TOKEN_STATE';
+      requestId?: string;
+      payload: {
+        isRefreshing: boolean;
+        status?: TokenStatus;
       };
     }
   | {

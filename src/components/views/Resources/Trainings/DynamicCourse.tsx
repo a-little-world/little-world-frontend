@@ -85,6 +85,7 @@ const DynamicCourse: FC<DynamicCourseProps> = ({ slug, preview = false }) => {
   const completedChapterCount = getCompletedChapterCountForCourseProgress(
     chapters,
     progress?.current_chapter_id ?? '',
+    progress?.completed ?? false,
   );
 
   const handleStepComplete = async (chapterId: string, stepIndex: number) => {
@@ -101,15 +102,21 @@ const DynamicCourse: FC<DynamicCourseProps> = ({ slug, preview = false }) => {
   };
 
   const handleChapterComplete = async (
-    _chapterId: string,
+    chapterId: string,
     chapterIndex: number,
   ) => {
     if (preview) return;
     const nextChapter = chapters[chapterIndex + 1];
     try {
       const updated = await updateCourseProgress(slug, {
-        current_chapter_id: nextChapter?.id ?? _chapterId,
-        current_step_index: 0,
+        current_chapter_id: nextChapter?.id ?? chapterId,
+        // Moving to a new chapter starts at its first step. On the last chapter there is
+        // nowhere to advance to, so record its quiz as finished instead of rewinding to 0:
+        // `Course` re-seeds its answered-step set from this value, and a 0 wipes the
+        // answers the learner just gave out of the progress bar.
+        current_step_index: nextChapter
+          ? 0
+          : (chapters[chapterIndex]?.quizSteps.length ?? 0),
       });
       setProgress(updated);
     } catch {

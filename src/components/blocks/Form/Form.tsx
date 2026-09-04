@@ -10,11 +10,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { completeForm, mutateUserData } from '../../../api';
+import { API_OPTIONS_ENDPOINT, USER_ENDPOINT } from '../../../api/endpoints';
 import { USER_FIELDS, USER_TYPES } from '../../../constants';
-import {
-  API_OPTIONS_ENDPOINT,
-  USER_ENDPOINT,
-} from '../../../features/swr/index';
 import { onFormError } from '../../../helpers/form';
 import {
   EDIT_FORM_ROUTE,

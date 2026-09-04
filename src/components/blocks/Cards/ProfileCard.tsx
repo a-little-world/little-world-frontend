@@ -28,8 +28,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import { CHATS_ENDPOINT } from '../../../api/endpoints';
 import { useCallSetupStore } from '../../../features/stores/index';
-import { CHATS_ENDPOINT } from '../../../features/swr/index';
 import {
   getAppRoute,
   getAppSubpageRoute,

@@ -7,11 +7,11 @@ import {
 import { getMessaging, getToken } from '@firebase/messaging';
 
 import { mutateUserData } from './api';
+import { FIREBASE_ENDPOINT } from './api/endpoints';
 import { apiFetch } from './api/helpers';
 import { environment } from './environment';
 import { useReceiveHandlerStore } from './features/stores';
 import useNativeStore from './features/stores/nativeStore';
-import { FIREBASE_ENDPOINT } from './features/swr';
 
 type FirebaseConfig = {
   firebaseClientConfig: FirebaseOptions;

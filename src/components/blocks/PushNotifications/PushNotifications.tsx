@@ -6,11 +6,11 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
+import { USER_ENDPOINT } from '../../../api/endpoints';
 import { mutateUserData } from '../../../api/index';
 import { environment } from '../../../environment';
 import { useDevelopmentFeaturesStore } from '../../../features/stores/index';
 import useNotificationStore from '../../../features/stores/notification';
-import { USER_ENDPOINT } from '../../../features/swr/index';
 import {
   registerFirebaseDeviceToken,
   sendFirebaseTestNotification,
@@ -120,7 +120,7 @@ const PushNotifications = ({ hideLabel }: { hideLabel?: boolean }) => {
     !devicePermissionGranted;
 
   useEffect(() => {
-    if (!environment.isNative) {
+    if (environment.isNative) {
       return;
     }
     if (enabledWithPermissionDenied) {

@@ -3,14 +3,14 @@ import useSWR, { mutate, SWRConfig } from 'swr';
 
 import './App.css';
 
-import { useDevelopmentFeaturesStore } from './features/stores/index';
 import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
-  swrConfig,
   USER_ENDPOINT,
-} from './features/swr/index';
+} from './api/endpoints';
+import { useDevelopmentFeaturesStore } from './features/stores/index';
+import { swrConfig } from './features/swr';
 import router from './router/router';
 
 function Preloader({ children }) {

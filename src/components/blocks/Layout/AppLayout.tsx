@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import { Modal } from '@a-little-world/little-world-design-system';
 import {
@@ -10,21 +10,27 @@ import {
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { submitCallFeedback } from '../../../api/livekit';
+import {
+  ACTIVE_CALL_ROOMS_ENDPOINT,
+  MATCHES_ENDPOINT,
+  PENDING_SURVEY_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../../api/endpoints';
+import {
+  dismissSurvey,
+  markSurveyShown,
+  PendingSurvey,
+  submitSurvey,
+  SurveyAnswers,
+} from '../../../api/surveys';
 import { pagesWithViewportHeight, USER_TYPES } from '../../../constants/index';
 import {
   useCallSetupStore,
   useConnectedCallStore,
-  usePostCallSurveyStore,
 } from '../../../features/stores';
 import useModalManagerStore, {
   ModalTypes,
 } from '../../../features/stores/modalManager';
-import {
-  ACTIVE_CALL_ROOMS_ENDPOINT,
-  MATCHES_ENDPOINT,
-  USER_ENDPOINT,
-} from '../../../features/swr/index';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
 import { getAppRoute, ONBOARDING_ROUTE } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
@@ -32,8 +38,8 @@ import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
 import MatchModal from '../Matching/MatchModal';
 import MobileNavBar from '../MobileNavBar';
-import PostCallSurvey from '../PostCallSurvey/PostCallSurvey';
 import Sidebar from '../Sidebar';
+import Survey, { hasRequiredAnswers } from '../Survey/Survey';
 
 const Wrapper = styled.div<{ $isVH: boolean }>`
   overflow-x: hidden;
@@ -117,15 +123,21 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   });
   const { data: activeCallRooms } = useSWR(ACTIVE_CALL_ROOMS_ENDPOINT);
   const activeCallRoom = activeCallRooms?.[0];
-  const { postCallSurvey } = usePostCallSurveyStore();
   const { disconnectedFromSession, disconnectFromCall } =
     useConnectedCallStore();
 
   // Zustand store hooks
   const { initCallSetup, callSetup, cancelCallSetup } = useCallSetupStore();
-  const { removePostCallSurvey } = usePostCallSurveyStore();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
+
+  const { data: pendingSurveyData, mutate: refetchPendingSurvey } = useSWR(
+    PENDING_SURVEY_ENDPOINT,
+  );
+  const pendingSurvey: PendingSurvey | null = pendingSurveyData?.survey ?? null;
+  const surveyAnswersRef = useRef<SurveyAnswers>({});
+  const acknowledgedSurveyId = useRef<number | null>(null);
+  const [surveyError, setSurveyError] = useState<string | null>(null);
 
   const unconfirmedMatch = matches?.unconfirmed?.results?.[0] ?? null;
   const proposals = matches?.proposed?.results ?? [];
@@ -184,11 +196,28 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     } else dismissModal(ModalTypes.MATCH.id);
   }, [matches]); // eslint-disable-line
 
+  // Polling is the whole delivery mechanism. A route change is the natural moment to look:
+  // leaving a call navigates, so the post-call survey arrives without needing a live socket.
   useEffect(() => {
-    if (postCallSurvey) {
-      openModal(ModalTypes.POST_CALL_SURVEY.id);
-    } else dismissModal(ModalTypes.POST_CALL_SURVEY.id);
-  }, [postCallSurvey]);
+    refetchPendingSurvey();
+  }, [location.pathname, refetchPendingSurvey]);
+
+  useEffect(() => {
+    if (!pendingSurvey) {
+      dismissModal(ModalTypes.SURVEY.id);
+      return;
+    }
+
+    openModal(ModalTypes.SURVEY.id);
+    setSurveyError(null);
+    surveyAnswersRef.current = {};
+
+    // Confirms the card reached the user, which is what the offer count is measured against.
+    if (acknowledgedSurveyId.current !== pendingSurvey.id) {
+      acknowledgedSurveyId.current = pendingSurvey.id;
+      markSurveyShown(pendingSurvey.id).catch(() => null);
+    }
+  }, [pendingSurvey?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onAnswerCall = () => {
     initCallSetup({ userId: activeCallRoom?.partner?.id });
@@ -206,33 +235,41 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     closeModal();
   };
 
-  const closePostCallSurvey = () => {
-    removePostCallSurvey();
-    closeModal();
+  const handleSurveySubmit = async (answers: SurveyAnswers) => {
+    if (!pendingSurvey) return;
+    try {
+      await submitSurvey({ surveyId: pendingSurvey.id, answers });
+      closeModal();
+      await refetchPendingSurvey();
+    } catch (error: any) {
+      setSurveyError(error?.message ?? null);
+    }
   };
 
-  // submitted even if user closes modal
-  const submitPostCallSurvey = ({
-    rating,
-    review,
-    onError,
-  }: {
-    rating?: number;
-    review?: string;
-    onError?: () => void;
-  } = {}) => {
-    // Do not submit when user closes modal without giving rating
-    if (rating || postCallSurvey?.rating)
-      submitCallFeedback({
-        reviewId: postCallSurvey?.review_id,
-        liveSessionId: postCallSurvey?.live_session_id,
-        rating: rating || (postCallSurvey?.rating as number),
-        review: review || postCallSurvey?.review,
-        onSuccess: closePostCallSurvey,
-        onError: onError ?? (() => null),
-      });
-    else closePostCallSurvey();
+  /**
+   * Closing the modal is not the same as declining: an answer the user already gave is worth
+   * keeping, so a complete answer set is submitted and only an empty one is a dismissal.
+   */
+  const handleSurveyClose = async () => {
+    if (!pendingSurvey) {
+      closeModal();
+      return;
+    }
+
+    const answers = surveyAnswersRef.current;
+    if (hasRequiredAnswers(pendingSurvey.questions, answers)) {
+      await handleSurveySubmit(answers);
+      return;
+    }
+
+    closeModal();
+    await dismissSurvey(pendingSurvey.id).catch(() => null);
+    await refetchPendingSurvey();
   };
+
+  const handleSurveyAnswersChange = useCallback((answers: SurveyAnswers) => {
+    surveyAnswersRef.current = answers;
+  }, []);
 
   if (isUserLoading && !user) {
     return (
@@ -283,10 +320,19 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       </Modal>
 
       <Modal
-        open={isModalOpen(ModalTypes.POST_CALL_SURVEY.id)}
-        onClose={submitPostCallSurvey}
+        open={isModalOpen(ModalTypes.SURVEY.id) && !!pendingSurvey}
+        onClose={handleSurveyClose}
       >
-        <PostCallSurvey onSubmit={submitPostCallSurvey} />
+        {!!pendingSurvey && (
+          <Survey
+            // Keyed so a second survey starts with empty answers rather than the previous ones.
+            key={pendingSurvey.id}
+            survey={pendingSurvey}
+            onAnswersChange={handleSurveyAnswersChange}
+            onSubmit={handleSurveySubmit}
+            submitError={surveyError}
+          />
+        )}
       </Modal>
       <Modal
         open={isModalOpen(ModalTypes.INCOMING_CALL.id)}
