@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import useSWR, { mutate } from 'swr';
 
+import { USER_ENDPOINT } from '../api/endpoints';
 import { updateUserSearchState } from '../api/profile';
 import { SEARCHING_STATES } from '../constants';
-import { USER_ENDPOINT } from '../features/swr/index';
 
 export interface SearchStateError {
   message?: string;

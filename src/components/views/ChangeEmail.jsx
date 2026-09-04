@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Button,
@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { mutate } from 'swr';
 
 import { setNewEmail } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index';
+import { USER_ENDPOINT } from '../../api/endpoints';
 import { onFormError, registerInput } from '../../helpers/form';
 import { getAppRoute, VERIFY_EMAIL_ROUTE } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';

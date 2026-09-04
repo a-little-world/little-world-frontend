@@ -16,16 +16,16 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 
+import {
+  API_OPTIONS_ENDPOINT,
+  MATCHES_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../api/endpoints';
 import { mutateUserData } from '../../api/index';
 import { fetchUserMatch } from '../../api/matches';
 import { fetchProfile } from '../../api/profile';
 import { COUNTRIES, USER_TYPES } from '../../constants/index';
-import {
-  API_OPTIONS_ENDPOINT,
-  MATCHES_ENDPOINT,
-  revalidateMatches,
-  USER_ENDPOINT,
-} from '../../features/swr/index';
+import { revalidateMatches } from '../../features/swr';
 import { onFormError } from '../../helpers/form';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../router/routes';

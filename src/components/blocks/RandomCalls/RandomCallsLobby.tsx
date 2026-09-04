@@ -30,6 +30,12 @@ import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import {
+  RANDOM_CALL_EXIT_PARAM,
+  RANDOM_CALL_EXIT_VALUE,
+  UPCOMING_LOBBIES_ENDPOINT,
+  USER_ENDPOINT,
+} from '../../../api/endpoints';
+import {
   acceptMatch,
   authenticateRoom,
   exitLobby,
@@ -39,12 +45,6 @@ import {
 } from '../../../api/randomCalls';
 import { COMMUNITY_EVENT_FREQUENCIES, USER_TYPES } from '../../../constants';
 import { useConnectedCallStore } from '../../../features/stores';
-import {
-  RANDOM_CALL_EXIT_PARAM,
-  RANDOM_CALL_EXIT_VALUE,
-  UPCOMING_LOBBIES_ENDPOINT,
-  USER_ENDPOINT,
-} from '../../../features/swr';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import { clearActiveTracks } from '../../../helpers/video';
 import {

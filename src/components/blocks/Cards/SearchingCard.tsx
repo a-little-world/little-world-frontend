@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index';
+import { USER_ENDPOINT } from '../../../api/endpoints';
 import { formatDate, formatTime } from '../../../helpers/date';
 import { getAppRoute, USER_FORM_ROUTES } from '../../../router/routes';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard';

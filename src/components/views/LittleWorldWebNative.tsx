@@ -4,17 +4,17 @@ import { I18nextProvider } from 'react-i18next';
 import { RouterProvider } from 'react-router-dom';
 import useSWR, { mutate, SWRConfig } from 'swr';
 
-import { apiFetch } from '../../api/helpers';
-import { environment } from '../../environment';
-import { useReceiveHandlerStore } from '../../features/stores';
-import useNativeStore from '../../features/stores/nativeStore';
-import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler';
 import {
   API_OPTIONS_ENDPOINT,
   API_TRANSLATIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr';
+} from '../../api/endpoints';
+import { apiFetch } from '../../api/helpers';
+import { environment } from '../../environment';
+import { useReceiveHandlerStore } from '../../features/stores';
+import useNativeStore from '../../features/stores/nativeStore';
+import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler';
 import useNativeSwrConfig from '../../hooks/useNativeSwrConfig';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';

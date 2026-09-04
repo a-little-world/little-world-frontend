@@ -12,13 +12,13 @@ import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
+import { getMatchEndpoint, USER_ENDPOINT } from '../../api/endpoints';
 import {
   COUNTRIES,
   LANGUAGE_LEVELS,
   LANGUAGES,
   USER_TYPES,
 } from '../../constants';
-import { getMatchEndpoint, USER_ENDPOINT } from '../../features/swr';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import PlusImage from '../../images/plus-with-circle.svg';
 import LanguageLevelCard from './Cards/LanguageLevelCard';

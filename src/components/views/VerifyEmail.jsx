@@ -18,7 +18,7 @@ import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { resendVerificationEmail, verifyEmail } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index';
+import { USER_ENDPOINT } from '../../api/endpoints';
 import { onFormError, registerInput } from '../../helpers/form';
 import {
   CHANGE_EMAIL_ROUTE,

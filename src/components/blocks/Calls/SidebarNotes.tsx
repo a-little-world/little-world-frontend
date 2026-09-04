@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { TextTypes } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index';
+import { USER_ENDPOINT } from '../../../api/endpoints';
 import {
   addUserNote,
   deleteUserNote,

@@ -6,15 +6,15 @@ import { mutate } from 'swr';
 import './App.css';
 
 import {
+  NOTIFICATIONS_ENDPOINT,
+  UNREAD_NOTIFICATIONS_ENDPOINT,
+} from './api/endpoints';
+import {
   useEffectiveBackendUrl,
   useEffectiveCoreWsScheme,
 } from './api/helpers';
 import { environment } from './environment';
 import useNativeStore from './features/stores/nativeStore';
-import {
-  NOTIFICATIONS_ENDPOINT,
-  UNREAD_NOTIFICATIONS_ENDPOINT,
-} from './features/swr';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import { getInstallationId } from './firebase-util';
 import useToast from './hooks/useToast';

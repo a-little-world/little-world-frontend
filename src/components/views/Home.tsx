@@ -5,14 +5,14 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
-import { updateMatchData } from '../../api/matches';
-import CustomPagination from '../../CustomPagination';
-import { useCallSetupStore } from '../../features/stores/index';
 import {
   getMatchEndpoint,
   RANDOM_CALL_LOBBY_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr/index';
+} from '../../api/endpoints';
+import { updateMatchData } from '../../api/matches';
+import CustomPagination from '../../CustomPagination';
+import { useCallSetupStore } from '../../features/stores/index';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import {
   COMMUNITY_EVENTS_ROUTE,

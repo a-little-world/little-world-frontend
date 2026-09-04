@@ -1,8 +1,6 @@
 import { isEmpty } from 'lodash';
 import { mutate } from 'swr';
 
-import { rejectCall } from '../../api/livekit';
-import useConnectedCallStore from '../stores/connectedCall';
 import {
   ACTIVE_CALL_ROOMS_ENDPOINT,
   CHATS_ENDPOINT,
@@ -11,7 +9,9 @@ import {
   MATCHES_ENDPOINT,
   PENDING_SURVEY_ENDPOINT,
   USER_ENDPOINT,
-} from './index';
+} from '../../api/endpoints';
+import { rejectCall } from '../../api/livekit';
+import useConnectedCallStore from '../stores/connectedCall';
 
 interface MatchesData {
   [category: string]: any[];
