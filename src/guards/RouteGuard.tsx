@@ -3,7 +3,6 @@ import { ComponentType } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import useSWR from 'swr';
 
-// import LoadingScreen from '../components/atoms/LoadingScreen';
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../api/endpoints';
 import { TokenStatus } from '../api/types';
 import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
