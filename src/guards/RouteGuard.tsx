@@ -6,6 +6,8 @@ import useSWR from 'swr';
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../api/endpoints';
 import { TokenStatus } from '../api/types';
 import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
+import { environment } from '../environment';
+// import LoadingScreen from '../components/atoms/LoadingScreen';
 import useNativeStore from '../features/stores/nativeStore';
 import {
   CHANGE_EMAIL_ROUTE,
@@ -22,7 +24,7 @@ interface Props {
 }
 
 function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
-  const { isTokenRefreshing, tokenStatus, isReady } = useNativeStore();
+  const { isReady, tokenState } = useNativeStore();
   const { pathname, search } = useLocation();
   // only internal absolute paths
   const rawNext = new URLSearchParams(search).get('next');
@@ -40,6 +42,12 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
   const authUndetermined = isAuthenticated === undefined;
   const userUndetermined = !!isAuthenticated && user === undefined;
 
+  const nativeAuthUndetermined =
+    environment.isNative &&
+    (tokenState?.isRefreshing || tokenState?.status === undefined);
+  const nativeTokenError =
+    environment.isNative && tokenState?.status === TokenStatus.ERROR;
+
   const withNext = (route: string) =>
     nextParam ? `${route}?next=${encodeURIComponent(nextParam)}` : route;
 
@@ -51,23 +59,18 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
     <Outlet />
   );
 
-  // TODO: enable if the optimistic app shell looks broken before user data loads on native.
-  // Keeps mid-session token refresh flicker-free (return current page), but shows the
-  // loading logo during the initial auth determination instead of a half-rendered shell.
-  // Web is unchanged. Requires the commented imports (environment, LoadingScreen) above.
-  // if (isTokenRefreshing) {
-  //   return pageContent;
-  // }
-  // if (environment.isNative && (!isReady || isAuthenticatedLoading || userLoading)) {
-  //   return <LoadingScreen />;
-  // }
-
-  if (!isReady || isTokenRefreshing || authUndetermined || userUndetermined) {
+  if (
+    !isReady ||
+    authUndetermined ||
+    userUndetermined ||
+    nativeAuthUndetermined ||
+    nativeTokenError
+  ) {
     return pageContent;
   }
 
   if (authRequired && !user) {
-    const sessionExpired = tokenStatus === TokenStatus.EXPIRED;
+    const sessionExpired = tokenState?.status === TokenStatus.EXPIRED;
     const params = new URLSearchParams();
     if (sessionExpired) {
       params.set('sessionExpired', 'true');

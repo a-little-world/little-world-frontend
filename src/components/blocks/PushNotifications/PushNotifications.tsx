@@ -120,7 +120,7 @@ const PushNotifications = ({ hideLabel }: { hideLabel?: boolean }) => {
     !devicePermissionGranted;
 
   useEffect(() => {
-    if (!environment.isNative) {
+    if (environment.isNative) {
       return;
     }
     if (enabledWithPermissionDenied) {

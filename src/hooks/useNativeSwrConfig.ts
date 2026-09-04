@@ -1,15 +1,14 @@
 import { SWRConfiguration } from 'swr';
 
+import { apiFetch } from '../api/helpers';
 import useNativeStore from '../features/stores/nativeStore';
-import nativeTokenRefreshMiddleware from '../features/swr/nativeTokenRefreshMiddleware';
 
 export const useNativeSwrConfig = (): SWRConfiguration => {
-  const { apiFetchNative, isTokenRefreshing, isReady } = useNativeStore();
+  const { isReady } = useNativeStore();
 
   return {
-    fetcher: apiFetchNative,
-    use: [nativeTokenRefreshMiddleware],
-    isPaused: () => !isReady || isTokenRefreshing,
+    fetcher: apiFetch,
+    isPaused: () => !isReady,
   };
 };
 

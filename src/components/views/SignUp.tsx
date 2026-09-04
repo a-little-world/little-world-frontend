@@ -27,6 +27,7 @@ import {
   USER_ENDPOINT,
 } from '../../api/endpoints';
 import { registerFirebaseDeviceToken } from '../../firebase-util';
+import { maxBirthYearForMinimumAge } from '../../helpers/date';
 import { onFormError, registerInput } from '../../helpers/form';
 import { LOGIN_ROUTE, passAuthenticationBoundary } from '../../router/routes';
 import {
@@ -49,6 +50,7 @@ const SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL = [
   'self-organized-',
   'dl-',
   'club',
+  'bef',
 ] as const;
 
 function signUpCompanySlugHidesNameLabel(company: string): boolean {
@@ -82,6 +84,7 @@ function runOptionalMatomoTriggers(userType?: string) {
 const SignUp = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const maxBirthYear = maxBirthYearForMinimumAge();
 
   // User can sign-up with a ?company='name' query
   // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
@@ -288,7 +291,7 @@ const SignUp = () => {
           type="number"
           width={InputWidth.Small}
           min={1900}
-          max={2007}
+          max={maxBirthYear}
         />
         <Controller
           defaultValue={false}
