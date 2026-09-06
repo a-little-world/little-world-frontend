@@ -4,10 +4,10 @@ import { isEmpty } from 'lodash';
 import { createRoot } from 'react-dom/client';
 import { mutate } from 'swr';
 
+import { API_OPTIONS_ENDPOINT } from './api/endpoints';
 import App from './App';
 import MessageCard from './components/blocks/Cards/MessageCard';
 import FormLayout from './components/blocks/Layout/FormLayout';
-import { API_OPTIONS_ENDPOINT } from './features/swr/index';
 import { updateTranslationResources } from './i18n';
 import reportWebVitals from './reportWebVitals';
 import { Root } from './router/router';

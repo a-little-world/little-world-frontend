@@ -10,9 +10,9 @@ import {
   fetchSelfOnboardingCourse,
   SELF_ONBOARDING_COURSE_ENDPOINT,
 } from '../../../api/courses';
+import { USER_ENDPOINT } from '../../../api/endpoints';
 import updateSelfOnboardingStep from '../../../api/onboarding';
 import { USER_TYPES } from '../../../constants';
-import { USER_ENDPOINT } from '../../../features/swr';
 import {
   getCompletedChapterCountForStoredStep,
   getSelfOnboardingStepIdForChapter,

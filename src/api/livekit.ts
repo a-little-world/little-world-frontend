@@ -21,37 +21,6 @@ export const requestVideoAccessToken = async ({
   }
 };
 
-export const submitCallFeedback = async ({
-  liveSessionId,
-  rating,
-  review,
-  reviewId,
-  onSuccess,
-  onError,
-}: {
-  liveSessionId?: string;
-  rating: number;
-  review?: string;
-  reviewId?: number;
-  onSuccess: (_result: any) => void;
-  onError: (_error: any) => void;
-}) => {
-  try {
-    const response = await apiFetch(`/api/livekit/review`, {
-      method: 'POST',
-      body: {
-        live_session_id: liveSessionId || null,
-        review_id: reviewId || null,
-        rating,
-        review: review || '',
-      },
-    });
-    onSuccess(response);
-  } catch (error) {
-    onError(error);
-  }
-};
-
 export const callAgain = async ({
   partnerId,
   sessionId,

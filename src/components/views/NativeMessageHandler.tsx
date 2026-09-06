@@ -175,6 +175,27 @@ function NativeMessageHandler() {
 
           return response;
         }
+        case 'SET_TOKEN_STATE': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
+          }
+
+          const { isRefreshing, status } = message.payload;
+
+          useNativeStore.getState().setTokenState({ isRefreshing, status });
+
+          const response: DomCommunicationResponse = {
+            ok: true,
+          };
+
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
         case 'DISPLAY_NOTIFICATION': {
           if (!requestId) {
             throw new Error('Received native message without request id');

@@ -27,8 +27,8 @@ import Avatar, { genConfig } from 'react-nice-avatar';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import { USER_ENDPOINT } from '../../../../api/endpoints';
 import { USER_FIELDS } from '../../../../constants/index';
-import { USER_ENDPOINT } from '../../../../features/swr/index';
 import useImageCompression from '../../../../hooks/useImageCompression';
 import useSystemModalBlocker from '../../../../hooks/useSystemModalBlocker';
 import { ImageSizes } from '../../../atoms/ProfileImage';

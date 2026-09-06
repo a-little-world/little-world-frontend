@@ -25,7 +25,7 @@ import {
   API_OPTIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr/index';
+} from '../../api/endpoints';
 import { registerFirebaseDeviceToken } from '../../firebase-util';
 import { maxBirthYearForMinimumAge } from '../../helpers/date';
 import { onFormError, registerInput } from '../../helpers/form';

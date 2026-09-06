@@ -12,8 +12,8 @@ import { useLocation, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
+import { CHATS_ENDPOINT } from '../../api/endpoints';
 import { useDevelopmentFeaturesStore } from '../../features/stores/index';
-import { CHATS_ENDPOINT } from '../../features/swr/index';
 import { APP_ROUTE } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import NotificationBell from '../atoms/NotificationBell';
