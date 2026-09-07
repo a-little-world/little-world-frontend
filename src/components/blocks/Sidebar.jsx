@@ -121,8 +121,7 @@ const MobileOverlay = styled.div`
   background: rgb(0 0 0 / 30%);
   z-index: 2;
   position: fixed;
-  height: 100vh;
-  width: 100vw;
+  inset: 0;
   pointer-events: all;
   transition: opacity 0.5s;
 

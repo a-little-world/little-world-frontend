@@ -120,7 +120,7 @@ export const Root = ({
         {restoreScroll && <ScrollRestoration />}
         <GlobalStyles />
         {!standalone && environment.isNative && <NativeMessageHandler />}
-        {children || <Outlet />}
+        <div id="router-outlet-wrapper">{children || <Outlet />}</div>
       </ToastProvider>
     </CustomThemeProvider>
   );

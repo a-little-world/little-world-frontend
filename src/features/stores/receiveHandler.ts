@@ -91,6 +91,13 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'SET_THEME';
+      requestId?: string;
+      payload: {
+        mode: 'light' | 'dark';
+      };
+    }
+  | {
       action: 'NAVIGATE_TO_LOGIN';
       requestId?: string;
       payload: {
