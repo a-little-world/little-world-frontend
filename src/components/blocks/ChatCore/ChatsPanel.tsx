@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { USER_ENDPOINT } from '../../../features/swr/index';
+import { USER_ENDPOINT } from '../../../api/endpoints';
 import {
   getCustomChatElements,
   processAttachmentWidgets,

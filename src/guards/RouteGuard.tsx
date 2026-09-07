@@ -3,12 +3,12 @@ import { ComponentType } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import useSWR from 'swr';
 
+import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../api/endpoints';
 import { TokenStatus } from '../api/types';
 import { FullAppLayout } from '../components/blocks/Layout/AppLayout';
 import { environment } from '../environment';
 // import LoadingScreen from '../components/atoms/LoadingScreen';
 import useNativeStore from '../features/stores/nativeStore';
-import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../features/swr';
 import {
   CHANGE_EMAIL_ROUTE,
   getAppRoute,

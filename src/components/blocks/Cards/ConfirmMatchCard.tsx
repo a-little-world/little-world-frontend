@@ -23,9 +23,10 @@ import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import { USER_ENDPOINT } from '../../../api/endpoints';
 import { respondToProposedMatch } from '../../../api/matches';
 import { MATCH_TYPES } from '../../../constants';
-import { revalidateMatches, USER_ENDPOINT } from '../../../features/swr/index';
+import { revalidateMatches } from '../../../features/swr';
 import {
   buildAvailabilityRows,
   formatSuggestedAvailabilityOverlap,

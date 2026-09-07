@@ -3,10 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { fetchChats } from '../../api/chat';
-import {
-  CHATS_ENDPOINT_SEPERATE,
-  MATCHES_ENDPOINT,
-} from '../../features/swr/index';
+import { CHATS_ENDPOINT_SEPERATE, MATCHES_ENDPOINT } from '../../api/endpoints';
 import useIniniteScroll from '../../hooks/useInfiniteScroll';
 import { getAppRoute, MESSAGES_ROUTE } from '../../router/routes';
 import PageHeader from '../atoms/PageHeader';

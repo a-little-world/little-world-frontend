@@ -21,8 +21,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import { getChatEndpoint, USER_ENDPOINT } from '../../../api/endpoints';
 import { useCallSetupStore } from '../../../features/stores/index';
-import { getChatEndpoint, USER_ENDPOINT } from '../../../features/swr/index';
 import { getAppRoute, PROFILE_ROUTE } from '../../../router/routes';
 import { CircleImageLoading, LoadingLine } from '../../atoms/Loading';
 import SupportTag from '../../atoms/SupportTag';

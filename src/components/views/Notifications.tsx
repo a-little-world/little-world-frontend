@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   ArchiveIcon,
   Button,
@@ -20,16 +18,16 @@ import { createSearchParams, useSearchParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import {
+  NOTIFICATIONS_ENDPOINT,
+  UNREAD_NOTIFICATIONS_ENDPOINT,
+} from '../../api/endpoints';
+import {
   deleteNotification,
   fetchNotifications,
   NotificationState,
   NotificationStateFilter,
   updateNotification,
 } from '../../api/notification';
-import {
-  NOTIFICATIONS_ENDPOINT,
-  UNREAD_NOTIFICATIONS_ENDPOINT,
-} from '../../features/swr/index';
 import PageHeader from '../atoms/PageHeader';
 import Toolbar from '../atoms/Toolbar';
 import UnreadIndicator from '../atoms/UnreadIndicator';

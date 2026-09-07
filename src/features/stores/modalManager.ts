@@ -7,7 +7,7 @@ type ModalTypeKey =
   | 'INCOMING_CALL'
   | 'CALL_SETUP'
   | 'MATCH'
-  | 'POST_CALL_SURVEY';
+  | 'SURVEY';
 
 interface ModalConfig {
   id: ModalTypeKey;
@@ -33,8 +33,8 @@ export const ModalTypes: Record<ModalTypeKey, ModalConfig> = {
     id: 'MATCH',
     priority: 2,
   },
-  POST_CALL_SURVEY: {
-    id: 'POST_CALL_SURVEY',
+  SURVEY: {
+    id: 'SURVEY',
     priority: 1,
   },
 } as const;

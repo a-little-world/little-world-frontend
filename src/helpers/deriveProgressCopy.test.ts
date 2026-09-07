@@ -61,11 +61,29 @@ describe('progressCtaTarget', () => {
 });
 
 describe('progressShowsLastCall', () => {
-  it('only mentions the last call once calls are happening', () => {
-    assert.ok(progressShowsLastCall('engaged'));
-    assert.ok(progressShowsLastCall('streak_active'));
-    assert.ok(!progressShowsLastCall('no_call'));
-    assert.ok(!progressShowsLastCall('dormant'));
+  // Shown once a call has actually happened — `dormant` included, where the point is that
+  // calls started and then stopped. `no_message` and `no_call` have nothing to report, and
+  // `successful` closes the cycle with its own copy.
+  const SHOWS_LAST_CALL: MatchStateKind[] = [
+    'engaged',
+    'streak_active',
+    'dormant',
+  ];
+
+  it('mentions the last call for exactly the states that have had one', () => {
+    ALL_STATES.forEach(state => {
+      assert.equal(
+        progressShowsLastCall(state),
+        SHOWS_LAST_CALL.includes(state),
+        state,
+      );
+    });
+  });
+
+  it('never picks a weekday for a state that shows no last call', () => {
+    ALL_STATES.filter(state => !progressShowsLastCall(state)).forEach(state => {
+      assert.ok(!progressLastCallUsesWeekday(state), state);
+    });
   });
 });
 

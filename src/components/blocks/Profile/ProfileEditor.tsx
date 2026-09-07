@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import { mutate } from 'swr';
 
 import { mutateUserData } from '../../../api';
-import { USER_ENDPOINT } from '../../../features/swr/index';
+import { USER_ENDPOINT } from '../../../api/endpoints';
 import { onFormError } from '../../../helpers/form';
 import ModalCard, { ModalTitle } from '../Cards/ModalCard';
 import FormStep from '../Form/FormStep';

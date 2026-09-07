@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 
-import { MATCHES_ENDPOINT } from '../features/swr';
+import { MATCHES_ENDPOINT } from '../api/endpoints';
 import { getAppSubpageRoute, MESSAGES_ROUTE } from '../router/routes';
 
 export interface SupportMatch {

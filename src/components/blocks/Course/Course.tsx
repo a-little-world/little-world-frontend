@@ -15,6 +15,7 @@ import { isFunction } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
+import { derivePrimaryVideoCta } from '../../../helpers/course';
 import { getAppRoute, TRAININGS_ROUTE } from '../../../router/routes';
 import NotFound from '../../atoms/NotFound';
 import Video from '../../atoms/Video';
@@ -79,8 +80,9 @@ export type CourseProps = {
    */
   onStepComplete?: (chapterId: string, stepIndex: number) => Promise<void>;
   /**
-   * Called when the user completes a chapter's quiz. Best-effort — errors are swallowed.
-   * Receives the chapter's id and its 0-based index.
+   * Called when the user completes a chapter (quiz, or continuing from a video-only
+   * chapter). Best-effort — errors are swallowed. Receives the chapter's id and its
+   * 0-based index.
    */
   onChapterComplete?: (
     chapterId: string,
@@ -104,6 +106,15 @@ function computeUnlockedChapterCount(completedChapterIndexes: Set<number>) {
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
+}
+
+function chapterHasQuiz(chapter: CourseChapter | undefined): boolean {
+  return (chapter?.quizSteps.length ?? 0) > 0;
+}
+
+/** Progress units a chapter contributes: one per question, or one for a video-only chapter. */
+function chapterProgressWeight(chapter: CourseChapter): number {
+  return Math.max(chapter.quizSteps.length, 1);
 }
 
 export default function Course({
@@ -198,11 +209,25 @@ export default function Course({
   const [mode, setMode] = useState<'video' | 'quiz'>(() => initialMode);
 
   const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+  const [isAdvancing, setIsAdvancing] = useState(false);
 
   // Sync mode with query + completion state.
   useEffect(() => {
     const nextMode: 'video' | 'quiz' =
       requestedMode === 'quiz' ? 'quiz' : 'video';
+    const chapter = chaptersRef.current[activeChapterIndex];
+
+    // A video-only chapter has no quiz to link to, so drop mode=quiz from the URL.
+    // Only once the chapter is known: chapters is not in this effect's deps, so before
+    // they load every chapter looks quiz-less and the replace would strand a deep link
+    // into a quiz on the video screen.
+    if (nextMode === 'quiz' && chapter && !chapterHasQuiz(chapter)) {
+      const next = new URLSearchParams(searchParams);
+      next.set('mode', 'video');
+      setSearchParams(next, { replace: true });
+      setMode('video');
+      return;
+    }
 
     // Never allow quiz for already completed chapters.
     // But when the user just finished the quiz (completion screen),
@@ -228,10 +253,19 @@ export default function Course({
     activeChapterIndex,
     unlockedChapterCount,
     isQuizCompleted,
+    searchParams,
+    setSearchParams,
   ]);
 
   const activeChapter = chapters[activeChapterIndex];
   const isLastChapter = activeChapterIndex >= chapters.length - 1;
+  const isActiveChapterCompleted = activeChapterIndex < unlockedChapterCount;
+  const hasChapterQuiz = chapterHasQuiz(activeChapter);
+  // What can actually render: `mode` follows the URL, but a chapter with no questions has
+  // no quiz screen, so a stale mode=quiz (e.g. arriving from a chapter that had one) would
+  // leave the page blank for a frame until the sync effect above corrects it.
+  const effectiveMode: 'video' | 'quiz' =
+    mode === 'quiz' && hasChapterQuiz ? 'quiz' : 'video';
 
   const [quizCorrectStepIds, setQuizCorrectStepIds] = useState<Set<string>>(
     new Set(),
@@ -239,7 +273,7 @@ export default function Course({
 
   // Reset (or resume) quiz tracking whenever we enter a chapter's quiz mode.
   useEffect(() => {
-    if (mode === 'quiz') {
+    if (effectiveMode === 'quiz') {
       // When entering the current in-progress chapter, pre-populate the steps
       // the user has already answered so the progress bar and skip logic are
       // correct on resume. For all other chapters start fresh.
@@ -255,10 +289,10 @@ export default function Course({
     } else {
       setIsQuizCompleted(false);
     }
-  }, [activeChapterIndex, completedCount, initialStepIndex, mode]);
+  }, [activeChapterIndex, completedCount, initialStepIndex, effectiveMode]);
 
   const totalProgressSteps = useMemo(
-    () => chapters.reduce((acc, ch) => acc + ch.quizSteps.length, 0),
+    () => chapters.reduce((acc, ch) => acc + chapterProgressWeight(ch), 0),
     [chapters],
   );
 
@@ -270,11 +304,11 @@ export default function Course({
       const isChapterCompleted = i < unlockedChapterCount;
 
       if (isChapterCompleted) {
-        done += chapter.quizSteps.length;
+        done += chapterProgressWeight(chapter);
       } else {
         if (i === activeChapterIndex) {
           // Only count question completion in quiz mode.
-          if (mode === 'quiz') done += quizCorrectStepIds.size;
+          if (effectiveMode === 'quiz') done += quizCorrectStepIds.size;
         }
 
         // Everything after current chapter is not counted yet.
@@ -287,7 +321,7 @@ export default function Course({
     chapters,
     unlockedChapterCount,
     activeChapterIndex,
-    mode,
+    effectiveMode,
     quizCorrectStepIds,
     totalProgressSteps,
   ]);
@@ -304,8 +338,10 @@ export default function Course({
 
   const goToVideo = (chapterIndex: number) =>
     setChapterAndMode(chapterIndex, 'video');
-  const goToQuiz = (chapterIndex: number) =>
+  const goToQuiz = (chapterIndex: number) => {
+    if (!chapterHasQuiz(chapters[chapterIndex])) return;
     setChapterAndMode(chapterIndex, 'quiz');
+  };
 
   const handleChapterClick = (index: number) => {
     const isLocked = index > unlockedChapterCount;
@@ -393,6 +429,50 @@ export default function Course({
     else onBack();
   };
 
+  const completeVideoOnlyChapter = async () => {
+    const alreadyRecorded = completedChapterIndexes.has(activeChapterIndex);
+    if (!alreadyRecorded && onChapterComplete) {
+      await onChapterComplete(activeChapter.id, activeChapterIndex).catch(
+        () => {},
+      );
+    }
+
+    if (isLastChapter) {
+      await handleOnCourseComplete();
+      return;
+    }
+
+    goToNextChapter();
+  };
+
+  const primaryVideoCta = derivePrimaryVideoCta({
+    isChapterCompleted: isActiveChapterCompleted,
+    hasChapterQuiz,
+    isLastChapter,
+  });
+
+  const handlePrimaryVideoCta = () => {
+    if (isAdvancing) return;
+
+    if (primaryVideoCta.action === 'start_quiz') {
+      goToQuiz(activeChapterIndex);
+      return;
+    }
+    if (primaryVideoCta.action === 'next_chapter') {
+      goToNextChapter();
+      return;
+    }
+
+    // The remaining actions persist progress, so hold the button until they settle —
+    // a second click would fire onChapterComplete again before the first one lands.
+    setIsAdvancing(true);
+    const advancing =
+      primaryVideoCta.action === 'finish_course'
+        ? handleOnCourseComplete()
+        : completeVideoOnlyChapter();
+    advancing.catch(() => {}).finally(() => setIsAdvancing(false));
+  };
+
   if (!activeChapter || chapters.length === 0)
     return (
       <NotFound title={t('resources.trainings.not_found')}>
@@ -410,18 +490,18 @@ export default function Course({
         <HeaderContent>
           <HeaderTitleRow>
             <HeaderBackCell>
-              {isFunction(onBack) && (mode === 'video' || mode === 'quiz') && (
+              {isFunction(onBack) && (
                 <BackButton
                   variation={ButtonVariations.Icon}
                   appearance={ButtonAppearance.Secondary}
                   onClick={
-                    mode === 'video'
+                    effectiveMode === 'video'
                       ? onBack
                       : () => goToVideo(activeChapterIndex)
                   }
                 >
                   <ArrowLeftIcon label="back" width={12} height={12} />
-                  {mode === 'video'
+                  {effectiveMode === 'video'
                     ? (backLabel ?? t('course.nav_back'))
                     : t('course.nav_back_to_video')}
                 </BackButton>
@@ -477,7 +557,7 @@ export default function Course({
       </Header>
 
       <Main>
-        {mode === 'video' && (
+        {effectiveMode === 'video' && (
           <>
             <ChapterContent key={`${activeChapterIndex}-video`}>
               <VideoWrapper>
@@ -505,34 +585,19 @@ export default function Course({
                 </Button>
               )}
 
-              {isLastChapter && completedCount === chapters.length ? (
-                <FooterPrimaryButton
-                  appearance={ButtonAppearance.Primary}
-                  size={ButtonSizes.Medium}
-                  onClick={handleOnCourseComplete}
-                >
-                  {t('course.chapter_complete_button_finish')}
-                </FooterPrimaryButton>
-              ) : (
-                <FooterPrimaryButton
-                  appearance={ButtonAppearance.Primary}
-                  size={ButtonSizes.Medium}
-                  onClick={
-                    activeChapterIndex < unlockedChapterCount
-                      ? goToNextChapter
-                      : () => goToQuiz(activeChapterIndex)
-                  }
-                >
-                  {activeChapterIndex < unlockedChapterCount
-                    ? t('course.chapter_complete_button_continue')
-                    : t('course.nav_continue_to_quiz')}
-                </FooterPrimaryButton>
-              )}
+              <FooterPrimaryButton
+                appearance={ButtonAppearance.Primary}
+                size={ButtonSizes.Medium}
+                onClick={handlePrimaryVideoCta}
+                disabled={isAdvancing}
+              >
+                {t(primaryVideoCta.labelKey)}
+              </FooterPrimaryButton>
             </ChapterFooter>
           </>
         )}
 
-        {mode === 'quiz' && (
+        {effectiveMode === 'quiz' && (
           <ChapterContent>
             <Quiz
               key={`quiz-${activeChapterIndex}`}
