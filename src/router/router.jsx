@@ -114,7 +114,7 @@ export const Root = ({ children, restoreScroll = true }) => {
         {restoreScroll && <ScrollRestoration />}
         <GlobalStyles />
         {environment.isNative && <NativeMessageHandler />}
-        {children || <Outlet />}
+        <div id="router-outlet-wrapper">{children || <Outlet />}</div>
       </ToastProvider>
     </CustomThemeProvider>
   );

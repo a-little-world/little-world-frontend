@@ -27,11 +27,18 @@ body {
   flex-direction: column;
 }
 
+/* - `contain` anchors `position: fixed` children to this element, which which adheres to the safe
+      are  padding set on the body; scrolling must stay on #router-outlet-wrapper or they scroll
+      out of view */
 #root {
   position: relative;
   height: 100%;
   width: 100%;
   contain: layout;
+}
+
+#router-outlet-wrapper {
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
