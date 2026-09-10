@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import {
   Loading,
@@ -17,6 +17,7 @@ import { USER_ENDPOINT } from '../../../api/endpoints';
 import { apiFetch } from '../../../api/helpers';
 import { mutateUserData } from '../../../api/index';
 import { onFormError } from '../../../helpers/form';
+import useSubmitOnChange from '../../../hooks/useSubmitOnChange';
 
 const MailingListsWrapper = styled.div<{ $centred?: boolean; $width?: string }>`
   display: flex;
@@ -49,7 +50,7 @@ const MailingLists = ({
   width?: string;
 }) => {
   const { t } = useTranslation();
-  const { control, getValues, setError, watch, handleSubmit } = useForm();
+  const { control, getValues, setError, watch } = useForm();
   const { data: user } = useSWR(USER_ENDPOINT);
 
   const subscribed = user?.profile.newsletter_subscribed;
@@ -66,11 +67,7 @@ const MailingLists = ({
     mutateUserData(data, onFormSuccess, onError);
   };
 
-  useEffect(() => {
-    const subscription = watch(() => handleSubmit(onToggle)());
-
-    return () => subscription.unsubscribe();
-  }, [handleSubmit, watch]);
+  useSubmitOnChange(watch, onToggle);
 
   return (
     <MailingListsWrapper $width={width}>
@@ -87,7 +84,7 @@ const MailingLists = ({
               id="newsletter_subscribed"
               name={name}
               inputRef={ref}
-              onCheckedChange={val => onChange({ target: { value: val } })}
+              onCheckedChange={onChange}
               onBlur={onBlur}
               value={value}
               defaultChecked={value}
@@ -109,15 +106,9 @@ const MailingLists = ({
 
 export const SingleCategoryToggle = ({ category, emailSettingsData }) => {
   const { t } = useTranslation();
-  const { control, watch, handleSubmit } = useForm();
-
-  // const onError = e => {
-  //   onFormError({ e, formFields: getValues(), setError, t });
-  // };
+  const { control, watch } = useForm();
 
   const { emailSettingsHash } = useParams();
-
-  // const onFormSuccess = data => {};
 
   const onToggle = data => {
     const chageSubscribe = data[category] ? 'subscribe' : 'unsubscribe';
@@ -131,11 +122,7 @@ export const SingleCategoryToggle = ({ category, emailSettingsData }) => {
     );
   };
 
-  useEffect(() => {
-    const subscription = watch(() => handleSubmit(onToggle)());
-
-    return () => subscription.unsubscribe();
-  }, [handleSubmit, watch]);
+  useSubmitOnChange(watch, onToggle);
 
   return (
     <CategoryForm>
@@ -153,7 +140,7 @@ export const SingleCategoryToggle = ({ category, emailSettingsData }) => {
             id={category}
             name={name}
             inputRef={ref}
-            onCheckedChange={val => onChange({ target: { value: val } })}
+            onCheckedChange={onChange}
             onBlur={onBlur}
             value={value}
             defaultChecked={value}

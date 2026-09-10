@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 
+import { getApps } from '@firebase/app';
 import {
   getMessaging,
   isSupported,
@@ -15,6 +16,10 @@ import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from './api/endpoints';
 import { ToastContextType } from './components/blocks/Toast';
 import useNotificationStore from './features/stores/notification';
 import { enableFirebase, enableNotificationsInProfile } from './firebase-util';
+import {
+  canUseWebPush,
+  getNotificationPermission,
+} from './helpers/webPushSupport';
 import useToast from './hooks/useToast';
 
 const SHOW_NOTIFICATION_PERMISSION_TOAST_KEY =
@@ -94,19 +99,20 @@ function FireBase() {
     s => s.setDevicePermissionGranted,
   );
 
-  const permissionStatus = globalThis.Notification?.permission;
   useEffect(() => {
+    const permissionStatus = getNotificationPermission();
     setDevicePermissionSet(
       permissionStatus !== undefined && permissionStatus !== 'default',
     );
     setDevicePermissionGranted(permissionStatus === 'granted');
-    isSupported().then(setDeviceSupported);
-  }, [
-    permissionStatus,
-    setDevicePermissionSet,
-    setDevicePermissionGranted,
-    setDeviceSupported,
-  ]);
+    if (!canUseWebPush()) {
+      setDeviceSupported(false);
+      return;
+    }
+    isSupported()
+      .then(setDeviceSupported)
+      .catch(() => setDeviceSupported(false));
+  }, [setDevicePermissionSet, setDevicePermissionGranted, setDeviceSupported]);
 
   useEffect(() => {
     if (
@@ -157,7 +163,11 @@ function FireBase() {
       onActionClick: () => {
         enableNotificationsInProfile();
 
-        Notification.requestPermission().then(permission => {
+        const NotificationCtor = globalThis.Notification;
+        if (typeof NotificationCtor?.requestPermission !== 'function') {
+          return;
+        }
+        NotificationCtor.requestPermission().then(permission => {
           setDevicePermissionSet(permission !== 'default');
           setDevicePermissionGranted(permission === 'granted');
         });
@@ -188,18 +198,35 @@ function FireBase() {
     };
 
     const enabled = Boolean(isAuthenticated && devicePermissionGranted);
-    if (!deviceSupported || !enabled || firebaseEnabledRef.current) {
+    if (
+      !canUseWebPush() ||
+      !deviceSupported ||
+      !enabled ||
+      firebaseEnabledRef.current
+    ) {
       return unsubscribe;
     }
 
     firebaseEnabledRef.current = true;
 
-    enableFirebase().then(() => {
-      const messaging = getMessaging();
-      unsubscribeRef.current = onMessage(messaging, payload =>
-        handleMessage(payload, toast, navigate),
-      );
-    });
+    enableFirebase()
+      .then(() => {
+        if (getApps().length === 0) {
+          firebaseEnabledRef.current = false;
+          return;
+        }
+        try {
+          const messaging = getMessaging();
+          unsubscribeRef.current = onMessage(messaging, payload =>
+            handleMessage(payload, toast, navigate),
+          );
+        } catch {
+          firebaseEnabledRef.current = false;
+        }
+      })
+      .catch(() => {
+        firebaseEnabledRef.current = false;
+      });
 
     return unsubscribe;
   }, [

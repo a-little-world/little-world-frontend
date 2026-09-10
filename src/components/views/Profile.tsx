@@ -27,6 +27,7 @@ import { fetchProfile } from '../../api/profile';
 import { COUNTRIES, USER_TYPES } from '../../constants/index';
 import { revalidateMatches } from '../../features/swr';
 import { onFormError } from '../../helpers/form';
+import useSubmitOnChange from '../../hooks/useSubmitOnChange';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import { EDIT_FORM_ROUTE, getAppRoute } from '../../router/routes';
 import {
@@ -157,7 +158,7 @@ function Profile() {
   const { t } = useTranslation();
   const { userId } = useParams();
   const navigate = useNavigate();
-  const { control, getValues, handleSubmit, setError, watch } = useForm();
+  const { control, getValues, setError, watch } = useForm();
 
   const formOptions = useSWR(API_OPTIONS_ENDPOINT).data?.profile;
 
@@ -218,6 +219,8 @@ function Profile() {
     mutateUserData(data, onFormSuccess, onError);
   };
 
+  useSubmitOnChange(watch, onFormSubmit);
+
   useEffect(() => {
     setProfile(isSelf ? user?.profile : match?.partner);
   }, [isSelf, user]);
@@ -234,11 +237,6 @@ function Profile() {
         }),
       );
   }, [profile, formOptions]);
-
-  useEffect(() => {
-    const subscription = watch(() => handleSubmit(onFormSubmit)());
-    return () => subscription.unsubscribe();
-  }, [handleSubmit, watch]);
 
   useEffect(() => {
     if (!isSelf && !match) {

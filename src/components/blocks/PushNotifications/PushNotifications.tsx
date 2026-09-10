@@ -17,6 +17,7 @@ import {
   unregisterFirebaseDeviceToken,
 } from '../../../firebase-util';
 import { onFormError } from '../../../helpers/form';
+import useSubmitOnChange from '../../../hooks/useSubmitOnChange';
 
 const NotificationsList = styled.form<{ $categoriesOpen: boolean }>`
   display: flex;
@@ -71,8 +72,7 @@ type Data = {
 
 const PushNotifications = ({ hideLabel }: { hideLabel?: boolean }) => {
   const { t } = useTranslation();
-  const { control, getValues, setError, clearErrors, watch, handleSubmit } =
-    useForm<Data>();
+  const { control, getValues, setError, clearErrors, watch } = useForm<Data>();
   const { data: user } = useSWR(USER_ENDPOINT);
   // notification store is not necessarily updated fast enough and only the initial value is used
   const userDataPushNotificationsEnabled =
@@ -94,11 +94,7 @@ const PushNotifications = ({ hideLabel }: { hideLabel?: boolean }) => {
     mutateUserData(data, onFormSuccess, onError);
   };
 
-  useEffect(() => {
-    const subscription = watch(() => handleSubmit(onToggle)());
-
-    return () => subscription.unsubscribe();
-  }, [handleSubmit, watch]);
+  useSubmitOnChange(watch, onToggle);
 
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
 
@@ -158,7 +154,7 @@ const PushNotifications = ({ hideLabel }: { hideLabel?: boolean }) => {
                 id="push_notifications_enabled"
                 name={name}
                 inputRef={ref}
-                onCheckedChange={val => onChange({ target: { value: val } })}
+                onCheckedChange={onChange}
                 onBlur={onBlur}
                 value={value}
                 defaultChecked={value}
@@ -196,9 +192,7 @@ const PushNotifications = ({ hideLabel }: { hideLabel?: boolean }) => {
                       name={name}
                       inputRef={ref}
                       disabled={!globalEnabled}
-                      onCheckedChange={val =>
-                        onChange({ target: { value: val } })
-                      }
+                      onCheckedChange={onChange}
                       onBlur={onBlur}
                       value={value}
                       defaultChecked={value}

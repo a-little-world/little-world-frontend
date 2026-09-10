@@ -12,6 +12,7 @@ import { apiFetch } from './api/helpers';
 import { environment } from './environment';
 import { useReceiveHandlerStore } from './features/stores';
 import useNativeStore from './features/stores/nativeStore';
+import { canUseWebPush } from './helpers/webPushSupport';
 
 type FirebaseConfig = {
   firebaseClientConfig: FirebaseOptions;
@@ -35,6 +36,9 @@ function getFirebaseConfig(): Promise<FirebaseConfig> {
 // (/firebase-cloud-messaging-push-scope) does not control the app's pages, and an
 // uncontrolled client cannot be navigated on notification click.
 async function registerServiceWorker(): Promise<ServiceWorkerRegistration> {
+  if (!navigator.serviceWorker) {
+    throw new Error('service worker is not available');
+  }
   await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
     scope: '/',
   });
@@ -43,27 +47,31 @@ async function registerServiceWorker(): Promise<ServiceWorkerRegistration> {
 }
 
 export async function getFirebaseToken(): Promise<string | undefined> {
-  if (getApps().length === 0) {
+  if (getApps().length === 0 || !canUseWebPush()) {
     return undefined;
   }
 
-  const { firebasePublicVapidKey } = await getFirebaseConfig();
-  const serviceWorkerRegistration = await registerServiceWorker();
-  const messaging = getMessaging();
-  const token = await Promise.race([
-    getToken(messaging, {
-      vapidKey: firebasePublicVapidKey,
-      serviceWorkerRegistration,
-    }),
-    // prevent forever hanging when push server is not reachable
-    new Promise<never>((_, reject) => {
-      setTimeout(
-        () => reject(new Error('timed out waiting for a firebase token')),
-        20000,
-      );
-    }),
-  ]);
-  return token;
+  try {
+    const { firebasePublicVapidKey } = await getFirebaseConfig();
+    const serviceWorkerRegistration = await registerServiceWorker();
+    const messaging = getMessaging();
+    const token = await Promise.race([
+      getToken(messaging, {
+        vapidKey: firebasePublicVapidKey,
+        serviceWorkerRegistration,
+      }),
+      // prevent forever hanging when push server is not reachable
+      new Promise<never>((_, reject) => {
+        setTimeout(
+          () => reject(new Error('timed out waiting for a firebase token')),
+          20000,
+        );
+      }),
+    ]);
+    return token;
+  } catch {
+    return undefined;
+  }
 }
 
 export async function getInstallationId(): Promise<string> {
@@ -92,6 +100,10 @@ export async function registerFirebaseDeviceToken(): Promise<void> {
       action: 'REGISTER_DEVICE_PUSH_TOKEN',
       payload: {},
     });
+    return;
+  }
+
+  if (!canUseWebPush()) {
     return;
   }
 
@@ -131,6 +143,9 @@ export async function unregisterFirebaseDeviceToken(): Promise<void> {
 }
 
 export async function enableFirebase() {
+  if (!canUseWebPush() || environment.isNative) {
+    return;
+  }
   if (getApps().length >= 1) {
     return;
   }
