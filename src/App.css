@@ -27,9 +27,8 @@ body {
   flex-direction: column;
 }
 
-/* - `contain` anchors `position: fixed` children to this element, which which adheres to the safe
-      are  padding set on the body; scrolling must stay on #router-outlet-wrapper or they scroll
-      out of view */
+/* `contain` anchors `position: fixed` children to this element, which adheres to the safe-area
+   padding set on the body; scrolling must stay off #root or they scroll out of view */
 #root {
   position: relative;
   height: 100%;
@@ -37,8 +36,10 @@ body {
   contain: layout;
 }
 
+/* fixes scrolling in nativet */
 #router-outlet-wrapper {
-  height: 100%;
+  position: fixed;
+  inset: 0;
   overflow-y: auto;
   overflow-x: hidden;
 }
