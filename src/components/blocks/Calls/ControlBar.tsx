@@ -309,16 +309,9 @@ function ControlBar({
 
   const onScreenShareChange = useCallback(
     (enabled: boolean) => {
-      console.log('onScreenShareChange', enabled);
       setIsScreenShareActive(enabled);
     },
     [setIsScreenShareActive],
-  );
-  console.log(
-    'isScreenShareActive',
-    browserSupportsScreenSharing,
-    isRemoteScreenShareActive,
-    remoteScreenShareTracks,
   );
   if (hide) return null;
   return (
