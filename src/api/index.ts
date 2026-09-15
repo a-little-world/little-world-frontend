@@ -9,8 +9,9 @@ import {
 } from '../features/integrityCheck';
 import useNativeStore from '../features/stores/nativeStore';
 import useReceiveHandlerStore from '../features/stores/receiveHandler';
-import { resetUserQueries, USER_ENDPOINT } from '../features/swr';
+import { resetUserQueries } from '../features/swr';
 import { LOGIN_ROUTE } from '../router/routes';
+import { USER_ENDPOINT } from './endpoints';
 import { apiFetch } from './helpers';
 
 export const completeForm = async () => apiFetch(`/api/profile/completed/`);

@@ -12,25 +12,8 @@ import {
 } from '../../../../api/courses';
 import { getAppSubpageRoute, TRAININGS_ROUTE } from '../../../../router/routes';
 import ContentList, { ItemType } from '../../../blocks/ContentList/ContentList';
-import { TRAININGS_DATA } from '../constants';
 import { ContentCard } from '../shared.styles';
 import { Method } from './Trainings.styles';
-
-const hardcodedItems: ItemType[] = Object.values(TRAININGS_DATA).map(
-  training => ({
-    title: training.title,
-    description: training.description,
-    bio: training.bio,
-    link: training.link,
-    linkText: training.linkText,
-    image: training.image,
-    altImage: training.altImage,
-    badge: {
-      type: 'video' as const,
-      label: 'resources.trainings.badge_video_only',
-    },
-  }),
-);
 
 function courseToItem(course: Course): ItemType {
   return {
@@ -52,7 +35,6 @@ const Trainings: FC = () => {
   const { data: apiCourses } = useSWR<Course[]>(COURSES_ENDPOINT, fetchCourses);
 
   const courseItems = (apiCourses ?? []).map(courseToItem);
-  const allItems: ItemType[] = [...hardcodedItems, ...courseItems];
 
   return (
     <ContentCard>
@@ -66,7 +48,7 @@ const Trainings: FC = () => {
       </Text>
       <Text bold>{t('resources.trainings.description')}</Text>
       <Method>{t('resources.trainings.method')}</Method>
-      <ContentList content={allItems} />
+      <ContentList content={courseItems} />
     </ContentCard>
   );
 };

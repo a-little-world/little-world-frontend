@@ -25,8 +25,8 @@ import {
   API_OPTIONS_ENDPOINT,
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr/index';
-import { registerFirebaseDeviceToken } from '../../firebase-util';
+} from '../../api/endpoints';
+import { maxBirthYearForMinimumAge } from '../../helpers/date';
 import { onFormError, registerInput } from '../../helpers/form';
 import { LOGIN_ROUTE, passAuthenticationBoundary } from '../../router/routes';
 import {
@@ -49,6 +49,7 @@ const SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL = [
   'self-organized-',
   'dl-',
   'club',
+  'bef',
 ] as const;
 
 function signUpCompanySlugHidesNameLabel(company: string): boolean {
@@ -82,6 +83,7 @@ function runOptionalMatomoTriggers(userType?: string) {
 const SignUp = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const maxBirthYear = maxBirthYearForMinimumAge();
 
   // User can sign-up with a ?company='name' query
   // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
@@ -142,7 +144,6 @@ const SignUp = () => {
     signUp(data)
       .then(async signUpData => {
         setIsSubmitting(false);
-        registerFirebaseDeviceToken();
         mutate(USER_ENDPOINT, signUpData, false);
         mutate(IS_AUTHENTICATED_ENDPOINT, true, false);
       })
@@ -288,7 +289,7 @@ const SignUp = () => {
           type="number"
           width={InputWidth.Small}
           min={1900}
-          max={2007}
+          max={maxBirthYear}
         />
         <Controller
           defaultValue={false}

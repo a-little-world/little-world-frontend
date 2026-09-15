@@ -12,6 +12,9 @@ import useNativeStore from '../features/stores/nativeStore';
 import { LOGIN_ROUTE } from '../router/routes';
 import { ApiError, ApiFetchOptions, RequestInit } from './types';
 
+export const USER_ENDPOINT = '/api/user';
+export const IS_AUTHENTICATED_ENDPOINT = '/api/user/authenticated';
+
 export function getEffectiveBackendUrl(): string {
   return debugStore.getState().backendUrlOverride ?? environment.backendUrl;
 }
@@ -48,6 +51,8 @@ export async function clearSwrCache(revalidate = true) {
 }
 
 export async function navigateToLogin(expired: boolean = false): Promise<void> {
+  await mutate(IS_AUTHENTICATED_ENDPOINT, false, false);
+  await mutate(USER_ENDPOINT, null, false);
   const currentPath = (window?.location?.hash ?? '').replaceAll('#', '');
   if (
     currentPath.startsWith(`/${LOGIN_ROUTE}`) &&

@@ -16,12 +16,12 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
-import CustomPagination from '../../../CustomPagination';
 import {
   getCommunityEventsEndpoint,
   UPCOMING_LOBBIES_ENDPOINT,
-} from '../../../features/swr/index';
+} from '../../../api/endpoints';
+import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
+import CustomPagination from '../../../CustomPagination';
 import { formatDate, formatEventTime } from '../../../helpers/date';
 import { calculateNextOccurrence, Event } from '../../../helpers/events';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';

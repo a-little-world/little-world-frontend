@@ -9,11 +9,11 @@ import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import { useDevelopmentFeaturesStore } from '../../features/stores/index';
 import {
   UNREAD_NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr/index';
+} from '../../api/endpoints';
+import { useDevelopmentFeaturesStore } from '../../features/stores/index';
 import { formatTimeDistance } from '../../helpers/date';
 import { getAppRoute, NOTIFICATIONS_ROUTE } from '../../router/routes';
 import MatchingUserTag from '../atoms/MatchingUserTag';

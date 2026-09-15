@@ -10,7 +10,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import { SWRConfig } from 'swr';
 
-import { swrConfig } from '../../features/swr/index';
+import { swrConfig } from '../../features/swr';
 import useSupportChat, { type SupportMatch } from '../../hooks/useSupportChat';
 import {
   getAppRoute,

@@ -10,7 +10,7 @@ import useSWR from 'swr';
 import {
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
-} from '../../../features/swr/index';
+} from '../../../api/endpoints';
 import {
   CategoryNote,
   CategorySelectorWrapper,

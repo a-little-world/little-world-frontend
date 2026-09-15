@@ -2,6 +2,7 @@ export enum TokenStatus {
   VALID,
   EXPIRED,
   MISSING,
+  ERROR,
 }
 
 // Add DOM types for fetch API

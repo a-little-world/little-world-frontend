@@ -23,7 +23,7 @@ import styled, { css, useTheme } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
 import { mutateUserData, setNewEmail, setNewPassword } from '../../api';
-import { USER_ENDPOINT } from '../../features/swr/index';
+import { USER_ENDPOINT } from '../../api/endpoints';
 import { onFormError, registerInput } from '../../helpers/form';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes';

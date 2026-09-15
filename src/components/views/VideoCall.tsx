@@ -31,6 +31,12 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
+import {
+  getChatEndpoint,
+  RANDOM_CALL_EXIT_PARAM,
+  RANDOM_CALL_EXIT_VALUE,
+  USER_ENDPOINT,
+} from '../../api/endpoints';
 import { callAgain } from '../../api/livekit';
 import { endRandomCallMatch } from '../../api/randomCalls';
 import { environment } from '../../environment';
@@ -39,12 +45,6 @@ import {
   useConnectedCallStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
-import {
-  getChatEndpoint,
-  RANDOM_CALL_EXIT_PARAM,
-  RANDOM_CALL_EXIT_VALUE,
-  USER_ENDPOINT,
-} from '../../features/swr';
 import useIsBelowBreakpoint from '../../hooks/useIsBelowBreakpoint';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import {

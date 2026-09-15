@@ -98,3 +98,19 @@ export function formatDuration(seconds: number): string {
   const remainingSeconds = seconds % 60;
   return `${minutes}:${two(remainingSeconds)}`;
 }
+
+/** Minimum age required to create a Little World account. */
+export const SIGNUP_MINIMUM_AGE = 18;
+
+/**
+ * Latest birth year allowed for year-only signup fields.
+ * Uses today's date so the cutoff advances automatically each year.
+ */
+export function maxBirthYearForMinimumAge(
+  minimumAge = SIGNUP_MINIMUM_AGE,
+  asOf: Date = new Date(),
+): number {
+  const cutoff = new Date(asOf);
+  cutoff.setFullYear(asOf.getFullYear() - minimumAge);
+  return cutoff.getFullYear();
+}

@@ -3,12 +3,9 @@ import { useTranslation } from 'react-i18next';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
+import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../../api/endpoints';
 import { USER_TYPES } from '../../constants';
 import { environment } from '../../environment';
-import {
-  IS_AUTHENTICATED_ENDPOINT,
-  USER_ENDPOINT,
-} from '../../features/swr/index';
 import {
   getAppRoute,
   getHomeRoute,

@@ -13,9 +13,9 @@ import { useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR, { mutate } from 'swr';
 
+import { USER_ENDPOINT } from '../../../api/endpoints';
 import { apiFetch } from '../../../api/helpers';
 import { mutateUserData } from '../../../api/index';
-import { USER_ENDPOINT } from '../../../features/swr/index';
 import { onFormError } from '../../../helpers/form';
 
 const MailingListsWrapper = styled.div<{ $centred?: boolean; $width?: string }>`

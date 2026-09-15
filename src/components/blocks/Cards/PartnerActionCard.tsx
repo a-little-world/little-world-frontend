@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { reportIssue, unmatch } from '../../../api/matches';
-import { revalidateMatches } from '../../../features/swr/index';
+import { revalidateMatches } from '../../../features/swr';
 import { REPORT_TYPE_UNMATCH, ReportType } from '../ReportForm/constants';
 import ReportForm from '../ReportForm/ReportForm';
 

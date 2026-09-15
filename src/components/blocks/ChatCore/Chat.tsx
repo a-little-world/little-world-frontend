@@ -30,18 +30,18 @@ import {
   sendFileAttachmentMessage,
   sendMessage,
 } from '../../../api/chat';
+import {
+  CHATS_ENDPOINT_SEPERATE,
+  getChatEndpoint,
+  getChatMessagesEndpoint,
+  USER_ENDPOINT,
+} from '../../../api/endpoints';
 import { environment } from '../../../environment';
 import {
   useCallSetupStore,
   useChatInputStore,
 } from '../../../features/stores/index';
-import {
-  CHATS_ENDPOINT_SEPERATE,
-  getChatEndpoint,
-  getChatMessagesEndpoint,
-  revalidateChats,
-  USER_ENDPOINT,
-} from '../../../features/swr/index';
+import { revalidateChats } from '../../../features/swr';
 import { addMessage } from '../../../features/swr/wsBridgeMutations';
 import {
   formatFileName,

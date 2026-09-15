@@ -13,13 +13,13 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
-import type { ApiError } from '../../../api/types';
-import { USER_TYPES } from '../../../constants';
-import { useCallSetupStore } from '../../../features/stores/index';
 import {
   getMatchOverviewEndpoint,
   USER_ENDPOINT,
-} from '../../../features/swr/index';
+} from '../../../api/endpoints';
+import type { ApiError } from '../../../api/types';
+import { USER_TYPES } from '../../../constants';
+import { useCallSetupStore } from '../../../features/stores/index';
 import {
   activeWeekNumbers,
   deriveMatchState,

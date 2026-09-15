@@ -102,19 +102,25 @@ const getInitialTheme = () => {
   return undefined; // Let CustomThemeProvider use its default
 };
 
-export const Root = ({ children, restoreScroll = true }) => {
+export const Root = ({
+  children,
+  restoreScroll = true,
+  standalone = false,
+}) => {
   useErrorDebugBridge();
   return (
     <CustomThemeProvider defaultMode={getInitialTheme()}>
       <ToastProvider>
-        <AuthGuard>
-          <WebsocketBridge />
-        </AuthGuard>
-        {!environment.isNative && <FireBase />}
+        {!standalone && (
+          <AuthGuard>
+            <WebsocketBridge />
+          </AuthGuard>
+        )}
+        {!standalone && !environment.isNative && <FireBase />}
         {restoreScroll && <ScrollRestoration />}
         <GlobalStyles />
-        {environment.isNative && <NativeMessageHandler />}
-        {children || <Outlet />}
+        {!standalone && environment.isNative && <NativeMessageHandler />}
+        <div id="router-outlet-wrapper">{children || <Outlet />}</div>
       </ToastProvider>
     </CustomThemeProvider>
   );

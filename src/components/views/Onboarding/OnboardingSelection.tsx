@@ -12,8 +12,8 @@ import { Navigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
+import { USER_ENDPOINT } from '../../../api/endpoints';
 import { USER_TYPES } from '../../../constants';
-import { USER_ENDPOINT } from '../../../features/swr';
 import { getAppRoute } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import PartnerActionCard from '../../blocks/Cards/PartnerActionCard';

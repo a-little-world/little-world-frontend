@@ -24,7 +24,7 @@ import {
   CHATS_ENDPOINT,
   NOTIFICATIONS_ENDPOINT,
   USER_ENDPOINT,
-} from '../../features/swr/index';
+} from '../../api/endpoints';
 import { unregisterFirebaseDeviceToken } from '../../firebase-util';
 import {
   COMMUNITY_EVENTS_ROUTE,
@@ -121,8 +121,7 @@ const MobileOverlay = styled.div`
   background: rgb(0 0 0 / 30%);
   z-index: 2;
   position: fixed;
-  height: 100vh;
-  width: 100vw;
+  inset: 0;
   pointer-events: all;
   transition: opacity 0.5s;
 

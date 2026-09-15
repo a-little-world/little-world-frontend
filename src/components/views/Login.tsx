@@ -14,11 +14,7 @@ import { useTranslation } from 'react-i18next';
 import useSWR, { mutate } from 'swr';
 
 import { login } from '../../api';
-import {
-  IS_AUTHENTICATED_ENDPOINT,
-  USER_ENDPOINT,
-} from '../../features/swr/index';
-import { registerFirebaseDeviceToken } from '../../firebase-util';
+import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../../api/endpoints';
 import { onFormError, registerInput } from '../../helpers/form';
 import useQueryParam, { useRemoveQueryParam } from '../../hooks/useQueryParam';
 import {
@@ -75,7 +71,6 @@ const Login = () => {
     login(data)
       .then(loginData => {
         setIsSubmitting(false);
-        registerFirebaseDeviceToken();
         mutate(USER_ENDPOINT, loginData, false);
         mutate(IS_AUTHENTICATED_ENDPOINT, true, false);
       })

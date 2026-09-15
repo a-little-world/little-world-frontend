@@ -98,7 +98,11 @@ export function progressCopyParams(
   return { name };
 }
 
-/** Only this state shows the last-call line; elsewhere it competes with the ask. */
+/**
+ * Which states show the last-call line. It needs a call to have happened, so `dormant`
+ * qualifies — a match that has gone quiet is precisely one where when they last spoke is
+ * the useful thing to say. Before the first call it would only compete with the ask.
+ */
 export function progressShowsLastCall(state: MatchStateKind): boolean {
   return (
     state === 'engaged' || state === 'streak_active' || state === 'dormant'
