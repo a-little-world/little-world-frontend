@@ -17,7 +17,7 @@ const ErrorWrapper = styled.div`
 
 const RouterError = ({ Layout = AppLayout }) => (
   <Layout>
-    <ErrorWrapper>
+    <ErrorWrapper data-testid="router-error">
       <MessageCard
         title="error_view.title"
         linkText="error_view.button"

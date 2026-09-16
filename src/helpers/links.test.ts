@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { isInternalLink } from './links';
+import { getAppLinkProps, isInternalLink } from './links.ts';
 
 describe('isInternalLink', () => {
   it('treats root-absolute app paths as internal', () => {
@@ -22,5 +22,23 @@ describe('isInternalLink', () => {
     assert.equal(isInternalLink('relative/path'), false);
     assert.equal(isInternalLink(undefined), false);
     assert.equal(isInternalLink(''), false);
+  });
+});
+
+describe('getAppLinkProps', () => {
+  it('routes internal app links through react-router (in-SPA, no new tab)', () => {
+    assert.deepEqual(getAppLinkProps('/app'), { to: '/app' });
+    assert.deepEqual(getAppLinkProps('/login'), { to: '/login' });
+  });
+
+  it('keeps external links as href + target=_blank', () => {
+    assert.deepEqual(getAppLinkProps('https://home.little-world.com/stories'), {
+      href: 'https://home.little-world.com/stories',
+      target: '_blank',
+    });
+    assert.deepEqual(getAppLinkProps('mailto:support@little-world.com'), {
+      href: 'mailto:support@little-world.com',
+      target: '_blank',
+    });
   });
 });

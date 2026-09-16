@@ -460,7 +460,7 @@ function CommunityEvents() {
           upcomingLobbies ?? [],
           t('community_events.random_calls_title'),
           t('community_events.random_calls_description', {
-            randomCallsLink: getAppAbsoluteRoute(RANDOM_CALLS_ROUTE),
+            randomCallsLink: getAppRoute(RANDOM_CALLS_ROUTE),
           }),
           t('community_events.random_calls_cta'),
         )
