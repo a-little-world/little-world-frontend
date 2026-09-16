@@ -64,10 +64,18 @@ const Options = styled.div`
   `}
 `;
 
-const LogoLink = styled.a`
+const logoLinkStyles = css`
   display: flex;
   flex: 1;
   min-width: fit-content;
+`;
+
+const LogoLink = styled.a`
+  ${logoLinkStyles}
+`;
+
+const LogoRouterLink = styled(Link)`
+  ${logoLinkStyles}
 `;
 
 const Header = () => {
@@ -79,15 +87,24 @@ const Header = () => {
       ? user?.userFormCompleted
       : user?.isOnboarded;
   const href = accessToMainApp ? getAppRoute() : WP_HOME_ROUTE;
+  const isNativeAppLink = environment?.isNative && accessToMainApp;
 
   return (
     <StyledHeader>
-      <LogoLink
-        href={href}
-        target={environment?.isNative || !accessToMainApp ? '_blank' : '_self'}
-      >
-        <Logo stacked={false} />
-      </LogoLink>
+      {isNativeAppLink ? (
+        <LogoRouterLink to={getAppRoute()}>
+          <Logo stacked={false} />
+        </LogoRouterLink>
+      ) : (
+        <LogoLink
+          href={href}
+          target={
+            environment?.isNative || !accessToMainApp ? '_blank' : '_self'
+          }
+        >
+          <Logo stacked={false} />
+        </LogoLink>
+      )}
       <Options>
         <LanguageSelector />
       </Options>
