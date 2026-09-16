@@ -149,6 +149,8 @@ type ContentSelectorProps = {
   newTopics?: string[];
   /** Topic keys that show an "Online" badge */
   onlineTopics?: string[];
+  /** Route a topic navigates to, exposed so e2e can verify tab navigation */
+  getTopicRoute?: (topic: string) => string | undefined;
 };
 
 function ContentSelector({
@@ -159,6 +161,7 @@ function ContentSelector({
   excludeTopics,
   newTopics,
   onlineTopics,
+  getTopicRoute,
 }: ContentSelectorProps) {
   const { t } = useTranslation();
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
@@ -199,6 +202,7 @@ function ContentSelector({
               onClick={() => onTopicSelect(topic)}
               disabled={selection === topic && disableIfSelected}
               $selected={selection === topic}
+              data-nav-route={getTopicRoute?.(topic)}
             >
               {t(`nbt_${topic}`)}
               {onlineTopics?.includes(topic) ? (

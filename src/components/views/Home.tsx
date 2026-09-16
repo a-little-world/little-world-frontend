@@ -139,9 +139,11 @@ function Main() {
     }
   }, [subpage, hasRandomCallsAccess, navigate]);
 
+  const subpageRoute = (page: subpages) =>
+    getAppRoute(page !== 'conversation_partners' ? page.replace('_', '-') : '');
+
   const handleSubpageSelect = (page: subpages) => {
-    const nextPath = page !== 'conversation_partners' ? page : '';
-    navigate(getAppRoute(nextPath.replace('_', '-')));
+    navigate(subpageRoute(page));
   };
 
   const onPageChange = (page: number) => {
@@ -161,6 +163,7 @@ function Main() {
           handleSubpageSelect(selection as subpages)
         }
         use="main"
+        getTopicRoute={topic => subpageRoute(topic as subpages)}
         excludeTopics={excludedTopics}
         newTopics={['random_calls']}
         onlineTopics={lobbyData?.status ? ['random_calls'] : []}
