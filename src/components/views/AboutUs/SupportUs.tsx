@@ -25,6 +25,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
+import { getAppLinkProps } from '../../../helpers/appLinks';
 import useSupportChat from '../../../hooks/useSupportChat';
 import Socials, { SOCIALS_LIST } from '../../atoms/Socials';
 import MailingLists from '../../blocks/MailingLists/MailingLists';
@@ -156,17 +157,17 @@ const SegmentCta = ({ label }: { label: string }) => {
   ) : (
     <Ctas>
       <SegmentLink
-        href={t(`support_us.${label}.link_href`, { supportUrl })}
+        {...getAppLinkProps(t(`support_us.${label}.link_href`, { supportUrl }))}
         buttonAppearance={ButtonAppearance.Secondary}
-        target="_blank"
       >
         {t(`support_us.${label}.link_text`)}
       </SegmentLink>
       {SECTIONS_WITH_TWO_CTAS.includes(label) && (
         <SegmentLink
-          href={t(`support_us.${label}.link_2_href`, { supportUrl })}
+          {...getAppLinkProps(
+            t(`support_us.${label}.link_2_href`, { supportUrl }),
+          )}
           buttonAppearance={ButtonAppearance.Secondary}
-          target="_blank"
         >
           {t(`support_us.${label}.link_2_text`)}
         </SegmentLink>

@@ -46,6 +46,7 @@ import AuthGuard from '../guards/AuthGuard';
 import RouteGuard from '../guards/RouteGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
 import WebsocketBridge from '../WebsocketBridge';
+import NativeAppLinkInterceptor from '../webview/NativeAppLinkInterceptor';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
   APP_ROUTE,
@@ -120,6 +121,7 @@ export const Root = ({
         {restoreScroll && <ScrollRestoration />}
         <GlobalStyles />
         {!standalone && environment.isNative && <NativeMessageHandler />}
+        {!standalone && environment.isNative && <NativeAppLinkInterceptor />}
         <div id="router-outlet-wrapper">{children || <Outlet />}</div>
       </ToastProvider>
     </CustomThemeProvider>
