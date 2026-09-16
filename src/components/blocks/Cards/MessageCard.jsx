@@ -11,6 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { getAppLinkProps } from '../../../helpers/links';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import { ModalTitle } from './ModalCard';
 
@@ -62,10 +63,9 @@ const MessageCard = ({
       )}
       {linkTo && (
         <Link
-          href={linkTo}
+          {...getAppLinkProps(linkTo)}
           buttonAppearance={ButtonAppearance.Primary}
           buttonSize={ButtonSizes.Stretch}
-          onClick={() => setTimeout(window?.location.reload(), 100)}
         >
           {t(linkText)}
         </Link>
