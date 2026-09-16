@@ -42,8 +42,11 @@ function OurWorld() {
       ? 'support'
       : last(location.pathname.split('/'));
 
+  const subpageRoute = (page: subpages) =>
+    getAppSubpageRoute(OUR_WORLD_ROUTE, page);
+
   const handleSubpageSelect = (page: subpages) => {
-    navigate(getAppSubpageRoute(OUR_WORLD_ROUTE, page));
+    navigate(subpageRoute(page));
   };
 
   return (
@@ -52,6 +55,7 @@ function OurWorld() {
         selection={subpage}
         setSelection={handleSubpageSelect}
         use="ourWorld"
+        getTopicRoute={topic => subpageRoute(topic as subpages)}
       />
       <Content>{renderResourceContent(subpage)}</Content>
     </>
