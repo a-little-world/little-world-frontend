@@ -18,6 +18,7 @@ import { ToastProvider } from '../components/blocks/Toast';
 import Welcome from '../components/blocks/Welcome/Welcome';
 import AboutUs from '../components/views/AboutUs/AboutUs';
 import ChangeEmail from '../components/views/ChangeEmail';
+import CookieSettings from '../components/views/CookieSettings';
 import EditView from '../components/views/Edit';
 import EmailPreferences from '../components/views/EmailPreferences';
 import ForgotPassword from '../components/views/ForgotPassword';
@@ -56,6 +57,7 @@ import {
   CHANGE_EMAIL_ROUTE,
   CHAT_ROUTE,
   COMMUNITY_EVENTS_ROUTE,
+  COOKIE_ROUTE,
   COURSE_PREVIEW_ROUTE,
   DONATE_ROUTE,
   EDIT_FORM_ROUTE,
@@ -134,6 +136,15 @@ export function getWebRouter() {
       element: (
         <FormLayout>
           <EmailPreferences />
+        </FormLayout>
+      ),
+      errorElement: <RouterError Layout={FormLayout} />,
+    },
+    {
+      path: COOKIE_ROUTE,
+      element: (
+        <FormLayout>
+          <CookieSettings />
         </FormLayout>
       ),
       errorElement: <RouterError Layout={FormLayout} />,

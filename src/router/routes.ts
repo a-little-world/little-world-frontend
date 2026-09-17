@@ -44,6 +44,7 @@ export const WP_HOME_ROUTE = 'https://home.little-world.com';
 export const TERMS_ROUTE = 'nutzungsbedingungen';
 export const PRIVACY_ROUTE = 'datenschutz';
 export const EMAIL_PREFERENCES_ROUTE = 'email-preferences/:emailSettingsHash';
+export const COOKIE_ROUTE = 'cookies';
 export const ONBOARDING_ROUTE = 'onboarding';
 export const SELF_ONBOARDING_ROUTE = 'onboarding/walkthrough';
 
