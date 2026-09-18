@@ -21,9 +21,11 @@ const StyledContent = styled(VaulDrawer.Content)`
   border-radius: ${({ theme }) =>
     `${theme.radius.small} ${theme.radius.small} 0 0`};
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  /* Portaled to document.body (not a #root descendant), so it anchors to the
+     viewport and ignores body's safe-area padding — inset each edge directly. */
+  bottom: var(--safe-bottom);
+  left: var(--safe-left);
+  right: var(--safe-right);
   outline: none;
   z-index: 100;
 `;
