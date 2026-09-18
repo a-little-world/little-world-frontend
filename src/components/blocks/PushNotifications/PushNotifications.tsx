@@ -55,12 +55,7 @@ const CategoryToggles = styled.div`
   overflow: hidden;
 `;
 
-const CATEGORIES = [
-  'chats',
-  'matches',
-  'random_calls',
-  'announcements',
-] as const;
+const CATEGORIES = ['chats', 'matches', 'announcements'] as const;
 
 type Data = {
   push_notifications_enabled: boolean;
