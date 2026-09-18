@@ -16,6 +16,7 @@ import { ToastContextType } from './components/blocks/Toast';
 import useNotificationStore from './features/stores/notification';
 import { enableFirebase, enableNotificationsInProfile } from './firebase-util';
 import useToast from './hooks/useToast';
+import { getAppRoute, SETTINGS_ROUTE } from './router/routes';
 
 const SHOW_NOTIFICATION_PERMISSION_TOAST_KEY =
   'notification-permission-show-toast';
@@ -152,7 +153,6 @@ function FireBase() {
       duration: Infinity, // show indefinitely
       width: '600px',
       showClose: true,
-      closeOnClick: false,
       // click is required for browser to show permission prompt
       onActionClick: () => {
         enableNotificationsInProfile();
@@ -161,6 +161,9 @@ function FireBase() {
           setDevicePermissionSet(permission !== 'default');
           setDevicePermissionGranted(permission === 'granted');
         });
+      },
+      onClick: () => {
+        navigate(getAppRoute(SETTINGS_ROUTE));
       },
       onClose: () => {
         localStorage.setItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY, 'false');
@@ -175,6 +178,7 @@ function FireBase() {
     setDevicePermissionSet,
     toast,
     t,
+    navigate,
   ]);
 
   // prevent multiple activations
