@@ -30,11 +30,11 @@ importers:
         specifier: ^0.12.23
         version: 0.12.25(@firebase/app@0.14.10)
       '@livekit/components-react':
-        specifier: file:prebuild/livekit-components-react-2.9.21.tgz
-        version: file:prebuild/livekit-components-react-2.9.21.tgz(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)
+        specifier: file:prebuild/livekit-components-react-2.9.22.tgz
+        version: file:prebuild/livekit-components-react-2.9.22.tgz(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)
       '@livekit/components-styles':
-        specifier: file:prebuild/livekit-components-styles-1.2.1.tgz
-        version: file:prebuild/livekit-components-styles-1.2.1.tgz
+        specifier: file:prebuild/livekit-components-styles-1.2.2.tgz
+        version: file:prebuild/livekit-components-styles-1.2.2.tgz
       '@radix-ui/react-dialog':
         specifier: ^1.0.6
         version: 1.1.15(@types/react@19.2.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -75,8 +75,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.5
       livekit-client:
-        specifier: ^2.18.7
-        version: 2.19.0(@types/dom-mediacapture-record@1.0.22)
+        specifier: ^2.22.3
+        version: 2.22.3(@types/dom-mediacapture-record@1.0.22)
       lodash:
         specifier: ^4.17.21
         version: 4.18.1
@@ -997,9 +997,6 @@ packages:
   '@floating-ui/core@1.7.5':
     resolution: {integrity: sha512-1Ih4WTWyw0+lKyFMcBHGbb5U5FtuHJuujoyyr5zTaWS5EYMeT6Jb2AuDeftsCsEuchO+mM2ij5+q9crhydzLhQ==}
 
-  '@floating-ui/dom@1.7.4':
-    resolution: {integrity: sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==}
-
   '@floating-ui/dom@1.7.6':
     resolution: {integrity: sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ==}
 
@@ -1194,20 +1191,20 @@ packages:
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
 
-  '@livekit/components-core@0.12.13':
-    resolution: {integrity: sha512-DQmi84afHoHjZ62wm8y+XPNIDHTwFHAltjd3lmyXj8UZHOY7wcza4vFt1xnghJOD5wLRY58L1dkAgAw59MgWvw==}
+  '@livekit/components-core@0.12.15':
+    resolution: {integrity: sha512-bDkK+jkPMgyT4a5lZmdcuc/hZ8fZUrXW+qQPNHVeSpXCBMzk5q9QWzx+HPtTsPJ8hnncWGfoT81RnXHBsy+Z8g==}
     engines: {node: '>=18'}
     peerDependencies:
-      livekit-client: ^2.17.2
+      livekit-client: ^2.20.1
       tslib: ^2.6.2
 
-  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.21.tgz':
-    resolution: {integrity: sha512-fNL3Mi54VYDfKDF46NzeHLQXIUa9SkMSFjbnTmFihMQyQJGtv68RSibuTo9XpohvLTu2MKman9oi9aKkh0oJMQ==, tarball: file:prebuild/livekit-components-react-2.9.21.tgz}
-    version: 2.9.21
+  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.22.tgz':
+    resolution: {integrity: sha512-fEuP1gkzwQX2xC6ZH4ordmdmjLw6zX1NUvE/pH6Ol6p4+jmXTyJnvpzamLrh1ZOg0gktAi/wnGb4DZI4flYciQ==, tarball: file:prebuild/livekit-components-react-2.9.22.tgz}
+    version: 2.9.22
     engines: {node: '>=18'}
     peerDependencies:
-      '@livekit/krisp-noise-filter': ^0.2.12 || ^0.3.0
-      livekit-client: ^2.13.3
+      '@livekit/krisp-noise-filter': ^0.2.12 || ^0.3.0 || ^0.4.0
+      livekit-client: ^2.20.1
       react: '>=18'
       react-dom: '>=18'
       tslib: ^2.6.2
@@ -1215,16 +1212,16 @@ packages:
       '@livekit/krisp-noise-filter':
         optional: true
 
-  '@livekit/components-styles@file:prebuild/livekit-components-styles-1.2.1.tgz':
-    resolution: {integrity: sha512-lwqtOUEnGo/wAsvaiZ3ymiEKnS0rJZ6i7Wd931RcirGEfLbj/wFPDI+DZ/btgUSeYB+YE390etby1QelSbZSPw==, tarball: file:prebuild/livekit-components-styles-1.2.1.tgz}
-    version: 1.2.1
+  '@livekit/components-styles@file:prebuild/livekit-components-styles-1.2.2.tgz':
+    resolution: {integrity: sha512-x3yjrTDSN2TBvP8SmA/ClEpKCfbsyHpOko+nRI0pkj7lH2wABHe31fesxcNWZ9eNKYZFyyCEQexQQNv3y++f1A==, tarball: file:prebuild/livekit-components-styles-1.2.2.tgz}
+    version: 1.2.2
     engines: {node: '>=18'}
 
   '@livekit/mutex@1.1.1':
     resolution: {integrity: sha512-EsshAucklmpuUAfkABPxJNhzj9v2sG7JuzFDL4ML1oJQSV14sqrpTYnsaOudMAw9yOaW53NU3QQTlUQoRs4czw==}
 
-  '@livekit/protocol@1.45.8':
-    resolution: {integrity: sha512-Q+l57E7w/xxOBFVWzdX5rkAZO7ffyF+rlDzNUYq2SU114+5aTyCq+PK4unaEVDNd4952Af7wteKr3sOgasGuaA==}
+  '@livekit/protocol@1.50.4':
+    resolution: {integrity: sha512-L1uggNQAqyY21smQY8AllyOYbcv9Me9TaxwuLytL1R8ck9nbYPmQLNwEDi3pOFGAMa5F8I2nUi2Jc59W5awxlA==}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -3913,8 +3910,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  livekit-client@2.19.0:
-    resolution: {integrity: sha512-aolY1XDAtx0nHKBNm29W9OhzBnSz1CP5kq3phvRhFfi1NbvMXs8tcACjAkZTnIKgihkp+BiJScZZ3tZv0Gz8sA==}
+  livekit-client@2.22.3:
+    resolution: {integrity: sha512-jw9zBKXY5Gtr5MZ7vEON3QhMNccuDvYHck1PFSyG1aaateQPqgKZFBMgZkFZaXHIf9RV4MDW5xpTK2b/+qbwOg==}
     peerDependencies:
       '@types/dom-mediacapture-record': ^1
 
@@ -4002,6 +3999,10 @@ packages:
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
+
+  machina@7.0.1:
+    resolution: {integrity: sha512-0Xkgs8NeBvO2hW6bjJT8ewLWrMfh1haMPstaghpASWjXkLjRhtDiaJG1Kb7mslaOHxZYxpH7PIjpmirRVYbMMA==}
+    engines: {node: '>=22.22'}
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -5264,8 +5265,8 @@ packages:
       webpack-cli:
         optional: true
 
-  webrtc-adapter@9.0.5:
-    resolution: {integrity: sha512-U9vjByy/sK2OMXu5mmfuZFKTMIUQe34c0JXRO+oDrxJTsntdYT2iIFwYMOV7HhMTuktcZLGf2W1N/OcSf9ssWg==}
+  webrtc-adapter@9.0.6:
+    resolution: {integrity: sha512-CHbl2ZQbxx164IgWRgzJno4hWtM4tFbRam1QfI3Yxhs3w/DvqluVxVWeXs3oL5/fbGkSNLKo0Ty5MgUWceNhog==}
     engines: {node: '>=6.0.0', npm: '>=3.10.0'}
 
   websocket-driver@0.7.4:
@@ -6429,11 +6430,6 @@ snapshots:
     dependencies:
       '@floating-ui/utils': 0.2.11
 
-  '@floating-ui/dom@1.7.4':
-    dependencies:
-      '@floating-ui/core': 1.7.5
-      '@floating-ui/utils': 0.2.11
-
   '@floating-ui/dom@1.7.6':
     dependencies:
       '@floating-ui/core': 1.7.5
@@ -6630,31 +6626,31 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-  '@livekit/components-core@0.12.13(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)':
+  '@livekit/components-core@0.12.15(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)':
     dependencies:
-      '@floating-ui/dom': 1.7.4
-      livekit-client: 2.19.0(@types/dom-mediacapture-record@1.0.22)
+      '@floating-ui/dom': 1.7.6
+      livekit-client: 2.22.3(@types/dom-mediacapture-record@1.0.22)
       loglevel: 1.9.1
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.21.tgz(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)':
+  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.22.tgz(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)':
     dependencies:
-      '@livekit/components-core': 0.12.13(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
+      '@livekit/components-core': 0.12.15(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
       clsx: 2.1.1
       events: 3.3.0
       jose: 6.2.2
-      livekit-client: 2.19.0(@types/dom-mediacapture-record@1.0.22)
+      livekit-client: 2.22.3(@types/dom-mediacapture-record@1.0.22)
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
       tslib: 2.8.1
       usehooks-ts: 3.1.1(react@19.2.4)
 
-  '@livekit/components-styles@file:prebuild/livekit-components-styles-1.2.1.tgz': {}
+  '@livekit/components-styles@file:prebuild/livekit-components-styles-1.2.2.tgz': {}
 
   '@livekit/mutex@1.1.1': {}
 
-  '@livekit/protocol@1.45.8':
+  '@livekit/protocol@1.50.4':
     dependencies:
       '@bufbuild/protobuf': 1.10.1
 
@@ -9558,18 +9554,19 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22):
+  livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22):
     dependencies:
       '@livekit/mutex': 1.1.1
-      '@livekit/protocol': 1.45.8
+      '@livekit/protocol': 1.50.4
       '@types/dom-mediacapture-record': 1.0.22
       events: 3.3.0
       jose: 6.2.2
       loglevel: 1.9.2
+      machina: 7.0.1
       sdp-transform: 2.15.0
       tslib: 2.8.1
       typed-emitter: 2.1.0
-      webrtc-adapter: 9.0.5
+      webrtc-adapter: 9.0.6
 
   loader-runner@4.3.1: {}
 
@@ -9632,6 +9629,8 @@ snapshots:
       yallist: 3.1.1
 
   lz-string@1.5.0: {}
+
+  machina@7.0.1: {}
 
   magic-string@0.30.21:
     dependencies:
@@ -11054,7 +11053,7 @@ snapshots:
       - esbuild
       - uglify-js
 
-  webrtc-adapter@9.0.5:
+  webrtc-adapter@9.0.6:
     dependencies:
       sdp: 3.2.1
 
