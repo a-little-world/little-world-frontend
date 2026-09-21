@@ -652,7 +652,6 @@
   "push_notifications.enable_error": "Notifications could not be enabled. Please check the notification permission for this page and then reload it.",
   "push_notifications.category.chats": "Chat messages",
   "push_notifications.category.matches": "Match notifications",
-  "push_notifications.category.random_calls": "Random call reminders",
   "push_notifications.category.announcements": "Announcements",
   "question_cards.next_topic": "Next topics",
   "question_cards.unarchive": "Unarchive",
