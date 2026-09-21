@@ -28,6 +28,11 @@ i18next
     fallbackLng: LANGUAGES.de,
   });
 
+i18next.on('languageChanged', lng => {
+  document.documentElement.lang = lng;
+});
+document.documentElement.lang = i18next.language;
+
 export default i18next;
 
 export const COOKIE_LANG = 'frontendLang';
