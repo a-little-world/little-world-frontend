@@ -31,6 +31,13 @@ describe('getAppLinkProps', () => {
     assert.deepEqual(getAppLinkProps('/login'), { to: '/login' });
   });
 
+  it('falls back to a same-tab href outside a router', () => {
+    assert.deepEqual(getAppLinkProps('/login', false), {
+      href: '/login',
+      target: '_self',
+    });
+  });
+
   it('keeps external links as href + target=_blank', () => {
     assert.deepEqual(getAppLinkProps('https://home.little-world.com/stories'), {
       href: 'https://home.little-world.com/stories',
