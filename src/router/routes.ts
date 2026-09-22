@@ -47,6 +47,31 @@ export const EMAIL_PREFERENCES_ROUTE = 'email-preferences/:emailSettingsHash';
 export const ONBOARDING_ROUTE = 'onboarding';
 export const SELF_ONBOARDING_ROUTE = 'onboarding/walkthrough';
 
+// Public routes must never be a `next` deep-link target: redirecting back to
+// them would bounce forever once `next` is always set on the login redirect.
+const PUBLIC_NEXT_ROOTS = [
+  LOGIN_ROUTE,
+  SIGN_UP_ROUTE,
+  FORGOT_PASSWORD_ROUTE,
+  RESET_PASSWORD_ROUTE.split('/')[0],
+  EMAIL_PREFERENCES_ROUTE.split('/')[0],
+];
+
+/**
+ * Validates a `next` deep-link target. Only internal absolute paths are
+ * allowed; public routes are rejected to avoid redirect loops.
+ */
+export const sanitizeNext = (rawNext?: string | null): string | null => {
+  if (!rawNext || !rawNext.startsWith('/') || rawNext.startsWith('//')) {
+    return null;
+  }
+
+  const path = rawNext.split(/[?#]/)[0];
+  const firstSegment = path.replace(/^\//, '').split('/')[0];
+
+  return PUBLIC_NEXT_ROOTS.includes(firstSegment) ? null : rawNext;
+};
+
 // User form specific route slugs
 export const USER_FORM_USER_TYPE = 'user-type';
 export const USER_FORM_SELF_INFO_1 = 'self-info-1';
