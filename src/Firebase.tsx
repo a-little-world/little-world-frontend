@@ -145,6 +145,9 @@ function FireBase() {
     const descriptionKey = notificationsEnabled
       ? 'push_notifications.permission_missing.description'
       : 'push_notifications.initial_toast.enable.description';
+
+    const setHideToast = () =>
+      localStorage.setItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY, 'false');
     toast.showToast({
       title: t(titleKey),
       description: t(descriptionKey),
@@ -155,6 +158,7 @@ function FireBase() {
       showClose: true,
       // click is required for browser to show permission prompt
       onActionClick: () => {
+        setHideToast();
         enableNotificationsInProfile();
 
         Notification.requestPermission().then(permission => {
@@ -163,10 +167,11 @@ function FireBase() {
         });
       },
       onClick: () => {
+        setHideToast();
         navigate(getAppRoute(SETTINGS_ROUTE));
       },
       onClose: () => {
-        localStorage.setItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY, 'false');
+        setHideToast();
       },
     });
   }, [
