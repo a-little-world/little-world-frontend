@@ -1,13 +1,24 @@
-// eslint-disable-next-line
-export const clearActiveTracks = () => {
-  // LiveKit isn't handling disconnecting user's devices so we must do it manually
+// LiveKit doesn't release the PreJoin devices itself, so the join flow used to stop them
+// synchronously. That tears down the WebView's communication-mode audio session right as
+// the room connects, and the partner's remote audio can latch onto the media stream.
+// Keep the preview microphone alive across the transition (stop only the camera) until
+// LiveKit's own mic track is live, then release it.
+let heldPreviewAudioTracks: MediaStreamTrack[] = [];
+
+export const holdPreviewAudioTracks = () => {
   const video = document.querySelector('video');
+  const stream = video?.srcObject as MediaStream | null | undefined;
+  if (!stream) return;
 
-  const vidStream = video?.srcObject as MediaStream;
-  const vidTracks = vidStream?.getTracks();
-
-  vidTracks?.forEach(track => {
-    track?.stop();
-    vidStream.removeTrack(track);
+  stream.getVideoTracks().forEach(track => {
+    track.stop();
+    stream.removeTrack(track);
   });
+
+  heldPreviewAudioTracks = stream.getAudioTracks();
+};
+
+export const releasePreviewAudioTracks = () => {
+  heldPreviewAudioTracks.forEach(track => track.stop());
+  heldPreviewAudioTracks = [];
 };

@@ -98,6 +98,11 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'GET_AUDIO_STATE';
+      requestId?: string;
+      payload: {};
+    }
+  | {
       action: 'SET_THEME';
       requestId?: string;
       payload: {

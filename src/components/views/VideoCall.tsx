@@ -15,6 +15,7 @@ import {
   RoomAudioRenderer,
   TrackReferenceOrPlaceholder,
   useDisconnectButton,
+  useLocalParticipant,
   useRoomInfo,
   useTracks,
 } from '@livekit/components-react';
@@ -22,7 +23,7 @@ import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/pre
 
 import '@livekit/components-styles';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
@@ -45,6 +46,7 @@ import {
   useConnectedCallStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
+import { releasePreviewAudioTracks } from '../../helpers/video';
 import useIsBelowBreakpoint from '../../hooks/useIsBelowBreakpoint';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import {
@@ -93,6 +95,120 @@ interface MyVideoConferenceProps {
   setCallRejected: (rejected: boolean) => void;
   callRejected: boolean;
   onDisconnectClick: () => void;
+}
+
+// Android AudioAttributes usages, mirrored from the native CallAudio module.
+const USAGE_MEDIA = 1;
+const USAGE_VOICE_COMMUNICATION = 2;
+
+async function fetchAudioState(): Promise<{
+  mode?: number;
+  usages?: number[];
+} | null> {
+  const bridge = useReceiveHandlerStore.getState().sendMessageToReactNative;
+  try {
+    const res = await bridge?.({ action: 'GET_AUDIO_STATE', payload: {} });
+    if (res && res.ok) return res.data;
+  } catch {
+    // unknown state; the caller keeps polling
+  }
+  return null;
+}
+
+/**
+ * Renders remote call audio, but only once the local microphone is capturing, and then
+ * verifies the WebView actually routed it through the voice-communication stream. On
+ * Android the remote playout latches onto STREAM_MUSIC when it is created before the
+ * WebView is in MODE_IN_COMMUNICATION (the join case); when that happens we re-create the
+ * playout until it lands on the call stream. Web has no such routing, so it renders
+ * immediately.
+ */
+function GatedRoomAudio() {
+  const { microphoneTrack } = useLocalParticipant();
+  const tracks = useTracks([Track.Source.Microphone], { onlySubscribed: true });
+  const hasRemoteAudio = tracks.some(
+    ref =>
+      ref.participant &&
+      !(ref.participant instanceof LocalParticipant) &&
+      !!ref.publication &&
+      !ref.publication.isMuted,
+  );
+
+  const micLive =
+    microphoneTrack?.track?.mediaStreamTrack?.readyState === 'live';
+
+  const [gateOpen, setGateOpen] = useState(!environment.isNative);
+  const [renderKey, setRenderKey] = useState(0);
+  const releasedRef = useRef(false);
+  const attemptsRef = useRef(0);
+
+  // Once LiveKit's own mic is live, drop the held preview mic.
+  useEffect(() => {
+    if (!environment.isNative || !micLive || releasedRef.current) return;
+    releasedRef.current = true;
+    releasePreviewAudioTracks();
+  }, [micLive]);
+
+  // Open the gate once the local mic is live.
+  useEffect(() => {
+    if (!environment.isNative || !micLive || gateOpen) return;
+    setGateOpen(true);
+  }, [micLive, gateOpen]);
+
+  // Safety net: never leave the call silent if the mic signal never arrives.
+  useEffect(() => {
+    if (!environment.isNative || gateOpen) return undefined;
+    const timer = setTimeout(() => {
+      console.warn('[call-audio] mic never went live; opening audio gate');
+      setGateOpen(true);
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [gateOpen]);
+
+  // Guarantee the outcome rather than assume timing: the WebView's remote playback must be
+  // on the voice-communication route. If it latched media, re-create the playout.
+  useEffect(() => {
+    if (!environment.isNative || !gateOpen || !micLive || !hasRemoteAudio) {
+      return undefined;
+    }
+    let cancelled = false;
+    const poll = async () => {
+      const state = await fetchAudioState();
+      if (cancelled) return;
+      const usages = state?.usages ?? [];
+      if (usages.includes(USAGE_VOICE_COMMUNICATION)) {
+        attemptsRef.current = 0;
+        return;
+      }
+      if (usages.includes(USAGE_MEDIA) && attemptsRef.current < 5) {
+        attemptsRef.current += 1;
+        console.warn(
+          `[call-audio] remote audio latched media; re-creating playout (attempt ${attemptsRef.current})`,
+        );
+        setRenderKey(key => key + 1);
+      }
+      setTimeout(poll, 500);
+    };
+    const timer = setTimeout(poll, 500);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [gateOpen, micLive, hasRemoteAudio]);
+
+  // Stop the held preview mic if the call unmounts before LiveKit took over.
+  useEffect(
+    () => () => {
+      if (!releasedRef.current) {
+        releasedRef.current = true;
+        releasePreviewAudioTracks();
+      }
+    },
+    [],
+  );
+
+  if (!gateOpen) return null;
+  return <RoomAudioRenderer key={renderKey} />;
 }
 
 function MyVideoConference({
@@ -546,7 +662,7 @@ function VideoCall() {
                 callRejected={callRejected}
                 onDisconnectClick={handleManualDisconnect}
               />
-              <RoomAudioRenderer />
+              <GatedRoomAudio />
               {!callRejected && (
                 <TopControlBar
                   activeOption={selectedDrawerOption}
