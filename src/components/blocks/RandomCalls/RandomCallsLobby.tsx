@@ -46,7 +46,7 @@ import {
 import { COMMUNITY_EVENT_FREQUENCIES, USER_TYPES } from '../../../constants';
 import { useConnectedCallStore } from '../../../features/stores';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
-import { clearActiveTracks } from '../../../helpers/video';
+import { holdPreviewAudioTracks } from '../../../helpers/video';
 import {
   getAppAbsoluteRoute,
   getAppRoute,
@@ -862,7 +862,7 @@ const RandomCallsLobby = ({
         )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
       });
 
-      clearActiveTracks();
+      holdPreviewAudioTracks();
 
       // Navigate to the random call screen for the partner
       navigate(getRandomCallRoute(currentMatchData.partner.id));
