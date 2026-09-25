@@ -139,6 +139,9 @@ function FireBase() {
     }
     toastShownRef.current = true;
 
+    const width = Math.min((window?.innerWidth ?? 650) - 50, 600);
+    const showActionButton = width > 450;
+
     const titleKey = notificationsEnabled
       ? 'push_notifications.permission_missing.title'
       : 'push_notifications.initial_toast.enable.title';
@@ -151,21 +154,27 @@ function FireBase() {
     toast.showToast({
       title: t(titleKey),
       description: t(descriptionKey),
-      actionText: t('push_notifications.request_permission'),
-      actionAltText: 'request notification permission',
+      actionText: showActionButton
+        ? t('push_notifications.request_permission')
+        : undefined,
+      actionAltText: showActionButton
+        ? 'request notification permission'
+        : undefined,
       duration: Infinity, // show indefinitely
-      width: '600px',
+      width: `${width}px`,
       showClose: true,
       // click is required for browser to show permission prompt
-      onActionClick: () => {
-        setHideToast();
-        enableNotificationsInProfile();
+      onActionClick: showActionButton
+        ? () => {
+            setHideToast();
+            enableNotificationsInProfile();
 
-        Notification.requestPermission().then(permission => {
-          setDevicePermissionSet(permission !== 'default');
-          setDevicePermissionGranted(permission === 'granted');
-        });
-      },
+            Notification.requestPermission().then(permission => {
+              setDevicePermissionSet(permission !== 'default');
+              setDevicePermissionGranted(permission === 'granted');
+            });
+          }
+        : undefined,
       onClick: () => {
         setHideToast();
         navigate(getAppRoute(SETTINGS_ROUTE));
