@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import {
   Button,
@@ -20,9 +20,8 @@ import {
   MediaDeviceMenu,
   TrackToggle,
   useDisconnectButton,
-  useTracks,
 } from '@livekit/components-react';
-import { LocalParticipant, Track } from 'livekit-client';
+import { Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
@@ -282,23 +281,6 @@ function ControlBar({
     disconnectProps;
   const [audioPermissionDenied, setAudioPermissionDenied] = useState(false);
   const [videoPermissionDenied, setVideoPermissionDenied] = useState(false);
-
-  const remoteScreenShareTracks = useTracks(
-    [{ source: Track.Source.ScreenShare, withPlaceholder: false }],
-    { onlySubscribed: true },
-  );
-
-  const isRemoteScreenShareActive = useMemo(
-    () =>
-      remoteScreenShareTracks.some(
-        track =>
-          track.participant &&
-          !(track.participant instanceof LocalParticipant) &&
-          track.publication &&
-          !track.publication.isMuted,
-      ),
-    [remoteScreenShareTracks],
-  );
 
   const handleOpenPermissionModal = () => {
     onPermissionModalOpen?.({
