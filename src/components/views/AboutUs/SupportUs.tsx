@@ -25,6 +25,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled, { useTheme } from 'styled-components';
 
+import { getAppLinkProps } from '../../../helpers/links';
 import useSupportChat from '../../../hooks/useSupportChat';
 import Socials, { SOCIALS_LIST } from '../../atoms/Socials';
 import MailingLists from '../../blocks/MailingLists/MailingLists';
@@ -147,6 +148,11 @@ const SegmentCta = ({ label }: { label: string }) => {
   const { supportUrl } = useSupportChat();
   if (label === 'subscribe_to_newsletter') return <MailingLists hideLabel />;
 
+  const linkHref = t(`support_us.${label}.link_href`, { supportUrl });
+  const secondaryLinkHref = t(`support_us.${label}.link_2_href`, {
+    supportUrl,
+  });
+
   return SOCIALS_LIST[label] ? (
     <Socials
       align="flex-start"
@@ -156,17 +162,15 @@ const SegmentCta = ({ label }: { label: string }) => {
   ) : (
     <Ctas>
       <SegmentLink
-        href={t(`support_us.${label}.link_href`, { supportUrl })}
+        {...getAppLinkProps(linkHref)}
         buttonAppearance={ButtonAppearance.Secondary}
-        target="_blank"
       >
         {t(`support_us.${label}.link_text`)}
       </SegmentLink>
       {SECTIONS_WITH_TWO_CTAS.includes(label) && (
         <SegmentLink
-          href={t(`support_us.${label}.link_2_href`, { supportUrl })}
+          {...getAppLinkProps(secondaryLinkHref)}
           buttonAppearance={ButtonAppearance.Secondary}
-          target="_blank"
         >
           {t(`support_us.${label}.link_2_text`)}
         </SegmentLink>
