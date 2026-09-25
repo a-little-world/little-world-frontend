@@ -35,16 +35,8 @@ importers:
         specifier: ^0.12.26
         version: 0.12.26(@firebase/app@0.14.13)
       '@livekit/components-react':
-<<<<<<< HEAD
-        specifier: file:prebuild/livekit-components-react-2.9.21.tgz
-        version: file:prebuild/livekit-components-react-2.9.21.tgz(livekit-client@2.22.2(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tslib@2.8.1)
-||||||| parent of fd61aa0a (Update livekit)
-        specifier: file:prebuild/livekit-components-react-2.9.21.tgz
-        version: file:prebuild/livekit-components-react-2.9.21.tgz(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)
-=======
         specifier: file:prebuild/livekit-components-react-2.9.22.tgz
-        version: file:prebuild/livekit-components-react-2.9.22.tgz(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)
->>>>>>> fd61aa0a (Update livekit)
+        version: file:prebuild/livekit-components-react-2.9.22.tgz(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tslib@2.8.1)
       '@livekit/components-styles':
         specifier: file:prebuild/livekit-components-styles-1.2.2.tgz
         version: file:prebuild/livekit-components-styles-1.2.2.tgz
@@ -88,16 +80,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.8
       livekit-client:
-<<<<<<< HEAD
-        specifier: ^2.22.2
-        version: 2.22.2(@types/dom-mediacapture-record@1.0.22)
-||||||| parent of fd61aa0a (Update livekit)
-        specifier: ^2.18.7
-        version: 2.19.0(@types/dom-mediacapture-record@1.0.22)
-=======
         specifier: ^2.22.3
         version: 2.22.3(@types/dom-mediacapture-record@1.0.22)
->>>>>>> fd61aa0a (Update livekit)
       lodash:
         specifier: ^4.18.1
         version: 4.18.1
@@ -1022,20 +1006,8 @@ packages:
     resolution: {integrity: sha512-LUdM4Wg7YM9Pq/49nGYySJA0CSQEKnGffFzWV8+6gXN7mGxn+FL1IqvFbuZUtAQcfZgHYDwCE1wwlK7rB7gl2g==}
     engines: {node: '>=20.0.0'}
 
-<<<<<<< HEAD
   '@floating-ui/core@1.8.0':
     resolution: {integrity: sha512-0CIZ5itps/8x7BG8dEIhs53BvCUH2PCoogtakwRTut+Arm58sJooJ0AuZhLw2HJYIR5cMLNPBSS728sPho2khQ==}
-||||||| parent of fd61aa0a (Update livekit)
-  '@floating-ui/core@1.7.5':
-    resolution: {integrity: sha512-1Ih4WTWyw0+lKyFMcBHGbb5U5FtuHJuujoyyr5zTaWS5EYMeT6Jb2AuDeftsCsEuchO+mM2ij5+q9crhydzLhQ==}
-
-  '@floating-ui/dom@1.7.4':
-    resolution: {integrity: sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==}
-
-=======
-  '@floating-ui/core@1.7.5':
-    resolution: {integrity: sha512-1Ih4WTWyw0+lKyFMcBHGbb5U5FtuHJuujoyyr5zTaWS5EYMeT6Jb2AuDeftsCsEuchO+mM2ij5+q9crhydzLhQ==}
->>>>>>> fd61aa0a (Update livekit)
 
   '@floating-ui/dom@1.7.6':
     resolution: {integrity: sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ==}
@@ -4161,16 +4133,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-<<<<<<< HEAD
-  livekit-client@2.22.2:
-    resolution: {integrity: sha512-o3yLYoH2eHVR/DmIZzgC96FMvtR4+g/DjeqNwS5zp12EjqrqiRULxm6Oq/YsTE97WnA6fhy23+a2hGkbce5SPA==}
-||||||| parent of fd61aa0a (Update livekit)
-  livekit-client@2.19.0:
-    resolution: {integrity: sha512-aolY1XDAtx0nHKBNm29W9OhzBnSz1CP5kq3phvRhFfi1NbvMXs8tcACjAkZTnIKgihkp+BiJScZZ3tZv0Gz8sA==}
-=======
   livekit-client@2.22.3:
     resolution: {integrity: sha512-jw9zBKXY5Gtr5MZ7vEON3QhMNccuDvYHck1PFSyG1aaateQPqgKZFBMgZkFZaXHIf9RV4MDW5xpTK2b/+qbwOg==}
->>>>>>> fd61aa0a (Update livekit)
     peerDependencies:
       '@types/dom-mediacapture-record': ^1
 
@@ -6741,19 +6705,7 @@ snapshots:
 
   '@floating-ui/core@1.8.0':
     dependencies:
-<<<<<<< HEAD
       '@floating-ui/utils': 0.2.12
-||||||| parent of fd61aa0a (Update livekit)
-      '@floating-ui/utils': 0.2.11
-
-  '@floating-ui/dom@1.7.4':
-    dependencies:
-      '@floating-ui/core': 1.7.5
-      '@floating-ui/utils': 0.2.11
-
-=======
-      '@floating-ui/utils': 0.2.11
->>>>>>> fd61aa0a (Update livekit)
 
   '@floating-ui/dom@1.7.6':
     dependencies:
@@ -6957,60 +6909,23 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-<<<<<<< HEAD
-  '@livekit/components-core@0.12.15(livekit-client@2.22.2(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)':
-||||||| parent of fd61aa0a (Update livekit)
-  '@livekit/components-core@0.12.13(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)':
-=======
   '@livekit/components-core@0.12.15(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)':
->>>>>>> fd61aa0a (Update livekit)
     dependencies:
       '@floating-ui/dom': 1.7.6
-<<<<<<< HEAD
-      livekit-client: 2.22.2(@types/dom-mediacapture-record@1.0.22)
-||||||| parent of fd61aa0a (Update livekit)
-      '@floating-ui/dom': 1.7.4
-      livekit-client: 2.19.0(@types/dom-mediacapture-record@1.0.22)
-=======
       livekit-client: 2.22.3(@types/dom-mediacapture-record@1.0.22)
->>>>>>> fd61aa0a (Update livekit)
       loglevel: 1.9.1
       rxjs: 7.8.2
       tslib: 2.8.1
 
-<<<<<<< HEAD
-  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.21.tgz(livekit-client@2.22.2(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tslib@2.8.1)':
-||||||| parent of fd61aa0a (Update livekit)
-  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.21.tgz(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)':
-=======
-  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.22.tgz(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(tslib@2.8.1)':
->>>>>>> fd61aa0a (Update livekit)
+  '@livekit/components-react@file:prebuild/livekit-components-react-2.9.22.tgz(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tslib@2.8.1)':
     dependencies:
-<<<<<<< HEAD
-      '@livekit/components-core': 0.12.15(livekit-client@2.22.2(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
-||||||| parent of fd61aa0a (Update livekit)
-      '@livekit/components-core': 0.12.13(livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
-=======
       '@livekit/components-core': 0.12.15(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
->>>>>>> fd61aa0a (Update livekit)
       clsx: 2.1.1
       events: 3.3.0
-<<<<<<< HEAD
       jose: 6.2.10
-      livekit-client: 2.22.2(@types/dom-mediacapture-record@1.0.22)
+      livekit-client: 2.22.3(@types/dom-mediacapture-record@1.0.22)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
-||||||| parent of fd61aa0a (Update livekit)
-      jose: 6.2.2
-      livekit-client: 2.19.0(@types/dom-mediacapture-record@1.0.22)
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-=======
-      jose: 6.2.2
-      livekit-client: 2.22.3(@types/dom-mediacapture-record@1.0.22)
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
->>>>>>> fd61aa0a (Update livekit)
       tslib: 2.8.1
       usehooks-ts: 3.1.1(react@19.2.8)
 
@@ -10093,13 +10008,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-<<<<<<< HEAD
-  livekit-client@2.22.2(@types/dom-mediacapture-record@1.0.22):
-||||||| parent of fd61aa0a (Update livekit)
-  livekit-client@2.19.0(@types/dom-mediacapture-record@1.0.22):
-=======
   livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22):
->>>>>>> fd61aa0a (Update livekit)
     dependencies:
       '@livekit/mutex': 1.1.1
       '@livekit/protocol': 1.50.4
@@ -10112,15 +10021,6 @@ snapshots:
       tslib: 2.8.1
       typed-emitter: 2.1.0
       webrtc-adapter: 9.0.6
-<<<<<<< HEAD
-||||||| parent of fd61aa0a (Update livekit)
-      webrtc-adapter: 9.0.5
-
-  loader-runner@4.3.1: {}
-=======
-
-  loader-runner@4.3.1: {}
->>>>>>> fd61aa0a (Update livekit)
 
   locate-path@5.0.0:
     dependencies:
