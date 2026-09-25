@@ -24,7 +24,7 @@ import useSWR from 'swr';
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { requestVideoAccessToken } from '../../../api/livekit';
 import { useConnectedCallStore } from '../../../features/stores';
-import { clearActiveTracks } from '../../../helpers/video';
+import { holdPreviewAudioTracks } from '../../../helpers/video';
 import { getCallRoute } from '../../../router/routes';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
@@ -130,7 +130,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       videoPermissionDenied: videoPermissionError,
     });
     onClose();
-    clearActiveTracks();
+    holdPreviewAudioTracks();
     navigate(getCallRoute(userPk));
   };
 

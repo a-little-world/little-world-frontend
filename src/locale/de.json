@@ -86,7 +86,7 @@
   "community_events.show_all": "Alle anzeigen",
   "community_events.show_more": "Mehr anzeigen",
   "community_events.random_calls_title": "Zufallsgespräche - spontan neue Leute kennenlernen",
-  "community_events.random_calls_description": "Triff neue Menschen, übe Sprachen und tausche Gedanken aus - ganz ohne Planung.\n<a {\"href\": \"{{- randomCallsLink }}\"}>Mehr erfahren</a>",
+  "community_events.random_calls_description": "Triff neue Menschen, übe Sprachen und tausche Gedanken aus - ganz ohne Planung.",
   "community_events.random_calls_cta": "Zufallsgespräche entdecken",
   "course.mode_video": "Video",
   "course.mode_quiz": "Eine Frage dazu",

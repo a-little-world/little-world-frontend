@@ -86,7 +86,7 @@
   "community_events.show_all": "Show all",
   "community_events.show_more": "Show more",
   "community_events.random_calls_title": "Random Calls - meet new people spontaneously",
-  "community_events.random_calls_description": "Meet new people, practice your German and have fun conversations - spontaneous and flexible.\n<a {\"href\": \"{{- randomCallsLink }}\"}>Learn more</a>",
+  "community_events.random_calls_description": "Meet new people, practice your German and have fun conversations - spontaneous and flexible.",
   "community_events.random_calls_cta": "Learn more",
   "conditions.checkbox_label": "<bold>I will comply with the listed principles above.</bold>",
   "conditions.disclaimer": "So far, our participants have had a positive experience - we want it to stay that way. If you have any questions please contact us at any time.",
