@@ -124,15 +124,17 @@ function Help() {
     return 'contact';
   }, [location.pathname]);
 
+  const subpageRoute = useCallback((page: string) => {
+    const route = HELP_SUBPAGE_ROUTES[page as HelpSubpage];
+    return route ? getAppRoute(route) : undefined;
+  }, []);
+
   const handleSubpageSelect = useCallback(
     (page: string) => {
-      const route = HELP_SUBPAGE_ROUTES[page as HelpSubpage];
-
-      if (route) {
-        navigate(getAppRoute(route));
-      }
+      const route = subpageRoute(page);
+      if (route) navigate(route);
     },
-    [navigate],
+    [navigate, subpageRoute],
   );
 
   return (
@@ -141,6 +143,7 @@ function Help() {
         selection={subpage}
         setSelection={handleSubpageSelect}
         use="help"
+        getTopicRoute={subpageRoute}
       />
 
       {subpage === 'faqs' && <FAQs supportUrl={supportUrl ?? ''} />}
