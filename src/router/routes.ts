@@ -97,17 +97,61 @@ export const isActiveRoute = (locationPath: string, path: string) => {
   return locationPath === path || locationPath.startsWith(`${path}/`);
 };
 
-// should be called when passing from unauthenticated to authenticated state
-export const passAuthenticationBoundary = () => {
+const COOKIE_BANNER_HIDE_RETRY_INTERVAL_MS = 100;
+const COOKIE_BANNER_HIDE_RETRY_TIMEOUT_MS = 10000;
+
+let cookieBannerHideRetryTimer: ReturnType<typeof setInterval> | null = null;
+
+/**
+ * Hides the cookie banner in the authenticated app.
+ *
+ * The banner is injected as an async script on public pages and only defines
+ * `window.setCookieBannerHidden` once it loads. A login and SPA navigation can
+ * easily win that race (notably on Safari), leaving the banner visible over the
+ * app. Remembering the request on `window.__lwCookieBannerHidden` makes the
+ * async bundle honor it, and the retry covers a bundle that is not loaded yet.
+ */
+export const hideCookieBanner = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   try {
-    if (
-      typeof window !== 'undefined' &&
-      (window as any)?.setCookieBannerHidden
-    ) {
-      (window as any)?.setCookieBannerHidden(true);
+    const win = window as any;
+    // eslint-disable-next-line no-underscore-dangle
+    win.__lwCookieBannerHidden = true;
+
+    const applyHidden = () => {
+      if (typeof win.setCookieBannerHidden === 'function') {
+        win.setCookieBannerHidden(true);
+        return true;
+      }
+      return false;
+    };
+
+    if (applyHidden() || cookieBannerHideRetryTimer !== null) {
+      return;
     }
+
+    const startedAt = Date.now();
+    cookieBannerHideRetryTimer = setInterval(() => {
+      if (
+        applyHidden() ||
+        Date.now() - startedAt >= COOKIE_BANNER_HIDE_RETRY_TIMEOUT_MS
+      ) {
+        if (cookieBannerHideRetryTimer !== null) {
+          clearInterval(cookieBannerHideRetryTimer);
+          cookieBannerHideRetryTimer = null;
+        }
+      }
+    }, COOKIE_BANNER_HIDE_RETRY_INTERVAL_MS);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error("Coudn't unload cookie banner", e);
   }
+};
+
+// should be called when passing from unauthenticated to authenticated state
+export const passAuthenticationBoundary = () => {
+  hideCookieBanner();
 };
