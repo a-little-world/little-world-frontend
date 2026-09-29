@@ -23,6 +23,7 @@ import { onFormError, registerInput } from '../../helpers/form';
 import {
   CHANGE_EMAIL_ROUTE,
   getAppRoute,
+  sanitizeNext,
   USER_FORM_ROUTE,
 } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
@@ -53,6 +54,11 @@ const VerifyEmail = () => {
   const email = userData?.email;
 
   const [searchParams] = useSearchParams();
+  // Sanitize here as well: this page can be reached by a crafted URL that
+  // bypasses the RouteGuard, and we navigate straight to `next` below.
+  const nextTarget = sanitizeNext(searchParams.get('next'));
+  const withNext = route =>
+    nextTarget ? `${route}?next=${encodeURIComponent(nextTarget)}` : route;
 
   const {
     register,
@@ -98,11 +104,12 @@ const VerifyEmail = () => {
         if (!updatedUser?.userFormCompleted) {
           // only navigate to /user-form when it's not completed
           // when a user changes email they see verify-email again but can go directly to /app after
-          navigate(getAppRoute(USER_FORM_ROUTE));
-        } else if (searchParams.get('next')) {
+          // carry `next` so a deep link survives the user-form gate too
+          navigate(withNext(getAppRoute(USER_FORM_ROUTE)));
+        } else if (nextTarget) {
           // users can be redirected from /login?next=<url>
           // consider this route after the requried for entry forms verify-email / user-form
-          navigate(searchParams.get('next'));
+          navigate(nextTarget);
         } else {
           navigate(getAppRoute());
         }
