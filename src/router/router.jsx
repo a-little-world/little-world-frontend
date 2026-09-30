@@ -37,6 +37,7 @@ import CoursePreview from '../components/views/Resources/Trainings/CoursePreview
 import Training from '../components/views/Resources/Trainings/Training';
 import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
+import SurveyPage from '../components/views/Survey/SurveyPage';
 import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
@@ -84,6 +85,7 @@ import {
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
+  SURVEY_ROUTE,
   TRAINING_ROUTE,
   TRAININGS_ROUTE,
   USER_FORM_ROUTE,
@@ -206,6 +208,7 @@ export function getWebRouter() {
         { path: getAppRoute(CALL_SETUP_ROUTE), element: <Main /> },
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
         { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
+        { path: getAppRoute(SURVEY_ROUTE), element: <SurveyPage /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
         { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
         { path: getAppRoute(OUR_WORLD_ROUTE), element: <AboutUs /> },
@@ -327,6 +330,7 @@ export function getNativeRouter() {
         },
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
         { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
+        { path: getAppRoute(SURVEY_ROUTE), element: <SurveyPage /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
         { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
         { path: getAppRoute(OUR_WORLD_ROUTE), element: <AboutUs /> },

@@ -161,7 +161,7 @@ export const hasRequiredAnswers = (
 interface SurveyProps {
   survey: PendingSurvey;
   /** Lets the parent submit what the user picked even if they close the modal. */
-  onAnswersChange: (answers: SurveyAnswers) => void;
+  onAnswersChange?: (answers: SurveyAnswers) => void;
   onSubmit: (answers: SurveyAnswers) => void;
   submitError?: string | null;
 }
@@ -179,7 +179,7 @@ const Survey: React.FC<SurveyProps> = ({
   const ratingLabels = starLabelsForScale(scale, t);
 
   useEffect(() => {
-    onAnswersChange(answers);
+    onAnswersChange?.(answers);
   }, [answers, onAnswersChange]);
 
   const canSubmit = hasRequiredAnswers(questions, answers);

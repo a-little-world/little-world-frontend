@@ -32,7 +32,12 @@ import useModalManagerStore, {
   ModalTypes,
 } from '../../../features/stores/modalManager';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
-import { getAppRoute, ONBOARDING_ROUTE } from '../../../router/routes';
+import {
+  getAppRoute,
+  isActiveRoute,
+  ONBOARDING_ROUTE,
+  SURVEYS_ROUTE,
+} from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
@@ -109,6 +114,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const isOnOnboardingRoute =
     location.pathname === onboardingBasePath ||
     location.pathname.startsWith(`${onboardingBasePath}/`);
+  const isSurveyLinkPage = isActiveRoute(
+    location.pathname,
+    getAppRoute(SURVEYS_ROUTE),
+  );
   const shouldRedirectVolunteerToOnboarding =
     user?.profile?.user_type === USER_TYPES.volunteer &&
     !user?.isOnboarded &&
@@ -203,7 +212,8 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [location.pathname, refetchPendingSurvey]);
 
   useEffect(() => {
-    if (!pendingSurvey) {
+    // The link page is its own delivery channel: do not show, count, or dismiss the popup there.
+    if (!pendingSurvey || isSurveyLinkPage) {
       dismissModal(ModalTypes.SURVEY.id);
       return;
     }
@@ -217,7 +227,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       acknowledgedSurveyId.current = pendingSurvey.id;
       markSurveyShown(pendingSurvey.id).catch(() => null);
     }
-  }, [pendingSurvey?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [pendingSurvey?.id, isSurveyLinkPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onAnswerCall = () => {
     initCallSetup({ userId: activeCallRoom?.partner?.id });

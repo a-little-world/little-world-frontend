@@ -15,15 +15,19 @@ const ErrorWrapper = styled.div`
   `}
 `;
 
+export const ErrorView = () => (
+  <ErrorWrapper>
+    <MessageCard
+      title="error_view.title"
+      linkText="error_view.button"
+      linkTo={getAppRoute('')}
+    />
+  </ErrorWrapper>
+);
+
 const RouterError = ({ Layout = AppLayout }) => (
   <Layout>
-    <ErrorWrapper>
-      <MessageCard
-        title="error_view.title"
-        linkText="error_view.button"
-        linkTo={getAppRoute('')}
-      />
-    </ErrorWrapper>
+    <ErrorView />
   </Layout>
 );
 

@@ -61,3 +61,43 @@ export const submitSurvey = async ({
 export const dismissSurvey = async (surveyId: number): Promise<void> => {
   await apiFetch(`/api/surveys/${surveyId}/dismiss`, { method: 'POST' });
 };
+
+export type SurveyLinkState =
+  | 'available'
+  | 'already_submitted'
+  | 'unavailable'
+  | 'ineligible'
+  | 'inactive'
+  | 'missing_context'
+  | 'not_found';
+
+export interface SurveyLinkResponse {
+  state: SurveyLinkState;
+  survey: PendingSurvey | null;
+}
+
+export const getSurveyBySlugEndpoint = (
+  slug: string,
+  liveSession?: string | null,
+) => {
+  const query = liveSession
+    ? `?live_session=${encodeURIComponent(liveSession)}`
+    : '';
+  return `/api/surveys/${encodeURIComponent(slug)}${query}`;
+};
+
+export const fetchSurveyBySlug = async (
+  slug: string,
+  liveSession?: string | null,
+): Promise<SurveyLinkResponse> => {
+  try {
+    return await apiFetch<SurveyLinkResponse>(
+      getSurveyBySlugEndpoint(slug, liveSession),
+    );
+  } catch (error: any) {
+    if (error?.status === 404) {
+      return { state: 'not_found', survey: null };
+    }
+    throw error;
+  }
+};
