@@ -27,7 +27,7 @@ import { ApiError } from '../../../api/types';
 import { getAppSubpageRoute, TRAININGS_ROUTE } from '../../../router/routes';
 import { PROFILE_CARD_HEIGHT, StyledProfileCard } from './ProfileCard';
 
-export const PROMOTED_COURSE_SLUG = 'interkulturelle-gespraechsfhrung';
+export const PROMOTED_COURSE_SLUG = 'interkulturelle-gespraechsfuehrung';
 /** Replace with the post-course survey URL when it is ready. */
 export const COURSE_PROMO_SURVEY_URL = '';
 
@@ -56,20 +56,11 @@ const Description = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
 `;
 
-const Thumbnail = styled.img`
-  width: 154px;
-  height: 154px;
-  object-fit: cover;
-  border-radius: ${({ theme }) => theme.radius.small};
-  flex-shrink: 0;
-  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
-`;
-
-const InfoContainer = styled.div<{ $centered: boolean }>`
+const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: ${({ $centered }) => ($centered ? 'center' : 'stretch')};
-  text-align: ${({ $centered }) => ($centered ? 'center' : 'left')};
+  align-items: stretch;
+  text-align: left;
 `;
 
 const StyledProgressRing = styled(ProgressRing)`
@@ -112,17 +103,22 @@ function CoursePromoCard() {
   } = useSWR<CourseProgress | null>(
     getCourseProgressEndpoint(PROMOTED_COURSE_SLUG),
     () => fetchCourseProgress(PROMOTED_COURSE_SLUG),
+    {
+      shouldRetryOnError: (error: ApiError) => error.status !== 404,
+    },
   );
 
   if (courseLoading || progressLoading) {
     return <LoadingCard width={CardSizes.Small} $loading />;
   }
 
-  if (courseError || progressError || !course) {
+  const state = getPromoState(progress ?? null);
+
+  // do not show card if course has not been started yet
+  if (courseError || progressError || !course || state === 'start') {
     return null;
   }
 
-  const state = getPromoState(progress ?? null);
   const progressPercent = Math.round((progress?.progress_fraction ?? 0) * 100);
   const ctaProps =
     state === 'complete'
@@ -131,13 +127,7 @@ function CoursePromoCard() {
 
   return (
     <StyledCard width={CardSizes.Small}>
-      <InfoContainer $centered={state !== 'start'}>
-        {state === 'start' && course.image && (
-          <Thumbnail
-            src={course.image}
-            alt={t(`course_promo.${state}_title`)}
-          />
-        )}
+      <InfoContainer>
         {state === 'continue' && (
           <StyledProgressRing
             label={t('course_promo.progress_label', {
@@ -164,10 +154,10 @@ function CoursePromoCard() {
             </PercentValue>
           </StyledProgressRing>
         )}
-        <Title tag="h3" type={TextTypes.Heading5} center={state !== 'start'}>
+        <Title tag="h3" type={TextTypes.Heading5} center>
           {t(`course_promo.${state}_title`)}
         </Title>
-        <Description center={state !== 'start'}>
+        <Description center>
           {t(`course_promo.${state}_description`, {
             courseName: t('course_promo.course_name'),
           })}
