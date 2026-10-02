@@ -44,7 +44,7 @@ import IncomingCall from '../Calls/IncomingCall';
 import MatchModal from '../Matching/MatchModal';
 import MobileNavBar from '../MobileNavBar';
 import Sidebar from '../Sidebar';
-import Survey, { hasRequiredAnswers } from '../Survey/Survey';
+import Survey, { shouldSubmitOnClose } from '../Survey/Survey';
 
 const Wrapper = styled.div<{ $isVH: boolean }>`
   overflow-x: hidden;
@@ -258,7 +258,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
 
   /**
    * Closing the modal is not the same as declining: an answer the user already gave is worth
-   * keeping, so a complete answer set is submitted and only an empty one is a dismissal.
+   * keeping, so a complete answer set is submitted and anything else is a dismissal.
    */
   const handleSurveyClose = async () => {
     if (!pendingSurvey) {
@@ -267,7 +267,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     }
 
     const answers = surveyAnswersRef.current;
-    if (hasRequiredAnswers(pendingSurvey.questions, answers)) {
+    if (shouldSubmitOnClose(pendingSurvey.questions, answers)) {
       await handleSurveySubmit(answers);
       return;
     }
@@ -349,7 +349,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         onClose={onRejectCall}
       >
         <IncomingCall
-          userPk={activeCallRoom?.partner.id}
           userProfile={activeCallRoom?.partner}
           onAnswerCall={onAnswerCall}
           onRejectCall={onRejectCall}

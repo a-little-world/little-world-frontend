@@ -232,13 +232,15 @@ const answeredEntries = (data: SurveyAnswers): SurveyAnswers =>
   );
 
 /**
- * Whether every required question has an answer. Used when the user closes the modal: a
- * complete answer set is submitted rather than discarded as a dismissal.
+ * Whether closing the modal should submit rather than dismiss: at least one answer, and every
+ * required question answered. Without the first check an all-optional survey would record an
+ * empty submission on a plain close.
  */
-export const hasRequiredAnswers = (
+export const shouldSubmitOnClose = (
   questions: SurveyQuestion[],
   answers: SurveyAnswers,
 ) =>
+  questions.some(question => isAnswered(answers[question.id])) &&
   questions
     .filter(question => question.required)
     .every(question => isAnswered(answers[question.id]));

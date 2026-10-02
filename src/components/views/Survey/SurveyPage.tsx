@@ -16,8 +16,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
-import useSWR from 'swr';
+import useSWR, { mutate as mutateGlobal } from 'swr';
 
+import { PENDING_SURVEY_ENDPOINT } from '../../../api/endpoints';
 import {
   fetchSurveyBySlug,
   getSurveyBySlugEndpoint,
@@ -47,8 +48,17 @@ const SurveyPage: FC = () => {
   const handleSubmit = async (answers: SurveyAnswers) => {
     if (!data?.survey) return;
     setSubmitError(null);
+    const surveyId = data.survey.id;
     try {
-      await submitSurvey({ surveyId: data.survey.id, answers });
+      await submitSurvey({ surveyId, answers });
+      // The popup may still hold this same offer from an earlier poll. Clear it now so going
+      // back to the app does not reopen a survey that is already answered.
+      mutateGlobal(
+        PENDING_SURVEY_ENDPOINT,
+        (current?: { survey: { id: number } | null }) =>
+          current?.survey?.id === surveyId ? { ...current, survey: null } : current,
+        { revalidate: true },
+      );
       await mutate(
         { state: 'already_submitted', survey: null },
         { revalidate: true },
