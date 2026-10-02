@@ -988,6 +988,7 @@
   "survey.star.4": "Sehr gut",
   "survey.star.5": "Ausgezeichnet",
   "survey.state.already_submitted.body": "Du hast diese Umfrage bereits beantwortet.",
+  "survey.state.already_submitted.cta": "Zurück zum Start",
   "survey.state.already_submitted.title": "Danke",
   "survey.state.error.body": "Bitte versuche es später erneut.",
   "translator.language_placeholder": "Sprache erkennen",

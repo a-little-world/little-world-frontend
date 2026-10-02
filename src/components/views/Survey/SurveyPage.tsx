@@ -1,10 +1,14 @@
 import { FC, useState } from 'react';
 
 import {
+  ButtonAppearance,
+  ButtonSizes,
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardSizes,
+  Link,
   Loading,
   LoadingSizes,
   Text,
@@ -20,7 +24,7 @@ import {
   submitSurvey,
   SurveyAnswers,
 } from '../../../api/surveys';
-import PageHeader from '../../atoms/PageHeader';
+import { getAppRoute } from '../../../router/routes';
 import { ErrorView } from '../../blocks/ErrorView/ErrorView';
 import Survey from '../../blocks/Survey/Survey';
 import { CardWrap, LoadingWrap, Page } from './SurveyPage.styles';
@@ -54,38 +58,32 @@ const SurveyPage: FC = () => {
     }
   };
 
-  if (isLoading && !data) {
-    return (
-      <Page>
-        <PageHeader canGoBack text={t('survey.page_title')} />
-        <LoadingWrap>
-          <Loading size={LoadingSizes.Medium} />
-        </LoadingWrap>
-      </Page>
-    );
+  const isPending = isLoading && !data;
+  const survey =
+    data?.state === 'available' ? data.survey : null;
+  const isSubmitted = data?.state === 'already_submitted';
+
+  if (!isPending && !survey && !isSubmitted) {
+    return <ErrorView />;
   }
 
-  if (data?.state === 'available' && data.survey) {
-    return (
-      <Page>
-        <PageHeader canGoBack text={t('survey.page_title')} />
-        <CardWrap>
+  return (
+    <Page>
+      <CardWrap>
+        {isPending && (
+          <LoadingWrap>
+            <Loading size={LoadingSizes.Medium} />
+          </LoadingWrap>
+        )}
+        {survey && (
           <Survey
-            key={data.survey.id}
-            survey={data.survey}
+            key={survey.id}
+            survey={survey}
             onSubmit={handleSubmit}
             submitError={submitError}
           />
-        </CardWrap>
-      </Page>
-    );
-  }
-
-  if (data?.state === 'already_submitted') {
-    return (
-      <Page>
-        <PageHeader canGoBack text={t('survey.page_title')} />
-        <CardWrap>
+        )}
+        {isSubmitted && (
           <Card width={CardSizes.Medium}>
             <CardHeader textColor={theme.color.text.title}>
               {t('survey.state.already_submitted.title')}
@@ -93,13 +91,20 @@ const SurveyPage: FC = () => {
             <CardContent>
               <Text>{t('survey.state.already_submitted.body')}</Text>
             </CardContent>
+            <CardFooter align="center">
+              <Link
+                buttonAppearance={ButtonAppearance.Primary}
+                buttonSize={ButtonSizes.Stretch}
+                to={getAppRoute()}
+              >
+                {t('survey.state.already_submitted.cta')}
+              </Link>
+            </CardFooter>
           </Card>
-        </CardWrap>
-      </Page>
-    );
-  }
-
-  return <ErrorView />;
+        )}
+      </CardWrap>
+    </Page>
+  );
 };
 
 export default SurveyPage;

@@ -995,6 +995,7 @@
   "survey.star.4": "Very good",
   "survey.star.5": "Excellent",
   "survey.state.already_submitted.body": "You've already answered this survey.",
+  "survey.state.already_submitted.cta": "Back to Home",
   "survey.state.already_submitted.title": "Thank you",
   "survey.state.error.body": "Please try again later.",
   "translator.language_placeholder": "Detect language",

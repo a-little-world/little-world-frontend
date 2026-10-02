@@ -332,10 +332,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       <Modal
         open={isModalOpen(ModalTypes.SURVEY.id) && !!pendingSurvey}
         onClose={handleSurveyClose}
+        closeOnBackdropClick={false}
       >
         {!!pendingSurvey && (
           <Survey
-            // Keyed so a second survey starts with empty answers rather than the previous ones.
             key={pendingSurvey.id}
             survey={pendingSurvey}
             onAnswersChange={handleSurveyAnswersChange}

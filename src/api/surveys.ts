@@ -1,6 +1,6 @@
 import { apiFetch } from './helpers';
 
-export type SurveyQuestionType = 'rating' | 'text' | 'choice';
+export type SurveyQuestionType = 'rating' | 'text' | 'choice' | 'multiselect';
 
 export interface SurveyChoiceOption {
   value: string;
@@ -14,12 +14,12 @@ export interface SurveyQuestion {
   label: string;
   placeholder?: string;
   options?: SurveyChoiceOption[];
+  scale?: number;
 }
 
 /**
- * Copy arrives as finished text in the user's language rather than as i18n keys: campaigns are
- * written in the admin panel, so their wording cannot be in the locale files that ship with
- * this bundle.
+ * Copy arrives as finished text in the user's language rather than as i18n keys: campaigns and
+ * their associated copy are written in the management panel
  */
 export interface PendingSurvey {
   id: number;
@@ -32,7 +32,8 @@ export interface PendingSurvey {
   questions: SurveyQuestion[];
 }
 
-export type SurveyAnswers = Record<string, number | string>;
+export type SurveyAnswerValue = number | string | string[];
+export type SurveyAnswers = Record<string, SurveyAnswerValue>;
 
 /**
  * Tells the backend the card was actually rendered.

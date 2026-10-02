@@ -21,7 +21,6 @@ import {
 } from '../../constants';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import PlusImage from '../../images/plus-with-circle.svg';
-import CoursePromoCard from './Cards/CoursePromoCard';
 import LanguageLevelCard from './Cards/LanguageLevelCard';
 import { getMatchTeaserDummyInput } from './Cards/matchTeaserDummyData';
 import PartnerActionCard from './Cards/PartnerActionCard';
@@ -185,7 +184,6 @@ function PartnerProfiles({
         ))
       )}
       {!isLearnerOutsideGermany && renderStatusCard()}
-      {currentPage === 1 && <CoursePromoCard />}
 
       <Modal open={Boolean(partnerActionData)} onClose={onModalClose}>
         {!!partnerActionData && (
