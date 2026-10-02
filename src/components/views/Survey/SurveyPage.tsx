@@ -56,7 +56,9 @@ const SurveyPage: FC = () => {
       mutateGlobal(
         PENDING_SURVEY_ENDPOINT,
         (current?: { survey: { id: number } | null }) =>
-          current?.survey?.id === surveyId ? { ...current, survey: null } : current,
+          current?.survey?.id === surveyId
+            ? { ...current, survey: null }
+            : current,
         { revalidate: true },
       );
       await mutate(
@@ -69,8 +71,7 @@ const SurveyPage: FC = () => {
   };
 
   const isPending = isLoading && !data;
-  const survey =
-    data?.state === 'available' ? data.survey : null;
+  const survey = data?.state === 'available' ? data.survey : null;
   const isSubmitted = data?.state === 'already_submitted';
 
   if (!isPending && !survey && !isSubmitted) {

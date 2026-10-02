@@ -86,7 +86,9 @@ function QuestionLabel({
   return (
     <Label bold htmlFor={htmlFor}>
       {children}
-      {required ? <RequiredAsterisk aria-hidden="true"> *</RequiredAsterisk> : null}
+      {required ? (
+        <RequiredAsterisk aria-hidden="true"> *</RequiredAsterisk>
+      ) : null}
     </Label>
   );
 }
