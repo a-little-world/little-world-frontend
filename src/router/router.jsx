@@ -331,7 +331,6 @@ export function getNativeRouter() {
         },
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
         { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
-        { path: getAppRoute(SURVEY_ROUTE), element: <SurveyPage /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
         { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
         { path: getAppRoute(OUR_WORLD_ROUTE), element: <AboutUs /> },

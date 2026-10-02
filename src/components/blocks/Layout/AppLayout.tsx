@@ -34,9 +34,7 @@ import useModalManagerStore, {
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
 import {
   getAppRoute,
-  isActiveRoute,
   ONBOARDING_ROUTE,
-  SURVEYS_ROUTE,
 } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import CallSetup from '../Calls/CallSetup';
@@ -114,10 +112,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const isOnOnboardingRoute =
     location.pathname === onboardingBasePath ||
     location.pathname.startsWith(`${onboardingBasePath}/`);
-  const isSurveyLinkPage = isActiveRoute(
-    location.pathname,
-    getAppRoute(SURVEYS_ROUTE),
-  );
   const shouldRedirectVolunteerToOnboarding =
     user?.profile?.user_type === USER_TYPES.volunteer &&
     !user?.isOnboarded &&
@@ -212,8 +206,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   }, [location.pathname, refetchPendingSurvey]);
 
   useEffect(() => {
-    // The link page is its own delivery channel: do not show, count, or dismiss the popup there.
-    if (!pendingSurvey || isSurveyLinkPage) {
+    if (!pendingSurvey) {
       dismissModal(ModalTypes.SURVEY.id);
       return;
     }
@@ -227,7 +220,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       acknowledgedSurveyId.current = pendingSurvey.id;
       markSurveyShown(pendingSurvey.id).catch(() => null);
     }
-  }, [pendingSurvey?.id, isSurveyLinkPage]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [pendingSurvey?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onAnswerCall = () => {
     initCallSetup({ userId: activeCallRoom?.partner?.id });
@@ -245,14 +238,17 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     closeModal();
   };
 
+  /** Resolves to whether the submit went through, so closing can fall back to a dismissal. */
   const handleSurveySubmit = async (answers: SurveyAnswers) => {
-    if (!pendingSurvey) return;
+    if (!pendingSurvey) return false;
     try {
       await submitSurvey({ surveyId: pendingSurvey.id, answers });
       closeModal();
       await refetchPendingSurvey();
+      return true;
     } catch (error: any) {
       setSurveyError(error?.message ?? null);
+      return false;
     }
   };
 
@@ -267,8 +263,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     }
 
     const answers = surveyAnswersRef.current;
-    if (shouldSubmitOnClose(pendingSurvey.questions, answers)) {
-      await handleSurveySubmit(answers);
+    if (
+      shouldSubmitOnClose(pendingSurvey.questions, answers) &&
+      (await handleSurveySubmit(answers))
+    ) {
       return;
     }
 

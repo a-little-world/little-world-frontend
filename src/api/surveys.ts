@@ -66,7 +66,6 @@ export const dismissSurvey = async (surveyId: number): Promise<void> => {
 export type SurveyLinkState =
   | 'available'
   | 'already_submitted'
-  | 'unavailable'
   | 'ineligible'
   | 'inactive'
   | 'missing_context'
