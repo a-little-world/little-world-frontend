@@ -1,5 +1,3 @@
-import React from 'react';
-
 import styled, { css } from 'styled-components';
 
 import { getAppRoute } from '../../../router/routes';
@@ -16,7 +14,7 @@ const ErrorWrapper = styled.div`
 `;
 
 export const ErrorView = () => (
-  <ErrorWrapper>
+  <ErrorWrapper data-testid="router-error">
     <MessageCard
       title="error_view.title"
       linkText="error_view.button"

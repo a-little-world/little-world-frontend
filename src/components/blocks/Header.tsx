@@ -1,11 +1,11 @@
 import { Link, TextTypes } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
+import { Link as RouterLink } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from '../../api/endpoints';
 import { USER_TYPES } from '../../constants';
-import { environment } from '../../environment';
 import {
   getAppRoute,
   getHomeRoute,
@@ -70,6 +70,12 @@ const LogoLink = styled.a`
   min-width: fit-content;
 `;
 
+const LogoRouterLink = styled(RouterLink)`
+  display: flex;
+  flex: 1;
+  min-width: fit-content;
+`;
+
 const Header = () => {
   const { t } = useTranslation();
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
@@ -78,16 +84,18 @@ const Header = () => {
     user?.profile?.user_type === USER_TYPES.learner
       ? user?.userFormCompleted
       : user?.isOnboarded;
-  const href = accessToMainApp ? getAppRoute() : WP_HOME_ROUTE;
 
   return (
     <StyledHeader>
-      <LogoLink
-        href={href}
-        target={environment?.isNative || !accessToMainApp ? '_blank' : '_self'}
-      >
-        <Logo stacked={false} />
-      </LogoLink>
+      {accessToMainApp ? (
+        <LogoRouterLink to={getAppRoute()}>
+          <Logo stacked={false} />
+        </LogoRouterLink>
+      ) : (
+        <LogoLink href={WP_HOME_ROUTE} target="_blank">
+          <Logo stacked={false} />
+        </LogoLink>
+      )}
       <Options>
         <LanguageSelector />
       </Options>

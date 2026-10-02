@@ -1,0 +1,26 @@
+name: Notify native
+
+# Pings the native repo when this subrepo's main moves, so native bumps its
+# submodule reference and opens a PR. Needs a BOT_PAT secret with repo access
+# to a-little-world/little-world-native.
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch submodule-update to native
+        env:
+          PAT: ${{ secrets.BOT_PAT }}
+        run: |
+          set -euo pipefail
+          curl -sf -o /dev/null -X POST \
+            -H "Authorization: Bearer $PAT" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/a-little-world/little-world-native/dispatches \
+            -d '{"event_type":"submodule-update"}'

@@ -16,6 +16,7 @@ import { ToastContextType } from './components/blocks/Toast';
 import useNotificationStore from './features/stores/notification';
 import { enableFirebase, enableNotificationsInProfile } from './firebase-util';
 import useToast from './hooks/useToast';
+import { getAppRoute, SETTINGS_ROUTE } from './router/routes';
 
 const SHOW_NOTIFICATION_PERMISSION_TOAST_KEY =
   'notification-permission-show-toast';
@@ -138,32 +139,48 @@ function FireBase() {
     }
     toastShownRef.current = true;
 
+    const width = Math.min((window?.innerWidth ?? 650) - 50, 600);
+    const showActionButton = width > 450;
+
     const titleKey = notificationsEnabled
       ? 'push_notifications.permission_missing.title'
       : 'push_notifications.initial_toast.enable.title';
     const descriptionKey = notificationsEnabled
       ? 'push_notifications.permission_missing.description'
       : 'push_notifications.initial_toast.enable.description';
+
+    const setHideToast = () =>
+      localStorage.setItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY, 'false');
     toast.showToast({
       title: t(titleKey),
       description: t(descriptionKey),
-      actionText: t('push_notifications.request_permission'),
-      actionAltText: 'request notification permission',
+      actionText: showActionButton
+        ? t('push_notifications.request_permission')
+        : undefined,
+      actionAltText: showActionButton
+        ? 'request notification permission'
+        : undefined,
       duration: Infinity, // show indefinitely
-      width: '600px',
+      width: `${width}px`,
       showClose: true,
-      closeOnClick: false,
       // click is required for browser to show permission prompt
-      onActionClick: () => {
-        enableNotificationsInProfile();
+      onActionClick: showActionButton
+        ? () => {
+            setHideToast();
+            enableNotificationsInProfile();
 
-        Notification.requestPermission().then(permission => {
-          setDevicePermissionSet(permission !== 'default');
-          setDevicePermissionGranted(permission === 'granted');
-        });
+            Notification.requestPermission().then(permission => {
+              setDevicePermissionSet(permission !== 'default');
+              setDevicePermissionGranted(permission === 'granted');
+            });
+          }
+        : undefined,
+      onClick: () => {
+        setHideToast();
+        navigate(getAppRoute(SETTINGS_ROUTE));
       },
       onClose: () => {
-        localStorage.setItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY, 'false');
+        setHideToast();
       },
     });
   }, [
@@ -175,6 +192,7 @@ function FireBase() {
     setDevicePermissionSet,
     toast,
     t,
+    navigate,
   ]);
 
   // prevent multiple activations

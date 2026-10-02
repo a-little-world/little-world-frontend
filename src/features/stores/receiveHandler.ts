@@ -91,6 +91,18 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'CALL_STATE_CHANGED';
+      requestId?: string;
+      payload: {
+        inCall: boolean;
+      };
+    }
+  | {
+      action: 'GET_AUDIO_STATE';
+      requestId?: string;
+      payload: {};
+    }
+  | {
       action: 'SET_THEME';
       requestId?: string;
       payload: {

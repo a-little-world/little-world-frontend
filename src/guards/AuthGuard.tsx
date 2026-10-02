@@ -1,10 +1,11 @@
-import { ReactNode, useMemo, useRef } from 'react';
+import { ReactNode, useEffect, useMemo, useRef } from 'react';
 
 import useSWR from 'swr';
 
 import { IS_AUTHENTICATED_ENDPOINT } from '../api/endpoints';
 import { environment } from '../environment';
 import useNativeStore from '../features/stores/nativeStore';
+import { hideCookieBanner } from '../router/routes';
 
 function AuthGuard({ children }: { children: ReactNode }) {
   const { data: authenticated, isValidating } = useSWR<boolean>(
@@ -28,6 +29,12 @@ function AuthGuard({ children }: { children: ReactNode }) {
 
     return Boolean(authenticated);
   }, [authenticated, isValidating, nativeAuthUndetermined]);
+
+  useEffect(() => {
+    if (isAuthenticated && !environment.isNative) {
+      hideCookieBanner();
+    }
+  }, [isAuthenticated]);
 
   return isAuthenticated ? children : null;
 }

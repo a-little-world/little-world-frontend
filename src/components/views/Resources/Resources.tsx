@@ -63,11 +63,16 @@ function Resources() {
     return last(pathSegments) || ROOT_PATH;
   }, [location.pathname, trainingSlug, partnerSlug]);
 
+  const subpageRoute = useCallback(
+    (page: Subpages) => getAppSubpageRoute(RESOURCES_ROUTE, page),
+    [],
+  );
+
   const handleSubpageSelect = useCallback(
     (page: Subpages) => {
-      navigate(getAppSubpageRoute(RESOURCES_ROUTE, page));
+      navigate(subpageRoute(page));
     },
-    [navigate],
+    [navigate, subpageRoute],
   );
 
   const selectorSelection = useMemo(() => {
@@ -83,6 +88,7 @@ function Resources() {
         selection={selectorSelection}
         setSelection={handleSubpageSelect}
         use="resources"
+        getTopicRoute={topic => subpageRoute(topic as Subpages)}
       />
       <Content>{renderResourceContent(subpage)}</Content>
     </>
