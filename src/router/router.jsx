@@ -37,6 +37,7 @@ import CoursePreview from '../components/views/Resources/Trainings/CoursePreview
 import Training from '../components/views/Resources/Trainings/Training';
 import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
+import SurveyPage from '../components/views/Survey/SurveyPage';
 import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
@@ -84,6 +85,7 @@ import {
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
+  SURVEY_ROUTE,
   TRAINING_ROUTE,
   TRAININGS_ROUTE,
   USER_FORM_ROUTE,
@@ -180,6 +182,7 @@ export function getWebRouter() {
             { path: ':slug', element: <Form /> },
           ],
         },
+        { path: getAppRoute(SURVEY_ROUTE), element: <SurveyPage /> },
       ],
     },
 
@@ -303,6 +306,7 @@ export function getNativeRouter() {
             { path: ':slug', element: <Form /> },
           ],
         },
+        { path: getAppRoute(SURVEY_ROUTE), element: <SurveyPage /> },
       ],
     },
 
