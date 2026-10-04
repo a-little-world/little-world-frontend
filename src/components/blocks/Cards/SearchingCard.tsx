@@ -20,7 +20,7 @@ import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { formatDate, formatTime } from '../../../helpers/date';
-import useCalEmbed, { whenCalReady } from '../../../hooks/useCalEmbed';
+import { whenCalReady } from '../../../hooks/useCalEmbed';
 import { getAppRoute, USER_FORM_ROUTES } from '../../../router/routes';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
@@ -96,8 +96,6 @@ export function SearchingCard({
 
   const appointmentBtn = useRef<HTMLButtonElement>(null);
 
-  useCalEmbed();
-
   const { data: user } = useSWR(USER_ENDPOINT);
   const hasMatch = user?.hasMatch;
   const preMatchingAppointment = user?.preMatchingAppointment;
@@ -114,12 +112,12 @@ export function SearchingCard({
   const isBookedState = cardState === 'pre_match_call_booked';
 
   useEffect(() => {
-    if (isOnboarded || isBookedState || !appointmentBtn?.current) {
+    if (!user || isOnboarded || isBookedState || !appointmentBtn?.current) {
       return () => {};
     }
     // Wait for cal embedding script to fully load
     return whenCalReady(() => appointmentBtn.current?.click());
-  }, [isOnboarded, isBookedState]);
+  }, [user, isOnboarded, isBookedState]);
 
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>

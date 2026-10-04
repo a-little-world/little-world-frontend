@@ -52,8 +52,28 @@ export function whenCalReady(callback: () => void): () => void {
   return () => window.clearInterval(interval);
 }
 
+// embed.js intercepts clicks on `[data-cal-link]`; without it those buttons
+// silently do nothing. Fall back to opening the booking page directly. Runs in
+// the capture phase and only when cal is not ready, so it never double-opens.
+function installFallbackClickHandler(): () => void {
+  const onClick = (event: MouseEvent) => {
+    if (isCalReady()) return;
+
+    const target = event.target as Element | null;
+    const trigger = target?.closest?.('[data-cal-link]');
+    const calLink = trigger?.getAttribute('data-cal-link');
+    if (!calLink) return;
+
+    window.open(`https://cal.com/${calLink}`, '_blank', 'noopener');
+  };
+
+  document.addEventListener('click', onClick, true);
+  return () => document.removeEventListener('click', onClick, true);
+}
+
 export default function useCalEmbed(): void {
   useEffect(() => {
     ensureCalEmbed();
+    return installFallbackClickHandler();
   }, []);
 }

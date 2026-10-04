@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { formatDate, formatTime } from '../../../helpers/date';
-import useCalEmbed from '../../../hooks/useCalEmbed';
 import {
   OptionCard,
   OptionSubtext,
@@ -46,7 +45,6 @@ function AppointmentOption({
   joinCallLink?: string;
 }) {
   const { t, i18n } = useTranslation();
-  useCalEmbed();
   const isBooked = !!onboardingAppointment?.start_time;
 
   const cardState = getCardState({ hasAppointment: isBooked });
