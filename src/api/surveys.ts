@@ -1,6 +1,6 @@
 import { apiFetch } from './helpers';
 
-export type SurveyQuestionType = 'rating' | 'text' | 'choice';
+export type SurveyQuestionType = 'rating' | 'text' | 'choice' | 'multiselect';
 
 export interface SurveyChoiceOption {
   value: string;
@@ -14,12 +14,12 @@ export interface SurveyQuestion {
   label: string;
   placeholder?: string;
   options?: SurveyChoiceOption[];
+  scale?: number;
 }
 
 /**
- * Copy arrives as finished text in the user's language rather than as i18n keys: campaigns are
- * written in the admin panel, so their wording cannot be in the locale files that ship with
- * this bundle.
+ * Copy arrives as finished text in the user's language rather than as i18n keys: campaigns and
+ * their associated copy are written in the management panel
  */
 export interface PendingSurvey {
   id: number;
@@ -32,7 +32,8 @@ export interface PendingSurvey {
   questions: SurveyQuestion[];
 }
 
-export type SurveyAnswers = Record<string, number | string>;
+export type SurveyAnswerValue = number | string | string[];
+export type SurveyAnswers = Record<string, SurveyAnswerValue>;
 
 /**
  * Tells the backend the card was actually rendered.
@@ -60,4 +61,43 @@ export const submitSurvey = async ({
 
 export const dismissSurvey = async (surveyId: number): Promise<void> => {
   await apiFetch(`/api/surveys/${surveyId}/dismiss`, { method: 'POST' });
+};
+
+export type SurveyLinkState =
+  | 'available'
+  | 'already_submitted'
+  | 'ineligible'
+  | 'inactive'
+  | 'missing_context'
+  | 'not_found';
+
+export interface SurveyLinkResponse {
+  state: SurveyLinkState;
+  survey: PendingSurvey | null;
+}
+
+export const getSurveyBySlugEndpoint = (
+  slug: string,
+  liveSession?: string | null,
+) => {
+  const query = liveSession
+    ? `?live_session=${encodeURIComponent(liveSession)}`
+    : '';
+  return `/api/surveys/${encodeURIComponent(slug)}${query}`;
+};
+
+export const fetchSurveyBySlug = async (
+  slug: string,
+  liveSession?: string | null,
+): Promise<SurveyLinkResponse> => {
+  try {
+    return await apiFetch<SurveyLinkResponse>(
+      getSurveyBySlugEndpoint(slug, liveSession),
+    );
+  } catch (error: any) {
+    if (error?.status === 404) {
+      return { state: 'not_found', survey: null };
+    }
+    throw error;
+  }
 };
