@@ -20,7 +20,7 @@ import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { formatDate, formatTime } from '../../../helpers/date';
-import { whenCalReady } from '../../../hooks/useCalEmbed';
+import { openCalFallback, whenCalReady } from '../../../hooks/useCalEmbed';
 import { getAppRoute, USER_FORM_ROUTES } from '../../../router/routes';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
@@ -197,7 +197,7 @@ export function SearchingCard({
             ref={appointmentBtn}
             data-cal-link={calComAppointmentLink}
             data-cal-config='{"layout":"month_view"}'
-            onClick={() => null}
+            onClick={() => openCalFallback(calComAppointmentLink)}
             size={ButtonSizes.Stretch}
             variation={
               isBookedState ? ButtonVariations.Inline : ButtonVariations.Basic
