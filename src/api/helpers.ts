@@ -76,7 +76,38 @@ export const formatApiError = (responseBody: any, response: any) => {
   apiError.status = response.status;
   apiError.statusText = response.statusText;
   apiError.data = responseBody;
-  if (typeof responseBody === 'string') {
+  const structuredError =
+    responseBody &&
+    typeof responseBody === 'object' &&
+    responseBody.error &&
+    typeof responseBody.error === 'object'
+      ? responseBody.error
+      : undefined;
+
+  if (structuredError) {
+    apiError.code = structuredError.code;
+    apiError.fields =
+      structuredError.fields && typeof structuredError.fields === 'object'
+        ? structuredError.fields
+        : undefined;
+
+    const firstField = apiError.fields
+      ? Object.keys(apiError.fields)[0]
+      : undefined;
+    const translatedCause = firstField
+      ? (API_FIELDS[firstField as keyof typeof API_FIELDS] ?? firstField)
+      : undefined;
+    const firstFieldMessage =
+      firstField && Array.isArray(apiError.fields?.[firstField])
+        ? apiError.fields?.[firstField][0]
+        : undefined;
+
+    apiError.cause = translatedCause ?? null;
+    apiError.message =
+      (typeof structuredError.message === 'string' && structuredError.message) ||
+      (typeof firstFieldMessage === 'string' && firstFieldMessage) ||
+      apiError.statusText;
+  } else if (typeof responseBody === 'string') {
     apiError.message = responseBody;
   } else {
     const responseObj: Record<string, any> = responseBody || {};
@@ -85,10 +116,14 @@ export const formatApiError = (responseBody: any, response: any) => {
       API_FIELDS[errorTypeApi as keyof typeof API_FIELDS] ?? errorTypeApi;
     const errorTags = Object.values(responseObj)?.[0] as any;
     const errorTag = Array.isArray(errorTags) ? errorTags[0] : errorTags;
+    const legacyMessage =
+      responseObj.message || responseObj.detail || responseObj.msg;
 
     apiError.cause = errorType ?? null;
     apiError.message =
-      apiError.data?.message || errorTag || apiError.statusText;
+      legacyMessage ||
+      (typeof errorTag === 'string' && errorTag) ||
+      apiError.statusText;
   }
 
   return apiError;
