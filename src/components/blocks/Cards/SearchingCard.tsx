@@ -20,6 +20,7 @@ import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { formatDate, formatTime } from '../../../helpers/date';
+import { openCalFallback, whenCalReady } from '../../../hooks/useCalEmbed';
 import { getAppRoute, USER_FORM_ROUTES } from '../../../router/routes';
 import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
@@ -111,10 +112,12 @@ export function SearchingCard({
   const isBookedState = cardState === 'pre_match_call_booked';
 
   useEffect(() => {
-    if (!isOnboarded && !isBookedState && appointmentBtn?.current) {
-      appointmentBtn.current?.click();
+    if (!user || isOnboarded || isBookedState || !appointmentBtn?.current) {
+      return () => {};
     }
-  }, [isOnboarded, isBookedState]);
+    // Wait for cal embedding script to fully load
+    return whenCalReady(() => appointmentBtn.current?.click());
+  }, [user, isOnboarded, isBookedState]);
 
   return (
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
@@ -194,7 +197,7 @@ export function SearchingCard({
             ref={appointmentBtn}
             data-cal-link={calComAppointmentLink}
             data-cal-config='{"layout":"month_view"}'
-            onClick={() => null}
+            onClick={() => openCalFallback(calComAppointmentLink)}
             size={ButtonSizes.Stretch}
             variation={
               isBookedState ? ButtonVariations.Inline : ButtonVariations.Basic
