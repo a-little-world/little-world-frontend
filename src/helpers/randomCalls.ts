@@ -4,6 +4,8 @@ export interface UpcomingLobbyItem {
   name: string;
   start_time: string;
   end_time: string;
+  frequency: string;
+  recurrence_group: string | null;
   status: boolean;
   active_users_count: number;
 }

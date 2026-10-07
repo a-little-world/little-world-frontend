@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   Button,
@@ -25,6 +25,12 @@ import CustomPagination from '../../../CustomPagination';
 import { formatDate, formatEventTime } from '../../../helpers/date';
 import { calculateNextOccurrence, Event } from '../../../helpers/events';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
+import { nextSessionPerSeries } from '../../../helpers/schedule';
+import {
+  calendarRecurrenceFor,
+  type SeriesRecurrence,
+} from '../../../helpers/seriesCalendar';
+import useIsBelowBreakpoint from '../../../hooks/useIsBelowBreakpoint';
 import placeholderImage from '../../../images/coffee.webp';
 import randomCallsImage from '../../../images/random-calls-image.png';
 import {
@@ -33,6 +39,7 @@ import {
   RANDOM_CALLS_ROUTE,
 } from '../../../router/routes';
 import AddToCalendarButton from '../../atoms/AddToCalendarButton';
+import FrequencyTag from '../../atoms/FrequencyTag';
 import PanelImage from '../../atoms/PanelImage';
 import ShowMoreText from '../../atoms/ShowMoreText';
 import {
@@ -46,9 +53,11 @@ import {
   EventTitle,
   Main,
   Session,
+  SessionDateTime,
   SessionFlex,
   Sessions,
   ShowMoreButton,
+  TimeWithFrequency,
 } from './styles';
 
 type EventSession = {
@@ -56,15 +65,25 @@ type EventSession = {
   startDate: Date;
   endDate?: Date;
   link: string;
+  /** Set for scheduled sessions (Random Calls), one-off included; shown as a tag after the time. */
+  frequency?: string;
+  /** Adds the session's series to the calendar as one recurring event. */
+  recurrence?: SeriesRecurrence;
 };
 
-interface GroupedEvent extends Event {
+interface GroupedEvent extends Omit<Event, 'frequency'> {
+  /** Named on the image. Left out when the event has no single frequency. */
+  frequency?: string;
   original_time?: string;
   sessions?: EventSession[];
   sessionDateFormat?: string;
   openInApp?: boolean;
   joinCtaLabel?: string;
   calendarLink?: string;
+  /** Frequency of a single-session event, shown as a tag after its time. */
+  sessionFrequency?: string;
+  /** Calendar recurrence of a single-session event's series. */
+  sessionRecurrence?: SeriesRecurrence;
 }
 
 interface CommunityEventProps extends GroupedEvent {
@@ -180,6 +199,21 @@ function collateEvents(events: Event[]): GroupedEvent[] {
   });
 }
 
+/**
+ * Recurrence for the calendar. A scheduled session repeats only as far as its series does,
+ * so without a series recurrence it is a single event, whatever the card's frequency.
+ */
+const calendarFrequency = (
+  sessionFrequency: string | undefined,
+  recurrence: SeriesRecurrence | undefined,
+  eventFrequency: string | undefined,
+) => {
+  if (sessionFrequency !== undefined) {
+    return recurrence ? sessionFrequency : COMMUNITY_EVENT_FREQUENCIES.once;
+  }
+  return eventFrequency ?? COMMUNITY_EVENT_FREQUENCIES.once;
+};
+
 const EventCtas = ({
   title,
   frequency,
@@ -193,6 +227,8 @@ const EventCtas = ({
   openInApp = false,
   joinCtaLabel,
   calendarLink,
+  sessionFrequency,
+  sessionRecurrence,
 }: {
   title: string;
   description: string;
@@ -200,12 +236,14 @@ const EventCtas = ({
   startDate: Date;
   originalStartDate: Date;
   endDate?: Date;
-  frequency: string;
+  frequency?: string;
   sessions?: EventSession[];
   sessionDateFormat?: string;
   openInApp?: boolean;
   joinCtaLabel?: string;
   calendarLink?: string;
+  sessionFrequency?: string;
+  sessionRecurrence?: SeriesRecurrence;
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -215,7 +253,10 @@ const EventCtas = ({
   } = useTranslation();
   const now = new Date();
   const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
+  // Scheduled sessions (sessionFrequency set) show their date; "every week" is for
+  // community events, which repeat without an end.
   const isWeeklyLabelInRange =
+    !sessionFrequency &&
     frequency === COMMUNITY_EVENT_FREQUENCIES.weekly &&
     (originalStartDate.getTime() <= now.getTime() ||
       originalStartDate.getTime() - now.getTime() < oneWeekMs);
@@ -223,6 +264,8 @@ const EventCtas = ({
   const joinLabel = joinCtaLabel ?? t('community_events.join_call');
   const showJoinIcon = !joinCtaLabel;
   const eventCalendarLink = calendarLink ?? link;
+
+  const isSmallScreen = useIsBelowBreakpoint(theme.breakpoints.small);
 
   const SESSIONS_COLLAPSED_COUNT = 5;
   const [sessionsExpanded, setSessionsExpanded] = useState(false);
@@ -240,20 +283,39 @@ const EventCtas = ({
     const visibleSessions = sessionsExpanded
       ? sessions
       : sessions.slice(0, SESSIONS_COLLAPSED_COUNT);
+    // Scheduled sessions (Random Calls) all carry a frequency; grouped community events don't.
+    const withFrequency = sessions.some(session => Boolean(session.frequency));
+    // The frequency tag takes room from the date and time, so they drop a size whenever
+    // tags are shown, and on small screens also stack in one column.
+    const stackDateTime = withFrequency && isSmallScreen;
+    const sessionTextType = withFrequency ? TextTypes.Body5 : TextTypes.Body4;
 
     return (
-      <Sessions>
+      <Sessions
+        $wideDate={showWideSessionDate}
+        $withFrequency={withFrequency}
+        $stacked={stackDateTime}
+      >
         {visibleSessions.map(session => (
-          <Session
-            key={session.id || session.link}
-            $wideDate={showWideSessionDate}
-          >
-            <Text type={TextTypes.Body4} bold tag="span">
-              {formatDate(session.startDate, sessionDateFormat, language)}
-            </Text>
-            <Text type={TextTypes.Body4} bold color={theme.color.text.heading}>
-              {formatEventTime(session.startDate, session.endDate)}
-            </Text>
+          <Session key={session.id || session.link}>
+            <SessionDateTime $stacked={stackDateTime}>
+              <Text type={sessionTextType} bold tag="span">
+                {formatDate(session.startDate, sessionDateFormat, language)}
+              </Text>
+              <Text
+                type={sessionTextType}
+                bold
+                color={theme.color.text.heading}
+              >
+                {formatEventTime(session.startDate, session.endDate)}
+              </Text>
+            </SessionDateTime>
+            {withFrequency && (
+              <FrequencyTag
+                frequency={session.frequency}
+                margin={`0 ${theme.spacing.small}`}
+              />
+            )}
             <SessionFlex>
               <Button
                 onClick={() => onJoin(session.link)}
@@ -275,7 +337,12 @@ const EventCtas = ({
                       calendarEvent={{
                         title,
                         description,
-                        frequency,
+                        frequency: calendarFrequency(
+                          session.frequency,
+                          session.recurrence,
+                          frequency,
+                        ),
+                        recurrence: session.recurrence,
                         startDate: session.startDate,
                         endDate: session.endDate,
                         durationInMinutes: 60,
@@ -314,9 +381,12 @@ const EventCtas = ({
               })
             : formatDate(startDate, 'cccc, do LLLL', language)}
         </DateText>
-        <Text type={TextTypes.Heading5} bold color={theme.color.text.heading}>
-          {formatEventTime(startDate, endDate)}
-        </Text>
+        <TimeWithFrequency>
+          <Text type={TextTypes.Heading5} bold color={theme.color.text.heading}>
+            {formatEventTime(startDate, endDate)}
+          </Text>
+          <FrequencyTag frequency={sessionFrequency} />
+        </TimeWithFrequency>
       </DateTimeEvent>
       <Buttons>
         <Button onClick={() => onJoin(link)}>
@@ -336,7 +406,12 @@ const EventCtas = ({
               <AddToCalendarButton
                 calendarEvent={{
                   title,
-                  frequency,
+                  frequency: calendarFrequency(
+                    sessionFrequency,
+                    sessionRecurrence,
+                    frequency,
+                  ),
+                  recurrence: sessionRecurrence,
                   description,
                   startDate,
                   endDate,
@@ -368,6 +443,8 @@ function CommunityEvent({
   openInApp,
   joinCtaLabel,
   calendarLink,
+  sessionFrequency,
+  sessionRecurrence,
 }: CommunityEventProps) {
   const { t } = useTranslation();
 
@@ -379,7 +456,7 @@ function CommunityEvent({
     <EventContainer id={id} key={_key}>
       <PanelImage
         src={image || placeholderImage}
-        label={t(`community_events.frequency_${frequency}`)}
+        label={frequency ? t(`community_events.frequency_${frequency}`) : ''}
         alt="event image"
       />
       <Main>
@@ -400,6 +477,8 @@ function CommunityEvent({
           openInApp={openInApp}
           joinCtaLabel={joinCtaLabel}
           calendarLink={calendarLink}
+          sessionFrequency={sessionFrequency}
+          sessionRecurrence={sessionRecurrence}
         />
       </Main>
     </EventContainer>
@@ -416,15 +495,19 @@ function buildRandomCallsEvent(
 
   const randomCallsRoute = getAppRoute(RANDOM_CALLS_ROUTE);
   const randomCallsCalendarLink = getAppAbsoluteRoute(RANDOM_CALLS_ROUTE);
-  const sortedLobbies = [...lobbies].sort(
-    (a, b) =>
-      new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
-  );
+  // A recurring series is one row: its next session, tagged with its frequency.
+  const sortedLobbies = nextSessionPerSeries(lobbies);
   const [firstLobby] = sortedLobbies;
+  const frequencies = new Set(sortedLobbies.map(lobby => lobby.frequency));
+  const [sharedFrequency] = frequencies;
 
   return {
     id: 'random-calls',
-    frequency: COMMUNITY_EVENT_FREQUENCIES.once,
+    // Only when every session shares it; mixed frequencies leave the image unlabelled.
+    // Each session carries its own frequency and calendar recurrence.
+    ...(frequencies.size === 1 && { frequency: sharedFrequency }),
+    sessionFrequency: firstLobby.frequency,
+    sessionRecurrence: calendarRecurrenceFor(firstLobby, lobbies).recurrence,
     description,
     image: randomCallsImage,
     title,
@@ -440,6 +523,8 @@ function buildRandomCallsEvent(
         startDate: new Date(lobby.start_time),
         endDate: new Date(lobby.end_time),
         link: randomCallsRoute,
+        frequency: lobby.frequency,
+        recurrence: calendarRecurrenceFor(lobby, lobbies).recurrence,
       })),
       sessionDateFormat: 'EEE d MMM',
     }),
@@ -454,15 +539,20 @@ function CommunityEvents() {
     UPCOMING_LOBBIES_ENDPOINT,
   );
   const groupedEvents = collateEvents(events?.results || []);
-  const randomCallsEvent =
-    currentPage === 1
-      ? buildRandomCallsEvent(
-          upcomingLobbies ?? [],
-          t('community_events.random_calls_title'),
-          t('community_events.random_calls_description'),
-          t('community_events.random_calls_cta'),
-        )
-      : null;
+  // Rebuilt only when the lobbies or the language change: each row works out its
+  // series' calendar recurrence, which is too much to repeat on every render.
+  const randomCallsEvent = useMemo(
+    () =>
+      currentPage === 1
+        ? buildRandomCallsEvent(
+            upcomingLobbies ?? [],
+            t('community_events.random_calls_title'),
+            t('community_events.random_calls_description'),
+            t('community_events.random_calls_cta'),
+          )
+        : null,
+    [currentPage, upcomingLobbies, t],
+  );
 
   const totalPages = events?.pages_total || 1;
 

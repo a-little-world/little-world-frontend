@@ -16,6 +16,11 @@ import styled, { useTheme } from 'styled-components';
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../constants/index';
 import { formatDateForCalendarUrl, getEndTime } from '../../helpers/date';
 import { CalendarEvent } from '../../helpers/events';
+import {
+  CALENDAR_TIME_ZONE,
+  formatBerlinIcsDateTime,
+  formatUtcIcsDateTime,
+} from '../../helpers/seriesCalendar';
 
 export const AddToCalendarOption = styled(Button)`
   font-size: 1rem;
@@ -31,25 +36,35 @@ export const AddToCalendarOption = styled(Button)`
 
 const DAY_NAMES = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'] as const;
 
-function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
-  const formattedStartDate = formatDateForCalendarUrl(
-    new Date(calendarEvent.startDate),
-  );
-
+function getEventDates(calendarEvent: CalendarEvent) {
+  const startDate = new Date(calendarEvent.startDate);
   // Use the endDate that's passed to us, or calculate based on duration if not provided
   const endDate = calendarEvent.endDate
     ? new Date(calendarEvent.endDate)
-    : getEndTime(
-        new Date(calendarEvent.startDate),
-        calendarEvent.durationInMinutes,
-        undefined,
-      );
-  const formattedEndDate = formatDateForCalendarUrl(endDate);
-  return { formattedStartDate, formattedEndDate };
+    : getEndTime(startDate, calendarEvent.durationInMinutes, undefined);
+  return { startDate, endDate };
 }
 
-function generateRecurrenceRule(calendarEvent: CalendarEvent): string {
-  const { frequency } = calendarEvent;
+function getFormattedCalendarDates(calendarEvent: CalendarEvent) {
+  const { startDate, endDate } = getEventDates(calendarEvent);
+  return {
+    formattedStartDate: formatDateForCalendarUrl(startDate),
+    formattedEndDate: formatDateForCalendarUrl(endDate),
+  };
+}
+
+/** Same day every month, falling back to the month's last day when it is shorter. */
+function monthDayRule(monthDay: number): string {
+  if (monthDay <= 28) return `FREQ=MONTHLY;BYMONTHDAY=${monthDay}`;
+  const candidateDays = Array.from(
+    { length: monthDay - 27 },
+    (_, index) => 28 + index,
+  );
+  return `FREQ=MONTHLY;BYMONTHDAY=${candidateDays.join(',')};BYSETPOS=-1`;
+}
+
+function generateBaseRecurrenceRule(calendarEvent: CalendarEvent): string {
+  const { frequency, recurrence } = calendarEvent;
 
   if (!frequency || frequency === COMMUNITY_EVENT_FREQUENCIES.once) {
     return '';
@@ -61,6 +76,10 @@ function generateRecurrenceRule(calendarEvent: CalendarEvent): string {
 
   if (frequency === COMMUNITY_EVENT_FREQUENCIES.fortnightly) {
     return 'FREQ=WEEKLY;INTERVAL=2';
+  }
+
+  if (frequency === COMMUNITY_EVENT_FREQUENCIES.monthly && recurrence) {
+    return monthDayRule(recurrence.monthDay);
   }
 
   if (frequency === COMMUNITY_EVENT_FREQUENCIES.monthly) {
@@ -85,9 +104,38 @@ function generateRecurrenceRule(calendarEvent: CalendarEvent): string {
   return '';
 }
 
-function formatDateTimeForIcs(dateString: string): string {
-  return dateString.replace(/[-:]/g, '').replace('.000Z', 'Z');
+function generateRecurrenceRule(calendarEvent: CalendarEvent): string {
+  const rule = generateBaseRecurrenceRule(calendarEvent);
+  const { recurrence } = calendarEvent;
+  return rule && recurrence
+    ? `${rule};UNTIL=${formatUtcIcsDateTime(recurrence.until)}`
+    : rule;
 }
+
+// Times are written in Berlin time with this definition, so a weekly 18:00 stays at 18:00
+// across DST in Apple and Outlook calendars, as it does in Google via `ctz`.
+const BERLIN_VTIMEZONE = [
+  'BEGIN:VTIMEZONE',
+  `TZID:${CALENDAR_TIME_ZONE}`,
+  'BEGIN:DAYLIGHT',
+  'TZOFFSETFROM:+0100',
+  'TZOFFSETTO:+0200',
+  'TZNAME:CEST',
+  'DTSTART:19700329T020000',
+  'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
+  'END:DAYLIGHT',
+  'BEGIN:STANDARD',
+  'TZOFFSETFROM:+0200',
+  'TZOFFSETTO:+0100',
+  'TZNAME:CET',
+  'DTSTART:19701025T030000',
+  'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
+  'END:STANDARD',
+  'END:VTIMEZONE',
+];
+
+const berlinIcsDates = (dates: Date[]) =>
+  dates.map(formatBerlinIcsDateTime).join(',');
 
 function generateGoogleCalendarUrl(calendarEvent: CalendarEvent): string {
   const { formattedStartDate, formattedEndDate } =
@@ -115,25 +163,33 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent): string {
 }
 
 function generateIcsCalendarFile(calendarEvent: CalendarEvent): string {
-  const { formattedStartDate, formattedEndDate } =
-    getFormattedCalendarDates(calendarEvent);
-  const formattedStartDateTime = formatDateTimeForIcs(formattedStartDate);
-  const formattedEndDateTime = formatDateTimeForIcs(formattedEndDate);
+  const { startDate, endDate } = getEventDates(calendarEvent);
   const recurrenceRule = generateRecurrenceRule(calendarEvent);
+  const { recurrence } = calendarEvent;
+  const exdates = recurrenceRule ? (recurrence?.exdates ?? []) : [];
+  const rdates = recurrenceRule ? (recurrence?.rdates ?? []) : [];
 
   const icsLines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//Your Company//NONSGML v1.0//EN',
+    ...BERLIN_VTIMEZONE,
     'BEGIN:VEVENT',
     `UID:${Date.now()}`,
     `URL:${document.URL}`,
-    `DTSTART:${formattedStartDateTime}`,
-    `DTEND:${formattedEndDateTime}`,
+    `DTSTART;TZID=${CALENDAR_TIME_ZONE}:${formatBerlinIcsDateTime(startDate)}`,
+    `DTEND;TZID=${CALENDAR_TIME_ZONE}:${formatBerlinIcsDateTime(endDate)}`,
     `SUMMARY:${calendarEvent.title || ''}`,
     `DESCRIPTION:${calendarEvent.description || ''}`,
     `LOCATION:${calendarEvent.link || ''}`,
     ...(recurrenceRule ? [`RRULE:${recurrenceRule}`] : []),
+    // Removed and moved sessions of a series. Google's add-event link can't carry these.
+    ...(exdates.length
+      ? [`EXDATE;TZID=${CALENDAR_TIME_ZONE}:${berlinIcsDates(exdates)}`]
+      : []),
+    ...(rdates.length
+      ? [`RDATE;TZID=${CALENDAR_TIME_ZONE}:${berlinIcsDates(rdates)}`]
+      : []),
     'END:VEVENT',
     'END:VCALENDAR',
   ];

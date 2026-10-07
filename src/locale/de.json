@@ -79,7 +79,7 @@
   "community_events.frequency_monthly": "Monatlich",
   "community_events.frequency_once": "Einmalig",
   "community_events.frequency_weekly": "Wöchentlich",
-  "community_events.frequency_fortnightly": "alle zwei Wochen",
+  "community_events.frequency_fortnightly": "14-täglich",
   "community_events.every_week": "Jeden {{ day }}",
   "community_events.join_call": "Gespräch beitreten",
   "community_events.show_less": "Weniger anzeigen",
