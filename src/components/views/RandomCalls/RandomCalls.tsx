@@ -10,6 +10,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
+import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import {
@@ -76,6 +77,7 @@ interface RandomCallLobby {
 
 const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const {
     data: upcomingLobbies,
     isLoading: lobbyLoading,
@@ -172,6 +174,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
       <InnerContainer>
         <InfoPanel>
           <PanelImage
+            breakpoint={theme.breakpoints.xlarge}
             src={randomCallsImage}
             label={t('random_calls.image_label')}
             alt="random calls"

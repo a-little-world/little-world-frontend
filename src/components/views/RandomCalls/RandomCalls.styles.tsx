@@ -33,7 +33,7 @@ export const InfoPanel = styled.div`
   width: 100%;
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media (min-width: ${theme.breakpoints.xlarge}) {
       flex-direction: row;
       width: unset;
       flex-shrink: 1;
@@ -51,8 +51,8 @@ export const InfoPanelText = styled.div`
     ${({ theme }) => theme.spacing.xxsmall};
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
-      padding: ${theme.spacing.xxsmall} ${theme.spacing.small} 0;
+    @media (min-width: ${theme.breakpoints.xlarge}) {
+      padding: ${theme.spacing.xxsmall} 0 0 ${theme.spacing.small};
     }
   `}
 `;

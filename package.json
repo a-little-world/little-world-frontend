@@ -7,6 +7,7 @@
     "lint-fix": "pnpm run lint --fix",
     "format:check": "prettier --check ./src",
     "format:fix": "prettier --write ./src",
+    "test": "node --test 'src/**/*.test.ts'",
     "dev": "webpack serveviews/index.js --env DEV_TOOL=eval-cheap-module-source-map --env DEBUG=1 --mode development",
     "clean": "rimraf dist",
     "build": "pnpm run clean && pnpm run build:bundle && pnpm run build:types && pnpm run copy-files:esm && pnpm run copy-files:cjs && pnpm pack",
