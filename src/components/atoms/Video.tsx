@@ -1,54 +1,7 @@
-import { useEffect, useRef } from 'react';
-
 import styled from 'styled-components';
 
-import { extractYoutubeId, getEmbedderOrigin } from '../../helpers/youtube';
-
-const YT_IFRAME_API_URL = 'https://www.youtube.com/iframe_api';
-
-type YouTubePlayer = {
-  destroy: () => void;
-  getIframe: () => HTMLIFrameElement | undefined;
-};
-
-type YouTubePlayerOptions = {
-  videoId: string;
-  playerVars?: Record<string, string | number>;
-};
-
-type YouTubeApi = {
-  Player: new (
-    element: HTMLElement,
-    options: YouTubePlayerOptions,
-  ) => YouTubePlayer;
-};
-
-const getYouTubeApi = (): YouTubeApi | undefined =>
-  (window as unknown as { YT?: YouTubeApi }).YT;
-
-let youTubeApiPromise: Promise<void> | null = null;
-
-function loadYouTubeApi(): Promise<void> {
-  if (getYouTubeApi()?.Player) return Promise.resolve();
-
-  if (!youTubeApiPromise) {
-    youTubeApiPromise = new Promise<void>(resolve => {
-      const globalWindow = window as unknown as {
-        onYouTubeIframeAPIReady?: () => void;
-      };
-      const previous = globalWindow.onYouTubeIframeAPIReady;
-      globalWindow.onYouTubeIframeAPIReady = () => {
-        previous?.();
-        resolve();
-      };
-      const script = document.createElement('script');
-      script.src = YT_IFRAME_API_URL;
-      document.head.appendChild(script);
-    });
-  }
-
-  return youTubeApiPromise;
-}
+import { environment } from '../../environment';
+import { extractYoutubeId } from '../../helpers/youtube';
 
 type VideoContainerProps = {
   $maxWidth?: string;
@@ -98,52 +51,31 @@ const Video = ({
   maxHeight,
   aspectRatio = 16 / 9,
 }: VideoProps) => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const videoId = extractYoutubeId(src);
+  const videoId = extractYoutubeId(src) ?? src;
 
-  useEffect(() => {
-    if (!videoId || !containerRef.current) return undefined;
-
-    const mount = document.createElement('div');
-    containerRef.current.appendChild(mount);
-
-    let player: YouTubePlayer | undefined;
-    let cancelled = false;
-
-    loadYouTubeApi().then(() => {
-      const api = getYouTubeApi();
-      if (cancelled || !api?.Player) return;
-
-      const origin = getEmbedderOrigin(window.location.origin);
-      player = new api.Player(mount, {
-        videoId,
-        playerVars: { origin, widget_referrer: origin },
-      });
-
-      const iframe = player.getIframe();
-      if (iframe) {
-        iframe.title = title;
-        iframe.setAttribute(
-          'referrerpolicy',
-          'strict-origin-when-cross-origin',
-        );
-      }
-    });
-
-    return () => {
-      cancelled = true;
-      player?.destroy();
-      mount.remove();
-    };
-  }, [videoId, title]);
+  // The native app renders this from a local file:// page, which has no origin
+  // and sends no Referer. YouTube rejects embedded players without one
+  // (error 153), so native builds embed via the backend's /youtube_embed/
+  // proxy page, which runs on a real https origin the browser can identify
+  // with. The web app has a real origin and can embed directly.
+  const embedUrl = environment.isNative
+    ? `${environment.backendUrl}/youtube_embed/?v=${encodeURIComponent(videoId)}`
+    : `https://www.youtube.com/embed/${videoId}`;
 
   return (
     <VideoContainer
-      ref={containerRef}
       $maxWidth={maxWidth}
       $maxHeight={maxHeight}
       $aspectRatio={aspectRatio}
-    />
+    >
+      <iframe
+        src={embedUrl}
+        title={title}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+      />
+    </VideoContainer>
   );
 };
 

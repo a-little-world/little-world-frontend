@@ -1,15 +1,4 @@
-// The native app serves this page from a local `file://` bundle, so the page
-// has no origin and the browser omits the Referer. YouTube rejects embedded
-// players without one (error 153), so the IFrame API is told to identify the
-// embedder with this origin instead.
-export const FALLBACK_EMBEDDER_ORIGIN = 'https://little-world.com';
-
-export function getEmbedderOrigin(locationOrigin: string): string {
-  return locationOrigin.startsWith('http')
-    ? locationOrigin
-    : FALLBACK_EMBEDDER_ORIGIN;
-}
-
+// eslint-disable-next-line import/prefer-default-export
 export function extractYoutubeId(input: string): string | null {
   // Accept raw ids, youtu.be links, and youtube.com links.
   // YouTube video ids are always 11 chars (letters, digits, _ and -).

@@ -1,30 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import {
-  extractYoutubeId,
-  FALLBACK_EMBEDDER_ORIGIN,
-  getEmbedderOrigin,
-} from './youtube.ts';
-
-describe('getEmbedderOrigin', () => {
-  it('keeps a real http(s) page origin', () => {
-    assert.equal(
-      getEmbedderOrigin('https://stage.little-world.com'),
-      'https://stage.little-world.com',
-    );
-    assert.equal(
-      getEmbedderOrigin('http://localhost:3000'),
-      'http://localhost:3000',
-    );
-  });
-
-  it('falls back when the page has no origin (native file:// WebView)', () => {
-    assert.equal(getEmbedderOrigin('null'), FALLBACK_EMBEDDER_ORIGIN);
-    assert.equal(getEmbedderOrigin('file://'), FALLBACK_EMBEDDER_ORIGIN);
-    assert.equal(getEmbedderOrigin(''), FALLBACK_EMBEDDER_ORIGIN);
-  });
-});
+import { extractYoutubeId } from './youtube.ts';
 
 describe('extractYoutubeId', () => {
   it('accepts raw ids and common URL forms', () => {
