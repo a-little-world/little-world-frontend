@@ -85,10 +85,14 @@ const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const maxBirthYear = maxBirthYearForMinimumAge();
 
-  // User can sign-up with a ?company='name' query
-  // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
+  // Keep signup attribution across navigation until the registration is submitted.
   const [searchParams, setSearchParams] = useSearchParams();
-  const [company, setCompany] = useState(Cookies.get('lw-company', null));
+  const [company, setCompany] = useState<string | undefined>(() =>
+    Cookies.get('lw-company'),
+  );
+  const [signupCampaign, setSignupCampaign] = useState<string | undefined>(() =>
+    Cookies.get('lw-signup-campaign'),
+  );
 
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
@@ -101,15 +105,58 @@ const SignUp = () => {
       label: t(`sign_up.user_type.${value}`),
       value,
     })) ?? [];
+  const knownSignupCampaigns: string[] | undefined =
+    apiOptions?.signup_campaigns;
 
   useEffect(() => {
-    if (searchParams.has('company')) {
-      Cookies.set('lw-company', searchParams.get('company'));
-      setCompany(searchParams.get('company'));
-      // Once the query param is stored in the cookie, we can remove it from the URL
-      setSearchParams(new URLSearchParams());
+    const nextSearchParams = new URLSearchParams(searchParams);
+    let searchParamsChanged = false;
+    const companyParam = searchParams.get('company');
+    const signupCampaignParam = searchParams.get('signup_campaign');
+
+    if (signupCampaignParam !== null) {
+      Cookies.set('lw-signup-campaign', signupCampaignParam);
+      setSignupCampaign(signupCampaignParam);
+      nextSearchParams.delete('signup_campaign');
+      searchParamsChanged = true;
     }
-  }, [searchParams, setSearchParams]);
+
+    if (knownSignupCampaigns) {
+      const legacyCompany = companyParam ?? company;
+      const isKnownCampaign =
+        legacyCompany &&
+        knownSignupCampaigns.some(
+          campaign => campaign.toLowerCase() === legacyCompany.toLowerCase(),
+        );
+
+      if (isKnownCampaign) {
+        if (signupCampaignParam === null && !signupCampaign) {
+          Cookies.set('lw-signup-campaign', legacyCompany);
+          setSignupCampaign(legacyCompany);
+        }
+        Cookies.remove('lw-company');
+        setCompany(undefined);
+      } else if (companyParam !== null) {
+        Cookies.set('lw-company', companyParam);
+        setCompany(companyParam);
+      }
+
+      if (companyParam !== null) {
+        nextSearchParams.delete('company');
+        searchParamsChanged = true;
+      }
+    }
+
+    if (searchParamsChanged) {
+      setSearchParams(nextSearchParams, { replace: true });
+    }
+  }, [
+    company,
+    knownSignupCampaigns,
+    searchParams,
+    setSearchParams,
+    signupCampaign,
+  ]);
 
   const {
     control,
@@ -141,7 +188,7 @@ const SignUp = () => {
   const onFormSubmit = async data => {
     setIsSubmitting(true);
     runOptionalMatomoTriggers(data?.userType);
-    signUp(data)
+    signUp({ ...data, signupCampaign })
       .then(async signUpData => {
         setIsSubmitting(false);
         mutate(USER_ENDPOINT, signUpData, false);
