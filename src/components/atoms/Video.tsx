@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { getEffectiveBackendUrl } from '../../api/helpers';
 import { environment } from '../../environment';
 import { extractYoutubeId } from '../../helpers/youtube';
 
@@ -59,7 +60,7 @@ const Video = ({
   // proxy page, which runs on a real https origin the browser can identify
   // with. The web app has a real origin and can embed directly.
   const embedUrl = environment.isNative
-    ? `${environment.backendUrl}/youtube_embed/?v=${encodeURIComponent(videoId)}`
+    ? `${getEffectiveBackendUrl()}/youtube_embed/?v=${encodeURIComponent(videoId)}`
     : `https://www.youtube.com/embed/${videoId}`;
 
   return (
