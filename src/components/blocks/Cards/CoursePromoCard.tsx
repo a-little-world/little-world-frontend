@@ -23,13 +23,21 @@ import {
   getCourseEndpoint,
   getCourseProgressEndpoint,
 } from '../../../api/courses';
+import {
+  fetchSurveyStatus,
+  getSurveyStatusEndpoint,
+} from '../../../api/surveys';
 import { ApiError } from '../../../api/types';
-import { getAppSubpageRoute, TRAININGS_ROUTE } from '../../../router/routes';
-import { PROFILE_CARD_HEIGHT, StyledProfileCard } from './ProfileCard';
+import {
+  getAppSubpageRoute,
+  getSurveyRoute,
+  TRAININGS_ROUTE,
+} from '../../../router/routes';
+import { PROFILE_CARD_HEIGHT } from './ProfileCard';
 
 export const PROMOTED_COURSE_SLUG = 'interkulturelle-gespraechsfuehrung';
-/** Replace with the post-course survey URL when it is ready. */
-export const COURSE_PROMO_SURVEY_URL = '';
+export const COURSE_SURVEY_SLUG =
+  'interkulturelle-gespraechsfuehrung-feedback-umfrage';
 
 type PromoState = 'start' | 'continue' | 'complete';
 
@@ -59,8 +67,7 @@ const Description = styled(Text)`
 const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  text-align: left;
+  align-items: center;
 `;
 
 const StyledProgressRing = styled(ProgressRing)`
@@ -68,7 +75,7 @@ const StyledProgressRing = styled(ProgressRing)`
 `;
 
 const PercentValue = styled(Text)`
-  color: ${({ theme }) => theme.color.text.heading};
+  color: ${({ theme }) => theme.color.text.primary};
   line-height: 1;
 `;
 
@@ -76,25 +83,9 @@ const StyledLink = styled(Link)`
   margin-top: auto;
 `;
 
-const LoadingCard = styled(StyledProfileCard)`
-  order: 2;
-`;
-
 function CoursePromoCard() {
   const { t } = useTranslation();
   const coursePath = getAppSubpageRoute(TRAININGS_ROUTE, PROMOTED_COURSE_SLUG);
-
-  const {
-    data: course,
-    error: courseError,
-    isLoading: courseLoading,
-  } = useSWR<CourseDetail>(
-    getCourseEndpoint(PROMOTED_COURSE_SLUG),
-    () => fetchCourseDetail(PROMOTED_COURSE_SLUG),
-    {
-      shouldRetryOnError: (error: ApiError) => error.status !== 404,
-    },
-  );
 
   const {
     data: progress,
@@ -103,27 +94,53 @@ function CoursePromoCard() {
   } = useSWR<CourseProgress | null>(
     getCourseProgressEndpoint(PROMOTED_COURSE_SLUG),
     () => fetchCourseProgress(PROMOTED_COURSE_SLUG),
+  );
+
+  const state = getPromoState(progress ?? null);
+
+  const { data: surveyStatus, isLoading: surveyStatusLoading } = useSWR<{
+    submitted: boolean;
+  } | null>(
+    state === 'complete' ? getSurveyStatusEndpoint(COURSE_SURVEY_SLUG) : null,
+    () => fetchSurveyStatus(COURSE_SURVEY_SLUG),
+  );
+
+  const shouldLoadCourse =
+    state === 'continue' ||
+    (state === 'complete' && surveyStatus?.submitted === false);
+
+  const {
+    data: course,
+    error: courseError,
+    isLoading: courseLoading,
+  } = useSWR<CourseDetail>(
+    shouldLoadCourse ? getCourseEndpoint(PROMOTED_COURSE_SLUG) : null,
+    () => fetchCourseDetail(PROMOTED_COURSE_SLUG),
     {
       shouldRetryOnError: (error: ApiError) => error.status !== 404,
     },
   );
 
-  if (courseLoading || progressLoading) {
-    return <LoadingCard width={CardSizes.Small} $loading />;
-  }
-
-  const state = getPromoState(progress ?? null);
-
-  // do not show card if course has not been started yet
-  if (courseError || progressError || !course || state === 'start') {
+  if (
+    progressLoading ||
+    progressError ||
+    state === 'start' ||
+    // Missing campaign (null): hide rather than link to a survey that does not exist.
+    (state === 'complete' &&
+      (surveyStatusLoading ||
+        surveyStatus === null ||
+        surveyStatus?.submitted)) ||
+    courseLoading ||
+    courseError ||
+    !course
+  ) {
     return null;
   }
 
   const progressPercent = Math.round((progress?.progress_fraction ?? 0) * 100);
-  const ctaProps =
-    state === 'complete'
-      ? { href: COURSE_PROMO_SURVEY_URL, target: '_blank' as const }
-      : { to: coursePath };
+  const ctaProps = {
+    to: state === 'complete' ? getSurveyRoute(COURSE_SURVEY_SLUG) : coursePath,
+  };
 
   return (
     <StyledCard width={CardSizes.Small}>
@@ -155,12 +172,12 @@ function CoursePromoCard() {
           </StyledProgressRing>
         )}
         <Title tag="h3" type={TextTypes.Heading5} center>
-          {t(`course_promo.${state}_title`)}
+          {t(`course_promo.${state}_title`, {
+            courseName: course.title,
+          })}
         </Title>
         <Description center>
-          {t(`course_promo.${state}_description`, {
-            courseName: t('course_promo.course_name'),
-          })}
+          {t(`course_promo.${state}_description`)}
         </Description>
       </InfoContainer>
 

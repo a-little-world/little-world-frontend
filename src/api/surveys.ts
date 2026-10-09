@@ -101,3 +101,23 @@ export const fetchSurveyBySlug = async (
     throw error;
   }
 };
+
+/** Read-only: does not create or open a survey offer the way GET-by-slug does. */
+export const getSurveyStatusEndpoint = (slug: string) =>
+  `/api/surveys/${encodeURIComponent(slug)}/status`;
+
+/** Resolves to `null` when no campaign exists at the slug. */
+export const fetchSurveyStatus = async (
+  slug: string,
+): Promise<{ submitted: boolean } | null> => {
+  try {
+    return await apiFetch<{ submitted: boolean }>(
+      getSurveyStatusEndpoint(slug),
+    );
+  } catch (error: any) {
+    if (error?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+};
