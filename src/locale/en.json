@@ -149,6 +149,7 @@
   "course_promo.continue_cta": "Continue",
   "course_promo.progress_label": "Course progress: {{percent}}%",
   "course_promo.progress_percent": "{{percent}}%",
+  "course_promo.thumbnail_alt": "E-course Intercultural conversations",
   "donate.title": "Help us connect 25,000 people to improve there German and create a more integrated society.",
   "error.connect_to_call": "Failed to connect to call. Please try again.",
   "error_view.button": "Back to the start",

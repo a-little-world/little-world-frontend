@@ -24,12 +24,17 @@ import {
   getCourseProgressEndpoint,
 } from '../../../api/courses';
 import { ApiError } from '../../../api/types';
-import { getAppSubpageRoute, TRAININGS_ROUTE } from '../../../router/routes';
+import {
+  getAppSubpageRoute,
+  getSurveyRoute,
+  TRAININGS_ROUTE,
+} from '../../../router/routes';
 import { PROFILE_CARD_HEIGHT, StyledProfileCard } from './ProfileCard';
 
 export const PROMOTED_COURSE_SLUG = 'interkulturelle-gespraechsfuehrung';
 /** Replace with the post-course survey URL when it is ready. */
-export const COURSE_PROMO_SURVEY_URL = '';
+export const COURSE_SURVEY_SLUG =
+  'interkulturelle-gespraechsfuehrung-feedback-umfrage';
 
 type PromoState = 'start' | 'continue' | 'complete';
 
@@ -120,10 +125,9 @@ function CoursePromoCard() {
   }
 
   const progressPercent = Math.round((progress?.progress_fraction ?? 0) * 100);
-  const ctaProps =
-    state === 'complete'
-      ? { href: COURSE_PROMO_SURVEY_URL, target: '_blank' as const }
-      : { to: coursePath };
+  const ctaProps = {
+    to: state === 'complete' ? getSurveyRoute(COURSE_SURVEY_SLUG) : coursePath,
+  };
 
   return (
     <StyledCard width={CardSizes.Small}>
