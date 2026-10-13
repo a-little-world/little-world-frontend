@@ -7,6 +7,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import type { PrejoinLanguage } from '@livekit/components-react';
 import {
   LayoutContextProvider,
   LiveKitRoom,
@@ -19,7 +20,6 @@ import {
   useRoomInfo,
   useTracks,
 } from '@livekit/components-react';
-import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
 
 import '@livekit/components-styles';
 
@@ -302,7 +302,7 @@ function MyVideoConference({
     setCurrentParticipants(tracks.length);
   }, [tracks.length]);
 
-  const placeholders = {};
+  const placeholders: Record<string, JSX.Element> = {};
   const remoteTracks: TrackReferenceOrPlaceholder[] = [];
   tracks.forEach(track => {
     if (track.participant) {

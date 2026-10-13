@@ -272,6 +272,7 @@ const RandomCallSetup = ({
         videoDeviceId: values.videoDeviceId,
         audioAvailable: values.audioAvailable ?? false,
         videoAvailable: values.videoAvailable ?? false,
+        deviceStatus: values.deviceStatus,
       } as LocalUserChoices);
     }
 
