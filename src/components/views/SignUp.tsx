@@ -217,11 +217,7 @@ const SignUp = () => {
           {company && (
             <>
               {!signUpCompanySlugHidesNameLabel(company) && (
-                <Label
-                  bold
-                  htmlFor="company"
-                  tooltipText={t('sign_up.company_tooltip')}
-                >
+                <Label bold htmlFor="company">
                   {t('sign_up.company_name_label')}: {company}
                 </Label>
               )}
