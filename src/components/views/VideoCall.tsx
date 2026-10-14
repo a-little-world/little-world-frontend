@@ -23,7 +23,13 @@ import {
 
 import '@livekit/components-styles';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
@@ -302,7 +308,7 @@ function MyVideoConference({
     setCurrentParticipants(tracks.length);
   }, [tracks.length]);
 
-  const placeholders: Record<string, JSX.Element> = {};
+  const placeholders: Record<string, React.JSX.Element> = {};
   const remoteTracks: TrackReferenceOrPlaceholder[] = [];
   tracks.forEach(track => {
     if (track.participant) {
