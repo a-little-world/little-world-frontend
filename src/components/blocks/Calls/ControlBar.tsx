@@ -301,42 +301,44 @@ function ControlBar({
   return (
     <Bar $position="bottom">
       <Section>
-        <Tooltip
-          text={t('call.microphone_toggle_tooltip')}
-          trigger={
-            <div>
-              <MediaControl $permissionDenied={audioPermissionDenied}>
-                <Toggle
-                  onClick={
-                    audioPermissionDenied
-                      ? handleOpenPermissionModal
-                      : undefined
-                  }
-                  source={Track.Source.Microphone}
-                  onPermissionsChange={setAudioPermissionDenied}
-                  showIcon
-                  $withBackground
-                  $permissionDenied={audioPermissionDenied}
-                  permissionDenied={audioPermissionDenied}
-                />
-                <MediaDeviceMenu
-                  kind="audioinput"
-                  disabled={audioPermissionDenied}
-                  tracks={{
-                    audioinput: microphoneTrack?.track as
-                      | LocalAudioTrack
-                      | undefined,
-                  }}
-                />
-              </MediaControl>
-            </div>
-          }
-        />
+        <div>
+          <MediaControl $permissionDenied={audioPermissionDenied}>
+            <Tooltip
+              text={t('call.microphone_toggle_tooltip')}
+              trigger={
+                <div>
+                  <Toggle
+                    onClick={
+                      audioPermissionDenied
+                        ? handleOpenPermissionModal
+                        : undefined
+                    }
+                    source={Track.Source.Microphone}
+                    onPermissionsChange={setAudioPermissionDenied}
+                    showIcon
+                    $withBackground
+                    $permissionDenied={audioPermissionDenied}
+                    permissionDenied={audioPermissionDenied}
+                  />
+                </div>
+              }
+            />
+            <MediaDeviceMenu
+              kind="audioinput"
+              disabled={audioPermissionDenied}
+              tracks={{
+                audioinput: microphoneTrack?.track as
+                  | LocalAudioTrack
+                  | undefined,
+              }}
+            />
+          </MediaControl>
+        </div>
 
-        <Tooltip
-          text={t('call.camera_toggle_tooltip')}
-          trigger={
-            <MediaControl $permissionDenied={videoPermissionDenied}>
+        <MediaControl $permissionDenied={videoPermissionDenied}>
+          <Tooltip
+            text={t('call.camera_toggle_tooltip')}
+            trigger={
               <div>
                 <Toggle
                   onClick={
@@ -352,16 +354,16 @@ function ControlBar({
                   permissionDenied={videoPermissionDenied}
                 />
               </div>
-              <MediaDeviceMenu
-                kind="videoinput"
-                disabled={videoPermissionDenied}
-                tracks={{
-                  videoinput: cameraTrack?.track as LocalVideoTrack | undefined,
-                }}
-              />
-            </MediaControl>
-          }
-        />
+            }
+          />
+          <MediaDeviceMenu
+            kind="videoinput"
+            disabled={videoPermissionDenied}
+            tracks={{
+              videoinput: cameraTrack?.track as LocalVideoTrack | undefined,
+            }}
+          />
+        </MediaControl>
 
         {browserSupportsScreenSharing && (
           <Tooltip
