@@ -46,6 +46,7 @@ import FireBase from '../Firebase';
 import AuthGuard from '../guards/AuthGuard';
 import RouteGuard from '../guards/RouteGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
+import useCalEmbed from '../hooks/useCalEmbed';
 import WebsocketBridge from '../WebsocketBridge';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
@@ -110,6 +111,7 @@ export const Root = ({
   standalone = false,
 }) => {
   useErrorDebugBridge();
+  useCalEmbed();
   return (
     <CustomThemeProvider defaultMode={getInitialTheme()}>
       <ToastProvider>
