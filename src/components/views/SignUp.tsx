@@ -58,6 +58,16 @@ function signUpCompanySlugHidesNameLabel(company: string): boolean {
   );
 }
 
+function isKnownSignupCampaign(
+  value: string | undefined,
+  campaigns: string[] | undefined,
+): boolean {
+  if (!value || !campaigns) return false;
+  return campaigns.some(
+    campaign => campaign.toLowerCase() === value.toLowerCase(),
+  );
+}
+
 function runOptionalMatomoTriggers(userType?: string) {
   if (!userType) return;
 
@@ -121,30 +131,22 @@ const SignUp = () => {
       searchParamsChanged = true;
     }
 
-    if (knownSignupCampaigns) {
-      const legacyCompany = companyParam ?? company;
-      const isKnownCampaign =
-        legacyCompany &&
-        knownSignupCampaigns.some(
-          campaign => campaign.toLowerCase() === legacyCompany.toLowerCase(),
-        );
+    if (companyParam !== null) {
+      nextSearchParams.delete('company');
+      searchParamsChanged = true;
+    }
 
-      if (isKnownCampaign) {
-        if (signupCampaignParam === null && !signupCampaign) {
-          Cookies.set('lw-signup-campaign', legacyCompany);
-          setSignupCampaign(legacyCompany);
-        }
-        Cookies.remove('lw-company');
-        setCompany(undefined);
-      } else if (companyParam !== null) {
-        Cookies.set('lw-company', companyParam);
-        setCompany(companyParam);
+    const legacyCompany = companyParam ?? company;
+    if (isKnownSignupCampaign(legacyCompany, knownSignupCampaigns)) {
+      if (signupCampaignParam === null && !signupCampaign) {
+        Cookies.set('lw-signup-campaign', legacyCompany);
+        setSignupCampaign(legacyCompany);
       }
-
-      if (companyParam !== null) {
-        nextSearchParams.delete('company');
-        searchParamsChanged = true;
-      }
+      Cookies.remove('lw-company');
+      setCompany(undefined);
+    } else if (companyParam !== null) {
+      Cookies.set('lw-company', companyParam);
+      setCompany(companyParam);
     }
 
     if (searchParamsChanged) {
