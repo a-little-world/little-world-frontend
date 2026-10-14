@@ -20,8 +20,9 @@ import {
   MediaDeviceMenu,
   TrackToggle,
   useDisconnectButton,
+  useLocalParticipant,
 } from '@livekit/components-react';
-import { Track } from 'livekit-client';
+import { LocalAudioTrack, LocalVideoTrack, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
@@ -272,6 +273,7 @@ function ControlBar({
   const { t } = useTranslation();
   const theme = useTheme();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const { microphoneTrack, cameraTrack } = useLocalParticipant();
   const isBelowBreakpoint = useIsBelowBreakpoint(theme.breakpoints.xlarge);
 
   const [isScreenShareActive, setIsScreenShareActive] = useState(false);
@@ -320,6 +322,11 @@ function ControlBar({
                 <MediaDeviceMenu
                   kind="audioinput"
                   disabled={audioPermissionDenied}
+                  tracks={{
+                    audioinput: microphoneTrack?.track as
+                      | LocalAudioTrack
+                      | undefined,
+                  }}
                 />
               </MediaControl>
             </div>
@@ -348,6 +355,9 @@ function ControlBar({
               <MediaDeviceMenu
                 kind="videoinput"
                 disabled={videoPermissionDenied}
+                tracks={{
+                  videoinput: cameraTrack?.track as LocalVideoTrack | undefined,
+                }}
               />
             </MediaControl>
           }
