@@ -34,9 +34,7 @@ export type DomCommunicationMessage =
   | {
       action: 'GET_WINDOW_ORIGIN';
       requestId?: string;
-      payload: {
-        origin: string;
-      };
+      payload: {};
     }
   | {
       action: 'DISPLAY_NOTIFICATION';
