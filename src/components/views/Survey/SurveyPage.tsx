@@ -22,6 +22,7 @@ import { PENDING_SURVEY_ENDPOINT } from '../../../api/endpoints';
 import {
   fetchSurveyBySlug,
   getSurveyBySlugEndpoint,
+  getSurveyStatusEndpoint,
   submitSurvey,
   SurveyAnswers,
 } from '../../../api/surveys';
@@ -59,6 +60,12 @@ const SurveyPage: FC = () => {
           current?.survey?.id === surveyId
             ? { ...current, survey: null }
             : current,
+        { revalidate: true },
+      );
+      // Status feeds cards like CoursePromoCard that hide once the survey is answered.
+      mutateGlobal(
+        getSurveyStatusEndpoint(slug as string),
+        { submitted: true },
         { revalidate: true },
       );
       await mutate(
