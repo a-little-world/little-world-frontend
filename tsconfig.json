@@ -9,7 +9,7 @@
     "moduleResolution": "bundler",
     "noImplicitAny": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "skipLibCheck": true,
     "strict": true,
     "target": "ES2020",
     "allowJs": true,
@@ -18,7 +18,17 @@
     // lets helpers share a module (helpers/matchWeek.ts) rather than each keeping its
     // own copy of a rule. Satisfied by `tsc --noEmit` and by `build:types`, which
     // passes --emitDeclarationOnly.
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "paths": {
+      "@livekit/components-core": ["./livekit/packages/core/src/index.ts"],
+      "@livekit/components-react": ["./livekit/packages/react/src/index.ts"],
+      "@livekit/components-react/*": [
+        "./livekit/packages/react/src/*/index.ts"
+      ],
+      "@livekit/components-styles": [
+        "./livekit/packages/styles/scss/index.scss"
+      ]
+    }
   },
   "include": ["src"],
   "exclude": [
