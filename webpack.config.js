@@ -5,6 +5,12 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const livekitPackages = path.resolve(__dirname, 'livekit/packages');
+const livekitSrc = [
+  path.join(livekitPackages, 'core/src'),
+  path.join(livekitPackages, 'react/src'),
+];
+
 const config = function (env) {
   let publicPath = '/';
   const devTool = env.DEV_TOOL === 'none' ? false : env.DEV_TOOL;
@@ -22,8 +28,23 @@ const config = function (env) {
       staticfiles: entryPoint,
     },
     resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.jsx'],
       alias: {
         '@': path.resolve(__dirname, '.src/'),
+        '@livekit/components-core$': path.join(livekitPackages, 'core/src'),
+        '@livekit/components-react$': path.join(livekitPackages, 'react/src'),
+        '@livekit/components-react/hooks$': path.join(
+          livekitPackages,
+          'react/src/hooks',
+        ),
+        '@livekit/components-react/prefabs$': path.join(
+          livekitPackages,
+          'react/src/prefabs',
+        ),
+        '@livekit/components-styles$': path.join(
+          livekitPackages,
+          'styles/scss/index.scss',
+        ),
       },
     },
     output: {
@@ -66,10 +87,32 @@ const config = function (env) {
           test: /\.(js|jsx|tsx|ts)$/,
           exclude: /node_modules/,
           use: ['babel-loader'],
-          resolve: {
-            extensions: ['.js', '.jsx'],
-          },
-          include: [path.resolve(__dirname, './src')],
+          include: [path.resolve(__dirname, './src'), ...livekitSrc],
+        },
+        {
+          // single copy of react/livekit-client, even if the fork has its own node_modules
+          include: livekitPackages,
+          resolve: { modules: [path.resolve(__dirname, 'node_modules')] },
+        },
+        {
+          test: /\.scss$/,
+          include: path.join(livekitPackages, 'styles/scss'),
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  config: path.join(
+                    livekitPackages,
+                    'styles/postcss.config.js',
+                  ),
+                },
+              },
+            },
+            'sass-loader',
+          ],
         },
         {
           test: /\.css$/,
