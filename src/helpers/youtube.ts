@@ -2,8 +2,8 @@
 export function extractYoutubeId(input: string): string | null {
   // Accept raw ids, youtu.be links, and youtube.com links.
   // YouTube video ids are always 11 chars (letters, digits, _ and -).
-  const rawIdMatch = input.match(/^[a-zA-Z0-9_-]{11}$/);
-  if (rawIdMatch) return input;
+  const rawIdMatch = input.match(/^([a-zA-Z0-9_-]{11})(?:[?&#]|$)/);
+  if (rawIdMatch) return rawIdMatch[1];
 
   try {
     const url = new URL(input);
