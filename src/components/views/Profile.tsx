@@ -263,10 +263,16 @@ function Profile() {
         <TopDetails>
           <ProfileCard
             chatId={match?.chatId}
+            matchId={match?.id}
             userPk={userId}
             profile={profile}
             isSelf={isSelf}
+            isMatch={Boolean(match) && !match?.partner?.isSupport}
+            isSupport={Boolean(match?.partner?.isSupport)}
+            isOnline={Boolean(match?.partner?.isOnline)}
             onProfile
+            bothActiveCallMinutes={match?.both_active_call_minutes}
+            successMinutes={match?.success_minutes}
             openEditImage={() =>
               navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
             }

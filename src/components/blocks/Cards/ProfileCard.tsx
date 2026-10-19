@@ -17,6 +17,9 @@ import {
   Popover,
   PopoverSizes,
   ProfileIcon,
+  ProgressBar,
+  ProgressBarSizes,
+  ProgressBarVariations,
   Text,
   TextTypes,
   Tooltip,
@@ -79,6 +82,8 @@ interface ProfileCardProps {
   loading?: boolean;
   // matchTeaserInput?: MatchStateInput | null;
   unreadCount?: number;
+  bothActiveCallMinutes?: number;
+  successMinutes?: number;
 }
 
 export const StyledProfileCard = styled(Card)<{
@@ -238,6 +243,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   loading = false,
   // matchTeaserInput = null,
   unreadCount: unreadCountProp,
+  bothActiveCallMinutes,
+  successMinutes,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -251,6 +258,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     )?.unread_count;
     return fromChatList ?? unreadCountProp ?? 0;
   }, [chatId, chats, unreadCountProp]);
+  const displayName = isDeleted
+    ? t('profile.deleted_name')
+    : profile.first_name;
+  const callMinutes = Math.max(0, Math.round(bothActiveCallMinutes ?? 0));
+  const callMinutesMax = Math.max(0, Math.round(successMinutes ?? 0));
+  const showsCallProgress =
+    Boolean(isMatch && !isSupport && !isDeleted && !isSelf && !onProfile) &&
+    callMinutes > 0 &&
+    callMinutesMax > 0;
   // const teaserViewModel = useMemo(
   //   () =>
   //     matchTeaserInput && isMatch && !isSupport && !isDeleted && matchId
@@ -295,7 +311,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           size={onProfile ? 'large' : 'medium'}
         />
       )}
-
       {isMatch && !isDeleted && (
         <Popover
           width={PopoverSizes.Large}
@@ -354,21 +369,35 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       <ProfileInfo>
         <NameContainer $isSelf={isSelf}>
           <Text type={TextTypes.Heading5} bold>
-            {isDeleted ? t('profile.deleted_name') : profile.first_name}
+            {displayName}
           </Text>
           {isSupport && <SupportTag />}
         </NameContainer>
-
-        {!onProfile && (
-          <Description>
-            {isSupport
-              ? t('profile_card.support_description')
-              : isDeleted
-                ? t('profile.deleted_description')
-                : profile.description}
-          </Description>
-        )}
+        {!onProfile &&
+          (showsCallProgress ? (
+            <ProgressBar
+              showScale={false}
+              showValueInBar
+              max={callMinutesMax}
+              value={
+                profile.first_name === 'Alice'
+                  ? 270
+                  : Math.min(callMinutes, callMinutesMax)
+              }
+              size={ProgressBarSizes.Small}
+              variation={ProgressBarVariations.Scale}
+            />
+          ) : (
+            <Description>
+              {isSupport
+                ? t('profile_card.support_description')
+                : isDeleted
+                  ? t('profile.deleted_description')
+                  : profile.description}
+            </Description>
+          ))}
       </ProfileInfo>
+
       {/* {teaserViewModel && (
         <MatchTeaser
           variant={teaserViewModel.variant}

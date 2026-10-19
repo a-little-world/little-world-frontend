@@ -4,9 +4,9 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
-  ProgressRing,
-  ProgressRingSizes,
-  ProgressRingTones,
+  ProgressBar,
+  ProgressBarSizes,
+  ProgressBarVariations,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
@@ -89,6 +89,7 @@ type MatchOverviewSnapshot = {
   is_free_play: boolean;
   calls: number;
   total_minutes: number;
+  success_minutes: number;
   tokens: number;
   token_threshold: number;
   messages: number;
@@ -361,20 +362,19 @@ function MatchOverview() {
               />
             </StatsStrip>
             <ProgressHero>
-              <ProgressRing
-                value={derived.activeWeeks}
-                max={derived.ringMax}
-                size={ProgressRingSizes.XLarge}
-                tone={
-                  derived.isCycleComplete
-                    ? ProgressRingTones.Success
-                    : ProgressRingTones.Accent
-                }
-                label={t('match_overview.ring_aria', {
-                  value: derived.activeWeeks,
-                  max: derived.ringMax,
+              <ProgressBar
+                value={Math.min(
+                  Math.round(snapshot.total_minutes),
+                  snapshot.success_minutes,
+                )}
+                max={snapshot.success_minutes}
+                size={ProgressBarSizes.Large}
+                variation={ProgressBarVariations.Scale}
+                title={t('match_overview.progress_title')}
+                scoreRest={t('profile_card.minutes_of', {
+                  count: snapshot.success_minutes,
                 })}
-                caption={t('match_overview.ring_caption')}
+                step={30}
               />
               <ProgressCopy>
                 <ProgressHeading type={TextTypes.Heading5} tag="h2">

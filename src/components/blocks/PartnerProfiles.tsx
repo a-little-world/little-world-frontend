@@ -176,6 +176,8 @@ function PartnerProfiles({
             isOnline={match.partner.isOnline}
             isSupport={match.partner.isSupport}
             chatId={match.chatId}
+            bothActiveCallMinutes={match.both_active_call_minutes}
+            successMinutes={match.success_minutes}
             matchTeaserInput={
               !match.partner.isSupport ? getMatchTeaserDummyInput(index) : null
             }

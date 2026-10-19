@@ -23,7 +23,7 @@ const stats: BadgeStats = {
 };
 
 describe('MATCH_OVERVIEW_BADGE_DEFINITIONS', () => {
-  it('locks the eight conditions', () => {
+  it('locks the six conditions', () => {
     assert.deepEqual(
       MATCH_OVERVIEW_BADGE_DEFINITIONS.map(badge => [
         badge.id,
@@ -32,8 +32,6 @@ describe('MATCH_OVERVIEW_BADGE_DEFINITIONS', () => {
       ]),
       [
         ['first_call', 'calls', 1],
-        ['fifty_messages', 'messages', 50],
-        ['hundred_messages', 'messages', 100],
         ['two_hours', 'call_hours', 2],
         ['four_hours', 'call_hours', 4],
         ['ten_hours', 'call_hours', 10],
@@ -53,8 +51,6 @@ describe('resolveBadgeStates', () => {
     const byId = Object.fromEntries(resolved.map(badge => [badge.id, badge]));
 
     assert.equal(byId.first_call.status, 'earned');
-    assert.equal(byId.fifty_messages.status, 'earned');
-    assert.equal(byId.hundred_messages.status, 'earned');
     assert.equal(byId.two_hours.status, 'earned');
     assert.equal(byId.four_hours.status, 'in_progress');
     assert.equal(byId.ten_hours.status, 'locked');
@@ -123,10 +119,6 @@ describe('resolveBadgeStates', () => {
 
     assert.equal(resolved[0].id, 'first_call');
     assert.equal(resolved[0].status, 'in_progress');
-    assert.equal(
-      resolved.find(badge => badge.id === 'fifty_messages')?.status,
-      'in_progress',
-    );
     assert.equal(getNextInProgressBadge(resolved)?.id, 'first_call');
     assert.equal(orderBadgesForStrip(resolved)[0].id, 'first_call');
   });
@@ -135,15 +127,15 @@ describe('resolveBadgeStates', () => {
     const resolved = resolveBadgeStates(
       [
         {
-          id: 'hundred_messages',
+          id: 'two_hours',
           nameKey: 'n',
           unlockHintKey: 'h',
-          icon: 'message',
-          metric: 'messages',
-          target: 100,
+          icon: 'clock',
+          metric: 'call_hours',
+          target: 2,
         },
       ],
-      { calls: 0, messages: 100, callMinutes: 0, activeWeeks: 0 },
+      { calls: 0, messages: 0, callMinutes: 120, activeWeeks: 0 },
     );
 
     assert.equal(resolved[0].status, 'earned');
@@ -184,46 +176,32 @@ describe('getNextInProgressBadge', () => {
 describe('badge ordering', () => {
   const everyStatus = resolveBadgeStates(MATCH_OVERVIEW_BADGE_DEFINITIONS, {
     calls: 1, // first_call earned
-    messages: 60, // fifty earned, hundred in progress
+    messages: 60,
     callMinutes: 150, // two hours earned, four in progress
     activeWeeks: 2, // five_active_weeks in progress
   });
 
-  it('leads with the first-call category and trails with messages', () => {
+  it('leads with the first-call category', () => {
     assert.equal(BADGE_CATEGORY_ORDER[0], 'calls');
-    assert.equal(
-      BADGE_CATEGORY_ORDER[BADGE_CATEGORY_ORDER.length - 1],
-      'messages',
-    );
     assert.deepEqual(BADGE_CATEGORY_ORDER, [
       'calls',
       'call_hours',
       'active_weeks',
-      'messages',
     ]);
   });
 
-  it('keeps the first-call category ahead of messages once both are earned', () => {
+  it('keeps the first-call category ahead once it is earned', () => {
     const strip = orderBadgesForStrip(everyStatus).map(badge => badge.id);
 
     assert.equal(strip[0], 'first_call');
-    assert.ok(strip.indexOf('four_hours') < strip.indexOf('hundred_messages'));
-    assert.ok(
-      strip.indexOf('five_active_weeks') < strip.indexOf('hundred_messages'),
-    );
+    assert.ok(strip.indexOf('first_call') < strip.indexOf('four_hours'));
+    assert.ok(strip.indexOf('first_call') < strip.indexOf('five_active_weeks'));
   });
 
   it('the strip shows earned badges plus the next rung of each category', () => {
     assert.deepEqual(
       orderBadgesForStrip(everyStatus).map(badge => badge.id),
-      [
-        'first_call',
-        'two_hours',
-        'four_hours',
-        'five_active_weeks',
-        'fifty_messages',
-        'hundred_messages',
-      ],
+      ['first_call', 'two_hours', 'four_hours', 'five_active_weeks'],
     );
   });
 
@@ -238,11 +216,9 @@ describe('badge ordering', () => {
 
     assert.deepEqual(visible, [
       'first_call',
-      'fifty_messages',
       'two_hours',
       'five_active_weeks',
     ]);
-    assert.ok(!visible.includes('hundred_messages'));
     assert.ok(!visible.includes('four_hours'));
     assert.ok(!visible.includes('ten_hours'));
     assert.ok(!visible.includes('ten_active_weeks'));
@@ -265,10 +241,8 @@ describe('badge ordering', () => {
     assert.deepEqual(ids, [
       'first_call',
       'two_hours',
-      'fifty_messages',
       'four_hours',
       'five_active_weeks',
-      'hundred_messages',
       'ten_hours',
       'ten_active_weeks',
     ]);
@@ -292,7 +266,6 @@ describe('inferBadgeEarnedAt', () => {
     assert.equal(earned.two_hours, '2026-06-15T18:00:00.000Z');
     assert.equal(earned.four_hours, undefined);
     assert.equal(earned.five_active_weeks, '2026-06-29T18:00:00.000Z');
-    assert.equal(earned.fifty_messages, undefined);
   });
 });
 
@@ -316,15 +289,8 @@ describe('resolveOverviewBadges', () => {
     const byId = Object.fromEntries(resolved.map(badge => [badge.id, badge]));
 
     assert.equal(byId.first_call.status, 'earned');
-    assert.equal(byId.fifty_messages.status, 'earned');
-    assert.equal(
-      byId.fifty_messages.status === 'earned'
-        ? byId.fifty_messages.earnedAt
-        : undefined,
-      null,
-    );
     assert.equal(byId.two_hours.status, 'earned');
-    assert.equal(byId.hundred_messages.status, 'in_progress');
+    assert.equal(byId.four_hours.status, 'in_progress');
   });
 });
 
