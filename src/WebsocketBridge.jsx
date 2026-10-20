@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
@@ -19,6 +19,10 @@ import useNativeStore from './features/stores/nativeStore';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import { getInstallationId } from './firebase-util';
 import useToast from './hooks/useToast';
+
+const isAway = () =>
+  document.visibilityState === 'hidden' ||
+  (!environment.isNative && !document.hasFocus());
 
 const WebsocketBridge = () => {
   /**
@@ -62,7 +66,8 @@ const WebsocketBridge = () => {
       setReady(true);
     })();
   }, []);
-  const { lastMessage } = useWebSocket(ready ? socketUrl : null, {
+  const awayRef = useRef(false);
+  const { lastMessage, sendMessage } = useWebSocket(ready ? socketUrl : null, {
     shouldReconnect: () => true,
     reconnectAttempts: 10,
     heartbeat: {
@@ -70,6 +75,10 @@ const WebsocketBridge = () => {
       returnMessage: 'pong',
       interval: 60000,
       timeout: 150000,
+    },
+    onOpen: () => {
+      awayRef.current = isAway();
+      if (awayRef.current) sendMessage('away', false);
     },
     // old token may have expired -> load current one
     onClose: () => {
@@ -84,21 +93,62 @@ const WebsocketBridge = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const missedRef = useRef({ count: 0, last: null, title: null });
+
+  const showNotification = useCallback(
+    ({ title, description, path }) => {
+      if (path === pathname) return;
+      toast.showToast({
+        title,
+        description,
+        duration: 3000,
+        onClick: path ? () => navigate(path) : undefined,
+      });
+    },
+    [pathname, toast, navigate],
+  );
+
+  useEffect(() => {
+    const onPresenceChange = () => {
+      const away = isAway();
+      if (away === awayRef.current) return;
+      awayRef.current = away;
+      sendMessage(away ? 'away' : 'active', false);
+
+      const missed = missedRef.current;
+      if (!away && missed.count) {
+        document.title = missed.title;
+        if (missed.last) {
+          showNotification(missed.last);
+        }
+        missedRef.current = { count: 0, last: null, title: null };
+      }
+    };
+    document.addEventListener('visibilitychange', onPresenceChange);
+    window.addEventListener('focus', onPresenceChange);
+    window.addEventListener('blur', onPresenceChange);
+    return () => {
+      document.removeEventListener('visibilitychange', onPresenceChange);
+      window.removeEventListener('focus', onPresenceChange);
+      window.removeEventListener('blur', onPresenceChange);
+    };
+  }, [sendMessage, showNotification]);
 
   useEffect(() => {
     if (lastMessage !== null) {
       setMessageHistory(prev => prev.concat(lastMessage));
       const message = JSON.parse(lastMessage.data);
 
-      if (message.action === 'addNotification' && message.payload?.showToast) {
-        const { title, description, path } = message.payload;
-        if (path !== pathname) {
-          toast.showToast({
-            title,
-            description,
-            duration: 3000,
-            onClick: path ? () => navigate(path) : undefined,
-          });
+      if (message.action === 'addNotification') {
+        const { showToast } = message.payload;
+        if (awayRef.current) {
+          const missed = missedRef.current;
+          missed.title ??= document.title;
+          missed.count += 1;
+          if (showToast) missed.last = message.payload;
+          document.title = `(${missed.count}) ${missed.title}`;
+        } else if (showToast) {
+          showNotification(message.payload);
         }
 
         // TODO: only if message is also persisted
