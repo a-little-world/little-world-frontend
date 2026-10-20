@@ -367,12 +367,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       )}
       <OnlineIndicator isOnline={isOnline} position="absolute" />
       <ProfileInfo>
-        <NameContainer $isSelf={isSelf}>
-          <Text type={TextTypes.Heading5} bold>
-            {displayName}
-          </Text>
-          {isSupport && <SupportTag />}
-        </NameContainer>
+        {onProfile ||
+          (!showsCallProgress && (
+            <NameContainer $isSelf={isSelf}>
+              <Text type={TextTypes.Heading5} bold>
+                {displayName}
+              </Text>
+              {isSupport && <SupportTag />}
+            </NameContainer>
+          ))}
         {!onProfile &&
           (showsCallProgress ? (
             <ProgressBar
@@ -386,6 +389,13 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               }
               size={ProgressBarSizes.Small}
               variation={ProgressBarVariations.Scale}
+              scoreRest="10x30 Minuten"
+              endLabel="300 Min"
+              title={
+                <Text type={TextTypes.Heading5} bold>
+                  {displayName}
+                </Text>
+              }
             />
           ) : (
             <Description>
