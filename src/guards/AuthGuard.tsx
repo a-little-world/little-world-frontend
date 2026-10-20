@@ -8,10 +8,10 @@ import useNativeStore from '../features/stores/nativeStore';
 import { hideCookieBanner } from '../router/routes';
 
 function AuthGuard({ children }: { children: ReactNode }) {
-  const { data: authenticated, isValidating } = useSWR<boolean>(
-    IS_AUTHENTICATED_ENDPOINT,
+  const { isReady, tokenState } = useNativeStore();
+  const { data: authenticated } = useSWR<boolean>(
+    isReady ? IS_AUTHENTICATED_ENDPOINT : null,
   );
-  const { tokenState } = useNativeStore();
 
   // Store previous authenticated state to prevent flickering during loading/token refresh
   const prevAuthenticatedRef = useRef<boolean>(false);
@@ -20,15 +20,14 @@ function AuthGuard({ children }: { children: ReactNode }) {
     environment.isNative &&
     (tokenState?.isRefreshing || tokenState?.status === undefined);
   const isAuthenticated = useMemo(() => {
-    // During loading, maintain previous state
-    if (isValidating || nativeAuthUndetermined) {
+    if (authenticated === undefined || nativeAuthUndetermined) {
       return prevAuthenticatedRef.current;
     }
 
     prevAuthenticatedRef.current = Boolean(authenticated);
 
     return Boolean(authenticated);
-  }, [authenticated, isValidating, nativeAuthUndetermined]);
+  }, [authenticated, nativeAuthUndetermined]);
 
   useEffect(() => {
     if (isAuthenticated && !environment.isNative) {

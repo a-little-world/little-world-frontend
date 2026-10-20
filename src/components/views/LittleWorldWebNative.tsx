@@ -46,13 +46,7 @@ function NativePreloader() {
     if (isReady) {
       mutate(API_OPTIONS_ENDPOINT);
       mutate(API_TRANSLATIONS_ENDPOINT);
-
-      // force initial auth check
-      apiFetch(IS_AUTHENTICATED_ENDPOINT).then(isAuthenticated =>
-        mutate(IS_AUTHENTICATED_ENDPOINT, isAuthenticated, {
-          revalidate: false,
-        }),
-      );
+      mutate(IS_AUTHENTICATED_ENDPOINT);
     }
   }, [isReady]);
   useSWR(API_OPTIONS_ENDPOINT);
