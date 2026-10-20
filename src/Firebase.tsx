@@ -14,7 +14,11 @@ import useSWR from 'swr';
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from './api/endpoints';
 import { ToastContextType } from './components/blocks/Toast';
 import useNotificationStore from './features/stores/notification';
-import { enableFirebase, enableNotificationsInProfile } from './firebase-util';
+import {
+  enableFirebase,
+  enableNotificationsInProfile,
+  registerInstallation,
+} from './firebase-util';
 import useToast from './hooks/useToast';
 import { getAppRoute, SETTINGS_ROUTE } from './router/routes';
 
@@ -194,6 +198,16 @@ function FireBase() {
     t,
     navigate,
   ]);
+
+  const installationRegisteredRef = useRef(false);
+
+  useEffect(() => {
+    if (!isAuthenticated || installationRegisteredRef.current) {
+      return;
+    }
+    installationRegisteredRef.current = true;
+    registerInstallation();
+  }, [isAuthenticated]);
 
   // prevent multiple activations
   const firebaseEnabledRef = useRef<boolean | undefined>(undefined);

@@ -86,6 +86,27 @@ export async function getInstallationId(): Promise<string> {
   }
 }
 
+export async function registerInstallation(token?: string): Promise<void> {
+  // native shell registers its own installation
+  if (environment.isNative) {
+    return;
+  }
+
+  try {
+    await apiFetch('/api/installations/register', {
+      method: 'POST',
+      body: {
+        install_id: await getInstallationId(),
+        token,
+        platform: 'web',
+        model_name: navigator.userAgent,
+      },
+    });
+  } catch (_e) {
+    // ignore
+  }
+}
+
 export async function registerFirebaseDeviceToken(): Promise<void> {
   if (environment.isNative) {
     await useReceiveHandlerStore.getState().sendMessageToReactNative?.({
@@ -100,19 +121,7 @@ export async function registerFirebaseDeviceToken(): Promise<void> {
     return;
   }
 
-  try {
-    await apiFetch('/api/push_notifications/register', {
-      method: 'POST',
-      body: {
-        install_id: await getInstallationId(),
-        token,
-        platform: 'web',
-        model_name: navigator.userAgent,
-      },
-    });
-  } catch (_e) {
-    // ignore
-  }
+  await registerInstallation(token);
 }
 
 export async function unregisterFirebaseDeviceToken(): Promise<void> {
