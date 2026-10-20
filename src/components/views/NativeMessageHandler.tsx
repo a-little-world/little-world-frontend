@@ -236,7 +236,7 @@ function NativeMessageHandler() {
           const { title, body, path } = payload;
           const currentPath = window.location.hash.replace(/^#/, '') || '/';
 
-          if (path && path !== currentPath) {
+          if (path !== currentPath) {
             toast.showToast({
               title,
               description: body,

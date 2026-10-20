@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useLocation, useNavigate } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { mutate } from 'swr';
 
@@ -81,6 +82,8 @@ const WebsocketBridge = () => {
   });
 
   const toast = useToast();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     if (lastMessage !== null) {
@@ -88,11 +91,15 @@ const WebsocketBridge = () => {
       const message = JSON.parse(lastMessage.data);
 
       if (message.action === 'addNotification' && message.payload?.showToast) {
-        const { title, description } = message.payload;
-        toast.showToast({
-          title,
-          description,
-        });
+        const { title, description, path } = message.payload;
+        if (path !== pathname) {
+          toast.showToast({
+            title,
+            description,
+            duration: 3000,
+            onClick: path ? () => navigate(path) : undefined,
+          });
+        }
 
         // TODO: only if message is also persisted
         // TODO: don't mutate the api via fetch rather just update the store
