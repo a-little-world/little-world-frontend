@@ -1,3 +1,4 @@
+import { isE2EEAvailable } from '../helpers/e2ee';
 import { apiFetch } from './helpers';
 
 export const joinLobby = (lobbyUuid: string) =>
@@ -30,6 +31,7 @@ export const authenticateRoom = (lobbyUuid: string, matchUuid: string) =>
     `/api/random_calls/lobby/${lobbyUuid}/match/${matchUuid}/room_authenticate`,
     {
       method: 'POST',
+      body: { e2ee_supported: isE2EEAvailable() },
     },
   );
 

@@ -3,7 +3,7 @@ import { ReactNode, useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 
 import { IS_AUTHENTICATED_ENDPOINT } from '../api/endpoints';
-import { reportE2EECapability } from '../api/livekit';
+import E2EEWarningModal from '../components/blocks/Calls/E2EEWarningModal';
 import { environment } from '../environment';
 import useNativeStore from '../features/stores/nativeStore';
 import { isE2EEAvailable } from '../helpers/e2ee';
@@ -38,17 +38,16 @@ function AuthGuard({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated]);
 
-  // Call encryption is only enabled for a room when both participants reported support ( both browsers need to support it at the same time )
-  // Report once per app load, never per call, so both peers read the same flags, so capbility locked in on first load, can clealy display state in UI
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    reportE2EECapability(isE2EEAvailable()).catch(() => {
-      // TODO: Report error UI pop-up cability support issues warning
-	console.error("Unecrypted session!")
-    });
-  }, [isAuthenticated]);
+  // Calls are only offered with end-to-end encryption. A client that cannot encrypt is
+  // blocked by a modal instead of silently continuing in plaintext.
+  const e2eeUnsupported = isAuthenticated && !isE2EEAvailable();
 
-  return isAuthenticated ? children : null;
+  return (
+    <>
+      {isAuthenticated ? children : null}
+      <E2EEWarningModal open={e2eeUnsupported} />
+    </>
+  );
 }
 
 export default AuthGuard;

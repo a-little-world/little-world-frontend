@@ -517,9 +517,9 @@ function VideoCall() {
     },
   );
 
-  // The backend only delivers a key when both participants support E2EE. Building the room
-  // encrypts every track from its first publication; if anything in that path fails we
-  // join unencrypted rather than losing the call.
+  // The backend hands out a key per room unless either client reported it cannot encrypt.
+  // Building the room encrypts every track from its first publication; if anything in that
+  // path fails we join unencrypted rather than losing the call.
   const [encryptedRoom, setEncryptedRoom] = useState<Room>();
   const [e2eeUnavailable, setE2eeUnavailable] = useState(false);
 
