@@ -45,6 +45,7 @@ import {
 } from '../../../api/randomCalls';
 import { COMMUNITY_EVENT_FREQUENCIES, USER_TYPES } from '../../../constants';
 import { useConnectedCallStore } from '../../../features/stores';
+import { isE2EEAvailable } from '../../../helpers/e2ee';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import { holdPreviewAudioTracks } from '../../../helpers/video';
 import {
@@ -56,6 +57,7 @@ import {
 import ProfileImage from '../../atoms/ProfileImage';
 import { Schedule } from '../../atoms/Schedule';
 import { CallSetupCard } from '../Calls/CallSetup';
+import { E2EEWarningCard } from '../Calls/E2EEWarningModal';
 import { TextField } from '../Profile/styles';
 
 type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected';
@@ -704,6 +706,8 @@ const RandomCallsLobby = ({
   }, [lobbyState, leaveLobbySilently]);
 
   const handleJoinComplete = useCallback(async () => {
+    if (!isE2EEAvailable()) return;
+
     setError(null);
     try {
       await joinLobby(lobbyUuid);
@@ -832,6 +836,8 @@ const RandomCallsLobby = ({
   };
 
   const handleBothAccepted = async (acceptedMatchData?: MatchData) => {
+    if (!isE2EEAvailable()) return;
+
     const currentMatchData = acceptedMatchData ?? matchData;
     if (!currentMatchData) return;
 
@@ -887,6 +893,10 @@ const RandomCallsLobby = ({
     },
     [],
   );
+
+  if (!isE2EEAvailable()) {
+    return <E2EEWarningCard />;
+  }
 
   switch (lobbyState) {
     case 'partner_found':

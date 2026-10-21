@@ -3,10 +3,8 @@ import { ReactNode, useEffect, useMemo, useRef } from 'react';
 import useSWR from 'swr';
 
 import { IS_AUTHENTICATED_ENDPOINT } from '../api/endpoints';
-import E2EEWarningModal from '../components/blocks/Calls/E2EEWarningModal';
 import { environment } from '../environment';
 import useNativeStore from '../features/stores/nativeStore';
-import { isE2EEAvailable } from '../helpers/e2ee';
 import { hideCookieBanner } from '../router/routes';
 
 function AuthGuard({ children }: { children: ReactNode }) {
@@ -38,16 +36,9 @@ function AuthGuard({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated]);
 
-  // Calls are only offered with end-to-end encryption. A client that cannot encrypt is
-  // blocked by a modal instead of silently continuing in plaintext.
-  const e2eeUnsupported = isAuthenticated && !isE2EEAvailable();
-
-  return (
-    <>
-      {isAuthenticated ? children : null}
-      <E2EEWarningModal open={e2eeUnsupported} />
-    </>
-  );
+  // Calls are only offered with end-to-end encryption. Clients that cannot encrypt are
+  // stopped when they try to join a call, not app-wide.
+  return isAuthenticated ? children : null;
 }
 
 export default AuthGuard;

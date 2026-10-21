@@ -24,10 +24,12 @@ import useSWR from 'swr';
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { requestVideoAccessToken } from '../../../api/livekit';
 import { useConnectedCallStore } from '../../../features/stores';
+import { isE2EEAvailable } from '../../../helpers/e2ee';
 import { holdPreviewAudioTracks } from '../../../helpers/video';
 import { getCallRoute } from '../../../router/routes';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
+import { E2EEWarningCard } from './E2EEWarningModal';
 
 export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
   ${({ theme, $hideJoinBtn }) => css`
@@ -137,6 +139,9 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   };
 
   useEffect(() => {
+    // A client that cannot encrypt call media must not receive a room token.
+    if (!isE2EEAvailable()) return;
+
     // Request the video room access token
     requestVideoAccessToken({
       partnerId: userPk,
@@ -190,6 +195,10 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     },
     [authData.token, error, setAudioPermissionError, setVideoPermissionError],
   );
+
+  if (!isE2EEAvailable()) {
+    return <E2EEWarningCard />;
+  }
 
   return (
     <CallSetupCard>

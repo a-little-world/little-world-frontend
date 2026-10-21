@@ -62,6 +62,7 @@ import CallSidebar, {
   SidebarSelectionProvider,
 } from '../blocks/Calls/CallSidebar';
 import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar';
+import E2EEWarningModal from '../blocks/Calls/E2EEWarningModal';
 import Chat from '../blocks/ChatCore/Chat';
 import QuestionCards from '../blocks/QuestionCards/QuestionCards';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool';
@@ -639,6 +640,12 @@ function VideoCall() {
       // Best effort: disconnect/redirect flow must continue even if this call fails.
     });
   }, [callType, isRandomCallRoute, randomMatchId]);
+
+  // Never connect a call from a client that cannot encrypt its media, even when this route
+  // is reached directly (deep link, stale call state).
+  if (!isE2EEAvailable()) {
+    return <E2EEWarningModal open />;
+  }
 
   return (
     <SidebarSelectionProvider
