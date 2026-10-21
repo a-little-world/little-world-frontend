@@ -151,7 +151,7 @@
   "error_view.title": "Uh oh, Diese Seite existiert nicht",
   "error.password_min_length": "Passwort zu kurz",
   "error.passwords_do_not_match": "Passwörter stimmen nicht überein",
-  "error.permissions": "Die Nutzung der Kamera und des Mikrofons erfordert deine Erlaubnis. Bitte erteile die Berechtigung in den Einstellungen deines Browsers. Anleitungen findest du <a {\"href\": \"/app/help/faqs#technical-support\", \"target\": \"_blank\"}>hier</a>",
+  "error.permissions": "Die Nutzung der Kamera und des Mikrofons erfordert deine Erlaubnis. Bitte erteile die Berechtigung in den Einstellungen deines Browsers. Anleitungen findest du <a {\"href\": \"/app/help/faqs#technical-support\"}>hier</a>",
   "error.required": "Erforderlich",
   "error.reject_reason_min_length": "Begründung muss mindestens 20 Zeichen lang sein",
   "error.server_issue": "Problem bei der Verbindung zum Server. Bitte versuche es noch einmal.",
@@ -169,7 +169,7 @@
         },
         "q2": {
           "question": "Ich habe noch kein Match. An wen kann ich mich wenden?",
-          "answer": "Erstmal sorry! Wir arbeiten mit Hochdruck daran, dass alle so schnell wie möglich gematcht werden. Manchmal kann es etwas dauern. Sollte es bei dir schon zu lange der Fall sein, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>dann melde dich bei unserem Support</a> und wir kümmern uns sofort darum!\nKomm aber in der Zwischenzeit gerne zum Gruppengespräch, jeden Mittwoch um 17.30 Uhr!"
+          "answer": "Erstmal sorry! Wir arbeiten mit Hochdruck daran, dass alle so schnell wie möglich gematcht werden. Manchmal kann es etwas dauern. Sollte es bei dir schon zu lange der Fall sein, <a {\"href\": \"{{- supportUrl }}\"}>dann melde dich bei unserem Support</a> und wir kümmern uns sofort darum!\nKomm aber in der Zwischenzeit gerne zum Gruppengespräch, jeden Mittwoch um 17.30 Uhr!"
         },
         "q3": {
           "question": "Mir fallen keine Gesprächsthemen ein. Was kann ich tun?",
@@ -177,11 +177,11 @@
         },
         "q4": {
           "question": "Technische Störungen auf Little World?",
-          "answer": "Hoppla! Solltest du technische Probleme haben, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>wende dich bitte an unseren Support</a> und wir kümmern uns umgehend darum!"
+          "answer": "Hoppla! Solltest du technische Probleme haben, <a {\"href\": \"{{- supportUrl }}\"}>wende dich bitte an unseren Support</a> und wir kümmern uns umgehend darum!"
         },
         "q5": {
           "question": "Kamera, Mikrofon oder Lautsprecher funktionieren nicht?",
-          "answer": "Bitte denke daran, den Zugriff auf Kamera und Mikrofon zu gewähren. Erst mit dieser Erlaubnis kann ein Videocall stattfinden. Zum Start wirst du danach gefragt, sollte das nicht funktionieren, checke deine Einstellung im Browser. Die jeweiligen Anleitungen findest du hier:\n\n<a {\"href\": \"https://support.google.com/chrome/answer/2693767?hl=de&co=GENIE.Platform%3DDesktop\", \"target\": \"_blank\"}>• Chrome</a>\n\n<a {\"href\": \"https://support.mozilla.org/de/kb/kamera-und-mikrofonberechtigungen-verwalten\", \"target\": \"_blank\"}>• Firefox</a>\n\n<a {\"href\": \"https://support.apple.com/de-de/guide/mac-help/mchlf6d108da/mac\", \"target\": \"_blank\"}>• Safari</a>\n\n<a {\"href\": \"https://support.microsoft.com/de-de/windows/windows-kamera-mikrofon-und-datenschutz-a83257bc-e990-d54a-d212-b5e41beba857\", \"target\": \"_blank\"}>• Edge</a>\n\nSollte es dennoch nicht klappen, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>schreibe unserem Support und wir helfen gerne.</a>"
+          "answer": "Bitte denke daran, den Zugriff auf Kamera und Mikrofon zu gewähren. Erst mit dieser Erlaubnis kann ein Videocall stattfinden. Zum Start wirst du danach gefragt, sollte das nicht funktionieren, checke deine Einstellung im Browser. Die jeweiligen Anleitungen findest du hier:\n\n<a {\"href\": \"https://support.google.com/chrome/answer/2693767?hl=de&co=GENIE.Platform%3DDesktop\", \"target\": \"_blank\"}>• Chrome</a>\n\n<a {\"href\": \"https://support.mozilla.org/de/kb/kamera-und-mikrofonberechtigungen-verwalten\", \"target\": \"_blank\"}>• Firefox</a>\n\n<a {\"href\": \"https://support.apple.com/de-de/guide/mac-help/mchlf6d108da/mac\", \"target\": \"_blank\"}>• Safari</a>\n\n<a {\"href\": \"https://support.microsoft.com/de-de/windows/windows-kamera-mikrofon-und-datenschutz-a83257bc-e990-d54a-d212-b5e41beba857\", \"target\": \"_blank\"}>• Edge</a>\n\nSollte es dennoch nicht klappen, <a {\"href\": \"{{- supportUrl }}\"}>schreibe unserem Support und wir helfen gerne.</a>"
         },
         "q6": {
           "question": "Kann ich mich irgendwie auf die Gespräche vorbereiten?",
@@ -189,7 +189,7 @@
         },
         "q7": {
           "question": "Mein Match gefällt mir nicht. Und jetzt?",
-          "answer": "Manchmal läuft das erste Gespräch nicht perfekt – das ist völlig normal. Deshalb empfehlen wir, mindestens drei Gespräche zu führen, bevor du entscheidest, ob es passt.\n\nAber das ist nur eine Empfehlung. Wenn du merkst, dass es einfach nicht stimmig ist, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>gib uns über den Support Bescheid.</a> Manchmal passt es einfach nicht – und das ist völlig okay!\n\nWir kümmern uns dann darum und finden eine:n neue:n Gesprächspartner:in für dich."
+          "answer": "Manchmal läuft das erste Gespräch nicht perfekt – das ist völlig normal. Deshalb empfehlen wir, mindestens drei Gespräche zu führen, bevor du entscheidest, ob es passt.\n\nAber das ist nur eine Empfehlung. Wenn du merkst, dass es einfach nicht stimmig ist, <a {\"href\": \"{{- supportUrl }}\"}>gib uns über den Support Bescheid.</a> Manchmal passt es einfach nicht – und das ist völlig okay!\n\nWir kümmern uns dann darum und finden eine:n neue:n Gesprächspartner:in für dich."
         },
         "q8": {
           "question": "Mein Match antwortet mir nicht?",
@@ -201,7 +201,7 @@
         },
         "q10": {
           "question": "Wie lange dauert es, eine/n Gesprächspartner:in zu finden?",
-          "answer": "Für Deutschlernende kann es etwa drei Wochen dauern, da sich sehr viele anmelden. Sobald wir eine passende Person gefunden haben, bekommst du eine E-Mail mit einem Vorschlag. Bitte behalte in dieser Zeit dein E-Mail-Postfach und den Spam-Ordner im Blick, damit du deinen Vorschlag nicht verpasst!\n\nFür Ehrenamtliche geht es in der Regel schneller, meist innerhalb von einer Woche, da hier ein hoher Bedarf besteht.\n\nFalls es länger dauert, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>melde dich gerne bei uns</a> – wir kümmern uns darum!\n\nIn der Zwischenzeit empfehlen wir dir unsere Kennenlerngespräche jeden Mittwoch um 17:30 Uhr. Dort kannst du Teil der Community werden und andere Nutzer:innen kennenlernen."
+          "answer": "Für Deutschlernende kann es etwa drei Wochen dauern, da sich sehr viele anmelden. Sobald wir eine passende Person gefunden haben, bekommst du eine E-Mail mit einem Vorschlag. Bitte behalte in dieser Zeit dein E-Mail-Postfach und den Spam-Ordner im Blick, damit du deinen Vorschlag nicht verpasst!\n\nFür Ehrenamtliche geht es in der Regel schneller, meist innerhalb von einer Woche, da hier ein hoher Bedarf besteht.\n\nFalls es länger dauert, <a {\"href\": \"{{- supportUrl }}\"}>melde dich gerne bei uns</a> – wir kümmern uns darum!\n\nIn der Zwischenzeit empfehlen wir dir unsere Kennenlerngespräche jeden Mittwoch um 17:30 Uhr. Dort kannst du Teil der Community werden und andere Nutzer:innen kennenlernen."
         },
         "q11": {
           "question": "Duzzen oder Siezen wir uns?",
@@ -211,7 +211,7 @@
       "during_talk": {
         "q1": {
           "question": "Kann man auch Gruppengespräche führen?",
-          "answer": "Das bieten wir bald an! Themenspezifisch oder ganz frei. Darauf freuen wir uns schon.\n. Wenn du Ideen hast, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>kannst du uns gerne schreiben!</a> Außerdem finden wöchentlich unsere Community Treffen Mittwochs um 17.30 Uhr statt: Zum Kennenlernen und Austauschen. Zugang und Termine findest du im Bereich \"Start\" und dann \"Gruppengespräche\"."
+          "answer": "Das bieten wir bald an! Themenspezifisch oder ganz frei. Darauf freuen wir uns schon.\n. Wenn du Ideen hast, <a {\"href\": \"{{- supportUrl }}\"}>kannst du uns gerne schreiben!</a> Außerdem finden wöchentlich unsere Community Treffen Mittwochs um 17.30 Uhr statt: Zum Kennenlernen und Austauschen. Zugang und Termine findest du im Bereich \"Start\" und dann \"Gruppengespräche\"."
         },
         "q2": {
           "question": "Ist es sinnvoll, Privates auszutauschen?",
@@ -223,15 +223,15 @@
         },
         "q4": {
           "question": "Technische Störung?",
-          "answer": "Plötzlich geht nichts mehr? Wenn technische Probleme aufkommen, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>wende dich bitte an unseren Support</a> und wir kümmern uns umgehend darum!"
+          "answer": "Plötzlich geht nichts mehr? Wenn technische Probleme aufkommen, <a {\"href\": \"{{- supportUrl }}\"}>wende dich bitte an unseren Support</a> und wir kümmern uns umgehend darum!"
         },
         "q5": {
           "question": "Beleidigung/Belästigung im Gespräch?",
-          "answer": "Das wird bei uns absolut nicht toleriert! <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Bitte wende dich sofort an unseren Support</a>, und wir werden entsprechend handeln. Du kannst auch jederzeit einen Nutzer melden und das Match entfernen."
+          "answer": "Das wird bei uns absolut nicht toleriert! <a {\"href\": \"{{- supportUrl }}\"}>Bitte wende dich sofort an unseren Support</a>, und wir werden entsprechend handeln. Du kannst auch jederzeit einen Nutzer melden und das Match entfernen."
         },
         "q6": {
           "question": "Was ist wenn Traumata aufbrechen oder Suizidgedanken geäußert werden?",
-          "answer": "Bitte nicht selbst lösen. Bei solchen Situationen <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>wende dich an unseren Support</a> und wir helfen, professionelle Ansprechpartner zu finden."
+          "answer": "Bitte nicht selbst lösen. Bei solchen Situationen <a {\"href\": \"{{- supportUrl }}\"}>wende dich an unseren Support</a> und wir helfen, professionelle Ansprechpartner zu finden."
         }
       },
       "after_talk": {
@@ -249,11 +249,11 @@
         },
         "q4": {
           "question": "Wie kann ich meinen Account löschen?",
-          "answer": "Ja, das kannst du! Melde dich auf der Plattform an und gehe zu den Einstellungen. Dort findest du den Button „Account löschen“.\n\nWir hoffen, dass du bei uns bleibst. Falls du möchtest, kannst du uns dein <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Feedback im Support mitteilen</a>. Vielleicht finden wir einen Weg, dir zu helfen und deine Erfahrung bei Little World zu verbessern."
+          "answer": "Ja, das kannst du! Melde dich auf der Plattform an und gehe zu den Einstellungen. Dort findest du den Button „Account löschen“.\n\nWir hoffen, dass du bei uns bleibst. Falls du möchtest, kannst du uns dein <a {\"href\": \"{{- supportUrl }}\"}>Feedback im Support mitteilen</a>. Vielleicht finden wir einen Weg, dir zu helfen und deine Erfahrung bei Little World zu verbessern."
         },
         "q5": {
           "question": "Wie kann ich Little World helfen?",
-          "answer": "Wir suchen immer Unterstützung. Für Programmierung, Promotion, Öffentlichkeitsarbeit und vieles mehr. Wir können jede Hilfe gebrauchen – auch Spenden helfen. <a {\"href\": \"/app/our-world\", \"target\": \"_blank\"}>Wir haben einige der besten Möglichkeiten unter 'Mach mit' aufgelistet.</a>"
+          "answer": "Wir suchen immer Unterstützung. Für Programmierung, Promotion, Öffentlichkeitsarbeit und vieles mehr. Wir können jede Hilfe gebrauchen – auch Spenden helfen. <a {\"href\": \"/app/our-world\"}>Wir haben einige der besten Möglichkeiten unter 'Mach mit' aufgelistet.</a>"
         },
         "q6": {
           "question": "Was passiert nach den 10 Wochen mit meinem/r Gesprächspartner:in?",

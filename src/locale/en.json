@@ -169,7 +169,7 @@
         },
         "q2": {
           "question": "I don't have a match yet. Who can I contact?",
-          "answer": "First of all, sorry! We are working hard to get everyone matched as quickly as possible. Sometimes it can take a while. If it has been too long for you, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please contact our support team</a> and we will try to prioritse you immediately!\nIn the meantime, please join our group meetings. They happen every Wednesday at 5.30 pm."
+          "answer": "First of all, sorry! We are working hard to get everyone matched as quickly as possible. Sometimes it can take a while. If it has been too long for you, <a {\"href\": \"{{- supportUrl }}\"}>please contact our support team</a> and we will try to prioritse you immediately!\nIn the meantime, please join our group meetings. They happen every Wednesday at 5.30 pm."
         },
         "q3": {
           "question": "I can't think of anything to talk about. What can I do?",
@@ -177,11 +177,11 @@
         },
         "q4": {
           "question": "Technical issues on Little World?",
-          "answer": "Whoops! If you have any technical problems, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please contact our support</a> and we'll take care of it right away!"
+          "answer": "Whoops! If you have any technical problems, <a {\"href\": \"{{- supportUrl }}\"}>please contact our support</a> and we'll take care of it right away!"
         },
         "q5": {
           "question": "Camera, microphone or loudspeaker not working?",
-          "answer": "Please remember to grant access to the camera and microphone. Only with these permissions a video call can take place. At the start you will be asked for it, if this does not work, check your settings in the browser. You can find the respective instructions here: \n\n<a {\"href\": \"https://support.google.com/chrome/answer/2693767?hl=en&co=GENIE.Platform%3DDesktop\", \"target\": \"_blank\"}>• Chrome</a>\n\n<a {\"href\": \"https://support.mozilla.org/en-US/kb/how-manage-your-camera-and-microphone-permissions\", \"target\": \"_blank\"}>• Firefox</a>\n\n<a {\"href\": \"https://support.apple.com/en-gb/guide/mac-help/mchlf6d108da/mac#:~:text=In%20Safari%2C%20to%20allow%20a,click%20Websites%2C%20then%20select%20Camera.\", \"target\": \"_blank\"}>• Safari</a>\n\n<a {\"href\": \"https://support.microsoft.com/en-us/windows/windows-camera-microphone-and-privacy-a83257bc-e990-d54a-d212-b5e41beba857\", \"target\": \"_blank\"}>• Edge</a>\n\nIf it still doesn't work, write to our support and we will be happy to <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>help</a>."
+          "answer": "Please remember to grant access to the camera and microphone. Only with these permissions a video call can take place. At the start you will be asked for it, if this does not work, check your settings in the browser. You can find the respective instructions here: \n\n<a {\"href\": \"https://support.google.com/chrome/answer/2693767?hl=en&co=GENIE.Platform%3DDesktop\", \"target\": \"_blank\"}>• Chrome</a>\n\n<a {\"href\": \"https://support.mozilla.org/en-US/kb/how-manage-your-camera-and-microphone-permissions\", \"target\": \"_blank\"}>• Firefox</a>\n\n<a {\"href\": \"https://support.apple.com/en-gb/guide/mac-help/mchlf6d108da/mac#:~:text=In%20Safari%2C%20to%20allow%20a,click%20Websites%2C%20then%20select%20Camera.\", \"target\": \"_blank\"}>• Safari</a>\n\n<a {\"href\": \"https://support.microsoft.com/en-us/windows/windows-camera-microphone-and-privacy-a83257bc-e990-d54a-d212-b5e41beba857\", \"target\": \"_blank\"}>• Edge</a>\n\nIf it still doesn't work, write to our support and we will be happy to <a {\"href\": \"{{- supportUrl }}\"}>help</a>."
         },
         "q6": {
           "question": "Is there anything I can do to prepare for the interviews?",
@@ -189,7 +189,7 @@
         },
         "q7": {
           "question": "What if I don't like the match?",
-          "answer": "Sometimes the first conversation doesn't go perfectly - that's completely normal. That's why we recommend having at least three conversations before deciding whether it's a good fit or not.\n\nBut that's just a recommendation. If you feel that it's just not right, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>let us know via the support chat</a>. Sometimes it isn't and that's completely okay!\n\nWe'll take care of it and find a new dialogue partner for you."
+          "answer": "Sometimes the first conversation doesn't go perfectly - that's completely normal. That's why we recommend having at least three conversations before deciding whether it's a good fit or not.\n\nBut that's just a recommendation. If you feel that it's just not right, <a {\"href\": \"{{- supportUrl }}\"}>let us know via the support chat</a>. Sometimes it isn't and that's completely okay!\n\nWe'll take care of it and find a new dialogue partner for you."
         },
         "q8": {
           "question": "My match isn't replying?",
@@ -201,7 +201,7 @@
         },
         "q10": {
           "question": "How long does it take to find a conversation partner?",
-          "answer": "For German learners, it can take about three weeks, as we have a lot of learners registering. As soon as we have found a suitable person, you will receive an e-mail with a suggestion. Please keep an eye on your e-mail inbox and spam folder during this time so that you don't miss your proposal!\n\nFor volunteers, it is usually quicker, so expect a proposal from us within a week.\n\nIf it takes longer, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please get in touch with us</a> - we'll take care of it!\n\nIn the meantime, we recommend our introductory meetings every Wednesday at 5.30 pm. There you can become part of the community and get to know other users."
+          "answer": "For German learners, it can take about three weeks, as we have a lot of learners registering. As soon as we have found a suitable person, you will receive an e-mail with a suggestion. Please keep an eye on your e-mail inbox and spam folder during this time so that you don't miss your proposal!\n\nFor volunteers, it is usually quicker, so expect a proposal from us within a week.\n\nIf it takes longer, <a {\"href\": \"{{- supportUrl }}\"}>please get in touch with us</a> - we'll take care of it!\n\nIn the meantime, we recommend our introductory meetings every Wednesday at 5.30 pm. There you can become part of the community and get to know other users."
         },
         "q11": {
           "question": "First-name basis? Sie or du?",
@@ -223,15 +223,15 @@
         },
         "q4": {
           "question": "Technical fault?",
-          "answer": "Suddenly nothing works anymore? If technical problems arise, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please contact our support</a> and we will take care of it immediately!"
+          "answer": "Suddenly nothing works anymore? If technical problems arise, <a {\"href\": \"{{- supportUrl }}\"}>please contact our support</a> and we will take care of it immediately!"
         },
         "q5": {
           "question": "Insult or harassment during a conversation?",
-          "answer": "This is absolutely not tolerated by us. <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Please contact our support</a> immediately and we will act accordingly. You can also report a user and remove the match at any time."
+          "answer": "This is absolutely not tolerated by us. <a {\"href\": \"{{- supportUrl }}\"}>Please contact our support</a> immediately and we will act accordingly. You can also report a user and remove the match at any time."
         },
         "q6": {
           "question": "What if traumas break out or suicidal thoughts are expressed?",
-          "answer": "Please do not solve it yourself. In such situations, <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>please contact our support</a> and we will find professionals in the field to provide support."
+          "answer": "Please do not solve it yourself. In such situations, <a {\"href\": \"{{- supportUrl }}\"}>please contact our support</a> and we will find professionals in the field to provide support."
         }
       },
       "after_talk": {
@@ -245,15 +245,15 @@
         },
         "q3": {
           "question": "Can I give feedback on the platform?",
-          "answer": "Feedback is always welcome! <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Feel free to write us a message in the support chat</a> or use our contact form: https://home.little-world.com/kontakt."
+          "answer": "Feedback is always welcome! <a {\"href\": \"{{- supportUrl }}\"}>Feel free to write us a message in the support chat</a> or use our contact form: https://home.little-world.com/kontakt."
         },
         "q4": {
           "question": "How can I delete my account?",
-          "answer": "Yes, you can. Log in to the platform and go to the settings page. There you will find the ‘Delete account’ button.\n\nOf course, we hope that you will stay with us. <a {\"href\": \"{{- supportUrl }}\", \"target\": \"_blank\"}>Do reach out to us with your feedback or concerns</a>, and hopefully we can find a way to help you and improve your experience at Little World."
+          "answer": "Yes, you can. Log in to the platform and go to the settings page. There you will find the ‘Delete account’ button.\n\nOf course, we hope that you will stay with us. <a {\"href\": \"{{- supportUrl }}\"}>Do reach out to us with your feedback or concerns</a>, and hopefully we can find a way to help you and improve your experience at Little World."
         },
         "q5": {
           "question": "How can I help Little World?",
-          "answer": "We are always looking for support. For programming, promotion, public relations and much more. We can use all the help we can get - donations help too. We have listed some of the best ways to support under <a {\"href\": \"/app/our-world\", \"target\": \"_blank\"}>Support Us.</a>"
+          "answer": "We are always looking for support. For programming, promotion, public relations and much more. We can use all the help we can get - donations help too. We have listed some of the best ways to support under <a {\"href\": \"/app/our-world\"}>Support Us.</a>"
         },
         "q6": {
           "question": "What happens at the end of the 10 weeks with my conversation partner?",
