@@ -3,8 +3,9 @@ import React from 'react';
 import { Button, TextTypes } from '@a-little-world/little-world-design-system';
 import { ButtonSizes } from '@a-little-world/little-world-design-system/dist/esm/components/Button/Button';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
+import { sanitizeNext } from '../../../router/routes';
 import { Title } from '../Form/styles';
 import {
   IntroText,
@@ -18,6 +19,14 @@ const FIRST_FORM_STEP = 'user-type';
 const Welcome = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+  // Carry a deep link through the multi-step user form.
+  const nextTarget = sanitizeNext(
+    new URLSearchParams(location.search).get('next'),
+  );
+  const firstStep = nextTarget
+    ? `${FIRST_FORM_STEP}?next=${encodeURIComponent(nextTarget)}`
+    : FIRST_FORM_STEP;
 
   return (
     <WelcomeCard>
@@ -30,10 +39,7 @@ const Welcome = () => {
       </IntroText>
       <IntroText center>{t('welcome.description')}</IntroText>
       <NoteText center>{t('welcome.note')}</NoteText>
-      <Button
-        size={ButtonSizes.Large}
-        onClick={() => navigate(FIRST_FORM_STEP)}
-      >
+      <Button size={ButtonSizes.Large} onClick={() => navigate(firstStep)}>
         {t('welcome.button')}
       </Button>
     </WelcomeCard>

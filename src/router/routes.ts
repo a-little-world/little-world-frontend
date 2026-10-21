@@ -51,6 +51,63 @@ export const EMAIL_PREFERENCES_ROUTE = 'email-preferences/:emailSettingsHash';
 export const ONBOARDING_ROUTE = 'onboarding';
 export const SELF_ONBOARDING_ROUTE = 'onboarding/walkthrough';
 
+// Public routes must never be a `next` deep-link target: redirecting back to
+// them would bounce forever once `next` is always set on the login redirect.
+const PUBLIC_NEXT_ROOTS = [
+  LOGIN_ROUTE,
+  SIGN_UP_ROUTE,
+  FORGOT_PASSWORD_ROUTE,
+  RESET_PASSWORD_ROUTE.split('/')[0],
+  EMAIL_PREFERENCES_ROUTE.split('/')[0],
+];
+
+// The origin `next` targets are resolved against. In the browser this is the
+// app's real origin; outside one (unit tests) a sentinel is enough because the
+// comparison only needs to be self-consistent. `window.location.origin` is
+// `"null"` for `file:`/opaque origins (the native WebView), which cannot be
+// used as a `URL` base, so treat it as absent.
+const getNextBaseOrigin = (): string => {
+  const origin =
+    typeof window !== 'undefined' ? window.location?.origin : undefined;
+  return origin && origin !== 'null' ? origin : 'https://app.little-world.com';
+};
+
+/**
+ * Validates a `next` deep-link target. Only internal absolute paths are
+ * allowed; public routes are rejected to avoid redirect loops.
+ *
+ * A string prefix check is not sufficient: browsers normalise `\` (and tab,
+ * newline and carriage return) to `/` when resolving a URL. Callers read `next`
+ * through `URLSearchParams`, which decodes `/%5C` to `\` and `/%09` to a tab,
+ * so a crafted `?next=/\evil.com` reaches this function as `/\evil.com` — it
+ * starts with a single `/` but resolves to `https://evil.com`. React Router
+ * then attempts `history.pushState` and, when that throws for the cross-origin
+ * URL, falls back to `window.location.assign`, i.e. a real off-site redirect.
+ * Resolving against our own origin and rejecting any mismatching origin closes
+ * that bypass, while still accepting same-origin paths such as `/%5C` (which
+ * the browser keeps on-site).
+ */
+export const sanitizeNext = (rawNext?: string | null): string | null => {
+  if (!rawNext || !rawNext.startsWith('/')) {
+    return null;
+  }
+
+  const baseOrigin = getNextBaseOrigin();
+  let resolved: URL;
+  try {
+    resolved = new URL(rawNext, baseOrigin);
+  } catch {
+    return null;
+  }
+  if (resolved.origin !== baseOrigin) {
+    return null;
+  }
+
+  const firstSegment = resolved.pathname.replace(/^\//, '').split('/')[0];
+
+  return PUBLIC_NEXT_ROOTS.includes(firstSegment) ? null : rawNext;
+};
+
 // User form specific route slugs
 export const USER_FORM_USER_TYPE = 'user-type';
 export const USER_FORM_SELF_INFO_1 = 'self-info-1';
