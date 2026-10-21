@@ -117,7 +117,7 @@ function NotificationPanel() {
       </ProfileInfo>
       <Divider />
       {areDevFeaturesEnabled ? (
-        <Link bold to={getAppRoute(NOTIFICATIONS_ROUTE)}>
+        <Link bold href={getAppRoute(NOTIFICATIONS_ROUTE)}>
           {t('notifications.title')}
         </Link>
       ) : (

@@ -477,7 +477,7 @@ export default function Course({
     return (
       <NotFound title={t('resources.trainings.not_found')}>
         <Link
-          to={getAppRoute(TRAININGS_ROUTE)}
+          href={getAppRoute(TRAININGS_ROUTE)}
           buttonAppearance={ButtonAppearance.Primary}
         >
           {t('resources.trainings.return')}

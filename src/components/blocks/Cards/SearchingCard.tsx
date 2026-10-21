@@ -171,7 +171,7 @@ export function SearchingCard({
           <Link
             buttonAppearance={ButtonAppearance.Primary}
             buttonSize={ButtonSizes.Stretch}
-            to={getAppRoute(USER_FORM_ROUTES.PARTNER_1)}
+            href={getAppRoute(USER_FORM_ROUTES.PARTNER_1)}
           >
             {t('searching_card.modify_search')}
           </Link>
@@ -188,7 +188,7 @@ export function SearchingCard({
             <Link
               buttonAppearance={ButtonAppearance.Primary}
               buttonSize={ButtonSizes.Stretch}
-              to={preMatchingCallJoinLink}
+              href={preMatchingCallJoinLink}
             >
               {t(`searching_card.${cardState}_join_call`)}
             </Link>

@@ -108,7 +108,7 @@ const Login = () => {
           type="password"
         />
 
-        <Link to={`/${FORGOT_PASSWORD_ROUTE}/`}>
+        <Link href={`/${FORGOT_PASSWORD_ROUTE}/`}>
           {t('login.forgot_password')}
         </Link>
         <StatusMessage
@@ -129,7 +129,7 @@ const Login = () => {
           {t('login.submit_btn')}
         </StyledCta>
         <Link
-          to={`/${SIGN_UP_ROUTE}`}
+          href={`/${SIGN_UP_ROUTE}`}
           buttonAppearance={ButtonAppearance.Secondary}
           buttonSize={ButtonSizes.Stretch}
         >

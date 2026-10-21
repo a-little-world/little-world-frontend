@@ -9,10 +9,8 @@ import {
   Text,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
-import { useInRouterContext } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { getAppLinkProps } from '../../../helpers/links';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import { ModalTitle } from './ModalCard';
 
@@ -39,7 +37,6 @@ const MessageCard = ({
   linkTo,
 }) => {
   const { t } = useTranslation();
-  const inRouter = useInRouterContext();
 
   return (
     <StyledCard>
@@ -65,7 +62,7 @@ const MessageCard = ({
       )}
       {linkTo && (
         <Link
-          {...getAppLinkProps(linkTo, inRouter)}
+          href={linkTo}
           buttonAppearance={ButtonAppearance.Primary}
           buttonSize={ButtonSizes.Stretch}
         >

@@ -31,7 +31,7 @@ const Partner: FC = () => {
     return (
       <NotFoundCard title={t('resources.partners.not_found')}>
         <Link
-          to={getAppRoute(PARTNERS_ROUTE)}
+          href={getAppRoute(PARTNERS_ROUTE)}
           buttonAppearance={ButtonAppearance.Primary}
         >
           {t('resources.partners.return')}

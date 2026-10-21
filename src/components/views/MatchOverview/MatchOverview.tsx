@@ -403,7 +403,7 @@ function MatchOverview() {
                         buttonAppearance={ButtonAppearance.Primary}
                         buttonSize={ButtonSizes.Large}
                         textDecoration={false}
-                        to={ctaTo}
+                        href={ctaTo}
                         state={
                           progressCtaTarget(matchState.state) === 'support'
                             ? undefined

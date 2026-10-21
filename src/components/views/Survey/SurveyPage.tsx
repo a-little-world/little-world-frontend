@@ -113,7 +113,7 @@ const SurveyPage: FC = () => {
               <Link
                 buttonAppearance={ButtonAppearance.Primary}
                 buttonSize={ButtonSizes.Stretch}
-                to={getAppRoute()}
+                href={getAppRoute()}
               >
                 {t('survey.state.already_submitted.cta')}
               </Link>

@@ -138,9 +138,8 @@ function CoursePromoCard() {
   }
 
   const progressPercent = Math.round((progress?.progress_fraction ?? 0) * 100);
-  const ctaProps = {
-    to: state === 'complete' ? getSurveyRoute(COURSE_SURVEY_SLUG) : coursePath,
-  };
+  const ctaHref =
+    state === 'complete' ? getSurveyRoute(COURSE_SURVEY_SLUG) : coursePath;
 
   return (
     <StyledCard width={CardSizes.Small}>
@@ -184,7 +183,7 @@ function CoursePromoCard() {
       <StyledLink
         buttonAppearance={ButtonAppearance.Primary}
         buttonSize={ButtonSizes.Stretch}
-        {...ctaProps}
+        href={ctaHref}
       >
         {t(`course_promo.${state}_cta`)}
       </StyledLink>

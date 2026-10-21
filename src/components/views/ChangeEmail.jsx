@@ -92,7 +92,7 @@ const ChangeEmail = () => {
           <Link
             buttonAppearance={ButtonAppearance.Secondary}
             buttonSize={ButtonSizes.Medium}
-            to={getAppRoute(VERIFY_EMAIL_ROUTE)}
+            href={getAppRoute(VERIFY_EMAIL_ROUTE)}
           >
             {t('change_email.back_btn')}
           </Link>

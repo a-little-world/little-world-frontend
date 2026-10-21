@@ -45,7 +45,7 @@ function WalkthroughOption({
           <Link
             buttonAppearance={ButtonAppearance.Primary}
             buttonSize={ButtonSizes.Stretch}
-            to={getAppRoute(SELF_ONBOARDING_ROUTE)}
+            href={getAppRoute(SELF_ONBOARDING_ROUTE)}
           >
             {t('onboarding_selection.walkthrough_cta')}
           </Link>
@@ -67,7 +67,7 @@ function WalkthroughOption({
             <Link
               buttonAppearance={ButtonAppearance.Primary}
               buttonSize={ButtonSizes.Stretch}
-              to={getAppRoute(SELF_ONBOARDING_ROUTE)}
+              href={getAppRoute(SELF_ONBOARDING_ROUTE)}
             >
               {t('onboarding_selection.walkthrough_continue_cta')}
             </Link>
