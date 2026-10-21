@@ -20,6 +20,8 @@ export interface ApiError extends Error {
   status?: number;
   statusText?: string;
   data?: any;
+  code?: string;
+  fields?: Record<string, string[]>;
 }
 
 export interface ApiFetchOptions {
