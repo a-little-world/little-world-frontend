@@ -39,7 +39,7 @@ import IncomingCall from '../Calls/IncomingCall';
 import MatchModal from '../Matching/MatchModal';
 import MobileNavBar from '../MobileNavBar';
 import Sidebar from '../Sidebar';
-import Survey, { hasRequiredAnswers } from '../Survey/Survey';
+import Survey, { shouldSubmitOnClose } from '../Survey/Survey';
 
 const Wrapper = styled.div<{ $isVH: boolean }>`
   overflow-x: hidden;
@@ -235,20 +235,23 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     closeModal();
   };
 
+  /** Resolves to whether the submit went through, so closing can fall back to a dismissal. */
   const handleSurveySubmit = async (answers: SurveyAnswers) => {
-    if (!pendingSurvey) return;
+    if (!pendingSurvey) return false;
     try {
       await submitSurvey({ surveyId: pendingSurvey.id, answers });
       closeModal();
       await refetchPendingSurvey();
+      return true;
     } catch (error: any) {
       setSurveyError(error?.message ?? null);
+      return false;
     }
   };
 
   /**
    * Closing the modal is not the same as declining: an answer the user already gave is worth
-   * keeping, so a complete answer set is submitted and only an empty one is a dismissal.
+   * keeping, so a complete answer set is submitted and anything else is a dismissal.
    */
   const handleSurveyClose = async () => {
     if (!pendingSurvey) {
@@ -257,8 +260,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
     }
 
     const answers = surveyAnswersRef.current;
-    if (hasRequiredAnswers(pendingSurvey.questions, answers)) {
-      await handleSurveySubmit(answers);
+    if (
+      shouldSubmitOnClose(pendingSurvey.questions, answers) &&
+      (await handleSurveySubmit(answers))
+    ) {
       return;
     }
 
@@ -322,10 +327,10 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       <Modal
         open={isModalOpen(ModalTypes.SURVEY.id) && !!pendingSurvey}
         onClose={handleSurveyClose}
+        closeOnBackdropClick={false}
       >
         {!!pendingSurvey && (
           <Survey
-            // Keyed so a second survey starts with empty answers rather than the previous ones.
             key={pendingSurvey.id}
             survey={pendingSurvey}
             onAnswersChange={handleSurveyAnswersChange}
@@ -339,7 +344,6 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         onClose={onRejectCall}
       >
         <IncomingCall
-          userPk={activeCallRoom?.partner.id}
           userProfile={activeCallRoom?.partner}
           onAnswerCall={onAnswerCall}
           onRejectCall={onRejectCall}

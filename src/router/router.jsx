@@ -37,6 +37,7 @@ import CoursePreview from '../components/views/Resources/Trainings/CoursePreview
 import Training from '../components/views/Resources/Trainings/Training';
 import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
+import SurveyPage from '../components/views/Survey/SurveyPage';
 import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
@@ -45,6 +46,7 @@ import FireBase from '../Firebase';
 import AuthGuard from '../guards/AuthGuard';
 import RouteGuard from '../guards/RouteGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
+import useCalEmbed from '../hooks/useCalEmbed';
 import WebsocketBridge from '../WebsocketBridge';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
@@ -84,6 +86,7 @@ import {
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
+  SURVEY_ROUTE,
   TRAINING_ROUTE,
   TRAININGS_ROUTE,
   USER_FORM_ROUTE,
@@ -108,6 +111,7 @@ export const Root = ({
   standalone = false,
 }) => {
   useErrorDebugBridge();
+  useCalEmbed();
   return (
     <CustomThemeProvider defaultMode={getInitialTheme()}>
       <ToastProvider>
@@ -180,6 +184,7 @@ export function getWebRouter() {
             { path: ':slug', element: <Form /> },
           ],
         },
+        { path: getAppRoute(SURVEY_ROUTE), element: <SurveyPage /> },
       ],
     },
 
@@ -303,6 +308,7 @@ export function getNativeRouter() {
             { path: ':slug', element: <Form /> },
           ],
         },
+        { path: getAppRoute(SURVEY_ROUTE), element: <SurveyPage /> },
       ],
     },
 

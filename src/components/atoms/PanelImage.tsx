@@ -1,7 +1,7 @@
 import { Text } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
-export const ImageContainer = styled.div`
+export const ImageContainer = styled.div<{ $breakpoint?: string }>`
   position: relative;
   min-width: 120px;
   width: 100%;
@@ -12,7 +12,8 @@ export const ImageContainer = styled.div`
   overflow: hidden;
   position: relative;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
+  @media (min-width: ${({ theme, $breakpoint }) =>
+      $breakpoint || theme.breakpoints.large}) {
     width: 40%;
     max-height: unset;
     min-width: 240px;
@@ -38,17 +39,19 @@ export const ImageLabel = styled(Text)`
 `;
 
 const PanelImage = ({
+  breakpoint,
   src,
   label,
   alt,
 }: {
+  breakpoint?: string;
   src: string;
   label: string;
   alt: string;
 }) => (
-  <ImageContainer>
+  <ImageContainer $breakpoint={breakpoint}>
     <Image alt={alt || ''} src={src} />
-    <ImageLabel>{label}</ImageLabel>
+    {label && <ImageLabel>{label}</ImageLabel>}
   </ImageContainer>
 );
 
