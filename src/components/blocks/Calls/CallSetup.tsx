@@ -9,13 +9,13 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import type { PrejoinLanguage } from '@livekit/components-react';
 import {
   DevicePermissionError,
   LocalUserChoices,
   PreJoin,
   PreJoinValues,
 } from '@livekit/components-react';
-import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';

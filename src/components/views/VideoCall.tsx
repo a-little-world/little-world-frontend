@@ -7,6 +7,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import type { PrejoinLanguage } from '@livekit/components-react';
 import {
   LayoutContextProvider,
   LiveKitRoom,
@@ -19,11 +20,16 @@ import {
   useRoomInfo,
   useTracks,
 } from '@livekit/components-react';
-import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
 
 import '@livekit/components-styles';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { LocalParticipant, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
@@ -302,7 +308,7 @@ function MyVideoConference({
     setCurrentParticipants(tracks.length);
   }, [tracks.length]);
 
-  const placeholders = {};
+  const placeholders: Record<string, React.JSX.Element> = {};
   const remoteTracks: TrackReferenceOrPlaceholder[] = [];
   tracks.forEach(track => {
     if (track.participant) {
