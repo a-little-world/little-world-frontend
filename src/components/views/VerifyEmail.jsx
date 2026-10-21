@@ -157,7 +157,7 @@ const VerifyEmail = () => {
         <ButtonsContainer>
           <Button
             appearance={ButtonAppearance.Secondary}
-            onClick={() => navigate(getAppRoute(CHANGE_EMAIL_ROUTE))}
+            onClick={() => navigate(withNext(getAppRoute(CHANGE_EMAIL_ROUTE)))}
             color={theme.color.text.link}
             size={ButtonSizes.Medium}
           >

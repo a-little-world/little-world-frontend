@@ -12,13 +12,17 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { mutate } from 'swr';
 
 import { setNewEmail } from '../../api';
 import { USER_ENDPOINT } from '../../api/endpoints';
 import { onFormError, registerInput } from '../../helpers/form';
-import { getAppRoute, VERIFY_EMAIL_ROUTE } from '../../router/routes';
+import {
+  getAppRoute,
+  sanitizeNext,
+  VERIFY_EMAIL_ROUTE,
+} from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import {
   FormDescription,
@@ -42,6 +46,13 @@ const ChangeEmail = () => {
 
   const navigate = useNavigate();
 
+  // Carry a deep link (`/login?next=`) through the change-email detour so the
+  // destination is not lost when the user changes their email mid-flow.
+  const [searchParams] = useSearchParams();
+  const nextTarget = sanitizeNext(searchParams.get('next'));
+  const withNext = route =>
+    nextTarget ? `${route}?next=${encodeURIComponent(nextTarget)}` : route;
+
   useEffect(() => {
     setFocus('email');
   }, [setFocus]);
@@ -58,7 +69,7 @@ const ChangeEmail = () => {
       .then(() => {
         setIsSubmitting(false);
         mutate(USER_ENDPOINT);
-        navigate(getAppRoute(VERIFY_EMAIL_ROUTE));
+        navigate(withNext(getAppRoute(VERIFY_EMAIL_ROUTE)));
       })
       .catch(onError);
   };
@@ -92,7 +103,7 @@ const ChangeEmail = () => {
           <Link
             buttonAppearance={ButtonAppearance.Secondary}
             buttonSize={ButtonSizes.Medium}
-            to={getAppRoute(VERIFY_EMAIL_ROUTE)}
+            to={withNext(getAppRoute(VERIFY_EMAIL_ROUTE))}
           >
             {t('change_email.back_btn')}
           </Link>
