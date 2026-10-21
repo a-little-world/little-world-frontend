@@ -1,5 +1,16 @@
 import { apiFetch } from './helpers';
 
+/**
+ * Reports whether this client can encrypt call media. Must happen outside the token
+ * request: both participants of a call read the same stored flags, while a per-token
+ * update could land between their two requests and encrypt only one side.
+ */
+export const reportE2EECapability = (supported: boolean) =>
+  apiFetch('/api/livekit/e2ee_capability', {
+    method: 'POST',
+    body: { supported },
+  });
+
 export const requestVideoAccessToken = async ({
   partnerId,
   onSuccess,

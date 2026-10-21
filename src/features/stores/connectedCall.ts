@@ -11,6 +11,7 @@ interface CallData {
   callType?: 'direct' | 'random';
   postDisconnectRedirect?: string;
   token?: string;
+  e2eeKey?: string;
   audioOptions?: boolean | { deviceId: string };
   videoOptions?: boolean | { deviceId: string };
   livekitServerUrl?: string;

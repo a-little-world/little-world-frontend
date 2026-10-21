@@ -103,6 +103,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     chatId: null,
     token: null,
     livekitServerUrl: null,
+    e2eeKey: null,
   });
   const [error, setError] = useState('');
   const [audioPermissionError, setAudioPermissionError] = useState(false);
@@ -119,6 +120,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       tracks: values,
       callType: 'direct',
       token: authData.token || undefined,
+      e2eeKey: authData.e2eeKey || undefined,
       audioOptions: values.audioEnabled
         ? { deviceId: values.audioDeviceId }
         : false,
@@ -143,6 +145,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
           chatId: res.chat?.uuid,
           token: res.token,
           livekitServerUrl: res.server_url,
+          e2eeKey: res.e2ee_key,
         });
       },
       onError: () => {
