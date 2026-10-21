@@ -25,7 +25,7 @@ import '@livekit/components-styles';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { LocalParticipant, Track } from 'livekit-client';
+import { LocalParticipant, Room, Track } from 'livekit-client';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -46,6 +46,7 @@ import {
   useConnectedCallStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
+import { createEncryptedRoom, isE2EEAvailable } from '../../helpers/e2ee';
 import { releasePreviewAudioTracks } from '../../helpers/video';
 import useIsBelowBreakpoint from '../../hooks/useIsBelowBreakpoint';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
@@ -498,6 +499,7 @@ function VideoCall() {
     callType,
     postDisconnectRedirect,
     randomLobbyUuid,
+    e2eeKey,
   } = callData || {};
   const { data: user } = useSWR(USER_ENDPOINT);
   const profile = user?.profile;
@@ -514,6 +516,44 @@ function VideoCall() {
       refreshInterval: 1000,
     },
   );
+
+  // The backend hands out a key per room unless either client reported it cannot encrypt.
+  // Building the room encrypts every track from its first publication; if anything in that
+  // path fails we join unencrypted rather than losing the call.
+  const [encryptedRoom, setEncryptedRoom] = useState<Room>();
+  const [e2eeUnavailable, setE2eeUnavailable] = useState(false);
+
+  useEffect(() => {
+    if (!e2eeKey || e2eeUnavailable) return undefined;
+    if (!isE2EEAvailable()) {
+      console.warn(
+        '[e2ee] client cannot encrypt call media; joining unencrypted',
+      );
+      setE2eeUnavailable(true);
+      return undefined;
+    }
+
+    let cancelled = false;
+    createEncryptedRoom(e2eeKey)
+      .then(room => {
+        if (cancelled) {
+          room.disconnect();
+          return;
+        }
+        setEncryptedRoom(room);
+      })
+      .catch(error => {
+        console.warn('[e2ee] setup failed; joining unencrypted', error);
+        if (!cancelled) setE2eeUnavailable(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [e2eeKey, e2eeUnavailable]);
+
+  const e2eePending = !!e2eeKey && !e2eeUnavailable && !encryptedRoom;
+  const room = e2eeKey && !e2eeUnavailable ? encryptedRoom : undefined;
 
   // Native hosts the call in a WebView and needs to know when to redirect the
   // hardware volume keys at the stream the call audio is actually on.
@@ -612,10 +652,14 @@ function VideoCall() {
         <CallLayout>
           <VideoContainer $isFullScreen={isFullScreen} $showChat={showChat}>
             <LiveKitRoom
+              room={room}
               video={videoPermissionDenied ? true : videoOptions}
               audio={audioPermissionDenied ? true : audioOptions}
-              token={token}
+              token={e2eePending ? undefined : token}
               serverUrl={livekitServerUrl}
+              onEncryptionError={error => {
+                console.warn('[e2ee] encryption error', error);
+              }}
               onDisconnected={() => {
                 disconnectFromCall({
                   sessionId: uuid,

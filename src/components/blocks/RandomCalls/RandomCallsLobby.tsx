@@ -847,6 +847,7 @@ const RandomCallsLobby = ({
         randomLobbyUuid: lobbyUuid,
         tracks: deviceChoices || undefined,
         token: roomData.token,
+        e2eeKey: roomData.e2ee_key || undefined,
         livekitServerUrl: roomData.server_url,
         callType: 'random',
         audioOptions: deviceChoices?.audioEnabled
