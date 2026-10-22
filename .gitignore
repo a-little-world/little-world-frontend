@@ -33,3 +33,6 @@ dist-*/
 assets/
 
 webpack-stats.json
+
+!a-little-world-little-world-design-system-4.0.0.tgz
+!a-little-world-little-world-design-system-core-2.0.0.tgz

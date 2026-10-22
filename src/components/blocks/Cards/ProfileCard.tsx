@@ -381,7 +381,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       )} */}
       {isSelf ? null : isSupport ? (
         <SupportChatLink
-          to={getAppRoute(HELP_CONTACT_ROUTE)}
+          href={getAppRoute(HELP_CONTACT_ROUTE)}
           buttonAppearance={ButtonAppearance.Primary}
           buttonSize={ButtonSizes.Stretch}
         >

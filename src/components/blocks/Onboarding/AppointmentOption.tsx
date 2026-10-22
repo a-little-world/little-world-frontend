@@ -101,7 +101,7 @@ function AppointmentOption({
             <Link
               buttonAppearance={ButtonAppearance.Primary}
               buttonSize={ButtonSizes.Stretch}
-              to={joinCallLink}
+              href={joinCallLink}
             >
               {t('searching_card.pre_match_call_booked_join_call')}
             </Link>

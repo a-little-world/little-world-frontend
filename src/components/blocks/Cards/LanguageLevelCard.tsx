@@ -49,7 +49,7 @@ function LanguageLevelCard() {
       <Link
         buttonAppearance={ButtonAppearance.Primary}
         buttonSize={ButtonSizes.Stretch}
-        to={getAppRoute(BEGINNERS_ROUTE)}
+        href={getAppRoute(BEGINNERS_ROUTE)}
       >
         {t('language_level_card.cta')}
       </Link>

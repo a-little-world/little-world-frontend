@@ -45,7 +45,7 @@ const OnboardingWalkthrough = () => {
     return (
       <NotFoundCard title={t('resources.trainings.not_found')}>
         <Link
-          to={getAppRoute(ONBOARDING_ROUTE)}
+          href={getAppRoute(ONBOARDING_ROUTE)}
           buttonAppearance={ButtonAppearance.Primary}
         >
           {t('onboarding_walkthrough.nav_back')}

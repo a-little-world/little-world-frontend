@@ -105,7 +105,7 @@ const ResetPassword = () => {
           <Link
             buttonAppearance={ButtonAppearance.Secondary}
             buttonSize={ButtonSizes.Stretch}
-            to={`/${LOGIN_ROUTE}`}
+            href={`/${LOGIN_ROUTE}`}
           >
             {t('reset_password.to_login')}
           </Link>

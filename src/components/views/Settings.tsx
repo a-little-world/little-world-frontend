@@ -225,7 +225,7 @@ function EditFieldCard({ label, valueIn, setEditing }) {
               type="password"
             />
 
-            <ForgotPasswordLink to={`/${FORGOT_PASSWORD_ROUTE}/`}>
+            <ForgotPasswordLink href={`/${FORGOT_PASSWORD_ROUTE}/`}>
               {t('settings.personal_password_forgot')}
             </ForgotPasswordLink>
             <TextInput

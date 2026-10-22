@@ -48,7 +48,7 @@ const CourseNotFound: FC = () => {
   return (
     <NotFoundCard title={t('resources.trainings.not_found')}>
       <Link
-        to={getAppRoute(TRAININGS_ROUTE)}
+        href={getAppRoute(TRAININGS_ROUTE)}
         buttonAppearance={ButtonAppearance.Primary}
       >
         {t('resources.trainings.return')}
@@ -66,7 +66,7 @@ const ProgressLoadError: FC<{ onRetry: () => void }> = ({ onRetry }) => {
         {t('resources.trainings.progress_retry')}
       </Button>
       <Link
-        to={getAppRoute(TRAININGS_ROUTE)}
+        href={getAppRoute(TRAININGS_ROUTE)}
         buttonAppearance={ButtonAppearance.Secondary}
       >
         {t('resources.trainings.return')}

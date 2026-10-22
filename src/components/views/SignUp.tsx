@@ -402,7 +402,7 @@ const SignUp = () => {
           {t('sign_up.submit_btn')}
         </StyledCta>
         <Link
-          to={`/${LOGIN_ROUTE}`}
+          href={`/${LOGIN_ROUTE}`}
           buttonAppearance={ButtonAppearance.Secondary}
           buttonSize={ButtonSizes.Stretch}
         >

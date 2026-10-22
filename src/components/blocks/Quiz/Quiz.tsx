@@ -265,7 +265,7 @@ const Quiz = ({
             )}
             {exitRoute && (
               <Link
-                to={exitRoute}
+                href={exitRoute}
                 buttonAppearance={ButtonAppearance.Primary}
                 buttonSize={ButtonSizes.Stretch}
               >
