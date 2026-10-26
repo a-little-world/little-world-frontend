@@ -23,9 +23,11 @@ import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { requestVideoAccessToken } from '../../../api/livekit';
-import { useConnectedCallStore } from '../../../features/stores';
+import {
+  useCallTracksStore,
+  useConnectedCallStore,
+} from '../../../features/stores';
 import { isE2EEAvailable } from '../../../helpers/e2ee';
-import { holdPreviewAudioTracks } from '../../../helpers/video';
 import { getCallRoute } from '../../../router/routes';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
@@ -144,21 +146,36 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
   const { connectToCall } = useConnectedCallStore();
+  const { acquireTracks, releaseTracks } = useCallTracksStore();
 
   const [joining, setJoining] = useState(false);
   const joinedRef = useRef(false);
+  const unmountedRef = useRef(false);
 
   // the call route renders outside this layout, so the dialog only goes away once the
   // call screen is in; clear the setup state then instead of before navigating
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    unmountedRef.current = false;
+    return () => {
+      unmountedRef.current = true;
       if (joinedRef.current) onJoined();
-    },
-    [], // eslint-disable-line react-hooks/exhaustive-deps
-  );
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleJoin = (values: LocalUserChoices) => {
+  const handleJoin = async (values: LocalUserChoices) => {
     setJoining(true);
+    const audioOptions = values.audioEnabled
+      ? { deviceId: values.audioDeviceId }
+      : false;
+    const videoOptions = values.videoEnabled
+      ? { deviceId: values.videoDeviceId }
+      : false;
+    // must be opened before PreJoin unmounts and stops its preview tracks
+    await acquireTracks({ audio: audioOptions, video: videoOptions });
+    if (unmountedRef.current) {
+      releaseTracks();
+      return;
+    }
     connectToCall({
       userId: userPk,
       chatId: authData.chatId || '',
@@ -166,17 +183,12 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
       callType: 'direct',
       token: authData.token || undefined,
       e2eeKey: authData.e2eeKey || undefined,
-      audioOptions: values.audioEnabled
-        ? { deviceId: values.audioDeviceId }
-        : false,
-      videoOptions: values.videoEnabled
-        ? { deviceId: values.videoDeviceId }
-        : false,
+      audioOptions,
+      videoOptions,
       livekitServerUrl: authData.livekitServerUrl || undefined,
       audioPermissionDenied: audioPermissionError,
       videoPermissionDenied: videoPermissionError,
     });
-    holdPreviewAudioTracks();
     joinedRef.current = true;
     navigate(getCallRoute(userPk));
   };
