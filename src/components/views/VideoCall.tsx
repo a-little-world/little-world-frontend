@@ -557,6 +557,7 @@ function VideoCall() {
   );
 
   const mountedRef = useRef(false);
+  const leavingRef = useRef(false);
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -584,6 +585,10 @@ function VideoCall() {
   }, []);
 
   useEffect(() => {
+    // route is rendered once more after disconnecting
+    // urlUserId is still set and token is null
+    // -> routed again to the call setup screen
+    if (leavingRef.current) return;
     if (urlUserId && !token) {
       // If userId is in url but no token available, redirect to call-setup so we can re-join the call
       if (isRandomCallRoute) {
@@ -686,6 +691,7 @@ function VideoCall() {
                 console.warn('[e2ee] encryption error', error);
               }}
               onDisconnected={() => {
+                leavingRef.current = true;
                 disconnectFromCall({
                   sessionId: uuid,
                   partnerId: chatData?.partner?.id,
