@@ -3,6 +3,7 @@
   "version": "0.1.316",
   "private": true,
   "scripts": {
+    "generate:e2ee-worker": "node scripts/generate-livekit-e2ee-worker.mjs",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "pnpm run lint --fix",
     "format:check": "prettier --check ./src",

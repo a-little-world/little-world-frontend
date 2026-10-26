@@ -1,8 +1,6 @@
 import { ExternalE2EEKeyProvider, isE2EESupported, Room } from 'livekit-client';
 
-// One worker is enough for the whole page and cheaper than creating one per call. It is
-// never terminated: tracks from later calls keep their transform bound to it.
-let e2eeWorker: Worker | undefined;
+import { getE2EEWorker } from './e2eeWorker';
 
 export const isE2EEAvailable = () =>
   isE2EESupported() &&
@@ -18,9 +16,7 @@ export const createEncryptedRoom = async (key: string): Promise<Room> => {
   const keyProvider = new ExternalE2EEKeyProvider();
   await keyProvider.setKey(key);
 
-  e2eeWorker ??= new Worker(
-    new URL('livekit-client/e2ee-worker', import.meta.url),
-  );
+  const e2eeWorker = await getE2EEWorker();
 
   const room = new Room({
     encryption: { keyProvider, worker: e2eeWorker },
