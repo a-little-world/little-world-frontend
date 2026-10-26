@@ -103,6 +103,10 @@ interface MyVideoConferenceProps {
 const USAGE_MEDIA = 1;
 const USAGE_VOICE_COMMUNICATION = 2;
 
+// Chrome keeps a closed output stream idle for 5s and hands it to the next player,
+// so the playout has to stay down longer than that to get a fresh stream.
+const REROUTE_GAP_MS = 6000;
+
 async function fetchAudioState(): Promise<{
   mode?: number;
   usages?: number[];
@@ -121,9 +125,9 @@ async function fetchAudioState(): Promise<{
  * Renders remote call audio, but only once the local microphone is capturing, and then
  * verifies the WebView actually routed it through the voice-communication stream. On
  * Android the remote playout latches onto STREAM_MUSIC when it is created before the
- * WebView is in MODE_IN_COMMUNICATION (the join case); when that happens we re-create the
- * playout until it lands on the call stream. Web has no such routing, so it renders
- * immediately.
+ * WebView is in MODE_IN_COMMUNICATION (the join case); when that happens we tear the
+ * playout down and re-create it until it lands on the call stream. Web has no such
+ * routing, so it renders immediately.
  */
 function GatedRoomAudio() {
   const { microphoneTrack } = useLocalParticipant();
@@ -140,7 +144,7 @@ function GatedRoomAudio() {
     microphoneTrack?.track?.mediaStreamTrack?.readyState === 'live';
 
   const [gateOpen, setGateOpen] = useState(!environment.isNative);
-  const [renderKey, setRenderKey] = useState(0);
+  const [rerouting, setRerouting] = useState(false);
   const releasedRef = useRef(false);
   const attemptsRef = useRef(0);
 
@@ -170,7 +174,13 @@ function GatedRoomAudio() {
   // Guarantee the outcome rather than assume timing: the WebView's remote playback must be
   // on the voice-communication route. If it latched media, re-create the playout.
   useEffect(() => {
-    if (!environment.isNative || !gateOpen || !micLive || !hasRemoteAudio) {
+    if (
+      !environment.isNative ||
+      !gateOpen ||
+      !micLive ||
+      !hasRemoteAudio ||
+      rerouting
+    ) {
       return undefined;
     }
     let cancelled = false;
@@ -182,12 +192,13 @@ function GatedRoomAudio() {
         attemptsRef.current = 0;
         return;
       }
-      if (usages.includes(USAGE_MEDIA) && attemptsRef.current < 5) {
+      if (usages.includes(USAGE_MEDIA) && attemptsRef.current < 3) {
         attemptsRef.current += 1;
         console.warn(
           `[call-audio] remote audio latched media; re-creating playout (attempt ${attemptsRef.current})`,
         );
-        setRenderKey(key => key + 1);
+        setRerouting(true);
+        return;
       }
       setTimeout(poll, 500);
     };
@@ -196,7 +207,13 @@ function GatedRoomAudio() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [gateOpen, micLive, hasRemoteAudio]);
+  }, [gateOpen, micLive, hasRemoteAudio, rerouting]);
+
+  useEffect(() => {
+    if (!rerouting) return undefined;
+    const timer = setTimeout(() => setRerouting(false), REROUTE_GAP_MS);
+    return () => clearTimeout(timer);
+  }, [rerouting]);
 
   // Stop the held preview mic if the call unmounts before LiveKit took over.
   useEffect(
@@ -209,8 +226,8 @@ function GatedRoomAudio() {
     [],
   );
 
-  if (!gateOpen) return null;
-  return <RoomAudioRenderer key={renderKey} />;
+  if (!gateOpen || rerouting) return null;
+  return <RoomAudioRenderer />;
 }
 
 function MyVideoConference({
