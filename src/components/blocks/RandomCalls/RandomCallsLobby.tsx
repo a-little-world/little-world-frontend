@@ -846,6 +846,10 @@ const RandomCallsLobby = ({
       const videoOptions = deviceChoices?.videoEnabled
         ? { deviceId: deviceChoices.videoDeviceId }
         : false;
+      await useCallTracksStore.getState().acquireTracks({
+        audio: audioOptions,
+        video: videoOptions,
+      });
 
       // Set up call connection with room data, including device choices
       connectToCall({
@@ -865,11 +869,6 @@ const RandomCallsLobby = ({
         postDisconnectRedirect: `${getAppRoute(
           RANDOM_CALLS_ROUTE,
         )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
-      });
-
-      await useCallTracksStore.getState().acquireTracks({
-        audio: audioOptions,
-        video: videoOptions,
       });
 
       // Navigate to the random call screen for the partner

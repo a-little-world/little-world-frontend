@@ -41,8 +41,8 @@ const createCamera = async (video: { deviceId: string }) => {
   return tracks;
 };
 
-// Opened while the preview is still running, so the browser shares the preview's mic and
-// camera instead of reopening them, and they stay open while the call screen takes over.
+// Opened before the call screen mounts so the mic is already live when the room connects.
+// While a preview is still running, the browser shares its devices instead of reopening them.
 const useCallTracksStore = create<CallTracksState>((set, get) => ({
   tracks: [],
   acquireTracks: async ({ audio, video }) => {
