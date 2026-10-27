@@ -45,6 +45,7 @@ import {
 } from '../../../api/randomCalls';
 import { COMMUNITY_EVENT_FREQUENCIES, USER_TYPES } from '../../../constants';
 import {
+  getDeviceOptions,
   useCallTracksStore,
   useConnectedCallStore,
 } from '../../../features/stores';
@@ -840,16 +841,8 @@ const RandomCallsLobby = ({
     setError(null);
     try {
       const roomData = await authenticateRoom(lobbyUuid, currentMatchData.uuid);
-      const audioOptions = deviceChoices?.audioEnabled
-        ? { deviceId: deviceChoices.audioDeviceId }
-        : false;
-      const videoOptions = deviceChoices?.videoEnabled
-        ? { deviceId: deviceChoices.videoDeviceId }
-        : false;
-      await useCallTracksStore.getState().acquireTracks({
-        audio: audioOptions,
-        video: videoOptions,
-      });
+      const deviceOptions = getDeviceOptions(deviceChoices);
+      await useCallTracksStore.getState().acquireTracks(deviceOptions);
 
       // Set up call connection with room data, including device choices
       connectToCall({
@@ -862,8 +855,8 @@ const RandomCallsLobby = ({
         e2eeKey: roomData.e2ee_key || undefined,
         livekitServerUrl: roomData.server_url,
         callType: 'random',
-        audioOptions,
-        videoOptions,
+        audioOptions: deviceOptions.audio,
+        videoOptions: deviceOptions.video,
         audioPermissionDenied: audioPermissionError,
         videoPermissionDenied: videoPermissionError,
         postDisconnectRedirect: `${getAppRoute(

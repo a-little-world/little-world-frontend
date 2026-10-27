@@ -1,5 +1,5 @@
 export { default as useCallSetupStore } from './callSetup';
-export { default as useCallTracksStore } from './callTracks';
+export { getDeviceOptions, default as useCallTracksStore } from './callTracks';
 export { default as useChatInputStore } from './chatInput';
 export { default as useConnectedCallStore } from './connectedCall';
 export { debugStore, default as useDebugStore } from './debugStore';

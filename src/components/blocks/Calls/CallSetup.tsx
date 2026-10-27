@@ -24,6 +24,7 @@ import useSWR from 'swr';
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { requestVideoAccessToken } from '../../../api/livekit';
 import {
+  getDeviceOptions,
   useCallTracksStore,
   useConnectedCallStore,
 } from '../../../features/stores';
@@ -161,14 +162,9 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
 
   const handleJoin = async (values: LocalUserChoices) => {
     setJoining(true);
-    const audioOptions = values.audioEnabled
-      ? { deviceId: values.audioDeviceId }
-      : false;
-    const videoOptions = values.videoEnabled
-      ? { deviceId: values.videoDeviceId }
-      : false;
+    const deviceOptions = getDeviceOptions(values);
     // must be opened before PreJoin unmounts and stops its preview tracks
-    await acquireTracks({ audio: audioOptions, video: videoOptions });
+    await acquireTracks(deviceOptions);
     if (unmountedRef.current) {
       releaseTracks();
       return;
@@ -180,8 +176,8 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
       callType: 'direct',
       token: authData.token || undefined,
       e2eeKey: authData.e2eeKey || undefined,
-      audioOptions,
-      videoOptions,
+      audioOptions: deviceOptions.audio,
+      videoOptions: deviceOptions.video,
       livekitServerUrl: authData.livekitServerUrl || undefined,
       audioPermissionDenied: audioPermissionError,
       videoPermissionDenied: videoPermissionError,

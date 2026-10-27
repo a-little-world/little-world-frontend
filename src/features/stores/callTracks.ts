@@ -1,3 +1,4 @@
+import type { LocalUserChoices } from '@livekit/components-react';
 import {
   createLocalTracks,
   CreateLocalTracksOptions,
@@ -7,12 +8,18 @@ import { create } from 'zustand';
 
 type DeviceOptions = false | { deviceId: string };
 
+type CallDeviceOptions = { audio: DeviceOptions; video: DeviceOptions };
+
+export const getDeviceOptions = (
+  choices?: LocalUserChoices | null,
+): CallDeviceOptions => ({
+  audio: choices?.audioEnabled ? { deviceId: choices.audioDeviceId } : false,
+  video: choices?.videoEnabled ? { deviceId: choices.videoDeviceId } : false,
+});
+
 interface CallTracksState {
   tracks: LocalTrack[];
-  acquireTracks: (options: {
-    audio: DeviceOptions;
-    video: DeviceOptions;
-  }) => Promise<void>;
+  acquireTracks: (options: CallDeviceOptions) => Promise<void>;
   takeTracks: () => LocalTrack[];
   releaseTracks: () => void;
 }
