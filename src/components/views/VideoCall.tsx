@@ -27,7 +27,15 @@ import '@livekit/components-styles';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { ConnectionState, LocalParticipant, Room, Track } from 'livekit-client';
+import {
+  ConnectionState,
+  LocalParticipant,
+  RemoteTrack,
+  RemoteTrackPublication,
+  Room,
+  RoomEvent,
+  Track,
+} from 'livekit-client';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -64,7 +72,6 @@ import CallSidebar, {
   SidebarSelectionProvider,
 } from '../blocks/Calls/CallSidebar';
 import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar';
-import E2EEWarningModal from '../blocks/Calls/E2EEWarningModal';
 import Chat from '../blocks/ChatCore/Chat';
 import QuestionCards from '../blocks/QuestionCards/QuestionCards';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool';
@@ -550,6 +557,25 @@ function VideoCall() {
   const e2eePending = !!e2eeKey && !e2eeUnavailable && !encryptedRoom;
   const room = e2eeKey && !e2eeUnavailable ? encryptedRoom : undefined;
 
+  // partner's client can't encrypt (it joined after we got our key) -> it can't decrypt us either
+  useEffect(() => {
+    if (!encryptedRoom) return undefined;
+    const onTrackSubscribed = (
+      _track: RemoteTrack,
+      publication: RemoteTrackPublication,
+    ) => {
+      if (publication.isEncrypted || !encryptedRoom.isE2EEEnabled) return;
+      console.warn('[e2ee] partner media is unencrypted; disabling encryption');
+      encryptedRoom.setE2EEEnabled(false).catch(error => {
+        console.warn('[e2ee] disabling encryption failed', error);
+      });
+    };
+    encryptedRoom.on(RoomEvent.TrackSubscribed, onTrackSubscribed);
+    return () => {
+      encryptedRoom.off(RoomEvent.TrackSubscribed, onTrackSubscribed);
+    };
+  }, [encryptedRoom]);
+
   // devices the setup already opened are published as-is instead of being reopened
   const [setupTrackKinds] = useState(
     () =>
@@ -657,12 +683,6 @@ function VideoCall() {
       // Best effort: disconnect/redirect flow must continue even if this call fails.
     });
   }, [callType, isRandomCallRoute, randomMatchId]);
-
-  // Never connect a call from a client that cannot encrypt its media, even when this route
-  // is reached directly (deep link, stale call state).
-  if (!isE2EEAvailable()) {
-    return <E2EEWarningModal open />;
-  }
 
   return (
     <SidebarSelectionProvider

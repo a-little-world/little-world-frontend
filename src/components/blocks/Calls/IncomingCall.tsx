@@ -6,11 +6,9 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { isE2EEAvailable } from '../../../helpers/e2ee';
 import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ProfileImage from '../../atoms/ProfileImage';
 import ModalCard, { Centred } from '../Cards/ModalCard';
-import { E2EEWarningCard } from './E2EEWarningModal';
 
 type IncomingCallProps = {
   userProfile: any;
@@ -26,10 +24,6 @@ function IncomingCall({
   const { t } = useTranslation();
 
   const usesAvatar = userProfile.image_type === 'avatar';
-
-  if (!isE2EEAvailable()) {
-    return <E2EEWarningCard />;
-  }
 
   return (
     <ModalCard>
