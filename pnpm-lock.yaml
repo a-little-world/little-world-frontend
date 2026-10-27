@@ -1220,7 +1220,7 @@ packages:
       tslib: ^2.6.2
 
   '@livekit/components-react@file:prebuild/livekit-components-react-2.9.22.tgz':
-    resolution: {integrity: sha512-etBoabXbNmycr8aGllhSmg32hduhKdg3eBSUhD36881poVZiflAOg4pu+OdrVhFBQgHY6+5FM72tyB9HvKsEfA==, tarball: file:prebuild/livekit-components-react-2.9.22.tgz}
+    resolution: {integrity: sha512-rXeUcDK6/xWDNtuWtxTRDIi6k908KRJfqsUaDBdYTU8Rj6KU23L27OeY43+drCHTd6FUrVQaksbZNAtFt6DGfg==, tarball: file:prebuild/livekit-components-react-2.9.22.tgz}
     version: 2.9.22
     engines: {node: '>=18'}
     peerDependencies:
