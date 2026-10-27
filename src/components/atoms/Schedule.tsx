@@ -26,6 +26,7 @@ export type { ScheduleSession } from '../../helpers/schedule';
 
 export type ScheduleProps = {
   title: string;
+  description?: string;
   sessions: ScheduleSession[];
   /** When set, the session list scrolls instead of growing the card. */
   listMaxHeight?: number;
@@ -56,6 +57,10 @@ const Wrapper = styled.div`
 const Title = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxsmall};
   color: ${({ theme }) => theme.color.text.heading};
+`;
+
+const Description = styled(Text)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
 // The list owns the columns and every row uses them through subgrid, so dates, times and
@@ -139,6 +144,7 @@ const IconWrap = styled.span`
 
 export function Schedule({
   title,
+  description,
   sessions,
   listMaxHeight,
   addToCalendar,
@@ -162,6 +168,9 @@ export function Schedule({
       <Title bold type={TextTypes.Heading6}>
         {title}
       </Title>
+      {description && (
+        <Description type={TextTypes.Body5}>{description}</Description>
+      )}
       <SessionList $maxHeight={listMaxHeight} $stacked={stackDateTime}>
         {rows.length === 0 ? (
           <EmptyText>{t('random_calls.schedule_empty')}</EmptyText>

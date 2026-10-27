@@ -161,6 +161,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
             key={`${lobbyData.uuid}-${lobbySessionKey}`}
             lobbyUuid={lobbyData.uuid}
             onCancel={onCloseLobby}
+            activeUsersCount={lobbyData.active_users_count}
           />
         )}
       </Modal>
@@ -189,7 +190,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
             ) : (
               <>
                 <div>
-                  <Text bold type={TextTypes.Body5}>
+                  <Text bold type={active ? TextTypes.Body4 : TextTypes.Body5}>
                     {t(
                       active
                         ? 'random_calls.active_heading'
@@ -198,7 +199,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                   </Text>
                   {active && startTime && endTime && (
                     <Text type={TextTypes.Body4}>
-                      {startTime} – {endTime}
+                      {t('random_calls.active_time', { startTime, endTime })}
                     </Text>
                   )}
                 </div>
@@ -219,6 +220,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                 ) : (
                   <Schedule
                     title={t('random_calls.schedule_heading')}
+                    description={t('random_calls.schedule_description')}
                     sessions={upcomingLobbies ?? []}
                     listMaxHeight={260}
                     addToCalendar={{
