@@ -50,7 +50,7 @@ import {
   REPORT_TYPE_UNMATCH,
 } from '../ReportForm/constants';
 
-export const PROFILE_CARD_HEIGHT = '408px';
+export const PROFILE_CARD_HEIGHT = '392px';
 
 interface Profile {
   first_name: string;
