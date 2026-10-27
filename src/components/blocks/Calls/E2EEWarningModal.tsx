@@ -2,14 +2,25 @@ import {
   Button,
   ButtonAppearance,
   ButtonSizes,
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardSizes,
+  ExclamationIcon,
   Modal,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
+import styled, { useTheme } from 'styled-components';
 
 import ButtonsContainer from '../../atoms/ButtonsContainer';
-import ModalCard, { Centred, ModalTitle } from '../Cards/ModalCard';
+
+const StyledCardHeader = styled(CardHeader)`
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+`;
 
 type E2EEWarningCardProps = {
   onContinue: () => void;
@@ -19,32 +30,46 @@ type E2EEWarningCardProps = {
 
 function E2EEWarningCard({ onContinue, partner }: E2EEWarningCardProps) {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const title = t(
+    partner ? 'e2ee.partner_warning_title' : 'e2ee.warning_title',
+  );
 
   return (
-    <ModalCard>
-      <Centred>
-        <ModalTitle>
-          {t(partner ? 'e2ee.partner_warning_title' : 'e2ee.warning_title')}
-        </ModalTitle>
+    <Card width={CardSizes.Medium}>
+      <StyledCardHeader asContainer textColor={theme.color.text.error}>
+        <ExclamationIcon label={title} color={theme.color.text.error} />
+        <Text
+          type={TextTypes.Heading4}
+          tag="h3"
+          center
+          color={theme.color.text.error}
+        >
+          {title}
+        </Text>
+      </StyledCardHeader>
+      <CardContent>
         <Text center type={TextTypes.Body4}>
           {t(partner ? 'e2ee.partner_warning_body' : 'e2ee.warning_body')}
         </Text>
-      </Centred>
-      <ButtonsContainer>
-        {!partner && (
-          <Button
-            appearance={ButtonAppearance.Secondary}
-            size={ButtonSizes.Small}
-            onClick={() => window.location.reload()}
-          >
-            {t('e2ee.warning_reload')}
+      </CardContent>
+      <CardFooter align="center">
+        <ButtonsContainer>
+          {!partner && (
+            <Button
+              appearance={ButtonAppearance.Secondary}
+              size={ButtonSizes.Stretch}
+              onClick={() => window.location.reload()}
+            >
+              {t('e2ee.warning_reload')}
+            </Button>
+          )}
+          <Button size={ButtonSizes.Stretch} onClick={onContinue}>
+            {t('e2ee.warning_continue')}
           </Button>
-        )}
-        <Button size={ButtonSizes.Small} onClick={onContinue}>
-          {t('e2ee.warning_continue')}
-        </Button>
-      </ButtonsContainer>
-    </ModalCard>
+        </ButtonsContainer>
+      </CardFooter>
+    </Card>
   );
 }
 
