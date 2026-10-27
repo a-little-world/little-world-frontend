@@ -188,7 +188,7 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
       videoPermissionDenied: videoPermissionError,
     });
     joinedRef.current = true;
-    navigate(getCallRoute(userPk));
+    navigate(getCallRoute(userPk), { replace: true });
   };
 
   useEffect(() => {
