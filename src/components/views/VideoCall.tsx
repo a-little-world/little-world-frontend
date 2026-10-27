@@ -113,14 +113,6 @@ interface MyVideoConferenceProps {
   onDisconnectClick: () => void;
 }
 
-// Android AudioAttributes usages, mirrored from the native CallAudio module.
-const USAGE_MEDIA = 1;
-const USAGE_VOICE_COMMUNICATION = 2;
-
-// Chrome keeps a closed output stream idle for 5s and hands it to the next player,
-// so the playout has to stay down longer than that to get a fresh stream.
-const REROUTE_GAP_MS = 6000;
-
 const MIC_GATED_CONNECT_OPTIONS = { autoSubscribe: false };
 
 const E2EE_UNAVAILABLE_TOPIC = 'e2ee-unavailable';
@@ -132,84 +124,6 @@ const CALL_ENDED_REASONS = [
   DisconnectReason.ROOM_DELETED,
   DisconnectReason.ROOM_CLOSED,
 ];
-
-async function fetchAudioState(): Promise<{
-  mode?: number;
-  usages?: number[];
-} | null> {
-  const bridge = useReceiveHandlerStore.getState().sendMessageToReactNative;
-  try {
-    const res = await bridge?.({ action: 'GET_AUDIO_STATE', payload: {} });
-    if (res && res.ok) return res.data;
-  } catch {
-    // unknown state; the caller keeps polling
-  }
-  return null;
-}
-
-/**
- * Renders remote call audio and verifies the WebView routed it through the
- * voice-communication stream. On Android the remote playout latches onto STREAM_MUSIC when
- * it is created while no mic is open (e.g. joining with the mic off and turning it on later);
- * when that happens we tear the playout down and re-create it until it lands on the call
- * stream. Web has no such routing.
- */
-function RoutedRoomAudio() {
-  const { microphoneTrack } = useLocalParticipant();
-  const tracks = useTracks([Track.Source.Microphone], { onlySubscribed: true });
-  const hasRemoteAudio = tracks.some(
-    ref =>
-      ref.participant &&
-      !(ref.participant instanceof LocalParticipant) &&
-      !!ref.publication &&
-      !ref.publication.isMuted,
-  );
-
-  const micLive =
-    microphoneTrack?.track?.mediaStreamTrack?.readyState === 'live';
-
-  const [rerouting, setRerouting] = useState(false);
-  const attemptsRef = useRef(0);
-
-  useEffect(() => {
-    if (!environment.isNative || !micLive || !hasRemoteAudio || rerouting) {
-      return undefined;
-    }
-    let cancelled = false;
-    const poll = async () => {
-      const state = await fetchAudioState();
-      if (cancelled) return;
-      const usages = state?.usages ?? [];
-      if (usages.includes(USAGE_VOICE_COMMUNICATION)) {
-        attemptsRef.current = 0;
-        return;
-      }
-      if (usages.includes(USAGE_MEDIA) && attemptsRef.current < 3) {
-        attemptsRef.current += 1;
-        console.warn(
-          `[call-audio] remote audio latched media; re-creating playout (attempt ${attemptsRef.current})`,
-        );
-        setRerouting(true);
-        return;
-      }
-      setTimeout(poll, 500);
-    };
-    const timer = setTimeout(poll, 500);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [micLive, hasRemoteAudio, rerouting]);
-
-  useEffect(() => {
-    if (!rerouting) return undefined;
-    const timer = setTimeout(() => setRerouting(false), REROUTE_GAP_MS);
-    return () => clearTimeout(timer);
-  }, [rerouting]);
-
-  if (rerouting) return null;
-  return <RoomAudioRenderer />;
-}
 
 const reopenTrack = async (room: Room, track: LocalTrack) => {
   const { deviceId } = track.mediaStreamTrack.getSettings();
@@ -886,7 +800,7 @@ function VideoCall() {
               />
               <CallTracks waitForMic={waitForMic} />
               <UnencryptedPartnerFallback />
-              <RoutedRoomAudio />
+              <RoomAudioRenderer />
               {!callRejected && (
                 <TopControlBar
                   activeOption={selectedDrawerOption}
