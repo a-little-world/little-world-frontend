@@ -72,6 +72,7 @@ import CallSidebar, {
   SidebarSelectionProvider,
 } from '../blocks/Calls/CallSidebar';
 import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar';
+import E2EEWarningModal from '../blocks/Calls/E2EEWarningModal';
 import Chat from '../blocks/ChatCore/Chat';
 import QuestionCards from '../blocks/QuestionCards/QuestionCards';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool';
@@ -557,6 +558,17 @@ function VideoCall() {
   const e2eePending = !!e2eeKey && !e2eeUnavailable && !encryptedRoom;
   const room = e2eeKey && !e2eeUnavailable ? encryptedRoom : undefined;
 
+  const [partnerUnencrypted, setPartnerUnencrypted] = useState(false);
+  const [e2eeWarningDismissed, setE2eeWarningDismissed] = useState(false);
+  const ownClientUnencrypted = !isE2EEAvailable();
+  // no key for a capable client -> the partner's client reported it can't encrypt
+  const showE2EEWarning =
+    !!token &&
+    !e2eeWarningDismissed &&
+    (ownClientUnencrypted || !e2eeKey || partnerUnencrypted);
+  // not connected until confirmed, so reloading from the warning can't drop a joined call
+  const awaitingUnencryptedJoin = ownClientUnencrypted && !e2eeWarningDismissed;
+
   // partner's client can't encrypt (it joined after we got our key) -> it can't decrypt us either
   useEffect(() => {
     if (!encryptedRoom) return undefined;
@@ -566,6 +578,7 @@ function VideoCall() {
     ) => {
       if (publication.isEncrypted || !encryptedRoom.isE2EEEnabled) return;
       console.warn('[e2ee] partner media is unencrypted; disabling encryption');
+      setPartnerUnencrypted(true);
       encryptedRoom.setE2EEEnabled(false).catch(error => {
         console.warn('[e2ee] disabling encryption failed', error);
       });
@@ -705,7 +718,7 @@ function VideoCall() {
                 !setupTrackKinds.has(Track.Kind.Audio) &&
                 (audioPermissionDenied ? true : audioOptions)
               }
-              token={e2eePending ? undefined : token}
+              token={e2eePending || awaitingUnencryptedJoin ? undefined : token}
               serverUrl={livekitServerUrl}
               onEncryptionError={error => {
                 console.warn('[e2ee] encryption error', error);
@@ -822,6 +835,11 @@ function VideoCall() {
           onClose={() => setShowPermissionModal(false)}
         />
       )}
+      <E2EEWarningModal
+        partner={!ownClientUnencrypted}
+        open={showE2EEWarning}
+        onContinue={() => setE2eeWarningDismissed(true)}
+      />
     </SidebarSelectionProvider>
   );
 }

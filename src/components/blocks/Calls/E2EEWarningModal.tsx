@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonAppearance,
   ButtonSizes,
   Modal,
   Text,
@@ -7,43 +8,54 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 
+import ButtonsContainer from '../../atoms/ButtonsContainer';
 import ModalCard, { Centred, ModalTitle } from '../Cards/ModalCard';
 
-/**
- * Blocking content for clients that cannot encrypt call media. There is deliberately no
- * action to continue into a call: calls are only offered with end-to-end encryption, so
- * the client has to be updated instead.
- */
-export function E2EEWarningCard() {
+type E2EEWarningCardProps = {
+  onContinue: () => void;
+  /** the partner's client cannot encrypt, not this one */
+  partner?: boolean;
+};
+
+function E2EEWarningCard({ onContinue, partner }: E2EEWarningCardProps) {
   const { t } = useTranslation();
 
   return (
     <ModalCard>
       <Centred>
-        <ModalTitle>{t('e2ee.warning_title')}</ModalTitle>
+        <ModalTitle>
+          {t(partner ? 'e2ee.partner_warning_title' : 'e2ee.warning_title')}
+        </ModalTitle>
         <Text center type={TextTypes.Body4}>
-          {t('e2ee.warning_body')}
+          {t(partner ? 'e2ee.partner_warning_body' : 'e2ee.warning_body')}
         </Text>
       </Centred>
-      <Button size={ButtonSizes.Small} onClick={() => window.location.reload()}>
-        {t('e2ee.warning_reload')}
-      </Button>
+      <ButtonsContainer>
+        {!partner && (
+          <Button
+            appearance={ButtonAppearance.Secondary}
+            size={ButtonSizes.Small}
+            onClick={() => window.location.reload()}
+          >
+            {t('e2ee.warning_reload')}
+          </Button>
+        )}
+        <Button size={ButtonSizes.Small} onClick={onContinue}>
+          {t('e2ee.warning_continue')}
+        </Button>
+      </ButtonsContainer>
     </ModalCard>
   );
 }
 
-type E2EEWarningModalProps = {
+type E2EEWarningModalProps = E2EEWarningCardProps & {
   open: boolean;
 };
 
-/**
- * Full-screen variant for the call route, in case it is reached without passing through
- * the call setup (e.g. a stale deep link). The call UI is never rendered for those clients.
- */
-function E2EEWarningModal({ open }: E2EEWarningModalProps) {
+function E2EEWarningModal({ open, ...cardProps }: E2EEWarningModalProps) {
   return (
     <Modal open={open} locked hideCloseButton>
-      <E2EEWarningCard />
+      <E2EEWarningCard {...cardProps} />
     </Modal>
   );
 }
