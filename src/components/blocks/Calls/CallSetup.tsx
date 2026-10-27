@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   CardContent,
@@ -18,21 +18,30 @@ import {
 import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { requestVideoAccessToken } from '../../../api/livekit';
-import { useConnectedCallStore } from '../../../features/stores';
-import { isE2EEAvailable } from '../../../helpers/e2ee';
-import { holdPreviewAudioTracks } from '../../../helpers/video';
+import {
+  useCallTracksStore,
+  useConnectedCallStore,
+} from '../../../features/stores';
 import { getCallRoute } from '../../../router/routes';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
-import { E2EEWarningCard } from './E2EEWarningModal';
 
-export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
-  ${({ theme, $hideJoinBtn }) => css`
+const spin = keyframes`
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+export const CallSetupCard = styled(ModalCard)<{
+  $hideJoinBtn?: boolean;
+  $joining?: boolean;
+}>`
+  ${({ theme, $hideJoinBtn, $joining }) => css`
     padding: ${theme.spacing.large};
     gap: 0;
 
@@ -84,6 +93,27 @@ export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
       css`
         display: none;
       `}
+
+      ${$joining &&
+      css`
+        position: relative;
+        color: transparent;
+        opacity: 1;
+        cursor: progress;
+
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          margin: auto;
+          width: 20px;
+          height: 20px;
+          border: 3px solid ${theme.color.text.reversed};
+          border-right-color: transparent;
+          border-radius: 50%;
+          animation: ${spin} 0.8s linear infinite;
+        }
+      `}
     }
 
     ${MEDIA_DEVICE_MENU_CSS}
@@ -91,11 +121,11 @@ export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
 `;
 
 type CallSetupProps = {
-  onClose: () => void;
+  onJoined: () => void;
   userPk: string;
 };
 
-function CallSetup({ onClose, userPk }: CallSetupProps) {
+function CallSetup({ onJoined, userPk }: CallSetupProps) {
   const navigate = useNavigate();
   const {
     t,
@@ -114,8 +144,36 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
   const { connectToCall } = useConnectedCallStore();
+  const { acquireTracks, releaseTracks } = useCallTracksStore();
 
-  const handleJoin = (values: LocalUserChoices) => {
+  const [joining, setJoining] = useState(false);
+  const joinedRef = useRef(false);
+  const unmountedRef = useRef(false);
+
+  // the call route renders outside this layout, so the dialog only goes away once the
+  // call screen is in; clear the setup state then instead of before navigating
+  useEffect(() => {
+    unmountedRef.current = false;
+    return () => {
+      unmountedRef.current = true;
+      if (joinedRef.current) onJoined();
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleJoin = async (values: LocalUserChoices) => {
+    setJoining(true);
+    const audioOptions = values.audioEnabled
+      ? { deviceId: values.audioDeviceId }
+      : false;
+    const videoOptions = values.videoEnabled
+      ? { deviceId: values.videoDeviceId }
+      : false;
+    // must be opened before PreJoin unmounts and stops its preview tracks
+    await acquireTracks({ audio: audioOptions, video: videoOptions });
+    if (unmountedRef.current) {
+      releaseTracks();
+      return;
+    }
     connectToCall({
       userId: userPk,
       chatId: authData.chatId || '',
@@ -123,25 +181,17 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       callType: 'direct',
       token: authData.token || undefined,
       e2eeKey: authData.e2eeKey || undefined,
-      audioOptions: values.audioEnabled
-        ? { deviceId: values.audioDeviceId }
-        : false,
-      videoOptions: values.videoEnabled
-        ? { deviceId: values.videoDeviceId }
-        : false,
+      audioOptions,
+      videoOptions,
       livekitServerUrl: authData.livekitServerUrl || undefined,
       audioPermissionDenied: audioPermissionError,
       videoPermissionDenied: videoPermissionError,
     });
-    onClose();
-    holdPreviewAudioTracks();
+    joinedRef.current = true;
     navigate(getCallRoute(userPk));
   };
 
   useEffect(() => {
-    // A client that cannot encrypt call media must not receive a room token.
-    if (!isE2EEAvailable()) return;
-
     // Request the video room access token
     requestVideoAccessToken({
       partnerId: userPk,
@@ -181,7 +231,9 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const handleValidate = useCallback(
     (values: PreJoinValues) => {
       const isValid = Boolean(
-        (values.audioAvailable || values.videoAvailable) && authData.token,
+        (values.audioAvailable || values.videoAvailable) &&
+        authData.token &&
+        !joining,
       );
 
       if (values.videoAvailable) {
@@ -193,15 +245,17 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       if (isValid && error) setError('');
       return isValid;
     },
-    [authData.token, error, setAudioPermissionError, setVideoPermissionError],
+    [
+      authData.token,
+      error,
+      joining,
+      setAudioPermissionError,
+      setVideoPermissionError,
+    ],
   );
 
-  if (true || !isE2EEAvailable()) {
-    return <E2EEWarningCard />;
-  }
-
   return (
-    <CallSetupCard>
+    <CallSetupCard $joining={joining}>
       <CardHeader>{t('pcs_main_heading')}</CardHeader>
       <CardContent>
         <Text center type={TextTypes.Body4}>

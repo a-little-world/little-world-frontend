@@ -44,10 +44,11 @@ import {
   rejectMatch,
 } from '../../../api/randomCalls';
 import { COMMUNITY_EVENT_FREQUENCIES, USER_TYPES } from '../../../constants';
-import { useConnectedCallStore } from '../../../features/stores';
-import { isE2EEAvailable } from '../../../helpers/e2ee';
+import {
+  useCallTracksStore,
+  useConnectedCallStore,
+} from '../../../features/stores';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
-import { holdPreviewAudioTracks } from '../../../helpers/video';
 import {
   getAppAbsoluteRoute,
   getAppRoute,
@@ -57,7 +58,6 @@ import {
 import ProfileImage from '../../atoms/ProfileImage';
 import { Schedule } from '../../atoms/Schedule';
 import { CallSetupCard } from '../Calls/CallSetup';
-import { E2EEWarningCard } from '../Calls/E2EEWarningModal';
 import { TextField } from '../Profile/styles';
 
 type LobbyState = 'idle' | 'partner_found' | 'timeout' | 'rejected';
@@ -706,8 +706,6 @@ const RandomCallsLobby = ({
   }, [lobbyState, leaveLobbySilently]);
 
   const handleJoinComplete = useCallback(async () => {
-    if (!isE2EEAvailable()) return;
-
     setError(null);
     try {
       await joinLobby(lobbyUuid);
@@ -836,14 +834,18 @@ const RandomCallsLobby = ({
   };
 
   const handleBothAccepted = async (acceptedMatchData?: MatchData) => {
-    if (!isE2EEAvailable()) return;
-
     const currentMatchData = acceptedMatchData ?? matchData;
     if (!currentMatchData) return;
 
     setError(null);
     try {
       const roomData = await authenticateRoom(lobbyUuid, currentMatchData.uuid);
+      const audioOptions = deviceChoices?.audioEnabled
+        ? { deviceId: deviceChoices.audioDeviceId }
+        : false;
+      const videoOptions = deviceChoices?.videoEnabled
+        ? { deviceId: deviceChoices.videoDeviceId }
+        : false;
 
       // Set up call connection with room data, including device choices
       connectToCall({
@@ -856,12 +858,8 @@ const RandomCallsLobby = ({
         e2eeKey: roomData.e2ee_key || undefined,
         livekitServerUrl: roomData.server_url,
         callType: 'random',
-        audioOptions: deviceChoices?.audioEnabled
-          ? { deviceId: deviceChoices.audioDeviceId }
-          : false,
-        videoOptions: deviceChoices?.videoEnabled
-          ? { deviceId: deviceChoices.videoDeviceId }
-          : false,
+        audioOptions,
+        videoOptions,
         audioPermissionDenied: audioPermissionError,
         videoPermissionDenied: videoPermissionError,
         postDisconnectRedirect: `${getAppRoute(
@@ -869,7 +867,10 @@ const RandomCallsLobby = ({
         )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
       });
 
-      holdPreviewAudioTracks();
+      await useCallTracksStore.getState().acquireTracks({
+        audio: audioOptions,
+        video: videoOptions,
+      });
 
       // Navigate to the random call screen for the partner
       navigate(getRandomCallRoute(currentMatchData.partner.id));
@@ -893,10 +894,6 @@ const RandomCallsLobby = ({
     },
     [],
   );
-
-  if (!isE2EEAvailable()) {
-    return <E2EEWarningCard />;
-  }
 
   switch (lobbyState) {
     case 'partner_found':

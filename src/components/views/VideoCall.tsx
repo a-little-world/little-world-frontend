@@ -14,8 +14,10 @@ import {
   PermissionsModal,
   RoomAudioRenderer,
   TrackReferenceOrPlaceholder,
+  useConnectionState,
   useDisconnectButton,
   useLocalParticipant,
+  useRoomContext,
   useRoomInfo,
   useTracks,
 } from '@livekit/components-react';
@@ -25,7 +27,15 @@ import '@livekit/components-styles';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { LocalParticipant, Room, Track } from 'livekit-client';
+import {
+  ConnectionState,
+  LocalParticipant,
+  RemoteTrack,
+  RemoteTrackPublication,
+  Room,
+  RoomEvent,
+  Track,
+} from 'livekit-client';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -42,12 +52,12 @@ import { callAgain } from '../../api/livekit';
 import { endRandomCallMatch } from '../../api/randomCalls';
 import { environment } from '../../environment';
 import {
+  useCallTracksStore,
   useChatInputStore,
   useConnectedCallStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
 import { createEncryptedRoom, isE2EEAvailable } from '../../helpers/e2ee';
-import { releasePreviewAudioTracks } from '../../helpers/video';
 import useIsBelowBreakpoint from '../../hooks/useIsBelowBreakpoint';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import {
@@ -62,7 +72,6 @@ import CallSidebar, {
   SidebarSelectionProvider,
 } from '../blocks/Calls/CallSidebar';
 import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar';
-import E2EEWarningModal from '../blocks/Calls/E2EEWarningModal';
 import Chat from '../blocks/ChatCore/Chat';
 import QuestionCards from '../blocks/QuestionCards/QuestionCards';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool';
@@ -103,6 +112,10 @@ interface MyVideoConferenceProps {
 const USAGE_MEDIA = 1;
 const USAGE_VOICE_COMMUNICATION = 2;
 
+// Chrome keeps a closed output stream idle for 5s and hands it to the next player,
+// so the playout has to stay down longer than that to get a fresh stream.
+const REROUTE_GAP_MS = 6000;
+
 async function fetchAudioState(): Promise<{
   mode?: number;
   usages?: number[];
@@ -118,14 +131,13 @@ async function fetchAudioState(): Promise<{
 }
 
 /**
- * Renders remote call audio, but only once the local microphone is capturing, and then
- * verifies the WebView actually routed it through the voice-communication stream. On
- * Android the remote playout latches onto STREAM_MUSIC when it is created before the
- * WebView is in MODE_IN_COMMUNICATION (the join case); when that happens we re-create the
- * playout until it lands on the call stream. Web has no such routing, so it renders
- * immediately.
+ * Renders remote call audio and verifies the WebView routed it through the
+ * voice-communication stream. On Android the remote playout latches onto STREAM_MUSIC when
+ * it is created while no mic is open (e.g. joining with the mic off and turning it on later);
+ * when that happens we tear the playout down and re-create it until it lands on the call
+ * stream. Web has no such routing.
  */
-function GatedRoomAudio() {
+function RoutedRoomAudio() {
   const { microphoneTrack } = useLocalParticipant();
   const tracks = useTracks([Track.Source.Microphone], { onlySubscribed: true });
   const hasRemoteAudio = tracks.some(
@@ -139,38 +151,11 @@ function GatedRoomAudio() {
   const micLive =
     microphoneTrack?.track?.mediaStreamTrack?.readyState === 'live';
 
-  const [gateOpen, setGateOpen] = useState(!environment.isNative);
-  const [renderKey, setRenderKey] = useState(0);
-  const releasedRef = useRef(false);
+  const [rerouting, setRerouting] = useState(false);
   const attemptsRef = useRef(0);
 
-  // Once LiveKit's own mic is live, drop the held preview mic.
   useEffect(() => {
-    if (!environment.isNative || !micLive || releasedRef.current) return;
-    releasedRef.current = true;
-    releasePreviewAudioTracks();
-  }, [micLive]);
-
-  // Open the gate once the local mic is live.
-  useEffect(() => {
-    if (!environment.isNative || !micLive || gateOpen) return;
-    setGateOpen(true);
-  }, [micLive, gateOpen]);
-
-  // Safety net: never leave the call silent if the mic signal never arrives.
-  useEffect(() => {
-    if (!environment.isNative || gateOpen) return undefined;
-    const timer = setTimeout(() => {
-      console.warn('[call-audio] mic never went live; opening audio gate');
-      setGateOpen(true);
-    }, 8000);
-    return () => clearTimeout(timer);
-  }, [gateOpen]);
-
-  // Guarantee the outcome rather than assume timing: the WebView's remote playback must be
-  // on the voice-communication route. If it latched media, re-create the playout.
-  useEffect(() => {
-    if (!environment.isNative || !gateOpen || !micLive || !hasRemoteAudio) {
+    if (!environment.isNative || !micLive || !hasRemoteAudio || rerouting) {
       return undefined;
     }
     let cancelled = false;
@@ -182,12 +167,13 @@ function GatedRoomAudio() {
         attemptsRef.current = 0;
         return;
       }
-      if (usages.includes(USAGE_MEDIA) && attemptsRef.current < 5) {
+      if (usages.includes(USAGE_MEDIA) && attemptsRef.current < 3) {
         attemptsRef.current += 1;
         console.warn(
           `[call-audio] remote audio latched media; re-creating playout (attempt ${attemptsRef.current})`,
         );
-        setRenderKey(key => key + 1);
+        setRerouting(true);
+        return;
       }
       setTimeout(poll, 500);
     };
@@ -196,21 +182,36 @@ function GatedRoomAudio() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [gateOpen, micLive, hasRemoteAudio]);
+  }, [micLive, hasRemoteAudio, rerouting]);
 
-  // Stop the held preview mic if the call unmounts before LiveKit took over.
-  useEffect(
-    () => () => {
-      if (!releasedRef.current) {
-        releasedRef.current = true;
-        releasePreviewAudioTracks();
-      }
-    },
-    [],
-  );
+  useEffect(() => {
+    if (!rerouting) return undefined;
+    const timer = setTimeout(() => setRerouting(false), REROUTE_GAP_MS);
+    return () => clearTimeout(timer);
+  }, [rerouting]);
 
-  if (!gateOpen) return null;
-  return <RoomAudioRenderer key={renderKey} />;
+  if (rerouting) return null;
+  return <RoomAudioRenderer />;
+}
+
+function PublishSetupTracks() {
+  const room = useRoomContext();
+  const connectionState = useConnectionState();
+
+  useEffect(() => {
+    if (connectionState !== ConnectionState.Connected) return;
+    useCallTracksStore
+      .getState()
+      .takeTracks()
+      .forEach(track =>
+        room.localParticipant.publishTrack(track).catch(error => {
+          console.warn('[call-tracks] could not publish track', error);
+          track.stop();
+        }),
+      );
+  }, [connectionState, room]);
+
+  return null;
 }
 
 function MyVideoConference({
@@ -238,6 +239,7 @@ function MyVideoConference({
     ],
     { onlySubscribed: true },
   );
+  const connectionState = useConnectionState();
   const [currentParticipants, setCurrentParticipants] = useState(1);
   const [otherUserDisconnected, setOtherUserDisconnected] = useState(false);
   const [callAgainError, setCallAgainError] = useState('');
@@ -365,7 +367,8 @@ function MyVideoConference({
     return t('call.waiting_for_partner', { name: partnerName });
   };
   const waitingMessage = getWaitingMessage();
-  if (isEmpty(tracks)) return null;
+  if (isEmpty(tracks) || connectionState === ConnectionState.Disconnected)
+    return null;
   return (
     <Videos>
       {!callRejected && (
@@ -556,6 +559,44 @@ function VideoCall() {
   const e2eePending = !!e2eeKey && !e2eeUnavailable && !encryptedRoom;
   const room = e2eeKey && !e2eeUnavailable ? encryptedRoom : undefined;
 
+  // partner's client can't encrypt (it joined after we got our key) -> it can't decrypt us either
+  useEffect(() => {
+    if (!encryptedRoom) return undefined;
+    const onTrackSubscribed = (
+      _track: RemoteTrack,
+      publication: RemoteTrackPublication,
+    ) => {
+      if (publication.isEncrypted || !encryptedRoom.isE2EEEnabled) return;
+      console.warn('[e2ee] partner media is unencrypted; disabling encryption');
+      encryptedRoom.setE2EEEnabled(false).catch(error => {
+        console.warn('[e2ee] disabling encryption failed', error);
+      });
+    };
+    encryptedRoom.on(RoomEvent.TrackSubscribed, onTrackSubscribed);
+    return () => {
+      encryptedRoom.off(RoomEvent.TrackSubscribed, onTrackSubscribed);
+    };
+  }, [encryptedRoom]);
+
+  // devices the setup already opened are published as-is instead of being reopened
+  const [setupTrackKinds] = useState(
+    () =>
+      new Set(useCallTracksStore.getState().tracks.map(track => track.kind)),
+  );
+
+  const mountedRef = useRef(false);
+  const leavingRef = useRef(false);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      // deferred so StrictMode's remount doesn't drop the tracks
+      setTimeout(() => {
+        if (!mountedRef.current) useCallTracksStore.getState().releaseTracks();
+      });
+    };
+  }, []);
+
   // Native hosts the call in a WebView and needs to know when to redirect the
   // hardware volume keys at the stream the call audio is actually on.
   useEffect(() => {
@@ -572,6 +613,10 @@ function VideoCall() {
   }, []);
 
   useEffect(() => {
+    // route is rendered once more after disconnecting
+    // urlUserId is still set and token is null
+    // -> routed again to the call setup screen
+    if (leavingRef.current) return;
     if (urlUserId && !token) {
       // If userId is in url but no token available, redirect to call-setup so we can re-join the call
       if (isRandomCallRoute) {
@@ -641,12 +686,6 @@ function VideoCall() {
     });
   }, [callType, isRandomCallRoute, randomMatchId]);
 
-  // Never connect a call from a client that cannot encrypt its media, even when this route
-  // is reached directly (deep link, stale call state).
-  if (!isE2EEAvailable()) {
-    return <E2EEWarningModal open />;
-  }
-
   return (
     <SidebarSelectionProvider
       value={{
@@ -660,14 +699,21 @@ function VideoCall() {
           <VideoContainer $isFullScreen={isFullScreen} $showChat={showChat}>
             <LiveKitRoom
               room={room}
-              video={videoPermissionDenied ? true : videoOptions}
-              audio={audioPermissionDenied ? true : audioOptions}
+              video={
+                !setupTrackKinds.has(Track.Kind.Video) &&
+                (videoPermissionDenied ? true : videoOptions)
+              }
+              audio={
+                !setupTrackKinds.has(Track.Kind.Audio) &&
+                (audioPermissionDenied ? true : audioOptions)
+              }
               token={e2eePending ? undefined : token}
               serverUrl={livekitServerUrl}
               onEncryptionError={error => {
                 console.warn('[e2ee] encryption error', error);
               }}
               onDisconnected={() => {
+                leavingRef.current = true;
                 disconnectFromCall({
                   sessionId: uuid,
                   partnerId: chatData?.partner?.id,
@@ -713,7 +759,8 @@ function VideoCall() {
                 callRejected={callRejected}
                 onDisconnectClick={handleManualDisconnect}
               />
-              <GatedRoomAudio />
+              <PublishSetupTracks />
+              <RoutedRoomAudio />
               {!callRejected && (
                 <TopControlBar
                   activeOption={selectedDrawerOption}

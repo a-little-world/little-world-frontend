@@ -311,14 +311,9 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         }}
       >
         <CallSetup
-          onClose={() => {
+          onJoined={() => {
             cancelCallSetup();
-            setSearchParams(prev => {
-              const newParams = new URLSearchParams(prev);
-              newParams.delete('call-setup');
-              return newParams;
-            });
-            closeModal();
+            dismissModal(ModalTypes.CALL_SETUP.id);
           }}
           userPk={callSetup?.userId as string}
         />
