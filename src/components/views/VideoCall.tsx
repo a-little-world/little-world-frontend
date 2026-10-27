@@ -219,7 +219,17 @@ function PublishSetupTracks() {
       .forEach(track =>
         room.localParticipant.publishTrack(track).catch(error => {
           console.warn('[call-tracks] could not publish track', error);
+          const { deviceId } = track.mediaStreamTrack.getSettings();
           track.stop();
+          if (track.isMuted) return;
+          // LiveKitRoom skips devices the setup opened, so reopen it here
+          const options = deviceId ? { deviceId } : undefined;
+          (track.kind === Track.Kind.Audio
+            ? room.localParticipant.setMicrophoneEnabled(true, options)
+            : room.localParticipant.setCameraEnabled(true, options)
+          ).catch(reopenError => {
+            console.warn('[call-tracks] could not reopen device', reopenError);
+          });
         }),
       );
   }, [connectionState, room]);
