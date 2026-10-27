@@ -301,39 +301,35 @@ function ControlBar({
   return (
     <Bar $position="bottom">
       <Section>
-        <div>
-          <MediaControl $permissionDenied={audioPermissionDenied}>
-            <Tooltip
-              text={t('call.microphone_toggle_tooltip')}
-              trigger={
-                <div>
-                  <Toggle
-                    onClick={
-                      audioPermissionDenied
-                        ? handleOpenPermissionModal
-                        : undefined
-                    }
-                    source={Track.Source.Microphone}
-                    onPermissionsChange={setAudioPermissionDenied}
-                    showIcon
-                    $withBackground
-                    $permissionDenied={audioPermissionDenied}
-                    permissionDenied={audioPermissionDenied}
-                  />
-                </div>
-              }
-            />
-            <MediaDeviceMenu
-              kind="audioinput"
-              disabled={audioPermissionDenied}
-              tracks={{
-                audioinput: microphoneTrack?.track as
-                  | LocalAudioTrack
-                  | undefined,
-              }}
-            />
-          </MediaControl>
-        </div>
+        <MediaControl $permissionDenied={audioPermissionDenied}>
+          <Tooltip
+            text={t('call.microphone_toggle_tooltip')}
+            trigger={
+              <div>
+                <Toggle
+                  onClick={
+                    audioPermissionDenied
+                      ? handleOpenPermissionModal
+                      : undefined
+                  }
+                  source={Track.Source.Microphone}
+                  onPermissionsChange={setAudioPermissionDenied}
+                  showIcon
+                  $withBackground
+                  $permissionDenied={audioPermissionDenied}
+                  permissionDenied={audioPermissionDenied}
+                />
+              </div>
+            }
+          />
+          <MediaDeviceMenu
+            kind="audioinput"
+            disabled={audioPermissionDenied}
+            tracks={{
+              audioinput: microphoneTrack?.track as LocalAudioTrack | undefined,
+            }}
+          />
+        </MediaControl>
 
         <MediaControl $permissionDenied={videoPermissionDenied}>
           <Tooltip
