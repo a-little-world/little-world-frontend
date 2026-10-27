@@ -300,7 +300,7 @@ const RandomCallSetup = ({
   }
 
   return (
-    <CallSetupCard $hideJoinBtn>
+    <CallSetupCard>
       <LobbyLoading size={LoadingSizes.Small} inline />
       <CardHeader>{t('random_calls.lobby_title')}</CardHeader>
       <CardContent>

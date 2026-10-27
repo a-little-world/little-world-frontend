@@ -2,7 +2,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
+  Button,
+  ButtonSizes,
   CardContent,
+  CardFooter,
   CardHeader,
   StatusMessage,
   StatusTypes,
@@ -11,14 +14,13 @@ import {
 } from '@a-little-world/little-world-design-system';
 import {
   DevicePermissionError,
-  LocalUserChoices,
   PreJoin,
   PreJoinValues,
 } from '@livekit/components-react';
 import type { PrejoinLanguage } from '@livekit/components-react/dist/prefabs/prejoinTranslations';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../api/endpoints';
@@ -32,17 +34,8 @@ import { getCallRoute } from '../../../router/routes';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
 
-const spin = keyframes`
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-export const CallSetupCard = styled(ModalCard)<{
-  $hideJoinBtn?: boolean;
-  $joining?: boolean;
-}>`
-  ${({ theme, $hideJoinBtn, $joining }) => css`
+export const CallSetupCard = styled(ModalCard)`
+  ${({ theme }) => css`
     padding: ${theme.spacing.large};
     gap: 0;
 
@@ -65,56 +58,7 @@ export const CallSetupCard = styled(ModalCard)<{
     }
 
     .lk-join-button {
-      font-weight: 700;
-      border-radius: 90px;
-      padding: ${theme.spacing.xsmall} ${theme.spacing.small};
-      height: 49px;
-      width: 100%;
-      color: ${theme.color.text.reversed};
-      border: none;
-      background: ${theme.color.gradient.orange10};
-      transition:
-        background-color 0.5s ease,
-        filter 0.5s ease,
-        border-color 0.5s ease,
-        color 0.5s ease,
-        0.4s;
-
-      &:not(:disabled):hover {
-        filter: brightness(80%);
-        transition:
-          background-color 0.5s ease,
-          filter 0.5s ease,
-          border-color 0.5s ease,
-          color 0.5s ease,
-          0.4s;
-      }
-
-      ${$hideJoinBtn &&
-      css`
-        display: none;
-      `}
-
-      ${$joining &&
-      css`
-        position: relative;
-        color: transparent;
-        opacity: 1;
-        cursor: progress;
-
-        &::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          margin: auto;
-          width: 20px;
-          height: 20px;
-          border: 3px solid ${theme.color.text.reversed};
-          border-right-color: transparent;
-          border-radius: 50%;
-          animation: ${spin} 0.8s linear infinite;
-        }
-      `}
+      display: none;
     }
 
     ${MEDIA_DEVICE_MENU_CSS}
@@ -147,6 +91,8 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
   const { connectToCall } = useConnectedCallStore();
   const { acquireTracks, releaseTracks } = useCallTracksStore();
 
+  const [choices, setChoices] = useState<PreJoinValues | null>(null);
+  const [canJoin, setCanJoin] = useState(false);
   const [joining, setJoining] = useState(false);
   const joinedRef = useRef(false);
   const unmountedRef = useRef(false);
@@ -160,7 +106,7 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleJoin = async (values: LocalUserChoices) => {
+  const handleJoin = async (values: PreJoinValues) => {
     setJoining(true);
     const deviceOptions = getDeviceOptions(values);
     // must be opened before PreJoin unmounts and stops its preview tracks
@@ -225,10 +171,9 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
 
   const handleValidate = useCallback(
     (values: PreJoinValues) => {
+      setChoices(values);
       const isValid = Boolean(
-        (values.audioAvailable || values.videoAvailable) &&
-        authData.token &&
-        !joining,
+        (values.audioAvailable || values.videoAvailable) && authData.token,
       );
 
       if (values.videoAvailable) {
@@ -237,20 +182,15 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
       if (values.audioAvailable) {
         setAudioPermissionError(false);
       }
+      setCanJoin(isValid);
       if (isValid && error) setError('');
       return isValid;
     },
-    [
-      authData.token,
-      error,
-      joining,
-      setAudioPermissionError,
-      setVideoPermissionError,
-    ],
+    [authData.token, error, setAudioPermissionError, setVideoPermissionError],
   );
 
   return (
-    <CallSetupCard $joining={joining}>
+    <CallSetupCard>
       <CardHeader>{t('pcs_main_heading')}</CardHeader>
       <CardContent>
         <Text center type={TextTypes.Body4}>
@@ -259,7 +199,6 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
       </CardContent>
       <PreJoin
         language={language as PrejoinLanguage}
-        onSubmit={handleJoin}
         camLabel={t('pcs_camera_label')}
         micLabel={t('pcs_mic_label')}
         joinLabel={t('pcs_btn_join_call')}
@@ -273,6 +212,16 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
           {t(error)}
         </StatusMessage>
       )}
+      <CardFooter align="center">
+        <Button
+          size={ButtonSizes.Stretch}
+          disabled={!canJoin || joining}
+          loading={joining}
+          onClick={() => choices && handleJoin(choices)}
+        >
+          {t('pcs_btn_join_call')}
+        </Button>
+      </CardFooter>
     </CallSetupCard>
   );
 }
