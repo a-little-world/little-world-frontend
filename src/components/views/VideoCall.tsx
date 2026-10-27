@@ -29,6 +29,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   ConnectionState,
+  DisconnectReason,
   LocalParticipant,
   RemoteTrack,
   RemoteTrackPublication,
@@ -115,6 +116,14 @@ const USAGE_VOICE_COMMUNICATION = 2;
 // Chrome keeps a closed output stream idle for 5s and hands it to the next player,
 // so the playout has to stay down longer than that to get a fresh stream.
 const REROUTE_GAP_MS = 6000;
+
+const CALL_ENDED_REASONS = [
+  DisconnectReason.CLIENT_INITIATED,
+  DisconnectReason.DUPLICATE_IDENTITY,
+  DisconnectReason.PARTICIPANT_REMOVED,
+  DisconnectReason.ROOM_DELETED,
+  DisconnectReason.ROOM_CLOSED,
+];
 
 async function fetchAudioState(): Promise<{
   mode?: number;
@@ -712,12 +721,18 @@ function VideoCall() {
               onEncryptionError={error => {
                 console.warn('[e2ee] encryption error', error);
               }}
-              onDisconnected={() => {
+              onDisconnected={reason => {
                 leavingRef.current = true;
                 disconnectFromCall({
                   sessionId: uuid,
                   partnerId: chatData?.partner?.id,
                 });
+                const connectionLost =
+                  reason !== undefined && !CALL_ENDED_REASONS.includes(reason);
+                if (connectionLost && !isRandomCall && urlUserId) {
+                  navigate(getCallSetupRoute(urlUserId), { replace: true });
+                  return;
+                }
                 if (postDisconnectRedirect) {
                   navigate(postDisconnectRedirect, { replace: true });
                   return;
