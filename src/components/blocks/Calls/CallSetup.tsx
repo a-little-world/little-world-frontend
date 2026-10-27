@@ -27,11 +27,9 @@ import {
   useCallTracksStore,
   useConnectedCallStore,
 } from '../../../features/stores';
-import { isE2EEAvailable } from '../../../helpers/e2ee';
 import { getCallRoute } from '../../../router/routes';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
-import { E2EEWarningCard } from './E2EEWarningModal';
 
 const spin = keyframes`
   to {
@@ -194,9 +192,6 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
   };
 
   useEffect(() => {
-    // A client that cannot encrypt call media must not receive a room token.
-    if (!isE2EEAvailable()) return;
-
     // Request the video room access token
     requestVideoAccessToken({
       partnerId: userPk,
@@ -258,10 +253,6 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
       setVideoPermissionError,
     ],
   );
-
-  if (true || !isE2EEAvailable()) {
-    return <E2EEWarningCard />;
-  }
 
   return (
     <CallSetupCard $joining={joining}>
