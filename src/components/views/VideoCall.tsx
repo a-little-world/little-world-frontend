@@ -29,8 +29,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   ConnectionState,
+  DataPacket_Kind,
   DisconnectReason,
   LocalParticipant,
+  RemoteParticipant,
   RemoteTrack,
   RemoteTrackPublication,
   Room,
@@ -116,6 +118,8 @@ const USAGE_VOICE_COMMUNICATION = 2;
 // Chrome keeps a closed output stream idle for 5s and hands it to the next player,
 // so the playout has to stay down longer than that to get a fresh stream.
 const REROUTE_GAP_MS = 6000;
+
+const E2EE_UNAVAILABLE_TOPIC = 'e2ee-unavailable';
 
 const CALL_ENDED_REASONS = [
   DisconnectReason.CLIENT_INITIATED,
@@ -219,6 +223,62 @@ function PublishSetupTracks() {
         }),
       );
   }, [connectionState, room]);
+
+  return null;
+}
+
+// partner's client can't encrypt (it joined after we got our key) -> it can't decrypt us either;
+// announced over data too, since a partner without mic and camera publishes no tracks
+function UnencryptedPartnerFallback() {
+  const room = useRoomContext();
+
+  useEffect(() => {
+    const disableEncryption = () => {
+      if (!room.isE2EEEnabled) return;
+      console.warn('[e2ee] partner is unencrypted; disabling encryption');
+      room.setE2EEEnabled(false).catch(error => {
+        console.warn('[e2ee] disabling encryption failed', error);
+      });
+    };
+    const onTrackSubscribed = (
+      _track: RemoteTrack,
+      publication: RemoteTrackPublication,
+    ) => {
+      if (!publication.isEncrypted) disableEncryption();
+    };
+    const onDataReceived = (
+      _payload: Uint8Array,
+      _participant?: RemoteParticipant,
+      _kind?: DataPacket_Kind,
+      topic?: string,
+    ) => {
+      if (topic === E2EE_UNAVAILABLE_TOPIC) disableEncryption();
+    };
+    const announceUnencrypted = () => {
+      if (room.isE2EEEnabled) return;
+      room.localParticipant
+        .publishData(new Uint8Array([1]), {
+          reliable: true,
+          topic: E2EE_UNAVAILABLE_TOPIC,
+        })
+        .catch(error => {
+          console.warn('[e2ee] announcing unencrypted client failed', error);
+        });
+    };
+
+    room
+      .on(RoomEvent.TrackSubscribed, onTrackSubscribed)
+      .on(RoomEvent.DataReceived, onDataReceived)
+      .on(RoomEvent.Connected, announceUnencrypted)
+      .on(RoomEvent.ParticipantConnected, announceUnencrypted);
+    return () => {
+      room
+        .off(RoomEvent.TrackSubscribed, onTrackSubscribed)
+        .off(RoomEvent.DataReceived, onDataReceived)
+        .off(RoomEvent.Connected, announceUnencrypted)
+        .off(RoomEvent.ParticipantConnected, announceUnencrypted);
+    };
+  }, [room]);
 
   return null;
 }
@@ -576,25 +636,6 @@ function VideoCall() {
   const e2eePending = !!e2eeKey && !e2eeUnavailable && !encryptedRoom;
   const room = e2eeKey && !e2eeUnavailable ? encryptedRoom : undefined;
 
-  // partner's client can't encrypt (it joined after we got our key) -> it can't decrypt us either
-  useEffect(() => {
-    if (!encryptedRoom) return undefined;
-    const onTrackSubscribed = (
-      _track: RemoteTrack,
-      publication: RemoteTrackPublication,
-    ) => {
-      if (publication.isEncrypted || !encryptedRoom.isE2EEEnabled) return;
-      console.warn('[e2ee] partner media is unencrypted; disabling encryption');
-      encryptedRoom.setE2EEEnabled(false).catch(error => {
-        console.warn('[e2ee] disabling encryption failed', error);
-      });
-    };
-    encryptedRoom.on(RoomEvent.TrackSubscribed, onTrackSubscribed);
-    return () => {
-      encryptedRoom.off(RoomEvent.TrackSubscribed, onTrackSubscribed);
-    };
-  }, [encryptedRoom]);
-
   // devices the setup already opened are published as-is instead of being reopened
   const [setupTrackKinds] = useState(
     () =>
@@ -783,6 +824,7 @@ function VideoCall() {
                 onDisconnectClick={handleManualDisconnect}
               />
               <PublishSetupTracks />
+              <UnencryptedPartnerFallback />
               <RoutedRoomAudio />
               {!callRejected && (
                 <TopControlBar
