@@ -239,6 +239,7 @@ function MyVideoConference({
     ],
     { onlySubscribed: true },
   );
+  const connectionState = useConnectionState();
   const [currentParticipants, setCurrentParticipants] = useState(1);
   const [otherUserDisconnected, setOtherUserDisconnected] = useState(false);
   const [callAgainError, setCallAgainError] = useState('');
@@ -366,7 +367,8 @@ function MyVideoConference({
     return t('call.waiting_for_partner', { name: partnerName });
   };
   const waitingMessage = getWaitingMessage();
-  if (isEmpty(tracks)) return null;
+  if (isEmpty(tracks) || connectionState === ConnectionState.Disconnected)
+    return null;
   return (
     <Videos>
       {!callRejected && (
