@@ -150,8 +150,7 @@ function CallSetup({ onJoined, userPk }: CallSetupProps) {
   const joinedRef = useRef(false);
   const unmountedRef = useRef(false);
 
-  // the call route renders outside this layout, so the dialog only goes away once the
-  // call screen is in; clear the setup state then instead of before navigating
+  // clear setup once the call screen replaced this layout, not before navigating
   useEffect(() => {
     unmountedRef.current = false;
     return () => {

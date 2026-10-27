@@ -1,11 +1,5 @@
-// Generates prebuild/livekit-e2ee-worker-<version>.js from the installed livekit-client
-// E2EE worker bundle.
-//
-// Web builds load the worker with `new Worker(new URL(..., import.meta.url))`, which
-// webpack turns into a worker chunk. Metro (used for the native app's WebView bundle) can
-// neither emit worker chunks nor provide a usable `import.meta.url`, so the native build
-// starts the worker from this inlined source string instead (blob URL). CI regenerates it
-// and fails when it no longer matches the installed livekit-client.
+// Metro can't emit worker chunks or resolve import.meta.url, so the native build starts
+// the livekit E2EE worker from this inlined source instead.
 import { readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';

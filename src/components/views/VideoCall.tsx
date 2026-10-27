@@ -671,9 +671,7 @@ function VideoCall() {
   }, []);
 
   useEffect(() => {
-    // route is rendered once more after disconnecting
-    // urlUserId is still set and token is null
-    // -> routed again to the call setup screen
+    // onDisconnected navigates itself
     if (leavingRef.current) return;
     if (urlUserId && !token) {
       // If userId is in url but no token available, redirect to call-setup so we can re-join the call

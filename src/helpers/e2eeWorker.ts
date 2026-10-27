@@ -12,12 +12,7 @@ const createWorkerFromInlinedSource = async (): Promise<Worker> => {
   );
 };
 
-/**
- * Web builds let webpack emit a worker chunk via `new URL(..., import.meta.url)`.
- * Metro (the native WebView bundle) can neither emit worker chunks nor provide a
- * usable `import.meta.url`, so it starts the worker from the livekit-client source
- * inlined by scripts/generate-livekit-e2ee-worker.mjs instead.
- */
+// Metro can't emit worker chunks, see scripts/generate-livekit-e2ee-worker.mjs
 export const getE2EEWorker = (): Promise<Worker> => {
   e2eeWorker ??= (
     environment.isNative

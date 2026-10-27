@@ -29,9 +29,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      # The inlined E2EE worker source must always match the installed
-      # livekit-client (the worker protocol is version-locked to the client).
-      # Fails the PR when livekit-client was bumped without regenerating it.
+      # worker protocol is version-locked to livekit-client
       - name: Verify inlined e2ee worker is up to date
         run: |
           pnpm run generate:e2ee-worker
