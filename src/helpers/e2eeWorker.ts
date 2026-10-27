@@ -18,7 +18,7 @@ const createWorkerFromInlinedSource = async (): Promise<Worker> => {
  * usable `import.meta.url`, so it starts the worker from the livekit-client source
  * inlined by scripts/generate-livekit-e2ee-worker.mjs instead.
  */
-export const getE2EEWorker = (): Promise<Worker> => {
+const getE2EEWorker = (): Promise<Worker> => {
   e2eeWorker ??= environment.isNative
     ? createWorkerFromInlinedSource()
     : Promise.resolve(
@@ -26,3 +26,5 @@ export const getE2EEWorker = (): Promise<Worker> => {
       );
   return e2eeWorker;
 };
+
+export default getE2EEWorker;

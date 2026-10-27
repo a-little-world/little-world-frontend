@@ -1,6 +1,6 @@
 import { ExternalE2EEKeyProvider, isE2EESupported, Room } from 'livekit-client';
 
-import { getE2EEWorker } from './e2eeWorker';
+import getE2EEWorker from './e2eeWorker';
 
 export const isE2EEAvailable = () =>
   isE2EESupported() &&

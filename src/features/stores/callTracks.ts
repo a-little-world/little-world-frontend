@@ -34,9 +34,10 @@ const createCamera = async (video: { deviceId: string }) => {
     video: { facingMode: { exact: 'user' } as unknown as 'user' },
   }).catch(() => createTracks({ audio: false, video: true }));
   // restarts reuse these constraints; an exact facingMode would block switching cameras
-  tracks.forEach(
-    track => delete (track.constraints as MediaTrackConstraints).facingMode,
-  );
+  tracks.forEach(track => {
+    const { constraints } = track;
+    delete constraints.facingMode;
+  });
   return tracks;
 };
 
