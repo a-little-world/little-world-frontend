@@ -1,13 +1,23 @@
 import {
   Button,
   ButtonSizes,
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardSizes,
+  ExclamationIcon,
   Modal,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
+import styled, { useTheme } from 'styled-components';
 
-import ModalCard, { Centred, ModalTitle } from '../Cards/ModalCard';
+const StyledCardHeader = styled(CardHeader)`
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+`;
 
 /**
  * Blocking content for clients that cannot encrypt call media. There is deliberately no
@@ -16,19 +26,38 @@ import ModalCard, { Centred, ModalTitle } from '../Cards/ModalCard';
  */
 export function E2EEWarningCard() {
   const { t } = useTranslation();
+  const theme = useTheme();
 
   return (
-    <ModalCard>
-      <Centred>
-        <ModalTitle>{t('e2ee.warning_title')}</ModalTitle>
+    <Card width={CardSizes.Medium}>
+      <StyledCardHeader asContainer textColor={theme.color.text.error}>
+        <ExclamationIcon
+          label={t('e2ee.warning_title')}
+          color={theme.color.text.error}
+        />
+        <Text
+          type={TextTypes.Heading4}
+          tag="h3"
+          center
+          color={theme.color.text.error}
+        >
+          {t('e2ee.warning_title')}
+        </Text>
+      </StyledCardHeader>
+      <CardContent>
         <Text center type={TextTypes.Body4}>
           {t('e2ee.warning_body')}
         </Text>
-      </Centred>
-      <Button size={ButtonSizes.Small} onClick={() => window.location.reload()}>
-        {t('e2ee.warning_reload')}
-      </Button>
-    </ModalCard>
+      </CardContent>
+      <CardFooter align="center">
+        <Button
+          size={ButtonSizes.Stretch}
+          onClick={() => window.location.reload()}
+        >
+          {t('e2ee.warning_reload')}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
 

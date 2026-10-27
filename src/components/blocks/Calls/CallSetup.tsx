@@ -196,7 +196,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     [authData.token, error, setAudioPermissionError, setVideoPermissionError],
   );
 
-  if (!isE2EEAvailable()) {
+  if (true || !isE2EEAvailable()) {
     return <E2EEWarningCard />;
   }
 
