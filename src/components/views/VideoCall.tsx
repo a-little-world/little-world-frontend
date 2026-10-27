@@ -249,6 +249,7 @@ function MyVideoConference({
     { onlySubscribed: true },
   );
   const connectionState = useConnectionState();
+  const [hasConnected, setHasConnected] = useState(false);
   const [currentParticipants, setCurrentParticipants] = useState(1);
   const [otherUserDisconnected, setOtherUserDisconnected] = useState(false);
   const [callAgainError, setCallAgainError] = useState('');
@@ -304,6 +305,10 @@ function MyVideoConference({
       ),
     [tracks],
   );
+
+  useEffect(() => {
+    if (connectionState === ConnectionState.Connected) setHasConnected(true);
+  }, [connectionState]);
 
   useEffect(() => {
     if (name) initializeCallID(name);
@@ -376,7 +381,10 @@ function MyVideoConference({
     return t('call.waiting_for_partner', { name: partnerName });
   };
   const waitingMessage = getWaitingMessage();
-  if (isEmpty(tracks) || connectionState === ConnectionState.Disconnected)
+  if (
+    isEmpty(tracks) ||
+    (hasConnected && connectionState === ConnectionState.Disconnected)
+  )
     return null;
   return (
     <Videos>
