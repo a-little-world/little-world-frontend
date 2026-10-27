@@ -29,9 +29,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   ConnectionState,
+  createLocalTracks,
   DataPacket_Kind,
   DisconnectReason,
   LocalParticipant,
+  LocalTrack,
   RemoteParticipant,
   RemoteTrack,
   RemoteTrackPublication,
@@ -118,6 +120,8 @@ const USAGE_VOICE_COMMUNICATION = 2;
 // Chrome keeps a closed output stream idle for 5s and hands it to the next player,
 // so the playout has to stay down longer than that to get a fresh stream.
 const REROUTE_GAP_MS = 6000;
+
+const MIC_GATED_CONNECT_OPTIONS = { autoSubscribe: false };
 
 const E2EE_UNAVAILABLE_TOPIC = 'e2ee-unavailable';
 
@@ -207,9 +211,37 @@ function RoutedRoomAudio() {
   return <RoomAudioRenderer />;
 }
 
-function PublishSetupTracks() {
+const reopenTrack = async (room: Room, track: LocalTrack) => {
+  const { deviceId } = track.mediaStreamTrack.getSettings();
+  track.stop();
+  const device = deviceId ? { deviceId } : true;
+  const [reopened] = await createLocalTracks(
+    track.kind === Track.Kind.Audio
+      ? { audio: device, video: false }
+      : { audio: false, video: device },
+  );
+  try {
+    if (track.isMuted) await reopened.mute();
+    await room.localParticipant.publishTrack(reopened);
+  } catch (error) {
+    reopened.stop();
+    throw error;
+  }
+};
+
+/**
+ * Publishes the tracks the setup opened and subscribes remote tracks. With `waitForMic`,
+ * remote audio is only subscribed once the local mic is live: on Android its playout latches
+ * onto the media stream when it starts before the mic put the WebView in communication mode.
+ */
+function CallTracks({ waitForMic }: { waitForMic: boolean }) {
   const room = useRoomContext();
   const connectionState = useConnectionState();
+  const { microphoneTrack } = useLocalParticipant();
+  const [micFailed, setMicFailed] = useState(false);
+  const micLive =
+    microphoneTrack?.track?.mediaStreamTrack?.readyState === 'live';
+  const audioAllowed = !waitForMic || micLive || micFailed;
 
   useEffect(() => {
     if (connectionState !== ConnectionState.Connected) return;
@@ -219,20 +251,35 @@ function PublishSetupTracks() {
       .forEach(track =>
         room.localParticipant.publishTrack(track).catch(error => {
           console.warn('[call-tracks] could not publish track', error);
-          const { deviceId } = track.mediaStreamTrack.getSettings();
-          track.stop();
-          if (track.isMuted) return;
-          // LiveKitRoom skips devices the setup opened, so reopen it here
-          const options = deviceId ? { deviceId } : undefined;
-          (track.kind === Track.Kind.Audio
-            ? room.localParticipant.setMicrophoneEnabled(true, options)
-            : room.localParticipant.setCameraEnabled(true, options)
-          ).catch(reopenError => {
+          reopenTrack(room, track).catch(reopenError => {
             console.warn('[call-tracks] could not reopen device', reopenError);
+            if (track.kind === Track.Kind.Audio) setMicFailed(true);
           });
         }),
       );
   }, [connectionState, room]);
+
+  useEffect(() => {
+    const subscribe = (publication: RemoteTrackPublication) => {
+      if (audioAllowed || publication.kind !== Track.Kind.Audio) {
+        publication.setSubscribed(true);
+      }
+    };
+    const subscribeAll = () =>
+      room.remoteParticipants.forEach(participant =>
+        participant.trackPublications.forEach(subscribe),
+      );
+
+    subscribeAll();
+    room
+      .on(RoomEvent.Connected, subscribeAll)
+      .on(RoomEvent.TrackPublished, subscribe);
+    return () => {
+      room
+        .off(RoomEvent.Connected, subscribeAll)
+        .off(RoomEvent.TrackPublished, subscribe);
+    };
+  }, [room, audioAllowed]);
 
   return null;
 }
@@ -651,6 +698,9 @@ function VideoCall() {
     () =>
       new Set(useCallTracksStore.getState().tracks.map(track => track.kind)),
   );
+  // without a setup mic there is no communication mode to wait for
+  const waitForMic =
+    environment.isNative && setupTrackKinds.has(Track.Kind.Audio);
 
   const mountedRef = useRef(false);
   const leavingRef = useRef(false);
@@ -775,6 +825,9 @@ function VideoCall() {
               }
               token={e2eePending ? undefined : token}
               serverUrl={livekitServerUrl}
+              connectOptions={
+                waitForMic ? MIC_GATED_CONNECT_OPTIONS : undefined
+              }
               onEncryptionError={error => {
                 console.warn('[e2ee] encryption error', error);
               }}
@@ -831,7 +884,7 @@ function VideoCall() {
                 callRejected={callRejected}
                 onDisconnectClick={handleManualDisconnect}
               />
-              <PublishSetupTracks />
+              <CallTracks waitForMic={waitForMic} />
               <UnencryptedPartnerFallback />
               <RoutedRoomAudio />
               {!callRejected && (
