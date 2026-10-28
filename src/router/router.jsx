@@ -331,6 +331,7 @@ export function getNativeRouter() {
           path: getAppRoute(EDIT_FORM_ROUTE),
           children: [{ path: ':slug', element: <EditView /> }],
         },
+        { path: getAppRoute(CALL_SETUP_ROUTE), element: <Main /> },
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
         { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
