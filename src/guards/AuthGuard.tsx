@@ -36,6 +36,8 @@ function AuthGuard({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated]);
 
+  // Calls are only offered with end-to-end encryption. Clients that cannot encrypt are
+  // stopped when they try to join a call, not app-wide.
   return isAuthenticated ? children : null;
 }
 
