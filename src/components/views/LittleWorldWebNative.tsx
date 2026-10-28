@@ -15,10 +15,11 @@ import { environment } from '../../environment';
 import { useReceiveHandlerStore } from '../../features/stores';
 import useNativeStore from '../../features/stores/nativeStore';
 import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler';
-import useNativeSwrConfig from '../../hooks/useNativeSwrConfig';
+import { useNativeSwrConfig } from '../../hooks/useNativeSwrConfig';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
 import { getAppRoute } from '../../router/routes';
+import { injectBundledFonts } from '../../webview/injectBundledFonts';
 
 export interface LittleWorldWebNativeProps {
   sendMessageToReactNative: DomCommunicationMessageFn;
@@ -143,6 +144,11 @@ export function LittleWorldWebNative({
       handshakeSentRef.current = false;
     });
   }, [handler, sendMessageToReactNativeSet, sendMessageToReactNative]);
+
+  useEffect(() => {
+    if (!environment.isNative) return undefined;
+    return injectBundledFonts();
+  }, []);
 
   const swrConfig = useNativeSwrConfig();
 
