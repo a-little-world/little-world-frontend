@@ -1,6 +1,8 @@
 import { Text } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
+import { DESKTOP } from '../../views/VideoCall.styles';
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -179,8 +181,8 @@ export const SidebarWrapper = styled.aside<{ $isDisplayed: boolean }>`
   padding: ${({ theme }) => theme.spacing.small};
   flex-shrink: 0;
 
-  ${({ theme, $isDisplayed }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+  ${({ $isDisplayed }) => css`
+    @media ${DESKTOP} {
       display: ${$isDisplayed ? 'flex' : 'none'};
     }
   `}

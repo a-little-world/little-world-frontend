@@ -63,8 +63,8 @@ import {
   useReceiveHandlerStore,
 } from '../../features/stores';
 import { createEncryptedRoom, isE2EEAvailable } from '../../helpers/e2ee';
-import useIsBelowBreakpoint from '../../hooks/useIsBelowBreakpoint';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
+import useMediaQuery from '../../hooks/useMediaQuery';
 import {
   getAppRoute,
   getCallSetupRoute,
@@ -84,6 +84,7 @@ import {
   CallLayout,
   CallRejectedTextContainer,
   CameraPipOverlay,
+  DESKTOP,
   DesktopTranslationTool,
   StyledGridLayout,
   VideoContainer,
@@ -194,6 +195,28 @@ function CallTracks({ waitForMic }: { waitForMic: boolean }) {
         .off(RoomEvent.TrackPublished, subscribe);
     };
   }, [room, audioAllowed]);
+
+  return null;
+}
+
+// a camera opened in one orientation keeps sending that frame shape after rotating
+function RestartCameraOnRotation() {
+  const room = useRoomContext();
+
+  useEffect(() => {
+    const portrait = window.matchMedia('(orientation: portrait)');
+    const restartCamera = () => {
+      const camera = room.localParticipant.getTrackPublication(
+        Track.Source.Camera,
+      )?.videoTrack;
+      if (!camera || camera.isMuted) return;
+      camera.restartTrack().catch(error => {
+        console.warn('[call-tracks] could not restart camera', error);
+      });
+    };
+    portrait.addEventListener('change', restartCamera);
+    return () => portrait.removeEventListener('change', restartCamera);
+  }, [room]);
 
   return null;
 }
@@ -537,7 +560,7 @@ function VideoCall() {
     callRejected,
   } = useConnectedCallStore();
   const { setOnTextAdded } = useChatInputStore();
-  const isBelowBreakpoint = useIsBelowBreakpoint();
+  const isDesktop = useMediaQuery(DESKTOP);
   const {
     uuid,
     token,
@@ -670,15 +693,15 @@ function VideoCall() {
     };
   }, [setOnTextAdded]);
 
-  const onChatToggle = () => {
-    if (isFullScreen) {
-      setShowChat(true);
-      setIsFullScreen(false);
+  const onSidebarToggle = (selection: 'chat' | 'questions') => {
+    if (!isDesktop) {
+      setSelectedDrawerOption(selection);
+    } else if (showChat && sideSelection === selection && !isFullScreen) {
+      setShowChat(false);
     } else {
-      setShowChat(prevState => {
-        if (prevState) setSideSelection('chat');
-        return !prevState;
-      });
+      setShowChat(true);
+      setSideSelection(selection);
+      setIsFullScreen(false);
     }
   };
 
@@ -687,24 +710,14 @@ function VideoCall() {
   };
 
   const onTranslatorToggle = () => {
-    if (isFullScreen) {
+    if (!isDesktop) {
+      setSelectedDrawerOption('translator');
+    } else if (isFullScreen) {
       setShowTranslator(true);
       setIsFullScreen(false);
     } else {
       setShowTranslator(prevState => !prevState);
     }
-  };
-
-  const onMobileTranslatorToggle = () => {
-    setSelectedDrawerOption('translator');
-  };
-
-  const onMobileChatToggle = () => {
-    setSelectedDrawerOption('chat');
-  };
-
-  const onMobileQuestionsToggle = () => {
-    setSelectedDrawerOption('questions');
   };
 
   const handleManualDisconnect = useCallback(() => {
@@ -799,21 +812,22 @@ function VideoCall() {
                 onDisconnectClick={handleManualDisconnect}
               />
               <CallTracks waitForMic={waitForMic} />
+              {environment.isNative && <RestartCameraOnRotation />}
               <UnencryptedPartnerFallback />
               <RoomAudioRenderer />
               {!callRejected && (
                 <TopControlBar
                   activeOption={selectedDrawerOption}
-                  onChatToggle={onMobileChatToggle}
-                  onTranslatorToggle={onMobileTranslatorToggle}
-                  onQuestionCardsToggle={onMobileQuestionsToggle}
+                  onChatToggle={() => onSidebarToggle('chat')}
+                  onTranslatorToggle={onTranslatorToggle}
+                  onQuestionCardsToggle={() => onSidebarToggle('questions')}
                   unreadChatCount={chatData?.unread_count}
                 />
               )}
               <ControlBar
                 hide={callRejected}
                 isFullScreen={isFullScreen}
-                onChatToggle={onChatToggle}
+                onChatToggle={() => onSidebarToggle('chat')}
                 onFullScreenToggle={onFullScreenToggle}
                 onTranslatorToggle={onTranslatorToggle}
                 onDisconnectClick={handleManualDisconnect}
@@ -826,7 +840,9 @@ function VideoCall() {
             </LiveKitRoom>
             {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>
-          {isBelowBreakpoint ? (
+          {isDesktop ? (
+            <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
+          ) : (
             <>
               <Drawer
                 title="Translate"
@@ -852,8 +868,6 @@ function VideoCall() {
                 <QuestionCards />
               </Drawer>
             </>
-          ) : (
-            <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
           )}
         </CallLayout>
       </LayoutContextProvider>
