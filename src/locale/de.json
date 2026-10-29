@@ -43,6 +43,7 @@
   "call.translation_toggle_tooltip": "Übersetzungstool",
   "call.camera_toggle_tooltip": "Kamera",
   "call.microphone_toggle_tooltip": "Mikrofon",
+  "call.questions_toggle_tooltip": "Fragen",
   "call.fullscreen_toggle_tooltip": "Vollbild",
   "call.screenshare_start_tooltip": "Bildschirm teilen",
   "call.screenshare_stop_tooltip": "Bildschirm teilen beenden",

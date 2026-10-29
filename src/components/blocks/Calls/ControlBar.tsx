@@ -220,6 +220,7 @@ interface SharedControlBarProps {
 interface ControlBarProps extends SharedControlBarProps {
   hide: boolean;
   onFullScreenToggle: () => void;
+  onQuestionCardsToggle: () => void;
   isFullScreen: boolean;
   onDisconnectClick?: () => void;
   onPermissionModalOpen: (permissions: {
@@ -261,7 +262,7 @@ export const TopControlBar = ({
         variation={ButtonVariations.Circle}
       >
         <MessageWithQuestionIcon
-          label="question cards"
+          label={t('call.questions_toggle_tooltip')}
           gradient={activeOption === 'questions' ? Gradients.Orange : undefined}
         />
       </ToggleBtn>
@@ -276,6 +277,7 @@ function ControlBar({
   onDisconnectClick,
   onFullScreenToggle,
   onTranslatorToggle,
+  onQuestionCardsToggle,
   onPermissionModalOpen,
   unreadChatCount,
 }: ControlBarProps) {
@@ -453,6 +455,22 @@ function ControlBar({
                 variation={ButtonVariations.Circle}
               >
                 <TranslatorIcon label={t('call.chat_label')} />
+              </ToggleBtn>
+            </div>
+          }
+        />
+        <Tooltip
+          text={t('call.questions_toggle_tooltip')}
+          trigger={
+            <div>
+              <ToggleBtn
+                $desktopOnly
+                onClick={onQuestionCardsToggle}
+                variation={ButtonVariations.Circle}
+              >
+                <MessageWithQuestionIcon
+                  label={t('call.questions_toggle_tooltip')}
+                />
               </ToggleBtn>
             </div>
           }

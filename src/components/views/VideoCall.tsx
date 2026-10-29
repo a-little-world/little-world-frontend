@@ -712,11 +712,11 @@ function VideoCall() {
   const onTranslatorToggle = () => {
     if (!isDesktop) {
       setSelectedDrawerOption('translator');
-    } else if (isFullScreen) {
+    } else if (showTranslator && !isFullScreen) {
+      setShowTranslator(false);
+    } else {
       setShowTranslator(true);
       setIsFullScreen(false);
-    } else {
-      setShowTranslator(prevState => !prevState);
     }
   };
 
@@ -830,6 +830,7 @@ function VideoCall() {
                 onChatToggle={() => onSidebarToggle('chat')}
                 onFullScreenToggle={onFullScreenToggle}
                 onTranslatorToggle={onTranslatorToggle}
+                onQuestionCardsToggle={() => onSidebarToggle('questions')}
                 onDisconnectClick={handleManualDisconnect}
                 onPermissionModalOpen={permissions => {
                   setDeniedPermissions(permissions);
