@@ -60,6 +60,7 @@ import {
   useCallTracksStore,
   useChatInputStore,
   useConnectedCallStore,
+  useNavigationStore,
   useReceiveHandlerStore,
 } from '../../features/stores';
 import { createEncryptedRoom, isE2EEAvailable } from '../../helpers/e2ee';
@@ -704,6 +705,20 @@ function VideoCall() {
       setIsFullScreen(false);
     }
   };
+
+  // outside desktop these are drawers, which close on back by themselves
+  useEffect(() => {
+    if (!isDesktop) return undefined;
+    useNavigationStore.setState({
+      onBack: () => {
+        if (showChat) setShowChat(false);
+        else if (showTranslator) setShowTranslator(false);
+        else return false;
+        return true;
+      },
+    });
+    return () => useNavigationStore.setState({ onBack: null });
+  }, [isDesktop, showChat, showTranslator]);
 
   const onFullScreenToggle = () => {
     setIsFullScreen(prevState => !prevState);
