@@ -16,7 +16,7 @@ export const createEncryptedRoom = async (key: string): Promise<Room> => {
   const keyProvider = new ExternalE2EEKeyProvider();
   await keyProvider.setKey(key);
 
-  const e2eeWorker = await getE2EEWorker();
+  const e2eeWorker = await getE2EEWorker(keyProvider.getOptions());
 
   const room = new Room({
     encryption: { keyProvider, worker: e2eeWorker },
