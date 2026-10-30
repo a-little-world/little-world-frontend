@@ -1,3 +1,5 @@
+import { CSSProperties, useEffect, useState } from 'react';
+
 import styled, { css } from 'styled-components';
 import { Drawer as VaulDrawer } from 'vaul';
 
@@ -24,7 +26,8 @@ const StyledContent = styled(VaulDrawer.Content)`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
   background: ${({ theme }) => theme.color.surface.primary};
-  height: 80%;
+  /* top edge stays put while the keyboard pushes the bottom up */
+  height: calc(80% - var(--keyboard-inset));
   padding: ${({ theme }) => theme.spacing.small};
   padding-top: 0;
   border-radius: ${({ theme }) =>
@@ -32,7 +35,7 @@ const StyledContent = styled(VaulDrawer.Content)`
   position: fixed;
   /* Portaled to document.body (not a #root descendant), so it anchors to the
      viewport and ignores body's safe-area padding — inset each edge directly. */
-  bottom: var(--safe-bottom);
+  bottom: max(var(--safe-bottom), var(--keyboard-inset));
   left: var(--safe-left);
   right: var(--safe-right);
   outline: none;
@@ -75,30 +78,76 @@ type DrawerProps = {
   title: string;
 };
 
+// layout viewport height the on-screen keyboard covers; 0 when the webview shrinks instead
+// (ios app). vaul's own tracking drifts out of sync
+const useKeyboardInset = (active: boolean) => {
+  const [inset, setInset] = useState(0);
+
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!active || !viewport) return undefined;
+    // layout viewport, not innerHeight: ios safari shrinks innerHeight with the keyboard
+    const update = () =>
+      setInset(
+        Math.max(
+          0,
+          document.documentElement.clientHeight -
+            viewport.height -
+            viewport.offsetTop,
+        ),
+      );
+    // ios scrolls the page to the focused input on top of the lift
+    const undoPageScroll = () => {
+      if (viewport.offsetTop > 0) window.scrollTo(0, 0);
+      update();
+    };
+    update();
+    viewport.addEventListener('resize', update);
+    viewport.addEventListener('scroll', undoPageScroll);
+    window.addEventListener('resize', update);
+    return () => {
+      viewport.removeEventListener('resize', update);
+      viewport.removeEventListener('scroll', undoPageScroll);
+      window.removeEventListener('resize', update);
+    };
+  }, [active]);
+
+  return inset;
+};
+
 const Drawer = ({
   children,
   handleOnly,
   open,
   onClose,
   title,
-}: DrawerProps) => (
-  <DrawerContainer>
-    <VaulDrawer.Root
-      dismissible
-      handleOnly={handleOnly}
-      open={open}
-      onOpenChange={isOpen => !isOpen && onClose()}
-    >
-      <VaulDrawer.Portal>
-        <VisuallyHiddenTitle>{title}</VisuallyHiddenTitle>
-        <StyledOverlay onClick={onClose} />
-        <StyledContent>
-          <DragHandle />
-          {children}
-        </StyledContent>
-      </VaulDrawer.Portal>
-    </VaulDrawer.Root>
-  </DrawerContainer>
-);
+}: DrawerProps) => {
+  const keyboardInset = useKeyboardInset(open);
+
+  return (
+    <DrawerContainer>
+      <VaulDrawer.Root
+        dismissible
+        handleOnly={handleOnly}
+        open={open}
+        onOpenChange={isOpen => !isOpen && onClose()}
+        repositionInputs={false}
+      >
+        <VaulDrawer.Portal>
+          <VisuallyHiddenTitle>{title}</VisuallyHiddenTitle>
+          <StyledOverlay onClick={onClose} />
+          <StyledContent
+            style={
+              { '--keyboard-inset': `${keyboardInset}px` } as CSSProperties
+            }
+          >
+            <DragHandle />
+            {children}
+          </StyledContent>
+        </VaulDrawer.Portal>
+      </VaulDrawer.Root>
+    </DrawerContainer>
+  );
+};
 
 export default Drawer;
