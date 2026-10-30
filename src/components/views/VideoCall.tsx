@@ -544,6 +544,7 @@ function VideoCall() {
   // Detect if this is a random call route
   const isRandomCallRoute = location.pathname.includes('/random-call/');
   const {
+    t,
     i18n: { language },
   } = useTranslation();
 
@@ -861,14 +862,14 @@ function VideoCall() {
           ) : (
             <>
               <Drawer
-                title="Translate"
+                title={t('call.translation_toggle_tooltip')}
                 open={selectedDrawerOption === 'translator'}
                 onClose={() => setSelectedDrawerOption(undefined)}
               >
                 <TranslationTool />
               </Drawer>
               <Drawer
-                title="Chat"
+                title={t('call.chat_label')}
                 open={selectedDrawerOption === 'chat'}
                 onClose={() => setSelectedDrawerOption(undefined)}
               >
@@ -877,7 +878,7 @@ function VideoCall() {
                 )}
               </Drawer>
               <Drawer
-                title="Questions"
+                title={t('call.questions_toggle_tooltip')}
                 open={selectedDrawerOption === 'questions'}
                 onClose={() => setSelectedDrawerOption(undefined)}
               >

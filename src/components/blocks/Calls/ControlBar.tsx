@@ -251,7 +251,7 @@ export const TopControlBar = ({
         variation={ButtonVariations.Circle}
       >
         <TranslatorIcon
-          label={t('call.chat_label')}
+          label={t('call.translation_toggle_tooltip')}
           gradient={
             activeOption === 'translator' ? Gradients.Orange : undefined
           }
@@ -421,9 +421,13 @@ function ControlBar({
                   variation={ButtonVariations.Circle}
                 >
                   {isFullScreen ? (
-                    <FullScreenExitIcon label="exit fullscreen" />
+                    <FullScreenExitIcon
+                      label={t('call.fullscreen_exit_label')}
+                    />
                   ) : (
-                    <FullScreenIcon label="fullscreen video toggle" />
+                    <FullScreenIcon
+                      label={t('call.fullscreen_toggle_tooltip')}
+                    />
                   )}
                 </ToggleBtn>
               </div>
@@ -454,7 +458,7 @@ function ControlBar({
                 onClick={onTranslatorToggle}
                 variation={ButtonVariations.Circle}
               >
-                <TranslatorIcon label={t('call.chat_label')} />
+                <TranslatorIcon label={t('call.translation_toggle_tooltip')} />
               </ToggleBtn>
             </div>
           }
@@ -487,7 +491,7 @@ function ControlBar({
             }}
             variation={ButtonVariations.Circle}
           >
-            <LeaveCallIcon label="leave call" />
+            <LeaveCallIcon label={t('call.leave_btn')} />
           </DisconnectBtn>
         ) : (
           <DisconnectBtn
