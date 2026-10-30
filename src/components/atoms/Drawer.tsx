@@ -9,6 +9,15 @@ const DrawerContainer = styled.div`
   `}
 `;
 
+// firefox (macOS) can stop painting the drawer after vaul's slide-in;
+// !important beats vaul's attribute selectors
+const NO_ANIMATION_IN_FIREFOX = css`
+  @supports (-moz-appearance: none) {
+    animation: none !important;
+    transition: none !important;
+  }
+`;
+
 const StyledContent = styled(VaulDrawer.Content)`
   display: flex;
   align-items: stretch;
@@ -28,6 +37,7 @@ const StyledContent = styled(VaulDrawer.Content)`
   right: var(--safe-right);
   outline: none;
   z-index: 100;
+  ${NO_ANIMATION_IN_FIREFOX}
 `;
 
 const StyledOverlay = styled(VaulDrawer.Overlay)`
@@ -35,6 +45,7 @@ const StyledOverlay = styled(VaulDrawer.Overlay)`
   inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 99;
+  ${NO_ANIMATION_IN_FIREFOX}
 `;
 
 const DragHandle = styled(VaulDrawer.Handle)`
