@@ -51,7 +51,7 @@ const Wrapper = ({
   children: React.ReactNode;
 }) => (asLink ? <Link to={getAppRoute()}>{children}</Link> : children);
 
-interface LogoProps {
+export interface LogoProps {
   asLink?: boolean;
   className?: string;
   displayImage?: boolean;

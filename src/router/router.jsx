@@ -30,6 +30,7 @@ import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
 import OnboardingSelection from '../components/views/Onboarding/OnboardingSelection';
 import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalkthrough';
+import PartnerLanding from '../components/views/PartnerLanding/PartnerLanding';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
@@ -76,6 +77,8 @@ import {
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
   OUR_WORLD_ROUTE,
+  PARTNER_LANDING_ROUTE,
+  PARTNER_LANDING_SHORT_ROUTE,
   PARTNER_ROUTE,
   PARTNERS_ROUTE,
   RANDOM_CALL_ROUTE,
@@ -133,6 +136,16 @@ export const Root = ({
 export function getWebRouter() {
   const ROOT_ROUTES = [
     // Unguarded — accessible regardless of auth state
+    {
+      path: PARTNER_LANDING_ROUTE,
+      element: <PartnerLanding />,
+      errorElement: <RouterError Layout={null} />,
+    },
+    {
+      path: PARTNER_LANDING_SHORT_ROUTE,
+      element: <PartnerLanding />,
+      errorElement: <RouterError Layout={null} />,
+    },
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
@@ -262,6 +275,16 @@ export function getWebRouter() {
 export function getNativeRouter() {
   const ROOT_ROUTES = [
     // Unguarded — accessible regardless of auth state
+    {
+      path: PARTNER_LANDING_ROUTE,
+      element: <PartnerLanding />,
+      errorElement: <RouterError Layout={null} />,
+    },
+    {
+      path: PARTNER_LANDING_SHORT_ROUTE,
+      element: <PartnerLanding />,
+      errorElement: <RouterError Layout={null} />,
+    },
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
