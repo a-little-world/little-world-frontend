@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+
+import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { getAppRoute } from '../../../router/routes';
@@ -23,10 +26,33 @@ export const ErrorView = () => (
   </ErrorWrapper>
 );
 
-const RouterError = ({ Layout = AppLayout }) => (
-  <Layout>
-    <ErrorView />
-  </Layout>
-);
+const toError = (error: unknown) => {
+  if (error instanceof Error) return error;
+  if (isRouteErrorResponse(error)) {
+    return new Error(`Route error ${error.status}: ${error.statusText}`);
+  }
+  return new Error(String(error));
+};
+
+const RouterError = ({ Layout = AppLayout }) => {
+  const error = useRouteError();
+
+  // errors caught here never reach window.onerror otherwise
+  useEffect(() => {
+    if (typeof window.reportError === 'function') {
+      window.reportError(toError(error));
+    } else {
+      setTimeout(() => {
+        throw toError(error);
+      });
+    }
+  }, [error]);
+
+  return (
+    <Layout>
+      <ErrorView />
+    </Layout>
+  );
+};
 
 export default RouterError;
