@@ -39,6 +39,7 @@ const RouterError = ({ Layout = AppLayout }) => {
 
   // errors caught here never reach window.onerror otherwise
   useEffect(() => {
+    if (!error) return;
     if (typeof window.reportError === 'function') {
       window.reportError(toError(error));
     } else {
