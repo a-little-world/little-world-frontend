@@ -11,7 +11,7 @@ import { FIREBASE_ENDPOINT } from './api/endpoints';
 import { apiFetch } from './api/helpers';
 import { environment } from './environment';
 import { useReceiveHandlerStore } from './features/stores';
-import useNativeStore from './features/stores/nativeStore';
+import { getInstallationId } from './installation-util';
 
 type FirebaseConfig = {
   firebaseClientConfig: FirebaseOptions;
@@ -66,24 +66,12 @@ export async function getFirebaseToken(): Promise<string | undefined> {
   return token;
 }
 
-export async function getInstallationId(): Promise<string> {
-  if (environment.isNative) {
-    return useNativeStore.getState().getInstallId();
+export async function enableFirebase() {
+  if (getApps().length >= 1) {
+    return;
   }
-
-  const key = 'install_id';
-
-  try {
-    let id = localStorage.getItem(key);
-    if (!id) {
-      id = crypto.randomUUID();
-      localStorage.setItem(key, id);
-    }
-    return id;
-  } catch {
-    // fallback for strict environments
-    return crypto.randomUUID();
-  }
+  const { firebaseClientConfig } = await getFirebaseConfig();
+  initializeApp(firebaseClientConfig, firebaseAppSettings);
 }
 
 export async function registerFirebaseDeviceToken(): Promise<void> {
@@ -95,6 +83,7 @@ export async function registerFirebaseDeviceToken(): Promise<void> {
     return;
   }
 
+  await enableFirebase();
   const token = await getFirebaseToken();
   if (!token) {
     return;
@@ -103,12 +92,7 @@ export async function registerFirebaseDeviceToken(): Promise<void> {
   try {
     await apiFetch('/api/push_notifications/register', {
       method: 'POST',
-      body: {
-        install_id: await getInstallationId(),
-        token,
-        platform: 'web',
-        model_name: navigator.userAgent,
-      },
+      body: { install_id: await getInstallationId(), token },
     });
   } catch (_e) {
     // ignore
@@ -128,15 +112,6 @@ export async function unregisterFirebaseDeviceToken(): Promise<void> {
     method: 'POST',
     body: { install_id: await getInstallationId() },
   });
-}
-
-export async function enableFirebase() {
-  if (getApps().length >= 1) {
-    return;
-  }
-  const { firebaseClientConfig } = await getFirebaseConfig();
-  initializeApp(firebaseClientConfig, firebaseAppSettings);
-  await registerFirebaseDeviceToken();
 }
 
 export async function disableFirebase() {
