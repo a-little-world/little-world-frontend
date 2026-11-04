@@ -20,8 +20,9 @@ import {
   MediaDeviceMenu,
   TrackToggle,
   useDisconnectButton,
+  useLocalParticipant,
 } from '@livekit/components-react';
-import { Track } from 'livekit-client';
+import { LocalAudioTrack, LocalVideoTrack, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
@@ -272,6 +273,7 @@ function ControlBar({
   const { t } = useTranslation();
   const theme = useTheme();
   const { buttonProps: disconnectProps } = useDisconnectButton({});
+  const { microphoneTrack, cameraTrack } = useLocalParticipant();
   const isBelowBreakpoint = useIsBelowBreakpoint(theme.breakpoints.xlarge);
 
   const [isScreenShareActive, setIsScreenShareActive] = useState(false);
@@ -299,11 +301,11 @@ function ControlBar({
   return (
     <Bar $position="bottom">
       <Section>
-        <Tooltip
-          text={t('call.microphone_toggle_tooltip')}
-          trigger={
-            <div>
-              <MediaControl $permissionDenied={audioPermissionDenied}>
+        <MediaControl $permissionDenied={audioPermissionDenied}>
+          <Tooltip
+            text={t('call.microphone_toggle_tooltip')}
+            trigger={
+              <div>
                 <Toggle
                   onClick={
                     audioPermissionDenied
@@ -317,19 +319,22 @@ function ControlBar({
                   $permissionDenied={audioPermissionDenied}
                   permissionDenied={audioPermissionDenied}
                 />
-                <MediaDeviceMenu
-                  kind="audioinput"
-                  disabled={audioPermissionDenied}
-                />
-              </MediaControl>
-            </div>
-          }
-        />
+              </div>
+            }
+          />
+          <MediaDeviceMenu
+            kind="audioinput"
+            disabled={audioPermissionDenied}
+            tracks={{
+              audioinput: microphoneTrack?.track as LocalAudioTrack | undefined,
+            }}
+          />
+        </MediaControl>
 
-        <Tooltip
-          text={t('call.camera_toggle_tooltip')}
-          trigger={
-            <MediaControl $permissionDenied={videoPermissionDenied}>
+        <MediaControl $permissionDenied={videoPermissionDenied}>
+          <Tooltip
+            text={t('call.camera_toggle_tooltip')}
+            trigger={
               <div>
                 <Toggle
                   onClick={
@@ -345,13 +350,16 @@ function ControlBar({
                   permissionDenied={videoPermissionDenied}
                 />
               </div>
-              <MediaDeviceMenu
-                kind="videoinput"
-                disabled={videoPermissionDenied}
-              />
-            </MediaControl>
-          }
-        />
+            }
+          />
+          <MediaDeviceMenu
+            kind="videoinput"
+            disabled={videoPermissionDenied}
+            tracks={{
+              videoinput: cameraTrack?.track as LocalVideoTrack | undefined,
+            }}
+          />
+        </MediaControl>
 
         {browserSupportsScreenSharing && (
           <Tooltip

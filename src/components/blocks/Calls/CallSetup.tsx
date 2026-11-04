@@ -1,8 +1,11 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
+  Button,
+  ButtonSizes,
   CardContent,
+  CardFooter,
   CardHeader,
   StatusMessage,
   StatusTypes,
@@ -11,7 +14,6 @@ import {
 } from '@a-little-world/little-world-design-system';
 import {
   DevicePermissionError,
-  LocalUserChoices,
   PreJoin,
   PreJoinValues,
 } from '@livekit/components-react';
@@ -23,14 +25,17 @@ import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { requestVideoAccessToken } from '../../../api/livekit';
-import { useConnectedCallStore } from '../../../features/stores';
-import { holdPreviewAudioTracks } from '../../../helpers/video';
+import {
+  getDeviceOptions,
+  useCallTracksStore,
+  useConnectedCallStore,
+} from '../../../features/stores';
 import { getCallRoute } from '../../../router/routes';
 import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
 import ModalCard from '../Cards/ModalCard';
 
-export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
-  ${({ theme, $hideJoinBtn }) => css`
+export const CallSetupCard = styled(ModalCard)`
+  ${({ theme }) => css`
     padding: ${theme.spacing.large};
     gap: 0;
 
@@ -53,35 +58,7 @@ export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
     }
 
     .lk-join-button {
-      font-weight: 700;
-      border-radius: 90px;
-      padding: ${theme.spacing.xsmall} ${theme.spacing.small};
-      height: 49px;
-      width: 100%;
-      color: ${theme.color.text.reversed};
-      border: none;
-      background: ${theme.color.gradient.orange10};
-      transition:
-        background-color 0.5s ease,
-        filter 0.5s ease,
-        border-color 0.5s ease,
-        color 0.5s ease,
-        0.4s;
-
-      &:not(:disabled):hover {
-        filter: brightness(80%);
-        transition:
-          background-color 0.5s ease,
-          filter 0.5s ease,
-          border-color 0.5s ease,
-          color 0.5s ease,
-          0.4s;
-      }
-
-      ${$hideJoinBtn &&
-      css`
-        display: none;
-      `}
+      display: none;
     }
 
     ${MEDIA_DEVICE_MENU_CSS}
@@ -89,11 +66,11 @@ export const CallSetupCard = styled(ModalCard)<{ $hideJoinBtn?: boolean }>`
 `;
 
 type CallSetupProps = {
-  onClose: () => void;
+  onJoined: () => void;
   userPk: string;
 };
 
-function CallSetup({ onClose, userPk }: CallSetupProps) {
+function CallSetup({ onJoined, userPk }: CallSetupProps) {
   const navigate = useNavigate();
   const {
     t,
@@ -103,6 +80,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
     chatId: null,
     token: null,
     livekitServerUrl: null,
+    e2eeKey: null,
   });
   const [error, setError] = useState('');
   const [audioPermissionError, setAudioPermissionError] = useState(false);
@@ -111,27 +89,47 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
   const { data: user } = useSWR(USER_ENDPOINT);
   const username = user?.profile?.first_name;
   const { connectToCall } = useConnectedCallStore();
+  const { acquireTracks, releaseTracks } = useCallTracksStore();
 
-  const handleJoin = (values: LocalUserChoices) => {
+  const [choices, setChoices] = useState<PreJoinValues | null>(null);
+  const [canJoin, setCanJoin] = useState(false);
+  const [joining, setJoining] = useState(false);
+  const joinedRef = useRef(false);
+  const unmountedRef = useRef(false);
+
+  // clear setup once the call screen replaced this layout, not before navigating
+  useEffect(() => {
+    unmountedRef.current = false;
+    return () => {
+      unmountedRef.current = true;
+      if (joinedRef.current) onJoined();
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleJoin = async (values: PreJoinValues) => {
+    setJoining(true);
+    const deviceOptions = getDeviceOptions(values);
+    // must be opened before PreJoin unmounts and stops its preview tracks
+    await acquireTracks(deviceOptions);
+    if (unmountedRef.current) {
+      releaseTracks();
+      return;
+    }
     connectToCall({
       userId: userPk,
       chatId: authData.chatId || '',
       tracks: values,
       callType: 'direct',
       token: authData.token || undefined,
-      audioOptions: values.audioEnabled
-        ? { deviceId: values.audioDeviceId }
-        : false,
-      videoOptions: values.videoEnabled
-        ? { deviceId: values.videoDeviceId }
-        : false,
+      e2eeKey: authData.e2eeKey || undefined,
+      audioOptions: deviceOptions.audio,
+      videoOptions: deviceOptions.video,
       livekitServerUrl: authData.livekitServerUrl || undefined,
       audioPermissionDenied: audioPermissionError,
       videoPermissionDenied: videoPermissionError,
     });
-    onClose();
-    holdPreviewAudioTracks();
-    navigate(getCallRoute(userPk));
+    joinedRef.current = true;
+    navigate(getCallRoute(userPk), { replace: true });
   };
 
   useEffect(() => {
@@ -143,6 +141,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
           chatId: res.chat?.uuid,
           token: res.token,
           livekitServerUrl: res.server_url,
+          e2eeKey: res.e2ee_key,
         });
       },
       onError: () => {
@@ -172,6 +171,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
 
   const handleValidate = useCallback(
     (values: PreJoinValues) => {
+      setChoices(values);
       const isValid = Boolean(
         (values.audioAvailable || values.videoAvailable) && authData.token,
       );
@@ -182,6 +182,7 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       if (values.audioAvailable) {
         setAudioPermissionError(false);
       }
+      setCanJoin(isValid);
       if (isValid && error) setError('');
       return isValid;
     },
@@ -198,7 +199,6 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
       </CardContent>
       <PreJoin
         language={language as PrejoinLanguage}
-        onSubmit={handleJoin}
         camLabel={t('pcs_camera_label')}
         micLabel={t('pcs_mic_label')}
         joinLabel={t('pcs_btn_join_call')}
@@ -212,6 +212,16 @@ function CallSetup({ onClose, userPk }: CallSetupProps) {
           {t(error)}
         </StatusMessage>
       )}
+      <CardFooter align="center">
+        <Button
+          size={ButtonSizes.Stretch}
+          disabled={!canJoin || joining}
+          loading={joining}
+          onClick={() => choices && handleJoin(choices)}
+        >
+          {t('pcs_btn_join_call')}
+        </Button>
+      </CardFooter>
     </CallSetupCard>
   );
 }

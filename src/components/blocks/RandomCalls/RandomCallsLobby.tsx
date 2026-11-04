@@ -44,9 +44,12 @@ import {
   rejectMatch,
 } from '../../../api/randomCalls';
 import { COMMUNITY_EVENT_FREQUENCIES, USER_TYPES } from '../../../constants';
-import { useConnectedCallStore } from '../../../features/stores';
+import {
+  getDeviceOptions,
+  useCallTracksStore,
+  useConnectedCallStore,
+} from '../../../features/stores';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
-import { holdPreviewAudioTracks } from '../../../helpers/video';
 import {
   getAppAbsoluteRoute,
   getAppRoute,
@@ -297,7 +300,7 @@ const RandomCallSetup = ({
   }
 
   return (
-    <CallSetupCard $hideJoinBtn>
+    <CallSetupCard>
       <LobbyLoading size={LoadingSizes.Small} inline />
       <CardHeader>{t('random_calls.lobby_title')}</CardHeader>
       <CardContent>
@@ -838,6 +841,8 @@ const RandomCallsLobby = ({
     setError(null);
     try {
       const roomData = await authenticateRoom(lobbyUuid, currentMatchData.uuid);
+      const deviceOptions = getDeviceOptions(deviceChoices);
+      await useCallTracksStore.getState().acquireTracks(deviceOptions);
 
       // Set up call connection with room data, including device choices
       connectToCall({
@@ -847,22 +852,17 @@ const RandomCallsLobby = ({
         randomLobbyUuid: lobbyUuid,
         tracks: deviceChoices || undefined,
         token: roomData.token,
+        e2eeKey: roomData.e2ee_key || undefined,
         livekitServerUrl: roomData.server_url,
         callType: 'random',
-        audioOptions: deviceChoices?.audioEnabled
-          ? { deviceId: deviceChoices.audioDeviceId }
-          : false,
-        videoOptions: deviceChoices?.videoEnabled
-          ? { deviceId: deviceChoices.videoDeviceId }
-          : false,
+        audioOptions: deviceOptions.audio,
+        videoOptions: deviceOptions.video,
         audioPermissionDenied: audioPermissionError,
         videoPermissionDenied: videoPermissionError,
         postDisconnectRedirect: `${getAppRoute(
           RANDOM_CALLS_ROUTE,
         )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
       });
-
-      holdPreviewAudioTracks();
 
       // Navigate to the random call screen for the partner
       navigate(getRandomCallRoute(currentMatchData.partner.id));
