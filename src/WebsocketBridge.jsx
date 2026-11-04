@@ -76,6 +76,10 @@ const WebsocketBridge = () => {
       interval: 60000,
       timeout: 150000,
     },
+    // pings only go out while idle, acks keep busy connections fresh
+    onMessage: event => {
+      if (event.data !== 'pong') sendMessage('ack', false);
+    },
     onOpen: () => {
       awayRef.current = isAway();
       if (awayRef.current) sendMessage('away', false);
