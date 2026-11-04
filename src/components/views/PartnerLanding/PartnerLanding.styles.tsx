@@ -9,6 +9,9 @@ import {
 } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
+import heroDesktop from '../../../images/partner-landing/hero-desktop.webp';
+import heroMobile from '../../../images/partner-landing/hero-mobile.webp';
+import lightsBackground from '../../../images/partner-landing/lights.webp';
 import Logo from '../../atoms/Logo';
 
 export const Page = styled.main`
@@ -18,8 +21,9 @@ export const Page = styled.main`
 `;
 
 const sectionPadding = css`
-  padding: ${({ theme }) => theme.spacing.xxxlarge}
-    ${({ theme }) => `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`};
+  padding: ${({ theme }) => theme.spacing.xlarge}
+    ${({ theme }) => `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`}
+    ${({ theme }) => theme.spacing.xxlarge};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
@@ -65,10 +69,9 @@ export const SectionIntro = styled.div`
 
 export const SectionEyebrow = styled(Text).attrs({
   type: TextTypes.Body6,
-  tag: 'p' as const,
   bold: true,
 })`
-  color: ${({ theme }) => theme.color.text.heading};
+  color: ${({ theme }) => theme.color.text.title};
   text-transform: uppercase;
   margin: 0;
 `;
@@ -88,56 +91,62 @@ export const Hero = styled.section`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
   color: ${({ theme }) => theme.color.text.button};
   background: ${({ theme }) => theme.color.text.info};
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      min-height: 60rem;
-    }
-  `}
 
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(
-        ellipse at 80% 40%,
-        ${({ theme }) => theme.color.surface.highlight} 0%,
-        transparent 45%
-      ),
-      ${({ theme }) => theme.color.text.info};
-    object-fit: cover;
+    z-index: 0;
+    background: url(${heroMobile}) center bottom / cover no-repeat;
+
+    ${({ theme }) => css`
+      @media (min-width: ${theme.breakpoints.medium}) {
+        background-image: url(${heroDesktop});
+        background-position: right center;
+        background-size: cover;
+      }
+    `}
   }
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: 0;
     background: linear-gradient(
-      90deg,
+      180deg,
       color-mix(
           in srgb,
-          ${({ theme }) => theme.color.text.info} 90%,
+          ${({ theme }) => theme.color.text.info} 62%,
           transparent
         )
         0%,
       color-mix(
           in srgb,
-          ${({ theme }) => theme.color.text.info} 70%,
+          ${({ theme }) => theme.color.text.info} 28%,
           transparent
         )
-        36%,
-      transparent 64%
+        48%,
+      color-mix(
+          in srgb,
+          ${({ theme }) => theme.color.text.info} 10%,
+          transparent
+        )
+        100%
     );
 
     ${({ theme }) => css`
-      @media (max-width: ${theme.breakpoints.small}) {
-        background: color-mix(
-          in srgb,
-          ${theme.color.text.info} 75%,
-          transparent
+      @media (min-width: ${theme.breakpoints.medium}) {
+        background: linear-gradient(
+          90deg,
+          color-mix(in srgb, ${theme.color.text.info} 68%, transparent) 0%,
+          color-mix(in srgb, ${theme.color.text.info} 32%, transparent) 36%,
+          color-mix(in srgb, ${theme.color.text.info} 8%, transparent) 58%,
+          transparent 78%
         );
       }
     `}
@@ -148,76 +157,33 @@ export const NavBar = styled.nav`
   position: relative;
   z-index: ${({ theme }) => theme.zIndex.sticky};
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   height: ${({ theme }) =>
     `calc(${theme.spacing.xxxxlarge} - ${theme.spacing.xlarge})`};
   padding: 0
     ${({ theme }) => `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`};
+  margin-top: ${({ theme }) => theme.spacing.xxxsmall};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       height: ${theme.spacing.xxxlarge};
       padding: 0 ${theme.spacing.xxxlarge};
+      margin-top: 0;
     }
   `}
 `;
 
 export const HomeLink = styled.a`
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  flex-shrink: 0;
+  min-width: fit-content;
   text-decoration: none;
   color: inherit;
 `;
 
 export const WhiteLogo = styled(Logo)`
   filter: brightness(0) invert(1);
-  flex-shrink: 0;
-
-  && {
-    height: ${({ theme }) =>
-      `calc(${theme.spacing.medium} + ${theme.spacing.xxxsmall})`};
-    overflow: hidden;
-  }
-
-  && > div:first-child {
-    display: none;
-  }
-
-  && > div:last-child {
-    width: auto !important;
-    height: 100%;
-  }
-
-  && img {
-    height: 100% !important;
-    width: auto !important;
-    max-height: 100%;
-  }
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      && {
-        height: ${theme.spacing.xlarge};
-        overflow: visible;
-      }
-
-      && > div:first-child {
-        display: block;
-        width: ${theme.spacing.xxxlarge} !important;
-      }
-
-      && > div:last-child {
-        width: ${theme.spacing.xxxlarge} !important;
-      }
-
-      && img {
-        width: 100% !important;
-        height: 100% !important;
-      }
-    }
-  `}
 `;
 
 export const PartnerPill = styled.div`
@@ -255,6 +221,21 @@ export const PartnerLogo = styled.img`
   `}
 `;
 
+export const PartnerCoopLabel = styled(Text).attrs({
+  type: TextTypes.Body6,
+  tag: 'span' as const,
+  bold: true,
+})`
+  display: none;
+  color: ${({ theme }) => theme.color.text.info};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: inline;
+    }
+  `}
+`;
+
 export const PartnerName = styled(Text).attrs({
   type: TextTypes.Body6,
   tag: 'span' as const,
@@ -265,7 +246,9 @@ export const PartnerName = styled(Text).attrs({
 `;
 
 export const Garland = styled.div`
-  position: relative;
+  position: absolute;
+  top: -12px;
+  width: 100%;
   z-index: ${({ theme }) => theme.zIndex.above};
   display: flex;
   align-items: center;
@@ -282,6 +265,7 @@ export const Garland = styled.div`
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       padding: 0 ${theme.spacing.xxxlarge};
+      top: 0;
 
       > :nth-child(n + 13) {
         display: block;
@@ -330,14 +314,14 @@ export const HeroLayout = styled.div`
   gap: ${({ theme }) =>
     `calc(${theme.spacing.medium} + ${theme.spacing.xxxsmall})`};
   width: 100%;
-  padding: 0
+  padding: ${({ theme }) => theme.spacing.large}
     ${({ theme }) => `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`}
-    ${({ theme }) => theme.spacing.xlarge};
+    ${({ theme }) => theme.spacing.xxlarge};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.xxsmall} ${theme.spacing.xxxlarge}
-        ${theme.spacing.xlarge};
+      padding: ${theme.spacing.large} ${theme.spacing.xxxlarge}
+        ${theme.spacing.xxlarge};
       gap: ${theme.spacing.medium};
     }
   `}
@@ -352,37 +336,7 @@ export const HeroContent = styled.div`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      flex: 1;
       justify-content: center;
-    }
-  `}
-`;
-
-export const HeroMedia = styled.div`
-  position: relative;
-  width: 100%;
-  height: ${({ theme }) =>
-    `calc(${theme.spacing.xxxxlarge} * 2 + ${theme.spacing.xlarge})`};
-  overflow: hidden;
-  border-radius: ${({ theme }) => theme.radius.large};
-  background:
-    radial-gradient(
-      ellipse at 80% 40%,
-      ${({ theme }) => theme.color.surface.highlight} 0%,
-      transparent 55%
-    ),
-    ${({ theme }) => theme.color.text.info};
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      display: none;
     }
   `}
 `;
@@ -442,7 +396,6 @@ export const HeroBadgeCopy = styled.div`
 
 export const HeroBadgeTitle = styled(Text).attrs({
   type: TextTypes.Body6,
-  tag: 'p' as const,
 })`
   color: ${({ theme }) => theme.color.text.tertiary};
   margin: 0;
@@ -450,7 +403,6 @@ export const HeroBadgeTitle = styled(Text).attrs({
 
 export const HeroBadgeText = styled(Text).attrs({
   type: TextTypes.Body6,
-  tag: 'p' as const,
   bold: true,
 })`
   color: ${({ theme }) => theme.color.text.info};
@@ -476,8 +428,7 @@ export const EyebrowPill = styled(Text).attrs({
     ${({ theme }) => theme.color.text.info} 55%,
     transparent
   );
-  box-shadow: inset 0 0 0 ${({ theme }) => theme.spacing.xxxxsmall}
-    ${({ theme }) => theme.color.border.message};
+  border: 2px solid ${({ theme }) => theme.color.border.button};
   border-radius: ${({ theme }) => theme.radius.massive};
   padding: ${({ theme }) => `${theme.spacing.xxxsmall} ${theme.spacing.small}`};
 `;
@@ -489,8 +440,7 @@ export const PartnerDoorPill = styled(Text).attrs({
 })`
   color: ${({ theme }) => theme.color.text.title};
   background: ${({ theme }) => theme.color.surface.primary};
-  box-shadow: inset 0 0 0 ${({ theme }) => theme.spacing.xxxxsmall}
-    ${({ theme }) => theme.color.border.message};
+  border: 2px solid ${({ theme }) => theme.color.border.highlight};
   border-radius: ${({ theme }) => theme.radius.massive};
   padding: ${({ theme }) => `${theme.spacing.xxxsmall} ${theme.spacing.small}`};
 `;
@@ -542,23 +492,29 @@ export const FinalBlock = styled.section`
     content: '';
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(
-        ellipse at 50% 0%,
-        ${({ theme }) => theme.color.surface.highlight} 0%,
-        transparent 55%
-      ),
-      ${({ theme }) => theme.color.text.info};
+    z-index: 0;
+    background: url(${lightsBackground}) center / cover no-repeat;
   }
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: color-mix(
-      in srgb,
-      ${({ theme }) => theme.color.text.info} 62%,
-      transparent
+    z-index: 0;
+    background: linear-gradient(
+      180deg,
+      color-mix(
+          in srgb,
+          ${({ theme }) => theme.color.text.info} 36%,
+          transparent
+        )
+        0%,
+      color-mix(
+          in srgb,
+          ${({ theme }) => theme.color.text.info} 18%,
+          transparent
+        )
+        100%
     );
   }
 `;
@@ -587,7 +543,7 @@ export const FinalInner = styled.div`
 `;
 
 export const FinalTitle = styled(Text).attrs({
-  type: TextTypes.Heading4,
+  type: TextTypes.Heading3,
   tag: 'h2' as const,
 })`
   color: ${({ theme }) => theme.color.text.button};
@@ -818,12 +774,23 @@ export const QuoteCard = styled(Card)`
   `}
 `;
 
-export const QuoteMark = styled(Text).attrs({
-  type: TextTypes.Heading3,
-  tag: 'span' as const,
-})`
+export const QuoteMark = styled.span`
+  display: flex;
+  align-items: flex-end;
   color: ${({ theme }) => theme.color.text.highlight};
+  font-family: 'Signika Negative', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 600;
   line-height: 1;
+  /* „ sits on the baseline; keep only the lower half of the em-box. */
+  height: 0.55em;
+  overflow: hidden;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.small}) {
+      font-size: 3rem;
+    }
+  `}
 `;
 
 export const QuoteText = styled(Text).attrs({
@@ -836,22 +803,20 @@ export const QuoteText = styled(Text).attrs({
   margin: 0;
 `;
 
-export const PersonRow = styled.div`
+export const PersonRow = styled.div<{ $spread?: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
+
+  ${({ $spread }) =>
+    $spread &&
+    css`
+      justify-content: space-between;
+      width: 100%;
+    `}
 `;
 
-export const InitialsAvatar = styled(Text).attrs({
-  type: TextTypes.Heading7,
-  tag: 'div' as const,
-})<{
-  $size?: 'medium' | 'large';
-  $tone?: 'highlight' | 'bold';
-}>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+const avatarSize = css<{ $size?: 'medium' | 'large' }>`
   flex-shrink: 0;
   width: ${({ theme, $size }) =>
     $size === 'large'
@@ -864,20 +829,51 @@ export const InitialsAvatar = styled(Text).attrs({
   border-radius: ${({ theme }) => theme.radius.half};
   border: ${({ theme }) => theme.spacing.xxxxsmall} solid
     ${({ theme }) => theme.color.surface.primary};
+  box-shadow: 0 ${({ theme }) => theme.spacing.xxxsmall}
+    ${({ theme }) => theme.spacing.small} rgb(0 0 0 / 8%);
+`;
+
+export const InitialsAvatar = styled(Text).attrs({
+  type: TextTypes.Heading7,
+  tag: 'div' as const,
+})<{
+  $size?: 'medium' | 'large';
+  $tone?: 'highlight' | 'bold';
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${avatarSize}
   background: ${({ theme, $tone }) =>
     $tone === 'highlight'
       ? theme.color.surface.highlight
       : theme.color.surface.bold};
   color: ${({ theme }) => theme.color.text.button};
-  box-shadow: 0 ${({ theme }) => theme.spacing.xxxsmall}
-    ${({ theme }) => theme.spacing.small} rgb(0 0 0 / 8%);
+`;
+
+export const PhotoAvatar = styled.img<{ $size?: 'medium' | 'large' }>`
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  ${avatarSize}
+`;
+
+export const QuoteCompanyLogo = styled.img`
+  display: block;
+  flex-shrink: 0;
+  height: ${({ theme }) => theme.spacing.medium};
+  width: auto;
+  max-width: ${({ theme }) => theme.spacing.xxxxlarge};
+  object-fit: contain;
 `;
 
 export const PersonCopy = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: ${({ theme }) => theme.spacing.xxxxsmall};
   min-width: 0;
+  text-align: left;
 `;
 
 export const PersonName = styled(Text).attrs({
@@ -1067,14 +1063,9 @@ export const FaqAccordion = styled(Accordion)`
   gap: ${({ theme }) => theme.spacing.xsmall};
 
   > * {
-    margin: 0;
-    width: 100%;
     background: ${({ theme }) => theme.color.surface.primary};
-    border: none;
+    border: 2px solid ${({ theme }) => theme.color.border.subtle};
     border-radius: ${({ theme }) => theme.radius.large};
-    box-shadow: inset 0 0 0 ${({ theme }) => theme.spacing.xxxxsmall}
-      ${({ theme }) => theme.color.border.subtle};
-    padding: 0 ${({ theme }) => theme.spacing.medium};
   }
 
   button {

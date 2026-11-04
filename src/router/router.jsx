@@ -51,6 +51,7 @@ import useCalEmbed from '../hooks/useCalEmbed';
 import WebsocketBridge from '../WebsocketBridge';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
+  ADVENT_LANDING_ROUTE,
   APP_ROUTE,
   BASE_ROUTE,
   BEGINNERS_ROUTE,
@@ -77,8 +78,6 @@ import {
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
   OUR_WORLD_ROUTE,
-  PARTNER_LANDING_ROUTE,
-  PARTNER_LANDING_SHORT_ROUTE,
   PARTNER_ROUTE,
   PARTNERS_ROUTE,
   RANDOM_CALL_ROUTE,
@@ -133,19 +132,20 @@ export const Root = ({
   );
 };
 
+const adventLandingRoute = {
+  path: ADVENT_LANDING_ROUTE,
+  element: <Outlet />,
+  errorElement: <RouterError Layout={null} />,
+  children: [
+    { index: true, element: <PartnerLanding /> },
+    { path: ':partnerSlug', element: <PartnerLanding /> },
+  ],
+};
+
 export function getWebRouter() {
   const ROOT_ROUTES = [
     // Unguarded — accessible regardless of auth state
-    {
-      path: PARTNER_LANDING_ROUTE,
-      element: <PartnerLanding />,
-      errorElement: <RouterError Layout={null} />,
-    },
-    {
-      path: PARTNER_LANDING_SHORT_ROUTE,
-      element: <PartnerLanding />,
-      errorElement: <RouterError Layout={null} />,
-    },
+    adventLandingRoute,
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
@@ -275,16 +275,7 @@ export function getWebRouter() {
 export function getNativeRouter() {
   const ROOT_ROUTES = [
     // Unguarded — accessible regardless of auth state
-    {
-      path: PARTNER_LANDING_ROUTE,
-      element: <PartnerLanding />,
-      errorElement: <RouterError Layout={null} />,
-    },
-    {
-      path: PARTNER_LANDING_SHORT_ROUTE,
-      element: <PartnerLanding />,
-      errorElement: <RouterError Layout={null} />,
-    },
+    adventLandingRoute,
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (

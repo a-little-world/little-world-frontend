@@ -15,7 +15,7 @@ export const fetchPartnerLanding = (slug: string) =>
   apiFetch<PartnerLanding>(getPartnerLandingEndpoint(slug));
 
 export const registerPartner = (
-  slug: string,
+  slug: string | undefined,
   body: { email: string; newsletter_subscribed: boolean },
 ) =>
   apiFetch(getPartnerRegisterEndpoint(slug), {

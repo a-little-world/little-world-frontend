@@ -260,22 +260,32 @@ export const ErrorText = styled(Text).attrs({
   margin: 0;
 `;
 
-export const SuccessRow = styled.div`
+export const SuccessState = styled.div`
   display: flex;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
-  padding: ${({ theme }) => `${theme.spacing.xxsmall} ${theme.spacing.xsmall}`};
-  border-radius: ${({ theme }) => theme.radius.small};
-  background: ${({ theme }) => theme.color.surface.success};
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.small} 0;
 `;
 
-export const SuccessText = styled(Text).attrs({
-  type: TextTypes.Body6,
+export const SuccessTitle = styled(Text).attrs({
+  type: TextTypes.Heading6,
   tag: 'p' as const,
   bold: true,
 })`
   color: ${({ theme }) => theme.color.text.success};
-  line-height: 1.4;
+  margin: 0;
+  text-wrap: balance;
+`;
+
+export const SuccessBody = styled(Text).attrs({
+  type: TextTypes.Body5,
+  tag: 'p' as const,
+})`
+  color: ${({ theme }) => theme.color.text.primary};
+  line-height: 1.5;
   margin: 0;
 `;
 
@@ -317,8 +327,8 @@ export const NewsletterLabel = styled(Text).attrs({
 
 export const SupportRow = styled.div`
   display: flex;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
   color: ${({ theme }) => theme.color.text.tertiary};
 
   svg {

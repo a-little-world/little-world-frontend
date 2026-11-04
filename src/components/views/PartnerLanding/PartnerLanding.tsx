@@ -24,10 +24,17 @@ import useSWR from 'swr';
 import { getPartnerLandingEndpoint } from '../../../api/endpoints';
 import {
   fetchPartnerLanding,
+  PartnerLanding,
   registerPartner,
 } from '../../../api/partnerLanding';
 import { formatDate } from '../../../helpers/date';
 import { onFormError } from '../../../helpers/form';
+import accentureLogo from '../../../images/partner-landing/accenture.png';
+import fazalPhoto from '../../../images/partner-landing/fazal.webp';
+import jamalPhoto from '../../../images/partner-landing/jamal.webp';
+import joergPhoto from '../../../images/partner-landing/joerg.webp';
+import monikaPhoto from '../../../images/partner-landing/monika.webp';
+import peterPhoto from '../../../images/partner-landing/peter.webp';
 import {
   getAppRoute,
   getHomeRoute,
@@ -64,16 +71,9 @@ import {
   Garland,
   GarlandLight,
   Hero,
-  HeroBadge,
-  HeroBadgeCopy,
-  HeroBadgeText,
-  HeroBadgeTitle,
   HeroContent,
-  HeroDoor,
-  HeroDoorNumber,
   HeroLayout,
   HeroLead,
-  HeroMedia,
   HeroPills,
   HeroTitle,
   HomeLink,
@@ -82,6 +82,7 @@ import {
   NavBar,
   Page,
   PageFooter,
+  PartnerCoopLabel,
   PartnerDoorPill,
   PartnerLogo,
   PartnerName,
@@ -90,7 +91,9 @@ import {
   PersonName,
   PersonRole,
   PersonRow,
+  PhotoAvatar,
   QuoteCard,
+  QuoteCompanyLogo,
   QuoteMark,
   QuoteText,
   Section,
@@ -131,33 +134,60 @@ const COUNTERPART_ITEMS = [
 
 const FOR_YOU_ITEMS = ['half_hour', 'you_decide'] as const;
 const QUOTES = [
-  { key: 'peter', initials: 'P', tone: 'bold' as const },
-  { key: 'sabine', initials: 'S', tone: 'highlight' as const },
+  {
+    key: 'peter',
+    photo: peterPhoto,
+  },
+  {
+    key: 'sabine',
+    logo: accentureLogo,
+    logoAlt: 'Accenture',
+  },
 ];
 const STEP_KEYS = ['one', 'two', 'three'] as const;
 const STORIES = [
   {
     key: 'jamal_monika',
-    initials: [
-      { letter: 'J', tone: 'bold' as const },
-      { letter: 'M', tone: 'highlight' as const },
+    href: `${WP_HOME_ROUTE}/jamal-und-monika-deutschlernender-und-sprachpatin/`,
+    people: [
+      { name: 'Jamal', letter: 'J', tone: 'bold' as const, photo: jamalPhoto },
+      {
+        name: 'Monika',
+        letter: 'M',
+        tone: 'highlight' as const,
+        photo: monikaPhoto,
+      },
     ],
   },
   {
     key: 'fazal_joerg',
-    initials: [
-      { letter: 'F', tone: 'highlight' as const },
-      { letter: 'J', tone: 'bold' as const },
+    href: `${WP_HOME_ROUTE}/fazal-und-joerg-deutschlernender-und-sprachpate/`,
+    people: [
+      {
+        name: 'Fazal',
+        letter: 'F',
+        tone: 'highlight' as const,
+        photo: fazalPhoto,
+      },
+      { name: 'Jörg', letter: 'J', tone: 'bold' as const, photo: joergPhoto },
     ],
   },
 ];
 const FAQ_KEYS = ['level', 'stay', 'privacy', 'tech', 'employer'] as const;
 
+const GENERIC_PARTNER: PartnerLanding = {
+  slug: '',
+  name: '',
+  logo: null,
+  email_domain: null,
+};
+
 const PartnerLandingPage = () => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const { partnerSlug } = useParams<{ partnerSlug: string }>();
-  const heroRef = useRef<HTMLElement>(null);
+  const counterpartRef = useRef<HTMLElement>(null);
+  const finalBlockRef = useRef<HTMLElement>(null);
   const finalCardRef = useRef<HTMLDivElement>(null);
 
   const [email, setEmail] = useState('');
@@ -167,32 +197,51 @@ const PartnerLandingPage = () => {
   const [success, setSuccess] = useState(false);
   const [stickyVisible, setStickyVisible] = useState(false);
 
-  const { data: partner, error: loadError } = useSWR(
+  const { data: loadedPartner, error: loadError } = useSWR(
     partnerSlug ? getPartnerLandingEndpoint(partnerSlug) : null,
     () => fetchPartnerLanding(partnerSlug as string),
     { revalidateOnFocus: false },
   );
+  const partner = partnerSlug ? loadedPartner : GENERIC_PARTNER;
 
   useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero || typeof IntersectionObserver === 'undefined') return undefined;
+    const counterpart = counterpartRef.current;
+    const finalBlock = finalBlockRef.current;
+    if (!counterpart || !finalBlock) return undefined;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setStickyVisible(!entry.isIntersecting),
-      { threshold: 0.15 },
-    );
-    observer.observe(hero);
-    return () => observer.disconnect();
+    const scrollRoot = document.getElementById('router-outlet-wrapper');
+
+    const updateSticky = () => {
+      const rootRect = scrollRoot?.getBoundingClientRect();
+      const rootTop = rootRect?.top ?? 0;
+      const rootBottom = rootRect?.bottom ?? window.innerHeight;
+      const sectionTop = counterpart.getBoundingClientRect().top;
+      const finalTop = finalBlock.getBoundingClientRect().top;
+      const reachedCounterpart = sectionTop < rootBottom;
+      const beforeFinal = finalTop > rootTop + (rootBottom - rootTop) * 0.6;
+      setStickyVisible(reachedCounterpart && beforeFinal);
+    };
+
+    const target = scrollRoot ?? window;
+    target.addEventListener('scroll', updateSticky, { passive: true });
+    window.addEventListener('resize', updateSticky);
+    updateSticky();
+    return () => {
+      target.removeEventListener('scroll', updateSticky);
+      window.removeEventListener('resize', updateSticky);
+    };
   }, [partner]);
 
   useEffect(() => {
-    if (!partner) return undefined;
+    if (partnerSlug && !partner) return undefined;
     const previousTitle = document.title;
-    document.title = `${partner.name} · Little World`;
+    document.title = partner?.name
+      ? `${partner.name} · Little World`
+      : t('partner_landing.page_title');
     return () => {
       document.title = previousTitle;
     };
-  }, [partner]);
+  }, [partner, partnerSlug, t]);
 
   const exampleEmail = partner?.email_domain
     ? `vorname.name@${partner.email_domain}`
@@ -214,9 +263,10 @@ const PartnerLandingPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (!partnerSlug || !partner || isSubmitting || success) return;
+    if (isSubmitting || success) return;
+    if (partnerSlug && !partner) return;
 
-    const code = validatePartnerEmail(email, partner.email_domain);
+    const code = validatePartnerEmail(email, partner?.email_domain ?? null);
     if (code) {
       setError(errorMessage(code));
       return;
@@ -237,7 +287,7 @@ const PartnerLandingPage = () => {
           if (name === 'email' || name === 'root.serverError') {
             setError(
               t(fieldError.message ?? 'partner_landing.error_invalid', {
-                companyName: partner.name,
+                companyName: partner?.name ?? '',
                 example: exampleEmail,
                 supportEmail: SUPPORT_EMAIL,
               }),
@@ -310,7 +360,7 @@ const PartnerLandingPage = () => {
       enableDarkMode={false}
     >
       <Page>
-        <Hero ref={heroRef}>
+        <Hero>
           <Garland aria-hidden="true">
             {Array.from({ length: GARLAND_COUNT }, (_, index) => (
               <GarlandLight
@@ -324,52 +374,45 @@ const PartnerLandingPage = () => {
             <HomeLink href={WP_HOME_ROUTE} target="_blank" rel="noreferrer">
               <WhiteLogo stacked={false} asLink={false} />
             </HomeLink>
-            <PartnerPill>
-              <Text bold color={theme.color.text.info} type={TextTypes.Body6}>
-                {t('partner_landing.in_partnership_with')}
-              </Text>
-              {partner.logo && <PartnerLogo src={partner.logo} alt="" />}
-              <PartnerName>{partner.name}</PartnerName>
-            </PartnerPill>
+            {partner.name ? (
+              <PartnerPill>
+                <PartnerCoopLabel>
+                  {t('partner_landing.in_partnership_with')}
+                </PartnerCoopLabel>
+                {partner.logo && <PartnerLogo src={partner.logo} alt="" />}
+                <PartnerName>{partner.name}</PartnerName>
+              </PartnerPill>
+            ) : null}
           </NavBar>
           <HeroLayout>
             <HeroContent>
               <HeroPills>
                 <EyebrowPill>{PARTNER_EVENT.campaignLabel}</EyebrowPill>
-                <PartnerDoorPill>
-                  {t('partner_landing.hero_partner_opens', {
-                    companyName: partner.name,
-                  })}
-                </PartnerDoorPill>
+                {partner.name ? (
+                  <PartnerDoorPill>
+                    {t('partner_landing.hero_partner_opens', {
+                      companyName: partner.name,
+                    })}
+                  </PartnerDoorPill>
+                ) : null}
               </HeroPills>
               <HeroTitle>{t('partner_landing.hero_title')}</HeroTitle>
               <HeroLead>
-                {t('partner_landing.hero_lead', {
-                  companyName: partner.name,
-                  eventDate: eventDateShort,
-                })}
+                {partner.name
+                  ? t('partner_landing.hero_lead', {
+                      companyName: partner.name,
+                      eventDate: eventDateShort,
+                    })
+                  : t('partner_landing.hero_lead_generic', {
+                      eventDate: eventDateShort,
+                    })}
               </HeroLead>
               <PartnerSignUpCard {...cardProps} inputId="partner-email-hero" />
             </HeroContent>
-            <HeroMedia>
-              <HeroBadge>
-                <HeroDoor>
-                  <HeroDoorNumber>{PARTNER_EVENT.doorNumber}</HeroDoorNumber>
-                </HeroDoor>
-                <HeroBadgeCopy>
-                  <HeroBadgeTitle>
-                    {t('partner_landing.hero_badge_title')}
-                  </HeroBadgeTitle>
-                  <HeroBadgeText>
-                    {t('partner_landing.hero_badge_text')}
-                  </HeroBadgeText>
-                </HeroBadgeCopy>
-              </HeroBadge>
-            </HeroMedia>
           </HeroLayout>
         </Hero>
 
-        <Section $tone="primary">
+        <Section ref={counterpartRef} $tone="primary">
           <SectionInner>
             <SectionIntro>
               <SectionEyebrow>
@@ -444,10 +487,13 @@ const PartnerLandingPage = () => {
                     <QuoteText>
                       {t(`partner_landing.quote.${quote.key}.text`)}
                     </QuoteText>
-                    <PersonRow>
-                      <InitialsAvatar $tone={quote.tone}>
-                        {quote.initials}
-                      </InitialsAvatar>
+                    <PersonRow $spread={Boolean(quote.logo)}>
+                      {quote.photo ? (
+                        <PhotoAvatar
+                          src={quote.photo}
+                          alt={t(`partner_landing.quote.${quote.key}.name`)}
+                        />
+                      ) : null}
                       <PersonCopy>
                         <PersonName>
                           {t(`partner_landing.quote.${quote.key}.name`)}
@@ -456,6 +502,12 @@ const PartnerLandingPage = () => {
                           {t(`partner_landing.quote.${quote.key}.role`)}
                         </PersonRole>
                       </PersonCopy>
+                      {quote.logo ? (
+                        <QuoteCompanyLogo
+                          src={quote.logo}
+                          alt={quote.logoAlt}
+                        />
+                      ) : null}
                     </PersonRow>
                   </QuoteCard>
                 ))}
@@ -496,15 +548,24 @@ const PartnerLandingPage = () => {
               {STORIES.map(story => (
                 <StoryCard key={story.key}>
                   <AvatarStack>
-                    {story.initials.map(person => (
-                      <InitialsAvatar
-                        key={person.letter}
-                        $size="large"
-                        $tone={person.tone}
-                      >
-                        {person.letter}
-                      </InitialsAvatar>
-                    ))}
+                    {story.people.map(person =>
+                      person.photo ? (
+                        <PhotoAvatar
+                          key={person.name}
+                          src={person.photo}
+                          alt={person.name}
+                          $size="large"
+                        />
+                      ) : (
+                        <InitialsAvatar
+                          key={person.name}
+                          $size="large"
+                          $tone={person.tone}
+                        >
+                          {person.letter}
+                        </InitialsAvatar>
+                      ),
+                    )}
                   </AvatarStack>
                   <StoryNames>
                     {t(`partner_landing.stories.${story.key}.names`)}
@@ -521,7 +582,7 @@ const PartnerLandingPage = () => {
                     {t(`partner_landing.stories.${story.key}.context`)}
                   </StoryContext>
                   <StoryLink
-                    href={t('support_us.stories.link_href')}
+                    href={story.href}
                     target="_blank"
                     buttonAppearance={ButtonAppearance.Secondary}
                     buttonSize={ButtonSizes.Medium}
@@ -547,14 +608,18 @@ const PartnerLandingPage = () => {
           </FaqInner>
         </FaqSection>
 
-        <FinalBlock>
+        <FinalBlock ref={finalBlockRef}>
           <FinalInner>
             <FinalTitle>{t('partner_landing.final_title')}</FinalTitle>
             <FinalLead>
-              {t('partner_landing.final_lead', {
-                companyName: partner.name,
-                eventDate: eventDateShort,
-              })}
+              {partner.name
+                ? t('partner_landing.final_lead', {
+                    companyName: partner.name,
+                    eventDate: eventDateShort,
+                  })
+                : t('partner_landing.final_lead_generic', {
+                    eventDate: eventDateShort,
+                  })}
             </FinalLead>
             <div ref={finalCardRef}>
               <PartnerSignUpCard {...cardProps} inputId="partner-email-final" />

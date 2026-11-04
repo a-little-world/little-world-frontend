@@ -12,6 +12,7 @@ import useNativeStore from '../features/stores/nativeStore';
 import {
   CHANGE_EMAIL_ROUTE,
   getAppRoute,
+  isAdventLandingPath,
   LOGIN_ROUTE,
   USER_FORM_ROUTE,
   VERIFY_EMAIL_ROUTE,
@@ -66,6 +67,11 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
     nativeAuthUndetermined ||
     nativeTokenError
   ) {
+    return pageContent;
+  }
+
+  // Campaign pages are public even after login; don't send staff/employees to /app.
+  if (isAdventLandingPath(pathname)) {
     return pageContent;
   }
 

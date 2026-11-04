@@ -34,7 +34,8 @@ export const getQuestionsEndpoint = (archived: boolean) =>
   `/api/user/question_cards/?archived=${archived}&category=all`;
 export const E2EE_WORKER_ENDPOINT = '/api/video/e2ee_worker.js';
 
+export const PARTNER_REGISTER_ENDPOINT = '/api/partner/register/';
 export const getPartnerLandingEndpoint = (slug: string) =>
   `/api/partner/${slug}/`;
-export const getPartnerRegisterEndpoint = (slug: string) =>
-  `/api/partner/${slug}/register/`;
+export const getPartnerRegisterEndpoint = (slug?: string) =>
+  slug ? `/api/partner/${slug}/register/` : PARTNER_REGISTER_ENDPOINT;

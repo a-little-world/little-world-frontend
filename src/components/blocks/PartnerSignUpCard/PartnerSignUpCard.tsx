@@ -3,11 +3,11 @@ import { FormEvent } from 'react';
 import {
   ButtonSizes,
   ClockIcon,
+  ConfettiImage,
   ExclamationIcon,
   Link,
   MailIcon,
   TextTypes,
-  TickIcon,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
@@ -41,8 +41,9 @@ import {
   NewsletterLabel,
   NewsletterRow,
   SubmitButton,
-  SuccessRow,
-  SuccessText,
+  SuccessBody,
+  SuccessState,
+  SuccessTitle,
   SupportRow,
   SupportText,
   TimeLabel,
@@ -78,8 +79,7 @@ const PartnerSignUpCard = ({
 }: PartnerSignUpCardProps) => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
-  const startsAt = PARTNER_EVENT.startsAt;
-  const endsAt = PARTNER_EVENT.endsAt;
+  const { startsAt, endsAt } = PARTNER_EVENT;
   const daysUntil = calendarDaysUntil(startsAt);
   const exampleEmail = partner.email_domain
     ? `vorname.name@${partner.email_domain}`
@@ -132,59 +132,67 @@ const PartnerSignUpCard = ({
       </AppointmentRow>
       <DashedDivider />
 
-      <FormStack onSubmit={handleSubmit} noValidate>
-        <EmailField
-          id={inputId}
-          label={t('partner_landing.email_label')}
-          type="email"
-          inputMode="email"
-          value={email}
-          placeholder={exampleEmail}
-          autoComplete="email"
-          cannotError
-          onChange={event => onEmailChange(event.target.value)}
-        />
-        {error && (
-          <ErrorRow>
-            <ExclamationIcon
-              label={t('partner_landing.error_icon_label')}
-              width={16}
-              color={theme.color.text.error}
+      {success ? (
+        <SuccessState role="status">
+          <ConfettiImage
+            label={t('partner_landing.success_icon_label')}
+            width={96}
+            height={96}
+          />
+          <SuccessTitle>
+            {t('partner_landing.success_title', {
+              eventDate: formatDate(startsAt, 'd. MMMM', i18n.language),
+            })}
+          </SuccessTitle>
+          <SuccessBody>{t('partner_landing.success_thanks')}</SuccessBody>
+          <SuccessBody>{t('partner_landing.success_email_hint')}</SuccessBody>
+        </SuccessState>
+      ) : (
+        <>
+          <FormStack onSubmit={handleSubmit} noValidate>
+            <EmailField
+              id={inputId}
+              label={t('partner_landing.email_label')}
+              type="email"
+              inputMode="email"
+              value={email}
+              placeholder={exampleEmail}
+              autoComplete="email"
+              cannotError
+              onChange={event => onEmailChange(event.target.value)}
             />
-            <ErrorText>{error}</ErrorText>
-          </ErrorRow>
-        )}
-        {success && (
-          <SuccessRow role="status">
-            <TickIcon
-              label={t('partner_landing.success_icon_label')}
-              width={16}
-              color={theme.color.text.success}
-            />
-            <SuccessText>{t('partner_landing.success')}</SuccessText>
-          </SuccessRow>
-        )}
-        <SubmitButton
-          type="submit"
-          size={ButtonSizes.Stretch}
-          loading={isSubmitting}
-          disabled={success}
-        >
-          {t('partner_landing.submit')}
-        </SubmitButton>
-        <Microcopy>{t('partner_landing.microcopy')}</Microcopy>
-      </FormStack>
+            {error && (
+              <ErrorRow>
+                <ExclamationIcon
+                  label={t('partner_landing.error_icon_label')}
+                  width={16}
+                  color={theme.color.text.error}
+                />
+                <ErrorText>{error}</ErrorText>
+              </ErrorRow>
+            )}
+            <SubmitButton
+              type="submit"
+              size={ButtonSizes.Stretch}
+              loading={isSubmitting}
+            >
+              {t('partner_landing.submit')}
+            </SubmitButton>
+            <Microcopy>{t('partner_landing.microcopy')}</Microcopy>
+          </FormStack>
 
-      <NewsletterRow htmlFor={`${inputId}-newsletter`}>
-        <NewsletterCheckbox
-          id={`${inputId}-newsletter`}
-          checked={newsletter}
-          required={false}
-          color={theme.color.surface.highlight}
-          onCheckedChange={value => onNewsletterChange(value === true)}
-        />
-        <NewsletterLabel>{t('partner_landing.newsletter')}</NewsletterLabel>
-      </NewsletterRow>
+          <NewsletterRow htmlFor={`${inputId}-newsletter`}>
+            <NewsletterCheckbox
+              id={`${inputId}-newsletter`}
+              checked={newsletter}
+              required={false}
+              color={theme.color.surface.highlight}
+              onCheckedChange={value => onNewsletterChange(value === true)}
+            />
+            <NewsletterLabel>{t('partner_landing.newsletter')}</NewsletterLabel>
+          </NewsletterRow>
+        </>
+      )}
 
       <SupportRow>
         <MailIcon
