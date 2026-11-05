@@ -67,32 +67,69 @@ const WebsocketBridge = () => {
     })();
   }, []);
   const awayRef = useRef(false);
-  const { lastMessage, sendMessage } = useWebSocket(ready ? socketUrl : null, {
-    shouldReconnect: () => true,
-    reconnectAttempts: 10,
-    heartbeat: {
-      message: 'ping',
-      returnMessage: 'pong',
-      interval: 60000,
-      timeout: 150000,
+  const resumeCheckRef = useRef();
+  const [restarting, setRestarting] = useState(false);
+  const { lastMessage, sendMessage, getWebSocket } = useWebSocket(
+    ready ? socketUrl : null,
+    {
+      shouldReconnect: () => true,
+      // backgrounded apps would use up any limit
+      reconnectAttempts: Infinity,
+      heartbeat: {
+        message: 'ping',
+        returnMessage: 'pong',
+        interval: 60000,
+        timeout: 150000,
+      },
+      // pings only go out while idle, acks keep busy connections fresh
+      onMessage: event => {
+        if (event.data === 'pong') clearTimeout(resumeCheckRef.current);
+        else sendMessage('ack', false);
+      },
+      onOpen: () => {
+        awayRef.current = isAway();
+        if (awayRef.current) sendMessage('away', false);
+      },
+      // old token may have expired -> load current one
+      onClose: () => {
+        if (environment.isNative) loadAccessToken();
+      },
+      protocols:
+        environment.isNative && accessToken
+          ? [`bearer.${accessToken}`]
+          : undefined,
     },
-    // pings only go out while idle, acks keep busy connections fresh
-    onMessage: event => {
-      if (event.data !== 'pong') sendMessage('ack', false);
-    },
-    onOpen: () => {
-      awayRef.current = isAway();
-      if (awayRef.current) sendMessage('away', false);
-    },
-    // old token may have expired -> load current one
-    onClose: () => {
-      if (environment.isNative) loadAccessToken();
-    },
-    protocols:
-      environment.isNative && accessToken
-        ? [`bearer.${accessToken}`]
-        : undefined,
-  });
+    !restarting,
+  );
+
+  useEffect(() => {
+    if (restarting) setRestarting(false);
+  }, [restarting]);
+
+  // sockets of suspended apps can die without a close event
+  useEffect(() => {
+    const restart = async () => {
+      if (environment.isNative) await loadAccessToken();
+      setRestarting(true);
+    };
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return;
+      const socket = getWebSocket();
+      if (socket?.readyState === WebSocket.CONNECTING) return;
+      if (socket?.readyState !== WebSocket.OPEN) {
+        restart();
+        return;
+      }
+      clearTimeout(resumeCheckRef.current);
+      sendMessage('ping', false);
+      resumeCheckRef.current = setTimeout(restart, 5000);
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      clearTimeout(resumeCheckRef.current);
+    };
+  }, [getWebSocket, sendMessage]);
 
   const toast = useToast();
   const navigate = useNavigate();
