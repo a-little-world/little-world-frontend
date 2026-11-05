@@ -115,6 +115,13 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'SET_USER';
+      requestId?: string;
+      payload: {
+        id: string | null;
+      };
+    }
+  | {
       action: 'SET_TOKEN_STATE';
       requestId?: string;
       payload: {

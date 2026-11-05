@@ -32,3 +32,4 @@ export const getMatchEndpoint = (page: number) =>
   `/api/matches?page=${page}&page_size=10`;
 export const getQuestionsEndpoint = (archived: boolean) =>
   `/api/user/question_cards/?archived=${archived}&category=all`;
+export const E2EE_WORKER_ENDPOINT = '/api/video/e2ee_worker.js';

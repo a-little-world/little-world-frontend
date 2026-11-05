@@ -44,6 +44,14 @@ body {
   overflow-x: hidden;
 }
 
+/* modals portal to body (outside #root) -> transparent border keeps content + close button
+   out of the system bars while backdrop still covers them */
+dialog[aria-modal] {
+  border: solid transparent;
+  border-width: var(--safe-top) var(--safe-right) var(--safe-bottom)
+    var(--safe-left);
+}
+
 body,
 button {
   font-family:
