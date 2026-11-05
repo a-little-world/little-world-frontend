@@ -523,16 +523,6 @@
   "profile_card.call": "Videoanruf starten",
   "profile_card.message": "Nachricht senden",
   "profile_card.minutes_of": "von {{count}} Minuten",
-  "matchCard.teaser.successful.title": "Ihr seid richtig ins Gespräch gekommen",
-  "matchCard.teaser.successful.subline": "{{calls}} Anrufe in {{months}} Monaten · weiter so",
-  "matchCard.teaser.no_message.title": "Sagt hallo",
-  "matchCard.teaser.no_message.subline": "Eine Nachricht genügt.",
-  "matchCard.teaser.no_call.title": "Bereit für euren ersten Anruf?",
-  "matchCard.teaser.no_call.subline": "{{messages}} Nachrichten · noch kein Anruf",
-  "matchCard.teaser.dormant.title": "Schon zwei Wochen still",
-  "matchCard.teaser.dormant.subline": "Knüpft mit einem kurzen Hallo wieder an.",
-  "matchCard.teaser.engaged.title": "Eure Momente",
-  "matchCard.teaser.engaged.subline": "{{calls}} Anrufe",
   "match_overview.progress_title": "10 x 30 Minuten",
   "match_overview.page_header": "Eure Momente",
   "match_overview.title": "Du & {{name}}",
@@ -1068,7 +1058,5 @@
   "welcome.title": "Hallo!",
   "match_overview.progress.no_message.heading": "Sagt erst mal hallo",
   "match_overview.progress.no_message.body": "Noch ist nichts gesagt. Eine Nachricht an {{name}} genügt für den Anfang.",
-  "match_overview.progress.no_message.cta": "Erste Nachricht senden",
-  "matchCard.teaser.streak_active.subline": "{{calls}} Anrufe · {{weeks}} Wochen in Folge",
-  "matchCard.teaser.streak_active.title": "Ihr seid in Fahrt"
+  "match_overview.progress.no_message.cta": "Erste Nachricht senden"
 }

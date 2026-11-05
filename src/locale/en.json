@@ -529,16 +529,6 @@
   "profile_card.call": "Call",
   "profile_card.message": "Message",
   "profile_card.minutes_of": "of {{count}} minutes",
-  "matchCard.teaser.successful.title": "You two have really got going",
-  "matchCard.teaser.successful.subline": "{{calls}} calls over {{months}} months · keep it up",
-  "matchCard.teaser.no_message.title": "Say hello",
-  "matchCard.teaser.no_message.subline": "One message is enough.",
-  "matchCard.teaser.no_call.title": "Ready for your first call?",
-  "matchCard.teaser.no_call.subline": "{{messages}} messages · no call yet",
-  "matchCard.teaser.dormant.title": "Two quiet weeks",
-  "matchCard.teaser.dormant.subline": "A quick hello picks up where you left off.",
-  "matchCard.teaser.engaged.title": "Your moments",
-  "matchCard.teaser.engaged.subline": "{{calls}} calls",
   "match_overview.progress_title": "10 x 30 minutes",
   "match_overview.page_header": "Your moments",
   "match_overview.title": "You & {{name}}",
@@ -1076,7 +1066,5 @@
   "welcome.title": "Hey!",
   "match_overview.progress.no_message.heading": "Say hello first",
   "match_overview.progress.no_message.body": "Nothing has been said yet. One message to {{name}} is enough to start.",
-  "match_overview.progress.no_message.cta": "Send a first message",
-  "matchCard.teaser.streak_active.subline": "{{calls}} calls · {{weeks}} weeks in a row",
-  "matchCard.teaser.streak_active.title": "On a roll"
+  "match_overview.progress.no_message.cta": "Send a first message"
 }

@@ -17,9 +17,6 @@ import {
   Popover,
   PopoverSizes,
   ProfileIcon,
-  ProgressBar,
-  ProgressBarSizes,
-  ProgressBarVariations,
   Text,
   TextTypes,
   Tooltip,
@@ -49,8 +46,9 @@ import {
   REPORT_TYPE_PARTNER,
   REPORT_TYPE_UNMATCH,
 } from '../ReportForm/constants';
+import ProgressPanel from './ProgressPanel';
 
-export const PROFILE_CARD_HEIGHT = '392px';
+export const PROFILE_CARD_HEIGHT = '456px';
 
 interface Profile {
   first_name: string;
@@ -80,7 +78,6 @@ interface ProfileCardProps {
   openEditImage?: () => void;
   type?: string;
   loading?: boolean;
-  // matchTeaserInput?: MatchStateInput | null;
   unreadCount?: number;
   bothActiveCallMinutes?: number;
   successMinutes?: number;
@@ -200,13 +197,17 @@ export const PartnerMenuLink = styled(RouterLink)`
   ${partnerMenuOptionStyles}
 `;
 
-export const Actions = styled.div<{ $onProfile: boolean }>`
+export const Actions = styled.div<{
+  $onProfile: boolean;
+  $showPanel?: boolean;
+}>`
   display: grid;
   grid-template-columns: ${({ $onProfile }) =>
-    $onProfile ? '1fr 1fr' : 'repeat(3, minmax(0, 1fr))'};
+    $onProfile ? 'repeat(2, minmax(0, 1fr))' : 'repeat(3, minmax(0, 1fr))'};
   column-gap: ${({ theme }) => theme.spacing.small};
   width: 100%;
   max-width: 498px;
+  margin-top: ${({ $showPanel }) => ($showPanel ? 0 : 'auto')};
 `;
 
 export const NameContainer = styled.div<{ $isSelf: boolean }>`
@@ -217,9 +218,12 @@ export const NameContainer = styled.div<{ $isSelf: boolean }>`
 
 export const Description = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
-  white-space: nowrap;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  white-space: pre-line;
+  overflow-wrap: break-word;
 `;
 
 export const SupportChatLink = styled(Link)`
@@ -258,29 +262,23 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     )?.unread_count;
     return fromChatList ?? unreadCountProp ?? 0;
   }, [chatId, chats, unreadCountProp]);
+  const { description: profileDescription } = profile;
   const displayName = isDeleted
     ? t('profile.deleted_name')
     : profile.first_name;
+  let description = profileDescription;
+  if (isSupport) description = t('profile_card.support_description');
+  else if (isDeleted) description = t('profile.deleted_description');
   const callMinutes = Math.max(0, Math.round(bothActiveCallMinutes ?? 0));
   const callMinutesMax = Math.max(0, Math.round(successMinutes ?? 0));
-  const showsCallProgress =
-    Boolean(isMatch && !isSupport && !isDeleted && !isSelf && !onProfile) &&
-    callMinutes > 0 &&
-    callMinutesMax > 0;
-  // const teaserViewModel = useMemo(
-  //   () =>
-  //     matchTeaserInput && isMatch && !isSupport && !isDeleted && matchId
-  //       ? buildMatchTeaserViewModel(matchTeaserInput, {
-  //           chatId,
-  //           userPk,
-  //           matchId,
-  //         })
-  //       : null,
-  //   [chatId, isDeleted, isMatch, isSupport, matchId, matchTeaserInput, userPk],
-  // );
-  // const showsDescription = matchTeaserShowsDescription(
-  //   teaserViewModel?.kind ?? null,
-  // );
+  const showPanel = Boolean(
+    isMatch &&
+    !isSupport &&
+    !isDeleted &&
+    !isSelf &&
+    !onProfile &&
+    callMinutes > 0,
+  );
 
   return (
     <StyledProfileCard
@@ -367,57 +365,16 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       )}
       <OnlineIndicator isOnline={isOnline} position="absolute" />
       <ProfileInfo>
-        {onProfile ||
-          (!showsCallProgress && (
-            <NameContainer $isSelf={isSelf}>
-              <Text type={TextTypes.Heading5} bold>
-                {displayName}
-              </Text>
-              {isSupport && <SupportTag />}
-            </NameContainer>
-          ))}
-        {!onProfile &&
-          (showsCallProgress ? (
-            <ProgressBar
-              showScale={false}
-              showValueInBar
-              max={callMinutesMax}
-              value={
-                profile.first_name === 'Alice'
-                  ? 270
-                  : Math.min(callMinutes, callMinutesMax)
-              }
-              size={ProgressBarSizes.Small}
-              variation={ProgressBarVariations.Scale}
-              scoreRest="10x30 Minuten"
-              endLabel="300 Min"
-              title={
-                <Text type={TextTypes.Heading5} bold>
-                  {displayName}
-                </Text>
-              }
-            />
-          ) : (
-            <Description>
-              {isSupport
-                ? t('profile_card.support_description')
-                : isDeleted
-                  ? t('profile.deleted_description')
-                  : profile.description}
-            </Description>
-          ))}
+        {!onProfile && (
+          <NameContainer $isSelf={isSelf}>
+            <Text type={TextTypes.Heading5} bold>
+              {displayName}
+            </Text>
+            {isSupport && <SupportTag />}
+          </NameContainer>
+        )}
+        {!onProfile && !showPanel && <Description>{description}</Description>}
       </ProfileInfo>
-
-      {/* {teaserViewModel && (
-        <MatchTeaser
-          variant={teaserViewModel.variant}
-          icon={teaserViewModel.icon}
-          titleKey={teaserViewModel.titleKey}
-          sublineKey={teaserViewModel.sublineKey}
-          sublineParams={teaserViewModel.sublineParams}
-          href={teaserViewModel.href}
-        />
-      )} */}
       {isSelf ? null : isSupport ? (
         <SupportChatLink
           to={getAppRoute(HELP_CONTACT_ROUTE)}
@@ -427,7 +384,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           {t('profile_card.support_chat')}
         </SupportChatLink>
       ) : (
-        <Actions $onProfile={onProfile}>
+        <Actions $onProfile={onProfile} $showPanel={showPanel}>
           {!onProfile && (
             <Tooltip
               text={t('profile_card.view_profile')}
@@ -488,6 +445,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             }
           />
         </Actions>
+      )}
+      {showPanel && (
+        <ProgressPanel
+          minutes={callMinutes}
+          max={callMinutesMax > 0 ? callMinutesMax : 300}
+        />
       )}
     </StyledProfileCard>
   );
