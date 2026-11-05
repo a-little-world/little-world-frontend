@@ -41,8 +41,6 @@ export const SIGN_UP_ROUTE = 'sign-up';
 export const ADVENT_LANDING_ROUTE = 'advents-gespraeche';
 export const ADVENT_LANDING_PARTNER_ROUTE = 'advents-gespraeche/:partnerSlug';
 
-export const getAdventsGespraecheRoute = (slug?: string) =>
-  slug ? `/advents-gespraeche/${slug}` : '/advents-gespraeche';
 export const CHANGE_EMAIL_ROUTE = 'change-email';
 export const VERIFY_EMAIL_ROUTE = 'verify-email';
 export const FORGOT_PASSWORD_ROUTE = 'forgot-password';
@@ -105,10 +103,6 @@ export const isActiveRoute = (locationPath: string, path: string) => {
 
   return locationPath === path || locationPath.startsWith(`${path}/`);
 };
-
-/** Public campaign page — reachable while logged in, not bounced into /app. */
-export const isAdventLandingPath = (pathname: string) =>
-  isActiveRoute(pathname, getAdventsGespraecheRoute());
 
 const COOKIE_BANNER_HIDE_RETRY_INTERVAL_MS = 100;
 const COOKIE_BANNER_HIDE_RETRY_TIMEOUT_MS = 10000;

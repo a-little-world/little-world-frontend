@@ -27,7 +27,7 @@ import {
   PartnerLanding,
   registerPartner,
 } from '../../../api/partnerLanding';
-import { formatDate } from '../../../helpers/date';
+import { formatDate, toTimeZone } from '../../../helpers/date';
 import { onFormError } from '../../../helpers/form';
 import accentureLogo from '../../../images/partner-landing/accenture.png';
 import fazalPhoto from '../../../images/partner-landing/fazal.webp';
@@ -332,7 +332,7 @@ const PartnerLandingPage = () => {
   }
 
   const eventDateShort = formatDate(
-    PARTNER_EVENT.startsAt,
+    toTimeZone(PARTNER_EVENT.startsAt, PARTNER_EVENT.timeZone),
     'd. MMMM',
     i18n.language,
   );

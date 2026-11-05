@@ -4,9 +4,10 @@ import {
   ButtonSizes,
   ClockIcon,
   ConfettiImage,
-  ExclamationIcon,
   Link,
   MailIcon,
+  StatusMessage,
+  StatusTypes,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +18,7 @@ import {
   calendarDaysUntil,
   formatDate,
   formatTimeRange,
+  toTimeZone,
 } from '../../../helpers/date';
 import { PARTNER_EVENT } from '../../views/PartnerLanding/constants';
 import {
@@ -33,8 +35,6 @@ import {
   DoorKnob,
   DoorNumber,
   EmailField,
-  ErrorRow,
-  ErrorText,
   FormStack,
   Microcopy,
   NewsletterCheckbox,
@@ -79,8 +79,10 @@ const PartnerSignUpCard = ({
 }: PartnerSignUpCardProps) => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
-  const { startsAt, endsAt } = PARTNER_EVENT;
-  const daysUntil = calendarDaysUntil(startsAt);
+  const { timeZone } = PARTNER_EVENT;
+  const startsAt = toTimeZone(PARTNER_EVENT.startsAt, timeZone);
+  const endsAt = toTimeZone(PARTNER_EVENT.endsAt, timeZone);
+  const daysUntil = calendarDaysUntil(startsAt, toTimeZone(new Date(), timeZone));
   const exampleEmail = partner.email_domain
     ? `vorname.name@${partner.email_domain}`
     : 'name@firma.de';
@@ -161,15 +163,10 @@ const PartnerSignUpCard = ({
               cannotError
               onChange={event => onEmailChange(event.target.value)}
             />
-            {error && (
-              <ErrorRow>
-                <ExclamationIcon
-                  label={t('partner_landing.error_icon_label')}
-                  width={16}
-                  color={theme.color.text.error}
-                />
-                <ErrorText>{error}</ErrorText>
-              </ErrorRow>
+            {Boolean(error) && (
+              <StatusMessage type={StatusTypes.Error} visible>
+                {error}
+              </StatusMessage>
             )}
             <SubmitButton
               type="submit"

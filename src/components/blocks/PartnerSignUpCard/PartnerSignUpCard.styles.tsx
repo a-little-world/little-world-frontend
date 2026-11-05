@@ -244,22 +244,6 @@ export const EmailField = styled(TextInput)`
   }
 `;
 
-export const ErrorRow = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
-  color: ${({ theme }) => theme.color.text.error};
-`;
-
-export const ErrorText = styled(Text).attrs({
-  type: TextTypes.Body6,
-  tag: 'p' as const,
-})`
-  color: ${({ theme }) => theme.color.text.error};
-  line-height: 1.4;
-  margin: 0;
-`;
-
 export const SuccessState = styled.div`
   display: flex;
   flex-direction: column;

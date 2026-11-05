@@ -34,7 +34,6 @@ import useModalManagerStore, {
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
 import {
   getAppRoute,
-  isAdventLandingPath,
   ONBOARDING_ROUTE,
 } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
@@ -116,8 +115,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const shouldRedirectVolunteerToOnboarding =
     user?.profile?.user_type === USER_TYPES.volunteer &&
     !user?.isOnboarded &&
-    !isOnOnboardingRoute &&
-    !isAdventLandingPath(location.pathname);
+    !isOnOnboardingRoute;
 
   const subPath = location.pathname.split('/').slice(2).join('/');
   const isVH = pagesWithViewportHeight.some(

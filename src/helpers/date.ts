@@ -16,6 +16,13 @@ export const formatTime = (date: Date) =>
 export const formatTimeRange = (start: Date, end: Date) =>
   `${formatTime(start)}–${formatTime(end)}`;
 
+/**
+ * The wall-clock time of `date` in `timeZone`, as a Date whose local fields hold it.
+ * Only for display: pass the result to formatTime / formatDate / calendarDaysUntil.
+ */
+export const toTimeZone = (date: Date, timeZone: string) =>
+  new Date(date.toLocaleString('en-US', { timeZone }));
+
 /** Whole calendar days from today to `date` (negative if `date` is in the past). */
 export const calendarDaysUntil = (date: Date, from: Date = new Date()) =>
   differenceInCalendarDays(startOfDay(date), startOfDay(from));

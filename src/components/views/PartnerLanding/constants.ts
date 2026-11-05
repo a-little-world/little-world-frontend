@@ -4,4 +4,6 @@ export const PARTNER_EVENT = {
   campaignLabel: '24 Gespräche · Adventskalender 2026',
   startsAt: new Date('2026-12-10T12:30:00+01:00'),
   endsAt: new Date('2026-12-10T13:00:00+01:00'),
+  // Times are shown in Berlin time regardless of the visitor's timezone.
+  timeZone: 'Europe/Berlin',
 };
