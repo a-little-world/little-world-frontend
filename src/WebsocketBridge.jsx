@@ -67,6 +67,9 @@ const WebsocketBridge = () => {
   const awayRef = useRef(false);
   const resumeCheckRef = useRef();
   const [restarting, setRestarting] = useState(false);
+  const [backgrounded, setBackgrounded] = useState(
+    () => environment.isNative && document.visibilityState === 'hidden',
+  );
   const { lastMessage, sendMessage, getWebSocket } = useWebSocket(
     ready ? socketUrl : null,
     {
@@ -97,20 +100,24 @@ const WebsocketBridge = () => {
           ? [`bearer.${accessToken}`]
           : undefined,
     },
-    !restarting,
+    !restarting && !backgrounded,
   );
 
   useEffect(() => {
     if (restarting) setRestarting(false);
   }, [restarting]);
 
-  // sockets of suspended apps can die without a close event
   useEffect(() => {
-    const restart = async () => {
-      if (environment.isNative) await loadAccessToken();
-      setRestarting(true);
-    };
-    const onVisible = () => {
+    const restart = () => setRestarting(true);
+    const onVisibilityChange = async () => {
+      // some devices keep sockets of backgrounded apps open indefinitely
+      if (environment.isNative) {
+        if (document.visibilityState === 'visible') await loadAccessToken();
+        setBackgrounded(document.visibilityState === 'hidden');
+        return;
+      }
+
+      // sockets of sleeping devices can die without a close event
       if (document.visibilityState !== 'visible') return;
       const socket = getWebSocket();
       if (socket?.readyState === WebSocket.CONNECTING) return;
@@ -122,9 +129,9 @@ const WebsocketBridge = () => {
       sendMessage('ping', false);
       resumeCheckRef.current = setTimeout(restart, 5000);
     };
-    document.addEventListener('visibilitychange', onVisible);
+    document.addEventListener('visibilitychange', onVisibilityChange);
     return () => {
-      document.removeEventListener('visibilitychange', onVisible);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       clearTimeout(resumeCheckRef.current);
     };
   }, [getWebSocket, sendMessage]);
