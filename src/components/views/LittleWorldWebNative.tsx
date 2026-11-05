@@ -42,6 +42,9 @@ export interface LittleWorldWebNativeProps {
 
 function NativePreloader() {
   const { isReady } = useNativeStore();
+  const sendMessageToReactNative = useReceiveHandlerStore(
+    state => state.sendMessageToReactNative,
+  );
 
   useEffect(() => {
     if (isReady) {
@@ -59,7 +62,16 @@ function NativePreloader() {
   useSWR(API_OPTIONS_ENDPOINT);
   const { data: apiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT);
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
-  useSWR(isAuthenticated ? USER_ENDPOINT : null);
+  const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
+  const userId = user?.id ?? null;
+
+  useEffect(() => {
+    if (!isReady) return;
+    sendMessageToReactNative?.({
+      action: 'SET_USER',
+      payload: { id: userId },
+    }).catch(() => {});
+  }, [isReady, userId, sendMessageToReactNative]);
 
   if (apiTranslations) {
     updateTranslationResources({ apiTranslations });
