@@ -20,6 +20,8 @@ import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
 import useToast from './hooks/useToast';
 import { getInstallationId } from './installation-util';
 
+const WEBSOCKET_CLIENT_VERSION = 2;
+
 const isAway = () =>
   document.visibilityState === 'hidden' ||
   (!environment.isNative && !document.hasFocus());
@@ -41,11 +43,7 @@ const WebsocketBridge = () => {
   const backendUrl = useEffectiveBackendUrl();
   const coreWsScheme = useEffectiveCoreWsScheme();
   const webSocketHost = new URL(backendUrl).host;
-  const socketUrl =
-    coreWsScheme +
-    webSocketHost +
-    environment.coreWsPath +
-    (installId ? `?install_id=${encodeURIComponent(installId)}` : '');
+  const socketUrl = `${coreWsScheme}${webSocketHost}${environment.coreWsPath}?version=${WEBSOCKET_CLIENT_VERSION}${installId ? `&install_id=${encodeURIComponent(installId)}` : ''}`;
 
   const loadAccessToken = async () => {
     const token = await useNativeStore.getState().getAccessToken();
