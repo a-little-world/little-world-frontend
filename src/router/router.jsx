@@ -30,6 +30,7 @@ import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
 import OnboardingSelection from '../components/views/Onboarding/OnboardingSelection';
 import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalkthrough';
+import PartnerLanding from '../components/views/PartnerLanding/PartnerLanding';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
@@ -50,6 +51,7 @@ import useCalEmbed from '../hooks/useCalEmbed';
 import WebsocketBridge from '../WebsocketBridge';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
+  ADVENT_LANDING_ROUTE,
   APP_ROUTE,
   BASE_ROUTE,
   BEGINNERS_ROUTE,
@@ -130,9 +132,20 @@ export const Root = ({
   );
 };
 
+const adventLandingRoute = {
+  path: ADVENT_LANDING_ROUTE,
+  element: <Outlet />,
+  errorElement: <RouterError Layout={null} />,
+  children: [
+    { index: true, element: <PartnerLanding /> },
+    { path: ':partnerSlug', element: <PartnerLanding /> },
+  ],
+};
+
 export function getWebRouter() {
   const ROOT_ROUTES = [
     // Unguarded — accessible regardless of auth state
+    adventLandingRoute,
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
@@ -262,6 +275,7 @@ export function getWebRouter() {
 export function getNativeRouter() {
   const ROOT_ROUTES = [
     // Unguarded — accessible regardless of auth state
+    adventLandingRoute,
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
