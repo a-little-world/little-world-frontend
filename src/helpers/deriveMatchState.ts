@@ -19,9 +19,7 @@ export interface MatchStateInput {
 }
 
 /**
- * What a match is doing right now. One vocabulary, two presentations: the teaser on the
- * partner card and the progress hero on the Match Overview page both read from this, so
- * the two cannot describe the same match differently.
+ * What a match is doing right now, for the Match Overview progress hero.
  */
 export type MatchState =
   | { state: 'successful'; calls: number; months: number }
