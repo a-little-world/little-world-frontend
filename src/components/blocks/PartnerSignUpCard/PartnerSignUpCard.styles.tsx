@@ -8,6 +8,8 @@ import {
 } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
+import { softCardShadowValue } from '../../views/PartnerLanding/shadow';
+
 export const CardShell = styled(Card)`
   && {
     width: 100%;
@@ -20,7 +22,7 @@ export const CardShell = styled(Card)`
       `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`};
     box-shadow:
       inset 0 0 0 1px ${({ theme }) => theme.color.border.subtle},
-      0 1px 25px 1px rgb(0 0 0 / 5%);
+      ${softCardShadowValue};
   }
 
   ${({ theme }) => css`
@@ -118,7 +120,6 @@ export const AppointmentEyebrow = styled(Text).attrs({
 
 export const AppointmentDate = styled(Text).attrs({
   type: TextTypes.Heading5,
-  tag: 'p' as const,
 })`
   color: ${({ theme }) => theme.color.text.title};
   line-height: 1.1;
@@ -244,35 +245,6 @@ export const EmailField = styled(TextInput)`
   }
 `;
 
-export const SuccessState = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: ${({ theme }) => theme.spacing.small};
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing.small} 0;
-`;
-
-export const SuccessTitle = styled(Text).attrs({
-  type: TextTypes.Heading6,
-  tag: 'p' as const,
-  bold: true,
-})`
-  color: ${({ theme }) => theme.color.text.success};
-  margin: 0;
-  text-wrap: balance;
-`;
-
-export const SuccessBody = styled(Text).attrs({
-  type: TextTypes.Body5,
-  tag: 'p' as const,
-})`
-  color: ${({ theme }) => theme.color.text.primary};
-  line-height: 1.5;
-  margin: 0;
-`;
-
 export const SubmitButton = styled(Button)`
   width: 100%;
   max-width: 100%;
@@ -283,7 +255,6 @@ export const SubmitButton = styled(Button)`
 
 export const Microcopy = styled(Text).attrs({
   type: TextTypes.Body6,
-  tag: 'p' as const,
 })`
   color: ${({ theme }) => theme.color.text.tertiary};
   margin: 0;
@@ -305,7 +276,6 @@ export const NewsletterLabel = styled(Text).attrs({
   type: TextTypes.Body6,
   tag: 'span' as const,
 })`
-  color: ${({ theme }) => theme.color.text.tertiary};
   line-height: 1.4;
 `;
 
@@ -324,7 +294,6 @@ export const SupportRow = styled.div`
 
 export const SupportText = styled(Text).attrs({
   type: TextTypes.Body6,
-  tag: 'p' as const,
 })`
   color: ${({ theme }) => theme.color.text.tertiary};
   margin: 0;

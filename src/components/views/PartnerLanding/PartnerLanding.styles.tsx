@@ -3,7 +3,8 @@ import {
   AccordionContent,
   Button,
   Card,
-  Link,
+  CardContent,
+  CardHeader,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -13,6 +14,7 @@ import heroDesktop from '../../../images/partner-landing/hero-desktop.webp';
 import heroMobile from '../../../images/partner-landing/hero-mobile.webp';
 import lightsBackground from '../../../images/partner-landing/lights.webp';
 import Logo from '../../atoms/Logo';
+import { softAvatarShadowValue, softCardShadowValue } from './shadow';
 
 export const Page = styled.main`
   min-height: 100vh;
@@ -20,14 +22,32 @@ export const Page = styled.main`
   color: ${({ theme }) => theme.color.text.primary};
 `;
 
-const sectionPadding = css`
-  padding: ${({ theme }) => theme.spacing.xlarge}
-    ${({ theme }) => `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`}
-    ${({ theme }) => theme.spacing.xxlarge};
+export const pageSidePadding = css`
+  padding-left: ${({ theme }) => theme.spacing.medium};
+  padding-right: ${({ theme }) => theme.spacing.medium};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.xxxxlarge} ${theme.spacing.massive};
+      padding-left: ${theme.spacing.xxxlarge};
+      padding-right: ${theme.spacing.xxxlarge};
+    }
+
+    @media (min-width: ${theme.breakpoints.large}) {
+      padding-left: ${theme.spacing.massive};
+      padding-right: ${theme.spacing.massive};
+    }
+  `}
+`;
+
+const sectionPadding = css`
+  padding-top: ${({ theme }) => theme.spacing.xlarge};
+  padding-bottom: ${({ theme }) => theme.spacing.xxlarge};
+  ${pageSidePadding}
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding-top: ${theme.spacing.xxxxlarge};
+      padding-bottom: ${theme.spacing.xxxxlarge};
     }
   `}
 `;
@@ -161,14 +181,14 @@ export const NavBar = styled.nav`
   justify-content: space-between;
   height: ${({ theme }) =>
     `calc(${theme.spacing.xxxxlarge} - ${theme.spacing.xlarge})`};
-  padding: 0
-    ${({ theme }) => `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`};
+  padding-top: 0;
+  padding-bottom: 0;
   margin-top: ${({ theme }) => theme.spacing.xxxsmall};
+  ${pageSidePadding}
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       height: ${theme.spacing.xxxlarge};
-      padding: 0 ${theme.spacing.xxxlarge};
       margin-top: 0;
     }
   `}
@@ -254,8 +274,9 @@ export const Garland = styled.div`
   align-items: center;
   justify-content: space-between;
   height: ${({ theme }) => theme.spacing.large};
-  padding: 0
-    ${({ theme }) => `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`};
+  padding-top: 0;
+  padding-bottom: 0;
+  ${pageSidePadding}
   pointer-events: none;
 
   > :nth-child(n + 13) {
@@ -264,7 +285,6 @@ export const Garland = styled.div`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: 0 ${theme.spacing.xxxlarge};
       top: 0;
 
       > :nth-child(n + 13) {
@@ -314,14 +334,12 @@ export const HeroLayout = styled.div`
   gap: ${({ theme }) =>
     `calc(${theme.spacing.medium} + ${theme.spacing.xxxsmall})`};
   width: 100%;
-  padding: ${({ theme }) => theme.spacing.large}
-    ${({ theme }) => `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`}
-    ${({ theme }) => theme.spacing.xxlarge};
+  padding-top: ${({ theme }) => theme.spacing.large};
+  padding-bottom: ${({ theme }) => theme.spacing.xxlarge};
+  ${pageSidePadding}
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.large} ${theme.spacing.xxxlarge}
-        ${theme.spacing.xxlarge};
       gap: ${theme.spacing.medium};
     }
   `}
@@ -428,7 +446,7 @@ export const EyebrowPill = styled(Text).attrs({
     ${({ theme }) => theme.color.text.info} 55%,
     transparent
   );
-  border: 2px solid ${({ theme }) => theme.color.border.button};
+  border: 2px solid ${({ theme }) => theme.color.border.info};
   border-radius: ${({ theme }) => theme.radius.massive};
   padding: ${({ theme }) => `${theme.spacing.xxxsmall} ${theme.spacing.small}`};
 `;
@@ -476,14 +494,18 @@ export const FinalBlock = styled.section`
   text-align: center;
   gap: ${({ theme }) =>
     `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`};
-  padding: ${({ theme }) =>
-    `${`calc(${theme.spacing.xlarge} + ${theme.spacing.xxsmall})`} ${`calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`}`};
+  padding-top: ${({ theme }) =>
+    `calc(${theme.spacing.xlarge} + ${theme.spacing.xxsmall})`};
+  padding-bottom: ${({ theme }) =>
+    `calc(${theme.spacing.xlarge} + ${theme.spacing.xxsmall})`};
+  ${pageSidePadding}
   color: ${({ theme }) => theme.color.text.button};
   background: ${({ theme }) => theme.color.text.info};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.xxxxlarge} ${theme.spacing.massive};
+      padding-top: ${theme.spacing.xxxxlarge};
+      padding-bottom: ${theme.spacing.xxxxlarge};
       gap: ${theme.spacing.medium};
     }
   `}
@@ -625,7 +647,7 @@ export const CardGrid = styled.div`
     `calc(${theme.spacing.xsmall} + ${theme.spacing.xxxxsmall})`};
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
+    @media (min-width: ${theme.breakpoints.large}) {
       grid-template-columns: repeat(4, 1fr);
       gap: ${theme.spacing.medium};
     }
@@ -642,13 +664,15 @@ export const FeatureCard = styled(Card)`
       `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`};
     border-radius: ${({ theme }) => theme.radius.xlarge};
     border: none;
-    box-shadow: inset 0 0 0 ${({ theme }) => theme.spacing.xxxxsmall}
-      ${({ theme }) => theme.color.border.subtle};
+    box-shadow:
+      inset 0 0 0 ${({ theme }) => theme.spacing.xxxxsmall}
+        ${({ theme }) => theme.color.border.subtle},
+      ${softCardShadowValue};
     background: ${({ theme }) => theme.color.surface.primary};
   }
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
+    @media (min-width: ${theme.breakpoints.large}) {
       && {
         flex-direction: column;
         gap: ${theme.spacing.small};
@@ -761,7 +785,7 @@ export const QuoteCard = styled(Card)`
       `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall} + ${theme.spacing.xxxxsmall})`};
     border-radius: ${({ theme }) => theme.radius.xlarge};
     border: none;
-    box-shadow: none;
+    box-shadow: ${softCardShadowValue};
     background: ${({ theme }) => theme.color.surface.primary};
   }
 
@@ -916,7 +940,7 @@ export const StepCard = styled(Card)`
       `${`calc(${theme.spacing.xsmall} + ${theme.spacing.xxxxsmall})`} ${theme.spacing.small}`};
     border-radius: ${({ theme }) => theme.radius.large};
     border: none;
-    box-shadow: none;
+    box-shadow: ${softCardShadowValue};
     background: ${({ theme }) => theme.color.surface.primary};
   }
 
@@ -973,8 +997,10 @@ export const StoryCard = styled(Card)`
       `calc(${theme.spacing.small} + ${theme.spacing.xxxsmall} + ${theme.spacing.xxxxsmall})`};
     border-radius: ${({ theme }) => theme.radius.xlarge};
     border: none;
-    box-shadow: inset 0 0 0 ${({ theme }) => theme.spacing.xxxxsmall}
-      ${({ theme }) => theme.color.border.subtle};
+    box-shadow:
+      inset 0 0 0 ${({ theme }) => theme.spacing.xxxxsmall}
+        ${({ theme }) => theme.color.border.subtle},
+      ${softCardShadowValue};
     background: ${({ theme }) => theme.color.surface.primary};
   }
 
@@ -989,6 +1015,10 @@ export const StoryCard = styled(Card)`
 
 export const AvatarStack = styled.div`
   display: flex;
+
+  > * {
+    box-shadow: ${softAvatarShadowValue};
+  }
 
   > *:not(:first-child) {
     margin-left: ${({ theme }) => `calc(${theme.spacing.small} * -1)`};
@@ -1031,24 +1061,66 @@ export const StoryContext = styled(Text).attrs({
   margin: 0;
 `;
 
-export const StoryLink = styled(Link)`
+export const StoryReadButton = styled(Button)`
   align-self: flex-start;
   width: auto;
 `;
 
-export const FaqSection = styled(Section)`
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      padding-left: calc(
-        ${theme.spacing.xxxxlarge} * 2 + ${theme.spacing.xlarge} +
-          ${theme.spacing.xsmall}
-      );
-      padding-right: calc(
-        ${theme.spacing.xxxxlarge} * 2 + ${theme.spacing.xlarge} +
-          ${theme.spacing.xsmall}
-      );
-    }
-  `}
+export const StoryModalCard = styled(Card)`
+  max-height: 90vh;
+  overflow: hidden;
+`;
+
+export const StoryModalHeader = styled(CardHeader)`
+  gap: ${({ theme }) => theme.spacing.small};
+`;
+
+export const StoryModalTitle = styled(Text).attrs({
+  type: TextTypes.Heading4,
+  tag: 'h2' as const,
+})`
+  color: ${({ theme }) => theme.color.text.heading};
+  margin: 0;
+  text-align: left;
+`;
+
+export const StoryModalKicker = styled(Text).attrs({
+  type: TextTypes.Body5,
+  tag: 'p' as const,
+})`
+  color: ${({ theme }) => theme.color.text.tertiary};
+  font-style: italic;
+  margin: 0;
+`;
+
+export const StoryModalBody = styled(CardContent)`
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+  overflow-y: auto;
+`;
+
+export const StoryModalSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
+`;
+
+export const StoryModalHeading = styled(Text).attrs({
+  type: TextTypes.Heading6,
+  tag: 'h3' as const,
+})`
+  color: ${({ theme }) => theme.color.text.bold};
+  margin: ${({ theme }) => theme.spacing.xsmall} 0 0;
+`;
+
+export const StoryModalParagraph = styled(Text).attrs({
+  type: TextTypes.Body4,
+  tag: 'p' as const,
+})`
+  color: ${({ theme }) => theme.color.text.primary};
+  line-height: 1.5;
+  margin: 0;
 `;
 
 export const FaqInner = styled(SectionInner)`
@@ -1066,6 +1138,8 @@ export const FaqAccordion = styled(Accordion)`
     background: ${({ theme }) => theme.color.surface.primary};
     border: 2px solid ${({ theme }) => theme.color.border.subtle};
     border-radius: ${({ theme }) => theme.radius.large};
+    padding-top: ${({ theme }) => theme.spacing.small};
+    padding-bottom: ${({ theme }) => theme.spacing.xxsmall};
   }
 
   button {
@@ -1075,9 +1149,8 @@ export const FaqAccordion = styled(Accordion)`
 
 export const FaqAccordionContent = styled(AccordionContent)`
   background: ${({ theme }) => theme.color.surface.primary};
-  padding: 0 0 ${({ theme }) => theme.spacing.medium};
+  padding: 0 0 ${({ theme }) => theme.spacing.small};
   margin: 0;
-  color: ${({ theme }) => theme.color.text.tertiary};
   line-height: 1.55;
 `;
 
@@ -1086,8 +1159,11 @@ export const PageFooter = styled.footer`
   flex-direction: column;
   align-items: flex-start;
   gap: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) =>
-    `${`calc(${theme.spacing.medium} + ${theme.spacing.xxxsmall})`} ${`calc(${theme.spacing.small} + ${theme.spacing.xxxsmall})`}`};
+  padding-top: ${({ theme }) =>
+    `calc(${theme.spacing.medium} + ${theme.spacing.xxxsmall})`};
+  padding-bottom: ${({ theme }) =>
+    `calc(${theme.spacing.medium} + ${theme.spacing.xxxsmall})`};
+  ${pageSidePadding}
   background: ${({ theme }) => theme.color.surface.primary};
   border-top: ${({ theme }) => theme.spacing.xxxxsmall} solid
     ${({ theme }) => theme.color.border.subtle};
@@ -1097,7 +1173,8 @@ export const PageFooter = styled.footer`
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      padding: ${theme.spacing.medium} ${theme.spacing.massive};
+      padding-top: ${theme.spacing.medium};
+      padding-bottom: ${theme.spacing.medium};
     }
   `}
 `;

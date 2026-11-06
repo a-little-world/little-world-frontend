@@ -3,7 +3,6 @@ import { FormEvent } from 'react';
 import {
   ButtonSizes,
   ClockIcon,
-  ConfettiImage,
   Link,
   MailIcon,
   StatusMessage,
@@ -20,7 +19,7 @@ import {
   formatTimeRange,
   toTimeZone,
 } from '../../../helpers/date';
-import { PARTNER_EVENT } from '../../views/PartnerLanding/constants';
+import { PartnerEvent } from '../../views/PartnerLanding/constants';
 import {
   AppointmentCopy,
   AppointmentDate,
@@ -41,9 +40,6 @@ import {
   NewsletterLabel,
   NewsletterRow,
   SubmitButton,
-  SuccessBody,
-  SuccessState,
-  SuccessTitle,
   SupportRow,
   SupportText,
   TimeLabel,
@@ -53,12 +49,12 @@ import {
 export const SUPPORT_EMAIL = 'support@little-world.com';
 
 export interface PartnerSignUpCardProps {
+  event: PartnerEvent;
   partner: PartnerLanding;
   email: string;
   newsletter: boolean;
   error: string | null;
   isSubmitting: boolean;
-  success: boolean;
   inputId: string;
   onEmailChange: (value: string) => void;
   onNewsletterChange: (value: boolean) => void;
@@ -66,12 +62,12 @@ export interface PartnerSignUpCardProps {
 }
 
 const PartnerSignUpCard = ({
+  event,
   partner,
   email,
   newsletter,
   error,
   isSubmitting,
-  success,
   inputId,
   onEmailChange,
   onNewsletterChange,
@@ -79,16 +75,19 @@ const PartnerSignUpCard = ({
 }: PartnerSignUpCardProps) => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
-  const { timeZone } = PARTNER_EVENT;
-  const startsAt = toTimeZone(PARTNER_EVENT.startsAt, timeZone);
-  const endsAt = toTimeZone(PARTNER_EVENT.endsAt, timeZone);
-  const daysUntil = calendarDaysUntil(startsAt, toTimeZone(new Date(), timeZone));
+  const { timeZone } = event;
+  const startsAt = toTimeZone(event.startsAt, timeZone);
+  const endsAt = toTimeZone(event.endsAt, timeZone);
+  const daysUntil = calendarDaysUntil(
+    startsAt,
+    toTimeZone(new Date(), timeZone),
+  );
   const exampleEmail = partner.email_domain
     ? `vorname.name@${partner.email_domain}`
     : 'name@firma.de';
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = (formEvent: FormEvent) => {
+    formEvent.preventDefault();
     onSubmit();
   };
 
@@ -96,7 +95,7 @@ const PartnerSignUpCard = ({
     <CardShell>
       <AppointmentRow>
         <DoorBadge>
-          <DoorNumber>{PARTNER_EVENT.doorNumber}</DoorNumber>
+          <DoorNumber>{event.doorNumber}</DoorNumber>
           <DoorKnob />
         </DoorBadge>
         <AppointmentCopy>
@@ -134,62 +133,43 @@ const PartnerSignUpCard = ({
       </AppointmentRow>
       <DashedDivider />
 
-      {success ? (
-        <SuccessState role="status">
-          <ConfettiImage
-            label={t('partner_landing.success_icon_label')}
-            width={96}
-            height={96}
-          />
-          <SuccessTitle>
-            {t('partner_landing.success_title', {
-              eventDate: formatDate(startsAt, 'd. MMMM', i18n.language),
-            })}
-          </SuccessTitle>
-          <SuccessBody>{t('partner_landing.success_thanks')}</SuccessBody>
-          <SuccessBody>{t('partner_landing.success_email_hint')}</SuccessBody>
-        </SuccessState>
-      ) : (
-        <>
-          <FormStack onSubmit={handleSubmit} noValidate>
-            <EmailField
-              id={inputId}
-              label={t('partner_landing.email_label')}
-              type="email"
-              inputMode="email"
-              value={email}
-              placeholder={exampleEmail}
-              autoComplete="email"
-              cannotError
-              onChange={event => onEmailChange(event.target.value)}
-            />
-            {Boolean(error) && (
-              <StatusMessage type={StatusTypes.Error} visible>
-                {error}
-              </StatusMessage>
-            )}
-            <SubmitButton
-              type="submit"
-              size={ButtonSizes.Stretch}
-              loading={isSubmitting}
-            >
-              {t('partner_landing.submit')}
-            </SubmitButton>
-            <Microcopy>{t('partner_landing.microcopy')}</Microcopy>
-          </FormStack>
+      <FormStack onSubmit={handleSubmit} noValidate>
+        <EmailField
+          id={inputId}
+          label={t('partner_landing.email_label')}
+          type="email"
+          inputMode="email"
+          value={email}
+          placeholder={exampleEmail}
+          autoComplete="email"
+          cannotError
+          onChange={inputEvent => onEmailChange(inputEvent.target.value)}
+        />
+        {Boolean(error) && (
+          <StatusMessage type={StatusTypes.Error} visible>
+            {error}
+          </StatusMessage>
+        )}
+        <SubmitButton
+          type="submit"
+          size={ButtonSizes.Stretch}
+          loading={isSubmitting}
+        >
+          {t('partner_landing.submit')}
+        </SubmitButton>
+        <Microcopy>{t('partner_landing.microcopy')}</Microcopy>
+      </FormStack>
 
-          <NewsletterRow htmlFor={`${inputId}-newsletter`}>
-            <NewsletterCheckbox
-              id={`${inputId}-newsletter`}
-              checked={newsletter}
-              required={false}
-              color={theme.color.surface.highlight}
-              onCheckedChange={value => onNewsletterChange(value === true)}
-            />
-            <NewsletterLabel>{t('partner_landing.newsletter')}</NewsletterLabel>
-          </NewsletterRow>
-        </>
-      )}
+      <NewsletterRow htmlFor={`${inputId}-newsletter`}>
+        <NewsletterCheckbox
+          id={`${inputId}-newsletter`}
+          checked={newsletter}
+          required={false}
+          color={theme.color.surface.highlight}
+          onCheckedChange={value => onNewsletterChange(value === true)}
+        />
+        <NewsletterLabel>{t('partner_landing.newsletter')}</NewsletterLabel>
+      </NewsletterRow>
 
       <SupportRow>
         <MailIcon

@@ -1,9 +1,22 @@
-/** Temporary campaign copy until partner landings are configured elsewhere. */
-export const PARTNER_EVENT = {
-  doorNumber: 10,
-  campaignLabel: '24 Gespräche · Adventskalender 2026',
-  startsAt: new Date('2026-12-10T12:30:00+01:00'),
-  endsAt: new Date('2026-12-10T13:00:00+01:00'),
-  // Times are shown in Berlin time regardless of the visitor's timezone.
-  timeZone: 'Europe/Berlin',
+export const PARTNER_EVENT_TIME_ZONE = 'Europe/Berlin';
+export const PARTNER_CAMPAIGN_LABEL = '24 Gespräche · Adventskalender 2026';
+
+export type PartnerEvent = {
+  doorNumber: number;
+  campaignLabel: string;
+  startsAt: Date;
+  endsAt: Date;
+  timeZone: string;
 };
+
+export const eventFromLanding = (landing: {
+  door_number: number;
+  starts_at: string;
+  ends_at: string;
+}): PartnerEvent => ({
+  doorNumber: landing.door_number,
+  campaignLabel: PARTNER_CAMPAIGN_LABEL,
+  startsAt: new Date(landing.starts_at),
+  endsAt: new Date(landing.ends_at),
+  timeZone: PARTNER_EVENT_TIME_ZONE,
+});

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   ButtonAppearance,
@@ -16,7 +16,7 @@ import {
   ThemeVariants,
   TickIcon,
 } from '@a-little-world/little-world-design-system';
-import { useTranslation } from 'react-i18next';
+import { I18nextProvider, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
@@ -27,6 +27,7 @@ import {
   PartnerLanding,
   registerPartner,
 } from '../../../api/partnerLanding';
+import { LANGUAGES } from '../../../constants/index';
 import { formatDate, toTimeZone } from '../../../helpers/date';
 import { onFormError } from '../../../helpers/form';
 import accentureLogo from '../../../images/partner-landing/accenture.png';
@@ -45,9 +46,11 @@ import Logo from '../../atoms/Logo';
 import PartnerSignUpCard, {
   SUPPORT_EMAIL,
 } from '../../blocks/PartnerSignUpCard/PartnerSignUpCard';
-import { PARTNER_EVENT } from './constants';
+import { eventFromLanding } from './constants';
+import PartnerConfirmation, {
+  PartnerConfirmationIntro,
+} from './PartnerConfirmation';
 import {
-  AvatarStack,
   BenefitCopy,
   BenefitList,
   BenefitRow,
@@ -56,7 +59,6 @@ import {
   FaqAccordion,
   FaqAccordionContent,
   FaqInner,
-  FaqSection,
   FeatureCard,
   FeatureCopy,
   FeatureText,
@@ -78,12 +80,10 @@ import {
   HeroTitle,
   HomeLink,
   IconCircle,
-  InitialsAvatar,
   NavBar,
   Page,
   PageFooter,
   PartnerCoopLabel,
-  PartnerDoorPill,
   PartnerLogo,
   PartnerName,
   PartnerPill,
@@ -113,13 +113,14 @@ import {
   StoriesGrid,
   StoryCard,
   StoryContext,
-  StoryLink,
   StoryNames,
   StoryQuote,
   StoryQuoteMark,
+  StoryReadButton,
   StorySpeaker,
   WhiteLogo,
 } from './PartnerLanding.styles';
+import PartnerStoryModal, { StoryAvatars } from './PartnerStoryModal';
 import { validatePartnerEmail } from './validation';
 
 const GARLAND_TONES = ['highlight', 'accent', 'heading', 'title'] as const;
@@ -148,7 +149,6 @@ const STEP_KEYS = ['one', 'two', 'three'] as const;
 const STORIES = [
   {
     key: 'jamal_monika',
-    href: `${WP_HOME_ROUTE}/jamal-und-monika-deutschlernender-und-sprachpatin/`,
     people: [
       { name: 'Jamal', letter: 'J', tone: 'bold' as const, photo: jamalPhoto },
       {
@@ -161,7 +161,6 @@ const STORIES = [
   },
   {
     key: 'fazal_joerg',
-    href: `${WP_HOME_ROUTE}/fazal-und-joerg-deutschlernender-und-sprachpate/`,
     people: [
       {
         name: 'Fazal',
@@ -173,13 +172,46 @@ const STORIES = [
     ],
   },
 ];
-const FAQ_KEYS = ['level', 'stay', 'privacy', 'tech', 'employer'] as const;
+const FAQ_KEYS = [
+  'level',
+  'volunteer_level',
+  'stay',
+  'after_time',
+  'privacy',
+  'tech',
+  'employer',
+] as const;
 
-const GENERIC_PARTNER: PartnerLanding = {
-  slug: '',
-  name: '',
-  logo: null,
-  email_domain: null,
+const PartnerHeroChrome = ({ partner }: { partner: PartnerLanding }) => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <Garland aria-hidden="true">
+        {Array.from({ length: GARLAND_COUNT }, (_, index) => (
+          <GarlandLight
+            key={index}
+            $tone={GARLAND_TONES[index % GARLAND_TONES.length]}
+            $wave={Math.sin((index / (GARLAND_COUNT - 1)) * Math.PI * 2)}
+          />
+        ))}
+      </Garland>
+      <NavBar>
+        <HomeLink href={WP_HOME_ROUTE} target="_blank" rel="noreferrer">
+          <WhiteLogo stacked={false} asLink={false} />
+        </HomeLink>
+        {partner.name ? (
+          <PartnerPill>
+            <PartnerCoopLabel>
+              {t('partner_landing.in_partnership_with')}
+            </PartnerCoopLabel>
+            {partner.logo && <PartnerLogo src={partner.logo} alt="" />}
+            <PartnerName>{partner.name}</PartnerName>
+          </PartnerPill>
+        ) : null}
+      </NavBar>
+    </>
+  );
 };
 
 const PartnerLandingPage = () => {
@@ -195,14 +227,17 @@ const PartnerLandingPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [personalPath, setPersonalPath] = useState<string | null>(null);
   const [stickyVisible, setStickyVisible] = useState(false);
+  const [openStoryKey, setOpenStoryKey] = useState<string | null>(null);
 
-  const { data: loadedPartner, error: loadError } = useSWR(
-    partnerSlug ? getPartnerLandingEndpoint(partnerSlug) : null,
-    () => fetchPartnerLanding(partnerSlug as string),
+  const { data: landing, error: loadError } = useSWR(
+    getPartnerLandingEndpoint(partnerSlug),
+    () => fetchPartnerLanding(partnerSlug),
     { revalidateOnFocus: false },
   );
-  const partner = partnerSlug ? loadedPartner : GENERIC_PARTNER;
+  const partner = landing;
+  const event = landing ? eventFromLanding(landing) : null;
 
   useEffect(() => {
     const counterpart = counterpartRef.current;
@@ -243,6 +278,13 @@ const PartnerLandingPage = () => {
     };
   }, [partner, partnerSlug, t]);
 
+  useEffect(() => {
+    if (!success) return undefined;
+    const scrollRoot = document.getElementById('router-outlet-wrapper');
+    scrollRoot?.scrollTo({ top: 0 });
+    return undefined;
+  }, [success]);
+
   const exampleEmail = partner?.email_domain
     ? `vorname.name@${partner.email_domain}`
     : 'name@firma.de';
@@ -274,10 +316,11 @@ const PartnerLandingPage = () => {
 
     setIsSubmitting(true);
     try {
-      await registerPartner(partnerSlug, {
+      const response = await registerPartner(partnerSlug, {
         email: email.trim(),
         newsletter_subscribed: newsletter,
       });
+      setPersonalPath(response.personal_path ?? null);
       setSuccess(true);
     } catch (submitError) {
       onFormError({
@@ -323,7 +366,7 @@ const PartnerLandingPage = () => {
     );
   }
 
-  if (!partner) {
+  if (!partner || !event) {
     return (
       <StatusWrap>
         <Loading size={LoadingSizes.Medium} />
@@ -332,18 +375,18 @@ const PartnerLandingPage = () => {
   }
 
   const eventDateShort = formatDate(
-    toTimeZone(PARTNER_EVENT.startsAt, PARTNER_EVENT.timeZone),
+    toTimeZone(event.startsAt, event.timeZone),
     'd. MMMM',
     i18n.language,
   );
 
   const cardProps = {
+    event,
     partner,
     email,
     newsletter,
     error,
     isSubmitting,
-    success,
     onEmailChange: handleEmailChange,
     onNewsletterChange: setNewsletter,
     onSubmit: handleSubmit,
@@ -360,272 +403,247 @@ const PartnerLandingPage = () => {
       enableDarkMode={false}
     >
       <Page>
-        <Hero>
-          <Garland aria-hidden="true">
-            {Array.from({ length: GARLAND_COUNT }, (_, index) => (
-              <GarlandLight
-                key={index}
-                $tone={GARLAND_TONES[index % GARLAND_TONES.length]}
-                $wave={Math.sin((index / (GARLAND_COUNT - 1)) * Math.PI * 2)}
-              />
-            ))}
-          </Garland>
-          <NavBar>
-            <HomeLink href={WP_HOME_ROUTE} target="_blank" rel="noreferrer">
-              <WhiteLogo stacked={false} asLink={false} />
-            </HomeLink>
-            {partner.name ? (
-              <PartnerPill>
-                <PartnerCoopLabel>
-                  {t('partner_landing.in_partnership_with')}
-                </PartnerCoopLabel>
-                {partner.logo && <PartnerLogo src={partner.logo} alt="" />}
-                <PartnerName>{partner.name}</PartnerName>
-              </PartnerPill>
-            ) : null}
-          </NavBar>
-          <HeroLayout>
-            <HeroContent>
-              <HeroPills>
-                <EyebrowPill>{PARTNER_EVENT.campaignLabel}</EyebrowPill>
-                {partner.name ? (
-                  <PartnerDoorPill>
-                    {t('partner_landing.hero_partner_opens', {
-                      companyName: partner.name,
-                    })}
-                  </PartnerDoorPill>
-                ) : null}
-              </HeroPills>
-              <HeroTitle>{t('partner_landing.hero_title')}</HeroTitle>
-              <HeroLead>
-                {partner.name
-                  ? t('partner_landing.hero_lead', {
-                      companyName: partner.name,
-                      eventDate: eventDateShort,
-                    })
-                  : t('partner_landing.hero_lead_generic', {
-                      eventDate: eventDateShort,
-                    })}
-              </HeroLead>
-              <PartnerSignUpCard {...cardProps} inputId="partner-email-hero" />
-            </HeroContent>
-          </HeroLayout>
-        </Hero>
-
-        <Section ref={counterpartRef} $tone="primary">
-          <SectionInner>
-            <SectionIntro>
-              <SectionEyebrow>
-                {t('partner_landing.counterpart.eyebrow')}
-              </SectionEyebrow>
-              <SectionTitle>
-                {t('partner_landing.counterpart.title')}
-              </SectionTitle>
-            </SectionIntro>
-            <CardGrid>
-              {COUNTERPART_ITEMS.map(({ key, Icon }) => (
-                <FeatureCard key={key}>
-                  <IconCircle>
-                    <Icon
-                      label={t(`partner_landing.counterpart.${key}.title`)}
-                      width={24}
-                      color={theme.color.text.title}
-                    />
-                  </IconCircle>
-                  <FeatureCopy>
-                    <FeatureTitle>
-                      {t(`partner_landing.counterpart.${key}.title`)}
-                    </FeatureTitle>
-                    <FeatureText>
-                      {t(`partner_landing.counterpart.${key}.text`)}
-                    </FeatureText>
-                  </FeatureCopy>
-                </FeatureCard>
-              ))}
-            </CardGrid>
-          </SectionInner>
-        </Section>
-
-        <Section $tone="secondary">
-          <SectionInner>
-            <SplitSection>
-              <SplitColumn>
-                <SectionIntro>
-                  <SectionEyebrow>
-                    {t('partner_landing.for_you.eyebrow')}
-                  </SectionEyebrow>
-                  <SectionTitle>
-                    {t('partner_landing.for_you.title')}
-                  </SectionTitle>
-                </SectionIntro>
-                <BenefitList>
-                  {FOR_YOU_ITEMS.map(key => (
-                    <BenefitRow key={key}>
-                      <IconCircle $tone="success">
-                        <TickIcon
-                          label={t(`partner_landing.for_you.${key}.title`)}
-                          width={24}
-                          color={theme.color.text.success}
-                        />
-                      </IconCircle>
-                      <BenefitCopy>
-                        <FeatureTitle>
-                          {t(`partner_landing.for_you.${key}.title`)}
-                        </FeatureTitle>
-                        <FeatureText>
-                          {t(`partner_landing.for_you.${key}.text`)}
-                        </FeatureText>
-                      </BenefitCopy>
-                    </BenefitRow>
-                  ))}
-                </BenefitList>
-              </SplitColumn>
-              <SplitColumn>
-                {QUOTES.map(quote => (
-                  <QuoteCard key={quote.key}>
-                    <QuoteMark aria-hidden="true">„</QuoteMark>
-                    <QuoteText>
-                      {t(`partner_landing.quote.${quote.key}.text`)}
-                    </QuoteText>
-                    <PersonRow $spread={Boolean(quote.logo)}>
-                      {quote.photo ? (
-                        <PhotoAvatar
-                          src={quote.photo}
-                          alt={t(`partner_landing.quote.${quote.key}.name`)}
-                        />
-                      ) : null}
-                      <PersonCopy>
-                        <PersonName>
-                          {t(`partner_landing.quote.${quote.key}.name`)}
-                        </PersonName>
-                        <PersonRole>
-                          {t(`partner_landing.quote.${quote.key}.role`)}
-                        </PersonRole>
-                      </PersonCopy>
-                      {quote.logo ? (
-                        <QuoteCompanyLogo
-                          src={quote.logo}
-                          alt={quote.logoAlt}
-                        />
-                      ) : null}
-                    </PersonRow>
-                  </QuoteCard>
-                ))}
-              </SplitColumn>
-            </SplitSection>
-          </SectionInner>
-        </Section>
-
-        <Section $tone="subtle">
-          <SectionInner>
-            <SectionTitle>{t('partner_landing.steps.title')}</SectionTitle>
-            <StepsRow>
-              {STEP_KEYS.map((key, index) => (
-                <StepCard key={key}>
-                  <StepNumber>{index + 1}</StepNumber>
-                  <StepText>
-                    {key === 'three'
-                      ? t('partner_landing.steps.three', {
+        {success ? (
+          <Hero>
+            <PartnerHeroChrome partner={partner} />
+            <PartnerConfirmationIntro
+              event={event}
+              hasPersonalLink={Boolean(personalPath)}
+            />
+            <PartnerConfirmation event={event} personalPath={personalPath} />
+          </Hero>
+        ) : (
+          <>
+            <Hero>
+              <PartnerHeroChrome partner={partner} />
+              <HeroLayout>
+                <HeroContent>
+                  <HeroPills>
+                    <EyebrowPill>{event.campaignLabel}</EyebrowPill>
+                  </HeroPills>
+                  <HeroTitle>{t('partner_landing.hero_title')}</HeroTitle>
+                  <HeroLead>
+                    {partner.name
+                      ? t('partner_landing.hero_lead', {
+                          companyName: partner.name,
                           eventDate: eventDateShort,
                         })
-                      : t(`partner_landing.steps.${key}`)}
-                  </StepText>
-                </StepCard>
-              ))}
-            </StepsRow>
-          </SectionInner>
-        </Section>
+                      : t('partner_landing.hero_lead_generic', {
+                          eventDate: eventDateShort,
+                        })}
+                  </HeroLead>
+                  <PartnerSignUpCard
+                    {...cardProps}
+                    inputId="partner-email-hero"
+                  />
+                </HeroContent>
+              </HeroLayout>
+            </Hero>
 
-        <Section $tone="primary">
-          <SectionInner>
-            <SectionIntro>
-              <SectionEyebrow>
-                {t('partner_landing.stories.eyebrow')}
-              </SectionEyebrow>
-              <SectionTitle>{t('partner_landing.stories.title')}</SectionTitle>
-            </SectionIntro>
-            <StoriesGrid>
-              {STORIES.map(story => (
-                <StoryCard key={story.key}>
-                  <AvatarStack>
-                    {story.people.map(person =>
-                      person.photo ? (
-                        <PhotoAvatar
-                          key={person.name}
-                          src={person.photo}
-                          alt={person.name}
-                          $size="large"
+            <Section ref={counterpartRef} $tone="primary">
+              <SectionInner>
+                <SectionIntro>
+                  <SectionEyebrow>
+                    {t('partner_landing.counterpart.eyebrow')}
+                  </SectionEyebrow>
+                  <SectionTitle>
+                    {t('partner_landing.counterpart.title')}
+                  </SectionTitle>
+                </SectionIntro>
+                <CardGrid>
+                  {COUNTERPART_ITEMS.map(({ key, Icon }) => (
+                    <FeatureCard key={key}>
+                      <IconCircle>
+                        <Icon
+                          label={t(`partner_landing.counterpart.${key}.title`)}
+                          width={24}
+                          color={theme.color.text.title}
                         />
-                      ) : (
-                        <InitialsAvatar
-                          key={person.name}
-                          $size="large"
-                          $tone={person.tone}
-                        >
-                          {person.letter}
-                        </InitialsAvatar>
-                      ),
-                    )}
-                  </AvatarStack>
-                  <StoryNames>
-                    {t(`partner_landing.stories.${story.key}.names`)}
-                  </StoryNames>
-                  <StoryQuote>
-                    <StoryQuoteMark aria-hidden="true">„</StoryQuoteMark>
-                    {t(`partner_landing.stories.${story.key}.quote`)}
-                    <StoryQuoteMark aria-hidden="true">“</StoryQuoteMark>{' '}
-                    <StorySpeaker>
-                      ({t(`partner_landing.stories.${story.key}.speaker`)})
-                    </StorySpeaker>
-                  </StoryQuote>
-                  <StoryContext>
-                    {t(`partner_landing.stories.${story.key}.context`)}
-                  </StoryContext>
-                  <StoryLink
-                    href={story.href}
-                    target="_blank"
-                    buttonAppearance={ButtonAppearance.Secondary}
-                    buttonSize={ButtonSizes.Medium}
-                  >
-                    {t('partner_landing.stories.read')}
-                  </StoryLink>
-                </StoryCard>
-              ))}
-            </StoriesGrid>
-          </SectionInner>
-        </Section>
+                      </IconCircle>
+                      <FeatureCopy>
+                        <FeatureTitle>
+                          {t(`partner_landing.counterpart.${key}.title`)}
+                        </FeatureTitle>
+                        <FeatureText>
+                          {t(`partner_landing.counterpart.${key}.text`)}
+                        </FeatureText>
+                      </FeatureCopy>
+                    </FeatureCard>
+                  ))}
+                </CardGrid>
+              </SectionInner>
+            </Section>
 
-        <FaqSection $tone="secondary">
-          <FaqInner>
-            <SectionTitle>{t('partner_landing.faq.title')}</SectionTitle>
-            <FaqAccordion
-              headerType={TextTypes.Heading7}
-              headerColor={theme.color.text.bold}
-              ContentWrapper={FaqAccordionContent}
-              defaultValue={faqItems[0]?.header}
-              items={faqItems}
-            />
-          </FaqInner>
-        </FaqSection>
+            <Section $tone="secondary">
+              <SectionInner>
+                <SplitSection>
+                  <SplitColumn>
+                    <SectionIntro>
+                      <SectionEyebrow>
+                        {t('partner_landing.for_you.eyebrow')}
+                      </SectionEyebrow>
+                      <SectionTitle>
+                        {t('partner_landing.for_you.title')}
+                      </SectionTitle>
+                    </SectionIntro>
+                    <BenefitList>
+                      {FOR_YOU_ITEMS.map(key => (
+                        <BenefitRow key={key}>
+                          <IconCircle $tone="success">
+                            <TickIcon
+                              label={t(`partner_landing.for_you.${key}.title`)}
+                              width={24}
+                              color={theme.color.text.success}
+                            />
+                          </IconCircle>
+                          <BenefitCopy>
+                            <FeatureTitle>
+                              {t(`partner_landing.for_you.${key}.title`)}
+                            </FeatureTitle>
+                            <FeatureText>
+                              {t(`partner_landing.for_you.${key}.text`)}
+                            </FeatureText>
+                          </BenefitCopy>
+                        </BenefitRow>
+                      ))}
+                    </BenefitList>
+                  </SplitColumn>
+                  <SplitColumn>
+                    {QUOTES.map(quote => (
+                      <QuoteCard key={quote.key}>
+                        <QuoteMark aria-hidden="true">„</QuoteMark>
+                        <QuoteText>
+                          {t(`partner_landing.quote.${quote.key}.text`)}
+                        </QuoteText>
+                        <PersonRow $spread={Boolean(quote.logo)}>
+                          {quote.photo ? (
+                            <PhotoAvatar
+                              src={quote.photo}
+                              alt={t(`partner_landing.quote.${quote.key}.name`)}
+                            />
+                          ) : null}
+                          <PersonCopy>
+                            <PersonName>
+                              {t(`partner_landing.quote.${quote.key}.name`)}
+                            </PersonName>
+                            <PersonRole>
+                              {t(`partner_landing.quote.${quote.key}.role`)}
+                            </PersonRole>
+                          </PersonCopy>
+                          {quote.logo ? (
+                            <QuoteCompanyLogo
+                              src={quote.logo}
+                              alt={quote.logoAlt}
+                            />
+                          ) : null}
+                        </PersonRow>
+                      </QuoteCard>
+                    ))}
+                  </SplitColumn>
+                </SplitSection>
+              </SectionInner>
+            </Section>
 
-        <FinalBlock ref={finalBlockRef}>
-          <FinalInner>
-            <FinalTitle>{t('partner_landing.final_title')}</FinalTitle>
-            <FinalLead>
-              {partner.name
-                ? t('partner_landing.final_lead', {
-                    companyName: partner.name,
-                    eventDate: eventDateShort,
-                  })
-                : t('partner_landing.final_lead_generic', {
-                    eventDate: eventDateShort,
-                  })}
-            </FinalLead>
-            <div ref={finalCardRef}>
-              <PartnerSignUpCard {...cardProps} inputId="partner-email-final" />
-            </div>
-          </FinalInner>
-        </FinalBlock>
+            <Section $tone="subtle">
+              <SectionInner>
+                <SectionTitle>{t('partner_landing.steps.title')}</SectionTitle>
+                <StepsRow>
+                  {STEP_KEYS.map((key, index) => (
+                    <StepCard key={key}>
+                      <StepNumber>{index + 1}</StepNumber>
+                      <StepText>
+                        {key === 'three'
+                          ? t('partner_landing.steps.three', {
+                              eventDate: eventDateShort,
+                            })
+                          : t(`partner_landing.steps.${key}`)}
+                      </StepText>
+                    </StepCard>
+                  ))}
+                </StepsRow>
+              </SectionInner>
+            </Section>
+
+            <Section $tone="primary">
+              <SectionInner>
+                <SectionIntro>
+                  <SectionEyebrow>
+                    {t('partner_landing.stories.eyebrow')}
+                  </SectionEyebrow>
+                  <SectionTitle>
+                    {t('partner_landing.stories.title')}
+                  </SectionTitle>
+                </SectionIntro>
+                <StoriesGrid>
+                  {STORIES.map(story => (
+                    <StoryCard key={story.key}>
+                      <StoryAvatars people={story.people} />
+                      <StoryNames>
+                        {t(`partner_landing.stories.${story.key}.names`)}
+                      </StoryNames>
+                      <StoryQuote>
+                        <StoryQuoteMark aria-hidden="true">„</StoryQuoteMark>
+                        {t(`partner_landing.stories.${story.key}.quote`)}
+                        <StoryQuoteMark aria-hidden="true">
+                          “
+                        </StoryQuoteMark>{' '}
+                        <StorySpeaker>
+                          ({t(`partner_landing.stories.${story.key}.speaker`)})
+                        </StorySpeaker>
+                      </StoryQuote>
+                      <StoryContext>
+                        {t(`partner_landing.stories.${story.key}.context`)}
+                      </StoryContext>
+                      <StoryReadButton
+                        type="button"
+                        appearance={ButtonAppearance.Secondary}
+                        size={ButtonSizes.Medium}
+                        onClick={() => setOpenStoryKey(story.key)}
+                      >
+                        {t('partner_landing.stories.read')}
+                      </StoryReadButton>
+                    </StoryCard>
+                  ))}
+                </StoriesGrid>
+              </SectionInner>
+            </Section>
+
+            <Section $tone="secondary">
+              <FaqInner>
+                <SectionTitle>{t('partner_landing.faq.title')}</SectionTitle>
+                <FaqAccordion
+                  headerType={TextTypes.Heading6}
+                  headerColor={theme.color.text.bold}
+                  ContentWrapper={FaqAccordionContent}
+                  defaultValue={faqItems[0]?.header}
+                  items={faqItems}
+                />
+              </FaqInner>
+            </Section>
+
+            <FinalBlock ref={finalBlockRef}>
+              <FinalInner>
+                <FinalTitle>{t('partner_landing.final_title')}</FinalTitle>
+                <FinalLead>
+                  {partner.name
+                    ? t('partner_landing.final_lead', {
+                        companyName: partner.name,
+                        eventDate: eventDateShort,
+                      })
+                    : t('partner_landing.final_lead_generic', {
+                        eventDate: eventDateShort,
+                      })}
+                </FinalLead>
+                <div ref={finalCardRef}>
+                  <PartnerSignUpCard
+                    {...cardProps}
+                    inputId="partner-email-final"
+                  />
+                </div>
+              </FinalInner>
+            </FinalBlock>
+          </>
+        )}
 
         <PageFooter>
           <FooterBrand>
@@ -652,18 +670,44 @@ const PartnerLandingPage = () => {
           </FooterLinks>
         </PageFooter>
 
-        <StickyBar $visible={stickyVisible && !success}>
-          <StickyButton
-            type="button"
-            size={ButtonSizes.Stretch}
-            onClick={scrollToFinalCard}
-          >
-            {t('partner_landing.submit')}
-          </StickyButton>
-        </StickyBar>
+        {!success && (
+          <>
+            <PartnerStoryModal
+              storyKey={openStoryKey}
+              people={
+                STORIES.find(story => story.key === openStoryKey)?.people ?? []
+              }
+              onClose={() => setOpenStoryKey(null)}
+            />
+
+            <StickyBar $visible={stickyVisible && !openStoryKey}>
+              <StickyButton
+                type="button"
+                size={ButtonSizes.Stretch}
+                onClick={scrollToFinalCard}
+              >
+                {t('partner_landing.submit')}
+              </StickyButton>
+            </StickyBar>
+          </>
+        )}
       </Page>
     </CustomThemeProvider>
   );
 };
 
-export default PartnerLandingPage;
+const PartnerLandingRoute = () => {
+  const { i18n } = useTranslation();
+  const germanI18n = useMemo(
+    () => i18n.cloneInstance({ lng: LANGUAGES.de }),
+    [i18n],
+  );
+
+  return (
+    <I18nextProvider i18n={germanI18n}>
+      <PartnerLandingPage />
+    </I18nextProvider>
+  );
+};
+
+export default PartnerLandingRoute;
