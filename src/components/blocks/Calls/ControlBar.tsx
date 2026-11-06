@@ -26,10 +26,14 @@ import { LocalAudioTrack, LocalVideoTrack, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
+import { environment } from '../../../environment';
 import useIsBelowBreakpoint from '../../../hooks/useIsBelowBreakpoint';
 import Timer from '../../atoms/Timer';
 import UnreadDot from '../../atoms/UnreadDot';
-import { MEDIA_DEVICE_MENU_CSS } from '../../views/VideoCall.styles';
+import {
+  MEDIA_DEVICE_MENU_CSS,
+  SINGLE_CONTROL_BAR,
+} from '../../views/VideoCall.styles';
 
 const TOGGLE_BACKGROUND = tokens.color.theme.light.surface.quaternary;
 const TOGGLE_BACKGROUND_DENIED = '#ea4335';
@@ -53,13 +57,18 @@ const Bar = styled.div<{ $position: 'top' | 'bottom' }>`
     if ($position === 'top')
       return css`
         top: 0;
-        @media (min-width: ${theme.breakpoints.large}) {
+        @media ${SINGLE_CONTROL_BAR} {
           display: none;
         }
       `;
     if ($position === 'bottom')
       return css`
         bottom: 0;
+        /* safe-area inset already spaces it from the screen edge */
+        padding-bottom: max(
+          ${theme.spacing.xxsmall},
+          calc(${theme.spacing.small} - var(--safe-bottom))
+        );
       `;
     return null;
   }}
@@ -137,9 +146,9 @@ const Toggle = styled(TrackToggle)<{
 const ToggleBtn = styled(Button)<{ $desktopOnly?: boolean }>`
   ${TOGGLE_CSS};
 
-  ${({ $desktopOnly, theme }) => css`
+  ${({ $desktopOnly }) => css`
     display: ${$desktopOnly ? 'none' : 'flex'};
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media ${SINGLE_CONTROL_BAR} {
       display: flex;
     }
   `}
@@ -161,9 +170,9 @@ const Section = styled.div`
 `;
 
 const StyledTimer = styled(Timer)<{ $desktopOnly?: boolean }>`
-  ${({ $desktopOnly, theme }) => css`
+  ${({ $desktopOnly }) => css`
     display: ${$desktopOnly ? 'none' : 'flex'};
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media ${SINGLE_CONTROL_BAR} {
       display: flex;
     }
   `}
@@ -211,6 +220,7 @@ interface SharedControlBarProps {
 interface ControlBarProps extends SharedControlBarProps {
   hide: boolean;
   onFullScreenToggle: () => void;
+  onQuestionCardsToggle: () => void;
   isFullScreen: boolean;
   onDisconnectClick?: () => void;
   onPermissionModalOpen: (permissions: {
@@ -241,7 +251,7 @@ export const TopControlBar = ({
         variation={ButtonVariations.Circle}
       >
         <TranslatorIcon
-          label={t('call.chat_label')}
+          label={t('call.translation_toggle_tooltip')}
           gradient={
             activeOption === 'translator' ? Gradients.Orange : undefined
           }
@@ -252,7 +262,7 @@ export const TopControlBar = ({
         variation={ButtonVariations.Circle}
       >
         <MessageWithQuestionIcon
-          label="question cards"
+          label={t('call.questions_toggle_tooltip')}
           gradient={activeOption === 'questions' ? Gradients.Orange : undefined}
         />
       </ToggleBtn>
@@ -267,6 +277,7 @@ function ControlBar({
   onDisconnectClick,
   onFullScreenToggle,
   onTranslatorToggle,
+  onQuestionCardsToggle,
   onPermissionModalOpen,
   unreadChatCount,
 }: ControlBarProps) {
@@ -398,24 +409,31 @@ function ControlBar({
           />
         )}
 
-        <Tooltip
-          text={t('call.fullscreen_toggle_tooltip')}
-          trigger={
-            <div>
-              <ToggleBtn
-                $desktopOnly
-                onClick={onFullScreenToggle}
-                variation={ButtonVariations.Circle}
-              >
-                {isFullScreen ? (
-                  <FullScreenExitIcon label="exit fullscreen" />
-                ) : (
-                  <FullScreenIcon label="fullscreen video toggle" />
-                )}
-              </ToggleBtn>
-            </div>
-          }
-        />
+        {/* WebView already fills the screen */}
+        {!environment.isNative && (
+          <Tooltip
+            text={t('call.fullscreen_toggle_tooltip')}
+            trigger={
+              <div>
+                <ToggleBtn
+                  $desktopOnly
+                  onClick={onFullScreenToggle}
+                  variation={ButtonVariations.Circle}
+                >
+                  {isFullScreen ? (
+                    <FullScreenExitIcon
+                      label={t('call.fullscreen_exit_label')}
+                    />
+                  ) : (
+                    <FullScreenIcon
+                      label={t('call.fullscreen_toggle_tooltip')}
+                    />
+                  )}
+                </ToggleBtn>
+              </div>
+            }
+          />
+        )}
         <Tooltip
           text={t('call.message_toggle_tooltip')}
           trigger={
@@ -440,7 +458,23 @@ function ControlBar({
                 onClick={onTranslatorToggle}
                 variation={ButtonVariations.Circle}
               >
-                <TranslatorIcon label={t('call.chat_label')} />
+                <TranslatorIcon label={t('call.translation_toggle_tooltip')} />
+              </ToggleBtn>
+            </div>
+          }
+        />
+        <Tooltip
+          text={t('call.questions_toggle_tooltip')}
+          trigger={
+            <div>
+              <ToggleBtn
+                $desktopOnly
+                onClick={onQuestionCardsToggle}
+                variation={ButtonVariations.Circle}
+              >
+                <MessageWithQuestionIcon
+                  label={t('call.questions_toggle_tooltip')}
+                />
               </ToggleBtn>
             </div>
           }
@@ -457,7 +491,7 @@ function ControlBar({
             }}
             variation={ButtonVariations.Circle}
           >
-            <LeaveCallIcon label="leave call" />
+            <LeaveCallIcon label={t('call.leave_btn')} />
           </DisconnectBtn>
         ) : (
           <DisconnectBtn

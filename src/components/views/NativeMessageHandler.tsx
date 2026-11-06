@@ -27,6 +27,32 @@ export interface NativeChallengeProofEvent {
   email: string;
 }
 
+// true if the back press was consumed
+function handleNativeBack(): boolean {
+  // radix drawers/dialogs/selects close on Escape keydown, design-system modals on keyup;
+  // a locked modal ignores it but still swallows the back press
+  if (
+    document.querySelector(
+      '[role="dialog"][data-state="open"], [role="listbox"][data-state="open"]',
+    )
+  ) {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    return true;
+  }
+  if (document.querySelector('dialog[aria-modal]')) {
+    window.dispatchEvent(new KeyboardEvent('keyup', { key: 'Escape' }));
+    return true;
+  }
+
+  const { onBack, navigate } = useNavigationStore.getState();
+  if (onBack?.()) return true;
+
+  // React Router keeps `idx` in history state; 0 = first entry this session
+  const canGoBack = (window.history.state?.idx ?? 0) > 0;
+  if (canGoBack) navigate?.(-1);
+  return canGoBack;
+}
+
 function NativeMessageHandler() {
   const { setHandler, sendMessageToReactNative } = useReceiveHandlerStore();
   const navigate = useNavigate();
@@ -109,17 +135,9 @@ function NativeMessageHandler() {
             throw new Error('Received native message without request id');
           }
 
-          // hacky solution
-          // React Router maintains `idx` in history state (0 = first entry this
-          // session). idx > 0 means there is an SPA screen to go back to.
-          const canGoBack = (window.history.state?.idx ?? 0) > 0;
-          if (canGoBack) {
-            useNavigationStore.getState().navigate?.(-1);
-          }
-
           const response: DomCommunicationResponse = {
             ok: true,
-            data: { handled: canGoBack },
+            data: { handled: handleNativeBack() },
           };
 
           sendMessageToReactNative!({

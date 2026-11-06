@@ -1,16 +1,30 @@
+import { tokens } from '@a-little-world/little-world-design-system';
 import { GridLayout } from '@livekit/components-react';
 import styled, { css, type DefaultTheme } from 'styled-components';
 
 import ProfileImage from '../atoms/ProfileImage';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool';
 
+const { small, large } = tokens.breakpoints;
+const PORTRAIT = '(orientation: portrait)';
+const LANDSCAPE = '(orientation: landscape)';
+// split top/bottom bars only on narrow portrait screens
+export const SINGLE_CONTROL_BAR = `${LANDSCAPE}, (min-width: ${large})`;
+// framed video, sidebar, inline translator; landscape phones stay edge-to-edge
+export const DESKTOP = `(min-width: ${large}) and (min-height: ${small})`;
+const CONTROL_BAR_SPACE = '72px';
+
 const pipCameraTileAppearance = (theme: DefaultTheme) => css`
   border-radius: ${theme.radius.small};
-  aspect-ratio: 9 / 16;
   overflow: hidden;
 
-  @media (min-width: ${theme.breakpoints.small}) {
-    aspect-ratio: 16 / 9;
+  /* placeholder has no intrinsic size */
+  &[data-lk-video-muted='true'] {
+    aspect-ratio: 9 / 16;
+
+    @media (min-width: ${theme.breakpoints.small}) {
+      aspect-ratio: 16 / 9;
+    }
   }
 
   .lk-participant-metadata {
@@ -25,8 +39,15 @@ const pipCameraTileAppearance = (theme: DefaultTheme) => css`
     display: none;
   }
 
+  /* match the sent frame aspect; fallback until the first frame */
   video {
     object-fit: cover !important;
+    height: auto;
+    aspect-ratio: auto 9 / 16;
+
+    @media ${LANDSCAPE} {
+      aspect-ratio: auto 16 / 9;
+    }
   }
 `;
 
@@ -86,11 +107,11 @@ const pipCameraCornerPosition = (theme: DefaultTheme) => css`
 
   @media (min-width: ${theme.breakpoints.small}) {
     width: clamp(120px, 20vw, 180px);
-    top: 72px;
+    top: ${CONTROL_BAR_SPACE};
     bottom: auto;
   }
 
-  @media (min-width: ${theme.breakpoints.large}) {
+  @media ${SINGLE_CONTROL_BAR} {
     width: clamp(160px, 14vw, 240px);
     top: ${theme.spacing.small};
   }
@@ -117,14 +138,18 @@ export const CameraPipOverlay = styled.div`
 
 export const CallLayout = styled.div`
   --lk-border-radius: 0;
+  /* livekit's portrait/screen share video bg; its theme (data-lk-theme) is off */
+  --lk-bg2: #000;
   --lk-control-active-bg: ${({ theme }) => theme.color.surface.contrast};
   --lk-control-active-hover-bg: ${({ theme }) => theme.color.surface.contrast};
   --lk-control-hover-bg: ${({ theme }) => theme.color.surface.contrast};
   display: flex;
   height: 100%;
+  /* body is black during calls */
+  background: ${({ theme }) => theme.color.surface.primary};
 
   ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media ${DESKTOP} {
       --lk-border-radius: ${theme.radius.medium};
       padding: ${theme.spacing.medium};
       gap: ${theme.spacing.medium};
@@ -145,7 +170,7 @@ export const VideoContainer = styled.div<{
   width: 100%;
 
   ${({ theme, $showChat }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media ${DESKTOP} {
       width: ${$showChat ? '66.666%' : '100%'};
       border: 2px solid ${theme.color.border.subtle};
       border-radius: ${theme.radius.medium};
@@ -190,7 +215,7 @@ export const VideoContainer = styled.div<{
       }
 
       [data-lk-local-participant='true'][data-lk-facing-mode='user'] {
-        @media (min-width: ${theme.breakpoints.large}) {
+        @media ${DESKTOP} {
           border-radius: 0;
         }
       }
@@ -255,7 +280,7 @@ export const StyledGridLayout = styled(GridLayout)<{
         right: 0;
         bottom: unset;
 
-        @media (min-width: ${theme.breakpoints.large}) {
+        @media ${SINGLE_CONTROL_BAR} {
           top: ${theme.spacing.small};
         }
       }
@@ -263,6 +288,23 @@ export const StyledGridLayout = styled(GridLayout)<{
 
   video {
     object-fit: contain !important;
+  }
+
+  .lk-participant-tile[data-lk-local-participant='false'] video {
+    padding-block: ${CONTROL_BAR_SPACE};
+    box-sizing: border-box;
+
+    @media ${SINGLE_CONTROL_BAR} {
+      padding-block: 0;
+    }
+  }
+
+  @media ${PORTRAIT} {
+    .lk-participant-tile[data-lk-local-participant='false']
+      video[data-lk-orientation='portrait'][data-lk-source='camera'] {
+      object-fit: cover !important;
+      padding-block: 0;
+    }
   }
 `;
 
@@ -282,7 +324,7 @@ export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
   padding: ${({ theme }) => `${theme.spacing.xxlarge} ${theme.spacing.xlarge}`};
 
   ${({ theme, $isFullScreen }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
+    @media ${DESKTOP} {
       border-radius: ${$isFullScreen ? 0 : theme.radius.small};
       padding: ${theme.spacing.xxlarge} ${theme.spacing.xlarge};
     }
@@ -297,11 +339,9 @@ export const WaitingTile = styled.div<{ $isFullScreen: boolean }>`
 
 export const DesktopTranslationTool = styled(TranslationTool)`
   display: none;
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.large}) {
-      display: flex;
-    }
-  `}
+  @media ${DESKTOP} {
+    display: flex;
+  }
 `;
 
 export const MEDIA_DEVICE_MENU_CSS = css`
