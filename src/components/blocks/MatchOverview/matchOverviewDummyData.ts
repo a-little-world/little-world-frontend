@@ -59,8 +59,6 @@ export const PLACEHOLDER_BADGE_STATS = {
 
 const PLACEHOLDER_EARNED_AT: Partial<Record<string, string>> = {
   first_call: daysAgo(40),
-  fifty_messages: daysAgo(24),
-  hundred_messages: daysAgo(12),
   two_hours: daysAgo(18),
   five_active_weeks: daysAgo(10),
 };

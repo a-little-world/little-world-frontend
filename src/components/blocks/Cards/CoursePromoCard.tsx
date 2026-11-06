@@ -12,7 +12,7 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 
 import {
@@ -51,8 +51,14 @@ const StyledCard = styled(Card)`
   border-color: ${({ theme }) => theme.color.border.subtle};
   gap: ${({ theme }) => theme.spacing.small};
   order: 2;
-  height: ${PROFILE_CARD_HEIGHT};
   padding: ${({ theme }) => theme.spacing.medium};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      height: ${PROFILE_CARD_HEIGHT};
+      justify-content: center;
+    }
+  `};
 `;
 
 const Title = styled(Text)`
@@ -80,7 +86,12 @@ const PercentValue = styled(Text)`
 `;
 
 const StyledLink = styled(Link)`
-  margin-top: auto;
+  ${({ theme }) => css`
+    margin-top: auto;
+    @media (min-width: ${theme.breakpoints.medium}) {
+      margin-top: 0;
+    }
+  `};
 `;
 
 function CoursePromoCard() {

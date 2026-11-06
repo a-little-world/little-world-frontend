@@ -39,6 +39,7 @@ import {
   restrictedLangLevels,
 } from '../../userForm/formPages';
 import PageHeader from '../atoms/PageHeader';
+import PartnerActionCard from '../blocks/Cards/PartnerActionCard';
 import ProfileCard from '../blocks/Cards/ProfileCard';
 import FormStep from '../blocks/Form/FormStep';
 import ProfileDetail from '../blocks/Profile/ProfileDetail';
@@ -163,6 +164,8 @@ function Profile() {
 
   const [editingField, setEditingField] = useState(null);
   useSystemModalBlocker(Boolean(editingField), 'profile-edit-field');
+  const [partnerActionData, setPartnerActionData] = useState(null);
+  useSystemModalBlocker(Boolean(partnerActionData), 'profile-partner-action');
 
   const { data: matches } = useSWR(MATCHES_ENDPOINT);
   const match = !matches
@@ -263,10 +266,17 @@ function Profile() {
         <TopDetails>
           <ProfileCard
             chatId={match?.chatId}
+            matchId={match?.id}
             userPk={userId}
             profile={profile}
             isSelf={isSelf}
+            isMatch={Boolean(match) && !match?.partner?.isSupport}
+            isSupport={Boolean(match?.partner?.isSupport)}
+            isOnline={Boolean(match?.partner?.isOnline)}
             onProfile
+            openPartnerModal={setPartnerActionData}
+            bothActiveCallMinutes={match?.both_active_call_minutes}
+            successMinutes={match?.success_minutes}
             openEditImage={() =>
               navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
             }
@@ -327,6 +337,17 @@ function Profile() {
           field={editingField}
           content={profileFields[editingField]}
         />
+      </Modal>
+      <Modal
+        open={Boolean(partnerActionData)}
+        onClose={() => setPartnerActionData(null)}
+      >
+        {!!partnerActionData && (
+          <PartnerActionCard
+            data={partnerActionData}
+            onClose={() => setPartnerActionData(null)}
+          />
+        )}
       </Modal>
     </>
   );
