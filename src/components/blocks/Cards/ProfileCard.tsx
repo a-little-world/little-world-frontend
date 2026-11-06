@@ -245,7 +245,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   openEditImage,
   type,
   loading = false,
-  // matchTeaserInput = null,
   unreadCount: unreadCountProp,
   bothActiveCallMinutes,
   successMinutes,
@@ -270,7 +269,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   if (isSupport) description = t('profile_card.support_description');
   else if (isDeleted) description = t('profile.deleted_description');
   const callMinutes = Math.max(0, Math.round(bothActiveCallMinutes ?? 0));
-  const callMinutesMax = Math.max(0, Math.round(successMinutes ?? 0));
   const showPanel = Boolean(
     isMatch &&
     !isSupport &&
@@ -332,7 +330,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             </MatchMenuToggle>
           }
         >
-          {/* {matchId && (
+          {/* Only entry point to Match Overview; hidden until that page launches.
+          {matchId && (
             <PartnerMenuLink to={getMatchOverviewRoute(matchId)}>
               {t('partner_profile.match_stats')}
             </PartnerMenuLink>
@@ -447,10 +446,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </Actions>
       )}
       {showPanel && (
-        <ProgressPanel
-          minutes={callMinutes}
-          max={callMinutesMax > 0 ? callMinutesMax : 300}
-        />
+        <ProgressPanel minutes={callMinutes} max={successMinutes} />
       )}
     </StyledProfileCard>
   );

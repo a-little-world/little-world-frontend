@@ -157,7 +157,7 @@ function PartnerProfiles({
   };
 
   if (!user) return null;
-  console.log({ matchesDisplay });
+
   return (
     <Matches>
       {matchesLoading ? (

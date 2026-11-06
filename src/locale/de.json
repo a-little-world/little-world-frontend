@@ -523,6 +523,7 @@
   "profile_card.call": "Videoanruf starten",
   "profile_card.message": "Nachricht senden",
   "profile_card.minutes_of": "von {{count}} Minuten",
+  "profile_card.minutes_short": "{{count}} Min.",
   "match_overview.progress_title": "10 x 30 Minuten",
   "match_overview.page_header": "Eure Momente",
   "match_overview.title": "Du & {{name}}",

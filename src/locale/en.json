@@ -529,6 +529,7 @@
   "profile_card.call": "Call",
   "profile_card.message": "Message",
   "profile_card.minutes_of": "of {{count}} minutes",
+  "profile_card.minutes_short": "{{count}} min",
   "match_overview.progress_title": "10 x 30 minutes",
   "match_overview.page_header": "Your moments",
   "match_overview.title": "You & {{name}}",
