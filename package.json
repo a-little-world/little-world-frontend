@@ -71,7 +71,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-hook-form": "^7.87.0",
-    "react-i18next": "^15.4.0",
+    "react-i18next": "^17.0.0",
     "react-nice-avatar": "file:prebuild/react-nice-avatar-1.6.1.tgz",
     "react-router-dom": "^7.18.4",
     "react-use-websocket": "^4.13.0",
