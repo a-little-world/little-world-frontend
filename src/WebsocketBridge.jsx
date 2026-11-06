@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useLocation, useNavigate } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import { mutate } from 'swr';
 
@@ -16,8 +17,14 @@ import {
 import { environment } from './environment';
 import useNativeStore from './features/stores/nativeStore';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
-import { getInstallationId } from './firebase-util';
 import useToast from './hooks/useToast';
+import { getInstallationId } from './installation-util';
+
+const WEBSOCKET_CLIENT_VERSION = 2;
+
+const isAway = () =>
+  document.visibilityState === 'hidden' ||
+  (!environment.isNative && !document.hasFocus());
 
 const WebsocketBridge = () => {
   /**
@@ -36,11 +43,7 @@ const WebsocketBridge = () => {
   const backendUrl = useEffectiveBackendUrl();
   const coreWsScheme = useEffectiveCoreWsScheme();
   const webSocketHost = new URL(backendUrl).host;
-  const socketUrl =
-    coreWsScheme +
-    webSocketHost +
-    environment.coreWsPath +
-    (installId ? `?install_id=${encodeURIComponent(installId)}` : '');
+  const socketUrl = `${coreWsScheme}${webSocketHost}${environment.coreWsPath}?version=${WEBSOCKET_CLIENT_VERSION}${installId ? `&install_id=${encodeURIComponent(installId)}` : ''}`;
 
   const loadAccessToken = async () => {
     const token = await useNativeStore.getState().getAccessToken();
@@ -61,38 +64,138 @@ const WebsocketBridge = () => {
       setReady(true);
     })();
   }, []);
-  const { lastMessage } = useWebSocket(ready ? socketUrl : null, {
-    shouldReconnect: () => true,
-    reconnectAttempts: 10,
-    heartbeat: {
-      message: 'ping',
-      returnMessage: 'pong',
-      interval: 60000,
-      timeout: 150000,
+  const awayRef = useRef(false);
+  const resumeCheckRef = useRef();
+  const [restarting, setRestarting] = useState(false);
+  const [backgrounded, setBackgrounded] = useState(
+    () => environment.isNative && document.visibilityState === 'hidden',
+  );
+  const { lastMessage, sendMessage, getWebSocket } = useWebSocket(
+    ready ? socketUrl : null,
+    {
+      shouldReconnect: () => true,
+      // backgrounded apps would use up any limit
+      reconnectAttempts: Infinity,
+      heartbeat: {
+        message: 'ping',
+        returnMessage: 'pong',
+        interval: 60000,
+        timeout: 150000,
+      },
+      // pings only go out while idle, acks keep busy connections fresh
+      onMessage: event => {
+        if (event.data === 'pong') clearTimeout(resumeCheckRef.current);
+        else sendMessage('ack', false);
+      },
+      onOpen: () => {
+        awayRef.current = isAway();
+        if (awayRef.current) sendMessage('away', false);
+      },
+      // old token may have expired -> load current one
+      onClose: () => {
+        if (environment.isNative) loadAccessToken();
+      },
+      protocols:
+        environment.isNative && accessToken
+          ? [`bearer.${accessToken}`]
+          : undefined,
     },
-    // old token may have expired -> load current one
-    onClose: () => {
-      if (environment.isNative) loadAccessToken();
-    },
-    protocols:
-      environment.isNative && accessToken
-        ? [`bearer.${accessToken}`]
-        : undefined,
-  });
+    !restarting && !backgrounded,
+  );
+
+  useEffect(() => {
+    if (restarting) setRestarting(false);
+  }, [restarting]);
+
+  useEffect(() => {
+    const restart = () => setRestarting(true);
+    const onVisibilityChange = async () => {
+      // some devices keep sockets of backgrounded apps open indefinitely
+      if (environment.isNative) {
+        if (document.visibilityState === 'visible') await loadAccessToken();
+        setBackgrounded(document.visibilityState === 'hidden');
+        return;
+      }
+
+      // sockets of sleeping devices can die without a close event
+      if (document.visibilityState !== 'visible') return;
+      const socket = getWebSocket();
+      if (socket?.readyState === WebSocket.CONNECTING) return;
+      if (socket?.readyState !== WebSocket.OPEN) {
+        restart();
+        return;
+      }
+      clearTimeout(resumeCheckRef.current);
+      sendMessage('ping', false);
+      resumeCheckRef.current = setTimeout(restart, 5000);
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      clearTimeout(resumeCheckRef.current);
+    };
+  }, [getWebSocket, sendMessage]);
 
   const toast = useToast();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const missedRef = useRef({ count: 0, last: null, title: null });
+
+  const showNotification = useCallback(
+    ({ title, description, path }) => {
+      if (path === pathname) return;
+      toast.showToast({
+        title,
+        description,
+        duration: 3000,
+        onClick: path ? () => navigate(path) : undefined,
+      });
+    },
+    [pathname, toast, navigate],
+  );
+
+  useEffect(() => {
+    const onPresenceChange = () => {
+      const away = isAway();
+      if (away === awayRef.current) return;
+      awayRef.current = away;
+      sendMessage(away ? 'away' : 'active', false);
+
+      const missed = missedRef.current;
+      if (!away && missed.count) {
+        document.title = missed.title;
+        if (missed.last) {
+          showNotification(missed.last);
+        }
+        missedRef.current = { count: 0, last: null, title: null };
+      }
+    };
+    document.addEventListener('visibilitychange', onPresenceChange);
+    window.addEventListener('focus', onPresenceChange);
+    window.addEventListener('blur', onPresenceChange);
+    return () => {
+      document.removeEventListener('visibilitychange', onPresenceChange);
+      window.removeEventListener('focus', onPresenceChange);
+      window.removeEventListener('blur', onPresenceChange);
+    };
+  }, [sendMessage, showNotification]);
 
   useEffect(() => {
     if (lastMessage !== null) {
       setMessageHistory(prev => prev.concat(lastMessage));
       const message = JSON.parse(lastMessage.data);
 
-      if (message.action === 'addNotification' && message.payload?.showToast) {
-        const { title, description } = message.payload;
-        toast.showToast({
-          title,
-          description,
-        });
+      if (message.action === 'addNotification') {
+        const { showToast } = message.payload;
+        if (awayRef.current) {
+          const missed = missedRef.current;
+          missed.title ??= document.title;
+          missed.count += 1;
+          if (showToast) missed.last = message.payload;
+          document.title = `(${missed.count}) ${missed.title}`;
+        } else if (showToast) {
+          showNotification(message.payload);
+        }
 
         // TODO: only if message is also persisted
         // TODO: don't mutate the api via fetch rather just update the store

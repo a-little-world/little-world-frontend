@@ -29,7 +29,7 @@ function handleMessage(
 ): void {
   const path = payload.data?.path;
   const currentPath = window.location.pathname;
-  if (path && path !== currentPath) {
+  if (path !== currentPath) {
     toast.showToast({
       title: payload.notification?.title,
       description: payload.notification?.body,
