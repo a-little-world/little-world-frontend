@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  sockjs>uuid: ^11.1.1
+  express>qs: ^6.16.0
+  body-parser>qs: ^6.16.0
+
 importers:
 
   .:
@@ -107,256 +112,6 @@ importers:
       react-nice-avatar:
         specifier: file:prebuild/react-nice-avatar-1.6.1.tgz
         version: file:prebuild/react-nice-avatar-1.6.1.tgz(react@19.2.8)
-      react-router-dom:
-        specifier: ^7.18.4
-        version: 7.18.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      react-use-websocket:
-        specifier: ^4.13.0
-        version: 4.13.0
-      style-loader:
-        specifier: ^3.3.4
-        version: 3.3.4(webpack@5.112.2)
-      styled-components:
-        specifier: ^6.5.3
-        version: 6.5.3(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      swr:
-        specifier: ^2.5.1
-        version: 2.5.1(react@19.2.8)
-      util:
-        specifier: ^0.12.5
-        version: 0.12.5
-      uuid:
-        specifier: ^14.0.2
-        version: 14.0.2
-      vaul:
-        specifier: ^1.1.2
-        version: 1.1.2(@types/react@19.2.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      web-vitals:
-        specifier: ^2.1.4
-        version: 2.1.4
-      webpack:
-        specifier: ^5.112.0
-        version: 5.112.2(postcss@8.5.28)(webpack-cli@5.1.4)
-      zustand:
-        specifier: ^5.0.15
-        version: 5.0.15(@types/react@19.2.8)(immer@11.1.18)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8))
-    devDependencies:
-      '@a-little-world/little-world-prettier-config':
-        specifier: ^2.0.0
-        version: 2.0.0(prettier@3.8.4)
-      '@changesets/cli':
-        specifier: ^3.0.3
-        version: 3.0.3
-      '@firebase/app-types':
-        specifier: ^0.9.6
-        version: 0.9.6
-      '@firebase/messaging-types':
-        specifier: ^0.6.1
-        version: 0.6.1(@firebase/app-types@0.9.6)
-      '@ianvs/prettier-plugin-sort-imports':
-        specifier: ^4.7.1
-        version: 4.7.1(prettier@3.8.4)
-      '@rollup/plugin-babel':
-        specifier: ^7.1.0
-        version: 7.1.0(@babel/core@7.29.7)(rollup@4.63.1)
-      '@rollup/plugin-commonjs':
-        specifier: ^29.0.3
-        version: 29.0.3(rollup@4.63.1)
-      '@rollup/plugin-json':
-        specifier: ^6.1.0
-        version: 6.1.0(rollup@4.63.1)
-      '@rollup/plugin-node-resolve':
-        specifier: ^16.0.3
-        version: 16.0.3(rollup@4.63.1)
-      '@svgr/webpack':
-        specifier: ^6.5.1
-        version: 6.5.1
-      '@testing-library/user-event':
-        specifier: ^13.5.0
-        version: 13.5.0(@testing-library/dom@10.4.1)
-      '@types/js-cookie':
-        specifier: ^3.0.6
-        version: 3.0.6
-      '@types/lodash':
-        specifier: ^4.17.25
-        version: 4.17.25
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.69.0
-        version: 8.69.0(@typescript-eslint/parser@8.69.0(eslint@8.57.1)(typescript@5.9.3))(eslint@8.57.1)(typescript@5.9.3)
-      '@typescript-eslint/parser':
-        specifier: ^8.69.0
-        version: 8.69.0(eslint@8.57.1)(typescript@5.9.3)
-      compression-webpack-plugin:
-        specifier: ^12.0.0
-        version: 12.0.0(webpack@5.112.2)
-      copy-webpack-plugin:
-        specifier: ^14.0.0
-        version: 14.0.0(webpack@5.112.2)
-      css-loader:
-        specifier: ^7.1.5
-        version: 7.1.5(webpack@5.112.2)
-      eslint:
-        specifier: ^8.57.1
-        version: 8.57.1
-      eslint-config-airbnb:
-        specifier: ^19.0.4
-        version: 19.0.4(eslint-plugin-import@2.32.0)(eslint-plugin-jsx-a11y@6.10.2(eslint@8.57.1))(eslint-plugin-react-hooks@4.6.2(eslint@8.57.1))(eslint-plugin-react@7.37.5(eslint@8.57.1))(eslint@8.57.1)
-      eslint-config-airbnb-base:
-        specifier: ^15.0.0
-        version: 15.0.0(eslint-plugin-import@2.32.0)(eslint@8.57.1)
-      eslint-config-prettier:
-        specifier: ^8.10.2
-        version: 8.10.2(eslint@8.57.1)
-      eslint-import-resolver-typescript:
-        specifier: ^4.4.5
-        version: 4.4.5(eslint-plugin-import@2.32.0)(eslint@8.57.1)
-      eslint-plugin-import:
-        specifier: ^2.32.0
-        version: 2.32.0(@typescript-eslint/parser@8.69.0(eslint@8.57.1)(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.5)(eslint@8.57.1)
-      eslint-plugin-jsx-a11y:
-        specifier: ^6.10.2
-        version: 6.10.2(eslint@8.57.1)
-      eslint-plugin-prettier:
-        specifier: ^4.2.5
-        version: 4.2.5(eslint-config-prettier@8.10.2(eslint@8.57.1))(eslint@8.57.1)(prettier@3.8.4)
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@8.57.1)
-      eslint-plugin-react-hooks:
-        specifier: ^4.6.2
-        version: 4.6.2(eslint@8.57.1)
-      html-webpack-plugin:
-        specifier: ^5.6.8
-        version: 5.6.8(webpack@5.112.2)
-      prettier:
-        specifier: 3.8.4
-        version: 3.8.4
-      rimraf:
-        specifier: ^6.1.3
-        version: 6.1.3
-      rollup:
-        specifier: ^4.63.1
-        version: 4.63.1
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      typescript-eslint:
-        specifier: ^8.69.0
-        version: 8.69.0(eslint@8.57.1)(typescript@5.9.3)
-      webpack-bundle-analyzer:
-        specifier: ^4.10.2
-        version: 4.10.2
-      webpack-bundle-tracker:
-        specifier: ^1.8.1
-        version: 1.8.1
-      webpack-cli:
-        specifier: ^5.1.4
-        version: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@5.2.7)(webpack@5.112.2)
-      webpack-dev-server:
-        specifier: ^5.2.7
-        version: 5.2.7(webpack-cli@5.1.4)(webpack@5.112.2)
-
-  ../../front/apps/main_frontend:
-    dependencies:
-      '@a-little-world/little-world-design-system':
-        specifier: ^3.2.1
-        version: 3.2.1(@types/react@19.2.8)(date-fns@4.4.0)(react-dom@19.2.8(react@19.2.8))(react-router-dom@7.18.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(styled-components@6.5.3(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
-      '@a-little-world/little-world-design-system-core':
-        specifier: ^1.17.1
-        version: 1.18.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@babel/core':
-        specifier: ^7.29.7
-        version: 7.29.7
-      '@babel/preset-env':
-        specifier: ^7.29.7
-        version: 7.29.7(@babel/core@7.29.7)
-      '@babel/preset-react':
-        specifier: ^7.29.7
-        version: 7.29.7(@babel/core@7.29.7)
-      '@babel/preset-typescript':
-        specifier: ^7.29.7
-        version: 7.29.7(@babel/core@7.29.7)
-      '@firebase/app':
-        specifier: ^0.14.13
-        version: 0.14.13
-      '@firebase/messaging':
-        specifier: ^0.12.26
-        version: 0.12.26(@firebase/app@0.14.13)
-      '@livekit/components-react':
-        specifier: file:prebuild/livekit-components-react-2.9.22.tgz
-        version: file:../../front/apps/main_frontend/prebuild/livekit-components-react-2.9.22.tgz(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tslib@2.8.1)
-      '@livekit/components-styles':
-        specifier: file:prebuild/livekit-components-styles-1.2.2.tgz
-        version: file:../../front/apps/main_frontend/prebuild/livekit-components-styles-1.2.2.tgz
-      '@radix-ui/react-dialog':
-        specifier: ^1.1.23
-        version: 1.1.23(@types/react@19.2.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@radix-ui/react-popover':
-        specifier: ^1.1.23
-        version: 1.1.23(@types/react@19.2.8)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@reduxjs/toolkit':
-        specifier: ^2.12.0
-        version: 2.12.0(react@19.2.8)
-      '@types/node':
-        specifier: ^24.19.1
-        version: 24.19.1
-      '@types/react':
-        specifier: 19.2.8
-        version: 19.2.8
-      babel-loader:
-        specifier: ^9.2.1
-        version: 9.2.1(@babel/core@7.29.7)(webpack@5.112.2)
-      babel-plugin-styled-components:
-        specifier: ^2.3.0
-        version: 2.3.0(@babel/core@7.29.7)(styled-components@6.5.3(css-to-react-native@3.2.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
-      classnames:
-        specifier: ^2.5.1
-        version: 2.5.1
-      date-fns:
-        specifier: ^4.4.0
-        version: 4.4.0
-      i18next:
-        specifier: ^25.3.1
-        version: 25.10.10(typescript@5.9.3)
-      i18next-browser-languagedetector:
-        specifier: ^8.2.1
-        version: 8.2.1
-      js-cookie:
-        specifier: ^3.0.8
-        version: 3.0.8
-      livekit-client:
-        specifier: 2.22.3
-        version: 2.22.3(@types/dom-mediacapture-record@1.0.22)
-      lodash:
-        specifier: ^4.18.1
-        version: 4.18.1
-      lodash.throttle:
-        specifier: ^4.1.1
-        version: 4.1.1
-      moment:
-        specifier: ^2.31.0
-        version: 2.31.0
-      motion:
-        specifier: ^12.43.0
-        version: 12.43.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      process:
-        specifier: ^0.11.10
-        version: 0.11.10
-      react:
-        specifier: ^19.2.8
-        version: 19.2.8
-      react-dom:
-        specifier: ^19.2.8
-        version: 19.2.8(react@19.2.8)
-      react-hook-form:
-        specifier: ^7.87.0
-        version: 7.87.0(react@19.2.8)
-      react-i18next:
-        specifier: ^15.4.0
-        version: 15.7.4(i18next@25.10.10(typescript@5.9.3))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@5.9.3)
-      react-nice-avatar:
-        specifier: file:prebuild/react-nice-avatar-1.6.1.tgz
-        version: file:../../front/apps/main_frontend/prebuild/react-nice-avatar-1.6.1.tgz(react@19.2.8)
       react-router-dom:
         specifier: ^7.18.4
         version: 7.18.5(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -1463,20 +1218,6 @@ packages:
       livekit-client: ^2.20.1
       tslib: ^2.6.2
 
-  '@livekit/components-react@file:../../front/apps/main_frontend/prebuild/livekit-components-react-2.9.22.tgz':
-    resolution: {integrity: sha512-rXeUcDK6/xWDNtuWtxTRDIi6k908KRJfqsUaDBdYTU8Rj6KU23L27OeY43+drCHTd6FUrVQaksbZNAtFt6DGfg==, tarball: file:../../front/apps/main_frontend/prebuild/livekit-components-react-2.9.22.tgz}
-    version: 2.9.22
-    engines: {node: '>=18'}
-    peerDependencies:
-      '@livekit/krisp-noise-filter': ^0.2.12 || ^0.3.0 || ^0.4.0
-      livekit-client: ^2.20.1
-      react: '>=18'
-      react-dom: '>=18'
-      tslib: ^2.6.2
-    peerDependenciesMeta:
-      '@livekit/krisp-noise-filter':
-        optional: true
-
   '@livekit/components-react@file:prebuild/livekit-components-react-2.9.22.tgz':
     resolution: {integrity: sha512-rXeUcDK6/xWDNtuWtxTRDIi6k908KRJfqsUaDBdYTU8Rj6KU23L27OeY43+drCHTd6FUrVQaksbZNAtFt6DGfg==, tarball: file:prebuild/livekit-components-react-2.9.22.tgz}
     version: 2.9.22
@@ -1490,11 +1231,6 @@ packages:
     peerDependenciesMeta:
       '@livekit/krisp-noise-filter':
         optional: true
-
-  '@livekit/components-styles@file:../../front/apps/main_frontend/prebuild/livekit-components-styles-1.2.2.tgz':
-    resolution: {integrity: sha512-x3yjrTDSN2TBvP8SmA/ClEpKCfbsyHpOko+nRI0pkj7lH2wABHe31fesxcNWZ9eNKYZFyyCEQexQQNv3y++f1A==, tarball: file:../../front/apps/main_frontend/prebuild/livekit-components-styles-1.2.2.tgz}
-    version: 1.2.2
-    engines: {node: '>=18'}
 
   '@livekit/components-styles@file:prebuild/livekit-components-styles-1.2.2.tgz':
     resolution: {integrity: sha512-x3yjrTDSN2TBvP8SmA/ClEpKCfbsyHpOko+nRI0pkj7lH2wABHe31fesxcNWZ9eNKYZFyyCEQexQQNv3y++f1A==, tarball: file:prebuild/livekit-components-styles-1.2.2.tgz}
@@ -4905,8 +4641,8 @@ packages:
     resolution: {integrity: sha512-BbubeCEyTuQjVMakvJQ/Sxbc93F2pwmbsxONT/ZRrwU7Ua38d8unYTwXpTVLAKJ4BDuH9IGztCjQcd/N/39Dvg==}
     engines: {node: '>=16.0.0'}
 
-  qs@6.15.4:
-    resolution: {integrity: sha512-d1zNHS+ltAfSgTmYjzXXH9gy9d6pEb33n0ZtUUkukA8UHhFSjv2mSYRiePyjbRiJh0g5sFJbMdAtMIg01Xf5/w==}
+  qs@6.17.1:
+    resolution: {integrity: sha512-jd3COkaKVgGUW+ZHyEHCG9bH7RoaaiWuMgzsIBjUMVjLAaWGWpoUAVwljVvBHxRu/2qEHnadLGZrkutYUBPQJA==}
     engines: {node: '>=0.6'}
 
   queue-microtask@1.2.3:
@@ -4956,12 +4692,6 @@ packages:
 
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
-
-  react-nice-avatar@file:../../front/apps/main_frontend/prebuild/react-nice-avatar-1.6.1.tgz:
-    resolution: {integrity: sha512-Sbf2YIygFhmapRR42afov9LML649RK5CC8m8fC/KuTEvOol152Gp0T7pDw/rXsCZgNlTO/dNluzpxoTV52jNxA==, tarball: file:../../front/apps/main_frontend/prebuild/react-nice-avatar-1.6.1.tgz}
-    version: 1.6.1
-    peerDependencies:
-      react: '>=16.0.0'
 
   react-nice-avatar@file:prebuild/react-nice-avatar-1.6.1.tgz:
     resolution: {integrity: sha512-Sbf2YIygFhmapRR42afov9LML649RK5CC8m8fC/KuTEvOol152Gp0T7pDw/rXsCZgNlTO/dNluzpxoTV52jNxA==, tarball: file:prebuild/react-nice-avatar-1.6.1.tgz}
@@ -5625,13 +5355,12 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
-  uuid@14.0.2:
-    resolution: {integrity: sha512-xZe/16rV4aa+HGSOCiY2YeLT1OybRLrrkL/Rqaq7p7GMVXjFh+6wN4oMYgjFmnSnhY8t6Xpdl2l9qmnHYuMHwQ==}
+  uuid@11.1.1:
+    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
-  uuid@8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+  uuid@14.0.2:
+    resolution: {integrity: sha512-xZe/16rV4aa+HGSOCiY2YeLT1OybRLrrkL/Rqaq7p7GMVXjFh+6wN4oMYgjFmnSnhY8t6Xpdl2l9qmnHYuMHwQ==}
     hasBin: true
 
   vary@1.1.2:
@@ -7085,18 +6814,6 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@livekit/components-react@file:../../front/apps/main_frontend/prebuild/livekit-components-react-2.9.22.tgz(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tslib@2.8.1)':
-    dependencies:
-      '@livekit/components-core': 0.12.15(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
-      clsx: 2.1.1
-      events: 3.3.0
-      jose: 6.2.10
-      livekit-client: 2.22.3(@types/dom-mediacapture-record@1.0.22)
-      react: 19.2.8
-      react-dom: 19.2.8(react@19.2.8)
-      tslib: 2.8.1
-      usehooks-ts: 3.1.1(react@19.2.8)
-
   '@livekit/components-react@file:prebuild/livekit-components-react-2.9.22.tgz(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tslib@2.8.1)':
     dependencies:
       '@livekit/components-core': 0.12.15(livekit-client@2.22.3(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
@@ -7108,8 +6825,6 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
       tslib: 2.8.1
       usehooks-ts: 3.1.1(react@19.2.8)
-
-  '@livekit/components-styles@file:../../front/apps/main_frontend/prebuild/livekit-components-styles-1.2.2.tgz': {}
 
   '@livekit/components-styles@file:prebuild/livekit-components-styles-1.2.2.tgz': {}
 
@@ -8731,7 +8446,7 @@ snapshots:
       http-errors: 2.0.1
       iconv-lite: 0.4.24
       on-finished: 2.4.1
-      qs: 6.15.4
+      qs: 6.17.1
       raw-body: 2.5.3
       type-is: 1.6.18
       unpipe: 1.0.0
@@ -9500,7 +9215,7 @@ snapshots:
       parseurl: 1.3.3
       path-to-regexp: 0.1.13
       proxy-addr: 2.0.7
-      qs: 6.15.4
+      qs: 6.17.1
       range-parser: 1.2.1
       safe-buffer: 5.2.1
       send: 0.19.2
@@ -10598,7 +10313,7 @@ snapshots:
 
   pvutils@1.2.0: {}
 
-  qs@6.15.4:
+  qs@6.17.1:
     dependencies:
       es-define-property: 1.0.1
       side-channel: 1.1.1
@@ -10638,13 +10353,6 @@ snapshots:
   react-is@16.13.1: {}
 
   react-is@17.0.2: {}
-
-  react-nice-avatar@file:../../front/apps/main_frontend/prebuild/react-nice-avatar-1.6.1.tgz(react@19.2.8):
-    dependencies:
-      '@babel/runtime': 7.29.7
-      chroma-js: 2.6.0
-      prop-types: 15.8.1
-      react: 19.2.8
 
   react-nice-avatar@file:prebuild/react-nice-avatar-1.6.1.tgz(react@19.2.8):
     dependencies:
@@ -11052,7 +10760,7 @@ snapshots:
   sockjs@0.3.24:
     dependencies:
       faye-websocket: 0.11.4
-      uuid: 8.3.2
+      uuid: 11.1.1
       websocket-driver: 0.7.5
 
   source-map-js@1.2.1: {}
@@ -11429,9 +11137,9 @@ snapshots:
 
   utils-merge@1.0.1: {}
 
-  uuid@14.0.2: {}
+  uuid@11.1.1: {}
 
-  uuid@8.3.2: {}
+  uuid@14.0.2: {}
 
   vary@1.1.2: {}
 
