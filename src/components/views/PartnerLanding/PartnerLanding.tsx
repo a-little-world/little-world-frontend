@@ -205,8 +205,11 @@ const PartnerHeroChrome = ({ partner }: { partner: PartnerLanding }) => {
             <PartnerCoopLabel>
               {t('partner_landing.in_partnership_with')}
             </PartnerCoopLabel>
-            {partner.logo && <PartnerLogo src={partner.logo} alt="" />}
-            <PartnerName>{partner.name}</PartnerName>
+            {partner.logo ? (
+              <PartnerLogo src={partner.logo} alt={partner.name} />
+            ) : (
+              <PartnerName>{partner.name}</PartnerName>
+            )}
           </PartnerPill>
         ) : null}
       </NavBar>
