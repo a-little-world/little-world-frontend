@@ -137,7 +137,9 @@ const BERLIN_VTIMEZONE = [
 const berlinIcsDates = (dates: Date[]) =>
   dates.map(formatBerlinIcsDateTime).join(',');
 
-export function generateGoogleCalendarUrl(calendarEvent: CalendarEvent): string {
+export function generateGoogleCalendarUrl(
+  calendarEvent: CalendarEvent,
+): string {
   const { formattedStartDate, formattedEndDate } =
     getFormattedCalendarDates(calendarEvent);
   const recurrenceRule = generateRecurrenceRule(calendarEvent);
@@ -162,7 +164,9 @@ export function generateGoogleCalendarUrl(calendarEvent: CalendarEvent): string 
   return encodeURI(`${baseUrl}&${params}${recurrenceParam}`);
 }
 
-export function generateOutlookCalendarUrl(calendarEvent: CalendarEvent): string {
+export function generateOutlookCalendarUrl(
+  calendarEvent: CalendarEvent,
+): string {
   const { startDate, endDate } = getEventDates(calendarEvent);
   const params = new URLSearchParams({
     path: '/calendar/action/compose',

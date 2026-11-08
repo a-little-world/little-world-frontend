@@ -214,11 +214,7 @@ describe('badge ordering', () => {
     });
     const visible = visibleOverviewBadges(resolved).map(badge => badge.id);
 
-    assert.deepEqual(visible, [
-      'first_call',
-      'two_hours',
-      'five_active_weeks',
-    ]);
+    assert.deepEqual(visible, ['first_call', 'two_hours', 'five_active_weeks']);
     assert.ok(!visible.includes('four_hours'));
     assert.ok(!visible.includes('ten_hours'));
     assert.ok(!visible.includes('ten_active_weeks'));

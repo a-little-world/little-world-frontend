@@ -113,8 +113,8 @@ const PartnerStoryModal = ({
                   t(
                     `partner_landing.stories.${storyKey}.article.${section.id}.body`,
                   ),
-                ).map((paragraph, index) => (
-                  <StoryModalParagraph key={`${section.id}-${index}`}>
+                ).map(paragraph => (
+                  <StoryModalParagraph key={paragraph}>
                     {paragraph}
                   </StoryModalParagraph>
                 ))}

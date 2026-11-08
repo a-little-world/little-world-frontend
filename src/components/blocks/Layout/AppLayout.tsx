@@ -32,10 +32,7 @@ import useModalManagerStore, {
   ModalTypes,
 } from '../../../features/stores/modalManager';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
-import {
-  getAppRoute,
-  ONBOARDING_ROUTE,
-} from '../../../router/routes';
+import { getAppRoute, ONBOARDING_ROUTE } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
