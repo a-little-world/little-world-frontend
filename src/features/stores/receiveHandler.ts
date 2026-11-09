@@ -132,22 +132,10 @@ export type DomCommunicationMessage =
   | {
       action: 'LOG_ERROR';
       requestId?: string;
-      payload:
-        | {
-            type: 'react';
-            message: string;
-            stack?: string;
-          }
-        | {
-            type: 'fetch';
-            method: string;
-            endpoint: string;
-            url: string;
-            headers: Record<string, string>;
-            requestBody: unknown;
-            status?: number;
-            error: unknown;
-          };
+      payload: {
+        message: string;
+        stack?: string;
+      };
     };
 
 export type DomCommunicationMessageFn = (
