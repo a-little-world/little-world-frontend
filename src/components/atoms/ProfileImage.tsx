@@ -3,6 +3,7 @@ import React from 'react';
 import Avatar, { type NiceAvatarProps } from 'react-nice-avatar';
 import styled from 'styled-components';
 
+import { toBackendUrl } from '../../api/helpers';
 import { DEFAULT_PROFILE_IMAGE } from '../../images/index';
 
 export const ImageSizes = {
@@ -111,7 +112,7 @@ function ProfileImage({
   return circle || !image ? (
     <CircleImage className={className} $size={size}>
       <CircleImageContent
-        src={(image as string) || DEFAULT_PROFILE_IMAGE}
+        src={toBackendUrl(image as string) || DEFAULT_PROFILE_IMAGE}
         alt="profile image"
       />
       {children}
@@ -120,7 +121,7 @@ function ProfileImage({
     <Image
       className={className}
       alt="user image"
-      src={image as string}
+      src={toBackendUrl(image as string)}
       $size={size}
     />
   );

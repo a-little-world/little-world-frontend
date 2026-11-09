@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash';
 import useSWR from 'swr';
 
 import { USER_ENDPOINT } from '../../api/endpoints';
+import { toBackendUrl } from '../../api/helpers';
 
 function CommsBanner() {
   const banner = useSWR(USER_ENDPOINT).data?.banner;
@@ -18,7 +19,7 @@ function CommsBanner() {
       description={banner.text}
       textColor={banner.text_color}
       background={banner.background}
-      image={banner.image || undefined}
+      image={toBackendUrl(banner.image)}
       imageAlt={banner.image_alt}
       primaryCtaColor={banner.cta_1_color || undefined}
       primaryCtaText={banner.cta_1_text || undefined}

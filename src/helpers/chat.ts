@@ -1,9 +1,23 @@
-import { ComponentType } from 'react';
+import { ComponentType, createElement } from 'react';
 
 import {
   AttachmentWidget,
+  AttachmentWidgetProps,
   CallWidget,
 } from '@a-little-world/little-world-design-system';
+
+import { toBackendUrl } from '../api/helpers';
+
+const BackendAttachmentWidget = ({
+  attachmentLink,
+  imageSrc,
+  ...props
+}: AttachmentWidgetProps) =>
+  createElement(AttachmentWidget, {
+    ...props,
+    attachmentLink: toBackendUrl(attachmentLink),
+    imageSrc: toBackendUrl(imageSrc),
+  });
 
 interface Message {
   sender: string;
@@ -87,7 +101,7 @@ export const getCustomChatElements = ({
       },
     },
     {
-      Component: AttachmentWidget,
+      Component: BackendAttachmentWidget,
       tag: 'AttachmentWidget',
       props: { isPreview },
     },

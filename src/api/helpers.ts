@@ -24,6 +24,11 @@ export function getEffectiveBackendUrl(): string {
   return debugStore.getState().backendUrlOverride ?? environment.backendUrl;
 }
 
+export const toBackendUrl = (url?: string | null) =>
+  environment.isNative && url?.startsWith('/')
+    ? `${getEffectiveBackendUrl()}${url}`
+    : (url ?? undefined);
+
 export function useEffectiveBackendUrl(): string {
   const { backendUrlOverride } = useDebugStore();
   return (

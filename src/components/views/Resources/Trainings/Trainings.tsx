@@ -10,6 +10,7 @@ import {
   COURSES_ENDPOINT,
   fetchCourses,
 } from '../../../../api/courses';
+import { toBackendUrl } from '../../../../api/helpers';
 import { getAppSubpageRoute, TRAININGS_ROUTE } from '../../../../router/routes';
 import ContentList, { ItemType } from '../../../blocks/ContentList/ContentList';
 import { ContentCard } from '../shared.styles';
@@ -18,7 +19,7 @@ import { Method } from './Trainings.styles';
 function courseToItem(course: Course): ItemType {
   return {
     title: course.title,
-    image: course.image,
+    image: toBackendUrl(course.image),
     description: course.description,
     link: getAppSubpageRoute(TRAININGS_ROUTE, course.slug),
     linkText: 'resources.trainings.training_cta',
