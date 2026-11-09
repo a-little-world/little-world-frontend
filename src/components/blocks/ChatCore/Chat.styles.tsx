@@ -100,6 +100,7 @@ export const WriteSection = styled.form`
 
 export const Messages = styled.div`
   position: relative;
+  isolation: isolate;
   flex: 1 1 0;
   background: ${({ theme }) => theme.color.surface.secondary};
   border: 2px solid ${({ theme }) => theme.color.border.subtle};
@@ -132,7 +133,7 @@ export const MessageGroup = styled.div`
 export const StickyDateHeader = styled.div<{ $isSticky: boolean }>`
   position: ${({ $isSticky }) => ($isSticky ? 'sticky' : 'relative')};
   top: ${({ $isSticky }) => ($isSticky ? '0' : 'auto')};
-  z-index: 2;
+  z-index: 1;
   background: ${({ theme }) => theme.color.surface.primary};
   padding: ${({ theme }) => theme.spacing.xxsmall}
     ${({ theme }) => theme.spacing.small};
