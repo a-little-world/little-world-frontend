@@ -14,6 +14,7 @@ describe('eventFromLanding', () => {
       name: 'Capgemini',
       logo: null,
       email_domain: 'capgemini.com',
+      enforce_email_domain: false,
       starts_at: '2026-12-03T11:00:00.000Z',
       ends_at: '2026-12-03T11:30:00.000Z',
       door_number: 3,

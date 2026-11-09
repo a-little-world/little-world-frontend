@@ -82,9 +82,12 @@ const PartnerSignUpCard = ({
     startsAt,
     toTimeZone(new Date(), timeZone),
   );
-  const exampleEmail = partner.email_domain
+  const enforceEmailDomain = Boolean(
+    partner.enforce_email_domain && partner.email_domain,
+  );
+  const exampleEmail = enforceEmailDomain
     ? `vorname.name@${partner.email_domain}`
-    : 'name@firma.de';
+    : t('partner_landing.email_placeholder_generic');
 
   const handleSubmit = (formEvent: FormEvent) => {
     formEvent.preventDefault();
@@ -136,7 +139,11 @@ const PartnerSignUpCard = ({
       <FormStack onSubmit={handleSubmit} noValidate>
         <EmailField
           id={inputId}
-          label={t('partner_landing.email_label')}
+          label={t(
+            enforceEmailDomain
+              ? 'partner_landing.email_label'
+              : 'partner_landing.email_label_generic',
+          )}
           type="email"
           inputMode="email"
           value={email}
