@@ -279,6 +279,9 @@ function Profile() {
             successMinutes={match?.success_minutes}
             progressTokens={match?.progress_tokens}
             bothPartnersMessaged={match?.both_partners_messaged}
+            lastCallMinutes={match?.last_call_minutes}
+            lastCallWithinWeek={match?.last_call_within_week}
+            minutesStale={match?.minutes_stale}
             openEditImage={() =>
               navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
             }
