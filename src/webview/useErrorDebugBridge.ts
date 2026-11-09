@@ -11,7 +11,6 @@ function useErrorDebugBridge() {
       sendMessageToReactNative?.({
         action: 'LOG_ERROR',
         payload: {
-          type: 'react',
           message,
           stack,
         },
