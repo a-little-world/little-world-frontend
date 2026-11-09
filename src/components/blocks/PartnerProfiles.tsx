@@ -178,6 +178,8 @@ function PartnerProfiles({
             chatId={match.chatId}
             bothActiveCallMinutes={match.both_active_call_minutes}
             successMinutes={match.success_minutes}
+            progressTokens={match.progress_tokens}
+            bothPartnersMessaged={match.both_partners_messaged}
             unreadCount={match.chat?.unread_count}
           />
         ))

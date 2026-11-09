@@ -81,6 +81,8 @@ interface ProfileCardProps {
   unreadCount?: number;
   bothActiveCallMinutes?: number;
   successMinutes?: number;
+  progressTokens?: number;
+  bothPartnersMessaged?: boolean;
 }
 
 export const StyledProfileCard = styled(Card)<{
@@ -248,6 +250,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   unreadCount: unreadCountProp,
   bothActiveCallMinutes,
   successMinutes,
+  progressTokens,
+  bothPartnersMessaged,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -446,7 +450,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </Actions>
       )}
       {showPanel && (
-        <ProgressPanel minutes={callMinutes} max={successMinutes} />
+        <ProgressPanel
+          minutes={callMinutes}
+          max={successMinutes}
+          tokens={progressTokens}
+          bothPartnersMessaged={bothPartnersMessaged}
+        />
       )}
     </StyledProfileCard>
   );
