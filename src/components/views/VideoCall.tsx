@@ -882,7 +882,10 @@ function VideoCall() {
             {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>
           {isDesktop ? (
-            <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
+            <CallSidebar
+              isDisplayed={showChat && !isFullScreen}
+              chatId={chatData?.uuid}
+            />
           ) : (
             <>
               <Drawer
