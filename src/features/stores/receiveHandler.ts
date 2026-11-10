@@ -1,7 +1,10 @@
+import type { MessagePayload } from '@firebase/messaging';
 import { NavigateOptions } from 'react-router-dom';
 import { create } from 'zustand';
 
 import { TokenStatus } from '../../api/types';
+
+export type NotificationPayload = Pick<MessagePayload, 'notification' | 'data'>;
 
 export type DomCommunicationResponse =
   | { ok: true; data?: any | undefined }
@@ -37,13 +40,14 @@ export type DomCommunicationMessage =
       payload: {};
     }
   | {
-      action: 'DISPLAY_NOTIFICATION';
+      action: 'NOTIFICATION_RECEIVED';
       requestId?: string;
-      payload: {
-        title?: string;
-        body?: string;
-        path?: string;
-      };
+      payload: NotificationPayload;
+    }
+  | {
+      action: 'NOTIFICATION_CLICKED';
+      requestId?: string;
+      payload: NotificationPayload;
     }
   | {
       action: 'GET_INTEGRITY_TOKEN';

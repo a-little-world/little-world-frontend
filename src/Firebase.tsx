@@ -3,41 +3,25 @@ import { useEffect, useMemo, useRef } from 'react';
 import {
   getMessaging,
   isSupported,
-  MessagePayload,
   onMessage,
   Unsubscribe,
 } from '@firebase/messaging';
 import { useTranslation } from 'react-i18next';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from './api/endpoints';
-import { ToastContextType } from './components/blocks/Toast';
 import useNotificationStore from './features/stores/notification';
 import { enableFirebase, enableNotificationsInProfile } from './firebase-util';
+import {
+  handleNotificationClicked,
+  showNotificationToast,
+} from './hooks/useNotificationHandler';
 import useToast from './hooks/useToast';
 import { getAppRoute, SETTINGS_ROUTE } from './router/routes';
 
 const SHOW_NOTIFICATION_PERMISSION_TOAST_KEY =
   'notification-permission-show-toast';
-
-// show foreground messages as in-app toast
-function handleMessage(
-  payload: MessagePayload,
-  toast: ToastContextType,
-  navigate: NavigateFunction,
-): void {
-  const path = payload.data?.path;
-  const currentPath = window.location.pathname;
-  if (path !== currentPath) {
-    toast.showToast({
-      title: payload.notification?.title,
-      description: payload.notification?.body,
-      duration: 3000,
-      onClick: path?.startsWith('/') ? () => navigate(path) : undefined,
-    });
-  }
-}
 
 function FireBase() {
   const { data: userData } = useSWR(USER_ENDPOINT, {
@@ -62,7 +46,7 @@ function FireBase() {
       if (type !== 'NAVIGATE' || path === window.location.pathname) {
         return;
       }
-      navigate(path);
+      handleNotificationClicked({ data: { path } }, navigate);
     };
 
     navigator.serviceWorker?.addEventListener(
@@ -215,7 +199,12 @@ function FireBase() {
     enableFirebase().then(() => {
       const messaging = getMessaging();
       unsubscribeRef.current = onMessage(messaging, payload =>
-        handleMessage(payload, toast, navigate),
+        showNotificationToast(
+          payload,
+          window.location.pathname,
+          toast,
+          navigate,
+        ),
       );
     });
 
