@@ -26,7 +26,10 @@ let firebaseConfig: Promise<FirebaseConfig> | undefined;
 
 function getFirebaseConfig(): Promise<FirebaseConfig> {
   if (!firebaseConfig) {
-    firebaseConfig = apiFetch(FIREBASE_ENDPOINT);
+    firebaseConfig = apiFetch(FIREBASE_ENDPOINT).catch(error => {
+      firebaseConfig = undefined;
+      throw error;
+    });
   }
   return firebaseConfig;
 }
@@ -89,14 +92,10 @@ export async function registerFirebaseDeviceToken(): Promise<void> {
     return;
   }
 
-  try {
-    await apiFetch('/api/push_notifications/register', {
-      method: 'POST',
-      body: { install_id: await getInstallationId(), token },
-    });
-  } catch (_e) {
-    // ignore
-  }
+  await apiFetch('/api/push_notifications/register', {
+    method: 'POST',
+    body: { install_id: await getInstallationId(), token },
+  });
 }
 
 export async function unregisterFirebaseDeviceToken(): Promise<void> {
