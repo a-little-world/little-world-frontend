@@ -267,7 +267,7 @@ export const NewsletterRow = styled.label`
   cursor: pointer;
 `;
 
-export const NewsletterCheckbox = styled(Checkbox)`
+export const NewsletterCheckbox: typeof Checkbox = styled(Checkbox)`
   flex-shrink: 0;
   margin-top: ${({ theme }) => theme.spacing.xxxxsmall};
 `;

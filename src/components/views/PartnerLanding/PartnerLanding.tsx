@@ -311,7 +311,10 @@ const PartnerLandingPage = () => {
     if (isSubmitting || success) return;
     if (partnerSlug && !partner) return;
 
-    const code = validatePartnerEmail(email, partner?.email_domain ?? null);
+    const code = validatePartnerEmail(
+      email,
+      partner?.enforce_email_domain ? (partner.email_domain ?? null) : null,
+    );
     if (code) {
       setError(errorMessage(code));
       return;
