@@ -21,6 +21,18 @@ export interface Nudge {
   Icon: NudgeIcon;
 }
 
+/** Column H (short lead) and column J (sentence), shown as one line. */
+function nudgeCopy(
+  t: TFunction,
+  key: string,
+  values?: { name?: string; minutes?: number },
+): string {
+  const body = values
+    ? t(`profile_card.nudge.${key}`, values)
+    : t(`profile_card.nudge.${key}`);
+  return `${t(`profile_card.nudge.${key}_lead`)} ${body}`;
+}
+
 interface NudgeContext {
   t: TFunction;
   minutes: number;
@@ -36,52 +48,52 @@ interface NudgeContext {
 const NUDGES: Record<number, (ctx: NudgeContext) => Nudge> = {
   1: ({ t, minutes }) => ({
     tone: 'success',
-    text: t('profile_card.nudge.1', { minutes }),
+    text: nudgeCopy(t, '1', { minutes }),
     Icon: StarIcon,
   }),
   2: ({ t }) => ({
     tone: 'motivational',
-    text: t('profile_card.nudge.2'),
+    text: nudgeCopy(t, '2'),
     Icon: FlameIcon,
   }),
   3: ({ t }) => ({
     tone: 'success',
-    text: t('profile_card.nudge.3'),
+    text: nudgeCopy(t, '3'),
     Icon: StarIcon,
   }),
   4: ({ t }) => ({
     tone: 'motivational',
-    text: t('profile_card.nudge.4'),
+    text: nudgeCopy(t, '4'),
     Icon: HeartIcon,
   }),
   5: ({ t }) => ({
     tone: 'success',
-    text: t('profile_card.nudge.5'),
+    text: nudgeCopy(t, '5'),
     Icon: HeartIcon,
   }),
   6: ({ t }) => ({
     tone: 'motivational',
-    text: t('profile_card.nudge.6'),
+    text: nudgeCopy(t, '6'),
     Icon: ClockIcon,
   }),
   7: ({ t }) => ({
     tone: 'success',
-    text: t('profile_card.nudge.7'),
+    text: nudgeCopy(t, '7'),
     Icon: HeartIcon,
   }),
   8: ({ t }) => ({
     tone: 'motivational',
-    text: t('profile_card.nudge.8'),
+    text: nudgeCopy(t, '8'),
     Icon: FlameIcon,
   }),
   9: ({ t }) => ({
     tone: 'motivational',
-    text: t('profile_card.nudge.9'),
+    text: nudgeCopy(t, '9'),
     Icon: StarIcon,
   }),
   10: ({ t }) => ({
     tone: 'success',
-    text: t('profile_card.nudge.10'),
+    text: nudgeCopy(t, '10'),
     Icon: HeartIcon,
   }),
 };
@@ -109,7 +121,7 @@ export function resolveNudge(
   if (minutesStale) {
     return {
       tone: 'motivational',
-      text: t('profile_card.nudge.stale', { name: partnerName }),
+      text: nudgeCopy(t, 'stale', { name: partnerName }),
       Icon: CalendarIcon,
     };
   }
@@ -122,7 +134,7 @@ export function resolveNudge(
   ) {
     return {
       tone: 'success',
-      text: t('profile_card.nudge.recent_hour'),
+      text: nudgeCopy(t, 'recent_hour'),
       Icon: ClockIcon,
     };
   }
@@ -130,7 +142,7 @@ export function resolveNudge(
   if (lastCallWithinWeek && lastCallMinutes != null && lastCallMinutes >= 120) {
     return {
       tone: 'success',
-      text: t('profile_card.nudge.recent_long'),
+      text: nudgeCopy(t, 'recent_long'),
       Icon: HeartIcon,
     };
   }
@@ -138,7 +150,7 @@ export function resolveNudge(
   if (tokens == null) {
     return {
       tone: 'informational',
-      text: t('profile_card.nudge.goal'),
+      text: nudgeCopy(t, 'goal'),
       Icon: QuestionIcon,
     };
   }
@@ -147,20 +159,20 @@ export function resolveNudge(
     if (minutes > 0) {
       return {
         tone: 'informational',
-        text: t('profile_card.nudge.short_call'),
+        text: nudgeCopy(t, 'short_call'),
         Icon: ClockIcon,
       };
     }
     if (bothPartnersMessaged) {
       return {
         tone: 'motivational',
-        text: t('profile_card.nudge.schedule', { name: partnerName }),
+        text: nudgeCopy(t, 'schedule', { name: partnerName }),
         Icon: CalendarIcon,
       };
     }
     return {
       tone: 'informational',
-      text: t('profile_card.nudge.goal'),
+      text: nudgeCopy(t, 'goal'),
       Icon: QuestionIcon,
     };
   }
@@ -168,7 +180,7 @@ export function resolveNudge(
   if (tokens > GOAL_TOKENS) {
     return {
       tone: 'success',
-      text: t('profile_card.nudge.11'),
+      text: nudgeCopy(t, '11'),
       Icon: FlameIcon,
     };
   }

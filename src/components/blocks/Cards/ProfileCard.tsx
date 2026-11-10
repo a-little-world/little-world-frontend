@@ -123,6 +123,7 @@ export const StyledProfileCard = styled(Card)<{
     min-height: ${$isSelf || $onProfile ? 'initial' : PROFILE_CARD_HEIGHT};
 
     @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.medium};
       height: ${$isSelf || $onProfile ? 'initial' : PROFILE_CARD_HEIGHT};
     }
   `};
