@@ -691,6 +691,7 @@ function VideoCall() {
 
   const openChat = useCallback(() => {
     setShowChat(true);
+    setIsFullScreen(false);
     setSideSelection('chat'); // Switch sidebar to chat tab
     setSelectedDrawerOption('chat'); // Open chat drawer on mobile
   }, []);
