@@ -137,7 +137,9 @@ const BERLIN_VTIMEZONE = [
 const berlinIcsDates = (dates: Date[]) =>
   dates.map(formatBerlinIcsDateTime).join(',');
 
-function generateGoogleCalendarUrl(calendarEvent: CalendarEvent): string {
+export function generateGoogleCalendarUrl(
+  calendarEvent: CalendarEvent,
+): string {
   const { formattedStartDate, formattedEndDate } =
     getFormattedCalendarDates(calendarEvent);
   const recurrenceRule = generateRecurrenceRule(calendarEvent);
@@ -160,6 +162,22 @@ function generateGoogleCalendarUrl(calendarEvent: CalendarEvent): string {
   ].join('&');
 
   return encodeURI(`${baseUrl}&${params}${recurrenceParam}`);
+}
+
+export function generateOutlookCalendarUrl(
+  calendarEvent: CalendarEvent,
+): string {
+  const { startDate, endDate } = getEventDates(calendarEvent);
+  const params = new URLSearchParams({
+    path: '/calendar/action/compose',
+    rru: 'addevent',
+    subject: calendarEvent.title || '',
+    startdt: startDate.toISOString(),
+    enddt: endDate.toISOString(),
+    body: calendarEvent.description || '',
+    location: calendarEvent.link || '',
+  });
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${params.toString()}`;
 }
 
 function generateIcsCalendarFile(calendarEvent: CalendarEvent): string {
@@ -197,7 +215,7 @@ function generateIcsCalendarFile(calendarEvent: CalendarEvent): string {
   return icsLines.join('\n');
 }
 
-function downloadIcsFile(calendarEvent: CalendarEvent): void {
+export function downloadIcsFile(calendarEvent: CalendarEvent): void {
   const icsContent = generateIcsCalendarFile(calendarEvent);
   const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);

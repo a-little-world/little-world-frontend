@@ -12,11 +12,7 @@ export type ProgressCtaTarget = 'chat' | 'support' | null;
 /**
  * Match Overview progress hero copy, keyed by `MatchState`.
  *
- * The states are the ones in `deriveMatchState`, not a private set — this hero and the
- * teaser on the partner card describe the same match, and they used to do it from two
- * unrelated vocabularies (`first_call` / `next_call` / `needs_support` / `complete` here,
- * `no_call` / `active` / `gone_quiet` / `cycle_complete` there). One list means a state
- * added in one place cannot go unanswered in the other.
+ * The states are the ones in `deriveMatchState`, not a private set.
  */
 const COPY_KEYS: Record<MatchStateKind, ProgressCopyKeys> = {
   successful: {

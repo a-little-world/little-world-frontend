@@ -38,6 +38,9 @@ export const HELP_FAQS_ROUTE = 'help/faqs';
 export const SETTINGS_ROUTE = 'settings';
 export const LOGIN_ROUTE = 'login';
 export const SIGN_UP_ROUTE = 'sign-up';
+export const ADVENT_LANDING_ROUTE = 'advents-gespraeche';
+export const ADVENT_LANDING_PARTNER_ROUTE = 'advents-gespraeche/:partnerSlug';
+
 export const CHANGE_EMAIL_ROUTE = 'change-email';
 export const VERIFY_EMAIL_ROUTE = 'verify-email';
 export const FORGOT_PASSWORD_ROUTE = 'forgot-password';

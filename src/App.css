@@ -27,6 +27,11 @@ body {
   flex-direction: column;
 }
 
+/* during calls */
+body:has(.lk-room-container) {
+  background-color: #000;
+}
+
 /* `contain` anchors `position: fixed` children to this element, which adheres to the safe-area
    padding set on the body; scrolling must stay off #root or they scroll out of view */
 #root {
@@ -42,6 +47,14 @@ body {
   inset: 0;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+/* modals portal to body (outside #root) -> transparent border keeps content + close button
+   out of the system bars while backdrop still covers them */
+dialog[aria-modal] {
+  border: solid transparent;
+  border-width: var(--safe-top) var(--safe-right) var(--safe-bottom)
+    var(--safe-left);
 }
 
 body,

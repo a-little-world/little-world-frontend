@@ -56,22 +56,6 @@ export const MATCH_OVERVIEW_BADGE_DEFINITIONS: BadgeDefinition[] = [
     target: 1,
   },
   {
-    id: 'fifty_messages',
-    nameKey: 'match_overview.badges.fifty_messages.name',
-    unlockHintKey: 'match_overview.badges.fifty_messages.hint',
-    icon: 'message',
-    metric: 'messages',
-    target: 50,
-  },
-  {
-    id: 'hundred_messages',
-    nameKey: 'match_overview.badges.hundred_messages.name',
-    unlockHintKey: 'match_overview.badges.hundred_messages.hint',
-    icon: 'message',
-    metric: 'messages',
-    target: 100,
-  },
-  {
     id: 'two_hours',
     nameKey: 'match_overview.badges.two_hours.name',
     unlockHintKey: 'match_overview.badges.two_hours.hint',
@@ -195,9 +179,9 @@ function categoryCurrentIds(rows: BadgeProgressRow[]): Set<string> {
 /**
  * Resolves badge visual state from definition + match stats.
  *
- * Metrics are ladders (messages, hours, active weeks). Only the next unfinished
- * rung in each ladder can be in_progress; later rungs stay locked. First call
- * is always in_progress until earned, even at zero, so it leads the strip.
+ * Metrics are ladders (hours, active weeks). Only the next unfinished rung in
+ * each ladder can be in_progress; later rungs stay locked. First call is always
+ * in_progress until earned, even at zero, so it leads the strip.
  */
 export function resolveBadgeStates(
   badges: BadgeDefinition[],
@@ -282,7 +266,7 @@ export function getNextInProgressBadge(
 
 /**
  * Earned badges plus the next unfinished rung of each metric. Later linked
- * badges (100 messages before 50, 10 hours before 2) are omitted.
+ * badges (10 hours before 2) are omitted.
  */
 export function visibleOverviewBadges(
   badges: ResolvedBadge[],
@@ -310,16 +294,14 @@ export function visibleOverviewBadges(
 
 /** The category a badge belongs to is its metric; these are the ladders. */
 const LEAD_BADGE_ID = 'first_call';
-const TRAILING_CATEGORY: BadgeMetric = 'messages';
 
 /**
  * Category display order, derived from the ladder so it cannot drift from it.
  *
  * The category holding the first call leads and keeps leading once it is earned —
  * getting a first call to happen is what the whole page is for, so its ladder outranks
- * the others whatever their progress. Messages trail: they accumulate on their own and
- * say the least about whether a match is working. Anything between keeps the order the
- * definitions are written in.
+ * the others whatever their progress. Anything after keeps the order the definitions
+ * are written in.
  */
 export const BADGE_CATEGORY_ORDER: BadgeMetric[] = (() => {
   const lead = MATCH_OVERVIEW_BADGE_DEFINITIONS.find(
@@ -331,10 +313,8 @@ export const BADGE_CATEGORY_ORDER: BadgeMetric[] = (() => {
     if (!declared.includes(badge.metric)) declared.push(badge.metric);
   });
 
-  const middle = declared.filter(
-    metric => metric !== lead && metric !== TRAILING_CATEGORY,
-  );
-  return [...(lead ? [lead] : []), ...middle, TRAILING_CATEGORY];
+  const rest = declared.filter(metric => metric !== lead);
+  return [...(lead ? [lead] : []), ...rest];
 })();
 
 export function categoryPriority(metric: BadgeMetric): number {

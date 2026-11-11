@@ -70,7 +70,7 @@ function QuestionCards() {
           onClick={() => changeScroll('left')}
         >
           <ChevronLeftIcon
-            label="prev conversation topics"
+            label={t('question_cards.prev_topic')}
             width={6}
             height={10}
           />

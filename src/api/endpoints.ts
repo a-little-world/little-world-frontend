@@ -32,3 +32,11 @@ export const getMatchEndpoint = (page: number) =>
   `/api/matches?page=${page}&page_size=10`;
 export const getQuestionsEndpoint = (archived: boolean) =>
   `/api/user/question_cards/?archived=${archived}&category=all`;
+export const E2EE_WORKER_ENDPOINT = '/api/video/e2ee_worker.js';
+
+export const PARTNER_REGISTER_ENDPOINT = '/api/partner/register/';
+export const PARTNER_LANDING_ENDPOINT = '/api/partner/';
+export const getPartnerLandingEndpoint = (slug?: string) =>
+  slug ? `/api/partner/${slug}/` : PARTNER_LANDING_ENDPOINT;
+export const getPartnerRegisterEndpoint = (slug?: string) =>
+  slug ? `/api/partner/${slug}/register/` : PARTNER_REGISTER_ENDPOINT;
