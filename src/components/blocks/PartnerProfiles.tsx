@@ -19,6 +19,7 @@ import {
   LANGUAGES,
   USER_TYPES,
 } from '../../constants';
+import type { NudgeKey } from '../../constants/matchNudges';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import PlusImage from '../../images/plus-with-circle.svg';
 import CoursePromoCard from './Cards/CoursePromoCard';
@@ -32,52 +33,18 @@ import { SearchingCard } from './Cards/SearchingCard';
 import UpdateSearchStateCard from './Cards/UpdateSearchStateCard';
 
 /** Temporary: one copy of the first partner card per nudge. Remove after review. */
-const NUDGE_PREVIEWS: {
-  key: string;
-  minutes: number;
-  tokens: number;
-  bothMessaged: boolean;
-  minutesStale?: boolean;
-  lastCallMinutes?: number;
-  lastCallWithinWeek?: boolean;
-}[] = [
-  {
-    key: 'stale',
-    minutes: 90,
-    tokens: 3,
-    bothMessaged: false,
-    minutesStale: true,
-  },
-  {
-    key: 'recent-hour',
-    minutes: 90,
-    tokens: 3,
-    bothMessaged: false,
-    lastCallMinutes: 90,
-    lastCallWithinWeek: true,
-  },
-  {
-    key: 'recent-long',
-    minutes: 150,
-    tokens: 5,
-    bothMessaged: false,
-    lastCallMinutes: 130,
-    lastCallWithinWeek: true,
-  },
-  { key: 'goal', minutes: 0, tokens: 0, bothMessaged: false },
-  { key: 'schedule', minutes: 0, tokens: 0, bothMessaged: true },
-  { key: 'short', minutes: 15, tokens: 0, bothMessaged: false },
-  { key: '1', minutes: 45, tokens: 1, bothMessaged: false },
-  { key: '2', minutes: 60, tokens: 2, bothMessaged: false },
-  { key: '3', minutes: 90, tokens: 3, bothMessaged: false },
-  { key: '4', minutes: 120, tokens: 4, bothMessaged: false },
-  { key: '5', minutes: 150, tokens: 5, bothMessaged: false },
-  { key: '6', minutes: 180, tokens: 6, bothMessaged: false },
-  { key: '7', minutes: 210, tokens: 7, bothMessaged: false },
-  { key: '8', minutes: 240, tokens: 8, bothMessaged: false },
-  { key: '9', minutes: 270, tokens: 9, bothMessaged: false },
-  { key: '10', minutes: 300, tokens: 10, bothMessaged: false },
-  { key: 'beyond', minutes: 330, tokens: 11, bothMessaged: false },
+const NUDGE_PREVIEWS: { nudge: NudgeKey; minutes: number }[] = [
+  { nudge: 'stale', minutes: 90 },
+  { nudge: 'recent_hour', minutes: 90 },
+  { nudge: 'recent_long', minutes: 150 },
+  { nudge: 'goal', minutes: 0 },
+  { nudge: 'schedule', minutes: 0 },
+  { nudge: 'short_call', minutes: 15 },
+  ...Array.from({ length: 10 }, (_, i) => ({
+    nudge: `band_${i + 1}` as NudgeKey,
+    minutes: (i + 1) * 30 + (i === 0 ? 15 : 0),
+  })),
+  { nudge: 'beyond_goal', minutes: 330 },
 ];
 
 const FindNewPartner = styled.button<{ $hasMatch: boolean }>`
@@ -231,11 +198,7 @@ function PartnerProfiles({
             chatId={match.chatId}
             bothActiveCallMinutes={match.both_active_call_minutes}
             successMinutes={match.success_minutes}
-            progressTokens={match.progress_tokens}
-            bothPartnersMessaged={match.both_partners_messaged}
-            lastCallMinutes={match.last_call_minutes}
-            lastCallWithinWeek={match.last_call_within_week}
-            minutesStale={match.minutes_stale}
+            progressNudge={match.progress_nudge}
             unreadCount={match.chat?.unread_count}
           />
         ))
@@ -243,7 +206,7 @@ function PartnerProfiles({
       {previewMatch &&
         NUDGE_PREVIEWS.map(preview => (
           <ProfileCard
-            key={`nudge-preview-${preview.key}`}
+            key={`nudge-preview-${preview.nudge}`}
             userPk={previewMatch.partner.id}
             profile={previewMatch.partner}
             isDeleted={false}
@@ -256,11 +219,7 @@ function PartnerProfiles({
             chatId={previewMatch.chatId}
             bothActiveCallMinutes={preview.minutes}
             successMinutes={previewMatch.success_minutes ?? 300}
-            progressTokens={preview.tokens}
-            bothPartnersMessaged={preview.bothMessaged}
-            lastCallMinutes={preview.lastCallMinutes}
-            lastCallWithinWeek={preview.lastCallWithinWeek}
-            minutesStale={preview.minutesStale}
+            progressNudge={preview.nudge}
             forceProgressPanel
           />
         ))}

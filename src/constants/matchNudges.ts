@@ -1,189 +1,61 @@
-import {
-  CalendarIcon,
-  ClockIcon,
-  FlameIcon,
-  HeartIcon,
-  QuestionIcon,
-  StarIcon,
-} from '@a-little-world/little-world-design-system';
-import { TFunction } from 'i18next';
-
-/** User-facing goal. The next band uses the "keep talking" line. */
-const GOAL_TOKENS = 10;
-
-export type NudgeIcon = typeof StarIcon;
+/**
+ * Presentation for the partner-card progress nudge.
+ *
+ * The backend decides which nudge applies and sends its key as `progress_nudge`
+ * (see `management/match_nudges.py`). This file only maps that key to a tone,
+ * an icon and a locale key. It has no imports so it can be unit-tested with
+ * `node --test`.
+ */
 
 export type NudgeTone = 'success' | 'motivational' | 'informational';
 
+export type NudgeIconName =
+  | 'calendar'
+  | 'clock'
+  | 'flame'
+  | 'heart'
+  | 'question'
+  | 'star';
+
 export interface Nudge {
   tone: NudgeTone;
-  text: string;
-  Icon: NudgeIcon;
+  icon: NudgeIconName;
+  /** Locale key under `profile_card.nudge`. */
+  textKey: string;
 }
 
-/** Column H (short lead) and column J (sentence), shown as one line. */
-function nudgeCopy(
-  t: TFunction,
-  key: string,
-  values?: { name?: string; minutes?: number },
-): string {
-  const body = values
-    ? t(`profile_card.nudge.${key}`, values)
-    : t(`profile_card.nudge.${key}`);
-  return `${t(`profile_card.nudge.${key}_lead`)} ${body}`;
+const NUDGES = {
+  goal: { tone: 'informational', icon: 'question' },
+  schedule: { tone: 'motivational', icon: 'calendar' },
+  short_call: { tone: 'informational', icon: 'clock' },
+  band_1: { tone: 'success', icon: 'star' },
+  band_2: { tone: 'motivational', icon: 'flame' },
+  band_3: { tone: 'success', icon: 'star' },
+  band_4: { tone: 'motivational', icon: 'heart' },
+  band_5: { tone: 'success', icon: 'heart' },
+  band_6: { tone: 'motivational', icon: 'clock' },
+  band_7: { tone: 'success', icon: 'heart' },
+  band_8: { tone: 'motivational', icon: 'flame' },
+  band_9: { tone: 'motivational', icon: 'star' },
+  band_10: { tone: 'success', icon: 'heart' },
+  beyond_goal: { tone: 'success', icon: 'flame' },
+  stale: { tone: 'motivational', icon: 'calendar' },
+  recent_hour: { tone: 'success', icon: 'clock' },
+  recent_long: { tone: 'success', icon: 'heart' },
+} satisfies Record<string, Omit<Nudge, 'textKey'>>;
+
+export type NudgeKey = keyof typeof NUDGES;
+
+export const NUDGE_KEYS = Object.keys(NUDGES) as NudgeKey[];
+
+/** Shown when the key is missing (older backend) or unknown (newer backend). */
+const FALLBACK_KEY: NudgeKey = 'goal';
+
+function isNudgeKey(key: string): key is NudgeKey {
+  return Object.prototype.hasOwnProperty.call(NUDGES, key);
 }
 
-interface NudgeContext {
-  t: TFunction;
-  minutes: number;
-  partnerName: string;
-  /** Most recent qualifying call. Absent when the pair has never had one. */
-  lastCallMinutes?: number | null;
-  /** That call ended within the last seven days. */
-  lastCallWithinWeek?: boolean;
-  /** Fifteen days with no new mutual minutes. */
-  minutesStale?: boolean;
-}
-
-const NUDGES: Record<number, (ctx: NudgeContext) => Nudge> = {
-  1: ({ t, minutes }) => ({
-    tone: 'success',
-    text: nudgeCopy(t, '1', { minutes }),
-    Icon: StarIcon,
-  }),
-  2: ({ t }) => ({
-    tone: 'motivational',
-    text: nudgeCopy(t, '2'),
-    Icon: FlameIcon,
-  }),
-  3: ({ t }) => ({
-    tone: 'success',
-    text: nudgeCopy(t, '3'),
-    Icon: StarIcon,
-  }),
-  4: ({ t }) => ({
-    tone: 'motivational',
-    text: nudgeCopy(t, '4'),
-    Icon: HeartIcon,
-  }),
-  5: ({ t }) => ({
-    tone: 'success',
-    text: nudgeCopy(t, '5'),
-    Icon: HeartIcon,
-  }),
-  6: ({ t }) => ({
-    tone: 'motivational',
-    text: nudgeCopy(t, '6'),
-    Icon: ClockIcon,
-  }),
-  7: ({ t }) => ({
-    tone: 'success',
-    text: nudgeCopy(t, '7'),
-    Icon: HeartIcon,
-  }),
-  8: ({ t }) => ({
-    tone: 'motivational',
-    text: nudgeCopy(t, '8'),
-    Icon: FlameIcon,
-  }),
-  9: ({ t }) => ({
-    tone: 'motivational',
-    text: nudgeCopy(t, '9'),
-    Icon: StarIcon,
-  }),
-  10: ({ t }) => ({
-    tone: 'success',
-    text: nudgeCopy(t, '10'),
-    Icon: HeartIcon,
-  }),
-};
-
-/**
- * A call under the first token band wins over the "set a meeting" prompt:
- * they have already talked. The meeting prompt and the goal line are for
- * before any mutual call, and stay hidden while the card requires minutes.
- */
-export function resolveNudge(
-  tokens: number | undefined,
-  bothPartnersMessaged: boolean,
-  ctx: NudgeContext,
-): Nudge {
-  const {
-    t,
-    minutes,
-    partnerName,
-    lastCallMinutes,
-    lastCallWithinWeek,
-    minutesStale,
-  } = ctx;
-
-  // A quiet stretch, or a long call this week, replaces the token-band line.
-  if (minutesStale) {
-    return {
-      tone: 'motivational',
-      text: nudgeCopy(t, 'stale', { name: partnerName }),
-      Icon: CalendarIcon,
-    };
-  }
-
-  if (
-    lastCallWithinWeek &&
-    lastCallMinutes != null &&
-    lastCallMinutes >= 60 &&
-    lastCallMinutes < 120
-  ) {
-    return {
-      tone: 'success',
-      text: nudgeCopy(t, 'recent_hour'),
-      Icon: ClockIcon,
-    };
-  }
-
-  if (lastCallWithinWeek && lastCallMinutes != null && lastCallMinutes >= 120) {
-    return {
-      tone: 'success',
-      text: nudgeCopy(t, 'recent_long'),
-      Icon: HeartIcon,
-    };
-  }
-
-  if (tokens == null) {
-    return {
-      tone: 'informational',
-      text: nudgeCopy(t, 'goal'),
-      Icon: QuestionIcon,
-    };
-  }
-
-  if (tokens <= 0) {
-    if (minutes > 0) {
-      return {
-        tone: 'informational',
-        text: nudgeCopy(t, 'short_call'),
-        Icon: ClockIcon,
-      };
-    }
-    if (bothPartnersMessaged) {
-      return {
-        tone: 'motivational',
-        text: nudgeCopy(t, 'schedule', { name: partnerName }),
-        Icon: CalendarIcon,
-      };
-    }
-    return {
-      tone: 'informational',
-      text: nudgeCopy(t, 'goal'),
-      Icon: QuestionIcon,
-    };
-  }
-
-  if (tokens > GOAL_TOKENS) {
-    return {
-      tone: 'success',
-      text: nudgeCopy(t, '11'),
-      Icon: FlameIcon,
-    };
-  }
-
-  return NUDGES[tokens](ctx);
+export function resolveNudge(key: string | null | undefined): Nudge {
+  const resolved = key && isNudgeKey(key) ? key : FALLBACK_KEY;
+  return { ...NUDGES[resolved], textKey: `profile_card.nudge.${resolved}` };
 }

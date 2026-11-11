@@ -212,7 +212,7 @@ export const PartnerPill = styled.div`
   align-items: center;
   justify-content: center;
   max-width: 100%;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
+  gap: ${({ theme }) => theme.spacing.xxxsmall};
   padding: ${({ theme }) =>
     `calc(${theme.spacing.xxxsmall} + ${theme.spacing.xxxxsmall} / 2) ${theme.spacing.xsmall}`};
   border-radius: ${({ theme }) => theme.radius.massive};
@@ -738,17 +738,18 @@ export const SplitSection = styled.div`
   `}
 `;
 
-export const SplitColumn = styled.div`
+export const SplitColumn = styled.div<{ $singleQuote?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) =>
     `calc(${theme.spacing.small} + ${theme.spacing.xxxxsmall})`};
   min-width: 0;
 
-  ${({ theme }) => css`
+  ${({ theme, $singleQuote }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       flex: 1;
       gap: ${theme.spacing.medium};
+      padding-top: ${$singleQuote ? theme.spacing.large : '0'};
     }
   `}
 `;
@@ -798,23 +799,11 @@ export const QuoteCard = styled(Card)`
   `}
 `;
 
-export const QuoteMark = styled.span`
-  display: flex;
-  align-items: flex-end;
+export const QuoteMark = styled(Text)`
   color: ${({ theme }) => theme.color.text.highlight};
-  font-family: 'Signika Negative', sans-serif;
-  font-size: 2.5rem;
-  font-weight: 600;
-  line-height: 1;
-  /* „ sits on the baseline; keep only the lower half of the em-box. */
-  height: 0.55em;
-  overflow: hidden;
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.small}) {
-      font-size: 3rem;
-    }
-  `}
+  line-height: 0.75;
+  margin: 0;
+  margin-top: -16px;
 `;
 
 export const QuoteText = styled(Text).attrs({

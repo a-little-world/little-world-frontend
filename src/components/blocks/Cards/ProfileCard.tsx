@@ -81,11 +81,7 @@ interface ProfileCardProps {
   unreadCount?: number;
   bothActiveCallMinutes?: number;
   successMinutes?: number;
-  progressTokens?: number;
-  bothPartnersMessaged?: boolean;
-  lastCallMinutes?: number | null;
-  lastCallWithinWeek?: boolean;
-  minutesStale?: boolean;
+  progressNudge?: string | null;
   /** Testing only: show the progress panel even with no call time. */
   forceProgressPanel?: boolean;
 }
@@ -256,11 +252,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   unreadCount: unreadCountProp,
   bothActiveCallMinutes,
   successMinutes,
-  progressTokens,
-  bothPartnersMessaged,
-  lastCallMinutes,
-  lastCallWithinWeek,
-  minutesStale,
+  progressNudge,
   forceProgressPanel = false,
 }) => {
   const { t } = useTranslation();
@@ -289,7 +281,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     !isDeleted &&
     !isSelf &&
     !onProfile &&
-    (callMinutes > 0 || forceProgressPanel),
+    forceProgressPanel,
   );
 
   return (
@@ -463,12 +455,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <ProgressPanel
           minutes={callMinutes}
           max={successMinutes}
-          tokens={progressTokens}
-          bothPartnersMessaged={bothPartnersMessaged}
-          partnerName={profile.first_name}
-          lastCallMinutes={lastCallMinutes}
-          lastCallWithinWeek={lastCallWithinWeek}
-          minutesStale={minutesStale}
+          nudgeKey={progressNudge}
         />
       )}
     </StyledProfileCard>

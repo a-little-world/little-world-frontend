@@ -1,35 +1,44 @@
 import React from 'react';
 
 import {
+  CalendarIcon,
+  ClockIcon,
+  FlameIcon,
+  HeartIcon,
   ProgressBar,
   ProgressBarSizes,
   ProgressBarVariations,
+  QuestionIcon,
+  StarIcon,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
-import { resolveNudge, type NudgeTone } from '../../../constants/matchNudges';
+import {
+  resolveNudge,
+  type NudgeIconName,
+  type NudgeTone,
+} from '../../../constants/matchNudges';
 
 /** Fallback only: the backend sends the goal as `success_minutes`. */
 const DEFAULT_MAX_MINUTES = 300;
 
+const NUDGE_ICONS: Record<NudgeIconName, typeof StarIcon> = {
+  calendar: CalendarIcon,
+  clock: ClockIcon,
+  flame: FlameIcon,
+  heart: HeartIcon,
+  question: QuestionIcon,
+  star: StarIcon,
+};
+
 export interface ProgressPanelProps {
   minutes: number;
   max?: number;
-  /** From `progress_tokens`. Omitted responses fall back to the goal line. */
-  tokens?: number;
-  /** From `both_partners_messaged`. */
-  bothPartnersMessaged?: boolean;
-  /** Partner first name, for the "send some times" line. */
-  partnerName?: string;
-  /** Minutes of the latest qualifying call. */
-  lastCallMinutes?: number | null;
-  /** That call ended within the last seven days. */
-  lastCallWithinWeek?: boolean;
-  /** Fifteen days with no new mutual minutes. */
-  minutesStale?: boolean;
+  /** From `progress_nudge`. Missing or unknown keys fall back to the goal line. */
+  nudgeKey?: string | null;
 }
 
 const Panel = styled.div<{ $tone: NudgeTone }>`
@@ -86,26 +95,13 @@ const NudgeLine = styled(Text)`
 const ProgressPanel: React.FC<ProgressPanelProps> = ({
   minutes,
   max,
-  tokens,
-  bothPartnersMessaged = false,
-  partnerName = '',
-  lastCallMinutes,
-  lastCallWithinWeek = false,
-  minutesStale = false,
+  nudgeKey,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const safeMax = max && max > 0 ? Math.round(max) : DEFAULT_MAX_MINUTES;
-  const value = Math.min(Math.max(minutes, 0), safeMax);
-  const nudge = resolveNudge(tokens, bothPartnersMessaged, {
-    t,
-    minutes: value,
-    partnerName,
-    lastCallMinutes,
-    lastCallWithinWeek,
-    minutesStale,
-  });
-  const { Icon } = nudge;
+  const nudge = resolveNudge(nudgeKey);
+  const Icon = NUDGE_ICONS[nudge.icon];
   let iconColor = theme.color.text.info;
   if (nudge.tone === 'success') iconColor = theme.color.text.success;
   if (nudge.tone === 'motivational') iconColor = theme.color.text.highlight;
@@ -113,10 +109,11 @@ const ProgressPanel: React.FC<ProgressPanelProps> = ({
   return (
     <Panel $tone={nudge.tone}>
       <ProgressBar
+        allowOverflow
         showScale={false}
         showValueInBar
         max={safeMax}
-        value={value}
+        value={minutes}
         size={ProgressBarSizes.Small}
         variation={ProgressBarVariations.Scale}
         endLabel={t('profile_card.minutes_short', { count: safeMax })}
@@ -125,7 +122,9 @@ const ProgressPanel: React.FC<ProgressPanelProps> = ({
         <NudgeIconWrapper aria-hidden="true">
           <Icon width={16} height={16} color={iconColor} label="" />
         </NudgeIconWrapper>
-        <NudgeLine type={TextTypes.Body6}>{nudge.text}</NudgeLine>
+        <NudgeLine type={TextTypes.Body6}>
+          {t(nudge.textKey, { minutes })}
+        </NudgeLine>
       </NudgeRow>
     </Panel>
   );

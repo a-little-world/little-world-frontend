@@ -403,6 +403,13 @@ const PartnerLandingPage = () => {
     content: t(`partner_landing.faq.${key}.answer`),
   }));
 
+  const quotes = QUOTES.filter(
+    quote =>
+      quote.key !== 'sabine' ||
+      !partner.name ||
+      partner.name.toLowerCase() === 'accenture',
+  );
+
   return (
     <CustomThemeProvider
       defaultMode={ThemeVariants.light}
@@ -514,10 +521,10 @@ const PartnerLandingPage = () => {
                       ))}
                     </BenefitList>
                   </SplitColumn>
-                  <SplitColumn>
-                    {QUOTES.map(quote => (
+                  <SplitColumn $singleQuote={quotes.length === 1}>
+                    {quotes.map(quote => (
                       <QuoteCard key={quote.key}>
-                        <QuoteMark aria-hidden="true">„</QuoteMark>
+                        <QuoteMark type={TextTypes.Heading3}>„</QuoteMark>
                         <QuoteText>
                           {t(`partner_landing.quote.${quote.key}.text`)}
                         </QuoteText>
