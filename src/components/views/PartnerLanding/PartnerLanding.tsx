@@ -405,9 +405,7 @@ const PartnerLandingPage = () => {
 
   const quotes = QUOTES.filter(
     quote =>
-      quote.key !== 'sabine' ||
-      !partner.name ||
-      partner.name.toLowerCase() === 'accenture',
+      quote.key !== 'sabine' || partner.name.toLowerCase() !== 'capgemini',
   );
 
   return (

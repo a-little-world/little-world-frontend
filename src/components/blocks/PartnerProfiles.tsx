@@ -19,7 +19,6 @@ import {
   LANGUAGES,
   USER_TYPES,
 } from '../../constants';
-import type { NudgeKey } from '../../constants/matchNudges';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import PlusImage from '../../images/plus-with-circle.svg';
 import CoursePromoCard from './Cards/CoursePromoCard';
@@ -31,21 +30,6 @@ import ProfileCard, {
 } from './Cards/ProfileCard';
 import { SearchingCard } from './Cards/SearchingCard';
 import UpdateSearchStateCard from './Cards/UpdateSearchStateCard';
-
-/** Temporary: one copy of the first partner card per nudge. Remove after review. */
-const NUDGE_PREVIEWS: { nudge: NudgeKey; minutes: number }[] = [
-  { nudge: 'stale', minutes: 90 },
-  { nudge: 'recent_hour', minutes: 90 },
-  { nudge: 'recent_long', minutes: 150 },
-  { nudge: 'goal', minutes: 0 },
-  { nudge: 'schedule', minutes: 0 },
-  { nudge: 'short_call', minutes: 15 },
-  ...Array.from({ length: 10 }, (_, i) => ({
-    nudge: `band_${i + 1}` as NudgeKey,
-    minutes: (i + 1) * 30 + (i === 0 ? 15 : 0),
-  })),
-  { nudge: 'beyond_goal', minutes: 330 },
-];
 
 const FindNewPartner = styled.button<{ $hasMatch: boolean }>`
   text-align: center;
@@ -174,10 +158,6 @@ function PartnerProfiles({
 
   if (!user) return null;
 
-  const previewMatch = matchesDisplay?.find(
-    match => !match.partner.isSupport && !match.partner.isDeleted,
-  );
-
   return (
     <Matches>
       {matchesLoading ? (
@@ -203,26 +183,6 @@ function PartnerProfiles({
           />
         ))
       )}
-      {previewMatch &&
-        NUDGE_PREVIEWS.map(preview => (
-          <ProfileCard
-            key={`nudge-preview-${preview.nudge}`}
-            userPk={previewMatch.partner.id}
-            profile={previewMatch.partner}
-            isDeleted={false}
-            isSelf={false}
-            isMatch
-            matchId={previewMatch.id}
-            openPartnerModal={setPartnerActionData}
-            isOnline={previewMatch.partner.isOnline}
-            isSupport={false}
-            chatId={previewMatch.chatId}
-            bothActiveCallMinutes={preview.minutes}
-            successMinutes={previewMatch.success_minutes ?? 300}
-            progressNudge={preview.nudge}
-            forceProgressPanel
-          />
-        ))}
       {!isLearnerOutsideGermany && renderStatusCard()}
       {currentPage === 1 && <CoursePromoCard />}
 

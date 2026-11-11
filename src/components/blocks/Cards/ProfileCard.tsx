@@ -82,8 +82,6 @@ interface ProfileCardProps {
   bothActiveCallMinutes?: number;
   successMinutes?: number;
   progressNudge?: string | null;
-  /** Testing only: show the progress panel even with no call time. */
-  forceProgressPanel?: boolean;
 }
 
 export const StyledProfileCard = styled(Card)<{
@@ -253,7 +251,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   bothActiveCallMinutes,
   successMinutes,
   progressNudge,
-  forceProgressPanel = false,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -276,12 +273,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   else if (isDeleted) description = t('profile.deleted_description');
   const callMinutes = Math.max(0, Math.round(bothActiveCallMinutes ?? 0));
   const showPanel = Boolean(
-    isMatch &&
-    !isSupport &&
-    !isDeleted &&
-    !isSelf &&
-    !onProfile &&
-    forceProgressPanel,
+    isMatch && !isSupport && !isDeleted && !isSelf && !onProfile,
   );
 
   return (
