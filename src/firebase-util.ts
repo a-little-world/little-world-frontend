@@ -6,7 +6,6 @@ import {
 } from '@firebase/app';
 import { getMessaging, getToken } from '@firebase/messaging';
 
-import { mutateUserData } from './api';
 import { FIREBASE_ENDPOINT } from './api/endpoints';
 import { apiFetch } from './api/helpers';
 import { environment } from './environment';
@@ -145,18 +144,6 @@ export async function disableFirebase() {
   }
 
   await unregisterFirebaseDeviceToken();
-}
-
-export async function enableNotificationsInProfile(
-  onSuccess: () => void = () => {},
-  onFailure: () => void = () => {},
-) {
-  await mutateUserData(
-    { push_notifications_enabled: true },
-    onSuccess,
-    onFailure,
-  );
-  // TODO: mutate user profile
 }
 
 export async function sendFirebaseTestNotification(
