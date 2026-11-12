@@ -28,6 +28,7 @@ import { onFormError, registerInput } from '../../helpers/form';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
+import LoadingScreen from '../atoms/LoadingScreen';
 import PageHeader from '../atoms/PageHeader';
 import ThemeSwitch from '../atoms/ThemeSwitch';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
@@ -315,6 +316,8 @@ function Settings() {
   const [editing, setEditing] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   useSystemModalBlocker(Boolean(editing) || showConfirm, 'settings-modal');
+
+  if (!profile) return <LoadingScreen />;
 
   const items = [
     // with ordering
