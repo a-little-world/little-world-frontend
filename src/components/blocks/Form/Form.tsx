@@ -17,6 +17,7 @@ import {
   EDIT_FORM_ROUTE,
   getAppRoute,
   PROFILE_ROUTE,
+  sanitizeNext,
   USER_FORM_PARTNER_1,
 } from '../../../router/routes';
 import {
@@ -82,6 +83,14 @@ const Form = () => {
     });
   const isLastStep = step === totalSteps;
 
+  // Carry a deep link (`/login?next=`) through the multi-step user form so the
+  // destination the user followed is not lost after the required entry forms.
+  const nextTarget = sanitizeNext(
+    new URLSearchParams(location.search).get('next'),
+  );
+  const withNext = (route: string) =>
+    nextTarget ? `${route}?next=${encodeURIComponent(nextTarget)}` : route;
+
   const onFormSuccess = async response => {
     let updatedUser = {
       ...userData,
@@ -93,13 +102,21 @@ const Form = () => {
 
     await mutateUserDataApi(updatedUser);
 
-    await navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage));
+    const defaultTarget = getAppRoute(isEditPath ? PROFILE_ROUTE : nextPage);
+    // The user form is the last required gate for learners (their nextPage is
+    // the app home): send them on to the deep link they originally followed.
+    // Volunteers still go through onboarding, which is a required gate itself.
+    const target =
+      !isEditPath && isLastStep && nextTarget && !nextPage
+        ? nextTarget
+        : withNext(defaultTarget);
+    await navigate(target);
   };
 
   const handleBackClick = e => {
     e.preventDefault();
     reset({ values: {} });
-    navigate(getAppRoute(isEditPath ? PROFILE_ROUTE : prevPage));
+    navigate(withNext(getAppRoute(isEditPath ? PROFILE_ROUTE : prevPage)));
   };
 
   const onError = e => {
