@@ -78,6 +78,8 @@ import {
 
 const EMPTY_MESSAGE_LIST: [] = [];
 
+const ATTACHMENTS_UNLOCK_POLL_MS = 10000;
+
 const Chat = ({
   chatId,
   inCall = false,
@@ -100,6 +102,12 @@ const Chat = ({
     {
       revalidateOnMount: true,
       revalidateOnFocus: true,
+      // Attachments open as soon as the partner joins the first call. In a call, poll until
+      // the server says so, then stop.
+      refreshInterval: latest =>
+        inCall && latest?.attachments_allowed === false
+          ? ATTACHMENTS_UNLOCK_POLL_MS
+          : 0,
     },
   );
 
@@ -117,6 +125,9 @@ const Chat = ({
   const messages = chatMessages?.results ?? EMPTY_MESSAGE_LIST;
   const messagesResult = messages;
   const isUnmatched = activeChat?.is_unmatched;
+  // The server refuses files until both people have been in a call together (never for
+  // support chats). Hidden until the chat has loaded and says otherwise.
+  const attachmentsAllowed = activeChat?.attachments_allowed === true;
 
   const [messagesSent, setMessagesSent] = useState(0);
   const onError = () => navigate(getAppRoute(MESSAGES_ROUTE));
@@ -276,13 +287,24 @@ const Chat = ({
   };
 
   const handleAttachmentClick = () => {
-    fileInputRef.current.click();
+    fileInputRef.current?.click();
   };
+
+  // Chat is not remounted when chatId changes, so a file picked in one conversation would
+  // otherwise follow the user into the next. Only the file is cleared, not typed text.
+  useEffect(() => {
+    setSelectedFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, [chatId]);
+
+  // A file only counts while attachments are allowed here. Otherwise Send would take the
+  // file path, get a 403 and drop the text, with no visible control left to remove the file.
+  const fileToSend = attachmentsAllowed ? selectedFile : null;
 
   const clearSelectedFile = () => {
     setSelectedFile(null);
     reset();
-    fileInputRef.current.value = ''; // Reset file input
+    if (fileInputRef.current) fileInputRef.current.value = ''; // Reset file input (absent while attachments are closed)
   };
 
   const onMessageSent = data => {
@@ -296,9 +318,9 @@ const Chat = ({
   const onSendMessage = ({ text }) => {
     setIsSubmitting(true);
 
-    if (selectedFile) {
+    if (fileToSend) {
       sendFileAttachmentMessage({
-        file: selectedFile,
+        file: fileToSend,
         text,
         chatId,
         onError: onSubmitError,
@@ -443,19 +465,21 @@ const Chat = ({
           ))}
       </Messages>
       <WriteSection onSubmit={handleSubmit(onSendMessage)}>
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileSelect}
-          style={{ display: 'none' }}
-          accept={AcceptedFiles.Generic}
-        />
+        {attachmentsAllowed && (
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileSelect}
+            style={{ display: 'none' }}
+            accept={AcceptedFiles.Generic}
+          />
+        )}
 
         <MessageBox
           {...registerInput({
             register,
             name: 'text',
-            options: { required: !selectedFile },
+            options: { required: !fileToSend },
           })}
           key={`message ${messagesSent}`}
           id="text"
@@ -470,48 +494,50 @@ const Chat = ({
           size={TextAreaSize.Xsmall}
           disabled={isUnmatched}
         />
-        {!!selectedFile && (
+        {!!fileToSend && (
           <Attachment>
             <AttachmentIcon
-              label={`Selected file: ${selectedFile.name}`}
+              label={`Selected file: ${fileToSend.name}`}
               height={40}
               width={40}
             />
             <UnreadDot count={1} height="18px" top="0px" right="22px" />
           </Attachment>
         )}
-        <AttachmentButton
-          size={ButtonSizes.Large}
-          type="button"
-          variation={ButtonVariations.Circle}
-          appearance={ButtonAppearance.Secondary}
-          backgroundColor={
-            selectedFile
-              ? theme.color.status.error
-              : theme.color.surface.primary
-          }
-          borderColor={theme.color.text.title}
-          color={
-            selectedFile ? theme.color.text.reversed : theme.color.text.title
-          }
-          onClick={selectedFile ? clearSelectedFile : handleAttachmentClick}
-          disabled={isUnmatched}
-        >
-          {selectedFile ? (
-            <CloseIcon
-              label={t('attachment.remove_btn')}
-              onClick={clearSelectedFile}
-              width="20"
-              height="20"
-            />
-          ) : (
-            <PlusIcon
-              label={t('attachment.upload_btn')}
-              width="20"
-              height="20"
-            />
-          )}
-        </AttachmentButton>
+        {attachmentsAllowed && (
+          <AttachmentButton
+            size={ButtonSizes.Large}
+            type="button"
+            variation={ButtonVariations.Circle}
+            appearance={ButtonAppearance.Secondary}
+            backgroundColor={
+              selectedFile
+                ? theme.color.status.error
+                : theme.color.surface.primary
+            }
+            borderColor={theme.color.text.title}
+            color={
+              selectedFile ? theme.color.text.reversed : theme.color.text.title
+            }
+            onClick={selectedFile ? clearSelectedFile : handleAttachmentClick}
+            disabled={isUnmatched}
+          >
+            {selectedFile ? (
+              <CloseIcon
+                label={t('attachment.remove_btn')}
+                onClick={clearSelectedFile}
+                width="20"
+                height="20"
+              />
+            ) : (
+              <PlusIcon
+                label={t('attachment.upload_btn')}
+                width="20"
+                height="20"
+              />
+            )}
+          </AttachmentButton>
+        )}
         <SendButton
           size={ButtonSizes.Large}
           type="submit"

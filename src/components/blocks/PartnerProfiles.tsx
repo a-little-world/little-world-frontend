@@ -142,6 +142,10 @@ function PartnerProfiles({
       return <SearchingCard setShowCancel={setShowCancel} />;
     }
 
+    if (user?.canSearchAgain === false) {
+      return null;
+    }
+
     return (
       <FindNewPartner
         type="button"
