@@ -178,6 +178,7 @@ function PartnerProfiles({
             chatId={match.chatId}
             bothActiveCallMinutes={match.both_active_call_minutes}
             successMinutes={match.success_minutes}
+            progressNudge={match.progress_nudge}
             unreadCount={match.chat?.unread_count}
           />
         ))
