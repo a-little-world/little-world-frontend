@@ -10,7 +10,12 @@ import {
 } from '../features/stores';
 import useNativeStore from '../features/stores/nativeStore';
 import { LOGIN_ROUTE } from '../router/routes';
-import { ApiError, ApiFetchOptions, RequestInit } from './types';
+import {
+  ApiError,
+  ApiFetchOptions,
+  RequestInit,
+  SerializedFormDataEntry,
+} from './types';
 
 export const USER_ENDPOINT = '/api/user';
 export const IS_AUTHENTICATED_ENDPOINT = '/api/user/authenticated';
@@ -18,6 +23,11 @@ export const IS_AUTHENTICATED_ENDPOINT = '/api/user/authenticated';
 export function getEffectiveBackendUrl(): string {
   return debugStore.getState().backendUrlOverride ?? environment.backendUrl;
 }
+
+export const toBackendUrl = (url?: string | null) =>
+  environment.isNative && url?.startsWith('/')
+    ? `${getEffectiveBackendUrl()}${url}`
+    : (url ?? undefined);
 
 export function useEffectiveBackendUrl(): string {
   const { backendUrlOverride } = useDebugStore();
@@ -161,13 +171,42 @@ async function apiFetchWeb<T = any>(
   }
 }
 
-export function apiFetch<T = any>(
+const readAsBase64 = (file: Blob) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve((reader.result as string).split(',')[1]);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+
+const serializeFormData = (formData: FormData) => {
+  const entries: Promise<SerializedFormDataEntry>[] = [];
+  formData.forEach((value, key) =>
+    entries.push(
+      typeof value === 'string'
+        ? Promise.resolve([key, value])
+        : readAsBase64(value).then(base64 => [
+            key,
+            { base64, name: value.name, type: value.type },
+          ]),
+    ),
+  );
+  return Promise.all(entries);
+};
+
+export async function apiFetch<T = any>(
   endpoint: string,
   options: ApiFetchOptions = {},
 ): Promise<T> {
-  const fetcher = environment.isNative
-    ? useNativeStore.getState().apiFetchNative
-    : apiFetchWeb;
+  if (!environment.isNative) return apiFetchWeb(endpoint, options);
 
-  return fetcher(endpoint, options);
+  const { apiFetchNative } = useNativeStore.getState();
+  if (options.body instanceof FormData) {
+    const { body, ...rest } = options;
+    return apiFetchNative(endpoint, {
+      ...rest,
+      formData: await serializeFormData(body),
+    });
+  }
+  return apiFetchNative(endpoint, options);
 }
