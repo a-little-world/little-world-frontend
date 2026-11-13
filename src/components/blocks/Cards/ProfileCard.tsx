@@ -81,6 +81,7 @@ interface ProfileCardProps {
   unreadCount?: number;
   bothActiveCallMinutes?: number;
   successMinutes?: number;
+  progressNudge?: string | null;
 }
 
 export const StyledProfileCard = styled(Card)<{
@@ -116,6 +117,7 @@ export const StyledProfileCard = styled(Card)<{
     min-height: ${$isSelf || $onProfile ? 'initial' : PROFILE_CARD_HEIGHT};
 
     @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.medium};
       height: ${$isSelf || $onProfile ? 'initial' : PROFILE_CARD_HEIGHT};
     }
   `};
@@ -248,6 +250,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   unreadCount: unreadCountProp,
   bothActiveCallMinutes,
   successMinutes,
+  progressNudge,
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -270,12 +273,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   else if (isDeleted) description = t('profile.deleted_description');
   const callMinutes = Math.max(0, Math.round(bothActiveCallMinutes ?? 0));
   const showPanel = Boolean(
-    isMatch &&
-    !isSupport &&
-    !isDeleted &&
-    !isSelf &&
-    !onProfile &&
-    callMinutes > 0,
+    isMatch && !isSupport && !isDeleted && !isSelf && !onProfile,
   );
 
   return (
@@ -446,7 +444,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </Actions>
       )}
       {showPanel && (
-        <ProgressPanel minutes={callMinutes} max={successMinutes} />
+        <ProgressPanel
+          minutes={callMinutes}
+          max={successMinutes}
+          nudgeKey={progressNudge}
+        />
       )}
     </StyledProfileCard>
   );
