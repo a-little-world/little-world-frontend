@@ -90,7 +90,8 @@ export const ChatContainer = styled.div`
 
 export const WriteSection = styled.form`
   position: relative;
-  z-index: 1; // prevents overlap issues with messages
+  z-index: ${({ theme }) =>
+    theme.zIndex.above}; // prevents overlap issues with messages
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -133,7 +134,7 @@ export const MessageGroup = styled.div`
 export const StickyDateHeader = styled.div<{ $isSticky: boolean }>`
   position: ${({ $isSticky }) => ($isSticky ? 'sticky' : 'relative')};
   top: ${({ $isSticky }) => ($isSticky ? '0' : 'auto')};
-  z-index: 1;
+  z-index: ${({ theme }) => theme.zIndex.above};
   background: ${({ theme }) => theme.color.surface.primary};
   padding: ${({ theme }) => theme.spacing.xxsmall}
     ${({ theme }) => theme.spacing.small};
