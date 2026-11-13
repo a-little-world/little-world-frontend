@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+
 import {
   CustomThemeProvider,
   GlobalStyles,
@@ -10,7 +12,9 @@ import {
   Outlet,
   ScrollRestoration,
 } from 'react-router-dom';
+import useSWR from 'swr';
 
+import { IS_AUTHENTICATED_ENDPOINT } from '../api/endpoints';
 import RouterError from '../components/blocks/ErrorView/ErrorView';
 import Form from '../components/blocks/Form/Form';
 import FormLayout from '../components/blocks/Layout/FormLayout';
@@ -43,11 +47,15 @@ import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
 import { environment } from '../environment';
+import useNotificationStore from '../features/stores/notification';
 import FireBase from '../Firebase';
+import { registerFirebaseDeviceToken } from '../firebase-util';
 import AuthGuard from '../guards/AuthGuard';
 import RouteGuard from '../guards/RouteGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
+import { retry } from '../helpers/retry';
 import useCalEmbed from '../hooks/useCalEmbed';
+import { registerInstallation } from '../installation-util';
 import WebsocketBridge from '../WebsocketBridge';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
@@ -114,6 +122,49 @@ export const Root = ({
 }) => {
   useErrorDebugBridge();
   useCalEmbed();
+
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
+  const pushAllowed = useNotificationStore(
+    s => s.deviceSupported && s.devicePermissionGranted,
+  );
+  const installationRef = useRef(undefined);
+  const registerDevice =
+    !standalone && !environment.isNative && isAuthenticated;
+
+  // installation once per login, cleared on logout so re-auth tries again
+  useEffect(() => {
+    if (!registerDevice) {
+      return undefined;
+    }
+    const controller = new AbortController();
+    installationRef.current = retry(
+      registerInstallation,
+      controller.signal,
+    ).then(
+      () => true,
+      () => false,
+    );
+    return () => {
+      controller.abort();
+      installationRef.current = undefined;
+    };
+  }, [registerDevice]);
+
+  // permission can be granted after login
+  useEffect(() => {
+    if (!registerDevice || !pushAllowed) {
+      return undefined;
+    }
+    const controller = new AbortController();
+    installationRef.current
+      .then(
+        installed =>
+          installed && retry(registerFirebaseDeviceToken, controller.signal),
+      )
+      .catch(() => {});
+    return () => controller.abort();
+  }, [registerDevice, pushAllowed]);
+
   return (
     <CustomThemeProvider defaultMode={getInitialTheme()}>
       <ToastProvider>
