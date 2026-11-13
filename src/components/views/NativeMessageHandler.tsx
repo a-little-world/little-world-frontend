@@ -18,6 +18,10 @@ import {
   DomCommunicationMessageFn,
   DomCommunicationResponse,
 } from '../../features/stores/receiveHandler';
+import {
+  handleNotificationClicked,
+  showNotificationToast,
+} from '../../hooks/useNotificationHandler';
 import useToast from '../../hooks/useToast';
 
 export interface NativeChallengeProofEvent {
@@ -26,6 +30,9 @@ export interface NativeChallengeProofEvent {
   timestamp: string;
   email: string;
 }
+
+const navigateTo = (path: string) =>
+  useNavigationStore.getState().navigate?.(path);
 
 // true if the back press was consumed
 function handleNativeBack(): boolean {
@@ -228,24 +235,33 @@ function NativeMessageHandler() {
 
           return response;
         }
-        case 'DISPLAY_NOTIFICATION': {
+        case 'NOTIFICATION_RECEIVED': {
           if (!requestId) {
             throw new Error('Received native message without request id');
           }
 
-          const { title, body, path } = payload;
-          const currentPath = window.location.hash.replace(/^#/, '') || '/';
+          showNotificationToast(
+            payload,
+            window.location.hash.replace(/^#/, '') || '/',
+            toast,
+            navigateTo,
+          );
 
-          if (path && path !== currentPath) {
-            toast.showToast({
-              title,
-              description: body,
-              duration: 3000,
-              onClick: path
-                ? () => useNavigationStore.getState().navigate?.(path)
-                : undefined,
-            });
+          const response: DomCommunicationResponse = { ok: true };
+          sendMessageToReactNative!({
+            action: 'RESPONSE',
+            requestId,
+            payload: response,
+          });
+
+          return response;
+        }
+        case 'NOTIFICATION_CLICKED': {
+          if (!requestId) {
+            throw new Error('Received native message without request id');
           }
+
+          handleNotificationClicked(payload, navigateTo);
 
           const response: DomCommunicationResponse = { ok: true };
           sendMessageToReactNative!({
