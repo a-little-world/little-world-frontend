@@ -1,305 +1,126 @@
 # Little World Frontend
 
-Thank you for your interest in contributing to our project! We value your effort and want to make the contribution process as smooth as possible. This guide will help you understand our workflow, coding standards, and best practices to ensure that your contributions are aligned with our project's goals and maintain high code quality.
+The Little World web app — and, when packaged, the webview of our React Native
+app ([little-world-native](https://github.com/a-little-world/little-world-native)).
 
-## Getting Started
+- **Web**: the website, built from this repo and deployed from the `prod` branch.
+- **Native webview**: this repo is published as the npm package `littleplanet`
+  (GitHub Package Registry, `pnpm publish --registry=https://npm.pkg.github.com`)
+  and rendered inside the mobile app.
 
-### Prerequisites
+This README is the short version. The details live in [`docs/`](docs/README.md).
 
-Before you begin, ensure you have met the following requirements:
-
-- Node.js installed (v14.x or higher)
-
-### Fork and Clone the Repository
-
-1. Fork the repository on GitHub.
-2. Clone your forked repository to your local machine:
-   ```bash
-   gh repo clone a-little-world/little-world-frontend
-   cd little-world-frontend
-   ```
-
-### Installing Dependencies
-
-Install the necessary dependencies using pnpm:
+## Quick start
 
 ```bash
+# prerequisites: Node 24 (see .nvmrc) and pnpm 10 (corepack enable)
 pnpm install
+pnpm exec webpack serve --mode development   # dev server on http://localhost:3000
+./schrodingers-nginx.sh                      # optional: nginx proxy on http://localhost:3333
 ```
 
-### Starting the local server
+Open <http://localhost:3333> (proxy) or <http://localhost:3000> (dev server).
+Note: `pnpm run dev` is currently broken (`webpack serveviews/index.js`) — see
+[docs/local-development.md](docs/local-development.md#install-and-run).
+The proxy exists because the backend sets cookies/CSRF tokens that only survive
+when frontend and API share one origin — see
+[docs/local-development.md](docs/local-development.md).
 
-#### Local dev with remote API server
+## Quality gates
+
+Run these before you push; CI runs the same commands on every pull request.
 
 ```bash
-pnpm run dev
-./schrodingers-nginx.sh
+pnpm run lint          # eslint ./src
+pnpm run format:check  # prettier --check ./src  (fix with pnpm run format:fix)
+pnpm test              # node --test 'src/**/*.test.ts'
+pnpm run build         # rollup bundle + type declarations
 ```
 
-### Testing Video Calls Locally
+Details, including what CI does and what to do when it fails:
+[docs/testing-and-ci.md](docs/testing-and-ci.md).
 
-To test our in-app video calls locally you need to:
-1) Add environment variables to `little-world-backend/envs/dev.env`:
-```
-DJ_LIVEKIT_API_KEY=REQUEST FROM TEAM
-DJ_LIVEKIT_API_SECRET=REQUEST FROM TEAM
-DJ_LIVEKIT_WEBHOOK_SECRET="secret"
-DJ_LIVEKIT_URL="https://littleworld-development-4tq43oit.livekit.cloud"
-```
+## Documentation
 
-2) Start the Backend server & Ngrok server
+| Document                                                 | What it answers                                                       |
+| -------------------------------------------------------- | --------------------------------------------------------------------- |
+| [docs/local-development.md](docs/local-development.md)    | How do I run this locally, and why is there an nginx proxy?            |
+| [docs/project-structure.md](docs/project-structure.md)    | Where do I put a new component / hook / helper / store?                |
+| [docs/design-system.md](docs/design-system.md)            | How do I use the design system, and how are **links** done?           |
+| [docs/data-and-state.md](docs/data-and-state.md)          | How do I call the API and cache the response?                          |
+| [docs/routing-and-i18n.md](docs/routing-and-i18n.md)      | How do I add a page, a route or a translation?                         |
+| [docs/testing-and-ci.md](docs/testing-and-ci.md)          | What do I have to verify, and what does CI check?                      |
 
-You will need to install ngrok and also create an account at https://ngrok.com/
-When you have an ngrok account you can [create your own static domain](https://dashboard.ngrok.com/get-started/setup/macos). 
-```
-brew install ngrok // if you don't have it already
-ngrok http --url=YOUR_STATIC_DOMAIN 8000
-```
+## Branching
 
-3) Go to livekit development dashboard and enter the callback url:
-https://YOUR_STATIC_DOMAIN.ngrok-free.app/api/livekit/webhook?secret=secret
+| Branch                | Purpose                                                            |
+| --------------------- | ------------------------------------------------------------------ |
+| `main`                | Development branch. Everything lands here via PR.                   |
+| `prod`                | Production. Merging here deploys the web app (and may release npm). |
+| `feature/<name>`      | New features / larger changes.                                     |
+| `fix/<issue>`         | Bug fixes.                                                         |
+| `chore/<chore>`       | Dependencies, tooling, chores.                                     |
 
-Now when you run the video calls locally they should work!
-Make sure the ngrok server is running - this is required for the webhooks to work!
+Work on a branch off `main`, open a PR **against `main`**, and only open a PR
+**against `prod`** when you want to release.
 
-ISSUE with (ngrok and recieving webhook calls)[https://stackoverflow.com/questions/73017353/how-to-bypass-ngrok-browser-warning]
+## Release process
 
-// More Info needed on how to handle webhooks
+1. Feature/fix work merges to `main`.
+2. A PR from `main` → `prod` is opened. The `Release` workflow runs on PRs
+   targeting `prod` and comments a package-version preview on the PR.
+3. The web app is deployed from `prod`.
+4. The npm package only reaches the native app when `package.json`'s version
+   changes. **Caveat:** the `Release` workflow only triggers on `pull_request`
+   events, while its publish/release steps are gated on
+   `github.ref == 'refs/heads/prod'` (which is `refs/pull/<n>/merge` for a PR).
+   So today the publish step does not actually run from this workflow — see
+   [docs/testing-and-ci.md](docs/testing-and-ci.md#release-and-publishing)
+   before relying on it; publishing may need to be run manually.
 
-## Branching Strategy
+Merging into `main` also notifies the native repo (`notify-native` workflow), so
+the mobile app can bump its submodule reference and open its own PR.
 
-Use the following branching strategy to manage your work:
-
-- **main**: The development branch. All merges into this branch should be through pull requests and must pass all tests.
-- **prod**: The production branch. This represents what is currently deployed in production and contains the latest stable release.
-- **feature/your-feature-name**: Feature-specific branches.
-- **fix/the-issue**: branches for fixing bugs.
-- **chore/the-chore**: branches for chores such as updating dependencies.
-
-To create a new feature branch:
+Version bumps use [Changesets](https://github.com/changesets/changesets):
 
 ```bash
-git checkout -b feature/your-feature-name main
+pnpm run changeset   # describe the change (patch/minor/major)
+pnpm run version     # apply: bumps package.json, updates changelog
 ```
 
-## Release Process
-
-### Why We Package This Frontend
-
-This frontend application is packaged and published as an npm package because it's consumed as a webview within our React Native mobile application. This approach allows us to:
-
-- **Maintain consistency**: Ensure the same UI/UX across web and mobile platforms
-- **Rapid updates**: Deploy frontend changes without requiring mobile app store updates
-- **Code sharing**: Reuse frontend components and logic in the mobile app
-- **Independent deployment**: Update the frontend independently of the mobile app release cycle
-
-**Related Repository**: [Little World React Native App](https://github.com/a-little-world/little-world-react-native)
-
-### Release Workflow
-
-Our release process is automated through GitHub Actions and follows this workflow:
-
-1. **Development**: Work happens on feature branches and gets merged to `main`
-2. **Testing**: Features are tested on the `main` branch
-3. **Production Release**: When ready for production:
-   - Create a Pull Request from `main` to `prod`
-   - The workflow automatically analyzes version changes
-   - PR comments show what will be published
-   - Upon merge to `prod`:
-     - Package is automatically published to npm (GitHub Package Registry)
-     - GitHub release is created with changelog information
-     - Mobile app can consume the updated package
-
-### Web Deployment vs Package Release
-
-**Important**: You can deploy changes to the web application without creating a new package release!
-
-- **Web Deployment**: Merge any changes to `prod` to deploy to web (versions unchanged)
-- **Package Release**: Only happens when you bump the version in `package.json`
-- **Mobile App Updates**: Only receive updates when package versions change
-
-This means you can:
-
-- Deploy bug fixes, UI improvements, and features to web users immediately
-- Control when mobile app users receive updates by managing package versions
-- Keep web and mobile releases in sync or independent as needed
-
-### Version Management
-
-- **Version Bumping**: Bump the version in `package.json` before merging to `prod`
-- **Automatic Publishing**: Only publishes when version numbers change
-- **Release Tags**: GitHub releases are automatically tagged with date-based versioning (e.g., `v2024.01.15`)
-
-### Using Changesets
-
-We use [Changesets](https://github.com/changesets/changesets) to manage versioning and changelog generation:
-
-#### Creating Changesets
-
-When you make changes that should trigger a version bump:
-
-```bash
-pnpm run changeset
-```
-
-This will:
-
-- Prompt you to select the type of change (patch, minor, major)
-- Ask for a description of the changes
-- Create a `.changeset/[random-name].md` file
-
-#### Versioning the Package
-
-When you're ready to release:
-
-```bash
-pnpm run version
-```
-
-This will:
-
-- Read all the changesets
-- Update the version in `package.json`
-- Update the changelog
-- Remove the processed changeset files
-
-#### Change Types
-
-- **patch**: Bug fixes and minor improvements (0.1.69 → 0.1.70)
-- **minor**: New features (0.1.69 → 0.2.0)
-- **major**: Breaking changes (0.1.69 → 1.0.0)
-
-### Package Registry
-
-Our package is published to the GitHub Package Registry under the `@a-little-world` scope:
-
-- **Package Name**: `@a-little-world/little-world-frontend`
-- **Registry**: `https://npm.pkg.github.com`
-- **Access**: Requires authentication with `PACKAGE_PUBLISH_TOKEN`
-
-### Release Checklist
-
-Before merging a PR to `prod`:
-
-**For Web Deployment Only (no package release):**
-
-- [ ] All tests pass
-- [ ] Code review completed
-- [ ] No version changes in `package.json`
-
-**For Package Release (mobile app update):**
-
-- [ ] Changesets created for all changes (`pnpm run changeset`)
-- [ ] Package versioned (`pnpm run version`)
-- [ ] All tests pass
-- [ ] Code review completed
-- [ ] PR shows version change in the automated comment
-
-## Coding Standards
-
-### General Guidelines
-
-- **TypeScript**: All new files must be written in TypeScript.
-- **Code Style**: Follow the [Airbnb JavaScript/React style guide](https://github.com/airbnb/javascript/tree/master/react) with ESLint for linting.
-- **Prettier**: Use Prettier for code formatting. Ensure your code is formatted before committing:
-  ```
-  pnpm run format:check
-  pnpm run format:fix
-  ```
-
-### React and TypeScript
-
-- Use function components and React hooks.
-- Define PropTypes using TypeScript interfaces.
-- Avoid using `any` type. Use specific types or generics.
-
-### Styled Components
-
-We use Styled Components for styling. Benefits of Styled Components include:
-
-- **Scoped Styling**: CSS is scoped to the component, avoiding global namespace pollution.
-- **Dynamic Styling**: Use props to dynamically style components.
-- **Enhanced CSS**: Utilize the full power of CSS in JS, including nesting and autoprefixing.
-
-For more details, refer to the [Styled Components documentation](https://styled-components.com/docs).
-
-### Design System
-
-Our project utilizes a custom Design System library that includes reusable components and design tokens. Adhere to the following:
-
-- **Reusable Components**: Use components from our Design System library wherever possible.
-- **Design Tokens**: Follow the design tokens defined in the Design System for consistent theming and styling.
-
-## Commit Message Guidelines
-
-Follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for commit messages. This helps in understanding the history and allows for better automation.
-
-Example of a commit message:
-
-```
-feat(Button): add primary variant
-
-Added a primary variant to the Button component in the Design System.
-```
-
-## Pull Request Process
-
-1. Ensure your feature branch is up to date with `main`:
-
-   ```bash
-   git checkout main
-   git pull origin main
-   git checkout feature/your-feature-name
-   git rebase main
-   ```
-
-2. For production releases, create a PR from `main` to `prod`:
-
-   ```bash
-   git checkout main
-   git pull origin main
-   git checkout -b release/prod-$(date +%Y%m%d)
-   # Bump version in package.json
-   git add package.json
-   git commit -m "chore: bump version to X.X.X"
-   git push origin release/prod-$(date +%Y%m%d)
-   # Create PR from this branch to prod
-   ```
-
-3. Run all tests and linters:
-
-   ```bash
-   WIP
-   ```
-
-4. Push your branch to GitHub:
-
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-5. Open a pull request against the `main` branch on GitHub.
-
-6. For production releases, open a pull request against the `prod` branch on GitHub.
-
-### Pull Request Checklist
-
-- Ensure your code passes all tests and lint checks.
-- Add or update tests as necessary.
-- Update documentation if applicable.
-- Include screenshots or GIFs if your changes include UI modifications.
-- Request a review from at least one team member.
-
-## Code Review
-
-All contributions are reviewed by a team member. Feedback may be provided, and changes might be requested. Ensure you address the feedback promptly and update your pull request accordingly.
-
-## Conclusion
-
-Thank you for taking the time to read our contributing guide. As a charitable organisation we really appreciate your effort and your contributions are extremely valuable to us. If you have any questions or need further assistance, feel free to open an issue or contact a team member.
-
-Happy coding!
+Bump the version **only** when the native app should receive the change — web
+deployments do not need a version bump.
+
+## Conventions
+
+- **Commits**: [Conventional Commits](https://www.conventionalcommits.org/) —
+  `feat(MatchOverview): add nudges row`.
+- **Code**: TypeScript for new files, function components + hooks, no `any`
+  where a real type exists, Airbnb ESLint + Prettier (both enforced in CI).
+- **Styling**: styled-components plus design-system tokens/components — never
+  hard-coded colours or spacing.
+- **Links**: always go through the design system plus
+  [`getAppLinkProps()`](docs/design-system.md#links) — never a raw `<a>` for an
+  in-app route.
+- **API access**: `apiFetch` from `src/api/helpers.ts` — never a bare `fetch`.
+- **Translations**: add the key to `src/locale/*.json`, never inline a user
+  facing string.
+
+## Pull request checklist
+
+- [ ] `pnpm run lint`, `pnpm run format:check` and `pnpm test` pass locally.
+- [ ] Tests added/updated for new logic (`.test.ts` next to the file).
+- [ ] Screenshots or a short screen recording for UI changes.
+- [ ] Docs updated when you introduce a new pattern or convention.
+- [ ] Review requested from at least one team member.
+
+## Code review
+
+All contributions are reviewed by a maintainer; address feedback on the same
+branch — the PR updates automatically.
 
 ---
 
-By following this guide, we can maintain a high standard of code quality and ensure a consistent and efficient development process. Thank you for contributing!
+Little World is a charitable project: contributions are extremely valuable to
+us. If anything in these docs is wrong or missing, open an issue — making this
+repository easier to work in is itself a welcome contribution.
