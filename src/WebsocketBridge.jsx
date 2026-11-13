@@ -65,7 +65,7 @@ const WebsocketBridge = () => {
     })();
   }, []);
   const awayRef = useRef(false);
-  const resumeCheckRef = useRef();
+  const resumeCheckRef = useRef(undefined);
   const [restarting, setRestarting] = useState(false);
   const [backgrounded, setBackgrounded] = useState(
     () => environment.isNative && document.visibilityState === 'hidden',
@@ -183,18 +183,24 @@ const WebsocketBridge = () => {
   useEffect(() => {
     if (lastMessage !== null) {
       setMessageHistory(prev => prev.concat(lastMessage));
-      const message = JSON.parse(lastMessage.data);
+      const message = lastMessage?.data
+        ? JSON.parse(lastMessage.data)
+        : undefined;
 
-      if (message.action === 'addNotification') {
-        const { showToast } = message.payload;
+      if (!message) {
+        return;
+      }
+
+      if (message?.action === 'addNotification') {
+        const { showToast } = message?.payload ?? {};
         if (awayRef.current) {
           const missed = missedRef.current;
           missed.title ??= document.title;
           missed.count += 1;
-          if (showToast) missed.last = message.payload;
+          if (showToast) missed.last = message?.payload;
           document.title = `(${missed.count}) ${missed.title}`;
         } else if (showToast) {
-          showNotification(message.payload);
+          showNotification(message?.payload);
         }
 
         // TODO: only if message is also persisted
@@ -204,12 +210,12 @@ const WebsocketBridge = () => {
       }
 
       try {
-        runWsBridgeMutation(message.action, message.payload);
+        runWsBridgeMutation(message?.action, message?.payload);
       } catch (e) {
         console.warn('CORE SOCKET ERROR:', e);
       }
     }
-  }, [lastMessage, setMessageHistory, toast]);
+  }, [lastMessage, setMessageHistory, toast, showNotification]);
 
   return null;
 };
