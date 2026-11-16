@@ -17,6 +17,7 @@ import {
 import { environment } from './environment';
 import useNativeStore from './features/stores/nativeStore';
 import { runWsBridgeMutation } from './features/swr/wsBridgeMutations';
+import { retry } from './helpers/retry';
 import useToast from './hooks/useToast';
 import { getInstallationId } from './installation-util';
 
@@ -56,13 +57,18 @@ const WebsocketBridge = () => {
   };
 
   useEffect(() => {
-    (async () => {
-      if (environment.isNative) {
-        await loadAccessToken();
-      }
-      await loadInstallId();
-      setReady(true);
-    })();
+    const controller = new AbortController();
+    retry(
+      async () => {
+        if (environment.isNative) {
+          await loadAccessToken();
+        }
+        await loadInstallId();
+      },
+      controller.signal,
+      5000,
+    ).then(() => setReady(true));
+    return () => controller.abort();
   }, []);
   const awayRef = useRef(false);
   const resumeCheckRef = useRef(undefined);
@@ -112,8 +118,11 @@ const WebsocketBridge = () => {
     const onVisibilityChange = async () => {
       // some devices keep sockets of backgrounded apps open indefinitely
       if (environment.isNative) {
-        if (document.visibilityState === 'visible') await loadAccessToken();
-        setBackgrounded(document.visibilityState === 'hidden');
+        try {
+          if (document.visibilityState === 'visible') await loadAccessToken();
+        } finally {
+          setBackgrounded(document.visibilityState === 'hidden');
+        }
         return;
       }
 
