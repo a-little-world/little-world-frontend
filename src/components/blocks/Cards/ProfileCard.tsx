@@ -222,7 +222,7 @@ export const Description = styled(Text)`
   color: ${({ theme }) => theme.color.text.secondary};
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 5;
   overflow: hidden;
   white-space: pre-line;
   overflow-wrap: break-word;

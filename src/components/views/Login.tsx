@@ -27,6 +27,8 @@ import { StyledCard, StyledCta, StyledForm, Title } from './SignUp.styles';
 const Login = () => {
   const { t } = useTranslation();
   const sessionExpired = useQueryParam('sessionExpired') === 'true';
+  const next = useQueryParam('next');
+  const showRedirectNotice = Boolean(next) && !sessionExpired;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -112,12 +114,22 @@ const Login = () => {
           {t('login.forgot_password')}
         </Link>
         <StatusMessage
-          visible={Boolean(errors?.root?.serverError) || sessionExpired}
-          type={sessionExpired ? StatusTypes.Info : StatusTypes.Error}
+          visible={
+            Boolean(errors?.root?.serverError) ||
+            sessionExpired ||
+            showRedirectNotice
+          }
+          type={
+            sessionExpired || showRedirectNotice
+              ? StatusTypes.Info
+              : StatusTypes.Error
+          }
         >
           {sessionExpired
             ? t('login.session_expired')
-            : t(errors?.root?.serverError?.message as string)}
+            : errors?.root?.serverError
+              ? t(errors?.root?.serverError?.message as string)
+              : t('login.redirect_notice')}
         </StatusMessage>
 
         <StyledCta
