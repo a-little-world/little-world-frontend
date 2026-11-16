@@ -1,4 +1,4 @@
-import { delay } from './delay';
+import delay from './delay';
 
 export const RETRY_DELAY_MS = 30_000;
 export const MAX_RETRIES = 5;
