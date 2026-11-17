@@ -20,6 +20,9 @@ import AboutUs from '../components/views/AboutUs/AboutUs';
 import ChangeEmail from '../components/views/ChangeEmail';
 import EditView from '../components/views/Edit';
 import EmailPreferences from '../components/views/EmailPreferences';
+import AfterGuestCall from '../components/views/ExternalRandomCalls/AfterGuestCall';
+import ExternalRandomCallsPortal from '../components/views/ExternalRandomCalls/ExternalRandomCallsPortal';
+import GuestSessionEnded from '../components/views/ExternalRandomCalls/GuestSessionEnded';
 import ForgotPassword from '../components/views/ForgotPassword';
 import Help from '../components/views/Help';
 import Main from '../components/views/Home';
@@ -32,6 +35,7 @@ import OnboardingSelection from '../components/views/Onboarding/OnboardingSelect
 import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalkthrough';
 import PartnerLanding from '../components/views/PartnerLanding/PartnerLanding';
 import Profile from '../components/views/Profile';
+import AfterRandomCall from '../components/views/RandomCalls/AfterRandomCall';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
 import CoursePreview from '../components/views/Resources/Trainings/CoursePreview';
@@ -51,7 +55,11 @@ import useCalEmbed from '../hooks/useCalEmbed';
 import WebsocketBridge from '../WebsocketBridge';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
+  ADVENT_GUEST_AFTER_CALL_ROUTE,
+  ADVENT_GUEST_LOBBY_ROUTE,
+  ADVENT_GUEST_STAY_ROUTE,
   ADVENT_LANDING_ROUTE,
+  APP_RANDOM_CALL_AFTER_ROUTE,
   APP_ROUTE,
   BASE_ROUTE,
   BEGINNERS_ROUTE,
@@ -138,6 +146,19 @@ const adventLandingRoute = {
   errorElement: <RouterError Layout={null} />,
   children: [
     { index: true, element: <PartnerLanding /> },
+    { path: ADVENT_GUEST_LOBBY_ROUTE, element: <ExternalRandomCallsPortal /> },
+    {
+      path: `${ADVENT_GUEST_LOBBY_ROUTE}/:lobbyId`,
+      element: <ExternalRandomCallsPortal />,
+    },
+    {
+      path: `${ADVENT_GUEST_LOBBY_ROUTE}/:lobbyId/${ADVENT_GUEST_AFTER_CALL_ROUTE}`,
+      element: <AfterGuestCall />,
+    },
+    {
+      path: `${ADVENT_GUEST_LOBBY_ROUTE}/:lobbyId/${ADVENT_GUEST_STAY_ROUTE}`,
+      element: <GuestSessionEnded />,
+    },
     { path: ':partnerSlug', element: <PartnerLanding /> },
   ],
 };
@@ -225,6 +246,12 @@ export function getWebRouter() {
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
         { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
+        {
+          path: getAppRoute(
+            `${RANDOM_CALLS_ROUTE}/:lobbyId/${APP_RANDOM_CALL_AFTER_ROUTE}`,
+          ),
+          element: <AfterRandomCall />,
+        },
         { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
         { path: getAppRoute(OUR_WORLD_ROUTE), element: <AboutUs /> },
         { path: getAppRoute(SUPPORT_US_ROUTE), element: <AboutUs /> },
@@ -349,6 +376,12 @@ export function getNativeRouter() {
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
         { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
+        {
+          path: getAppRoute(
+            `${RANDOM_CALLS_ROUTE}/:lobbyId/${APP_RANDOM_CALL_AFTER_ROUTE}`,
+          ),
+          element: <AfterRandomCall />,
+        },
         { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
         { path: getAppRoute(OUR_WORLD_ROUTE), element: <AboutUs /> },
         { path: getAppRoute(SUPPORT_US_ROUTE), element: <AboutUs /> },

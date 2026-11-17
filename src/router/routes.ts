@@ -40,6 +40,23 @@ export const LOGIN_ROUTE = 'login';
 export const SIGN_UP_ROUTE = 'sign-up';
 export const ADVENT_LANDING_ROUTE = 'advents-gespraeche';
 export const ADVENT_LANDING_PARTNER_ROUTE = 'advents-gespraeche/:partnerSlug';
+/** Guest lobby for one external session. The id is that session's lobby uuid. */
+export const ADVENT_GUEST_LOBBY_ROUTE = 'gast';
+export const ADVENT_GUEST_AFTER_CALL_ROUTE = 'danach';
+export const APP_RANDOM_CALL_AFTER_ROUTE = 'post-call';
+export const ADVENT_GUEST_STAY_ROUTE = 'kontakt';
+export const getAdventGuestLobbyRoute = (lobbyId?: string) =>
+  `/${ADVENT_LANDING_ROUTE}/${ADVENT_GUEST_LOBBY_ROUTE}${
+    lobbyId ? `/${lobbyId}` : ''
+  }`;
+export const getAdventGuestAfterCallRoute = (lobbyId: string) =>
+  `${getAdventGuestLobbyRoute(lobbyId)}/${ADVENT_GUEST_AFTER_CALL_ROUTE}`;
+export const getAdventGuestStayRoute = (lobbyId: string) =>
+  `${getAdventGuestLobbyRoute(lobbyId)}/${ADVENT_GUEST_STAY_ROUTE}`;
+export const getAppRandomCallAfterRoute = (lobbyId: string) =>
+  getAppRoute(
+    `${RANDOM_CALLS_ROUTE}/${lobbyId}/${APP_RANDOM_CALL_AFTER_ROUTE}`,
+  );
 
 export const CHANGE_EMAIL_ROUTE = 'change-email';
 export const VERIFY_EMAIL_ROUTE = 'verify-email';

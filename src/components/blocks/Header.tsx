@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { Link, TextTypes } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
@@ -76,7 +78,27 @@ const LogoRouterLink = styled(RouterLink)`
   min-width: fit-content;
 `;
 
-const Header = () => {
+const LogoMark = styled.div`
+  display: flex;
+  flex: 1;
+  min-width: fit-content;
+`;
+
+const HeaderEnd = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+  min-width: 0;
+`;
+
+type HeaderProps = {
+  /** Replaces language and policy links. Used when the page must not offer app navigation. */
+  endSlot?: ReactNode;
+  logoLinksOut?: boolean;
+};
+
+const Header = ({ endSlot, logoLinksOut = true }: HeaderProps) => {
   const { t } = useTranslation();
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
@@ -85,36 +107,46 @@ const Header = () => {
       ? user?.userFormCompleted
       : user?.isOnboarded;
 
+  const logo = <Logo stacked={false} />;
+  let logoLink = (
+    <LogoLink href={WP_HOME_ROUTE} target="_blank">
+      {logo}
+    </LogoLink>
+  );
+  if (!logoLinksOut) {
+    logoLink = <LogoMark>{logo}</LogoMark>;
+  } else if (accessToMainApp) {
+    logoLink = <LogoRouterLink to={getAppRoute()}>{logo}</LogoRouterLink>;
+  }
+
   return (
     <StyledHeader>
-      {accessToMainApp ? (
-        <LogoRouterLink to={getAppRoute()}>
-          <Logo stacked={false} />
-        </LogoRouterLink>
+      {logoLink}
+      {endSlot ? (
+        <HeaderEnd>{endSlot}</HeaderEnd>
       ) : (
-        <LogoLink href={WP_HOME_ROUTE} target="_blank">
-          <Logo stacked={false} />
-        </LogoLink>
+        <>
+          <Options>
+            <LanguageSelector />
+          </Options>
+          <Policies>
+            <Link
+              href={getHomeRoute('de', TERMS_ROUTE)}
+              target="_blank"
+              textType={TextTypes.Body6}
+            >
+              {t('header.terms')}
+            </Link>
+            <Link
+              href={getHomeRoute('de', PRIVACY_ROUTE)}
+              target="_blank"
+              textType={TextTypes.Body6}
+            >
+              {t('header.privacy')}
+            </Link>
+          </Policies>
+        </>
       )}
-      <Options>
-        <LanguageSelector />
-      </Options>
-      <Policies>
-        <Link
-          href={getHomeRoute('de', TERMS_ROUTE)}
-          target="_blank"
-          textType={TextTypes.Body6}
-        >
-          {t('header.terms')}
-        </Link>
-        <Link
-          href={getHomeRoute('de', PRIVACY_ROUTE)}
-          target="_blank"
-          textType={TextTypes.Body6}
-        >
-          {t('header.privacy')}
-        </Link>
-      </Policies>
     </StyledHeader>
   );
 };

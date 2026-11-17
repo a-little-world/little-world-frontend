@@ -36,13 +36,8 @@ import jamalPhoto from '../../../images/partner-landing/jamal.webp';
 import joergPhoto from '../../../images/partner-landing/joerg.webp';
 import monikaPhoto from '../../../images/partner-landing/monika.webp';
 import peterPhoto from '../../../images/partner-landing/peter.webp';
-import {
-  getAppRoute,
-  getHomeRoute,
-  PRIVACY_ROUTE,
-  WP_HOME_ROUTE,
-} from '../../../router/routes';
-import Logo from '../../atoms/Logo';
+import { getAppRoute, WP_HOME_ROUTE } from '../../../router/routes';
+import PageFooter from '../../blocks/PageFooter/PageFooter';
 import PartnerSignUpCard, {
   SUPPORT_EMAIL,
 } from '../../blocks/PartnerSignUpCard/PartnerSignUpCard';
@@ -67,9 +62,6 @@ import {
   FinalInner,
   FinalLead,
   FinalTitle,
-  FooterBrand,
-  FooterCopy,
-  FooterLinks,
   Garland,
   GarlandLight,
   Hero,
@@ -82,7 +74,6 @@ import {
   IconCircle,
   NavBar,
   Page,
-  PageFooter,
   PartnerCoopLabel,
   PartnerLogo,
   PartnerName,
@@ -656,30 +647,7 @@ const PartnerLandingPage = () => {
           </>
         )}
 
-        <PageFooter>
-          <FooterBrand>
-            <HomeLink href={WP_HOME_ROUTE} target="_blank" rel="noreferrer">
-              <Logo stacked={false} asLink={false} />
-            </HomeLink>
-            <FooterCopy>{t('partner_landing.footer.nonprofit')}</FooterCopy>
-          </FooterBrand>
-          <FooterLinks>
-            <Link
-              href={getHomeRoute('de', PRIVACY_ROUTE)}
-              target="_blank"
-              textType={TextTypes.Body6}
-            >
-              {t('header.privacy')}
-            </Link>
-            <Link
-              href={getHomeRoute('de', 'impressum')}
-              target="_blank"
-              textType={TextTypes.Body6}
-            >
-              {t('partner_landing.footer.imprint')}
-            </Link>
-          </FooterLinks>
-        </PageFooter>
+        <PageFooter />
 
         {!success && (
           <>

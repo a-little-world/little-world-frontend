@@ -9,6 +9,9 @@ interface CallData {
   randomLobbyUuid?: string;
   tracks?: any;
   callType?: 'direct' | 'random';
+  partnerName?: string;
+  partnerProfile?: string;
+  partnerImage?: string;
   postDisconnectRedirect?: string;
   token?: string;
   e2eeKey?: string;

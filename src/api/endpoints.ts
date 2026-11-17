@@ -7,8 +7,6 @@ export const RANDOM_CALL_LOBBY_ENDPOINT =
   '/api/random_calls/lobby/default/active_or_upcoming';
 export const UPCOMING_LOBBIES_ENDPOINT =
   '/api/random_calls/upcoming?name=default';
-export const RANDOM_CALL_EXIT_PARAM = 'randomCallEnded';
-export const RANDOM_CALL_EXIT_VALUE = '1';
 export const apiOptions = '#api_options';
 export const API_OPTIONS_ENDPOINT = '/api/api_options';
 export const FIREBASE_ENDPOINT = '/api/firebase';
@@ -36,6 +34,10 @@ export const E2EE_WORKER_ENDPOINT = '/api/video/e2ee_worker.js';
 
 export const PARTNER_REGISTER_ENDPOINT = '/api/partner/register/';
 export const PARTNER_LANDING_ENDPOINT = '/api/partner/';
+
+export const getRandomCallLobbyEndpoint = (lobbyId: string) =>
+  `/api/random_calls/lobby/${lobbyId}/`;
+
 export const getPartnerLandingEndpoint = (slug?: string) =>
   slug ? `/api/partner/${slug}/` : PARTNER_LANDING_ENDPOINT;
 export const getPartnerRegisterEndpoint = (slug?: string) =>
