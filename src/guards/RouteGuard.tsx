@@ -13,6 +13,7 @@ import {
   CHANGE_EMAIL_ROUTE,
   getAppRoute,
   LOGIN_ROUTE,
+  sanitizeNext,
   USER_FORM_ROUTE,
   VERIFY_EMAIL_ROUTE,
 } from '../router/routes';
@@ -26,12 +27,8 @@ interface Props {
 function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
   const { isReady, tokenState } = useNativeStore();
   const { pathname, search } = useLocation();
-  // only internal absolute paths
-  const rawNext = new URLSearchParams(search).get('next');
-  const nextParam =
-    rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')
-      ? rawNext
-      : null;
+  // only internal absolute paths, never public routes
+  const nextParam = sanitizeNext(new URLSearchParams(search).get('next'));
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
 
@@ -74,7 +71,12 @@ function RouteGuard({ Layout = FullAppLayout, authRequired = true }: Props) {
     const params = new URLSearchParams();
     if (sessionExpired) {
       params.set('sessionExpired', 'true');
-      params.set('next', `${pathname}${search}`);
+    }
+    // Always preserve where the user wanted to go (web deep links and native
+    // session expiry alike). Prefer an incoming `next` over the current route.
+    const nextTarget = nextParam ?? sanitizeNext(`${pathname}${search}`);
+    if (nextTarget) {
+      params.set('next', nextTarget);
     }
     const query = params.toString();
 

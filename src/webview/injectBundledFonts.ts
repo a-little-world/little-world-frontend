@@ -1,4 +1,4 @@
-import { fontFiles } from '@a-little-world/little-world-design-system-core';
+import { fontFiles } from '@a-little-world/little-world-design-system';
 
 // bundle fonts for native app instead of loading from web
 function buildFontFaceCSS(fonts: Record<string, unknown>): string {

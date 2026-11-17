@@ -315,7 +315,10 @@ const PartnerLandingPage = () => {
     if (isSubmitting || success) return;
     if (partnerSlug && !partner) return;
 
-    const code = validatePartnerEmail(email, partner?.email_domain ?? null);
+    const code = validatePartnerEmail(
+      email,
+      partner?.enforce_email_domain ? (partner.email_domain ?? null) : null,
+    );
     if (code) {
       setError(errorMessage(code));
       return;
@@ -403,6 +406,11 @@ const PartnerLandingPage = () => {
     header: t(`partner_landing.faq.${key}.question`),
     content: t(`partner_landing.faq.${key}.answer`),
   }));
+
+  const quotes = QUOTES.filter(
+    quote =>
+      quote.key !== 'sabine' || partner.name.toLowerCase() !== 'capgemini',
+  );
 
   return (
     <CustomThemeProvider
@@ -515,10 +523,10 @@ const PartnerLandingPage = () => {
                       ))}
                     </BenefitList>
                   </SplitColumn>
-                  <SplitColumn>
-                    {QUOTES.map(quote => (
+                  <SplitColumn $singleQuote={quotes.length === 1}>
+                    {quotes.map(quote => (
                       <QuoteCard key={quote.key}>
-                        <QuoteMark aria-hidden="true">„</QuoteMark>
+                        <QuoteMark type={TextTypes.Heading3}>„</QuoteMark>
                         <QuoteText>
                           {t(`partner_landing.quote.${quote.key}.text`)}
                         </QuoteText>

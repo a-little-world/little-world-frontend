@@ -142,6 +142,10 @@ function PartnerProfiles({
       return <SearchingCard setShowCancel={setShowCancel} />;
     }
 
+    if (user?.canSearchAgain === false) {
+      return null;
+    }
+
     return (
       <FindNewPartner
         type="button"
@@ -178,6 +182,7 @@ function PartnerProfiles({
             chatId={match.chatId}
             bothActiveCallMinutes={match.both_active_call_minutes}
             successMinutes={match.success_minutes}
+            progressNudge={match.progress_nudge}
             unreadCount={match.chat?.unread_count}
           />
         ))

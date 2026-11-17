@@ -817,11 +817,11 @@ function VideoCall() {
                 }
                 partnerImageType={chatData?.partner?.image_type}
                 selfImage={
-                  profile.image_type === 'avatar'
+                  profile?.image_type === 'avatar'
                     ? profile.avatar_config
                     : profile?.image
                 }
-                selfImageType={profile.image_type}
+                selfImageType={profile?.image_type}
                 initializeCallID={initializeCallID}
                 setCallRejected={setCallRejected}
                 callRejected={callRejected}

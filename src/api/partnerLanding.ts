@@ -9,6 +9,7 @@ export interface PartnerLanding {
   name: string;
   logo: string | null;
   email_domain: string | null;
+  enforce_email_domain: boolean;
   starts_at: string;
   ends_at: string;
   door_number: number;
