@@ -16,8 +16,8 @@ import {
 import { useDevelopmentFeaturesStore } from '../../features/stores/index';
 import { formatTimeDistance } from '../../helpers/date';
 import { getAppRoute, NOTIFICATIONS_ROUTE } from '../../router/routes';
-import TeamMemberTag from '../atoms/TeamMemberTag';
 import ProfileImage from '../atoms/ProfileImage';
+import TeamMemberTag from '../atoms/TeamMemberTag';
 
 const ProfileInfo = styled.div`
   display: flex;
