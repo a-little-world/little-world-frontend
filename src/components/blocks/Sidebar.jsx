@@ -149,7 +149,7 @@ function Sidebar({ isVH, sidebarMobile }) {
   const { data: notifications } = useSWR(NOTIFICATIONS_ENDPOINT);
   const { data: chats } = useSWR(CHATS_ENDPOINT);
   const { data: user } = useSWR(USER_ENDPOINT);
-  const hasMatchingPermissions = Boolean(user?.hasMatchingPermissions);
+  const canOpenManagementPanel = Boolean(user?.canOpenManagementPanel);
 
   const buttonData = useMemo(
     () => [
@@ -189,7 +189,7 @@ function Sidebar({ isVH, sidebarMobile }) {
         path: getAppRoute(SETTINGS_ROUTE),
         Icon: SettingsIcon,
       },
-      ...(hasMatchingPermissions
+      ...(canOpenManagementPanel
         ? [
             {
               label: 'management',
@@ -211,7 +211,7 @@ function Sidebar({ isVH, sidebarMobile }) {
         },
       },
     ],
-    [hasMatchingPermissions, startPath, navigate],
+    [canOpenManagementPanel, startPath, navigate],
   );
 
   const [showSidebarMobile, setShowSidebarMobile] = [

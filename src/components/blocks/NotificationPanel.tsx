@@ -16,7 +16,7 @@ import {
 import { useDevelopmentFeaturesStore } from '../../features/stores/index';
 import { formatTimeDistance } from '../../helpers/date';
 import { getAppRoute, NOTIFICATIONS_ROUTE } from '../../router/routes';
-import MatchingUserTag from '../atoms/MatchingUserTag';
+import TeamMemberTag from '../atoms/TeamMemberTag';
 import ProfileImage from '../atoms/ProfileImage';
 
 const ProfileInfo = styled.div`
@@ -97,7 +97,7 @@ function NotificationPanel() {
   const theme = useTheme();
 
   const { data: user } = useSWR(USER_ENDPOINT);
-  const hasMatchingPermissions = Boolean(user?.hasMatchingPermissions);
+  const canOpenManagementPanel = Boolean(user?.canOpenManagementPanel);
   const usesAvatar = (user as any)?.profile.image_type === 'avatar';
   const { data: unreadNotifications } = useSWR(UNREAD_NOTIFICATIONS_ENDPOINT);
   const areDevFeaturesEnabled = useDevelopmentFeaturesStore().enabled;
@@ -110,7 +110,7 @@ function NotificationPanel() {
           image={usesAvatar ? user?.profile.avatar_config : user?.profile.image}
           imageType={user?.profile.image_type}
         />
-        {hasMatchingPermissions && <MatchingUserTag />}
+        {canOpenManagementPanel && <TeamMemberTag />}
         <Text tag="h3" type={TextTypes.Heading5} bold>
           {`${user?.profile.first_name} ${user?.profile.second_name}`}
         </Text>
