@@ -18,12 +18,14 @@ import {
   getAppRoute,
   HELP_CONTACT_ROUTE,
   HELP_FAQS_ROUTE,
+  HELP_FEEDBACK_ROUTE,
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import Socials from '../atoms/Socials';
 import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo';
 import ContentSelector from '../blocks/ContentSelector';
 import FAQs from '../blocks/FAQs/FAQs';
+import Feedback from '../blocks/Feedback/Feedback';
 import {
   BusinessName,
   ContactInfo,
@@ -44,11 +46,12 @@ export const NativeWebWrapper = ({
   children: React.ReactNode;
 }) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
 
-type HelpSubpage = 'contact' | 'faqs';
+type HelpSubpage = 'contact' | 'faqs' | 'feedback';
 
 const HELP_SUBPAGE_ROUTES: Record<HelpSubpage, string> = {
   contact: HELP_CONTACT_ROUTE,
   faqs: HELP_FAQS_ROUTE,
+  feedback: HELP_FEEDBACK_ROUTE,
 };
 
 interface SupportMatchProps {
@@ -125,8 +128,8 @@ function Help() {
     const pathSegments = location.pathname.split('/').filter(Boolean);
     const lastSegment = last(pathSegments);
 
-    if (lastSegment === 'faqs' || lastSegment === 'contact') {
-      return lastSegment;
+    if (lastSegment && lastSegment in HELP_SUBPAGE_ROUTES) {
+      return lastSegment as HelpSubpage;
     }
 
     return 'contact';
@@ -155,6 +158,7 @@ function Help() {
       />
 
       {subpage === 'faqs' && <FAQs supportUrl={supportUrl ?? ''} />}
+      {subpage === 'feedback' && <Feedback />}
       {subpage === 'contact' && (
         <Contact supportMatch={supportMatch} isLoading={isMatchesLoading} />
       )}
