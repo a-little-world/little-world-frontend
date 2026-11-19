@@ -1,3 +1,4 @@
+import { getDeviceInfo } from '../device-info';
 import { environment } from '../environment';
 import { apiFetch } from './helpers';
 
@@ -27,6 +28,9 @@ export const submitFeedback = async ({
   if (area) body.append('area', area);
   if (areaOther) body.append('area_other', areaOther);
   if (message) body.append('message', message);
+  if (kind === 'bug') {
+    body.append('device', JSON.stringify(await getDeviceInfo()));
+  }
   attachments.forEach(file => body.append('attachments', file, file.name));
 
   await apiFetch('/api/feedback/', { method: 'POST', body });
