@@ -72,6 +72,12 @@ export const ContactLink = styled.a`
   align-items: center;
 `;
 
+export const FileList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const FileName = styled.div`
   display: flex;
   align-items: center;

@@ -269,6 +269,7 @@
   "file_upload.change_files": "Click to change files",
   "file_upload.click_to_upload": "Click to upload",
   "file_upload.drop_hint": "or drag and drop image here",
+  "file_upload.remove_file": "Remove file",
   "forgot_password.cancel_btn": "Cancel",
   "forgot_password.description": "No need to worry! Just enter the email address you registered with. We will then send an email in order to set a new password.",
   "forgot_password.email_label": "Registered Email",
