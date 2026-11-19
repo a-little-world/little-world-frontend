@@ -9,6 +9,7 @@ import {
 } from 'date-fns';
 
 import { COMMUNITY_EVENT_FREQUENCIES } from '../constants/index';
+import type { SeriesRecurrence } from './seriesCalendar';
 
 export interface Event {
   id: string;
@@ -30,6 +31,12 @@ export interface CalendarEvent {
   endDate?: Date;
   startDate: Date;
   link: string;
+  /**
+   * For a scheduled series (Random Calls): where it ends, its monthly day and its
+   * exceptions. Without it a recurring event repeats indefinitely, and "monthly" means the
+   * same weekday of the month, as for community events.
+   */
+  recurrence?: SeriesRecurrence;
 }
 
 export function calculateNextOccurrence(

@@ -44,25 +44,26 @@ const EmbedContainer = styled.div`
   }
 `;
 
+const TWINGLE_WIDGET_URL =
+  'https://spenden.twingle.de/embed/a-little-world-gemeinnutzige-ug-haftungsbeschrankt/sprache-schafft-heimat-toleranz-durch-dialog/tw66ebf16a1b2d3/widget';
+
 const TwingleEmbed = () => {
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.innerHTML = `
-        (function() {
-          var u="https://spenden.twingle.de/embed/a-little-world-gemeinnutzige-ug-haftungsbeschrankt/sprache-schafft-heimat-toleranz-durch-dialog/tw66ebf16a1b2d3/widget";
-          var id = '_' + Math.random().toString(36).substr(2, 9);
-          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-          d.getElementById('twingle-container').innerHTML = '<div id="twingle-public-embed-' + id + '"></div>';
-          g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'/'+id; s.parentNode.insertBefore(g,s);
-        })();
-      `;
+    const container = containerRef.current;
+    if (!container) return () => {};
 
-    containerRef.current?.appendChild(script);
+    const id = `_${Math.random().toString(36).slice(2, 11)}`;
+    container.innerHTML = `<div id="twingle-public-embed-${id}"></div>`;
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `${TWINGLE_WIDGET_URL}/${id}`;
+    container.appendChild(script);
 
     return () => {
-      containerRef.current?.removeChild(script);
+      container.innerHTML = '';
     };
   }, []);
 

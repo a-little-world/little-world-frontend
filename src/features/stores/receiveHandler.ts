@@ -34,9 +34,7 @@ export type DomCommunicationMessage =
   | {
       action: 'GET_WINDOW_ORIGIN';
       requestId?: string;
-      payload: {
-        origin: string;
-      };
+      payload: {};
     }
   | {
       action: 'DISPLAY_NOTIFICATION';
@@ -117,6 +115,13 @@ export type DomCommunicationMessage =
       };
     }
   | {
+      action: 'SET_USER';
+      requestId?: string;
+      payload: {
+        id: string | null;
+      };
+    }
+  | {
       action: 'SET_TOKEN_STATE';
       requestId?: string;
       payload: {
@@ -127,22 +132,10 @@ export type DomCommunicationMessage =
   | {
       action: 'LOG_ERROR';
       requestId?: string;
-      payload:
-        | {
-            type: 'react';
-            message: string;
-            stack?: string;
-          }
-        | {
-            type: 'fetch';
-            method: string;
-            endpoint: string;
-            url: string;
-            headers: Record<string, string>;
-            requestBody: unknown;
-            status?: number;
-            error: unknown;
-          };
+      payload: {
+        message: string;
+        stack?: string;
+      };
     };
 
 export type DomCommunicationMessageFn = (

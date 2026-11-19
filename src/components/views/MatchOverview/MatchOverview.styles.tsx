@@ -137,16 +137,8 @@ export const MatchSince = styled(Text).attrs({
 export const ProgressHero = styled.section`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: ${({ theme }) => theme.spacing.medium};
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      flex-direction: row;
-      align-items: flex-start;
-      gap: ${theme.spacing.large};
-    }
-  `};
 `;
 
 export const ProgressCopy = styled.div`

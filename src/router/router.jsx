@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react';
+
 import {
   CustomThemeProvider,
   GlobalStyles,
@@ -10,7 +12,9 @@ import {
   Outlet,
   ScrollRestoration,
 } from 'react-router-dom';
+import useSWR from 'swr';
 
+import { IS_AUTHENTICATED_ENDPOINT } from '../api/endpoints';
 import RouterError from '../components/blocks/ErrorView/ErrorView';
 import Form from '../components/blocks/Form/Form';
 import FormLayout from '../components/blocks/Layout/FormLayout';
@@ -30,6 +34,7 @@ import NativeMessageHandler from '../components/views/NativeMessageHandler';
 import Notifications from '../components/views/Notifications';
 import OnboardingSelection from '../components/views/Onboarding/OnboardingSelection';
 import OnboardingWalkthrough from '../components/views/Onboarding/OnboardingWalkthrough';
+import PartnerLanding from '../components/views/PartnerLanding/PartnerLanding';
 import Profile from '../components/views/Profile';
 import ResetPassword from '../components/views/ResetPassword';
 import Resources from '../components/views/Resources/Resources';
@@ -37,17 +42,24 @@ import CoursePreview from '../components/views/Resources/Trainings/CoursePreview
 import Training from '../components/views/Resources/Trainings/Training';
 import Settings from '../components/views/Settings';
 import SignUp from '../components/views/SignUp';
+import SurveyPage from '../components/views/Survey/SurveyPage';
 import VerifyEmail from '../components/views/VerifyEmail';
 import VideoCall from '../components/views/VideoCall';
 import { STORAGE_KEYS } from '../constants';
 import { environment } from '../environment';
+import useNotificationStore from '../features/stores/notification';
 import FireBase from '../Firebase';
+import { registerFirebaseDeviceToken } from '../firebase-util';
 import AuthGuard from '../guards/AuthGuard';
 import RouteGuard from '../guards/RouteGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
+import { retry } from '../helpers/retry';
+import useCalEmbed from '../hooks/useCalEmbed';
+import { registerInstallation } from '../installation-util';
 import WebsocketBridge from '../WebsocketBridge';
 import useErrorDebugBridge from '../webview/useErrorDebugBridge';
 import {
+  ADVENT_LANDING_ROUTE,
   APP_ROUTE,
   BASE_ROUTE,
   BEGINNERS_ROUTE,
@@ -84,6 +96,7 @@ import {
   SETTINGS_ROUTE,
   SIGN_UP_ROUTE,
   SUPPORT_US_ROUTE,
+  SURVEY_ROUTE,
   TRAINING_ROUTE,
   TRAININGS_ROUTE,
   USER_FORM_ROUTE,
@@ -108,6 +121,50 @@ export const Root = ({
   standalone = false,
 }) => {
   useErrorDebugBridge();
+  useCalEmbed();
+
+  const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
+  const pushAllowed = useNotificationStore(
+    s => s.deviceSupported && s.devicePermissionGranted,
+  );
+  const installationRef = useRef(undefined);
+  const registerDevice =
+    !standalone && !environment.isNative && isAuthenticated;
+
+  // installation once per login, cleared on logout so re-auth tries again
+  useEffect(() => {
+    if (!registerDevice) {
+      return undefined;
+    }
+    const controller = new AbortController();
+    installationRef.current = retry(
+      registerInstallation,
+      controller.signal,
+    ).then(
+      () => true,
+      () => false,
+    );
+    return () => {
+      controller.abort();
+      installationRef.current = undefined;
+    };
+  }, [registerDevice]);
+
+  // permission can be granted after login
+  useEffect(() => {
+    if (!registerDevice || !pushAllowed) {
+      return undefined;
+    }
+    const controller = new AbortController();
+    installationRef.current
+      .then(
+        installed =>
+          installed && retry(registerFirebaseDeviceToken, controller.signal),
+      )
+      .catch(() => {});
+    return () => controller.abort();
+  }, [registerDevice, pushAllowed]);
+
   return (
     <CustomThemeProvider defaultMode={getInitialTheme()}>
       <ToastProvider>
@@ -126,9 +183,20 @@ export const Root = ({
   );
 };
 
+const adventLandingRoute = {
+  path: ADVENT_LANDING_ROUTE,
+  element: <Outlet />,
+  errorElement: <RouterError Layout={null} />,
+  children: [
+    { index: true, element: <PartnerLanding /> },
+    { path: ':partnerSlug', element: <PartnerLanding /> },
+  ],
+};
+
 export function getWebRouter() {
   const ROOT_ROUTES = [
     // Unguarded — accessible regardless of auth state
+    adventLandingRoute,
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
@@ -180,6 +248,7 @@ export function getWebRouter() {
             { path: ':slug', element: <Form /> },
           ],
         },
+        { path: getAppRoute(SURVEY_ROUTE), element: <SurveyPage /> },
       ],
     },
 
@@ -257,6 +326,7 @@ export function getWebRouter() {
 export function getNativeRouter() {
   const ROOT_ROUTES = [
     // Unguarded — accessible regardless of auth state
+    adventLandingRoute,
     {
       path: EMAIL_PREFERENCES_ROUTE,
       element: (
@@ -303,6 +373,7 @@ export function getNativeRouter() {
             { path: ':slug', element: <Form /> },
           ],
         },
+        { path: getAppRoute(SURVEY_ROUTE), element: <SurveyPage /> },
       ],
     },
 
@@ -325,6 +396,7 @@ export function getNativeRouter() {
           path: getAppRoute(EDIT_FORM_ROUTE),
           children: [{ path: ':slug', element: <EditView /> }],
         },
+        { path: getAppRoute(CALL_SETUP_ROUTE), element: <Main /> },
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
         { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },

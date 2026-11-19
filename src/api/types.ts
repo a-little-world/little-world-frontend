@@ -24,12 +24,19 @@ export interface ApiError extends Error {
   fields?: Record<string, string[]>;
 }
 
+export type SerializedFormDataEntry = [
+  string,
+  string | { base64: string; name: string; type: string },
+];
+
 export interface ApiFetchOptions {
   method?: HttpMethod;
   body?: object | FormData;
   headers?: Record<string, string>;
   credentials?: RequestCredentials;
   useTagsOnly?: boolean;
+  // FormData can't cross native bridge
+  formData?: SerializedFormDataEntry[];
 }
 
 export type ApiFetchFn<T = any> = (

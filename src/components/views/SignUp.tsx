@@ -58,6 +58,23 @@ function signUpCompanySlugHidesNameLabel(company: string): boolean {
   );
 }
 
+/** Blank or whitespace-only attribution values are treated as absent. */
+function attributionValue(
+  value: string | null | undefined,
+): string | undefined {
+  return value?.trim() || undefined;
+}
+
+function isKnownSignupCampaign(
+  value: string | undefined,
+  campaigns: string[] | undefined,
+): value is string {
+  if (!value || !campaigns) return false;
+  return campaigns.some(
+    campaign => campaign.toLowerCase() === value.toLowerCase(),
+  );
+}
+
 function runOptionalMatomoTriggers(userType?: string) {
   if (!userType) return;
 
@@ -85,10 +102,14 @@ const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const maxBirthYear = maxBirthYearForMinimumAge();
 
-  // User can sign-up with a ?company='name' query
-  // We take this query and store it as the 'lw-company' cookie so it doen't get lost on navigation
+  // Keep signup attribution across navigation until the registration is submitted.
   const [searchParams, setSearchParams] = useSearchParams();
-  const [company, setCompany] = useState(Cookies.get('lw-company', null));
+  const [company, setCompany] = useState<string | undefined>(() =>
+    attributionValue(Cookies.get('lw-company')),
+  );
+  const [signupCampaign, setSignupCampaign] = useState<string | undefined>(() =>
+    attributionValue(Cookies.get('lw-signup-campaign')),
+  );
 
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: userData } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
@@ -101,15 +122,49 @@ const SignUp = () => {
       label: t(`sign_up.user_type.${value}`),
       value,
     })) ?? [];
+  const knownSignupCampaigns: string[] | undefined =
+    apiOptions?.signup_campaigns;
 
   useEffect(() => {
-    if (searchParams.has('company')) {
-      Cookies.set('lw-company', searchParams.get('company'));
-      setCompany(searchParams.get('company'));
-      // Once the query param is stored in the cookie, we can remove it from the URL
-      setSearchParams(new URLSearchParams());
+    const nextSearchParams = new URLSearchParams(searchParams);
+    // Params are always stripped from the URL; blank values are dropped and never overwrite a stored value.
+    const searchParamsChanged =
+      searchParams.has('company') || searchParams.has('signup_campaign');
+    const companyParam = attributionValue(searchParams.get('company'));
+    const signupCampaignParam = attributionValue(
+      searchParams.get('signup_campaign'),
+    );
+    nextSearchParams.delete('company');
+    nextSearchParams.delete('signup_campaign');
+
+    if (signupCampaignParam) {
+      Cookies.set('lw-signup-campaign', signupCampaignParam);
+      setSignupCampaign(signupCampaignParam);
     }
-  }, [searchParams, setSearchParams]);
+
+    const legacyCompany = companyParam ?? company;
+    if (isKnownSignupCampaign(legacyCompany, knownSignupCampaigns)) {
+      if (!signupCampaignParam && !signupCampaign) {
+        Cookies.set('lw-signup-campaign', legacyCompany);
+        setSignupCampaign(legacyCompany);
+      }
+      Cookies.remove('lw-company');
+      setCompany(undefined);
+    } else if (companyParam) {
+      Cookies.set('lw-company', companyParam);
+      setCompany(companyParam);
+    }
+
+    if (searchParamsChanged) {
+      setSearchParams(nextSearchParams, { replace: true });
+    }
+  }, [
+    company,
+    knownSignupCampaigns,
+    searchParams,
+    setSearchParams,
+    signupCampaign,
+  ]);
 
   const {
     control,
@@ -141,7 +196,9 @@ const SignUp = () => {
   const onFormSubmit = async data => {
     setIsSubmitting(true);
     runOptionalMatomoTriggers(data?.userType);
-    signUp(data)
+    // Attribution comes from state, not the hidden input, so a company that changed or was moved to
+    // signupCampaign after the input mounted is never submitted with its old value.
+    signUp({ ...data, company: company ?? null, signupCampaign })
       .then(async signUpData => {
         setIsSubmitting(false);
         mutate(USER_ENDPOINT, signUpData, false);
@@ -160,11 +217,7 @@ const SignUp = () => {
           {company && (
             <>
               {!signUpCompanySlugHidesNameLabel(company) && (
-                <Label
-                  bold
-                  htmlFor="company"
-                  tooltipText={t('sign_up.company_tooltip')}
-                >
+                <Label bold htmlFor="company">
                   {t('sign_up.company_name_label')}: {company}
                 </Label>
               )}

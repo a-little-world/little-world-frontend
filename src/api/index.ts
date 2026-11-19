@@ -189,6 +189,7 @@ export async function signUp({
   lastName,
   mailingList,
   company = null,
+  signupCampaign = null,
   userType,
 }) {
   const requestBody = {
@@ -200,6 +201,7 @@ export async function signUp({
     birth_year: birthYear,
     newsletter_subscribed: mailingList,
     company,
+    signup_campaign: signupCampaign,
     user_type: userType,
   };
 

@@ -10,6 +10,7 @@ import {
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
+import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import {
@@ -76,6 +77,7 @@ interface RandomCallLobby {
 
 const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const {
     data: upcomingLobbies,
     isLoading: lobbyLoading,
@@ -159,6 +161,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
             key={`${lobbyData.uuid}-${lobbySessionKey}`}
             lobbyUuid={lobbyData.uuid}
             onCancel={onCloseLobby}
+            activeUsersCount={lobbyData.active_users_count}
           />
         )}
       </Modal>
@@ -172,6 +175,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
       <InnerContainer>
         <InfoPanel>
           <PanelImage
+            breakpoint={theme.breakpoints.xlarge}
             src={randomCallsImage}
             label={t('random_calls.image_label')}
             alt="random calls"
@@ -186,7 +190,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
             ) : (
               <>
                 <div>
-                  <Text bold type={TextTypes.Body5}>
+                  <Text bold type={active ? TextTypes.Body4 : TextTypes.Body5}>
                     {t(
                       active
                         ? 'random_calls.active_heading'
@@ -195,7 +199,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                   </Text>
                   {active && startTime && endTime && (
                     <Text type={TextTypes.Body4}>
-                      {startTime} – {endTime}
+                      {t('random_calls.active_time', { startTime, endTime })}
                     </Text>
                   )}
                 </div>
@@ -216,6 +220,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
                 ) : (
                   <Schedule
                     title={t('random_calls.schedule_heading')}
+                    description={t('random_calls.schedule_description')}
                     sessions={upcomingLobbies ?? []}
                     listMaxHeight={260}
                     addToCalendar={{

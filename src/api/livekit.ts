@@ -1,3 +1,4 @@
+import { isE2EEAvailable } from '../helpers/e2ee';
 import { apiFetch } from './helpers';
 
 export const requestVideoAccessToken = async ({
@@ -13,7 +14,10 @@ export const requestVideoAccessToken = async ({
     const result = await apiFetch(`/api/livekit/authenticate`, {
       method: 'POST',
       useTagsOnly: true,
-      body: { partner_id: partnerId },
+      body: {
+        partner_id: partnerId,
+        e2ee_supported: isE2EEAvailable(),
+      },
     });
     onSuccess(result);
   } catch (error) {

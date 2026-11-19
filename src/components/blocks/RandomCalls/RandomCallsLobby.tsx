@@ -44,9 +44,12 @@ import {
   rejectMatch,
 } from '../../../api/randomCalls';
 import { COMMUNITY_EVENT_FREQUENCIES, USER_TYPES } from '../../../constants';
-import { useConnectedCallStore } from '../../../features/stores';
+import {
+  getDeviceOptions,
+  useCallTracksStore,
+  useConnectedCallStore,
+} from '../../../features/stores';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
-import { holdPreviewAudioTracks } from '../../../helpers/video';
 import {
   getAppAbsoluteRoute,
   getAppRoute,
@@ -167,6 +170,7 @@ const RandomCallSetup = ({
   onCancel,
   onJoinComplete,
   hasJoinedLobby,
+  activeUsersCount = 0,
   onDeviceChoicesChange,
   onPermissionErrorsChange,
   error,
@@ -174,6 +178,7 @@ const RandomCallSetup = ({
   onCancel: () => void;
   onJoinComplete: () => void;
   hasJoinedLobby: boolean;
+  activeUsersCount?: number;
   onDeviceChoicesChange: (choices: LocalUserChoices | null) => void;
   onPermissionErrorsChange: (errors: {
     audio: boolean;
@@ -285,6 +290,10 @@ const RandomCallSetup = ({
     return hasDevice;
   }, []);
 
+  const othersOnline = hasJoinedLobby
+    ? activeUsersCount > 1
+    : activeUsersCount > 0;
+
   let cancelButtonLabel = t('random_calls.lobby_cancel_search');
   if (!permissionsGranted) {
     cancelButtonLabel = t('random_calls.lobby_enable_mic_or_video_to_join');
@@ -297,11 +306,17 @@ const RandomCallSetup = ({
   }
 
   return (
-    <CallSetupCard $hideJoinBtn>
+    <CallSetupCard>
       <LobbyLoading size={LoadingSizes.Small} inline />
       <CardHeader>{t('random_calls.lobby_title')}</CardHeader>
       <CardContent>
-        <Text center>{t('random_calls.lobby_description')}</Text>
+        <Text center>
+          {t(
+            othersOnline
+              ? 'random_calls.lobby_description'
+              : 'random_calls.lobby_description_waiting',
+          )}
+        </Text>
         <PreJoin
           camLabel={t('pcs_camera_label')}
           micLabel={t('pcs_mic_label')}
@@ -577,9 +592,11 @@ const RejectedView = ({
 const RandomCallsLobby = ({
   lobbyUuid,
   onCancel,
+  activeUsersCount = 0,
 }: {
   lobbyUuid: string;
   onCancel: () => void;
+  activeUsersCount?: number;
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -838,6 +855,8 @@ const RandomCallsLobby = ({
     setError(null);
     try {
       const roomData = await authenticateRoom(lobbyUuid, currentMatchData.uuid);
+      const deviceOptions = getDeviceOptions(deviceChoices);
+      await useCallTracksStore.getState().acquireTracks(deviceOptions);
 
       // Set up call connection with room data, including device choices
       connectToCall({
@@ -847,22 +866,17 @@ const RandomCallsLobby = ({
         randomLobbyUuid: lobbyUuid,
         tracks: deviceChoices || undefined,
         token: roomData.token,
+        e2eeKey: roomData.e2ee_key || undefined,
         livekitServerUrl: roomData.server_url,
         callType: 'random',
-        audioOptions: deviceChoices?.audioEnabled
-          ? { deviceId: deviceChoices.audioDeviceId }
-          : false,
-        videoOptions: deviceChoices?.videoEnabled
-          ? { deviceId: deviceChoices.videoDeviceId }
-          : false,
+        audioOptions: deviceOptions.audio,
+        videoOptions: deviceOptions.video,
         audioPermissionDenied: audioPermissionError,
         videoPermissionDenied: videoPermissionError,
         postDisconnectRedirect: `${getAppRoute(
           RANDOM_CALLS_ROUTE,
         )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
       });
-
-      holdPreviewAudioTracks();
 
       // Navigate to the random call screen for the partner
       navigate(getRandomCallRoute(currentMatchData.partner.id));
@@ -895,6 +909,7 @@ const RandomCallsLobby = ({
             onCancel={handleCancel}
             onJoinComplete={handleJoinComplete}
             hasJoinedLobby={hasJoinedLobby}
+            activeUsersCount={activeUsersCount}
             onDeviceChoicesChange={setDeviceChoices}
             onPermissionErrorsChange={handlePermissionErrorsChange}
             error={error}
@@ -927,6 +942,7 @@ const RandomCallsLobby = ({
           onCancel={handleCancel}
           onJoinComplete={handleJoinComplete}
           hasJoinedLobby={hasJoinedLobby}
+          activeUsersCount={activeUsersCount}
           onDeviceChoicesChange={setDeviceChoices}
           onPermissionErrorsChange={handlePermissionErrorsChange}
           error={error}

@@ -1,12 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 
 import {
+  Button,
   ButtonAppearance,
   Link,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import useSWR from 'swr';
+import useSWR, { mutate as mutateGlobal } from 'swr';
 
 import {
   completeCourse,
@@ -14,6 +15,7 @@ import {
   CourseProgress,
   fetchCourseDetail,
   fetchCoursePreview,
+  getCourseProgressEndpoint,
   startCourse,
   updateCourseProgress,
 } from '../../../../api/courses';
@@ -55,6 +57,24 @@ const CourseNotFound: FC = () => {
   );
 };
 
+const ProgressLoadError: FC<{ onRetry: () => void }> = ({ onRetry }) => {
+  const { t } = useTranslation();
+
+  return (
+    <NotFoundCard title={t('resources.trainings.progress_error')}>
+      <Button appearance={ButtonAppearance.Primary} onClick={onRetry}>
+        {t('resources.trainings.progress_retry')}
+      </Button>
+      <Link
+        to={getAppRoute(TRAININGS_ROUTE)}
+        buttonAppearance={ButtonAppearance.Secondary}
+      >
+        {t('resources.trainings.return')}
+      </Link>
+    </NotFoundCard>
+  );
+};
+
 const DynamicCourse: FC<DynamicCourseProps> = ({ slug, preview = false }) => {
   const navigate = useNavigate();
 
@@ -69,17 +89,53 @@ const DynamicCourse: FC<DynamicCourseProps> = ({ slug, preview = false }) => {
   );
 
   const [progress, setProgress] = useState<CourseProgress | null>(null);
+  // Course writes `?chapter=` on first mount from completedChapterCount. If we
+  // render before startCourse returns, that count is 0 and the URL sticks on
+  // chapter 1 even after progress arrives.
+  const [progressLoadedForSlug, setProgressLoadedForSlug] = useState<string>();
+  // Falling back to empty progress would silently restart the learner at chapter 1.
+  const [progressFailed, setProgressFailed] = useState(false);
+  const [startAttempt, setStartAttempt] = useState(0);
+  const hasCourse = Boolean(course);
+
+  // Other views (e.g. CoursePromoCard) read progress from the SWR cache.
+  const syncProgress = (updated: CourseProgress) => {
+    setProgress(updated);
+    if (slug) {
+      mutateGlobal(getCourseProgressEndpoint(slug), updated, {
+        revalidate: false,
+      });
+    }
+  };
 
   useEffect(() => {
-    if (!course || preview || !slug) return;
+    if (!hasCourse || preview || !slug) return undefined;
+    let cancelled = false;
+    setProgressFailed(false);
     startCourse(slug)
-      .then(setProgress)
-      .catch(() => setProgress(null));
-  }, [course, slug, preview]);
+      .then(data => {
+        if (cancelled) return;
+        syncProgress(data);
+        setProgressLoadedForSlug(slug);
+      })
+      .catch(() => {
+        if (!cancelled) setProgressFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasCourse, slug, preview, startAttempt]);
+
+  const isProgressReady = preview || progressLoadedForSlug === slug;
 
   if (!slug) return <CourseNotFound />;
   if (isLoading) return <LoadingScreen />;
   if (error || !course) return <CourseNotFound />;
+  if (progressFailed) {
+    return <ProgressLoadError onRetry={() => setStartAttempt(n => n + 1)} />;
+  }
+  if (!isProgressReady) return <LoadingScreen />;
 
   const chapters = course.chapters.map(mapChapter);
   const completedChapterCount = getCompletedChapterCountForCourseProgress(
@@ -95,7 +151,7 @@ const DynamicCourse: FC<DynamicCourseProps> = ({ slug, preview = false }) => {
         current_chapter_id: chapterId,
         current_step_index: stepIndex + 1,
       });
-      setProgress(updated);
+      syncProgress(updated);
     } catch {
       // best-effort
     }
@@ -118,7 +174,7 @@ const DynamicCourse: FC<DynamicCourseProps> = ({ slug, preview = false }) => {
           ? 0
           : (chapters[chapterIndex]?.quizSteps.length ?? 0),
       });
-      setProgress(updated);
+      syncProgress(updated);
     } catch {
       // best-effort
     }
@@ -127,7 +183,7 @@ const DynamicCourse: FC<DynamicCourseProps> = ({ slug, preview = false }) => {
   const handleCourseComplete = async () => {
     if (!preview) {
       try {
-        await completeCourse(slug);
+        syncProgress(await completeCourse(slug));
       } catch {
         // best-effort
       }

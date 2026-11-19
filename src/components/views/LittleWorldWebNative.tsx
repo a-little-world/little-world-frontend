@@ -15,10 +15,11 @@ import { environment } from '../../environment';
 import { useReceiveHandlerStore } from '../../features/stores';
 import useNativeStore from '../../features/stores/nativeStore';
 import { DomCommunicationMessageFn } from '../../features/stores/receiveHandler';
-import useNativeSwrConfig from '../../hooks/useNativeSwrConfig';
+import { useNativeSwrConfig } from '../../hooks/useNativeSwrConfig';
 import i18n, { updateTranslationResources } from '../../i18n';
 import { getNativeRouter } from '../../router/router';
 import { getAppRoute } from '../../router/routes';
+import { injectBundledFonts } from '../../webview/injectBundledFonts';
 
 export interface LittleWorldWebNativeProps {
   sendMessageToReactNative: DomCommunicationMessageFn;
@@ -41,24 +42,30 @@ export interface LittleWorldWebNativeProps {
 
 function NativePreloader() {
   const { isReady } = useNativeStore();
+  const sendMessageToReactNative = useReceiveHandlerStore(
+    state => state.sendMessageToReactNative,
+  );
 
   useEffect(() => {
     if (isReady) {
       mutate(API_OPTIONS_ENDPOINT);
       mutate(API_TRANSLATIONS_ENDPOINT);
-
-      // force initial auth check
-      apiFetch(IS_AUTHENTICATED_ENDPOINT).then(isAuthenticated =>
-        mutate(IS_AUTHENTICATED_ENDPOINT, isAuthenticated, {
-          revalidate: false,
-        }),
-      );
+      mutate(IS_AUTHENTICATED_ENDPOINT);
     }
   }, [isReady]);
   useSWR(API_OPTIONS_ENDPOINT);
   const { data: apiTranslations } = useSWR(API_TRANSLATIONS_ENDPOINT);
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
-  useSWR(isAuthenticated ? USER_ENDPOINT : null);
+  const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
+  const userId = user?.id ?? null;
+
+  useEffect(() => {
+    if (!isReady) return;
+    sendMessageToReactNative?.({
+      action: 'SET_USER',
+      payload: { id: userId },
+    }).catch(() => {});
+  }, [isReady, userId, sendMessageToReactNative]);
 
   if (apiTranslations) {
     updateTranslationResources({ apiTranslations });
@@ -143,6 +150,11 @@ export function LittleWorldWebNative({
       handshakeSentRef.current = false;
     });
   }, [handler, sendMessageToReactNativeSet, sendMessageToReactNative]);
+
+  useEffect(() => {
+    if (!environment.isNative) return undefined;
+    return injectBundledFonts();
+  }, []);
 
   const swrConfig = useNativeSwrConfig();
 

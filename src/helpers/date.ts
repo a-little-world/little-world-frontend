@@ -1,4 +1,9 @@
-import { format, formatDistance, startOfDay } from 'date-fns';
+import {
+  differenceInCalendarDays,
+  format,
+  formatDistance,
+  startOfDay,
+} from 'date-fns';
 import { de, enGB } from 'date-fns/locale';
 
 import { LANGUAGES } from '../constants/index';
@@ -7,6 +12,20 @@ const two = (n: number) => (n < 10 ? `0${n}` : n);
 
 export const formatTime = (date: Date) =>
   `${two(date.getHours())}:${two(date.getMinutes())}`;
+
+export const formatTimeRange = (start: Date, end: Date) =>
+  `${formatTime(start)}–${formatTime(end)}`;
+
+/**
+ * The wall-clock time of `date` in `timeZone`, as a Date whose local fields hold it.
+ * Only for display: pass the result to formatTime / formatDate / calendarDaysUntil.
+ */
+export const toTimeZone = (date: Date, timeZone: string) =>
+  new Date(date.toLocaleString('en-US', { timeZone }));
+
+/** Whole calendar days from today to `date` (negative if `date` is in the past). */
+export const calendarDaysUntil = (date: Date, from: Date = new Date()) =>
+  differenceInCalendarDays(startOfDay(date), startOfDay(from));
 
 export const formatEventTime = (date1: Date, date2?: Date) => {
   if (!date2) return formatTime(date1);

@@ -72,28 +72,28 @@ export const TRAININGS_DATA = {
     hasHandout: false,
     video: [
       {
-        id: 'HEAtdAeYiQg?si=CFfTat_UccuT-OL6',
+        id: 'HEAtdAeYiQg',
         label: 'Interkulturelle Kommunikation - Achtsamer Umgang',
       },
       {
-        id: 'aEVKGlXfNzk?si=dqJ5osXnDpHZ_rcq',
+        id: 'aEVKGlXfNzk',
         label: 'Interkulturelle Kommunikation - Selbstreflexion',
       },
       {
-        id: 'NmzP_hBtWmU?si=TAnA_ukURlcjIxD_',
+        id: 'NmzP_hBtWmU',
         label: 'Interkulturelle Kommunikation - Fremdreflexion',
       },
       {
-        id: 'tVmQYvID-4A?si=rhxinzEdDZITbA5Y',
+        id: 'tVmQYvID-4A',
         label: 'Interkulturelle Kommunikation - Umgang miteinander',
       },
       {
-        id: 'RFIqBk84ckc?si=7BMf1jEvXfkfSKiK',
+        id: 'RFIqBk84ckc',
         label:
           'Interkulturelle Kommunikation - Theorie muss sein: Kulturdimensionen',
       },
       {
-        id: 'aaN4Htfkp4I?si=fy88MDx4-y7RNC-j',
+        id: 'aaN4Htfkp4I',
         label: 'Interkulturelle Kommunikation - Sensibilisierung',
       },
     ],

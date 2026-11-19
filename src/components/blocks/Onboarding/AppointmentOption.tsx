@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { formatDate, formatTime } from '../../../helpers/date';
+import { openCalFallback } from '../../../hooks/useCalEmbed';
 import {
   OptionCard,
   OptionSubtext,
@@ -70,7 +71,7 @@ function AppointmentOption({
           <Button
             data-cal-link={bookAppointmentLink}
             data-cal-config='{"layout":"month_view"}'
-            onClick={() => null}
+            onClick={() => openCalFallback(bookAppointmentLink)}
             size={ButtonSizes.Stretch}
             appearance={ButtonAppearance.Primary}
           >
@@ -107,7 +108,7 @@ function AppointmentOption({
             <Button
               data-cal-link={bookAppointmentLink}
               data-cal-config='{"layout":"month_view"}'
-              onClick={() => null}
+              onClick={() => openCalFallback(bookAppointmentLink)}
               appearance={ButtonAppearance.Secondary}
               size={ButtonSizes.Stretch}
             >

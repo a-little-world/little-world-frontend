@@ -14,7 +14,7 @@ import { rejectCall } from '../../api/livekit';
 import useConnectedCallStore from '../stores/connectedCall';
 
 interface MatchesData {
-  [category: string]: any[];
+  [category: string]: { results: any[] };
 }
 
 const sortChats = (chats: any[]) => {
@@ -45,7 +45,10 @@ export function addMatch(category: string, match: any): void {
       if (!matchesData) return matchesData;
       return {
         ...matchesData,
-        [category]: [...(matchesData[category] || []), match],
+        [category]: {
+          ...matchesData[category],
+          results: [...(matchesData[category]?.results || []), match],
+        },
       };
     },
     false,

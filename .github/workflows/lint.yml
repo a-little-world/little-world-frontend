@@ -29,6 +29,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
+      # worker protocol is version-locked to livekit-client
+      - name: Verify inlined e2ee worker is up to date
+        run: |
+          pnpm run generate:e2ee-worker
+          if [ -n "$(git status --porcelain -- 'prebuild/livekit-e2ee-worker-*')" ]; then
+            git status --short -- 'prebuild/livekit-e2ee-worker-*'
+            echo "::error::prebuild/livekit-e2ee-worker-* is stale. Run 'pnpm generate:e2ee-worker', update the import in src/helpers/e2eeWorker.ts and commit the result."
+            exit 1
+          fi
+
       - name: Run ESLint
         run: pnpm lint
 

@@ -1,12 +1,15 @@
 import { Button, Text } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
+const MAX_SESSION_ROW_WIDTH_WITH_FREQUENCY = '424px';
+const MAX_SESSION_ROW_WIDTH_WITHOUT_FREQUENCY = '400px';
+
 export const Events = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
   flex: 1 1 0;
-  max-width: 1200px;
+  max-width: min(1200px, 100%);
   padding: ${({ theme }) => theme.spacing.small};
 
   ${({ theme }) => css`
@@ -56,6 +59,13 @@ export const DateTimeEvent = styled.div`
   justify-content: flex-start;
 `;
 
+export const TimeWithFrequency = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.xsmall};
+`;
+
 export const SessionFlex = styled.div`
   display: flex;
   align-items: center;
@@ -78,24 +88,73 @@ export const Buttons = styled.div`
   `}
 `;
 
-export const Sessions = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xsmall};
+export const ShowMoreButton = styled(Button)`
+  height: 44px;
+`;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.large}) {
-    max-width: 360px;
+type SessionColumns = {
+  $wideDate?: boolean;
+  $withFrequency?: boolean;
+  $stacked?: boolean;
+};
+
+const sessionColumns = ({
+  $wideDate,
+  $withFrequency,
+  $stacked,
+}: SessionColumns) => {
+  // Small screens with tags: date and time share the first column.
+  if ($stacked) return 'minmax(0, 1fr) auto auto';
+  const date = $wideDate ? 'minmax(6.25rem, max-content)' : '104px';
+  return $withFrequency ? `${date} max-content auto auto` : `${date} auto auto`;
+};
+
+// The list owns the columns and every row uses them through subgrid, so times, tags and
+// buttons line up across rows instead of each row sizing its own.
+export const Sessions = styled.div<SessionColumns>`
+  display: grid;
+  grid-template-columns: ${sessionColumns};
+  column-gap: ${({ theme }) => theme.spacing.xxsmall};
+  row-gap: ${({ theme }) => theme.spacing.xsmall};
+  align-items: center;
+
+  ${({ theme, $withFrequency }) => css`
+    @media (min-width: ${theme.breakpoints.large}) {
+      max-width: ${$withFrequency
+        ? MAX_SESSION_ROW_WIDTH_WITH_FREQUENCY
+        : MAX_SESSION_ROW_WIDTH_WITHOUT_FREQUENCY};
+    }
+  `}
+
+  > ${ShowMoreButton} {
+    grid-column: 1 / -1;
   }
 `;
 
-export const Session = styled.div<{ $wideDate?: boolean }>`
+export const Session = styled.div`
   display: grid;
-  grid-template-columns:
-    ${({ $wideDate }) => ($wideDate ? 'minmax(7.5rem, max-content)' : '104px')}
-    auto auto;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-  align-items: center;
-  width: 100%;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: flex-end;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      align-items: center;
+    }
+  `}
+`;
+
+/** Date and time: two grid columns normally, one stacked column on small screens. */
+export const SessionDateTime = styled.div<{ $stacked?: boolean }>`
+  ${({ $stacked }) =>
+    $stacked
+      ? css`
+          display: flex;
+          flex-direction: column;
+        `
+      : css`
+          display: contents;
+        `}
 `;
 
 export const EventsPagination = styled.div`
@@ -112,8 +171,4 @@ export const EventsPagination = styled.div`
 
 export const DateText = styled(Text)`
   margin-bottom: ${({ theme }) => theme.spacing.xxxxsmall};
-`;
-
-export const ShowMoreButton = styled(Button)`
-  height: 44px;
 `;
