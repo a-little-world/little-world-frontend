@@ -20,6 +20,7 @@ import {
   getCommunityEventsEndpoint,
   UPCOMING_LOBBIES_ENDPOINT,
 } from '../../../api/endpoints';
+import { toBackendUrl } from '../../../api/helpers';
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
 import CustomPagination from '../../../CustomPagination';
 import { formatDate, formatEventTime } from '../../../helpers/date';
@@ -576,6 +577,7 @@ function CommunityEvents() {
             key={eventData.id}
             _key={eventData.id}
             {...eventData}
+            image={toBackendUrl(eventData.image)}
           />
         ))}
       </Events>

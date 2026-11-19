@@ -22,6 +22,7 @@ import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { getPartnerLandingEndpoint } from '../../../api/endpoints';
+import { toBackendUrl } from '../../../api/helpers';
 import {
   fetchPartnerLanding,
   PartnerLanding,
@@ -206,7 +207,10 @@ const PartnerHeroChrome = ({ partner }: { partner: PartnerLanding }) => {
               {t('partner_landing.in_partnership_with')}
             </PartnerCoopLabel>
             {partner.logo ? (
-              <PartnerLogo src={partner.logo} alt={partner.name} />
+              <PartnerLogo
+                src={toBackendUrl(partner.logo)}
+                alt={partner.name}
+              />
             ) : (
               <PartnerName>{partner.name}</PartnerName>
             )}
@@ -403,6 +407,11 @@ const PartnerLandingPage = () => {
     content: t(`partner_landing.faq.${key}.answer`),
   }));
 
+  const quotes = QUOTES.filter(
+    quote =>
+      quote.key !== 'sabine' || partner.name.toLowerCase() !== 'capgemini',
+  );
+
   return (
     <CustomThemeProvider
       defaultMode={ThemeVariants.light}
@@ -514,10 +523,10 @@ const PartnerLandingPage = () => {
                       ))}
                     </BenefitList>
                   </SplitColumn>
-                  <SplitColumn>
-                    {QUOTES.map(quote => (
+                  <SplitColumn $singleQuote={quotes.length === 1}>
+                    {quotes.map(quote => (
                       <QuoteCard key={quote.key}>
-                        <QuoteMark aria-hidden="true">„</QuoteMark>
+                        <QuoteMark type={TextTypes.Heading3}>„</QuoteMark>
                         <QuoteText>
                           {t(`partner_landing.quote.${quote.key}.text`)}
                         </QuoteText>

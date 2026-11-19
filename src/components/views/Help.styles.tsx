@@ -7,6 +7,8 @@ import {
 } from '@a-little-world/little-world-design-system';
 import styled from 'styled-components';
 
+const SUPPORT_DESCRIPTION_MAX_WIDTH = '300px';
+
 export const ContactUsContainer = styled.div`
   display: flex;
   flex: 1;
@@ -69,10 +71,14 @@ export const SupportTeam = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  margin-top: ${({ theme }) => theme.spacing.xxsmall};
+`;
 
-  h2 {
-    margin: 0;
-  }
+export const SupportDescription = styled(Text)`
+  text-align: center;
+  margin-top: ${({ theme }) => theme.spacing.small};
+  max-width: ${SUPPORT_DESCRIPTION_MAX_WIDTH};
 `;
 
 export const ContactButtons = styled.div`

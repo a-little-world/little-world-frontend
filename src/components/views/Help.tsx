@@ -3,6 +3,8 @@ import React, { useCallback, useMemo } from 'react';
 import {
   Gradients,
   MailIcon,
+  Text,
+  TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { last } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -31,6 +33,7 @@ import {
   ContentWrapper,
   SupportCard,
   SupportChatWrapper,
+  SupportDescription,
   SupportTeam,
   Topper,
 } from './Help.styles';
@@ -71,9 +74,14 @@ export function Contact({ supportMatch, isLoading }: SupportMatchProps) {
         <Topper>
           <Logo />
           <SupportTeam>
-            <h2>{t('help.support_header')}</h2>
-            <div>{t('help.support_slogan')}</div>
+            <Text tag="h3" type={TextTypes.Body3}>
+              {t('help.support_header')}
+            </Text>
+            <Text bold>{t('help.support_slogan')}</Text>
           </SupportTeam>
+          <SupportDescription>
+            {t('help.support_description')}
+          </SupportDescription>
         </Topper>
         <ContactInfo>
           <ContentWrapper>

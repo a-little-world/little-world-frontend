@@ -41,6 +41,7 @@ const WelcomeTitle = styled(Text)`
 
 const CancelSearchButton = styled(Button)`
   color: ${({ theme }) => theme.color.text.link};
+  margin-top: ${({ theme }) => theme.spacing.small};
 `;
 
 const SearchingImage = styled(MatchSearchingImage)<{ $hasMatch?: boolean }>`

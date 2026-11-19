@@ -277,6 +277,7 @@ function Profile() {
             openPartnerModal={setPartnerActionData}
             bothActiveCallMinutes={match?.both_active_call_minutes}
             successMinutes={match?.success_minutes}
+            progressNudge={match?.progress_nudge}
             openEditImage={() =>
               navigate(getAppRoute(`${EDIT_FORM_ROUTE}/picture`))
             }

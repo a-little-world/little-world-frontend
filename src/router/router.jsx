@@ -53,6 +53,7 @@ import { registerFirebaseDeviceToken } from '../firebase-util';
 import AuthGuard from '../guards/AuthGuard';
 import RouteGuard from '../guards/RouteGuard';
 import { getLocalStorageItem } from '../helpers/localStorage';
+import { retry } from '../helpers/retry';
 import useCalEmbed from '../hooks/useCalEmbed';
 import { registerInstallation } from '../installation-util';
 import WebsocketBridge from '../WebsocketBridge';
@@ -130,21 +131,38 @@ export const Root = ({
   const registerDevice =
     !standalone && !environment.isNative && isAuthenticated;
 
-  // permission can be granted after login, installation only once per login
+  // installation once per login, cleared on logout so re-auth tries again
   useEffect(() => {
     if (!registerDevice) {
-      installationRef.current = undefined;
-      return;
+      return undefined;
     }
-    installationRef.current ??= registerInstallation().then(
+    const controller = new AbortController();
+    installationRef.current = retry(
+      registerInstallation,
+      controller.signal,
+    ).then(
       () => true,
       () => false,
     );
-    if (pushAllowed) {
-      installationRef.current
-        .then(registered => registered && registerFirebaseDeviceToken())
-        .catch(() => {});
+    return () => {
+      controller.abort();
+      installationRef.current = undefined;
+    };
+  }, [registerDevice]);
+
+  // permission can be granted after login
+  useEffect(() => {
+    if (!registerDevice || !pushAllowed) {
+      return undefined;
     }
+    const controller = new AbortController();
+    installationRef.current
+      .then(
+        installed =>
+          installed && retry(registerFirebaseDeviceToken, controller.signal),
+      )
+      .catch(() => {});
+    return () => controller.abort();
   }, [registerDevice, pushAllowed]);
 
   return (
