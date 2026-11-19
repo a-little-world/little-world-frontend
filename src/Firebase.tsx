@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import {
   getMessaging,
@@ -7,19 +7,14 @@ import {
   onMessage,
   Unsubscribe,
 } from '@firebase/messaging';
-import { useTranslation } from 'react-i18next';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { IS_AUTHENTICATED_ENDPOINT, USER_ENDPOINT } from './api/endpoints';
 import { ToastContextType } from './components/blocks/Toast';
 import useNotificationStore from './features/stores/notification';
-import { enableFirebase, enableNotificationsInProfile } from './firebase-util';
+import { enableFirebase } from './firebase-util';
 import useToast from './hooks/useToast';
-import { getAppRoute, SETTINGS_ROUTE } from './router/routes';
-
-const SHOW_NOTIFICATION_PERMISSION_TOAST_KEY =
-  'notification-permission-show-toast';
 
 // show foreground messages as in-app toast
 function handleMessage(
@@ -53,7 +48,6 @@ function FireBase() {
 
   const toast = useToast();
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   // handle desktop notification navigation in-app to prevent reloads
   useEffect(() => {
@@ -77,10 +71,6 @@ function FireBase() {
   }, [navigate]);
 
   const deviceSupported = useNotificationStore(s => s.deviceSupported);
-  const notificationsEnabled = useNotificationStore(
-    s => s.notificationsEnabled,
-  );
-  const devicePermissionSet = useNotificationStore(s => s.devicePermissionSet);
   const devicePermissionGranted = useNotificationStore(
     s => s.devicePermissionGranted,
   );
@@ -117,83 +107,6 @@ function FireBase() {
       setNotificationsEnabled(userNotificationsEnabled);
     }
   }, [userNotificationsEnabled, setNotificationsEnabled]);
-
-  const showNotificationPermissionToast = useMemo(
-    () => localStorage.getItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY) === null,
-    [],
-  );
-
-  const toastShownRef = useRef(false);
-
-  // Show one-time toast when browser has not granted notification
-  // permission yet
-  useEffect(() => {
-    if (
-      !deviceSupported ||
-      notificationsEnabled === undefined || // profile not loaded yet
-      (devicePermissionSet && notificationsEnabled) ||
-      !showNotificationPermissionToast ||
-      toastShownRef.current
-    ) {
-      return;
-    }
-    toastShownRef.current = true;
-
-    const width = Math.min((window?.innerWidth ?? 650) - 50, 600);
-    const showActionButton = width > 450;
-
-    const titleKey = notificationsEnabled
-      ? 'push_notifications.permission_missing.title'
-      : 'push_notifications.initial_toast.enable.title';
-    const descriptionKey = notificationsEnabled
-      ? 'push_notifications.permission_missing.description'
-      : 'push_notifications.initial_toast.enable.description';
-
-    const setHideToast = () =>
-      localStorage.setItem(SHOW_NOTIFICATION_PERMISSION_TOAST_KEY, 'false');
-    toast.showToast({
-      title: t(titleKey),
-      description: t(descriptionKey),
-      actionText: showActionButton
-        ? t('push_notifications.request_permission')
-        : undefined,
-      actionAltText: showActionButton
-        ? 'request notification permission'
-        : undefined,
-      duration: Infinity, // show indefinitely
-      width: `${width}px`,
-      showClose: true,
-      // click is required for browser to show permission prompt
-      onActionClick: showActionButton
-        ? () => {
-            setHideToast();
-            enableNotificationsInProfile();
-
-            Notification.requestPermission().then(permission => {
-              setDevicePermissionSet(permission !== 'default');
-              setDevicePermissionGranted(permission === 'granted');
-            });
-          }
-        : undefined,
-      onClick: () => {
-        setHideToast();
-        navigate(getAppRoute(SETTINGS_ROUTE));
-      },
-      onClose: () => {
-        setHideToast();
-      },
-    });
-  }, [
-    deviceSupported,
-    notificationsEnabled,
-    devicePermissionSet,
-    showNotificationPermissionToast,
-    setDevicePermissionGranted,
-    setDevicePermissionSet,
-    toast,
-    t,
-    navigate,
-  ]);
 
   // prevent multiple activations
   const firebaseEnabledRef = useRef<boolean | undefined>(undefined);
