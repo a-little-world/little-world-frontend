@@ -262,7 +262,7 @@ const FileDropzone = ({
         {showSelectedFiles && selectedFiles.length > 0 ? (
           <FileList>
             {selectedFiles.map((file, index) => (
-              <FileName key={`${file.name}-${index}`}>
+              <FileName key={`${file.name}-${file.lastModified}`}>
                 <ImageIcon label="uploaded file" width="16" height="16" />
                 {file.name}
                 <Button
