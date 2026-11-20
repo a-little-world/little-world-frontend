@@ -6,7 +6,6 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { last } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
@@ -18,12 +17,15 @@ import {
   getAppRoute,
   HELP_CONTACT_ROUTE,
   HELP_FAQS_ROUTE,
+  HELP_FEEDBACK_ROUTE,
+  isActiveRoute,
 } from '../../router/routes';
 import Logo from '../atoms/Logo';
 import Socials from '../atoms/Socials';
 import ChatWithUserInfo from '../blocks/ChatCore/ChatWithUserInfo';
 import ContentSelector from '../blocks/ContentSelector';
 import FAQs from '../blocks/FAQs/FAQs';
+import Feedback from '../blocks/Feedback/Feedback';
 import {
   BusinessName,
   ContactInfo,
@@ -44,11 +46,12 @@ export const NativeWebWrapper = ({
   children: React.ReactNode;
 }) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
 
-type HelpSubpage = 'contact' | 'faqs';
+type HelpSubpage = 'contact' | 'faqs' | 'feedback';
 
 const HELP_SUBPAGE_ROUTES: Record<HelpSubpage, string> = {
   contact: HELP_CONTACT_ROUTE,
   faqs: HELP_FAQS_ROUTE,
+  feedback: HELP_FEEDBACK_ROUTE,
 };
 
 interface SupportMatchProps {
@@ -121,16 +124,16 @@ function Help() {
     revalidateOnMount: true,
   });
 
-  const subpage = useMemo<HelpSubpage>(() => {
-    const pathSegments = location.pathname.split('/').filter(Boolean);
-    const lastSegment = last(pathSegments);
-
-    if (lastSegment === 'faqs' || lastSegment === 'contact') {
-      return lastSegment;
-    }
-
-    return 'contact';
-  }, [location.pathname]);
+  const subpage = useMemo<HelpSubpage>(
+    () =>
+      (Object.keys(HELP_SUBPAGE_ROUTES) as HelpSubpage[]).find(page =>
+        isActiveRoute(
+          location.pathname,
+          getAppRoute(HELP_SUBPAGE_ROUTES[page]),
+        ),
+      ) ?? 'contact',
+    [location.pathname],
+  );
 
   const subpageRoute = useCallback((page: string) => {
     const route = HELP_SUBPAGE_ROUTES[page as HelpSubpage];
@@ -155,6 +158,7 @@ function Help() {
       />
 
       {subpage === 'faqs' && <FAQs supportUrl={supportUrl ?? ''} />}
+      {subpage === 'feedback' && <Feedback />}
       {subpage === 'contact' && (
         <Contact supportMatch={supportMatch} isLoading={isMatchesLoading} />
       )}
