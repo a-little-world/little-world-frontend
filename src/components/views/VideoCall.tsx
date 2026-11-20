@@ -580,7 +580,6 @@ function VideoCall() {
     callType,
     postDisconnectRedirect,
     partnerName,
-    partnerProfile,
     partnerImage,
     randomLobbyUuid,
     e2eeKey,
@@ -815,7 +814,6 @@ function VideoCall() {
                     durationMinutes: connectedAtRef.current
                       ? Math.max(1, Math.round(elapsed / 60000))
                       : 0,
-                    profileLine: partnerProfile?.trim() || '',
                     image: chatPhoto || partnerImage || null,
                   });
                 }

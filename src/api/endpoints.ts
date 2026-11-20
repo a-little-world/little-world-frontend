@@ -32,6 +32,7 @@ export const getQuestionsEndpoint = (archived: boolean) =>
   `/api/user/question_cards/?archived=${archived}&category=all`;
 export const E2EE_WORKER_ENDPOINT = '/api/video/e2ee_worker.js';
 
+export const ADVENT_DOORS_ENDPOINT = '/api/advent/doors/';
 export const PARTNER_REGISTER_ENDPOINT = '/api/partner/register/';
 export const PARTNER_LANDING_ENDPOINT = '/api/partner/';
 

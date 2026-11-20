@@ -86,9 +86,11 @@ function PartnerProfiles({
 }) {
   const { t } = useTranslation();
 
-  const { data: matches, isLoading: matchesLoading } = useSWR(
-    getMatchEndpoint(currentPage),
-  );
+  const {
+    data: matches,
+    error: matchesError,
+    isLoading: matchesLoading,
+  } = useSWR(getMatchEndpoint(currentPage), { shouldRetryOnError: false });
   const confirmed = matches?.confirmed;
   const support = matches?.support;
 
@@ -164,7 +166,7 @@ function PartnerProfiles({
 
   return (
     <Matches>
-      {matchesLoading ? (
+      {!matches && matchesLoading && !matchesError ? (
         <StyledProfileCard width={CardSizes.Small} $loading />
       ) : (
         matchesDisplay?.map(match => (

@@ -434,23 +434,6 @@ export const HeroPills = styled.div`
   gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
-export const EyebrowPill = styled(Text).attrs({
-  type: TextTypes.Body6,
-  tag: 'span' as const,
-  bold: true,
-})`
-  align-self: flex-start;
-  color: ${({ theme }) => theme.color.text.button};
-  background: color-mix(
-    in srgb,
-    ${({ theme }) => theme.color.text.info} 55%,
-    transparent
-  );
-  border: 2px solid ${({ theme }) => theme.color.border.info};
-  border-radius: ${({ theme }) => theme.radius.massive};
-  padding: ${({ theme }) => `${theme.spacing.xxxsmall} ${theme.spacing.small}`};
-`;
-
 export const PartnerDoorPill = styled(Text).attrs({
   type: TextTypes.Body6,
   tag: 'span' as const,

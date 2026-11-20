@@ -9,8 +9,45 @@ export type RandomCallLobbyDetails = {
   active_users_count: number;
 };
 
+export const DESIGN_PREVIEW_LOBBY = 'preview';
+
+export const isDesignPreview = (lobbyId?: string) =>
+  lobbyId === DESIGN_PREVIEW_LOBBY;
+
+export const previewCallCount = (search: string) => {
+  const value = new URLSearchParams(search).get('calls');
+  if (value === '0') return 0;
+  if (value === '3') return 3;
+  return 1;
+};
+
+export const previewWindowClosed = (search: string) =>
+  new URLSearchParams(search).get('window') === 'closed';
+
+const hour = 60 * 60 * 1000;
+
+export const previewLobby = (closed: boolean): RandomCallLobbyDetails => {
+  const now = Date.now();
+  return {
+    uuid: DESIGN_PREVIEW_LOBBY,
+    name: 'capgemini',
+    status: !closed,
+    start_time: new Date(
+      closed ? now - 2 * hour : now - 30 * 60 * 1000,
+    ).toISOString(),
+    end_time: new Date(
+      closed ? now - hour : now + 30 * 60 * 1000,
+    ).toISOString(),
+    active_users_count: 4,
+  };
+};
+
+export const PREVIEW_FIRST_NAME = 'Anna';
+
 export type SignedInGuest = {
   email?: string;
+  /** Set by the guest-account work. Absent until that lands, so a real account is not temporary. */
+  isTemporary?: boolean;
   profile?: { first_name?: string | null };
 };
 
@@ -71,9 +108,34 @@ export type GuestCallSummary = {
   partnerName: string;
   partnerId: string | null;
   durationMinutes: number;
-  profileLine?: string;
   image?: string | null;
 };
+
+const SAMPLE_CALLS: GuestCallSummary[] = [
+  {
+    id: 'preview-henry',
+    partnerName: 'Henry',
+    partnerId: 'henry',
+    durationMinutes: 28,
+    image: null,
+  },
+  {
+    id: 'preview-meryem',
+    partnerName: 'Meryem',
+    partnerId: 'meryem',
+    durationMinutes: 12,
+    image: null,
+  },
+  {
+    id: 'preview-tomasz',
+    partnerName: 'Tomasz',
+    partnerId: 'tomasz',
+    durationMinutes: 12,
+    image: null,
+  },
+];
+
+export const previewCalls = (count: number) => SAMPLE_CALLS.slice(0, count);
 
 const summaryKey = (lobbyId: string) =>
   `external-random-call-summary:${lobbyId}`;

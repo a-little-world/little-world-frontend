@@ -207,63 +207,6 @@ export const CopyButton = styled(Button)<{ $copied?: boolean }>`
   `}
 `;
 
-export const CalendarList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xxsmall};
-`;
-
-export const CalendarOption = styled.button`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.small};
-  width: 100%;
-  padding: ${({ theme }) =>
-    `${`calc(${theme.spacing.xsmall} + ${theme.spacing.xxxxsmall})`} ${theme.spacing.small}`};
-  border: none;
-  border-radius: ${({ theme }) => theme.radius.small};
-  background: ${({ theme }) => theme.color.surface.primary};
-  box-shadow: inset 0 0 0 ${({ theme }) => theme.spacing.xxxxsmall}
-    ${({ theme }) => theme.color.border.subtle};
-  text-align: left;
-  cursor: pointer;
-  transition: box-shadow 160ms ease;
-
-  &:hover {
-    box-shadow: inset 0 0 0 ${({ theme }) => theme.spacing.xxxxsmall}
-      ${({ theme }) => theme.color.border.highlight};
-  }
-`;
-
-export const CalendarOptionCopy = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xxxxsmall};
-  min-width: 0;
-  flex: 1;
-`;
-
-export const CalendarOptionTitle = styled(Text).attrs({
-  type: TextTypes.Body5,
-  tag: 'span' as const,
-  bold: true,
-})`
-  color: ${({ theme }) => theme.color.text.bold};
-`;
-
-export const CalendarOptionSubtitle = styled(Text).attrs({
-  type: TextTypes.Body6,
-  tag: 'span' as const,
-})`
-  color: ${({ theme }) => theme.color.text.quaternary};
-`;
-
-export const CalendarChevron = styled.span`
-  display: flex;
-  opacity: 0.5;
-  flex-shrink: 0;
-`;
-
 export const InfoBarWrap = styled.div`
   padding-bottom: ${({ theme }) => theme.spacing.xlarge};
   ${pageSidePadding}

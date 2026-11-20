@@ -37,6 +37,7 @@ import joergPhoto from '../../../images/partner-landing/joerg.webp';
 import monikaPhoto from '../../../images/partner-landing/monika.webp';
 import peterPhoto from '../../../images/partner-landing/peter.webp';
 import { getAppRoute, WP_HOME_ROUTE } from '../../../router/routes';
+import { Pill } from '../../atoms/Pills';
 import PageFooter from '../../blocks/PageFooter/PageFooter';
 import PartnerSignUpCard, {
   SUPPORT_EMAIL,
@@ -50,7 +51,6 @@ import {
   BenefitList,
   BenefitRow,
   CardGrid,
-  EyebrowPill,
   FaqAccordion,
   FaqAccordionContent,
   FaqInner,
@@ -114,8 +114,13 @@ import {
 import PartnerStoryModal, { StoryAvatars } from './PartnerStoryModal';
 import { validatePartnerEmail } from './validation';
 
-const GARLAND_TONES = ['highlight', 'accent', 'heading', 'title'] as const;
-const GARLAND_COUNT = 34;
+export const GARLAND_TONES = [
+  'highlight',
+  'accent',
+  'heading',
+  'title',
+] as const;
+export const GARLAND_COUNT = 34;
 
 const COUNTERPART_ITEMS = [
   { key: 'speech', Icon: MessageIcon },
@@ -421,7 +426,7 @@ const PartnerLandingPage = () => {
               <HeroLayout>
                 <HeroContent>
                   <HeroPills>
-                    <EyebrowPill>{event.campaignLabel}</EyebrowPill>
+                    <Pill $tone="eyebrow">{event.campaignLabel}</Pill>
                   </HeroPills>
                   <HeroTitle>{t('partner_landing.hero_title')}</HeroTitle>
                   <HeroLead>

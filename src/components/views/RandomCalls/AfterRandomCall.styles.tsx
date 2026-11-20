@@ -7,7 +7,8 @@ import {
 import styled, { css } from 'styled-components';
 
 import { softCardShadowValue } from '../PartnerLanding/shadow';
-import { OPEN_LOBBY_DOT } from './ExternalRandomCallsPortal.styles';
+
+const OPTION_CARD_MAX_WIDTH = '640px';
 
 export const Page = styled.main`
   display: flex;
@@ -26,13 +27,12 @@ export const Column = styled.div`
   max-width: 64rem;
   margin: 0 auto;
   padding: ${({ theme }) =>
-    `${theme.spacing.xlarge} ${theme.spacing.medium} ${theme.spacing.xxlarge}`};
+    `${theme.spacing.medium} ${theme.spacing.medium} ${theme.spacing.xxlarge}`};
   text-align: center;
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.xxxlarge} ${theme.spacing.large}
-        ${theme.spacing.massive};
+      padding: ${theme.spacing.xlarge} ${theme.spacing.large};
     }
   `}
 `;
@@ -45,6 +45,7 @@ export const Title = styled(Text).attrs({
   margin: 0;
   color: ${({ theme }) => theme.color.text.title};
   text-wrap: balance;
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
@@ -53,44 +54,22 @@ export const Title = styled(Text).attrs({
   `}
 `;
 
-export const Pills = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing.small};
-  margin-top: ${({ theme }) => theme.spacing.medium};
-`;
-
-export const Pill = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.xsmall};
-  padding: ${({ theme }) => `${theme.spacing.xsmall} ${theme.spacing.small}`};
-  border-radius: ${({ theme }) => theme.radius.massive};
-  background: ${({ theme }) => theme.color.surface.secondary};
-  color: ${({ theme }) => theme.color.text.secondary};
-  font-size: 0.875rem;
-  font-weight: 600;
-`;
-
 export const WindowStatus = styled.p<{ $open: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.xsmall};
-  margin: ${({ theme }) => `${theme.spacing.medium} 0 0`};
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
   color: ${({ theme, $open }) =>
     $open ? theme.color.text.heading : theme.color.text.secondary};
   font-size: 0.875rem;
   font-weight: 600;
-`;
 
-export const StatusDot = styled.span<{ $open: boolean }>`
-  width: 0.625rem;
-  height: 0.625rem;
-  border-radius: ${({ theme }) => theme.radius.half};
-  background: ${({ theme, $open }) =>
-    $open ? OPEN_LOBBY_DOT : theme.color.text.quaternary};
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      margin-bottom: ${theme.spacing.large};
+    }
+  `}
 `;
 
 export const Cards = styled.div`
@@ -98,12 +77,13 @@ export const Cards = styled.div`
   grid-template-columns: 1fr;
   gap: ${({ theme }) => theme.spacing.medium};
   width: 100%;
-  margin-top: ${({ theme }) => theme.spacing.large};
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
       align-items: stretch;
+      justify-items: center;
     }
   `}
 `;
@@ -111,21 +91,70 @@ export const Cards = styled.div`
 export const OptionCard = styled(Card)<{ $recommended?: boolean }>`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   height: 100%;
   padding: ${({ theme }) => theme.spacing.large};
-  text-align: center;
+  text-align: left;
   box-shadow: ${({ theme }) => softCardShadowValue({ theme })};
   border: 2px solid
     ${({ theme, $recommended }) =>
       $recommended ? theme.color.text.title : 'transparent'};
+  max-width: ${OPTION_CARD_MAX_WIDTH};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      align-items: center;
+      text-align: center;
+    }
+  `}
+`;
+
+export const CardIntro = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+  width: 100%;
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      flex-direction: column;
+      margin-bottom: 0;
+    }
+  `}
+`;
+
+export const CardCopy = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
 `;
 
 export const IllustrationSlot = styled.div`
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  height: 7.5rem;
+  width: 5.5rem;
+
+  svg,
+  img {
+    width: 5.5rem;
+    height: auto;
+  }
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.small}) {
+      width: auto;
+      height: 7.5rem;
+
+      svg,
+      img {
+        width: 7.5rem;
+      }
+    }
+  `}
 `;
 
 export const CardTitle = styled(Text).attrs({
@@ -133,22 +162,26 @@ export const CardTitle = styled(Text).attrs({
   tag: 'h2' as const,
   bold: true,
 })`
-  margin: ${({ theme }) => `${theme.spacing.small} 0 0`};
+  margin-bottom: ${({ theme }) => theme.spacing.small};
 `;
 
 export const CardBody = styled(Text).attrs({
   type: TextTypes.Body5,
   tag: 'p' as const,
 })`
-  margin: ${({ theme }) => `${theme.spacing.xsmall} 0 ${theme.spacing.medium}`};
+  margin-bottom: 0;
   color: ${({ theme }) => theme.color.text.secondary};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      margin: ${theme.spacing.xsmall} 0 ${theme.spacing.medium};
+    }
+  `}
 `;
 
 export const CardButton = styled(Button)`
-  && {
-    width: 100%;
-    margin-top: auto;
-  }
+  margin-top: auto;
+  gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 export const ReportRow = styled.p`
@@ -157,9 +190,9 @@ export const ReportRow = styled.p`
   align-items: center;
   justify-content: center;
   gap: ${({ theme }) => theme.spacing.xsmall};
-  margin: ${({ theme }) => `${theme.spacing.large} 0 0`};
   color: ${({ theme }) => theme.color.text.tertiary};
   font-size: 0.875rem;
+  margin-top: auto;
 `;
 
 export const EndedCopy = styled(Text).attrs({
@@ -167,6 +200,6 @@ export const EndedCopy = styled(Text).attrs({
   tag: 'p' as const,
 })`
   max-width: 36rem;
-  margin: ${({ theme }) => `${theme.spacing.medium} 0 0`};
+  margin-bottom: ${({ theme }) => theme.spacing.medium};
   color: ${({ theme }) => theme.color.text.secondary};
 `;

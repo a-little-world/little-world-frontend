@@ -21,6 +21,8 @@ export const PARTNER_ROUTE = 'resources/partners/:partnerSlug?/';
 export const TRAININGS_ROUTE = 'resources/trainings';
 export const TRAINING_ROUTE = 'resources/trainings/:trainingSlug';
 export const COURSE_PREVIEW_ROUTE = 'courses/preview/:courseSlug';
+/** Learner Advent doors. Reached only by URL; nothing links here yet. */
+export const ADVENT_DOORS_ROUTE = 'advent';
 export const SURVEYS_ROUTE = 'surveys';
 export const SURVEY_ROUTE = `${SURVEYS_ROUTE}/:slug`;
 
@@ -44,7 +46,7 @@ export const ADVENT_LANDING_PARTNER_ROUTE = 'advents-gespraeche/:partnerSlug';
 export const ADVENT_GUEST_LOBBY_ROUTE = 'gast';
 export const ADVENT_GUEST_AFTER_CALL_ROUTE = 'danach';
 export const APP_RANDOM_CALL_AFTER_ROUTE = 'post-call';
-export const ADVENT_GUEST_STAY_ROUTE = 'kontakt';
+export const ADVENT_GUEST_STAY_ROUTE = 'session-ended';
 export const getAdventGuestLobbyRoute = (lobbyId?: string) =>
   `/${ADVENT_LANDING_ROUTE}/${ADVENT_GUEST_LOBBY_ROUTE}${
     lobbyId ? `/${lobbyId}` : ''

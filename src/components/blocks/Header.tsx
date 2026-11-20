@@ -96,9 +96,11 @@ type HeaderProps = {
   /** Replaces language and policy links. Used when the page must not offer app navigation. */
   endSlot?: ReactNode;
   logoLinksOut?: boolean;
+  /** In-app path for the logo. Takes precedence over the usual logo link. */
+  logoTo?: string;
 };
 
-const Header = ({ endSlot, logoLinksOut = true }: HeaderProps) => {
+const Header = ({ endSlot, logoLinksOut = true, logoTo }: HeaderProps) => {
   const { t } = useTranslation();
   const { data: isAuthenticated } = useSWR(IS_AUTHENTICATED_ENDPOINT);
   const { data: user } = useSWR(isAuthenticated ? USER_ENDPOINT : null);
@@ -113,7 +115,9 @@ const Header = ({ endSlot, logoLinksOut = true }: HeaderProps) => {
       {logo}
     </LogoLink>
   );
-  if (!logoLinksOut) {
+  if (logoTo) {
+    logoLink = <LogoRouterLink to={logoTo}>{logo}</LogoRouterLink>;
+  } else if (!logoLinksOut) {
     logoLink = <LogoMark>{logo}</LogoMark>;
   } else if (accessToMainApp) {
     logoLink = <LogoRouterLink to={getAppRoute()}>{logo}</LogoRouterLink>;

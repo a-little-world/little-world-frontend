@@ -7,7 +7,6 @@ import {
   ButtonVariations,
   CalendarIcon,
   ClockIcon,
-  ConfettiImage,
   CustomThemeProvider,
   MessageIcon,
   ProfileIcon,
@@ -15,7 +14,7 @@ import {
   TickIcon,
 } from '@a-little-world/little-world-design-system';
 import { I18nextProvider, useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
@@ -24,12 +23,18 @@ import {
   USER_ENDPOINT,
 } from '../../../api/endpoints';
 import { LANGUAGES } from '../../../constants/index';
-import { formatDate, formatTime, toTimeZone } from '../../../helpers/date';
+import {
+  formatDate,
+  formatMinutes,
+  formatTime,
+  toTimeZone,
+} from '../../../helpers/date';
 import { ADVENT_LANDING_ROUTE, SIGN_UP_ROUTE } from '../../../router/routes';
+import { Pill } from '../../atoms/Pills';
 import Header from '../../blocks/Header';
 import PageFooter from '../../blocks/PageFooter/PageFooter';
 import { PARTNER_EVENT_TIME_ZONE } from '../PartnerLanding/constants';
-import { Column, Page, Pill, Pills, Title } from './AfterGuestCall.styles';
+import { Column, Page, Title } from '../RandomCalls/AfterRandomCall.styles';
 import {
   AccountCard,
   Avatar,
@@ -42,16 +47,26 @@ import {
   CallName,
   CallRow,
   CardHeading,
+  DatePill,
+  FinalBenefit,
   Footnote,
   Goodbye,
   Illustration,
   LaterLink,
   OfferLayout,
+  OfferPills,
+  OfferTitle,
+  StyledConfetti,
   TickCircle,
 } from './GuestAccountOffer.styles';
 import GuestChrome from './GuestChrome';
 import {
   GuestCallSummary,
+  isDesignPreview,
+  PREVIEW_FIRST_NAME,
+  previewCallCount,
+  previewCalls,
+  previewLobby,
   RandomCallLobbyDetails,
   readGuestCalls,
   readGuestFirstName,
@@ -95,15 +110,23 @@ const GuestAccountOfferPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { lobbyId = '' } = useParams<{ lobbyId: string }>();
-  const calls = useMemo(() => readGuestCalls(lobbyId), [lobbyId]);
+  const [searchParams] = useSearchParams();
+  const preview = isDesignPreview(lobbyId);
+  const previewSearch = searchParams.toString();
+  const calls = useMemo(() => {
+    if (preview) return previewCalls(previewCallCount(previewSearch));
+    return readGuestCalls(lobbyId);
+  }, [lobbyId, preview, previewSearch]);
   const { data: user } = useSWR<SignedInGuest>(USER_ENDPOINT);
-  const { data: lobby } = useSWR<RandomCallLobbyDetails>(
-    lobbyId ? getRandomCallLobbyEndpoint(lobbyId) : null,
+  const { data: fetchedLobby } = useSWR<RandomCallLobbyDetails>(
+    !preview && lobbyId ? getRandomCallLobbyEndpoint(lobbyId) : null,
   );
+  const lobby = preview ? previewLobby(false) : fetchedLobby;
   const [later, setLater] = useState(false);
 
-  const firstName =
-    readGuestFirstName(lobbyId) || user?.profile?.first_name?.trim() || '';
+  const firstName = preview
+    ? PREVIEW_FIRST_NAME
+    : readGuestFirstName(lobbyId) || user?.profile?.first_name?.trim() || '';
   const nameSuffix = firstName ? `, ${firstName}` : '';
   const several = calls.length >= 2;
   const startsAt = lobby?.start_time ? new Date(lobby.start_time) : null;
@@ -122,12 +145,7 @@ const GuestAccountOfferPage = () => {
   const names = uniqueNames(calls);
   const oneCall = calls[0];
   const durationLabel = (minutes: number) =>
-    t(
-      minutes === 1
-        ? 'external_random_calls.after.duration_one'
-        : 'external_random_calls.after.duration_other',
-      { count: minutes },
-    );
+    formatMinutes(minutes, i18n.language);
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -187,11 +205,13 @@ const GuestAccountOfferPage = () => {
         ) : (
           <>
             <Illustration>
-              <ConfettiImage label="" width={160} height={160} />
+              <StyledConfetti label="" width={160} height={160} />
             </Illustration>
-            <Title>{t(headlineKey, { name: nameSuffix })}</Title>
+            <OfferTitle $withPills={calls.length > 0}>
+              {t(headlineKey, { name: nameSuffix })}
+            </OfferTitle>
             {calls.length > 0 ? (
-              <Pills>
+              <OfferPills>
                 {several ? (
                   <Pill>
                     <MessageIcon
@@ -220,7 +240,7 @@ const GuestAccountOfferPage = () => {
                   </Pill>
                 )}
                 {!several && whenLabel ? (
-                  <Pill>
+                  <DatePill>
                     <CalendarIcon
                       label=""
                       width={16}
@@ -228,7 +248,7 @@ const GuestAccountOfferPage = () => {
                       color={theme.color.text.secondary}
                     />
                     {whenLabel}
-                  </Pill>
+                  </DatePill>
                 ) : null}
                 <Pill>
                   <ClockIcon
@@ -252,27 +272,17 @@ const GuestAccountOfferPage = () => {
                     {whenLabel}
                   </Pill>
                 ) : null}
-              </Pills>
+              </OfferPills>
             ) : null}
             <OfferLayout $single={!several}>
               {several ? (
                 <CallListCard>
                   <CardHeading>
-                    {dateLabel
-                      ? t('external_random_calls.offer.list_title', {
-                          date: dateLabel,
-                        })
-                      : t('external_random_calls.offer.list_title_plain')}
+                    {t('external_random_calls.offer.list_title_plain')}
                   </CardHeading>
                   {calls.map(call => {
-                    const minutes = durationLabel(call.durationMinutes);
-                    const meta = call.profileLine
-                      ? t('external_random_calls.offer.profile_line', {
-                          duration: minutes,
-                          profile: call.profileLine,
-                        })
-                      : minutes;
-                    const seed = call.partnerId || call.partnerName || call.id || '';
+                    const seed =
+                      call.partnerId || call.partnerName || call.id || '';
                     return (
                       <CallRow key={call.id}>
                         <Avatar $tone={avatarTone(seed)} aria-hidden="true">
@@ -287,7 +297,9 @@ const GuestAccountOfferPage = () => {
                             {call.partnerName ||
                               t('external_random_calls.offer.someone')}
                           </CallName>
-                          <CallMeta>{meta}</CallMeta>
+                          <CallMeta>
+                            {durationLabel(call.durationMinutes)}
+                          </CallMeta>
                         </CallCopy>
                       </CallRow>
                     );
@@ -332,7 +344,7 @@ const GuestAccountOfferPage = () => {
                     {t('external_random_calls.offer.benefit_calls')}
                   </BenefitText>
                 </Benefit>
-                <Benefit>
+                <FinalBenefit>
                   <TickCircle>
                     <TickIcon
                       label=""
@@ -344,7 +356,7 @@ const GuestAccountOfferPage = () => {
                   <BenefitText>
                     {t('external_random_calls.offer.benefit_email')}
                   </BenefitText>
-                </Benefit>
+                </FinalBenefit>
                 <Button
                   appearance={ButtonAppearance.Primary}
                   size={ButtonSizes.Stretch}

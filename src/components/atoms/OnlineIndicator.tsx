@@ -34,7 +34,7 @@ const IndicatorText = styled(Text)`
 
 const pulse = keyframes`
   0% {
-    box-shadow: 0 0 0 0px rgba(46, 169, 87, 0.2);
+    box-shadow: 0 0 0 0px rgba(46, 169, 87, 0.4);
   }
   100% {
     box-shadow: 0 0 0 4px rgba(46, 169, 87, 0);
@@ -42,7 +42,7 @@ const pulse = keyframes`
 `;
 
 export const OnlineCircle = styled.span`
-  background-color: ${({ theme }) => theme.color.status.success};
+  background-color: ${({ theme }) => theme.color.surface.indicator};
   height: 9px;
   width: 9px;
   border-radius: 100%;

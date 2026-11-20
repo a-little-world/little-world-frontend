@@ -2,6 +2,7 @@ import {
   differenceInCalendarDays,
   format,
   formatDistance,
+  formatDuration as formatLength,
   startOfDay,
 } from 'date-fns';
 import { de, enGB } from 'date-fns/locale';
@@ -15,6 +16,21 @@ export const formatTime = (date: Date) =>
 
 export const formatTimeRange = (start: Date, end: Date) =>
   `${formatTime(start)}–${formatTime(end)}`;
+
+/** A length of time, such as "27 minutes" or "1 hour 3 minutes". */
+export const formatMinutes = (minutes: number, locale: string) => {
+  const total = Math.max(0, Math.round(minutes));
+  const hours = Math.floor(total / 60);
+  const remainder = total % 60;
+  let duration: { hours?: number; minutes?: number } = { minutes: total };
+  if (hours > 0 && remainder > 0) duration = { hours, minutes: remainder };
+  else if (hours > 0) duration = { hours };
+
+  return formatLength(duration, {
+    locale: locale === LANGUAGES.en ? enGB : de,
+    zero: total === 0,
+  });
+};
 
 /**
  * The wall-clock time of `date` in `timeZone`, as a Date whose local fields hold it.

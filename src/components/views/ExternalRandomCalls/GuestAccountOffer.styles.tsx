@@ -1,11 +1,14 @@
 import {
   Card,
+  ConfettiImage,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
+import { Pill, Pills } from '../../atoms/Pills';
 import { softCardShadowValue } from '../PartnerLanding/shadow';
+import { Title } from '../RandomCalls/AfterRandomCall.styles';
 
 export const Illustration = styled.div`
   display: flex;
@@ -13,12 +16,23 @@ export const Illustration = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.small};
 `;
 
+export const StyledConfetti = styled(ConfettiImage)`
+  width: 80px;
+  height: 80px;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      width: 104px;
+      height: 104px;
+    }
+  `}
+`;
+
 export const OfferLayout = styled.div<{ $single: boolean }>`
   display: grid;
   grid-template-columns: 1fr;
   gap: ${({ theme }) => theme.spacing.medium};
   width: 100%;
-  margin-top: ${({ theme }) => theme.spacing.large};
   text-align: left;
 
   ${({ $single, theme }) =>
@@ -29,7 +43,7 @@ export const OfferLayout = styled.div<{ $single: boolean }>`
       : css`
           @media (min-width: ${theme.breakpoints.medium}) {
             grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-            align-items: start;
+            align-items: stretch;
           }
         `}
 `;
@@ -139,6 +153,10 @@ export const Benefit = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
 `;
 
+export const FinalBenefit = styled(Benefit)`
+  margin-bottom: ${({ theme }) => theme.spacing.xxxsmall};
+`;
+
 export const TickCircle = styled.span`
   display: inline-flex;
   flex-shrink: 0;
@@ -157,6 +175,25 @@ export const BenefitText = styled(Text).attrs({
   margin: 0;
 `;
 
+export const OfferTitle = styled(Title)<{ $withPills: boolean }>`
+  margin-bottom: ${({ theme, $withPills }) =>
+    $withPills ? theme.spacing.medium : theme.spacing.large};
+`;
+
+export const OfferPills = styled(Pills)`
+  margin-bottom: ${({ theme }) => theme.spacing.large};
+`;
+
+export const DatePill = styled(Pill)`
+  display: none;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      display: inline-flex;
+    }
+  `}
+`;
+
 export const LaterLink = styled.div`
   display: flex;
   justify-content: center;
@@ -166,7 +203,7 @@ export const Footnote = styled(Text).attrs({
   type: TextTypes.Body6,
   tag: 'p' as const,
 })`
-  margin: ${({ theme }) => `${theme.spacing.xsmall} 0 0`};
+  margin: 0;
   color: ${({ theme }) => theme.color.text.tertiary};
   font-size: 0.75rem;
   text-align: center;
