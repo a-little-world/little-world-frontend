@@ -269,6 +269,7 @@
   "file_upload.change_files": "Zum Ändern von Dateien klicken",
   "file_upload.click_to_upload": "Zum Hochladen klicken",
   "file_upload.drop_hint": "oder Bild ziehen und hier ablegen",
+  "file_upload.remove_file": "Datei entfernen",
   "forgot_password.cancel_btn": "Abbrechen",
   "forgot_password.description": "Kein Grund zur Sorge! Gib einfach die E-Mail Adresse ein, mit der du dich registriert hast. Du kannst dann ein neues Passwort festlegen.",
   "forgot_password.email_label": "Registrierte E-mail",

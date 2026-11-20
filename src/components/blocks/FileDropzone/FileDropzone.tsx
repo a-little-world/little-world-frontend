@@ -9,6 +9,9 @@ import {
 } from 'react';
 
 import {
+  Button,
+  ButtonVariations,
+  CloseIcon,
   ImageIcon,
   ImageSearchIcon,
   Label,
@@ -23,6 +26,7 @@ import {
   DesktopUploadIcon,
   DropZoneContainer,
   FileInput,
+  FileList,
   FileName,
   UploadArea,
 } from './FileDropzone.styles';
@@ -128,16 +132,16 @@ const FileDropzone = ({
   uploadedImage,
 }: FileDropzoneProps) => {
   const { t } = useTranslation();
-  const [filenames, setFilenames] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const theme = useTheme();
   const fileInputId = useId();
   const inputElementRef = useRef<HTMLInputElement | null>(null);
-  const hasSelectedFiles = filenames.length > 0 || Boolean(uploadedImage);
+  const hasSelectedFiles = selectedFiles.length > 0 || Boolean(uploadedImage);
   const ctaKey = hasSelectedFiles ? 'change_files' : 'click_to_upload';
 
   const updateSelectedFiles = (files: File[]) => {
-    setFilenames(files.map(file => file.name));
+    setSelectedFiles(files);
     onFileChange?.(files);
   };
 
@@ -190,7 +194,7 @@ const FileDropzone = ({
   const handleImageDelete = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setFilenames([]);
+    setSelectedFiles([]);
 
     if (inputElementRef.current) {
       inputElementRef.current.value = '';
@@ -198,6 +202,17 @@ const FileDropzone = ({
 
     onFileChange?.([]);
     onImageDelete?.(e);
+  };
+
+  const handleFileRemove = (e: MouseEvent, fileIndex: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const remainingFiles = selectedFiles.filter(
+      (_, index) => index !== fileIndex,
+    );
+
+    syncInputFiles(remainingFiles);
+    updateSelectedFiles(remainingFiles);
   };
 
   return (
@@ -244,11 +259,27 @@ const FileDropzone = ({
         >
           {t(`file_upload.${ctaKey}`)}
         </Text>
-        {showSelectedFiles && filenames.length > 0 ? (
-          <FileName>
-            <ImageIcon label="uploaded file" width="16" height="16" />
-            {filenames.map(fileName => fileName).join(', ')}
-          </FileName>
+        {showSelectedFiles && selectedFiles.length > 0 ? (
+          <FileList>
+            {selectedFiles.map((file, index) => (
+              <FileName key={`${file.name}-${file.lastModified}`}>
+                <ImageIcon label="uploaded file" width="16" height="16" />
+                {file.name}
+                <Button
+                  type="button"
+                  variation={ButtonVariations.Icon}
+                  onClick={e => handleFileRemove(e, index)}
+                  aria-label={t('file_upload.remove_file')}
+                >
+                  <CloseIcon
+                    label={t('file_upload.remove_file')}
+                    width={16}
+                    height={16}
+                  />
+                </Button>
+              </FileName>
+            ))}
+          </FileList>
         ) : (
           <Text color={theme.color.text.quaternary} type={TextTypes.Body5}>
             {dropHint || t('file_upload.drop_hint')}
