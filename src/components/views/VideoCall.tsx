@@ -43,7 +43,12 @@ import {
 } from 'livekit-client';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  matchPath,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
@@ -66,7 +71,9 @@ import {
 import { createEncryptedRoom, isE2EEAvailable } from '../../helpers/e2ee';
 import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import useMediaQuery from '../../hooks/useMediaQuery';
+import useNotificationHandler from '../../hooks/useNotificationHandler';
 import {
+  CHAT_ROUTE,
   getAppRoute,
   getCallSetupRoute,
   RANDOM_CALLS_ROUTE,
@@ -682,18 +689,35 @@ function VideoCall() {
     }
   }, [urlUserId, token, navigate]);
 
+  const openChat = useCallback(() => {
+    setShowChat(true);
+    setIsFullScreen(false);
+    setSideSelection('chat'); // Switch sidebar to chat tab
+    setSelectedDrawerOption('chat'); // Open chat drawer on mobile
+  }, []);
+
   // Set up callback to open chat when text is added from TranslationTool
   useEffect(() => {
-    setOnTextAdded(() => {
-      setShowChat(true);
-      setSideSelection('chat'); // Switch sidebar to chat tab
-      setSelectedDrawerOption('chat'); // Open chat drawer on mobile
-    });
+    setOnTextAdded(openChat);
 
     return () => {
       setOnTextAdded(null);
     };
-  }, [setOnTextAdded]);
+  }, [setOnTextAdded, openChat]);
+
+  const chatVisible = isDesktop
+    ? showChat && sideSelection === 'chat' && !isFullScreen
+    : selectedDrawerOption === 'chat';
+
+  useNotificationHandler(({ data }) => {
+    const path = data?.path;
+    const notificationChatId =
+      path && matchPath(getAppRoute(CHAT_ROUTE), path)?.params.chatId;
+    if (!notificationChatId || notificationChatId !== chatData?.uuid) {
+      return 'drop';
+    }
+    return chatVisible ? 'drop' : openChat;
+  });
 
   const onSidebarToggle = (selection: 'chat' | 'questions') => {
     if (!isDesktop) {
@@ -858,7 +882,10 @@ function VideoCall() {
             {showTranslator && <DesktopTranslationTool />}
           </VideoContainer>
           {isDesktop ? (
-            <CallSidebar isDisplayed={showChat} chatId={chatData?.uuid} />
+            <CallSidebar
+              isDisplayed={showChat && !isFullScreen}
+              chatId={chatData?.uuid}
+            />
           ) : (
             <>
               <Drawer

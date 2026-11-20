@@ -18,4 +18,5 @@ export type {
   DomCommunicationMessage,
   DomCommunicationMessageFn,
   DomCommunicationResponse,
+  NotificationPayload,
 } from './features/stores/receiveHandler';
