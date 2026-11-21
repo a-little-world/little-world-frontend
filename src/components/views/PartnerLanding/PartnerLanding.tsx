@@ -22,6 +22,7 @@ import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import { getPartnerLandingEndpoint } from '../../../api/endpoints';
+import { toBackendUrl } from '../../../api/helpers';
 import {
   fetchPartnerLanding,
   PartnerLanding,
@@ -206,7 +207,10 @@ const PartnerHeroChrome = ({ partner }: { partner: PartnerLanding }) => {
               {t('partner_landing.in_partnership_with')}
             </PartnerCoopLabel>
             {partner.logo ? (
-              <PartnerLogo src={partner.logo} alt={partner.name} />
+              <PartnerLogo
+                src={toBackendUrl(partner.logo)}
+                alt={partner.name}
+              />
             ) : (
               <PartnerName>{partner.name}</PartnerName>
             )}

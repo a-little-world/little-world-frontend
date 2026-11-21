@@ -13,8 +13,10 @@ export type {
   IntegrityCheckRequestDataWeb,
   IntegrityCheckWeb,
 } from './features/integrityCheck';
+export type { SerializedFormDataEntry } from './api/types';
 export type {
   DomCommunicationMessage,
   DomCommunicationMessageFn,
   DomCommunicationResponse,
+  NotificationPayload,
 } from './features/stores/receiveHandler';
