@@ -50,6 +50,7 @@ const SIGN_UP_COMPANY_SLUG_PREFIXES_HIDE_LABEL = [
   'dl-',
   'club',
   'bef',
+  'vip',
 ] as const;
 
 function signUpCompanySlugHidesNameLabel(company: string): boolean {
