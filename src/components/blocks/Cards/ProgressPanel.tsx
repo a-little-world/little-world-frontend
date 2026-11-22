@@ -120,7 +120,7 @@ const ProgressPanel: React.FC<ProgressPanelProps> = ({
       />
       <NudgeRow>
         <NudgeIconWrapper aria-hidden="true">
-          <Icon width={16} height={16} color={iconColor} label="" />
+          <Icon width={16} height={16} color={iconColor} />
         </NudgeIconWrapper>
         <NudgeLine type={TextTypes.Body6}>
           {t(nudge.textKey, { minutes })}

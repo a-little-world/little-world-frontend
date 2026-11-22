@@ -8,7 +8,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   Label,
-  Modal,
   PencilIcon,
   PlusIcon,
   Text,
@@ -31,6 +30,7 @@ import { USER_ENDPOINT } from '../../../../api/endpoints';
 import { USER_FIELDS } from '../../../../constants/index';
 import useImageCompression from '../../../../hooks/useImageCompression';
 import useSystemModalBlocker from '../../../../hooks/useSystemModalBlocker';
+import Modal from '../../../atoms/Modal';
 import { ImageSizes } from '../../../atoms/ProfileImage';
 import UploadImage from '../../../atoms/UploadImage';
 import FileDropzone, { AcceptedFiles } from '../../FileDropzone/FileDropzone';
@@ -206,7 +206,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                 <UploadImage
                   icon={
                     <PlusIcon
-                      label="add image"
+                      label={t('a11y.add_image')}
                       color={theme.color.text.accent}
                       width={48}
                       height={48}
@@ -258,7 +258,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                     type="button"
                   >
                     <ChevronLeftIcon
-                      label="previous avatar"
+                      label={t('a11y.previous_avatar')}
                       width={6}
                       height={10}
                     />
@@ -281,7 +281,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                     type="button"
                   >
                     <ChevronRightIcon
-                      label="next avatar"
+                      label={t('a11y.next_avatar')}
                       width={6}
                       height={10}
                     />
@@ -305,7 +305,7 @@ const ProfilePic: React.FC<ProfilePicProps> = ({
                   color={theme.color.text.accent}
                 >
                   <PencilIcon
-                    label="edit avatar"
+                    label={t('a11y.edit_avatar')}
                     color={theme.color.text.accent}
                     width={12}
                   />

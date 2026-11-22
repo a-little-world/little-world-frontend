@@ -80,7 +80,7 @@ function CallHistoryRow({
   return (
     <Row className={className}>
       <IconWrap aria-hidden>
-        <Icon label="" width={20} height={20} color={theme.color.text.accent} />
+        <Icon width={20} height={20} color={theme.color.text.accent} />
       </IconWrap>
       <Middle>
         <Text type={TextTypes.Body5} tag="span">

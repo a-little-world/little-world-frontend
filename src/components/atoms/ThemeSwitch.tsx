@@ -57,9 +57,17 @@ const ThemeSwitch = ({ withLabel = false }: { withLabel?: boolean }) => {
       onClick={onToggle}
     >
       {isDarkMode ? (
-        <SunIcon width="24" height="24" label="turn dark mode on" />
+        <SunIcon
+          width="24"
+          height="24"
+          label={t('a11y.switch_to_light_mode')}
+        />
       ) : (
-        <MoonIcon width="24" height="24" label="turn light mode on" />
+        <MoonIcon
+          width="24"
+          height="24"
+          label={t('a11y.switch_to_dark_mode')}
+        />
       )}
     </SwitchButton>
   );

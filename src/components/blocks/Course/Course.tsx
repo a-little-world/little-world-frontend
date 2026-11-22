@@ -500,7 +500,7 @@ export default function Course({
                       : () => goToVideo(activeChapterIndex)
                   }
                 >
-                  <ArrowLeftIcon label="back" width={12} height={12} />
+                  <ArrowLeftIcon width={12} height={12} />
                   {effectiveMode === 'video'
                     ? (backLabel ?? t('course.nav_back'))
                     : t('course.nav_back_to_video')}

@@ -295,7 +295,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             circular
             height="16px"
             width="16px"
-            label="edit profile image"
+            label={t('a11y.edit_profile_image')}
           />
         </ProfileImageButton>
       ) : (
@@ -321,7 +321,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 text={t('profile_card.user_actions')}
                 trigger={
                   <div style={{ display: 'flex' }}>
-                    <DotsIcon height="16px" width="16px" label="menu options" />
+                    <DotsIcon
+                      height="16px"
+                      width="16px"
+                      label={t('profile_card.user_actions')}
+                    />
                   </div>
                 }
               />
@@ -392,7 +396,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                     disabled={isDeleted}
                     Icon={ProfileIcon}
                     iconGradient={Gradients.Orange}
-                    iconLabel="visit profile"
                     text={t('partner_profile.profile')}
                   />
                 </div>
@@ -408,7 +411,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                   state={{ userPk }}
                   Icon={MessageIcon}
                   iconGradient={Gradients.Orange}
-                  iconLabel="chat icon"
                   unreadCount={unreadCount}
                   text={t(
                     isDeleted
@@ -433,7 +435,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 <VideoIcon
                   gradient={isDeleted ? undefined : Gradients.Orange}
                   color={isDeleted ? theme.color.text.disabled : undefined}
-                  label="call icon"
                   width={38}
                   height={32}
                 />

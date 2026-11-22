@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import {
-  Modal,
   MultiSelect,
   MultiSelectVariants,
   StatusTypes,
@@ -38,6 +37,7 @@ import {
   constructCheckboxes,
   restrictedLangLevels,
 } from '../../userForm/formPages';
+import Modal from '../atoms/Modal';
 import PageHeader from '../atoms/PageHeader';
 import PartnerActionCard from '../blocks/Cards/PartnerActionCard';
 import ProfileCard from '../blocks/Cards/ProfileCard';
@@ -332,7 +332,17 @@ function Profile() {
           )}
         </ProfileDetail>
       </PageContent>
-      <Modal open={!!editingField} onClose={() => setEditingField(null)}>
+      <Modal
+        open={!!editingField}
+        onClose={() => setEditingField(null)}
+        label={
+          editingField
+            ? t(
+                `profile.editor_title_${(profileFields as Record<string, any>)[editingField]?.dataField}`,
+              )
+            : undefined
+        }
+      >
         <ProfileEditor
           onClose={() => setEditingField(null)}
           field={editingField}

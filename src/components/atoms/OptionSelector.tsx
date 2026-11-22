@@ -10,6 +10,8 @@ export interface OptionSelectorOption<T = string | number> {
   value: T;
   label: string;
   ariaLabel?: string;
+  // Language of the option's own text, e.g. 'de' for "Deutsch"
+  lang?: string;
 }
 
 const Selector = styled.div`
@@ -41,6 +43,8 @@ export interface OptionSelectorProps<T = string | number> {
   value: T;
   onChange: (value: T) => void;
   ariaLabelPrefix?: string;
+  // Accessible name for the whole group
+  groupLabel?: string;
 }
 
 function OptionSelector<T extends string | number>({
@@ -48,9 +52,10 @@ function OptionSelector<T extends string | number>({
   value,
   onChange,
   ariaLabelPrefix,
+  groupLabel,
 }: OptionSelectorProps<T>) {
   return (
-    <Selector role="group">
+    <Selector role="group" aria-label={groupLabel}>
       {options.map(option => {
         const isActive = option.value === value;
         const ariaLabel =
@@ -64,6 +69,7 @@ function OptionSelector<T extends string | number>({
             $active={isActive}
             disabled={isActive}
             aria-label={ariaLabel}
+            lang={option.lang}
             aria-pressed={isActive}
             onClick={() => onChange(option.value)}
           >

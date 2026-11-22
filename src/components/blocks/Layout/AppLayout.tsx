@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
-import { Modal } from '@a-little-world/little-world-design-system';
+import { useTranslation } from 'react-i18next';
 import {
   Navigate,
   Outlet,
@@ -34,6 +34,7 @@ import useModalManagerStore, {
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
 import { getAppRoute, ONBOARDING_ROUTE } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
+import Modal from '../../atoms/Modal';
 import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
 import MatchModal from '../Matching/MatchModal';
@@ -100,6 +101,7 @@ const Content = styled.section<{ $isVH: boolean }>`
 
 export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { openModal, closeModal, dismissModal, isModalOpen } =
     useModalManagerStore();
@@ -309,6 +311,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
           });
           closeModal();
         }}
+        label={t('pcs_main_heading')}
       >
         <CallSetup
           onJoined={() => {
@@ -323,6 +326,7 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
         open={isModalOpen(ModalTypes.SURVEY.id) && !!pendingSurvey}
         onClose={handleSurveyClose}
         closeOnBackdropClick={false}
+        label={pendingSurvey?.title}
       >
         {!!pendingSurvey && (
           <Survey
@@ -337,6 +341,11 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
       <Modal
         open={isModalOpen(ModalTypes.INCOMING_CALL.id)}
         onClose={onRejectCall}
+        label={
+          activeCallRoom?.partner?.first_name
+            ? `${activeCallRoom.partner.first_name} ${t('pcs_waiting')}`
+            : undefined
+        }
       >
         <IncomingCall
           userProfile={activeCallRoom?.partner}

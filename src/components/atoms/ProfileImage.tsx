@@ -113,14 +113,14 @@ function ProfileImage({
     <CircleImage className={className} $size={size}>
       <CircleImageContent
         src={toBackendUrl(image as string) || DEFAULT_PROFILE_IMAGE}
-        alt="profile image"
+        alt=""
       />
       {children}
     </CircleImage>
   ) : (
     <Image
       className={className}
-      alt="user image"
+      alt=""
       src={toBackendUrl(image as string)}
       $size={size}
     />

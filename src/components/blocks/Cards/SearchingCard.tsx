@@ -124,10 +124,7 @@ export function SearchingCard({
     <StyledCard width={CardSizes.Small} $hasMatch={hasMatch}>
       {hasMatch ? (
         <>
-          <SearchingImage
-            label="searching for match image"
-            $hasMatch={hasMatch}
-          />
+          <SearchingImage $hasMatch={hasMatch} />
           <Text center>{t('matching_state_searching_trans')}</Text>
         </>
       ) : (
@@ -136,15 +133,9 @@ export function SearchingCard({
             {t(`searching_card.${cardState}_title`)}
           </WelcomeTitle>
           {isOnboarded ? (
-            <SearchingImage
-              label="searching for match image"
-              $hasMatch={hasMatch}
-            />
+            <SearchingImage $hasMatch={hasMatch} />
           ) : (
-            <MatchingCallImage
-              label="matching call image"
-              gradient={Gradients.Orange}
-            />
+            <MatchingCallImage gradient={Gradients.Orange} />
           )}
           <Text center>{t(`searching_card.${cardState}_info_1`)}</Text>
           {isBookedState ? (

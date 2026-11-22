@@ -102,7 +102,7 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
             onClick={onBackButton}
             $show={!!onBackButton}
           >
-            <ArrowLeftIcon label="return to profile" width="16" height="16" />
+            <ArrowLeftIcon label={t('a11y.back')} width="16" height="16" />
           </BackButton>
 
           <ProfileLink
@@ -145,7 +145,7 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
             size={ButtonSizes.Large}
           >
             <VideoIcon
-              label="Video Call Icon"
+              label={t('a11y.start_video_call')}
               color={theme.color.surface.secondary}
               width={24}
               height={24}
@@ -157,12 +157,7 @@ const ChatWithUserInfo: React.FC<ChatWithUserInfoProps> = ({
     </Panel>
   ) : (
     <NoChatSelected $isSupportChat={isSupportChat}>
-      <GroupChatIcon
-        label="Chat Icon"
-        gradient={Gradients.Blue}
-        width="144px"
-        height="144px"
-      />
+      <GroupChatIcon gradient={Gradients.Blue} width="144px" height="144px" />
       <Text type={TextTypes.Body4}>
         {isSupportChat ? t('chat.support_unavailable') : t('chat.not_selected')}
       </Text>

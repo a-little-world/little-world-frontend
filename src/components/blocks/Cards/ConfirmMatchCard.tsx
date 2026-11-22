@@ -294,7 +294,7 @@ const ConfirmMessage: React.FC<ConfirmMessageProps> = ({
                 // @ts-expect-error Accordion header typing expects string; ReactNode works at runtime
                 header: (
                   <AccordionHeader>
-                    <CalendarIcon label="" width={16} height={16} />
+                    <CalendarIcon width={16} height={16} />
                     {t('confirm_match.availability_accordion', { name })}
                   </AccordionHeader>
                 ),

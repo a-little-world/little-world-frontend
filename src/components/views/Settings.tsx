@@ -7,7 +7,6 @@ import {
   ButtonVariations,
   Card,
   Link,
-  Modal,
   PencilIcon,
   Select,
   StatusMessage,
@@ -29,6 +28,7 @@ import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import { FORGOT_PASSWORD_ROUTE } from '../../router/routes';
 import ButtonsContainer from '../atoms/ButtonsContainer';
 import LoadingScreen from '../atoms/LoadingScreen';
+import Modal from '../atoms/Modal';
 import PageHeader from '../atoms/PageHeader';
 import ThemeSwitch from '../atoms/ThemeSwitch';
 import DeleteAccountCard from '../blocks/Cards/DeleteAccountCard';
@@ -122,7 +122,7 @@ function ListItem({ section, label, value, setEditing }) {
           color={theme.color.text.link}
           onClick={() => setEditing(label)}
         >
-          <PencilIcon height="12px" width="16px" label="edit icon" />
+          <PencilIcon height="12px" width="16px" />
           {t('settings.edit_button')}
         </Button>
       </Field>
@@ -374,7 +374,18 @@ function Settings() {
           </SettingsItem>
         </ContentPanel>
       </SettingsWrapper>
-      <Modal open={editing} onClose={() => setEditing(false)}>
+      <Modal
+        open={editing}
+        onClose={() => setEditing(false)}
+        label={
+          editing
+            ? t('settings.edit_item', {
+                item: t(`settings.personal_${String(editing)}`),
+                interpolation: { escapeValue: false },
+              })
+            : undefined
+        }
+      >
         <EditFieldCard
           label={editing}
           valueIn={data[editing]}
@@ -382,7 +393,11 @@ function Settings() {
           setEditing={setEditing}
         />
       </Modal>
-      <Modal open={showConfirm} onClose={() => setShowConfirm(false)}>
+      <Modal
+        open={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        label={t('settings.delete_account_modal_title')}
+      >
         <DeleteAccountCard setShowModal={setShowConfirm} />
       </Modal>
     </>

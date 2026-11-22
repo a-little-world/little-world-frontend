@@ -35,9 +35,7 @@ const Note = ({
   className?: string;
 }>) => (
   <StyledNote $center={center} className={className}>
-    {withIcon && (
-      <StyledInfoIcon height="16px" width="16px" label="info icon" />
-    )}
+    {withIcon && <StyledInfoIcon height="16px" width="16px" />}
     <NoteText type={TextTypes.Body6}>{children}</NoteText>
   </StyledNote>
 );

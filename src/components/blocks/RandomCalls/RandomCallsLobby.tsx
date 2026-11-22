@@ -427,7 +427,7 @@ const PartnerProposal = ({
       <CardContent marginBottom={theme.spacing.medium}>
         <Timer>
           <Text type={TextTypes.Body3} bold>
-            <ClockIcon label="Clock icon" width={16} height={16} /> {timeLeft}s
+            <ClockIcon width={16} height={16} /> {timeLeft}s
           </Text>
         </Timer>
         <PartnerInfo>
@@ -563,7 +563,6 @@ const RejectedView = ({
     <ProposalCard>
       <RejectedCardHeader align="center" asContainer>
         <ExclamationIcon
-          label="Exclamation mark"
           width={32}
           height={32}
           color={theme.color.text.error}

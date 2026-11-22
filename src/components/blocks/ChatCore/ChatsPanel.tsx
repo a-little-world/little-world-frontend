@@ -208,7 +208,11 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
                       <Text type={TextTypes.Heading6}>
                         {message.partner.first_name}
                       </Text>
-                      <Logo height="16" width="16" label="support logo" />
+                      <Logo
+                        height="16"
+                        width="16"
+                        label={t('profile_card.support_user')}
+                      />
                     </SupportName>
                   ) : (
                     <Text type={TextTypes.Heading6}>
@@ -241,10 +245,14 @@ const ChatsPanel: React.FC<ChatsPanelProps> = ({
                         color={theme.color.status?.info || '#000'}
                         width="16px"
                         height="16px"
-                        label="Read"
+                        label={t('a11y.message_read')}
                       />
                     ) : (
-                      <TickIcon width="16px" height="16px" label="Sent" />
+                      <TickIcon
+                        width="16px"
+                        height="16px"
+                        label={t('a11y.message_sent')}
+                      />
                     )
                   ) : message.unread_count ? (
                     <UnreadIndicator />

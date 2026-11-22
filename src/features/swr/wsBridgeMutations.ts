@@ -1,3 +1,4 @@
+import i18next from 'i18next';
 import { isEmpty } from 'lodash';
 import { mutate } from 'swr';
 
@@ -11,6 +12,7 @@ import {
   USER_ENDPOINT,
 } from '../../api/endpoints';
 import { rejectCall } from '../../api/livekit';
+import useAnnouncerStore from '../stores/announcer';
 import useConnectedCallStore from '../stores/connectedCall';
 
 interface MatchesData {
@@ -142,6 +144,18 @@ export function addMessage(
 
   // Revalidate active (single) chat so Chat.tsx gets fresh unread_count
   mutate(getChatEndpoint(chatId));
+
+  if (!senderIsSelf) {
+    const name = metaChatObj?.partner?.first_name;
+    useAnnouncerStore.getState().announce(
+      name
+        ? i18next.t('a11y.new_message_from', {
+            name,
+            interpolation: { escapeValue: false },
+          })
+        : i18next.t('a11y.new_message'),
+    );
+  }
 }
 
 export function addActiveCallRoom(callRoom: any): void {

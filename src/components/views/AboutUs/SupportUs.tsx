@@ -113,19 +113,16 @@ const Ctas = styled.div`
 
 const SECTIONS_WITH_TWO_CTAS = ['volunteer'];
 const SECTION_IMAGES = {
-  join_events: <PeopleTogetherImage label="people together" />,
-  organize_an_event: <GroupHandsImage label="group hands" />,
-  become_a_volunteer: <FriendshipImage label="friendship" />,
-  stories: <TeacherImage label="stories" />,
-  donate: <RaisingMoneyImage label="raising money" />,
+  join_events: <PeopleTogetherImage />,
+  organize_an_event: <GroupHandsImage />,
+  become_a_volunteer: <FriendshipImage />,
+  stories: <TeacherImage />,
+  donate: <RaisingMoneyImage />,
   get_interviewed: (
-    <LaptopWithPhoneImage
-      label="laptop with phone"
-      color={tokens.color.theme.light.text.heading}
-    />
+    <LaptopWithPhoneImage color={tokens.color.theme.light.text.heading} />
   ),
-  distribute: <ManOnRocketImage label="man on rocket" />,
-  volunteer: <TimeFlexibleImage label="time flexible" />,
+  distribute: <ManOnRocketImage />,
+  volunteer: <TimeFlexibleImage />,
 };
 
 const SECTIONS = [
@@ -232,7 +229,7 @@ const SupportUs: FC = () => {
         }))}
       />
       <PaperPlaneWrapper>
-        <PaperPlaneImage label="paper plane" />
+        <PaperPlaneImage />
       </PaperPlaneWrapper>
       <Text center>{t('support_us.thank_you.message')}</Text>
     </ContentCard>

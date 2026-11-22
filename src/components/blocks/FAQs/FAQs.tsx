@@ -62,7 +62,7 @@ function FAQs({ supportUrl }: { supportUrl: string }) {
       </CardHeader>
       <FAQContainer>
         <FAQImageWrapper>
-          <TeacherImage label="image of woman holding book" />
+          <TeacherImage />
         </FAQImageWrapper>
         <FAQsDescription type={TextTypes.Body5} center>
           {t('help.faqs_intro')}

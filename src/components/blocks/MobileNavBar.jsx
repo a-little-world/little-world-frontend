@@ -97,7 +97,7 @@ function MobileNavBar({ setShowSidebarMobile }) {
         onClick={() => setShowSidebarMobile(true)}
       >
         <MenuIcon
-          label="open menu"
+          label={t('a11y.open_menu')}
           width={24}
           height={24}
           gradient={Gradients.Blue}

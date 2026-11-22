@@ -2,11 +2,11 @@ import {
   CardFooter,
   CardSizes,
   Link,
-  Modal,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { WP_HOME_ROUTE } from '../../../router/routes';
+import Modal from '../../atoms/Modal';
 import {
   AvatarStack,
   InitialsAvatar,
@@ -87,7 +87,15 @@ const PartnerStoryModal = ({
   const sections = storyKey ? STORY_SECTIONS[storyKey] : undefined;
 
   return (
-    <Modal open={Boolean(storyKey)} onClose={onClose}>
+    <Modal
+      open={Boolean(storyKey)}
+      onClose={onClose}
+      label={
+        storyKey
+          ? t(`partner_landing.stories.${storyKey}.article.title`)
+          : undefined
+      }
+    >
       {storyKey && sections ? (
         <StoryModalCard width={CardSizes.Large}>
           <StoryModalHeader asContainer align="flex-start">

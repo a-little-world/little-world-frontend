@@ -74,9 +74,7 @@ const CallHistoryList = ({
         toast.showToast({
           headline: t('call_history.request_match_error_title'),
           title: message,
-          icon: (
-            <ExclamationIcon label="Exclamation icon" width={20} height={20} />
-          ),
+          icon: <ExclamationIcon width={20} height={20} />,
           showClose: false,
         });
         setRequestingMatch(null);
@@ -110,11 +108,7 @@ const CallHistoryList = ({
                 <CallDateTime>
                   {item.date && (
                     <CallDate>
-                      <CalendarIcon
-                        label="Calendar icon"
-                        width={16}
-                        height={16}
-                      />
+                      <CalendarIcon width={16} height={16} />
                       <Text>
                         {formatDate(new Date(item.date), 'd MMMM, p', language)}
                       </Text>
@@ -122,7 +116,7 @@ const CallHistoryList = ({
                   )}
                   {item.duration && (
                     <CallTime>
-                      <ClockIcon label="Clock icon" width={16} height={16} />
+                      <ClockIcon width={16} height={16} />
                       <Text>
                         {t('call_history.duration')}:{' '}
                         {formatDuration(item.duration)}
@@ -167,7 +161,7 @@ const CallHistory = ({ className }: { className?: string }) => {
     <Container className={className} $hasData={!isEmpty(data) || isLoading}>
       {(!data || isEmpty(data)) && !isLoading ? (
         <>
-          <ClockDashedIcon label="No call history" />
+          <ClockDashedIcon />
           <Text bold tag="h3" type={TextTypes.Body4}>
             {t('call_history.title_no_history')}
           </Text>

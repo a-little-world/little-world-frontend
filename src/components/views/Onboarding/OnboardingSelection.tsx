@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import {
-  Modal,
   Stepper,
   StepperOrientations,
   Text,
@@ -16,6 +15,7 @@ import { USER_ENDPOINT } from '../../../api/endpoints';
 import { USER_TYPES } from '../../../constants';
 import { getAppRoute } from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
+import Modal from '../../atoms/Modal';
 import PartnerActionCard from '../../blocks/Cards/PartnerActionCard';
 import AppointmentOption from '../../blocks/Onboarding/AppointmentOption';
 import WalkthroughOption from '../../blocks/Onboarding/WalkthroughOption';

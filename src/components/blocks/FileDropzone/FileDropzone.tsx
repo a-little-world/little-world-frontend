@@ -226,7 +226,7 @@ const FileDropzone = ({
           fileInputRef={inputElementRef}
           icon={
             <ImageSearchIcon
-              label="file input icon"
+              label={t('a11y.choose_file')}
               width={56}
               height={56}
               color={theme.color.text.accent}
@@ -235,7 +235,7 @@ const FileDropzone = ({
           onImageDelete={handleImageDelete}
           uploadedImage={uploadedImage}
         />
-        <DesktopUploadIcon label="file input icon" width={56} height={56} />
+        <DesktopUploadIcon width={56} height={56} />
         <Text
           color={theme.color.text.accent}
           bold
@@ -246,7 +246,7 @@ const FileDropzone = ({
         </Text>
         {showSelectedFiles && filenames.length > 0 ? (
           <FileName>
-            <ImageIcon label="uploaded file" width="16" height="16" />
+            <ImageIcon width="16" height="16" />
             {filenames.map(fileName => fileName).join(', ')}
           </FileName>
         ) : (

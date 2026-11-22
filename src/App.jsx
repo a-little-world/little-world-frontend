@@ -9,6 +9,7 @@ import {
   IS_AUTHENTICATED_ENDPOINT,
   USER_ENDPOINT,
 } from './api/endpoints';
+import LiveAnnouncer from './components/atoms/LiveAnnouncer';
 import { useDevelopmentFeaturesStore } from './features/stores/index';
 import { swrConfig } from './features/swr';
 import router from './router/router';
@@ -64,6 +65,7 @@ function App({ user, apiTranslations, apiOptions }) {
     <SWRConfig value={swrConfig}>
       <Preloader>
         <RouterProvider router={router()} />
+        <LiveAnnouncer />
       </Preloader>
     </SWRConfig>
   );

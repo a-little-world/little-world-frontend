@@ -324,7 +324,7 @@ const EventCtas = ({
                 size={ButtonSizes.Small}
               >
                 <PhoneIcon
-                  label="join call"
+                  label={t('a11y.join_call')}
                   color={theme.color.surface.primary}
                   width={14}
                   height={14}
@@ -392,11 +392,7 @@ const EventCtas = ({
       <Buttons>
         <Button onClick={() => onJoin(link)}>
           {showJoinIcon && (
-            <PhoneIcon
-              label="join call icon"
-              color={theme.color.text.button}
-              width="20px"
-            />
+            <PhoneIcon color={theme.color.text.button} width="20px" />
           )}
           {joinLabel}
         </Button>
@@ -458,7 +454,7 @@ function CommunityEvent({
       <PanelImage
         src={image || placeholderImage}
         label={frequency ? t(`community_events.frequency_${frequency}`) : ''}
-        alt="event image"
+        alt=""
       />
       <Main>
         <EventInfo>

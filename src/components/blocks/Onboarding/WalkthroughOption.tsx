@@ -31,7 +31,7 @@ function WalkthroughOption({
 
   return (
     <OptionCard $inProgress={started} width={CardSizes.Medium}>
-      <TeacherImage label="teacher image" height={60} />
+      <TeacherImage height={60} />
       <OptionTitle type={TextTypes.Heading4}>
         {t('onboarding_selection.walkthrough_title')}
       </OptionTitle>

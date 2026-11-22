@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import { Modal } from '@a-little-world/little-world-design-system';
+import { useTranslation } from 'react-i18next';
 
 import { MATCH_TYPES } from '../../../constants';
 import { usesAvatar } from '../../../helpers/profile';
+import Modal from '../../atoms/Modal';
 import ConfirmMatchCard from '../Cards/ConfirmMatchCard';
 import type { ProposalItem } from './MatchProposals';
 import ProposalsStackComponent from './MatchProposals';
@@ -26,6 +27,7 @@ const MatchModal = ({
   proposals,
   onClose,
 }: MatchModalProps) => {
+  const { t } = useTranslation();
   const hasNewMatch = Boolean(unconfirmedMatch?.partner);
   const [proposalsViewOpen, setProposalsViewOpen] = useState(false);
   const prevOpenRef = useRef(false);
@@ -54,10 +56,13 @@ const MatchModal = ({
   const locked = hasNewMatch && !proposalsViewOpen;
 
   let content: React.ReactNode = null;
+  let label: string | undefined;
   if (proposalsViewOpen) {
+    label = t('confirm_match.title_proposals');
     content = <ProposalsStackComponent proposals={filteredProposals} />;
   } else if (hasNewMatch) {
     const profile = unconfirmedMatch?.partner;
+    label = t('new_match_title');
     content = (
       <NewMatchCard
         name={profile.first_name}
@@ -71,6 +76,11 @@ const MatchModal = ({
     );
   } else if (filteredProposals.length === 1) {
     const { id, match_type: matchType, partner } = filteredProposals[0];
+    label = t(
+      matchType === MATCH_TYPES.standard
+        ? 'confirm_match.title_standard'
+        : 'confirm_match.title_random_call',
+    );
     content = (
       <ConfirmMatchCard
         name={partner?.first_name ?? ''}
@@ -90,7 +100,7 @@ const MatchModal = ({
   }
 
   return (
-    <Modal open={open} onClose={handleClose} locked={locked}>
+    <Modal open={open} onClose={handleClose} locked={locked} label={label}>
       {content}
     </Modal>
   );

@@ -54,7 +54,10 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
                 onClick={() => setEditingField(content.dataField)}
               >
                 <PencilIcon
-                  label="edit interests button"
+                  label={t('a11y.edit_field', {
+                    field: t(`profile.${content.dataField}_title`),
+                    interpolation: { escapeValue: false },
+                  })}
                   width="16"
                   height="16"
                   circular

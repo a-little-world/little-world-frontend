@@ -7,6 +7,15 @@ import { LANGUAGES } from './constants/index';
 import translationDE from './locale/de.json';
 import translationEN from './locale/en.json';
 
+// Keep <html lang> in sync with the UI language so screen readers pronounce
+// text with the right voice. The server only knows the language on first load.
+i18next.on('languageChanged', lng => {
+  if (typeof document !== 'undefined' && lng) {
+    const [baseLang] = lng.split('-');
+    document.documentElement.lang = baseLang;
+  }
+});
+
 i18next
   .use(LanguageDetector)
   .use(initReactI18next)

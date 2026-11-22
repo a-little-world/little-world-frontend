@@ -43,7 +43,7 @@ function LanguageLevelCard() {
       <WelcomeTitle tag="h3" type={TextTypes.Body1} bold center>
         {t('language_level_card.title')}
       </WelcomeTitle>
-      <SearchingImage label="searching for match image" />
+      <SearchingImage />
       <Text center>{t('language_level_card.description')}</Text>
 
       <Link

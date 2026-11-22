@@ -81,9 +81,9 @@ function StreakChip({ weeks, state, className }: StreakChipProps) {
     >
       <IconWrap aria-hidden>
         {resolvedState === 'active' ? (
-          <FlameIcon label="" gradient={Gradients.Orange} />
+          <FlameIcon gradient={Gradients.Orange} />
         ) : (
-          <FlameOutlineIcon label="" color={theme.color.text.tertiary} />
+          <FlameOutlineIcon color={theme.color.text.tertiary} />
         )}
       </IconWrap>
       <Copy>

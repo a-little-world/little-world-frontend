@@ -4,7 +4,6 @@ import {
   ButtonSizes,
   Loading,
   LoadingSizes,
-  Modal,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -28,6 +27,7 @@ import {
   getAppAbsoluteRoute,
   RANDOM_CALLS_ROUTE,
 } from '../../../router/routes';
+import Modal from '../../atoms/Modal';
 import { OnlineCircle } from '../../atoms/OnlineIndicator';
 import PanelImage from '../../atoms/PanelImage';
 import { Schedule } from '../../atoms/Schedule';
@@ -157,6 +157,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
         open={lobbyOpen}
         onClose={onCloseLobby}
         closeOnBackdropClick={false}
+        label={t('random_calls.lobby_title')}
       >
         {lobbyData?.uuid && (
           <RandomCallsLobby
@@ -168,7 +169,11 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
         )}
       </Modal>
 
-      <Modal open={callEnded} onClose={handleClosePostCall}>
+      <Modal
+        open={callEnded}
+        onClose={handleClosePostCall}
+        label={t('random_calls.post_call_title')}
+      >
         <PostRandomCallsFlow
           onReturnToStart={handleClosePostCall}
           onReturnToLobby={handleReturnToLobby}
@@ -180,7 +185,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
             breakpoint={theme.breakpoints.xlarge}
             src={randomCallsImage}
             label={t('random_calls.image_label')}
-            alt="random calls"
+            alt=""
           />
           <InfoPanelText>
             <Text bold tag="h2" type={TextTypes.Heading4}>

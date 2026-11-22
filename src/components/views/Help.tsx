@@ -93,7 +93,6 @@ export function Contact({ supportMatch, isLoading }: SupportMatchProps) {
             <ContactLink href="mailto:support@little-world.com">
               <MailIcon
                 circular
-                label="e-mail"
                 backgroundColor={theme.color.surface.quaternary}
                 borderColor={theme.color.border.subtle}
                 color={theme.color.text.reversed}
