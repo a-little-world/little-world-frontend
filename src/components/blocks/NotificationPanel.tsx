@@ -133,7 +133,6 @@ function NotificationPanel() {
             <Notification key={hash} className="notification-item">
               <CalendarIcon
                 circular
-                label="appointment notification icon"
                 backgroundColor={theme.color.surface.message}
                 borderColor={theme.color.surface.message}
                 color={theme.color.text.highlight}

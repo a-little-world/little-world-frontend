@@ -5,6 +5,7 @@ import {
   ButtonVariations,
   TrashIcon,
 } from '@a-little-world/little-world-design-system';
+import { useTranslation } from 'react-i18next';
 import styled, { css, useTheme } from 'styled-components';
 
 import ProfileImage, { ImageSizes } from './ProfileImage';
@@ -56,6 +57,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
   uploadedImage,
 }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   return uploadedImage ? (
     <StyledProfileImage
@@ -72,7 +74,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
           type="button"
         >
           <TrashIcon
-            label="delete image"
+            label={t('a11y.delete_image')}
             color={theme.color.surface.disabled}
           />
         </TrashButton>

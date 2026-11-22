@@ -63,7 +63,7 @@ function NextBadgeNudge({ badge, onPlanCall, className }: NextBadgeNudgeProps) {
   return (
     <Banner className={className}>
       <IconWrap aria-hidden>
-        <StarIcon label="" width={24} height={24} />
+        <StarIcon width={24} height={24} />
       </IconWrap>
       <Copy type={TextTypes.Body5} tag="p">
         <Trans

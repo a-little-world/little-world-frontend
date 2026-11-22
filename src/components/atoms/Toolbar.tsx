@@ -69,7 +69,7 @@ const Toolbar = ({
         variation={ButtonVariations.Icon}
         $isActive={filter === 'all'}
       >
-        <BellIcon label=" all notifications" width="16px" height="16px" />
+        <BellIcon width="16px" height="16px" />
         {t('notifications.filter_all')}
       </ToolbarButton>
       <ToolbarButton
@@ -78,7 +78,7 @@ const Toolbar = ({
         variation={ButtonVariations.Icon}
         $isActive={filter === NotificationState.UNREAD}
       >
-        <ClockIcon label="unread icon" width="16px" height="16px" />
+        <ClockIcon width="16px" height="16px" />
         {t('notifications.filter_unread')}
       </ToolbarButton>
       <ToolbarButton
@@ -87,7 +87,7 @@ const Toolbar = ({
         variation={ButtonVariations.Icon}
         $isActive={filter === NotificationState.READ}
       >
-        <ClockDashedIcon label="read icon" width="16px" height="16px" />
+        <ClockDashedIcon width="16px" height="16px" />
         {t('notifications.filter_read')}
       </ToolbarButton>
       {showArchived && (
@@ -96,7 +96,7 @@ const Toolbar = ({
           variation={ButtonVariations.Icon}
           $isActive={filter === NotificationState.ARCHIVED}
         >
-          <ArchiveIcon label="archive icon" width="16px" height="16px" />
+          <ArchiveIcon width="16px" height="16px" />
           {t('notifications.archived')}
         </ToolbarButton>
       )}

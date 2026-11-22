@@ -52,10 +52,7 @@ function AppointmentOption({
 
   return (
     <OptionCard $inProgress={isBooked} width={CardSizes.Medium}>
-      <MatchingCallImage
-        label="matching call image"
-        gradient={Gradients.Orange}
-      />
+      <MatchingCallImage gradient={Gradients.Orange} />
       <OptionTitle type={TextTypes.Heading4}>
         {isBooked
           ? t('onboarding_selection.appointment_booked_heading')

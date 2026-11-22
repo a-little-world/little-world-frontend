@@ -3,7 +3,6 @@ import { useState } from 'react';
 import {
   CardDimensions,
   CardSizes,
-  Modal,
   pixelate,
   Text,
   TextTypes,
@@ -21,6 +20,7 @@ import {
 } from '../../constants';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import PlusImage from '../../images/plus-with-circle.svg';
+import Modal from '../atoms/Modal';
 import CoursePromoCard from './Cards/CoursePromoCard';
 import LanguageLevelCard from './Cards/LanguageLevelCard';
 import PartnerActionCard from './Cards/PartnerActionCard';
@@ -152,7 +152,7 @@ function PartnerProfiles({
         onClick={() => setShowSearchConfirmModal(true)}
         $hasMatch={user?.hasMatch}
       >
-        <img src={PlusImage} alt="change matching status icon" />
+        <img src={PlusImage} alt="" />
         <Text type={TextTypes.Body3}>
           {t('matching_state_not_searching_trans')}
         </Text>

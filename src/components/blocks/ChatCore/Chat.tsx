@@ -442,14 +442,14 @@ const Chat = ({
                         <Time type={TextTypes.Body6}>
                           {message.read ? (
                             <TickDoubleIcon
-                              label="message read icon"
+                              label={t('a11y.message_read')}
                               color={theme.color.status.info}
                               width="16px"
                               height="16px"
                             />
                           ) : (
                             <TickIcon
-                              label="message unread icon"
+                              label={t('a11y.message_sent')}
                               width="16px"
                               height="16px"
                             />
@@ -497,7 +497,10 @@ const Chat = ({
         {!!fileToSend && (
           <Attachment>
             <AttachmentIcon
-              label={`Selected file: ${fileToSend.name}`}
+              label={t('a11y.selected_file', {
+                name: fileToSend.name,
+                interpolation: { escapeValue: false },
+              })}
               height={40}
               width={40}
             />

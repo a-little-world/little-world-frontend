@@ -6,6 +6,7 @@ import {
   ButtonSizes,
   ButtonVariations,
 } from '@a-little-world/little-world-design-system';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -26,6 +27,7 @@ function NotificationBell({ className }: { className?: string }) {
   const notifications = useUnreadNotificationCount();
   const count = notifications.data?.count ?? 0;
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const onClick = () => {
     navigate(UNREAD_NOTIFICATIONS_LINK);
@@ -39,7 +41,7 @@ function NotificationBell({ className }: { className?: string }) {
       onClick={onClick}
     >
       {count > 0 && <UnreadDot count={count} onIcon />}
-      <BellIcon label=" all notifications" width="16px" height="16px" />
+      <BellIcon label={t('a11y.notifications')} width="16px" height="16px" />
     </StyledNotificationBell>
   );
 }

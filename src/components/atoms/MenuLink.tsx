@@ -82,7 +82,8 @@ const MenuLink = ({
   disabled?: boolean;
   Icon: ComponentType<any>;
   iconGradient?: Gradients;
-  iconLabel: string;
+  /** Only for icon-only links; ignored when `text` is set, which already names the link. */
+  iconLabel?: string;
   order?: number;
   state?: any;
   text?: string;
@@ -92,12 +93,13 @@ const MenuLink = ({
   reloadDocument?: boolean;
 }) => {
   const theme = useTheme();
+  const label = text ? undefined : iconLabel;
   if (disabled || !to)
     return (
       <DisabledMenuLink $order={order}>
         <Icon
           color={theme.color.text.disabled}
-          label={iconLabel}
+          label={label}
           width={32}
           height={32}
         />
@@ -119,7 +121,7 @@ const MenuLink = ({
         {...(active
           ? { color: theme.color.surface.primary }
           : { gradient: iconGradient })}
-        label={iconLabel}
+        label={label}
         width={32}
         height={32}
       />

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { Modal } from '@a-little-world/little-world-design-system';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import useSWR, { mutate } from 'swr';
@@ -19,6 +18,7 @@ import {
   getAppRoute,
   RANDOM_CALLS_ROUTE,
 } from '../../router/routes';
+import Modal from '../atoms/Modal';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard';
 import CommsBanner from '../blocks/CommsBanner';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent';

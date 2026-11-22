@@ -261,7 +261,6 @@ function Sidebar({ isVH, sidebarMobile }) {
                     key={label}
                     active={isActive}
                     Icon={Icon}
-                    iconLabel={label}
                     text={t(`nbs_${label}`)}
                     unreadCount={unreadCount}
                     reloadDocument={reloadDocument}
@@ -275,7 +274,6 @@ function Sidebar({ isVH, sidebarMobile }) {
                   >
                     <LogoutIcon
                       color={theme.color.text.tertiary}
-                      label={label}
                       width={32}
                       height={32}
                     />

@@ -184,12 +184,7 @@ export function Schedule({
             const date = (
               <IconLabel>
                 <IconWrap>
-                  <CalendarIcon
-                    label="date icon"
-                    width={16}
-                    height={16}
-                    aria-hidden
-                  />
+                  <CalendarIcon width={16} height={16} aria-hidden />
                 </IconWrap>
                 <SessionDate tag="span" type={textType}>
                   {dateLabel}
@@ -199,12 +194,7 @@ export function Schedule({
             const time = (
               <IconLabel>
                 <IconWrap>
-                  <ClockIcon
-                    label="time icon"
-                    width={16}
-                    height={16}
-                    aria-hidden
-                  />
+                  <ClockIcon width={16} height={16} aria-hidden />
                 </IconWrap>
                 <SessionTime tag="span" type={textType}>
                   {timeLabel}

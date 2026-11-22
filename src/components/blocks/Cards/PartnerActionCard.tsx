@@ -91,9 +91,9 @@ function PartnerActionCard({ data, onClose }: PartnerActionCardProps) {
       return (
         <Centred>
           {isUnmatch ? (
-            <UnmatchedImage height="120px" label="Unmatch with user" />
+            <UnmatchedImage height="120px" />
           ) : (
-            <ExclamationIcon width="64px" height="64px" label="Report issue" />
+            <ExclamationIcon width="64px" height="64px" />
           )}
           <ConfirmationText type={TextTypes.Body5} center>
             {t(`${translationKeyPrefix}.confirmation`, { name: data.userName })}

@@ -153,7 +153,7 @@ export function SidebarNotes() {
         <StyledImage
           className={`image-for-${topic}-notes`}
           selected={selectedTopic === topic}
-          alt="category-icon"
+          alt=""
           height="20px"
           width="20px"
         />
@@ -292,12 +292,12 @@ export function SidebarNotes() {
                           {is_favorite ? (
                             <img
                               className="favorite-icon"
-                              alt="fovorite note"
+                              alt={t('a11y.remove_note_from_favourites')}
                             />
                           ) : (
                             <img
                               className="unfavorite-icon"
-                              alt="unfovorite note"
+                              alt={t('a11y.add_note_to_favourites')}
                             />
                           )}
                         </Buttons>
@@ -305,13 +305,13 @@ export function SidebarNotes() {
                           className="add-archives"
                           onClick={() => handleNoteAction(id, 'archive')}
                         >
-                          <img alt="archive note" />
+                          <img alt={t('a11y.archive_note')} />
                         </Buttons>
                         <Buttons
                           className="remove-note"
                           onClick={() => handleNoteAction(id, 'remove')}
                         >
-                          <img alt="remove note" />
+                          <img alt={t('a11y.delete_note')} />
                         </Buttons>
                         <WrapperContainer>
                           {isContentChanged && (

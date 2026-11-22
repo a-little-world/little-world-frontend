@@ -7,13 +7,15 @@ import { LANGUAGES } from '../../../constants/index';
 import { COOKIE_LANG } from '../../../i18n';
 import OptionSelector from '../../atoms/OptionSelector';
 
+// Each language is named in itself (and marked with `lang`) so people who
+// can't read the current UI language can still find their own.
 const LANGUAGE_OPTIONS = [
-  { value: LANGUAGES.de, label: 'DE', ariaLabel: 'switch language to German' },
-  { value: LANGUAGES.en, label: 'EN', ariaLabel: 'switch language to English' },
+  { value: LANGUAGES.de, label: 'DE', ariaLabel: 'Deutsch', lang: 'de' },
+  { value: LANGUAGES.en, label: 'EN', ariaLabel: 'English', lang: 'en' },
 ];
 
 const LanguageSelector = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const currentValue =
     i18n.language === LANGUAGES.de || i18n.language?.startsWith?.(LANGUAGES.de)
@@ -30,6 +32,7 @@ const LanguageSelector = () => {
       options={LANGUAGE_OPTIONS}
       value={currentValue}
       onChange={handleChangeLanguage}
+      groupLabel={t('a11y.language')}
     />
   );
 };

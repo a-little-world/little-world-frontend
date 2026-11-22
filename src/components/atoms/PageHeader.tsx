@@ -5,6 +5,7 @@ import {
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
@@ -41,6 +42,7 @@ function PageHeader({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   return (
     <HeaderContainer>
@@ -51,7 +53,7 @@ function PageHeader({
             navigate(location.key === 'default' ? getAppRoute() : -1)
           }
         >
-          <ArrowLeftIcon label="return to profile" width="24" height="24" />
+          <ArrowLeftIcon label={t('a11y.back')} width="24" height="24" />
         </BackButton>
       )}
       <Text tag="h2" bold type={TextTypes.Heading4}>

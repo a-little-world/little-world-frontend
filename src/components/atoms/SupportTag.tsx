@@ -17,7 +17,7 @@ const SupportTag = () => {
   return (
     <Tag color={theme.color.status.info} bold size={TagSizes.small}>
       <TagText>{t('profile_card.support_user')}</TagText>
-      <Logo height="16" width="16" label="support logo" />
+      <Logo height="16" width="16" />
     </Tag>
   );
 };
