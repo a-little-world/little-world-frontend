@@ -17,6 +17,7 @@ import { UPCOMING_LOBBIES_ENDPOINT } from '../../../api/endpoints';
 import { exitLobby } from '../../../api/randomCalls';
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
+import useNotificationHandler from '../../../hooks/useNotificationHandler';
 import useSystemModalBlocker from '../../../hooks/useSystemModalBlocker';
 import randomCallsImage from '../../../images/random-calls-image.png';
 import {
@@ -111,6 +112,7 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
   }, [location.pathname, location.state, navigate]);
 
   useSystemModalBlocker(lobbyOpen, 'random-calls');
+  useNotificationHandler(() => (lobbyOpen ? 'drop' : 'pass'));
 
   const openLobbyFresh = () => {
     // @tbscode TODO tempo fix forecefuly reset lobby cache by reloading everything on re-enters

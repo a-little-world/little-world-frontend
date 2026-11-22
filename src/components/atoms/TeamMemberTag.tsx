@@ -3,21 +3,22 @@ import styled, { useTheme } from 'styled-components';
 
 import { TagText } from './SupportTag';
 
-const MatchingUserTagWrapper = styled.div`
+const TeamMemberTagWrapper = styled.div`
   display: flex;
   justify-content: center;
 `;
 
-const MatchingUserTag = () => {
+/** Shown on the profile of someone who can open the management panel. */
+const TeamMemberTag = () => {
   const theme = useTheme();
 
   return (
-    <MatchingUserTagWrapper>
+    <TeamMemberTagWrapper>
       <Tag color={theme.color.status.info} bold size={TagSizes.small}>
-        <TagText>matching-user</TagText>
+        <TagText>team-member</TagText>
       </Tag>
-    </MatchingUserTagWrapper>
+    </TeamMemberTagWrapper>
   );
 };
 
-export default MatchingUserTag;
+export default TeamMemberTag;
