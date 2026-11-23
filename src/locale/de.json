@@ -1,7 +1,7 @@
 {
   "add_to_calendar": "Zum Kalender hinzufügen",
-  "advent_doors.title": "Öffne ein Türchen im Advent",
-  "advent_doors.lead": "Hinter {{count}} Türchen warten Mitarbeitende verschiedener Unternehmen, die sich 30 Minuten Zeit nehmen, um mit dir Deutsch zu sprechen. Übe ganz entspannt, lerne neue Menschen kennen und erfahre, wie ihr Arbeitsalltag aussieht.",
+  "advent_doors.title": "Zufallsgespräche mit Unternehmen",
+  "advent_doors.lead": "Mitarbeitende aus verschiedenen Unternehmen nehmen sich freiwillig Zeit, um mit dir zu reden. Die Plätze für jedes Gespräch sind begrenzt. Melde dich bitte nur für Termine an, an denen du sicher Zeit hast.",
   "advent_doors.booked_none": "Noch kein Türchen gebucht",
   "advent_doors.booked_one": "1 Türchen gebucht",
   "advent_doors.booked_other": "{{count}} Türchen gebucht",
