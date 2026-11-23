@@ -11,17 +11,19 @@ export const submitFeedback = async ({
   details,
   message,
   attachments = [],
+  includeDeviceInfo,
 }: FeedbackSubmission & {
   message?: string;
   attachments?: File[];
+  includeDeviceInfo: boolean;
 }): Promise<void> => {
   const body = new FormData();
   body.append('kind', kind);
   body.append('details', JSON.stringify(details));
   body.append('platform', environment.isNative ? 'native' : 'web');
   if (message) body.append('message', message);
-  const deviceInfo = await getDeviceInfo();
-  body.append('device', JSON.stringify(deviceInfo));
+  if (includeDeviceInfo)
+    body.append('device', JSON.stringify(await getDeviceInfo()));
   attachments.forEach(file => body.append('attachments', file, file.name));
 
   await apiFetch('/api/feedback/', { method: 'POST', body });

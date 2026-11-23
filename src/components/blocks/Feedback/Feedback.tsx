@@ -31,6 +31,7 @@ import {
 } from '../../../router/routes';
 import Survey from '../Survey/Survey';
 import BugReportForm from './BugReportForm';
+import DeviceInfoOption from './DeviceInfoOption';
 import {
   BackButton,
   FeedbackContainer,
@@ -50,6 +51,7 @@ function Feedback() {
   const { feedbackKind } = useParams();
   const [isSent, setIsSent] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [includeDeviceInfo, setIncludeDeviceInfo] = useState(true);
 
   const showKinds = () => navigate(getAppRoute(HELP_FEEDBACK_ROUTE));
 
@@ -90,6 +92,7 @@ function Feedback() {
         kind: 'general',
         details: { rating: answers.rating as number },
         message: answers.message as string | undefined,
+        includeDeviceInfo,
       });
       setIsSent(true);
     } catch (error: any) {
@@ -137,7 +140,12 @@ function Feedback() {
             survey={generalSurvey}
             onSubmit={submitGeneral}
             submitError={submitError}
-            submitNote={t('help.feedback.device_note')}
+            submitNote={
+              <DeviceInfoOption
+                checked={includeDeviceInfo}
+                onCheckedChange={setIncludeDeviceInfo}
+              />
+            }
           />
         ) : (
           <BugReportForm onSent={() => setIsSent(true)} />

@@ -10,11 +10,9 @@ import {
   RadioGroup,
   StatusMessage,
   StatusTypes,
-  Text,
   TextArea,
   TextAreaSize,
   TextInput,
-  TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +20,7 @@ import { useTheme } from 'styled-components';
 
 import { submitFeedback } from '../../../api/feedback';
 import FileDropzone, { AcceptedFiles } from '../FileDropzone/FileDropzone';
+import DeviceInfoOption from './DeviceInfoOption';
 import { FeedbackForm } from './Feedback.styles';
 
 const AREAS = {
@@ -46,6 +45,7 @@ function BugReportForm({ onSent }: { onSent: () => void }) {
   const areaRef = useRef<HTMLInputElement>(null) as RefObject<HTMLInputElement>;
   const [screenshots, setScreenshots] = useState<File[]>([]);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [includeDeviceInfo, setIncludeDeviceInfo] = useState(true);
   const {
     control,
     handleSubmit,
@@ -71,6 +71,7 @@ function BugReportForm({ onSent }: { onSent: () => void }) {
         },
         message,
         attachments: screenshots,
+        includeDeviceInfo,
       });
       onSent();
     } catch (error: any) {
@@ -154,9 +155,10 @@ function BugReportForm({ onSent }: { onSent: () => void }) {
             })}
           </InputError>
         </div>
-        <Text type={TextTypes.Body6} color={theme.color.text.tertiary}>
-          {t('help.feedback.device_note')}
-        </Text>
+        <DeviceInfoOption
+          checked={includeDeviceInfo}
+          onCheckedChange={setIncludeDeviceInfo}
+        />
         {!!submitError && (
           <StatusMessage visible type={StatusTypes.Error}>
             {submitError}

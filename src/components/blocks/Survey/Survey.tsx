@@ -17,7 +17,6 @@ import {
   Text,
   TextArea,
   TextAreaSize,
-  TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -254,7 +253,7 @@ interface SurveyProps {
   onAnswersChange?: (answers: SurveyAnswers) => void;
   onSubmit: (answers: SurveyAnswers) => unknown;
   submitError?: string | null;
-  submitNote?: string;
+  submitNote?: React.ReactNode;
 }
 
 const Survey: React.FC<SurveyProps> = ({
@@ -333,11 +332,7 @@ const Survey: React.FC<SurveyProps> = ({
               })}
             </Questions>
 
-            {!!submitNote && (
-              <Text type={TextTypes.Body6} color={theme.color.text.tertiary}>
-                {submitNote}
-              </Text>
-            )}
+            {submitNote}
             {!!submitError && (
               <StatusMessage visible type={StatusTypes.Error}>
                 {submitError}
