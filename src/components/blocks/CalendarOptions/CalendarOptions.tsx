@@ -49,11 +49,7 @@ const CalendarOptions = ({
     <CalendarList>
       {options.map(({ key, title, subtitle, Icon, onClick }) => (
         <CalendarOption key={key} type="button" $size={size} onClick={onClick}>
-          <Icon
-            label=""
-            width={iconSize}
-            color={theme.color.text.primary}
-          />
+          <Icon label="" width={iconSize} color={theme.color.text.primary} />
           <CalendarOptionCopy>
             <CalendarOptionTitle>{title}</CalendarOptionTitle>
             {size === 'regular' && subtitle ? (
