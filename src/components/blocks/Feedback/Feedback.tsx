@@ -132,7 +132,7 @@ function Feedback() {
           appearance={ButtonAppearance.Secondary}
           onClick={showKinds}
         >
-          <ArrowLeftIcon label={t('help.feedback.back')} width={12} />
+          <ArrowLeftIcon width={12} />
           {t('help.feedback.back')}
         </BackButton>
         {feedbackKind === 'general' ? (
@@ -169,7 +169,7 @@ function Feedback() {
               size={ButtonSizes.Stretch}
               onClick={() => showKind(kind)}
             >
-              <Icon label={t(`help.feedback.${kind}.title`)} width={24} />
+              <Icon width={24} />
               <OptionCopy>
                 <Text bold tag="span">
                   {t(`help.feedback.${kind}.title`)}

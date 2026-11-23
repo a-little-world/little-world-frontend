@@ -6,7 +6,9 @@ import {
   Card,
   CardHeader,
   CardSizes,
+  FileUploader,
   InputError,
+  Label,
   RadioGroup,
   StatusMessage,
   StatusTypes,
@@ -19,7 +21,6 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
 import { submitFeedback } from '../../../api/feedback';
-import FileDropzone, { AcceptedFiles } from '../FileDropzone/FileDropzone';
 import DeviceInfoOption from './DeviceInfoOption';
 import { FeedbackForm } from './Feedback.styles';
 
@@ -44,6 +45,7 @@ function BugReportForm({ onSent }: { onSent: () => void }) {
   const theme = useTheme();
   const areaRef = useRef<HTMLInputElement>(null) as RefObject<HTMLInputElement>;
   const [screenshots, setScreenshots] = useState<File[]>([]);
+  const [tooManyScreenshots, setTooManyScreenshots] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [includeDeviceInfo, setIncludeDeviceInfo] = useState(true);
   const {
@@ -55,10 +57,7 @@ function BugReportForm({ onSent }: { onSent: () => void }) {
     defaultValues: { area: '', areaOther: '', message: '' },
   });
 
-  const tooManyScreenshots = screenshots.length > MAX_SCREENSHOTS;
-
   const onValid = async ({ area, areaOther, message }: BugReportFields) => {
-    if (tooManyScreenshots) return;
     setSubmitError(null);
     try {
       await submitFeedback({
@@ -143,11 +142,17 @@ function BugReportForm({ onSent }: { onSent: () => void }) {
           )}
         />
         <div>
-          <FileDropzone
-            acceptedFiles={AcceptedFiles.Images}
-            label={t('help.feedback.bug.screenshots')}
-            multiple
-            onFileChange={setScreenshots}
+          <Label bold>{t('help.feedback.bug.screenshots')}</Label>
+          <FileUploader
+            accept="image/*"
+            maxFiles={MAX_SCREENSHOTS}
+            label={t('file_upload.click_to_upload')}
+            hint={t('file_upload.drop_hint')}
+            onFilesChange={files => {
+              setScreenshots(files);
+              if (files.length < MAX_SCREENSHOTS) setTooManyScreenshots(false);
+            }}
+            onError={() => setTooManyScreenshots(true)}
           />
           <InputError visible={tooManyScreenshots} textAlign="left">
             {t('help.feedback.bug.too_many_screenshots', {
