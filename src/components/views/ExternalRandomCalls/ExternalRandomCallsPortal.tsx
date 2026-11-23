@@ -108,7 +108,6 @@ import {
   VideoTile,
   VideoTiles,
 } from './ExternalRandomCallsPortal.styles';
-import GuestChrome from './GuestChrome';
 import {
   ExternalGuestSession,
   lobbyIsActive,
@@ -118,6 +117,7 @@ import {
   sessionFromLobby,
   SignedInGuest,
 } from './guestSession';
+import SessionUserChip from './SessionUserChip';
 
 const ICON_SIZE = 20;
 
@@ -260,9 +260,10 @@ const ExternalRandomCallsPage = ({ session }: PortalProps) => {
       <Header
         logoLinksOut={false}
         endSlot={
-          <GuestChrome
+          <SessionUserChip
             partnerName={session.partnerName}
             firstName={displayedName}
+            isGuest={session.isGuest}
           />
         }
       />
@@ -467,13 +468,17 @@ const GuestPortalLoader = () => {
   } = useSWR<RandomCallLobbyDetails>(
     lobbyId ? getRandomCallLobbyEndpoint(lobbyId) : null,
   );
-  const { data: user } = useSWR<SignedInGuest>(lobby ? USER_ENDPOINT : null);
+  const { data: user, isLoading: userLoading } = useSWR<SignedInGuest>(
+    lobby ? USER_ENDPOINT : null,
+  );
   const partnerSlug = partnerSlugForLobby(lobby?.name);
   const { data: partner } = useSWR<{ name?: string | null }>(
     partnerSlug ? getPartnerLandingEndpoint(partnerSlug) : null,
   );
 
-  if (isLoading) {
+  // Wait for the account too, so a signed-in user never shows as a guest.
+  // Signed out, the user request fails quickly and the page renders.
+  if (isLoading || userLoading) {
     return (
       <Page>
         <StatusPane>

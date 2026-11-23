@@ -1,11 +1,11 @@
 import {
   Button,
+  Card as DSCard,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import styled, { css, DefaultTheme } from 'styled-components';
 
-import { softCardShadowValue } from '../../views/PartnerLanding/shadow';
 import { DoorVisual } from './doors';
 
 /** Same width as the secondary button and the inputs. */
@@ -129,7 +129,7 @@ export const Weekday = styled(Text).attrs({
 `;
 
 export const DayNumber = styled(Text).attrs({
-  type: TextTypes.Heading3,
+  type: TextTypes.Heading4,
   tag: 'span',
 })<{
   $booked?: boolean;
@@ -188,7 +188,6 @@ export const TimeRow = styled.span<{ $muted?: boolean }>`
 `;
 
 export const Spacer = styled.span`
-  flex: 1 1 auto;
   width: 100%;
   min-height: ${({ theme }) => theme.spacing.xsmall};
 `;
@@ -211,6 +210,7 @@ export const DoorCta = styled(Button)`
 
 export const StatusRow = styled.span`
   display: inline-flex;
+  margin-top: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 export const CancelLink = styled.button`
@@ -228,28 +228,22 @@ export const CancelLink = styled.button`
   }
 `;
 
-export const Card = styled.section`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-self: stretch;
-  box-sizing: border-box;
-  margin-top: ${({ theme }) => theme.spacing.small};
-  padding: ${({ theme }) => theme.spacing.medium};
-  border: ${outlineWidth} solid ${({ theme }) => theme.color.border.subtle};
-  border-radius: ${({ theme }) => theme.radius.xxlarge};
-  background: ${({ theme }) => theme.color.surface.primary};
-  box-shadow: ${softCardShadowValue};
-  text-align: left;
-  gap: ${({ theme }) => theme.spacing.large};
-
+/** Same page wrapper as Resources and About Us: a small gutter on phones only. */
+export const Content = styled.div`
   ${({ theme }) => css`
+    width: 100%;
+    max-width: 1200px;
+    padding: ${theme.spacing.xxsmall};
+
     @media (min-width: ${theme.breakpoints.medium}) {
-      padding: ${theme.spacing.large} ${theme.spacing.large};
-      margin-top: 0;
+      padding: 0;
     }
   `}
+`;
+
+export const Card = styled(DSCard)`
+  text-align: left;
+  gap: ${({ theme }) => theme.spacing.large};
 `;
 
 export const LoadingCard = styled(Card)`

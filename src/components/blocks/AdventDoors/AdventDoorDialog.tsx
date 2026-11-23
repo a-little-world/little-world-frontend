@@ -13,7 +13,6 @@ import {
   Modal,
   Text,
   TextTypes,
-  TickIcon,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
@@ -30,12 +29,11 @@ import CalendarOptions from '../CalendarOptions/CalendarOptions';
 import {
   Actions,
   Badge,
-  Box,
   CalendarBlock,
   CalendarLabel,
-  CancelActions,
   CancelBox,
   Card,
+  CommitCheckbox,
   CommitRow,
   CommitText,
   Confirmed,
@@ -172,17 +170,13 @@ const AdventDoorDialog = ({
                 {t('advent_doors.commit_info', { company: door.company })}
               </Text>
             </InfoBox>
-            <CommitRow>
-              <input
-                type="checkbox"
+            <CommitRow htmlFor={`${blockerId}-commit`}>
+              <CommitCheckbox
+                id={`${blockerId}-commit`}
                 checked={accepted}
-                onChange={event => setAccepted(event.target.checked)}
+                required={false}
+                onCheckedChange={value => setAccepted(value === true)}
               />
-              <Box aria-hidden="true">
-                {accepted && (
-                  <TickIcon label="" width="12" height="12" color="#ffffff" />
-                )}
-              </Box>
               <CommitText>
                 {t('advent_doors.commit_label', {
                   day: door.day,
@@ -272,7 +266,7 @@ const AdventDoorDialog = ({
             <Actions>
               <Button
                 appearance={ButtonAppearance.Primary}
-                size={ButtonSizes.Medium}
+                size={ButtonSizes.Stretch}
                 onClick={onClose}
               >
                 {t('advent_doors.done')}
@@ -289,7 +283,7 @@ const AdventDoorDialog = ({
               {t('advent_doors.cancel_body', { company: door.company })}
             </Text>
             {error && <ErrorText>{error}</ErrorText>}
-            <CancelActions>
+            <Actions>
               <Button
                 appearance={ButtonAppearance.Secondary}
                 size={ButtonSizes.Medium}
@@ -306,7 +300,7 @@ const AdventDoorDialog = ({
               >
                 {t('advent_doors.stay')}
               </Button>
-            </CancelActions>
+            </Actions>
           </>
         )}
       </Card>

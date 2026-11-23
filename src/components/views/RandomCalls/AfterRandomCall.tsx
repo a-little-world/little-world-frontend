@@ -43,7 +43,6 @@ import ModalCard from '../../blocks/Cards/ModalCard';
 import Header from '../../blocks/Header';
 import { REPORT_TYPE_USER } from '../../blocks/ReportForm/constants';
 import ReportForm, { ReportFormData } from '../../blocks/ReportForm/ReportForm';
-import GuestChrome from '../ExternalRandomCalls/GuestChrome';
 import {
   isDesignPreview,
   lobbyIsActive,
@@ -57,6 +56,7 @@ import {
   readGuestFirstName,
   SignedInGuest,
 } from '../ExternalRandomCalls/guestSession';
+import SessionUserChip from '../ExternalRandomCalls/SessionUserChip';
 import { PARTNER_EVENT_TIME_ZONE } from '../PartnerLanding/constants';
 import {
   CardBody,
@@ -237,7 +237,9 @@ export const AfterCallScreen = ({ flow = 'app' }: AfterCallProps) => {
           </ModalCard>
         ) : (
           <ModalCard>
-            <CardHeader>{t('random_calls.report_confirmed_title')}</CardHeader>
+            <CardHeader marginBottom="0">
+              {t('random_calls.report_confirmed_title')}
+            </CardHeader>
             <CardContent>
               <Text center>
                 {t('random_calls.report_confirmed_description')}
@@ -249,7 +251,12 @@ export const AfterCallScreen = ({ flow = 'app' }: AfterCallProps) => {
       <Header
         logoLinksOut={false}
         logoTo={logoTo}
-        endSlot={<GuestChrome partnerName={null} firstName={firstName} />}
+        endSlot={
+          // Wait for the account so a signed-in user never flashes as a guest.
+          accountKnown ? (
+            <SessionUserChip firstName={firstName} isGuest={!hasAccount} />
+          ) : null
+        }
       />
       <Column>
         <Title>{t('external_random_calls.after.title')}</Title>
@@ -349,7 +356,7 @@ export const AfterCallScreen = ({ flow = 'app' }: AfterCallProps) => {
             height={16}
             color={theme.color.text.tertiary}
           />
-          {t('external_random_calls.after.problem')}
+          <Text>{t('external_random_calls.after.problem')}</Text>
           <Button
             variation={ButtonVariations.Inline}
             onClick={() => setReportState('form')}

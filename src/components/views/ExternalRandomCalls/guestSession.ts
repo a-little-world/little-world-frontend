@@ -51,9 +51,14 @@ export type SignedInGuest = {
   profile?: { first_name?: string | null };
 };
 
+/** Anyone without a full account: not signed in, or on a temporary guest account. */
+export const isGuestUser = (user?: SignedInGuest | null) =>
+  !user || user.isTemporary === true;
+
 export type ExternalGuestSession = {
   email: string;
   firstName: string | null;
+  isGuest: boolean;
   partnerName: string | null;
   startsAt: Date;
   endsAt: Date;
@@ -69,6 +74,7 @@ export const sessionFromLobby = (
 ): ExternalGuestSession => ({
   email: user?.email ?? '',
   firstName: user?.profile?.first_name?.trim() || null,
+  isGuest: isGuestUser(user),
   partnerName: partnerName?.trim() || null,
   startsAt: new Date(lobby.start_time),
   endsAt: new Date(lobby.end_time),

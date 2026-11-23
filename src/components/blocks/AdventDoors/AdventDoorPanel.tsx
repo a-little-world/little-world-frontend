@@ -22,12 +22,12 @@ import useSWR, { mutate } from 'swr';
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { USER_TYPES } from '../../../constants/index';
 import { Pill } from '../../atoms/Pills';
-import Garland from '../Garland/Garland';
 import AdventDoorDialog, { DialogStep } from './AdventDoorDialog';
 import {
   CancelLink,
   Card,
   Company,
+  Content,
   DayNumber,
   Divider,
   DoorButton,
@@ -171,9 +171,11 @@ const AdventDoorPanel = () => {
 
   if (userLoading || doorsLoading) {
     return (
-      <LoadingCard aria-busy="true">
-        <Loading size={LoadingSizes.Medium} />
-      </LoadingCard>
+      <Content>
+        <LoadingCard aria-busy="true">
+          <Loading size={LoadingSizes.Medium} />
+        </LoadingCard>
+      </Content>
     );
   }
   if (!isLearner || !data || !doors.length) return null;
@@ -183,69 +185,70 @@ const AdventDoorPanel = () => {
     booked ? theme.color.text.tertiary : theme.color.text.button;
 
   return (
-    <Card>
-      <LiveRegion aria-live="polite">{announcement}</LiveRegion>
-      <Garland padding="32px" curvature={0.2} top="-16px" />
-      <Header>
-        <HeaderText>
-          <Title>{t('advent_doors.title')}</Title>
-          <Lead>{t('advent_doors.lead', { count: doors.length })}</Lead>
-        </HeaderText>
-        <Pill $tone="accent" $size="medium" $border="message">
-          <CalendarIcon
+    <Content>
+      <Card>
+        <LiveRegion aria-live="polite">{announcement}</LiveRegion>
+        <Header>
+          <HeaderText>
+            <Title>{t('advent_doors.title')}</Title>
+            <Lead>{t('advent_doors.lead', { count: doors.length })}</Lead>
+          </HeaderText>
+          <Pill $tone="accent" $size="medium" $border="message">
+            <CalendarIcon
+              label=""
+              width="16"
+              height="16"
+              color={theme.color.text.title}
+            />
+            {countLabel(bookedCount, t)}
+          </Pill>
+        </Header>
+        <Instruction>
+          <InstructionMark>
+            <CalendarAddIcon
+              label=""
+              width="16"
+              height="16"
+              color={theme.color.text.title}
+            />
+          </InstructionMark>
+          <InstructionText type={TextTypes.Body5}>
+            {t('advent_doors.instruction')}
+          </InstructionText>
+        </Instruction>
+        <Doors>
+          {doors.map(door => (
+            <Door
+              key={door.id}
+              door={door}
+              language={i18n.language}
+              clockColor={clockColor(door.bookedByMe)}
+              onOpen={step => setDialog({ id: door.id, step })}
+              t={t}
+            />
+          ))}
+        </Doors>
+        <Footer>
+          <InfoIcon
             label=""
             width="16"
             height="16"
-            color={theme.color.text.title}
+            color={theme.color.text.tertiary}
           />
-          {countLabel(bookedCount, t)}
-        </Pill>
-      </Header>
-      <Instruction>
-        <InstructionMark>
-          <CalendarAddIcon
-            label=""
-            width="16"
-            height="16"
-            color={theme.color.text.title}
-          />
-        </InstructionMark>
-        <InstructionText type={TextTypes.Body5}>
-          {t('advent_doors.instruction')}
-        </InstructionText>
-      </Instruction>
-      <Doors>
-        {doors.map(door => (
-          <Door
-            key={door.id}
-            door={door}
-            language={i18n.language}
-            clockColor={clockColor(door.bookedByMe)}
-            onOpen={step => setDialog({ id: door.id, step })}
-            t={t}
-          />
-        ))}
-      </Doors>
-      <Footer>
-        <InfoIcon
-          label=""
-          width="16"
-          height="16"
-          color={theme.color.text.tertiary}
+          <FooterText>{t('advent_doors.footer')}</FooterText>
+        </Footer>
+        <AdventDoorDialog
+          door={dialog ? active : null}
+          step={dialog?.step ?? 'commit'}
+          onStep={step =>
+            setDialog(current => (current ? { ...current, step } : current))
+          }
+          onClose={() => setDialog(null)}
+          onBook={book}
+          onCancelBooking={cancel}
         />
-        <FooterText>{t('advent_doors.footer')}</FooterText>
-      </Footer>
-      <AdventDoorDialog
-        door={dialog ? active : null}
-        step={dialog?.step ?? 'commit'}
-        onStep={step =>
-          setDialog(current => (current ? { ...current, step } : current))
-        }
-        onClose={() => setDialog(null)}
-        onBook={book}
-        onCancelBooking={cancel}
-      />
-    </Card>
+      </Card>
+    </Content>
   );
 };
 

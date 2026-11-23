@@ -59,10 +59,10 @@ import {
   StyledConfetti,
   TickCircle,
 } from './GuestAccountOffer.styles';
-import GuestChrome from './GuestChrome';
 import {
   GuestCallSummary,
   isDesignPreview,
+  isGuestUser,
   PREVIEW_FIRST_NAME,
   previewCallCount,
   previewCalls,
@@ -72,6 +72,7 @@ import {
   readGuestFirstName,
   SignedInGuest,
 } from './guestSession';
+import SessionUserChip from './SessionUserChip';
 
 const TICK_COLOR = '#1f7a45';
 
@@ -117,7 +118,8 @@ const GuestAccountOfferPage = () => {
     if (preview) return previewCalls(previewCallCount(previewSearch));
     return readGuestCalls(lobbyId);
   }, [lobbyId, preview, previewSearch]);
-  const { data: user } = useSWR<SignedInGuest>(USER_ENDPOINT);
+  const { data: user, isLoading: userLoading } =
+    useSWR<SignedInGuest>(USER_ENDPOINT);
   const { data: fetchedLobby } = useSWR<RandomCallLobbyDetails>(
     !preview && lobbyId ? getRandomCallLobbyEndpoint(lobbyId) : null,
   );
@@ -182,7 +184,15 @@ const GuestAccountOfferPage = () => {
     <Page>
       <Header
         logoLinksOut={false}
-        endSlot={<GuestChrome partnerName={null} firstName={firstName} />}
+        endSlot={
+          // Wait for the account so a signed-in user never flashes as a guest.
+          preview || !userLoading ? (
+            <SessionUserChip
+              firstName={firstName}
+              isGuest={preview || isGuestUser(user)}
+            />
+          ) : null
+        }
       />
       <Column>
         {later ? (

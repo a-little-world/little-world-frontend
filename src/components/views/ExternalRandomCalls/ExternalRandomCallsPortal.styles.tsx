@@ -62,19 +62,21 @@ export const PartnerPill = styled(Text).attrs({
   `}
 `;
 
-export const GuestChip = styled.div`
+export const UserChip = styled.div<{ $avatarOnly?: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xsmall};
   max-width: 16rem;
   min-width: 0;
-  padding: ${({ theme }) =>
-    `${theme.spacing.xxxsmall} ${theme.spacing.small} ${theme.spacing.xxxsmall} ${theme.spacing.xxxsmall}`};
+  padding: ${({ theme, $avatarOnly }) =>
+    $avatarOnly
+      ? theme.spacing.xxxsmall
+      : `${theme.spacing.xxxsmall} ${theme.spacing.small} ${theme.spacing.xxxsmall} ${theme.spacing.xxxsmall}`};
   border-radius: ${({ theme }) => theme.radius.massive};
   background: ${({ theme }) => theme.color.surface.secondary};
 `;
 
-export const GuestAvatar = styled.span`
+export const UserAvatar = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -90,7 +92,7 @@ export const GuestAvatar = styled.span`
   line-height: 1;
 `;
 
-export const GuestName = styled(Text).attrs({
+export const UserName = styled(Text).attrs({
   type: TextTypes.Body6,
   tag: 'span' as const,
 })`

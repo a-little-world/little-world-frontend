@@ -1,4 +1,8 @@
-import { Text, TextTypes } from '@a-little-world/little-world-design-system';
+import {
+  Checkbox,
+  Text,
+  TextTypes,
+} from '@a-little-world/little-world-design-system';
 import styled, { css } from 'styled-components';
 
 import { outlineWidth } from './AdventDoorPanel.styles';
@@ -30,7 +34,10 @@ export const DoorHeader = styled.div`
   gap: ${({ theme }) => theme.spacing.small};
 `;
 
-export const Badge = styled.span`
+export const Badge = styled(Text).attrs({
+  type: TextTypes.Heading4,
+  tag: 'span',
+})`
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
@@ -43,8 +50,6 @@ export const Badge = styled.span`
   box-shadow: ${({ theme }) =>
     `inset 0 0 0 ${outlineWidth} ${theme.color.border.reversed}, 0 0 0 ${outlineWidth} ${theme.color.border.bold}`};
   color: ${({ theme }) => theme.color.text.button};
-  font-family: 'Work Sans', sans-serif;
-  font-weight: 700;
 `;
 
 export const HeaderCopy = styled.div`
@@ -55,7 +60,7 @@ export const HeaderCopy = styled.div`
   gap: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
-export const Kicker = styled(Text).attrs({ type: TextTypes.Body7, tag: 'p' })`
+export const Kicker = styled(Text).attrs({ type: TextTypes.Body7 })`
   margin: 0;
   color: ${({ theme }) => theme.color.text.heading};
   font-weight: 700;
@@ -79,7 +84,6 @@ export const InfoBox = styled.div`
 `;
 
 export const CommitRow = styled.label`
-  position: relative;
   display: flex;
   align-items: flex-start;
   margin: 0;
@@ -89,39 +93,15 @@ export const CommitRow = styled.label`
   cursor: pointer;
   gap: ${({ theme }) => theme.spacing.xsmall};
 
-  &:hover {
+  &:hover,
+  &:has([data-state='checked']) {
     border-color: ${({ theme }) => theme.color.border.selected};
-  }
-
-  input {
-    position: absolute;
-    width: ${({ theme }) => theme.spacing.medium};
-    height: ${({ theme }) => theme.spacing.medium};
-    margin: 0;
-    opacity: 0;
-  }
-
-  input:focus-visible + span {
-    outline: ${outlineWidth} solid ${({ theme }) => theme.color.border.selected};
-    outline-offset: ${({ theme }) => theme.spacing.xxxsmall};
   }
 `;
 
-export const Box = styled.span`
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  width: ${({ theme }) => theme.spacing.medium};
-  height: ${({ theme }) => theme.spacing.medium};
-  border: ${outlineWidth} solid ${({ theme }) => theme.color.border.moderate};
-  border-radius: ${({ theme }) => theme.radius.xxsmall};
-  background: ${({ theme }) => theme.color.surface.primary};
-
-  ${CommitRow}:has(input:checked) & {
-    border-color: ${({ theme }) => theme.color.border.selected};
-    background: ${({ theme }) => theme.color.border.selected};
-  }
+export const CommitCheckbox: typeof Checkbox = styled(Checkbox)`
+  flex-shrink: 0;
+  margin-top: ${({ theme }) => theme.spacing.xxxxsmall};
 `;
 
 export const CommitText = styled(Text).attrs({
@@ -143,16 +123,6 @@ export const ErrorText = styled(Text).attrs({
 export const Actions = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: ${({ theme }) => theme.spacing.medium};
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      justify-content: flex-end;
-    }
-  `}
-`;
-
-export const CancelActions = styled(Actions)`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.small};
 

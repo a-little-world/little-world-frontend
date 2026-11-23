@@ -184,14 +184,13 @@ export const CardButton = styled(Button)`
   gap: ${({ theme }) => theme.spacing.xsmall};
 `;
 
-export const ReportRow = styled.p`
+export const ReportRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: ${({ theme }) => theme.spacing.xsmall};
+  gap: ${({ theme }) => theme.spacing.xxsmall};
   color: ${({ theme }) => theme.color.text.tertiary};
-  font-size: 0.875rem;
   margin-top: auto;
 `;
 
