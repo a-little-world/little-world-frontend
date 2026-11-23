@@ -340,7 +340,7 @@
   "help.feedback.bug.message_placeholder": "Beschreibe, was du gemacht hast und was stattdessen passiert ist.",
   "help.feedback.bug.screenshots": "Screenshots (optional)",
   "help.feedback.bug.too_many_screenshots": "Bitte füge höchstens {{max}} Bilder hinzu.",
-  "help.feedback.bug.device_note": "Dein Gerät und deine App-Version werden mit der Meldung gesendet.",
+  "help.feedback.device_note": "Informationen zu deinem Gerät und deiner App-Version werden mit deinem Feedback gesendet.",
   "help.feedback.bug.submit": "Meldung senden",
   "help.support_header": "Support-Team",
   "help.support_message_btn": "Schreib uns an",

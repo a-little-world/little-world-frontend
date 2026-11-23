@@ -155,7 +155,7 @@ function BugReportForm({ onSent }: { onSent: () => void }) {
           </InputError>
         </div>
         <Text type={TextTypes.Body6} color={theme.color.text.tertiary}>
-          {t('help.feedback.bug.device_note')}
+          {t('help.feedback.device_note')}
         </Text>
         {!!submitError && (
           <StatusMessage visible type={StatusTypes.Error}>

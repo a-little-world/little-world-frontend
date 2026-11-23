@@ -21,9 +21,7 @@ export const submitFeedback = async ({
   body.append('platform', environment.isNative ? 'native' : 'web');
   if (message) body.append('message', message);
   const deviceInfo = await getDeviceInfo();
-  if (kind === 'bug') {
-    body.append('device', JSON.stringify(deviceInfo));
-  }
+  body.append('device', JSON.stringify(deviceInfo));
   attachments.forEach(file => body.append('attachments', file, file.name));
 
   await apiFetch('/api/feedback/', { method: 'POST', body });

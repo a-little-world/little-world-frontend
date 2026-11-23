@@ -137,6 +137,7 @@ function Feedback() {
             survey={generalSurvey}
             onSubmit={submitGeneral}
             submitError={submitError}
+            submitNote={t('help.feedback.device_note')}
           />
         ) : (
           <BugReportForm onSent={() => setIsSent(true)} />

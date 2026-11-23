@@ -340,7 +340,7 @@
   "help.feedback.bug.message_placeholder": "Tell us what you did and what happened instead.",
   "help.feedback.bug.screenshots": "Screenshots (optional)",
   "help.feedback.bug.too_many_screenshots": "Please add at most {{max}} images.",
-  "help.feedback.bug.device_note": "Your device and app version are sent with the report.",
+  "help.feedback.device_note": "Information about your device and app version is sent with your feedback.",
   "help.feedback.bug.submit": "Send report",
   "help.support_description": "Unser ehrenamtliches Support-Team kümmert sich persönlich um deine Nachrichten. Hier antworten echte Menschen, kein KI-Bot. Wir antworten dir so schnell wie möglich. Wenn uns viele Anfragen erreichen, kann es manchmal etwas länger dauern.\n\nDanke für deine Geduld und dein Verständnis! 💛",
   "help.support_call_btn": "Call now",
