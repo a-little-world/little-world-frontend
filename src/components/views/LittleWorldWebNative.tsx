@@ -11,6 +11,7 @@ import {
   USER_ENDPOINT,
 } from '../../api/endpoints';
 import { apiFetch } from '../../api/helpers';
+import type { DeviceInfo } from '../../device-info';
 import { environment } from '../../environment';
 import { useReceiveHandlerStore } from '../../features/stores';
 import useNativeStore from '../../features/stores/nativeStore';
@@ -31,6 +32,7 @@ export interface LittleWorldWebNativeProps {
     refreshToken: string | undefined,
   ) => Promise<void>;
   getInstallId: () => Promise<string>;
+  getDeviceInfo: () => Promise<DeviceInfo>;
   hasStoredToken: boolean;
 }
 
@@ -82,6 +84,7 @@ export function LittleWorldWebNative({
   setAccessTokens,
   hasStoredToken,
   getInstallId,
+  getDeviceInfo,
 }: LittleWorldWebNativeProps) {
   // Optimistic startup: if native has a stored token, boot the hash-router at the app
   // route instead of the default login route so RouteGuard renders the app immediately
@@ -104,6 +107,7 @@ export function LittleWorldWebNative({
     setGetAccesToken,
     setSetAccessTokens,
     setGetInstallId,
+    setGetDeviceInfo,
   } = useNativeStore();
 
   useEffect(() => {
@@ -129,6 +133,10 @@ export function LittleWorldWebNative({
   useEffect(() => {
     setGetInstallId(getInstallId);
   }, [getInstallId, setGetInstallId]);
+
+  useEffect(() => {
+    setGetDeviceInfo(getDeviceInfo);
+  }, [getDeviceInfo, setGetDeviceInfo]);
 
   useEffect(() => {
     if (handler) {

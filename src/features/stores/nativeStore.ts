@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 import { ApiFetchFn, TokenStatus } from '../../api/types';
+import type { DeviceInfo } from '../../device-info';
 import { environment } from '../../environment';
 
 export interface TokenState {
@@ -21,6 +22,8 @@ interface NativeStoreState {
   setTokenState: (tokenState: TokenState) => void;
   getInstallId: () => Promise<string>;
   setGetInstallId: (getInstallIdFn: () => Promise<string>) => void;
+  getDeviceInfo: () => Promise<DeviceInfo>;
+  setGetDeviceInfo: (getDeviceInfoFn: () => Promise<DeviceInfo>) => void;
   setAccessTokens: (
     accessToken: string | undefined,
     refreshToken: string | undefined,
@@ -48,6 +51,8 @@ const useNativeStore = create<NativeStoreState>(set => {
     setTokenState: tokenState => set({ tokenState }),
     getInstallId: errorFn('getInstallId'),
     setGetInstallId: getInstallId => set({ getInstallId }),
+    getDeviceInfo: errorFn('getDeviceInfo'),
+    setGetDeviceInfo: getDeviceInfo => set({ getDeviceInfo }),
     setAccessTokens: errorFn('setAccessTokens'),
     setSetAccessTokens: setAccessTokens => set({ setAccessTokens }),
   };

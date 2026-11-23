@@ -31,10 +31,12 @@ export const getSurveyRoute = (slug: string) =>
 export const BEGINNERS_ROUTE = 'resources/beginners';
 export const LANGUAGE_RESOURCES_ROUTE = 'resources/german';
 export const MY_STORY_ROUTE = 'resources/story';
-/** Redirect-only; link to HELP_CONTACT_ROUTE or HELP_FAQS_ROUTE instead. */
+/** Redirect-only; link to a HELP_*_ROUTE subpage instead. */
 export const HELP_ROUTE = 'help';
 export const HELP_CONTACT_ROUTE = 'help/contact';
 export const HELP_FAQS_ROUTE = 'help/faqs';
+export const HELP_FEEDBACK_ROUTE = 'help/feedback';
+export const HELP_FEEDBACK_KIND_ROUTE = 'help/feedback/:feedbackKind';
 export const SETTINGS_ROUTE = 'settings';
 export const LOGIN_ROUTE = 'login';
 export const SIGN_UP_ROUTE = 'sign-up';

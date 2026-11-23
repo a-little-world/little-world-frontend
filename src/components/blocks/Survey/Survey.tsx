@@ -253,6 +253,7 @@ interface SurveyProps {
   onAnswersChange?: (answers: SurveyAnswers) => void;
   onSubmit: (answers: SurveyAnswers) => unknown;
   submitError?: string | null;
+  submitNote?: React.ReactNode;
 }
 
 const Survey: React.FC<SurveyProps> = ({
@@ -260,6 +261,7 @@ const Survey: React.FC<SurveyProps> = ({
   onAnswersChange,
   onSubmit,
   submitError,
+  submitNote,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -330,6 +332,7 @@ const Survey: React.FC<SurveyProps> = ({
               })}
             </Questions>
 
+            {submitNote}
             {!!submitError && (
               <StatusMessage visible type={StatusTypes.Error}>
                 {submitError}
