@@ -79,10 +79,12 @@ const AdventDoorDialog = ({
 
   useSystemModalBlocker(open, blockerId);
 
+  // The dialog stays mounted between doors, so every opening starts clean.
   useEffect(() => {
     setAccepted(false);
     setError('');
-  }, [door?.id, step]);
+    setBusy(false);
+  }, [door?.id, step, open]);
 
   if (!door) return null;
 
@@ -140,6 +142,7 @@ const AdventDoorDialog = ({
       onClose();
     } catch {
       setError(t('advent_doors.generic_error'));
+    } finally {
       setBusy(false);
     }
   };
@@ -298,7 +301,7 @@ const AdventDoorDialog = ({
               </Button>
               <Button
                 variation={ButtonVariations.Inline}
-                onClick={() => onStep('confirmed')}
+                onClick={onClose}
                 color={theme.color.text.link}
               >
                 {t('advent_doors.stay')}

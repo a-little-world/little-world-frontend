@@ -7,6 +7,8 @@ import {
   CalendarIcon,
   ClockIcon,
   InfoIcon,
+  Loading,
+  LoadingSizes,
   Tag,
   TagAppearance,
   TagSizes,
@@ -20,14 +22,7 @@ import useSWR, { mutate } from 'swr';
 import { USER_ENDPOINT } from '../../../api/endpoints';
 import { USER_TYPES } from '../../../constants/index';
 import { Pill } from '../../atoms/Pills';
-import {
-  GARLAND_COUNT,
-  GARLAND_TONES,
-} from '../../views/PartnerLanding/PartnerLanding';
-import {
-  Garland,
-  GarlandLight,
-} from '../../views/PartnerLanding/PartnerLanding.styles';
+import Garland from '../Garland/Garland';
 import AdventDoorDialog, { DialogStep } from './AdventDoorDialog';
 import {
   CancelLink,
@@ -50,6 +45,7 @@ import {
   InstructionText,
   Lead,
   LiveRegion,
+  LoadingCard,
   Places,
   Spacer,
   StatusRow,
@@ -89,9 +85,11 @@ const countLabel = (
 const AdventDoorPanel = () => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
-  const { data: user } = useSWR(USER_ENDPOINT);
+  const { data: user, isLoading: userLoading } = useSWR(USER_ENDPOINT);
   const isLearner = user?.profile?.user_type === USER_TYPES.learner;
-  const { data } = useSWR<DoorPayload[]>(isLearner ? ADVENT_DOORS_KEY : null);
+  const { data, isLoading: doorsLoading } = useSWR<DoorPayload[]>(
+    isLearner ? ADVENT_DOORS_KEY : null,
+  );
   const [dialog, setDialog] = useState<DialogState | null>(null);
   const [announcement, setAnnouncement] = useState('');
 
@@ -100,8 +98,7 @@ const AdventDoorPanel = () => {
       (data ?? [])
         .map(toDoor)
         .filter(door => isUpcoming(door))
-        .sort(compareDoors)
-        .slice(0, 12),
+        .sort(compareDoors),
     [data],
   );
 
@@ -172,6 +169,13 @@ const AdventDoorPanel = () => {
     }
   };
 
+  if (userLoading || doorsLoading) {
+    return (
+      <LoadingCard aria-busy="true">
+        <Loading size={LoadingSizes.Medium} />
+      </LoadingCard>
+    );
+  }
   if (!isLearner || !data || !doors.length) return null;
   const active = doors.find(door => door.id === dialog?.id) ?? null;
   const bookedCount = doors.filter(door => door.bookedByMe).length;
@@ -181,15 +185,7 @@ const AdventDoorPanel = () => {
   return (
     <Card>
       <LiveRegion aria-live="polite">{announcement}</LiveRegion>
-      <Garland aria-hidden="true">
-        {Array.from({ length: GARLAND_COUNT }, (_, index) => (
-          <GarlandLight
-            key={index}
-            $tone={GARLAND_TONES[index % GARLAND_TONES.length]}
-            $wave={Math.sin((index / (GARLAND_COUNT - 1)) * Math.PI * 2)}
-          />
-        ))}
-      </Garland>
+      <Garland padding="32px" curvature={0.2} top="-16px" />
       <Header>
         <HeaderText>
           <Title>{t('advent_doors.title')}</Title>
@@ -309,8 +305,8 @@ const Door = ({ door, language, clockColor, onOpen, t }: DoorProps) => {
           })}
         </TimeText>
       </TimeRow>
-      <Spacer $beforeAction={!showPlaces} />
-      {showPlaces && <Places>{placesText}</Places>}
+      <Spacer />
+
       {booked ? (
         <StatusRow>
           <Tag appearance={TagAppearance.success} size={TagSizes.small} bold>
@@ -329,6 +325,7 @@ const Door = ({ door, language, clockColor, onOpen, t }: DoorProps) => {
           {cta}
         </DoorCta>
       )}
+      {showPlaces && <Places>{placesText}</Places>}
     </>
   );
 

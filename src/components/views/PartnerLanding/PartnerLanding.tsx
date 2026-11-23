@@ -39,6 +39,7 @@ import monikaPhoto from '../../../images/partner-landing/monika.webp';
 import peterPhoto from '../../../images/partner-landing/peter.webp';
 import { getAppRoute, WP_HOME_ROUTE } from '../../../router/routes';
 import { Pill } from '../../atoms/Pills';
+import Garland from '../../blocks/Garland/Garland';
 import PageFooter from '../../blocks/PageFooter/PageFooter';
 import PartnerSignUpCard, {
   SUPPORT_EMAIL,
@@ -63,8 +64,6 @@ import {
   FinalInner,
   FinalLead,
   FinalTitle,
-  Garland,
-  GarlandLight,
   Hero,
   HeroContent,
   HeroLayout,
@@ -114,14 +113,6 @@ import {
 } from './PartnerLanding.styles';
 import PartnerStoryModal, { StoryAvatars } from './PartnerStoryModal';
 import { validatePartnerEmail } from './validation';
-
-export const GARLAND_TONES = [
-  'highlight',
-  'accent',
-  'heading',
-  'title',
-] as const;
-export const GARLAND_COUNT = 34;
 
 const COUNTERPART_ITEMS = [
   { key: 'speech', Icon: MessageIcon },
@@ -184,15 +175,7 @@ const PartnerHeroChrome = ({ partner }: { partner: PartnerLanding }) => {
 
   return (
     <>
-      <Garland aria-hidden="true">
-        {Array.from({ length: GARLAND_COUNT }, (_, index) => (
-          <GarlandLight
-            key={index}
-            $tone={GARLAND_TONES[index % GARLAND_TONES.length]}
-            $wave={Math.sin((index / (GARLAND_COUNT - 1)) * Math.PI * 2)}
-          />
-        ))}
-      </Garland>
+      <Garland />
       <NavBar>
         <HomeLink href={WP_HOME_ROUTE} target="_blank" rel="noreferrer">
           <WhiteLogo stacked={false} asLink={false} />

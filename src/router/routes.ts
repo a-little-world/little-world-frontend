@@ -21,7 +21,7 @@ export const PARTNER_ROUTE = 'resources/partners/:partnerSlug?/';
 export const TRAININGS_ROUTE = 'resources/trainings';
 export const TRAINING_ROUTE = 'resources/trainings/:trainingSlug';
 export const COURSE_PREVIEW_ROUTE = 'courses/preview/:courseSlug';
-/** Learner Advent doors. Reached only by URL; nothing links here yet. */
+/** Learner Advent doors, a Home tab shown only to learners. */
 export const ADVENT_DOORS_ROUTE = 'advent';
 export const SURVEYS_ROUTE = 'surveys';
 export const SURVEY_ROUTE = `${SURVEYS_ROUTE}/:slug`;

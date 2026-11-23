@@ -21,7 +21,6 @@ import FormLayout from '../components/blocks/Layout/FormLayout';
 import { ToastProvider } from '../components/blocks/Toast';
 import Welcome from '../components/blocks/Welcome/Welcome';
 import AboutUs from '../components/views/AboutUs/AboutUs';
-import AdventDoors from '../components/views/AdventDoors';
 import ChangeEmail from '../components/views/ChangeEmail';
 import EditView from '../components/views/Edit';
 import EmailPreferences from '../components/views/EmailPreferences';
@@ -316,7 +315,7 @@ export function getWebRouter() {
         },
         { path: getAppRoute(CALL_SETUP_ROUTE), element: <Main /> },
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
-        { path: getAppRoute(ADVENT_DOORS_ROUTE), element: <AdventDoors /> },
+        { path: getAppRoute(ADVENT_DOORS_ROUTE), element: <Main /> },
         { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
         { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },
@@ -447,7 +446,7 @@ export function getNativeRouter() {
         },
         { path: getAppRoute(CALL_SETUP_ROUTE), element: <Main /> },
         { path: getAppRoute(COMMUNITY_EVENTS_ROUTE), element: <Main /> },
-        { path: getAppRoute(ADVENT_DOORS_ROUTE), element: <AdventDoors /> },
+        { path: getAppRoute(ADVENT_DOORS_ROUTE), element: <Main /> },
         { path: getAppRoute(COURSE_PREVIEW_ROUTE), element: <CoursePreview /> },
         { path: getAppRoute(RANDOM_CALLS_ROUTE), element: <Main /> },
         { path: getAppRoute(CHAT_ROUTE), element: <Messages /> },

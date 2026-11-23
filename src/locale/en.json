@@ -1,7 +1,7 @@
 {
   "add_to_calendar": "Add to Calendar",
   "advent_doors.title": "Open a door this Advent",
-  "advent_doors.lead": "{{count}} companies are taking 30 minutes in December for a conversation with you. So nobody waits alone, every door needs as many learners as employees.",
+  "advent_doors.lead": "Behind {{count}} doors, employees from different companies are taking 30 minutes to speak German with you. Practise in a relaxed setting, meet new people and hear what their working day is like.",
   "advent_doors.booked_none": "No door booked yet",
   "advent_doors.booked_one": "1 door booked",
   "advent_doors.booked_other": "{{count}} doors booked",
@@ -446,6 +446,7 @@
   "nbs_support_chat": "Support chat",
   "nbs_start": "Home",
   "nbt_about": "About us",
+  "nbt_advent": "Advent Conversations",
   "nbt_beginners": "Beginners",
   "nbt_german": "Lernressourcen",
   "nbt_contact": "Contact Us",

@@ -265,66 +265,6 @@ export const PartnerName = styled(Text).attrs({
   text-transform: uppercase;
 `;
 
-export const Garland = styled.div`
-  position: absolute;
-  top: -12px;
-  width: 100%;
-  z-index: ${({ theme }) => theme.zIndex.above};
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: ${({ theme }) => theme.spacing.large};
-  padding-top: 0;
-  padding-bottom: 0;
-  ${pageSidePadding}
-  pointer-events: none;
-
-  > :nth-child(n + 13) {
-    display: none;
-  }
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      top: 0;
-
-      > :nth-child(n + 13) {
-        display: block;
-      }
-    }
-  `}
-`;
-
-export const GarlandLight = styled.span<{
-  $tone: 'highlight' | 'accent' | 'heading' | 'title';
-  $wave: number;
-}>`
-  width: ${({ theme }) => theme.spacing.xxsmall};
-  height: ${({ theme }) => theme.spacing.xxsmall};
-  border-radius: ${({ theme }) => theme.radius.half};
-  transform: translateY(
-    calc(${({ theme }) => theme.spacing.xsmall} * ${({ $wave }) => $wave})
-  );
-  background: ${({ theme, $tone }) => {
-    if ($tone === 'highlight') return theme.color.surface.highlight;
-    if ($tone === 'accent') return theme.color.surface.bold;
-    if ($tone === 'heading') return theme.color.text.heading;
-    return theme.color.text.title;
-  }};
-  box-shadow: 0 0 ${({ theme }) => theme.spacing.xxsmall}
-    ${({ theme }) => theme.spacing.xxxxsmall} currentColor;
-  color: ${({ theme, $tone }) => {
-    if ($tone === 'highlight') return theme.color.surface.highlight;
-    if ($tone === 'accent') return theme.color.surface.bold;
-    if ($tone === 'heading') return theme.color.text.heading;
-    return theme.color.text.title;
-  }};
-
-  @media (prefers-reduced-motion: reduce) {
-    transform: none;
-    box-shadow: none;
-  }
-`;
-
 export const HeroLayout = styled.div`
   position: relative;
   z-index: ${({ theme }) => theme.zIndex.above};

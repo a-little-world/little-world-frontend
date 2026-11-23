@@ -187,19 +187,16 @@ export const TimeRow = styled.span<{ $muted?: boolean }>`
   gap: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
-export const Spacer = styled.span<{ $beforeAction?: boolean }>`
+export const Spacer = styled.span`
   flex: 1 1 auto;
   width: 100%;
-  min-height: ${({ theme }) => theme.spacing.xxsmall};
-  margin-bottom: ${({ theme, $beforeAction }) =>
-    $beforeAction ? theme.spacing.xsmall : 0};
+  min-height: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 export const Places = styled(Text).attrs({
   type: TextTypes.Body7,
   tag: 'span',
 })`
-  margin: 0 0 ${({ theme }) => theme.spacing.xxsmall};
   color: inherit;
 `;
 
@@ -209,6 +206,7 @@ export const DoorCta = styled(Button)`
   max-width: none;
   pointer-events: none;
   height: ${({ theme }) => theme.spacing.xlarge};
+  margin-bottom: ${({ theme }) => theme.spacing.xsmall};
 `;
 
 export const StatusRow = styled.span`
@@ -237,14 +235,27 @@ export const Card = styled.section`
   width: 100%;
   align-self: stretch;
   box-sizing: border-box;
-  margin-bottom: ${({ theme }) => theme.spacing.large};
-  padding: ${({ theme }) => theme.spacing.xlarge};
+  margin-top: ${({ theme }) => theme.spacing.small};
+  padding: ${({ theme }) => theme.spacing.medium};
   border: ${outlineWidth} solid ${({ theme }) => theme.color.border.subtle};
   border-radius: ${({ theme }) => theme.radius.xxlarge};
   background: ${({ theme }) => theme.color.surface.primary};
   box-shadow: ${softCardShadowValue};
   text-align: left;
   gap: ${({ theme }) => theme.spacing.large};
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      padding: ${theme.spacing.large} ${theme.spacing.large};
+      margin-top: 0;
+    }
+  `}
+`;
+
+export const LoadingCard = styled(Card)`
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
 `;
 
 export const Header = styled.div`

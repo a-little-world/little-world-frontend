@@ -11,14 +11,17 @@ import {
   USER_ENDPOINT,
 } from '../../api/endpoints';
 import { updateMatchData } from '../../api/matches';
+import { USER_TYPES } from '../../constants/index';
 import CustomPagination from '../../CustomPagination';
 import { useCallSetupStore } from '../../features/stores/index';
 import useSystemModalBlocker from '../../hooks/useSystemModalBlocker';
 import {
+  ADVENT_DOORS_ROUTE,
   COMMUNITY_EVENTS_ROUTE,
   getAppRoute,
   RANDOM_CALLS_ROUTE,
 } from '../../router/routes';
+import AdventDoorPanel from '../blocks/AdventDoors/AdventDoorPanel';
 import UpdateSearchStateCard from '../blocks/Cards/UpdateSearchStateCard';
 import CommsBanner from '../blocks/CommsBanner';
 import CommunityEvents from '../blocks/CommunityEvents/CommunityEvent';
@@ -62,6 +65,7 @@ const Home = styled.div`
 `;
 
 type subpages =
+  | 'advent'
   | 'events'
   | 'conversation_partners'
   | 'random_calls'
@@ -97,6 +101,8 @@ function Main() {
   const { data: matches } = useSWR(getMatchEndpoint(currentPage));
   const { data: user } = useSWR(USER_ENDPOINT);
   const hasRandomCallsAccess = user?.hasRandomCallsAccess ?? false;
+  // Initial testing: only learners see the Advent tab.
+  const isLearner = user?.profile?.user_type === USER_TYPES.learner;
   const { data: lobbyDataResponse } = useSWR<
     RandomCallLobby | EmptyRandomCallLobbyResponse
   >(hasRandomCallsAccess ? RANDOM_CALL_LOBBY_ENDPOINT : null, {
@@ -124,6 +130,9 @@ function Main() {
     if (location.pathname === getAppRoute(COMMUNITY_EVENTS_ROUTE)) {
       return 'events';
     }
+    if (location.pathname === getAppRoute(ADVENT_DOORS_ROUTE)) {
+      return 'advent';
+    }
     if (location.pathname === getAppRoute(RANDOM_CALLS_ROUTE)) {
       return 'random_calls';
     }
@@ -139,6 +148,13 @@ function Main() {
     }
   }, [subpage, hasRandomCallsAccess, navigate]);
 
+  useEffect(() => {
+    // Wait for the user so a learner is not redirected while it loads.
+    if (subpage === 'advent' && user && !isLearner) {
+      navigate(getAppRoute(''));
+    }
+  }, [subpage, user, isLearner, navigate]);
+
   const subpageRoute = (page: subpages) =>
     getAppRoute(page !== 'conversation_partners' ? page.replace('_', '-') : '');
 
@@ -151,6 +167,7 @@ function Main() {
   };
 
   const excludedTopics = !hasRandomCallsAccess ? ['random_calls'] : [];
+  if (!isLearner) excludedTopics.push('advent');
   excludedTopics.push(
     !user?.isOnboarded ? 'conversation_partners' : 'onboarding',
   );
@@ -165,11 +182,12 @@ function Main() {
         use="main"
         getTopicRoute={topic => subpageRoute(topic as subpages)}
         excludeTopics={excludedTopics}
-        newTopics={['random_calls']}
+        newTopics={['advent']}
         onlineTopics={lobbyData?.status ? ['random_calls'] : []}
       />
-      {subpage !== 'random_calls' && <CommsBanner />}
+      {subpage !== 'random_calls' && subpage !== 'advent' && <CommsBanner />}
       {subpage === 'events' && <CommunityEvents />}
+      {subpage === 'advent' && isLearner && <AdventDoorPanel />}
       {subpage === 'random_calls' && hasRandomCallsAccess && (
         <RandomCalls lobbyData={lobbyData} />
       )}
