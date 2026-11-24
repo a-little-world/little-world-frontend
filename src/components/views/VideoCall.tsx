@@ -52,12 +52,7 @@ import {
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import {
-  getChatEndpoint,
-  RANDOM_CALL_EXIT_PARAM,
-  RANDOM_CALL_EXIT_VALUE,
-  USER_ENDPOINT,
-} from '../../api/endpoints';
+import { getChatEndpoint, USER_ENDPOINT } from '../../api/endpoints';
 import { callAgain } from '../../api/livekit';
 import { endRandomCallMatch } from '../../api/randomCalls';
 import { environment } from '../../environment';
@@ -73,7 +68,10 @@ import useKeyboardShortcut from '../../hooks/useKeyboardShortcut';
 import useMediaQuery from '../../hooks/useMediaQuery';
 import useNotificationHandler from '../../hooks/useNotificationHandler';
 import {
+  ADVENT_GUEST_AFTER_CALL_ROUTE,
+  APP_RANDOM_CALL_AFTER_ROUTE,
   CHAT_ROUTE,
+  getAppRandomCallAfterRoute,
   getAppRoute,
   getCallSetupRoute,
   RANDOM_CALLS_ROUTE,
@@ -88,6 +86,7 @@ import ControlBar, { TopControlBar } from '../blocks/Calls/ControlBar';
 import Chat from '../blocks/ChatCore/Chat';
 import QuestionCards from '../blocks/QuestionCards/QuestionCards';
 import TranslationTool from '../blocks/TranslationTool/TranslationTool';
+import { saveGuestCallSummary } from './ExternalRandomCalls/guestSession';
 import {
   CallLayout,
   CallRejectedTextContainer,
@@ -120,6 +119,7 @@ interface MyVideoConferenceProps {
   setCallRejected: (rejected: boolean) => void;
   callRejected: boolean;
   onDisconnectClick: () => void;
+  onConnected?: () => void;
 }
 
 const MIC_GATED_CONNECT_OPTIONS = { autoSubscribe: false };
@@ -300,6 +300,7 @@ function MyVideoConference({
   setCallRejected,
   callRejected,
   onDisconnectClick,
+  onConnected,
 }: MyVideoConferenceProps) {
   // `useTracks` returns all camera and screen share tracks. If a user
   // joins without a published camera track, a placeholder track is returned.
@@ -369,8 +370,11 @@ function MyVideoConference({
   );
 
   useEffect(() => {
-    if (connectionState === ConnectionState.Connected) setHasConnected(true);
-  }, [connectionState]);
+    if (connectionState === ConnectionState.Connected) {
+      setHasConnected(true);
+      onConnected?.();
+    }
+  }, [connectionState, onConnected]);
 
   useEffect(() => {
     if (name) initializeCallID(name);
@@ -582,6 +586,8 @@ function VideoCall() {
     videoPermissionDenied,
     callType,
     postDisconnectRedirect,
+    partnerName,
+    partnerImage,
     randomLobbyUuid,
     e2eeKey,
   } = callData || {};
@@ -650,6 +656,10 @@ function VideoCall() {
 
   const mountedRef = useRef(false);
   const leavingRef = useRef(false);
+  const connectedAtRef = useRef<number | null>(null);
+  const markConnected = useCallback(() => {
+    if (connectedAtRef.current == null) connectedAtRef.current = Date.now();
+  }, []);
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -799,10 +809,41 @@ function VideoCall() {
                 console.warn('[e2ee] encryption error', error);
               }}
               onDisconnected={reason => {
+                if (leavingRef.current) return;
                 leavingRef.current = true;
+                const partnerId = chatData?.partner?.id;
+                const spokenWith =
+                  partnerName || chatData?.partner?.first_name || '';
+                const isRandom = callType === 'random' || isRandomCallRoute;
+                const afterPath =
+                  postDisconnectRedirect ||
+                  (isRandom && randomLobbyUuid
+                    ? getAppRandomCallAfterRoute(randomLobbyUuid)
+                    : null);
+                const isAfterCallPage =
+                  afterPath?.endsWith(`/${ADVENT_GUEST_AFTER_CALL_ROUTE}`) ||
+                  afterPath?.endsWith(`/${APP_RANDOM_CALL_AFTER_ROUTE}`);
+                if (isAfterCallPage && randomLobbyUuid) {
+                  const elapsed = connectedAtRef.current
+                    ? Date.now() - connectedAtRef.current
+                    : 0;
+                  const chatPhoto =
+                    chatData?.partner?.image_type !== 'avatar' &&
+                    typeof chatData?.partner?.image === 'string'
+                      ? chatData.partner.image
+                      : null;
+                  saveGuestCallSummary(randomLobbyUuid, {
+                    partnerName: spokenWith,
+                    partnerId: partnerId != null ? String(partnerId) : null,
+                    durationMinutes: connectedAtRef.current
+                      ? Math.max(1, Math.round(elapsed / 60000))
+                      : 0,
+                    image: chatPhoto || partnerImage || null,
+                  });
+                }
                 disconnectFromCall({
                   sessionId: uuid,
-                  partnerId: chatData?.partner?.id,
+                  partnerId,
                 });
                 const connectionLost =
                   reason !== undefined && !CALL_ENDED_REASONS.includes(reason);
@@ -810,18 +851,8 @@ function VideoCall() {
                   navigate(getCallSetupRoute(urlUserId), { replace: true });
                   return;
                 }
-                if (postDisconnectRedirect) {
-                  navigate(postDisconnectRedirect, { replace: true });
-                  return;
-                }
-                // Redirect to random calls page with query param for random calls
-                if (callType === 'random' || isRandomCallRoute) {
-                  navigate(
-                    `${getAppRoute(
-                      RANDOM_CALLS_ROUTE,
-                    )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
-                    { replace: true },
-                  );
+                if (afterPath) {
+                  navigate(afterPath, { replace: true });
                   return;
                 }
                 navigate(getAppRoute());
@@ -850,6 +881,7 @@ function VideoCall() {
                 setCallRejected={setCallRejected}
                 callRejected={callRejected}
                 onDisconnectClick={handleManualDisconnect}
+                onConnected={markConnected}
               />
               <CallTracks waitForMic={waitForMic} />
               {environment.isNative && <RestartCameraOnRotation />}

@@ -4,7 +4,6 @@ import {
   BellIcon,
   ButtonSizes,
   CalendarAddIcon,
-  ChevronRightIcon,
   ClockIcon,
   ConfettiImage,
   CopyIcon,
@@ -31,6 +30,7 @@ import {
   generateGoogleCalendarUrl,
   generateOutlookCalendarUrl,
 } from '../../atoms/AddToCalendarButton';
+import CalendarOptions from '../../blocks/CalendarOptions/CalendarOptions';
 import { SUPPORT_EMAIL } from '../../blocks/PartnerSignUpCard/PartnerSignUpCard';
 import {
   AppointmentCopy,
@@ -49,12 +49,6 @@ import {
 } from '../../blocks/PartnerSignUpCard/PartnerSignUpCard.styles';
 import { PartnerEvent } from './constants';
 import {
-  CalendarChevron,
-  CalendarList,
-  CalendarOption,
-  CalendarOptionCopy,
-  CalendarOptionSubtitle,
-  CalendarOptionTitle,
   ConfirmCard,
   ConfirmCards,
   ConfirmCardText,
@@ -301,37 +295,16 @@ const PartnerConfirmation = ({
           <ConfirmCardText>
             {t('partner_landing.confirm.calendar_lead')}
           </ConfirmCardText>
-          <CalendarList>
-            {CALENDAR_OPTIONS.map(({ key, Icon, open }) => {
-              const title = t(`partner_landing.confirm.calendar_${key}`);
-              return (
-                <CalendarOption
-                  key={key}
-                  type="button"
-                  onClick={() => open(calendarEvent)}
-                >
-                  <Icon
-                    label={title}
-                    width={24}
-                    color={theme.color.text.primary}
-                  />
-                  <CalendarOptionCopy>
-                    <CalendarOptionTitle>{title}</CalendarOptionTitle>
-                    <CalendarOptionSubtitle>
-                      {t(`partner_landing.confirm.calendar_${key}_sub`)}
-                    </CalendarOptionSubtitle>
-                  </CalendarOptionCopy>
-                  <CalendarChevron>
-                    <ChevronRightIcon
-                      label={t('partner_landing.confirm.calendar_open')}
-                      width={16}
-                      height={16}
-                    />
-                  </CalendarChevron>
-                </CalendarOption>
-              );
-            })}
-          </CalendarList>
+          <CalendarOptions
+            openLabel={t('partner_landing.confirm.calendar_open')}
+            options={CALENDAR_OPTIONS.map(({ key, Icon, open }) => ({
+              key,
+              Icon,
+              title: t(`partner_landing.confirm.calendar_${key}`),
+              subtitle: t(`partner_landing.confirm.calendar_${key}_sub`),
+              onClick: () => open(calendarEvent),
+            }))}
+          />
         </ConfirmCard>
       </ConfirmCards>
 

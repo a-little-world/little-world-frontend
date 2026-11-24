@@ -265,66 +265,6 @@ export const PartnerName = styled(Text).attrs({
   text-transform: uppercase;
 `;
 
-export const Garland = styled.div`
-  position: absolute;
-  top: -12px;
-  width: 100%;
-  z-index: ${({ theme }) => theme.zIndex.above};
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: ${({ theme }) => theme.spacing.large};
-  padding-top: 0;
-  padding-bottom: 0;
-  ${pageSidePadding}
-  pointer-events: none;
-
-  > :nth-child(n + 13) {
-    display: none;
-  }
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      top: 0;
-
-      > :nth-child(n + 13) {
-        display: block;
-      }
-    }
-  `}
-`;
-
-export const GarlandLight = styled.span<{
-  $tone: 'highlight' | 'accent' | 'heading' | 'title';
-  $wave: number;
-}>`
-  width: ${({ theme }) => theme.spacing.xxsmall};
-  height: ${({ theme }) => theme.spacing.xxsmall};
-  border-radius: ${({ theme }) => theme.radius.half};
-  transform: translateY(
-    calc(${({ theme }) => theme.spacing.xsmall} * ${({ $wave }) => $wave})
-  );
-  background: ${({ theme, $tone }) => {
-    if ($tone === 'highlight') return theme.color.surface.highlight;
-    if ($tone === 'accent') return theme.color.surface.bold;
-    if ($tone === 'heading') return theme.color.text.heading;
-    return theme.color.text.title;
-  }};
-  box-shadow: 0 0 ${({ theme }) => theme.spacing.xxsmall}
-    ${({ theme }) => theme.spacing.xxxxsmall} currentColor;
-  color: ${({ theme, $tone }) => {
-    if ($tone === 'highlight') return theme.color.surface.highlight;
-    if ($tone === 'accent') return theme.color.surface.bold;
-    if ($tone === 'heading') return theme.color.text.heading;
-    return theme.color.text.title;
-  }};
-
-  @media (prefers-reduced-motion: reduce) {
-    transform: none;
-    box-shadow: none;
-  }
-`;
-
 export const HeroLayout = styled.div`
   position: relative;
   z-index: ${({ theme }) => theme.zIndex.above};
@@ -432,23 +372,6 @@ export const HeroPills = styled.div`
   flex-wrap: wrap;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.xxsmall};
-`;
-
-export const EyebrowPill = styled(Text).attrs({
-  type: TextTypes.Body6,
-  tag: 'span' as const,
-  bold: true,
-})`
-  align-self: flex-start;
-  color: ${({ theme }) => theme.color.text.button};
-  background: color-mix(
-    in srgb,
-    ${({ theme }) => theme.color.text.info} 55%,
-    transparent
-  );
-  border: 2px solid ${({ theme }) => theme.color.border.info};
-  border-radius: ${({ theme }) => theme.radius.massive};
-  padding: ${({ theme }) => `${theme.spacing.xxxsmall} ${theme.spacing.small}`};
 `;
 
 export const PartnerDoorPill = styled(Text).attrs({
@@ -1141,63 +1064,4 @@ export const FaqAccordionContent = styled(AccordionContent)`
   padding: 0 0 ${({ theme }) => theme.spacing.small};
   margin: 0;
   line-height: 1.55;
-`;
-
-export const PageFooter = styled.footer`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.small};
-  padding-top: ${({ theme }) =>
-    `calc(${theme.spacing.medium} + ${theme.spacing.xxxsmall})`};
-  padding-bottom: ${({ theme }) =>
-    `calc(${theme.spacing.medium} + ${theme.spacing.xxxsmall})`};
-  ${pageSidePadding}
-  background: ${({ theme }) => theme.color.surface.primary};
-  border-top: ${({ theme }) => theme.spacing.xxxxsmall} solid
-    ${({ theme }) => theme.color.border.subtle};
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: ${theme.spacing.medium};
-      padding-bottom: ${theme.spacing.medium};
-    }
-  `}
-`;
-
-export const FooterBrand = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.small};
-
-  img {
-    height: ${({ theme }) => theme.spacing.large};
-    width: auto;
-  }
-
-  ${({ theme }) => css`
-    @media (min-width: ${theme.breakpoints.medium}) {
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-  `}
-`;
-
-export const FooterCopy = styled(Text).attrs({
-  type: TextTypes.Body6,
-  tag: 'p' as const,
-})`
-  color: ${({ theme }) => theme.color.text.tertiary};
-  margin: 0;
-`;
-
-export const FooterLinks = styled.nav`
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${({ theme }) => theme.spacing.medium};
 `;

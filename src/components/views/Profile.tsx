@@ -170,9 +170,11 @@ function Profile() {
   const { data: matches } = useSWR(MATCHES_ENDPOINT);
   const match = !matches
     ? undefined
-    : [...matches.support.results, ...matches.confirmed.results].find(
-        m => m.partner.id === userId,
-      );
+    : [
+        ...matches.support.results,
+        ...matches.confirmed.results,
+        ...(matches.unconfirmed?.results ?? []),
+      ].find(m => m.partner.id === userId);
 
   const { data: user } = useSWR(USER_ENDPOINT);
   const isSelf = user?.id === userId || !userId;
@@ -193,17 +195,36 @@ function Profile() {
       : {},
   );
 
+  // The last partner the profile endpoint returned, with the id it was asked
+  // for. A deactivated partner comes back censored (id "censored"), so the
+  // partner's own id can't tell us the fetch is done; this can, and stops it
+  // from repeating.
+  const [fetched, setFetched] = useState<{
+    userId: string;
+    partner: typeof profile;
+  } | null>(null);
+  const fetchedPartner =
+    fetched && fetched.userId === userId ? fetched.partner : null;
+  const matchPartner = match?.partner;
+
   useEffect(() => {
-    if (!isSelf && !profile) {
-      fetchProfile({ userId })
-        .then(data => {
-          setProfile(data.match.partner);
-        })
-        .catch(error => {
-          throw error;
-        });
+    if (isSelf || !userId || matchPartner || fetchedPartner) {
+      return undefined;
     }
-  }, []);
+
+    let cancelled = false;
+    fetchProfile({ userId })
+      .then(data => {
+        if (!cancelled) setFetched({ userId, partner: data.match.partner });
+      })
+      .catch(error => {
+        if (!cancelled) throw error;
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isSelf, userId, matchPartner, fetchedPartner]);
 
   const profileTitle = isSelf
     ? t('profile.self_profile_title')
@@ -222,8 +243,25 @@ function Profile() {
   };
 
   useEffect(() => {
-    setProfile(isSelf ? user?.profile : match?.partner);
-  }, [isSelf, user]);
+    if (isSelf) {
+      if (user?.profile) setProfile(user.profile);
+      else setProfile(current => (current?.id ? undefined : current));
+      return;
+    }
+
+    if (match?.partner) {
+      setProfile(match.partner);
+      return;
+    }
+
+    if (fetchedPartner) {
+      setProfile(fetchedPartner);
+      return;
+    }
+
+    // Keep the partner already on screen while their match row is still settling.
+    setProfile(current => (current?.id === userId ? current : undefined));
+  }, [isSelf, user, match, userId, fetchedPartner]);
 
   useEffect(() => {
     if (profile && formOptions)
@@ -253,7 +291,13 @@ function Profile() {
     }
   }, [isSelf, match, userId]);
 
-  if (isEmpty(profile) || isEmpty(profileFields)) return null;
+  const profileForPage =
+    profile &&
+    (isSelf ? !profile.id : profile.id === userId || profile === fetchedPartner)
+      ? profile
+      : undefined;
+
+  if (isEmpty(profileForPage) || isEmpty(profileFields)) return null;
 
   const selectedInterests = formOptions?.interests
     ?.filter(option => profile.interests.includes(option.value))

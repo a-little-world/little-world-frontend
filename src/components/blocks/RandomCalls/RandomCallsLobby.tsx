@@ -30,8 +30,6 @@ import styled, { css, useTheme } from 'styled-components';
 import useSWR from 'swr';
 
 import {
-  RANDOM_CALL_EXIT_PARAM,
-  RANDOM_CALL_EXIT_VALUE,
   UPCOMING_LOBBIES_ENDPOINT,
   USER_ENDPOINT,
 } from '../../../api/endpoints';
@@ -52,7 +50,7 @@ import {
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
 import {
   getAppAbsoluteRoute,
-  getAppRoute,
+  getAppRandomCallAfterRoute,
   getRandomCallRoute,
   RANDOM_CALLS_ROUTE,
 } from '../../../router/routes';
@@ -593,14 +591,19 @@ const RandomCallsLobby = ({
   lobbyUuid,
   onCancel,
   activeUsersCount = 0,
+  exitPath,
 }: {
   lobbyUuid: string;
   onCancel: () => void;
   activeUsersCount?: number;
+  // Where a finished call sends the person. Omitted for the usual app lobby.
+  exitPath?: string;
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { connectToCall } = useConnectedCallStore();
+  const postDisconnectRedirect =
+    exitPath || getAppRandomCallAfterRoute(lobbyUuid);
   const [lobbyState, setLobbyState] = useState<LobbyState>('idle');
   const [statusAttemptId, setStatusAttemptId] = useState<string | null>(null);
   const [isAccepting, setIsAccepting] = useState(false);
@@ -869,13 +872,18 @@ const RandomCallsLobby = ({
         e2eeKey: roomData.e2ee_key || undefined,
         livekitServerUrl: roomData.server_url,
         callType: 'random',
+        partnerName: currentMatchData.partner.name,
+        partnerProfile: currentMatchData.partner.description,
+        partnerImage:
+          currentMatchData.partner.image_type === 'avatar' ||
+          typeof currentMatchData.partner.image !== 'string'
+            ? undefined
+            : currentMatchData.partner.image,
         audioOptions: deviceOptions.audio,
         videoOptions: deviceOptions.video,
         audioPermissionDenied: audioPermissionError,
         videoPermissionDenied: videoPermissionError,
-        postDisconnectRedirect: `${getAppRoute(
-          RANDOM_CALLS_ROUTE,
-        )}?${RANDOM_CALL_EXIT_PARAM}=${RANDOM_CALL_EXIT_VALUE}`,
+        postDisconnectRedirect,
       });
 
       // Navigate to the random call screen for the partner

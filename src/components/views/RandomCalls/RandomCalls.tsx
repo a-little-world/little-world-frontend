@@ -9,15 +9,11 @@ import {
   TextTypes,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
-import {
-  RANDOM_CALL_EXIT_PARAM,
-  RANDOM_CALL_EXIT_VALUE,
-  UPCOMING_LOBBIES_ENDPOINT,
-} from '../../../api/endpoints';
+import { UPCOMING_LOBBIES_ENDPOINT } from '../../../api/endpoints';
 import { exitLobby } from '../../../api/randomCalls';
 import { COMMUNITY_EVENT_FREQUENCIES } from '../../../constants/index';
 import { type UpcomingLobbyItem } from '../../../helpers/randomCalls';
@@ -33,7 +29,6 @@ import PanelImage from '../../atoms/PanelImage';
 import { Schedule } from '../../atoms/Schedule';
 import CallHistory from '../../blocks/CallHistory/CallHistory';
 import Instructions from '../../blocks/Instructions/Instructions';
-import PostRandomCallsFlow from '../../blocks/RandomCalls/PostRandomCallsFlow';
 import RandomCallsLobby from '../../blocks/RandomCalls/RandomCallsLobby';
 import {
   ActiveUsers,
@@ -85,11 +80,11 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
     mutate,
   } = useSWR<UpcomingLobbyItem[]>(UPCOMING_LOBBIES_ENDPOINT);
 
+  const location = useLocation();
+  const navigate = useNavigate();
   const active = lobbyData?.status ?? false;
   const [lobbyOpen, setLobbyOpen] = useState(false);
-  const [callEnded, setCallEnded] = useState(false);
   const [lobbySessionKey, setLobbySessionKey] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
 
   // Format time from ISO string to HH:MM
   const formatTime = (dateString?: string) => {
@@ -109,16 +104,14 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
   }, [lobbyData?.status, mutate]);
 
   useEffect(() => {
-    const randomCallEnded = searchParams.get(RANDOM_CALL_EXIT_PARAM);
-    if (randomCallEnded === RANDOM_CALL_EXIT_VALUE) {
-      setCallEnded(true);
-      const nextParams = new URLSearchParams(searchParams);
-      nextParams.delete(RANDOM_CALL_EXIT_PARAM);
-      setSearchParams(nextParams, { replace: true });
-    }
-  }, [searchParams, setSearchParams]);
+    const state = location.state as { openLobby?: boolean } | null;
+    if (!state?.openLobby) return;
+    setLobbySessionKey(current => current + 1);
+    setLobbyOpen(true);
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
-  useSystemModalBlocker(lobbyOpen || callEnded, 'random-calls');
+  useSystemModalBlocker(lobbyOpen, 'random-calls');
   useNotificationHandler(() => (lobbyOpen ? 'drop' : 'pass'));
 
   const openLobbyFresh = () => {
@@ -142,15 +135,6 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
     }
   };
 
-  const handleReturnToLobby = () => {
-    setCallEnded(false);
-    openLobbyFresh();
-  };
-
-  const handleClosePostCall = () => {
-    setCallEnded(false);
-  };
-
   return (
     <Container>
       <Modal
@@ -166,13 +150,6 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
             activeUsersCount={lobbyData.active_users_count}
           />
         )}
-      </Modal>
-
-      <Modal open={callEnded} onClose={handleClosePostCall}>
-        <PostRandomCallsFlow
-          onReturnToStart={handleClosePostCall}
-          onReturnToLobby={handleReturnToLobby}
-        />
       </Modal>
       <InnerContainer>
         <InfoPanel>
