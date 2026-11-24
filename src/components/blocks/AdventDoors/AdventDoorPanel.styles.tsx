@@ -32,7 +32,7 @@ export const doorShell = css<{ $state: DoorVisual }>`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-  width: 11rem
+  width: 11rem;
   min-width: 0;
   height: auto;
   align-self: stretch;
