@@ -76,8 +76,15 @@ export const toPayload = (door: AdventDoor): DoorPayload => ({
   join_path: door.joinPath,
 });
 
+/**
+ * Learners never see more than this many free places. A big company's door can have far more
+ * real places, and a large number reads as unpopular rather than open. Display only: booking
+ * still checks the real capacity on the backend.
+ */
+export const MAX_SHOWN_FREE_SEATS = 20;
+
 export const freeSeats = (door: AdventDoor) =>
-  Math.max(door.capacity - door.booked, 0);
+  Math.min(Math.max(door.capacity - door.booked, 0), MAX_SHOWN_FREE_SEATS);
 
 export const doorVisual = (door: AdventDoor): DoorVisual => {
   if (door.bookedByMe) return 'booked';

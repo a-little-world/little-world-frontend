@@ -297,7 +297,7 @@ const Door = ({ door, language, clockColor, onOpen, t }: DoorProps) => {
     <>
       <DayNumber $booked={booked}>{door.day}</DayNumber>
       <Divider $booked={booked} />
-      <Company>{door.company}</Company>
+      <Company lang={language}>{door.company}</Company>
       <Weekday $muted={booked}>{weekday}</Weekday>
       <TimeRow $muted={booked}>
         <ClockIcon label="" width="14" height="14" color={clockColor} />

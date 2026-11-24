@@ -32,7 +32,8 @@ export const doorShell = css<{ $state: DoorVisual }>`
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-  width: auto;
+  width: 11rem
+  min-width: 0;
   height: auto;
   align-self: stretch;
   padding: ${({ theme }) =>
@@ -48,6 +49,7 @@ export const doorShell = css<{ $state: DoorVisual }>`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
+      width: 12rem;
       padding: ${theme.spacing.medium} ${theme.spacing.medium}
         ${theme.spacing.small};
     }
@@ -164,6 +166,8 @@ export const Company = styled(Text).attrs({
   font-weight: 700;
   line-height: 1.3;
   text-wrap: balance;
+  overflow-wrap: break-word;
+  hyphens: auto;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 `;
