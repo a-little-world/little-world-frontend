@@ -39,7 +39,7 @@
   "advent_doors.outlook": "Outlook",
   "advent_doors.apple": "Apple / andere (.ics)",
   "advent_doors.event_title": "Zufallsgespräch mit {{company}}",
-  "advent_doors.event_details": "Dein Gespräch mit {{company}}. Hier geht's zum Gespräch: {{join}}",
+  "advent_doors.event_details": "Dein Zufallsgespräch mit {{company}} auf Little World.",
   "advent_doors.cancel_prompt": "Kannst du doch nicht?",
   "advent_doors.cancel_hint": "Sag bitte so früh wie möglich ab. Dann kann jemand anderes deinen Platz übernehmen.",
   "advent_doors.cancel_time": "Termin absagen",

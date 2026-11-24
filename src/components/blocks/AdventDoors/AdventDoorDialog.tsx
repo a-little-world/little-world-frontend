@@ -92,25 +92,19 @@ const AdventDoorDialog = ({
     start: door.startTime,
     end: door.endTime,
   });
-  const join =
-    typeof window === 'undefined'
-      ? door.joinPath
-      : `${window.location.origin}${door.joinPath}`;
   const startDate = new Date(door.startsAt);
   const endDate = new Date(door.endsAt);
   const calendarEvent: CalendarEvent = {
     frequency: COMMUNITY_EVENT_FREQUENCIES.once,
     title: t('advent_doors.event_title', { company: door.company }),
-    description: t('advent_doors.event_details', {
-      company: door.company,
-      join,
-    }),
+    description: t('advent_doors.event_details', { company: door.company }),
     startDate,
     endDate,
     durationInMinutes: Math.round(
       (endDate.getTime() - startDate.getTime()) / 60000,
     ),
-    link: join,
+    // The join link isn't final yet, so the calendar entry carries none.
+    link: '',
   };
 
   const confirm = async () => {
