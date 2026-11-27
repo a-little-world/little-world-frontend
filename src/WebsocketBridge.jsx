@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+} from 'react';
 
 import { useLocation, useNavigate } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
@@ -164,6 +170,7 @@ const WebsocketBridge = () => {
       ),
     [pathname, toast, navigate],
   );
+  const onNotification = useEffectEvent(payload => showNotification(payload));
 
   useEffect(() => {
     const onPresenceChange = () => {
@@ -211,7 +218,7 @@ const WebsocketBridge = () => {
           if (showToast) missed.last = message?.payload;
           document.title = `(${missed.count}) ${missed.title}`;
         } else if (showToast) {
-          showNotification(message?.payload);
+          onNotification(message?.payload);
         }
 
         // TODO: only if message is also persisted
@@ -226,7 +233,7 @@ const WebsocketBridge = () => {
         console.warn('CORE SOCKET ERROR:', e);
       }
     }
-  }, [lastMessage, setMessageHistory, toast, showNotification]);
+  }, [lastMessage]);
 
   return null;
 };
