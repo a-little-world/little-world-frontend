@@ -78,7 +78,7 @@ import {
 } from './ExternalRandomCallsPortal.styles';
 import {
   ExternalGuestSession,
-  isAppLearner,
+  joinsInTheApp,
   RandomCallLobbyDetails,
   readGuestFirstName,
   saveGuestFirstName,
@@ -427,9 +427,9 @@ const GuestPortalLoader = () => {
     );
   }
 
-  // A learner booked this in the app and joins it there. A full account that signed up on the
-  // landing is a partner, like a guest, and stays here.
-  if (isAppLearner(user)) {
+  // An app booking opens the session in the app. A landing signup, including a learner's, stays
+  // on this page.
+  if (joinsInTheApp(lobby)) {
     return <Navigate to={getAppExternalSessionRoute(lobby.uuid)} replace />;
   }
 

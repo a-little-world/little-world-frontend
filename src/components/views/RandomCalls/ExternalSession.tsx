@@ -7,13 +7,16 @@ import {
   Text,
 } from '@a-little-world/little-world-design-system';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 
 import { getRandomCallLobbyEndpoint } from '../../../api/endpoints';
 import { exitLobby } from '../../../api/randomCalls';
 import useSystemModalBlocker from '../../../hooks/useSystemModalBlocker';
-import { getAppRandomCallAfterRoute } from '../../../router/routes';
+import {
+  getAdventGuestLobbyRoute,
+  getAppRandomCallAfterRoute,
+} from '../../../router/routes';
 import RandomCallsLobby from '../../blocks/RandomCalls/RandomCallsLobby';
 import { RandomCallLobbyDetails } from '../ExternalRandomCalls/guestSession';
 import LobbyCard from '../ExternalRandomCalls/LobbyCard';
@@ -70,6 +73,11 @@ const ExternalSession = () => {
         <Text>{t('external_random_calls.unavailable')}</Text>
       </StatusPane>
     );
+  }
+
+  // A landing signup belongs on the partner page, including a learner who confirmed one.
+  if (lobby.join_surface === 'landing') {
+    return <Navigate to={getAdventGuestLobbyRoute(lobby.uuid)} replace />;
   }
 
   const startsAt = new Date(lobby.start_time);

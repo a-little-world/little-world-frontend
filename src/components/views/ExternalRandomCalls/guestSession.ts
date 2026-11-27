@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 
-import { USER_TYPES } from '../../../constants/index';
 import { PARTNER_EVENT_TIME_ZONE } from '../PartnerLanding/constants';
 
 export type RandomCallLobbyDetails = {
@@ -10,6 +9,8 @@ export type RandomCallLobbyDetails = {
   start_time: string;
   end_time: string;
   active_users_count: number;
+  /** Where this viewer belongs: the partner page, the app, or neither. */
+  join_surface?: 'landing' | 'app' | null;
 };
 
 export const DESIGN_PREVIEW_LOBBY = 'preview';
@@ -58,13 +59,9 @@ export type SignedInGuest = {
 export const isGuestUser = (user?: SignedInGuest | null) =>
   !user || user.isTemporary === true;
 
-/**
- * A learner with a full account. Learners book a session in the app, so they join it there.
- * Everyone else who signed up on a landing, full account or guest, is a partner and stays on
- * the partner page.
- */
-export const isAppLearner = (user?: SignedInGuest | null) =>
-  !isGuestUser(user) && user?.profile?.user_type === USER_TYPES.learner;
+/** An app booking with no landing signup. A landing signup stays on the partner page. */
+export const joinsInTheApp = (lobby: RandomCallLobbyDetails) =>
+  lobby.join_surface === 'app';
 
 /**
  * The session's lobby id on its partner page. At `/advents-gespraeche/<id>` the router names the
