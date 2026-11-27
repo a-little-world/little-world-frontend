@@ -43,7 +43,7 @@ import {
   RandomCallsInstructions,
 } from './RandomCalls.styles';
 
-const instructions = [
+export const randomCallInstructions = [
   {
     heading: 'random_calls.step_1.heading',
     description: 'random_calls.step_1.description',
@@ -233,14 +233,14 @@ const RandomCalls = ({ lobbyData }: { lobbyData?: RandomCallLobby }) => {
       </InnerContainer>
       <RandomCallsInstructions
         title={t('random_calls.instructions_title')}
-        items={instructions}
+        items={randomCallInstructions}
       />
       <RandomCallsAccordion
         ContentWrapper={RandomCallsAccordionContentWrapper}
         defaultValue={t('random_calls.instructions_title')}
         items={[
           {
-            content: <Instructions items={instructions} />,
+            content: <Instructions items={randomCallInstructions} />,
             header: t('random_calls.instructions_title'),
           },
           { content: <CallHistory />, header: t('call_history.title') },

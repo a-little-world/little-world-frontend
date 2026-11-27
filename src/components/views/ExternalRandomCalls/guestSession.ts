@@ -1,3 +1,6 @@
+import { useParams } from 'react-router-dom';
+
+import { USER_TYPES } from '../../../constants/index';
 import { PARTNER_EVENT_TIME_ZONE } from '../PartnerLanding/constants';
 
 export type RandomCallLobbyDetails = {
@@ -48,12 +51,29 @@ export type SignedInGuest = {
   email?: string;
   /** Set by the guest-account work. Absent until that lands, so a real account is not temporary. */
   isTemporary?: boolean;
-  profile?: { first_name?: string | null };
+  profile?: { first_name?: string | null; user_type?: string | null };
 };
 
 /** Anyone without a full account: not signed in, or on a temporary guest account. */
 export const isGuestUser = (user?: SignedInGuest | null) =>
   !user || user.isTemporary === true;
+
+/**
+ * A learner with a full account. Learners book a session in the app, so they join it there.
+ * Everyone else who signed up on a landing, full account or guest, is a partner and stays on
+ * the partner page.
+ */
+export const isAppLearner = (user?: SignedInGuest | null) =>
+  !isGuestUser(user) && user?.profile?.user_type === USER_TYPES.learner;
+
+/**
+ * The session's lobby id on its partner page. At `/advents-gespraeche/<id>` the router names the
+ * segment `partnerSlug`, because the same route also serves the landings.
+ */
+export const useLobbyIdParam = () => {
+  const { lobbyId, partnerSlug } = useParams();
+  return lobbyId ?? partnerSlug;
+};
 
 export type ExternalGuestSession = {
   email: string;

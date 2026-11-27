@@ -44,10 +44,8 @@ import PageFooter from '../../blocks/PageFooter/PageFooter';
 import PartnerSignUpCard, {
   SUPPORT_EMAIL,
 } from '../../blocks/PartnerSignUpCard/PartnerSignUpCard';
+import AdventStatusPage from './AdventStatusPage';
 import { eventFromLanding } from './constants';
-import PartnerConfirmation, {
-  PartnerConfirmationIntro,
-} from './PartnerConfirmation';
 import {
   BenefitCopy,
   BenefitList,
@@ -212,8 +210,7 @@ const PartnerLandingPage = () => {
   const [newsletter, setNewsletter] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [personalPath, setPersonalPath] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
   const [stickyVisible, setStickyVisible] = useState(false);
   const [openStoryKey, setOpenStoryKey] = useState<string | null>(null);
 
@@ -264,13 +261,6 @@ const PartnerLandingPage = () => {
     };
   }, [partner, partnerSlug, t]);
 
-  useEffect(() => {
-    if (!success) return undefined;
-    const scrollRoot = document.getElementById('router-outlet-wrapper');
-    scrollRoot?.scrollTo({ top: 0 });
-    return undefined;
-  }, [success]);
-
   const exampleEmail = partner?.email_domain
     ? `vorname.name@${partner.email_domain}`
     : 'name@firma.de';
@@ -291,7 +281,7 @@ const PartnerLandingPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (isSubmitting || success) return;
+    if (isSubmitting || sentTo) return;
     if (partnerSlug && !partner) return;
 
     const code = validatePartnerEmail(
@@ -305,12 +295,11 @@ const PartnerLandingPage = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await registerPartner(partnerSlug, {
+      await registerPartner(partnerSlug, {
         email: email.trim(),
         newsletter_subscribed: newsletter,
       });
-      setPersonalPath(response.personal_path ?? null);
-      setSuccess(true);
+      setSentTo(email.trim());
     } catch (submitError) {
       onFormError({
         e: submitError as { cause: string; message?: string; status?: number },
@@ -344,14 +333,14 @@ const PartnerLandingPage = () => {
 
   if (loadError) {
     return (
-      <StatusWrap>
+      <AdventStatusPage>
         <Text type={TextTypes.Heading5} tag="h1">
           {t('partner_landing.not_found')}
         </Text>
         <Link to={getAppRoute()} buttonSize={ButtonSizes.Medium}>
           {t('partner_landing.back_home')}
         </Link>
-      </StatusWrap>
+      </AdventStatusPage>
     );
   }
 
@@ -376,6 +365,8 @@ const PartnerLandingPage = () => {
     newsletter,
     error,
     isSubmitting,
+    sentTo,
+    onChangeEmail: () => setSentTo(null),
     onEmailChange: handleEmailChange,
     onNewsletterChange: setNewsletter,
     onSubmit: handleSubmit,
@@ -397,270 +388,256 @@ const PartnerLandingPage = () => {
       enableDarkMode={false}
     >
       <Page>
-        {success ? (
+        <>
           <Hero>
             <PartnerHeroChrome partner={partner} />
-            <PartnerConfirmationIntro
-              event={event}
-              hasPersonalLink={Boolean(personalPath)}
-            />
-            <PartnerConfirmation event={event} personalPath={personalPath} />
-          </Hero>
-        ) : (
-          <>
-            <Hero>
-              <PartnerHeroChrome partner={partner} />
-              <HeroLayout>
-                <HeroContent>
-                  <HeroPills>
-                    <Pill $tone="eyebrow">{event.campaignLabel}</Pill>
-                  </HeroPills>
-                  <HeroTitle>{t('partner_landing.hero_title')}</HeroTitle>
-                  <HeroLead>
-                    {partner.name
-                      ? t('partner_landing.hero_lead', {
-                          companyName: partner.name,
-                          eventDate: eventDateShort,
-                        })
-                      : t('partner_landing.hero_lead_generic', {
-                          eventDate: eventDateShort,
-                        })}
-                  </HeroLead>
-                  <PartnerSignUpCard
-                    {...cardProps}
-                    inputId="partner-email-hero"
-                  />
-                </HeroContent>
-              </HeroLayout>
-            </Hero>
-
-            <Section ref={counterpartRef} $tone="primary">
-              <SectionInner>
-                <SectionIntro>
-                  <SectionEyebrow>
-                    {t('partner_landing.counterpart.eyebrow')}
-                  </SectionEyebrow>
-                  <SectionTitle>
-                    {t('partner_landing.counterpart.title')}
-                  </SectionTitle>
-                </SectionIntro>
-                <CardGrid>
-                  {COUNTERPART_ITEMS.map(({ key, Icon }) => (
-                    <FeatureCard key={key}>
-                      <IconCircle>
-                        <Icon
-                          label={t(`partner_landing.counterpart.${key}.title`)}
-                          width={24}
-                          color={theme.color.text.title}
-                        />
-                      </IconCircle>
-                      <FeatureCopy>
-                        <FeatureTitle>
-                          {t(`partner_landing.counterpart.${key}.title`)}
-                        </FeatureTitle>
-                        <FeatureText>
-                          {t(`partner_landing.counterpart.${key}.text`)}
-                        </FeatureText>
-                      </FeatureCopy>
-                    </FeatureCard>
-                  ))}
-                </CardGrid>
-              </SectionInner>
-            </Section>
-
-            <Section $tone="secondary">
-              <SectionInner>
-                <SplitSection>
-                  <SplitColumn>
-                    <SectionIntro>
-                      <SectionEyebrow>
-                        {t('partner_landing.for_you.eyebrow')}
-                      </SectionEyebrow>
-                      <SectionTitle>
-                        {t('partner_landing.for_you.title')}
-                      </SectionTitle>
-                    </SectionIntro>
-                    <BenefitList>
-                      {FOR_YOU_ITEMS.map(key => (
-                        <BenefitRow key={key}>
-                          <IconCircle $tone="success">
-                            <TickIcon
-                              label={t(`partner_landing.for_you.${key}.title`)}
-                              width={24}
-                              color={theme.color.text.success}
-                            />
-                          </IconCircle>
-                          <BenefitCopy>
-                            <FeatureTitle>
-                              {t(`partner_landing.for_you.${key}.title`)}
-                            </FeatureTitle>
-                            <FeatureText>
-                              {t(`partner_landing.for_you.${key}.text`)}
-                            </FeatureText>
-                          </BenefitCopy>
-                        </BenefitRow>
-                      ))}
-                    </BenefitList>
-                  </SplitColumn>
-                  <SplitColumn $singleQuote={quotes.length === 1}>
-                    {quotes.map(quote => (
-                      <QuoteCard key={quote.key}>
-                        <QuoteMark type={TextTypes.Heading3}>„</QuoteMark>
-                        <QuoteText>
-                          {t(`partner_landing.quote.${quote.key}.text`)}
-                        </QuoteText>
-                        <PersonRow $spread={Boolean(quote.logo)}>
-                          {quote.photo ? (
-                            <PhotoAvatar
-                              src={quote.photo}
-                              alt={t(`partner_landing.quote.${quote.key}.name`)}
-                            />
-                          ) : null}
-                          <PersonCopy>
-                            <PersonName>
-                              {t(`partner_landing.quote.${quote.key}.name`)}
-                            </PersonName>
-                            <PersonRole>
-                              {t(`partner_landing.quote.${quote.key}.role`)}
-                            </PersonRole>
-                          </PersonCopy>
-                          {quote.logo ? (
-                            <QuoteCompanyLogo
-                              src={quote.logo}
-                              alt={quote.logoAlt}
-                            />
-                          ) : null}
-                        </PersonRow>
-                      </QuoteCard>
-                    ))}
-                  </SplitColumn>
-                </SplitSection>
-              </SectionInner>
-            </Section>
-
-            <Section $tone="subtle">
-              <SectionInner>
-                <SectionTitle>{t('partner_landing.steps.title')}</SectionTitle>
-                <StepsRow>
-                  {STEP_KEYS.map((key, index) => (
-                    <StepCard key={key}>
-                      <StepNumber>{index + 1}</StepNumber>
-                      <StepText>
-                        {key === 'three'
-                          ? t('partner_landing.steps.three', {
-                              eventDate: eventDateShort,
-                            })
-                          : t(`partner_landing.steps.${key}`)}
-                      </StepText>
-                    </StepCard>
-                  ))}
-                </StepsRow>
-              </SectionInner>
-            </Section>
-
-            <Section $tone="primary">
-              <SectionInner>
-                <SectionIntro>
-                  <SectionEyebrow>
-                    {t('partner_landing.stories.eyebrow')}
-                  </SectionEyebrow>
-                  <SectionTitle>
-                    {t('partner_landing.stories.title')}
-                  </SectionTitle>
-                </SectionIntro>
-                <StoriesGrid>
-                  {STORIES.map(story => (
-                    <StoryCard key={story.key}>
-                      <StoryAvatars people={story.people} />
-                      <StoryNames>
-                        {t(`partner_landing.stories.${story.key}.names`)}
-                      </StoryNames>
-                      <StoryQuote>
-                        <StoryQuoteMark aria-hidden="true">„</StoryQuoteMark>
-                        {t(`partner_landing.stories.${story.key}.quote`)}
-                        <StoryQuoteMark aria-hidden="true">
-                          “
-                        </StoryQuoteMark>{' '}
-                        <StorySpeaker>
-                          ({t(`partner_landing.stories.${story.key}.speaker`)})
-                        </StorySpeaker>
-                      </StoryQuote>
-                      <StoryContext>
-                        {t(`partner_landing.stories.${story.key}.context`)}
-                      </StoryContext>
-                      <StoryReadButton
-                        type="button"
-                        appearance={ButtonAppearance.Secondary}
-                        size={ButtonSizes.Medium}
-                        onClick={() => setOpenStoryKey(story.key)}
-                      >
-                        {t('partner_landing.stories.read')}
-                      </StoryReadButton>
-                    </StoryCard>
-                  ))}
-                </StoriesGrid>
-              </SectionInner>
-            </Section>
-
-            <Section $tone="secondary">
-              <FaqInner>
-                <SectionTitle>{t('partner_landing.faq.title')}</SectionTitle>
-                <FaqAccordion
-                  headerType={TextTypes.Heading6}
-                  headerColor={theme.color.text.bold}
-                  ContentWrapper={FaqAccordionContent}
-                  defaultValue={faqItems[0]?.header}
-                  items={faqItems}
-                />
-              </FaqInner>
-            </Section>
-
-            <FinalBlock ref={finalBlockRef}>
-              <FinalInner>
-                <FinalTitle>{t('partner_landing.final_title')}</FinalTitle>
-                <FinalLead>
+            <HeroLayout>
+              <HeroContent>
+                <HeroPills>
+                  <Pill $tone="eyebrow">{event.campaignLabel}</Pill>
+                </HeroPills>
+                <HeroTitle>{t('partner_landing.hero_title')}</HeroTitle>
+                <HeroLead>
                   {partner.name
-                    ? t('partner_landing.final_lead', {
+                    ? t('partner_landing.hero_lead', {
                         companyName: partner.name,
                         eventDate: eventDateShort,
                       })
-                    : t('partner_landing.final_lead_generic', {
+                    : t('partner_landing.hero_lead_generic', {
                         eventDate: eventDateShort,
                       })}
-                </FinalLead>
-                <div ref={finalCardRef}>
-                  <PartnerSignUpCard
-                    {...cardProps}
-                    inputId="partner-email-final"
-                  />
-                </div>
-              </FinalInner>
-            </FinalBlock>
-          </>
-        )}
+                </HeroLead>
+                <PartnerSignUpCard
+                  {...cardProps}
+                  inputId="partner-email-hero"
+                />
+              </HeroContent>
+            </HeroLayout>
+          </Hero>
+
+          <Section ref={counterpartRef} $tone="primary">
+            <SectionInner>
+              <SectionIntro>
+                <SectionEyebrow>
+                  {t('partner_landing.counterpart.eyebrow')}
+                </SectionEyebrow>
+                <SectionTitle>
+                  {t('partner_landing.counterpart.title')}
+                </SectionTitle>
+              </SectionIntro>
+              <CardGrid>
+                {COUNTERPART_ITEMS.map(({ key, Icon }) => (
+                  <FeatureCard key={key}>
+                    <IconCircle>
+                      <Icon
+                        label={t(`partner_landing.counterpart.${key}.title`)}
+                        width={24}
+                        color={theme.color.text.title}
+                      />
+                    </IconCircle>
+                    <FeatureCopy>
+                      <FeatureTitle>
+                        {t(`partner_landing.counterpart.${key}.title`)}
+                      </FeatureTitle>
+                      <FeatureText>
+                        {t(`partner_landing.counterpart.${key}.text`)}
+                      </FeatureText>
+                    </FeatureCopy>
+                  </FeatureCard>
+                ))}
+              </CardGrid>
+            </SectionInner>
+          </Section>
+
+          <Section $tone="secondary">
+            <SectionInner>
+              <SplitSection>
+                <SplitColumn>
+                  <SectionIntro>
+                    <SectionEyebrow>
+                      {t('partner_landing.for_you.eyebrow')}
+                    </SectionEyebrow>
+                    <SectionTitle>
+                      {t('partner_landing.for_you.title')}
+                    </SectionTitle>
+                  </SectionIntro>
+                  <BenefitList>
+                    {FOR_YOU_ITEMS.map(key => (
+                      <BenefitRow key={key}>
+                        <IconCircle $tone="success">
+                          <TickIcon
+                            label={t(`partner_landing.for_you.${key}.title`)}
+                            width={24}
+                            color={theme.color.text.success}
+                          />
+                        </IconCircle>
+                        <BenefitCopy>
+                          <FeatureTitle>
+                            {t(`partner_landing.for_you.${key}.title`)}
+                          </FeatureTitle>
+                          <FeatureText>
+                            {t(`partner_landing.for_you.${key}.text`)}
+                          </FeatureText>
+                        </BenefitCopy>
+                      </BenefitRow>
+                    ))}
+                  </BenefitList>
+                </SplitColumn>
+                <SplitColumn $singleQuote={quotes.length === 1}>
+                  {quotes.map(quote => (
+                    <QuoteCard key={quote.key}>
+                      <QuoteMark type={TextTypes.Heading3}>„</QuoteMark>
+                      <QuoteText>
+                        {t(`partner_landing.quote.${quote.key}.text`)}
+                      </QuoteText>
+                      <PersonRow $spread={Boolean(quote.logo)}>
+                        {quote.photo ? (
+                          <PhotoAvatar
+                            src={quote.photo}
+                            alt={t(`partner_landing.quote.${quote.key}.name`)}
+                          />
+                        ) : null}
+                        <PersonCopy>
+                          <PersonName>
+                            {t(`partner_landing.quote.${quote.key}.name`)}
+                          </PersonName>
+                          <PersonRole>
+                            {t(`partner_landing.quote.${quote.key}.role`)}
+                          </PersonRole>
+                        </PersonCopy>
+                        {quote.logo ? (
+                          <QuoteCompanyLogo
+                            src={quote.logo}
+                            alt={quote.logoAlt}
+                          />
+                        ) : null}
+                      </PersonRow>
+                    </QuoteCard>
+                  ))}
+                </SplitColumn>
+              </SplitSection>
+            </SectionInner>
+          </Section>
+
+          <Section $tone="subtle">
+            <SectionInner>
+              <SectionTitle>{t('partner_landing.steps.title')}</SectionTitle>
+              <StepsRow>
+                {STEP_KEYS.map((key, index) => (
+                  <StepCard key={key}>
+                    <StepNumber>{index + 1}</StepNumber>
+                    <StepText>
+                      {key === 'three'
+                        ? t('partner_landing.steps.three', {
+                            eventDate: eventDateShort,
+                          })
+                        : t(`partner_landing.steps.${key}`)}
+                    </StepText>
+                  </StepCard>
+                ))}
+              </StepsRow>
+            </SectionInner>
+          </Section>
+
+          <Section $tone="primary">
+            <SectionInner>
+              <SectionIntro>
+                <SectionEyebrow>
+                  {t('partner_landing.stories.eyebrow')}
+                </SectionEyebrow>
+                <SectionTitle>
+                  {t('partner_landing.stories.title')}
+                </SectionTitle>
+              </SectionIntro>
+              <StoriesGrid>
+                {STORIES.map(story => (
+                  <StoryCard key={story.key}>
+                    <StoryAvatars people={story.people} />
+                    <StoryNames>
+                      {t(`partner_landing.stories.${story.key}.names`)}
+                    </StoryNames>
+                    <StoryQuote>
+                      <StoryQuoteMark aria-hidden="true">„</StoryQuoteMark>
+                      {t(`partner_landing.stories.${story.key}.quote`)}
+                      <StoryQuoteMark aria-hidden="true">“</StoryQuoteMark>{' '}
+                      <StorySpeaker>
+                        ({t(`partner_landing.stories.${story.key}.speaker`)})
+                      </StorySpeaker>
+                    </StoryQuote>
+                    <StoryContext>
+                      {t(`partner_landing.stories.${story.key}.context`)}
+                    </StoryContext>
+                    <StoryReadButton
+                      type="button"
+                      appearance={ButtonAppearance.Secondary}
+                      size={ButtonSizes.Medium}
+                      onClick={() => setOpenStoryKey(story.key)}
+                    >
+                      {t('partner_landing.stories.read')}
+                    </StoryReadButton>
+                  </StoryCard>
+                ))}
+              </StoriesGrid>
+            </SectionInner>
+          </Section>
+
+          <Section $tone="secondary">
+            <FaqInner>
+              <SectionTitle>{t('partner_landing.faq.title')}</SectionTitle>
+              <FaqAccordion
+                headerType={TextTypes.Heading6}
+                headerColor={theme.color.text.bold}
+                ContentWrapper={FaqAccordionContent}
+                defaultValue={faqItems[0]?.header}
+                items={faqItems}
+              />
+            </FaqInner>
+          </Section>
+
+          <FinalBlock ref={finalBlockRef}>
+            <FinalInner>
+              <FinalTitle>{t('partner_landing.final_title')}</FinalTitle>
+              <FinalLead>
+                {partner.name
+                  ? t('partner_landing.final_lead', {
+                      companyName: partner.name,
+                      eventDate: eventDateShort,
+                    })
+                  : t('partner_landing.final_lead_generic', {
+                      eventDate: eventDateShort,
+                    })}
+              </FinalLead>
+              <div ref={finalCardRef}>
+                <PartnerSignUpCard
+                  {...cardProps}
+                  inputId="partner-email-final"
+                />
+              </div>
+            </FinalInner>
+          </FinalBlock>
+        </>
 
         <PageFooter />
 
-        {!success && (
-          <>
-            <PartnerStoryModal
-              storyKey={openStoryKey}
-              people={
-                STORIES.find(story => story.key === openStoryKey)?.people ?? []
-              }
-              onClose={() => setOpenStoryKey(null)}
-            />
+        <PartnerStoryModal
+          storyKey={openStoryKey}
+          people={
+            STORIES.find(story => story.key === openStoryKey)?.people ?? []
+          }
+          onClose={() => setOpenStoryKey(null)}
+        />
 
-            <StickyBar $visible={stickyVisible && !openStoryKey}>
-              <StickyButton
-                type="button"
-                size={ButtonSizes.Stretch}
-                onClick={scrollToFinalCard}
-              >
-                {t('partner_landing.submit')}
-              </StickyButton>
-            </StickyBar>
-          </>
+        {/* Signed up: nothing left to scroll to. */}
+        {!sentTo && (
+          <StickyBar $visible={stickyVisible && !openStoryKey}>
+            <StickyButton
+              type="button"
+              size={ButtonSizes.Stretch}
+              onClick={scrollToFinalCard}
+            >
+              {t('partner_landing.submit')}
+            </StickyButton>
+          </StickyBar>
         )}
       </Page>
     </CustomThemeProvider>

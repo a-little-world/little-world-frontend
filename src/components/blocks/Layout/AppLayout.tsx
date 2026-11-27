@@ -32,7 +32,11 @@ import useModalManagerStore, {
   ModalTypes,
 } from '../../../features/stores/modalManager';
 import { blockIncomingCall } from '../../../features/swr/wsBridgeMutations';
-import { getAppRoute, ONBOARDING_ROUTE } from '../../../router/routes';
+import {
+  getAppRoute,
+  ONBOARDING_ROUTE,
+  RANDOM_CALLS_ROUTE,
+} from '../../../router/routes';
 import LoadingScreen from '../../atoms/LoadingScreen';
 import CallSetup from '../Calls/CallSetup';
 import IncomingCall from '../Calls/IncomingCall';
@@ -109,10 +113,14 @@ export const FullAppLayout = ({ children }: { children: ReactNode }) => {
   const isOnOnboardingRoute =
     location.pathname === onboardingBasePath ||
     location.pathname.startsWith(`${onboardingBasePath}/`);
+  const isExternalSessionLobby = location.pathname.startsWith(
+    `${getAppRoute(RANDOM_CALLS_ROUTE)}/`,
+  );
   const shouldRedirectVolunteerToOnboarding =
     user?.profile?.user_type === USER_TYPES.volunteer &&
     !user?.isOnboarded &&
-    !isOnOnboardingRoute;
+    !isOnOnboardingRoute &&
+    !isExternalSessionLobby;
 
   const subPath = location.pathname.split('/').slice(2).join('/');
   const isVH = pagesWithViewportHeight.some(

@@ -5,6 +5,7 @@ import { ADVENT_DOORS_ENDPOINT } from '../../../api/endpoints';
 import { apiFetch } from '../../../api/helpers';
 import { ApiError } from '../../../api/types';
 import { LANGUAGES } from '../../../constants/index';
+import { getAppExternalSessionRoute } from '../../../router/routes';
 
 /** A door is almost full once this many learner seats, or fewer, remain. */
 export const ALMOST_FULL_FREE_SEATS = 3;
@@ -58,7 +59,8 @@ export const toDoor = (payload: DoorPayload): AdventDoor => ({
   capacity: payload.capacity,
   booked: payload.booked,
   bookedByMe: payload.booked_by_me,
-  joinPath: payload.join_path,
+  // Learners are full accounts, so the room link is the in-app session.
+  joinPath: getAppExternalSessionRoute(payload.id),
 });
 
 export const toPayload = (door: AdventDoor): DoorPayload => ({
@@ -99,6 +101,21 @@ export const compareDoors = (a: AdventDoor, b: AdventDoor) =>
   a.startTime.localeCompare(b.startTime) ||
   a.id.localeCompare(b.id);
 
+/** A booked door turns into a join button this long before its session starts. */
+export const JOIN_OPENS_BEFORE_MS = 15 * 60 * 1000;
+
+/** The booked learner can enter the call now: from shortly before the start until the end. */
+export const isJoinOpen = (door: AdventDoor, now = new Date()) =>
+  door.bookedByMe &&
+  now.getTime() >= new Date(door.startsAt).getTime() - JOIN_OPENS_BEFORE_MS &&
+  now.getTime() < new Date(door.endsAt).getTime();
+
+/** The session's lobby page as a full URL, for calendar entries. */
+export const joinUrl = (door: AdventDoor) =>
+  typeof window === 'undefined'
+    ? door.joinPath
+    : `${window.location.origin}${door.joinPath}`;
+
 /** The backend lists only Advent doors; this drops one that ends while the page is open. */
 export const isUpcoming = (door: AdventDoor, now = new Date()) =>
   new Date(door.endsAt).getTime() > now.getTime();
@@ -126,8 +143,20 @@ export const cancelDoorRequest = (id: string) =>
 
 export const isFullError = (error: unknown): DoorPayload | null => {
   const apiError = error as ApiError;
-  if (apiError?.status === 409 && apiError.data?.door) {
+  if (
+    apiError?.status === 409 &&
+    apiError.data?.code !== 'already_registered' &&
+    apiError.data?.door
+  ) {
     return apiError.data.door as DoorPayload;
   }
   return null;
+};
+
+/** The learner already signed up for this session on its landing page. */
+export const isAlreadyRegisteredError = (error: unknown): boolean => {
+  const apiError = error as ApiError;
+  return (
+    apiError?.status === 409 && apiError.data?.code === 'already_registered'
+  );
 };

@@ -1,5 +1,6 @@
 import {
   Checkbox,
+  ConfettiImage,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -73,6 +74,18 @@ export const When = styled(Text).attrs({ type: TextTypes.Body6, tag: 'p' })`
   color: ${({ theme }) => theme.color.text.tertiary};
 `;
 
+export const StyledConfettiImage = styled(ConfettiImage)`
+  width: 72px;
+  height: 72px;
+
+  ${({ theme }) => css`
+    @media (min-width: ${theme.breakpoints.medium}) {
+      width: 96px;
+      height: 96px;
+    }
+  `}
+`;
+
 export const InfoBox = styled.div`
   display: flex;
   align-items: flex-start;
@@ -140,6 +153,13 @@ export const Confirmed = styled.div`
   align-items: center;
   text-align: center;
   gap: ${({ theme }) => theme.spacing.xsmall};
+`;
+
+export const RoomBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 export const CalendarBlock = styled.div`

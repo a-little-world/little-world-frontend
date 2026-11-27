@@ -18,6 +18,9 @@ import {
 import Logo from '../atoms/Logo';
 import LanguageSelector from './LanguageSelector/LanguageSelector';
 
+const HEADER_HEIGHT_SMALL = '72px';
+const HEADER_HEIGHT_LARGE = '84px';
+
 const StyledHeader = styled.header`
   display: flex;
   align-items: center;
@@ -27,7 +30,7 @@ const StyledHeader = styled.header`
   border-bottom: 1px solid ${({ theme }) => theme.color.border.subtle};
   padding: ${({ theme }) => theme.spacing.small};
   background-color: ${({ theme }) => theme.color.surface.primary};
-  height: 72px;
+  height: ${HEADER_HEIGHT_SMALL};
   z-index: 10;
   width: 100%;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);
@@ -35,8 +38,8 @@ const StyledHeader = styled.header`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      height: 90px;
-      padding: ${theme.spacing.large};
+      height: ${HEADER_HEIGHT_LARGE};
+      padding: ${theme.spacing.medium} ${theme.spacing.large};
     }
   `}
 `;

@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   Checkbox,
+  StatusMessage,
   Text,
   TextInput,
   TextTypes,
@@ -11,11 +12,7 @@ import styled, { css } from 'styled-components';
 import { softCardShadowValue } from '../../views/PartnerLanding/shadow';
 
 export const CardShell = styled(Card)`
-  && {
-    width: 100%;
-    max-width: 100%;
     gap: ${({ theme }) => theme.spacing.small};
-    text-align: left;
     color: ${({ theme }) => theme.color.text.primary};
     border-radius: ${({ theme }) => theme.radius.large};
     padding: ${({ theme }) =>
@@ -27,11 +24,9 @@ export const CardShell = styled(Card)`
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      && {
-        max-width: 40rem;
-        border-radius: ${theme.radius.xlarge};
-        padding: ${theme.spacing.medium} ${theme.spacing.large};
-      }
+      max-width: 40rem;
+      border-radius: ${theme.radius.xlarge};
+      padding: ${theme.spacing.medium} ${theme.spacing.large};
     }
   `}
 `;
@@ -218,38 +213,10 @@ export const FormStack = styled.form`
 `;
 
 export const EmailField = styled(TextInput)`
-  && {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  input {
-    width: 100%;
-    max-width: 100%;
-    height: ${({ theme }) =>
-      `calc(${theme.spacing.xlarge} + ${theme.spacing.xsmall})`};
-    border-radius: ${({ theme }) => theme.radius.small};
-    border-width: ${({ theme }) => theme.spacing.xxxxsmall};
-    background: ${({ theme }) => theme.color.surface.primary};
-    color: ${({ theme }) => theme.color.text.primary};
-
-    &::placeholder {
-      color: ${({ theme }) => theme.color.text.quaternary};
-    }
-
-    &:focus,
-    &:focus-visible {
-      outline: none;
-      border-color: ${({ theme }) => theme.color.border.selected};
-    }
-  }
+  max-width: 100%;
 `;
 
 export const SubmitButton = styled(Button)`
-  width: 100%;
-  max-width: 100%;
-  height: ${({ theme }) =>
-    `calc(${theme.spacing.xlarge} + ${theme.spacing.xsmall})`};
   white-space: nowrap;
 `;
 
@@ -279,6 +246,10 @@ export const NewsletterLabel = styled(Text).attrs({
   line-height: 1.4;
 `;
 
+export const StyledStatusMessage = styled(StatusMessage)`
+  max-width: 480px;
+`;
+
 export const SupportRow = styled.div`
   display: flex;
   align-items: center;
@@ -297,4 +268,27 @@ export const SupportText = styled(Text).attrs({
 })`
   color: ${({ theme }) => theme.color.text.tertiary};
   margin: 0;
+`;
+
+/** Replaces the form once the confirmation mail is sent. */
+export const SentStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.spacing.xxsmall};
+  width: 100%;
+`;
+
+export const SentTitle = styled(Text).attrs({
+  type: TextTypes.Heading6,
+  tag: 'h3' as const,
+})`
+  margin: 0;
+`;
+
+export const SentText = styled(Text).attrs({
+  type: TextTypes.Body5,
+})`
+  margin: 0;
+  overflow-wrap: anywhere;
 `;

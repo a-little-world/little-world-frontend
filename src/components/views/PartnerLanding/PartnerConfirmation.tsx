@@ -70,12 +70,12 @@ import {
 
 type PartnerConfirmationProps = {
   event: PartnerEvent;
-  personalPath?: string | null;
+  /** The access link (magic link): the same one the access mail and the reminders carry. */
+  accessUrl: string;
 };
 
 type PartnerConfirmationIntroProps = {
   event: PartnerEvent;
-  hasPersonalLink?: boolean;
 };
 
 const COPY_RESET_MS = 2500;
@@ -100,14 +100,8 @@ const CALENDAR_OPTIONS = [
   },
 ] as const;
 
-const displayHost = () =>
-  typeof window === 'undefined'
-    ? 'little-world.com'
-    : window.location.host.replace(/^www\./, '');
-
 export const PartnerConfirmationIntro = ({
   event,
-  hasPersonalLink = false,
 }: PartnerConfirmationIntroProps) => {
   const { t, i18n } = useTranslation();
   const startsAt = toTimeZone(event.startsAt, event.timeZone);
@@ -124,25 +118,18 @@ export const PartnerConfirmationIntro = ({
           eventDate: formatDate(startsAt, 'd. MMMM', i18n.language),
         })}
       </ConfirmTitle>
-      <ConfirmLead>
-        {t(
-          hasPersonalLink
-            ? 'partner_landing.confirm.lead'
-            : 'partner_landing.success_thanks',
-        )}
-      </ConfirmLead>
+      <ConfirmLead>{t('partner_landing.confirm.lead')}</ConfirmLead>
     </ConfirmIntro>
   );
 };
 
-const PartnerConfirmation = ({
-  event,
-  personalPath,
-}: PartnerConfirmationProps) => {
+/** Shown without the scheme; the field cuts the token off with an ellipsis. */
+const displayLink = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
+
+const PartnerConfirmation = ({ event, accessUrl }: PartnerConfirmationProps) => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const [copied, setCopied] = useState(false);
-  const hasPersonalLink = Boolean(personalPath);
   const { timeZone } = event;
   const startsAt = toTimeZone(event.startsAt, timeZone);
   const endsAt = toTimeZone(event.endsAt, timeZone);
@@ -150,31 +137,21 @@ const PartnerConfirmation = ({
     startsAt,
     toTimeZone(new Date(), timeZone),
   );
-  const origin =
-    typeof window === 'undefined'
-      ? 'https://little-world.com'
-      : window.location.origin;
-  const personalUrl = hasPersonalLink ? `${origin}${personalPath}` : '';
-  const displayLink = hasPersonalLink ? `${displayHost()}${personalPath}` : '';
 
   const calendarEvent = useMemo<CalendarEvent>(
     () => ({
       frequency: COMMUNITY_EVENT_FREQUENCIES.once,
       title: t('partner_landing.calendar.title'),
-      description: hasPersonalLink
-        ? t('partner_landing.calendar.description', {
-            supportEmail: SUPPORT_EMAIL,
-            link: personalUrl,
-          })
-        : t('partner_landing.calendar.description_pending', {
-            supportEmail: SUPPORT_EMAIL,
-          }),
+      description: t('partner_landing.calendar.description', {
+        supportEmail: SUPPORT_EMAIL,
+        link: accessUrl,
+      }),
       startDate: event.startsAt,
       endDate: event.endsAt,
       durationInMinutes: 30,
-      link: personalUrl,
+      link: accessUrl,
     }),
-    [event.endsAt, event.startsAt, hasPersonalLink, personalUrl, t],
+    [accessUrl, event.endsAt, event.startsAt, t],
   );
 
   useEffect(() => {
@@ -185,7 +162,7 @@ const PartnerConfirmation = ({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(personalUrl);
+      await navigator.clipboard.writeText(accessUrl);
       setCopied(true);
     } catch {
       setCopied(false);
@@ -236,34 +213,28 @@ const PartnerConfirmation = ({
           </AppointmentRow>
           <DashedDivider />
           <ConfirmCardTitle>
-            {t(
-              hasPersonalLink
-                ? 'partner_landing.confirm.link_title'
-                : 'partner_landing.confirm.link_pending_title',
-            )}
+            {t('partner_landing.confirm.link_title')}
           </ConfirmCardTitle>
-          {hasPersonalLink ? (
-            <>
-              <LinkRow>
-                <LinkField>
-                  <WebIcon
-                    label={t('partner_landing.confirm.link_icon_label')}
-                    width={18}
-                    color={theme.color.text.primary}
+          <LinkRow>
+            <LinkField>
+              <WebIcon
+                label={t('partner_landing.confirm.link_icon_label')}
+                width={18}
+                color={theme.color.text.primary}
                   />
-                  <LinkValue>{displayLink}</LinkValue>
-                </LinkField>
-                <CopyButton
-                  type="button"
-                  $copied={copied}
-                  size={ButtonSizes.Medium}
-                  onClick={handleCopy}
+              <LinkValue>{displayLink(accessUrl)}</LinkValue>
+            </LinkField>
+            <CopyButton
+              type="button"
+              $copied={copied}
+              size={ButtonSizes.Medium}
+              onClick={handleCopy}
                 >
-                  {copied ? (
-                    <TickIcon
-                      label={t('partner_landing.confirm.copied')}
-                      width={18}
-                      color={theme.color.text.success}
+              {copied ? (
+                <TickIcon
+                  label={t('partner_landing.confirm.copied')}
+                  width={18}
+                  color={theme.color.text.success}
                     />
                   ) : (
                     <CopyIcon
@@ -272,20 +243,14 @@ const PartnerConfirmation = ({
                       color={theme.color.text.button}
                     />
                   )}
-                  {copied
+              {copied
                     ? t('partner_landing.confirm.copied')
                     : t('partner_landing.confirm.copy')}
-                </CopyButton>
-              </LinkRow>
-              <ConfirmCardText>
-                {t('partner_landing.confirm.link_help')}
-              </ConfirmCardText>
-            </>
-          ) : (
-            <ConfirmCardText>
-              {t('partner_landing.confirm.link_pending')}
-            </ConfirmCardText>
-          )}
+            </CopyButton>
+          </LinkRow>
+          <ConfirmCardText>
+            {t('partner_landing.confirm.link_help')}
+          </ConfirmCardText>
         </ConfirmCard>
 
         <ConfirmCard>
@@ -310,18 +275,14 @@ const PartnerConfirmation = ({
 
       <InfoBarWrap>
         <InfoBar>
-          {hasPersonalLink && (
-            <InfoBarCopy>
-              <BellIcon
-                label={t('partner_landing.confirm.email_icon_label')}
-                width={22}
-                color={theme.color.text.primary}
-              />
-              <InfoBarText>
-                {t('partner_landing.confirm.email_note')}
-              </InfoBarText>
-            </InfoBarCopy>
-          )}
+          <InfoBarCopy>
+            <BellIcon
+              label={t('partner_landing.confirm.email_icon_label')}
+              width={22}
+              color={theme.color.text.primary}
+            />
+            <InfoBarText>{t('partner_landing.confirm.email_note')}</InfoBarText>
+          </InfoBarCopy>
           <InfoBarSupport>
             <MailIcon
               label={t('partner_landing.support_icon_label')}
@@ -329,8 +290,8 @@ const PartnerConfirmation = ({
               color={theme.color.text.tertiary}
             />
             <InfoBarText>
-              {t('partner_landing.support_prompt')}{' '}
-              <Link href={`mailto:${SUPPORT_EMAIL}`} textType={TextTypes.Body6}>
+              {t('partner_landing.confirm.support_prompt')}{' '}
+              <Link href={`mailto:${SUPPORT_EMAIL}`} textType={TextTypes.Body5}>
                 {SUPPORT_EMAIL}
               </Link>
             </InfoBarText>

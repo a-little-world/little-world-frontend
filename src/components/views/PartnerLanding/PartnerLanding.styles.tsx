@@ -173,6 +173,11 @@ export const Hero = styled.section`
   }
 `;
 
+/** Same photograph as the landing hero, sized to the success message rather than the viewport. */
+export const ConfirmHero = styled(Hero)`
+  min-height: auto;
+`;
+
 export const NavBar = styled.nav`
   position: relative;
   z-index: ${({ theme }) => theme.zIndex.sticky};
@@ -561,6 +566,28 @@ export const StatusWrap = styled.div`
   min-height: 100vh;
   padding: ${({ theme }) => theme.spacing.large};
   background: ${({ theme }) => theme.color.surface.primary};
+`;
+
+export const StatusPage = styled.main`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: ${({ theme }) => theme.color.surface.primary};
+  color: ${({ theme }) => theme.color.text.primary};
+`;
+
+export const StatusBody = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${({ theme }) => theme.spacing.medium};
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: ${({ theme }) => theme.spacing.large};
+  text-align: center;
 `;
 
 export const CardGrid = styled.div`

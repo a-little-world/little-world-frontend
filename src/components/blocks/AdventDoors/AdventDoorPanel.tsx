@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   ButtonAppearance,
@@ -43,6 +43,7 @@ import {
   Instruction,
   InstructionMark,
   InstructionText,
+  JoinLink,
   Lead,
   LiveRegion,
   LoadingCard,
@@ -63,7 +64,9 @@ import {
   DoorPayload,
   doorVisual,
   freeSeats,
+  isAlreadyRegisteredError,
   isFullError,
+  isJoinOpen,
   isUpcoming,
   longDate,
   toDoor,
@@ -92,14 +95,21 @@ const AdventDoorPanel = () => {
   );
   const [dialog, setDialog] = useState<DialogState | null>(null);
   const [announcement, setAnnouncement] = useState('');
+  // Ticks so a booked door turns into a join button, and a finished one drops out, without a reload.
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 30000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const doors = useMemo(
     () =>
       (data ?? [])
         .map(toDoor)
-        .filter(door => isUpcoming(door))
+        .filter(door => isUpcoming(door, now))
         .sort(compareDoors),
-    [data],
+    [data, now],
   );
 
   const replace = (id: string, next: DoorPayload) =>
@@ -138,6 +148,7 @@ const AdventDoorPanel = () => {
         return 'full' as const;
       }
       if (previous) await replace(door.id, previous);
+      if (isAlreadyRegisteredError(error)) return 'already_registered' as const;
       throw error;
     }
   };
@@ -223,6 +234,7 @@ const AdventDoorPanel = () => {
               door={door}
               language={i18n.language}
               clockColor={clockColor(door.bookedByMe)}
+              joinOpen={isJoinOpen(door, now)}
               onOpen={step => setDialog({ id: door.id, step })}
               t={t}
             />
@@ -256,11 +268,19 @@ type DoorProps = {
   door: AdventDoor;
   language: string;
   clockColor: string;
+  joinOpen: boolean;
   onOpen: (step: DialogStep) => void;
   t: (key: string, options?: Record<string, unknown>) => string;
 };
 
-const Door = ({ door, language, clockColor, onOpen, t }: DoorProps) => {
+const Door = ({
+  door,
+  language,
+  clockColor,
+  joinOpen,
+  onOpen,
+  t,
+}: DoorProps) => {
   const state = doorVisual(door);
   const free = freeSeats(door);
   const booked = state === 'booked';
@@ -342,9 +362,20 @@ const Door = ({ door, language, clockColor, onOpen, t }: DoorProps) => {
         >
           {body}
         </DoorHit>
-        <CancelLink type="button" onClick={() => onOpen('cancel')}>
-          {t('advent_doors.cancel')}
-        </CancelLink>
+        {/* Beside the door's button, not inside it: a link inside a button is invalid. */}
+        {joinOpen ? (
+          <JoinLink
+            to={door.joinPath}
+            buttonAppearance={ButtonAppearance.Primary}
+            buttonSize={ButtonSizes.Small}
+          >
+            {t('advent_doors.join_now')}
+          </JoinLink>
+        ) : (
+          <CancelLink type="button" onClick={() => onOpen('cancel')}>
+            {t('advent_doors.cancel')}
+          </CancelLink>
+        )}
       </DoorFrame>
     );
   }
