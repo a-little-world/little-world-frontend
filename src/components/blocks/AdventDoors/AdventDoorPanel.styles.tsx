@@ -1,7 +1,7 @@
 import {
   Button,
-  Link,
   Card as DSCard,
+  Link,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';

@@ -60,14 +60,11 @@ export const registerPartner = (
   slug: string | undefined,
   body: { email: string; newsletter_subscribed: boolean },
 ) =>
-  apiFetch<{ ok: true }>(
-    getPartnerRegisterEndpoint(slug),
-    {
-      method: 'POST',
-      useTagsOnly: true,
-      body,
-    },
-  );
+  apiFetch<{ ok: true }>(getPartnerRegisterEndpoint(slug), {
+    method: 'POST',
+    useTagsOnly: true,
+    body,
+  });
 
 export const verifyPartnerEmail = (token: string) =>
   apiFetch<PartnerVerifyResult>(PARTNER_VERIFY_ENDPOINT, {

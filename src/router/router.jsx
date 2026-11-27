@@ -74,9 +74,9 @@ import {
   ADVENT_DOORS_ROUTE,
   ADVENT_EMAIL_CONFIRM_ROUTE,
   ADVENT_GUEST_AFTER_CALL_ROUTE,
-  ADVENT_LEGACY_GUEST_ROUTE,
   ADVENT_GUEST_STAY_ROUTE,
   ADVENT_LANDING_ROUTE,
+  ADVENT_LEGACY_GUEST_ROUTE,
   APP_RANDOM_CALL_AFTER_ROUTE,
   APP_ROUTE,
   BASE_ROUTE,
@@ -218,7 +218,10 @@ const adventLandingRoute = {
       element: <GuestSessionEnded />,
     },
     { path: ':lobbyId/kontakt', element: <SessionEndedRedirect /> },
-    { path: `${ADVENT_LEGACY_GUEST_ROUTE}/*`, element: <LegacyGuestRedirect /> },
+    {
+      path: `${ADVENT_LEGACY_GUEST_ROUTE}/*`,
+      element: <LegacyGuestRedirect />,
+    },
     { path: ADVENT_EMAIL_CONFIRM_ROUTE, element: <PartnerEmailConfirm /> },
     { path: ADVENT_ACCESS_ROUTE, element: <PartnerAccess /> },
     // A landing, or a session's partner page when the segment is its lobby uuid.

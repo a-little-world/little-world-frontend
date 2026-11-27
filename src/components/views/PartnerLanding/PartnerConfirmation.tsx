@@ -126,7 +126,10 @@ export const PartnerConfirmationIntro = ({
 /** Shown without the scheme; the field cuts the token off with an ellipsis. */
 const displayLink = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
 
-const PartnerConfirmation = ({ event, accessUrl }: PartnerConfirmationProps) => {
+const PartnerConfirmation = ({
+  event,
+  accessUrl,
+}: PartnerConfirmationProps) => {
   const { t, i18n } = useTranslation();
   const theme = useTheme();
   const [copied, setCopied] = useState(false);
@@ -221,7 +224,7 @@ const PartnerConfirmation = ({ event, accessUrl }: PartnerConfirmationProps) => 
                 label={t('partner_landing.confirm.link_icon_label')}
                 width={18}
                 color={theme.color.text.primary}
-                  />
+              />
               <LinkValue>{displayLink(accessUrl)}</LinkValue>
             </LinkField>
             <CopyButton
@@ -229,23 +232,23 @@ const PartnerConfirmation = ({ event, accessUrl }: PartnerConfirmationProps) => 
               $copied={copied}
               size={ButtonSizes.Medium}
               onClick={handleCopy}
-                >
+            >
               {copied ? (
                 <TickIcon
                   label={t('partner_landing.confirm.copied')}
                   width={18}
                   color={theme.color.text.success}
-                    />
-                  ) : (
-                    <CopyIcon
-                      label={t('partner_landing.confirm.copy')}
-                      width={18}
-                      color={theme.color.text.button}
-                    />
-                  )}
+                />
+              ) : (
+                <CopyIcon
+                  label={t('partner_landing.confirm.copy')}
+                  width={18}
+                  color={theme.color.text.button}
+                />
+              )}
               {copied
-                    ? t('partner_landing.confirm.copied')
-                    : t('partner_landing.confirm.copy')}
+                ? t('partner_landing.confirm.copied')
+                : t('partner_landing.confirm.copy')}
             </CopyButton>
           </LinkRow>
           <ConfirmCardText>

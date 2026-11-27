@@ -4,7 +4,8 @@ import ExternalRandomCallsPortal from '../components/views/ExternalRandomCalls/E
 import PartnerLanding from '../components/views/PartnerLanding/PartnerLanding';
 import { ADVENT_LANDING_ROUTE } from './routes';
 
-const LOBBY_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const LOBBY_ID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * `/advents-gespraeche/<segment>` is either a session's partner page (the segment is its lobby
