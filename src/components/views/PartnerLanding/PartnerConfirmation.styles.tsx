@@ -27,10 +27,8 @@ export const ConfirmIntro = styled.section`
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: ${({ theme }) =>
-    `calc(${theme.spacing.xsmall} + ${theme.spacing.xxxxsmall})`};
-  padding-top: ${({ theme }) =>
-    `calc(${theme.spacing.xlarge} + ${theme.spacing.xxxsmall})`};
+  gap: ${({ theme }) => theme.spacing.xsmall};
+  padding-top: ${({ theme }) => theme.spacing.medium};
   padding-bottom: ${({ theme }) => theme.spacing.xlarge};
   ${pageSidePadding}
 `;
@@ -77,7 +75,6 @@ export const ConfirmCards = styled.div`
   gap: ${({ theme }) => theme.spacing.large};
   padding-top: ${({ theme }) => theme.spacing.large};
   padding-bottom: ${({ theme }) => theme.spacing.small};
-  ${pageSidePadding}
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {

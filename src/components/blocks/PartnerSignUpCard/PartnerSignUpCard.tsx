@@ -1,15 +1,16 @@
 import { FormEvent } from 'react';
 
 import {
+  Button,
   ButtonSizes,
+  ButtonVariations,
   ClockIcon,
   Link,
   MailIcon,
-  StatusMessage,
   StatusTypes,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components';
 
 import { PartnerLanding } from '../../../api/partnerLanding';
@@ -39,6 +40,10 @@ import {
   NewsletterCheckbox,
   NewsletterLabel,
   NewsletterRow,
+  SentStack,
+  SentText,
+  SentTitle,
+  StyledStatusMessage,
   SubmitButton,
   SupportRow,
   SupportText,
@@ -56,6 +61,10 @@ export interface PartnerSignUpCardProps {
   error: string | null;
   isSubmitting: boolean;
   inputId: string;
+  /** The address the confirmation mail went to. Set, the card shows that instead of the form. */
+  sentTo?: string | null;
+  /** Brings the form back, for a mistyped address. */
+  onChangeEmail?: () => void;
   onEmailChange: (value: string) => void;
   onNewsletterChange: (value: boolean) => void;
   onSubmit: () => void;
@@ -69,6 +78,8 @@ const PartnerSignUpCard = ({
   error,
   isSubmitting,
   inputId,
+  sentTo = null,
+  onChangeEmail,
   onEmailChange,
   onNewsletterChange,
   onSubmit,
@@ -136,47 +147,71 @@ const PartnerSignUpCard = ({
       </AppointmentRow>
       <DashedDivider />
 
-      <FormStack onSubmit={handleSubmit} noValidate>
-        <EmailField
-          id={inputId}
-          label={t(
-            enforceEmailDomain
-              ? 'partner_landing.email_label'
-              : 'partner_landing.email_label_generic',
+      {sentTo ? (
+        <SentStack aria-live="polite">
+          <SentTitle>{t('partner_landing.sent.title')}</SentTitle>
+          <SentText>
+            <Trans
+              i18nKey="partner_landing.sent.body"
+              values={{ email: sentTo }}
+              components={{ b: <strong /> }}
+            />
+          </SentText>
+          {onChangeEmail && (
+            <Button
+              type="button"
+              variation={ButtonVariations.Inline}
+              onClick={onChangeEmail}
+            >
+              {t('partner_landing.sent.change_email')}
+            </Button>
           )}
-          type="email"
-          inputMode="email"
-          value={email}
-          placeholder={exampleEmail}
-          autoComplete="email"
-          cannotError
-          onChange={inputEvent => onEmailChange(inputEvent.target.value)}
-        />
-        {Boolean(error) && (
-          <StatusMessage type={StatusTypes.Error} visible>
-            {error}
-          </StatusMessage>
-        )}
-        <SubmitButton
-          type="submit"
-          size={ButtonSizes.Stretch}
-          loading={isSubmitting}
-        >
-          {t('partner_landing.submit')}
-        </SubmitButton>
-        <Microcopy>{t('partner_landing.microcopy')}</Microcopy>
-      </FormStack>
+        </SentStack>
+      ) : (
+        <>
+          <FormStack onSubmit={handleSubmit} noValidate>
+            <EmailField
+              id={inputId}
+              label={t(
+                enforceEmailDomain
+                  ? 'partner_landing.email_label'
+                  : 'partner_landing.email_label_generic',
+              )}
+              type="email"
+              inputMode="email"
+              value={email}
+              placeholder={exampleEmail}
+              autoComplete="email"
+              cannotError
+              onChange={inputEvent => onEmailChange(inputEvent.target.value)}
+            />
+            {Boolean(error) && (
+              <StyledStatusMessage type={StatusTypes.Error} visible>
+                {error}
+              </StyledStatusMessage>
+            )}
+            <SubmitButton
+              type="submit"
+              size={ButtonSizes.Large}
+              loading={isSubmitting}
+            >
+              {t('partner_landing.submit')}
+            </SubmitButton>
+            <Microcopy>{t('partner_landing.microcopy')}</Microcopy>
+          </FormStack>
 
-      <NewsletterRow htmlFor={`${inputId}-newsletter`}>
-        <NewsletterCheckbox
-          id={`${inputId}-newsletter`}
-          checked={newsletter}
-          required={false}
-          color={theme.color.surface.highlight}
-          onCheckedChange={value => onNewsletterChange(value === true)}
-        />
-        <NewsletterLabel>{t('partner_landing.newsletter')}</NewsletterLabel>
-      </NewsletterRow>
+          <NewsletterRow htmlFor={`${inputId}-newsletter`}>
+            <NewsletterCheckbox
+              id={`${inputId}-newsletter`}
+              checked={newsletter}
+              required={false}
+              color={theme.color.surface.highlight}
+              onCheckedChange={value => onNewsletterChange(value === true)}
+            />
+            <NewsletterLabel>{t('partner_landing.newsletter')}</NewsletterLabel>
+          </NewsletterRow>
+        </>
+      )}
 
       <SupportRow>
         <MailIcon

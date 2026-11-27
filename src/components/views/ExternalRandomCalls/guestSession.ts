@@ -1,3 +1,5 @@
+import { useParams } from 'react-router-dom';
+
 import { PARTNER_EVENT_TIME_ZONE } from '../PartnerLanding/constants';
 
 export type RandomCallLobbyDetails = {
@@ -7,6 +9,8 @@ export type RandomCallLobbyDetails = {
   start_time: string;
   end_time: string;
   active_users_count: number;
+  /** Where this viewer belongs: the partner page, the app, or neither. */
+  join_surface?: 'landing' | 'app' | null;
 };
 
 export const DESIGN_PREVIEW_LOBBY = 'preview';
@@ -48,12 +52,25 @@ export type SignedInGuest = {
   email?: string;
   /** Set by the guest-account work. Absent until that lands, so a real account is not temporary. */
   isTemporary?: boolean;
-  profile?: { first_name?: string | null };
+  profile?: { first_name?: string | null; user_type?: string | null };
 };
 
 /** Anyone without a full account: not signed in, or on a temporary guest account. */
 export const isGuestUser = (user?: SignedInGuest | null) =>
   !user || user.isTemporary === true;
+
+/** An app booking with no landing signup. A landing signup stays on the partner page. */
+export const joinsInTheApp = (lobby: RandomCallLobbyDetails) =>
+  lobby.join_surface === 'app';
+
+/**
+ * The session's lobby id on its partner page. At `/advents-gespraeche/<id>` the router names the
+ * segment `partnerSlug`, because the same route also serves the landings.
+ */
+export const useLobbyIdParam = () => {
+  const { lobbyId, partnerSlug } = useParams();
+  return lobbyId ?? partnerSlug;
+};
 
 export type ExternalGuestSession = {
   email: string;

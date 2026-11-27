@@ -1,6 +1,7 @@
 import {
   Button,
   Card as DSCard,
+  Link,
   Text,
   TextTypes,
 } from '@a-little-world/little-world-design-system';
@@ -230,6 +231,11 @@ export const CancelLink = styled.button`
   &:hover {
     color: ${({ theme }) => theme.color.text.title};
   }
+`;
+
+export const JoinLink = styled(Link)`
+  width: 100%;
+  margin-top: ${({ theme }) => theme.spacing.xxsmall};
 `;
 
 /** Same page wrapper as Resources and About Us: a small gutter on phones only. */

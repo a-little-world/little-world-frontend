@@ -1,21 +1,12 @@
-import {
-  ComponentType,
-  FormEvent,
-  RefObject,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ComponentType, useEffect, useMemo, useState } from 'react';
 
 import {
-  ButtonAppearance,
-  ButtonSizes,
   ClockIcon,
   CustomThemeProvider,
   ExclamationIcon,
+  Gradients,
+  GroupChatIcon,
   HeartIcon,
-  InclusiveIcon,
   InfoIcon,
   Loading,
   LoadingSizes,
@@ -23,7 +14,6 @@ import {
   MessageIcon,
   MicIcon,
   Modal,
-  PhoneIcon,
   PhoneSlashIcon,
   ProfileIcon,
   QuestionIcon,
@@ -31,12 +21,11 @@ import {
   TagAppearance,
   TagSizes,
   Text,
-  TextInput,
   ThemeVariants,
   VideoIcon,
 } from '@a-little-world/little-world-design-system';
 import { I18nextProvider, useTranslation } from 'react-i18next';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import useSWR from 'swr';
 
@@ -47,22 +36,16 @@ import {
 } from '../../../api/endpoints';
 import { exitLobby } from '../../../api/randomCalls';
 import { LANGUAGES } from '../../../constants/index';
-import {
-  formatDate,
-  formatTime,
-  formatTimeRange,
-  toTimeZone,
-} from '../../../helpers/date';
+import { formatDate, formatTimeRange, toTimeZone } from '../../../helpers/date';
 import useSystemModalBlocker from '../../../hooks/useSystemModalBlocker';
-import { getAdventGuestAfterCallRoute } from '../../../router/routes';
+import {
+  getAdventGuestAfterCallRoute,
+  getAppExternalSessionRoute,
+} from '../../../router/routes';
 import Header from '../../blocks/Header';
 import PageFooter from '../../blocks/PageFooter/PageFooter';
-import {
-  DoorBadge,
-  DoorKnob,
-  DoorNumber,
-} from '../../blocks/PartnerSignUpCard/PartnerSignUpCard.styles';
 import RandomCallsLobby from '../../blocks/RandomCalls/RandomCallsLobby';
+import AdventStatusPage from '../PartnerLanding/AdventStatusPage';
 import {
   BannerCopy,
   CardTitle,
@@ -74,28 +57,14 @@ import {
   IconRow,
   IconSlot,
   InfoBanner,
-  LobbyBody,
-  LobbyCard,
-  LobbyDoorScale,
-  LobbyDoorSlot,
-  LobbyLead,
-  LobbyTitle,
   MainRow,
-  NameBlock,
-  NameError,
-  NameForm,
-  NameHint,
   Page,
   RowText,
   SecondaryIntro,
   SecondRow,
   SideStack,
   StackCard,
-  StartButton,
-  StatusDot,
-  StatusLabel,
   StatusPane,
-  StatusRow,
   Step,
   StepBody,
   StepCopy,
@@ -104,19 +73,20 @@ import {
   StepTitle,
   TileText,
   TileTitle,
-  TimeSlot,
   VideoTile,
   VideoTiles,
 } from './ExternalRandomCallsPortal.styles';
 import {
   ExternalGuestSession,
-  lobbyIsActive,
+  joinsInTheApp,
   RandomCallLobbyDetails,
   readGuestFirstName,
   saveGuestFirstName,
   sessionFromLobby,
   SignedInGuest,
+  useLobbyIdParam,
 } from './guestSession';
+import LobbyCard from './LobbyCard';
 import SessionUserChip from './SessionUserChip';
 
 const ICON_SIZE = 20;
@@ -126,7 +96,7 @@ const TIPS = [
   { key: 'pace', Icon: MessageIcon },
   { key: 'correct', Icon: HeartIcon },
   { key: 'topics', Icon: QuestionIcon },
-  { key: 'equal', Icon: InclusiveIcon },
+  { key: 'equal', Icon: GroupChatIcon },
   { key: 'stop', Icon: ExclamationIcon },
 ] as const;
 
@@ -141,16 +111,22 @@ type LobbyIcon = ComponentType<{
   color?: string;
 }>;
 
-const MutedIcon = ({ icon: Icon }: { icon: LobbyIcon }) => {
+const MutedIcon = ({
+  icon: Icon,
+  paddingTop,
+}: {
+  icon: LobbyIcon;
+  paddingTop?: string;
+}) => {
   const theme = useTheme();
 
   return (
-    <IconSlot>
+    <IconSlot $paddingTop={paddingTop}>
       <Icon
         label=""
         width={ICON_SIZE}
         height={ICON_SIZE}
-        color={theme.color.text.primary}
+        color={theme.color.surface.quaternary}
       />
     </IconSlot>
   );
@@ -158,42 +134,25 @@ const MutedIcon = ({ icon: Icon }: { icon: LobbyIcon }) => {
 
 const ExternalRandomCallsPage = ({ session }: PortalProps) => {
   const { t, i18n } = useTranslation();
-  const theme = useTheme();
-  const { lobbyId } = useParams<{ lobbyId?: string }>();
+  const lobbyId = useLobbyIdParam();
   const location = useLocation();
   const navigate = useNavigate();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const theme = useTheme();
   const recordName = session.firstName?.trim() ?? '';
   const [savedName, setSavedName] = useState(
     () => recordName || readGuestFirstName(lobbyId),
   );
-  const [draftName, setDraftName] = useState('');
-  const [nameError, setNameError] = useState<string | null>(null);
   const [lobbyOpen, setLobbyOpen] = useState(false);
   const [lobbySessionKey, setLobbySessionKey] = useState(0);
 
-  const [now, setNow] = useState(() => new Date());
   const startsAt = toTimeZone(session.startsAt, session.timeZone);
   const endsAt = toTimeZone(session.endsAt, session.timeZone);
-  const lobbyActive = lobbyIsActive(session.startsAt, session.endsAt, now);
-  const windowEnded = now.getTime() > session.endsAt.getTime();
-  let statusKey = 'external_random_calls.status_upcoming';
-  if (lobbyActive) statusKey = 'external_random_calls.status_open';
-  if (windowEnded) statusKey = 'external_random_calls.status_closed';
   const eventDate = formatDate(startsAt, 'd. MMMM', i18n.language);
-  const weekday = formatDate(startsAt, 'EEEEEE', i18n.language);
   const displayedName = savedName;
 
   useEffect(() => {
     setSavedName(recordName || readGuestFirstName(lobbyId));
-    setDraftName('');
-    setNameError(null);
   }, [recordName, lobbyId]);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 15000);
-    return () => window.clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -227,16 +186,7 @@ const ExternalRandomCallsPage = ({ session }: PortalProps) => {
     }
   };
 
-  const handleStart = (event?: FormEvent) => {
-    event?.preventDefault();
-    const name = (displayedName || draftName).trim();
-    if (!name) {
-      setNameError(t('external_random_calls.name_error'));
-      inputRef.current?.focus();
-      return;
-    }
-
-    setNameError(null);
+  const handleStart = (name: string) => {
     setSavedName(name);
     saveGuestFirstName(lobbyId, name);
     openLobbyFresh();
@@ -271,79 +221,24 @@ const ExternalRandomCallsPage = ({ session }: PortalProps) => {
         <InfoBanner>
           <MutedIcon icon={InfoIcon} />
           <BannerCopy>
-            {t('external_random_calls.banner', { date: eventDate })}
+            {t(
+              session.isGuest
+                ? 'external_random_calls.banner'
+                : 'external_random_calls.banner_account',
+              { date: eventDate },
+            )}
           </BannerCopy>
         </InfoBanner>
 
         <MainRow>
-          <LobbyCard>
-            <LobbyDoorSlot>
-              <LobbyDoorScale>
-                <DoorBadge>
-                  <DoorNumber>{startsAt.getDate()}</DoorNumber>
-                  <DoorKnob />
-                </DoorBadge>
-              </LobbyDoorScale>
-            </LobbyDoorSlot>
-            <LobbyBody>
-              <LobbyTitle>{t('external_random_calls.title')}</LobbyTitle>
-              <LobbyLead>{t('external_random_calls.lead')}</LobbyLead>
-              <TimeSlot>
-                {t('external_random_calls.slot', {
-                  weekday,
-                  date: eventDate,
-                  start: formatTime(startsAt),
-                  end: formatTime(endsAt),
-                })}
-              </TimeSlot>
-              <StatusRow>
-                <StatusDot $open={lobbyActive} />
-                <StatusLabel $open={lobbyActive}>{t(statusKey)}</StatusLabel>
-              </StatusRow>
-              <NameForm onSubmit={handleStart}>
-                {lobbyActive && !displayedName ? (
-                  <NameBlock>
-                    <TextInput
-                      id="guest-first-name"
-                      inputRef={inputRef as RefObject<HTMLInputElement>}
-                      label={t('external_random_calls.name_label')}
-                      placeholder={t('external_random_calls.name_placeholder')}
-                      value={draftName}
-                      autoComplete="given-name"
-                      cannotError
-                      aria-invalid={nameError ? true : undefined}
-                      aria-describedby={
-                        nameError ? 'guest-first-name-error' : undefined
-                      }
-                      onChange={event => {
-                        setDraftName(event.target.value);
-                        if (nameError) setNameError(null);
-                      }}
-                    />
-                    <NameHint>{t('external_random_calls.name_hint')}</NameHint>
-                  </NameBlock>
-                ) : null}
-                {nameError ? (
-                  <NameError id="guest-first-name-error">{nameError}</NameError>
-                ) : null}
-                {lobbyActive ? (
-                  <StartButton
-                    type="submit"
-                    appearance={ButtonAppearance.Primary}
-                    size={ButtonSizes.Medium}
-                  >
-                    <PhoneIcon
-                      label=""
-                      width={18}
-                      height={18}
-                      color={theme.color.text.button}
-                    />
-                    {t('external_random_calls.start')}
-                  </StartButton>
-                ) : null}
-              </NameForm>
-            </LobbyBody>
-          </LobbyCard>
+          <LobbyCard
+            isGuest={session.isGuest}
+            startsAt={session.startsAt}
+            endsAt={session.endsAt}
+            timeZone={session.timeZone}
+            savedName={displayedName}
+            onStart={handleStart}
+          />
 
           <SideStack>
             <StackCard>
@@ -366,11 +261,20 @@ const ExternalRandomCallsPage = ({ session }: PortalProps) => {
             </StackCard>
 
             <StackCard>
-              <CardTitle>{t('external_random_calls.access_title')}</CardTitle>
+              <CardTitle>
+                {t(
+                  session.isGuest
+                    ? 'external_random_calls.access_title'
+                    : 'external_random_calls.access_title_account',
+                )}
+              </CardTitle>
               <IconList>
                 {session.email ? (
-                  <IconRow>
-                    <MutedIcon icon={MailIcon} />
+                  <IconRow $align="center">
+                    <MutedIcon
+                      icon={MailIcon}
+                      paddingTop={theme.spacing.xxxxsmall}
+                    />
                     <IconCopy>
                       <RowText disableParser>{session.email}</RowText>
                       <Tag
@@ -384,7 +288,10 @@ const ExternalRandomCallsPage = ({ session }: PortalProps) => {
                   </IconRow>
                 ) : null}
                 <IconRow>
-                  <MutedIcon icon={ClockIcon} />
+                  <MutedIcon
+                    icon={ClockIcon}
+                    paddingTop={theme.spacing.xxxsmall}
+                  />
                   <RowText>
                     {t('external_random_calls.valid_until', {
                       date: eventDate,
@@ -393,7 +300,10 @@ const ExternalRandomCallsPage = ({ session }: PortalProps) => {
                   </RowText>
                 </IconRow>
                 <IconRow>
-                  <MutedIcon icon={ProfileIcon} />
+                  <MutedIcon
+                    icon={ProfileIcon}
+                    paddingTop={theme.spacing.xxxsmall}
+                  />
                   <RowText>
                     {t('external_random_calls.first_name_only')}
                   </RowText>
@@ -412,7 +322,14 @@ const ExternalRandomCallsPage = ({ session }: PortalProps) => {
             <IconList>
               {TIPS.map(({ key, Icon }) => (
                 <IconRow key={key}>
-                  <MutedIcon icon={Icon} />
+                  <IconSlot $paddingTop={theme.spacing.xxxsmall}>
+                    <Icon
+                      label=""
+                      width={ICON_SIZE}
+                      height={ICON_SIZE}
+                      gradient={Gradients.Blue}
+                    />
+                  </IconSlot>
                   <RowText>{t(`external_random_calls.tip_${key}`)}</RowText>
                 </IconRow>
               ))}
@@ -435,11 +352,17 @@ const ExternalRandomCallsPage = ({ session }: PortalProps) => {
             </VideoTiles>
             <IconList>
               <IconRow>
-                <MutedIcon icon={ClockIcon} />
+                <MutedIcon
+                  icon={ClockIcon}
+                  paddingTop={theme.spacing.xxxsmall}
+                />
                 <RowText>{t('external_random_calls.timer')}</RowText>
               </IconRow>
               <IconRow>
-                <MutedIcon icon={PhoneSlashIcon} />
+                <MutedIcon
+                  icon={PhoneSlashIcon}
+                  paddingTop={theme.spacing.xxxsmall}
+                />
                 <RowText>{t('external_random_calls.leave')}</RowText>
               </IconRow>
             </IconList>
@@ -460,7 +383,7 @@ const partnerSlugForLobby = (name?: string | null) =>
 
 const GuestPortalLoader = () => {
   const { t } = useTranslation();
-  const { lobbyId } = useParams<{ lobbyId?: string }>();
+  const lobbyId = useLobbyIdParam();
   const {
     data: lobby,
     error,
@@ -489,14 +412,25 @@ const GuestPortalLoader = () => {
   }
 
   if (error || !lobby?.start_time || !lobby.end_time) {
+    // Signed out, the lobby is never shown: the confirmation mail is what signs a guest in.
+    const signedOut = error?.status === 401 || error?.status === 403;
     return (
-      <Page>
-        <Header logoLinksOut={false} />
-        <StatusPane>
-          <Text>{t('external_random_calls.unavailable')}</Text>
-        </StatusPane>
-      </Page>
+      <AdventStatusPage>
+        <Text>
+          {t(
+            signedOut
+              ? 'external_random_calls.sign_in_needed'
+              : 'external_random_calls.unavailable',
+          )}
+        </Text>
+      </AdventStatusPage>
     );
+  }
+
+  // An app booking opens the session in the app. A landing signup, including a learner's, stays
+  // on this page.
+  if (joinsInTheApp(lobby)) {
+    return <Navigate to={getAppExternalSessionRoute(lobby.uuid)} replace />;
   }
 
   return (

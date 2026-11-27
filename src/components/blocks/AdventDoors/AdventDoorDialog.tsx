@@ -7,9 +7,9 @@ import {
   ButtonVariations,
   CalendarAddIcon,
   CalendarIcon,
-  ConfettiImage,
   DownloadIcon,
   HeartIcon,
+  Link,
   Modal,
   Text,
   TextTypes,
@@ -42,13 +42,15 @@ import {
   HeaderCopy,
   InfoBox,
   Kicker,
+  RoomBlock,
+  StyledConfettiImage,
   When,
 } from './AdventDoorDialog.styles';
-import { AdventDoor, longDate, weekdayName } from './doors';
+import { AdventDoor, joinUrl, longDate, weekdayName } from './doors';
 
 export type DialogStep = 'commit' | 'confirmed' | 'cancel';
 
-type BookResult = 'booked' | 'full';
+type BookResult = 'booked' | 'full' | 'already_registered';
 
 type Props = {
   door: AdventDoor | null;
@@ -97,14 +99,17 @@ const AdventDoorDialog = ({
   const calendarEvent: CalendarEvent = {
     frequency: COMMUNITY_EVENT_FREQUENCIES.once,
     title: t('advent_doors.event_title', { company: door.company }),
-    description: t('advent_doors.event_details', { company: door.company }),
+    description: t('advent_doors.event_details', {
+      company: door.company,
+      link: joinUrl(door),
+    }),
     startDate,
     endDate,
     durationInMinutes: Math.round(
       (endDate.getTime() - startDate.getTime()) / 60000,
     ),
-    // The join link isn't final yet, so the calendar entry carries none.
-    link: '',
+    // The session's lobby page. It opens only for someone signed in and booked on this door.
+    link: joinUrl(door),
   };
 
   const confirm = async () => {
@@ -115,6 +120,10 @@ const AdventDoorDialog = ({
       const result = await onBook(door);
       if (result === 'full') {
         setError(t('advent_doors.full_error'));
+        return;
+      }
+      if (result === 'already_registered') {
+        setError(t('advent_doors.already_registered_error'));
         return;
       }
       onStep('confirmed');
@@ -197,7 +206,7 @@ const AdventDoorDialog = ({
         {step === 'confirmed' && (
           <>
             <Confirmed>
-              <ConfettiImage label="" width={120} height={120} />
+              <StyledConfettiImage label="" />
               <Text type={TextTypes.Heading4} tag="h2">
                 {t('advent_doors.confirmed_title')}
               </Text>
@@ -208,6 +217,17 @@ const AdventDoorDialog = ({
                 })}
               </Text>
             </Confirmed>
+            <RoomBlock>
+              <CalendarLabel>{t('advent_doors.room_label')}</CalendarLabel>
+              <Text>{t('advent_doors.room_hint')}</Text>
+              <Link
+                to={door.joinPath}
+                buttonAppearance={ButtonAppearance.Secondary}
+                buttonSize={ButtonSizes.Medium}
+              >
+                {t('advent_doors.room_link')}
+              </Link>
+            </RoomBlock>
             <CalendarBlock>
               <CalendarLabel>{t('advent_doors.calendar_label')}</CalendarLabel>
               <CalendarOptions

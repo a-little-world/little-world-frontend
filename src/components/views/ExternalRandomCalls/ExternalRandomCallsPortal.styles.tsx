@@ -36,7 +36,7 @@ export const Content = styled.div`
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
       gap: ${theme.spacing.medium};
-      padding: ${theme.spacing.large};
+      padding: ${theme.spacing.medium};
     }
   `}
 `;
@@ -159,26 +159,22 @@ export const SecondRow = styled.section`
   `}
 `;
 
-export const LobbyCard = styled(Card)`
+export const LobbyCardShell = styled(Card)`
   box-shadow: ${({ theme }) => softCardShadowValue({ theme })};
 `;
 
 export const LobbyDoorSlot = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 200px;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xsmall};
 
   ${({ theme }) => css`
     @media (min-width: ${theme.breakpoints.medium}) {
-      height: 240px;
+      flex-direction: row;
+      gap: ${theme.spacing.medium};
     }
   `}
-`;
-
-export const LobbyDoorScale = styled.div`
-  transform: scale(1.75);
-  transform-origin: center;
 `;
 
 export const LobbyBody = styled.div`
@@ -187,35 +183,27 @@ export const LobbyBody = styled.div`
   align-items: flex-start;
   gap: ${({ theme }) => theme.spacing.small};
   min-width: 0;
-  padding: ${({ theme }) =>
-    `${theme.spacing.xxsmall} ${theme.spacing.small} ${theme.spacing.small}`};
+  padding: ${({ theme }) => `${theme.spacing.small} 0 ${theme.spacing.small}`};
 `;
 
 export const LobbyTitle = styled(Text).attrs({
   type: TextTypes.Heading3,
   tag: 'h2' as const,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.heading};
   text-wrap: balance;
 `;
 
 export const LobbyLead = styled(Text).attrs({
-  type: TextTypes.Body4,
-  tag: 'p' as const,
+  type: TextTypes.Body5,
 })`
-  max-width: 36rem;
-  margin: 0;
   color: ${({ theme }) => theme.color.text.primary};
-  line-height: 1.5;
 `;
 
 export const TimeSlot = styled(Text).attrs({
   type: TextTypes.Body3,
-  tag: 'p' as const,
   bold: true,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.bold};
 `;
 
@@ -241,7 +229,6 @@ export const StatusLabel = styled(Text).attrs({
   tag: 'span' as const,
   bold: true,
 })<{ $open: boolean }>`
-  margin: 0;
   color: ${({ $open, theme }) =>
     $open ? theme.color.text.heading : theme.color.text.secondary};
 `;
@@ -264,17 +251,13 @@ export const NameBlock = styled.div`
 
 export const NameHint = styled(Text).attrs({
   type: TextTypes.Body6,
-  tag: 'p' as const,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.tertiary};
 `;
 
 export const NameError = styled(Text).attrs({
   type: TextTypes.Body6,
-  tag: 'p' as const,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.error};
 `;
 
@@ -299,6 +282,7 @@ export const StartButton = styled(Button)`
 
 export const StackCard = styled(Card)`
   box-shadow: ${({ theme }) => softCardShadowValue({ theme })};
+  gap: ${({ theme }) => theme.spacing.small};
 `;
 
 export const EqualCard = styled(StackCard)`
@@ -311,7 +295,6 @@ export const CardTitle = styled(Text).attrs({
   type: TextTypes.Heading6,
   tag: 'h2' as const,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.bold};
 `;
 
@@ -355,20 +338,15 @@ export const StepCopy = styled.div`
 
 export const StepTitle = styled(Text).attrs({
   type: TextTypes.Body5,
-  tag: 'p' as const,
   bold: true,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.bold};
 `;
 
 export const StepBody = styled(Text).attrs({
-  type: TextTypes.Body6,
-  tag: 'p' as const,
+  type: TextTypes.Body5,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.secondary};
-  line-height: 1.45;
 `;
 
 export const IconList = styled.ul`
@@ -380,18 +358,17 @@ export const IconList = styled.ul`
   list-style: none;
 `;
 
-export const IconRow = styled.li`
+export const IconRow = styled.li<{ $align?: 'center' | 'flex-start' }>`
   display: flex;
-  align-items: flex-start;
+  align-items: ${({ $align }) => $align || 'flex-start'};
   gap: ${({ theme }) => theme.spacing.small};
   min-width: 0;
 `;
 
-export const IconSlot = styled.span`
+export const IconSlot = styled.span<{ $paddingTop?: string }>`
   display: inline-flex;
   flex-shrink: 0;
-  opacity: 0.65;
-  padding-top: ${({ theme }) => theme.spacing.xxxxsmall};
+  padding-top: ${({ $paddingTop }) => $paddingTop || 0};
 `;
 
 export const IconCopy = styled.div`
@@ -405,21 +382,15 @@ export const IconCopy = styled.div`
 
 export const RowText = styled(Text).attrs({
   type: TextTypes.Body5,
-  tag: 'p' as const,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.primary};
-  line-height: 1.45;
   overflow-wrap: break-word;
 `;
 
 export const SecondaryIntro = styled(Text).attrs({
   type: TextTypes.Body5,
-  tag: 'p' as const,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.secondary};
-  line-height: 1.45;
 `;
 
 export const VideoTiles = styled.div`
@@ -438,7 +409,6 @@ export const VideoTile = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: ${({ theme }) => theme.spacing.xxxsmall};
   min-width: 0;
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.radius.medium};
@@ -447,26 +417,22 @@ export const VideoTile = styled.div`
 
 export const TileTitle = styled(Text).attrs({
   type: TextTypes.Body5,
-  tag: 'p' as const,
   bold: true,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.bold};
+  margin-top: ${({ theme }) => theme.spacing.xxxsmall};
 `;
 
 export const TileText = styled(Text).attrs({
-  type: TextTypes.Body6,
-  tag: 'p' as const,
+  type: TextTypes.Body5,
 })`
-  margin: 0;
   color: ${({ theme }) => theme.color.text.secondary};
-  line-height: 1.4;
 `;
 
 export const Footnote = styled(Text).attrs({
-  type: TextTypes.Body6,
-  tag: 'p' as const,
+  type: TextTypes.Body5,
+  center: true,
 })`
-  margin: 0;
+  margin-top: auto;
   color: ${({ theme }) => theme.color.text.tertiary};
 `;

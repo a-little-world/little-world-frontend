@@ -42,15 +42,19 @@ export const LOGIN_ROUTE = 'login';
 export const SIGN_UP_ROUTE = 'sign-up';
 export const ADVENT_LANDING_ROUTE = 'advents-gespraeche';
 export const ADVENT_LANDING_PARTNER_ROUTE = 'advents-gespraeche/:partnerSlug';
+/** Confirmation mail. The token stays in the URL fragment and is sent by POST. */
+export const ADVENT_EMAIL_CONFIRM_ROUTE = 'email-bestaetigen';
+/** Access mail (magic link). The token stays in the URL fragment and is sent by POST. */
+export const ADVENT_ACCESS_ROUTE = 'zugang';
 /** Guest lobby for one external session. The id is that session's lobby uuid. */
-export const ADVENT_GUEST_LOBBY_ROUTE = 'gast';
+/** The old partner-page segment. Only redirects now (`LegacyGuestRedirect`). */
+export const ADVENT_LEGACY_GUEST_ROUTE = 'gast';
 export const ADVENT_GUEST_AFTER_CALL_ROUTE = 'danach';
 export const APP_RANDOM_CALL_AFTER_ROUTE = 'post-call';
 export const ADVENT_GUEST_STAY_ROUTE = 'session-ended';
+/** A session's partner page, for guests and full accounts who signed up on a landing. */
 export const getAdventGuestLobbyRoute = (lobbyId?: string) =>
-  `/${ADVENT_LANDING_ROUTE}/${ADVENT_GUEST_LOBBY_ROUTE}${
-    lobbyId ? `/${lobbyId}` : ''
-  }`;
+  `/${ADVENT_LANDING_ROUTE}${lobbyId ? `/${lobbyId}` : ''}`;
 export const getAdventGuestAfterCallRoute = (lobbyId: string) =>
   `${getAdventGuestLobbyRoute(lobbyId)}/${ADVENT_GUEST_AFTER_CALL_ROUTE}`;
 export const getAdventGuestStayRoute = (lobbyId: string) =>
@@ -59,6 +63,9 @@ export const getAppRandomCallAfterRoute = (lobbyId: string) =>
   getAppRoute(
     `${RANDOM_CALLS_ROUTE}/${lobbyId}/${APP_RANDOM_CALL_AFTER_ROUTE}`,
   );
+/** A learner joins an external session here. Landing signups use `getAdventGuestLobbyRoute`. */
+export const getAppExternalSessionRoute = (lobbyId: string) =>
+  getAppRoute(`${RANDOM_CALLS_ROUTE}/${lobbyId}`);
 
 export const CHANGE_EMAIL_ROUTE = 'change-email';
 export const VERIFY_EMAIL_ROUTE = 'verify-email';

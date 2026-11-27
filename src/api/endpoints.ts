@@ -43,3 +43,5 @@ export const getPartnerLandingEndpoint = (slug?: string) =>
   slug ? `/api/partner/${slug}/` : PARTNER_LANDING_ENDPOINT;
 export const getPartnerRegisterEndpoint = (slug?: string) =>
   slug ? `/api/partner/${slug}/register/` : PARTNER_REGISTER_ENDPOINT;
+export const PARTNER_VERIFY_ENDPOINT = '/api/partner/verify/';
+export const PARTNER_ACCESS_ENDPOINT = '/api/partner/access/';
